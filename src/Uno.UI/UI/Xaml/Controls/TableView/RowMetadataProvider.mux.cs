@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\RowMetadataProvider.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\RowMetadataProvider.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -46,6 +46,11 @@ partial class RowMetadataProvider
 			{
 				m_flatRowsChangedToken.Disposable = null;
 			}
+
+			if (m_hierarchicalRows is not null && m_hierarchicalRowsChangedToken.Disposable is not null)
+			{
+				m_hierarchicalRowsChangedToken.Disposable = null;
+			}
 		}
 		catch
 		{
@@ -84,17 +89,52 @@ partial class RowMetadataProvider
 		return CreateForGroupedRows(adapter is not null ? adapter.Entries() : null, adapter, itemKeySelector);
 	}
 
+	internal static ITableViewRowMetadataProvider CreateForHierarchicalRows(
+		HierarchicalSourceAdapter? adapter,
+		TableViewRowItemKeySelector? itemKeySelector = null)
+	{
+		return new RowMetadataProvider(
+			SourceKind.Hierarchical,
+			null,
+			null,
+			null,
+			itemKeySelector,
+			adapter is not null ? adapter.Entries() : null,
+			adapter);
+	}
+
+	internal static ITableViewRowMetadataProvider CreateForGroupedHierarchicalRows(
+		GroupedSourceAdapter? groupedAdapter,
+		HierarchicalSourceAdapter? hierarchicalAdapter,
+		TableViewRowItemKeySelector? itemKeySelector = null)
+	{
+		// Only the grouped rows are subscribed: node toggles reach us as grouped-adapter changes,
+		// so subscribing to the hierarchy too would invalidate the identity index twice.
+		return new RowMetadataProvider(
+			SourceKind.GroupedHierarchical,
+			null,
+			groupedAdapter is not null ? groupedAdapter.Entries() : null,
+			groupedAdapter,
+			itemKeySelector,
+			null,
+			hierarchicalAdapter);
+	}
+
 	internal RowMetadataProvider(
 		SourceKind sourceKind,
 		ItemsSourceView? flatRows,
 		ItemsSourceView? groupedRows,
 		GroupedSourceAdapter? groupedAdapter,
-		TableViewRowItemKeySelector? itemKeySelector)
+		TableViewRowItemKeySelector? itemKeySelector,
+		ItemsSourceView? hierarchicalRows = null,
+		HierarchicalSourceAdapter? hierarchicalAdapter = null)
 	{
 		m_sourceKind = sourceKind;
 		m_flatRows = flatRows;
 		m_groupedRows = groupedRows;
 		m_groupedAdapter = groupedAdapter;
+		m_hierarchicalRows = hierarchicalRows;
+		m_hierarchicalAdapter = hierarchicalAdapter;
 		m_itemKeySelector = itemKeySelector;
 
 		// Subscribe to whichever source this provider indexes so the reverse map cannot outlive the
@@ -108,6 +148,7 @@ partial class RowMetadataProvider
 			if (weakAlive.Value)
 			{
 				InvalidateIdentityIndex();
+				InvalidateGroupHeaderIndices();
 			}
 		};
 
@@ -116,6 +157,12 @@ partial class RowMetadataProvider
 			var groupedRowsView = m_groupedRows;
 			groupedRowsView.CollectionChanged += onChanged;
 			m_groupedRowsChangedToken.Disposable = Disposable.Create(() => groupedRowsView.CollectionChanged -= onChanged);
+		}
+		else if (m_hierarchicalRows is not null)
+		{
+			var hierarchicalRowsView = m_hierarchicalRows;
+			hierarchicalRowsView.CollectionChanged += onChanged;
+			m_hierarchicalRowsChangedToken.Disposable = Disposable.Create(() => hierarchicalRowsView.CollectionChanged -= onChanged);
 		}
 		else if (m_flatRows is not null)
 		{
@@ -148,6 +195,12 @@ partial class RowMetadataProvider
 				rowCount = m_flatRows is not null ? m_flatRows.Count : 0;
 				break;
 			case SourceKind.Grouped:
+				rowCount = m_groupedRows is not null ? m_groupedRows.Count : 0;
+				break;
+			case SourceKind.Hierarchical:
+				rowCount = m_hierarchicalRows is not null ? m_hierarchicalRows.Count : 0;
+				break;
+			case SourceKind.GroupedHierarchical:
 				rowCount = m_groupedRows is not null ? m_groupedRows.Count : 0;
 				break;
 		}
@@ -199,6 +252,70 @@ partial class RowMetadataProvider
 		return true;
 	}
 
+	private void InvalidateGroupHeaderIndices()
+	{
+		m_groupHeaderIndicesRowCount = -1;
+		m_groupHeaderIndices.Clear();
+	}
+
+	private void EnsureGroupHeaderIndices(int rowCount)
+	{
+		if (m_groupHeaderIndicesRowCount == rowCount)
+		{
+			return;
+		}
+
+		m_groupHeaderIndices.Clear();
+		for (int i = 0; i < rowCount; ++i)
+		{
+			if (GroupedEntry.TryGetGroupedEntry(m_groupedRows!.GetAt(i)) is not null)
+			{
+				m_groupHeaderIndices.Add(i);
+			}
+		}
+		m_groupHeaderIndicesRowCount = rowCount;
+	}
+
+	public bool TryGetGroupMembership(
+		object? rows,
+		int index,
+		out int positionInGroup,
+		out int groupSize)
+	{
+		positionInGroup = 0;
+		groupSize = 0;
+
+		// Only answer for our own projection, so the index can't resolve against a stale one.
+		if (m_sourceKind != SourceKind.Grouped || m_groupedRows is null || rows is null || !SameObject(rows, m_groupedRows))
+		{
+			return false;
+		}
+
+		var rowCount = m_groupedRows.Count;
+		if (index < 0 || index >= rowCount)
+		{
+			return false;
+		}
+
+		EnsureGroupHeaderIndices(rowCount);
+
+		// First band after the row; the one before it (if any) opens the row's group.
+		// Uno specific: List<int>.BinarySearch has no upper_bound, so derive it from the complement.
+		var found = m_groupHeaderIndices.BinarySearch(index);
+		var next = found >= 0 ? found + 1 : ~found;
+		int previousHeader = next == 0 ? -1 : m_groupHeaderIndices[next - 1];
+		if (previousHeader == index)
+		{
+			// A header band is not a member of any group's data set.
+			return false;
+		}
+		int nextHeader = next == m_groupHeaderIndices.Count ? rowCount : m_groupHeaderIndices[next];
+
+		positionInGroup = index - previousHeader;
+		groupSize = nextHeader - previousHeader - 1;
+		return true;
+	}
+
 	public TableViewRowInfo GetRowInfo(int index)
 	{
 		var kind = TableViewRowKind.Data;
@@ -206,6 +323,8 @@ partial class RowMetadataProvider
 		bool isExpandable = false;
 		bool isExpanded = false;
 		int childCount = 0;
+		// Set only for hierarchical data rows.
+		HierarchicalSourceAdapter.NodeRow? node = null;
 
 		switch (m_sourceKind)
 		{
@@ -231,9 +350,51 @@ partial class RowMetadataProvider
 					}
 					break;
 				}
+
+			case SourceKind.Hierarchical:
+				{
+					if (m_hierarchicalAdapter is not null)
+					{
+						node = m_hierarchicalAdapter.TryGetNodeRow(index);
+					}
+					break;
+				}
+
+			case SourceKind.GroupedHierarchical:
+				{
+					var entry = TryGetGroupHeaderEntry(index);
+					if (entry is not null)
+					{
+						// Count roots, not rows, so the header count does not change as nodes expand. Falls back to
+						// the row count if the projection did not publish one.
+						kind = TableViewRowKind.GroupHeader;
+						childCount = entry.GroupItemCount();
+						if (entry.Group() is ShapingHelpers.IGroupChildCount counted)
+						{
+							int rootCount = counted.GroupChildCount();
+							if (rootCount >= 0)
+							{
+								childCount = rootCount;
+							}
+						}
+						// Expandability follows rows, so an empty group stays a leaf.
+						isExpandable = entry.GroupItemCount() > 0;
+						isExpanded = entry.IsExpanded();
+						break;
+					}
+
+					// Index addresses the grouped axis (with headers); the item is the only handle shared with
+					// the hierarchy adapter.
+					groupLevel = 1;
+					if (m_hierarchicalAdapter is not null)
+					{
+						node = m_hierarchicalAdapter.TryGetNodeRowForItem(GetGroupedRow(index));
+					}
+					break;
+				}
 		}
 
-		return new TableViewRowInfo
+		TableViewRowInfo info = new()
 		{
 			Kind = kind,
 			Level = groupLevel,
@@ -241,6 +402,18 @@ partial class RowMetadataProvider
 			IsExpanded = isExpanded,
 			ChildCount = childCount,
 		};
+		if (node is not null)
+		{
+			// Depth is 0-based; Level (and UIA AutomationProperties.Level) is 1-based.
+			info.Level = node.Depth + 1;
+			info.IsExpandable = node.HasChildren;
+			info.IsExpanded = node.IsExpanded;
+			info.ChildCount = node.ChildCount;
+			info.ParentIdentity = node.ParentKey;
+			info.PositionInSet = (uint)node.SiblingIndex;
+			info.SizeOfSet = (uint)node.SiblingCount;
+		}
+		return info;
 	}
 
 	public string GetIdentity(int index)
@@ -267,6 +440,39 @@ partial class RowMetadataProvider
 					}
 					return GetItemKey(GetGroupedRow(index));
 				}
+
+			case SourceKind.Hierarchical:
+				{
+					// Node key, matching what expand/collapse takes; survives item re-creation.
+					if (m_hierarchicalAdapter is not null)
+					{
+						if (m_hierarchicalAdapter.TryGetNodeRow(index) is { } node)
+						{
+							return node.NodeKey;
+						}
+					}
+					throw new ArgumentOutOfRangeException(nameof(index));
+				}
+
+			case SourceKind.GroupedHierarchical:
+				{
+					var entry = TryGetGroupHeaderEntry(index);
+					if (entry is not null)
+					{
+						return GetGroupExpansionKey(entry.Group());
+					}
+
+					// Node key so identity matches Toggle's addressing. Falls back to the item key mid-reshape.
+					var item = GetGroupedRow(index);
+					if (m_hierarchicalAdapter is not null)
+					{
+						if (m_hierarchicalAdapter.TryGetNodeRowForItem(item) is { } node)
+						{
+							return node.NodeKey;
+						}
+					}
+					return GetItemKey(item);
+				}
 		}
 
 		throw new ArgumentOutOfRangeException(nameof(index));
@@ -279,24 +485,88 @@ partial class RowMetadataProvider
 			return false;
 		}
 
-		bool isExpanded = desired ?? !m_groupedAdapter.IsGroupExpanded(group);
-		m_groupedAdapter.SetGroupExpanded(group, isExpanded);
-		return isExpanded;
+		// Strong ref: a handler of the resulting change may replace this provider mid-call.
+		var adapter = m_groupedAdapter;
+		bool before = adapter.IsGroupExpanded(group);
+		adapter.SetGroupExpanded(group, desired ?? !before);
+		return adapter.IsGroupExpanded(group) != before;
 	}
 
-	public void Expand(string key)
+	public bool Expand(string key)
 	{
-		SetGroupExpandedCore(ResolveGroupFromKey(key), true);
+		if (IsNodeExpansionKey(key))
+		{
+			return SetNodeExpandedCore(key, true);
+		}
+		return SetGroupExpandedCore(ResolveGroupFromKey(key), true);
 	}
 
-	public void Collapse(string key)
+	public bool Collapse(string key)
 	{
-		SetGroupExpandedCore(ResolveGroupFromKey(key), false);
+		if (IsNodeExpansionKey(key))
+		{
+			return SetNodeExpandedCore(key, false);
+		}
+		return SetGroupExpandedCore(ResolveGroupFromKey(key), false);
 	}
 
 	public bool Toggle(string key)
 	{
+		if (IsNodeExpansionKey(key))
+		{
+			return SetNodeExpandedCore(key, null);
+		}
 		return SetGroupExpandedCore(ResolveGroupFromKey(key), null);
+	}
+
+	// The guards of SetGroupExpandedCore and HierarchicalSourceAdapter::SetNodeExpanded: a group that resolves, or a
+	// presented node with children, in another state than the one requested.
+	public bool WouldChangeExpansion(string key, bool? desired)
+	{
+		try
+		{
+			if (IsNodeExpansionKey(key))
+			{
+				var row = m_hierarchicalAdapter!.TryGetIndexForNodeKey(key, out var nodeIndex)
+					? m_hierarchicalAdapter.TryGetNodeRow(nodeIndex) : null;
+				return row is not null && row.HasChildren && (desired is null || row.IsExpanded != desired.Value);
+			}
+
+			var group = ResolveGroupFromKey(key);
+			return group is not null && m_groupedAdapter is not null && (desired is null || m_groupedAdapter.IsGroupExpanded(group) != desired.Value);
+		}
+		catch
+		{
+			return true;
+		}
+	}
+
+	// Under GroupedHierarchical both "group:" and "node:" keys arrive here; route on the key
+	// (disjoint prefixes), not SourceKind.
+	private bool IsNodeExpansionKey(string key)
+	{
+		if (m_hierarchicalAdapter is null || string.IsNullOrEmpty(key))
+		{
+			return false;
+		}
+
+		// Positive prefix test, so a stale or foreign identity cannot become node intent.
+		return HierarchicalSourceAdapter.IsNodeKey(key);
+	}
+
+	private bool SetNodeExpandedCore(string nodeKey, bool? desired)
+	{
+		if (m_hierarchicalAdapter is null || string.IsNullOrEmpty(nodeKey))
+		{
+			return false;
+		}
+
+		var adapter = m_hierarchicalAdapter;
+		bool before = adapter.IsNodeExpanded(nodeKey);
+		adapter.SetNodeExpanded(nodeKey, desired ?? !before);
+
+		// Reports any change (collapse included), not the resulting state.
+		return adapter.IsNodeExpanded(nodeKey) != before;
 	}
 
 	private object? GetGroupedRow(int index)
@@ -320,22 +590,46 @@ partial class RowMetadataProvider
 
 	public void ExpandAllGroups()
 	{
-		if (m_groupedAdapter is null)
+		// Groups only, even when composed: driving the hierarchy too would expand every tree node.
+		// See ExpandAllRows.
+		if (m_groupedAdapter is { } adapter)
 		{
-			return;
+			adapter.ExpandAll();
 		}
-
-		m_groupedAdapter.ExpandAll();
 	}
 
 	public void CollapseAllGroups()
 	{
-		if (m_groupedAdapter is null)
+		if (m_groupedAdapter is { } adapter)
 		{
-			return;
+			adapter.CollapseAll();
 		}
+	}
 
-		m_groupedAdapter.CollapseAll();
+	public void ExpandAllRows()
+	{
+		// Moves the hierarchy baseline; no app code runs. Does not open group headers when composed.
+		if (m_hierarchicalAdapter is { } adapter)
+		{
+			adapter.ExpandAll();
+		}
+	}
+
+	public void ExpandSubtree(string key)
+	{
+		if (IsNodeExpansionKey(key))
+		{
+			var adapter = m_hierarchicalAdapter!;
+			adapter.ExpandSubtree(key);
+		}
+	}
+
+	public void CollapseAllRows()
+	{
+		if (m_hierarchicalAdapter is { } adapter)
+		{
+			adapter.CollapseAll();
+		}
 	}
 
 	private object? GetFlatItem(int index)

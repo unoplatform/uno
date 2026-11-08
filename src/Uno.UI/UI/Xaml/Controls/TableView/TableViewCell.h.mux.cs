@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewCell.h, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewCell.h, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -55,6 +55,7 @@ internal partial class TableViewCell : Grid, ITableViewCellAutomationPeerAccess
 			return existingPeer;
 		}
 		AutomationPeer peer = new TableViewCellAutomationPeer(
+			new TableViewCellAutomationPeer.TrustedOwnerTag(),
 			this, m_row.Get(), m_column.Get(), m_columnIndex);
 		m_automationPeer = new WeakReference<AutomationPeer>(peer);
 		return peer;

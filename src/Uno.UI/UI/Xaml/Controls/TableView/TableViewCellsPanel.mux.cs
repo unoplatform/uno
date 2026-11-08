@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewCellsPanel.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewCellsPanel.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -22,7 +22,7 @@ partial class TableViewCellsPanel
 	// absorbs sub-pixel / layout-rounding noise so steady state doesn't churn.
 	private const double c_columnMeasureChangeThreshold = 0.5;
 
-	private static TableViewColumn? ColumnForCell(UIElement child)
+	internal static TableViewColumn? ColumnForCell(UIElement child)
 	{
 		if (child is FrameworkElement fe)
 		{
@@ -255,6 +255,8 @@ partial class TableViewCellsPanel
 	protected override Size ArrangeOverride(Size finalSize)
 	{
 		float x = 0.0f;
+		float leadLeft = 0.0f;
+		float leadWidth = -1.0f;
 
 		foreach (UIElement child in Children)
 		{
@@ -265,7 +267,20 @@ partial class TableViewCellsPanel
 
 			// Cells are arranged at the resolved column width; content wider than the column clips/ellipsizes.
 			child.Arrange(new Rect(x, 0.0f, w, finalSize.Height));
+
+			// Same "lead" rule as TableViewRow::ApplyHierarchyIndentToCells: the first visible wrapper.
+			if (leadWidth < 0.0f && child.Visibility == Visibility.Visible && column is not null)
+			{
+				leadLeft = x;
+				leadWidth = w;
+			}
 			x += w;
+		}
+
+		// Report the lead slot so the chevron is confined to it; every width change passes through here.
+		if (m_owningRow is not null && m_owningRow.TryGetTarget(out var row))
+		{
+			row.OnCellsArrangedInternal(leadLeft, leadWidth, finalSize.Height);
 		}
 
 		return new Size(x, finalSize.Height);

@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewRowTemplateSelector.h, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewRowTemplateSelector.h, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -27,7 +27,7 @@ partial class TableViewRowTemplateSelector
 	// repeater -> wrapper -> selector -> template -> pool -> repeater through plain C++
 	// references the reference tracker cannot walk, so nothing is collected and the selector's
 	// own destructor never runs. Dropping the pools breaks the one edge we own.
-	// void Detach();
+	// void Detach() noexcept;
 
 	// private:
 	// winrt::DataTemplate ResolveTemplateFromMarkup(std::wstring_view markup);

@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewRowTemplateSelector.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewRowTemplateSelector.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -66,14 +66,25 @@ partial class TableViewRowTemplateSelector
 	internal void Detach()
 	{
 		// Breaks the template -> pool edge; see the header for why this cannot be a destructor.
-		if (m_rowTemplate is not null)
+		// May run after XAML shut down on this thread (SetValue throws) or after MUXC cleared its DPs:
+		// PoolInstanceProperty() never registers, so skip when it is null, and contain any throw.
+		try
 		{
-			RecyclePool.SetPoolInstance(m_rowTemplate, null);
+			// TODO Uno: the C# getter registers the property on first use; it is never null here.
+			if (RecyclePool.PoolInstanceProperty is { } poolInstanceProperty)
+			{
+				foreach (var dataTemplate in new[] { m_rowTemplate, m_groupHeaderTemplate })
+				{
+					if (dataTemplate is not null)
+					{
+						dataTemplate.ClearValue(poolInstanceProperty);
+					}
+				}
+			}
 		}
-
-		if (m_groupHeaderTemplate is not null)
+		catch (Exception ex)
 		{
-			RecyclePool.SetPoolInstance(m_groupHeaderTemplate, null);
+			global::System.Diagnostics.Debug.WriteLine($"TableView: clearing the row template pools failed (0x{ex.HResult:X8}).");
 		}
 
 		m_rowTemplate = null;

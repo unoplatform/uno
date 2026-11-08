@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewCellsPanel.h, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewCellsPanel.h, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -40,9 +40,10 @@ partial class TableViewCellsPanel
 	// that is currently being edited; null for the header host, which has no row.
 	// void SetOwningRowInternal(winrt::TableViewRow const& row);
 
-	// private:
 	// Each cell is Tagged with its owning TableViewColumn; this reads it (or null).
 	// static winrt::TableViewColumn ColumnForCell(winrt::UIElement const& child);
+
+	// private:
 	// void CacheMeasuredWidthForColumn(winrt::TableViewColumn const& column, double measuredWidth);
 
 	// Records this panel's freshly measured width for a column into newLastMeasured and returns true if

@@ -1,10 +1,13 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewRow.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewRow.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Numerics;
+using System.Runtime.CompilerServices;
 using Microsoft.UI;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Automation;
@@ -16,7 +19,9 @@ using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI.ViewManagement;
+using Microsoft.UI.Xaml.Hosting;
+using Windows.System;
+using Windows.UI.Core;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 using static Microsoft.UI.Xaml.Controls.Tabular.TableViewAutomationHelpers;
 
@@ -26,22 +31,16 @@ partial class TableViewRow
 {
 	private const string s_CellsHostPartName = "PART_CellsHost";
 	private const string s_GridLineBorderPartName = "PART_GridLineBorder";
+	private const string s_RowExpanderGutterPartName = "PART_RowExpanderGutter";
+
+	// Used only when there is no owner to ask; mirrors the TableViewRowExpanderSize resource.
+	private const double c_defaultRowExpanderSize = 24.0;
+
+	// Mirrors the TableViewRowIndentSize resource. Used only when there is no owner to ask.
+	private const double c_defaultRowIndentSize = 16.0;
 
 	private static readonly Thickness s_verticalThickness = new(0, 0, 1, 0);
-	// The cell's trailing edge is its LEFT edge under RTL. The cells panel arranges at explicit
-	// physical coordinates, so this subtree is not auto-mirrored and a right-sided thickness would
-	// draw every body grid line one full column away from the header grid line above it.
-	private static readonly Thickness s_verticalThicknessRtl = new(1, 0, 0, 0);
 	private static readonly Thickness s_zeroThickness = new(0, 0, 0, 0);
-
-	private static SolidColorBrush? s_transparent;
-
-	// Shared transparent fill for cell wrappers. Cached because rows and cells are rebuilt on every
-	// scroll, and a fresh brush per cell is pure allocation for a value that never varies.
-	private static Brush TransparentBrush()
-	{
-		return s_transparent ??= new SolidColorBrush(Colors.Transparent);
-	}
 
 	private static bool WantsHorizontalLines(TableViewGridLinesVisibility visibility)
 	{
@@ -55,47 +54,87 @@ partial class TableViewRow
 			visibility == TableViewGridLinesVisibility.All;
 	}
 
-	// Slop allowed between the two presses of a double-click, in DIPs.
-	//
-	// SM_CXDOUBLECLK is in PHYSICAL pixels, so it must be divided by the element's rasterization
-	// scale to be comparable with the DIP-space positions this gesture works in. Without that the
-	// effective tolerance halves at 200% - a user whose two presses land 6 DIPs apart is inside the
-	// system tolerance but outside ours, and the double-click is silently dropped.
-	//
-	// Read per press rather than cached: the metric changes with the mouse control panel and the
-	// scale changes when the window moves between monitors, and a cached value never sees either.
-	// GetSystemMetrics is a cheap cached read in user32, not a round trip.
-	private static double GetDoubleClickSlop(UIElement? element)
+	// Failure path only: the element a column factory returned already sits in another parent. The logical
+	// parent is checked first: an element held by a container outside the live tree has no visual parent yet.
+	private static bool HasForeignParent(FrameworkElement? element, DependencyObject host)
 	{
-		// TODO Uno: 4 is the Windows default for GetSystemMetrics(SM_CXDOUBLECLK / SM_CYDOUBLECLK); no per-host source.
-		// const auto cx = static_cast<double>(::GetSystemMetrics(SM_CXDOUBLECLK));
-		// const auto cy = static_cast<double>(::GetSystemMetrics(SM_CYDOUBLECLK));
-		const double cx = 4.0;
-		const double cy = 4.0;
-		double physical = Math.Max(Math.Max(cx, cy), 4.0) / 2.0;
-
-		double scale = 1.0;
-		if (element is not null)
+		try
 		{
-			if (element.XamlRoot is { } root)
+			if (element is null)
 			{
-				var rasterization = root.RasterizationScale;
-				if (rasterization > 0.0)
-				{
-					scale = rasterization;
-				}
+				return false;
 			}
+			var parent = element.Parent;
+			if (parent is null)
+			{
+				parent = VisualTreeHelper.GetParent(element);
+			}
+			return parent is not null && !ReferenceEquals(parent, host);
 		}
-
-		return physical / scale;
+		catch (Exception)
+		{
+			return false;
+		}
 	}
 
-	// PointerPoint.Timestamp is in microseconds; the system double-click time is in milliseconds.
-	// Not cached, so a change made in the mouse control panel takes effect immediately.
-	private static ulong GetDoubleClickIntervalMicroseconds()
+	// These run from OnDataContextChanged inside the rows list measure. A redundant write still
+	// invalidates measure, which repeated per row per pass trips the layout-cycle failfast, so every
+	// layout-affecting write on that path must be a no-op when the value is already in place.
+	private static void ClearLocalValueIfSet(DependencyObject target, DependencyProperty property)
 	{
-		// return static_cast<uint64_t>(::GetDoubleClickTime()) * 1000ull;
-		return (ulong)UISettings.GetDoubleClickTime() * 1000UL;
+		if (target.ReadLocalValue(property) != DependencyProperty.UnsetValue)
+		{
+			target.ClearValue(property);
+		}
+	}
+
+	private static void SetThicknessIfChanged(
+		DependencyObject target,
+		DependencyProperty property,
+		Thickness value)
+	{
+		var current = target.ReadLocalValue(property);
+		if (current == DependencyProperty.UnsetValue ||
+			(current is Thickness currentThickness ? currentThickness : new Thickness(-1, -1, -1, -1)) != value)
+		{
+			target.SetValue(property, value);
+		}
+	}
+
+	private static bool IsKeyDown(VirtualKey key)
+	{
+		return (InputKeyboardSource.GetKeyStateForCurrentThread(key) &
+			CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+	}
+
+	// Collects tab stops BELOW a cell wrapper (the wrapper is owned by SetCellsTabStopInternal).
+	// Keeps descending past a found tab stop: a focusable container can hold more.
+	private const int c_maxCellContentTabStopDepth = 16;
+
+	private static void AppendContentTabStops(
+		DependencyObject parent, List<UIElement> tabStops, int depthBudget)
+	{
+		if (depthBudget <= 0)
+		{
+			return;
+		}
+
+		int count = VisualTreeHelper.GetChildrenCount(parent);
+		for (int i = 0; i < count && i < c_maxCellContentChildrenPerLevel; ++i)
+		{
+			var child = VisualTreeHelper.GetChild(parent, i);
+			if (child is null)
+			{
+				continue;
+			}
+
+			if (child is UIElement element && element.IsTabStop)
+			{
+				tabStops.Add(element);
+			}
+
+			AppendContentTabStops(child, tabStops, depthBudget - 1);
+		}
 	}
 
 	public TableViewRow()
@@ -103,6 +142,15 @@ partial class TableViewRow
 		this.SetTabularDefaultStyleKey();
 
 		var weakRow = new WeakReference<TableViewRow>(this);
+
+		RegisterPropertyChangedCallback(UIElement.ContextFlyoutProperty,
+			(_, _) =>
+			{
+				if (weakRow.TryGetTarget(out var strongRow))
+				{
+					strongRow.m_contextFlyoutOpeningRevoker.Disposable = TableViewDetails.HookContextFlyoutSuppression(strongRow);
+				}
+			});
 
 		// handledEventsToo: a row that participates in selection marks the press handled, which also
 		// suppresses XAML's gesture recognizer - this registration is what keeps begin-edit reachable.
@@ -142,27 +190,40 @@ partial class TableViewRow
 		IsEnabledChanged += isEnabledChangedHandler;
 		m_isEnabledChangedRevoker.Disposable = Disposable.Create(() => IsEnabledChanged -= isEnabledChangedHandler);
 
-		TypedEventHandler<UIElement, GettingFocusEventArgs> gettingFocusHandler =
-			(UIElement sender, GettingFocusEventArgs args) =>
-			{
-				if (weakRow.TryGetTarget(out var strongRow))
-				{
-					strongRow.OnRowGettingFocus(sender, args);
-				}
-			};
-		GettingFocus += gettingFocusHandler;
-		m_gettingFocusRevoker.Disposable = Disposable.Create(() => GettingFocus -= gettingFocusHandler);
-
 		RoutedEventHandler gotFocusHandler =
 			(object sender, RoutedEventArgs args) =>
 			{
 				if (weakRow.TryGetTarget(out var strongRow))
 				{
-					strongRow.OnRowGotFocus();
+					strongRow.OnRowGotFocus(args.OriginalSource as DependencyObject);
 				}
 			};
 		GotFocus += gotFocusHandler;
 		m_gotFocusRevoker.Disposable = Disposable.Create(() => GotFocus -= gotFocusHandler);
+
+		// auto_revoke owns this self-event subscription until row destruction.
+		TypedEventHandler<UIElement, ContextRequestedEventArgs> contextRequestedHandler =
+			(UIElement sender, ContextRequestedEventArgs args) =>
+			{
+				if (weakRow.TryGetTarget(out var strongRow))
+				{
+					strongRow.OnRowContextRequested(args);
+				}
+			};
+		ContextRequested += contextRequestedHandler;
+		m_contextRequestedRevoker.Disposable = Disposable.Create(() => ContextRequested -= contextRequestedHandler);
+
+		// Don't strand cell content out of the tab order if unloaded before the restore turn runs.
+		RoutedEventHandler unloadedHandler =
+			(object sender, RoutedEventArgs args) =>
+			{
+				if (weakRow.TryGetTarget(out var strongRow))
+				{
+					strongRow.RestoreCellContentTabStopsInternal();
+				}
+			};
+		Unloaded += unloadedHandler;
+		m_unloadedRevoker.Disposable = Disposable.Create(() => Unloaded -= unloadedHandler);
 	}
 
 	private void OnIsEnabledChanged(
@@ -174,12 +235,44 @@ partial class TableViewRow
 
 	protected override void OnApplyTemplate()
 	{
+		m_cellsHostContextRequestedRevoker.Disposable = null;
+		m_templateRootContextRequestedRevoker.Disposable = null;
 		base.OnApplyTemplate();
 
 		ResetCellAutomationNames();
 		var host = GetTemplateChild(s_CellsHostPartName) as Panel;
 		m_cellsHost = host;
 		m_gridLineBorder = GetTemplateChild(s_GridLineBorderPartName) as Border;
+		m_rowExpanderGutter = GetTemplateChild(s_RowExpanderGutterPartName) as FrameworkElement;
+
+		// Revoke unconditionally so a re-template that drops the gutter leaves no stale subscription.
+		m_gutterPointerPressedRevoker.Disposable = null;
+		m_gutterPointerReleasedRevoker.Disposable = null;
+		m_gutterPointerExitedRevoker.Disposable = null;
+		m_gutterPointerCaptureLostRevoker.Disposable = null;
+		m_isGutterPressed = false;
+
+		// Subscribe per template apply, not per prepare (pooled container would fan one tap into N
+		// toggles). The press is handled so the row's release-time selection latch never arms; the
+		// toggle itself fires on release-inside, matching TableViewGroupHeader.
+		if (m_rowExpanderGutter is { } gutter)
+		{
+			PointerEventHandler pressedHandler = OnExpanderGutterPointerPressed;
+			gutter.PointerPressed += pressedHandler;
+			m_gutterPointerPressedRevoker.Disposable = Disposable.Create(() => gutter.PointerPressed -= pressedHandler);
+
+			PointerEventHandler releasedHandler = OnExpanderGutterPointerReleased;
+			gutter.PointerReleased += releasedHandler;
+			m_gutterPointerReleasedRevoker.Disposable = Disposable.Create(() => gutter.PointerReleased -= releasedHandler);
+
+			PointerEventHandler exitedHandler = OnExpanderGutterPointerCanceled;
+			gutter.PointerExited += exitedHandler;
+			m_gutterPointerExitedRevoker.Disposable = Disposable.Create(() => gutter.PointerExited -= exitedHandler);
+
+			PointerEventHandler captureLostHandler = OnExpanderGutterPointerCanceled;
+			gutter.PointerCaptureLost += captureLostHandler;
+			m_gutterPointerCaptureLostRevoker.Disposable = Disposable.Create(() => gutter.PointerCaptureLost -= captureLostHandler);
+		}
 
 		if (host is not null)
 		{
@@ -193,16 +286,51 @@ partial class TableViewRow
 			cellsPanel.SetOwningRowInternal(this);
 		}
 
+		// Every body request is handled below the row, so the framework never shows a row style or
+		// template ContextFlyout on its own and skips the focus and current-cell handling. Cell
+		// requests are caught at the cells host; padding and chevron requests at the template root.
+		if (host is not null)
+		{
+			var weakThis = new WeakReference<TableViewRow>(this);
+			TypedEventHandler<UIElement, ContextRequestedEventArgs> hostHandler =
+				(UIElement _, ContextRequestedEventArgs args) =>
+				{
+					if (weakThis.TryGetTarget(out var self))
+					{
+						self.OnCellsHostContextRequested(args);
+					}
+				};
+			host.ContextRequested += hostHandler;
+			m_cellsHostContextRequestedRevoker.Disposable = Disposable.Create(() => host.ContextRequested -= hostHandler);
+		}
+
+		{
+			var weakThis = new WeakReference<TableViewRow>(this);
+			m_templateRootContextRequestedRevoker.Disposable = TableViewDetails.HookTemplateRootContextRequested(this,
+				(UIElement _, ContextRequestedEventArgs args) =>
+				{
+					if (weakThis.TryGetTarget(out var self))
+					{
+						self.OnTemplateRootContextRequested(args);
+					}
+				});
+		}
+
 		RebuildCells();
+
+		ApplyHierarchyAffordance();
 
 		UpdateVisualState(false /* useTransitions */);
 	}
 
-	internal void SetTerminalGridLineSuppression(TerminalGridLineSuppressionState state)
+	internal void SetTerminalGridLineSuppression(TerminalGridLineSuppressionState state, bool refresh = true)
 	{
 		m_suppressTrailingGridLine = state.suppressTrailing;
 		m_suppressBottomGridLine = state.suppressBottom;
-		RefreshGridLines();
+		if (refresh)
+		{
+			RefreshGridLines();
+		}
 	}
 
 	protected override AutomationPeer OnCreateAutomationPeer()
@@ -215,6 +343,54 @@ partial class TableViewRow
 	{
 		// Keep the owner weak; callers acquire a strong ref only for synchronous work.
 		return m_owningTableView is not null && m_owningTableView.TryGetTarget(out var owner) ? owner : null;
+	}
+
+	// Row-side half of TableView::IsContextMenuTargetCurrent, the only caller: it has already checked
+	// the target kind, row, anchor load state, column, and owning table.
+	internal bool IsContextMenuTargetCurrent(
+		TableViewDetails.ContextMenuTarget target)
+	{
+		if (target.Row is null || !target.Row.IsLoaded || target.ScopeRoot is null || !ReferenceEquals(target.ScopeRoot, m_cellsHost))
+		{
+			return false;
+		}
+
+		var owner = GetOwningTableView();
+		if (owner is null)
+		{
+			return false;
+		}
+
+		var ownerImpl = owner;
+		if (!TableView.SameInspectableIdentity(
+				ownerImpl.UnwrapEditingDataItem(target.Row.DataContext),
+				target.Item))
+		{
+			return false;
+		}
+
+		var repeater = ownerImpl.GetRowsRepeaterInternal();
+		if (repeater is null)
+		{
+			return false;
+		}
+
+		var index = repeater.GetElementIndex(target.Row);
+		var view = repeater.ItemsSourceView;
+		if (view is null || index < 0 || index >= view.Count ||
+			!TableView.SameInspectableIdentity(
+				ownerImpl.UnwrapEditingDataItem(view.GetAt(index)),
+				target.Item))
+		{
+			return false;
+		}
+
+		if (target.Column is null)
+		{
+			return ReferenceEquals(target.Anchor, target.Row);
+		}
+
+		return TableViewDetails.IsLiveCellAnchor(target.Anchor, target.ScopeRoot, target.Column);
 	}
 
 	internal TableViewColumn? GetCellOwningColumn(UIElement? cellElement)
@@ -379,7 +555,14 @@ partial class TableViewRow
 
 			// Drill in BEFORE focusing: at row level the cells are not tab stops, and
 			// CUIElement::IsFocusable requires IsTabStop even for a programmatic Focus().
-			SetCellLevelInternal(true);
+			if (m_isCellLevel)
+			{
+				cell.IsTabStop = IsCellActionableInternal(cell);
+			}
+			else
+			{
+				SetCellLevelInternal(true);
+			}
 
 			if (cell.Focus(state))
 			{
@@ -393,6 +576,59 @@ partial class TableViewRow
 		}
 
 		return Focus(state);
+	}
+
+	internal bool IsCellActionableInternal(UIElement? cell)
+	{
+		if (cell is not FrameworkElement cellElement || cellElement.Visibility != Visibility.Visible)
+		{
+			return false;
+		}
+
+		var column = GetCellOwningColumn(cell);
+		if (!IsVisibleColumn(column))
+		{
+			return false;
+		}
+
+		if (GetOwningTableView() is { } owner && owner.IsColumnCellEditableInternal(column))
+		{
+			return true;
+		}
+
+		if (column!.CellContextFlyout is not null || TableViewDetails.HasEffectiveToolTip(cellElement))
+		{
+			return true;
+		}
+
+		// Content taken out of the tab order for one Tab walk is still interactive.
+		bool isSuppressed(UIElement element)
+		{
+			foreach (var entry in m_suppressedContentTabStops)
+			{
+				if (entry.element is not null && entry.element.TryGetTarget(out var suppressed) && ReferenceEquals(suppressed, element))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		int budget = 64;
+		return HasActionableContent(cellElement, 9, ref budget,
+			m_suppressedContentTabStops.Count == 0 ? null : isSuppressed);
+	}
+
+	internal int FindActionableCellInternal(int startVisibleIndex, int step)
+	{
+		int count = GetVisibleCellCountInternal();
+		for (int i = startVisibleIndex; i >= 0 && i < count && step != 0; i += step)
+		{
+			if (IsCellActionableInternal(GetVisibleCellInternal(i)!))
+			{
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	// ----- Two-level focus: ROW level vs CELL level -----
@@ -417,18 +653,26 @@ partial class TableViewRow
 		// target during the handoff.
 		if (m_isCellLevel)
 		{
-			SetCellsTabStopInternal(true);
-			IsTabStop = false;
+			// With no actionable cell left, the row stays the tab stop, or Tab could skip the table.
+			bool rowIsTabStop = !SetCellsTabStopInternal(true);
+			if (IsTabStop != rowIsTabStop)
+			{
+				IsTabStop = rowIsTabStop;
+			}
 		}
 		else
 		{
-			IsTabStop = true;
+			if (!IsTabStop)
+			{
+				IsTabStop = true;
+			}
 			SetCellsTabStopInternal(false);
 		}
 	}
 
-	private void SetCellsTabStopInternal(bool isTabStop)
+	private bool SetCellsTabStopInternal(bool isTabStop)
 	{
+		bool anyTabStop = false;
 		if (m_cellsHost is { } host)
 		{
 			var children = host.Children;
@@ -437,10 +681,221 @@ partial class TableViewRow
 			{
 				if (children[i] is { } child)
 				{
-					child.IsTabStop = isTabStop;
+					// Inactive cells never take focus, by keyboard, pointer or UIA.
+					bool cellIsTabStop = isTabStop && IsCellActionableInternal(child);
+					if (child.IsTabStop != cellIsTabStop)
+					{
+						child.IsTabStop = cellIsTabStop;
+					}
+					anyTabStop = anyTabStop || cellIsTabStop;
 				}
 			}
 		}
+		return anyTabStop;
+	}
+
+	// Focus inside a cell's content (drilled in via Enter, or an editor) is not grid level: that
+	// content owns its own keys, including Tab.
+	private bool IsGridLevelFocusInternal()
+	{
+		var root = XamlRoot;
+		if (root is null)
+		{
+			return false;
+		}
+
+		var focused = FocusManager.GetFocusedElement(root) as DependencyObject;
+		if (focused is null)
+		{
+			return false;
+		}
+
+		DependencyObject selfObject = this;
+		if (ReferenceEquals(focused, selfObject))
+		{
+			return true;
+		}
+
+		return FindOwnCellInternal(focused, true /* requireExact */) is not null;
+	}
+
+	// Takes authored cell content out of the tab order for ONE Tab walk. CFocusManager::GetNextTabStop
+	// searches the focused element's children before honouring TabFocusNavigation, so cell content
+	// would otherwise become extra tab stops. It can't stay suppressed: IsFocusable requires IsTabStop,
+	// so pointer/programmatic focus would break too. Restored on the next dispatcher turn (after XAML's
+	// default Tab move), and only if the local value is still the false written here.
+	private void SuppressCellContentTabStopsForTabWalkInternal()
+	{
+		// Restore a pending suppression first, or our false would be recorded as the original.
+		RestoreCellContentTabStopsInternal();
+
+		List<UIElement> candidates = new();
+		if (m_cellsHost is { } host)
+		{
+			var children = host.Children;
+			uint size = (uint)children.Count;
+			for (uint i = 0; i < size; ++i)
+			{
+				if (children[(int)i] is { } cell)
+				{
+					AppendContentTabStops(cell, candidates, c_maxCellContentTabStopDepth);
+				}
+			}
+		}
+
+		if (candidates.Count == 0)
+		{
+			return;
+		}
+
+		var isTabStopProperty = UIElement.IsTabStopProperty;
+		var unsetValue = DependencyProperty.UnsetValue;
+		object suppressedValue = false;
+
+		foreach (var element in candidates)
+		{
+			var local = element.ReadLocalValue(isTabStopProperty);
+			var binding = local as BindingExpression;
+			bool isRestorable =
+				local == unsetValue ||
+				local is bool ||
+				(binding is not null && binding.ParentBinding is not null);
+			if (!isRestorable)
+			{
+				continue;
+			}
+
+			if (binding is not null)
+			{
+				// Detach first: SetValue over a TwoWay binding would write through to the app's source.
+				element.ClearValue(isTabStopProperty);
+			}
+
+			element.SetValue(isTabStopProperty, suppressedValue);
+			m_suppressedContentTabStops.Add(new SuppressedContentTabStop { element = new WeakReference<UIElement>(element), originalLocalValue = local });
+		}
+
+		if (m_suppressedContentTabStops.Count == 0)
+		{
+			return;
+		}
+
+		var weakRow = new WeakReference<TableViewRow>(this);
+		var queue = DispatcherQueue;
+		if (queue is null || !queue.TryEnqueue(() =>
+			{
+				if (weakRow.TryGetTarget(out var strongRow))
+				{
+					try
+					{
+						strongRow.RestoreCellContentTabStopsInternal();
+					}
+					catch (Exception)
+					{
+						// Best-effort restore; never fail-fast the dispatcher.
+					}
+				}
+			}))
+		{
+			// No dispatcher: never leave content out of the tab order, even at the cost of this press.
+			RestoreCellContentTabStopsInternal();
+		}
+	}
+
+	// Idempotent. Elements that have left this row are still restored (the false is our write); the
+	// "still our false" check preserves any newer value.
+	private void RestoreCellContentTabStopsInternal()
+	{
+		if (m_suppressedContentTabStops.Count == 0)
+		{
+			return;
+		}
+
+		var suppressed = m_suppressedContentTabStops.ToArray();
+		m_suppressedContentTabStops.Clear();
+
+		var isTabStopProperty = UIElement.IsTabStopProperty;
+		var unsetValue = DependencyProperty.UnsetValue;
+
+		foreach (var entry in suppressed)
+		{
+			if (entry.element is null || !entry.element.TryGetTarget(out var element))
+			{
+				continue;
+			}
+
+			try
+			{
+				if (element.ReadLocalValue(isTabStopProperty) is not bool current || current)
+				{
+					continue;
+				}
+
+				var original = entry.originalLocalValue;
+				if (original == unsetValue)
+				{
+					element.ClearValue(isTabStopProperty);
+				}
+				else if (original is BindingExpression binding)
+				{
+					BindingOperations.SetBinding(
+						element, isTabStopProperty, binding.ParentBinding);
+				}
+				else
+				{
+					element.SetValue(isTabStopProperty, original);
+				}
+			}
+			catch (Exception)
+			{
+				// One element failing must not strand the rest out of the tab order.
+			}
+		}
+	}
+
+	// The body is one tab stop; Enter is the route into cell content. The move is left to XAML:
+	// FocusManager::TryMoveFocus ignores ItemsRepeater's KeyboardNavigationMode::Once, so Shift+Tab
+	// would land in the previous row's content. Multiply expands the subtree (as TreeViewItem);
+	// unhandled Left/Right go to TableView::TryHandleRowLevelDrillKey here, ahead of PART_BodyScroller,
+	// and Space stays row selection.
+	protected override void OnKeyDown(KeyRoutedEventArgs args)
+	{
+		if (!args.Handled &&
+			args.Key == VirtualKey.Tab &&
+			// Ctrl+Tab is app-level navigation and Alt is the resize chord; neither is a band move.
+			!IsKeyDown(VirtualKey.Control) &&
+			!IsKeyDown(VirtualKey.Menu) &&
+			IsGridLevelFocusInternal())
+		{
+			SuppressCellContentTabStopsForTabWalkInternal();
+		}
+
+		// Unmodified only: Ctrl+arrow is focus-without-select; Shift/Alt chords belong to the app.
+		if (!args.Handled && Level > 0 && IsRowItselfFocused() &&
+			!IsKeyDown(VirtualKey.Control) &&
+			!IsKeyDown(VirtualKey.Shift) &&
+			!IsKeyDown(VirtualKey.Menu))
+		{
+			var owner = GetOwningTableView();
+			if (args.Key == VirtualKey.Multiply && IsExpandable && owner is not null)
+			{
+				owner.ExpandRowSubtree(this);
+				args.Handled = true;
+			}
+		}
+
+		// Row-level Up/Down too, or PART_BodyScroller would focus a control in this row's own cells.
+		if (!args.Handled &&
+			(args.Key == VirtualKey.Left || args.Key == VirtualKey.Right ||
+				((args.Key == VirtualKey.Up || args.Key == VirtualKey.Down) && IsRowItselfFocused())))
+		{
+			if (GetOwningTableView() is { } owner)
+			{
+				owner.HandleBodyKeyFromRowInternal(args);
+			}
+		}
+
+		base.OnKeyDown(args);
 	}
 
 	// Pop-out must make the row focusable before clearing the focused cell from tab order.
@@ -449,100 +904,11 @@ partial class TableViewRow
 		IsTabStop = true;
 	}
 
-	private void OnRowGettingFocus(
-		UIElement sender,
-		GettingFocusEventArgs args)
-	{
-		DependencyObject selfObject = this;
-		var newFocus = args.NewFocusedElement;
-		if (newFocus is null)
-		{
-			return;
-		}
-
-		// Tab / Shift+Tab only. Arrow navigation, an edit-close restore and a pointer press all name
-		// the row they mean; redirecting those would move the user somewhere they did not ask for.
-		var direction = args.Direction;
-		bool isTabEntry =
-			direction == FocusNavigationDirection.Next ||
-			direction == FocusNavigationDirection.Previous;
-		if (!isTabEntry)
-		{
-			return;
-		}
-
-		var owner = GetOwningTableView();
-		if (owner is null)
-		{
-			return;
-		}
-
-		var ownerImpl = owner;
-
-		// An open editor owns focus; redirecting the row focus the editor teardown performs would
-		// fight the row's own "move focus off the editor before it leaves the tree" step.
-		if (ownerImpl.IsEditing && m_editingElement is not null)
-		{
-			return;
-		}
-
-		// Focus LEAVING this row must never be pulled back, or Tab can never exit the table. Only
-		// focus arriving from outside the row is an entry that wants resolving.
-		var oldFocus = args.OldFocusedElement;
-		if (ReferenceEquals(oldFocus, selfObject) ||
-			SharedHelpers.IsAncestor(oldFocus!, selfObject, false /* checkVisibility */))
-		{
-			return;
-		}
-
-		// When returning from another band inside the table, stale cell-level state can make XAML aim
-		// the body's single tab stop at a cell. Body band entry is still row-level; outside re-entry is
-		// left alone so it can resume the previously focused cell.
-		if (!ReferenceEquals(newFocus, selfObject))
-		{
-			DependencyObject ownerObject = owner;
-			bool focusCameFromWithinTable =
-				ReferenceEquals(oldFocus, ownerObject) ||
-				SharedHelpers.IsAncestor(oldFocus!, ownerObject, false /* checkVisibility */);
-			if (!focusCameFromWithinTable || FindOwnCellInternal(newFocus, false /* requireExact */) is null)
-			{
-				return;
-			}
-
-			SetCellLevelInternal(false);
-			ownerImpl.SetCellCursorActiveInternal(false);
-			args.TrySetNewFocusedElement(selfObject);
-			return;
-		}
-
-		// Redirect body Tab entry from the first repeater row to the remembered row.
-		var target = ownerImpl.ResolveFocusEntryRow(this, oldFocus);
-		if (target is null || ReferenceEquals(target, this))
-		{
-			return;
-		}
-
-		DependencyObject? targetObject = target;
-		if (targetObject is null || ReferenceEquals(targetObject, newFocus))
-		{
-			return;
-		}
-
-		// Body entry is row-level; reset the remembered row before redirecting or it is not focusable.
-		target.SetCellLevelInternal(false);
-		ownerImpl.SetCellCursorActiveInternal(false);
-
-		// TrySetNewFocusedElement is refused during some focus operations (a programmatic move already
-		// in flight, for one). Failing is fine - focus simply stays on the row XAML aimed at, which is
-		// still a row-level landing in the body.
-		args.TrySetNewFocusedElement(targetObject);
-	}
-
-	private void OnRowGotFocus()
+	private void OnRowGotFocus(DependencyObject? focusedElement)
 	{
 		if (GetOwningTableView() is { } owner)
 		{
-			owner.OnRowCellFocusChanged(this);
+			owner.OnRowCellFocusChanged(this, focusedElement);
 		}
 	}
 
@@ -580,13 +946,15 @@ partial class TableViewRow
 		}
 	}
 
-	internal void SetOwningTableViewInternal(TableView? owner)
+	internal bool SetOwningTableViewInternal(TableView? owner, bool rebuildCells = true)
 	{
 		var currentOwner = GetOwningTableView();
+		m_cellsRebuiltForDataContext = false;
+		m_inRecyclePool = !rebuildCells;
 		// Compare through the typed accessor so unchanged weak refs hit the no-op path.
 		if (currentOwner == owner)
 		{
-			return;
+			return false;
 		}
 
 		// Single-writer: the recycle cycle clears the owner to null between tables; a direct
@@ -596,7 +964,7 @@ partial class TableViewRow
 			// Runs inside an ItemsRepeater callback; an escaping throw would failfast.
 			// Assert in debug, no-op in retail (keep current owner, skip re-attach).
 			MUX_ASSERT(false, "TableViewRow re-owned without an intervening clear");
-			return;
+			return false;
 		}
 
 		DetachColumnsSubscription();
@@ -608,6 +976,11 @@ partial class TableViewRow
 		else
 		{
 			ResetCellAutomationNames();
+			// Drop the row peer's cell-peer cache so the next item's cell peers are not served from it.
+			if (FrameworkElementAutomationPeer.FromElement(this) is TableViewRowAutomationPeer rowPeer)
+			{
+				rowPeer.DropCellPeerCache();
+			}
 			m_owningTableView = null;
 			// Reset transient interaction state so a row recycled while hovered/pressed
 			// re-enters the pool in Normal state (ListViewItem parity), not a stale tint.
@@ -627,49 +1000,75 @@ partial class TableViewRow
 			// Recycled rows return at row level; otherwise a drilled row can reappear unreachable by Tab.
 			m_isCellLevel = false;
 
+			RestoreCellContentTabStopsInternal();
+			// ElementPrepared may skip the rebuild, which would otherwise restamp row/cell tab stops.
+			ApplyFocusLevelInternal();
+
 			UpdateVisualState(false);
 		}
 
 		// Observe the new owner's Columns vector (no-op on recycle-out when owner is null).
 		AttachColumnsSubscription(owner);
 
-		RebuildCells();
+		if (!rebuildCells)
+		{
+			// Without the rebuild, pooled cell peers would keep their item index and advertise VirtualizedItem.
+			UpdateCellPeerItems(DataContext);
+			return false;
+		}
+		return RebuildCells();
 	}
 
-	internal void EnsureOwningTableViewInternal(TableView? owner)
+	internal bool EnsureOwningTableViewInternal(TableView? owner, bool skipIfCellsCurrent = false)
 	{
 		if (owner is null)
 		{
-			return;
+			return false;
 		}
 
 		if (GetOwningTableView() != owner)
 		{
-			SetOwningTableViewInternal(owner);
-			return;
+			return SetOwningTableViewInternal(owner);
 		}
+
+		bool skipRebuild = m_cellsRebuiltForDataContext && skipIfCellsCurrent;
+		m_cellsRebuiltForDataContext = false;
+		m_inRecyclePool = false;
 
 		var rowPeer = FrameworkElementAutomationPeer.FromElement(this) as TableViewRowAutomationPeer;
 		var peerImpl = rowPeer;
 		if (peerImpl is not null && !peerImpl.CanReuseForRowItem(this, owner))
 		{
-			if (m_cellsHost is { } host)
+			// Cell providers are bound to their element, so replace the cells only if a cell peer exists;
+			// otherwise keep them and let them restamp from the inherited DataContext.
+			bool chromeRefreshed = false;
+			if (HasCellAutomationPeers())
 			{
-				ResetCellAutomationNames();
-				host.Children.Clear();
+				if (m_cellsHost is { } host)
+				{
+					ResetCellAutomationNames();
+					host.Children.Clear();
+				}
+				peerImpl.DropCellPeerCache();
+				chromeRefreshed = RebuildCells(false /* updateExistingCellPeerItems */);
 			}
-			peerImpl.DropCellPeerCache();
-			RebuildCells(false /* updateExistingCellPeerItems */);
+			else
+			{
+				peerImpl.DropCellPeerCache();
+				chromeRefreshed = skipRebuild ? false : RebuildCells();
+			}
 			peerImpl.TrackCurrentRowItem(this, owner);
-			return;
+			return chromeRefreshed;
 		}
 
-		RebuildCells();
+		bool chromeRefreshedCurrent = skipRebuild ? false : RebuildCells();
 
 		if (peerImpl is not null)
 		{
 			peerImpl.TrackCurrentRowItem(this, owner);
 		}
+
+		return chromeRefreshedCurrent;
 	}
 
 	// Rewire realized rows when Columns changes but the owner identity does not.
@@ -689,6 +1088,7 @@ partial class TableViewRow
 		{
 			ResetCellAutomationNames();
 			host.Children.Clear();
+			InvalidateCellsCurrent();
 		}
 
 		RebuildCells();
@@ -700,13 +1100,28 @@ partial class TableViewRow
 	{
 		// On recycle ItemsRepeater updates the row's DataContext; cells pick up the new item reactively
 		// via inheritance (they are not restamped). RebuildCells is still called so index-dependent visuals
-		// (alternating-row banding, frozen pinning) refresh for the new position. Guard against re-entry
-		// from child DataContext propagation.
+		// (alternating-row banding, frozen pinning) refresh for the new position, and the following
+		// ElementPrepared skips its own rebuild. Guard against re-entry from child DataContext propagation.
+		m_cellsRebuiltForDataContext = false;
 		if (m_isRebuildingCells)
 		{
 			return;
 		}
-		RebuildCells();
+		var dataItem = DataContext;
+		// The repeater nulls a recycled row's DataContext after ElementClearing; the next prepare rebuilds.
+		if (dataItem is null && m_inRecyclePool)
+		{
+			return;
+		}
+		m_cellsInvalidated = false;
+		bool rebuilt = RebuildCells();
+		m_cellsRebuiltForDataContext = rebuilt && !m_cellsInvalidated && dataItem is not null && ReferenceEquals(DataContext, dataItem);
+	}
+
+	private void InvalidateCellsCurrent()
+	{
+		m_cellsRebuiltForDataContext = false;
+		m_cellsInvalidated = true;
 	}
 
 	private void OnColumnsVectorChanged(
@@ -733,6 +1148,8 @@ partial class TableViewRow
 		{
 			return;
 		}
+
+		InvalidateCellsCurrent();
 
 		var dispatcher = DispatcherQueue;
 		if (dispatcher is null)
@@ -776,13 +1193,28 @@ partial class TableViewRow
 		var pointerPoint = args.GetCurrentPoint(this);
 		var props = pointerPoint.Properties;
 
-		// Mouse/pen: primary button only - a right-click opens a context menu and must not select.
+		// Right-button focus must precede native template menus opening, without arming selection.
 		// Touch reports no pressed button, so it is admitted on device type instead, matching the
 		// begin-edit gesture. Without this a touch press never arms the release-time selection.
 		var deviceType = args.Pointer.PointerDeviceType;
 		if (deviceType != PointerDeviceType.Touch &&
 			!props.IsLeftButtonPressed)
 		{
+			var owner = GetOwningTableView();
+			var requestSource = args.OriginalSource as DependencyObject;
+			if (!props.IsRightButtonPressed || owner is null ||
+				!TableViewDetails.IsOwnRequestSource(requestSource, this))
+			{
+				return;
+			}
+
+			// Resolve from the source only, as the ContextRequested that follows does. A pointer
+			// hit-test would pick the cell under the expander chevron, which belongs to the row.
+			var target = ResolveContextMenuTarget(requestSource);
+			if (target is { } resolvedTarget && resolvedTarget.Column is not null)
+			{
+				owner.FocusContextMenuTargetFromPointer(resolvedTarget);
+			}
 			return;
 		}
 
@@ -924,6 +1356,387 @@ partial class TableViewRow
 		UpdateVisualState(true /* useTransitions */);
 	}
 
+	internal void SetHierarchyStateInternal(int level, bool isExpandable, bool isExpanded)
+	{
+		// Snapshot for the automation event (a recycled row moving to another node is a real transition).
+		ExpandCollapseState oldState = HierarchyExpandCollapseState();
+
+		// Guarded: setters box before SetValue, and re-preparing onto the same node is the common case.
+		if (Level != level)
+		{
+			Level = level;
+		}
+
+		if (IsExpandable != isExpandable)
+		{
+			IsExpandable = isExpandable;
+		}
+
+		if (IsExpanded != isExpanded)
+		{
+			IsExpanded = isExpanded;
+		}
+
+		// Unconditional: indent also depends on the indent resource and grouping. Writes inside are
+		// equality-guarded, so no layout re-invalidation.
+		ApplyHierarchyAffordance();
+
+		RaiseExpandCollapseStateChanged(oldState, HierarchyExpandCollapseState());
+
+		// Only an existing peer can have handed a client cached set metadata.
+		if (AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
+		{
+			if (FrameworkElementAutomationPeer.FromElement(this) is TableViewRowAutomationPeer rowPeer)
+			{
+				rowPeer.RaiseHierarchyPositionChanged();
+			}
+		}
+	}
+
+	// Computed here, not on the peer, so transitions are measurable without forcing a peer.
+	internal ExpandCollapseState HierarchyExpandCollapseState()
+	{
+		if (Level <= 0 || !IsExpandable)
+		{
+			return ExpandCollapseState.LeafNode;
+		}
+
+		return IsExpanded
+			? ExpandCollapseState.Expanded
+			: ExpandCollapseState.Collapsed;
+	}
+
+	private void RaiseExpandCollapseStateChanged(
+		ExpandCollapseState oldState,
+		ExpandCollapseState newState)
+	{
+		if (oldState == newState)
+		{
+			return;
+		}
+
+		// Runs on every prepare; avoid forcing peers when no client listens.
+		if (!AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
+		{
+			return;
+		}
+
+		// XAML caches the peer per element, so the fallback yields the same instance a client holds.
+		var peer = FrameworkElementAutomationPeer.FromElement(this);
+		if (peer is null)
+		{
+			peer = FrameworkElementAutomationPeer.CreatePeerForElement(this);
+		}
+
+		if (peer is TableViewRowAutomationPeer rowPeer)
+		{
+			rowPeer.RaiseExpandCollapseAutomationEvent(
+				oldState, newState);
+		}
+	}
+
+	// Keys bubbling from cell content (editors, ComboBox) must not toggle the row.
+	private bool IsRowItselfFocused()
+	{
+		var root = XamlRoot;
+		if (root is null)
+		{
+			return false;
+		}
+
+		var focused = FocusManager.GetFocusedElement(root) as UIElement;
+		return focused is not null && ReferenceEquals(focused, this);
+	}
+
+	// Places the chevron and reserves room in the lead cell. Separate so template apply and cell
+	// rebuild (fresh gutter/wrappers) can re-apply against unchanged state.
+	internal void ApplyHierarchyAffordance()
+	{
+		int level = Level;
+		bool isHierarchical = level > 0;
+
+		VisualStateManager.GoToState(
+			this, isHierarchical ? "RowHierarchical" : "RowNotHierarchical", false /* useTransitions */);
+		VisualStateManager.GoToState(
+			this, IsExpandable ? "RowExpandable" : "RowNotExpandable", false /* useTransitions */);
+		VisualStateManager.GoToState(
+			this, IsExpanded ? "RowExpanded" : "RowCollapsed", false /* useTransitions */);
+
+		double indent = HierarchyIndent();
+
+		if (m_rowExpanderGutter is { } gutter)
+		{
+			// Set directly: a visual state undoing the Collapsed base value would only revert to it.
+			var visibility = isHierarchical ? Visibility.Visible : Visibility.Collapsed;
+			if (gutter.Visibility != visibility)
+			{
+				gutter.Visibility = visibility;
+			}
+
+			Thickness gutterMargin = new(indent, 0, 0, 0);
+			if (gutter.Margin.Left != gutterMargin.Left)
+			{
+				gutter.Margin = gutterMargin;
+			}
+		}
+
+		// The clip is in gutter space, which the margin just moved.
+		UpdateExpanderGutterClip();
+
+		ApplyHierarchyIndentToCells(indent);
+
+		// A Level change without re-prepare skips RefreshFrozenColumnLayout; sync the pinned lead
+		// cell's Translation here.
+		if (m_cellsHost is { } host)
+		{
+			var gutterForSync = m_rowExpanderGutter;
+			if (gutterForSync is not null && (isHierarchical || gutterForSync.Translation.X != 0.0f))
+			{
+				SyncExpanderGutterWithLeadCell(host);
+			}
+		}
+	}
+
+	// Level is 1-based (UIA); a root gets no indent beyond the gutter.
+	internal double HierarchyIndent()
+	{
+		int level = Level;
+		if (level <= 0)
+		{
+			return 0.0;
+		}
+
+		double indentSize = c_defaultRowIndentSize;
+		double baseIndent = 0.0;
+		if (GetOwningTableView() is { } owner)
+		{
+			var ownerImpl = owner;
+
+			indentSize = ownerImpl.GetRowIndentSize();
+
+			// Under a group header, roots are indented by its gutter + spacing (not its Padding);
+			// ungrouped roots stay flush.
+			if (ownerImpl.IsTableViewSourceGrouped())
+			{
+				baseIndent = ownerImpl.GetGroupHeaderContentOffset();
+			}
+		}
+
+		return baseIndent + (level - 1) * indentSize;
+	}
+
+	// Reserves chevron space via lead cell WRAPPER padding (column content may be any app element).
+	// Separate so column-visibility changes can move it without re-running visual states.
+	internal void ApplyHierarchyIndentToCells()
+	{
+		ApplyHierarchyIndentToCells(HierarchyIndent());
+	}
+
+	internal void ApplyHierarchyIndentToCells(double indent)
+	{
+		var host = m_cellsHost;
+		if (host is null)
+		{
+			return;
+		}
+
+		bool isHierarchical = Level > 0;
+
+		// From the resource, not the element: gutter may not be measured yet.
+		double expanderSize = c_defaultRowExpanderSize;
+		if (isHierarchical)
+		{
+			if (GetOwningTableView() is { } owner)
+			{
+				expanderSize = owner.GetRowExpanderSize();
+			}
+		}
+
+		var children = host.Children;
+		bool leadAssigned = false;
+		for (int i = 0; i < children.Count; ++i)
+		{
+			var wrapper = children[i] as Grid;
+			if (wrapper is null || TableViewCellsPanel.ColumnForCell(wrapper) is null)
+			{
+				continue;
+			}
+
+			// Lead = first VISIBLE cell; reset all others so hiding/showing columns never strands or
+			// duplicates the reservation.
+			bool isLead =
+				!leadAssigned && wrapper.Visibility == Visibility.Visible;
+			leadAssigned = leadAssigned || isLead;
+
+			double reserved = (isLead && isHierarchical) ? indent + expanderSize : 0.0;
+			var padding = wrapper.Padding;
+			if (padding.Left != reserved)
+			{
+				padding.Left = reserved;
+				wrapper.Padding = padding;
+			}
+		}
+	}
+
+	private void OnExpanderGutterPointerPressed(
+		object sender,
+		PointerRoutedEventArgs args)
+	{
+		if (!IsExpandable)
+		{
+			// Unhandled so a press on a leaf's gutter selects like the cell.
+			return;
+		}
+
+		// Primary only (incl. touch/pen) so context-menu presses reach the row.
+		if (!args.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
+		{
+			return;
+		}
+
+		// Keep the press from arming the row's release-time selection latch.
+		args.Handled = true;
+		m_isGutterPressed = true;
+	}
+
+	private void OnExpanderGutterPointerReleased(
+		object sender,
+		PointerRoutedEventArgs args)
+	{
+		// Released over the gutter (no capture is taken), so a press that drags off never toggles.
+		bool wasPressed = m_isGutterPressed;
+		m_isGutterPressed = false;
+		if (!wasPressed || !IsExpandable)
+		{
+			return;
+		}
+
+		args.Handled = true;
+
+		if (GetOwningTableView() is { } owner)
+		{
+			// Shared with group headers: resolves identity now, defers the reshape.
+			owner.ToggleGroupExpansion(this);
+		}
+	}
+
+	private void OnExpanderGutterPointerCanceled(
+		object sender,
+		PointerRoutedEventArgs args)
+	{
+		m_isGutterPressed = false;
+	}
+
+	private bool IsWithinExpanderGutter(object? source)
+	{
+		var gutter = m_rowExpanderGutter;
+		if (gutter is null)
+		{
+			return false;
+		}
+
+		DependencyObject self = this;
+		for (var current = source as DependencyObject; current is not null && !ReferenceEquals(current, self);
+			current = VisualTreeHelper.GetParent(current))
+		{
+			if (ReferenceEquals(current, gutter))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	internal void OnCellsArrangedInternal(double leadLeft, double leadWidth, double height)
+	{
+		if (m_cellsArranged && leadLeft == m_leadCellLeft && leadWidth == m_leadCellWidth && height == m_cellsArrangedHeight)
+		{
+			return;
+		}
+
+		m_cellsArranged = true;
+		m_leadCellLeft = leadLeft;
+		m_leadCellWidth = leadWidth;
+		m_cellsArrangedHeight = height;
+		UpdateExpanderGutterClip();
+	}
+
+	// Confine the chevron to the lead cell's slot so it never paints over or takes presses from the next
+	// column. Gutter and host share origin and Translation, so subtracting the gutter's left margin maps
+	// the slot into gutter space (holds under frozen pinning and RTL). Clip also bounds hit-testing.
+	private void UpdateExpanderGutterClip()
+	{
+		var gutter = m_rowExpanderGutter;
+		if (gutter is null)
+		{
+			return;
+		}
+
+		// Every column hidden: clip away and disable hit-testing until the next arrange.
+		if (Level > 0 && m_cellsArranged && m_leadCellWidth < 0.0)
+		{
+			var emptyGeometry = gutter.Clip;
+			if (emptyGeometry is null)
+			{
+				emptyGeometry = new RectangleGeometry();
+				gutter.Clip = emptyGeometry;
+			}
+			Rect empty = new(0.0, 0.0, 0.0, 0.0);
+			var currentEmpty = emptyGeometry.Rect;
+			if (currentEmpty.Width != 0.0 || currentEmpty.Height != 0.0 || currentEmpty.X != 0.0 || currentEmpty.Y != 0.0)
+			{
+				emptyGeometry.Rect = empty;
+			}
+			if (gutter.IsHitTestVisible)
+			{
+				gutter.IsHitTestVisible = false;
+			}
+			return;
+		}
+
+		// Not arranged yet (or flat): leave the gutter unclipped until the first arrange reports a slot.
+		if (Level <= 0 || m_leadCellWidth < 0.0 || m_cellsArrangedHeight <= 0.0)
+		{
+			if (gutter.Clip is not null)
+			{
+				gutter.Clip = null;
+			}
+			if (!gutter.IsHitTestVisible)
+			{
+				gutter.IsHitTestVisible = true;
+			}
+			return;
+		}
+
+		double gutterLeft = gutter.Margin.Left;
+		double visibleLeft = Math.Max(0.0, m_leadCellLeft - gutterLeft);
+		double visibleWidth = Math.Max(0.0, m_leadCellLeft + m_leadCellWidth - gutterLeft - visibleLeft);
+
+		var geometry = gutter.Clip;
+		if (geometry is null)
+		{
+			geometry = new RectangleGeometry();
+			gutter.Clip = geometry;
+		}
+		Rect rect = new(
+			(float)visibleLeft,
+			0.0f,
+			(float)visibleWidth,
+			(float)m_cellsArrangedHeight);
+		var current = geometry.Rect;
+		if (current.X != rect.X || current.Y != rect.Y || current.Width != rect.Width || current.Height != rect.Height)
+		{
+			geometry.Rect = rect;
+		}
+
+		bool hitTestable = visibleWidth > 0.0;
+		if (gutter.IsHitTestVisible != hitTestable)
+		{
+			gutter.IsHitTestVisible = hitTestable;
+		}
+	}
+
 	internal void RefreshDensity()
 	{
 		// Re-read density metrics and restamp built-in cell padding.
@@ -936,6 +1749,7 @@ partial class TableViewRow
 		{
 			ResetCellAutomationNames();
 			host.Children.Clear();
+			InvalidateCellsCurrent();
 		}
 
 		RebuildCells();
@@ -952,6 +1766,10 @@ partial class TableViewRow
 		{
 			cell.Visibility = visibility;
 		}
+
+		// Lead cell may have changed. Indent only: runs from a column property callback, so no
+		// visual-state transitions.
+		ApplyHierarchyIndentToCells();
 	}
 
 	internal double MeasuredWidthForColumn(TableViewColumn? column)
@@ -996,20 +1814,103 @@ partial class TableViewRow
 		}
 	}
 
-	private void RebuildCells(bool updateExistingCellPeerItems = true)
+	private void UpdateCellPeerItems(object? dataItem)
 	{
+		if (m_cellsHost is { } host)
+		{
+			try
+			{
+				foreach (var cell in host.Children)
+				{
+					if (TableViewCell.TryGetExistingPeer(cell) is TableViewCellAutomationPeer peer)
+					{
+						peer.UpdateNameItem(dataItem);
+					}
+				}
+			}
+			catch (Exception)
+			{
+				TVDiag.LogRetailF("[TableView] Optional recycled-cell name state could not be refreshed.");
+			}
+		}
+	}
+
+	private bool HasCellAutomationPeers()
+	{
+		if (m_cellsHost is { } host)
+		{
+			foreach (var cell in host.Children)
+			{
+				try
+				{
+					if (TableViewCell.TryGetExistingPeer(cell) is not null)
+					{
+						return true;
+					}
+				}
+				catch (Exception)
+				{
+					// Unknown provider state: take the replace path, which is always correct.
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	internal void RaiseCellAutomationNamesChangedInternal(UIElement? skipCell = null)
+	{
+		if (m_cellsHost is { } host)
+		{
+			foreach (var cell in host.Children)
+			{
+				if (skipCell is not null && ReferenceEquals(cell, skipCell))
+				{
+					continue;
+				}
+
+				try
+				{
+					if (TableViewCell.TryGetExistingPeer(cell) is TableViewCellAutomationPeer peer)
+					{
+						if (peer.TakeLastNameInternal() is { } oldName)
+						{
+							var newName = peer.GetName();
+							if (newName != oldName)
+							{
+								peer.RaisePropertyChangedEvent(AutomationElementIdentifiers.NameProperty,
+									oldName, newName);
+							}
+						}
+					}
+				}
+				catch (Exception)
+				{
+					TVDiag.LogRetailF("[TableView] Optional cell name change could not be raised.");
+				}
+			}
+		}
+	}
+
+	private bool RebuildCells(bool updateExistingCellPeerItems = true)
+	{
+		RestoreCellContentTabStopsInternal();
+
 		var host = m_cellsHost;
 		if (host is null)
 		{
-			return;
+			return false;
 		}
 
 		// Re-entry guard. See OnDataContextChanged.
 		if (m_isRebuildingCells)
 		{
-			return;
+			// The outer pass may already be past the point this request needed.
+			InvalidateCellsCurrent();
+			return false;
 		}
 		m_isRebuildingCells = true;
+		m_cellsRebuiltForDataContext = false;
 		// Synchronous RAII guard: captures this only until RebuildCells returns.
 		try
 		{
@@ -1018,14 +1919,17 @@ partial class TableViewRow
 			{
 				// Keep realized cells on recycle-out so the next ElementPrepared restamps
 				// instead of re-generating every cell (the restamp fast-path exists for this).
-				return;
+				return false;
 			}
 
 			// Density: apply the owning TableView's row min-height (Fluent Standard = 40,
 			// Compact = 30, Comfortable = 48; resolved from the TableViewRowMinHeight* resources).
 			var ownerImpl = owner;
 			var rowMinHeight = ownerImpl.GetDensityRowMinHeight();
-			MinHeight = rowMinHeight;
+			if (MinHeight != rowMinHeight)
+			{
+				MinHeight = rowMinHeight;
+			}
 
 			var columns = owner.Columns;
 			bool isOwnedColumn(TableViewColumn? column)
@@ -1054,13 +1958,13 @@ partial class TableViewRow
 					// rather than orphan the editor; the next pass retries once the edit has closed.
 					if (m_editingCellWrapper is not null)
 					{
-						return;
+						return false;
 					}
 				}
 
 				ResetCellAutomationNames();
 				host.Children.Clear();
-				return;
+				return false;
 			}
 
 			var dataContext = DataContext;
@@ -1068,20 +1972,7 @@ partial class TableViewRow
 			var children = host.Children;
 			if (updateExistingCellPeerItems)
 			{
-				try
-				{
-					foreach (var cell in children)
-					{
-						if (TableViewCell.TryGetExistingPeer(cell) is TableViewCellAutomationPeer peer)
-						{
-							peer.UpdateNameItem(dataItem);
-						}
-					}
-				}
-				catch (Exception)
-				{
-					TVDiag.LogRetailF("[TableView] Optional recycled-cell name state could not be refreshed.");
-				}
+				UpdateCellPeerItems(dataItem);
 			}
 
 			uint nonNullColumnCount = 0;
@@ -1154,14 +2045,23 @@ partial class TableViewRow
 					var cellWrapper = (Grid)children[childIndex];
 					// Do NOT re-push data during ItemsRepeater measure: live DataContext/Content mutation re-entered layout and hit 0xc0000420 on scroll.
 					// Cells must update reactively from inherited DataContext; only equal-valued visual restamps are safe here.
-					cellWrapper.Visibility = column.Visibility;
-					cellWrapper.MinHeight = rowMinHeight;
+					if (cellWrapper.Visibility != column.Visibility)
+					{
+						cellWrapper.Visibility = column.Visibility;
+					}
+					if (cellWrapper.MinHeight != rowMinHeight)
+					{
+						cellWrapper.MinHeight = rowMinHeight;
+					}
 
 					if (TableViewCell.Child(cellWrapper) is FrameworkElement cellElement)
 					{
 						if (cellElement is TextBlock textBlock)
 						{
-							textBlock.Padding = cellPadding;
+							if (textBlock.Padding != cellPadding)
+							{
+								textBlock.Padding = cellPadding;
+							}
 						}
 					}
 
@@ -1178,7 +2078,8 @@ partial class TableViewRow
 
 				RefreshGridLines();
 				RefreshRowBackground();
-				return;
+				ApplyHierarchyAffordance();
+				return true;
 			}
 
 			// Column adds/removes/reorders or template changes rebuild cells; width-only changes are picked
@@ -1207,7 +2108,7 @@ partial class TableViewRow
 				// rebuild happens on the next pass once the edit has actually closed.
 				if (m_editingCellWrapper is not null)
 				{
-					return;
+					return false;
 				}
 			}
 
@@ -1230,10 +2131,15 @@ partial class TableViewRow
 				cellWrapper.Tag = column;
 				cellWrapper.Visibility = column.Visibility;
 				cellWrapper.MinHeight = rowMinHeight;
+				ownerImpl.AttachFocusCornerRadius(cellWrapper);
 
 				// A null Background does not hit-test; Transparent keeps the full cell pressable so clicks
 				// in padding still set current cell and support double-click-to-edit.
-				cellWrapper.Background = TransparentBrush();
+				if (m_cellWrapperBackground is null)
+				{
+					m_cellWrapperBackground = new SolidColorBrush(Colors.Transparent);
+				}
+				cellWrapper.Background = m_cellWrapperBackground;
 
 				// No local DataContext anywhere on the cell path: cells inherit the row item so recycled
 				// rows update reactively. Custom columns must also bind to inherited DataContext, not bake
@@ -1264,6 +2170,8 @@ partial class TableViewRow
 
 			RefreshGridLines();
 			RefreshRowBackground();
+			ApplyHierarchyAffordance();
+			return true;
 		}
 		finally
 		{
@@ -1271,13 +2179,62 @@ partial class TableViewRow
 		}
 	}
 
-	// Recycle-out. Always walks: the restamp fast-path revives tooltips through the binding, so a
-	// cached per-row flag would go stale and strand app content in the pool.
+	// Recycle-out. Always walks: the bound value can revive a tooltip at any time, so a cached
+	// per-row flag would go stale and strand app content in the pool.
 	internal void ReleaseCellToolTips()
 	{
 		if (m_cellsHost is { } host)
 		{
 			ClearOwnedCellToolTips(host);
+		}
+	}
+
+	// Recycle-in. ReleaseCellToolTips neutralized the tooltips, and a bound value that did not change
+	// (an explicit Source, or equal across the DataContext reset) raises no callback to revive them.
+	internal void RefreshCellToolTips()
+	{
+		var host = m_cellsHost;
+		if (host is null)
+		{
+			return;
+		}
+
+		var editingWrapper = m_editingCellWrapper;
+		var children = host.Children;
+		uint count = (uint)children.Count;
+		for (uint i = 0; i < count; ++i)
+		{
+			if (children[(int)i] is Grid cellWrapper && !ReferenceEquals(cellWrapper, editingWrapper))
+			{
+				// Usually the value changed with the DataContext and the tooltip is already live.
+				var record = TableViewDetails.GetRecord(cellWrapper);
+				if (record is null || record.ToolTip is null || record.ToolTip.IsEnabled)
+				{
+					continue;
+				}
+
+				try
+				{
+					TableViewDetails.RefreshOwnedToolTip(cellWrapper);
+				}
+				catch (Exception ex)
+				{
+					TVDiag.LogRetailF($"[TableView] Re-applying a cell tooltip failed (HRESULT 0x{ex.HResult:X8}).");
+				}
+			}
+		}
+
+		// A tooltip makes a cell actionable, so the tab stops may have changed.
+		ApplyFocusLevelInternal();
+	}
+
+	internal void OnCellToolTipChangedInternal(UIElement cell)
+	{
+		// Restamps every row and hands a focused cell that lost its only action to its row.
+		var owner = GetOwningTableView();
+		if (m_isCellLevel && owner is not null && cell.IsTabStop != IsCellActionableInternal(cell))
+		{
+			owner.RefreshCellFocusLevelsInternal();
 		}
 	}
 
@@ -1337,11 +2294,11 @@ partial class TableViewRow
 		var visibility = owner.GridLinesVisibility;
 		if (WantsHorizontalLines(visibility))
 		{
-			ClearValue(Control.BorderThicknessProperty);
+			ClearLocalValueIfSet(this, Control.BorderThicknessProperty);
 		}
 		else
 		{
-			BorderThickness = s_zeroThickness;
+			SetThicknessIfChanged(this, Control.BorderThicknessProperty, s_zeroThickness);
 		}
 
 		if (m_gridLineBorder is { } gridLineBorder)
@@ -1351,7 +2308,10 @@ partial class TableViewRow
 			{
 				thickness.Bottom = 0.0;
 			}
-			gridLineBorder.BorderThickness = thickness;
+			if (gridLineBorder.BorderThickness != thickness)
+			{
+				gridLineBorder.BorderThickness = thickness;
+			}
 		}
 
 		var host = m_cellsHost;
@@ -1362,11 +2322,8 @@ partial class TableViewRow
 
 		bool wantVertical = WantsVerticalLines(visibility);
 		Brush? gridLineBrush = null;
-		// Read the direction from the owner, the same source RebuildHeaders stamps the header grid line
-		// from, so the two edges cannot disagree.
-		var verticalThickness = owner.FlowDirection == FlowDirection.RightToLeft
-			? s_verticalThicknessRtl
-			: s_verticalThickness;
+		// FlowDirection mirrors the whole subtree, so the logical right edge is trailing in RTL too.
+		var verticalThickness = s_verticalThickness;
 		if (wantVertical)
 		{
 			gridLineBrush = owner.GetGridLineBrush();
@@ -1400,20 +2357,27 @@ partial class TableViewRow
 				{
 					// RTL-aware thickness, not the LTR-only static: the separator must sit on the
 					// trailing edge in both flow directions.
-					cellWrapper.BorderThickness = verticalThickness;
+					if (cellWrapper.BorderThickness != verticalThickness)
+					{
+						cellWrapper.BorderThickness = verticalThickness;
+					}
 					// Keep the separator's layout thickness stable and suppress only its brush when
 					// the terminal cell actually meets the outer border.
-					cellWrapper.BorderBrush =
+					var brush =
 						m_suppressTrailingGridLine &&
 						cellWrapper.Visibility == Visibility.Visible &&
 						i == lastVisibleCell
 							? null
 							: gridLineBrush;
+					if (!ReferenceEquals(cellWrapper.BorderBrush, brush))
+					{
+						cellWrapper.BorderBrush = brush;
+					}
 				}
 				else
 				{
-					cellWrapper.ClearValue(Grid.BorderThicknessProperty);
-					cellWrapper.ClearValue(Grid.BorderBrushProperty);
+					ClearLocalValueIfSet(cellWrapper, Grid.BorderThicknessProperty);
+					ClearLocalValueIfSet(cellWrapper, Grid.BorderBrushProperty);
 				}
 			}
 		}
@@ -1429,8 +2393,9 @@ partial class TableViewRow
 			return;
 		}
 
-		// Clear first so recycled rows do not keep stale banding fills.
-		ClearValue(Control.BackgroundProperty);
+		// Resolve the target first and write only on change, so recycled rows drop stale banding fills
+		// without a clear-then-set churn on every DataContext change.
+		Brush? background = null;
 		if (owner.RowBackground is not null || owner.AlternatingRowBackground is not null)
 		{
 			var rowIndex = -1;
@@ -1443,16 +2408,24 @@ partial class TableViewRow
 				// RowBackground is the base for every row; AlternatingRowBackground overrides
 				// odd rows only when set (WPF DataGrid parity). Setting RowBackground alone
 				// must fill all rows uniformly, not stripe odd rows transparent.
-				var background = owner.RowBackground;
+				background = owner.RowBackground;
 				if ((rowIndex % 2) != 0 && owner.AlternatingRowBackground is not null)
 				{
 					background = owner.AlternatingRowBackground;
 				}
-				if (background is not null)
-				{
-					Background = background;
-				}
 			}
+		}
+
+		if (background is not null)
+		{
+			if (!ReferenceEquals(ReadLocalValue(Control.BackgroundProperty), background))
+			{
+				Background = background;
+			}
+		}
+		else
+		{
+			ClearLocalValueIfSet(this, Control.BackgroundProperty);
 		}
 	}
 
@@ -1461,6 +2434,51 @@ partial class TableViewRow
 		if (m_cellsHost is { } host)
 		{
 			TableViewCellsPanel.ApplyFrozenColumnLayout(host, horizontalOffset, leadingFrozenWidth);
+
+			// Same gate as ApplyHierarchyAffordance: flat rows skip this on every scroll pass, but a
+			// row leaving a tree still resets its gutter Translation.
+			var gutter = m_rowExpanderGutter;
+			if (gutter is not null && (Level > 0 || gutter.Translation.X != 0.0f))
+			{
+				SyncExpanderGutterWithLeadCell(host);
+			}
+		}
+	}
+
+	// Gutter sits outside the cells host, so mirror the lead visible wrapper's Translation (whatever
+	// frozen pinning decided, including none) to keep the chevron over its cell.
+	internal void SyncExpanderGutterWithLeadCell(Panel host)
+	{
+		var gutter = m_rowExpanderGutter;
+		if (gutter is null)
+		{
+			return;
+		}
+
+		float offset = 0.0f;
+		if (Level > 0)
+		{
+			var children = host.Children;
+			for (int i = 0; i < children.Count; ++i)
+			{
+				var wrapper = children[i];
+				if (TableViewCellsPanel.ColumnForCell(wrapper) is not null && wrapper.Visibility == Visibility.Visible)
+				{
+					offset = wrapper.Translation.X;
+					break;
+				}
+			}
+		}
+
+		ElementCompositionPreview.SetIsTranslationEnabled(gutter, true);
+		var translation = gutter.Translation;
+		if (translation.X != offset || translation.Y != 0.0f || translation.Z != 0.0f)
+		{
+			gutter.Translation = new Vector3(offset, 0.0f, 0.0f);
+		}
+		if (Canvas.GetZIndex(gutter) != 2)
+		{
+			Canvas.SetZIndex(gutter, 2);
 		}
 	}
 
@@ -1506,9 +2524,87 @@ partial class TableViewRow
 			return false;
 		}
 
+		// A throw past here must restore the display element and drop the half-captured edit state, or
+		// the cell is left blank and the row half-editing.
+		var displayElement = TableViewCell.Child(cellWrapper);
+		var focusRoot = XamlRoot;
+		var restoreFocusState = FocusState.Unfocused;
+		{
+			var focused = focusRoot is not null ? FocusManager.GetFocusedElement(focusRoot) : null;
+			if (TableViewDetails.IsWithinElementPopupAware(focused, cellWrapper, focusRoot))
+			{
+				var focusedElement = focused as UIElement;
+				restoreFocusState = focusedElement is not null && focusedElement.FocusState != FocusState.Unfocused
+					? focusedElement.FocusState : FocusState.Programmatic;
+			}
+		}
+		bool unwindReleased = false;
+		using var unwindOnThrow = Disposable.Create(() =>
+		{
+			if (unwindReleased)
+			{
+				return;
+			}
+
+			try
+			{
+				if (TableViewCell.TryGetExistingPeer(cellWrapper) is TableViewCellAutomationPeer peer)
+				{
+					peer.ResetEditName();
+				}
+			}
+			catch (Exception)
+			{
+				TVDiag.LogRetailF("[TableView] Optional abandoned-cell name state could not be reset.");
+			}
+			try
+			{
+				if (!ReferenceEquals(TableViewCell.Child(cellWrapper), displayElement))
+				{
+					TableViewCell.Child(cellWrapper, displayElement);
+					TableViewDetails.RefreshOwnedToolTip(cellWrapper);
+				}
+			}
+			catch (Exception)
+			{
+				TVDiag.LogRetailF("[TableView] A failed BeginCellEdit could not restore the display cell.");
+			}
+			m_editingAutomationPeer = null;
+			m_editingAutomationItem = null;
+			m_editingAutomationValue = "";
+			m_editingAutomationName = "";
+			m_editingRowAutomationName = null;
+			m_editingColumn = null;
+			m_editingCellWrapper = null;
+			m_editingElement = null;
+			m_editingDisplayElement = null;
+
+			// Not a layout pass (unlike AbandonCellEdit's callers), so focus the editor took or dropped
+			// can go back to the cell.
+			try
+			{
+				if (restoreFocusState != FocusState.Unfocused &&
+					!TableViewDetails.IsWithinElementPopupAware(
+						focusRoot is not null ? FocusManager.GetFocusedElement(focusRoot) : null, cellWrapper, focusRoot))
+				{
+					SetCellLevelInternal(true);
+					if (!cellWrapper.Focus(restoreFocusState))
+					{
+						SetCellLevelInternal(false);
+						Focus(restoreFocusState);
+					}
+				}
+			}
+			catch (Exception)
+			{
+				TVDiag.LogRetailF("[TableView] A failed BeginCellEdit could not restore focus to the cell.");
+			}
+		});
+
 		var editingElement = column.GenerateEditingElement(dataItem);
 		if (editingElement is null)
 		{
+			unwindReleased = true;
 			return false;
 		}
 
@@ -1532,6 +2628,14 @@ partial class TableViewRow
 				m_editingAutomationName = name;
 				m_editingAutomationPeer = weakPeer;
 			}
+			m_editingRowAutomationName = null;
+			if (AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
+			{
+				if (FrameworkElementAutomationPeer.FromElement(this) is { } rowPeer)
+				{
+					m_editingRowAutomationName = rowPeer.GetName();
+				}
+			}
 		}
 		catch (Exception)
 		{
@@ -1539,6 +2643,7 @@ partial class TableViewRow
 			m_editingAutomationItem = null;
 			m_editingAutomationValue = "";
 			m_editingAutomationName = "";
+			m_editingRowAutomationName = null;
 			TVDiag.LogRetailF("[TableView] Optional pre-edit UIA snapshot could not be captured.");
 		}
 		try
@@ -1552,7 +2657,7 @@ partial class TableViewRow
 		{
 			TVDiag.LogRetailF("[TableView] Optional stable cell-name capture failed.");
 		}
-		m_editingDisplayElement = TableViewCell.Child(cellWrapper);
+		m_editingDisplayElement = displayElement;
 		m_pendingEditingCell = new WeakReference<UIElement>(cellWrapper);
 		try
 		{
@@ -1563,7 +2668,7 @@ partial class TableViewRow
 			TableViewDetails.ClearOwnedToolTip(cellWrapper);
 			m_editingElement = editingElement;
 
-
+			unwindReleased = true;
 			return true;
 		}
 		finally
@@ -1572,7 +2677,7 @@ partial class TableViewRow
 		}
 	}
 
-	internal void EndCellEdit(TableViewEditAction action)
+	internal void EndCellEdit(TableViewEditAction action, StrongBox<int?>? displayFailure = null, StrongBox<bool>? applicationFault = null)
 	{
 		var cellWrapper = m_editingCellWrapper;
 		var weakPeer = m_editingAutomationPeer;
@@ -1594,6 +2699,8 @@ partial class TableViewRow
 		m_editingAutomationItem = null;
 		m_editingAutomationValue = "";
 		m_editingAutomationName = "";
+		var oldRowName = m_editingRowAutomationName;
+		m_editingRowAutomationName = null;
 		if (cellWrapper is null)
 		{
 			m_editingColumn = null;
@@ -1608,31 +2715,27 @@ partial class TableViewRow
 		if (m_editingElement is { } editingElement)
 		{
 			bool editorHasFocus = false;
+			var restoreState = FocusState.Programmatic;
 			if (XamlRoot is { } root)
 			{
-				if (FocusManager.GetFocusedElement(root) is DependencyObject focused)
+				var focused = FocusManager.GetFocusedElement(root);
+				editorHasFocus = TableViewDetails.IsWithinElementPopupAware(focused, editingElement, root);
+				if (editorHasFocus)
 				{
-					DependencyObject? current = focused;
-					while (current is not null)
+					// Read from the focused element: inside a dropdown the editor itself reports Unfocused.
+					if (focused is UIElement focusedElement && focusedElement.FocusState != FocusState.Unfocused)
 					{
-						if (ReferenceEquals(current, editingElement))
-						{
-							editorHasFocus = true;
-							break;
-						}
-						current = VisualTreeHelper.GetParent(current);
+						restoreState = focusedElement.FocusState;
 					}
 				}
 			}
+
+			TableViewDetails.CloseOpenDropDowns(editingElement);
 
 			if (editorHasFocus)
 			{
 				// Restore focus to the cell, not row, and preserve Keyboard focus state so the focus
 				// rectangle survives Enter-commit.
-				var restoreState = editingElement.FocusState == FocusState.Unfocused
-					? FocusState.Programmatic
-					: editingElement.FocusState;
-
 				// Closing edit returns to cell level, so re-arm cells before restoring focus.
 				SetCellLevelInternal(true);
 
@@ -1661,16 +2764,31 @@ partial class TableViewRow
 		{
 			if (m_editingColumn is { } column)
 			{
+				bool factoryReturned = false;
+				FrameworkElement? refreshed = null;
 				try
 				{
-					if (column.GenerateElement(DataContext) is { } refreshed)
+					refreshed = column.GenerateElement(DataContext);
+					factoryReturned = true;
+					if (refreshed is not null)
 					{
 						AttachCellContent(cellWrapper, refreshed);
 						displayElement = null;
 					}
 				}
-				catch (Exception)
+				catch (Exception ex)
 				{
+					if (displayFailure is not null)
+					{
+						displayFailure.Value = ex.HResult;
+					}
+					// An app-derived column's factory threw, or returned an element that already has a parent: both
+					// are the app's. TableView's own columns build a new element.
+					if (applicationFault is not null)
+					{
+						applicationFault.Value = TableViewDetails.IsAppDerivedColumn(column) &&
+							(!factoryReturned || HasForeignParent(refreshed, cellWrapper));
+					}
 					// A column that throws while regenerating must not strand the row in edit mode;
 					// fall back to the parked element, which is stale but present.
 					displayElement = m_editingDisplayElement;
@@ -1734,7 +2852,7 @@ partial class TableViewRow
 										return;
 									}
 									var peerImpl = currentPeer;
-									if (peerImpl.Row < 0 || peerImpl.Value != newValue || peerImpl.ReadNameForEdit() != newName)
+									if (peerImpl.GetRowIndexInternal() < 0 || peerImpl.Value != newValue || peerImpl.ReadNameForEdit() != newName)
 									{
 										return;
 									}
@@ -1764,6 +2882,57 @@ partial class TableViewRow
 		catch (Exception)
 		{
 			TVDiag.LogRetailF("[TableView] Optional committed-cell UIA notification could not be prepared.");
+		}
+
+		// Other cells and the row Name can derive from the edited value (a template column bound to a
+		// computed property). Their peers compute names live, but clients that cache need the change.
+		try
+		{
+			if (action == TableViewEditAction.Commit &&
+				AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
+			{
+				if (DispatcherQueue is { } queue)
+				{
+					var weakThis = new WeakReference<TableViewRow>(this);
+					var weakCell = new WeakReference<UIElement>(cellWrapper);
+					var item = DataContext;
+					if (!queue.TryEnqueue(global::Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
+					{
+						try
+						{
+							if (!weakThis.TryGetTarget(out var row) || !TableView.SameInspectableIdentity(row.DataContext, item))
+							{
+								return;
+							}
+							weakCell.TryGetTarget(out var skipCell);
+							row.RaiseCellAutomationNamesChangedInternal(skipCell);
+							if (oldRowName is not null)
+							{
+								if (FrameworkElementAutomationPeer.FromElement(row) is { } rowPeer)
+								{
+									var newRowName = rowPeer.GetName();
+									if (newRowName != oldRowName)
+									{
+										rowPeer.RaisePropertyChangedEvent(AutomationElementIdentifiers.NameProperty,
+											oldRowName, newRowName);
+									}
+								}
+							}
+						}
+						catch (Exception)
+						{
+							TVDiag.LogRetailF("[TableView] Optional committed-row name notification could not be delivered.");
+						}
+					}))
+					{
+						TVDiag.LogRetailF("[TableView] Optional committed-row name notification queue rejected delivery.");
+					}
+				}
+			}
+		}
+		catch (Exception)
+		{
+			TVDiag.LogRetailF("[TableView] Optional committed-row name notification could not be prepared.");
 		}
 	}
 
@@ -1814,6 +2983,143 @@ partial class TableViewRow
 		m_lastPressItem = null;
 	}
 
+	private void ProcessContextRequest(
+		TableViewDetails.ContextMenuTarget target,
+		ContextRequestedEventArgs args)
+	{
+		var owner = GetOwningTableView();
+		if (owner is null)
+		{
+			return;
+		}
+
+		if (owner.ProcessContextMenuRequest(target, args))
+		{
+			args.Handled = true;
+		}
+	}
+
+	// Cell requests (pointer, keyboard, cell peer). Requests on the host's empty area carry no column
+	// and go on to the template root as row requests.
+	private void OnCellsHostContextRequested(ContextRequestedEventArgs args)
+	{
+		if (args.Handled)
+		{
+			return;
+		}
+
+		if (ResolveContextMenuTarget(args) is { } target && target.Column is not null)
+		{
+			ProcessContextRequest(target, args);
+		}
+	}
+
+	// Row requests from anywhere under the template root but outside a cell: padding, the chevron,
+	// the cells host's empty area. A ContextFlyout on the template root itself is shown by the
+	// framework before this handler runs.
+	private void OnTemplateRootContextRequested(ContextRequestedEventArgs args)
+	{
+		if (args.Handled)
+		{
+			return;
+		}
+
+		// A cell request the cells host left Unhandled (nothing to show) keeps bubbling.
+		if (ResolveContextMenuTarget(args) is { } target && target.Column is null)
+		{
+			ProcessContextRequest(target, args);
+		}
+	}
+
+	// Row requests raised on the row itself: Shift+F10 / Menu key while the row (not a cell) has
+	// focus. They start above the template root, so neither handler above sees them; without this
+	// the row-template menu is skipped and the table fallback opens. Requests that bubbled up from
+	// inside the row were already offered to the handlers above and keep bubbling.
+	private void OnRowContextRequested(ContextRequestedEventArgs args)
+	{
+		var source = args.OriginalSource as TableViewRow;
+		if (args.Handled || source is null || !ReferenceEquals(source, this))
+		{
+			return;
+		}
+
+		if (ResolveContextMenuTarget(args) is { } target && target.Column is null)
+		{
+			ProcessContextRequest(target, args);
+		}
+	}
+
+	internal bool ShowContextMenuFromPeer()
+	{
+		var owner = GetOwningTableView();
+		var target = MakeRowContextMenuTarget();
+		if (owner is null || target is null)
+		{
+			return false;
+		}
+
+		return owner.ProcessContextMenuRequest(target.Value, null);
+	}
+
+	private TableViewDetails.ContextMenuTarget? MakeRowContextMenuTarget()
+	{
+		var owner = GetOwningTableView();
+		var host = m_cellsHost;
+		if (owner is null || host is null)
+		{
+			return null;
+		}
+
+		TableViewDetails.ContextMenuTarget target = new();
+		target.Row = this;
+		target.Item = owner.UnwrapEditingDataItem(DataContext);
+		target.Anchor = this;
+		target.ScopeRoot = host;
+		return target;
+	}
+
+	private TableViewDetails.ContextMenuTarget? ResolveContextMenuTarget(
+		ContextRequestedEventArgs args)
+	{
+		return ResolveContextMenuTarget(args.OriginalSource as DependencyObject);
+	}
+
+	private TableViewDetails.ContextMenuTarget? ResolveContextMenuTarget(
+		DependencyObject? source)
+	{
+		var maybeTarget = MakeRowContextMenuTarget();
+		if (maybeTarget is null)
+		{
+			return null;
+		}
+		var target = maybeTarget.Value;
+
+		TableViewRow self = this;
+		if (!TableViewDetails.IsOwnRequestSource(source, self))
+		{
+			return null;
+		}
+
+		// The column comes from the cell wrapper the request started in, never from a Tag on the
+		// cell's content and never from where the pointer is: the chevron overlays the first cell but
+		// belongs to the row.
+		var cell = FindOwnCellInternal(source, false /* requireExact */);
+		var column = cell is not null ? GetCellOwningColumn(cell) : null;
+		if (column is not null && !GetOwningTableView()!.IsContextMenuColumn(column))
+		{
+			column = null;
+		}
+
+		var anchor = column is not null ? TableViewCellsPanel.CellForColumn(target.ScopeRoot, column) : null;
+		if (anchor is not null)
+		{
+			target.Column = column;
+			target.Anchor = anchor;
+		}
+
+		return target;
+	}
+
 	// Pointer entry point for editing, and the only place a pointer establishes the current cell.
 	//
 	// Lives on the row because the row owns its cells: resolving which cell a press landed on is a
@@ -1838,6 +3144,13 @@ partial class TableViewRow
 
 		// Editing is opt-in and read-only by default, so a read-only table pays nothing beyond this.
 		if (ownerImpl.IsReadOnly)
+		{
+			return;
+		}
+
+		// A chevron press is a toggle, not a lead-cell press; otherwise two quick toggles would read as
+		// a double-click and open an editor. Leaf gutters (no toggle) fall through.
+		if (IsExpandable && IsWithinExpanderGutter(args.OriginalSource))
 		{
 			return;
 		}
@@ -1872,7 +3185,7 @@ partial class TableViewRow
 		var timestamp = pointerPoint.Timestamp;
 		var position = pointerPoint.Position;
 
-		double slop = GetDoubleClickSlop(this);
+		double slop = TableView.DoubleClickSlop(this);
 
 		// Device type is part of the repeat identity so a mouse click following a pen tap is not read
 		// as one double-click. Pointer ID deliberately is NOT: every touch contact gets a fresh id, so
@@ -1883,7 +3196,7 @@ partial class TableViewRow
 			TableView.SameInspectableIdentity(m_lastPressItem, item) &&
 			m_lastPressDeviceType == deviceType &&
 			timestamp >= m_lastPressTimestamp &&
-			(timestamp - m_lastPressTimestamp) <= GetDoubleClickIntervalMicroseconds() &&
+			(timestamp - m_lastPressTimestamp) <= TableView.DoubleClickIntervalMicroseconds() &&
 			Math.Abs(position.X - m_lastPressPosition.X) <= slop &&
 			Math.Abs(position.Y - m_lastPressPosition.Y) <= slop;
 
@@ -1931,56 +3244,47 @@ partial class TableViewRow
 		object? originalSource,
 		Point hostPoint)
 	{
-		// A nested TableView's press bubbles through this row, and the walk would reach the INNER
-		// table's tagged Border before it ever reached this row - so filter on ownership rather than
-		// trying to stop the walk. A column this table does not own is not ours to act on.
-		var owner = GetOwningTableView();
-		bool ownedByThisTable(TableViewColumn? candidate)
+		var source = originalSource as DependencyObject;
+		if (!TableViewDetails.IsOwnRequestSource(source, this))
 		{
-			if (candidate is null || owner is null)
-			{
-				return false;
-			}
-
-			if (owner.Columns is { } columns)
-			{
-				foreach (var column in columns)
-				{
-					if (ReferenceEquals(column, candidate))
-					{
-						return true;
-					}
-				}
-			}
-
-			return false;
+			return null;
 		}
 
-		var current = originalSource as DependencyObject;
-		while (current is not null)
+		// Only a direct child of our cells host can identify a column. Application content can have
+		// its own Tag, including one naming another column in this table.
+		if (FindOwnCellInternal(source, false /* requireExact */) is { } ownCell)
 		{
-			if (current is Grid cell)
-			{
-				if (cell.Tag is TableViewColumn tagged)
-				{
-					return ownedByThisTable(tagged) ? tagged : null;
-				}
-			}
-
-			current = VisualTreeHelper.GetParent(current);
+			return GetCellOwningColumn(ownCell);
 		}
 
 		foreach (var hit in VisualTreeHelper.FindElementsInHostCoordinates(hostPoint, this))
 		{
-			if (hit is Grid cell)
+			if (!TableViewDetails.IsOwnRequestSource(hit, this))
 			{
-				if (cell.Tag is TableViewColumn tagged)
-				{
-					return ownedByThisTable(tagged) ? tagged : null;
-				}
+				return null;
+			}
+
+			if (FindOwnCellInternal(hit, false /* requireExact */) is { } cell)
+			{
+				return GetCellOwningColumn(cell);
 			}
 		}
 
 		return null;
+	}
+}
+
+internal static partial class TableViewDetails
+{
+	internal static partial void OnCellToolTipValueAppliedInternal(FrameworkElement cell)
+	{
+		for (DependencyObject? node = VisualTreeHelper.GetParent(cell); node is not null; node = VisualTreeHelper.GetParent(node))
+		{
+			if (node is TableViewRow row)
+			{
+				row.OnCellToolTipChangedInternal(cell);
+				return;
+			}
+		}
 	}
 }

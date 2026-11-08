@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\RowMetadataProvider.h, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\RowMetadataProvider.h, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -34,21 +34,49 @@ internal partial class RowMetadataProvider : ITableViewRowMetadataProvider
 	//     GroupedSourceAdapterPtr const& adapter,
 	//     ItemKeySelector const& itemKeySelector = {});
 
+	// All rows are data rows; level/expandability come from the adapter descriptor, keys are "node:".
+	// static TableViewRowMetadataProvider CreateForHierarchicalRows(
+	//     HierarchicalSourceAdapterPtr const& adapter,
+	//     ItemKeySelector const& itemKeySelector = {});
+
+	// GroupBy over hierarchy roots. Row indices are the grouped axis (with headers), so node
+	// metadata is resolved by item via TryGetNodeRowForItem.
+	// static TableViewRowMetadataProvider CreateForGroupedHierarchicalRows(
+	//     GroupedSourceAdapterPtr const& groupedAdapter,
+	//     HierarchicalSourceAdapterPtr const& hierarchicalAdapter,
+	//     ItemKeySelector const& itemKeySelector = {});
+
 	// TableViewRowInfo GetRowInfo(int32_t index) override;
 	// winrt::hstring GetIdentity(int32_t index) override;
 	// bool TryGetIndexForIdentity(winrt::hstring const& identity, int32_t& index) override;
-	// void Expand(winrt::hstring const& key) override;
-	// void Collapse(winrt::hstring const& key) override;
+	// bool Expand(winrt::hstring const& key) override;
+	// bool Collapse(winrt::hstring const& key) override;
 	// bool Toggle(winrt::hstring const& key) override;
+	// bool WouldChangeExpansion(winrt::hstring const& key, std::optional<bool> desired) noexcept override;
 
 	// Bulk group commands. No-ops when the source is not grouped.
 	// void ExpandAllGroups() override;
 	// void CollapseAllGroups() override;
+	// void ExpandAllRows() override;
+	// void CollapseAllRows() override;
+	// void ExpandSubtree(winrt::hstring const& key) override;
+
+	public bool IsHierarchicalSource() =>
+		m_sourceKind == SourceKind.Hierarchical || m_sourceKind == SourceKind.GroupedHierarchical;
+
+	// bool TryGetGroupMembership(
+	//     winrt::IInspectable const& rows,
+	//     int32_t index,
+	//     int32_t& positionInGroup,
+	//     int32_t& groupSize) override;
 
 	internal enum SourceKind
 	{
 		Flat,
 		Grouped,
+		Hierarchical,
+		// Row kinds/identities from the grouped axis; level/expansion from the hierarchy adapter.
+		GroupedHierarchical,
 	}
 
 	// RowMetadataProvider(
@@ -56,14 +84,22 @@ internal partial class RowMetadataProvider : ITableViewRowMetadataProvider
 	//     winrt::ItemsSourceView const& flatRows,
 	//     winrt::ItemsSourceView const& groupedRows,
 	//     GroupedSourceAdapterPtr const& groupedAdapter,
-	//     ItemKeySelector const& itemKeySelector);
+	//     ItemKeySelector const& itemKeySelector,
+	//     winrt::ItemsSourceView const& hierarchicalRows = nullptr,
+	//     HierarchicalSourceAdapterPtr const& hierarchicalAdapter = nullptr);
 
 	// private:
 	// Single implementation behind all six expand/collapse/toggle entry points. They differ only
 	// in how the caller names the group (row key vs. the app's GroupBy key), so resolution stays
 	// in the wrappers and the state change lives here exactly once. `desired` empty means toggle.
-	// Returns the resulting expansion state; false when there is no group or no adapter.
+	// Returns true when the expansion state changed.
 	// bool SetGroupExpandedCore(winrt::IInspectable const& group, std::optional<bool> desired);
+
+	// Hierarchy equivalent; the node key is the adapter's addressing scheme.
+	// bool SetNodeExpandedCore(winrt::hstring const& nodeKey, std::optional<bool> desired);
+
+	// Composed projection routes both key spaces through Expand/Collapse/Toggle.
+	// bool IsNodeExpansionKey(winrt::hstring const& key) const;
 
 	// winrt::IInspectable GetGroupedRow(int32_t index) const;
 	// winrt::com_ptr<GroupedEntry> TryGetGroupHeaderEntry(int32_t index) const;
@@ -84,6 +120,8 @@ internal partial class RowMetadataProvider : ITableViewRowMetadataProvider
 	private ItemsSourceView? m_flatRows = null;
 	private ItemsSourceView? m_groupedRows = null;
 	private GroupedSourceAdapter? m_groupedAdapter;
+	private ItemsSourceView? m_hierarchicalRows = null;
+	private HierarchicalSourceAdapter? m_hierarchicalAdapter;
 	private TableViewRowItemKeySelector? m_itemKeySelector;
 
 	// Lazily built identity -> row index over the rows this provider wraps. Rebuilt wholesale
@@ -94,6 +132,13 @@ internal partial class RowMetadataProvider : ITableViewRowMetadataProvider
 	// void EnsureIdentityIndex();
 	private readonly Dictionary<string, int> m_identityToIndex = new();
 	private bool m_identityIndexValid = false;
+
+	// Sorted header-band indexes; invalidated on CollectionChanged and keyed to row count. Built by
+	// a plain scan: mid-expand a header's count can lead its inserted rows, so striding skips groups.
+	// void InvalidateGroupHeaderIndices();
+	// void EnsureGroupHeaderIndices(int32_t rowCount);
+	private readonly List<int> m_groupHeaderIndices = new();
+	private int m_groupHeaderIndicesRowCount = -1;
 
 	// Subscriptions to XAML's ItemsSourceView are held as raw tokens, not auto-revokers.
 	//
@@ -107,6 +152,7 @@ internal partial class RowMetadataProvider : ITableViewRowMetadataProvider
 	// races teardown becomes a no-op under the weak lock -- GC / re-entrancy safety, not threading.
 	private readonly SerialDisposable m_groupedRowsChangedToken = new();
 	private readonly SerialDisposable m_flatRowsChangedToken = new();
+	private readonly SerialDisposable m_hierarchicalRowsChangedToken = new();
 	// TODO Uno: std::shared_ptr<bool> mapped to StrongBox<bool>; handlers capture the box and test Value
 	// in place of weak_ptr::lock(), and Dispose clears Value and nulls the field in place of m_alive.reset().
 	private StrongBox<bool>? m_alive = new(true);
