@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\APITests\TableView_APITests_Common.cs, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\APITests\TableView_APITests_Common.cs, tag winui3/main, commit 79209e041
 
 #pragma warning disable CS8305 // The Tabular types are [Experimental], as in WinUI
 
@@ -31,6 +31,9 @@ public class TableViewApiTestBase : MUXApiTestBase
 	// Hosts the element as test content and runs a synchronous layout pass. Call on the UI thread.
 	protected void LoadContent(UIElement element)
 	{
+		// Primitives (SortIndicator, ResizeGripper) hosted without a TableView still need the
+		// control resources, or the first test in a fresh host fails template lookup.
+		EnsureTabularControlsResources();
 		Content = element;
 		Content.UpdateLayout();
 	}
@@ -517,10 +520,11 @@ internal static class TableViewTestHelpers
 		}
 	}
 
-	// Indexed in projection order, not visual-child order.
+	// Indexed in projection order, not visual-child order, over the realized headers only, so a
+	// fixture large enough to virtualize can still reach its realized headers.
 	internal static TableViewGroupHeader GetGroupHeader(TableView tableView, int index)
 	{
-		var headers = GetProjectedElements(tableView).OfType<TableViewGroupHeader>().ToList();
+		var headers = GetProjectedElements(tableView, requireAllRealized: false).OfType<TableViewGroupHeader>().ToList();
 		if (headers.Count <= index)
 		{
 			Verify.Fail($"The test needs a projected group header at index {index}; saw {headers.Count}.");

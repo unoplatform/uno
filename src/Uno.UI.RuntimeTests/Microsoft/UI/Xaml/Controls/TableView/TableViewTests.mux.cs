@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\APITests\TableViewTests.cs, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\APITests\TableViewTests.cs, tag winui3/main, commit 79209e041
 
 #pragma warning disable CS8305 // The Tabular types are [Experimental], as in WinUI
 
@@ -751,6 +751,53 @@ public class TableViewTests : TableViewApiTestBase
 		}
 
 		Log.Comment("Repeated create/load/unload/collect cycles completed without crashing.");
+	}
+
+	[TestMethod]
+	[TestProperty("Description", "Verifies closing the window that hosts a loaded TableView does not fail-fast while ThemeSettings is torn down.")]
+	public async Task VerifyClosingHostWindowDoesNotCrash()
+	{
+		Window window = null;
+		var loaded = new global::System.Threading.AutoResetEvent(false);
+
+		RunOnUIThread.Execute(() =>
+		{
+			var tableView = CreateTableView(headers: new[] { "Name", "Role" });
+			tableView.Loaded += (sender, args) => loaded.Set();
+			window = new Window() { Content = tableView };
+			window.Activate();
+		});
+
+		try
+		{
+			Verify.IsTrue(loaded.WaitOne(DefaultWaitTimeInMS), "Waiting for the TableView to load in its own window.");
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				window.Close();
+				window = null;
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+				GC.Collect();
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+		finally
+		{
+			RunOnUIThread.Execute(() =>
+			{
+				window?.Close();
+				TestServices.WindowHelper.CurrentTestWindow.Activate();
+			});
+		}
+
+		Log.Comment("Closing the host window completed without crashing.");
 	}
 
 	[TestMethod]

@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\APITests\TableView_ToolTips_APITests.cs, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\APITests\TableView_ToolTips_APITests.cs, tag winui3/main, commit 79209e041
 
 #pragma warning disable CS8305 // The Tabular types are [Experimental], as in WinUI
 
@@ -326,6 +326,45 @@ public class TableViewToolTipTests : TableViewApiTestBase
 	}
 
 	[TestMethod]
+	[TestProperty("Description", "Verifies recycled rows keep their tooltip and help text when the bound value does not change between items.")]
+	public async Task VerifyRecycledRowKeepsToolTipWhenItemsShareTheValue()
+	{
+		TableView tableView = null;
+		var items = MakeManyItems(200);
+
+		RunOnUIThread.Execute(() =>
+		{
+			tableView = CreateToolTipTable(items, cellToolTipPath: null);
+			// An explicit Source keeps the value constant across the DataContext reset, so a
+			// recycled cell gets no property-changed callback to revive its tooltip.
+			tableView.Columns[0].CellToolTipBinding = new Binding { Source = "Shared role", Mode = BindingMode.OneWay };
+			LoadContent(tableView);
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		await ScrollBodyTo(tableView, ScrollAxis.Vertical, 2000.0);
+		await ScrollBodyTo(tableView, ScrollAxis.Vertical, 4000.0);
+
+		RunOnUIThread.Execute(() =>
+		{
+			var rows = GetRealizedRows(tableView);
+			Verify.IsGreaterThan(rows.Count, 0, "Rows must be realized after the scroll.");
+
+			foreach (var row in rows)
+			{
+				var item = row.DataContext as Person;
+				var wrapper = GetRowCell(row, 0);
+				var toolTip = RequireToolTip(wrapper, $"the row for {item?.Name}");
+				Verify.AreEqual("Shared role", toolTip.Content as string, "A recycled row must keep its tooltip content.");
+				Verify.IsTrue(toolTip.IsEnabled, "A recycled row's tooltip must be enabled.");
+				Verify.AreEqual("Shared role", AutomationProperties.GetHelpText(wrapper),
+					"A recycled row must re-publish the tooltip as help text.");
+			}
+		});
+	}
+
+	[TestMethod]
 	[TestProperty("Description", "Verifies a source PropertyChanged updates a live cell tooltip in place, on the same ToolTip instance.")]
 	public async Task VerifyItemPropertyChangeUpdatesCellToolTipInPlace()
 	{
@@ -363,6 +402,42 @@ public class TableViewToolTipTests : TableViewApiTestBase
 			// comments on - and without this assertion the test only re-proves that the binding works.
 			Verify.IsTrue(ReferenceEquals(original, current),
 				"The update must reuse the same ToolTip instance rather than attaching a new one.");
+		});
+	}
+
+	[TestMethod]
+	[TestProperty("Description", "Verifies a live CellToolTipBinding change that clears the only action of the focused read-only cell takes it out of the tab order and hands focus to its row.")]
+	public async Task VerifyClearingFocusedCellsOnlyToolTipHandsFocusToRow()
+	{
+		TableView tableView = null;
+		var items = MakeEditableItems("Asha", "Diego", "Mei");
+
+		RunOnUIThread.Execute(() =>
+		{
+			tableView = CreateToolTipTable(items, cellToolTipPath: "Role");
+			LoadContent(tableView);
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		RunOnUIThread.Execute(() =>
+		{
+			var row = RequireFirstRow(tableView);
+			Verify.IsTrue(tableView.IsReadOnly, "Precondition: the tooltip is the cell's only action.");
+			GetCellPeer(row, 0).SetFocus();
+			Verify.AreEqual<object>(GetRowCell(row, 0), Microsoft.UI.Xaml.Input.FocusManager.GetFocusedElement(tableView.XamlRoot),
+				"Precondition: the tooltip cell takes focus.");
+			items[0].Role = null;
+		});
+
+		await TestServices.WindowHelper.WaitForIdle();
+
+		RunOnUIThread.Execute(() =>
+		{
+			var row = RequireFirstRow(tableView);
+			Verify.IsFalse(GetRowCell(row, 0).IsTabStop, "A cell with no action left leaves the tab order.");
+			Verify.AreEqual<object>(row, Microsoft.UI.Xaml.Input.FocusManager.GetFocusedElement(tableView.XamlRoot),
+				"Focus must move from the inactive cell to its row.");
 		});
 	}
 
