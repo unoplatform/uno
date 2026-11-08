@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
-using Uno.UI.DataBinding;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
@@ -371,7 +370,8 @@ public class Given_BindingSourceStaleHandlers
 
 	private static int CallbackCount(DependencyObject source, DependencyProperty property)
 	{
-		var details = ((IDependencyObjectStoreProvider)source).Store.GetPropertyDetails(property);
+#if HAS_UNO
+		var details = source.GetPropertyDetails(property);
 		var manager = typeof(DependencyPropertyDetails)
 			.GetField("_callbackManager", BindingFlags.Instance | BindingFlags.NonPublic)!
 			.GetValue(details);
@@ -384,6 +384,9 @@ public class Given_BindingSourceStaleHandlers
 			.GetField("_callbacks", BindingFlags.Instance | BindingFlags.NonPublic)!
 			.GetValue(manager)!;
 		return callbacks.Count;
+#else
+		throw new NotSupportedException("The property-changed callbacks are read from Uno internals.");
+#endif
 	}
 
 	// Collects at least 3 times, pumping the dispatcher in between so the removals posted by finalizers run.
