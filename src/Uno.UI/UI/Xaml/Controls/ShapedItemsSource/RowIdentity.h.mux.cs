@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\ShapedItemsSource\RowIdentity.h, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\ShapedItemsSource\RowIdentity.h, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -32,6 +32,10 @@ internal static partial class RowIdentity
 	// identity.
 	internal static partial ShapingHelpers.KeySelector MakeObjectIdentitySelector();
 
+	// The IUnknown address object identity is formatted from, so an address alone names the same row.
+	// TODO Uno: uintptr_t becomes the id ObjectIdentityHelper hands out per live object.
+	internal static partial ulong GetObjectAddress(object? item);
+	internal static partial string FormatObjectIdentity(ulong address);
 	internal static partial bool TryGetRequiredRowIdentity(
 		object? item,
 		ShapingHelpers.KeySelector? keySelector,

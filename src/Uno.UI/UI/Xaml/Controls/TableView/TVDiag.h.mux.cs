@@ -1,10 +1,11 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\inc\TVDiag.h, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\inc\TVDiag.h, tag winui3/main, commit 79209e041
 
 #nullable enable
 
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using Uno.Foundation.Logging;
@@ -14,6 +15,8 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 // TVDiag — logging helpers for TableView code.
 //
 // DbgLogF is #ifdef DBG-gated so retail builds drop both the call and any format-string cost.
+//
+// LogDebugger emits development setup hints only when a debugger is attached, in either build.
 //
 // LogRetailF is retail-visible. Use ONLY where the control silently swallows something an app
 // author would need to diagnose, and where the alternative is behaviour that is indistinguishable
@@ -306,6 +309,21 @@ internal static partial class TVDiag
 
 			return precision > text.Length ? text.PadLeft(precision, '0') : text;
 		}
+	}
+
+	internal static bool LogDebugger(string message)
+	{
+		if (!Debugger.IsAttached)
+		{
+			return false;
+		}
+
+		// TODO Uno: OutputDebugStringW becomes Debugger.Log, which also reaches the attached debugger in either build.
+		// Original C++:
+		// OutputDebugStringW(message);
+		// OutputDebugStringW(L"\n");
+		Debugger.Log(0, null, message + "\n");
+		return true;
 	}
 
 	// Intentionally NOT DBG-gated. See the header comment for when this is appropriate.

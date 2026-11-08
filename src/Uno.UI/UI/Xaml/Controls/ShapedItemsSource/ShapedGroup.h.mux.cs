@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\ShapedItemsSource\ShapedGroup.h, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\ShapedItemsSource\ShapedGroup.h, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -32,7 +32,8 @@ internal sealed partial class ShapedGroup :
 	ICollectionViewGroup,
 	IEnumerable<object?>,
 	ICustomPropertyProvider,
-	ShapingHelpers.IGroupIdentity
+	ShapingHelpers.IGroupIdentity,
+	ShapingHelpers.IGroupChildCount
 {
 	// ShapedGroup(object? key, string groupKey); (ShapedGroup.mux.cs)
 
@@ -62,6 +63,11 @@ internal sealed partial class ShapedGroup :
 	// without depending on this type.
 	public partial string StableGroupIdentity();
 
+	// IGroupChildCount — immediate children. -1 until a hierarchical projection sets it, which is
+	// how a flat grouped projection says "I have nothing to add, use the row count".
+	public partial int GroupChildCount();
+	public partial void GroupChildCount(int value);
+
 	public partial void GroupKey(string value);
 	public partial void Key(object? value);
 	public partial void SetItems(List<object?> items);
@@ -70,4 +76,5 @@ internal sealed partial class ShapedGroup :
 	private string m_groupKey = "";
 	// TODO Uno: typed as the concrete ObservableVector<T> (single_threaded_observable_vector) so ReplaceAll raises one Reset.
 	private readonly ObservableVector<object?> m_items;
+	private int m_groupChildCount = -1;
 }

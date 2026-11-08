@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\ShapedItemsSource\RowIdentity.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\ShapedItemsSource\RowIdentity.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -38,6 +38,33 @@ partial class RowIdentity
 		return ShapingHelpers.ValueKey.TryGetStablePropertyKey(key, out identity, true);
 	}
 
+	internal static partial ulong GetObjectAddress(object? item)
+	{
+		if (item is null)
+		{
+			return 0;
+		}
+
+		// QI'd IUnknown is the canonical COM identity; boxed copies of one value are distinct rows.
+		// TODO Uno: there is no IUnknown address in .NET; ObjectIdentityHelper hands out a stable id per live object.
+		// A string or value-type row is an IPropertyValue box, and under C#/WinRT every read through the ABI
+		// mints a new box, so such a row never keeps its identity across reads and equal values never collide.
+		// The fresh object below stands in for that new box; keying the .NET reference instead would merge
+		// interned strings and reused boxes into one identity.
+		// Original C++:
+		// auto const unknown = item.as<winrt::Windows::Foundation::IUnknown>();
+		// return reinterpret_cast<uintptr_t>(winrt::get_abi(unknown));
+		return ValueConversionHelpers.TryGetPropertyType(item, out _)
+			? ObjectIdentityHelper.GetId(new object())
+			: ObjectIdentityHelper.GetId(item);
+	}
+
+	internal static partial string FormatObjectIdentity(ulong address)
+	{
+		// swprintf_s(buffer, L"0x%zx", static_cast<size_t>(address));
+		return "0x" + address.ToString("x", CultureInfo.InvariantCulture);
+	}
+
 	internal static partial ShapingHelpers.KeySelector MakeObjectIdentitySelector()
 	{
 		return (object? item) =>
@@ -47,24 +74,7 @@ partial class RowIdentity
 				return null;
 			}
 
-			// COM identity: the IUnknown obtained by QI is the canonical per-object pointer, so
-			// two references to the same object always stringify identically and two distinct
-			// objects never collide -- including two boxed copies of the same value, which are
-			// separate objects and therefore separate rows.
-			// TODO Uno: there is no IUnknown address in .NET; ObjectIdentityHelper hands out a stable id per live object.
-			// A string or value-type row is an IPropertyValue box, and under C#/WinRT every read through the ABI
-			// mints a new box, so such a row never keeps its identity across reads and equal values never collide.
-			// The fresh object below stands in for that new box; keying the .NET reference instead would merge
-			// interned strings and reused boxes into one identity.
-			// Original C++:
-			// auto const unknown = item.as<winrt::Windows::Foundation::IUnknown>();
-			// auto const address = reinterpret_cast<uintptr_t>(winrt::get_abi(unknown));
-			var address = ValueConversionHelpers.TryGetPropertyType(item, out _)
-				? ObjectIdentityHelper.GetId(new object())
-				: ObjectIdentityHelper.GetId(item);
-
-			// swprintf_s(buffer, L"0x%zx", static_cast<size_t>(address));
-			return "0x" + address.ToString("x", CultureInfo.InvariantCulture);
+			return FormatObjectIdentity(GetObjectAddress(item));
 		};
 	}
 

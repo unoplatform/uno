@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewSource.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewSource.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -14,6 +14,89 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 
 partial class TableViewSource
 {
+	// TODO Uno: C++ nests this as `struct TableViewSource::ShapingTip` with a destructor; C# uses IDisposable under `using`.
+	private sealed class ShapingTip : IDisposable
+	{
+		public ShapingTip(TableViewSource source, TableViewTip.Operation kind, bool meaningful = true)
+		{
+			this.source = source;
+			this.kind = kind;
+			handlers = source.m_shapingTipHandlers;
+			previous = source.m_shapingTip;
+			source.m_shapingTip = this;
+			ownerGeneration = source.m_ownerGeneration;
+			observation.unproven = previous is not null || source.m_notificationDepth != 0;
+			if (previous is not null) { previous.observation.unproven = true; }
+			if (handlers is not null)
+			{
+				generation = handlers.begin!(kind, meaningful);
+			}
+		}
+
+		public void Dispose()
+		{
+			source.m_shapingTip = previous;
+			if (handlers is not null)
+			{
+				var stale = ownerGeneration != source.m_ownerGeneration;
+				handlers.complete!(kind, generation, !stale && observation.Failed(),
+					stale ? TableViewTip.IgnoreReason.Stale : observation.Ignored(),
+					observation.error, observation.appFaultKind, observation.contained);
+			}
+		}
+
+		public void Apply(Action callback)
+		{
+			// The verb counts its own contained delegate faults, however it ends. A tally already running belongs to the verb
+			// a delegate started this one in, and goes back to it; with no such verb it is live shaping's or a source
+			// change's, not this verb's.
+			var enclosing = source.m_engine.ExchangeSwallowedFaults(new());
+			try
+			{
+				try
+				{
+					callback();
+					observation.completed = true;
+				}
+				catch (Exception error)
+				{
+					// The app's collection, its broken contract, or a callout arrive tagged as the app's; TableView's own
+					// invalid arguments stay its own.
+					var fault = TableViewTip.CurrentFault(error);
+					if (observation.error is null) { observation.error = fault.error; }
+					if (observation.appFaultKind == TableViewTip.AppFaultKind.None) { observation.appFaultKind = fault.appFault; }
+					throw;
+				}
+			}
+			finally
+			{
+				var own = source.m_engine.ExchangeSwallowedFaults(previous is not null ? enclosing : new());
+				observation.contained = new TableViewTip.ContainedFaults { count = own.count, firstError = own.firstError };
+			}
+		}
+
+		private readonly TableViewSource source;
+		private readonly TableViewTip.Operation kind;
+		private readonly ShapingTipHandlers? handlers;
+		private readonly ShapingTip? previous;
+		private readonly ulong ownerGeneration;
+		private readonly ulong generation;
+		public readonly TableViewTip.ShapingObservation observation = new();
+	}
+
+	internal void SetShapingTipHandlers(
+		object? owner,
+		Func<TableViewTip.Operation, bool, ulong> begin,
+		ShapingTipCompleted complete)
+	{
+		if (!ReferenceEquals(GetOwningTableView(), owner)) { return; }
+		try
+		{
+			m_shapingTipHandlers = new ShapingTipHandlers { begin = begin, complete = complete };
+		}
+		catch (Exception) { global::System.Diagnostics.Debug.WriteLine("TableView TiP: source observation unavailable."); }
+	}
+
 	// TODO Uno: Original C++: TableViewSource::~TableViewSource() = default;
 
 	internal TableViewSource(object? items)
@@ -31,9 +114,6 @@ partial class TableViewSource
 		m_engine.Start();
 	}
 
-	// Accepts the same collection interfaces as ItemsSourceView: IVector<Object> (so also
-	// IObservableVector<Object>), IBindableVector, IIterable<Object>, or IBindableIterable.
-	// Anything else throws E_INVALIDARG. The projection is populated by the time From returns.
 	/// <summary>
 	/// Creates a <see cref="TableViewSource"/> over the specified collection. Accepts the same collection
 	/// interfaces as <see cref="ItemsSourceView"/>; the projection is populated by the time this method returns.
@@ -51,10 +131,9 @@ partial class TableViewSource
 		return new TableViewSource(items);
 	}
 
-	// Use ClearFilter() to remove an existing filter rather than passing a pass-everything one.
 	/// <summary>
 	/// Filters the source with the specified predicate. Each call replaces the previous predicate;
-	/// use <see cref="ClearFilter"/> to remove it.
+	/// use <see cref="ClearFilter"/> to remove it rather than passing a pass-everything one.
 	/// </summary>
 	/// <param name="predicate">Returns true for the items to keep.</param>
 	/// <returns>This <see cref="TableViewSource"/>.</returns>
@@ -66,31 +145,26 @@ partial class TableViewSource
 		{
 			throw new ArgumentException("predicate cannot be null.");
 		}
-		m_engine.SetFilter(item => predicate(item));
+		using ShapingTip tip = new(this, TableViewTip.Operation.Filter);
+		tip.Apply(() =>
+		{
+			m_engine.SetFilter(item => predicate(item));
+		});
 		return this;
 	}
 
-	// keySelector: required, non-null (throws E_INVALIDARG when null; use ClearGroupBy() to
-	// remove grouping). Overload metadata is frozen at v1 — without it MIDL bakes GroupBy2 into
-	// the ABI.
-	//
-	// Grouping FAILS FAST. When a group's identity cannot be resolved, the call that builds the
-	// projection throws E_INVALIDARG; the projection is never silently flattened, because a
-	// grouping request that quietly renders ungrouped is a bug an app ships without noticing.
-	// An identity is unresolvable when:
-	//   * the key is null, or is a reference type and no groupIdentitySelector was supplied;
-	//   * the key is the EMPTY STRING, or a supplied groupIdentitySelector returns the empty
-	//     string. String is a supported key type, but "" is not a usable identity, so an app
-	//     grouping on a property that can be null/blank must coalesce it to a real bucket label
-	//     (e.g. "(none)") itself;
-	//   * a supplied groupIdentitySelector throws;
-	//   * two logically-different keys resolve to the same identity string and no
-	//     groupIdentitySelector was supplied to declare that collapse intentional.
 	/// <summary>
 	/// Groups the source by the key the specified selector returns.
 	/// </summary>
 	/// <param name="key">Selects the group key of an item. Use <see cref="ClearGroupBy"/> to remove grouping.</param>
 	/// <returns>This <see cref="TableViewSource"/>.</returns>
+	/// <remarks>
+	/// Grouping fails fast. When a group's identity cannot be resolved, the call that builds the projection throws
+	/// <see cref="ArgumentException"/>; the projection is never silently flattened. An identity is unresolvable when the
+	/// key is null, or is a reference type and no identity selector was supplied; when the key is the empty string, or a
+	/// supplied identity selector returns it; when a supplied identity selector throws; or when two logically-different
+	/// keys resolve to the same identity string and no identity selector was supplied to declare that collapse intentional.
+	/// </remarks>
 	public TableViewSource GroupBy(TableViewKeySelector key)
 	{
 		m_threadAffinity.CheckThread();
@@ -98,16 +172,13 @@ partial class TableViewSource
 		return GroupBy(key, null);
 	}
 
-	// groupIdentitySelector is OPTIONAL: null selects the built-in value-type group identity
-	// (String/Int32/Int64/Guid/Boolean/enum); a reference-type group key with no selector fails
-	// fast at projection time, as does an empty identity from either source (see above).
-
 	/// <summary>
 	/// Groups the source by the key the specified selector returns, using a stable string identity for each group key.
 	/// </summary>
 	/// <param name="key">Selects the group key of an item.</param>
 	/// <param name="groupIdentitySelector">Optional. Returns a stable string identity for a group key; null selects
-	/// the built-in value-type group identity.</param>
+	/// the built-in value-type group identity (string, int, long, Guid, bool or enum). A reference-type group key with no
+	/// selector fails fast at projection time, as does an empty identity from either source.</param>
 	/// <returns>This <see cref="TableViewSource"/>.</returns>
 	public TableViewSource GroupBy(TableViewKeySelector key, TableViewIdentitySelector? groupIdentitySelector)
 	{
@@ -118,16 +189,45 @@ partial class TableViewSource
 			throw new ArgumentException("key cannot be null.");
 		}
 
+		using ShapingTip tip = new(this, TableViewTip.Operation.GroupConfiguration);
 		RowIdentity.IdentitySelector? groupIdentity = null;
 		if (groupIdentitySelector is not null)
 		{
 			groupIdentity = item => groupIdentitySelector(item);
 		}
 
-		m_engine.SetGroup(item => key(item), groupIdentity);
+		tip.Apply(() =>
+		{
+			m_engine.SetGroup(item => key(item), groupIdentity);
+		});
 		return this;
 	}
 
+	/// <summary>
+	/// Makes the source a tree: each item is a node identified by <paramref name="keySelector"/>, nested under the
+	/// node whose key <paramref name="parentKeySelector"/> returns. Calling it again replaces the relation and resets expansion.
+	/// </summary>
+	/// <param name="keySelector">Selects the key of an item. Required; use <see cref="ClearParentBy"/> to remove the tree.</param>
+	/// <param name="parentKeySelector">Selects the key of an item's parent. A null or unknown key makes the item a root. Required.</param>
+	/// <returns>This <see cref="TableViewSource"/>.</returns>
+	/// <exception cref="ArgumentException">A selector is null, or the data has a null or duplicate key, an item that is its own parent, or a cycle.</exception>
+	public TableViewSource ParentBy(TableViewKeySelector keySelector, TableViewKeySelector parentKeySelector)
+	{
+		m_threadAffinity.CheckThread();
+
+		if (keySelector is null || parentKeySelector is null)
+		{
+			throw new ArgumentException("ParentBy: keySelector and parentKeySelector are required.");
+		}
+
+		m_engine.SetParent(
+			item => keySelector(item),
+			item => parentKeySelector(item));
+		return this;
+	}
+
+	// A clear is measured only when the engine holds something to clear. The engine keeps a declaration
+	// even when re-projecting it throws, so it, not a flag set around the call, is the answer.
 	/// <summary>
 	/// Removes the filter.
 	/// </summary>
@@ -136,7 +236,8 @@ partial class TableViewSource
 	{
 		m_threadAffinity.CheckThread();
 
-		m_engine.ClearFilter();
+		using ShapingTip tip = new(this, TableViewTip.Operation.Filter, m_engine.HasFilter());
+		tip.Apply(() => { m_engine.ClearFilter(); });
 		return this;
 	}
 
@@ -148,7 +249,20 @@ partial class TableViewSource
 	{
 		m_threadAffinity.CheckThread();
 
-		m_engine.ClearGroup();
+		using ShapingTip tip = new(this, TableViewTip.Operation.GroupConfiguration, m_engine.HasGroup());
+		tip.Apply(() => { m_engine.ClearGroup(); });
+		return this;
+	}
+
+	/// <summary>
+	/// Removes the tree and shows the source flat. Resets expansion.
+	/// </summary>
+	/// <returns>This <see cref="TableViewSource"/>.</returns>
+	public TableViewSource ClearParentBy()
+	{
+		m_threadAffinity.CheckThread();
+
+		m_engine.ClearParentBy();
 		return this;
 	}
 
@@ -160,20 +274,44 @@ partial class TableViewSource
 	{
 		m_threadAffinity.CheckThread();
 
-		m_engine.ClearSorts();
+		using ShapingTip tip = new(this, TableViewTip.Operation.Sort, m_engine.HasSortAxis(""));
+		tip.Apply(() => { m_engine.ClearSorts(); });
 		return this;
 	}
 
 	internal TableViewSource ClearSort(string sortAxisToken)
 	{
-		m_engine.ClearSort(sortAxisToken);
+		using ShapingTip tip = new(this, TableViewTip.Operation.Sort, m_engine.HasSortAxis(sortAxisToken));
+		tip.Apply(() => { m_engine.ClearSort(sortAxisToken); });
 		return this;
 	}
 
 	internal TableViewSource ClearSortsExcept(string sortAxisToken)
 	{
-		m_engine.ClearSortsExcept(sortAxisToken);
+		using ShapingTip tip = new(this, TableViewTip.Operation.Sort, m_engine.HasSortOtherThan(sortAxisToken));
+		tip.Apply(() => { m_engine.ClearSortsExcept(sortAxisToken); });
 		return this;
+	}
+
+	/// <summary>
+	/// Gets or sets whether the shaping verbs follow changes to the items' properties. When true, an item that raises
+	/// <c>PropertyChanged</c> is re-filtered, re-sorted and re-grouped, and under <see cref="ParentBy"/> re-parented, in place.
+	/// Defaults to false.
+	/// </summary>
+	public bool IsLiveShaping
+	{
+		get
+		{
+			m_threadAffinity.CheckThread();
+
+			return m_engine.IsLiveShapingEnabled();
+		}
+		set
+		{
+			m_threadAffinity.CheckThread();
+
+			m_engine.SetLiveShaping(value);
+		}
 	}
 
 	internal List<ActiveSortAxisInfo> ActiveSortAxisInfos()
@@ -201,11 +339,6 @@ partial class TableViewSource
 		return "path:" + sortMemberPath;
 	}
 
-	// keySelector form: for keys no property path expresses — computed, multi-field, normalized,
-	// or the identity of a primitive collection. The axis is ANONYMOUS: nothing names a property,
-	// so a bound TableView cannot attribute it to a column and clears every sort indicator
-	// instead of leaving one describing a sort that is no longer primary. Prefer the
-	// sortMemberPath overload whenever the key is a property.
 	/// <summary>
 	/// Sorts the source by the key the specified selector returns. The axis is anonymous: a bound
 	/// <see cref="TableView"/> cannot attribute it to a column. Prefer <see cref="Sort(string, SortDirection)"/>
@@ -214,6 +347,10 @@ partial class TableViewSource
 	/// <param name="key">Selects the sort key of an item.</param>
 	/// <param name="direction">The sort direction. <see cref="SortDirection.None"/> removes this key's sort axis.</param>
 	/// <returns>This <see cref="TableViewSource"/>.</returns>
+	/// <remarks>
+	/// Both Sort overloads are last writer wins against <see cref="TableView"/>'s own sort. When several axes are active
+	/// the first one declared is the primary sort and each later axis breaks ties within the previous.
+	/// </remarks>
 	public TableViewSource Sort(TableViewKeySelector key, SortDirection direction)
 	{
 		m_threadAffinity.CheckThread();
@@ -221,22 +358,6 @@ partial class TableViewSource
 		return SortCore("", "", key, "", direction);
 	}
 
-	// SortDirection.None removes that key's sort axis rather than seeding a stage, so sorting
-	// every axis to None leaves the source unsorted. When several axes are active the FIRST one
-	// declared is the primary sort and each later axis breaks ties within the previous, matching
-	// WPF DataGrid's SortDescriptions order; re-sorting an existing axis keeps its position.
-	//
-	// Both overloads are LAST WRITER WINS against TableView's own sort: declaring a sort here
-	// replaces the control's axis rather than stacking behind it, so the rows are ordered by this
-	// axis alone. What differs is what the headers can say about it.
-	//
-	// sortMemberPath names the property this axis sorts on and is the preferred form. The path is
-	// evaluated by the same binding-based evaluator a column uses for its SortMemberPath, so a
-	// path that displays also sorts (dotted paths and indexers included), and a bound TableView
-	// can match the path to a column and light that column's sort indicator. Re-sorting the same
-	// path replaces that axis in place rather than adding a second one.
-	// Throws E_INVALIDARG when sortMemberPath is empty.
-	// Overload metadata is frozen at v1 — without it MIDL bakes Sort2 into the ABI.
 	/// <summary>
 	/// Sorts the source by the property the specified path names, evaluated the same way a column evaluates
 	/// its SortMemberPath. Re-sorting the same path replaces that axis in place.
@@ -244,6 +365,12 @@ partial class TableViewSource
 	/// <param name="sortMemberPath">The property path to sort on. Must not be empty.</param>
 	/// <param name="direction">The sort direction. <see cref="SortDirection.None"/> removes this axis.</param>
 	/// <returns>This <see cref="TableViewSource"/>.</returns>
+	/// <exception cref="ArgumentException"><paramref name="sortMemberPath"/> is empty.</exception>
+	/// <remarks>
+	/// The path is evaluated by the same binding-based evaluator a column uses for its SortMemberPath, so a path that
+	/// displays also sorts, and a bound <see cref="TableView"/> can match it to a column and light that column's sort
+	/// indicator. This is the preferred form.
+	/// </remarks>
 	public TableViewSource Sort(string sortMemberPath, SortDirection direction)
 	{
 		m_threadAffinity.CheckThread();
@@ -291,19 +418,81 @@ partial class TableViewSource
 		// handed over as the axis identity. The wrapping lambda holds a strong ref to that same
 		// delegate, so the identity stays valid for as long as the axis lives.
 		// key.as<IUnknown>(): the delegate object is its own identity on .NET.
-		m_engine.SetSort(
-			previousSortAxisToken,
-			sortAxisToken,
-			item => key(item),
-			key,
-			sortMemberPath,
-			direction);
+		var keyIdentity = key;
+		// Removing an axis that is not there is a no-op, measured no more than a clear with nothing to clear.
+		bool meaningful = direction != SortDirection.None ||
+			m_engine.HasMatchingSort(sortAxisToken, keyIdentity) ||
+			(previousSortAxisToken.Length != 0 && previousSortAxisToken != sortAxisToken && m_engine.HasSortAxis(previousSortAxisToken));
+		using ShapingTip tip = new(this, TableViewTip.Operation.Sort, meaningful);
+		tip.Apply(() =>
+		{
+			m_engine.SetSort(
+				previousSortAxisToken,
+				sortAxisToken,
+				item => key(item),
+				keyIdentity,
+				sortMemberPath,
+				direction);
+		});
 		return this;
 	}
 
 	internal bool IsGrouped()
 	{
 		return m_engine.IsProjectedAsGrouped();
+	}
+
+	internal bool HasFilter() => m_engine.HasFilter();
+
+	internal bool HasGroupBy() => m_engine.HasGroup();
+
+	internal bool HasParentBy() => m_engine.HasParentBy();
+
+	internal uint SourceRowCount() => m_engine.SourceRowCount();
+
+	internal uint DataRowCount()
+	{
+		// Rows() is only a snapshot of a tree's visible rows; the published index holds every node the filter keeps.
+		var adapter = m_engine.HierarchicalAdapter();
+		if (adapter is not null && adapter.HasIndex())
+		{
+			return adapter.KeptNodeCount();
+		}
+		// Rows() is the shaped data without headers and ignores group expansion.
+		var rows = m_engine.Rows();
+		return rows is not null ? (uint)rows.Count : 0;
+	}
+
+	internal bool ContainsShapedItem(object? item)
+	{
+		if (item is null)
+		{
+			return false;
+		}
+
+		// Decided by the published index, not Kind(): a rebuild publishes the index (or releases it)
+		// before raising the Reset that closes the edit, while Kind() is only updated afterwards.
+		var adapter = m_engine.HierarchicalAdapter();
+		if (adapter is not null && adapter.HasIndex())
+		{
+			// Rows() is only a snapshot of the visible rows here; the index holds every filtered node.
+			return adapter.IndexContainsItem(item);
+		}
+
+		// Rows() is the shaped data without headers and ignores group expansion.
+		var rows = m_engine.Rows();
+		if (rows is null)
+		{
+			return false;
+		}
+		foreach (var row in rows)
+		{
+			if (row is not null && ReferenceEquals(row, item))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 
 	internal ItemsSourceView? GetItemsSourceView()
@@ -327,9 +516,47 @@ partial class TableViewSource
 			case ShapedItemsSource.ProjectionKind.Grouped:
 				{
 					var adapter = m_engine.GroupedAdapter();
+					if (adapter is null)
+					{
+						// A projection kind without its adapter is never published coherently; keep the
+						// previous projection until the engine publishes again.
+						MUX_ASSERT(false, "TableViewSource: Grouped projection published without a grouped adapter.");
+						return;
+					}
 					// No wrap: the grouped view IS an ItemsSourceView, so ItemsRepeater consumes it directly.
-					m_itemsSourceView = adapter!.Entries();
+					m_itemsSourceView = adapter.Entries();
 					m_rowMetadata = RowMetadataProvider.CreateForGroupedRows(adapter, MakeIdentitySelector());
+					break;
+				}
+			case ShapedItemsSource.ProjectionKind.Hierarchical:
+				{
+					var adapter = m_engine.HierarchicalAdapter();
+					if (adapter is null)
+					{
+						MUX_ASSERT(false, "TableViewSource: Hierarchical projection published without a hierarchical adapter.");
+						return;
+					}
+					// Same as grouped: consumed directly.
+					m_itemsSourceView = adapter.Entries();
+					m_rowMetadata = RowMetadataProvider.CreateForHierarchicalRows(adapter, MakeIdentitySelector());
+					break;
+				}
+			case ShapedItemsSource.ProjectionKind.GroupedHierarchical:
+				{
+					// Grouped adapter supplies the presented axis (header rows); hierarchy adapter supplies
+					// level and expansion.
+					var groupedAdapter = m_engine.GroupedAdapter();
+					var hierarchicalAdapter = m_engine.HierarchicalAdapter();
+					if (groupedAdapter is null || hierarchicalAdapter is null)
+					{
+						MUX_ASSERT(false, "TableViewSource: GroupedHierarchical projection published without both adapters.");
+						return;
+					}
+					m_itemsSourceView = groupedAdapter.Entries();
+					m_rowMetadata = RowMetadataProvider.CreateForGroupedHierarchicalRows(
+						groupedAdapter,
+						hierarchicalAdapter,
+						MakeIdentitySelector());
 					break;
 				}
 			case ShapedItemsSource.ProjectionKind.Flat:
@@ -356,6 +583,7 @@ partial class TableViewSource
 		// Every rebuild mints a fresh row-metadata provider and can swap the view, so anything the
 		// owner cached from the previous projection is stale from here - whether or not grouped-ness
 		// changed.
+		if (m_shapingTip is not null) { m_shapingTip.observation.published = true; }
 		NotifyOwnerProjectionChanged();
 
 		// TODO Uno: shared_ptr release of the replaced provider. The owner swaps its copy during the
@@ -399,7 +627,7 @@ partial class TableViewSource
 		};
 	}
 
-	internal void SetOwningTableView(object? owner)
+	internal bool SetOwningTableView(object? owner)
 	{
 		// Sharing one shaped TableViewSource across two TableView controls has no coherent
 		// semantics: shaping verbs (Filter/Sort/GroupBy) mutate a single projection, and the two
@@ -408,53 +636,141 @@ partial class TableViewSource
 		// exists, silently overwriting m_owningTableView here left the previous owner rendering
 		// against stale shape metadata and never receiving projection-shape notifications.
 		//
-		// Contract: fail-fast if a second live TableView tries to bind to a TableViewSource that
-		// is already owned by a different TableView. In chk this asserts (same shape as the
-		// null-queue and identity fail-fasts in this file); in fre we keep the existing owner
-		// intact and refuse the new binding rather than corrupt the projection state, so a
-		// shipping app degrades gracefully instead of crashing. Callers must Unbind the source
-		// from the previous TableView (assign a different ItemsSource) before binding it here.
-		if (owner is not null)
+		// Contract: a second TableView cannot bind a source another TableView already owns; it is
+		// refused and renders empty until the owner releases it (assigns a different ItemsSource or
+		// is unloaded). Not an assert: a navigation loads the new page before it unloads the old one,
+		// so a refusal is a normal transient state.
+		var existingOwner = GetOwningTableView();
+		if (existingOwner is not null)
 		{
-			if (m_owningTableView is not null && m_owningTableView.TryGetTarget(out var existingOwner))
+			if (!ReferenceEquals(existingOwner, owner))
 			{
-				if (!ReferenceEquals(existingOwner, owner))
-				{
-					MUX_ASSERT(false,
-						"TableViewSource: attempted to bind an already-owned source to a second TableView. " +
-						"A TableViewSource has single-owner semantics; unbind it from the previous " +
-						"TableView (assign a different ItemsSource) before binding to another.");
-					return;
-				}
-				// Same TableView re-registering itself (e.g. re-entrant ItemsSource re-assignment
-				// with the same value). Idempotent.
+				return false;
+			}
+			// Same TableView re-registering itself (e.g. reclaiming on Loaded). Idempotent.
+		}
+
+		if (!ReferenceEquals(GetOwningTableView(), owner)) { ++m_ownerGeneration; }
+		m_owningTableView = owner is not null ? new WeakReference<object>(owner) : null;
+		RemoveOwnerReleasedHandler(owner);
+		return true;
+	}
+
+	internal void AddOwnerReleasedHandler(object? waiter, Action handler)
+	{
+		RemoveOwnerReleasedHandler(waiter);
+		m_ownerReleasedWaiters.Add(new OwnerReleasedWaiter { Waiter = new WeakReference<object>(waiter!), Handler = handler });
+	}
+
+	internal void RemoveOwnerReleasedHandler(object? waiter)
+	{
+		// Also prunes waiters that have been collected.
+		m_ownerReleasedWaiters.RemoveAll(entry =>
+		{
+			return !entry.Waiter.TryGetTarget(out var entryWaiter) || ReferenceEquals(entryWaiter, waiter);
+		});
+	}
+
+	internal void ReleaseOwningTableView(object? owner)
+	{
+		// Only the owner can release; a table whose bind was refused must not detach the real owner.
+		var existingOwner = GetOwningTableView();
+		if (existingOwner is not null && !ReferenceEquals(existingOwner, owner))
+		{
+			return;
+		}
+
+		if (GetOwningTableView() is not null) { ++m_ownerGeneration; }
+		m_owningTableView = null;
+
+		// Drop the owner's handlers with the owner itself, so a source that has been swapped out of
+		// ItemsSource cannot drive the control it used to belong to.
+		m_projectionChanged = null;
+		m_shapingChanged = null;
+		m_shapingTipHandlers = null;
+		// A restore held for the former owner's editor must not wait on an edit it will no longer
+		// hear the end of.
+		m_engine.SetLiveShapingHold(null);
+		m_engine.SetLiveItemChangedHook(null);
+		m_engine.SetRowsReleasedHook(null);
+		m_engine.SetLiveItemReshapeHandler(null);
+		m_engine.ResumeHeldLiveShaping();
+
+		// Last, after the former owner's handlers are dropped. Each waiter is popped before it runs:
+		// it re-enters SetOwningTableView, and one that does not claim must not be retried.
+		while (GetOwningTableView() is null && m_ownerReleasedWaiters.Count != 0)
+		{
+			var waiter = m_ownerReleasedWaiters[0];
+			m_ownerReleasedWaiters.RemoveAt(0);
+			if (waiter.Waiter.TryGetTarget(out _) && waiter.Handler is not null)
+			{
+				waiter.Handler();
 			}
 		}
+	}
 
-		m_owningTableView = owner is not null ? new WeakReference<object>(owner) : null;
+	internal void SetLiveShapingHold(Func<bool>? isHeld)
+	{
+		m_engine.SetLiveShapingHold(isHeld);
+	}
 
-		if (owner is null)
-		{
-			// Detaching: drop the owner's handlers with the owner itself, so a source that has been
-			// swapped out of ItemsSource cannot drive the control it used to belong to.
-			m_projectionChanged = null;
-			m_shapingChanged = null;
-		}
+	internal void SetLiveItemChangedHook(Func<object?, bool, bool>? hook)
+	{
+		m_engine.SetLiveItemChangedHook(hook);
+	}
+
+	internal void SetLiveItemReshapeHandler(Action? handler)
+	{
+		m_engine.SetLiveItemReshapeHandler(handler);
+	}
+
+	internal void SetRowsReleasedHook(Action<object?, List<object?>>? hook)
+	{
+		m_engine.SetRowsReleasedHook(hook);
+	}
+
+	internal void ResumeHeldLiveShaping()
+	{
+		m_engine.ResumeHeldLiveShaping();
+	}
+
+	internal bool CanApplySort()
+	{
+		return m_engine.CanProjectWithRowIdentity();
 	}
 
 	private void NotifyOwnerProjectionChanged()
 	{
 		if (m_projectionChanged is not null)
 		{
-			m_projectionChanged();
+			// TODO Uno: the C++ get_strong() keeps this source alive while the owner runs app code; the GC does that here.
+			++m_notificationDepth;
+			try
+			{
+				m_projectionChanged();
+			}
+			finally
+			{
+				--m_notificationDepth;
+			}
 		}
 	}
 
 	private void NotifyOwnerShapingChanged(bool reorderOnly)
 	{
+		// Only the in-place reorder notification proves computation; Refresh can merely defer.
+		if (reorderOnly && m_shapingTip is not null) { m_shapingTip.observation.published = true; }
 		if (m_shapingChanged is not null)
 		{
-			m_shapingChanged(reorderOnly);
+			++m_notificationDepth;
+			try
+			{
+				m_shapingChanged(reorderOnly);
+			}
+			finally
+			{
+				--m_notificationDepth;
+			}
 		}
 	}
 }
