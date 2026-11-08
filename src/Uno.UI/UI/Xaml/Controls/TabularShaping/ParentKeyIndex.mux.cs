@@ -49,47 +49,47 @@ internal static partial class ShapingHelpers
 		switch (GetPropertyValueType(key))
 		{
 			case PropertyType.OtherType:
-			{
-				string value;
-				// TODO Uno: IPropertyValue::GetInt64() / GetUInt64() succeed on an enum box only, and the enum's
-				// underlying type decides which of the two does.
-				if (key.GetType().IsEnum)
 				{
-					var underlying = Enum.GetUnderlyingType(key.GetType());
-					if (underlying == typeof(byte) || underlying == typeof(ushort) || underlying == typeof(uint) || underlying == typeof(ulong))
+					string value;
+					// TODO Uno: IPropertyValue::GetInt64() / GetUInt64() succeed on an enum box only, and the enum's
+					// underlying type decides which of the two does.
+					if (key.GetType().IsEnum)
 					{
-						value = "u" + Convert.ToUInt64(key, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture);
+						var underlying = Enum.GetUnderlyingType(key.GetType());
+						if (underlying == typeof(byte) || underlying == typeof(ushort) || underlying == typeof(uint) || underlying == typeof(ulong))
+						{
+							value = "u" + Convert.ToUInt64(key, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture);
+						}
+						else
+						{
+							value = Convert.ToInt64(key, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture);
+						}
 					}
 					else
 					{
-						value = Convert.ToInt64(key, CultureInfo.InvariantCulture).ToString(CultureInfo.InvariantCulture);
+						return "";
 					}
-				}
-				else
-				{
-					return "";
-				}
 
-				string typeName = "";
-				// TODO Uno: winrt::get_class_name(key) is the type's full name.
-				try { typeName = key.GetType().FullName ?? ""; } catch { }
-				return c_valueKeyPrefix + "e:" + typeName + ":" + value;
-			}
+					string typeName = "";
+					// TODO Uno: winrt::get_class_name(key) is the type's full name.
+					try { typeName = key.GetType().FullName ?? ""; } catch { }
+					return c_valueKeyPrefix + "e:" + typeName + ":" + value;
+				}
 			case PropertyType.Point:
-			{
-				var p = (Point)key;
-				return c_valueKeyPrefix + "pt:" + FloatBits(p.X) + "," + FloatBits(p.Y);
-			}
+				{
+					var p = (Point)key;
+					return c_valueKeyPrefix + "pt:" + FloatBits(p.X) + "," + FloatBits(p.Y);
+				}
 			case PropertyType.Size:
-			{
-				var s = (Size)key;
-				return c_valueKeyPrefix + "sz:" + FloatBits(s.Width) + "," + FloatBits(s.Height);
-			}
+				{
+					var s = (Size)key;
+					return c_valueKeyPrefix + "sz:" + FloatBits(s.Width) + "," + FloatBits(s.Height);
+				}
 			case PropertyType.Rect:
-			{
-				var r = (Rect)key;
-				return c_valueKeyPrefix + "rc:" + FloatBits(r.X) + "," + FloatBits(r.Y) + "," + FloatBits(r.Width) + "," + FloatBits(r.Height);
-			}
+				{
+					var r = (Rect)key;
+					return c_valueKeyPrefix + "rc:" + FloatBits(r.X) + "," + FloatBits(r.Y) + "," + FloatBits(r.Width) + "," + FloatBits(r.Height);
+				}
 			default:
 				return "";
 		}

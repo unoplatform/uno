@@ -1406,9 +1406,9 @@ partial class TableView
 	// the constructor, and released on Unloaded, AppWindow.Destroying, or destruction.
 	private ThemeSettings? m_themeSettings = null;
 	private readonly SerialDisposable m_themeSettingsChangedRevoker = new(); // Runtime HC toggles must refresh cached HC-dependent brushes.
-	// remove_Changed fail-fasts once the window is gone, hence the Destroying release. A token, not
-	// auto_revoke: AppWindow has no weak reference support.
-	// TODO Uno: AppWindow.Destroying is not implemented, so ThemeSettings is released on Unloaded only.
+																			 // remove_Changed fail-fasts once the window is gone, hence the Destroying release. A token, not
+																			 // auto_revoke: AppWindow has no weak reference support.
+																			 // TODO Uno: AppWindow.Destroying is not implemented, so ThemeSettings is released on Unloaded only.
 #if !HAS_UNO
 	private Microsoft.UI.Windowing.AppWindow? m_appWindow = null;
 	private readonly SerialDisposable m_appWindowDestroyingToken = new();
@@ -1496,7 +1496,7 @@ partial class TableView
 	private readonly List<TableViewColumn?> m_trackedColumns = new();
 
 	private KeyEventHandler? m_keyDownHandler = null;  // Root KeyDown (handledEventsToo); registration is released with the element, no explicit RemoveHandler needed.
-	// Set when a row already ran this key through OnKeyDownForNavigation.
+													   // Set when a row already ran this key through OnKeyDownForNavigation.
 	private bool m_navKeyHandledEarly = false;
 	// void OnKeyDownForNavigation(
 	//     const winrt::IInspectable& sender,

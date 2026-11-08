@@ -191,9 +191,9 @@ internal partial class ResourceAccessor
 	public const string SR_TableViewSortDescendingHelpText = "TableViewSortDescendingHelpText";
 	public const string SR_TableViewSortNoneHelpText = "TableViewSortNoneHelpText";
 	public const string SR_TableViewColumnHeaderHelpTextFormat = "TableViewColumnHeaderHelpTextFormat";
-		public const string SR_TableViewRowExpanded = "TableViewRowExpanded";
-		public const string SR_TableViewRowCollapsed = "TableViewRowCollapsed";
-		public const string SR_TableViewCellBlankName = "TableViewCellBlankName";
+	public const string SR_TableViewRowExpanded = "TableViewRowExpanded";
+	public const string SR_TableViewRowCollapsed = "TableViewRowCollapsed";
+	public const string SR_TableViewCellBlankName = "TableViewCellBlankName";
 
 	public const string SR_UIA_LIGHTDISMISS_NAME = "UIA_LIGHTDISMISS_NAME";
 

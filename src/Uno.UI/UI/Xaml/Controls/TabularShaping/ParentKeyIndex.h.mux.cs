@@ -45,7 +45,7 @@ internal static partial class ShapingHelpers
 		// parent nodeKey -> children.
 		public Dictionary<string, List<object?>> Children = new(StringComparer.Ordinal);
 		public HashSet<string> ContextKeys = new(StringComparer.Ordinal); // kept only because a descendant matched the filter
-		// Nodes the filter keeps: the matches and the ancestors that give them context.
+																		  // Nodes the filter keeps: the matches and the ancestors that give them context.
 		public int KeptNodeCount;
 		// Owns the keys all lookups resolve against; its key set is complete and unfiltered.
 		public ParentStructure? Structure;

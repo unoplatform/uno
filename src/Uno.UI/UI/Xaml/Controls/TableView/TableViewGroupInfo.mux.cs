@@ -208,17 +208,17 @@ partial class TableViewGroupInfo
 					// NaN != NaN, but a NaN key is still one group; treat it as equal so the cached
 					// projection is updated in place rather than replaced.
 					case PropertyType.Double:
-					{
-						var l = (double)left;
-						var r = (double)right;
-						return l == r || (double.IsNaN(l) && double.IsNaN(r));
-					}
+						{
+							var l = (double)left;
+							var r = (double)right;
+							return l == r || (double.IsNaN(l) && double.IsNaN(r));
+						}
 					case PropertyType.Single:
-					{
-						var l = (float)left;
-						var r = (float)right;
-						return l == r || (float.IsNaN(l) && float.IsNaN(r));
-					}
+						{
+							var l = (float)left;
+							var r = (float)right;
+							return l == r || (float.IsNaN(l) && float.IsNaN(r));
+						}
 					case PropertyType.UInt8:
 						return (byte)left == (byte)right;
 					case PropertyType.Int16:

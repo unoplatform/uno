@@ -35,7 +35,7 @@ partial class TableViewRow
 	public int Level
 	{
 		get => (int)GetValue(LevelProperty);
-		internal set => SetValue(LevelProperty, value);
+		internal set => SetValue(LevelProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -46,7 +46,7 @@ partial class TableViewRow
 			nameof(Level),
 			typeof(int),
 			typeof(TableViewRow),
-			new FrameworkPropertyMetadata(0));
+			new FrameworkPropertyMetadata(IntBoxes.Zero));
 
 	/// <summary>
 	/// Gets a value that indicates whether the row can be expanded.
