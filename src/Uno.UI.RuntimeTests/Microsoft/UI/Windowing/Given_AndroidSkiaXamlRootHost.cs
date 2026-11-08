@@ -181,18 +181,18 @@ public class Given_AndroidSkiaXamlRootHost
 		{
 			Assert.AreNotEqual(0, subscriptions.Count, "A tracked tree must subscribe to its scroll sources.");
 
-			host.GetType().GetMethod("DetachRenderView", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(host, null);
+			try
+			{
+				host.GetType().GetMethod("DetachRenderView", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(host, null);
 
-			// Removals aren't routed while detached, so a subscription left here pins its removed subtree.
-			Assert.AreEqual(0, subscriptions.Count, "Detaching must release the scroll subscriptions.");
-		}
-		finally
-		{
-			host.GetType().GetMethod("TryConfigureHelper", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(host, null);
-		}
+				// Removals aren't routed while detached, so a subscription left here pins its removed subtree.
+				Assert.AreEqual(0, subscriptions.Count, "Detaching must release the scroll subscriptions.");
+			}
+			finally
+			{
+				host.GetType().GetMethod("TryConfigureHelper", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(host, null);
+			}
 
-		try
-		{
 			Assert.AreNotEqual(0, subscriptions.Count, "The next render view must track the tree again.");
 		}
 		finally
