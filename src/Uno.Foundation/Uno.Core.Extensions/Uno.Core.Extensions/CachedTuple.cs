@@ -82,8 +82,8 @@ namespace Uno
 			Item1 = item1;
 			Item2 = item2;
 
-			_cachedHashCode = item1?.GetHashCode() ?? 0
-				^ item2?.GetHashCode() ?? 0;
+			_cachedHashCode = (item1?.GetHashCode() ?? 0)
+				^ (item2?.GetHashCode() ?? 0);
 		}
 
 		public override int GetHashCode() => _cachedHashCode;
@@ -145,9 +145,9 @@ namespace Uno
 			Item3 = item3;
 
 			_cachedHashCode =
-				item1?.GetHashCode() ?? 0
-				^ item2?.GetHashCode() ?? 0
-				^ item3?.GetHashCode() ?? 0;
+				(item1?.GetHashCode() ?? 0)
+				^ (item2?.GetHashCode() ?? 0)
+				^ (item3?.GetHashCode() ?? 0);
 		}
 
 		public override int GetHashCode() => _cachedHashCode;
@@ -208,10 +208,10 @@ namespace Uno
 			Item3 = item3;
 			Item4 = item4;
 
-			_cachedHashCode = item1?.GetHashCode() ?? 0
-				^ item2?.GetHashCode() ?? 0
-				^ item3?.GetHashCode() ?? 0
-				^ item4?.GetHashCode() ?? 0;
+			_cachedHashCode = (item1?.GetHashCode() ?? 0)
+				^ (item2?.GetHashCode() ?? 0)
+				^ (item3?.GetHashCode() ?? 0)
+				^ (item4?.GetHashCode() ?? 0);
 		}
 
 		public override int GetHashCode() => _cachedHashCode;
@@ -275,11 +275,11 @@ namespace Uno
 			Item4 = item4;
 			Item5 = item5;
 
-			_cachedHashCode = item1?.GetHashCode() ?? 0
-				^ item2?.GetHashCode() ?? 0
-				^ item3?.GetHashCode() ?? 0
-				^ item4?.GetHashCode() ?? 0
-				^ item5?.GetHashCode() ?? 0;
+			_cachedHashCode = (item1?.GetHashCode() ?? 0)
+				^ (item2?.GetHashCode() ?? 0)
+				^ (item3?.GetHashCode() ?? 0)
+				^ (item4?.GetHashCode() ?? 0)
+				^ (item5?.GetHashCode() ?? 0);
 		}
 
 		public override int GetHashCode() => _cachedHashCode;
