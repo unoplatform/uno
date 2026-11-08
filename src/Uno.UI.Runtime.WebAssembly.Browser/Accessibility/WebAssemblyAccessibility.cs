@@ -1120,6 +1120,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
+		// The native scroller is drawn with the port's transform to the root (see UpdateNativeScrollOffsets).
+		var scale = GetScrollPortScale(owner);
+		horizontalOffset /= scale.X;
+		verticalOffset /= scale.Y;
+
 		// The native range can exceed the managed one (e.g. a semantic child drawn past the content), and the
 		// scroller may apply offsets asynchronously, so clamp here and push the clamped target back.
 		var clampedHorizontalOffset = Math.Clamp(horizontalOffset, 0, port.ScrollableWidth);
@@ -1147,14 +1152,29 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	}
 
 	private static void UpdateNativeScrollOffsets(UIElement scrollPort, IScrollPortGeometry port, double horizontalOffset, double verticalOffset)
-		=> NativeMethods.UpdateNativeScrollOffsets(
+	{
+		// Like its semantic children (see GetRectInSemanticParent), the native scroller is sized with the
+		// port's transform to the root, so an ancestor scale applies to its offsets and range too.
+		var scale = GetScrollPortScale(scrollPort);
+		NativeMethods.UpdateNativeScrollOffsets(
 			scrollPort.Visual.Handle,
-			horizontalOffset,
-			verticalOffset,
-			port.ZoomedExtentWidth,
-			port.ZoomedExtentHeight,
+			horizontalOffset * scale.X,
+			verticalOffset * scale.Y,
+			port.ZoomedExtentWidth * scale.X,
+			port.ZoomedExtentHeight * scale.Y,
 			port.ScrollableWidth > 0,
 			port.ScrollableHeight > 0);
+	}
+
+	private static Vector2 GetScrollPortScale(UIElement scrollPort)
+	{
+		var toRoot = UIElement.GetTransform(from: scrollPort, to: null);
+		var scaleX = new Vector2(toRoot.M11, toRoot.M12).Length();
+		var scaleY = new Vector2(toRoot.M21, toRoot.M22).Length();
+
+		// A port scaled to nothing has no native range to map.
+		return new Vector2(scaleX > 0 ? scaleX : 1, scaleY > 0 ? scaleY : 1);
+	}
 
 	/// <summary>
 	/// Called when a button element is invoked (clicked, Enter pressed, or Space pressed).
@@ -2045,6 +2065,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	{
 		var localRect = new Windows.Foundation.Rect(0, 0, element.Visual.Size.X, element.Visual.Size.Y);
 
+		// Semantic elements carry no CSS transform, so a transform shared by the element and its semantic parent
+		// (an ancestor ScaleTransform, a scroller's zoom) must not cancel out: both are placed with their
+		// transform to the root, and the element relative to where its parent's semantic element is placed.
+		var parentToRoot = UIElement.GetTransform(from: semanticParent, to: null);
+		var parentBounds = parentToRoot.Transform(new Windows.Foundation.Rect(0, 0, semanticParent.Visual.Size.X, semanticParent.Visual.Size.Y));
+
+		Windows.Foundation.Rect bounds;
+
 		// The semantic element of a scroll port is a native scroller that applies the scroll offset itself,
 		// so its children are positioned in zoomed content coordinates: relative to the scrolled content, whose
 		// arranged offset (unlike its visual transform) includes neither the scroll translation nor the zoom.
@@ -2052,14 +2080,18 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			var rect = UIElement.GetTransform(from: element, to: content).Transform(localRect);
 			var zoom = port.ZoomFactor;
-			return new Windows.Foundation.Rect(
+			bounds = parentToRoot.Transform(new Windows.Foundation.Rect(
 				content.ActualOffset.X + rect.X * zoom,
 				content.ActualOffset.Y + rect.Y * zoom,
 				rect.Width * zoom,
-				rect.Height * zoom);
+				rect.Height * zoom));
+		}
+		else
+		{
+			bounds = UIElement.GetTransform(from: element, to: null).Transform(localRect);
 		}
 
-		return UIElement.GetTransform(from: element, to: semanticParent).Transform(localRect);
+		return new Windows.Foundation.Rect(bounds.X - parentBounds.X, bounds.Y - parentBounds.Y, bounds.Width, bounds.Height);
 
 		static UIElement? GetScrollPortContent(UIElement element, UIElement scrollPort)
 		{
