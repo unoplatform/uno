@@ -28,6 +28,10 @@ internal class Win32VulkanSurfaceFactory : IVulkanPlatformSurfaceFactory
 
 	public IReadOnlyList<string> RequiredInstanceExtensions { get; } = new[] { "VK_KHR_win32_surface" };
 
+	// The loader orders devices as DXGI orders adapters, and WinUI renders on the first of those: the primary display's
+	// adapter, or the app's choice in the Windows graphics settings.
+	public bool PrefersDiscreteDevice => false;
+
 	public VkGetInstanceProcAddressDelegate GetVkGetInstanceProcAddr()
 	{
 		EnsureVulkanAvailable();

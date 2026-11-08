@@ -14,12 +14,12 @@ internal unsafe partial class VulkanDevice
 {
 	/// <summary>
 	/// Creates a VulkanDevice. Simplified from Avalonia's version:
-	/// - Always prefers discrete GPUs
+	/// - Prefers discrete GPUs, unless <paramref name="preferDiscrete"/> keeps the loader's order
 	/// - Always requires VK_KHR_swapchain
 	/// - Does not require compute bit by default
 	/// </summary>
 	public static VulkanDevice Create(VulkanInstance instance, VulkanInstanceApi instanceApi,
-		VkSurfaceKHR? checkSurface = null, Func<VkPhysicalDevice, uint, bool>? supportsPresentation = null)
+		VkSurfaceKHR? checkSurface = null, Func<VkPhysicalDevice, uint, bool>? supportsPresentation = null, bool preferDiscrete = true)
 	{
 		uint deviceCount = 0;
 		var vkInstance = instance.Handle;
@@ -45,11 +45,11 @@ internal unsafe partial class VulkanDevice
 					discreteDevice ??= info;
 			}
 
-			if (compatibleDevice != null && discreteDevice != null)
+			if (compatibleDevice != null && (discreteDevice != null || !preferDiscrete))
 				break;
 		}
 
-		if (discreteDevice != null)
+		if (preferDiscrete && discreteDevice != null)
 			compatibleDevice = discreteDevice;
 
 		if (compatibleDevice == null)

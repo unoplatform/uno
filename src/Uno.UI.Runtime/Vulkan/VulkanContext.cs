@@ -103,7 +103,7 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 			try
 			{
 				// Create device (checks surface presentation support)
-				_device = VulkanDevice.Create((VulkanInstance)_instance, _instanceApi, vkSurface);
+				_device = VulkanDevice.Create((VulkanInstance)_instance, _instanceApi, vkSurface, preferDiscrete: factory.PrefersDiscreteDevice);
 			}
 			finally
 			{
@@ -171,7 +171,8 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		_instanceApi = new VulkanInstanceApi(_instance);
 		var instance = (VulkanInstance)_instance;
 		_device = VulkanDevice.Create(instance, _instanceApi,
-			supportsPresentation: (physicalDevice, queueFamily) => factory.SupportsPresentation(instance, physicalDevice, queueFamily));
+			supportsPresentation: (physicalDevice, queueFamily) => factory.SupportsPresentation(instance, physicalDevice, queueFamily),
+			preferDiscrete: factory.PrefersDiscreteDevice);
 		_deviceApi = new VulkanDeviceApi(_device);
 	}
 
