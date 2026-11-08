@@ -13,6 +13,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Rect = Windows.Foundation.Rect;
+using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Core.Scaling;
 
 
@@ -356,10 +357,15 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 
 	protected override void ShowContextMenuCore()
 	{
-		// This should instead raise the ContextRequested event, but for now we'll just show the ContextFlyout directly.
-		if (Owner is Control control)
+		// MUX Reference CFrameworkElementAutomationPeer::ShowContextMenuHelper
+		if (Owner is FrameworkElement element)
 		{
-			control.ContextFlyout?.ShowAt(control);
+			element.RaiseRightTappedEvent(Microsoft.UI.Input.PointerDeviceType.Mouse);
+
+			VisualTree.GetContentRootForElement(element)?.InputManager.ContextMenuProcessor.RaiseContextRequestedEvent(
+				element,
+				new Point(-1, -1),
+				isTouchInput: false);
 		}
 	}
 

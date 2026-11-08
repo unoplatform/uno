@@ -477,6 +477,10 @@ namespace Microsoft.UI.Xaml
 				isTouchInput: false);
 		}
 
+		// MUX Reference CInputServices::RaiseRightTappedEvent
+		internal void RaiseRightTappedEvent(MuxPointerDeviceType deviceType)
+			=> SafeRaiseEvent(RightTappedEvent, new RightTappedRoutedEventArgs(this, deviceType));
+
 		private void RaiseAfterPointerReleased(Action raiseGesture)
 		{
 #if UNO_HAS_MANAGED_POINTERS
