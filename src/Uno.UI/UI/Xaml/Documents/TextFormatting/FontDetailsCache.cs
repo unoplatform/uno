@@ -103,8 +103,9 @@ internal static class FontDetailsCache
 		try
 		{
 			using var stream = await AppDataUriEvaluator.ToStream(uri, CancellationToken.None);
-			// LoadFontFile reads synchronously; keep that file I/O off the UI thread, as the async copy did.
-			return await Task.Run(() => FontProvider.LoadFontFile(stream));
+			// Stay on the caller's thread: a font in the app package then resolves within the first measure, as in
+			// WinUI, rather than measuring with the fallback font and changing size once the load completes.
+			return FontProvider.LoadFontFile(stream);
 		}
 		catch (Exception e)
 		{
