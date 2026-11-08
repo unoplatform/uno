@@ -98,9 +98,10 @@ namespace Microsoft.UI.Xaml
 				entries[i]?.Dispose();
 			}
 
-			ReturnEntriesAndOffsetsToPools();
-
+			// The final arrays are left to the GC rather than returned to the pools: Dispose mostly runs from the store's
+			// finalizer, in bursts after each GC, and the pools would keep those arrays for the life of the process.
 			_entries = null!;
+			_entryOffsets = null;
 		}
 
 		public DependencyPropertyDetails DataContextPropertyDetails
@@ -209,19 +210,6 @@ namespace Microsoft.UI.Xaml
 				}
 
 				return null;
-			}
-		}
-
-		private void ReturnEntriesAndOffsetsToPools()
-		{
-			if (_entries != _empty)
-			{
-				_pool.Return(_entries, clearArray: true);
-			}
-
-			if (_entryOffsets != null)
-			{
-				_offsetsPool.Return(_entryOffsets);
 			}
 		}
 
