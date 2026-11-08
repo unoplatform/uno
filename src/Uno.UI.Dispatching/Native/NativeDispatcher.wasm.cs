@@ -14,8 +14,7 @@ namespace Uno.UI.Dispatching
 	internal sealed partial class NativeDispatcher
 	{
 		// In MT mode, the runtime installs its JSSynchronizationContext on the deputy thread, captured
-		// here since Application.Start replaces it with Uno's. Dispatcher work is posted into it via Post()
-		// so the runtime's pump loop drains both JS interop and Uno dispatcher items from a single queue.
+		// here since Application.Start replaces it with Uno's. Other threads post dispatcher work into it.
 		private static SynchronizationContext _deputySynchronizationContext;
 
 		private static int _uiThreadId;
@@ -29,6 +28,14 @@ namespace Uno.UI.Dispatching
 			}
 
 			DispatchItems();
+		}
+
+		[JSExport]
+		private static Task DispatcherCallbackAsync()
+		{
+			DispatcherCallback();
+
+			return Task.CompletedTask;
 		}
 
 		partial void Initialize()
@@ -69,12 +76,15 @@ namespace Uno.UI.Dispatching
 
 			if (DispatchOverride == null)
 			{
-				if (IsThreadingSupported)
+				if (IsThreadingSupported && Environment.CurrentManagedThreadId != _uiThreadId)
 				{
 					_deputySynchronizationContext.Post(static _ => DispatchItems(), null);
 				}
 				else
 				{
+					// Always through the event loop, even in MT: the runtime's pump drains its queue until empty before
+					// yielding, so an item posting the next one would chain forever and starve everything the event
+					// loop delivers (JS calls into managed, timers, animation frames).
 					NativeMethods.WakeUp();
 				}
 			}

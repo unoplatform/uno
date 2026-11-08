@@ -5,12 +5,14 @@
 		static _isReady: boolean;
 
 		public static init() {
+			const exports = (<any>globalThis).DotnetExports.UnoUIDispatching.Uno.UI.Dispatching.NativeDispatcher;
 
-			if (!(<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
-				NativeDispatcher._dispatcherCallback = (<any>globalThis).DotnetExports.UnoUIDispatching.Uno.UI.Dispatching.NativeDispatcher.DispatcherCallback;
-				NativeDispatcher.WakeUp(true);
-				NativeDispatcher._isReady = true;
-			}
+			NativeDispatcher._dispatcherCallback = (<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()
+				? exports.DispatcherCallbackAsync
+				: exports.DispatcherCallback;
+
+			NativeDispatcher.WakeUp(true);
+			NativeDispatcher._isReady = true;
 		}
 
 		// Queues a dispatcher callback on the event loop
