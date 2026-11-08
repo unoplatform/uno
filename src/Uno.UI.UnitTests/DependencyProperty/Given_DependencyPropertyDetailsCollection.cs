@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml;
@@ -40,6 +41,30 @@ public class Given_DependencyPropertyDetailsCollection
 
 		Assert.AreEqual(0, arrays.Count(a => a.IsAlive), "Storage arrays of a disposed store still alive");
 		GC.KeepAlive(sut);
+	}
+
+	[TestMethod]
+	public void When_Property_In_High_Bucket_Then_Offsets_Sized_To_Bucket_Index()
+	{
+		// Registered after every property this process has loaded, so it lands in the highest bucket.
+		var property = DependencyProperty.RegisterAttached(
+			nameof(When_Property_In_High_Bucket_Then_Offsets_Sized_To_Bucket_Index),
+			typeof(int),
+			typeof(Given_DependencyPropertyDetailsCollection),
+			new FrameworkPropertyMetadata(default(int)));
+		var sut = new ColumnDefinition();
+
+		sut.SetValue(property, 42);
+
+		var properties = GetProperties(sut);
+		var highestBucketIndex = properties.GetAllDetails().Max(d => d is null ? 0 : d.Property.UniqueId >> 4);
+		var offsets = (short[])_entryOffsets.GetValue(properties)!;
+
+		// The offsets are indexed by bucket index, and the pool may hand out an array up to one size class larger.
+		var maxLength = 2 * (int)BitOperations.RoundUpToPowerOf2((uint)Math.Max(16, highestBucketIndex + 1));
+		// From bucket index 2 up, renting bucketIndex * 16 + 1 offsets exceeds maxLength.
+		Assert.IsTrue(highestBucketIndex >= 2, $"Expected a high bucket index, got {highestBucketIndex}");
+		Assert.IsTrue(offsets.Length <= maxLength, $"{offsets.Length} offsets rented for bucket index {highestBucketIndex}, expected at most {maxLength}");
 	}
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
