@@ -83,16 +83,16 @@ internal class Win32VulkanSurfaceFactory : IVulkanPlatformSurfaceFactory
 	}
 
 	/// <summary>
-	/// Finds the adapter driving the window's monitor, or the primary monitor without a window.
+	/// Finds the adapter driving the window's monitor, or null if the display configuration doesn't report one.
 	/// </summary>
-	public unsafe long? GetPresentingAdapterLuid(IntPtr nativeWindowHandle)
+	internal static unsafe long? GetPresentingAdapterLuid(HWND hwnd)
 	{
 		if (PresentingAdapterLuidOverride is { } luidOverride)
 		{
 			return luidOverride;
 		}
 
-		var monitor = PInvoke.MonitorFromWindow((HWND)nativeWindowHandle, MONITOR_FROM_FLAGS.MONITOR_DEFAULTTOPRIMARY);
+		var monitor = PInvoke.MonitorFromWindow(hwnd, MONITOR_FROM_FLAGS.MONITOR_DEFAULTTONEAREST);
 		var monitorInfo = new MONITORINFOEXW { monitorInfo = new MONITORINFO { cbSize = (uint)sizeof(MONITORINFOEXW) } };
 		if (!PInvoke.GetMonitorInfo(monitor, (MONITORINFO*)&monitorInfo))
 		{

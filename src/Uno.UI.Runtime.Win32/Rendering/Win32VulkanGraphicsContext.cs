@@ -143,7 +143,7 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 	/// alpha, which a system backdrop needs. Assumed true when either adapter is unknown.
 	/// </summary>
 	public bool PresentsDirectlyTo(HWND hwnd)
-		=> new Win32VulkanSurfaceFactory().GetPresentingAdapterLuid(hwnd.Value) is not { } luid
+		=> Win32VulkanSurfaceFactory.GetPresentingAdapterLuid(hwnd) is not { } luid
 			|| _vk.DeviceLuid is not { } deviceLuid
 			|| luid == deviceLuid;
 

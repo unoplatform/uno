@@ -37,10 +37,4 @@ internal interface IVulkanPlatformSurfaceFactory
 	/// follows the OS's choice of GPU answers false.
 	/// </summary>
 	bool PrefersDiscreteDevice => true;
-
-	/// <summary>
-	/// LUID of the adapter that scans out the window (without a window, the primary display); null when the
-	/// platform doesn't expose one.
-	/// </summary>
-	long? GetPresentingAdapterLuid(IntPtr nativeWindowHandle) => null;
 }

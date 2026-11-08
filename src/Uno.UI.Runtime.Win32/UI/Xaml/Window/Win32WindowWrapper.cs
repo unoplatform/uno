@@ -333,6 +333,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
 				UpdateWindowState(wParam);
+				// The largest overlap decides the window's monitor, so a resize can change it without a WM_MOVE.
+				UpdateCanRevealBackdrop();
 				return new LRESULT(0);
 			case PInvoke.WM_MOVE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
