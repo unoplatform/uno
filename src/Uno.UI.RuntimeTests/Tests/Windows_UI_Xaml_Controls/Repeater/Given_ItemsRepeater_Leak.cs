@@ -111,6 +111,8 @@ public class Given_ItemsRepeater_Leak
 
 	[TestMethod]
 	[RunsOnUIThread]
+	// 6.x: on the Mono interpreter (WASM, iOS), stale stack slots can keep a repeater alive: 1 of 5 alive on CI now and then.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit)]
 #if RUNTIME_NATIVE_AOT
 	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
 #endif
