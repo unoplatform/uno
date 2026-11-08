@@ -1,9 +1,10 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TabularShaping\ShapingDescriptions.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TabularShaping\ShapingDescriptions.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -81,7 +82,8 @@ internal static partial class ShapingHelpers
 	private static string CompositeGroupIdentity(
 		List<GroupDescription> groups,
 		object? item,
-		out object? firstAxisKey)
+		out object? firstAxisKey,
+		SwallowedFaults? contained)
 	{
 		firstAxisKey = null;
 
@@ -96,8 +98,9 @@ internal static partial class ShapingHelpers
 				{
 					key = group.Evaluator(item);
 				}
-				catch
+				catch (Exception error)
 				{
+					contained?.Note(error);
 					key = null;
 				}
 			}
@@ -130,7 +133,8 @@ internal static partial class ShapingHelpers
 		return composite.ToString();
 	}
 
-	private static void SortWithinRange(List<object?> items, List<SortDescription> sorts)
+	private static void SortWithinRange(List<object?> items, List<SortDescription> sorts,
+		SwallowedFaults? contained)
 	{
 		if (sorts.Count == 0 || items.Count < 2)
 		{
@@ -151,10 +155,11 @@ internal static partial class ShapingHelpers
 				{
 					return evaluator(item);
 				}
-				catch
+				catch (Exception error)
 				{
 					// A throwing key selector sorts as the null class rather than aborting the
 					// whole reshape, matching ApplyPredicateFilter's fail-safe posture.
+					contained?.Note(error);
 					return null;
 				}
 			},
@@ -180,7 +185,8 @@ internal static partial class ShapingHelpers
 		}
 	}
 
-	private static void ApplyFilters(List<object?> items, List<FilterDescription> filters)
+	private static void ApplyFilters(List<object?> items, List<FilterDescription> filters,
+		SwallowedFaults? contained)
 	{
 		foreach (var filter in filters)
 		{
@@ -188,11 +194,11 @@ internal static partial class ShapingHelpers
 			{
 				continue;
 			}
-			ApplyPredicateFilter(items, filter.Predicate);
+			ApplyPredicateFilter(items, filter.Predicate, contained);
 		}
 	}
 
-	private static void Bucketize(ShapingState state, ShapingSpec spec)
+	private static void Bucketize(ShapingState state, ShapingSpec spec, SwallowedFaults? contained)
 	{
 		state.Buckets.Clear();
 		state.IsGrouped = false;
@@ -216,7 +222,7 @@ internal static partial class ShapingHelpers
 		Dictionary<string, int> indexByIdentity = new(global::System.StringComparer.Ordinal);
 		foreach (var item in state.Items)
 		{
-			var identity = CompositeGroupIdentity(spec.Groups, item, out var representativeKey);
+			var identity = CompositeGroupIdentity(spec.Groups, item, out var representativeKey, contained);
 
 			if (!indexByIdentity.TryGetValue(identity, out var bucketIndex))
 			{
@@ -298,7 +304,7 @@ internal static partial class ShapingHelpers
 		}
 	}
 
-	internal static partial void Reshape(ShapingState state, ShapingSpec spec, ShapingDelta delta)
+	internal static partial void Reshape(ShapingState state, ShapingSpec spec, ShapingDelta delta, SwallowedFaults? contained)
 	{
 		// The incremental paths read FilteredSource and Buckets as authoritative. Against a state
 		// that has never been fully shaped they would produce an empty, apparently-valid
@@ -312,9 +318,9 @@ internal static partial class ShapingHelpers
 
 			case ShapingWork.FullReshape:
 				state.FilteredSource = new List<object?>(state.Source);
-				ApplyFilters(state.FilteredSource, spec.Filters);
+				ApplyFilters(state.FilteredSource, spec.Filters, contained);
 				state.Items = new List<object?>(state.FilteredSource);
-				Bucketize(state, spec);
+				Bucketize(state, spec, contained);
 				break;
 
 			case ShapingWork.ReBucket:
@@ -322,7 +328,7 @@ internal static partial class ShapingHelpers
 				// flattened Items: those are still clustered by the PREVIOUS grouping, which would
 				// make both the new bucket order and the stable sort's tie order depend on it.
 				state.Items = new List<object?>(state.FilteredSource);
-				Bucketize(state, spec);
+				Bucketize(state, spec, contained);
 				break;
 
 			case ShapingWork.ReSortWithinBuckets:
@@ -340,13 +346,13 @@ internal static partial class ShapingHelpers
 		{
 			foreach (var bucket in state.Buckets)
 			{
-				SortWithinRange(bucket.Items, spec.Sorts);
+				SortWithinRange(bucket.Items, spec.Sorts, contained);
 			}
 			FlattenBucketsInto(state.Buckets, state.Items);
 		}
 		else
 		{
-			SortWithinRange(state.Items, spec.Sorts);
+			SortWithinRange(state.Items, spec.Sorts, contained);
 		}
 
 		state.HasProjection = true;

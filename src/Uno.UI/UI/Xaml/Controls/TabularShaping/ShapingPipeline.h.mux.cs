@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TabularShaping\ShapingPipeline.h, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TabularShaping\ShapingPipeline.h, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -98,8 +98,8 @@ internal static partial class ShapingHelpers
 		public partial void ClearFilter();
 		public partial void ClearFilter(string axisToken);
 		public bool HasFilter() => m_filters.Count != 0;
-		// A predicate that throws excludes the item (fail-safe). Returns true when no filter is
-		// set, so callers can gate unconditionally.
+		// A predicate that throws excludes the item (fail-safe) and is counted (SwallowedFaultsTally). Returns true
+		// when no filter is set, so callers can gate unconditionally.
 		public partial bool PassesFilter(object? item);
 		public partial void ApplyFilter(List<object?> rows);
 
@@ -122,6 +122,13 @@ internal static partial class ShapingHelpers
 		// holding one token cannot address the axes it does not own by token alone.
 		public partial void ClearSortsExcept(string axisToken);
 		public partial bool HasActiveSort();
+		// True when ClearSort(axisToken) would remove an axis; as there, the empty token addresses every axis.
+		public partial bool HasSortAxis(string axisToken);
+		// True when ClearSortsExcept(axisToken) would remove an axis; as there, the empty token preserves none.
+		public partial bool HasSortOtherThan(string axisToken);
+		// True when SetSort(..., axisToken, ..., keyIdentity, ..., None) would remove an axis: the same axis
+		// match SetSort uses, by token, or by key identity for an untokenized axis.
+		public partial bool HasMatchingSort(string axisToken, object? keyIdentity);
 
 		// Axes with a live key and direction whose Order falls strictly between the bounds. A
 		// negative bound is unbounded, so ActiveSortAxes(-1, -1) is every active axis. Returned in
@@ -149,6 +156,10 @@ internal static partial class ShapingHelpers
 		// 0 means the two are indistinguishable to the sort, i.e. their relative order is decided
 		// by the stable sort's source-order tiebreak rather than by any key.
 		public partial int CompareItemToRow(object? item, object? row);
+
+		// The tally of the predicates and key selectors that threw (a throwing key sorts as null): the pipeline counts
+		// here, and so does the engine for what it contains outside the pipeline (a group key, an in-place re-sort).
+		public SwallowedFaults SwallowedFaultsTally() => m_swallowedFaults;
 
 		// -- verb ordering --------------------------------------------------------------------
 		public int NextVerbOrder() => m_nextVerbOrder++;
@@ -185,7 +196,7 @@ internal static partial class ShapingHelpers
 
 		// Compares an item's precomputed axis keys against a row whose keys are evaluated on the
 		// fly. Lets the binary search hoist axis filtering and item-key evaluation out of the loop.
-		private static partial int CompareKeysToRow(
+		private partial int CompareKeysToRow(
 			List<SortAxis> axes,
 			List<object?> itemKeys,
 			object? row);
@@ -204,5 +215,6 @@ internal static partial class ShapingHelpers
 		// caller has no projection yet and must do the full reshape regardless).
 		private bool m_hasCommittedSpec;
 		private uint m_nextDescriptionId;
+		private SwallowedFaults m_swallowedFaults = new();
 	}
 }

@@ -1,11 +1,12 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TabularShaping\ShapingHelpers.h, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TabularShaping\ShapingHelpers.h, tag winui3/main, commit 79209e041
 
 #nullable enable
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Interop;
 using Windows.Foundation.Collections;
 using _IBindableVector = System.Collections.IList;
@@ -33,6 +34,30 @@ internal static partial class ShapingHelpers
 	internal interface IGroupIdentity
 	{
 		string StableGroupIdentity();
+	}
+
+	// A group's count of IMMEDIATE children. Over a hierarchy a group's rows include visible
+	// descendants, so only the projection that sliced the group knows the root count.
+	// TODO Uno: COM tag interface __declspec(uuid("9D3B0F7A-6B2E-4E67-93A2-1C8A9F5E4B10")); try_as becomes an `is` check.
+	internal interface IGroupChildCount
+	{
+		int GroupChildCount();
+	}
+
+	// Value keys compare numerically equal floats as equal: -0 folds into +0 and every NaN into one
+	// canonical NaN, so the key is not the raw bit pattern.
+	internal static uint CanonicalFloatBits(float value)
+	{
+		if (float.IsNaN(value)) { return 0x7FC00000u; }
+		if (value == 0.0f) { return 0u; }
+		return BitConverter.SingleToUInt32Bits(value);
+	}
+
+	internal static ulong CanonicalDoubleBits(double value)
+	{
+		if (double.IsNaN(value)) { return 0x7FF8000000000000ul; }
+		if (value == 0.0) { return 0ul; }
+		return BitConverter.DoubleToUInt64Bits(value);
 	}
 
 	internal static partial class ValueKey
@@ -72,9 +97,77 @@ internal static partial class ShapingHelpers
 		internal static partial bool UsesFallbackKey(object? value);
 	}
 
+	// Whose collection is read. A read of the caller's collection that throws is rethrown tagged as the caller's
+	// (RethrowAsCallerError), except running out of memory while enumerating a collection with no indexed read, which
+	// may be shaping's own allocation; a read of shaping's own collections, such as the group list it builds, never is.
+	internal enum CollectionOwner { Shaping, Caller }
+
 	internal static partial List<object?> EnumerateInspectableItems(
 		object? source,
-		bool throwIfUnsupported = false);
+		bool throwIfUnsupported = false,
+		CollectionOwner owner = CollectionOwner.Shaping);
+
+	// The kind a CallerError carries when the caller's collection or contract failed. An owner maps kinds onto its own
+	// fault vocabulary; TableViewTip::AppFaultKind::Data is this value.
+	internal const uint c_callerDataFault = 6;
+
+	// An exception that left the caller's code: its collection, a broken contract, or a callback an owner ran. It
+	// keeps the original HRESULT and error info, so the caller sees the same error, and records whose fault it was,
+	// so an owner attributes a failure by the exception's type instead of by matching HRESULTs.
+	// TODO Uno: winrt::hresult_error becomes an Exception wrapping the original, carrying its HResult.
+	internal sealed class CallerError : Exception
+	{
+		internal CallerError(Exception error, uint kind) : base(error.Message, error)
+		{
+			HResult = error.HResult;
+			m_kind = kind;
+		}
+
+		internal uint Kind() => m_kind;
+
+		private readonly uint m_kind;
+	}
+
+	// The caller's code ran out of memory (C++/WinRT throws std::bad_alloc for E_OUTOFMEMORY). Still an
+	// OutOfMemoryException (the std::bad_alloc counterpart), so it leaves as E_OUTOFMEMORY without allocating,
+	// and records whose fault it was like CallerError.
+	internal sealed class CallerOutOfMemory : OutOfMemoryException
+	{
+		internal CallerOutOfMemory(uint kind) { m_kind = kind; }
+
+		internal uint Kind() => m_kind;
+
+		private readonly uint m_kind;
+	}
+
+	// In a catch: rethrows `error` tagged with `kind`, as a CallerError, or a CallerOutOfMemory when the
+	// caller's code ran out of memory. A tagged exception keeps its kind; any other exception leaves unchanged.
+	// TODO Uno: C++ reads the current exception with a bare `throw;`; C# takes it as a parameter.
+	[DoesNotReturn]
+	internal static partial void RethrowAsCallerError(Exception error, uint kind);
+	// In a catch: `error`'s kind when it is tagged, else 0.
+	internal static partial uint CurrentCallerErrorKind(Exception error);
+
+	// Caller delegates that threw and were contained by design (a predicate excludes its row, a key selector yields a
+	// null key, a comparer calls the pair equal): how many, and the first one's HRESULT. An owner takes the tally
+	// after a verb, so it can report the caller's fault without failing the verb.
+	// TODO Uno: a class rather than a struct; C++ passes it by pointer/reference (SwallowedFaults* contained,
+	// SwallowedFaults&), so the shared instance stands in for the pointer.
+	internal sealed class SwallowedFaults
+	{
+		public uint count;
+		public int firstError;
+
+		// In a catch. Reads only the first fault's HRESULT.
+		public void Note(Exception error)
+		{
+			if (count == 0)
+			{
+				firstError = error is OutOfMemoryException ? unchecked((int)0x8007000E) : error.HResult;
+			}
+			if (count != uint.MaxValue) { ++count; }
+		}
+	}
 
 	// Resolves ONCE what a collection is and how to read it.
 	//
@@ -90,7 +183,7 @@ internal static partial class ShapingHelpers
 	// classifies each group's items) need it, and siblings may not include each other's headers.
 	// TODO Uno: a C++ value type (default-constructed members, assigned by copy), so it ports as a struct.
 	// CollectionAccessor() = default is the implicit parameterless constructor; the explicit
-	// CollectionAccessor(object? source) constructor is in ShapingHelpers.mux.cs.
+	// CollectionAccessor(object? source, CollectionOwner owner) constructor is in ShapingHelpers.mux.cs.
 	internal partial struct CollectionAccessor
 	{
 		// True when Count/GetAt are a direct call rather than an enumeration. An enumerable-only
@@ -118,6 +211,7 @@ internal static partial class ShapingHelpers
 		private partial object? GetAtUnchecked(uint index);
 
 		private object? m_source;
+		private bool m_callerOwned;
 
 		// Read: at most one of these is set, in IVector > IVectorView > IBindableVector order.
 		private IList<object?>? m_vector;
@@ -135,10 +229,12 @@ internal static partial class ShapingHelpers
 	// Canonical predicate filter shared by Tabular shaping engines. Retains items for which
 	// predicate(item) returns true; a predicate that throws is treated as "exclude", which is the
 	// fail-safe every caller wants: a broken predicate hides rows rather than failing the shape. In-place; preserves relative order of kept items.
+	// `contained`, when given, counts the predicates that threw.
 	// std::function<bool(IInspectable const&)> is the same type as the Predicate alias, so the delegate is reused.
 	internal static partial void ApplyPredicateFilter(
 		List<object?> items,
-		Predicate? predicate);
+		Predicate? predicate,
+		SwallowedFaults? contained = null);
 
 	// Canonical multi-axis stable sort shared by every Tabular shaping engine.
 	// The caller supplies key extraction
@@ -242,16 +338,48 @@ internal static partial class ShapingHelpers
 		// that closed over it by shared_ptr stays valid.
 		public partial void Reset();
 
+		// Re-places an item whose comparer-read property changed; true when any row's key changed.
+		// With deferPlacement the rank is only dropped and the next KeyFor re-places it (or
+		// re-ranks everything once that is cheaper).
+		public partial bool Reposition(object? item, bool deferPlacement);
+
+		// Every ranked item may have changed untracked (live shaping was off); the next key read
+		// re-ranks everything once.
+		public partial void InvalidateRanks();
+
 		public bool HasComparer() => m_comparer is not null;
+
+		// Drop rows that left the source so the ranks stop keeping them alive. Rank gaps left
+		// behind are harmless: keys only have to order. Both are no-ops inside a comparer callback.
+		public partial void Forget(object? item);
+		public partial void RetainOnly(List<object?> liveRows);
+
+		// The comparer calls that threw since the last take (SafeCompare); resets the tally.
+		// TODO Uno: std::exchange(m_swallowedFaults, {}) returns the old value and leaves a fresh one.
+		public SwallowedFaults TakeSwallowedFaults()
+		{
+			var taken = m_swallowedFaults;
+			m_swallowedFaults = new();
+			return taken;
+		}
 
 		private struct RankEntry
 		{
 			public object? Item;
 			public int Rank;
+			// COM identity (IUnknown), cached so lookups compare pointers instead of calling QI.
+			// TODO Uno: void* becomes the object reference itself, which is its reference identity.
+			public object? Identity;
 		}
 
+		private static partial object? IdentityOf(object? item);
+		// m_ranks stays ordered by rank; PlaceUnranked relies on it to binary-search.
+		private partial void AddRanked(object? item, int rank);
+		private partial void InsertRanked(int position, object? item, int rank);
+
 		// App code, so it never escapes: a throwing comparer degrades to "equal", which keeps the
-		// merge stable rather than random. Also normalizes the result to -1 / 0 / 1.
+		// merge stable rather than random, and is counted (TakeSwallowedFaults). Also normalizes the
+		// result to -1 / 0 / 1.
 		private partial int SafeCompare(object? left, object? right);
 
 		// Orders two row indices under the comparer, breaking ties by source index so the sort is
@@ -278,8 +406,33 @@ internal static partial class ShapingHelpers
 		// before trusting ranks written for a pass that is no longer current.
 		private partial void ClearRanks();
 
+		// Orders `rows` with the comparer and writes their dense ranks. Callers hold the reentrancy
+		// guard and have just cleared the ranks.
+		private partial void PopulateRanks(List<object?> rows, ulong generation);
+
+		// Re-ranks every ranked and evicted item; current order breaks ties.
+		private partial void RerankAll();
+
+		// Places an unranked item. False when a reentrant comparer cleared the ranks. `tied`: it
+		// joined an existing rank.
+		private partial bool PlaceUnranked(object? item, ulong generation, out int rank, out bool tied);
+
+		// Drops an item's rank (closing any gap) and queues it for re-placement. False if unranked.
+		private partial bool EvictEntry(object? item, out int oldRank, out bool wasShared);
+
+		// Re-places all evicted items before handing out any key, so keys are consistent.
+		private partial void PlaceEvicted();
+
+		// True when re-placing the evicted items costs more than re-ranking everything.
+		private partial bool ShouldRerankAll();
+
 		private PairwiseComparer? m_comparer;
 		private List<RankEntry> m_ranks = new();
+		// Items whose rank was dropped by Evict and not yet re-placed.
+		private List<object?> m_evicted = new();
+		// Set once enough items are evicted that PlaceEvicted will re-rank everything; further
+		// deferred evictions are then skipped (the re-rank covers them).
+		private bool m_rerankAllPending;
 		// O(1) identity -> rank lookup for the common (reference-type item) case; falls back to the
 		// comparer scan on a miss, e.g. a boxed value type whose CCW churned.
 		// TODO Uno: unordered_map<void*, int32_t> keyed by the IUnknown address becomes a reference-equality dictionary.
@@ -291,6 +444,7 @@ internal static partial class ShapingHelpers
 		// comparer is an app bug (a sort predicate must be a pure function of its inputs), so fail
 		// fast in chk and no-op safely in fre. WinUI is single-threaded, so a plain bool suffices.
 		private bool m_comparerActive;
+		private SwallowedFaults m_swallowedFaults = new();
 	}
 
 }

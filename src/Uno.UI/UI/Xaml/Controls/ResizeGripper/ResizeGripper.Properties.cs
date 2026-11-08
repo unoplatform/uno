@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\Generated\ResizeGripper.properties.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\Generated\ResizeGripper.properties.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -13,10 +13,6 @@ namespace Microsoft.UI.Private.Controls;
 
 partial class ResizeGripper
 {
-	// The axis the drag is measured along, which for a divider is perpendicular to how it looks:
-	// Horizontal drags left/right. Named DragOrientation rather than Orientation because the
-	// primitive owns no shape - the host sizes it - so the control's own layout axis is not
-	// something it can describe. Only horizontal mirrors under RTL.
 	/// <summary>
 	/// Gets or sets the axis the drag is measured along.
 	/// </summary>
@@ -55,8 +51,6 @@ partial class ResizeGripper
 			typeof(ResizeGripper),
 			new FrameworkPropertyMetadata(BoolBoxes.False, OnPropertyChanged));
 
-	// How far one arrow key travels; Shift multiplies it. Step size is host policy, so it is
-	// settable rather than baked in.
 	/// <summary>
 	/// Gets or sets how far one arrow key travels.
 	/// </summary>
@@ -76,11 +70,6 @@ partial class ResizeGripper
 			typeof(ResizeGripper),
 			new FrameworkPropertyMetadata(c_defaultKeyboardIncrement, OnPropertyChanged));
 
-	// The frame drags are measured in. A host sets this to an ancestor that does NOT move while the
-	// drag resizes something: the gripper travels with the edge it drags, so the default frame (the
-	// gripper itself) feeds the resize back into the gesture and stalls it, while the XamlRoot
-	// content picks up any scale or zoom applied between it and the gripper. Null falls back to the
-	// XamlRoot content, which is correct whenever nothing between it and the gripper is scaled.
 	/// <summary>
 	/// Gets or sets the frame drags are measured in.
 	/// </summary>
@@ -100,9 +89,6 @@ partial class ResizeGripper
 			typeof(ResizeGripper),
 			new FrameworkPropertyMetadata(default(UIElement), OnPropertyChanged));
 
-	// Qualifier the automation peer prepends to its localized name, so N grippers in one band are
-	// distinguishable ("Price, Resize gripper"). Declared rather than read off Tag: Tag is a
-	// general-purpose slot a host may already be using, and a silent wrong name is an a11y bug.
 	/// <summary>
 	/// Gets or sets the qualifier the automation peer prepends to its localized name.
 	/// </summary>
@@ -123,9 +109,9 @@ partial class ResizeGripper
 			new FrameworkPropertyMetadata(string.Empty, OnPropertyChanged));
 
 	/// <summary>
-	/// Occurs when a drag ends or is canceled.
+	/// Occurs when a drag starts.
 	/// </summary>
-	public event TypedEventHandler<ResizeGripper, ResizeGripperDragCompletedEventArgs>? DragCompleted;
+	public event TypedEventHandler<ResizeGripper, object>? DragStarted;
 
 	/// <summary>
 	/// Occurs while a drag moves.
@@ -133,9 +119,9 @@ partial class ResizeGripper
 	public event TypedEventHandler<ResizeGripper, ResizeGripperDragDeltaEventArgs>? DragDelta;
 
 	/// <summary>
-	/// Occurs when a drag starts.
+	/// Occurs when a drag ends or is canceled.
 	/// </summary>
-	public event TypedEventHandler<ResizeGripper, object>? DragStarted;
+	public event TypedEventHandler<ResizeGripper, ResizeGripperDragCompletedEventArgs>? DragCompleted;
 
 	private static void OnPropertyChanged(
 		DependencyObject sender,

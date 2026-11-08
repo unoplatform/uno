@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\ResizeGripper\ResizeGripper.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\ResizeGripper\ResizeGripper.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
+using Windows.Devices.Input;
 using Windows.System;
 using Windows.UI.Core;
 
@@ -37,39 +38,39 @@ partial class ResizeGripper
 		// __RP_Marker_ClassById(RuntimeProfiler.ProfId_ResizeGripper);
 
 		this.SetTabularDefaultStyleKey();
-		// ProtectedCursor is deliberately NOT set here - see UpdateResizeCursor.
 		// Set here rather than in the default style: without it no manipulation is ever raised, so a
 		// host whose style failed to load would have no pointer resize at all.
 		UpdateManipulationMode();
 
 		IsEnabledChanged += OnIsEnabledChanged;
 		Unloaded += OnUnloaded;
-
-		// The separator's side is derived from FlowDirection, and FlowDirection is not a property this
-		// control declares, so there is no OnPropertyChanged for it. A host may flip direction on a live
-		// tree rather than rebuilding it, which would otherwise leave the separator on the stale edge.
-		RegisterPropertyChangedCallback(
-			FrameworkElement.FlowDirectionProperty,
-			static (sender, _) =>
-			{
-				if (sender is ResizeGripper gripper)
-				{
-					gripper.UpdateOrientationVisualState();
-				}
-			});
 	}
 
 	// Detached mid-gesture - the host rebuilt the subtree we live in - so no manipulation event will
 	// arrive to complete the drag and IsDragging would stay true for the rest of this instance's life.
 	private void OnUnloaded(object sender, RoutedEventArgs args)
 	{
+		// A re-parent raises Loaded before the stale Unloaded.
+		if (IsLoaded)
+		{
+			return;
+		}
+
 		m_isPointerOver = false;
 		EndDrag(true /* canceled */);
+		// A press that never became a manipulation has no drag to end but still holds the capture.
+		ReleaseCapturedPointer();
 	}
 
 	private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs args)
 	{
+		if (!IsEnabled)
+		{
+			EndDrag(true /* canceled */);
+			ReleaseCapturedPointer();
+		}
 		UpdateVisualState();
+		UpdateResizeCursor();
 	}
 
 	protected override void OnApplyTemplate()
@@ -78,6 +79,7 @@ partial class ResizeGripper
 		m_templateApplied = true;
 		UpdateOrientationVisualState();
 		UpdateVisualState();
+		UpdateResizeCursor();
 	}
 
 	protected override void OnPointerEntered(PointerRoutedEventArgs args)
@@ -94,8 +96,7 @@ partial class ResizeGripper
 		UpdateVisualState();
 	}
 
-	// Pressed stays on for the whole drag even if the pointer leaves the gripper, because the host
-	// captures the pointer and the column keeps resizing.
+	// Pressed holds for the whole drag, even after the pointer leaves the gripper.
 	private void UpdateVisualState()
 	{
 		var state =
@@ -110,47 +111,27 @@ partial class ResizeGripper
 	// separately, with opposite-polarity tests, is where an axis bug hides.
 	private bool IsHorizontalDrag() => DragOrientation != Orientation.Vertical;
 
-	// The separator is drawn on one side of the gripper, so the state has to carry the mirror as well as
-	// the axis: under RTL a horizontal gripper's trailing edge is its LEFT edge. Only the horizontal case
-	// mirrors - FlowDirection does not mirror y, so a vertical gripper's separator stays on the bottom.
-	// Falls back to the unmirrored state if a host's template predates HorizontalMirrored, which is the
-	// previous behaviour rather than no separator at all.
+	// Axis only: the separator is on the logical trailing edge and the framework mirrors it under RTL.
 	private void UpdateOrientationVisualState()
 	{
-		if (!IsHorizontalDrag())
-		{
-			VisualStateManager.GoToState(this, "Vertical", true /* useTransitions */);
-			return;
-		}
-
-		if (FlowDirection == FlowDirection.RightToLeft &&
-			VisualStateManager.GoToState(this, "HorizontalMirrored", true /* useTransitions */))
-		{
-			return;
-		}
-
-		VisualStateManager.GoToState(this, "Horizontal", true /* useTransitions */);
+		VisualStateManager.GoToState(this, IsHorizontalDrag() ? "Horizontal" : "Vertical", true /* useTransitions */);
 	}
 
-	// PARKED - deliberately not called. The framework drops ProtectedCursor on the next pointer move,
-	// so setting it made the resize shape appear as the pointer arrived and revert immediately, which
-	// is a flicker rather than an affordance. Measured: dwell on a divider reads an arrow 40 samples
-	// out of 40; re-asserting per pointer move changed nothing. Tracked as ADO 63771830 / related to
-	// microsoft-ui-xaml#7062. The shape logic below is correct and stays put: restore the calls in
-	// OnPointerEntered and in the DragOrientation branch of OnPropertyChanged once the framework holds
-	// the cursor. Until then the hover separator carries the affordance.
-	//
-	// Owned by the primitive so every host gets the right shape, keyed off the direction of travel.
-	// Two guards, both of which cause a visibly wrong or flickering cursor when missed:
-	//  - nothing before OnApplyTemplate. Assigning ProtectedCursor that early does not stick
-	//    (microsoft-ui-xaml#7062), which is why the shape is resolved on pointer entry instead.
-	//  - never reassign the shape already in effect. Handing the input system a brand new
-	//    InputSystemCursor makes the pointer visibly reset even when the shape is identical.
-#pragma warning disable IDE0051 // Unused upstream as well, kept for 1:1 parity
+	// Assigned once, after OnApplyTemplate: the input system re-reads it on every pointer move, and
+	// reassigning the same shape visibly resets the pointer.
 	private void UpdateResizeCursor()
 	{
 		if (!m_templateApplied)
 		{
+			return;
+		}
+
+		if (!IsEnabled)
+		{
+			if (ProtectedCursor is not null)
+			{
+				ProtectedCursor = null;
+			}
 			return;
 		}
 
@@ -166,7 +147,6 @@ partial class ResizeGripper
 
 		ProtectedCursor = InputSystemCursor.Create(shape);
 	}
-#pragma warning restore IDE0051
 
 	// One axis only: the cross-axis translation is noise, and leaving it out lets an ancestor
 	// ScrollViewer keep panning on the axis we do not resize.
@@ -180,9 +160,6 @@ partial class ResizeGripper
 	protected override void OnManipulationStarting(ManipulationStartingRoutedEventArgs args)
 	{
 		base.OnManipulationStarting(args);
-
-		// Default container is this element, so the two frames agree by definition.
-		m_containerIsRightToLeft = FlowDirection == FlowDirection.RightToLeft;
 
 		// A host-designated frame wins: it knows which of its ancestors stays put while the drag
 		// resizes something, and it is not subject to any scale applied above it.
@@ -201,14 +178,6 @@ partial class ResizeGripper
 		if (container is not null)
 		{
 			args.Container = container;
-
-			// Cumulative().Translation is expressed in the CONTAINER's space, and RTL mirrors that
-			// space. Record the container's direction so the delta is mirrored against the frame it
-			// was actually measured in, not against this element's own direction.
-			if (container is FrameworkElement containerElement)
-			{
-				m_containerIsRightToLeft = containerElement.FlowDirection == FlowDirection.RightToLeft;
-			}
 		}
 	}
 
@@ -229,9 +198,8 @@ partial class ResizeGripper
 		double totalDelta = isHorizontal ? translation.X : translation.Y;
 
 		// Report a logical delta, so positive always grows in reading order and both input paths agree.
-		// Mirror only when this element and the measurement frame disagree; mirroring on the element's
-		// own direction inverts the drag in a fully-RTL app, where the container is mirrored too.
-		if (isHorizontal && (FlowDirection == FlowDirection.RightToLeft) != m_containerIsRightToLeft)
+		// Cumulative().Translation is in unmirrored physical space, so mirror it on RTL (matches TryKeyboardStep).
+		if (isHorizontal && FlowDirection == FlowDirection.RightToLeft)
 		{
 			totalDelta = -totalDelta;
 		}
@@ -258,7 +226,64 @@ partial class ResizeGripper
 
 		if (IsEnabled)
 		{
+			// Mouse only: touch capture would stop an ancestor ScrollViewer panning the cross axis.
+			var pointer = args.Pointer;
+			if (pointer.PointerDeviceType == Microsoft.UI.Input.PointerDeviceType.Mouse && CapturePointer(pointer))
+			{
+				m_capturedPointer = pointer;
+				m_capturedPointerId = pointer.PointerId;
+				m_isCapturedPointerReleased = false;
+			}
 			args.Handled = true;
+		}
+	}
+
+	protected override void OnPointerReleased(PointerRoutedEventArgs args)
+	{
+		base.OnPointerReleased(args);
+
+		if (m_capturedPointer is not null && args.Pointer.PointerId == m_capturedPointerId)
+		{
+			m_isCapturedPointerReleased = true;
+		}
+	}
+
+	// The release that completes a drag also drops the capture; only a capture lost before it cancels.
+	protected override void OnPointerCaptureLost(PointerRoutedEventArgs args)
+	{
+		base.OnPointerCaptureLost(args);
+
+		if (m_capturedPointer is not null && args.Pointer.PointerId == m_capturedPointerId)
+		{
+			bool released = m_isCapturedPointerReleased;
+			m_capturedPointer = null;
+			m_isCapturedPointerReleased = false;
+			if (!released)
+			{
+				EndDrag(true /* canceled */);
+			}
+		}
+		UpdateVisualState();
+	}
+
+	// Best effort: clears our state first, so the PointerCaptureLost this raises is ignored, and skips
+	// the release once the gripper has no visual tree to release it from.
+	private void ReleaseCapturedPointer()
+	{
+		var pointer = m_capturedPointer;
+		m_capturedPointer = null;
+		m_isCapturedPointerReleased = false;
+
+		// Runs from EndDrag's finally: nothing may escape.
+		try
+		{
+			if (pointer is not null && XamlRoot is not null)
+			{
+				ReleasePointerCapture(pointer);
+			}
+		}
+		catch
+		{
 		}
 	}
 
@@ -286,6 +311,8 @@ partial class ResizeGripper
 		}
 		m_lastRaisedDelta = 0.0;
 		SetValue(IsDraggingProperty, BoolBoxes.True);
+		// Before raising: a handler may end the drag re-entrantly.
+		AttachCancelKeyHandler();
 		UpdateVisualState();
 		DragStarted?.Invoke(this, null!);
 	}
@@ -319,13 +346,92 @@ partial class ResizeGripper
 
 		double totalDelta = m_lastRaisedDelta;
 
+		DetachCancelKeyHandler();
+
 		// Clear the flag before raising: a throwing handler would otherwise leave IsDragging stuck
 		// true, wedging every later BeginDrag.
 		SetValue(IsDraggingProperty, BoolBoxes.False);
-		UpdateVisualState();
+		try
+		{
+			UpdateVisualState();
 
-		var eventArgs = new ResizeGripperDragCompletedEventArgs(totalDelta, canceled);
-		DragCompleted?.Invoke(this, eventArgs);
+			var eventArgs = new ResizeGripperDragCompletedEventArgs(totalDelta, canceled);
+			DragCompleted?.Invoke(this, eventArgs);
+		}
+		finally
+		{
+			ReleaseCapturedPointer();
+		}
+	}
+
+	// Escape cancels the drag. A pointer drag takes no focus, so the hook lives on the XamlRoot content,
+	// and only for the drag.
+	private void AttachCancelKeyHandler()
+	{
+		if (m_cancelKeyHandler is not null)
+		{
+			return;
+		}
+
+		var xamlRoot = XamlRoot;
+		if (xamlRoot is null)
+		{
+			return;
+		}
+
+		if (xamlRoot.Content is not UIElement root)
+		{
+			return;
+		}
+
+		// RemoveHandler needs the same boxed instance, so it is stored.
+		WeakReference<ResizeGripper> weakThis = new(this);
+		KeyEventHandler handler = (sender, args) =>
+		{
+			if (weakThis.TryGetTarget(out var strongThis))
+			{
+				strongThis.OnCancelKeyDown(sender, args);
+			}
+		};
+
+		// handledEventsToo: a host handling Escape first must not strand the drag.
+		root.AddHandler(UIElement.KeyDownEvent, handler, true /* handledEventsToo */);
+
+		m_cancelKeyHandler = handler;
+		m_cancelKeyRoot = new WeakReference<UIElement>(root);
+	}
+
+	private void DetachCancelKeyHandler()
+	{
+		var handler = m_cancelKeyHandler;
+		m_cancelKeyHandler = null;
+
+		if (handler is null)
+		{
+			return;
+		}
+
+		UIElement? root = null;
+		m_cancelKeyRoot?.TryGetTarget(out root);
+		m_cancelKeyRoot = null;
+
+		if (root is not null)
+		{
+			root.RemoveHandler(UIElement.KeyDownEvent, handler);
+		}
+	}
+
+	private void OnCancelKeyDown(object sender, KeyRoutedEventArgs args)
+	{
+		if (args.Key != VirtualKey.Escape || !IsDragging)
+		{
+			return;
+		}
+
+		EndDrag(true /* canceled */);
+
+		// An Escape with no drag in flight belongs to the app.
+		args.Handled = true;
 	}
 
 	private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
@@ -334,6 +440,7 @@ partial class ResizeGripper
 		{
 			UpdateOrientationVisualState();
 			UpdateManipulationMode();
+			UpdateResizeCursor();
 		}
 	}
 

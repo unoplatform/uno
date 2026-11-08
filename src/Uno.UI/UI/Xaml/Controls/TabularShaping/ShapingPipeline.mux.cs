@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TabularShaping\ShapingPipeline.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TabularShaping\ShapingPipeline.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -138,8 +138,9 @@ internal static partial class ShapingHelpers
 						return false;
 					}
 				}
-				catch
+				catch (Exception error)
 				{
+					m_swallowedFaults.Note(error);
 					return false;
 				}
 			}
@@ -155,21 +156,9 @@ internal static partial class ShapingHelpers
 			}
 
 			// One pass over the rows regardless of axis count: the axes are conjunctive, so they
-			// compose into a single predicate rather than into N successive erase passes.
-			ApplyPredicateFilter(
-				rows,
-				item =>
-				{
-					foreach (var axis in m_filters)
-					{
-						if (!axis.Predicate!(item))
-						{
-							return false;
-						}
-					}
-
-					return true;
-				});
+			// compose into a single predicate rather than into N successive erase passes. PassesFilter
+			// also counts a predicate that throws.
+			ApplyPredicateFilter(rows, item => PassesFilter(item));
 		}
 
 		public partial void SetSort(
@@ -272,6 +261,17 @@ internal static partial class ShapingHelpers
 			return false;
 		}
 
+		public partial bool HasSortAxis(string axisToken) =>
+			m_sorts.Exists(axis => string.IsNullOrEmpty(axisToken) || axis.AxisToken == axisToken);
+
+		public partial bool HasSortOtherThan(string axisToken) =>
+			m_sorts.Exists(axis => string.IsNullOrEmpty(axisToken) || axis.AxisToken != axisToken);
+
+		public partial bool HasMatchingSort(string axisToken, object? keyIdentity) =>
+			m_sorts.Exists(axis => string.IsNullOrEmpty(axisToken) ?
+				(string.IsNullOrEmpty(axis.AxisToken) && axis.KeyIdentity is not null && ReferenceEquals(axis.KeyIdentity, keyIdentity)) :
+				axis.AxisToken == axisToken);
+
 		public partial List<SortAxis> ActiveSortAxes(int afterOrder, int beforeOrder)
 		{
 			List<SortAxis> active = new();
@@ -319,15 +319,16 @@ internal static partial class ShapingHelpers
 					{
 						return active[axisIndex].Key!(item);
 					}
-					catch
+					catch (Exception error)
 					{
+						m_swallowedFaults.Note(error);
 						return null;
 					}
 				},
 				axisIndex => active[axisIndex].Direction);
 		}
 
-		private static partial int CompareKeysToRow(
+		private partial int CompareKeysToRow(
 			List<SortAxis> axes,
 			List<object?> itemKeys,
 			object? row)
@@ -340,8 +341,9 @@ internal static partial class ShapingHelpers
 				{
 					rowKey = axis.Key!(row);
 				}
-				catch
+				catch (Exception error)
 				{
+					m_swallowedFaults.Note(error);
 					rowKey = null;
 				}
 				int cmp = ValueComparer.Compare(itemKeys[i], rowKey);
@@ -364,8 +366,9 @@ internal static partial class ShapingHelpers
 				{
 					key = axis.Key!(item);
 				}
-				catch
+				catch (Exception error)
 				{
+					m_swallowedFaults.Note(error);
 					key = null;
 				}
 				itemKeys.Add(key);
@@ -391,8 +394,9 @@ internal static partial class ShapingHelpers
 				{
 					key = axis.Key!(item);
 				}
-				catch
+				catch (Exception error)
 				{
+					m_swallowedFaults.Note(error);
 					key = null;
 				}
 				itemKeys.Add(key);

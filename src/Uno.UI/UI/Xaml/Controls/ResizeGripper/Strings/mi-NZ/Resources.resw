@@ -58,4 +58,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ResizeGripperName" xml:space="preserve">
+    <value>Whakarahi anō o te puritanga</value>
+    <comment>Automation name for the Resize gripper.</comment>
+  </data>
+  <data name="ResizeGripperNameFormat" xml:space="preserve">
+    <value>%1!s!, %2!s!</value>
+    <comment>Automation name format for the Resize gripper. %1 is the column header text, %2 is the resize gripper name.</comment>
+  </data>
 </root>

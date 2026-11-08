@@ -1,12 +1,13 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TabularShaping\ShapingHelpers.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TabularShaping\ShapingHelpers.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.ExceptionServices;
 using Microsoft.UI.Xaml.Interop;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
@@ -538,18 +539,14 @@ internal static partial class ShapingHelpers
 					return true;
 				case PropertyType.Single:
 					{
-						var value = (float)propertyValue;
-						uint bits = BitConverter.SingleToUInt32Bits(value);
-						// Original C++: swprintf_s(buffer, L"f32:%08X", bits);
-						key = "f32:" + bits.ToString("X8", CultureInfo.InvariantCulture);
+						// Original C++: swprintf_s(buffer, L"f32:%08X", CanonicalFloatBits(propertyValue.GetSingle()));
+						key = "f32:" + CanonicalFloatBits((float)propertyValue).ToString("X8", CultureInfo.InvariantCulture);
 						return true;
 					}
 				case PropertyType.Double:
 					{
-						var value = (double)propertyValue;
-						ulong bits = BitConverter.DoubleToUInt64Bits(value);
-						// Original C++: swprintf_s(buffer, L"f64:%016llX", static_cast<unsigned long long>(bits));
-						key = "f64:" + bits.ToString("X16", CultureInfo.InvariantCulture);
+						// Original C++: swprintf_s(buffer, L"f64:%016llX", static_cast<unsigned long long>(CanonicalDoubleBits(propertyValue.GetDouble())));
+						key = "f64:" + CanonicalDoubleBits((double)propertyValue).ToString("X16", CultureInfo.InvariantCulture);
 						return true;
 					}
 				case PropertyType.Boolean:
@@ -723,20 +720,47 @@ internal static partial class ShapingHelpers
 		}
 	}
 
+	internal static partial void RethrowAsCallerError(Exception error, uint kind)
+	{
+		switch (error)
+		{
+			case CallerError:
+			case CallerOutOfMemory:
+				ExceptionDispatchInfo.Capture(error).Throw();
+				break;
+			case OutOfMemoryException:
+				throw new CallerOutOfMemory(kind);
+			default:
+				throw new CallerError(error, kind);
+		}
+
+		throw error;
+	}
+
+	internal static partial uint CurrentCallerErrorKind(Exception error) =>
+		error switch
+		{
+			CallerError callerError => callerError.Kind(),
+			CallerOutOfMemory callerOutOfMemory => callerOutOfMemory.Kind(),
+			_ => 0,
+		};
+
 	internal static partial List<object?> EnumerateInspectableItems(
 		object? source,
-		bool throwIfUnsupported)
+		bool throwIfUnsupported,
+		CollectionOwner owner)
 	{
 		// Single entry point for callers holding a raw source. The classification and the walk both
 		// live on CollectionAccessor so there is exactly one interface ladder in the stack.
-		return new CollectionAccessor(source).Enumerate(throwIfUnsupported);
+		return new CollectionAccessor(source, owner).Enumerate(throwIfUnsupported);
 	}
 
 	partial struct CollectionAccessor
 	{
-		public CollectionAccessor(object? source)
+		public CollectionAccessor(object? source, CollectionOwner owner)
 		{
 			m_source = source;
+			m_callerOwned = owner == CollectionOwner.Caller;
 
 			if (source is null)
 			{
@@ -785,32 +809,49 @@ internal static partial class ShapingHelpers
 
 		public partial uint Count()
 		{
-			if (m_vector is not null)
+			try
 			{
-				return (uint)m_vector.Count;
+				if (m_vector is not null)
+				{
+					return (uint)m_vector.Count;
+				}
+				if (m_vectorView is not null)
+				{
+					return (uint)m_vectorView.Count;
+				}
+				if (m_bindableVector is not null)
+				{
+					return (uint)m_bindableVector.Count;
+				}
+				return 0;
 			}
-			if (m_vectorView is not null)
+			catch (Exception error)
 			{
-				return (uint)m_vectorView.Count;
+				// Only the collection runs here, so any failure, out-of-memory included, is its own.
+				if (m_callerOwned) { RethrowAsCallerError(error, c_callerDataFault); }
+				throw;
 			}
-			if (m_bindableVector is not null)
-			{
-				return (uint)m_bindableVector.Count;
-			}
-			return 0;
 		}
 
 		private partial object? GetAtUnchecked(uint index)
 		{
-			if (m_vector is not null)
+			try
 			{
-				return m_vector[(int)index];
+				if (m_vector is not null)
+				{
+					return m_vector[(int)index];
+				}
+				if (m_vectorView is not null)
+				{
+					return m_vectorView[(int)index];
+				}
+				return m_bindableVector![(int)index];
 			}
-			if (m_vectorView is not null)
+			catch (Exception error)
 			{
-				return m_vectorView[(int)index];
+				if (m_callerOwned) { RethrowAsCallerError(error, c_callerDataFault); }
+				throw;
 			}
-			return m_bindableVector![(int)index];
 		}
 
 		public partial bool TryGetAt(uint index, out object? item)
@@ -825,7 +866,23 @@ internal static partial class ShapingHelpers
 			return true;
 		}
 
+		// Uno specific: the C++ function-try-block catch is split out so the body keeps its indentation.
 		public partial List<object?> Enumerate(bool throwIfUnsupported)
+		{
+			try
+			{
+				return EnumerateCore(throwIfUnsupported);
+			}
+			catch (Exception error)
+			{
+				// This also grows its own vector, so an out-of-memory here may be shaping's. A caller's indexed read that
+				// ran out of memory is tagged already (Count, GetAtUnchecked).
+				if (m_callerOwned && error is not OutOfMemoryException) { RethrowAsCallerError(error, c_callerDataFault); }
+				throw;
+			}
+		}
+
+		private List<object?> EnumerateCore(bool throwIfUnsupported)
 		{
 			List<object?> result = new();
 			if (m_source is null)
@@ -898,7 +955,8 @@ internal static partial class ShapingHelpers
 
 	internal static partial void ApplyPredicateFilter(
 		List<object?> items,
-		Predicate? predicate)
+		Predicate? predicate,
+		SwallowedFaults? contained)
 	{
 		if (predicate is null)
 		{
@@ -913,8 +971,9 @@ internal static partial class ShapingHelpers
 			{
 				keep = predicate(item);
 			}
-			catch
+			catch (Exception error)
 			{
+				contained?.Note(error);
 				keep = false;
 			}
 
@@ -1094,8 +1153,9 @@ internal static partial class ShapingHelpers
 				var result = m_comparer(left, right);
 				return result < 0 ? -1 : (result > 0 ? 1 : 0);
 			}
-			catch
+			catch (Exception error)
 			{
+				m_swallowedFaults.Note(error);
 				return 0;
 			}
 		}
@@ -1190,12 +1250,94 @@ internal static partial class ShapingHelpers
 			++m_generation;
 			m_ranks.Clear();
 			m_rankByIdentity.Clear();
+			m_evicted.Clear();
+			m_rerankAllPending = false;
+		}
+
+		private static partial object? IdentityOf(object? item)
+		{
+			// The entry's Item keeps the object alive, so the identity stays valid while ranked.
+			// Original C++: auto const unknown = item.try_as<::IUnknown>(); return unknown ? unknown.get() : nullptr;
+			return item;
+		}
+
+		private partial void AddRanked(object? item, int rank)
+		{
+			InsertRanked(m_ranks.Count, item, rank);
+		}
+
+		private partial void InsertRanked(int position, object? item, int rank)
+		{
+			object? identity = IdentityOf(item);
+			m_ranks.Insert(position, new RankEntry { Item = item, Rank = rank, Identity = identity });
+			if (identity is not null)
+			{
+				m_rankByIdentity[identity] = rank;
+			}
 		}
 
 		public partial void Reset()
 		{
 			m_comparer = null;
 			ClearRanks();
+		}
+
+		public partial void InvalidateRanks()
+		{
+			if (m_comparer is not null && m_ranks.Count != 0)
+			{
+				m_rerankAllPending = true;
+			}
+		}
+
+		public partial void Forget(object? item)
+		{
+			if (m_comparerActive || item is null)
+			{
+				return;
+			}
+
+			object? identity = IdentityOf(item);
+			bool IsItem(object? candidate, object? candidateIdentity) =>
+				ReferenceEquals(candidate, item) || (identity is not null && ReferenceEquals(candidateIdentity, identity));
+			m_ranks.RemoveAll(entry => IsItem(entry.Item, entry.Identity));
+			m_evicted.RemoveAll(evicted => IsItem(evicted, IdentityOf(evicted)));
+			if (identity is not null)
+			{
+				m_rankByIdentity.Remove(identity);
+			}
+		}
+
+		public partial void RetainOnly(List<object?> liveRows)
+		{
+			if (m_comparerActive || (m_ranks.Count == 0 && m_evicted.Count == 0))
+			{
+				return;
+			}
+
+			HashSet<object> live = new(ReferenceEqualityComparer.Instance);
+			foreach (var row in liveRows)
+			{
+				if (row is not null && IdentityOf(row) is { } identity)
+				{
+					live.Add(identity);
+				}
+			}
+			bool IsLive(object? identity) => identity is not null && live.Contains(identity);
+
+			m_ranks.RemoveAll(entry =>
+			{
+				if (IsLive(entry.Identity))
+				{
+					return false;
+				}
+				if (entry.Identity is not null)
+				{
+					m_rankByIdentity.Remove(entry.Identity);
+				}
+				return true;
+			});
+			m_evicted.RemoveAll(evicted => !IsLive(IdentityOf(evicted)));
 		}
 
 		public partial void Rank(
@@ -1218,44 +1360,43 @@ internal static partial class ShapingHelpers
 				{
 					return;
 				}
-				var generation = m_generation;
-
-				List<int> order = new();
-				if (!StableMergeSortOrder(order, rows, generation))
-				{
-					return;
-				}
-
-				// Rank, not position: equal items must share a rank or the projection would impose an
-				// arbitrary order on a tie the comparer called equal.
-				int rank = 0;
-				for (int i = 0; i < order.Count; ++i)
-				{
-					if (i > 0)
-					{
-						int comparison = SafeCompare(rows[order[i - 1]], rows[order[i]]);
-						if (m_generation != generation)
-						{
-							return;
-						}
-						if (comparison != 0)
-						{
-							++rank;
-						}
-					}
-
-					var item = rows[order[i]];
-					m_ranks.Add(new RankEntry { Item = item, Rank = rank });
-					// Original C++: if (auto unknown = item.try_as<::IUnknown>())
-					if (item is not null)
-					{
-						m_rankByIdentity[item] = rank;
-					}
-				}
+				PopulateRanks(rows, m_generation);
 			}
 			finally
 			{
 				m_comparerActive = false;
+			}
+		}
+
+		private partial void PopulateRanks(
+			List<object?> rows,
+			ulong generation)
+		{
+			List<int> order = new();
+			if (!StableMergeSortOrder(order, rows, generation))
+			{
+				return;
+			}
+
+			// Rank, not position: equal items must share a rank or the projection would impose an
+			// arbitrary order on a tie the comparer called equal.
+			int rank = 0;
+			for (int i = 0; i < order.Count; ++i)
+			{
+				if (i > 0)
+				{
+					int comparison = SafeCompare(rows[order[i - 1]], rows[order[i]]);
+					if (m_generation != generation)
+					{
+						return;
+					}
+					if (comparison != 0)
+					{
+						++rank;
+					}
+				}
+
+				AddRanked(rows[order[i]], rank);
 			}
 		}
 
@@ -1274,6 +1415,11 @@ internal static partial class ShapingHelpers
 			m_comparerActive = true;
 			try
 			{
+				if (m_rerankAllPending || m_evicted.Count != 0)
+				{
+					PlaceEvicted();
+				}
+
 				var generation = m_generation;
 
 				// Original C++: if (auto unknown = item.try_as<::IUnknown>())
@@ -1285,53 +1431,10 @@ internal static partial class ShapingHelpers
 					}
 				}
 
-				// A row the rank pass never saw - added after the sort was applied. Find where it belongs
-				// among the existing ranks and insert it there, shifting the ranks above it.
-				int rank = 0;
-				for (int i = 0; i < m_ranks.Count; ++i)
-				{
-					var entryItem = m_ranks[i].Item;
-					var entryRank = m_ranks[i].Rank;
-					int comparison = SafeCompare(entryItem, item);
-					if (m_generation != generation)
-					{
-						return null;
-					}
-					if (comparison == 0)
-					{
-						return entryRank;
-					}
-					if (comparison < 0)
-					{
-						rank = Math.Max(rank, entryRank + 1);
-					}
-				}
-
-				if (m_generation != generation)
+				// A row the rank pass never saw - added after the sort was applied.
+				if (!PlaceUnranked(item, generation, out int rank, out _))
 				{
 					return null;
-				}
-
-				for (int i = 0; i < m_ranks.Count; i++)
-				{
-					var entry = m_ranks[i];
-					if (entry.Rank >= rank)
-					{
-						++entry.Rank;
-						m_ranks[i] = entry;
-						// Original C++: if (auto unknown = entry.Item.try_as<::IUnknown>())
-						if (entry.Item is not null)
-						{
-							m_rankByIdentity[entry.Item] = entry.Rank;
-						}
-					}
-				}
-
-				m_ranks.Add(new RankEntry { Item = item, Rank = rank });
-				// Original C++: if (auto unknown = item.try_as<::IUnknown>())
-				if (item is not null)
-				{
-					m_rankByIdentity[item] = rank;
 				}
 				return rank;
 			}
@@ -1339,6 +1442,220 @@ internal static partial class ShapingHelpers
 			{
 				m_comparerActive = false;
 			}
+		}
+
+		private partial bool PlaceUnranked(
+			object? item,
+			ulong generation,
+			out int rank,
+			out bool tied)
+		{
+			// m_ranks is ordered by rank, so a binary search finds the slot in O(log n) comparer calls;
+			// this can run inside the app's PropertyChanged setter. Find the first entry not below item.
+			rank = 0;
+			tied = false;
+			int low = 0;
+			int high = m_ranks.Count;
+			bool highIsEqual = false;
+			while (low < high)
+			{
+				int mid = low + (high - low) / 2;
+				// Copied: the comparer is app code and must not see a reference into m_ranks.
+				var entryItem = m_ranks[mid].Item;
+				int comparison = SafeCompare(entryItem, item);
+				if (m_generation != generation)
+				{
+					return false;
+				}
+				if (comparison < 0)
+				{
+					low = mid + 1;
+				}
+				else
+				{
+					high = mid;
+					highIsEqual = comparison == 0;
+				}
+			}
+
+			if (low < m_ranks.Count && highIsEqual)
+			{
+				rank = m_ranks[low].Rank;
+				tied = true;
+				InsertRanked(low, item, rank);
+				return true;
+			}
+
+			rank = low > 0 ? m_ranks[low - 1].Rank + 1 : 0;
+			for (int i = low; i < m_ranks.Count; ++i)
+			{
+				var entry = m_ranks[i];
+				++entry.Rank;
+				m_ranks[i] = entry;
+				if (entry.Identity is not null)
+				{
+					m_rankByIdentity[entry.Identity] = entry.Rank;
+				}
+			}
+
+			InsertRanked(low, item, rank);
+			return true;
+		}
+
+		public partial bool Reposition(object? item, bool deferPlacement)
+		{
+			// A comparer call that mutates its inputs must not reshuffle the ranks under the pass
+			// that is reading them.
+			if (m_comparer is null || m_comparerActive || item is null)
+			{
+				return false;
+			}
+
+			if (deferPlacement)
+			{
+				// A full re-rank is already due, and it re-orders this item too.
+				if (m_rerankAllPending)
+				{
+					return false;
+				}
+
+				EvictEntry(item, out _, out _);
+				m_rerankAllPending = ShouldRerankAll();
+				return false;
+			}
+
+			m_comparerActive = true;
+			try
+			{
+				// Items left over from a coalesced batch whose reshape never asked for a key; settle them
+				// first so the comparison below is against a complete ranking.
+				bool hadPending = m_rerankAllPending || m_evicted.Count != 0;
+				if (hadPending)
+				{
+					PlaceEvicted();
+				}
+
+				if (!EvictEntry(item, out int oldRank, out bool wasShared))
+				{
+					return hadPending;
+				}
+				m_evicted.RemoveAt(m_evicted.Count - 1);
+
+				var generation = m_generation;
+				if (!PlaceUnranked(item, generation, out int newRank, out bool tied))
+				{
+					return true;
+				}
+
+				// The item's own key is not enough: an item that leaves a tie for a slot just below its
+				// old partner keeps its rank while the partner's moves up. Every other row keeps its key
+				// only when the item lands on the same rank the same way it left it.
+				return hadPending || newRank != oldRank || tied != wasShared;
+			}
+			finally
+			{
+				m_comparerActive = false;
+			}
+		}
+
+		private partial bool EvictEntry(
+			object? item,
+			out int oldRank,
+			out bool wasShared)
+		{
+			oldRank = 0;
+			wasShared = false;
+
+			object? identity = IdentityOf(item);
+			int foundIndex = m_ranks.FindIndex(entry =>
+				ReferenceEquals(entry.Item, item) || (identity is not null && ReferenceEquals(entry.Identity, identity)));
+			if (foundIndex < 0)
+			{
+				return false;
+			}
+
+			int rank = m_ranks[foundIndex].Rank;
+			oldRank = rank;
+			m_ranks.RemoveAt(foundIndex);
+			if (identity is not null)
+			{
+				m_rankByIdentity.Remove(identity);
+			}
+
+			// Keep the ranks dense: re-placing an item that did not move must hand every row back the
+			// key it had, or the reshape would see a change where there was none.
+			bool rankStillHeld = m_ranks.Exists(entry => entry.Rank == rank);
+			wasShared = rankStillHeld;
+			if (!rankStillHeld)
+			{
+				for (int i = 0; i < m_ranks.Count; ++i)
+				{
+					var entry = m_ranks[i];
+					if (entry.Rank > rank)
+					{
+						--entry.Rank;
+						m_ranks[i] = entry;
+						if (entry.Identity is not null)
+						{
+							m_rankByIdentity[entry.Identity] = entry.Rank;
+						}
+					}
+				}
+			}
+
+			m_evicted.Add(item);
+			return true;
+		}
+
+		private partial bool ShouldRerankAll()
+		{
+			// Re-placing costs about log n comparer calls plus an O(n) rank shift per item; a full
+			// re-rank about n log n.
+			int log2Count = 0;
+			for (int remaining = m_ranks.Count; remaining > 0; remaining >>= 1)
+			{
+				++log2Count;
+			}
+			return m_evicted.Count > log2Count;
+		}
+
+		private partial void PlaceEvicted()
+		{
+			if (m_rerankAllPending || ShouldRerankAll())
+			{
+				RerankAll();
+				return;
+			}
+
+			var evicted = m_evicted;
+			m_evicted = new();
+			var generation = m_generation;
+			foreach (var item in evicted)
+			{
+				if (!PlaceUnranked(item, generation, out _, out _))
+				{
+					return;
+				}
+			}
+		}
+
+		private partial void RerankAll()
+		{
+			// TODO Uno: std::stable_sort is StableSort (see its note).
+			StableSort(m_ranks, (left, right) => left.Rank < right.Rank);
+
+			List<object?> rows = new(m_ranks.Count + m_evicted.Count);
+			foreach (var entry in m_ranks)
+			{
+				rows.Add(entry.Item);
+			}
+			foreach (var item in m_evicted)
+			{
+				rows.Add(item);
+			}
+
+			ClearRanks();
+			PopulateRanks(rows, m_generation);
 		}
 	}
 }

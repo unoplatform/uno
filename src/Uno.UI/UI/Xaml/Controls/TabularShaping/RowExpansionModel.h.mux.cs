@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TabularShaping\RowExpansionModel.h, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TabularShaping\RowExpansionModel.h, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -65,6 +65,10 @@ internal static partial class ShapingHelpers
 		// vanished (a filter removed its last row, the source was reassigned) lingers forever and
 		// the store grows unbounded across changing datasets. Silent: pruning a dead key changes
 		// no live key's resolved state.
+		//
+		// The live-key set must be COMPLETE -- grouping's is, because every group emits a header
+		// whether it is collapsed or not; a parent-key hierarchy passes every key in the unfiltered
+		// source, so intent hidden behind a collapse or a filter survives.
 		public partial void RetainOnly(HashSet<string> liveKeys);
 
 		private partial void SetDefaultExpanded(bool expanded);
