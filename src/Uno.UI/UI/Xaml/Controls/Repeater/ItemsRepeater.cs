@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Uno;
 using Uno.Disposables;
 using Uno.UI;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
@@ -650,11 +651,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (_dataSourceSubscriptionsRevoker.Disposable is null && m_itemsSourceView is not null)
 			{
-				m_itemsSourceView.CollectionChanged += OnItemsSourceViewChanged;
-				_dataSourceSubscriptionsRevoker.Disposable = Disposable.Create(() =>
-				{
-					m_itemsSourceView.CollectionChanged -= OnItemsSourceViewChanged;
-				});
+				_dataSourceSubscriptionsRevoker.Disposable = SubscribeToItemsSourceView(m_itemsSourceView, this);
 			}
 
 			// Uno-specific: re-supply the effective provider so layout-provided defaults survive an
@@ -702,6 +699,30 @@ namespace Microsoft.UI.Xaml.Controls
 			_stackLayoutMeasureCounter = 0u;
 		}
 
+		// Uno-specific: holds the repeater weakly, like WinUI's raw-'this' delegate, since a repeater that never loads
+		// never unloads to remove it. Static so the handler cannot capture the repeater. Only the repeater references the
+		// returned subscription, whose finalizer removes the handler from a view that outlives it.
+		private static IDisposable SubscribeToItemsSourceView(ItemsSourceView view, ItemsRepeater repeater)
+		{
+			var weakRepeater = new WeakReference<ItemsRepeater>(repeater);
+			NotifyCollectionChangedEventHandler handler = (sender, args) =>
+			{
+				if (weakRepeater.TryGetTarget(out var target))
+				{
+					target.OnItemsSourceViewChanged(sender, args);
+				}
+			};
+
+			view.CollectionChanged += handler;
+			return new WeakSourceSubscription<ItemsSourceView, NotifyCollectionChangedEventHandler>(
+				view,
+				handler,
+				static (v, h) => v.CollectionChanged -= h,
+				onDisposed: null,
+				typeof(ItemsRepeater),
+				"an ItemsSourceView subscription");
+		}
+
 		private void OnDataSourcePropertyChanged(ItemsSourceView oldValue, ItemsSourceView newValue)
 		{
 			if (m_isLayoutInProgress)
@@ -718,11 +739,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (newValue != null)
 			{
-				newValue.CollectionChanged += OnItemsSourceViewChanged;
-				_dataSourceSubscriptionsRevoker.Disposable = Disposable.Create(() =>
-				{
-					newValue.CollectionChanged -= OnItemsSourceViewChanged;
-				});
+				_dataSourceSubscriptionsRevoker.Disposable = SubscribeToItemsSourceView(newValue, this);
 			}
 
 			var layout = Layout;
