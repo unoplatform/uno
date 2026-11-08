@@ -1,11 +1,12 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewGroupInfo.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewGroupInfo.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
 using System;
 using System.ComponentModel;
+using Microsoft.UI.Xaml.Data;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using static Uno.UI.Helpers.WinUI.ResourceAccessor;
@@ -44,6 +45,33 @@ partial class TableViewGroupInfo
 		}
 
 		return countFormat;
+	}
+
+	private sealed class GroupInfoProperty : ICustomProperty
+	{
+		private readonly string m_name;
+		private readonly Type m_type;
+		private readonly Func<TableViewGroupInfo, object?> m_getter;
+
+		public GroupInfoProperty(string name, Type type, Func<TableViewGroupInfo, object?> getter)
+		{
+			m_name = name;
+			m_type = type;
+			m_getter = getter;
+		}
+
+		public Type Type => m_type;
+		public string Name => m_name;
+		public bool CanRead => true;
+		public bool CanWrite => false;
+
+		public object GetValue(object target) => m_getter((TableViewGroupInfo)target)!;
+
+		public void SetValue(object target, object value) => throw new NotImplementedException();
+
+		public object GetIndexedValue(object target, object index) => throw new NotImplementedException();
+
+		public void SetIndexedValue(object target, object value, object index) => throw new NotImplementedException();
 	}
 
 	internal TableViewGroupInfo(
@@ -105,6 +133,39 @@ partial class TableViewGroupInfo
 		CppWinRTHelpers.InvokeWinRTEvent(ref PropertyChanged, handler => handler(this, args));
 	}
 
+	// Uno specific: System.Type replaces winrt::TypeName.
+	Type ICustomPropertyProvider.Type => GetType();
+
+	ICustomProperty ICustomPropertyProvider.GetCustomProperty(string name)
+	{
+		switch (name)
+		{
+			case "Key":
+				return new GroupInfoProperty("Key", typeof(object), info => info.Key);
+			case "KeyText":
+				return new GroupInfoProperty("KeyText", typeof(string), info => info.KeyText);
+			case "ItemCount":
+				return new GroupInfoProperty("ItemCount", typeof(int), info => info.ItemCount);
+			case "ItemCountText":
+				return new GroupInfoProperty("ItemCountText", typeof(string), info => info.ItemCountText);
+			case "Level":
+				return new GroupInfoProperty("Level", typeof(int), info => info.Level);
+			case "IsExpandable":
+				return new GroupInfoProperty("IsExpandable", typeof(bool), info => info.IsExpandable);
+			case "IsExpanded":
+				return new GroupInfoProperty("IsExpanded", typeof(bool), info => info.IsExpanded);
+		}
+
+		return null!;
+	}
+
+	ICustomProperty ICustomPropertyProvider.GetIndexedProperty(string name, Type type) => null!;
+
+	string ICustomPropertyProvider.GetStringRepresentation() => m_keyText;
+
+	/// <inheritdoc />
+	public override string ToString() => m_keyText;
+
 	// C++/WinRT's operator== compares the ABI pointer of the interface currently held, with no
 	// QI, so the same object reached through different interfaces compares unequal. Boxed keys
 	// are also re-created per projection pass, so two *equal* keys are distinct objects --
@@ -144,10 +205,20 @@ partial class TableViewGroupInfo
 						return (ulong)left == (ulong)right;
 					case PropertyType.Boolean:
 						return (bool)left == (bool)right;
+					// NaN != NaN, but a NaN key is still one group; treat it as equal so the cached
+					// projection is updated in place rather than replaced.
 					case PropertyType.Double:
-						return (double)left == (double)right;
+					{
+						var l = (double)left;
+						var r = (double)right;
+						return l == r || (double.IsNaN(l) && double.IsNaN(r));
+					}
 					case PropertyType.Single:
-						return (float)left == (float)right;
+					{
+						var l = (float)left;
+						var r = (float)right;
+						return l == r || (float.IsNaN(l) && float.IsNaN(r));
+					}
 					case PropertyType.UInt8:
 						return (byte)left == (byte)right;
 					case PropertyType.Int16:

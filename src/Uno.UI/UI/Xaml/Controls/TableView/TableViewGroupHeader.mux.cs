@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewGroupHeader.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewGroupHeader.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -25,11 +25,38 @@ partial class TableViewGroupHeader
 	public TableViewGroupHeader()
 	{
 		this.SetTabularDefaultStyleKey();
+
+		WeakReference<TableViewGroupHeader> weakThis = new(this);
+		RegisterPropertyChangedCallback(UIElement.ContextFlyoutProperty,
+			(DependencyObject _, DependencyProperty _) =>
+			{
+				if (weakThis.TryGetTarget(out var strongThis))
+				{
+					strongThis.m_contextFlyoutOpeningRevoker.Disposable = TableViewDetails.HookContextFlyoutSuppression(strongThis);
+				}
+			});
 	}
 
 	protected override AutomationPeer OnCreateAutomationPeer() => new TableViewGroupHeaderAutomationPeer(this);
 
 	protected override Size MeasureOverride(Size availableSize)
+	{
+		var desired = MeasureBand(availableSize);
+
+		// The base measure realizes the content template, so a header created disabled, or given a new
+		// content template while disabled, is handled here.
+		if (!IsEnabled && ContentTemplateRoot != GetInspectedContentRoot())
+		{
+			UpdateDefaultCountOpacity();
+		}
+		return desired;
+	}
+
+	// Uno specific: WeakReference<T> has no get() returning null.
+	private UIElement? GetInspectedContentRoot()
+		=> m_inspectedContentRoot is not null && m_inspectedContentRoot.TryGetTarget(out var root) ? root : null;
+
+	private Size MeasureBand(Size availableSize)
 	{
 		// Same sum TableViewCellsPanel uses for a row, evaluated at the same point in the layout
 		// pass, so the band and the rows can never disagree.
@@ -76,16 +103,29 @@ partial class TableViewGroupHeader
 		base.OnApplyTemplate();
 
 		m_isEnabledChangedRevoker.Disposable = null;
+		m_templateRootContextRequestedRevoker.Disposable = null;
 		m_gridLineBorder = GetTemplateChild(s_GridLineBorderPartName) as Border;
+		var weakThis = new WeakReference<TableViewGroupHeader>(this);
+
+		// A group header's ContextFlyout (set through a TableViewGroupHeader Style) stays closed while
+		// a cell is editing.
+		m_templateRootContextRequestedRevoker.Disposable = TableViewDetails.HookTemplateRootContextRequested(this,
+			(UIElement _, ContextRequestedEventArgs args) =>
+			{
+				if (weakThis.TryGetTarget(out var strongThis) && strongThis.GetOwningTableView() is { } owner)
+				{
+					owner.SuppressContextRequestWhileEditing(args);
+				}
+			});
 
 		// Keep CommonStates in sync with IsEnabled so Disabled activates when a consumer toggles it
 		// at runtime, not only when it happens to be false at template time.
-		var weakThis = new WeakReference<TableViewGroupHeader>(this);
 		DependencyPropertyChangedEventHandler handler = (object sender, DependencyPropertyChangedEventArgs args) =>
 		{
 			if (weakThis.TryGetTarget(out var strongThis))
 			{
 				strongThis.UpdateVisualStates(true /* useTransitions */);
+				strongThis.UpdateDefaultCountOpacity();
 			}
 		};
 		IsEnabledChanged += handler;
@@ -93,6 +133,46 @@ partial class TableViewGroupHeader
 
 		UpdateVisualStates(false /* useTransitions */);
 		UpdateTerminalBottomGridLineSuppression();
+	}
+
+	private void UpdateDefaultCountOpacity()
+	{
+		// The disabled brush already dims the default count; its Style opacity would dim it twice.
+		if (IsEnabled)
+		{
+			if (m_defaultCount is { } enabledCount)
+			{
+				enabledCount.ClearValue(UIElement.OpacityProperty);
+			}
+			return;
+		}
+
+		TrackDefaultCount(ContentTemplateRoot);
+		if (m_defaultCount is { } count)
+		{
+			count.Opacity = 1.0;
+		}
+	}
+
+	private void TrackDefaultCount(UIElement? root)
+	{
+		if (root == GetInspectedContentRoot())
+		{
+			return;
+		}
+
+		if (m_defaultCount is { } previous)
+		{
+			previous.ClearValue(UIElement.OpacityProperty);
+			m_defaultCount = null;
+		}
+		m_inspectedContentRoot = root is not null ? new WeakReference<UIElement>(root) : null;
+
+		// Only the built-in template is touched: an app template's same-named element keeps its Opacity.
+		if (root is FrameworkElement rootElement && rootElement.Name == "TableViewDefaultGroupHeaderContentRoot")
+		{
+			m_defaultCount = rootElement.FindName("TableViewGroupHeaderItemCountText") as TextBlock;
+		}
 	}
 
 	internal void SetTerminalBottomGridLineSuppression(bool suppress)
@@ -113,7 +193,10 @@ partial class TableViewGroupHeader
 			{
 				thickness.Bottom = 0.0;
 			}
-			gridLineBorder.BorderThickness = thickness;
+			if (gridLineBorder.BorderThickness != thickness)
+			{
+				gridLineBorder.BorderThickness = thickness;
+			}
 		}
 	}
 
@@ -245,19 +328,22 @@ partial class TableViewGroupHeader
 			{
 				case VirtualKey.Enter:
 				case VirtualKey.Space:
-					RequestToggle();
 					args.Handled = true;
+					m_gestureFocusState = FocusState.Keyboard;
+					RequestToggle();
 					break;
 
 				case VirtualKey.Right:
 					// Right expands in LTR, collapses in RTL -- the TreeViewItem / Expander convention.
-					RequestExpansion(!isRtl);
 					args.Handled = true;
+					m_gestureFocusState = FocusState.Keyboard;
+					RequestExpansion(!isRtl);
 					break;
 
 				case VirtualKey.Left:
-					RequestExpansion(isRtl);
 					args.Handled = true;
+					m_gestureFocusState = FocusState.Keyboard;
+					RequestExpansion(isRtl);
 					break;
 
 				default:
@@ -278,9 +364,36 @@ partial class TableViewGroupHeader
 	protected override void OnPointerExited(PointerRoutedEventArgs args)
 	{
 		base.OnPointerExited(args);
+		// Only the pressing pointer may cancel the press (as TableViewRow): another contact or the mouse
+		// leaving must not drop an in-flight tap.
+		if (m_isPressed && args.Pointer.PointerId != m_pressedPointerId)
+		{
+			return;
+		}
 		m_isPointerOver = false;
 		m_isPressed = false;
+		m_pressedGroupIdentity = "";
 		UpdateVisualStates(true /* useTransitions */);
+	}
+
+	internal void ResetPointerStateInternal()
+	{
+		// Hover is left alone: it describes where the pointer is, not which group it acted on.
+		m_pressedGroupIdentity = "";
+		if (m_isPressed)
+		{
+			m_isPressed = false;
+			UpdateVisualStates(false /* useTransitions */);
+		}
+	}
+
+	private string GetGroupIdentity()
+	{
+		if (GetOwningTableView() is { } owner)
+		{
+			return owner.GetContainerIdentityInternal(this);
+		}
+		return "";
 	}
 
 	protected override void OnPointerPressed(PointerRoutedEventArgs args)
@@ -297,6 +410,10 @@ partial class TableViewGroupHeader
 		}
 
 		m_isPressed = true;
+		m_pressedPointerId = args.Pointer.PointerId;
+
+		// A reshape between press and release can recycle this container onto another group.
+		m_pressedGroupIdentity = GetGroupIdentity();
 
 		// The band owns the gesture: mark it handled so a press on a group header never reaches the
 		// row's selection handling.
@@ -313,14 +430,42 @@ partial class TableViewGroupHeader
 		base.OnPointerReleased(args);
 
 		bool wasPressed = m_isPressed;
+		var pressedIdentity = m_pressedGroupIdentity;
 		m_isPressed = false;
+		m_pressedGroupIdentity = "";
 		UpdateVisualStates(true /* useTransitions */);
 
 		// Toggle on release-inside, the standard click semantic: a press that drags off the band
 		// does not activate.
-		if (wasPressed && m_isPointerOver && IsExpandable)
+		if (!wasPressed || !m_isPointerOver || pressedIdentity != GetGroupIdentity())
+		{
+			return;
+		}
+
+		// Focus before the toggle so the toggle captures it for the restore after the reshape.
+		// Focus on release, not press: leaving an open editor commits it and can reshape mid-gesture.
+		if (Focus(FocusState.Pointer))
+		{
+			if (GetOwningTableView() is { } owner)
+			{
+				owner.SetCellCursorActiveInternal(false);
+			}
+		}
+
+		// The editor commit inside Focus() can reshape and recycle this header onto another group.
+		if (pressedIdentity != GetGroupIdentity())
+		{
+			if (IsExpandable)
+			{
+				args.Handled = true;
+			}
+			return;
+		}
+
+		if (IsExpandable)
 		{
 			args.Handled = true;
+			m_gestureFocusState = FocusState.Pointer;
 			RequestToggle();
 		}
 	}
@@ -328,8 +473,13 @@ partial class TableViewGroupHeader
 	protected override void OnPointerCaptureLost(PointerRoutedEventArgs args)
 	{
 		base.OnPointerCaptureLost(args);
+		if (m_isPressed && args.Pointer.PointerId != m_pressedPointerId)
+		{
+			return;
+		}
 		m_isPressed = false;
 		m_isPointerOver = false;
+		m_pressedGroupIdentity = "";
 		UpdateVisualStates(true /* useTransitions */);
 	}
 }

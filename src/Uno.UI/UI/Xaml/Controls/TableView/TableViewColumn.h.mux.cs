@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewColumn.h, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewColumn.h, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -16,6 +16,26 @@ partial class TableViewColumn
 	// MUX_DEFAULT_VALUE("120.0") in TableView.idl.
 	// TODO Uno: `static constexpr winrt::GridLength` in C++; a property, as GridLength cannot be a C# const.
 	internal static GridLength c_widthDefault => new(120.0, GridUnitType.Pixel);
+
+	// TODO Uno: Free functions in C++; call them as TableViewColumn.NonNegativeFiniteOrZero(...).
+	internal static double NonNegativeFiniteOrZero(double value) =>
+		double.IsFinite(value) && value >= 0.0 ? value : 0.0;
+
+	internal static double NonNegativeFiniteOrDefault(double value) =>
+		double.IsFinite(value) && value >= 0.0 ? value : c_widthDefault.Value;
+
+	internal static double MaxWidthForColumn(TableViewColumn column, double minWidth)
+	{
+		var maxWidth = column.MaxWidth;
+		if (double.IsNaN(maxWidth) || double.IsPositiveInfinity(maxWidth))
+		{
+			return double.PositiveInfinity;
+		}
+
+		// A negative MaxWidth is a malformed finite bound. Treat it as zero so it still clamps to
+		// MinWidth; only NaN and positive infinity mean there is no upper bound.
+		return Math.Max(minWidth, Math.Max(0.0, maxWidth));
+	}
 
 	// TableViewColumn();
 
@@ -55,7 +75,7 @@ partial class TableViewColumn
 	// void CustomSortComparer(winrt::ITableViewSortComparer const& value);
 
 	// Derived columns call this when one of their own properties invalidates realized cell content.
-	// void NotifyCellContentChanged();
+	// void NotifyCellContentChanged(bool resetAutoWidth = true);
 
 	// Keep the owner weak to avoid TableView -> Columns -> Column -> TableView cycles.
 	// bool SetOwningTableViewInternal(winrt::TableView const& owner);
@@ -76,13 +96,14 @@ partial class TableViewColumn
 	// void SetSortStateInternal(winrt::SortDirection direction);
 
 	// Internal — Auto size-to-content. The owning TableView pulls measured widths from the header
-	// and realized row panels; ResolveColumnWidths derives the current measured max each pass and
-	// stores the resulting nonnegative desired width here (shrink-capable — not a grow-only
-	// accumulator). Reset on data-set boundaries (ItemsSource / Columns replaced / CellTemplate /
-	// Header changes).
-	// void SetDesiredWidthInternal(double desiredWidth);
+	// and realized row panels; ResolveColumnWidths keeps the grow-only max of the row widths and of
+	// the header width separately, so hiding the headers drops only the header term. Both reset on
+	// data-set boundaries (ItemsSource / Columns replaced / CellTemplate / Header changes).
+	// void SetDesiredWidthInternal(double rowsDesiredWidth, double headerDesiredWidth);
 	// void ResetDesiredWidthInternal();
-	internal double DesiredWidthInternal() => m_desiredWidth;
+	internal double RowsDesiredWidthInternal() => m_rowsDesiredWidth;
+	internal double HeaderDesiredWidthInternal() => m_headerDesiredWidth;
+	internal double DesiredWidthInternal() => Math.Max(m_rowsDesiredWidth, m_headerDesiredWidth);
 
 	// Internal - resize: the width the app authored. A user resize rewrites Width as pixels, and
 	// the layout needs the original mode to know whether the table is meant to fit its viewport.
@@ -104,14 +125,17 @@ partial class TableViewColumn
 	// Write the resolved, clamped width into the read-only ActualWidth DP.
 	// void UpdateActualWidth();
 
-	// Monotonic max of pulled realized-cell measured widths for an Auto column (0 until first pull).
-	private double m_desiredWidth = 0.0;
+	// Monotonic maxima of the pulled realized-row cell and header measured widths for an Auto column
+	// (0 until first pull; the header term is 0 while headers are hidden).
+	private double m_rowsDesiredWidth = 0.0;
+	private double m_headerDesiredWidth = 0.0;
 	private GridLength m_authoredWidth = c_widthDefault;
 	private bool m_inUserResize = false;
 
 	private Binding? m_cellToolTipBinding;
 
 	private WeakReference<TableView>? m_owningTableView = null;
+	private readonly Uno.Disposables.SerialDisposable m_cellContextFlyoutToken = new();
 	private ITableViewSortComparer? m_customSortComparer = null;
 	private uint m_automationIdentity = 0;
 }

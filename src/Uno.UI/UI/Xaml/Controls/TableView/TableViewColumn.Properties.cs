@@ -1,17 +1,16 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\Generated\TableViewColumn.properties.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\Generated\TableViewColumn.properties.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls.Tabular;
 
 partial class TableViewColumn
 {
-	// Read-only DP written by the column's width resolve; the header host and realized cell panels
-	// arrange each cell to this width (no per-cell binding).
 	/// <summary>
 	/// Gets the resolved, MinWidth/MaxWidth-clamped width of the column.
 	/// </summary>
@@ -31,7 +30,6 @@ partial class TableViewColumn
 			typeof(TableViewColumn),
 			new FrameworkPropertyMetadata(120.0));
 
-	// Gates the resize affordance for this column only; the owner's CanUserResizeColumns gates all of them.
 	/// <summary>
 	/// Gets or sets a value that indicates whether the user can resize this column.
 	/// </summary>
@@ -51,8 +49,6 @@ partial class TableViewColumn
 			typeof(TableViewColumn),
 			new FrameworkPropertyMetadata(BoolBoxes.True, OnPropertyChanged));
 
-	// Per-column opt-out for the click-to-sort UX. Default true. When false the header click
-	// handler ignores this column; programmatic SortByColumn still works.
 	/// <summary>
 	/// Gets or sets a value that indicates whether clicking this column's header sorts it.
 	/// </summary>
@@ -72,7 +68,6 @@ partial class TableViewColumn
 			typeof(TableViewColumn),
 			new FrameworkPropertyMetadata(BoolBoxes.True, OnPropertyChanged));
 
-	// Editing visual. A column with no CellEditingTemplate and no built-in editor is not editable.
 	/// <summary>
 	/// Gets or sets the editing visual for the column's cells.
 	/// </summary>
@@ -92,7 +87,6 @@ partial class TableViewColumn
 			typeof(TableViewColumn),
 			new FrameworkPropertyMetadata(default(DataTemplate), OnPropertyChanged));
 
-	// Pins the column during horizontal scroll; Leading is implemented, Trailing reserved.
 	/// <summary>
 	/// Gets or sets the edge the column is pinned to during horizontal scrolling.
 	/// </summary>
@@ -131,7 +125,6 @@ partial class TableViewColumn
 			typeof(TableViewColumn),
 			new FrameworkPropertyMetadata(default(object), OnPropertyChanged));
 
-	// Optional header template; HeaderTemplateSelector takes precedence.
 	/// <summary>
 	/// Gets or sets the template used to display the header.
 	/// </summary>
@@ -170,8 +163,63 @@ partial class TableViewColumn
 			typeof(TableViewColumn),
 			new FrameworkPropertyMetadata(default(DataTemplateSelector), OnPropertyChanged));
 
-	// Opt-in header tooltip content; null or empty means no tooltip. Not a Binding property: a
-	// header is not bound against a row, so there is nothing to defer.
+	/// <summary>
+	/// Gets or sets the style applied to this column's header. It takes precedence over <see cref="TableView.ColumnHeaderStyle"/>.
+	/// </summary>
+	public Style? HeaderStyle
+	{
+		get => (Style?)GetValue(HeaderStyleProperty);
+		set => SetValue(HeaderStyleProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the HeaderStyle dependency property.
+	/// </summary>
+	public static DependencyProperty HeaderStyleProperty { get; } =
+		DependencyProperty.Register(
+			nameof(HeaderStyle),
+			typeof(Style),
+			typeof(TableViewColumn),
+			new FrameworkPropertyMetadata(default(Style), OnPropertyChanged));
+
+	/// <summary>
+	/// Gets or sets the flyout shown when a context menu is requested on one of this column's cells.
+	/// </summary>
+	public FlyoutBase? CellContextFlyout
+	{
+		get => (FlyoutBase?)GetValue(CellContextFlyoutProperty);
+		set => SetValue(CellContextFlyoutProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the CellContextFlyout dependency property.
+	/// </summary>
+	public static DependencyProperty CellContextFlyoutProperty { get; } =
+		DependencyProperty.Register(
+			nameof(CellContextFlyout),
+			typeof(FlyoutBase),
+			typeof(TableViewColumn),
+			new FrameworkPropertyMetadata(default(FlyoutBase)));
+
+	/// <summary>
+	/// Gets or sets the flyout shown when a context menu is requested on this column's header.
+	/// </summary>
+	public FlyoutBase? HeaderContextFlyout
+	{
+		get => (FlyoutBase?)GetValue(HeaderContextFlyoutProperty);
+		set => SetValue(HeaderContextFlyoutProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the HeaderContextFlyout dependency property.
+	/// </summary>
+	public static DependencyProperty HeaderContextFlyoutProperty { get; } =
+		DependencyProperty.Register(
+			nameof(HeaderContextFlyout),
+			typeof(FlyoutBase),
+			typeof(TableViewColumn),
+			new FrameworkPropertyMetadata(default(FlyoutBase)));
+
 	/// <summary>
 	/// Gets or sets the opt-in tooltip content for this column's header.
 	/// </summary>
@@ -191,7 +239,6 @@ partial class TableViewColumn
 			typeof(TableViewColumn),
 			new FrameworkPropertyMetadata(default(object), OnPropertyChanged));
 
-	// Per-column opt-out. A read-only column can still be the current cell, but cannot be edited.
 	/// <summary>
 	/// Gets or sets a value that indicates whether the column's cells cannot be edited.
 	/// </summary>
@@ -249,10 +296,6 @@ partial class TableViewColumn
 			typeof(TableViewColumn),
 			new FrameworkPropertyMetadata(20.0, OnPropertyChanged));
 
-	// Direction sequence repeated header clicks walk for THIS column. Per-column because the cycle
-	// describes how one column responds to being clicked again, and a table can reasonably mix
-	// policies - a metric column that should open on its largest values alongside a name column
-	// that should open A-Z. Read at click time, so a change needs no rebuild.
 	/// <summary>
 	/// Gets or sets the direction sequence repeated header clicks walk for this column.
 	/// </summary>
@@ -272,8 +315,6 @@ partial class TableViewColumn
 			typeof(TableViewColumn),
 			new FrameworkPropertyMetadata(TableViewSortCycle.AscendingDescending));
 
-	// Read-only DP driven by the owning TableView. None means the column is not part of the
-	// active sort.
 	/// <summary>
 	/// Gets the column's current sort direction. None means the column is not part of the active sort.
 	/// </summary>
@@ -293,15 +334,6 @@ partial class TableViewColumn
 			typeof(TableViewColumn),
 			new FrameworkPropertyMetadata(SortDirection.None));
 
-	// Property name on the row item used to extract the sort key. When empty, TableViewTextColumn
-	// falls back to its Binding.Path.Path; the base column returns an empty string and the column
-	// is only sortable if it supplies a CustomSortComparer.
-	//
-	// The path need not be unique. Several columns may name the same property - a common shape when
-	// one column formats a value and another ranks it. Each column sorts as its own independent
-	// axis, keyed on column identity rather than on this path, so duplicates neither collide nor
-	// prevent the table from being built. Sorting one of them leaves the others' SortDirection at
-	// None, since sorting is single-column: applying a sort clears any previous one.
 	/// <summary>
 	/// Gets or sets the property name on the row item used to extract the sort key.
 	/// </summary>
@@ -340,9 +372,6 @@ partial class TableViewColumn
 			typeof(TableViewColumn),
 			new FrameworkPropertyMetadata(Visibility.Visible, OnPropertyChanged));
 
-	// Width carries GridLength intent; ActualWidth is the resolved, MinWidth/MaxWidth-clamped
-	// pixels (see TableView_Layout.cpp). Pixel = exact; Auto = widest realized cell (grows within a
-	// data set); Star = a proportional share of the body viewport after fixed columns.
 	/// <summary>
 	/// Gets or sets the column width as a GridLength (Pixel, Auto or Star).
 	/// </summary>

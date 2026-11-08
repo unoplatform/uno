@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableView_Grouping.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableView_Grouping.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -183,8 +183,53 @@ partial class TableView
 		RequestGroupExpansion(container, expand);
 	}
 
-	private void RequestGroupExpansion(UIElement container, bool? desired)
+	internal void ExpandRowSubtree(UIElement container)
 	{
+		RequestGroupExpansion(container, true, true /* subtree */);
+	}
+
+	internal bool TryFocusParentRow(UIElement container)
+	{
+		var repeater = m_rowsRepeater;
+		if (repeater is null || container is null || m_tableViewSourceRowMetadata is null)
+		{
+			return false;
+		}
+
+		var index = repeater.GetElementIndex(container);
+		TableViewRowInfo info = default;
+		int parentIndex = -1;
+		if (index < 0 || !TryGetTableViewSourceRowInfo(index, ref info) || string.IsNullOrEmpty(info.ParentIdentity) ||
+			!m_tableViewSourceRowMetadata.TryGetIndexForIdentity(info.ParentIdentity, out parentIndex))
+		{
+			return false;
+		}
+
+		if (!FocusRow(parentIndex))
+		{
+			return false;
+		}
+
+		// Selection follows the keyboard cursor, as for Up/Down (drill is never Ctrl here).
+		SelectRowIndexFromInteraction(parentIndex, false /* toggle */);
+		return true;
+	}
+
+	private void RequestGroupExpansion(UIElement container, bool? desired, bool subtree = false)
+	{
+		// Consume the gesture state first so a request that goes nowhere can't leak it to a later one.
+		FocusState gestureState = FocusState.Unfocused;
+		if (container is TableViewGroupHeader header)
+		{
+			gestureState = header.TakeGestureFocusStateInternal();
+		}
+		else if (subtree)
+		{
+			// Only the Multiply key expands a row subtree, so restore as Keyboard even when the row was
+			// focused by a click: its rebuild recycles the row, which would otherwise strand focus.
+			gestureState = FocusState.Keyboard;
+		}
+
 		if (m_tableViewSourceRowMetadata is null)
 		{
 			return;
@@ -196,11 +241,22 @@ partial class TableView
 		// dropping the request). Identity is index-independent once captured.
 		string identity = TryGetContainerIdentity(container);
 
-		// Capture keyboard focus on this header (if any) so it can be restored after the deferred
-		// reshape recycles the container. Done here, while the container still owns focus.
-		CaptureGroupHeaderFocusForRestore(container, identity);
+		// Capture focus while the container still owns it; the deferred reshape recycles it.
+		CaptureContainerFocusForRestore(container, identity, gestureState);
 
-		QueueGroupExpansionByIdentity(identity, desired);
+		// A header toggles a group; anything else is a tree row.
+		var axis = container is TableViewGroupHeader
+			? BulkExpansionAxis.Groups
+			: BulkExpansionAxis.Rows;
+
+		// One group or node is use; a subtree is a bulk request, like ExpandAllGroups.
+		if (!subtree && !string.IsNullOrEmpty(identity))
+		{
+			TableViewTelemetry.MarkUsed(m_telemetrySession, m_telemetrySession.generation,
+				axis == BulkExpansionAxis.Groups ? TableViewTelemetry.Feature.Grouping : TableViewTelemetry.Feature.Hierarchy);
+		}
+
+		QueueGroupExpansionByIdentity(identity, desired, axis, subtree);
 	}
 
 	private string TryGetContainerIdentity(UIElement? container)
@@ -233,11 +289,15 @@ partial class TableView
 		}
 	}
 
-	private void CaptureGroupHeaderFocusForRestore(UIElement? container, string identity)
+	private void CaptureContainerFocusForRestore(
+		UIElement? container,
+		string identity,
+		FocusState gestureState = FocusState.Unfocused)
 	{
 		// Clear any prior capture: a fresh toggle supersedes an earlier one whose restore has not run.
 		m_pendingGroupFocusIdentity = "";
 		m_pendingGroupFocusState = FocusState.Unfocused;
+		m_pendingGroupFocusFromPointerGesture = false;
 
 		if (string.IsNullOrEmpty(identity) || container is null)
 		{
@@ -268,25 +328,55 @@ partial class TableView
 			return;
 		}
 
-		if (container is Control control)
+		// A data row's focus is usually on an inner cell/editor, so read the focused element's state.
+		var stateSource = container is TableViewRow
+			? focused as Control
+			: container as Control;
+
+		if (stateSource is { } control)
 		{
-			// Pointer focus draws no focus visual, so there is nothing to restore for a band click.
-			// Keyboard (and programmatic, e.g. a test driving Focus) carry a visual worth preserving.
-			var state = control.FocusState;
-			if (state == FocusState.Keyboard || state == FocusState.Programmatic)
+			// Headers restore pointer focus too (a band click focuses then collapses); data rows only
+			// keyboard/programmatic, since the row restore always focuses with Keyboard state.
+			bool isHeader = container is TableViewGroupHeader;
+			var state = gestureState != FocusState.Unfocused ? gestureState : control.FocusState;
+			bool restorable = isHeader
+				? state != FocusState.Unfocused
+				: (state == FocusState.Keyboard || state == FocusState.Programmatic);
+			if (restorable)
 			{
 				m_pendingGroupFocusIdentity = identity;
 				m_pendingGroupFocusState = state;
+				m_pendingGroupFocusFromPointerGesture = gestureState == FocusState.Pointer;
 			}
 		}
 	}
 
-	private string CaptureFocusedGroupHeaderForRestore()
+	private bool CanRestoreContainerFocus()
+	{
+		var root = XamlRoot;
+		if (root is null || !root.IsHostVisible)
+		{
+			return false;
+		}
+
+		// ItemsRepeater moves focus off a cleared container to a realized neighbour, still inside.
+		var focused = FocusManager.GetFocusedElement(root) as DependencyObject;
+		if (focused is null)
+		{
+			return true;
+		}
+
+		DependencyObject selfObject = this;
+		return focused == selfObject || SharedHelpers.IsAncestor(focused, selfObject, false /* checkVisibility */);
+	}
+
+	private string CaptureFocusedContainerForRestore()
 	{
 		// A bulk expand/collapse supersedes any earlier capture whose restore has not run, exactly as
 		// a fresh single-group toggle does.
 		m_pendingGroupFocusIdentity = "";
 		m_pendingGroupFocusState = FocusState.Unfocused;
+		m_pendingGroupFocusFromPointerGesture = false;
 
 		var root = XamlRoot;
 		if (root is null)
@@ -294,15 +384,31 @@ partial class TableView
 			return "";
 		}
 
-		// Walk out from the focused element to its header container, if it is inside one. Focus on a
-		// data row is deliberately not captured.
+		// Walk out from the focused element to its header container, if it is inside one. Data-row
+		// focus is captured only for a hierarchical source, where a row's chevron is the expansion
+		// target; in a flat grouped table, row focus is left alone.
+		bool captureRows = m_tableViewSourceRowMetadata is not null && m_tableViewSourceRowMetadata.IsHierarchicalSource();
 		var focused = FocusManager.GetFocusedElement(root) as DependencyObject;
 		for (DependencyObject? node = focused; node is not null; node = VisualTreeHelper.GetParent(node))
 		{
+			UIElement? container = null;
 			if (node is TableViewGroupHeader header)
 			{
-				var identity = TryGetContainerIdentity(header);
-				CaptureGroupHeaderFocusForRestore(header, identity);
+				container = header;
+			}
+			else if (node is TableViewRow row)
+			{
+				if (!captureRows)
+				{
+					break;
+				}
+				container = row;
+			}
+
+			if (container is not null)
+			{
+				var identity = TryGetContainerIdentity(container);
+				CaptureContainerFocusForRestore(container, identity);
 				return identity;
 			}
 		}
@@ -312,7 +418,11 @@ partial class TableView
 
 	// Directional request from a UIA provider or the band gesture. Identity is resolved here, while
 	// the container's index is still current, because the mutation below is deferred.
-	private void QueueGroupExpansionByIdentity(string identity, bool? desired)
+	private void QueueGroupExpansionByIdentity(
+		string identity,
+		bool? desired,
+		BulkExpansionAxis axis,
+		bool subtree = false)
 	{
 		if (string.IsNullOrEmpty(identity))
 		{
@@ -323,6 +433,9 @@ partial class TableView
 		// not idempotent: two Expand() calls would expand then collapse. Carrying `desired` through
 		// makes the deferred half an idempotent set.
 		var generation = m_rowMetadataGeneration;
+
+		// A bulk expand/collapse on this axis requested after this supersedes it (see ApplyGroupExpansionByIdentity).
+		var bulkGeneration = BulkExpansionGeneration(axis);
 
 		// Defer the structural mutation off the current callout. Running it inline re-projects rows
 		// while the caller's frame is still on the stack, which faults on the pointer path and
@@ -336,7 +449,7 @@ partial class TableView
 			{
 				if (weakThis.TryGetTarget(out var strongThis))
 				{
-					strongThis.ApplyGroupExpansionByIdentity(identity, desired, generation);
+					strongThis.ApplyGroupExpansionByIdentity(identity, desired, generation, axis, bulkGeneration, subtree);
 				}
 			});
 			return;
@@ -344,15 +457,28 @@ partial class TableView
 
 		// No dispatcher means this is not a UI thread (test host), so there is no in-flight callout to
 		// unwind and the hazard above cannot apply.
-		ApplyGroupExpansionByIdentity(identity, desired, generation);
+		ApplyGroupExpansionByIdentity(identity, desired, generation, axis, bulkGeneration, subtree);
 	}
 
-	private void ApplyGroupExpansionByIdentity(string identity, bool? desired, ulong generation)
+	private void ApplyGroupExpansionByIdentity(
+		string identity,
+		bool? desired,
+		ulong generation,
+		BulkExpansionAxis axis,
+		ulong bulkGeneration,
+		bool subtree = false)
 	{
 		// Identities are value-based strings, not tied to a provider instance. If ItemsSource was
 		// replaced while this request sat on the queue, the same string could name an unrelated group
 		// in the new source -- exactly the wrong-group mutation this path exists to prevent.
 		if (generation != m_rowMetadataGeneration)
+		{
+			return;
+		}
+
+		// A bulk expand/collapse on this axis was requested after this one. It is the later intent and
+		// clears per-item exceptions, so applying this now would resurrect one; drop it.
+		if (bulkGeneration != BulkExpansionGeneration(axis))
 		{
 			return;
 		}
@@ -370,36 +496,61 @@ partial class TableView
 			{
 				QueueCoalescedEditReshape(() =>
 				{
-					ApplyGroupExpansionByIdentity(identity, desired, generation);
+					ApplyGroupExpansionByIdentity(identity, desired, generation, axis, bulkGeneration, subtree);
 				});
 			}
 			return;
 		}
 
 		bool changed = false;
-		try
+		// Local strong ref: a handler may re-declare the shape and replace the provider mid-call. Edit-ending handlers
+		// ran app code above, so re-check the source before mutating; a stale request still falls through to drain
+		// queued edit reshapes.
+		var provider = m_tableViewSourceRowMetadata;
+		if (provider is not null && generation == m_rowMetadataGeneration)
 		{
-			if (desired.HasValue)
+			// While actions are tracked, every request is, so a failure writes TableView_Error. A request that changes one
+			// group or tree node also runs a TiP test. A subtree is a bulk request, like ExpandAllGroups, and a request
+			// that changes nothing runs none: each arrow on a group header is requested by the header and again by
+			// TryHandleGroupHeaderExpandCollapseKey. The lookup runs only while actions are tracked.
+			var withTest = TracksTipActions() && !subtree && provider.WouldChangeExpansion(identity, desired);
+			using ActionTip tip = new(this, axis == BulkExpansionAxis.Groups ?
+					TableViewTip.Operation.GroupExpansion : TableViewTip.Operation.HierarchyExpansion,
+				TableViewTip.Stage.Expansion, true, withTest);
+			try
 			{
-				// Idempotent set: applying the state we already have is a no-op in the provider.
-				if (desired.Value)
+				if (subtree)
 				{
-					m_tableViewSourceRowMetadata.Expand(identity);
+					provider.ExpandSubtree(identity);
+					changed = true;
+				}
+				else if (desired.HasValue)
+				{
+					// Idempotent set: applying the state we already have is a no-op, and reports no change.
+					changed = desired.Value
+						? provider.Expand(identity)
+						: provider.Collapse(identity);
 				}
 				else
 				{
-					m_tableViewSourceRowMetadata.Collapse(identity);
+					changed = provider.Toggle(identity);
 				}
-				changed = true;
+
+				if (generation != m_rowMetadataGeneration) { tip.Ignore(TableViewTip.IgnoreReason.Stale); }
+				else if (changed) { tip.Complete(); }
+				// No change shown yet. A tested request expected one; an untested one closes without a TiP result.
+				else { tip.Ignore(TableViewTip.IgnoreReason.DeferredOrUnproven); }
 			}
-			else
+			catch (Exception ex)
 			{
-				changed = m_tableViewSourceRowMetadata.Toggle(identity);
+				// Best-effort: the grouping source or its state can change during cleanup. Expansion reads only the
+				// projection TableView built, so a failure is TableView's unless the source was replaced or the exception
+				// is tagged as the app's.
+				var fault = TableViewTip.CurrentFault(ex);
+				if (generation != m_rowMetadataGeneration) { tip.Ignore(TableViewTip.IgnoreReason.Stale); }
+				else if (fault.appFault != TableViewTip.AppFaultKind.None) { tip.ApplicationFault(fault.appFault, fault.error); }
+				else { tip.Fail(fault.error); }
 			}
-		}
-		catch (Exception)
-		{
-			// Best-effort: the grouping source or its state can change during cleanup.
 		}
 
 		DrainCoalescedEditReshape();
@@ -409,17 +560,73 @@ partial class TableView
 		if (changed)
 		{
 			QueueGroupExpansionRowRefresh();
+			// The toggled row keeps its index, so it is never re-prepared; restamp it here. In a tree,
+			// rows below the splice may still report pre-reconcile indices, so restamp again once the
+			// repeater has reconciled. Flat grouped rows carry no tree state, so one pass is enough.
+			RefreshRealizedRowHierarchyState();
+			if (m_tableViewSourceRowMetadata is not null && m_tableViewSourceRowMetadata.IsHierarchicalSource())
+			{
+				QueueRefreshRealizedRowHierarchyState();
+			}
 			RaiseGroupStructureChanged();
 		}
 
-		// Restore keyboard focus to the toggled header even when nothing structurally changed: a
+		// Restore keyboard focus to the toggled header or row even when nothing structurally changed: a
 		// non-expandable/no-op toggle still ran the container through the reshape path, and leaving
 		// focus stranded is the very bug this guards. Matches on identity, so an unrelated queued
 		// toggle does not consume this restore.
-		RestoreGroupHeaderFocusIfPending(identity);
+		RestoreContainerFocusIfPending(identity);
+
+		if (changed && axis == BulkExpansionAxis.Rows && !subtree &&
+			generation == m_rowMetadataGeneration && provider == m_tableViewSourceRowMetadata &&
+			bulkGeneration == BulkExpansionGeneration(axis))
+		{
+			AnnounceRowExpansionChange(identity);
+		}
 	}
 
-	private void RestoreGroupHeaderFocusIfPending(string identity)
+	private void AnnounceRowExpansionChange(string identity)
+	{
+		if (!AutomationPeer.ListenerExists(AutomationPeer.NotificationEvent) ||
+			m_tableViewSourceRowMetadata is null || !m_tableViewSourceRowMetadata.IsHierarchicalSource())
+		{
+			return;
+		}
+
+		try
+		{
+			int index = -1;
+			TableViewRowInfo info = default;
+			if (!m_tableViewSourceRowMetadata.TryGetIndexForIdentity(identity, out index) ||
+				!TryGetTableViewSourceRowInfo(index, ref info) ||
+				info.Kind != TableViewRowKind.Data || !info.IsExpandable)
+			{
+				return;
+			}
+
+			if (FrameworkElementAutomationPeer.FromElement(this) is { } peer)
+			{
+				var announcement = ResourceAccessor.GetLocalizedStringResource(
+					info.IsExpanded ? ResourceAccessor.SR_TableViewRowExpanded : ResourceAccessor.SR_TableViewRowCollapsed);
+				if (!string.IsNullOrEmpty(announcement))
+				{
+					// Narrator does not voice the DataItem's ExpandCollapse change. Announce the
+					// completed request here, not during row preparation or bulk expansion.
+					peer.RaiseNotificationEvent(
+						AutomationNotificationKind.ActionCompleted,
+						AutomationNotificationProcessing.MostRecent,
+						announcement,
+						"TableViewRowExpansionChanged");
+				}
+			}
+		}
+		catch (Exception)
+		{
+			// Narrator feedback is best-effort; announcement failures must not affect row expansion.
+		}
+	}
+
+	private void RestoreContainerFocusIfPending(string identity)
 	{
 		if (string.IsNullOrEmpty(m_pendingGroupFocusIdentity) || m_pendingGroupFocusIdentity != identity)
 		{
@@ -427,13 +634,22 @@ partial class TableView
 		}
 
 		var focusState = m_pendingGroupFocusState;
+		bool fromPointerGesture = m_pendingGroupFocusFromPointerGesture;
 		m_pendingGroupFocusIdentity = "";
 		m_pendingGroupFocusState = FocusState.Unfocused;
+		m_pendingGroupFocusFromPointerGesture = false;
 
 		// Defer to after the reshape's relayout. The reprojection triggered by the toggle recycles the
 		// header container during the next layout pass; focusing now would land on a container layout
 		// is about to recycle, dropping focus a second time. A one-shot LayoutUpdated fires once the
-		// tree has settled, mirroring FocusRow's deferred-focus pattern.
+		// tree has settled.
+		ArmContainerFocusRestore(identity, focusState, fromPointerGesture, s_containerFocusRestoreAttempts);
+	}
+
+	// Re-armed while the header is still unarranged after the relayout; the last attempt focuses anyway.
+	private void ArmContainerFocusRestore(
+		string identity, FocusState focusState, bool fromPointerGesture, int attemptsLeft)
+	{
 		if (m_pendingGroupFocusLayoutToken.Disposable is not null)
 		{
 			m_pendingGroupFocusLayoutToken.Disposable = null;
@@ -453,39 +669,50 @@ partial class TableView
 			}
 
 			// This runs from a LAYOUT callback, where an escaping exception reaches no app handler
-			// and fails the process fast instead. FocusGroupHeaderByIdentity realizes a container
+			// and fails the process fast instead. FocusContainerByIdentity realizes a container
 			// and moves focus, both of which can throw when the projection has moved underneath a
 			// deferred restore.
 			try
 			{
-				strongThis.FocusGroupHeaderByIdentity(identity, focusState);
+				if (!strongThis.CanRestoreContainerFocus())
+				{
+					return;
+				}
+
+				bool finalAttempt = attemptsLeft <= 1;
+				if (!strongThis.FocusContainerByIdentity(identity, focusState, fromPointerGesture, finalAttempt))
+				{
+					strongThis.ArmContainerFocusRestore(identity, focusState, fromPointerGesture, attemptsLeft - 1);
+				}
 			}
 			catch (Exception)
 			{
-				// Best-effort focus restore: the group can be gone by the time layout settles.
+				// Best-effort focus restore: the header or row can be gone by the time layout settles.
 			}
 		};
 		LayoutUpdated += onLayoutUpdated;
 		m_pendingGroupFocusLayoutToken.Disposable = Disposable.Create(() => LayoutUpdated -= onLayoutUpdated);
 	}
 
-	private void FocusGroupHeaderByIdentity(string identity, FocusState focusState)
+	// Returns false only when a non-final attempt found the group header not yet arranged.
+	private bool FocusContainerByIdentity(
+		string identity, FocusState focusState, bool fromPointerGesture, bool finalAttempt)
 	{
 		if (string.IsNullOrEmpty(identity) || m_tableViewSourceRowMetadata is null)
 		{
-			return;
+			return true;
 		}
 
 		int index = -1;
 		if (!m_tableViewSourceRowMetadata.TryGetIndexForIdentity(identity, out index) || index < 0)
 		{
-			return;
+			return true;
 		}
 
 		var repeater = m_rowsRepeater;
 		if (repeater is null)
 		{
-			return;
+			return true;
 		}
 
 		// The metadata provider and repeater own separate views that can absorb reshapes at different
@@ -494,83 +721,218 @@ partial class TableView
 		var sourceView = repeater.ItemsSourceView;
 		if (sourceView is null || index >= sourceView.Count)
 		{
-			return;
+			return true;
+		}
+
+		// Data row: a splice keeps focus in place; restore only if the Reset recycled the container.
+		TableViewRowInfo info = default;
+		if (TryGetTableViewSourceRowInfo(index, ref info) && info.Kind == TableViewRowKind.Data)
+		{
+			if (XamlRoot is { } root)
+			{
+				var focused = FocusManager.GetFocusedElement(root) as DependencyObject;
+				for (DependencyObject? node = focused; node is not null; node = VisualTreeHelper.GetParent(node))
+				{
+					if (node is TableViewRow row)
+					{
+						if (repeater.GetElementIndex(row) == index)
+						{
+							return true;
+						}
+						break;
+					}
+				}
+			}
+
+			FocusRow(index);
+			return true;
 		}
 
 		var element = repeater.GetOrCreateElement(index);
 		if (element is null)
 		{
-			return;
+			return true;
 		}
 
 		// Only a group header is a valid target: after a re-sort or source swap the identity's index
 		// could now name a data row, and focusing that with a header's intent would be wrong.
 		if (element is not TableViewGroupHeader)
 		{
-			return;
+			return true;
 		}
 
-		if (element is FrameworkElement frameworkElement)
+		if (!IsRowElementArranged(element))
 		{
-			frameworkElement.StartBringIntoView();
+			// The layout can re-project the source; the header must still be this group's, at index.
+			var expectedItem = GetRowsSourceItemAt(index);
+			int revalidatedIndex = -1;
+			bool sameHeader = ArrangeAndRevalidate(element, index, expectedItem) &&
+				m_tableViewSourceRowMetadata is not null &&
+				m_tableViewSourceRowMetadata.TryGetIndexForIdentity(identity, out revalidatedIndex) &&
+				revalidatedIndex == index &&
+				element is TableViewGroupHeader;
+			if (!sameHeader)
+			{
+				if (!finalAttempt)
+				{
+					return false;
+				}
+				if (!fromPointerGesture && expectedItem is not null)
+				{
+					BeginPendingBodyFocus(index, m_currentCellColumn, false /* cellLevel */, null, expectedItem);
+					m_pendingReshapeFocusState = focusState == FocusState.Unfocused ? FocusState.Keyboard : focusState;
+				}
+				return true;
+			}
+			if (!IsRowElementArranged(element) && !finalAttempt)
+			{
+				return false;
+			}
 		}
 
 		if (element is Control control)
 		{
 			control.Focus(focusState);
 		}
+
+		// The body scrolls itself to the header; finish through the attempt loop if the header still
+		// sits at an estimated position outside the viewport.
+		if (!fromPointerGesture && !IsRowElementInViewport(element))
+		{
+			BringRowElementIntoView(element, null);
+			BeginPendingBodyFocus(index, m_currentCellColumn, false /* cellLevel */, null);
+			m_pendingReshapeFocusState = focusState == FocusState.Unfocused ? FocusState.Keyboard : focusState;
+		}
+		return true;
 	}
 
 	// ----- Grouping commands -----
 	// Expands or collapses every group in one batch. Individual groups are expanded and collapsed
 	// through the group header's ExpandCollapse pattern or by clicking the header itself; these
 	// are the programmatic bulk counterparts. Both are no-ops when the source is not grouped.
+	/// <summary>
+	/// Expands every group in one batch. A no-op when the source is not grouped.
+	/// </summary>
 	public void ExpandAllGroups()
 	{
-		SetAllGroupsExpansion(true);
+		SetBulkExpansion(true, BulkExpansionAxis.Groups);
 	}
 
+	/// <summary>
+	/// Collapses every group in one batch. A no-op when the source is not grouped.
+	/// </summary>
 	public void CollapseAllGroups()
 	{
-		SetAllGroupsExpansion(false);
+		SetBulkExpansion(false, BulkExpansionAxis.Groups);
 	}
 
-	// Bulk counterpart of ApplyGroupExpansionByIdentity. No UIA callout to unwind here - the caller is
-	// the app - so this runs inline, but it still has to coalesce behind an in-flight edit for the same
-	// reason: the edit sits over a row that the reshape is about to move.
-	private void SetAllGroupsExpansion(bool expand)
+	/// <summary>
+	/// Expands every expandable row in one batch. A no-op when the source is not hierarchical.
+	/// </summary>
+	public void ExpandAllRows()
+	{
+		SetBulkExpansion(true, BulkExpansionAxis.Rows);
+	}
+
+	/// <summary>
+	/// Collapses every expandable row in one batch. A no-op when the source is not hierarchical.
+	/// </summary>
+	public void CollapseAllRows()
+	{
+		SetBulkExpansion(false, BulkExpansionAxis.Rows);
+	}
+
+	// Bulk counterpart of ApplyGroupExpansionByIdentity for either axis. Runs inline (no UIA
+	// callout), but still coalesces behind an in-flight edit.
+	private void SetBulkExpansion(bool expand, BulkExpansionAxis axis)
 	{
 		if (m_tableViewSourceRowMetadata is null)
 		{
 			return;
 		}
 
+		// Keep documented no-ops from committing an open edit.
+		bool hasAxis = (axis == BulkExpansionAxis.Rows)
+			? m_tableViewSourceRowMetadata.IsHierarchicalSource()
+			: IsTableViewSourceGrouped();
+		if (!hasAxis)
+		{
+			return;
+		}
+
+		// Stamped at the request, so a per-item request made after this one - even while this one is
+		// deferred behind an ending edit - is not mistaken for an older intent.
+		++BulkExpansionGeneration(axis);
+
+		ApplyBulkExpansion(expand, axis);
+	}
+
+	private void ApplyBulkExpansion(bool expand, BulkExpansionAxis axis)
+	{
+		if (m_tableViewSourceRowMetadata is null)
+		{
+			return;
+		}
+
+		// Older deferred work runs first, so a provider it replaces does not make this request look stale.
+		FlushDeferredEditReshapes();
+		// That work may have removed the axis; a documented no-op must not end an open edit.
+		if (m_tableViewSourceRowMetadata is null ||
+			!((axis == BulkExpansionAxis.Rows) ? m_tableViewSourceRowMetadata.IsHierarchicalSource() : IsTableViewSourceGrouped()))
+		{
+			return;
+		}
+		ulong generation = m_rowMetadataGeneration;
 		if (!TryTerminateEditForControlInitiatedReshape())
 		{
 			if (m_editState == EditState.Ending)
 			{
 				QueueCoalescedEditReshape(() =>
 				{
-					SetAllGroupsExpansion(expand);
+					ApplyBulkExpansion(expand, axis);
 				});
 			}
 			return;
 		}
 
-		var focusedGroupIdentity = CaptureFocusedGroupHeaderForRestore();
+		// Both axes: row expansion under groups also recycles focused header containers.
+		var focusedGroupIdentity = CaptureFocusedContainerForRestore();
 
 		bool changed = false;
 		try
 		{
-			if (expand)
+			// Local strong ref, as in ApplyGroupExpansionByIdentity; edit-ending handlers may have
+			// replaced or cleared the source.
+			var provider = m_tableViewSourceRowMetadata;
+			if (provider is not null && generation == m_rowMetadataGeneration)
 			{
-				m_tableViewSourceRowMetadata.ExpandAllGroups();
+				switch (axis)
+				{
+					case BulkExpansionAxis.Groups:
+						if (expand)
+						{
+							provider.ExpandAllGroups();
+						}
+						else
+						{
+							provider.CollapseAllGroups();
+						}
+						break;
+
+					case BulkExpansionAxis.Rows:
+						if (expand)
+						{
+							provider.ExpandAllRows();
+						}
+						else
+						{
+							provider.CollapseAllRows();
+						}
+						break;
+				}
+
+				changed = true;
 			}
-			else
-			{
-				m_tableViewSourceRowMetadata.CollapseAllGroups();
-			}
-			changed = true;
 		}
 		catch (Exception)
 		{
@@ -582,15 +944,45 @@ partial class TableView
 		if (changed)
 		{
 			QueueGroupExpansionRowRefresh();
+			// Sync for rows that kept their index; queued for rows whose index the splice shifted.
+			RefreshRealizedRowHierarchyState();
+			QueueRefreshRealizedRowHierarchyState();
+
+			// Both axes: under a grouped tree, row expansion changes group contents.
 			RaiseGroupStructureChanged();
 		}
 
-		RestoreGroupHeaderFocusIfPending(focusedGroupIdentity);
+		RestoreContainerFocusIfPending(focusedGroupIdentity);
+	}
+
+	// Restamps every realized row; rows that kept their index after a reshape are stale.
+	private void RefreshRealizedRowHierarchyState()
+	{
+		var repeater = m_rowsRepeater;
+		if (repeater is null)
+		{
+			return;
+		}
+
+		ForEachRealizedRow(row =>
+		{
+			// A container awaiting recycle reports -1; its state is about to be re-derived on prepare.
+			var index = repeater.GetElementIndex(row);
+			if (index >= 0)
+			{
+				RefreshRowHierarchyState(row, index);
+			}
+		});
 	}
 
 	private void RaiseGroupStructureChanged()
 	{
 		QueueTerminalGridLineRefresh();
+
+		if (!AutomationPeer.ListenerExists(AutomationEvents.StructureChanged))
+		{
+			return;
+		}
 
 		if (FrameworkElementAutomationPeer.FromElement(this) is TableViewAutomationPeer peer)
 		{
@@ -749,14 +1141,40 @@ partial class TableView
 		bool isExpanded = false;
 		bool isExpandable = false;
 
-		if (GroupedEntry.TryGetGroupedEntry(header.DataContext) is { } entry)
+		// Resolve from the PROJECTION at `index`: a reshape can rebind a pooled header in place, so its
+		// DataContext may still be the previous projection's entry. DataContext is only the fallback.
+		object? groupRow = null;
+		if (hasRowInfo && m_rowsItemsSourceView is { } rowsView && index >= 0 && index < rowsView.Count)
+		{
+			try
+			{
+				groupRow = rowsView.GetAt(index);
+			}
+			catch (Exception)
+			{
+				// Best-effort: the projection can change underneath a deferred reshape.
+			}
+		}
+		if (groupRow is null)
+		{
+			groupRow = header.DataContext;
+			if (groupRow is TableViewGroupInfo)
+			{
+				// Already prepared once: DataContext is the projection set below, not the entry.
+				groupRow = headerImpl.GroupEntryInternal();
+			}
+		}
+
+		if (GroupedEntry.TryGetGroupedEntry(groupRow) is { } entry)
 		{
 			// TableViewGroupInfo.Key is contracted (TableView.idl) as the GroupBy key, not the
 			// internal group object. entry->Group() is the ShapedGroup (an ICollectionViewGroup);
 			// unwrap it to the key it carries so an app template binding {Binding Key} sees the key
 			// value, not the projection wrapper. KeyText / display is unaffected either way.
 			groupKey = GetGroupHeaderKey(entry);
-			itemCount = entry.GroupItemCount();
+			// Prefer row metadata (root count) over the entry's span count under a hierarchy; the entry is
+			// the fallback while metadata describes a different row.
+			itemCount = hasRowInfo ? rowInfo.ChildCount : entry.GroupItemCount();
 			isExpanded = hasRowInfo ? rowInfo.IsExpanded : entry.IsExpanded();
 			isExpandable = hasRowInfo ? rowInfo.IsExpandable : (entry.GroupItemCount() > 0);
 			level = hasRowInfo ? Math.Max(0, rowInfo.Level) : 0;
@@ -767,7 +1185,7 @@ partial class TableView
 			// today, since GetRowKindForItem derives the kind from exactly this probe). Guard on
 			// hasRowInfo so this cannot silently render a default-initialized TableViewRowInfo --
 			// IsExpandable=false would give a dead chevron.
-			groupKey = header.DataContext;
+			groupKey = groupRow;
 			if (hasRowInfo)
 			{
 				itemCount = rowInfo.ChildCount;
@@ -789,9 +1207,8 @@ partial class TableView
 			header.ClearValue(ContentControl.ContentTemplateProperty);
 		}
 
-		// Update the projection in place. Re-pointing Content at a fresh instance every prepare would
-		// re-evaluate every binding in the content template and drop any binding the app made against
-		// the previous instance.
+		// Keep bindings live within a group, but never retarget an object held by an open menu to a
+		// different group when its header is recycled.
 		var keyText = StringifyGroupKey(groupKey);
 		var existing = header.Content as TableViewGroupInfo;
 
@@ -817,9 +1234,9 @@ partial class TableView
 			: isExpanded ? ExpandCollapseState.Expanded
 			: ExpandCollapseState.Collapsed;
 
-		if (existing is not null)
+		if (sameGroup)
 		{
-			existing.UpdateInternal(groupKey, itemCount, level, keyText);
+			existing!.UpdateInternal(groupKey, itemCount, level, keyText);
 		}
 		else
 		{
@@ -830,12 +1247,71 @@ partial class TableView
 		header.IsExpandable = isExpandable;
 		header.IsExpanded = isExpanded;
 
+		// Expose the projection as the header's DataContext, as a data row exposes its item, so
+		// bindings in a group header Style and in its ContextFlyout (the flyout takes its target's
+		// DataContext) see TableViewGroupInfo rather than the internal projection entry.
+		headerImpl.SetGroupEntryInternal(groupRow);
+		if (header.Content is { } info && !ReferenceEquals(header.DataContext, info))
+		{
+			header.DataContext = info;
+		}
+
 		if (sameGroup && previousState != newState)
 		{
 			headerImpl.RaiseExpandCollapseStateChanged(previousState, newState);
 		}
 
 		UpdateGroupHeaderWidth(header);
+	}
+
+	private void ForEachRealizedGroupHeader(Action<TableViewGroupHeader, int> fn)
+	{
+		var repeater = m_rowsRepeater;
+		if (repeater is null || fn is null)
+		{
+			return;
+		}
+
+		var childCount = VisualTreeHelper.GetChildrenCount(repeater);
+		for (int i = 0; i < childCount; ++i)
+		{
+			if (VisualTreeHelper.GetChild(repeater, i) is TableViewGroupHeader header)
+			{
+				var index = repeater.GetElementIndex(header);
+				if (index < 0)
+				{
+					continue;
+				}
+
+				fn(header, index);
+			}
+		}
+	}
+
+	private void RefreshRealizedGroupHeadersAfterExpansion()
+	{
+		if (!IsTableViewSourceGrouped())
+		{
+			return;
+		}
+
+		ForEachRealizedGroupHeader((header, index) =>
+		{
+			PrepareGroupHeaderElement(header, index);
+		});
+	}
+
+	private void OnGroupHeaderTemplatePropertyChanged(DependencyPropertyChangedEventArgs args)
+	{
+		if (ReferenceEquals(args.OldValue, args.NewValue))
+		{
+			return;
+		}
+
+		ForEachRealizedGroupHeader((header, index) =>
+		{
+			PrepareGroupHeaderElement(header, index);
+		});
 	}
 
 	private void ClearGroupHeaderElement(TableViewGroupHeader? header)
@@ -845,17 +1321,18 @@ partial class TableView
 			return;
 		}
 
-		// Leave Content in place: the pooled header is handed back for the next group and
-		// UpdateInternal re-points the same projection, which is the whole reason bindings survive
-		// recycling. Only the app-owned template is dropped, so a GroupHeaderTemplate change while
-		// this header sits in the pool cannot resurface.
+		// Leave Content in place for a same-group prepare. A different group gets a fresh projection,
+		// so references held by an open menu retain their original identity. Drop the app-owned
+		// template so a GroupHeaderTemplate change while this header sits in the pool cannot resurface.
 		//
 		// The owning-TableView weak ref is deliberately NOT cleared. On the element-factory path the
 		// repeater leaves recycled containers parented, so an AT client that holds a provider across a
 		// scroll can still call Expand()/Row()/ContainingGrid() on this element -- nulling the owner
 		// turns those into silent no-ops, which is worse than the ancestor walk it replaced. A weak
 		// ref costs nothing to keep and stays correct.
+		header.ResetPointerStateInternal();
 		header.ClearValue(ContentControl.ContentTemplateProperty);
+		header.SetGroupEntryInternal(null);
 	}
 
 	private void UpdateGroupHeaderWidth(TableViewGroupHeader? header)

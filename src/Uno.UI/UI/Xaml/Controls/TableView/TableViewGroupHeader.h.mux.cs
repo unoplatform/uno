@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewGroupHeader.h, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewGroupHeader.h, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -80,19 +80,50 @@ partial class TableViewGroupHeader
 	internal bool IsToggleHooked() => m_toggleHooked;
 	internal void SetToggleHooked() => m_toggleHooked = true;
 
+	// void ResetPointerStateInternal();
+
+	// Consumed once by RequestGroupExpansion so the focus restore uses the gesture's state.
+	internal void SetGestureFocusStateInternal(FocusState state) => m_gestureFocusState = state;
+	internal FocusState TakeGestureFocusStateInternal()
+	{
+		var state = m_gestureFocusState;
+		m_gestureFocusState = FocusState.Unfocused;
+		return state;
+	}
+
+	// Internal: the projection entry this header was last prepared for. DataContext carries the
+	// public TableViewGroupInfo once prepared, so a re-prepare that cannot read the projection
+	// falls back to this instead.
+	internal object? GroupEntryInternal() => m_groupEntry;
+	internal void SetGroupEntryInternal(object? entry) => m_groupEntry = entry;
+
 	// private:
 	// void UpdateVisualStates(bool useTransitions);
+	// void UpdateDefaultCountOpacity();
+	// void TrackDefaultCount(winrt::UIElement const& root);
+	// winrt::Size MeasureBand(winrt::Size const& availableSize);
 	// void UpdateTerminalBottomGridLineSuppression();
+
+	// winrt::hstring GetGroupIdentity();
 
 	// Mirror the authoritative IsExpandable/IsExpanded DPs onto the bound projection.
 	// void SyncExpansionToContent();
 
 	private readonly SerialDisposable m_isEnabledChangedRevoker = new();
+	private readonly SerialDisposable m_templateRootContextRequestedRevoker = new();
+	private readonly SerialDisposable m_contextFlyoutOpeningRevoker = new();
 	private Border? m_gridLineBorder;
+	// The count in the default content template, cached per inspected ContentTemplateRoot.
+	private TextBlock? m_defaultCount;
+	private WeakReference<UIElement>? m_inspectedContentRoot = null;
+	private object? m_groupEntry;
 
 	private bool m_isPointerOver = false;
 	private bool m_isPressed = false;
+	private uint m_pressedPointerId = 0;
 	private bool m_suppressBottomGridLine = false;
+	private string m_pressedGroupIdentity = "";
+	private FocusState m_gestureFocusState = FocusState.Unfocused;
 
 	private WeakReference<TableView>? m_owningTableView = null;
 

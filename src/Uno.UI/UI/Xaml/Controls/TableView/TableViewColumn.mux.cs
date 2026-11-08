@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewColumn.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewColumn.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
 using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 
@@ -41,6 +42,40 @@ partial class TableViewColumn
 			}
 		}
 		return false;
+	}
+
+	// Realizing and focusing a CellEditingTemplate's content runs the app's code, so a throw there leaves tagged as the
+	// app's; the rest of the editing hooks is TableView's own code.
+	private static T RunEditorContent<T>(bool appContent, Func<T> call)
+	{
+		try
+		{
+			return call();
+		}
+		catch (Exception ex)
+		{
+			if (appContent)
+			{
+				TableViewTip.RethrowAppFault(ex, TableViewTip.AppFaultKind.Factory);
+			}
+			throw;
+		}
+	}
+
+	private static void RunEditorContent(bool appContent, Action call)
+	{
+		try
+		{
+			call();
+		}
+		catch (Exception ex)
+		{
+			if (appContent)
+			{
+				TableViewTip.RethrowAppFault(ex, TableViewTip.AppFaultKind.Factory);
+			}
+			throw;
+		}
 	}
 	// } // namespace
 
@@ -124,12 +159,15 @@ partial class TableViewColumn
 			return null;
 		}
 
+		// A CellEditingTemplate's content is the app's (see GenerateEditingElementCore); TableView's own editor is not.
+		bool appContent = CellEditingTemplate is not null;
+
 		// Focus so typing goes straight into the editor; otherwise the row keeps focus and the user has
 		// to click the editor they just opened. The editing root is not necessarily focusable - a
 		// template column produces a ContentPresenter - so fall back to its first focusable descendant.
 		var root = editingElement.XamlRoot;
 		var initialFocus = root is not null ? FocusManager.GetFocusedElement(root) : null;
-		if (!TryFocusEditor(editingElement))
+		if (!RunEditorContent(appContent, () => TryFocusEditor(editingElement)))
 		{
 			if (root is not null && FocusManager.GetFocusedElement(root) != initialFocus)
 			{
@@ -151,7 +189,7 @@ partial class TableViewColumn
 
 			// The editing ContentPresenter may not have instantiated its DataTemplate.
 			// Realize it before returning from F2 so the first keystroke has a target.
-			editingElement.UpdateLayout();
+			RunEditorContent(appContent, () => editingElement.UpdateLayout());
 
 			// Layout can run application code and recycle the row or end the edit.
 			if (owner is not null && (GetOwningTableView() != owner ||
@@ -167,7 +205,7 @@ partial class TableViewColumn
 				// A Loaded/focus handler chose another target; preserve that choice.
 				return null;
 			}
-			if (!TryFocusEditor(editingElement))
+			if (!RunEditorContent(appContent, () => TryFocusEditor(editingElement)))
 			{
 				TVDiag.LogRetailF("[TableView] The realized cell editor has no available keyboard focus target.");
 			}
@@ -327,6 +365,10 @@ partial class TableViewColumn
 			UpdateActualWidth();
 			if (GetOwningTableView() is { } owner)
 			{
+				if (property != WidthProperty || !m_inUserResize)
+				{
+					owner.ExpireLockedColumnHolds();
+				}
 				owner.OnColumnWidthChanged(this);
 			}
 		}
@@ -342,8 +384,9 @@ partial class TableViewColumn
 		}
 		else if (property == CellEditingTemplateProperty)
 		{
-			// Realized editors were generated from the previous template.
-			NotifyCellContentChanged();
+			// Realized editors were generated from the previous template. An editor does not change
+			// what the cell displays, so the Auto width keeps its history.
+			NotifyCellContentChanged(false /* resetAutoWidth */);
 		}
 		else if (property == HeaderTemplateProperty ||
 				 property == HeaderTemplateSelectorProperty ||
@@ -363,6 +406,13 @@ partial class TableViewColumn
 				owner.OnColumnHeaderToolTipChanged(this);
 			}
 		}
+		else if (property == HeaderStyleProperty)
+		{
+			if (GetOwningTableView() is { } owner)
+			{
+				owner.QueueRebuildHeaders();
+			}
+		}
 		else if (property == FrozenEdgeProperty)
 		{
 			if (GetOwningTableView() is { } owner)
@@ -375,6 +425,7 @@ partial class TableViewColumn
 			// Adds or removes this column's gripper, so the header band has to be rebuilt.
 			if (GetOwningTableView() is { } owner)
 			{
+				owner.ExpireLockedColumnHolds();
 				owner.QueueRebuildHeaders();
 			}
 		}
@@ -382,6 +433,7 @@ partial class TableViewColumn
 		{
 			if (GetOwningTableView() is { } owner)
 			{
+				owner.ExpireLockedColumnHolds();
 				owner.OnColumnVisibilityChanged(this);
 			}
 		}
@@ -413,6 +465,10 @@ partial class TableViewColumn
 			}
 
 			m_customSortComparer = value;
+			if (GetOwningTableView() is { } tableView)
+			{
+				tableView.RefreshHeaderTabStopsInternal();
+			}
 
 			// Swapping the comparer invalidates the order the column is currently sorted in, so re-apply
 			// the active direction rather than leaving the rows in the old comparer's order.
@@ -458,11 +514,11 @@ partial class TableViewColumn
 	// column would then have no way to invalidate its cells without editing this file. This mirrors
 	// WPF, where DataGridColumn owns the notification and each derived column routes its own property
 	// callbacks into it.
-	internal void NotifyCellContentChanged()
+	internal void NotifyCellContentChanged(bool resetAutoWidth = true)
 	{
 		if (GetOwningTableView() is { } owner)
 		{
-			owner.OnColumnCellTemplateChanged(this);
+			owner.OnColumnCellTemplateChanged(this, resetAutoWidth);
 		}
 	}
 
@@ -478,8 +534,9 @@ partial class TableViewColumn
 		{
 			m_cellToolTipBinding = value;
 
-			// Realized cells carry the previous binding. The only invalidation this feature needs.
-			NotifyCellContentChanged();
+			// Realized cells carry the previous binding. A tooltip does not change what the cell displays,
+			// so the Auto width keeps its history.
+			NotifyCellContentChanged(false /* resetAutoWidth */);
 		}
 	}
 
@@ -497,6 +554,31 @@ partial class TableViewColumn
 				return false;
 			}
 			m_owningTableView = new WeakReference<TableView>(owner);
+			// These have no generated change callback: a menu makes cells actionable, a sort key the header.
+			if (m_cellContextFlyoutToken.Disposable is null)
+			{
+				WeakReference<TableViewColumn> weakThis = new(this);
+				long cellContextFlyoutToken = RegisterPropertyChangedCallback(CellContextFlyoutProperty,
+					(DependencyObject _, DependencyProperty _) =>
+					{
+						if (weakThis.TryGetTarget(out var strongThis) && strongThis.GetOwningTableView() is { } owningTableView)
+						{
+							owningTableView.RefreshCellFocusLevelsInternal();
+						}
+					});
+				m_cellContextFlyoutToken.Disposable = Disposable.Create(() => UnregisterPropertyChangedCallback(CellContextFlyoutProperty, cellContextFlyoutToken));
+				foreach (DependencyProperty property in new[] { SortMemberPathProperty, HeaderContextFlyoutProperty })
+				{
+					RegisterPropertyChangedCallback(property,
+						(DependencyObject _, DependencyProperty _) =>
+						{
+							if (weakThis.TryGetTarget(out var strongThis) && strongThis.GetOwningTableView() is { } owningTableView)
+							{
+								owningTableView.RefreshHeaderTabStopsInternal();
+							}
+						});
+				}
+			}
 			return true;
 		}
 		else
@@ -517,12 +599,17 @@ partial class TableViewColumn
 		}
 	}
 
-	internal void SetDesiredWidthInternal(double desiredWidth)
+	internal void SetDesiredWidthInternal(double rowsDesiredWidth, double headerDesiredWidth)
 	{
-		m_desiredWidth = StdMath.Max(0.0, desiredWidth);
+		m_rowsDesiredWidth = StdMath.Max(0.0, rowsDesiredWidth);
+		m_headerDesiredWidth = StdMath.Max(0.0, headerDesiredWidth);
 	}
 
-	internal void ResetDesiredWidthInternal() => m_desiredWidth = 0.0;
+	internal void ResetDesiredWidthInternal()
+	{
+		m_rowsDesiredWidth = 0.0;
+		m_headerDesiredWidth = 0.0;
+	}
 
 	private void UpdateActualWidth()
 	{
@@ -531,17 +618,13 @@ partial class TableViewColumn
 		var width = Width;
 		var widthPixels =
 			width.GridUnitType == GridUnitType.Pixel
-				? width.Value
+				? NonNegativeFiniteOrDefault(width.Value)
 				: c_widthDefault.Value;
 
-		// Reject non-finite / negative bounds the same way the resize path does (TableView.cpp), so a
-		// pathological MinWidth/MaxWidth (NaN, infinity, negative) can never leak into ActualWidth. A
-		// non-finite MinWidth means "no lower bound" (0) and a non-finite MaxWidth means "no upper
-		// bound" (infinity). std::max keeps the clamp well-defined when MinWidth exceeds MaxWidth.
-		var lo = (double.IsFinite(MinWidth) && MinWidth >= 0.0) ? MinWidth : 0.0;
-		var hi = (double.IsFinite(MaxWidth) && MaxWidth >= 0.0)
-			? StdMath.Max(lo, MaxWidth)
-			: double.PositiveInfinity;
+		// Reject malformed widths and bounds the same way layout does, so provisional ActualWidth and
+		// resolved layout widths cannot drift.
+		var lo = NonNegativeFiniteOrZero(MinWidth);
+		var hi = MaxWidthForColumn(this, lo);
 		var clamped = StdMath.Clamp(widthPixels, lo, hi);
 
 		// ActualWidth uses the SetValue-via-key read-only DP convention.

@@ -1,12 +1,13 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewTextColumn.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewTextColumn.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
 using System;
-using Microsoft.UI.Text;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Data;
+using static Microsoft.UI.Xaml.Controls.Tabular.TableViewAutomationHelpers;
 
 namespace Microsoft.UI.Xaml.Controls.Tabular;
 
@@ -47,9 +48,8 @@ partial class TableViewTextColumn
 		var owner = GetOwningTableView();
 		// Cell content is left-aligned and vertically centered within the row (standard grid look).
 		textBlock.VerticalAlignment = VerticalAlignment.Center;
-		// Fluent body text: theme font size / Normal.
+		// FontWeight stays unset so a TableView/app value inherits.
 		textBlock.FontSize = owner is not null ? owner.GetCellFontSize() : 14.0;
-		textBlock.FontWeight = FontWeights.Normal;
 		// Density-aware built-in cell padding (Standard = 8,4,8,4 = unchanged default).
 		if (owner is not null)
 		{
@@ -93,7 +93,6 @@ partial class TableViewTextColumn
 		// text or resize the row as the edit opens.
 		textBox.VerticalAlignment = VerticalAlignment.Center;
 		textBox.FontSize = owner is not null ? owner.GetCellFontSize() : 14.0;
-		textBox.FontWeight = FontWeights.Normal;
 		textBox.Padding = owner is not null
 			? owner.GetDensityCellPadding()
 			: ThicknessHelper.FromLengths(8, 4, 8, 4);
@@ -142,6 +141,12 @@ partial class TableViewTextColumn
 		editingBinding.UpdateSourceTrigger = UpdateSourceTrigger.Explicit;
 
 		BindingOperations.SetBinding(textBox, TextBox.TextProperty, editingBinding);
+
+		var headerText = ResolveColumnAccessibleName(owner, this);
+		if (!string.IsNullOrEmpty(headerText))
+		{
+			AutomationProperties.SetName(textBox, headerText);
+		}
 
 		return textBox;
 	}
