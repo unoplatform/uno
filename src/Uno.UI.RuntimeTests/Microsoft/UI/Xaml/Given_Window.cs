@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -290,6 +291,148 @@ public class Given_Window
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public void When_Vulkan_Then_Device_Is_The_Primary_Display_Adapter()
+	{
+		// WinUI renders on DXGI's first adapter, which is the primary display's unless the app was assigned another GPU.
+		// DWM also only gets a Vulkan swapchain's alpha, which a system backdrop needs, from the adapter driving the display.
+		var wrapper = TestServices.WindowHelper.CurrentTestWindow.NativeWrapper;
+		var context = GetField(wrapper, "_context");
+		if (context?.GetType().GetProperty("Kind")?.GetValue(context)?.ToString() != "Vulkan")
+		{
+			Assert.Inconclusive("The window did not negotiate a Vulkan context.");
+		}
+
+		var vulkan = GetField(context, "_vk");
+		var deviceLuid = (long?)vulkan!.GetType().GetProperty("DeviceLuid", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(vulkan);
+
+		var factoryType = Type.GetType("Uno.UI.Runtime.Win32.Vulkan.Win32VulkanSurfaceFactory, Uno.UI.Runtime.Win32", throwOnError: true)!;
+		var factory = Activator.CreateInstance(factoryType, nonPublic: true);
+		var presentingLuid = (long?)factoryType.GetMethod("GetPresentingAdapterLuid")!.Invoke(factory, [IntPtr.Zero]);
+
+		if (deviceLuid is null || presentingLuid is null)
+		{
+			Assert.Inconclusive("The driver or the display configuration doesn't report an adapter LUID.");
+		}
+
+		Assert.AreEqual(presentingLuid, deviceLuid);
+
+		static object GetField(object target, string name)
+			=> target?.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(target);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[DataRow(ElementTheme.Dark, (byte)0x20)]
+	[DataRow(ElementTheme.Light, (byte)0xF3)]
+	public async Task When_SystemBackdrop_Not_Rendered_Then_Root_Paints_Page_Background(ElementTheme theme, byte expected)
+	{
+		var content = new Border { Width = 100, Height = 100 };
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(content);
+
+		var window = TestServices.WindowHelper.CurrentTestWindow;
+		var previousBackdrop = window.SystemBackdrop;
+
+		// The fallback follows the theme of the window's content, as MUX's SystemBackdropConfiguration does.
+		var windowContent = (FrameworkElement)window.Content;
+		var previousTheme = windowContent.RequestedTheme;
+		try
+		{
+			windowContent.RequestedTheme = theme;
+
+			// No head renders a custom backdrop, just as Android, iOS, WebAssembly and X11 don't render Mica.
+			window.SystemBackdrop = new UnrenderedBackdrop();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			AssertPaintsPageBackground((XamlIslandRoot)content.XamlRoot.VisualTree.RootElement, expected);
+		}
+		finally
+		{
+			window.SystemBackdrop = previousBackdrop;
+			windowContent.RequestedTheme = previousTheme;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[DataRow(ElementTheme.Dark, (byte)0x20)]
+	[DataRow(ElementTheme.Light, (byte)0xF3)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public async Task When_Window_On_Another_Adapters_Display_Then_Backdrop_Falls_Back_Until_It_Returns(ElementTheme theme, byte expected)
+	{
+		var wrapper = TestServices.WindowHelper.CurrentTestWindow.NativeWrapper;
+		var context = wrapper.GetType().GetField("_context", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(wrapper);
+		if (context?.GetType().GetProperty("Kind")?.GetValue(context)?.ToString() != "Vulkan")
+		{
+			Assert.Inconclusive("The window did not negotiate a Vulkan context.");
+		}
+
+		var vulkan = context.GetType().GetField("_vk", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(context)!;
+		if (vulkan.GetType().GetProperty("DeviceLuid", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(vulkan) is not long deviceLuid)
+		{
+			Assert.Inconclusive("The driver doesn't report an adapter LUID.");
+			return;
+		}
+
+		var content = new Border { Width = 100, Height = 100 };
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(content);
+		var root = (XamlIslandRoot)content.XamlRoot.VisualTree.RootElement;
+
+		var hwnd = ((Uno.UI.NativeElementHosting.Win32NativeWindow)wrapper.NativeWindow).Hwnd;
+		var luidOverride = Type.GetType("Uno.UI.Runtime.Win32.Vulkan.Win32VulkanSurfaceFactory, Uno.UI.Runtime.Win32", throwOnError: true)!
+			.GetProperty("PresentingAdapterLuidOverride", BindingFlags.Static | BindingFlags.NonPublic)!;
+
+		var window = TestServices.WindowHelper.CurrentTestWindow;
+		var previousBackdrop = window.SystemBackdrop;
+		var windowContent = (FrameworkElement)window.Content;
+		var previousTheme = windowContent.RequestedTheme;
+		try
+		{
+			windowContent.RequestedTheme = theme;
+			luidOverride.SetValue(null, deviceLuid);
+			window.SystemBackdrop = new MicaBackdrop();
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(BackdropBackgroundMode.Transparent, root.BackdropBackground, "The rendering adapter drives the display, so the material shows.");
+
+			// What unplugging a screen or dragging the window to another adapter's screen ends in.
+			luidOverride.SetValue(null, deviceLuid + 1);
+			SendMessage(hwnd, WM_DISPLAYCHANGE, 0, 0);
+			await TestServices.WindowHelper.WaitForIdle();
+			AssertPaintsPageBackground(root, expected);
+
+			luidOverride.SetValue(null, deviceLuid);
+			SendMessage(hwnd, WM_DISPLAYCHANGE, 0, 0);
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(BackdropBackgroundMode.Transparent, root.BackdropBackground, "The material returns with the adapter.");
+		}
+		finally
+		{
+			luidOverride.SetValue(null, null);
+			window.SystemBackdrop = previousBackdrop;
+			windowContent.RequestedTheme = previousTheme;
+			SendMessage(hwnd, WM_DISPLAYCHANGE, 0, 0);
+		}
+	}
+
+	private static void AssertPaintsPageBackground(XamlIslandRoot root, byte expected)
+	{
+		Assert.AreEqual(BackdropBackgroundMode.Fallback, root.BackdropBackground);
+
+		var brush = (Microsoft.UI.Composition.CompositionColorBrush)((Microsoft.UI.Composition.BorderVisual)root.Visual).BackgroundBrush;
+		Assert.AreEqual(Windows.UI.Color.FromArgb(0xFF, expected, expected, expected), brush.Color);
+	}
+
+	private sealed class UnrenderedBackdrop : SystemBackdrop;
+
+	private const uint WM_DISPLAYCHANGE = 0x007E;
+
+	[System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "SendMessageW")]
+	private static extern nint SendMessage(nint hWnd, uint msg, nuint wParam, nint lParam);
 #endif
 
 #endif
