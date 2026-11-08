@@ -47,7 +47,8 @@ public class Given_BindingStaleHandlers
 	[TestMethod]
 	// NativeWinUI: WinUI removes the handlers of collected bindings on its own schedule: flaky here.
 	// SkiaWasm: stale stack slots can keep the elements alive, see the WASM branch below.
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)]
+	// SkiaUIKit (6.x): the same on the iOS interpreter, 5 of 5 alive on CI.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit)]
 	public async Task When_Raised_Before_Handlers_Removed_Then_Safe()
 	{
 		var vm = new CountingViewModel();
