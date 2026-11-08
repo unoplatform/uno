@@ -1930,6 +1930,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaFrameBuffer | RuntimeTestPlatforms.SkiaX11)] // Flaky on 6.x: https://github.com/unoplatform/uno/issues/26221
 #if __WASM__
 		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
 #elif !HAS_INPUT_INJECTOR

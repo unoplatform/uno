@@ -54,6 +54,7 @@ public partial class Given_InteractionTracker
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS)] // Flaky on 6.x: https://github.com/unoplatform/uno/issues/26221
 #if !HAS_COMPOSITION_API
 	[Ignore("Composition APIs are not supported on this platform.")]
 #endif
