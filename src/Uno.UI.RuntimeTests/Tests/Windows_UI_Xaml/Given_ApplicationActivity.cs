@@ -246,6 +246,7 @@ public class Given_ApplicationActivity
 			Height = 100,
 			Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red),
 		};
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
 		await UITestHelper.Load(border);
 		var host = GetWindowHost();
 		Assert.IsNotNull(host);
@@ -279,6 +280,7 @@ public class Given_ApplicationActivity
 	public async Task When_Finished_And_Reopened_Then_Frame_Drivers_Tick()
 	{
 		var border = new Microsoft.UI.Xaml.Controls.Border { Width = 100, Height = 100 };
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
 		await UITestHelper.Load(border);
 
 		await FinishAndReopen();
@@ -313,6 +315,7 @@ public class Given_ApplicationActivity
 			Height = 100,
 			Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red),
 		};
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
 		await UITestHelper.Load(border);
 
 		var visual = border.Visual;
@@ -343,6 +346,7 @@ public class Given_ApplicationActivity
 	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
 	[DynamicDependency("get_Wrapper", "Uno.UI.Runtime.Android.ApplicationActivity", "Uno.UI.Runtime.Android")]
 	[DynamicDependency("get_CurrentActivity", "Uno.UI.Xaml.Controls.NativeWindowWrapper", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("_awaitingFirstFrame", "Uno.UI.Xaml.Controls.NativeWindowWrapper", "Uno.UI.Runtime.Android")]
 	[DynamicDependency("Finish", "Android.App.Activity", "Mono.Android")]
 	[DynamicDependency("get_IsDestroyed", "Android.App.Activity", "Mono.Android")]
 	[DynamicDependency("get_ApplicationContext", "Android.Content.ContextWrapper", "Mono.Android")]
