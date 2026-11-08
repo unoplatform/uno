@@ -1,11 +1,13 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableView_Columns.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableView_Columns.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
 using System;
 using Uno.Disposables;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation.Collections;
 
@@ -127,6 +129,7 @@ partial class TableView
 			}
 		}
 		m_trackedColumns.Clear();
+		CancelPendingSortRestore();
 
 		if (purgedSortState)
 		{
@@ -158,6 +161,8 @@ partial class TableView
 		{
 			return;
 		}
+
+		ExpireLockedColumnHolds();
 
 		// Detach the old vector so replaced Columns do not leak subscriptions or owners.
 		if (m_columnsVectorChangedToken.Disposable is not null)
@@ -206,12 +211,17 @@ partial class TableView
 				row.RefreshColumnsSubscriptionInternal();
 			});
 		}
+
+		// Replacing the whole vector raises no VectorChanged, so announce the shape change here.
+		QueueRaiseColumnsStructureChanged();
 	}
 
 	private void OnColumnsVectorChanged(
 		IObservableVector<TableViewColumn> sender,
 		IVectorChangedEventArgs args)
 	{
+		ExpireLockedColumnHolds();
+
 		// Track columns incrementally so owner back-pointers stay in sync without diffing.
 		var change = args.CollectionChange;
 		var index = args.Index;
@@ -232,6 +242,7 @@ partial class TableView
 								// A re-inserted / recycled column instance may carry a stale grow-only accumulator
 								// from a prior position or table; clear it so it re-grows from its content here.
 								col.ResetDesiredWidthInternal();
+								RestoreSortOfMovedColumn(col);
 							}
 							else
 							{
@@ -254,10 +265,7 @@ partial class TableView
 							// A column that has left Columns must not stay the active sort. Reshaping here
 							// would run inside the VectorChanged callback, so the clear is deferred until the
 							// collection has settled.
-							if (PurgeColumnFromSortState(col))
-							{
-								QueueClearSortAfterColumnRemoval();
-							}
+							PurgeLeavingColumnFromSortState(col);
 						}
 						m_trackedColumns.RemoveAt((int)index);
 					}
@@ -271,10 +279,7 @@ partial class TableView
 						if (oldCol is not null)
 						{
 							oldCol.SetOwningTableViewInternal(null);
-							if (PurgeColumnFromSortState(oldCol))
-							{
-								QueueClearSortAfterColumnRemoval();
-							}
+							PurgeLeavingColumnFromSortState(oldCol);
 						}
 						if (index < (uint)sender.Count)
 						{
@@ -292,6 +297,7 @@ partial class TableView
 									{
 										newCol.ResetDesiredWidthInternal();
 									}
+									RestoreSortOfMovedColumn(newCol);
 								}
 								else
 								{
@@ -315,6 +321,9 @@ partial class TableView
 
 		QueueRebuildHeaders();
 
+		// QueueRebuildHeaders updates visuals only; UIA clients must be told the grid shape changed.
+		QueueRaiseColumnsStructureChanged();
+
 		// Realized rows observe Columns directly; no TableView broadcast is needed.
 		if (change == CollectionChange.Reset)
 		{
@@ -328,6 +337,13 @@ partial class TableView
 			// currently realized rows). A newly inserted column starts fresh at 0 and grows from content;
 			// re-resolve to pick up the new fixed total and star share.
 			InvalidateMeasure();
+		}
+
+		// A column that left may be added to another TableView before the queued rebuild runs. Last,
+		// because releasing runs app code that can change Columns again.
+		if (change != CollectionChange.ItemInserted)
+		{
+			ReleaseHeaderCells(m_headerHost, HeaderRelease.DetachedColumns);
 		}
 	}
 
@@ -344,7 +360,17 @@ partial class TableView
 		{
 			if (TableViewCellsPanel.CellForColumn(headerHost, column) is { } headerCell)
 			{
+				// Read before collapsing: a collapsed cell drops focus, leaving it nowhere.
+				int focusIndex = visibility == Visibility.Collapsed
+					? GetCollapsingHeaderFocusIndex(headerHost, headerCell)
+					: -1;
+
 				headerCell.Visibility = visibility;
+
+				if (focusIndex >= 0 && FocusVisibleHeaderFrom(focusIndex, +1) < 0 && FocusVisibleHeaderFrom(focusIndex - 1, -1) < 0)
+				{
+					FocusBodyEntryTarget(false /* select */);
+				}
 			}
 		}
 
@@ -364,6 +390,49 @@ partial class TableView
 		// `changed` gate stays false and would never re-pin. Refresh it directly.
 		InvalidateMeasure();
 		RefreshFrozenColumns();
+		RefreshResizeGripperAvailability();
+
+		// UIA addresses only visible columns (IsVisibleColumn), so a visibility flip shifts column
+		// indices just like an add/remove.
+		QueueRaiseColumnsStructureChanged();
+	}
+
+	// The column is already Collapsed here, so its own cell is not counted: the result is the index the
+	// next visible header takes.
+	private int GetCollapsingHeaderFocusIndex(Panel? host, FrameworkElement? headerCell)
+	{
+		var root = XamlRoot;
+		if (host is null || headerCell is null || root is null)
+		{
+			return -1;
+		}
+
+		var current = FocusManager.GetFocusedElement(root) as DependencyObject;
+		while (current is not null && current != headerCell)
+		{
+			current = VisualTreeHelper.GetParent(current);
+		}
+		if (current is null)
+		{
+			return -1;
+		}
+
+		int index = 0;
+		foreach (var child in host.Children)
+		{
+			if (child == headerCell)
+			{
+				return index;
+			}
+			if (child is FrameworkElement element)
+			{
+				if (element.Tag is TableViewColumn childColumn && childColumn.Visibility == Visibility.Visible)
+				{
+					++index;
+				}
+			}
+		}
+		return -1;
 	}
 
 	internal void OnColumnWidthChanged(TableViewColumn? column)
@@ -387,9 +456,16 @@ partial class TableView
 		InvalidateCellPanels();
 		RefreshFrozenColumns();
 		QueueTerminalGridLineRefresh();
+
+		// A drag converts columns to Pixel as it goes; re-evaluating then would pull the gripper out
+		// from under the pointer. DragCompleted refreshes instead.
+		if (m_activeColumnResizeDrag is null)
+		{
+			RefreshResizeGripperAvailability();
+		}
 	}
 
-	internal void OnColumnCellTemplateChanged(TableViewColumn? column)
+	internal void OnColumnCellTemplateChanged(TableViewColumn? column, bool resetAutoWidth = true)
 	{
 		if (column is null)
 		{
@@ -406,8 +482,12 @@ partial class TableView
 		// content width. Reset only this column's grow-only accumulator -- a global reset would shrink
 		// unrelated Auto columns to only the currently-realized rows (the same reason OnColumnsVectorChanged
 		// does not reset pre-existing columns).
-		column.ResetDesiredWidthInternal();
+		if (resetAutoWidth)
+		{
+			column.ResetDesiredWidthInternal();
+		}
 		InvalidateMeasure();
+		RefreshCellFocusLevelsInternal();
 	}
 
 	internal void OnColumnHeaderChanged(TableViewColumn? column)
@@ -417,6 +497,17 @@ partial class TableView
 		// grow-only accumulator -- a global reset would shrink UNRELATED Auto columns to only the
 		// currently-realized rows. Resetting even when the column is currently Pixel/Star preserves the
 		// "switched back to Auto" stale-width safeguard for that one column.
+		// An old UIElement Header is the app's again now, as with ContentControl.Content, not after the
+		// rebuild. Any other content stays until the rebuild, so the header does not go blank meanwhile.
+		var headerHost = m_headerHost;
+		if (TableViewCellsPanel.CellForColumn(headerHost, column) is TableViewColumnHeader headerCell)
+		{
+			if (headerCell.Content is UIElement
+				&& !headerCell.OwnsContentInternal())
+			{
+				ReleaseHeaderCells(headerHost, HeaderRelease.Column, column);
+			}
+		}
 		QueueRebuildHeaders();
 		if (column is not null)
 		{
@@ -443,6 +534,7 @@ partial class TableView
 		{
 			TableViewDetails.ApplyHeaderToolTip(headerCell, column.HeaderToolTip);
 		}
+		RefreshHeaderTabStopsInternal();
 	}
 
 	internal void OnColumnFrozenEdgeChanged(TableViewColumn? column)

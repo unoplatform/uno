@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableView_Sort.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableView_Sort.cpp, tag winui3/main, commit 79209e041
 
 // Single-column sort for TableView.
 //
@@ -19,9 +19,11 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
-using Windows.Foundation;
+using static Microsoft.UI.Xaml.Controls.Tabular.TableViewAutomationHelpers;
 
 namespace Microsoft.UI.Xaml.Controls.Tabular;
 
@@ -40,12 +42,82 @@ partial class TableViewSourceSortBinding
 		MemberPath = "";
 		AxisToken = "";
 		KeySelector = null;
-		ResetCustomSort();
+		// Dropped, not reset: the axis left on a source this table no longer owns still ranks through
+		// it. The next sort mints a fresh adapter and selector.
+		CustomSortState = null;
 	}
 }
 
 partial class TableView
 {
+	private bool RepositionCustomSortItem(object? item, bool reshapePending)
+	{
+		var state = m_tableViewSourceSort.CustomSortState;
+		if (state is null || !state.HasComparer())
+		{
+			return false;
+		}
+		if (item is null)
+		{
+			state.InvalidateRanks();
+			return false;
+		}
+		return state.Reposition(item, reshapePending);
+	}
+
+	private void ReleaseCustomSortRows(object? item, List<object?> liveRows)
+	{
+		var state = m_tableViewSourceSort.CustomSortState;
+		if (state is null || !state.HasComparer())
+		{
+			return;
+		}
+		if (item is not null)
+		{
+			state.Forget(item);
+		}
+		else
+		{
+			state.RetainOnly(liveRows);
+		}
+	}
+
+	// Rank() starts from the current rows, so it drops ranks rooted while released and re-reads values
+	// edited meanwhile; re-declaring the axis makes the projection read the new keys.
+	private void RerankCustomSortAfterReclaim()
+	{
+		var state = m_tableViewSourceSort.CustomSortState;
+		if (state is null || !state.HasComparer() || m_sortedColumns.Count != 1)
+		{
+			return;
+		}
+		var column = m_sortedColumns[0];
+		if (column is null || column.CustomSortComparer is null)
+		{
+			return;
+		}
+		var direction = column.SortDirection;
+		if (direction == SortDirection.None || !CanApplySortTo(direction))
+		{
+			return;
+		}
+
+		var preservedSelection = SelectedItemInternal();
+		try
+		{
+			// A rerank after reclaim is control-driven, not a user sort, so it carries no TiP operation.
+			if (SyncTableViewSourceSort(column, direction, 0) && preservedSelection is not null)
+			{
+				ApplySelection(FindEntryIndexForDataItem(preservedSelection));
+			}
+		}
+		catch (Exception)
+		{
+			// Dispatcher callback: best-effort, the previous order stands.
+			TVDiag.LogRetailF("[TableView] Re-ranking the custom sort after reclaim failed.");
+		}
+	}
+
 	// TODO Uno: TableView_Sort.cpp's anonymous-namespace LocalizedOrFallback is identical to TableView_Grouping.cpp's; both share the definition in TableView.Grouping.mux.cs.
 
 	// Evaluates a property path against a row item; see SortMemberPathResolver.h. The same
@@ -95,14 +167,53 @@ partial class TableView
 		return m_activeSource;
 	}
 
+	internal bool IsColumnUserSortableInternal(TableViewColumn? column)
+	{
+		return column is not null && CanUserSortColumns && CanSortColumn(column);
+	}
+
 	private bool IsSortClearStillValid()
 	{
 		return m_sortedColumns.Count != 0;
 	}
 
-	private bool IsSortRequestStillValid(TableViewColumn? column)
+	// Refused a source another table owns: there is nothing to sort until it is released, and the
+	// columns keep their state for the reconcile that follows.
+	private bool CanSortColumnNow(TableViewColumn? column, bool requireCanSort = true)
 	{
-		if (column is null || !CanSortColumn(column))
+		// Unadopted after an unload, too, which no longer awaits it.
+		if (m_awaitedSource is not null && m_awaitedSource.TryGetTarget(out _) ||
+			(ShapingSourceInternal() is null && IsActiveSourceOwnedByOther()))
+		{
+			return false;
+		}
+		return requireCanSort ? CanSortColumn(column) : column is not null;
+	}
+
+	private bool CanApplySortTo(SortDirection direction)
+	{
+		if (direction == SortDirection.None)
+		{
+			return true;
+		}
+		var source = ShapingSourceInternal();
+		if (source is not null && m_activeSourceReleased && source.IsOwnedByOther(this))
+		{
+			return false;
+		}
+		return source is null || source.CanApplySort();
+	}
+
+	private bool IsSortRequestStillValid(TableViewColumn? column, bool requireCanSort = true)
+	{
+		if (column is null || !CanSortColumnNow(column, requireCanSort))
+		{
+			return false;
+		}
+
+		// A clear that skips the CanSort gate clears only the column's own sort. A replayed or
+		// re-entered one may find another column sorted since, and must not clear that sort.
+		if (!requireCanSort && column.SortDirection == SortDirection.None)
 		{
 			return false;
 		}
@@ -136,7 +247,19 @@ partial class TableView
 	// to clear. Returns true when the sort state changed.
 	public bool SortByColumn(TableViewColumn column, SortDirection direction)
 	{
-		if (!CanSortColumn(column))
+		// A column that opted out of sorting can still have the sort it holds cleared.
+		bool clearsOwnSort = direction == SortDirection.None &&
+			column is not null && column.SortDirection != SortDirection.None;
+		return SortByColumnInternal(column, direction, true, !clearsOwnSort);
+	}
+
+	private bool SortByColumnInternal(
+		TableViewColumn? column, SortDirection direction, bool measureTip, bool requireCanSort = true)
+	{
+		FlushDeferredEditReshapes();
+		// Only a clear may skip the CanSort gate.
+		requireCanSort = requireCanSort || direction != SortDirection.None;
+		if (!CanSortColumnNow(column, requireCanSort))
 		{
 			return false;
 		}
@@ -157,6 +280,12 @@ partial class TableView
 			}
 		}
 
+		// A null item or one object on two rows can't be sorted; refuse before any state changes.
+		if (!CanApplySortTo(direction))
+		{
+			return false;
+		}
+
 		// An open editor is showing a row at an index that is about to move. Close it first; if it
 		// cannot close synchronously, replay this request once it does.
 		if (!TryTerminateEditForControlInitiatedReshape())
@@ -165,12 +294,12 @@ partial class TableView
 			{
 				QueueCoalescedEditReshape(() =>
 				{
-					SortByColumn(column, direction);
+					SortByColumnInternal(column, direction, measureTip, requireCanSort);
 				});
 			}
 			return false;
 		}
-		if (!IsSortRequestStillValid(column))
+		if (!IsSortRequestStillValid(column, requireCanSort))
 		{
 			return false;
 		}
@@ -180,13 +309,14 @@ partial class TableView
 			return false;
 		}
 
-		if (!IsSortRequestStillValid(column))
+		// The edit commit and the Sorting handler are app code that can change the rows.
+		if (!IsSortRequestStillValid(column, requireCanSort) || !CanApplySortTo(direction))
 		{
 			return false;
 		}
 
-		ApplySingleColumnSortState(column, direction);
-		RecomputeSortDPsAndRaiseInternal(column);
+		ApplySingleColumnSortState(column!, direction);
+		RecomputeSortDPsAndRaiseInternal(column, measureTip);
 		DrainCoalescedEditReshape();
 		return true;
 	}
@@ -195,7 +325,8 @@ partial class TableView
 	// Returns true when the sort state changed.
 	public bool ToggleSortDirection(TableViewColumn column)
 	{
-		if (!CanSortColumn(column))
+		FlushDeferredEditReshapes();
+		if (!CanSortColumnNow(column))
 		{
 			return false;
 		}
@@ -238,6 +369,11 @@ partial class TableView
 			next = opening;
 		}
 
+		if (!CanApplySortTo(next))
+		{
+			return false;
+		}
+
 		if (!TryTerminateEditForControlInitiatedReshape())
 		{
 			if (m_editState == EditState.Ending && !m_isApplyingCoalescedEditReshape)
@@ -259,7 +395,7 @@ partial class TableView
 			return false;
 		}
 
-		if (!IsSortRequestStillValid(column))
+		if (!IsSortRequestStillValid(column) || !CanApplySortTo(next))
 		{
 			return false;
 		}
@@ -273,7 +409,51 @@ partial class TableView
 	// Clears every column's sort state in one batch. Returns true when anything was cleared.
 	public bool ClearSort()
 	{
+		return ClearSortInternal(true, true);
+	}
+
+	private bool IsActiveSourceOwnedByOther()
+	{
+		var source = ShapingSourceInternal();
+		if (source is null)
+		{
+			// A refused reclaim leaves the source unadopted, also once unloaded and no longer awaiting it.
+			return ItemsSource is TableViewSource;
+		}
+		return m_activeSourceReleased && source.IsOwnedByOther(this);
+	}
+
+	private bool IsSortLitOnlyByApp()
+	{
+		if (!string.IsNullOrEmpty(m_tableViewSourceSort.AxisToken))
+		{
+			return false;
+		}
+		var source = ShapingSourceInternal();
+		if (source is null)
+		{
+			return false;
+		}
+		// Released but unowned (unloaded): the axes are still the app's.
+		if (m_activeSourceReleased && source.IsOwnedByOther(this))
+		{
+			return false;
+		}
+		// A column: axis is one a table installed, never the app's.
+		var axes = source.ActiveSortAxisInfos();
+		return axes.Any(axis => !axis.AxisToken.StartsWith("column:", StringComparison.Ordinal));
+	}
+
+	private bool ClearSortInternal(bool measureTip, bool explicitClear = false)
+	{
+		CancelPendingSortRestore();
+		FlushDeferredEditReshapes();
 		if (m_sortedColumns.Count == 0)
+		{
+			return false;
+		}
+
+		if (!explicitClear && IsSortLitOnlyByApp())
 		{
 			return false;
 		}
@@ -284,7 +464,7 @@ partial class TableView
 			{
 				QueueCoalescedEditReshape(() =>
 				{
-					ClearSort();
+					ClearSortInternal(measureTip, explicitClear);
 				});
 			}
 			return false;
@@ -314,7 +494,7 @@ partial class TableView
 		m_sortedColumns.Clear();
 
 		// Null trigger: Sorted fires with Column=null to signal a full clear.
-		RecomputeSortDPsAndRaiseInternal(null);
+		RecomputeSortDPsAndRaiseInternal(null, measureTip, explicitClear);
 		DrainCoalescedEditReshape();
 		return true;
 	}
@@ -329,6 +509,7 @@ partial class TableView
 		// Silent, unlike ClearSort: there is no reshape to perform because the source is being rebuilt
 		// from scratch, and the data set is already gone by the time a handler could react, so this is
 		// not a cancellable Sorting nor a Sorted the app could act on.
+		CancelPendingSortRestore();
 		if (m_sortedColumns.Count == 0 && string.IsNullOrEmpty(m_tableViewSourceSort.AxisToken))
 		{
 			return;
@@ -352,6 +533,7 @@ partial class TableView
 	// v1 is single-column sort, so applying a direction always clears every other column first.
 	private void ApplySingleColumnSortState(TableViewColumn column, SortDirection direction)
 	{
+		CancelPendingSortRestore();
 		foreach (var weakColumn in m_sortedColumns)
 		{
 			if (weakColumn is { } sortedColumn && sortedColumn != column)
@@ -378,7 +560,8 @@ partial class TableView
 		}
 
 		var args = new TableViewSortingEventArgs(trigger, direction);
-		Sorting?.Invoke(this, args);
+		try { Sorting?.Invoke(this, args); }
+		catch (Exception ex) { TableViewTip.RethrowAppFault(ex, TableViewTip.AppFaultKind.Callback); throw; }
 
 		return args.Cancel;
 	}
@@ -417,7 +600,9 @@ partial class TableView
 
 	private bool SyncTableViewSourceSort(
 		TableViewColumn? trigger,
-		SortDirection direction)
+		SortDirection direction,
+		ulong tipGeneration,
+		bool explicitClear = false)
 	{
 		var tableViewSource = ShapingSourceInternal();
 		if (tableViewSource is null)
@@ -425,13 +610,44 @@ partial class TableView
 			return false;
 		}
 
+		// Released on Unloaded or before the first Loaded. While another table owns the source, this
+		// table changes only its own state; a path axis left behind re-lights the column on reclaim.
+		if (m_activeSourceReleased && tableViewSource.IsOwnedByOther(this))
+		{
+			if (direction == SortDirection.None)
+			{
+				m_tableViewSourceSort.Clear();
+			}
+			return false;
+		}
+
+		// Comparer faults contained before this sort (a live re-sort) are not its own.
+		if (m_tableViewSourceSort.CustomSortState is { } priorRankAdapter) { priorRankAdapter.TakeSwallowedFaults(); }
+
+		// A custom comparer that threw was contained as "equal": the sort stands, and the fault is the app's. Reported
+		// however this sort ends, from the adapter it ranked with (a reentrant sort can install another).
+		ShapingHelpers.CustomSortRankAdapter? rankedWith = null;
+		using var reportContained = Disposable.Create(() =>
+		{
+			if (rankedWith is null) { return; }
+			var contained = rankedWith.TakeSwallowedFaults();
+			if (contained.count != 0)
+			{
+				TableViewTelemetry.ReportError(m_telemetrySession, 0, TableViewTip.Operation.Sort, TableViewTip.Stage.Sort,
+					true, TableViewTip.Attribution.Application, contained.firstError, TableViewTip.AppFaultKind.Callback,
+					contained.count);
+			}
+		});
+
 		TableViewKeySelector? keySelector = null;
 		string sortAxisToken = "";
 		// What this axis sorts on, purely descriptive. Stays empty for a CustomSortComparer: the
 		// ordering is the comparer's, not the path's, so nothing else may claim the axis sorts by a
 		// property.
 		string axisSortMemberPath = "";
-		if (trigger is not null)
+		// A clear removes the installed axis by its token, so it must not depend on the trigger's sort
+		// path, which a Sorting handler may have changed or emptied since the axis was installed.
+		if (trigger is not null && direction != SortDirection.None)
 		{
 			if (trigger.CustomSortComparer is { } customComparer)
 			{
@@ -467,21 +683,29 @@ partial class TableView
 						}
 					}
 
-					if (m_tableViewSourceSort.CustomSortState is { } rankAdapter)
+					rankedWith = m_tableViewSourceSort.CustomSortState;
+					if (rankedWith is not null)
 					{
 						ShapingHelpers.PairwiseComparer comparer =
 							(object? a, object? b) =>
 							{
 								return customComparer.Compare(a, b);
 							};
-						rankAdapter.Rank(comparer, rows);
+						rankedWith.Rank(comparer, rows);
 					}
 				}
 			}
 			else
 			{
 				// Projected dispatch - see the note in HasResolvedSortMemberPath.
-				var sortMemberPath = trigger.GetSortMemberPathCore();
+				string sortMemberPath;
+				try { sortMemberPath = trigger.GetSortMemberPathCore(); }
+				catch (Exception ex)
+				{
+					// An app-derived column's override is the app's code; TableView's own columns are TableView's.
+					if (TableViewDetails.IsAppDerivedColumn(trigger)) { TableViewTip.RethrowAppFault(ex, TableViewTip.AppFaultKind.Callback); }
+					throw;
+				}
 				if (string.IsNullOrEmpty(sortMemberPath))
 				{
 					return false;
@@ -493,7 +717,7 @@ partial class TableView
 		}
 		else
 		{
-			// Clear-all: reuse whatever axis is currently installed so it can be removed by token.
+			// A clear: reuse whatever axis is currently installed so it can be removed by token.
 			keySelector = m_tableViewSourceSort.KeySelector;
 			sortAxisToken = m_tableViewSourceSort.AxisToken;
 			if (direction == SortDirection.None)
@@ -502,31 +726,50 @@ partial class TableView
 			}
 		}
 
-		if (keySelector is null)
-		{
-			return false;
-		}
-
 		// Limitation: this reshapes on explicit sort and on collection notifications only.
 		// INotifyPropertyChanged-only mutations of the active sort key do not live re-sort until the
 		// next collection change.
 		var tableViewSourceImpl = tableViewSource;
+		// An explicit clear needs no key selector: an app-declared axis lit on a column was never
+		// installed by this control, yet clearing that column must still remove it. Any other clear
+		// removes only the axis this control installed.
+		bool clearsAppAxes = direction == SortDirection.None && explicitClear;
+		if (clearsAppAxes
+			? keySelector is null && tableViewSourceImpl.ActiveSortAxisInfos().Count == 0
+			: keySelector is null || (direction == SortDirection.None && string.IsNullOrEmpty(sortAxisToken)))
+		{
+			return false;
+		}
 		// The control is the last writer here, so its axis becomes the only one. Without this an
 		// app-declared fluent Sort axis would survive alongside it and, being declared earlier, would
 		// outrank it as the primary sort while the chevron advertised this column.
-		using var reconcileGuard = BeginControlInitiatedSortScope();
-		if (direction == SortDirection.None)
+		using var reconcileGuard = BeginControlInitiatedSortScope(tipGeneration);
+		if (clearsAppAxes)
 		{
-			// A control-initiated clear means "nothing is sorted", so it clears EVERY axis, not just
-			// the one this control installed. Clearing only its own token would leave an app-declared
-			// fluent axis ordering the rows while every chevron said the sort was off.
+			// An explicit clear means "nothing is sorted", so it clears EVERY axis, not just the one
+			// this control installed. Clearing only its own token would leave an app-declared fluent
+			// axis ordering the rows while every chevron said the sort was off.
 			tableViewSourceImpl.ClearSort();
+		}
+		else if (direction == SortDirection.None)
+		{
+			tableViewSourceImpl.ClearSort(sortAxisToken);
 		}
 		else
 		{
 			// Replacing rather than adding: re-sorting a column must swap its axis, not stack a
 			// second one on top of the first.
-			tableViewSourceImpl.SortReplacing(m_tableViewSourceSort.AxisToken, sortAxisToken, keySelector, axisSortMemberPath, direction);
+			try
+			{
+				tableViewSourceImpl.SortReplacing(m_tableViewSourceSort.AxisToken, sortAxisToken, keySelector!, axisSortMemberPath, direction);
+			}
+			catch (Exception)
+			{
+				// The axis is declared before the projection fails; keep owning it so the next sort
+				// replaces it instead of stacking on an orphan.
+				m_tableViewSourceSort.AxisToken = sortAxisToken;
+				throw;
+			}
 			tableViewSourceImpl.ClearSortsExcept(sortAxisToken);
 		}
 
@@ -604,7 +847,7 @@ partial class TableView
 	}
 
 	private void RecomputeSortDPsAndRaiseInternal(
-		TableViewColumn? trigger)
+		TableViewColumn? trigger, bool measureTip = true, bool explicitClear = false)
 	{
 		// Stale-deferred-clear guard. A null trigger means "clear", and every legitimate null-trigger
 		// caller - ClearSort, SortByColumn(col, None), ToggleSortDirection cycling to None - clears
@@ -618,71 +861,136 @@ partial class TableView
 			return;
 		}
 
-		// Reshapes through whichever source is active. A cancelled Sorting never reaches this point,
-		// so anything that does gets both the reshape and the published state.
-		var requestedDirection = trigger is not null ? trigger.SortDirection : SortDirection.None;
-
-		// Selection is index-based, and a re-sort moves every index. Capture the item, then re-find it
-		// afterwards so the selection follows the row rather than the slot.
-		var preservedSelection = SelectedItemInternal();
-		bool reshaped = SyncTableViewSourceSort(trigger, requestedDirection);
-
-		if (reshaped && preservedSelection is not null)
+		var invalidatedSort = !measureTip && m_tip.operation == TableViewTip.Operation.Sort
+			? m_tip.operationGeneration : 0;
+		var tipGeneration = BeginTipOperation(TableViewTip.Operation.Sort, measureTip);
+		m_controlSortPublishedGeneration = 0;
+		bool completed = false;
+		TableViewTip.Fault? failure = null;
+		using var tipCompletion = Disposable.Create(() =>
 		{
-			// A row that fell out of the projection surfaces as a real deselect, which is the honest
-			// answer - the selected item is no longer displayed.
-			ApplySelection(FindEntryIndexForDataItem(preservedSelection));
-		}
-
-		if (Sorted is not null)
-		{
-			var appliedDirection = trigger is not null ? trigger.SortDirection : SortDirection.None;
-			var args = new TableViewSortedEventArgs(trigger, appliedDirection);
-			Sorted?.Invoke(this, args);
-		}
-
-		if (AutomationPeer.ListenerExists(AutomationPeer.NotificationEvent))
-		{
-			// A programmatic or header-driven re-sort has no input event behind it, so without an
-			// announcement a screen-reader user has no way to learn the order changed.
-			if (trigger is not null)
+			if (measureTip && !completed)
 			{
-				string header = "";
-				if (trigger.Header is { } headerContent)
+				FailTipOperation(tipGeneration, TableViewTip.Stage.Sort, failure);
+			}
+			else if (measureTip && m_controlSortPublishedGeneration == tipGeneration)
+			{
+				CompleteTipOperation(tipGeneration);
+			}
+			else if (measureTip)
+			{
+				TableViewTip.IgnoreOperation(m_tip, tipGeneration, TableViewTip.IgnoreReason.DeferredOrUnproven);
+			}
+			EndTipOperation();
+		});
+
+		try
+		{
+			// Reshapes through whichever source is active. A cancelled Sorting never reaches this point,
+			// so anything that does gets both the reshape and the published state.
+			var requestedDirection = trigger is not null ? trigger.SortDirection : SortDirection.None;
+
+			// Selection is index-based, and a re-sort moves every index. Capture the item, then re-find it
+			// afterwards so the selection follows the row rather than the slot.
+			var preservedSelection = SelectedItemInternal();
+			bool reshaped = SyncTableViewSourceSort(trigger, requestedDirection, tipGeneration, explicitClear || trigger is not null);
+			if (reshaped && invalidatedSort != 0)
+			{
+				TableViewTip.IgnoreOperation(m_tip, invalidatedSort, TableViewTip.IgnoreReason.Stale);
+			}
+			if (!reshaped && tipGeneration == m_tip.operationGeneration)
+			{
+				TableViewTip.IgnoreOperation(m_tip, tipGeneration, TableViewTip.IgnoreReason.Stale);
+			}
+
+			if (reshaped && preservedSelection is not null)
+			{
+				// A row that fell out of the projection surfaces as a real deselect, which is the honest
+				// answer - the selected item is no longer displayed.
+				ApplySelection(FindEntryIndexForDataItem(preservedSelection));
+			}
+
+			// The app's sort remains on the source, so an implicit clear is not reported as a clear.
+			bool keptSourceSort = false;
+			if (trigger is null && !explicitClear && !m_activeSourceReleased)
+			{
+				if (ShapingSourceInternal() is { } source)
 				{
-					// TODO Uno: IPropertyValue projection; Type() == PropertyType::String becomes a type check
-					// through ValueConversionHelpers.GetPropertyType.
-					if (ValueConversionHelpers.GetPropertyType(headerContent.GetType()) == PropertyType.String)
+					keptSourceSort = source.ActiveSortAxisInfos().Count != 0;
+				}
+			}
+
+			if (Sorted is not null && !keptSourceSort)
+			{
+				var appliedDirection = trigger is not null ? trigger.SortDirection : SortDirection.None;
+				var args = new TableViewSortedEventArgs(trigger, appliedDirection);
+				try
+				{
+					Sorted?.Invoke(this, args);
+				}
+				catch (Exception ex)
+				{
+					TableViewTip.RethrowAppFault(ex, TableViewTip.AppFaultKind.Callback);
+					throw;
+				}
+			}
+
+			if (!keptSourceSort && AutomationPeer.ListenerExists(AutomationPeer.NotificationEvent))
+			{
+				// A programmatic or header-driven re-sort has no input event behind it, so without an
+				// announcement a screen-reader user has no way to learn the order changed.
+				if (trigger is not null)
+				{
+					// The realized header peer also names template headers, which carry no string.
+					string header = "";
+					if (GetRealizedColumnHeaderPeer(this, trigger) is { } headerPeer)
 					{
-						header = (string)headerContent;
+						header = headerPeer.GetName();
+					}
+					if (string.IsNullOrEmpty(header))
+					{
+						header = TableViewDetails.GetColumnHeaderText(trigger);
+					}
+
+					switch (trigger.SortDirection)
+					{
+						case SortDirection.Ascending:
+							AnnounceSortChange(StringUtil.FormatString(
+								LocalizedOrFallback(ResourceAccessor.SR_TableViewSortedAscending, "Sorted by %1!s! ascending."), header));
+							break;
+						case SortDirection.Descending:
+							AnnounceSortChange(StringUtil.FormatString(
+								LocalizedOrFallback(ResourceAccessor.SR_TableViewSortedDescending, "Sorted by %1!s! descending."), header));
+							break;
+						case SortDirection.None:
+						default:
+							AnnounceSortChange(StringUtil.FormatString(
+								LocalizedOrFallback(ResourceAccessor.SR_TableViewSortCleared, "Sorting cleared for %1!s!."), header));
+							break;
 					}
 				}
-
-				switch (trigger.SortDirection)
+				else
 				{
-					case SortDirection.Ascending:
-						AnnounceSortChange(StringUtil.FormatString(
-							LocalizedOrFallback(ResourceAccessor.SR_TableViewSortedAscending, "Sorted by %1!s! ascending."), header));
-						break;
-					case SortDirection.Descending:
-						AnnounceSortChange(StringUtil.FormatString(
-							LocalizedOrFallback(ResourceAccessor.SR_TableViewSortedDescending, "Sorted by %1!s! descending."), header));
-						break;
-					case SortDirection.None:
-					default:
-						AnnounceSortChange(StringUtil.FormatString(
-							LocalizedOrFallback(ResourceAccessor.SR_TableViewSortCleared, "Sorting cleared for %1!s!."), header));
-						break;
+					AnnounceSortChange(LocalizedOrFallback(ResourceAccessor.SR_TableViewSortClearedAll, "All sorting cleared."));
 				}
 			}
-			else
-			{
-				AnnounceSortChange(LocalizedOrFallback(ResourceAccessor.SR_TableViewSortClearedAll, "All sorting cleared."));
-			}
+		}
+		catch (Exception ex)
+		{
+			// App code's exceptions (the collection, its contract, a sort callout) carry their kind.
+			failure = TableViewTip.CurrentFault(ex);
+			throw;
 		}
 
 		// The chevrons are already current: SetSortStateInternal republished them through
 		// RefreshSortIndicators as each column's DP was written.
+		completed = true;
+
+		// An app-declared axis that survived the clear re-lights its column (for example a moved one).
+		if (trigger is null && !explicitClear)
+		{
+			QueueReconcileSortStateWithSource();
+		}
 	}
 
 	private void QueueReconcileSortStateWithSource()
@@ -702,8 +1010,12 @@ partial class TableView
 			{
 				if (weakThis.TryGetTarget(out var strongThis))
 				{
-					strongThis.m_sortReconcileQueued = false;
-					strongThis.ReconcileSortStateWithSource();
+					// An opt-out replayed in the meantime may have reconciled already.
+					if (strongThis.m_sortReconcileQueued)
+					{
+						strongThis.m_sortReconcileQueued = false;
+						strongThis.ReconcileSortStateWithSource();
+					}
 				}
 			});
 		}
@@ -716,14 +1028,35 @@ partial class TableView
 	private void ReconcileSortStateWithSource()
 	{
 		var tableViewSource = ShapingSourceInternal();
-		if (tableViewSource is null)
+		// Released on Unloaded: another table may own it now, and Loaded reconciles on reclaim.
+		if (tableViewSource is null || m_activeSourceReleased)
 		{
 			return;
 		}
+		bool rerankCustomSort = m_rerankCustomSortOnReconcile;
+		m_rerankCustomSortOnReconcile = false;
 
 		var ownToken = m_tableViewSourceSort.AxisToken;
 		var tableViewSourceImpl = tableViewSource;
 		var axes = tableViewSourceImpl.ActiveSortAxisInfos();
+
+		// A comparer axis another table (or this one, before an ItemsSource change) installed ranks
+		// through an adapter nothing here can update, so it would order rows on stale ranks.
+		bool clearedForeignComparerAxis = false;
+		foreach (var axis in axes)
+		{
+			if (axis.AxisToken != ownToken && string.IsNullOrEmpty(axis.SortMemberPath) &&
+				axis.AxisToken.StartsWith("column:", StringComparison.Ordinal))
+			{
+				using var reconcileGuard = BeginControlInitiatedSortScope();
+				tableViewSourceImpl.ClearSort(axis.AxisToken);
+				clearedForeignComparerAxis = true;
+			}
+		}
+		if (clearedForeignComparerAxis)
+		{
+			axes = tableViewSourceImpl.ActiveSortAxisInfos();
+		}
 
 		bool ownAxisPresent = false;
 		// Infos arrive in precedence order, so the first foreign axis is the one that outranks ours
@@ -744,13 +1077,10 @@ partial class TableView
 		if (ownAxisPresent && primaryForeignAxis is null)
 		{
 			// The control's axis is still the only sort: chevrons already describe it.
-			return;
-		}
-
-		if (primaryForeignAxis is null && string.IsNullOrEmpty(ownToken) && m_sortedColumns.Count == 0)
-		{
-			// Nothing sorted anywhere and no chevron lit. Reached on every shaping notification -
-			// a filter or group change also lands here - so it must not raise a spurious Sorted.
+			if (rerankCustomSort)
+			{
+				RerankCustomSortAfterReclaim();
+			}
 			return;
 		}
 
@@ -759,6 +1089,7 @@ partial class TableView
 			// The app declared a sort while ours was installed. Last writer wins, so ours goes: left
 			// alone it would keep whichever axis was declared FIRST as the primary sort, which is the
 			// hidden-precedence case this reconciliation exists to prevent.
+			CancelPendingSortRestore();
 			using var reconcileGuard = BeginControlInitiatedSortScope();
 			tableViewSourceImpl.ClearSort(ownToken);
 		}
@@ -789,6 +1120,13 @@ partial class TableView
 			? primaryForeignAxis.Value.Direction
 			: SortDirection.None;
 
+		// No axis of ours, nothing a column can describe and no chevron lit. Reached on every shaping
+		// notification - a filter or group change also lands here - so it must not raise a spurious Sorted.
+		if (string.IsNullOrEmpty(ownToken) && matchedColumn is null && m_sortedColumns.Count == 0)
+		{
+			return;
+		}
+
 		// Already reconciled to exactly this state. Reached whenever an unrelated shaping change - a
 		// filter or a group - renotifies while an app-owned sort is standing; re-raising Sorted for it
 		// would report a sort change that did not happen.
@@ -804,6 +1142,7 @@ partial class TableView
 		// Silent, like ResetSortStateForNewItemsSource: the app already owns the ordering by the time
 		// we get here, so there is nothing to cancel and no reshape of our own to perform. Sorted is
 		// still raised so an app tracking sort state sees the chevrons move.
+		CancelPendingSortRestore();
 		foreach (var weakColumn in m_sortedColumns)
 		{
 			if (weakColumn is { } column && column != matchedColumn)
@@ -853,16 +1192,55 @@ partial class TableView
 				if (weakThis.TryGetTarget(out var strongThis))
 				{
 					strongThis.m_clearSortAfterColumnRemovalQueued = false;
+					strongThis.m_sortedColumnPendingRemoval = null;
 					// RecomputeSortDPsAndRaiseInternal's stale-clear guard drops this if the app
 					// applied a new sort on a different column in the meantime.
-					strongThis.RecomputeSortDPsAndRaiseInternal(null);
+					strongThis.RecomputeSortDPsAndRaiseInternal(null, false);
 				}
 			});
 		}
 		else
 		{
 			m_clearSortAfterColumnRemovalQueued = false;
+			m_sortedColumnPendingRemoval = null;
 		}
+	}
+
+	private void PurgeLeavingColumnFromSortState(TableViewColumn column)
+	{
+		bool wasSorted = m_sortedColumns.Contains(column);
+		var direction = column.SortDirection;
+		if (!PurgeColumnFromSortState(column))
+		{
+			return;
+		}
+
+		if (wasSorted && direction != SortDirection.None)
+		{
+			m_sortedColumnPendingRemoval = new WeakReference<TableViewColumn>(column);
+			m_sortedColumnPendingRemovalDirection = direction;
+		}
+		QueueClearSortAfterColumnRemoval();
+	}
+
+	private void RestoreSortOfMovedColumn(TableViewColumn column)
+	{
+		if (!m_clearSortAfterColumnRemovalQueued || column is null ||
+			m_sortedColumnPendingRemoval is null || !m_sortedColumnPendingRemoval.TryGetTarget(out var pending) || pending != column)
+		{
+			return;
+		}
+		m_sortedColumnPendingRemoval = null;
+
+		// A sort applied since the removal replaced this one. A column that opted out while detached
+		// never told the table; one lit only by the app's source sort keeps it, as when attached.
+		if (m_sortedColumns.Count != 0 || (!CanSortColumn(column) && !IsSortLitOnlyByApp()))
+		{
+			return;
+		}
+
+		column.SetSortStateInternal(m_sortedColumnPendingRemovalDirection);
+		m_sortedColumns.Add(column);
 	}
 
 	private void AnnounceSortChange(string announcement)

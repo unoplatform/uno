@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\Generated\TableView.properties.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\Generated\TableView.properties.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -32,7 +32,6 @@ partial class TableView
 			typeof(TableView),
 			new FrameworkPropertyMetadata(default(Brush), OnAlternatingRowBackgroundPropertyChanged));
 
-	// Master switch for the column-resize affordance; a column opts out individually via CanResize.
 	/// <summary>
 	/// Gets or sets a value that indicates whether the user can resize columns.
 	/// </summary>
@@ -52,9 +51,6 @@ partial class TableView
 			typeof(TableView),
 			new FrameworkPropertyMetadata(BoolBoxes.True, OnCanUserResizeColumnsPropertyChanged));
 
-	// Control-wide gate for the click-to-sort UX. When false no sort affordance is built and
-	// header clicks do not sort; programmatic sorting still works. The per-column cycle policy is
-	// TableViewColumn.SortCycle.
 	/// <summary>
 	/// Gets or sets a value that indicates whether the user can sort columns by clicking their headers.
 	/// </summary>
@@ -74,7 +70,6 @@ partial class TableView
 			typeof(TableView),
 			new FrameworkPropertyMetadata(BoolBoxes.True, OnCanUserSortColumnsPropertyChanged));
 
-	// ABI exposes IVector, but the backing vector is observable for live column updates.
 	/// <summary>
 	/// Gets the developer-defined column collection. This is the content property.
 	/// </summary>
@@ -94,7 +89,6 @@ partial class TableView
 			typeof(TableView),
 			new FrameworkPropertyMetadata(default(IList<TableViewColumn>), OnColumnsPropertyChanged));
 
-	// Vertical density preset for row height and built-in cell/header padding.
 	/// <summary>
 	/// Gets or sets the row and cell spacing preset.
 	/// </summary>
@@ -114,7 +108,6 @@ partial class TableView
 			typeof(TableView),
 			new FrameworkPropertyMetadata(TableViewDensity.Standard, OnDensityPropertyChanged));
 
-	// Optional empty-state template shown when ItemsSource is null or empty.
 	/// <summary>
 	/// Gets or sets the template displayed when there are no rows.
 	/// </summary>
@@ -134,7 +127,6 @@ partial class TableView
 			typeof(TableView),
 			new FrameworkPropertyMetadata(default(DataTemplate), OnEmptyTemplatePropertyChanged));
 
-	// Controls row dividers and column separators; row banding is separate.
 	/// <summary>
 	/// Gets or sets which gridlines are displayed.
 	/// </summary>
@@ -154,10 +146,6 @@ partial class TableView
 			typeof(TableView),
 			new FrameworkPropertyMetadata(TableViewGridLinesVisibility.All, OnGridLinesVisibilityPropertyChanged));
 
-	// [MUX_PROPERTY_CHANGED_CALLBACK(TRUE)] belongs here -- swapping the template at runtime has
-	// to re-inflate the realized headers. The handler lives in TableView.cpp, which this PR does
-	// not carry, so the attribute travels with it rather than pointing at a method that is not
-	// here yet.
 	/// <summary>
 	/// Gets or sets the template used for the content of group headers.
 	/// </summary>
@@ -175,9 +163,27 @@ partial class TableView
 			nameof(GroupHeaderTemplate),
 			typeof(DataTemplate),
 			typeof(TableView),
-			new FrameworkPropertyMetadata(default(DataTemplate)));
+			new FrameworkPropertyMetadata(default(DataTemplate), OnGroupHeaderTemplatePropertyChanged));
 
-	// Controls column-header visibility without mutating Columns.
+	/// <summary>
+	/// Gets or sets the style applied to every column header. A column's HeaderStyle takes precedence.
+	/// </summary>
+	public Style? ColumnHeaderStyle
+	{
+		get => (Style?)GetValue(ColumnHeaderStyleProperty);
+		set => SetValue(ColumnHeaderStyleProperty, value);
+	}
+
+	/// <summary>
+	/// Identifies the ColumnHeaderStyle dependency property.
+	/// </summary>
+	public static DependencyProperty ColumnHeaderStyleProperty { get; } =
+		DependencyProperty.Register(
+			nameof(ColumnHeaderStyle),
+			typeof(Style),
+			typeof(TableView),
+			new FrameworkPropertyMetadata(default(Style), OnColumnHeaderStylePropertyChanged));
+
 	/// <summary>
 	/// Gets or sets which headers are displayed.
 	/// </summary>
@@ -197,7 +203,6 @@ partial class TableView
 			typeof(TableView),
 			new FrameworkPropertyMetadata(TableViewHeadersVisibility.Column, OnHeadersVisibilityPropertyChanged));
 
-	// Editing is opt-in: while true (the default) no cell can be edited, whatever the column says.
 	/// <summary>
 	/// Gets or sets a value that gates editing for the whole control.
 	/// </summary>
@@ -236,7 +241,6 @@ partial class TableView
 			typeof(TableView),
 			new FrameworkPropertyMetadata(default(object), OnItemsSourcePropertyChanged));
 
-	// Opt-in row banding; null brushes preserve the theme row background.
 	/// <summary>
 	/// Gets or sets the background brush for rows.
 	/// </summary>
@@ -256,13 +260,6 @@ partial class TableView
 			typeof(TableView),
 			new FrameworkPropertyMetadata(default(Brush), OnRowBackgroundPropertyChanged));
 
-	// ----- Selection -----
-	// Row-scoped, single item. SelectedItem and SelectedIndex are read-only projections of the
-	// selection and stay coherent with each other. Drive selection through Select / Deselect /
-	// DeselectAll, matching ItemsView. Independent of editing.
-
-	// The selected item's index in the displayed row projection, or -1 when nothing is selected.
-	// Under grouping, group headers occupy projection indexes but cannot be selected.
 	/// <summary>
 	/// Gets the selected item's index in the displayed row projection, or -1 when nothing is selected.
 	/// </summary>
@@ -285,7 +282,6 @@ partial class TableView
 			typeof(TableView),
 			new FrameworkPropertyMetadata(IntBoxes.NegativeOne));
 
-	// The selected data item, or null.
 	/// <summary>
 	/// Gets the selected data item, or null.
 	/// </summary>
@@ -305,7 +301,6 @@ partial class TableView
 			typeof(TableView),
 			new FrameworkPropertyMetadata(default(object)));
 
-	// On by default, matching ItemsView, ListView and WPF's DataGrid. None = display-only.
 	/// <summary>
 	/// Gets or sets the row selection behavior.
 	/// </summary>
@@ -335,23 +330,16 @@ partial class TableView
 	/// </summary>
 	public event TypedEventHandler<TableView, TableViewCellEditEndingEventArgs>? CellEditEnding;
 
-	// There is no post-close event in this release. CellEditEnding reports the outcome through
-	// EditAction and is raised for every close, so a second "it finished" event is surface without
-	// a scenario of its own yet. It can be added later without breaking anyone.
-
 	/// <summary>
 	/// Occurs after the selection has settled.
 	/// </summary>
 	public event TypedEventHandler<TableView, SelectionChangedEventArgs>? SelectionChanged;
 
-	// Raised AFTER a sort-state change has been applied. Not cancellable.
 	/// <summary>
 	/// Occurs after a sort-state change has been applied.
 	/// </summary>
 	public event TypedEventHandler<TableView, TableViewSortedEventArgs>? Sorted;
 
-	// Raised BEFORE a sort-state change is applied. Set Cancel=true to keep the control's sort
-	// state unchanged and let the app own the ordering.
 	/// <summary>
 	/// Occurs before a sort-state change is applied.
 	/// </summary>
@@ -403,6 +391,22 @@ partial class TableView
 	{
 		var owner = (TableView)sender;
 		owner.OnEmptyTemplatePropertyChanged(args);
+	}
+
+	private static void OnGroupHeaderTemplatePropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (TableView)sender;
+		owner.OnGroupHeaderTemplatePropertyChanged(args);
+	}
+
+	private static void OnColumnHeaderStylePropertyChanged(
+		DependencyObject sender,
+		DependencyPropertyChangedEventArgs args)
+	{
+		var owner = (TableView)sender;
+		owner.OnColumnHeaderStylePropertyChanged(args);
 	}
 
 	private static void OnGridLinesVisibilityPropertyChanged(

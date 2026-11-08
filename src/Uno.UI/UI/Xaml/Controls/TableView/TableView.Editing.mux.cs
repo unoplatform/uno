@@ -1,13 +1,17 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableView_Editing.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableView_Editing.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
 using System;
+using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.Disposables;
+using Uno.UI.Helpers.WinUI;
+using Windows.Foundation;
 using INotifyDataErrorInfo = System.ComponentModel.INotifyDataErrorInfo;
 
 namespace Microsoft.UI.Xaml.Controls.Tabular;
@@ -125,17 +129,93 @@ partial class TableView
 			hr);
 	}
 
+	// Retail-visible like a consumer handler's throw, but an editing hook is TableView's own column code.
+	private static void LogColumnHookThrow(string hookName, Exception exception)
+	{
+		var hr = unchecked((uint)exception.HResult);
+		TVDiag.LogRetailF("[TableView] Column %ls threw (HRESULT 0x%08X).", hookName, hr);
+	}
+
 	// A cancel that cannot restore the pre-edit value is a silent data-integrity failure from the
 	// user's point of view: they pressed Esc and their edit stayed. Report it.
 #pragma warning disable IDE0051 // Unused upstream as well, kept for 1:1 parity
 	private static void LogRevertUnavailable(string reason)
 	{
 		TVDiag.LogRetailF(
-			"[TableView] Cancel cannot revert this edit (%ls). Implement ITableViewEditableItem " +
-			"on the data item to make rollback reliable.",
+			"[TableView] Cancel cannot revert this edit (%ls). Buffer the editing binding with " +
+			"UpdateSourceTrigger=Explicit so a cancelled value never reaches the data item.",
 			reason);
 	}
 #pragma warning restore IDE0051
+
+	// Value-typed properties come back as a fresh box on every read, so compare those by value.
+	// Returns nullopt when the values can't be compared (enums, structs, managed-only value types
+	// such as decimal, or other non-identical objects), since a fresh box can't be told apart from
+	// a newer write.
+	private static bool? SameEditValue(object? left, object? right)
+	{
+		if (SameInspectableIdentity(left, right))
+		{
+			return true;
+		}
+		if (left is null || right is null)
+		{
+			return false;
+		}
+
+		// TODO Uno: IPropertyValue projection, see ValueConversionHelpers.TryGetPropertyType.
+		if (!ValueConversionHelpers.TryGetPropertyType(left, out var leftType) ||
+			!ValueConversionHelpers.TryGetPropertyType(right, out var rightType))
+		{
+			return null;
+		}
+		if (leftType != rightType)
+		{
+			return false;
+		}
+
+		switch (leftType)
+		{
+			case PropertyType.Boolean: return (bool)left == (bool)right;
+			case PropertyType.Char16: return (char)left == (char)right;
+			case PropertyType.UInt8: return (byte)left == (byte)right;
+			case PropertyType.Int16: return (short)left == (short)right;
+			case PropertyType.UInt16: return (ushort)left == (ushort)right;
+			case PropertyType.Int32: return (int)left == (int)right;
+			case PropertyType.UInt32: return (uint)left == (uint)right;
+			case PropertyType.Int64: return (long)left == (long)right;
+			case PropertyType.UInt64: return (ulong)left == (ulong)right;
+			case PropertyType.Single: return (float)left == (float)right;
+			case PropertyType.Double: return (double)left == (double)right;
+			case PropertyType.String: return (string)left == (string)right;
+			case PropertyType.Guid: return (Guid)left == (Guid)right;
+			case PropertyType.DateTime: return (DateTimeOffset)left == (DateTimeOffset)right;
+			case PropertyType.TimeSpan: return (TimeSpan)left == (TimeSpan)right;
+			default: return null;
+		}
+	}
+
+	// Records whether the edited item raised PropertyChanged for the edited property between a
+	// posted rollback being queued and running. The handler holds this weakly, so the posted work
+	// owns it and dropping that work revokes the subscription.
+	// TODO Uno: C++ revokes in the destructor; C# has no deterministic destruction, so a dropped
+	// posted rollback leaves the (weak) handler subscribed until the item goes away.
+	private sealed class RollbackSupersededWatch
+	{
+		public global::System.ComponentModel.INotifyPropertyChanged? Source;
+		public global::System.ComponentModel.PropertyChangedEventHandler? Handler;
+		public volatile bool Superseded;
+
+		public void Revoke()
+		{
+			if (Source is { } source)
+			{
+				Source = null;
+				try { source.PropertyChanged -= Handler; }
+				catch (Exception) { }
+			}
+		}
+	}
 
 	// ----- Editing lifecycle (opt-in via IsReadOnly=false) -----
 
@@ -211,7 +291,7 @@ partial class TableView
 		UpdateCurrentColumn(column);
 	}
 
-	private bool RaiseBeginningEdit(object? item, TableViewColumn? column)
+	private bool RaiseBeginningEdit(object? item, TableViewColumn? column, ActionTip tip)
 	{
 		if (BeginningEdit is null)
 		{
@@ -224,6 +304,7 @@ partial class TableView
 		}
 		catch (Exception ex)
 		{
+			tip.RecoveredAppFault(TableViewTip.AppFaultKind.Callback, ex.HResult);
 			LogConsumerHandlerThrow("BeginningEdit", ex);
 		}
 		return !args.Cancel;
@@ -232,7 +313,8 @@ partial class TableView
 	private EditEndingResult RaiseEditEnding(
 		EditingUnit unit,
 		TableViewEditAction action,
-		bool honorCancel)
+		bool honorCancel,
+		ActionTip? tip)
 	{
 		var item = m_currentEditItem;
 		var column = m_currentEditColumn;
@@ -244,6 +326,10 @@ partial class TableView
 		{
 			var cellArgs = new TableViewCellEditEndingEventArgs(item, column, action);
 			var self = this;
+			var lifetime = m_tipLifetimeGeneration;
+			var operation = action == TableViewEditAction.Commit ?
+				TableViewTip.Operation.CommitEdit : TableViewTip.Operation.CancelEdit;
+			var postedTip = m_insideLayoutPass ? null : tip;
 			PostEditNotification(() =>
 			{
 				try
@@ -252,6 +338,15 @@ partial class TableView
 				}
 				catch (Exception ex)
 				{
+					if (lifetime == self.m_tipLifetimeGeneration)
+					{
+						if (postedTip is not null) { postedTip.RecoveredAppFault(TableViewTip.AppFaultKind.Callback, ex.HResult); }
+						else
+						{
+							self.NoteRecoveredAppFault(operation, TableViewTip.Stage.Editing,
+								TableViewTip.AppFaultKind.Callback, ex.HResult);
+						}
+					}
 					LogConsumerHandlerThrow("CellEditEnding", ex);
 				}
 			});
@@ -325,9 +420,8 @@ partial class TableView
 
 		column = focusedColumn is not null ? focusedColumn : m_currentColumn;
 
-		// Keyboard-only fallback. Row navigation focuses the row, not a column-tagged cell, so a user
-		// who has never used the pointer has no current column and F2 would silently do nothing.
-		// Defaulting to the first visible editable column makes the keyboard path reachable.
+		// With focus on the row rather than a cell there is no current column, and F2 would silently
+		// do nothing.
 		if (column is null)
 		{
 			column = FirstEditableColumn(this);
@@ -345,10 +439,8 @@ partial class TableView
 
 	private bool TryResolveCurrentCell(out object? item, out TableViewColumn? column)
 	{
-		// Focus wins over the cached current cell when they disagree. Row navigation moves focus but not
-		// the current cell (there is no cell-level keyboard navigation yet), so without this, clicking
-		// row 1 then arrowing to row 40 and pressing F2 would edit row 1. Preferring the focused row
-		// while keeping the cached column gives the user the cell they are looking at.
+		// Focus wins over the cached current cell when they disagree, so clicking row 1, arrowing to
+		// row 40 and pressing F2 edits the focused cell rather than row 1.
 		if (TryResolveFocusedCell(out var focusedItem, out var focusedColumn))
 		{
 			item = focusedItem;
@@ -488,7 +580,7 @@ partial class TableView
 		return null;
 	}
 
-	private void EndEditVisual(TableViewEditAction action)
+	private void EndEditVisual(TableViewEditAction action, ActionTip? tip)
 	{
 		if (m_currentEditRow is { } row)
 		{
@@ -501,13 +593,24 @@ partial class TableView
 			}
 			else
 			{
-				row.EndCellEdit(action);
+				StrongBox<int?> displayFailure = new();
+				StrongBox<bool> applicationFault = new();
+				row.EndCellEdit(action, tip is not null ? displayFailure : null, applicationFault);
+				if (displayFailure.Value is { } failure && tip is not null)
+				{
+					// The edit already landed and the row fell back to its parked element.
+					if (applicationFault.Value) { tip.RecoveredAppFault(TableViewTip.AppFaultKind.Factory, failure); }
+					else { tip.Fail(failure); }
+				}
 			}
 		}
 		m_currentEditRow = null;
+		m_editorFlyoutClosedRevoker.Disposable = null;
+		m_editorFlyoutClosingRevoker.Disposable = null;
+		m_editorPopupClosedRevoker.Disposable = null;
 	}
 
-	internal bool TerminateEditWithoutVisualRestore(bool insideLayoutPass = false)
+	internal bool TerminateEditWithoutVisualRestore(bool insideLayoutPass = false, bool sourceReplaced = false)
 	{
 		if (m_editState == EditState.None)
 		{
@@ -519,7 +622,7 @@ partial class TableView
 		var clearLayoutFlag = insideLayoutPass;
 		try
 		{
-			return TerminateEditForReset(true /* force */);
+			return TerminateEditForReset(true /* force */, sourceReplaced);
 		}
 		finally
 		{
@@ -575,7 +678,8 @@ partial class TableView
 
 	private bool HasBlockingValidationErrors(
 		object? item,
-		TableViewColumn? column)
+		TableViewColumn? column,
+		ActionTip? tip = null)
 	{
 		if (item is null)
 		{
@@ -592,6 +696,16 @@ partial class TableView
 		// unrelated, pre-existing error on a different property block this cell permanently -
 		// the user could never leave the edit.
 		var editingPath = column is not null ? ResolveEditingPropertyPath(column) : string.Empty;
+		// A validation read that throws is the app's; the edit treats it as no error and carries on.
+		void recoverValidationFault(int error)
+		{
+			if (tip is not null) { tip.RecoveredAppFault(TableViewTip.AppFaultKind.Validation, error); }
+			else
+			{
+				NoteRecoveredAppFault(TableViewTip.Operation.CommitEdit, TableViewTip.Stage.Editing,
+					TableViewTip.AppFaultKind.Validation, error);
+			}
+		}
 
 		if (!string.IsNullOrEmpty(editingPath))
 		{
@@ -612,8 +726,9 @@ partial class TableView
 				}
 				return false;
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
+				recoverValidationFault(ex.HResult);
 				return false;
 			}
 		}
@@ -622,13 +737,14 @@ partial class TableView
 		{
 			return errorInfo.HasErrors;
 		}
-		catch (Exception)
+		catch (Exception ex)
 		{
+			recoverValidationFault(ex.HResult);
 			return false;
 		}
 	}
 
-	private bool FinishEditTeardown(EditingUnit unit, TableViewEditAction action, bool honorCancel)
+	private bool FinishEditTeardown(EditingUnit unit, TableViewEditAction action, bool honorCancel, ActionTip? tip)
 	{
 		var item = m_currentEditItem;
 		var column = m_currentEditColumn;
@@ -641,6 +757,7 @@ partial class TableView
 			// again here would invoke the app's setters twice for one commit.
 			var alreadyTransferred = !honorCancel;
 			var wrote = alreadyTransferred;
+			var ownWriteFailed = false;
 
 			if (!wrote && column is not null && editingElement is not null)
 			{
@@ -651,13 +768,23 @@ partial class TableView
 				}
 				catch (Exception ex)
 				{
-					LogConsumerHandlerThrow("CommitCellEdit", ex);
+					// The editing hooks are TableView's code for every column; a value the app rejected returns false
+					// instead of throwing.
+					var error = ex.HResult;
+					ownWriteFailed = true;
+					if (tip is not null) { tip.Fail(error); }
+					LogColumnHookThrow("CommitCellEdit", ex);
 					wrote = false;
 				}
 			}
 
 			if (!wrote)
 			{
+				if (tip is not null)
+				{
+					if (column is null || editingElement is null) { tip.Ignore(TableViewTip.IgnoreReason.Stale); }
+					else if (!ownWriteFailed) { tip.ApplicationFault(TableViewTip.AppFaultKind.Write); }
+				}
 				// Nothing reached the item - a setter threw, or no writable binding could be resolved.
 				// Reporting success here is silent data loss, so the edit stays open instead.
 				//
@@ -674,8 +801,9 @@ partial class TableView
 
 			// Validate AFTER the write - the pending value lives in the editor until the column
 			// commits, so validating before it would only ever re-check the pre-edit value.
-			if (honorCancel && HasBlockingValidationErrors(item, column))
+			if (honorCancel && HasBlockingValidationErrors(item, column, tip))
 			{
+				if (tip is not null) { tip.Ignore(TableViewTip.IgnoreReason.ValidationRejected); }
 				if (column is not null && editingElement is not null)
 				{
 					// Undo the write. CancelCellEdit restores the EDITOR, and because the editing
@@ -684,9 +812,10 @@ partial class TableView
 					// the item keeps the value the control just rejected, and the user's typed text is
 					// replaced in the editor as well: invalid data on the item, nothing on screen.
 					column.CancelCellEdit(editingElement, m_editUneditedValue);
-
 					if (!column.CommitCellEdit(editingElement))
 					{
+						// The rejection stands either way; the app's failed write is reported with it.
+						if (tip is not null) { tip.RecoveredAppFault(TableViewTip.AppFaultKind.Write); }
 						TVDiag.LogRetailF(
 							"[TableView] A rejected value could not be rolled back; the item still holds it.");
 					}
@@ -710,18 +839,123 @@ partial class TableView
 				// teardown and fail-fasts with 0xc0000420 in an Auto-width column.
 				//
 				// The one case that DOES need it: a commit already wrote to the item and validation
-				// then rejected the value, leaving the edit open. There the editor has to be restored
+				// then rejected the value, leaving the edit open, or a forced teardown transferred a
+				// value that failed validation. There the editor has to be restored
 				// and re-committed so the item stops holding a value the control rejected.
 				if (m_editSourceWritten)
 				{
-					try
+					if (m_insideLayoutPass)
 					{
-						column.CancelCellEdit(editingElement, m_editUneditedValue);
-						column.CommitCellEdit(editingElement);
+						// Restoring the editor here is the layout re-entrancy above, so post it. By then
+						// the editor is detached and has no inherited DataContext, so pin it to our item.
+						//
+						// Snapshot the rejected value now: if the item no longer holds it when the
+						// rollback runs, something newer (another edit, an app or live write) owns the
+						// property and restoring the pre-edit value would overwrite it.
+						var weakThis = new WeakReference<TableView>(this);
+						var uneditedValue = m_editUneditedValue;
+						var editingPath = ResolveEditingPropertyPath(column);
+						var resolver = new SortMemberPathResolver(editingPath);
+						var rejectedValue = resolver.Resolve(item);
+						// The snapshot cannot tell a fresh box from a newer write for enums, structs or
+						// an empty path, so also watch the item: any change to the edited property
+						// before the rollback runs supersedes it. Revoked when the posted work runs or
+						// is dropped.
+						var watch = new RollbackSupersededWatch();
+						if (item is global::System.ComponentModel.INotifyPropertyChanged observable)
+						{
+							var anyProperty = editingPath.Length == 0 || editingPath.IndexOfAny(['.', '[', '(']) != -1;
+							var weakWatch = new WeakReference<RollbackSupersededWatch>(watch);
+							try
+							{
+								global::System.ComponentModel.PropertyChangedEventHandler handler = (_, args) =>
+								{
+									if (weakWatch.TryGetTarget(out var strongWatch))
+									{
+										var changed = args.PropertyName;
+										if (anyProperty || string.IsNullOrEmpty(changed) || changed == editingPath)
+										{
+											strongWatch.Superseded = true;
+										}
+									}
+								};
+								observable.PropertyChanged += handler;
+								watch.Handler = handler;
+								watch.Source = observable;
+							}
+							catch (Exception)
+							{
+							}
+						}
+						var rollbackColumn = column;
+						var rollbackEditor = editingElement;
+						var queue = DispatcherQueue;
+						if (queue is null || !queue.TryEnqueue(() =>
+							{
+								// Before the rollback write, which raises PropertyChanged itself.
+								watch.Revoke();
+
+								// Column, editor and item are held strongly, so the rollback still runs
+								// after the table is gone; only the newer-edit check needs the table.
+								var newerEditOpen = false;
+								if (weakThis.TryGetTarget(out var strongThis))
+								{
+									newerEditOpen =
+										strongThis.m_editState != EditState.None &&
+										strongThis.m_currentEditColumn == rollbackColumn &&
+										SameInspectableIdentity(strongThis.m_currentEditItem, item);
+								}
+								if (newerEditOpen || watch.Superseded ||
+									(editingPath.Length != 0 && SameEditValue(resolver.Resolve(item), rejectedValue) == false))
+								{
+									TVDiag.LogRetailF("[TableView] Skipped a posted edit rollback: the value changed after the rejected commit.");
+									return;
+								}
+
+								var restored = false;
+								try
+								{
+									rollbackEditor.DataContext = item;
+									rollbackColumn.CancelCellEdit(rollbackEditor, uneditedValue);
+									restored = rollbackColumn.CommitCellEdit(rollbackEditor);
+								}
+								catch (Exception ex)
+								{
+									LogColumnHookThrow("CancelCellEdit", ex);
+								}
+								try { rollbackEditor.ClearValue(FrameworkElement.DataContextProperty); }
+								catch (Exception) { }
+
+								if (!restored)
+								{
+									TVDiag.LogRetailF("[TableView] A rejected value could not be rolled back; the item still holds it.");
+								}
+							}))
+						{
+							TVDiag.LogRetailF("[TableView] A rejected value could not be rolled back; the item still holds it.");
+						}
 					}
-					catch (Exception ex)
+					else
 					{
-						LogConsumerHandlerThrow("CancelCellEdit", ex);
+						// The cancel closes the edit whatever the rollback does. A write that did not land is the app's.
+						try
+						{
+							column.CancelCellEdit(editingElement, m_editUneditedValue);
+							if (!column.CommitCellEdit(editingElement))
+							{
+								if (tip is not null) { tip.RecoveredAppFault(TableViewTip.AppFaultKind.Write); }
+								else
+								{
+									NoteRecoveredAppFault(TableViewTip.Operation.CancelEdit, TableViewTip.Stage.Editing,
+										TableViewTip.AppFaultKind.Write, null);
+								}
+							}
+						}
+						catch (Exception ex)
+						{
+							NoteColumnFault(tip, TableViewTip.Operation.CancelEdit, ex.HResult);
+							LogColumnHookThrow("CancelCellEdit", ex);
+						}
 					}
 
 					m_editSourceWritten = false;
@@ -729,7 +963,7 @@ partial class TableView
 			}
 		}
 
-		EndEditVisual(action);
+		EndEditVisual(action, tip);
 		m_editUneditedValue = null;
 
 		m_currentEditItem = null;
@@ -737,15 +971,17 @@ partial class TableView
 		return true;
 	}
 
-	private bool CompleteEditEnd(EditingUnit unit, TableViewEditAction action, bool honorCancel, bool vetoed)
+	private bool CompleteEditEnd(EditingUnit unit, TableViewEditAction action, bool honorCancel, bool vetoed, ActionTip? tip = null)
 	{
 		if (m_editState != EditState.Ending)
 		{
+			if (tip is not null) { tip.Ignore(TableViewTip.IgnoreReason.Stale); }
 			return false;
 		}
 
 		if (vetoed)
 		{
+			if (tip is not null) { tip.Ignore(TableViewTip.IgnoreReason.Vetoed); }
 			// Ending -> Editing: a handler kept the edit open.
 			m_editState = EditState.Editing;
 			ClearCoalescedEditReshape();
@@ -754,7 +990,7 @@ partial class TableView
 
 		var generation = m_editGeneration;
 
-		var closed = FinishEditTeardown(unit, action, honorCancel);
+		var closed = FinishEditTeardown(unit, action, honorCancel, tip);
 
 		// A rollback write inside FinishEditTeardown raises PropertyChanged, which can re-enter layout
 		// and drive a forced teardown (row rebuild / recycle) underneath this frame. That teardown has
@@ -762,6 +998,7 @@ partial class TableView
 		// would leave the control reporting IsEditing with no editor.
 		if (m_editGeneration != generation)
 		{
+			if (tip is not null) { tip.Ignore(TableViewTip.IgnoreReason.Superseded); }
 			return false;
 		}
 
@@ -812,14 +1049,29 @@ partial class TableView
 			return false;
 		}
 
-		m_editState = EditState.Ending;
+		using ActionTip tip = new(this,
+			action == TableViewEditAction.Commit ? TableViewTip.Operation.CommitEdit : TableViewTip.Operation.CancelEdit,
+			TableViewTip.Stage.Editing, honorCancel);
+		try
+		{
+			var generation = m_editGeneration;
+			m_editState = EditState.Ending;
 
-		var result = RaiseEditEnding(unit, action, honorCancel);
+			var result = RaiseEditEnding(unit, action, honorCancel, honorCancel ? tip : null);
 
-		return CompleteEditEnd(unit, action, honorCancel, result == EditEndingResult.Vetoed);
+			var closed = CompleteEditEnd(unit, action, honorCancel, result == EditEndingResult.Vetoed, honorCancel ? tip : null);
+			if (closed && m_editGeneration == generation) { tip.Complete(); }
+			else if (m_editGeneration != generation) { tip.Ignore(TableViewTip.IgnoreReason.Superseded); }
+			return closed;
+		}
+		catch (Exception ex)
+		{
+			tip.Escaping(TableViewTip.CurrentFault(ex));
+			throw;
+		}
 	}
 
-	internal bool TerminateEditForReset(bool force)
+	internal bool TerminateEditForReset(bool force, bool sourceReplaced = false)
 	{
 		if (m_editState == EditState.None)
 		{
@@ -828,10 +1080,18 @@ partial class TableView
 
 		// Forced teardown (source-driven reset / ItemsSource replacement / unload) cannot be
 		// vetoed: commit the pending value if it is valid, otherwise report Cancel and restore
-		// the edit snapshot. Control-initiated (non-forced) reshapes stay cancelable.
+		// the edit snapshot. An item that has left the source (removed, filtered out, source
+		// replaced) is reported as Cancel with nothing written, as WPF DataGrid does, so a deleted
+		// record is never written back. Control-initiated (non-forced) reshapes stay cancelable.
 		var action = TableViewEditAction.Commit;
 		if (force)
 		{
+			// Asked of the active source, not the repeater: a projection swap is reported before the
+			// repeater re-binds, and an item under a collapsed group or node is still present.
+			var source = m_activeSource;
+			var itemLeftSource = sourceReplaced || source is null ||
+				!source.ContainsShapedItem(UnwrapEditingDataItem(m_currentEditItem));
+
 			// Transfer the pending editor value to the source BEFORE validating. The editing
 			// bindings use UpdateSourceTrigger::Explicit, so until this runs the typed value is
 			// still sitting in the editor and validation would only ever re-check the pre-edit
@@ -842,17 +1102,25 @@ partial class TableView
 			// FinishEditTeardown must not repeat this write; it detects the forced case via
 			// honorCancel == false.
 			var wrote = false;
-			if (m_currentEditColumn is { } column)
+			if (m_currentEditColumn is { } column && !itemLeftSource)
 			{
 				if (CurrentEditingElement() is { } editingElement)
 				{
+					// The forced close carries on whatever the write does; a write that did not land is the app's.
 					try
 					{
 						wrote = column.CommitCellEdit(editingElement);
+						if (!wrote)
+						{
+							NoteRecoveredAppFault(TableViewTip.Operation.CommitEdit, TableViewTip.Stage.Editing,
+								TableViewTip.AppFaultKind.Write, null);
+						}
+						m_editSourceWritten = m_editSourceWritten || wrote;
 					}
 					catch (Exception ex)
 					{
-						LogConsumerHandlerThrow("CommitCellEdit", ex);
+						NoteColumnFault(null, TableViewTip.Operation.CommitEdit, ex.HResult);
+						LogColumnHookThrow("CommitCellEdit", ex);
 					}
 				}
 			}
@@ -875,7 +1143,13 @@ partial class TableView
 	{
 		if (m_editState == EditState.None)
 		{
-			return true;
+			// Work deferred past an earlier forced close is older than this request.
+			FlushDeferredEditReshapes();
+			// A handler run by that work may have opened an edit; end it like any other.
+			if (m_editState == EditState.None)
+			{
+				return true;
+			}
 		}
 
 		// Already inside a transition (a consumer callback, or a deferral in flight): the reshape
@@ -906,17 +1180,103 @@ partial class TableView
 		}
 	}
 
+	internal void QueueReshapeAfterEditCloses(Action? operation)
+	{
+		if (operation is not null)
+		{
+			m_reshapesAfterEditCloses.Enqueue(operation);
+		}
+	}
+
 	internal void ClearCoalescedEditReshape() => m_pendingEditReshapes.Clear();
+
+	private void QueueDeferredEditReshapeDrain()
+	{
+		if (IsEditing || m_editReshapeDrainQueued ||
+			(m_reshapesAfterEditCloses.Count == 0 && m_pendingEditReshapes.Count == 0))
+		{
+			return;
+		}
+		if (DispatcherQueue is { } queue)
+		{
+			var weakThis = new WeakReference<TableView>(this);
+			m_editReshapeDrainQueued = queue.TryEnqueue(() =>
+			{
+				if (weakThis.TryGetTarget(out var strongThis))
+				{
+					strongThis.m_editReshapeDrainQueued = false;
+					// While another table owns the source the queue waits for the next edit close.
+					if (!strongThis.IsEditing && !strongThis.IsActiveSourceOwnedByOther())
+					{
+						try
+						{
+							strongThis.DrainCoalescedEditReshape();
+						}
+						catch (Exception)
+						{
+							TVDiag.LogRetailF("[TableView] A reshape deferred past a forced edit close threw while draining.");
+						}
+					}
+				}
+			});
+		}
+	}
+
+	internal void FlushDeferredEditReshapes()
+	{
+		// Each pass pops at least one operation, so this terminates even if every one throws.
+		while (!m_suppressEditVisualRestore && !m_isApplyingCoalescedEditReshape && !IsActiveSourceOwnedByOther() && !IsEditing &&
+			(m_pendingEditReshapes.Count != 0 || m_reshapesAfterEditCloses.Count != 0))
+		{
+			try
+			{
+				DrainCoalescedEditReshape();
+			}
+			catch (Exception)
+			{
+				// The rest is re-posted; the newer request must not fail for an older one.
+				TVDiag.LogRetailF("[TableView] A deferred edit reshape threw while flushing ahead of a newer one.");
+			}
+		}
+	}
 
 	internal void DrainCoalescedEditReshape()
 	{
+		// Every edit close lands here. Release a held live reshape unconditionally: it is posted, so
+		// safe even inside a layout pass.
+		if (!IsEditing)
+		{
+			if (m_activeSource is { } source)
+			{
+				source.ResumeHeldLiveShaping();
+			}
+		}
+
 		// Never replay inside a layout pass. The queued operations are app-supplied callables that
 		// reshape the source; running one from ItemsRepeater's element-clearing/measure callback
 		// re-enters the repeater mid-pass. m_suppressEditVisualRestore is exactly the "we are inside
 		// layout" signal, so it gates this too.
 		if (m_suppressEditVisualRestore)
 		{
+			// No later close is coming to replay them.
+			QueueDeferredEditReshapeDrain();
 			return;
+		}
+
+		if (!IsEditing && m_reshapesAfterEditCloses.Count != 0)
+		{
+			// Uno specific: Queue has no insert at the front, so the pending operations are re-queued behind these.
+			var pending = m_pendingEditReshapes.ToArray();
+			m_pendingEditReshapes.Clear();
+			foreach (var deferred in m_reshapesAfterEditCloses)
+			{
+				m_pendingEditReshapes.Enqueue(deferred);
+			}
+			foreach (var queued in pending)
+			{
+				m_pendingEditReshapes.Enqueue(queued);
+			}
+			m_reshapesAfterEditCloses.Clear();
 		}
 
 		if (m_isApplyingCoalescedEditReshape || m_pendingEditReshapes.Count == 0)
@@ -934,7 +1294,16 @@ partial class TableView
 				var operation = m_pendingEditReshapes.Dequeue();
 				if (operation is not null)
 				{
-					operation();
+					try
+					{
+						operation();
+					}
+					catch (Exception)
+					{
+						// Already popped, so re-posting the rest terminates.
+						QueueDeferredEditReshapeDrain();
+						throw;
+					}
 				}
 			}
 		}
@@ -942,6 +1311,15 @@ partial class TableView
 		{
 			m_isApplyingCoalescedEditReshape = false;
 		}
+	}
+
+	private void ResetPendingBeginEdit()
+	{
+		m_currentEditItem = null;
+		m_currentEditColumn = null;
+		m_editUneditedValue = null;
+		m_editState = EditState.None;
+		m_abandonPendingBeginEdit = false;
 	}
 
 	internal bool BeginEdit()
@@ -970,8 +1348,7 @@ partial class TableView
 		if (m_editState == EditState.Editing)
 		{
 			// Moving commits the open edit. WPF parity: leaving the *row* is what ends the row-level
-			// transaction, so moving to a different item commits with unit Row - which is what raises
-			// RowEditEnding and calls ITableViewEditableItem.EndEdit at row scope. Moving between cells
+			// transaction, so moving to a different item commits with unit Row. Moving between cells
 			// of the same row stays a Cell-unit commit.
 			//
 			// A veto, a validation failure or a deferral all leave the existing edit open, so the move
@@ -989,70 +1366,121 @@ partial class TableView
 			}
 		}
 
-		m_currentEditItem = item;
-		m_currentEditColumn = column;
-		m_editState = EditState.Beginning;
-		m_abandonPendingBeginEdit = false;
-		m_editSourceWritten = false;
-
-		// Everything from here to the promotion below runs app code - a BeginningEdit handler, the
-		// editing binding's getter, ITableViewEditableItem.BeginEdit - any of which can mutate the
-		// collection and have ItemsRepeater recycle the row underneath us. A forced teardown cannot
-		// close an edit that is still Beginning, so OnRowElementClearing raises this flag instead and
-		// the checks below unwind rather than promoting to Editing over a recycled row.
-		var allowed = RaiseBeginningEdit(item, column);
-		if (!allowed || m_abandonPendingBeginEdit || !TryBeginEditVisual(item, column))
+		using ActionTip tip = new(this, TableViewTip.Operation.BeginEdit, TableViewTip.Stage.Editing);
+		try
 		{
-			// Beginning -> None. Do not leave stale trackers behind, and reset the state before
-			// draining so a queued reshape can itself start an edit.
-			//
-			// The item transaction is deliberately NOT touched: a cell commit keeps the row
-			// transaction open, so anything held here belongs to a previous cell in the same row and
-			// is still legitimately live. Clearing it would leave the item with an unpaired BeginEdit.
-			m_currentEditItem = null;
-			m_currentEditColumn = null;
-			m_editUneditedValue = null;
-			m_editState = EditState.None;
+			var generation = m_editGeneration;
+			m_currentEditItem = item;
+			m_currentEditColumn = column;
+			m_currentEditRow = null;
+			m_editState = EditState.Beginning;
 			m_abandonPendingBeginEdit = false;
-			DrainCoalescedEditReshape();
-			return false;
-		}
+			m_editSourceWritten = false;
 
-		// The column primes its own editor and hands back whatever it needs to revert. Done here rather
-		// than in the row so the returned value has an owner for the lifetime of the edit.
-		if (m_currentEditRow is { } row)
-		{
-			if (row.GetEditingElement() is { } editingElement)
+			// Only a throw reaches here still Beginning; without this unwind IsEditing would stay true and
+			// every later edit would be rejected as reentrant.
+			using var unwindOnThrow = Disposable.Create(() =>
 			{
+				if (m_editState != EditState.Beginning)
+				{
+					return;
+				}
 				try
 				{
-					m_editUneditedValue = column.PrepareCellForEdit(editingElement, null);
+					// Not a layout pass, so unlike AbandonCellEdit this may hand focus back to the cell.
+					if (m_currentEditRow is { } failedRow)
+					{
+						failedRow.EndCellEdit(TableViewEditAction.Cancel);
+					}
 				}
-				catch (Exception ex)
+				catch (Exception)
 				{
-					LogConsumerHandlerThrow("PrepareCellForEdit", ex);
+					TVDiag.LogRetailF("[TableView] Abandoning a failed BeginEdit could not restore the display cell.");
+				}
+				m_currentEditRow = null;
+				ResetPendingBeginEdit();
+				try
+				{
+					DrainCoalescedEditReshape();
+				}
+				catch (Exception)
+				{
+					TVDiag.LogRetailF("[TableView] A reshape queued during a failed BeginEdit threw while draining.");
+				}
+			});
+
+			// Everything from here to the promotion below runs app code - a BeginningEdit handler, the
+			// editing binding's getter, PrepareCellForEdit - any of which can mutate the
+			// collection and have ItemsRepeater recycle the row underneath us. A forced teardown cannot
+			// close an edit that is still Beginning, so OnRowElementClearing raises this flag instead and
+			// the checks below unwind rather than promoting to Editing over a recycled row.
+			var allowed = RaiseBeginningEdit(item, column, tip);
+			if (!allowed || m_abandonPendingBeginEdit || !TryBeginEditVisual(item, column))
+			{
+				tip.Ignore(!allowed ? TableViewTip.IgnoreReason.Vetoed :
+					m_abandonPendingBeginEdit ? TableViewTip.IgnoreReason.Stale : TableViewTip.IgnoreReason.Cancelled);
+				// Beginning -> None. Do not leave stale trackers behind, and reset the state before
+				// draining so a queued reshape can itself start an edit.
+				//
+				// The item transaction is deliberately NOT touched: a cell commit keeps the row
+				// transaction open, so anything held here belongs to a previous cell in the same row and
+				// is still legitimately live. Clearing it would leave the item with an unpaired BeginEdit.
+				ResetPendingBeginEdit();
+				DrainCoalescedEditReshape();
+				return false;
+			}
+
+			// The column primes its own editor and hands back whatever it needs to revert. Done here rather
+			// than in the row so the returned value has an owner for the lifetime of the edit.
+			if (m_currentEditRow is { } row)
+			{
+				if (row.GetEditingElement() is { } editingElement)
+				{
+					try
+					{
+						m_editUneditedValue = column.PrepareCellForEdit(editingElement, null);
+					}
+					catch (Exception ex)
+					{
+						// The hook is TableView's code; the app code it ran (a CellEditingTemplate's content) tags its throw.
+						var fault = TableViewTip.CurrentFault(ex);
+						NoteColumnFault(tip, TableViewTip.Operation.BeginEdit, fault.error,
+							fault.appFault != TableViewTip.AppFaultKind.None ? fault.appFault : null);
+						LogColumnHookThrow("PrepareCellForEdit", ex);
+					}
 				}
 			}
-		}
 
-		// Last chance to unwind: PrepareCellForEdit calls app code, so
-		// the row can have been recycled between the check above and here. Promoting to Editing over a
-		// recycled row is what lets a later commit write into a different item.
-		if (m_abandonPendingBeginEdit || m_currentEditRow is null)
-		{
-			m_abandonPendingBeginEdit = false;
-			m_currentEditItem = null;
-			m_currentEditColumn = null;
-			m_editUneditedValue = null;
-			m_editState = EditState.None;
+			// Last chance to unwind: PrepareCellForEdit calls app code, so
+			// the row can have been recycled between the check above and here. Promoting to Editing over a
+			// recycled row is what lets a later commit write into a different item.
+			if (m_abandonPendingBeginEdit || m_currentEditRow is null)
+			{
+				tip.Ignore(TableViewTip.IgnoreReason.Stale);
+				ResetPendingBeginEdit();
+				DrainCoalescedEditReshape();
+				return false;
+			}
+
+			SetCurrentCell(item, column);
+			m_editState = EditState.Editing;
 			DrainCoalescedEditReshape();
-			return false;
+			if (m_editGeneration == generation && m_editState == EditState.Editing &&
+				m_currentEditColumn == column && SameInspectableIdentity(m_currentEditItem, item))
+			{
+				tip.Complete();
+			}
+			else
+			{
+				tip.Ignore(TableViewTip.IgnoreReason.Superseded);
+			}
+			return true;
 		}
-
-		SetCurrentCell(item, column);
-		m_editState = EditState.Editing;
-		DrainCoalescedEditReshape();
-		return true;
+		catch (Exception ex)
+		{
+			tip.Escaping(TableViewTip.CurrentFault(ex));
+			throw;
+		}
 	}
 
 	// Editing starts from the user: double-click, or F2 on the current cell. There is no

@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableView_Selection.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableView_Selection.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -87,6 +87,26 @@ partial class TableView
 
 	// ----- SelectionModel plumbing -----
 
+	private void CallSelectionModel(Action call)
+	{
+		m_selectionModelAppFault = default;
+		++m_selectionModelCallDepth;
+		using var depth = Disposable.Create(() => --m_selectionModelCallDepth);
+		try
+		{
+			call();
+			// A hop whose exception SelectionModel swallowed must not keep the app's error object alive.
+			m_selectionModelAppFault = default;
+		}
+		catch (Exception ex)
+		{
+			var hop = m_selectionModelAppFault;
+			m_selectionModelAppFault = default;
+			TableViewTip.RestoreAppFault(hop, ex);
+			throw;
+		}
+	}
+
 	private void EnsureSelectionModel()
 	{
 		if (m_selectionModel is not null)
@@ -130,7 +150,7 @@ partial class TableView
 		// Source has no identity short-circuit: assigning the same source again clears the selection.
 		if (!ReferenceEquals(m_selectionModel.Source, rowsSource))
 		{
-			m_selectionModel.Source = rowsSource;
+			CallSelectionModel(() => m_selectionModel.Source = rowsSource);
 		}
 	}
 
@@ -170,7 +190,29 @@ partial class TableView
 
 	private bool ShouldDeferSelectionRequest() => !CanSelectRows() || !HasRowsSource();
 
-	private void ClearPendingSelection() => m_pendingSelectedItem = null;
+	private void ClearPendingSelection()
+	{
+		m_pendingSelectedItem = null;
+		m_pendingSelectedIdentity = "";
+	}
+
+	private string HierarchyIdentityForIndex(int index)
+	{
+		if (index < 0 || m_tableViewSourceRowMetadata is null || !m_tableViewSourceRowMetadata.IsHierarchicalSource())
+		{
+			return "";
+		}
+
+		try
+		{
+			return m_tableViewSourceRowMetadata.GetIdentity(index);
+		}
+		catch (Exception)
+		{
+			// Mid-reshape the row may not be addressable; the object anchor still applies.
+			return "";
+		}
+	}
 
 	private bool DrainPendingSelection()
 	{
@@ -181,8 +223,25 @@ partial class TableView
 
 		if (m_pendingSelectedItem is { } pendingItem)
 		{
+			var pendingIdentity = m_pendingSelectedIdentity;
 			ClearPendingSelection();
-			ApplySelection(IndexOfItem(pendingItem));
+
+			// Tree: re-anchor on node key first (app may have replaced the object); object identity is
+			// the fallback.
+			int index = -1;
+			if (pendingIdentity.Length != 0 && m_tableViewSourceRowMetadata is not null &&
+				m_tableViewSourceRowMetadata.IsHierarchicalSource())
+			{
+				int candidate = -1;
+				TableViewRowInfo info = default;
+				if (m_tableViewSourceRowMetadata.TryGetIndexForIdentity(pendingIdentity, out candidate) &&
+					TryGetTableViewSourceRowInfo(candidate, ref info) && info.Kind == TableViewRowKind.Data)
+				{
+					index = candidate;
+				}
+			}
+
+			ApplySelection(index >= 0 ? index : IndexOfItem(pendingItem));
 			return true;
 		}
 
@@ -228,101 +287,153 @@ partial class TableView
 
 	// ----- The single writer -----
 
-	private void ApplySelection(int index)
+	private void ApplySelection(int index, bool measureTip = false)
 	{
+		bool validRequest = index >= -1;
 		if (!CanSelectRows())
 		{
 			index = -1;
+			validRequest = false;
 		}
 
 		if (index >= 0 && index >= GetItemsSourceCount())
 		{
 			index = -1;
+			validRequest = false;
 		}
 
-		if (index < 0 && m_selectionModel is null)
+		bool accepted = m_telemetrySession.active && measureTip && !m_isRestoringSelection &&
+			validRequest && m_lastPublishedIndex != index;
+		var version = m_selectionVersion;
+		var sourceGeneration = m_rowMetadataGeneration;
+		using ActionTip tip = new(this, TableViewTip.Operation.Selection, TableViewTip.Stage.Selection, accepted);
+		try
 		{
-			// Nothing selected and no model yet - nothing to clear, but publish so the projections
-			// start out agreeing with the model.
-			m_stickySelectedItem = null;
+			if (index < 0 && m_selectionModel is null)
+			{
+				// Nothing selected and no model yet - nothing to clear, but publish so the projections
+				// start out agreeing with the model.
+				m_stickySelectedItem = null;
+				m_stickySelectedIdentity = "";
+				PushSelectionProperties();
+				return;
+			}
+
+			EnsureSelectionModel();
+
+			if (index < 0)
+			{
+				CallSelectionModel(() => m_selectionModel!.ClearSelection());
+			}
+			else
+			{
+				CallSelectionModel(() => m_selectionModel!.Select(index));
+			}
+
+			// Capture the intentional selection by object identity. This is the single selection writer, so
+			// every gesture / programmatic set / restore passes through here; the anchor otherwise moves only
+			// in OnSelectionModelSelectionChanged (incremental clear outside a restore). A Reset-driven clear
+			// runs under the restore flag, keeping it for the identity restore.
+			m_stickySelectedItem = index >= 0 ? SelectedItemForIndex(index) : null;
+			m_stickySelectedIdentity = (index >= 0 && m_stickySelectedItem is not null) ? HierarchyIdentityForIndex(index) : "";
+
+			// The model raises SelectionChanged only when the selection actually moved; publish here too so
+			// a rejected write still leaves the DPs agreeing with the model.
 			PushSelectionProperties();
-			return;
+			if (accepted)
+			{
+				if (m_selectionVersion == version + 1 && m_rowMetadataGeneration == sourceGeneration &&
+					m_lastPublishedIndex == index)
+				{
+					tip.Complete();
+				}
+				else
+				{
+					tip.Ignore(TableViewTip.IgnoreReason.Superseded);
+				}
+			}
 		}
-
-		EnsureSelectionModel();
-
-		if (index < 0)
+		catch (Exception ex)
 		{
-			m_selectionModel!.ClearSelection();
+			tip.Escaping(TableViewTip.CurrentFault(ex));
+			throw;
 		}
-		else
-		{
-			m_selectionModel!.Select(index);
-		}
-
-		// Capture the intentional selection by object identity. This is the single selection writer, so
-		// every user gesture / programmatic set / restore passes through here and nowhere else moves the
-		// sticky anchor - which is exactly why a Reset-driven model clear (which does NOT call this)
-		// leaves it intact for the identity restore.
-		m_stickySelectedItem = index >= 0 ? SelectedItemForIndex(index) : null;
-
-		// The model raises SelectionChanged only when the selection actually moved; publish here too so
-		// a rejected write still leaves the DPs agreeing with the model.
-		PushSelectionProperties();
 	}
 
 	private void OnSelectionModelSelectionChanged(
 		SelectionModel sender,
 		SelectionModelSelectionChangedEventArgs args)
 	{
-		int newIndex = SelectedIndexInternal();
-		var newItem = SelectedItemInternal();
-		var deselectedItem = UnwrapEditingDataItem(SelectedItem);
-		var selectedItem = UnwrapEditingDataItem(newItem);
-
-		var deselectedRow = FindRealizedRowForIndex(m_lastPublishedIndex);
-		var selectedRow = FindRealizedRowForIndex(newIndex);
-		m_lastPublishedIndex = newIndex;
-
-		// Arm the guard BEFORE any DP write. Both the row IsSelected pushes below and
-		// PushSelectionProperties notify synchronously, so an observer can select something else from
-		// inside either one. When that happens the nested pass has already published and raised for the
-		// newer selection; finishing this one would overwrite it and raise a bogus delta.
-		uint version = ++m_selectionVersion;
-
-		// Restamp before notifying, so a handler that walks the rows sees settled chrome.
-		if (deselectedRow is not null)
+		try
 		{
-			deselectedRow.SetIsSelectedInternal(false);
-		}
+			int newIndex = SelectedIndexInternal();
+			var newItem = SelectedItemInternal();
+			var deselectedItem = UnwrapEditingDataItem(SelectedItem);
+			var selectedItem = UnwrapEditingDataItem(newItem);
 
-		if (selectedRow is not null)
+			var deselectedRow = FindRealizedRowForIndex(m_lastPublishedIndex);
+			var selectedRow = FindRealizedRowForIndex(newIndex);
+			m_lastPublishedIndex = newIndex;
+
+			// Arm the guard BEFORE any DP write. Both the row IsSelected pushes below and
+			// PushSelectionProperties notify synchronously, so an observer can select something else from
+			// inside either one. When that happens the nested pass has already published and raised for the
+			// newer selection; finishing this one would overwrite it and raise a bogus delta.
+			uint version = ++m_selectionVersion;
+
+			// Restamp before notifying, so a handler that walks the rows sees settled chrome.
+			if (deselectedRow is not null)
+			{
+				deselectedRow.SetIsSelectedInternal(false);
+			}
+
+			if (selectedRow is not null)
+			{
+				selectedRow.SetIsSelectedInternal(true);
+			}
+
+			if (m_selectionVersion != version)
+			{
+				return;
+			}
+
+			// While a reload is being restored, SelectionModel::Source clears before the stashed item is
+			// re-selected. Chrome is already settled above; suppressing the rest keeps that round trip from
+			// publishing a transient null and raising a clear-then-reselect pair for a selection that never
+			// actually changed. ResolveSelectionAfterSourceChange publishes once when it finishes.
+			if (m_isRestoringSelection)
+			{
+				return;
+			}
+
+			// Outside a restore, a model clear means the row left the view (a removal, or a group or subtree
+			// collapse). Drop the anchor so a later Reset doesn't resurrect it.
+			if (newIndex < 0)
+			{
+				m_stickySelectedItem = null;
+				m_stickySelectedIdentity = "";
+			}
+
+			PushSelectionProperties();
+			if (m_selectionVersion != version)
+			{
+				return;
+			}
+
+			RaiseSelectionAutomationEvents(deselectedRow, deselectedItem, selectedRow, selectedItem);
+			RaiseSelectionChanged(newItem);
+		}
+		catch (Exception ex)
 		{
-			selectedRow.SetIsSelectedInternal(true);
-		}
+			// SelectionModel called this through the ABI, which drops the exception's tag; CallSelectionModel restores it.
+			// Outside such a call nothing would consume it.
+			if (m_selectionModelCallDepth != 0)
+			{
+				m_selectionModelAppFault = TableViewTip.CurrentAppFaultHop(ex);
+			}
 
-		if (m_selectionVersion != version)
-		{
-			return;
+			throw;
 		}
-
-		// While a reload is being restored, SelectionModel::Source clears before the stashed item is
-		// re-selected. Chrome is already settled above; suppressing the rest keeps that round trip from
-		// publishing a transient null and raising a clear-then-reselect pair for a selection that never
-		// actually changed. ResolveSelectionAfterSourceChange publishes once when it finishes.
-		if (m_isRestoringSelection)
-		{
-			return;
-		}
-
-		PushSelectionProperties();
-		if (m_selectionVersion != version)
-		{
-			return;
-		}
-
-		RaiseSelectionAutomationEvents(deselectedRow, deselectedItem, selectedRow, selectedItem);
-		RaiseSelectionChanged(newItem);
 	}
 
 	private void PushSelectionProperties()
@@ -334,14 +445,23 @@ partial class TableView
 		int index = SelectedIndexInternal();
 		var item = SelectedItemForIndex(index);
 
-		if (SelectedIndex != index)
+		// Only app property observers and bindings run from these writes; a throw from them is the app's.
+		try
 		{
-			SelectedIndex = index;
-		}
+			if (SelectedIndex != index)
+			{
+				SelectedIndex = index;
+			}
 
-		if (!SameInspectableIdentity(SelectedItem, item))
+			if (!SameInspectableIdentity(SelectedItem, item))
+			{
+				SelectedItem = item;
+			}
+		}
+		catch (Exception ex)
 		{
-			SelectedItem = item;
+			TableViewTip.RethrowAppFault(ex, TableViewTip.AppFaultKind.Callback);
+			throw;
 		}
 	}
 
@@ -378,6 +498,7 @@ partial class TableView
 		}
 
 		m_lastRaisedSelectedItem = addedItem;
+		++m_selectionSequence;
 
 		List<object> added = new();
 		if (addedItem is not null)
@@ -397,7 +518,8 @@ partial class TableView
 			removed,
 			added);
 
-		SelectionChanged?.Invoke(this, args);
+		try { SelectionChanged?.Invoke(this, args); }
+		catch (Exception ex) { TableViewTip.RethrowAppFault(ex, TableViewTip.AppFaultKind.Callback); throw; }
 	}
 
 	private void RaiseSelectionAutomationEvents(
@@ -570,6 +692,7 @@ partial class TableView
 		// transient clear the model is about to publish, so the restore reads as one atomic event (or
 		// as silence when the same row is re-selected) rather than a clear-then-reselect pair.
 		m_pendingSelectedItem = sticky;
+		m_pendingSelectedIdentity = m_stickySelectedIdentity;
 		m_isRestoringSelection = true;
 		m_resetSelectionRestorePending = true;
 	}
@@ -762,11 +885,11 @@ partial class TableView
 
 		if (toggle && IsSelected(index))
 		{
-			ApplySelection(-1);
+			ApplySelection(-1, true);
 			return;
 		}
 
-		ApplySelection(index);
+		ApplySelection(index, true);
 	}
 
 	internal void SelectRowIndexFromKeyboardFocus(int index)
@@ -805,7 +928,7 @@ partial class TableView
 			return;
 		}
 
-		ApplySelection(index);
+		ApplySelection(index, true);
 	}
 
 	/// <summary>
@@ -818,7 +941,7 @@ partial class TableView
 		// Only clears when `index` IS the selection, so a stale call cannot clobber a newer one.
 		if (IsSelected(index))
 		{
-			ApplySelection(-1);
+			ApplySelection(-1, true);
 		}
 	}
 
@@ -847,6 +970,6 @@ partial class TableView
 	public void DeselectAll()
 	{
 		ClearPendingSelection();
-		ApplySelection(-1);
+		ApplySelection(-1, true);
 	}
 }

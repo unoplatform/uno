@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewToolTipHelpers.h, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewToolTipHelpers.h, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -20,6 +20,11 @@ internal static partial class TableViewDetails
 	{
 		public ToolTip? ToolTip;
 		public string PublishedHelpText = "";
+		// Detached by SuppressOwnedToolTip; RestoreOwnedToolTip re-attaches it.
+		public bool IsSuppressed = false;
+		// A restore requested while the detach is still unregistering runs once it has finished.
+		public bool IsDetaching = false;
+		public bool IsRestorePending = false;
 	}
 
 	// InitializeDependencyProperty(name, IInspectable, TableView, isAttached: true, defaultValue: nullptr)
@@ -68,6 +73,12 @@ internal static partial class TableViewDetails
 		}
 	}
 
+	internal static bool IsOwnedToolTip(FrameworkElement element, CellToolTipRecord record)
+	{
+		var attached = ToolTipService.GetToolTip(element);
+		return record.ToolTip is not null && (record.IsSuppressed ? attached is null : record.ToolTip == (attached as ToolTip));
+	}
+
 	internal static string? TryGetString(object? value)
 	{
 		// TODO Uno: IPropertyValue projection
@@ -78,6 +89,46 @@ internal static partial class TableViewDetails
 		}
 
 		return null;
+	}
+
+	// A neutralized control-owned ToolTip (disabled, no content) stays attached, so its presence
+	// alone does not mean the element shows a tooltip.
+	internal static bool HasEffectiveToolTip(DependencyObject? element)
+	{
+		var value = element is not null ? ToolTipService.GetToolTip(element) : null;
+		if (value is null)
+		{
+			return false;
+		}
+
+		if (TryGetString(value) is { } text)
+		{
+			return text.Length != 0;
+		}
+
+		if (value is ToolTip toolTip)
+		{
+			if (!toolTip.IsEnabled)
+			{
+				return false;
+			}
+			var content = toolTip.Content;
+			if (TryGetString(content) is { } contentText)
+			{
+				return contentText.Length != 0;
+			}
+			if (content is not null)
+			{
+				return true;
+			}
+			// An app ToolTip can render through its own template with no Content; ours never has one.
+			var record = GetRecord(element as FrameworkElement);
+			return (record is null || record.ToolTip != toolTip) &&
+				(toolTip.ReadLocalValue(Control.TemplateProperty) != DependencyProperty.UnsetValue ||
+				 toolTip.ReadLocalValue(FrameworkElement.StyleProperty) != DependencyProperty.UnsetValue);
+		}
+
+		return true;
 	}
 
 	internal static void RetractPublishedHelpText(FrameworkElement element, CellToolTipRecord record)
@@ -102,11 +153,11 @@ internal static partial class TableViewDetails
 
 		RetractPublishedHelpText(element, record);
 
-		if (record.ToolTip is not null && record.ToolTip == (ToolTipService.GetToolTip(element) as ToolTip))
+		if (IsOwnedToolTip(element, record))
 		{
 			// Close before dropping content: clearing an open tooltip's content removes a live
 			// popup's child, the shape behind the reentrant CPopup::RemoveChild crash.
-			record.ToolTip.IsEnabled = false;
+			record.ToolTip!.IsEnabled = false;
 			if (record.ToolTip.IsOpen)
 			{
 				record.ToolTip.IsOpen = false;
@@ -136,8 +187,7 @@ internal static partial class TableViewDetails
 		var record = GetRecord(element);
 		// The raw value, not a ToolTip-narrowed one: a bare string would otherwise read as empty.
 		var existingValue = ToolTipService.GetToolTip(element);
-		var owned = (record is not null && record.ToolTip is not null && record.ToolTip == (existingValue as ToolTip))
-			? record.ToolTip : null;
+		var owned = (record is not null && IsOwnedToolTip(element, record)) ? record.ToolTip : null;
 
 		if (existingValue is not null && owned is null)
 		{
@@ -238,6 +288,9 @@ internal static partial class TableViewDetails
 		}
 	}
 
+	// Defined by TableViewRow: a live value change can make the cell (in)actionable.
+	internal static partial void OnCellToolTipValueAppliedInternal(FrameworkElement cell);
+
 	// The whole per-cell update path: no event, no invalidation, no realization-time work.
 	internal static void OnCellToolTipValueChanged(
 		DependencyObject sender,
@@ -260,6 +313,7 @@ internal static partial class TableViewDetails
 			{
 				ClearOwnedToolTip(element);
 			}
+			OnCellToolTipValueAppliedInternal(element);
 		}
 		catch (Exception ex)
 		{
@@ -312,6 +366,64 @@ internal static partial class TableViewDetails
 		{
 			TVDiag.LogRetailF("[TableView] Applying a header tooltip failed (HRESULT 0x%08X).",
 				unchecked((uint)ex.HResult));
+		}
+	}
+
+	// Contained: attaching runs app code (DataContextChanged), and callers include property-changed callbacks.
+	internal static void RestoreOwnedToolTip(FrameworkElement element)
+	{
+		var record = GetRecord(element);
+		if (record is not null && record.IsSuppressed)
+		{
+			if (record.IsDetaching)
+			{
+				record.IsRestorePending = true;
+				return;
+			}
+
+			var owned = IsOwnedToolTip(element, record);
+			record.IsSuppressed = false;
+			if (owned)
+			{
+				try
+				{
+					ToolTipService.SetToolTip(element, record.ToolTip);
+				}
+				catch (Exception ex)
+				{
+					TVDiag.LogRetailF("[TableView] Restoring a header tooltip failed (HRESULT 0x%08X).",
+						unchecked((uint)ex.HResult));
+				}
+			}
+		}
+	}
+
+	// Workaround for a framework bug: an opening tooltip resets the cursor (detached, as a disabled one still opens).
+	internal static void SuppressOwnedToolTip(FrameworkElement element)
+	{
+		var record = GetRecord(element);
+		if (record is not null && !record.IsSuppressed && IsOwnedToolTip(element, record))
+		{
+			record.IsSuppressed = true;
+			// Detaching clears the ToolTip's DataContext, so app code runs mid-detach. A restore attached
+			// then would be unregistered again by this call, so it waits until the detach returns.
+			record.IsDetaching = true;
+			try
+			{
+				ToolTipService.SetToolTip(element, null);
+			}
+			catch (Exception ex)
+			{
+				TVDiag.LogRetailF("[TableView] Suppressing a header tooltip failed (HRESULT 0x%08X).",
+					unchecked((uint)ex.HResult));
+			}
+			record.IsDetaching = false;
+			var restorePending = record.IsRestorePending;
+			record.IsRestorePending = false;
+			if (restorePending)
+			{
+				RestoreOwnedToolTip(element);
+			}
 		}
 	}
 }
