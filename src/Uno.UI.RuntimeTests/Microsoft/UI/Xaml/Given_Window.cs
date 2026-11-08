@@ -295,10 +295,9 @@ public class Given_Window
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
-	public void When_Vulkan_Then_Device_Is_The_Primary_Display_Adapter()
+	public void When_Vulkan_Then_Device_Is_DXGIs_First_Hardware_Adapter()
 	{
-		// WinUI renders on DXGI's first adapter, which is the primary display's unless the app was assigned another GPU.
-		// DWM also only gets a Vulkan swapchain's alpha, which a system backdrop needs, from the adapter driving the display.
+		// WinUI renders on DXGI's first hardware adapter: the primary display's, or the app's choice in the Windows graphics settings.
 		var wrapper = TestServices.WindowHelper.CurrentTestWindow.NativeWrapper;
 		var context = GetField(wrapper, "_context");
 		if (context?.GetType().GetProperty("Kind")?.GetValue(context)?.ToString() != "Vulkan")
@@ -309,19 +308,56 @@ public class Given_Window
 		var vulkan = GetField(context, "_vk");
 		var deviceLuid = (long?)vulkan!.GetType().GetProperty("DeviceLuid", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(vulkan);
 
-		var factoryType = Type.GetType("Uno.UI.Runtime.Win32.Vulkan.Win32VulkanSurfaceFactory, Uno.UI.Runtime.Win32", throwOnError: true)!;
-		var factory = Activator.CreateInstance(factoryType, nonPublic: true);
-		var presentingLuid = (long?)factoryType.GetMethod("GetPresentingAdapterLuid")!.Invoke(factory, [IntPtr.Zero]);
-
-		if (deviceLuid is null || presentingLuid is null)
+		if (deviceLuid is null)
 		{
-			Assert.Inconclusive("The driver or the display configuration doesn't report an adapter LUID.");
+			Assert.Inconclusive("The driver doesn't report an adapter LUID.");
 		}
 
-		Assert.AreEqual(presentingLuid, deviceLuid);
+		Assert.AreEqual(GetFirstHardwareAdapterLuid(), deviceLuid);
 
 		static object GetField(object target, string name)
 			=> target?.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(target);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public async Task When_Swapchain_Missing_Then_Next_Frame_Recovers()
+	{
+		const BindingFlags Private = BindingFlags.Instance | BindingFlags.NonPublic;
+
+		var wrapper = TestServices.WindowHelper.CurrentTestWindow.NativeWrapper;
+		var context = wrapper.GetType().GetField("_context", Private)!.GetValue(wrapper);
+		if (context?.GetType().GetProperty("Kind")?.GetValue(context)?.ToString() != "Vulkan")
+		{
+			Assert.Inconclusive("The window did not negotiate a Vulkan context.");
+		}
+
+		var vulkan = context.GetType().GetField("_vk", Private)!.GetValue(context)!;
+		var display = vulkan.GetType().GetField("_display", Private)!.GetValue(vulkan)!;
+		var swapchain = display.GetType().GetField("_swapchain", Private)!;
+		ulong SwapchainHandle()
+		{
+			var value = swapchain.GetValue(display)!;
+			return (ulong)value.GetType().GetField("Handle")!.GetValue(value)!;
+		}
+
+		// What a failed RecreateSurface leaves behind during a display transition.
+		using (var deviceLock = (IDisposable)vulkan.GetType().GetMethod("Lock")!.Invoke(vulkan, null)!)
+		{
+			var deviceApi = vulkan.GetType().GetProperty("DeviceApi")!.GetValue(vulkan)!;
+			deviceApi.GetType().GetMethod("DeviceWaitIdle")!.Invoke(deviceApi, [vulkan.GetType().GetProperty("DeviceHandle")!.GetValue(vulkan)]);
+			display.GetType().GetMethod("DestroyCurrentImageViews", Private)!.Invoke(display, null);
+			display.GetType().GetMethod("DestroySwapchain", Private)!.Invoke(display, null);
+		}
+
+		Assert.AreEqual(0UL, SwapchainHandle());
+
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) });
+
+		await TestServices.WindowHelper.WaitFor(() => SwapchainHandle() != 0);
+		await TestServices.WindowHelper.WaitFor(() => (bool)context.GetType().GetProperty("PresentedLastFrame")!.GetValue(context)!);
 	}
 
 	[TestMethod]
@@ -419,13 +455,17 @@ public class Given_Window
 		var previousBackdrop = window.SystemBackdrop;
 		var windowContent = (FrameworkElement)window.Content;
 		var previousTheme = windowContent.RequestedTheme;
+		var previousSize = window.AppWindow.Size;
+
+		// An OS without Mica stays on the fallback throughout.
+		var materialMode = Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported() ? BackdropBackgroundMode.Transparent : BackdropBackgroundMode.Fallback;
 		try
 		{
 			windowContent.RequestedTheme = theme;
 			luidOverride.SetValue(null, deviceLuid);
 			window.SystemBackdrop = new MicaBackdrop();
 			await TestServices.WindowHelper.WaitForIdle();
-			Assert.AreEqual(BackdropBackgroundMode.Transparent, root.BackdropBackground, "The rendering adapter drives the display, so the material shows.");
+			Assert.AreEqual(materialMode, root.BackdropBackground, "The rendering adapter drives the display, so the material shows.");
 
 			// What unplugging a screen or dragging the window to another adapter's screen ends in.
 			luidOverride.SetValue(null, deviceLuid + 1);
@@ -436,16 +476,81 @@ public class Given_Window
 			luidOverride.SetValue(null, deviceLuid);
 			SendMessage(hwnd, WM_DISPLAYCHANGE, 0, 0);
 			await TestServices.WindowHelper.WaitForIdle();
-			Assert.AreEqual(BackdropBackgroundMode.Transparent, root.BackdropBackground, "The material returns with the adapter.");
+			Assert.AreEqual(materialMode, root.BackdropBackground, "The material returns with the adapter.");
+
+			// A resize alone can change the window's monitor, with no move: the largest overlap decides it.
+			var backdropMonitor = wrapper.GetType().GetField("_backdropMonitor", BindingFlags.Instance | BindingFlags.NonPublic)!;
+			backdropMonitor.SetValue(wrapper, Activator.CreateInstance(backdropMonitor.FieldType));
+			luidOverride.SetValue(null, deviceLuid + 1);
+			window.AppWindow.Resize(new Windows.Graphics.SizeInt32(previousSize.Width + 1, previousSize.Height));
+			await TestServices.WindowHelper.WaitForIdle();
+			AssertPaintsPageBackground(root, expected);
 		}
 		finally
 		{
 			luidOverride.SetValue(null, null);
+			window.AppWindow.Resize(previousSize);
 			window.SystemBackdrop = previousBackdrop;
 			windowContent.RequestedTheme = previousTheme;
 			SendMessage(hwnd, WM_DISPLAYCHANGE, 0, 0);
 		}
 	}
+
+	private static long? GetFirstHardwareAdapterLuid()
+	{
+		const int EnumAdapters1Slot = 12, GetDesc1Slot = 10;
+		const uint WarpVendorId = 0x1414, WarpDeviceId = 0x8C;
+
+		var iidFactory1 = new Guid("770aae78-f26f-4dba-a829-253c83d1b387");
+		System.Runtime.InteropServices.Marshal.ThrowExceptionForHR(CreateDXGIFactory1(ref iidFactory1, out var factory));
+		try
+		{
+			var enumAdapters = VTableMethod<EnumAdapters1Delegate>(factory, EnumAdapters1Slot);
+			for (uint i = 0; enumAdapters(factory, i, out var adapter) >= 0; i++)
+			{
+				try
+				{
+					System.Runtime.InteropServices.Marshal.ThrowExceptionForHR(VTableMethod<GetDesc1Delegate>(adapter, GetDesc1Slot)(adapter, out var desc));
+					if (desc.VendorId != WarpVendorId || desc.DeviceId != WarpDeviceId)
+					{
+						return desc.AdapterLuid;
+					}
+				}
+				finally
+				{
+					System.Runtime.InteropServices.Marshal.Release(adapter);
+				}
+			}
+		}
+		finally
+		{
+			System.Runtime.InteropServices.Marshal.Release(factory);
+		}
+
+		return null;
+
+		static T VTableMethod<T>(nint comObject, int slot) where T : Delegate
+			=> System.Runtime.InteropServices.Marshal.GetDelegateForFunctionPointer<T>(
+				System.Runtime.InteropServices.Marshal.ReadIntPtr(System.Runtime.InteropServices.Marshal.ReadIntPtr(comObject), slot * nint.Size));
+	}
+
+	private delegate int EnumAdapters1Delegate(nint factory, uint index, out nint adapter);
+
+	private delegate int GetDesc1Delegate(nint adapter, out DXGI_ADAPTER_DESC1 desc);
+
+	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+	private struct DXGI_ADAPTER_DESC1
+	{
+		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValTStr, SizeConst = 128)]
+		public string Description;
+		public uint VendorId, DeviceId, SubSysId, Revision;
+		public nuint DedicatedVideoMemory, DedicatedSystemMemory, SharedSystemMemory;
+		public long AdapterLuid;
+		public uint Flags;
+	}
+
+	[System.Runtime.InteropServices.DllImport("dxgi.dll")]
+	private static extern int CreateDXGIFactory1(ref Guid riid, out nint factory);
 
 	private static void AssertPaintsPageBackground(XamlIslandRoot root, byte expected)
 	{
