@@ -993,6 +993,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			root.Children.Add(transparentFill);
 			root.Children.Add(strokeOnly);
 
+			using var resetWindowContent = UITestHelper.ResetWindowContent();
 			TestServices.WindowHelper.WindowContent = root;
 			await TestServices.WindowHelper.WaitForLoaded(root);
 			await TestServices.WindowHelper.WaitForIdle();
