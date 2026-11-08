@@ -1361,6 +1361,8 @@ partial class TableViewCellAutomationPeer
 	/// <param name="value">The text to write to the cell.</param>
 	public void SetValue(string value)
 	{
+		const int E_FAIL = unchecked((int)0x80004005);
+
 		if (IsReadOnly)
 		{
 			// throw winrt::hresult_error(E_NOTIMPL, L"This cell is read-only.");
@@ -1372,14 +1374,14 @@ partial class TableViewCellAutomationPeer
 		if (row is null || column is null || GetTrackedTableForRow(row) is null)
 		{
 			// throw winrt::hresult_error(E_FAIL, L"The cell is no longer realized.");
-			throw new InvalidOperationException("The cell is no longer realized.");
+			throw new Exception("The cell is no longer realized.") { HResult = E_FAIL };
 		}
 
 		var owner = column.GetOwningTableView();
 		if (owner is null)
 		{
 			// throw winrt::hresult_error(E_FAIL, L"The cell has no owning TableView.");
-			throw new InvalidOperationException("The cell has no owning TableView.");
+			throw new Exception("The cell has no owning TableView.") { HResult = E_FAIL };
 		}
 
 		var item = GetTrackedItem();
@@ -1395,7 +1397,7 @@ partial class TableViewCellAutomationPeer
 		if (!ownerImpl.BeginEdit(item, column))
 		{
 			// throw winrt::hresult_error(E_FAIL, L"The cell could not be opened for editing.");
-			throw new InvalidOperationException("The cell could not be opened for editing.");
+			throw new Exception("The cell could not be opened for editing.") { HResult = E_FAIL };
 		}
 
 		bool wrote = false;
@@ -1421,7 +1423,7 @@ partial class TableViewCellAutomationPeer
 			// Vetoed, rejected by validation, or waiting on a deferral; the edit stays open and the
 			// caller must not be told the value was applied.
 			// throw winrt::hresult_error(E_FAIL, L"The value was not accepted.");
-			throw new InvalidOperationException("The value was not accepted.");
+			throw new Exception("The value was not accepted.") { HResult = E_FAIL };
 		}
 	}
 
