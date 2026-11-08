@@ -4,11 +4,11 @@ namespace Uno.UI.RuntimeTests.Tests;
 
 public sealed partial class XBindIndexerControl : UserControl
 {
-	public XBindIndexerControl(Given_BindingSourceStaleHandlers.CountingViewModel vm)
+	public XBindIndexerControl(Windows_UI_Xaml.Given_BindingSourceStaleHandlers.CountingViewModel vm)
 	{
 		VM = vm;
 		this.InitializeComponent();
 	}
 
-	public Given_BindingSourceStaleHandlers.CountingViewModel VM { get; }
+	public Windows_UI_Xaml.Given_BindingSourceStaleHandlers.CountingViewModel VM { get; }
 }

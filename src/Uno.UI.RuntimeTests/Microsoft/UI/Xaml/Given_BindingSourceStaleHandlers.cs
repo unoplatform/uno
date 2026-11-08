@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml.Data;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
-namespace Uno.UI.RuntimeTests.Tests;
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 // A binding dropped without being disposed must not leave subscriptions on a source that outlives it,
 // whatever kind of source it binds to: a collection it indexes into, a DependencyObject, or an x:Bind source.
