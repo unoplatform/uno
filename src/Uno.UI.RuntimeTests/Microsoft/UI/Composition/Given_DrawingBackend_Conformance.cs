@@ -169,4 +169,26 @@ public class Given_DrawingBackend_Conformance
 		ImageAssert.HasColorAt(bmp, 25, 50, Colors.Purple, Tol);   // inside clip
 		ImageAssert.HasColorAt(bmp, 75, 50, Colors.White, Tol);    // clipped away
 	}
+
+	// Every frame starts from Colors.Transparent, which is #00FFFFFF: kept as is, a system backdrop shows white.
+	[TestMethod]
+	[DataRow((byte)0x00, (byte)0xFF, (byte)0x00)]
+	[DataRow((byte)0x80, (byte)0xFF, (byte)0x80)]
+	[DataRow((byte)0xFF, (byte)0x40, (byte)0x40)]
+	public async Task When_Cleared_Then_Target_Is_Premultiplied(byte alpha, byte channel, byte expected)
+	{
+		var factory = TestServices.WindowHelper.XamlRoot?.VisualTree.RootElement?.Visual.CompositionTarget?.Renderer
+			?? throw new System.InvalidOperationException("The test window has no negotiated renderer.");
+
+		using var texture = factory.RenderOffscreen(4, 4, session => session.Clear(Color.FromArgb(alpha, channel, channel, channel)));
+		var image = await factory.SnapshotAsync(texture);
+		var bgra = new byte[4 * 4 * 4];
+		image.CopyPixels(bgra);
+
+		Assert.AreEqual(alpha, bgra[3], "alpha");
+		for (var channelIndex = 0; channelIndex < 3; channelIndex++)
+		{
+			Assert.IsTrue(System.Math.Abs(bgra[channelIndex] - expected) <= 1, $"Channel {channelIndex} was {bgra[channelIndex]}, expected {expected}.");
+		}
+	}
 }
