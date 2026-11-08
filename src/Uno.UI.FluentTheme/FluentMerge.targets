@@ -54,6 +54,7 @@
 	<XamlMergeInput Include="$(MSBuildThisFileDirectory)Tabular\Resources\Generic\SortIndicator.xaml" MergeFile="generic.xaml" />
 	<XamlMergeInput Include="$(MSBuildThisFileDirectory)Tabular\Resources\Generic\TableView.xaml" MergeFile="generic.xaml" />
 	<XamlMergeInput Include="$(MSBuildThisFileDirectory)Tabular\Resources\ThemeResources\TabularSurfaces_themeresources.xaml" MergeFile="tabular_themeresources.xaml" />
+	<XamlMergeInput Include="$(MSBuildThisFileDirectory)Tabular\Resources\ThemeResources\ResizeGripper_themeresources.xaml" MergeFile="tabular_themeresources.xaml" />
 	<XamlMergeInput Include="$(MSBuildThisFileDirectory)Tabular\Resources\ThemeResources\SortIndicator_themeresources.xaml" MergeFile="tabular_themeresources.xaml" />
 	<XamlMergeInput Include="$(MSBuildThisFileDirectory)Tabular\Resources\ThemeResources\TableView_themeresources.xaml" MergeFile="tabular_themeresources.xaml" />
   </ItemGroup>

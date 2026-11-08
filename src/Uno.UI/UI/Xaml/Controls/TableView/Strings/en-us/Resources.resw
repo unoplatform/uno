@@ -104,6 +104,14 @@
     <comment>Joins a column header's tooltip text with its sort state when the header reports both as help text. %1!s! is the tooltip text; %2!s! is the sort-state help text.</comment>
   </data>
   <!-- Automation peer strings -->
+  <data name="TableViewRowExpanded" xml:space="preserve">
+    <value>Expanded.</value>
+    <comment>Screen-reader announcement after expanding one hierarchical TableView row.</comment>
+  </data>
+  <data name="TableViewRowCollapsed" xml:space="preserve">
+    <value>Collapsed.</value>
+    <comment>Screen-reader announcement after collapsing one hierarchical TableView row.</comment>
+  </data>
   <data name="TableViewColumnWidthChanged" xml:space="preserve">
     <value>Column %1!s! width: %2!s! pixels.</value>
     <comment>Assistive-technology announcement raised when a TableView column is resized, by pointer or by keyboard, while its header has focus. %1!s! is the column header text; %2!s! is the whole-pixel width.</comment>
@@ -119,6 +127,10 @@
   <data name="TableViewCellNameFormat" xml:space="preserve">
     <value>%1!s!, %2!s!</value>
     <comment>Cell name announced by assistive technology when both a column header and a cell value are available. %1!s! is the column header text; %2!s! is the cell value text.</comment>
+  </data>
+  <data name="TableViewCellBlankName" xml:space="preserve">
+    <value>blank</value>
+    <comment>Value announced by assistive technology for a TableView cell that displays nothing, so an empty cell is not read as its column header. Lower case: screen readers read it inline, sometimes after the column header.</comment>
   </data>
   <data name="TableViewBooleanTrue" xml:space="preserve">
     <value>True</value>
