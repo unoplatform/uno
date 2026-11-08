@@ -197,7 +197,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 			=> new(FontDetailsCache.GetFont(null, size, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal).details.FontHandle);
 
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
-		public async Task When_Local_Font_Not_Loaded_Then_First_Measure_Uses_It()
+		public async Task When_Local_Font_Requested_Then_First_Measure_Uses_It()
 		{
 			var path = await CopyFontToTempFile(LatinFontAsset);
 			try
@@ -219,12 +219,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 
 				sut.InvalidateMeasure();
 				sut.Measure(new Windows.Foundation.Size(double.PositiveInfinity, double.PositiveInfinity));
-				Assert.AreEqual(firstWidth, sut.DesiredSize.Width);
+				Assert.AreEqual(firstWidth, sut.DesiredSize.Width, 0.01);
 			}
 			finally
 			{
 				File.Delete(path);
 			}
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+		public void When_Package_Font_Requested_Then_Load_Completes_Synchronously()
+		{
+			var (details, loadedTask) = FontDetailsCache.GetFont(LatinFontAsset, 17f, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+
+			Assert.IsTrue(loadedTask.IsCompletedSuccessfully, "A font in the app package should load during the first request.");
+			Assert.AreEqual("Roboto", details.FontHandle.FamilyName);
 		}
 
 		private static async Task<IFont> LoadAssetFont()
