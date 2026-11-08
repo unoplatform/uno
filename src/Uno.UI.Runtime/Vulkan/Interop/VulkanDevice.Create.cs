@@ -14,7 +14,7 @@ internal unsafe partial class VulkanDevice
 {
 	/// <summary>
 	/// Creates a VulkanDevice. Simplified from Avalonia's version:
-	/// - Prefers discrete GPUs, unless <paramref name="preferDiscrete"/> keeps the loader's order
+	/// - Prefers discrete GPUs, unless <paramref name="preferDiscrete"/> keeps the loader's order, with software devices last
 	/// - Always requires VK_KHR_swapchain
 	/// - Does not require compute bit by default
 	/// </summary>
@@ -33,24 +33,20 @@ internal unsafe partial class VulkanDevice
 		instanceApi.EnumeratePhysicalDevices(vkInstance, ref deviceCount, devices)
 			.ThrowOnError("vkEnumeratePhysicalDevices");
 
-		DeviceInfo? compatibleDevice = null, discreteDevice = null;
-
+		var deviceTypes = new VkPhysicalDeviceType[deviceCount];
 		for (var c = 0; c < deviceCount; c++)
 		{
-			var info = CheckDevice(instanceApi, devices[c], checkSurface, supportsPresentation);
-			if (info != null)
-			{
-				compatibleDevice ??= info;
-				if (info.Value.Type == VkPhysicalDeviceType.VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
-					discreteDevice ??= info;
-			}
-
-			if (compatibleDevice != null && (discreteDevice != null || !preferDiscrete))
-				break;
+			instanceApi.GetPhysicalDeviceProperties(devices[c], out var properties);
+			deviceTypes[c] = properties.deviceType;
 		}
 
-		if (preferDiscrete && discreteDevice != null)
-			compatibleDevice = discreteDevice;
+		DeviceInfo? compatibleDevice = null;
+		foreach (var index in GetProbeOrder(deviceTypes, preferDiscrete))
+		{
+			compatibleDevice = CheckDevice(instanceApi, devices[index], checkSurface, supportsPresentation);
+			if (compatibleDevice != null)
+				break;
+		}
 
 		if (compatibleDevice == null)
 			throw new VulkanException("No compatible devices found");
@@ -97,11 +93,18 @@ internal unsafe partial class VulkanDevice
 			dev.QueueFamilyIndex, enabledExtensions);
 	}
 
+	// OrderBy is stable, so devices of the same rank keep the loader's order.
+	internal static int[] GetProbeOrder(VkPhysicalDeviceType[] types, bool preferDiscrete)
+		=> Enumerable.Range(0, types.Length)
+			.OrderBy(i => preferDiscrete
+				? types[i] != VkPhysicalDeviceType.VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU
+				: types[i] == VkPhysicalDeviceType.VK_PHYSICAL_DEVICE_TYPE_CPU)
+			.ToArray();
+
 	struct DeviceInfo
 	{
 		public VkPhysicalDevice PhysicalDevice;
 		public uint QueueFamilyIndex;
-		public VkPhysicalDeviceType Type;
 		public List<string> Extensions;
 		public uint QueueCount;
 	}
@@ -146,8 +149,6 @@ internal unsafe partial class VulkanDevice
 	static DeviceInfo? CheckDevice(VulkanInstanceApi instance, VkPhysicalDevice physicalDevice,
 		VkSurfaceKHR? surface, Func<VkPhysicalDevice, uint, bool>? supportsPresentation)
 	{
-		instance.GetPhysicalDeviceProperties(physicalDevice, out var properties);
-
 		var supportedExtensions = GetDeviceExtensions(instance, physicalDevice);
 		if (!supportedExtensions.Contains(VK_KHR_swapchain))
 			return null;
@@ -178,7 +179,6 @@ internal unsafe partial class VulkanDevice
 			{
 				PhysicalDevice = physicalDevice,
 				Extensions = supportedExtensions,
-				Type = properties.deviceType,
 				QueueFamilyIndex = (uint)c,
 				QueueCount = familyProperties[c].queueCount
 			};
