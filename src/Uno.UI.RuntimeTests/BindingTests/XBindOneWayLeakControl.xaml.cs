@@ -4,13 +4,13 @@ namespace Uno.UI.RuntimeTests.Tests;
 
 public sealed partial class XBindOneWayLeakControl : UserControl
 {
-	public XBindOneWayLeakControl(Given_BindingSourceStaleHandlers.CountingViewModel vm)
+	public XBindOneWayLeakControl(Windows_UI_Xaml.Given_BindingSourceStaleHandlers.CountingViewModel vm)
 	{
 		VM = vm;
 		this.InitializeComponent();
 	}
 
-	public Given_BindingSourceStaleHandlers.CountingViewModel VM { get; }
+	public Windows_UI_Xaml.Given_BindingSourceStaleHandlers.CountingViewModel VM { get; }
 
 	public string ShownName => NameText.Text;
 }
