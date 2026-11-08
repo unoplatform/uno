@@ -967,10 +967,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		[TestMethod]
 		public void When_Fill_Set_On_One_Shape_Others_Stay_Unfilled()
 		{
-			var a = new Rectangle { Fill = new SolidColorBrush(Colors.Red) };
-			Assert.IsNotNull(a.Fill);
-			Assert.IsNull(new Ellipse().Fill);
-			Assert.IsNull(new Rectangle().Fill);
+			var existingRectangle = new Rectangle();
+			var existingEllipse = new Ellipse();
+
+			var sut = new Rectangle { Fill = new SolidColorBrush(Colors.Red) };
+
+			Assert.IsNotNull(sut.Fill);
+			Assert.IsNull(existingRectangle.Fill);
+			Assert.IsNull(existingEllipse.Fill);
 		}
 
 #if HAS_UNO
@@ -992,7 +996,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			TestServices.WindowHelper.WindowContent = root;
 			await TestServices.WindowHelper.WaitForLoaded(root);
 			await TestServices.WindowHelper.WaitForIdle();
-			await Task.Delay(100);
 
 			static Point Center(FrameworkElement e) => e.TransformToVisual(null).TransformPoint(new Point(e.ActualWidth / 2, e.ActualHeight / 2));
 			static Point TopEdge(FrameworkElement e) => e.TransformToVisual(null).TransformPoint(new Point(e.ActualWidth / 2, 1));
