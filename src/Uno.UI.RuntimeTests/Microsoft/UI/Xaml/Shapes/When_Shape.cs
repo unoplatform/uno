@@ -939,6 +939,74 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 #endif
 
+		[TestMethod]
+		public void When_Fill_Default_Is_Null()
+		{
+			Assert.IsNull(new Rectangle().Fill);
+			Assert.IsNull(new Ellipse().Fill);
+			Assert.IsNull(new Path().Fill);
+			Assert.IsNull(new Line().Fill);
+			Assert.IsNull(new Polygon().Fill);
+			Assert.IsNull(new Polyline().Fill);
+		}
+
+		[TestMethod]
+		public void When_Fill_Set_To_Null_Explicitly()
+		{
+			var sut = new Rectangle { Fill = new SolidColorBrush(Colors.Red) };
+			Assert.IsNotNull(sut.Fill);
+
+			sut.Fill = null;
+			Assert.IsNull(sut.Fill);
+
+			sut.Fill = new SolidColorBrush(Colors.Red);
+			sut.ClearValue(Shape.FillProperty);
+			Assert.IsNull(sut.Fill);
+		}
+
+		[TestMethod]
+		public void When_Fill_Set_On_One_Shape_Others_Stay_Unfilled()
+		{
+			var a = new Rectangle { Fill = new SolidColorBrush(Colors.Red) };
+			Assert.IsNotNull(a.Fill);
+			Assert.IsNull(new Ellipse().Fill);
+			Assert.IsNull(new Rectangle().Fill);
+		}
+
+#if HAS_UNO
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("Only skia accurately hittests shapes")]
+#endif
+		public async Task When_Fill_Null_Or_Transparent_HitTesting()
+		{
+			var noFillNoStroke = new Rectangle { Name = "NoFillNoStroke", Width = 40, Height = 40 };
+			var transparentFill = new Rectangle { Name = "TransparentFill", Width = 40, Height = 40, Fill = new SolidColorBrush(Colors.Transparent) };
+			var strokeOnly = new Rectangle { Name = "StrokeOnly", Width = 40, Height = 40, Stroke = new SolidColorBrush(Colors.Black), StrokeThickness = 2 };
+
+			var root = new StackPanel { Name = "Root", Background = new SolidColorBrush(Colors.Transparent), Spacing = 20, Padding = new Thickness(20) };
+			root.Children.Add(noFillNoStroke);
+			root.Children.Add(transparentFill);
+			root.Children.Add(strokeOnly);
+
+			TestServices.WindowHelper.WindowContent = root;
+			await TestServices.WindowHelper.WaitForLoaded(root);
+			await TestServices.WindowHelper.WaitForIdle();
+			await Task.Delay(100);
+
+			static Point Center(FrameworkElement e) => e.TransformToVisual(null).TransformPoint(new Point(e.ActualWidth / 2, e.ActualHeight / 2));
+			static Point TopEdge(FrameworkElement e) => e.TransformToVisual(null).TransformPoint(new Point(e.ActualWidth / 2, 1));
+
+			static string HitName(Point p)
+				=> (VisualTreeHelper.HitTest(p, TestServices.WindowHelper.XamlRoot?.VisualTree.RootElement).element as FrameworkElement)?.Name ?? string.Empty;
+
+			Assert.AreEqual("Root", HitName(Center(noFillNoStroke)));
+			Assert.AreEqual("TransparentFill", HitName(Center(transparentFill)));
+			Assert.AreEqual("Root", HitName(Center(strokeOnly)), "A null Fill interior must not be hit.");
+			Assert.AreEqual("StrokeOnly", HitName(TopEdge(strokeOnly)), "The stroke itself must be hit.");
+		}
+#endif
+
 #if HAS_UNO
 		[TestMethod]
 #if !__SKIA__
