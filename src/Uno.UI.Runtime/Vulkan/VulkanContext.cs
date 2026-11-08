@@ -317,7 +317,14 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 			try
 			{
 				_deviceApi.DeviceWaitIdle(DeviceHandle);
-				_display.RecreateSwapchainSafe();
+				if (acquireResult == (int)VkResult.VK_ERROR_SURFACE_LOST_KHR)
+				{
+					_display.RecreateSurface();
+				}
+				else
+				{
+					_display.RecreateSwapchainSafe();
+				}
 
 				// Retry acquire after recreation
 				acquireResult = _display.TryAcquireNextImage();
