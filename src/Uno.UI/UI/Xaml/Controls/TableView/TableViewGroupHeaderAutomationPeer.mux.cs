@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewGroupHeaderAutomationPeer.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewGroupHeaderAutomationPeer.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -84,6 +84,35 @@ partial class TableViewGroupHeaderAutomationPeer
 		return base.GetNameCore();
 	}
 
+	protected override void SetFocusCore()
+	{
+		// Base peer focuses as Programmatic, which FocusManager coerces (e.g. to Pointer: no focus
+		// visual, and group-expansion focus restore skips it), hence explicit Keyboard.
+		if (GetHeader() is { } header)
+		{
+			if (header.Focus(FocusState.Keyboard))
+			{
+				return;
+			}
+		}
+
+		base.SetFocusCore();
+	}
+
+	protected override void ShowContextMenuCore()
+	{
+		_ = Row; // Reject a pooled header before the native owner-menu path can run.
+
+		// The base raises ContextRequested on the header itself, which shows the header's own
+		// ContextFlyout before any TableView suppression hook can see it.
+		if (GetOwningTableView() is { } tableView && tableView.AreContextMenusSuppressed())
+		{
+			return;
+		}
+
+		base.ShowContextMenuCore();
+	}
+
 	protected override int GetLevelCore()
 	{
 		// An app-set AutomationProperties.Level wins, as in the dxaml peers that compute this.
@@ -93,19 +122,7 @@ partial class TableViewGroupHeaderAutomationPeer
 			return provided;
 		}
 
-		// 1-based per UIA; 0 means "unknown", the honest answer once the projection info is gone.
-		if (GetHeader() is { } header)
-		{
-			if (header.Content is TableViewGroupInfo info)
-			{
-				var level = info.Level;
-				if (level >= 0)
-				{
-					return level + 1;
-				}
-			}
-		}
-
+		// Grouping is single-level: no synthesized Level (0 = not specified) unless the app sets one.
 		return 0;
 	}
 
@@ -221,10 +238,17 @@ partial class TableViewGroupHeaderAutomationPeer
 				{
 					if (owner.GetRowsRepeaterForPeer() is { } repeater)
 					{
-						return repeater.GetElementIndex(header);
+						var index = repeater.GetElementIndex(header);
+						if (index >= 0)
+						{
+							return index;
+						}
 					}
 				}
 			}
+
+			// A recycled header has no row; -1 would read as a real coordinate.
+			ThrowElementNotAvailable();
 			return -1;
 		}
 	}

@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewAutomationPeer.h, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewAutomationPeer.h, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -18,6 +18,9 @@ partial class TableViewAutomationPeer
 	// winrt::IInspectable GetPatternCore(winrt::PatternInterface const& patternInterface);
 	// hstring GetClassNameCore();
 	// winrt::AutomationControlType GetAutomationControlTypeCore();
+	// winrt::Rect GetBoundingRectangleCore();
+	// No menu while a cell is editing.
+	// void ShowContextMenuCore();
 
 	// IGridProvider / ITableProvider expose visible logical columns.
 	// Headers remain semantic cell names even when the header strip is hidden.
@@ -49,6 +52,8 @@ partial class TableViewAutomationPeer
 	// Expanding or collapsing a group adds or removes whole runs of rows, so every cached child
 	// of the TableView peer may be stale.
 	// void RaiseStructureChangedForGroupExpansion();
+	// Column add/remove/hide changes every row's cells and the header band.
+	// void RaiseStructureChangedForColumnsChange();
 
 	// Internal — the single source of column-header peer identity, shared with
 	// TableViewCellAutomationPeer::GetColumnHeaderItems.
@@ -76,6 +81,9 @@ partial class TableViewAutomationPeer
 
 	// void RaiseStructureChanged(winrt::AutomationStructureChangeType const& structureChangeType);
 	// com_ptr<TableView> GetImpl();
+	// winrt::AutomationPeer GetOrCreateSelectedItemPeer(TableView& table, winrt::IInspectable const& item, int32_t index, bool create);
 
 	private List<ColumnHeaderPeerCacheEntry> m_columnHeaderPeerCache = new();
+	// Peers for unrealized selected rows, so repeated GetSelection calls return the same provider.
+	private readonly List<AutomationPeer> m_selectedItemPeerCache = new();
 }

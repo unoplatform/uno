@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewAutomationPeer.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewAutomationPeer.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 
@@ -24,6 +26,331 @@ partial class TableViewAutomationPeer
 	/// <param name="owner">The <see cref="TableView"/> to create a peer for.</param>
 	public TableViewAutomationPeer(TableView owner) : base(owner)
 	{
+	}
+
+	// A realized row's name as composed from its text cells, read from the item without realizing the row.
+	private static string ComposeTextColumnValues(TableView table, object? item)
+	{
+		global::System.Text.StringBuilder composed = new();
+		var separator = LocalizedOrFallbackForTableViewAutomation(ResourceAccessor.SR_TableViewCellTextSeparator, ", ");
+		TextBlock? probe = null;
+		foreach (var column in table.Columns)
+		{
+			var textColumn = IsVisibleColumn(column) ? column as TableViewTextColumn : null;
+			var binding = textColumn?.Binding;
+			// A detached probe cannot resolve element-relative sources.
+			if (binding is null || !string.IsNullOrEmpty(binding.ElementName) || binding.RelativeSource is not null)
+			{
+				continue;
+			}
+			if (probe is null)
+			{
+				probe = new TextBlock();
+				// Converters and StringFormat format for the target's language, which a cell inherits.
+				probe.Language = table.Language;
+			}
+			string text = string.Empty;
+			try
+			{
+				BindingOperations.SetBinding(probe, TextBlock.TextProperty, binding);
+				probe.DataContext = item;
+				text = probe.Text;
+				probe.ClearValue(TextBlock.TextProperty);
+				probe.DataContext = null;
+			}
+			catch (Exception)
+			{
+				// An app converter that throws only costs that column's text.
+			}
+			if (string.IsNullOrEmpty(text))
+			{
+				continue;
+			}
+			if (composed.Length > 0)
+			{
+				composed.Append(separator);
+			}
+			composed.Append(text);
+		}
+		return composed.ToString();
+	}
+
+	// A container-free data-item peer for a selected, unrealized row. Reads never realize it; once
+	// realized it forwards to the row's peer but keeps its own RuntimeId.
+	private sealed class TableViewRowItemAutomationPeer :
+		AutomationPeer,
+		ISelectionItemProvider,
+		IVirtualizedItemProvider,
+		IScrollItemProvider
+	{
+		public TableViewRowItemAutomationPeer(TableView table, object? item, int index, bool byIndex)
+		{
+			m_table = new WeakReference<TableView>(table);
+			// Boxed values have no stable identity: such a peer tracks its index while that row stays selected.
+			m_byIndex = byIndex;
+			m_lastIndex = index;
+			m_item.Track(item);
+		}
+
+		// Rebinding to the selected index picks the right occurrence of a duplicated item.
+		public bool TryRebind(object? item, int index)
+		{
+			if (m_byIndex ? m_lastIndex != index : !m_item.SameIdentityAs(item))
+			{
+				return false;
+			}
+			m_lastIndex = index;
+			return true;
+		}
+
+		protected override object? GetPatternCore(PatternInterface patternInterface)
+		{
+			int index = ItemIndex();
+			var rowPeer = RealizedRowPeer(index);
+			if (patternInterface == PatternInterface.SelectionItem ||
+				patternInterface == PatternInterface.VirtualizedItem)
+			{
+				bool offered = patternInterface == PatternInterface.SelectionItem
+					? index >= 0 && m_table.Get()!.CanSelectRows()
+					: index >= 0 && rowPeer is null;
+				if (offered)
+				{
+					return this;
+				}
+				return null;
+			}
+			// The row peer's ScrollItem is a framework default that GetPattern does not return.
+			if (patternInterface == PatternInterface.ScrollItem)
+			{
+				if (rowPeer is not null)
+				{
+					return this;
+				}
+				return null;
+			}
+			return rowPeer is not null ? rowPeer.GetPattern(patternInterface) : base.GetPatternCore(patternInterface);
+		}
+
+		protected override object? NavigateCore(AutomationNavigationDirection direction)
+		{
+			if (direction == AutomationNavigationDirection.Parent)
+			{
+				return RefreshParent();
+			}
+			return base.NavigateCore(direction);
+		}
+
+		// Parented where realized rows are; re-resolved on use, as the template may have been reapplied.
+		public AutomationPeer? RefreshParent()
+		{
+			var table = m_table.Get();
+			if (table is null)
+			{
+				return null;
+			}
+			AutomationPeer? parent = FrameworkElementAutomationPeer.CreatePeerForElement(table);
+			if (table.GetRowsRepeaterInternal() is { } repeater && VisualTreeHelper.GetChildrenCount(repeater) > 0)
+			{
+				if (VisualTreeHelper.GetChild(repeater, 0) is UIElement rowElement &&
+					FrameworkElementAutomationPeer.CreatePeerForElement(rowElement) is { } rowPeer)
+				{
+					if (rowPeer.Navigate(AutomationNavigationDirection.Parent) is AutomationPeer rowParent)
+					{
+						parent = rowParent;
+					}
+				}
+			}
+			SetParent(parent);
+			return parent;
+		}
+
+		protected override string GetClassNameCore() => typeof(TableViewRow).FullName!;
+		protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.DataItem;
+		protected override bool IsContentElementCore() => true;
+		protected override bool IsControlElementCore() => true;
+
+		protected override string GetNameCore()
+		{
+			int index = RequireIndex();
+			// A realized row composes its name from its cells, so it can differ from ItemToName.
+			if (RealizedRowPeer(index) is { } rowPeer)
+			{
+				return rowPeer.GetName();
+			}
+			// Read from the source: m_item may be a weak reference to a box nothing else keeps alive.
+			var tableImpl = m_table.Get()!;
+			var item = tableImpl.UnwrapEditingDataItem(tableImpl.GetRowsRepeaterInternal()!.ItemsSourceView.GetAt(index));
+			var composed = ComposeTextColumnValues(tableImpl, item);
+			if (!string.IsNullOrEmpty(composed))
+			{
+				return composed;
+			}
+			return ItemToName(item);
+		}
+
+		protected override bool IsEnabledCore()
+		{
+			if (RealizedRowPeer(ItemIndex()) is { } p)
+			{
+				return p.IsEnabled();
+			}
+			var table = m_table.Get();
+			return table is null || table.IsEnabled;
+		}
+
+		protected override int GetCultureCore()
+		{
+			AutomationPeer? p = RealizedRowPeer(ItemIndex());
+			if (p is null)
+			{
+				if (m_table.Get() is { } table)
+				{
+					p = FrameworkElementAutomationPeer.CreatePeerForElement(table);
+				}
+			}
+			return p is not null ? p.GetCulture() : base.GetCultureCore();
+		}
+
+		protected override bool IsOffscreenCore() { var p = RealizedRowPeer(ItemIndex()); return p is null || p.IsOffscreen(); }
+		protected override Rect GetBoundingRectangleCore() { var p = RealizedRowPeer(ItemIndex()); return p is not null ? p.GetBoundingRectangle() : default; }
+		// Not forwarded: the framework re-parents returned children, which would steal the row's cell peers.
+		protected override IList<AutomationPeer>? GetChildrenCore() => null;
+		protected override Point GetClickablePointCore() { var p = RealizedRowPeer(ItemIndex()); return p is not null ? p.GetClickablePoint() : default; }
+		protected override bool HasKeyboardFocusCore() { var p = RealizedRowPeer(ItemIndex()); return p is not null && p.HasKeyboardFocus(); }
+		protected override bool IsKeyboardFocusableCore() { var p = RealizedRowPeer(ItemIndex()); return p is not null && p.IsKeyboardFocusable(); }
+		protected override void SetFocusCore() { if (RealizedRowPeer(ItemIndex()) is { } p) { p.SetFocus(); } }
+
+		public bool IsSelected
+		{
+			get
+			{
+				// Resolved first: it throws when the table is gone, before the table is dereferenced.
+				int index = RequireIndex();
+				return m_table.Get()!.SelectedIndexInternal() == index;
+			}
+		}
+
+		public IRawElementProviderSimple? SelectionContainer
+		{
+			get
+			{
+				RequireIndex();
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(m_table.Get()!);
+				return peer is not null ? ProviderFromPeer(peer) : null;
+			}
+		}
+
+		public void AddToSelection() { Select(); }
+
+		public void RemoveFromSelection()
+		{
+			int index = RequireIndex();
+			m_table.Get()!.Deselect(index);
+		}
+
+		public void Select()
+		{
+			int index = RequireIndex();
+			m_table.Get()!.SelectRowIndexFromInteraction(index, false);
+		}
+
+		public void Realize()
+		{
+			// An ElementPrepared handler can rebind this peer to another occurrence while the row is created.
+			int index = RequireIndex();
+			TableViewRowAutomationPeer.RealizeRowAt(m_table.Get(), index,
+				row => IsItemRow(row) && ItemIndex() == index);
+		}
+
+		public void ScrollIntoView()
+		{
+			var row = RealizedRow(RequireIndex());
+			if (row is null)
+			{
+				ThrowElementNotAvailable();
+			}
+			BringIntoViewOptions options = new();
+			options.AnimationDesired = false;
+			row.StartBringIntoView(options);
+		}
+
+		// -1 once the item left the source (or a boxed value's row was deselected); the table is alive when >= 0.
+		private int ItemIndex()
+		{
+			var tableImpl = m_table.Get();
+			var repeater = tableImpl?.GetRowsRepeaterInternal();
+			var view = repeater?.ItemsSourceView;
+			if (tableImpl is null || view is null)
+			{
+				return -1;
+			}
+
+			int count = view.Count;
+			int selectedIndex = tableImpl.SelectedIndexInternal();
+			if (m_byIndex)
+			{
+				return m_lastIndex < count && m_lastIndex == selectedIndex ? m_lastIndex : -1;
+			}
+
+			bool matches(int index)
+			{
+				return index >= 0 && index < count &&
+					m_item.SameIdentityAs(tableImpl.UnwrapEditingDataItem(view.GetAt(index)));
+			}
+			// The selected index first: after an insert, m_lastIndex can hold another occurrence of the item.
+			foreach (int hint in stackalloc int[] { selectedIndex, m_lastIndex })
+			{
+				if (matches(hint))
+				{
+					return m_lastIndex = hint;
+				}
+			}
+			for (int index = 0; index < count; ++index)
+			{
+				if (matches(index))
+				{
+					return m_lastIndex = index;
+				}
+			}
+			return -1;
+		}
+
+		private int RequireIndex()
+		{
+			int index = ItemIndex();
+			if (index < 0)
+			{
+				ThrowElementNotAvailable();
+			}
+			return index;
+		}
+
+		private bool IsItemRow(TableViewRow row)
+		{
+			return m_byIndex ||
+				m_item.SameIdentityAs(m_table.Get()!.UnwrapEditingDataItem(row.DataContext));
+		}
+
+		private TableViewRow? RealizedRow(int index)
+		{
+			if (index < 0)
+			{
+				return null;
+			}
+			var row = m_table.Get()!.GetRowsRepeaterInternal()!.TryGetElement(index) as TableViewRow;
+			return row is not null && IsItemRow(row) ? row : null;
+		}
+
+		private AutomationPeer? RealizedRowPeer(int index)
+		{
+			var row = RealizedRow(index);
+			return row is not null ? FrameworkElementAutomationPeer.CreatePeerForElement(row) : null;
+		}
+
+		private readonly WeakReference<TableView> m_table;
+		private readonly TableViewTrackedItemIdentity m_item = new();
+		private readonly bool m_byIndex;
+		private int m_lastIndex = -1;
 	}
 
 	private static int VisibleColumnToChildIndex(IList<UIElement> children, int visibleColumnIndex)
@@ -106,6 +433,67 @@ partial class TableViewAutomationPeer
 
 	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.DataGrid;
 
+	// The default bounds include cache rows the scroller clips; best-effort clip to the layout box.
+	protected override Rect GetBoundingRectangleCore()
+	{
+		var bounds = base.GetBoundingRectangleCore();
+		if (bounds.Width <= 0.0 || bounds.Height <= 0.0)
+		{
+			return bounds;
+		}
+
+		var owner = Owner as FrameworkElement;
+		if (owner is null || owner.XamlRoot is null)
+		{
+			return bounds;
+		}
+
+		Rect localBounds = new(
+			0.0,
+			0.0,
+			owner.ActualWidth,
+			owner.ActualHeight);
+		if (localBounds.Width <= 0.0 || localBounds.Height <= 0.0)
+		{
+			return bounds;
+		}
+
+		Rect layoutBounds = default;
+		try
+		{
+			layoutBounds = SharedHelpers.ConvertDipsToPhysical(
+				owner, owner.TransformToVisual(null).TransformBounds(localBounds));
+		}
+		catch (Exception)
+		{
+			// TransformToVisual throws while the owner is leaving the tree (teardown, window close).
+			return bounds;
+		}
+
+		// Intersect reports no overlap as RectHelper::Empty() (infinite extents); never return that.
+		var clipped = RectHelper.Intersect(bounds, layoutBounds);
+		if (!(clipped.Width > 0.0) || !(clipped.Height > 0.0) ||
+			!double.IsFinite(clipped.X) || !double.IsFinite(clipped.Y) ||
+			!double.IsFinite(clipped.Width) || !double.IsFinite(clipped.Height))
+		{
+			return bounds;
+		}
+
+		return clipped;
+	}
+
+	protected override void ShowContextMenuCore()
+	{
+		// The base raises ContextRequested on the TableView itself, which shows its own
+		// ContextFlyout before the template-root suppression hook can see it.
+		if (GetImpl() is { } impl && impl.AreContextMenusSuppressed())
+		{
+			return;
+		}
+
+		base.ShowContextMenuCore();
+	}
+
 	internal void RaiseStructureChangedForSortChange()
 	{
 		// Same children, new order.
@@ -120,6 +508,12 @@ partial class TableViewAutomationPeer
 
 	internal void RaiseStructureChangedForGroupExpansion()
 	{
+		RaiseStructureChanged(AutomationStructureChangeType.ChildrenInvalidated);
+	}
+
+	internal void RaiseStructureChangedForColumnsChange()
+	{
+		// A column isn't a child of this peer, so ChildAdded/ChildRemoved don't apply.
 		RaiseStructureChanged(AutomationStructureChangeType.ChildrenInvalidated);
 	}
 
@@ -324,36 +718,91 @@ partial class TableViewAutomationPeer
 		var impl = GetImpl();
 		if (impl is null || !impl.CanSelectRows())
 		{
+			m_selectedItemPeerCache.Clear();
 			return Array.Empty<IRawElementProviderSimple>();
 		}
 
 		int selectedIndex = impl.SelectedIndexInternal();
 		if (selectedIndex < 0)
 		{
+			m_selectedItemPeerCache.Clear();
 			return Array.Empty<IRawElementProviderSimple>();
 		}
 
-		// Only a realized row has a provider. A selected row scrolled out of the realization window
-		// reports as unrealized here rather than fabricating a peer for an element that does not
-		// exist; AT clients reach it through ItemContainer.FindItemByProperty, which realizes it.
+		// A UIA read must not realize the row: it would become the repeater's anchor and move the viewport.
+		List<IRawElementProviderSimple> selection = new();
+		List<AutomationPeer> liveCache = new();
 		if (impl.GetRowsRepeaterInternal() is { } repeater)
 		{
-			if (repeater.TryGetElement(selectedIndex) is { } rowElement)
+			AutomationPeer? peer = null;
+			object? item = null;
+			if (repeater.ItemsSourceView is { } view && selectedIndex < view.Count)
 			{
-				if (FrameworkElementAutomationPeer.CreatePeerForElement(rowElement) is { } rowPeer)
+				item = impl.UnwrapEditingDataItem(view.GetAt(selectedIndex));
+			}
+			var rowElement = repeater.TryGetElement(selectedIndex);
+			if (rowElement is not null)
+			{
+				peer = FrameworkElementAutomationPeer.CreatePeerForElement(rowElement);
+			}
+
+			// Kept while its row is realized too, so a held item keeps one RuntimeId as it scrolls in and out.
+			AutomationPeer? itemPeer = null;
+			if (item is not null)
+			{
+				itemPeer = GetOrCreateSelectedItemPeer(impl, item, selectedIndex, rowElement is null /* create */);
+			}
+			if (itemPeer is not null)
+			{
+				liveCache.Add(itemPeer);
+				if (peer is null)
 				{
-					// An empty selection is a valid answer; an array holding a null provider is not.
-					if (ProviderFromPeer(rowPeer) is { } provider)
-					{
-						List<IRawElementProviderSimple> selection = new();
-						selection.Add(provider);
-						return selection.ToArray();
-					}
+					peer = itemPeer;
+				}
+			}
+
+			// An empty selection is a valid answer; an array holding a null provider is not.
+			if (peer is not null)
+			{
+				if (ProviderFromPeer(peer) is { } provider)
+				{
+					selection.Add(provider);
 				}
 			}
 		}
 
-		return Array.Empty<IRawElementProviderSimple>();
+		m_selectedItemPeerCache.Clear();
+		m_selectedItemPeerCache.AddRange(liveCache);
+		return selection.ToArray();
+	}
+
+	private AutomationPeer? GetOrCreateSelectedItemPeer(TableView table, object? item, int index, bool create)
+	{
+		AutomationPeer? peer = null;
+		foreach (var cached in m_selectedItemPeerCache)
+		{
+			// Only TableViewRowItemAutomationPeer instances are cached.
+			if (cached is TableViewRowItemAutomationPeer itemPeer && itemPeer.TryRebind(item, index))
+			{
+				peer = cached;
+				break;
+			}
+		}
+
+		if (peer is null)
+		{
+			if (!create)
+			{
+				return null;
+			}
+			var repeater = table.GetRowsRepeaterInternal();
+			bool byIndex = !TableView.SameInspectableIdentity(
+				item, table.UnwrapEditingDataItem(repeater!.ItemsSourceView.GetAt(index)));
+			peer = new TableViewRowItemAutomationPeer(table, item, index, byIndex);
+		}
+
+		((TableViewRowItemAutomationPeer)peer).RefreshParent();
+		return peer;
 	}
 
 	/// <summary>
@@ -363,9 +812,8 @@ partial class TableViewAutomationPeer
 	{
 		get
 		{
-			// Single selection only in this release. Multiple must derive this from SelectionMode, and
-			// GetSelection below must return every selected row rather than at most one.
-			return false;
+			// GetSelection below must return every selected row once this can be true.
+			return GetImpl() is { } impl && impl.CanSelectMultipleRows();
 		}
 	}
 
@@ -390,8 +838,9 @@ partial class TableViewAutomationPeer
 		List<IRawElementProviderSimple> headers = new();
 		List<ColumnHeaderPeerCacheEntry> liveCache = new();
 
-		// Key off visible logical Columns() so headers enumerate before templates realize.
-		if (Owner is TableView tableView)
+		// Key off visible logical Columns() so headers enumerate before templates realize. Hidden column
+		// headers report none, matching each cell's GetColumnHeaderItems.
+		if (Owner is TableView tableView && tableView.AreColumnHeadersShownInternal())
 		{
 			if (tableView.Columns is { } columns)
 			{

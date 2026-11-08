@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewGroupHeaderAutomationPeer.h, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewGroupHeaderAutomationPeer.h, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -22,6 +22,12 @@ partial class TableViewGroupHeaderAutomationPeer
 	// winrt::AutomationControlType GetAutomationControlTypeCore();
 	// winrt::hstring GetClassNameCore();
 	// winrt::hstring GetNameCore();
+
+	// Lands keyboard focus for UIA SetFocus; see the definition.
+	// void SetFocusCore();
+
+	// No menu while a cell is editing.
+	// void ShowContextMenuCore();
 
 	// IExpandCollapseProvider
 	// void Expand();

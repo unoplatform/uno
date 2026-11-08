@@ -1,6 +1,6 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewColumnHeaderAutomationPeer.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewColumnHeaderAutomationPeer.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -84,22 +84,19 @@ partial class TableViewColumnHeaderAutomationPeer
 			}
 		}
 
-		if (TryGetColumnHeaderString(m_column.Get()) is { } headerString)
+		if (TableViewDetails.TryGetColumnHeaderText(m_column.Get()) is { } headerString)
 		{
 			return headerString;
 		}
 
-		// Read template content, never re-enter this header's own peer.
-		if (GetHeaderElement() is Panel header)
+		// Only the content region names the header, never the grid line, glyph or gripper.
+		if (GetHeaderElement() is TableViewColumnHeader header)
 		{
 			uint remaining = 64;
-			foreach (var child in header.Children)
+			var name = GetCellContentName(header.GetContentPresenterInternal(), true, 8, ref remaining);
+			if (!string.IsNullOrEmpty(name))
 			{
-				var childName = GetCellContentName(child as FrameworkElement, true, 8, ref remaining);
-				if (!string.IsNullOrEmpty(childName))
-				{
-					return childName;
-				}
+				return name;
 			}
 		}
 
@@ -187,7 +184,19 @@ partial class TableViewColumnHeaderAutomationPeer
 			return toolTipText;
 		}
 
-		return StringUtil.FormatString(format, toolTipText, sortText);
+		// The format supplies its own separator; a tooltip written as a sentence would otherwise read "..".
+		var trimmedToolTip = toolTipText.AsSpan();
+		while (!trimmedToolTip.IsEmpty &&
+			(trimmedToolTip[trimmedToolTip.Length - 1] == '.' || trimmedToolTip[trimmedToolTip.Length - 1] == '\u3002' || char.IsWhiteSpace(trimmedToolTip[trimmedToolTip.Length - 1])))
+		{
+			trimmedToolTip = trimmedToolTip.Slice(0, trimmedToolTip.Length - 1);
+		}
+		if (trimmedToolTip.IsEmpty)
+		{
+			return sortText;
+		}
+
+		return StringUtil.FormatString(format, trimmedToolTip.ToString(), sortText);
 	}
 
 	protected override object? GetPatternCore(PatternInterface patternInterface)
@@ -197,21 +206,30 @@ partial class TableViewColumnHeaderAutomationPeer
 			return this;
 		}
 
+		if (patternInterface == PatternInterface.Transform && IsResizableColumn())
+		{
+			return this;
+		}
+
 		return base.GetPatternCore(patternInterface);
 	}
 
 	protected override bool IsEnabledCore()
 	{
-		// Grid is not a Control, so its base peer does not report inherited disabled state.
 		var table = m_table.Get();
 		if (table is null || !table.IsEnabled)
 		{
 			return false;
 		}
 
-		// A template control (for example the header ScrollViewer) can be disabled
-		// independently of the table. Its coerced state applies to this header too.
-		var ancestor = VisualTreeHelper.GetParent(Owner);
+		// The header's own state, and that of any template control around it (for example the header
+		// ScrollViewer), can be disabled independently of the table.
+		var header = GetHeaderElement();
+		if (header is Control headerControl && !headerControl.IsEnabled)
+		{
+			return false;
+		}
+		var ancestor = VisualTreeHelper.GetParent(header ?? Owner);
 		while (ancestor is not null && ancestor != table)
 		{
 			if (ancestor is Control control && !control.IsEnabled)
@@ -221,6 +239,31 @@ partial class TableViewColumnHeaderAutomationPeer
 			ancestor = VisualTreeHelper.GetParent(ancestor);
 		}
 		return true;
+	}
+
+	protected override bool IsKeyboardFocusableCore()
+	{
+		var owner = m_table.Get();
+		var header = GetHeaderElement();
+		return owner is not null && header is not null && owner.IsHeaderCellActionableInternal(header);
+	}
+
+	// Only an actionable header takes focus; a lagging inactive stamp is dropped first.
+	protected override void SetFocusCore()
+	{
+		var owner = m_table.Get();
+		var header = GetHeaderElement();
+		if (owner is null || header is null || !owner.IsHeaderCellActionableInternal(header))
+		{
+			// UIA_E_INVALIDOPERATION
+			throw new InvalidOperationException();
+		}
+		owner.ClearHeaderTabStopStampInternal(header);
+		if (!header.Focus(FocusState.Programmatic) || header.FocusState == FocusState.Unfocused)
+		{
+			// UIA_E_INVALIDOPERATION
+			throw new InvalidOperationException();
+		}
 	}
 
 	/// <summary>
@@ -249,6 +292,111 @@ partial class TableViewColumnHeaderAutomationPeer
 
 		// UIA_E_ELEMENTNOTAVAILABLE
 		throw new ElementNotAvailableException();
+	}
+
+	/// <summary>
+	/// Gets a value that indicates whether the header can be moved.
+	/// </summary>
+	public bool CanMove => false;
+
+	/// <summary>
+	/// Gets a value that indicates whether the column can be resized.
+	/// </summary>
+	public bool CanResize
+	{
+		get
+		{
+			if (!IsResizableColumn())
+			{
+				return false;
+			}
+
+			var owner = m_table.Get();
+			return owner is not null && owner.CanResizeColumnFromAutomation(m_column.Get()!);
+		}
+	}
+
+	/// <summary>
+	/// Gets a value that indicates whether the header can be rotated.
+	/// </summary>
+	public bool CanRotate => false;
+
+	/// <summary>
+	/// Not supported for a column header.
+	/// </summary>
+	public void Move(double x, double y)
+	{
+		// UIA_E_INVALIDOPERATION
+		throw new InvalidOperationException();
+	}
+
+	/// <summary>
+	/// Resizes the column to the given width.
+	/// </summary>
+	public void Resize(double width, double height)
+	{
+		if (!IsEnabled())
+		{
+			// UIA_E_ELEMENTNOTENABLED
+			throw new ElementNotEnabledException();
+		}
+		if (!double.IsFinite(width) || width < 0.0)
+		{
+			// hresult_invalid_argument
+			throw new ArgumentException();
+		}
+		if (!CanResize)
+		{
+			// UIA_E_INVALIDOPERATION
+			throw new InvalidOperationException();
+		}
+
+		// Height is ignored: a column header only resizes along the column axis.
+		var column = m_column.Get();
+		var owner = m_table.Get();
+		if (column is null || owner is null)
+		{
+			// UIA_E_ELEMENTNOTAVAILABLE
+			throw new ElementNotAvailableException();
+		}
+
+		// UIA sizes are physical pixels, like BoundingRectangle; column widths are DIPs in the table's
+		// own frame, below any scale applied above it.
+		if (owner.XamlRoot is { } xamlRoot)
+		{
+			double scale = xamlRoot.RasterizationScale;
+			try
+			{
+				var unit = owner.TransformToVisual(null).TransformBounds(new Rect(0.0, 0.0, 1.0, 0.0));
+				if (unit.Width > 0.0)
+				{
+					scale *= unit.Width;
+				}
+			}
+			catch (Exception)
+			{
+				// Not in the live tree; the display scale alone is the best answer.
+			}
+			if (scale > 0.0)
+			{
+				width /= scale;
+			}
+		}
+
+		if (!owner.TryResizeColumnFromAutomation(column, width))
+		{
+			// UIA_E_INVALIDOPERATION
+			throw new InvalidOperationException();
+		}
+	}
+
+	/// <summary>
+	/// Not supported for a column header.
+	/// </summary>
+	public void Rotate(double degrees)
+	{
+		// UIA_E_INVALIDOPERATION
+		throw new InvalidOperationException();
 	}
 
 	protected override IList<AutomationPeer> GetChildrenCore()
@@ -286,6 +434,29 @@ partial class TableViewColumnHeaderAutomationPeer
 		return IsTableViewOwned() ? true : base.IsOffscreenCore();
 	}
 
+	protected override void ShowContextMenuCore()
+	{
+		if (!IsTableViewOwned())
+		{
+			base.ShowContextMenuCore();
+			return;
+		}
+
+		var column = m_column.Get();
+		if (column is null || !IsVisibleColumn(column))
+		{
+			return;
+		}
+
+		if (GetHeaderElement() is { } header)
+		{
+			if (FrameworkElementAutomationPeer.CreatePeerForElement(header) is { } peer)
+			{
+				peer.ShowContextMenu();
+			}
+		}
+	}
+
 	internal bool IsTableViewOwned()
 	{
 		return Owner is TableView;
@@ -294,13 +465,27 @@ partial class TableViewColumnHeaderAutomationPeer
 	private bool IsSortableColumn()
 	{
 		var column = m_column.Get();
-		if (column is null || !column.CanSort || !IsVisibleColumn(column))
+		if (column is null || !IsVisibleColumn(column))
+		{
+			return false;
+		}
+
+		// A column without a sort key cannot sort, so it does not advertise Invoke.
+		var owner = m_table.Get();
+		return owner is not null && owner.IsLoaded && owner.IsColumnUserSortableInternal(column);
+	}
+
+	// The static opt-in only; whether the gripper is usable right now is CanResize's job.
+	private bool IsResizableColumn()
+	{
+		var column = m_column.Get();
+		if (column is null || !column.CanResize || !IsVisibleColumn(column))
 		{
 			return false;
 		}
 
 		var owner = m_table.Get();
-		return owner is not null && owner.IsLoaded && owner.CanUserSortColumns;
+		return owner is not null && owner.CanUserResizeColumns;
 	}
 
 	protected override int GetPositionInSetCore()

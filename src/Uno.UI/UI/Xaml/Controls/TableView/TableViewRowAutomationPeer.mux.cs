@@ -1,21 +1,86 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewRowAutomationPeer.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewRowAutomationPeer.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
+using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Uno.UI.Helpers.WinUI;
 
+using static Microsoft.UI.Xaml.Controls.Tabular.TableViewAutomationHelpers;
+
 namespace Microsoft.UI.Xaml.Controls.Tabular;
 
 partial class TableViewRowAutomationPeer
 {
+	// Grouped sources report PositionInSet/SizeOfSet relative to the containing group, excluding
+	// header bands. The provider's cached band index avoids a quadratic per-row walk; the walk
+	// below is the fallback.
+	private static bool TryGetGroupedRowSetMetadataFromProvider(TableView tableImpl, int rowIndex, out int positionInSet, out int sizeOfSet)
+	{
+		positionInSet = 0;
+		sizeOfSet = 0;
+		try
+		{
+			// Grouping exists only on an app-assigned TableViewSource (the ItemsSource itself).
+			var source = tableImpl.ItemsSource as TableViewSource;
+			var repeater = tableImpl.GetRowsRepeaterInternal();
+			if (source is null || repeater is null)
+			{
+				return false;
+			}
+
+			var metadata = source.GetRowMetadata();
+			return metadata is not null && metadata.TryGetGroupMembership(repeater.ItemsSourceView, rowIndex, out positionInSet, out sizeOfSet);
+		}
+		catch (Exception)
+		{
+			return false;
+		}
+	}
+
+	private static bool TryGetGroupedRowSetMetadata(TableView? tableImpl, int rowIndex, out int positionInSet, out int sizeOfSet)
+	{
+		positionInSet = 0;
+		sizeOfSet = 0;
+		if (tableImpl is null || rowIndex < 0 || !tableImpl.IsTableViewSourceGrouped())
+		{
+			return false;
+		}
+
+		var rowCount = tableImpl.GetRowCountInternal();
+		if (rowIndex >= rowCount || tableImpl.IsGroupHeaderRow(rowIndex))
+		{
+			return false;
+		}
+
+		if (TryGetGroupedRowSetMetadataFromProvider(tableImpl, rowIndex, out positionInSet, out sizeOfSet))
+		{
+			return true;
+		}
+
+		int first = rowIndex;
+		while (first > 0 && !tableImpl.IsGroupHeaderRow(first - 1))
+		{
+			--first;
+		}
+
+		int last = rowIndex;
+		while (last + 1 < rowCount && !tableImpl.IsGroupHeaderRow(last + 1))
+		{
+			++last;
+		}
+
+		positionInSet = rowIndex - first + 1;
+		sizeOfSet = last - first + 1;
+		return true;
+	}
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TableViewRowAutomationPeer"/> class.
 	/// </summary>
@@ -60,7 +125,39 @@ partial class TableViewRowAutomationPeer
 			return this;
 		}
 
+		// Tree rows only (keyed off Level, not IsExpandable): a tree leaf reports LeafNode, while flat/
+		// grouped rows withhold the pattern so the grid isn't announced as a collapsed tree.
+		if (patternInterface == PatternInterface.ExpandCollapse && IsHierarchicalRow())
+		{
+			return this;
+		}
+
 		return base.GetPatternCore(patternInterface);
+	}
+
+	private TableViewRow? GetRow() => Owner as TableViewRow;
+
+	protected override void ShowContextMenuCore()
+	{
+		// A recycled row raising the request would open a menu for whatever item it holds next.
+		if (GetOwningTableView() is null)
+		{
+			ThrowElementNotAvailable();
+		}
+
+		if (GetRow() is { } row && row.ShowContextMenuFromPeer())
+		{
+			return;
+		}
+
+		base.ShowContextMenuCore();
+	}
+
+	private bool IsHierarchicalRow()
+	{
+		// Level: 0 for flat/grouped, 1-based for tree rows.
+		var row = GetRow();
+		return row is not null && row.Level > 0;
 	}
 
 	private TableView? GetOwningTableView()
@@ -149,7 +246,15 @@ partial class TableViewRowAutomationPeer
 	{
 		TableView? tableView = null;
 		m_lastOwningTable?.TryGetTarget(out tableView);
-		var rowIndex = tableView is not null ? GetTrackedItemIndex(tableView) : -1;
+		RealizeRowAt(tableView, tableView is not null ? GetTrackedItemIndex(tableView) : -1,
+			row => IsTrackedRow(row, tableView));
+	}
+
+	internal static void RealizeRowAt(
+		TableView? tableView,
+		int rowIndex,
+		Func<TableViewRow, bool> isExpectedRow)
+	{
 		if (tableView is null || rowIndex < 0)
 		{
 			ThrowElementNotAvailable();
@@ -168,12 +273,14 @@ partial class TableViewRowAutomationPeer
 		}
 
 		UIElement? element = null;
+		bool madeAnchor = false;
 		try
 		{
 			element = repeater.TryGetElement(rowIndex);
 			if (element is null)
 			{
 				element = repeater.GetOrCreateElement(rowIndex);
+				madeAnchor = true;
 			}
 		}
 		catch
@@ -181,22 +288,29 @@ partial class TableViewRowAutomationPeer
 			ThrowElementNotAvailable();
 		}
 
-		if (element is TableViewRow row)
+		var row = element as TableViewRow;
+		bool isExpected = row is not null && isExpectedRow(row);
+		if (isExpected)
 		{
-			if (!IsTrackedRow(row, tableView))
+			// Arranged first, as ItemsRepeater requires; layout runs app code that can change the source or recycle the row.
+			try
 			{
-				ThrowElementNotAvailable();
+				row!.UpdateLayout();
+			}
+			catch (Exception)
+			{
+				isExpected = false;
 			}
 		}
-		else
+		if (!isExpected || repeater.TryGetElement(rowIndex) != row || !isExpectedRow(row!))
 		{
+			if (madeAnchor)
+			{
+				tableImpl.ReleaseRowsRepeaterAnchor(element!);
+			}
 			ThrowElementNotAvailable();
 		}
-
-		if (element is FrameworkElement frameworkElement)
-		{
-			frameworkElement.StartBringIntoView();
-		}
+		row!.StartBringIntoView();
 	}
 
 #pragma warning disable IDE0051 // Unused upstream as well, kept for 1:1 parity
@@ -363,10 +477,6 @@ partial class TableViewRowAutomationPeer
 
 	internal void DropCellPeerCache() => m_cellPeerCache.Clear();
 
-	// UIA_E_ELEMENTNOTAVAILABLE projects to ElementNotAvailableException.
-	[DoesNotReturn]
-	private static void ThrowElementNotAvailable() => throw new ElementNotAvailableException();
-
 	protected override string GetNameCore()
 	{
 		var row = Owner as TableViewRow;
@@ -452,10 +562,23 @@ partial class TableViewRowAutomationPeer
 
 	protected override int GetPositionInSetCore()
 	{
+		int value = ComputePositionInSet();
+		m_lastReportedPositionInSet = value;
+		return value;
+	}
+
+	private int ComputePositionInSet()
+	{
 		// An app-set AutomationProperties value wins, as in every dxaml peer that computes this.
 		if (base.GetPositionInSetCore() is var provided && provided > 0)
 		{
 			return provided;
+		}
+
+		// A tree row reports its place among its siblings, not its offset into the flat row axis.
+		if (TryGetSiblingPosition(out int position, out int sizeOfSet))
+		{
+			return position;
 		}
 
 		var index = GetRowIndex();
@@ -467,7 +590,14 @@ partial class TableViewRowAutomationPeer
 
 		if (GetOwningTableView() is { } tableView)
 		{
-			return tableView.GetDataRowPositionInSetInternal(index);
+			var tableImpl = tableView;
+
+			if (TryGetGroupedRowSetMetadata(tableImpl, index, out int groupPosition, out int groupSize))
+			{
+				return groupPosition;
+			}
+
+			return tableImpl.GetDataRowPositionInSetInternal(index);
 		}
 
 		return 0;
@@ -475,14 +605,33 @@ partial class TableViewRowAutomationPeer
 
 	protected override int GetSizeOfSetCore()
 	{
+		int value = ComputeSizeOfSet();
+		m_lastReportedSizeOfSet = value;
+		return value;
+	}
+
+	private int ComputeSizeOfSet()
+	{
 		if (base.GetSizeOfSetCore() is var provided && provided > 0)
 		{
 			return provided;
 		}
 
+		if (TryGetSiblingPosition(out int position, out int sizeOfSet))
+		{
+			return sizeOfSet;
+		}
+
 		if (GetOwningTableView() is { } tableView)
 		{
-			if (tableView.GetDataRowSizeOfSetInternal() is var count && count > 0)
+			var tableImpl = tableView;
+
+			if (TryGetGroupedRowSetMetadata(tableImpl, GetRowIndex(), out int groupPosition, out int groupSize))
+			{
+				return groupSize;
+			}
+
+			if (tableImpl.GetDataRowSizeOfSetInternal() is var count && count > 0)
 			{
 				return count;
 			}
@@ -576,9 +725,23 @@ partial class TableViewRowAutomationPeer
 	/// </summary>
 	public void AddToSelection()
 	{
-		// The container is single-select, so "add" can only mean "make this the selection". XAML's own
-		// single-select peers (ListViewItemAutomationPeer) behave the same way rather than failing.
-		// Multiple must add to the selection instead of replacing it.
+		if (!IsEnabled())
+		{
+			// UIA_E_ELEMENTNOTENABLED
+			throw new ElementNotEnabledException();
+		}
+
+		// Per the UIA SelectionItem spec, single-select fails rather than replacing another row's selection.
+		// Ask the model: SelectedIndex and the row's IsSelected lag it while selection observers run.
+		if (GetOwningTableView() is { } tableView)
+		{
+			var impl = tableView;
+			if (!impl.CanSelectMultipleRows() && impl.SelectedIndexInternal() >= 0 && !impl.IsSelected(GetRowIndex()))
+			{
+				// UIA_E_INVALIDOPERATION
+				throw new InvalidOperationException();
+			}
+		}
 		Select();
 	}
 
@@ -587,6 +750,12 @@ partial class TableViewRowAutomationPeer
 	/// </summary>
 	public void RemoveFromSelection()
 	{
+		if (!IsEnabled())
+		{
+			// UIA_E_ELEMENTNOTENABLED
+			throw new ElementNotEnabledException();
+		}
+
 		if (GetOwningTableView() is { } tableView)
 		{
 			int index = GetRowIndex();
@@ -604,6 +773,12 @@ partial class TableViewRowAutomationPeer
 	/// </summary>
 	public void Select()
 	{
+		if (!IsEnabled())
+		{
+			// UIA_E_ELEMENTNOTENABLED
+			throw new ElementNotEnabledException();
+		}
+
 		if (GetOwningTableView() is { } tableView)
 		{
 			int index = GetRowIndex();
@@ -613,6 +788,174 @@ partial class TableViewRowAutomationPeer
 				tableView.SelectRowIndexFromInteraction(index, false);
 			}
 		}
+	}
+
+	// ----- IExpandCollapseProvider -----
+
+	/// <summary>
+	/// Gets the expand/collapse state of the row; a leaf or recycled row reports LeafNode.
+	/// </summary>
+	public ExpandCollapseState ExpandCollapseState
+	{
+		get
+		{
+			var row = GetRow();
+			if (row is null || !row.IsExpandable)
+			{
+				// Leaf or recycled row; non-tree rows never expose the pattern.
+				return ExpandCollapseState.LeafNode;
+			}
+
+			return row.IsExpanded
+				? ExpandCollapseState.Expanded
+				: ExpandCollapseState.Collapsed;
+		}
+	}
+
+	/// <summary>
+	/// Expands the row.
+	/// </summary>
+	public void Expand()
+	{
+		SetExpansion(true);
+	}
+
+	/// <summary>
+	/// Collapses the row.
+	/// </summary>
+	public void Collapse()
+	{
+		SetExpansion(false);
+	}
+
+	private void SetExpansion(bool expand)
+	{
+		var row = GetRow();
+		if (row is null || !row.IsExpandable)
+		{
+			return;
+		}
+
+		// Pass direction, not a toggle: the mutation is deferred, so IsExpanded() can't make it
+		// idempotent as ExpandCollapsePattern requires. Same entry point as the chevron gesture.
+		if (GetOwningTableView() is { } tableView)
+		{
+			tableView.SetGroupExpansion(row, expand);
+		}
+	}
+
+	internal void RaiseExpandCollapseAutomationEvent(
+		ExpandCollapseState oldState,
+		ExpandCollapseState newState)
+	{
+		if (oldState == newState)
+		{
+			return;
+		}
+
+		if (!AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
+		{
+			return;
+		}
+
+		try
+		{
+			RaisePropertyChangedEvent(
+				ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty,
+				oldState,
+				newState);
+		}
+		catch (Exception)
+		{
+			// best-effort: the tree may be tearing down.
+		}
+	}
+
+	internal void RaiseHierarchyPositionChanged()
+	{
+		// A row that left the tree (ClearParentBy, or a recycled row bound to a flat item) still owes
+		// a client that read its tree Level the change back.
+		if (!IsHierarchicalRow() && m_lastReportedLevel <= 0)
+		{
+			return;
+		}
+
+		try
+		{
+			// Compare against what this peer last reported to a client (recorded by the Get*Core
+			// overrides). -1 means never reported, so no client can hold a stale value.
+			void raiseIfChanged(AutomationProperty property, ref int last, int current)
+			{
+				if (last >= 0 && last != current)
+				{
+					RaisePropertyChangedEvent(property, last, current);
+					last = current;
+				}
+			}
+
+			raiseIfChanged(AutomationElementIdentifiers.LevelProperty, ref m_lastReportedLevel, ComputeLevel());
+			raiseIfChanged(AutomationElementIdentifiers.PositionInSetProperty, ref m_lastReportedPositionInSet, ComputePositionInSet());
+			raiseIfChanged(AutomationElementIdentifiers.SizeOfSetProperty, ref m_lastReportedSizeOfSet, ComputeSizeOfSet());
+		}
+		catch (Exception)
+		{
+			// best-effort: the tree may be tearing down.
+		}
+	}
+
+	// ----- IAutomationPeerOverrides3 -----
+
+	protected override int GetLevelCore()
+	{
+		int value = ComputeLevel();
+		m_lastReportedLevel = value;
+		return value;
+	}
+
+	private int ComputeLevel()
+	{
+		// An app-set AutomationProperties.Level wins, as in GetPositionInSetCore/GetSizeOfSetCore.
+		if (base.GetLevelCore() is var provided && provided > 0)
+		{
+			return provided;
+		}
+
+		// Level is already 1-based; 0 (not a tree row) is UIA's "not specified".
+		var row = GetRow();
+		return row is not null ? row.Level : 0;
+	}
+
+	// Position within the sibling set (not the flat axis), O(1) from the hierarchy descriptor.
+	private bool TryGetSiblingPosition(out int positionInSet, out int sizeOfSet)
+	{
+		positionInSet = 0;
+		sizeOfSet = 0;
+
+		var tableView = GetOwningTableView();
+		if (tableView is null || !IsHierarchicalRow())
+		{
+			return false;
+		}
+
+		int index = GetRowIndex();
+		if (index < 0)
+		{
+			return false;
+		}
+
+		var tableViewImpl = tableView;
+
+		TableViewRowInfo info = default;
+		if (!tableViewImpl.TryGetTableViewSourceRowInfo(index, ref info) ||
+			info.Kind != TableViewRowKind.Data ||
+			info.SizeOfSet == 0)
+		{
+			return false;
+		}
+
+		positionInSet = (int)info.PositionInSet;
+		sizeOfSet = (int)info.SizeOfSet;
+		return true;
 	}
 
 	// See header comment for rationale.

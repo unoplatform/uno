@@ -1,12 +1,11 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewCellAutomationPeer.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewCellAutomationPeer.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -21,6 +20,32 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 
 partial class TableViewCellAutomationPeer
 {
+	private static FrameworkElement CellForPublicConstructor(
+		FrameworkElement? cell,
+		TableViewRow? row,
+		TableViewColumn? column,
+		int columnIndex)
+	{
+		if (cell is null || row is null || column is null || columnIndex < 0)
+		{
+			// hresult_invalid_argument
+			throw new ArgumentException();
+		}
+
+		// A row not yet owned by a TableView has no column set to check against.
+		if (row.GetOwningTableView() is { } table)
+		{
+			if (column.GetOwningTableView() != table ||
+				(uint)columnIndex >= (uint)table.Columns.Count)
+			{
+				// hresult_invalid_argument
+				throw new ArgumentException();
+			}
+		}
+
+		return cell;
+	}
+
 	/// <summary>
 	/// Initializes a new instance of the <see cref="TableViewCellAutomationPeer"/> class.
 	/// </summary>
@@ -29,6 +54,16 @@ partial class TableViewCellAutomationPeer
 	/// <param name="column">The column that owns the cell.</param>
 	/// <param name="columnIndex">The visible column index of the cell.</param>
 	public TableViewCellAutomationPeer(
+		FrameworkElement cell,
+		TableViewRow? row,
+		TableViewColumn? column,
+		int columnIndex)
+		: this(new TrustedOwnerTag(), CellForPublicConstructor(cell, row, column, columnIndex), row, column, columnIndex)
+	{
+	}
+
+	internal TableViewCellAutomationPeer(
+		TrustedOwnerTag trustedOwnerTag,
 		FrameworkElement cell,
 		TableViewRow? row,
 		TableViewColumn? column,
@@ -118,7 +153,7 @@ partial class TableViewCellAutomationPeer
 	}
 
 	// UIA focusability is not Tab reachability: row-level cells still need SetFocus and
-	// IsKeyboardFocusable to succeed when enabled and visible.
+	// IsKeyboardFocusable to succeed when enabled, visible and actionable.
 	protected override bool IsKeyboardFocusableCore()
 	{
 		var cell = Owner as FrameworkElement;
@@ -133,7 +168,7 @@ partial class TableViewCellAutomationPeer
 		{
 			return false;
 		}
-		return row is null || row.IsEnabled;
+		return row is null || (row.IsEnabled && row.IsCellActionableInternal(cell));
 	}
 
 	protected override void SetFocusCore()
@@ -148,16 +183,47 @@ partial class TableViewCellAutomationPeer
 
 		if (row is not null && cell is not null)
 		{
-			// Drill the row in first, exactly as Right does: the cell is not focusable at all while the
-			// row is at row level, so a bare Focus() here would silently do nothing.
-			row.SetCellLevelInternal(true);
-			if (cell.Focus(FocusState.Programmatic))
+			// Only an actionable cell takes focus; never leave the row armed with no focusable level.
+			var rowImpl = row;
+			int column = rowImpl.GetVisibleCellIndexInternal(cell);
+			if (column < 0 || !rowImpl.IsCellActionableInternal(cell))
 			{
-				return;
+				// UIA_E_INVALIDOPERATION
+				throw new InvalidOperationException();
 			}
+			// The exact cell or nothing: no fallback to the row, and a refused cell restores the level.
+			bool wasCellLevel = rowImpl.IsCellLevelInternal();
+			rowImpl.SetCellLevelInternal(true);
+			if (!cell.Focus(FocusState.Programmatic) || cell.FocusState == FocusState.Unfocused)
+			{
+				rowImpl.SetCellLevelInternal(wasCellLevel);
+				// UIA_E_INVALIDOPERATION
+				throw new InvalidOperationException();
+			}
+			return;
 		}
 
 		base.SetFocusCore();
+	}
+
+	protected override void ShowContextMenuCore()
+	{
+		// Same tracking rule as SetFocusCore: a recycled cell must not raise a request for another item.
+		var row = m_row.Get();
+		var cell = row is not null && GetTrackedTableForRow(row) is not null ? GetRealizedCellFromRow(row) : null;
+		if (cell is null)
+		{
+			ThrowElementNotAvailable();
+		}
+
+		if (cell == Owner)
+		{
+			base.ShowContextMenuCore();
+		}
+		else if (FrameworkElementAutomationPeer.CreatePeerForElement(cell) is { } peer)
+		{
+			peer.ShowContextMenu();
+		}
 	}
 
 	protected override string GetNameCore()
@@ -177,7 +243,8 @@ partial class TableViewCellAutomationPeer
 		}
 		if (GetCachedHasInteractiveCellContent(Owner as FrameworkElement))
 		{
-			var interactiveName = GetColumnHeaderText();
+			// The control names itself; naming the cell after it too would read that name twice.
+			var interactiveName = GetColumnHeaderText(tableView);
 			m_lastName = interactiveName;
 			return interactiveName;
 		}
@@ -185,12 +252,12 @@ partial class TableViewCellAutomationPeer
 		{
 			if (row.GetDisplayElementForAutomation(Owner) is { } display)
 			{
-				var displayName = ReadDisplayName(display as FrameworkElement);
+				var displayName = ReadDisplayName(tableView, display as FrameworkElement);
 				m_lastName = displayName;
 				return displayName;
 			}
 		}
-		var name = ReadDisplayName();
+		var name = ReadDisplayName(tableView);
 		m_lastName = name;
 		return name;
 	}
@@ -216,7 +283,7 @@ partial class TableViewCellAutomationPeer
 
 		UpdateNameItem(row is not null && tableView is not null
 			? row.DataContext : null);
-		var name = ReadDisplayName();
+		var name = ReadDisplayName(tableView);
 		m_lastName = name;
 		return name;
 	}
@@ -392,35 +459,95 @@ partial class TableViewCellAutomationPeer
 		TVDiag.LogRetailF("[TableView] Optional final cell-name invalidation could not be queued.");
 	}
 
-	private string ReadDisplayName(FrameworkElement? display = null)
+	// True when the cell shows nothing: only layout containers and empty text.
+	private static bool ShowsNoCellContent(DependencyObject element, uint depth)
 	{
-		var headerText = GetColumnHeaderText();
+		var fe = element as FrameworkElement;
+		if (fe is null || fe.Visibility != Visibility.Visible)
+		{
+			return true;
+		}
+		if (fe is TextBlock textBlock)
+		{
+			return string.IsNullOrEmpty(textBlock.Text);
+		}
+		if (fe is TextBox textBox)
+		{
+			return string.IsNullOrEmpty(textBox.Text);
+		}
+		if (depth == 0 || !(fe is Panel || fe is Border || fe is ContentPresenter))
+		{
+			return false;
+		}
+		var count = VisualTreeHelper.GetChildrenCount(fe);
+		for (int i = 0; i < count; ++i)
+		{
+			if (!ShowsNoCellContent(VisualTreeHelper.GetChild(fe, i), depth - 1))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+	private string ReadDisplayName(TableView? table, FrameworkElement? display = null)
+	{
 		uint remaining = 32;
 		var valueText = display is not null
 			? GetCellContentName(display, true, 8, ref remaining)
 			: GetCellDisplayText(Owner as FrameworkElement);
 
-		if (string.IsNullOrEmpty(headerText))
+		// Borrowing the header would read an empty cell like one whose value is the header text.
+		if (string.IsNullOrEmpty(valueText))
+		{
+			// An unnamed visual (a ProgressBar, say) is not blank; name it by its column instead.
+			var content = display ?? GetCellContentElement(Owner as FrameworkElement);
+			if (content is not null && !ShowsNoCellContent(content, 8))
+			{
+				return GetColumnHeaderText(table);
+			}
+			valueText = LocalizedOrFallbackForTableViewAutomation(ResourceAccessor.SR_TableViewCellBlankName, "blank");
+		}
+
+		// A reachable header item already gives the column context.
+		if (IsColumnHeaderReachable(table))
 		{
 			return valueText;
 		}
-		if (string.IsNullOrEmpty(valueText))
+
+		var headerText = GetColumnHeaderText(table);
+		if (string.IsNullOrEmpty(headerText))
 		{
-			return headerText;
+			return valueText;
 		}
 
 		return FormatLocalizedOrFallback(ResourceAccessor.SR_TableViewCellNameFormat, "%1!s!, %2!s!", headerText, valueText, ", ");
 	}
 
-	private string GetColumnHeaderText()
+	private string GetColumnHeaderText(TableView? table)
 	{
-		// Non-string headers have no simple textual prefix, so let the value stand alone.
-		if (TryGetColumnHeaderString(m_column.Get()) is { } headerString)
+		return ResolveColumnAccessibleName(table, m_column.Get());
+	}
+
+	private bool IsColumnHeaderReachable(TableView? table)
+	{
+		var column = m_column.Get();
+		return table is not null && IsVisibleColumn(column) &&
+			column!.GetOwningTableView() == table &&
+			table.AreColumnHeadersShownInternal();
+	}
+
+	internal string? TakeLastNameInternal()
+	{
+		// An edit pins the pre-edit name; EndEditName publishes the final one.
+		if (m_editName is not null)
 		{
-			return headerString;
+			return null;
 		}
 
-		return string.Empty;
+		var lastName = m_lastName;
+		m_lastName = null;
+		return lastName;
 	}
 
 	private string GetCellValueText()
@@ -680,44 +807,51 @@ partial class TableViewCellAutomationPeer
 	{
 		if (m_row.Get() is { } row)
 		{
-			if (GetTrackedTableForRow(row) is { } tableView)
-			{
-				m_lastOwningTable = new WeakReference<TableView>(tableView);
+			return GetRowIndex(row, GetTrackedTableForRow(row));
+		}
 
-				// Use the row peer's coordinate basis and avoid a visual-tree walk per realized cell.
-				if (tableView.GetRowsRepeaterInternal() is { } tableRepeater)
+		return -1;
+	}
+
+	private int GetRowIndex(TableViewRow row, TableView? tableView)
+	{
+		if (tableView is not null)
+		{
+			m_lastOwningTable = new WeakReference<TableView>(tableView);
+
+			// Use the row peer's coordinate basis and avoid a visual-tree walk per realized cell.
+			if (tableView.GetRowsRepeaterInternal() is { } tableRepeater)
+			{
+				var trackedRowIndex = tableRepeater.GetElementIndex(row);
+				if (trackedRowIndex >= 0)
 				{
-					var trackedRowIndex = tableRepeater.GetElementIndex(row);
-					if (trackedRowIndex >= 0)
-					{
-						m_lastKnownRowIndex = trackedRowIndex;
-						return trackedRowIndex;
-					}
+					m_lastKnownRowIndex = trackedRowIndex;
+					return trackedRowIndex;
 				}
 			}
+		}
 
-			// TableView exposes no public row-index API, so fall back to the hosting ItemsRepeater for
-			// a row whose owner is not resolvable yet.
-			var rowItem = row.DataContext;
-			if (!m_item.SameIdentityAs(rowItem))
-			{
-				return -1;
-			}
+		// TableView exposes no public row-index API, so fall back to the hosting ItemsRepeater for
+		// a row whose owner is not resolvable yet.
+		var rowItem = row.DataContext;
+		if (!m_item.SameIdentityAs(rowItem))
+		{
+			return -1;
+		}
 
-			DependencyObject? parent = VisualTreeHelper.GetParent(row);
-			while (parent is not null)
+		DependencyObject? parent = VisualTreeHelper.GetParent(row);
+		while (parent is not null)
+		{
+			if (parent is ItemsRepeater repeater)
 			{
-				if (parent is ItemsRepeater repeater)
+				var rowIndex = repeater.GetElementIndex(row);
+				if (rowIndex >= 0)
 				{
-					var rowIndex = repeater.GetElementIndex(row);
-					if (rowIndex >= 0)
-					{
-						m_lastKnownRowIndex = rowIndex;
-						return rowIndex;
-					}
+					m_lastKnownRowIndex = rowIndex;
+					return rowIndex;
 				}
-				parent = VisualTreeHelper.GetParent(parent);
 			}
+			parent = VisualTreeHelper.GetParent(parent);
 		}
 
 		return -1;
@@ -802,7 +936,9 @@ partial class TableViewCellAutomationPeer
 
 		if (element is TableViewRow row)
 		{
-			if (!IsTrackedRow(row, tableView))
+			// The peer is bound to its own cell element; if the repeater realized the item into another
+			// row, this provider cannot describe it, so fail rather than report a realized element.
+			if (!IsTrackedRow(row, tableView) || row != m_row.Get() || !IsOwnerCurrentCellOfRow(row))
 			{
 				ThrowElementNotAvailable();
 			}
@@ -992,10 +1128,6 @@ partial class TableViewCellAutomationPeer
 		}
 	}
 
-	// UIA_E_ELEMENTNOTAVAILABLE projects to ElementNotAvailableException.
-	[DoesNotReturn]
-	private static void ThrowElementNotAvailable() => throw new ElementNotAvailableException();
-
 	private UIElement? GetRealizedCellFromRow(TableViewRow? row)
 	{
 		if (row is null)
@@ -1033,8 +1165,34 @@ partial class TableViewCellAutomationPeer
 	{
 		get
 		{
-			return GetRowIndex();
+			var row = m_row.Get();
+			var tableView = row is not null ? GetTrackedTableForRow(row) : null;
+			if (tableView is null || !IsOwnerCurrentCellOfRow(row!))
+			{
+				ThrowElementNotAvailable();
+			}
+
+			var rowIndex = GetRowIndex(row!, tableView);
+			if (rowIndex >= 0)
+			{
+				return rowIndex;
+			}
+
+			// Between recycle and re-prepare a live row has no repeater index; only an item that has left
+			// the source makes this provider stale.
+			var itemIndex = GetTrackedItemIndex(tableView);
+			if (itemIndex >= 0)
+			{
+				return itemIndex;
+			}
+			ThrowElementNotAvailable();
+			return -1;
 		}
+	}
+
+	internal int GetRowIndexInternal()
+	{
+		return GetRowIndex();
 	}
 
 	/// <summary>
@@ -1044,44 +1202,66 @@ partial class TableViewCellAutomationPeer
 	{
 		get
 		{
-			// Computed live, mirroring Row(): a cached index goes stale as soon as a column is hidden or
-			// shown underneath a client holding this provider.
-			if (m_row.Get() is { } row)
+			var row = m_row.Get();
+			if (row is null || GetTrackedTableForRow(row) is null || !IsOwnerCurrentCellOfRow(row))
 			{
-				if (GetTrackedTableForRow(row) is null)
-				{
-					ThrowElementNotAvailable();
-				}
-
-				var rowImpl = row;
-				if (rowImpl.GetCellsHostPanelInternal() is { } cellsHost)
-				{
-					var cell = Owner;
-					var cellChildren = cellsHost.Children;
-					var count = cellChildren.Count;
-					int visibleColumnIndex = 0;
-
-					// Same walk and predicate as TableViewAutomationPeer::VisibleColumnToChildIndex and
-					// the row peer's GetChildrenCore, so all three agree on the coordinate.
-					for (int i = 0; i < count; ++i)
-					{
-						var child = cellChildren[i] as UIElement;
-						if (child is null || !IsVisibleColumn(rowImpl.GetCellOwningColumn(child)))
-						{
-							continue;
-						}
-
-						if (child == cell)
-						{
-							return visibleColumnIndex;
-						}
-						++visibleColumnIndex;
-					}
-				}
+				ThrowElementNotAvailable();
 			}
 
+			// Computed live, mirroring Row(): a cached index goes stale as soon as a column is hidden or
+			// shown underneath a client holding this provider.
+			var rowImpl = row;
+			if (rowImpl.GetCellsHostPanelInternal() is { } cellsHost)
+			{
+				var cell = Owner;
+				var cellChildren = cellsHost.Children;
+				var count = cellChildren.Count;
+				int visibleColumnIndex = 0;
+
+				// Same walk and predicate as TableViewAutomationPeer::VisibleColumnToChildIndex and
+				// the row peer's GetChildrenCore, so all three agree on the coordinate.
+				for (int i = 0; i < count; ++i)
+				{
+					var child = cellChildren[i] as UIElement;
+					if (child is null || !IsVisibleColumn(rowImpl.GetCellOwningColumn(child)))
+					{
+						continue;
+					}
+
+					if (child == cell)
+					{
+						return visibleColumnIndex;
+					}
+					++visibleColumnIndex;
+				}
+
+				// Still hosted, but its column is collapsed: the cell has no visible-column coordinate.
+				ThrowElementNotAvailable();
+			}
+
+			if (m_columnIndex < 0)
+			{
+				ThrowElementNotAvailable();
+			}
 			return m_columnIndex;
 		}
+	}
+
+	// A same-row rebuild (column reorder or removal, CellTemplate change) replaces the cells while the
+	// row and its item stay live, so a tracked row alone does not prove this cell is current.
+	private bool IsOwnerCurrentCellOfRow(TableViewRow row)
+	{
+		var rowImpl = row;
+		var cellsHost = rowImpl.GetCellsHostPanelInternal();
+		if (cellsHost is null)
+		{
+			return true;
+		}
+
+		var cell = Owner as UIElement;
+		return cell is not null &&
+			(VisualTreeHelper.GetParent(cell) as Panel) == cellsHost &&
+			rowImpl.GetCellOwningColumn(cell) == m_column.Get();
 	}
 
 	/// <summary>
@@ -1141,7 +1321,8 @@ partial class TableViewCellAutomationPeer
 		{
 			if (m_row.Get() is { } row)
 			{
-				if (GetTrackedTableForRow(row) is { } owner)
+				// Hidden headers are named into the cell instead, so reporting them would repeat the header.
+				if (GetTrackedTableForRow(row) is { } owner && IsColumnHeaderReachable(owner))
 				{
 					// Resolve the visual's peer even when the app supplies a custom table peer.
 					var headerPeer = GetRealizedColumnHeaderPeer(owner, column);

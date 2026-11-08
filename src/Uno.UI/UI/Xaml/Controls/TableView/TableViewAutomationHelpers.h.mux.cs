@@ -1,14 +1,16 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\TableView\TableViewAutomationHelpers.h, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\TableView\TableViewAutomationHelpers.h, tag winui3/main, commit 79209e041
 
 #nullable enable
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
@@ -76,6 +78,11 @@ internal sealed class TableViewTrackedItemIdentity
 // TODO Uno: free inline functions in C++; they live in a static class here.
 internal static class TableViewAutomationHelpers
 {
+	// A stale provider must fail rather than report coordinates that now belong to another element.
+	[DoesNotReturn]
+	internal static void ThrowElementNotAvailable() =>
+		throw new ElementNotAvailableException();
+
 	// Resource lookups feeding UIA are supplementary: degrade instead of letting a missing PRI (a host
 	// app that does not merge the control's resources) escape into a UIA call.
 	internal static string TryGetLocalizedString(string resourceName)
@@ -252,21 +259,17 @@ internal static class TableViewAutomationHelpers
 		return count;
 	}
 
-	// Returns the text a cell displays: the column-generated TextBlock's text, else the content's own
-	// computed UIA name. Shared so a cell's name and the row name composed from its cells agree.
-	//
-	// allowPeerCreation gates the fallback: CreatePeerForElement does not just read a name, it creates
-	// and permanently attaches a peer. Worth it for a cell naming itself; not for the row name, which
-	// walks every cell on every name query, so it passes false and skips template content.
-	internal static string GetCellContentName(
-		FrameworkElement? content, bool allowPeerCreation, uint depth, ref uint remaining)
-	{
-		if (content is null || content.Visibility != Visibility.Visible || depth == 0 || remaining == 0)
-		{
-			return string.Empty;
-		}
-		--remaining;
+	internal const int c_maxCellContentChildrenPerLevel = 32;
 
+	internal static bool ShouldWalkCellContentSubtree(FrameworkElement? content) =>
+		content is not null &&
+			(content is ContentPresenter ||
+				content is Panel ||
+				content is Border);
+
+	internal static string GetExplicitCellContentName(
+		FrameworkElement content, bool allowPeerCreation)
+	{
 		var name = AutomationProperties.GetName(content);
 		if (!string.IsNullOrEmpty(name))
 		{
@@ -285,6 +288,29 @@ internal static class TableViewAutomationHelpers
 					return labelName;
 				}
 			}
+		}
+		return string.Empty;
+	}
+
+	// Returns the text a cell displays: the column-generated TextBlock's text, else the content's own
+	// computed UIA name. Shared so a cell's name and the row name composed from its cells agree.
+	//
+	// allowPeerCreation gates the fallback: CreatePeerForElement does not just read a name, it creates
+	// and permanently attaches a peer. Worth it for a cell naming itself; not for the row name, which
+	// walks every cell on every name query, so it passes false and only reads already-realized content.
+	internal static string GetCellContentName(
+		FrameworkElement? content, bool allowPeerCreation, uint depth, ref uint remaining)
+	{
+		if (content is null || content.Visibility != Visibility.Visible || depth == 0 || remaining == 0)
+		{
+			return string.Empty;
+		}
+		--remaining;
+
+		var explicitName = GetExplicitCellContentName(content, allowPeerCreation);
+		if (!string.IsNullOrEmpty(explicitName))
+		{
+			return explicitName;
 		}
 		if (content is TextBlock textBlock)
 		{
@@ -310,10 +336,11 @@ internal static class TableViewAutomationHelpers
 
 		// A named control describes its own content; do not repeat its inner interactive labels.
 		// Only traverse layout wrappers, and bound the work of each cell-name query.
-		if (presenter is not null || content is Panel || content is Border)
+		// Per-level cap retained: removing it destabilised the column-header peers.
+		if (ShouldWalkCellContentSubtree(content))
 		{
 			var count = VisualTreeHelper.GetChildrenCount(content);
-			for (int i = 0; i < count && remaining > 0; ++i)
+			for (int i = 0; i < count && i < c_maxCellContentChildrenPerLevel && remaining > 0; ++i)
 			{
 				if (VisualTreeHelper.GetChild(content, i) is FrameworkElement child)
 				{
@@ -325,6 +352,38 @@ internal static class TableViewAutomationHelpers
 				}
 			}
 		}
+		return string.Empty;
+	}
+
+	// The name UIA uses for a column: its string header, else an element header's own name (hidden
+	// headers collapse their header cells), else the name its realized header item exposes, which is
+	// the only source for an object or templated header. Shared by the cell peer and the built-in
+	// editor so both name the column the same way.
+	internal static string ResolveColumnAccessibleName(TableView? table, TableViewColumn? column)
+	{
+		if (TableViewDetails.TryGetColumnHeaderText(column) is { } headerString)
+		{
+			return headerString;
+		}
+
+		if (column?.Header is FrameworkElement headerElement)
+		{
+			uint remaining = 32;
+			var name = GetCellContentName(headerElement, false /* allowPeerCreation */, 8, ref remaining);
+			if (!string.IsNullOrEmpty(name))
+			{
+				return name;
+			}
+		}
+
+		if (table is not null)
+		{
+			if (GetRealizedColumnHeaderPeer(table, column) is { } headerPeer)
+			{
+				return headerPeer.GetName();
+			}
+		}
+
 		return string.Empty;
 	}
 
@@ -384,9 +443,8 @@ internal static class TableViewAutomationHelpers
 			return true;
 		}
 
-		const int maxChildrenPerLevel = 32;
 		var childCount = VisualTreeHelper.GetChildrenCount(element);
-		for (int i = 0; i < childCount && i < maxChildrenPerLevel && budget > 0; ++i)
+		for (int i = 0; i < childCount && i < c_maxCellContentChildrenPerLevel && budget > 0; ++i)
 		{
 			if (VisualTreeHelper.GetChild(element, i) is UIElement child)
 			{
@@ -402,6 +460,111 @@ internal static class TableViewAutomationHelpers
 
 	internal static bool HasInteractiveCellContent(FrameworkElement? cell) =>
 		ContainsFocusableElement(GetCellAutomationContent(cell));
+
+	// A text control's built-in copy menu is its default value, not an app menu; reading the local value
+	// first also avoids creating that default flyout. A Style-set flyout on a text control is not counted.
+	internal static bool HasAppContextFlyout(UIElement element)
+	{
+		if (element is TextBlock || element is RichTextBlock ||
+			element is RichTextBlockOverflow || element is TextBox ||
+			element is RichEditBox || element is PasswordBox)
+		{
+			// A local binding that resolves to null, or fails, leaves the built-in menu in effect.
+			var local = element.ReadLocalValue(UIElement.ContextFlyoutProperty);
+			if (local is null || local == DependencyProperty.UnsetValue)
+			{
+				return false;
+			}
+			var flyout = element.ContextFlyout;
+			return flyout is not null && !(local is Microsoft.UI.Xaml.Data.BindingExpression && flyout is TextCommandBarFlyout);
+		}
+		return element.ContextFlyout is not null;
+	}
+
+	// An inline Hyperlink (directly or in nested Spans such as Bold/Italic) in a TextBlock or a RichTextBlock paragraph.
+	internal static Hyperlink? FindHyperlink(UIElement element)
+	{
+		static Hyperlink? FindLink(InlineCollection inlines, int depth)
+		{
+			foreach (var item in inlines)
+			{
+				if (item is Hyperlink link)
+				{
+					return link;
+				}
+				if (item is Span span && depth > 0)
+				{
+					if (FindLink(span.Inlines, depth - 1) is { } nestedLink)
+					{
+						return nestedLink;
+					}
+				}
+			}
+			return null;
+		}
+
+		const int maxSpanDepth = 4;
+		if (element is TextBlock textBlock)
+		{
+			return FindLink(textBlock.Inlines, maxSpanDepth);
+		}
+		if (element is RichTextBlock richText)
+		{
+			foreach (var block in richText.Blocks)
+			{
+				if (block is Paragraph paragraph)
+				{
+					if (FindLink(paragraph.Inlines, maxSpanDepth) is { } link)
+					{
+						return link;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	internal static bool HasHyperlink(UIElement element) =>
+		FindHyperlink(element) is not null;
+
+	// Focusable controls, inline hyperlinks, app context menus or a nested TableView below element. A
+	// subtree too deep to scan is assumed interactive rather than made unreachable. IsTabStop is not
+	// consulted for TableView-suppressed tab stops; callers pass isSuppressed for those.
+	internal static bool HasActionableContent(
+		DependencyObject element, int depth, ref int budget,
+		Func<UIElement, bool>? isSuppressed = null)
+	{
+		var count = VisualTreeHelper.GetChildrenCount(element);
+		if (count > 0 && (depth <= 0 || budget <= 0))
+		{
+			return true;
+		}
+
+		for (int i = 0; i < count && i < c_maxCellContentChildrenPerLevel; ++i)
+		{
+			var child = VisualTreeHelper.GetChild(element, i) as UIElement;
+			if (child is null || child.Visibility != Visibility.Visible)
+			{
+				continue;
+			}
+			// Nothing under a disabled Control can take focus.
+			if (child is Control control && !control.IsEnabled)
+			{
+				continue;
+			}
+			--budget;
+			// A non-Control UIElement (Grid, Border) with IsTabStop is focusable too, as Enter's FindFirstFocusableElement sees it.
+			if (IsFocusableCellContent(child) || (child is not Control && child.IsTabStop) ||
+				HasAppContextFlyout(child) || child is TableView ||
+				(isSuppressed is not null && isSuppressed(child)) || HasHyperlink(child) ||
+				HasActionableContent(child, depth - 1, ref budget, isSuppressed))
+			{
+				return true;
+			}
+		}
+		// Children past the per-level cap were not scanned; like an over-budget subtree, assume interactive.
+		return count > c_maxCellContentChildrenPerLevel;
+	}
 
 	internal static void SetAccessibilityViewIfNeeded(
 		FrameworkElement? element,
@@ -444,9 +607,8 @@ internal static class TableViewAutomationHelpers
 
 		SetAccessibilityViewIfNeeded(root, AccessibilityView.Raw);
 
-		const int maxChildrenPerLevel = 32;
 		var childCount = VisualTreeHelper.GetChildrenCount(root);
-		for (int i = 0; i < childCount && i < maxChildrenPerLevel; ++i)
+		for (int i = 0; i < childCount && i < c_maxCellContentChildrenPerLevel; ++i)
 		{
 			if (VisualTreeHelper.GetChild(root, i) is FrameworkElement child)
 			{
@@ -468,9 +630,8 @@ internal static class TableViewAutomationHelpers
 			return;
 		}
 
-		const int maxChildrenPerLevel = 32;
 		var childCount = VisualTreeHelper.GetChildrenCount(root);
-		for (int i = 0; i < childCount && i < maxChildrenPerLevel; ++i)
+		for (int i = 0; i < childCount && i < c_maxCellContentChildrenPerLevel; ++i)
 		{
 			if (VisualTreeHelper.GetChild(root, i) is FrameworkElement child)
 			{
@@ -484,29 +645,5 @@ internal static class TableViewAutomationHelpers
 		var content = GetCellContentElement(cell);
 		uint remaining = 32;
 		return GetCellContentName(content, allowPeerCreation, 8, ref remaining);
-	}
-
-	// Returns the column Header's string form (an IStringable, or a String-typed IPropertyValue), or
-	// nullopt when the header is not a string (or the column is null). Returning nullopt rather than an
-	// empty string lets callers distinguish "no string header" from "an explicitly empty string header".
-	internal static string? TryGetColumnHeaderString(TableViewColumn? column)
-	{
-		if (column is not null)
-		{
-			var header = column.Header;
-			if (SharedHelpers.IsStringable(header))
-			{
-				return SharedHelpers.StringableToString(header);
-			}
-			// TODO Uno: IPropertyValue projection
-			if (header is not null)
-			{
-				if (ValueConversionHelpers.GetPropertyType(header.GetType()) == PropertyType.String)
-				{
-					return (string)header;
-				}
-			}
-		}
-		return null;
 	}
 }
