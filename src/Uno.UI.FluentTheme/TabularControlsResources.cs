@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference controls\dev\dll-tabular\TabularControlsResources.cpp, tag winui3/main, commit dc28206ea35
+// MUX Reference controls\dev\dll-tabular\TabularControlsResources.cpp, tag winui3/main, commit 79209e041
 
 #nullable enable
 
@@ -29,7 +29,14 @@ public sealed partial class TabularControlsResources : ResourceDictionary
 		Uno.UI.FluentTheme.GlobalStaticResources.RegisterResourceDictionariesBySource();
 #endif
 		UpdateSource();
+		s_hasBeenCreated = true;
 	}
+
+	// Successful construction does not imply that the dictionary is merged or still available.
+	internal static bool HasBeenCreatedOnCurrentThread() => s_hasBeenCreated;
+
+	[global::System.ThreadStatic]
+	private static bool s_hasBeenCreated;
 
 	private void UpdateSource()
 	{
