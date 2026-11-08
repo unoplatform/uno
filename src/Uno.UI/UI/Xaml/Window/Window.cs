@@ -543,6 +543,11 @@ public partial class Window
 		}
 	}
 
+	/// <summary>
+	/// Re-evaluates what the root paints after the native window's ability to render the backdrop changed.
+	/// </summary>
+	internal void RefreshSystemBackdropSupport() => UpdateRootVisualBackgroundForBackdrop(_systemBackdrop);
+
 	private static bool IsBackdropImplemented(Media.SystemBackdrop? backdrop) => backdrop switch
 	{
 		null => true,
