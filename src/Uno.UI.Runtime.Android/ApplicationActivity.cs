@@ -385,6 +385,15 @@ namespace Uno.UI.Runtime.Android
 			{
 				EnsureContentView();
 
+				// A finishing activity disposes the XamlRoot host (OnDestroy) while the process and the
+				// window live on; the activity that re-shows the window must register a new one, or no
+				// frame is ever produced for it.
+				if (Wrapper.XamlRootHost is null && existingWindow.RootElement.XamlRoot is { } hostlessRoot)
+				{
+					Wrapper.XamlRootHost = new AndroidSkiaXamlRootHost(existingWindow, Wrapper, hostlessRoot);
+					XamlRootMap.Register(hostlessRoot, Wrapper.XamlRootHost);
+				}
+
 				if (existingWindow.RootElement.XamlRoot is { } xamlRoot && _nativeLayerHost is { } nativeLayerHost)
 				{
 					AndroidSkiaNativeElementHostingExtension.AdoptNativeElements(xamlRoot, nativeLayerHost);
