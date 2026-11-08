@@ -114,18 +114,14 @@ internal static partial class ShapingHelpers
 	// An exception that left the caller's code: its collection, a broken contract, or a callback an owner ran. It
 	// keeps the original HRESULT and error info, so the caller sees the same error, and records whose fault it was,
 	// so an owner attributes a failure by the exception's type instead of by matching HRESULTs.
-	// TODO Uno: winrt::hresult_error becomes an Exception wrapping the original, carrying its HResult.
-	internal sealed class CallerError : Exception
+	// Uno specific: a managed wrapper would change the type the app catches, where the C++ ABI only sees the HRESULT, so
+	// the kind is stored on the original exception instead of in a CallerError type.
+	private const string c_callerErrorKindKey = "Uno.Tabular.CallerErrorKind";
+
+	internal static Exception TagCallerError(Exception error, uint kind)
 	{
-		internal CallerError(Exception error, uint kind) : base(error.Message, error)
-		{
-			HResult = error.HResult;
-			m_kind = kind;
-		}
-
-		internal uint Kind() => m_kind;
-
-		private readonly uint m_kind;
+		error.Data[c_callerErrorKindKey] = kind;
+		return error;
 	}
 
 	// The caller's code ran out of memory (C++/WinRT throws std::bad_alloc for E_OUTOFMEMORY). Still an
@@ -140,7 +136,7 @@ internal static partial class ShapingHelpers
 		private readonly uint m_kind;
 	}
 
-	// In a catch: rethrows `error` tagged with `kind`, as a CallerError, or a CallerOutOfMemory when the
+	// In a catch: rethrows `error` tagged with `kind`, or a CallerOutOfMemory when the
 	// caller's code ran out of memory. A tagged exception keeps its kind; any other exception leaves unchanged.
 	// TODO Uno: C++ reads the current exception with a bare `throw;`; C# takes it as a parameter.
 	[DoesNotReturn]

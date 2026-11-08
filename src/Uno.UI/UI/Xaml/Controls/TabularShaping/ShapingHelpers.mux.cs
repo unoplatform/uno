@@ -722,27 +722,25 @@ internal static partial class ShapingHelpers
 
 	internal static partial void RethrowAsCallerError(Exception error, uint kind)
 	{
-		switch (error)
+		if (error is OutOfMemoryException and not CallerOutOfMemory)
 		{
-			case CallerError:
-			case CallerOutOfMemory:
-				ExceptionDispatchInfo.Capture(error).Throw();
-				break;
-			case OutOfMemoryException:
-				throw new CallerOutOfMemory(kind);
-			default:
-				throw new CallerError(error, kind);
+			throw new CallerOutOfMemory(kind);
 		}
 
+		if (error is not CallerOutOfMemory && CurrentCallerErrorKind(error) == 0)
+		{
+			TagCallerError(error, kind);
+		}
+
+		ExceptionDispatchInfo.Capture(error).Throw();
 		throw error;
 	}
 
 	internal static partial uint CurrentCallerErrorKind(Exception error) =>
 		error switch
 		{
-			CallerError callerError => callerError.Kind(),
 			CallerOutOfMemory callerOutOfMemory => callerOutOfMemory.Kind(),
-			_ => 0,
+			_ => error.Data[c_callerErrorKindKey] is uint kind ? kind : 0,
 		};
 
 	internal static partial List<object?> EnumerateInspectableItems(

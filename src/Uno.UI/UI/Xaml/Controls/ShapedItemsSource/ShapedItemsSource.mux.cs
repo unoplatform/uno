@@ -69,11 +69,7 @@ partial class ShapedItemsSource
 	[DoesNotReturn]
 	private static void ThrowCallerContract(string message)
 	{
-		// TODO Uno: across the ABI an app sees this CallerError as E_INVALIDARG, which is exactly ArgumentException, and a
-		// managed wrapper would break that contract. The c_callerDataFault tag is lost; only TiP reads it, a no-op here.
-		// Original C++:
-		// throw ShapingHelpers::CallerError(winrt::hresult_invalid_argument(message), ShapingHelpers::c_callerDataFault);
-		throw new ArgumentException(message);
+		throw ShapingHelpers.TagCallerError(new ArgumentException(message), ShapingHelpers.c_callerDataFault);
 	}
 
 	public ShapedItemsSource(object? source)
