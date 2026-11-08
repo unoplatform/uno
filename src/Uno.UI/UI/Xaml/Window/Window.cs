@@ -332,6 +332,13 @@ public partial class Window
 
 		_windowImplementation.Initialize();
 
+		if (IsHostedAlcWindow)
+		{
+			// No native window backs a hosted ALC window, so Activate/Close must take the ALC paths
+			// even before its content is set.
+			InitializeAlcWindowMode();
+		}
+
 #if __SKIA__
 		if (_systemBackdrop is not null)
 		{
