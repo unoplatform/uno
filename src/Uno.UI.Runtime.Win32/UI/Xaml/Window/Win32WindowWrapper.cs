@@ -173,6 +173,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	private void OnSystemThemeChanged(object? _, EventArgs __) => UpdateFrameTheme();
 
+	private bool _canRevealBackdrop = true;
+	private HMONITOR _backdropMonitor;
+
 	private void OnContentActualThemeChanged(FrameworkElement sender, object args) => UpdateFrameTheme();
 
 	// MUX retargets the backdrop theme source on XamlRoot.Changed (SystemBackdrop_Partial.cpp).
@@ -319,6 +322,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			case PInvoke.WM_DPICHANGED:
 				OnWmDpiChanged(wParam, lParam);
 				return new LRESULT(0);
+			case PInvoke.WM_DISPLAYCHANGE:
+				UpdateDisplayInfo();
+				UpdateCanRevealBackdrop(displaysChanged: true);
+				// An idle window otherwise keeps its out-of-date swapchain until something else asks for a frame.
+				_renderThread?.SignalNewFrame();
+				break;
 			case PInvoke.WM_SIZE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_SIZE)} message.");
 				UpdateDisplayInfo();
@@ -329,6 +338,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
+				UpdateCanRevealBackdrop();
 				// No present here: the DWM backing surface survives the move, and the OS
 				// invalidates any region needing repaint via WM_PAINT.
 				return new LRESULT(0);
@@ -1037,7 +1047,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	/// onto <c>DWMWA_SYSTEMBACKDROP_TYPE</c>, and that attribute needs Windows 11 build 22621.
 	/// </remarks>
 	public override bool IsSystemBackdropSupported(Microsoft.UI.Xaml.Media.SystemBackdrop backdrop)
-		=> backdrop switch
+		=> _canRevealBackdrop && backdrop switch
 		{
 			Microsoft.UI.Xaml.Media.MicaBackdrop
 				=> Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported(),
@@ -1045,6 +1055,36 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				=> Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.IsSupported(),
 			_ => false,
 		};
+
+	/// <summary>
+	/// Every window shares one Vulkan device, so a window can end up on a display another adapter drives: the app was
+	/// assigned another GPU, the window was dragged across, or its screen was unplugged. That swapchain loses the alpha
+	/// DWM needs, so the window paints its fallback rather than black until it's back on the device's adapter.
+	/// </summary>
+	private void UpdateCanRevealBackdrop(bool displaysChanged = false)
+	{
+		if (_window?.SystemBackdrop is null)
+		{
+			return;
+		}
+
+		var monitor = PInvoke.MonitorFromWindow(_hwnd, MONITOR_FROM_FLAGS.MONITOR_DEFAULTTONEAREST);
+		if (!displaysChanged && monitor == _backdropMonitor)
+		{
+			return;
+		}
+
+		_backdropMonitor = monitor;
+
+		var canReveal = _context is not Win32VulkanGraphicsContext vulkan || vulkan.PresentsDirectlyTo(_hwnd);
+		if (canReveal != _canRevealBackdrop)
+		{
+			_canRevealBackdrop = canReveal;
+			this.LogInfo()?.Info($"The window's display {(canReveal ? "is" : "is not")} driven by the adapter rendering it, so its system backdrop {(canReveal ? "shows" : "falls back to the window background")}.");
+			UpdateClientAreaExtension();
+			_window.RefreshSystemBackdropSupport();
+		}
+	}
 
 	public override unsafe void SetSystemBackdrop(Microsoft.UI.Xaml.Media.SystemBackdrop? backdrop)
 	{
@@ -1095,6 +1135,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// area ("sheet of glass" MARGINS {-1,-1,-1,-1}) so the transparent client pixels reveal the
 		// material instead of black; otherwise it restores the title-bar/border configuration. Keeping
 		// this in the presenter avoids fighting it over the frame margins and corner preference.
+		UpdateCanRevealBackdrop(displaysChanged: true);
 		UpdateFrameTheme();
 		UpdateClientAreaExtension();
 	}

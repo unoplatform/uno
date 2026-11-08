@@ -138,6 +138,15 @@ internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceCont
 		}
 	}
 
+	/// <summary>
+	/// Whether the device runs on the adapter driving the window's display. Only then does DWM receive the swapchain's
+	/// alpha, which a system backdrop needs. Assumed true when either adapter is unknown.
+	/// </summary>
+	public bool PresentsDirectlyTo(HWND hwnd)
+		=> new Win32VulkanSurfaceFactory().GetPresentingAdapterLuid(hwnd.Value) is not { } luid
+			|| _vk.DeviceLuid is not { } deviceLuid
+			|| luid == deviceLuid;
+
 	private static VulkanContext CreateDevice()
 	{
 		var vk = new VulkanContext();

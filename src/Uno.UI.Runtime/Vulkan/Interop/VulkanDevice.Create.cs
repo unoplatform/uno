@@ -126,6 +126,23 @@ internal unsafe partial class VulkanDevice
 
 	private const string VK_KHR_swapchain = "VK_KHR_swapchain";
 
+	internal static long? GetDeviceLuid(VulkanInstanceApi instance, VkPhysicalDevice physicalDevice)
+	{
+		var idProperties = new VkPhysicalDeviceIDProperties
+		{
+			sType = VkStructureType.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ID_PROPERTIES,
+		};
+		var properties = new VkPhysicalDeviceProperties2
+		{
+			sType = VkStructureType.VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2,
+			pNext = &idProperties,
+		};
+		instance.GetPhysicalDeviceProperties2(physicalDevice, &properties);
+
+		// Same memory layout as a Win32 LUID: LowPart, then HighPart.
+		return idProperties.deviceLUIDValid != 0 ? *(long*)idProperties.deviceLUID : null;
+	}
+
 	static DeviceInfo? CheckDevice(VulkanInstanceApi instance, VkPhysicalDevice physicalDevice,
 		VkSurfaceKHR? surface, Func<VkPhysicalDevice, uint, bool>? supportsPresentation)
 	{
