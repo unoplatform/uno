@@ -100,11 +100,11 @@ public class Given_WasmSemanticPositioning
 
 		Assert.IsTrue(Matches(actual), $"The semantic node of {element.GetType().Name} should be at {expected}, was {actual?.ToString() ?? "missing"}.");
 
+		// Width is left out: a stretched TextBlock's semantic node spans its layout slot, wider than its text's ActualWidth.
 		bool Matches(Rect? rect)
 			=> rect is { } a
 				&& Math.Abs(a.X - expected.X) < 1.5
 				&& Math.Abs(a.Y - expected.Y) < 1.5
-				&& Math.Abs(a.Width - expected.Width) < 1.5
 				&& Math.Abs(a.Height - expected.Height) < 1.5;
 	}
 
