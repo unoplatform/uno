@@ -130,6 +130,25 @@ public class Given_ListView_Grouping
 	}
 
 	[TestMethod]
+	public async Task When_GroupStyle_Replaced_After_Load_Then_Headers_Use_New_Style()
+	{
+		// MUX Reference ItemsControl_Partial.cpp, OnGroupStyleChanged: a GroupStyle collection change refreshes the containers.
+		var list = CreateList(CreateGroups(3, 2), headerTemplate: Template("<TextBlock Text='First' Height='40' />"));
+		await Load(list);
+		Assert.IsNotNull(FindFirst<TextBlock>(Headers(list)[0], t => t.Text == "First"));
+
+		list.GroupStyle[0] = new GroupStyle { HeaderTemplate = Template("<TextBlock Text='Second' Height='40' />") };
+		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(3, Headers(list).Count);
+		foreach (var header in Headers(list))
+		{
+			Assert.IsNotNull(FindFirst<TextBlock>(header, t => t.Text == "Second"));
+		}
+	}
+
+	[TestMethod]
 	public async Task When_GroupStyleSelector_Swapped_After_Load_Then_HidesIfEmpty_Follows()
 	{
 		var groups = CreateGroups(3, 2);
