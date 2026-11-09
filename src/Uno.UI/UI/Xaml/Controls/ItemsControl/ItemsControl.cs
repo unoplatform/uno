@@ -738,17 +738,14 @@ namespace Microsoft.UI.Xaml.Controls
 				_cvsViewChanged.Disposable = null;
 				_cvsViewChanged.Disposable = cvs.RegisterDisposablePropertyChangedCallback(
 					CollectionViewSource.ViewProperty,
-					(s, e) =>
+					// WinUI's binding hands the new View to ItemsSource, which runs the whole ItemsSource change,
+					// including the Selector's sync with the current item.
+					(s, e) => OnItemsSourceChanged(new DependencyPropertyChangedEventArgs
 					{
-						Items.SetItemsSource(UnwrapItemsSource() as IEnumerable);
-						ObserveCollectionChanged();
-
-						if (CustomItemsHost is { } customItemsHost)
-						{
-							customItemsHost.RegisterItemsHost(this);
-							customItemsHost.Refresh();
-						}
-					}
+						PropertyInternal = ItemsSourceProperty,
+						OldValueInternal = cvs,
+						NewValueInternal = cvs,
+					})
 				);
 			}
 		}
