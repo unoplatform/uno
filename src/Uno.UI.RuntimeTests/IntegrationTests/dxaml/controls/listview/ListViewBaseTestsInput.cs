@@ -78,7 +78,7 @@ internal static class ListViewBaseTestsInput
 			mouse.Press(center);
 		});
 
-		await MoveInSteps(center, relX, relY, velocityFactor, p => mouse.MoveTo(p, 1, 0));
+		await MoveInSteps(center, relX, relY, velocityFactor, 0, (p, offset) => mouse.MoveTo(p, 1, offset));
 
 		UIExecutor.Execute(() => mouse.Release());
 	}
@@ -99,7 +99,7 @@ internal static class ListViewBaseTestsInput
 
 		await Task.Delay((int)holdTime);
 
-		await MoveInSteps(center, relX, relY, velocityFactor, p => finger.MoveTo(p, 1, 0));
+		await MoveInSteps(center, relX, relY, velocityFactor, holdTime, (p, offset) => finger.MoveTo(p, 0, offset));
 
 		UIExecutor.Execute(() =>
 		{
@@ -123,7 +123,7 @@ internal static class ListViewBaseTestsInput
 			pen.Press(center);
 		});
 
-		await MoveInSteps(center, relX, relY, velocityFactor, p => pen.MoveTo(p, 1, 0));
+		await MoveInSteps(center, relX, relY, velocityFactor, 0, (p, offset) => pen.MoveTo(p, 0, offset));
 
 		UIExecutor.Execute(() =>
 		{
@@ -148,10 +148,12 @@ internal static class ListViewBaseTestsInput
 			mouse.MoveTo(from);
 		});
 
-		await MoveInSteps(from, to.X - from.X, to.Y - from.Y, 1.0, p => mouse.MoveTo(p, 1, 0));
+		await MoveInSteps(from, to.X - from.X, to.Y - from.Y, 1.0, 0, (p, offset) => mouse.MoveTo(p, 1, offset));
 	}
 
-	private static async Task MoveInSteps(Point start, double relX, double relY, double velocityFactor, Action<Point> moveTo)
+	// Injected input carries its own clock: without time offsets the recognizer never sees the hold,
+	// and the drag ignores the moves as they all belong to the same frame.
+	private static async Task MoveInSteps(Point start, double relX, double relY, double velocityFactor, uint holdTime, Action<Point, uint> moveTo)
 	{
 		// velocityFactor 1.0 = 1px/ms, as in WinUI's test infra.
 		var durationInMilliseconds = Math.Max(1, Math.Sqrt(relX * relX + relY * relY) / velocityFactor);
@@ -160,7 +162,8 @@ internal static class ListViewBaseTestsInput
 		for (int i = 1; i <= Steps; i++)
 		{
 			var position = new Point(start.X + relX * i / Steps, start.Y + relY * i / Steps);
-			UIExecutor.Execute(() => moveTo(position));
+			var offset = (uint)stepDelay + (i == 1 ? holdTime : 0);
+			UIExecutor.Execute(() => moveTo(position, offset));
 			await Task.Delay(stepDelay);
 		}
 	}
