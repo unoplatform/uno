@@ -74,6 +74,7 @@ public partial class ListViewBaseTests
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task FocusResetAfterSwitchingItemsSource()
 	{
 		ListView list = null;
