@@ -129,7 +129,10 @@ public partial class Popup : FrameworkElement, IPopup, IBackButtonListener
 				var focusManager = VisualTree.GetFocusManagerForElement(this);
 				var focusedElement = focusManager?.FocusedElement as UIElement;
 
-				if (_lastFocusedElement != null && _lastFocusedElement.Target is UIElement target && focusedElement != target)
+				// MUX Reference CPopup::Close: focus that already moved out of the popup stays where it is.
+				var popupHoldsFocus = focusedElement is null || focusedElement == this || (Child is { } child && (focusedElement == child || child.IsAncestorOf(focusedElement)));
+
+				if (popupHoldsFocus && _lastFocusedElement != null && _lastFocusedElement.Target is UIElement target && focusedElement != target)
 				{
 #if __SKIA__
 					// Ported from: Popup.cpp Close (lines 1233-1244)
