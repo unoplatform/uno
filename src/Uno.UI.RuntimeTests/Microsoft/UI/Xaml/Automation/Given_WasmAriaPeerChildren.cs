@@ -80,6 +80,27 @@ public class Given_WasmAriaPeerChildren
 	}
 
 	[TestMethod]
+	public async Task When_Hidden_Child_Is_Moved_Out_Then_It_Is_Exposed()
+	{
+		var hidden = new HiddenLetters("W");
+		var visible = new TextBlock { Text = "Visible text" };
+		var root = new StackPanel { Children = { hidden, visible } };
+		await UITestHelper.Load(root);
+
+		EnableAccessibilityThroughDom();
+		await UITestHelper.WaitFor(() => SemanticElementExists(visible), message: "The control's sibling should be exposed.");
+		await UITestHelper.WaitForIdle();
+
+		var letter = (TextBlock)hidden.Panel.Children[0];
+		Assert.IsFalse(SemanticElementExists(letter), "The letter starts under a peer that reports no children.");
+
+		hidden.Panel.Children.Remove(letter);
+		root.Children.Add(letter);
+
+		await UITestHelper.WaitFor(() => SemanticElementExists(letter), message: "Once moved out from under the hiding peer, the letter should be exposed.");
+	}
+
+	[TestMethod]
 	public async Task When_Peer_Reports_Subset_Then_Only_Reported_Children_Are_Exposed()
 	{
 		var reported = new Button { Content = "Reported" };

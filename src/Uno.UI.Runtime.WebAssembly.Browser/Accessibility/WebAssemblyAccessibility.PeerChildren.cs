@@ -14,6 +14,8 @@ namespace Uno.UI.Runtime;
 internal partial class WebAssemblyAccessibility
 {
 	// Peer-bearing elements left out because the peer above them does not report them (their subtree is left out too).
+	// Decided when the element is walked and dropped when it is removed. A peer whose GetChildren() result changes
+	// without a tree change isn't re-evaluated.
 	private readonly HashSet<IntPtr> _peerExcludedHandles = new();
 
 	/// <summary>
