@@ -1190,17 +1190,18 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			Assert.IsNull(SUT.SelectedItem, "[step1]SUT.SelectedItem should be null");
 			Assert.IsNull(SUT.SelectedNode, "[step1]SUT.SelectedNode should be null");
 			Assert.IsNull(SUT.NodeFromContainer(SUT.ContainerFromItem(targetItem)), "selected node should no longer be present.");
+			Assert.IsFalse(targetItem.IsSelected, "[step1]the two-way binding should clear the model");
 
-			// step 2: normally, re-expanding parent shouldn't change selection from its previous null state
-			// however, the IsSelected=true on the model, should cause the tree-view to reselect it.
+			// step 2: re-expanding parent doesn't change selection from its previous null state: the model no longer selects it.
 			tvm.GetNode("11").IsExpanded = true;
 			await UITestHelper.WaitForIdle();
 			SUT.ToString();
-			Assert.AreEqual(targetItem, tvm.SelectedItem, "[step2]invalid tvm.SelectedItem");
-			Assert.AreEqual(targetItem, SUT.SelectedItem, "[step2]invalid SUT.SelectedItem");
-			Assert.AreEqual(targetItem, SUT.SelectedNode?.Content, "[step2]invalid SUT.SelectedNode.Content");
+			Assert.IsNull(tvm.SelectedItem, "[step2]tvm.SelectedItem should stay null");
+			Assert.IsNull(SUT.SelectedItem, "[step2]SUT.SelectedItem should stay null");
+			Assert.IsNull(SUT.SelectedNode, "[step2]SUT.SelectedNode should stay null");
+			Assert.IsFalse(targetItem.IsSelected, "[step2]the model should stay unselected");
 #if HAS_UNO
-			Assert.AreEqual(TreeNodeSelectionState.Selected, SUT.NodeFromContainer(SUT.ContainerFromItem(targetItem))?.SelectionState, "[step2]target node is not selected");
+			Assert.AreEqual(TreeNodeSelectionState.UnSelected, SUT.NodeFromContainer(SUT.ContainerFromItem(targetItem))?.SelectionState, "[step2]target node should not be selected");
 #endif
 		}
 
