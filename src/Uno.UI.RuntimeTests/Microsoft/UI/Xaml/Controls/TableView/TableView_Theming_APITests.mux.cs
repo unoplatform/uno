@@ -3493,7 +3493,8 @@ internal static class TableViewThemingTestHelpers
 			var dictionary = pending.Pop();
 			if (dictionary.ThemeDictionaries.TryGetValue(themeName, out var theme) &&
 				theme is ResourceDictionary themeDictionary &&
-				themeDictionary.TryGetValue(key, out var value) &&
+				// Uno specific: the plain overload falls back to the active theme's system resources.
+				themeDictionary.TryGetValue(key, out var value, shouldCheckSystem: false) &&
 				value is Color color)
 			{
 				return color;

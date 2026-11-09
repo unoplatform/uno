@@ -978,6 +978,7 @@ public class TableViewGroupingTests : TableViewApiTestBase
 					// The focus restore runs on LayoutUpdated after the deferred reshape.
 					await SettleLayout(tableView);
 					await SettleLayout(tableView);
+					await SettleScrollAnimation(tableView);
 
 					RunOnUIThread.Execute(() =>
 					{
@@ -1251,6 +1252,7 @@ public class TableViewGroupingTests : TableViewApiTestBase
 			}
 		});
 		await SettleLayout(tableView);
+		await SettleScrollAnimation(tableView);
 
 		RunOnUIThread.Execute(() =>
 		{

@@ -45,6 +45,7 @@ public class TableViewNegativePathTests : TableViewApiTestBase
 	[TestMethod]
 	[TestProperty("IsolationLevel", "Method")]
 	[TestProperty("Description", "Missing resources in the stock deferred TableView template retain the generic parse diagnostic.")]
+	[Ignore("Uno's compiled XAML does not fail with a parse error on a missing ThemeResource.")]
 	public async Task VerifyDeferredTemplateResourceMissKeepsGenericDiagnostic()
 	{
 		Grid host = null;

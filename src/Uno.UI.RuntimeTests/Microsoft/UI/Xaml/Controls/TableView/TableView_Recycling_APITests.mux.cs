@@ -311,6 +311,7 @@ public class TableViewAutomationRecyclingTests : TableViewApiTestBase
 		List<Person> items = null;
 		var cellsBefore = new Dictionary<TableViewRow, List<UIElement>>();
 		var contentBefore = new Dictionary<TableViewRow, List<object>>();
+		var cellPeersExist = false;
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -332,7 +333,13 @@ public class TableViewAutomationRecyclingTests : TableViewApiTestBase
 			}
 
 			Verify.IsGreaterThan(cellsBefore.Count, 0, "Precondition: rows must be realized before scrolling.");
+			cellPeersExist = CellsHaveAutomationPeers(cellsBefore.Keys);
 		});
+
+		if (cellPeersExist)
+		{
+			Assert.Inconclusive(CellPeersExistMessage);
+		}
 
 		await ScrollToEnd(tableView);
 
@@ -885,6 +892,7 @@ public class TableViewRecyclingCostTests : TableViewApiTestBase
 		CountingVisualStateManager vsm = null;
 		var trackedRows = new HashSet<TableViewRow>();
 		int recycles = 0;
+		var cellPeersExist = false;
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -906,6 +914,7 @@ public class TableViewRecyclingCostTests : TableViewApiTestBase
 				trackedRows.Add(row);
 			}
 			Verify.IsGreaterThan(trackedRows.Count, 0, "Precondition: rows must realize.");
+			cellPeersExist = CellsHaveAutomationPeers(trackedRows);
 
 			GetRowsRepeater(tableView).ElementPrepared += (s, e) =>
 			{
@@ -915,6 +924,11 @@ public class TableViewRecyclingCostTests : TableViewApiTestBase
 				}
 			};
 		});
+
+		if (cellPeersExist)
+		{
+			Assert.Inconclusive(CellPeersExistMessage);
+		}
 
 		await ScrollInSteps(tableView);
 

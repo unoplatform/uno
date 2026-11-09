@@ -893,6 +893,7 @@ public class TableViewHeaderTests : TableViewApiTestBase
 		});
 
 		await TestServices.WindowHelper.WaitForIdle();
+		SkipIfEnteringTheTreeRaisesActualThemeChanged(tableView);
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -960,6 +961,10 @@ public class TableViewHeaderTests : TableViewApiTestBase
 		});
 
 		await TestServices.WindowHelper.WaitForIdle();
+		if (setters == "SelectorLast")
+		{
+			SkipIfEnteringTheTreeRaisesActualThemeChanged(tableView);
+		}
 
 		RunOnUIThread.Execute(() =>
 		{
@@ -1169,6 +1174,18 @@ public class TableViewHeaderTests : TableViewApiTestBase
 		protected override DataTemplate SelectTemplateCore(object item) => Template;
 
 		protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => Template;
+	}
+
+	// Uno specific: SamplesApp's shell requests Light. On a dark OS that raises ActualThemeChanged when the
+	// table enters the tree, as in WinUI, and the handler rebuilds the headers, asking the selector again.
+	private static void SkipIfEnteringTheTreeRaisesActualThemeChanged(TableView tableView)
+	{
+		var themesDiffer = false;
+		RunOnUIThread.Execute(() => themesDiffer = (Application.Current.RequestedTheme == ApplicationTheme.Dark) != (tableView.ActualTheme == ElementTheme.Dark));
+		if (themesDiffer)
+		{
+			Assert.Inconclusive("The tree's theme differs from the application's, so the headers are rebuilt once more.");
+		}
 	}
 
 	private sealed class RecordingHeaderTemplateSelector : DataTemplateSelector

@@ -2477,6 +2477,7 @@ public class TableViewEditValidationTests : TableViewApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies a BeginEdit whose editor creation throws rolls back: no edit is left open, the display cell and focus are restored, and a later edit works.")]
+	[Ignore("Uno's binding engine logs a converter's exception instead of rethrowing it, so BeginEdit cannot fail this way.")]
 	public async Task VerifyBeginEditThatThrowsRollsBackAndAllowsALaterEdit()
 	{
 		TableView tableView = null;

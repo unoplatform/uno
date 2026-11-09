@@ -369,6 +369,30 @@ internal static class TableViewTestHelpers
 		await TestServices.WindowHelper.WaitForIdle();
 	}
 
+	// Uno specific: WaitForIdle does not cover a running scroll animation, unlike WinUI's IdleSynchronizer.
+	internal static async Task SettleScrollAnimation(TableView tableView)
+	{
+		var previous = double.NaN;
+		for (var i = 0; i < 40; i++)
+		{
+			await global::System.Threading.Tasks.Task.Delay(50);
+			var offset = 0.0;
+			RunOnUIThread.Execute(() => offset = GetBodyScroller(tableView).VerticalOffset);
+			if (offset == previous)
+			{
+				break;
+			}
+			previous = offset;
+		}
+		await SettleLayout(tableView);
+	}
+
+	// Uno specific: with a UIA client listening, Win32 accessibility creates a peer for every element entering the tree.
+	internal static bool CellsHaveAutomationPeers(IEnumerable<TableViewRow> rows)
+		=> rows.SelectMany(row => GetCellsHost(row).Children).Any(cell => TableViewCell.TryGetExistingPeer(cell) is not null);
+
+	internal const string CellPeersExistMessage = "A UIA client is listening, so the cells already have automation peers.";
+
 	internal static Panel GetHeaderHost(TableView tableView)
 	{
 		var host = tableView.FindVisualChildByName("PART_HeaderHost") as Panel;
