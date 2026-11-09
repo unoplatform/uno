@@ -380,6 +380,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Subtree_Theme_Then_Dropdown_Items_Follow()
+		{
+			var subtreeTheme = Application.Current.RequestedTheme == ApplicationTheme.Dark ? ElementTheme.Light : ElementTheme.Dark;
+			var SUT = new ComboBox { ItemsSource = Enumerable.Range(0, 5).ToArray() };
+			var root = new Border { RequestedTheme = subtreeTheme, Child = SUT };
+
+			try
+			{
+				WindowHelper.WindowContent = root;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.IsDropDownOpen = true;
+
+				ComboBoxItem cbi = null;
+				await WindowHelper.WaitFor(() => (cbi = SUT.ContainerFromIndex(0) as ComboBoxItem) != null);
+				await WindowHelper.WaitForLoaded(cbi);
+
+				Assert.AreEqual(subtreeTheme, cbi.ActualTheme);
+			}
+			finally
+			{
+				SUT.IsDropDownOpen = false;
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_CB_Fluent_And_Theme_Changed()
 		{
