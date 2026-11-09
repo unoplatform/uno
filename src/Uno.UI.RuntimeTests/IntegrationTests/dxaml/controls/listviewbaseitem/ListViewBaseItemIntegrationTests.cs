@@ -531,9 +531,9 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 			Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison);
 
-			// TODO Uno: no MockDComp masters, so check that the check box itself mirrors.
-			var listViewRtl = await GetCheckBoxCenterX(listView);
-			var gridViewRtl = await GetCheckBoxCenterX(gridView);
+			// TODO Uno: no MockDComp masters, so check that the check box mirrors and its tick doesn't.
+			var (listViewRtl, listViewRtlTick) = await GetCheckBox(listView);
+			var (gridViewRtl, gridViewRtlTick) = await GetCheckBox(gridView);
 
 			await RunOnUIThread(() =>
 			{
@@ -543,17 +543,38 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 			await Task.Delay(500);
 
-			var listViewLtr = await GetCheckBoxCenterX(listView);
-			var gridViewLtr = await GetCheckBoxCenterX(gridView);
+			var (listViewLtr, listViewLtrTick) = await GetCheckBox(listView);
+			var (gridViewLtr, gridViewLtrTick) = await GetCheckBox(gridView);
 
 			VERIFY_IS_TRUE(listViewRtl > 0.5 && listViewLtr < 0.5, $"ListViewItem check box at {listViewLtr:P0} LTR, {listViewRtl:P0} RTL");
 			VERIFY_IS_TRUE(Math.Abs(1 - listViewRtl - listViewLtr) < 0.05, $"ListViewItem check box at {listViewLtr:P0} LTR, {listViewRtl:P0} RTL");
 			VERIFY_IS_TRUE(Math.Abs(1 - gridViewRtl - gridViewLtr) < 0.05, $"GridViewItem check box at {gridViewLtr:P0} LTR, {gridViewRtl:P0} RTL");
+
+			// The tick is a FontIcon glyph (MirroredWhenRightToLeft is false), and WinUI draws text unmirrored in RTL.
+			VerifyTickNotMirrored("ListViewItem", listViewLtrTick, listViewRtlTick);
+			VerifyTickNotMirrored("GridViewItem", gridViewLtrTick, gridViewRtlTick);
+		}
+
+		// Compares the tick's column profiles: an unmirrored tick matches the LTR profile better than its reverse.
+		private static void VerifyTickNotMirrored(string name, int[] ltr, int[] rtl)
+		{
+			var n = Math.Min(ltr.Length, rtl.Length);
+			int same = 0, mirrored = 0;
+			for (var i = 0; i < n; i++)
+			{
+				same += Math.Abs(rtl[i] - ltr[i]);
+				mirrored += Math.Abs(rtl[i] - ltr[n - 1 - i]);
+			}
+
+			var profiles = $"LTR [{string.Join(",", ltr)}], RTL [{string.Join(",", rtl)}]";
+			VERIFY_IS_TRUE(ltr.Sum() > 0, $"{name}: no tick found in the check box. {profiles}");
+			VERIFY_IS_TRUE(same < mirrored, $"{name}: the tick is drawn mirrored. {profiles}");
 		}
 
 		// Where the check box of the first item is drawn, as a fraction of the item's width: the pixels that change most on selection.
+		// Also the tick's pixel count per column of the box, left to right on screen.
 		// The window is captured, as a capture of the item alone leaves out the list's RTL mirroring.
-		private static async Task<double> GetCheckBoxCenterX(ListViewBase list)
+		private static async Task<(double CenterX, int[] TickColumns)> GetCheckBox(ListViewBase list)
 		{
 			FrameworkElement root = null;
 			Rect bounds = default;
@@ -574,10 +595,12 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			// The selection animations need to settle before the two captures differ only by the check box.
 			long sum = 0;
 			long count = 0;
+			RawBitmap selected = null;
+			int left = int.MaxValue, right = int.MinValue, top = int.MaxValue, bottom = int.MinValue;
 			for (var attempt = 0; attempt < 5 && count == 0; attempt++)
 			{
 				await Task.Delay(500);
-				var selected = await UITestHelper.ScreenShot(root);
+				selected = await UITestHelper.ScreenShot(root);
 
 				await RunOnUIThread(() => list.DeselectRange(new ItemIndexRange(0, 1)));
 				await WindowHelper.WaitForIdle();
@@ -598,6 +621,10 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 						{
 							sum += x;
 							count++;
+							left = Math.Min(left, x);
+							right = Math.Max(right, x);
+							top = Math.Min(top, y);
+							bottom = Math.Max(bottom, y);
 						}
 					}
 				}
@@ -605,7 +632,32 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 
 			VERIFY_IS_TRUE(count > 0, $"Selecting the item must draw the check box in {bounds}.");
 
-			return ((double)sum / count - bounds.Left) / bounds.Width;
+			// The tick is whatever in the filled box isn't the fill colour.
+			Dictionary<global::Windows.UI.Color, int> histogram = new();
+			for (var y = top; y <= bottom; y++)
+			{
+				for (var x = left; x <= right; x++)
+				{
+					var c = selected.GetPixel(x, y);
+					histogram[c] = histogram.TryGetValue(c, out var k) ? k + 1 : 1;
+				}
+			}
+
+			var fill = histogram.OrderByDescending(kv => kv.Value).First().Key;
+			var tick = new int[right - left + 1];
+			for (var y = top; y <= bottom; y++)
+			{
+				for (var x = left; x <= right; x++)
+				{
+					var c = selected.GetPixel(x, y);
+					if (Math.Abs(c.R - fill.R) + Math.Abs(c.G - fill.G) + Math.Abs(c.B - fill.B) > 200)
+					{
+						tick[x - left]++;
+					}
+				}
+			}
+
+			return (((double)sum / count - bounds.Left) / bounds.Width, tick);
 		}
 
 		[TestMethod]
