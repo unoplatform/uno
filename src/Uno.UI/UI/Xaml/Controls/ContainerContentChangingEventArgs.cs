@@ -1,4 +1,6 @@
-﻿using Microsoft.UI.Xaml.Controls.Primitives;
+﻿#nullable enable
+
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -14,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-		internal ContainerContentChangingEventArgs(object item, SelectorItem itemContainer, int itemIndex)
+		internal ContainerContentChangingEventArgs(object? item, SelectorItem itemContainer, int itemIndex)
 		{
 			Item = item;
 			RegisterBackpointerToContainer(itemContainer);
@@ -38,7 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Gets the data item associated with this container.
 		/// </summary>
-		public object Item { get; internal set; }
+		public object? Item { get; internal set; }
 
 		/// <summary>
 		/// Gets the UI container used to display the current data item.
