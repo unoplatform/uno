@@ -1253,6 +1253,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void HyperlinksOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) => RecalculateSubscribeToPointerEvents();
 
+		// CTextBlock::GetFocusableChildren: the elements the focus manager discovers for tab navigation.
+		internal IReadOnlyList<DependencyObject> GetFocusableChildren() => _hyperlinks;
+
 		private void RecalculateSubscribeToPointerEvents()
 		{
 			SubscribeToPointerEvents = HasHyperlink
