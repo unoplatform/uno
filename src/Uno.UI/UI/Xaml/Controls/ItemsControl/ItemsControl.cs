@@ -80,6 +80,14 @@ namespace Microsoft.UI.Xaml.Controls
 			InitializePartial();
 
 			_items.VectorChanged += OnItemsVectorChanged;
+			GroupStyle.VectorChanged += OnGroupStyleChanged;
+		}
+
+		// MUX Reference ItemsControl_Partial.cpp, OnGroupStyleChanged: RefreshContainers.
+		private void OnGroupStyleChanged(IObservableVector<GroupStyle> sender, IVectorChangedEventArgs e)
+		{
+			Refresh();
+			UpdateItems(null);
 		}
 
 		private void OnItemsVectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs e)
