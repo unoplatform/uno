@@ -7,7 +7,9 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using DirectUI;
+using DirectUI.Components;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
@@ -796,29 +798,20 @@ partial class ListViewBase
 
 								if (selectedRangesCount > 0)
 								{
-#if !HAS_UNO
-									// TODO Uno: ItemIndexRangeHelper.Range/RangeSelection are not ported (commented out in ItemIndexRangeHelper.cs).
-									std::vector<DirectUI::Components::ItemIndexRangeHelper::Range> addedRanges;
-									DirectUI::Components::ItemIndexRangeHelper::RangeSelection rangeSelection;
+									List<ItemIndexRangeHelper.Range> addedRanges = new();
+									ItemIndexRangeHelper.RangeSelection rangeSelection = new();
 
-									for (unsigned int i = 0; i < selectedRangesCount; ++i)
+									for (var i = 0; i < selectedRangesCount; ++i)
 									{
-										int firstIndex = -1;
-										unsigned int length = 0;
-										ctl::ComPtr<xaml_data::IItemIndexRange> spRange;
+										var spRange = spSelectedRanges[i];
 
-										IFC_RETURN(spSelectedRanges->GetAt(i, &spRange));
-										IFC_RETURN(spRange->get_FirstIndex(&firstIndex));
-										IFC_RETURN(spRange->get_Length(&length));
-
-										rangeSelection.SelectRange(firstIndex, length, addedRanges);
+										rangeSelection.SelectRange(spRange.FirstIndex, spRange.Length, ref addedRanges);
 									}
 
-									if (rangeSelection.size() == static_cast<unsigned int>(1))
+									if (rangeSelection.Count == 1)
 									{
-										itemCountSelected = (*rangeSelection.begin()).length;
+										itemCountSelected = rangeSelection[0].Length;
 									}
-#endif
 								}
 							}
 							else
