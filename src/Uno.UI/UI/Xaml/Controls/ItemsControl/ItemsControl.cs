@@ -683,6 +683,14 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"Calling OnItemsSourceChanged(), Old source={e.OldValue}, new source={e.NewValue}, NoOfItems={NumberOfItems}");
 			}
 
+			// MUX Reference ItemsControl_Partial.cpp, OnItemsSourceChanged: ClearContainers refreshes the panel
+			// before the new source arrives, so the reset that follows no longer finds the old focused container.
+			var customItemsHost = CustomItemsHost;
+			var focusState = customItemsHost is not null && HasFocus()
+				? (Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(this)?.FocusedElement as UIElement)?.FocusState
+				: null;
+			customItemsHost?.Refresh();
+
 			TrySnapshotNonObservableSource(e.NewValue);
 
 			IsGrouping = (e.NewValue as ICollectionView)?.CollectionGroups != null;
@@ -691,15 +699,13 @@ namespace Microsoft.UI.Xaml.Controls
 			TryObserveCollectionViewSource(e.NewValue);
 
 			// The panel observes the collection groups of the source it was registered with.
-			if (CustomItemsHost is { } customItemsHost)
+			customItemsHost?.RegisterItemsHost(this);
+
+			// TODO Uno: WinUI's Control::LeaveImpl moves focus off the recycled container as the refresh removes it.
+			// Uno's equivalent is the unload focus handling (#26250), so focus is restored here instead.
+			if (focusState is { } previousFocusState)
 			{
-				customItemsHost.RegisterItemsHost(this);
-				var focusState = HasFocus() ? (Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(this)?.FocusedElement as UIElement)?.FocusState : null;
-				customItemsHost.Refresh();
-				if (focusState is { } previousFocusState)
-				{
-					OnFocusedContainerRefreshed(previousFocusState);
-				}
+				OnFocusedContainerRefreshed(previousFocusState);
 			}
 		}
 
