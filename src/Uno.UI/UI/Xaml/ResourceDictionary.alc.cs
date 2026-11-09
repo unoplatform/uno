@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml
 	public partial class ResourceDictionary
 	{
 		/// <summary>
-		/// Clears <c>DependencyObjectStore._associatedParent</c> references into collectible
+		/// Clears <c>DependencyObjectStore.AssociatedParent</c> references (and the DataContext they propagated) into collectible
 		/// AssemblyLoadContexts on every materialized value of this dictionary (recursing into
 		/// nested, merged and theme dictionaries). A shared resource (e.g. a theme brush) first
 		/// consumed by a secondary-ALC element records that element as its InheritanceContext
