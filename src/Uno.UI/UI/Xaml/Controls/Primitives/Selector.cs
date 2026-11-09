@@ -324,6 +324,22 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			ProcessItemsChanges(changes, NotifyItemsHost);
 		}
 
+		// TODO Uno: WinUI recycles during the reset, where the focused index ends up at -1 and focus goes back to the list.
+		// Here the refresh comes after it and drops focus, and an item can only take focus again once it's loaded.
+		private protected override void OnFocusedContainerRefreshed(FocusState focusState)
+		{
+			SetFocusedIndex(-1);
+			SetLastFocusedIndex(0);
+
+			_ = DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Low, () =>
+			{
+				if (IsLoaded && Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(this)?.FocusedElement is null)
+				{
+					SetFocusedItem(-1, false /*shouldScrollIntoView*/, true /*forceFocus*/, focusState);
+				}
+			});
+		}
+
 		// Stands in for the NotifyOfSourceChanged and OnItemsChanged calls that WinUI's ItemCollection makes for each change.
 		private void ProcessItemsChanges(List<IVectorChangedEventArgs> changes, Action notifyItemsHost)
 		{
