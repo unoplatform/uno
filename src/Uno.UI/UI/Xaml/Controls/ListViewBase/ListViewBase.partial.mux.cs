@@ -2694,7 +2694,8 @@ partial class ListViewBase
 		tryStartOperation.InitAndStart(this, animation, item, elementName);
 		return tryStartOperation;
 #else
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListViewBase", "TryStartConnectedAnimationAsync");
+		// TODO Uno: Connected animation is inert, so report "not started", the same result as a failed ConnectedAnimation.TryStart.
+		return global::System.Threading.Tasks.Task.FromResult(false).AsAsyncOperation();
 #endif
 	}
 
