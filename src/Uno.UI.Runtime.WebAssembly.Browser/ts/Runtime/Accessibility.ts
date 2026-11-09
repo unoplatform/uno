@@ -331,6 +331,11 @@ namespace Uno.UI.Runtime {
 			this.containerElement.removeChild(this.enableAccessibilityButton);
 			this.managedEnableAccessibility();
 
+			// A failed enable is rolled back, and the rollback puts the button back.
+			if (Accessibility.isEnableAccessibilityButtonActive()) {
+				return;
+			}
+
 			// Initialize subsystem TypeScript modules
 			LiveRegion.initialize();
 

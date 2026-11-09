@@ -975,6 +975,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					@this.Log().Error($"[A11y] EnableAccessibility: max retries ({MaxEnableAccessibilityRetries}) exceeded; Window still not ready.");
 				}
 
+				// The enable button was removed when it was pressed: bring it back so the user can try again.
+				_enableAccessibilityRetryCount = 0;
+				NativeMethods.ResetSemanticsRoot();
 				return;
 			}
 		}
