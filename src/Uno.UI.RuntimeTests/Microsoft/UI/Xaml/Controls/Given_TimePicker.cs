@@ -410,12 +410,14 @@ currentItemCount, $"Should have visible items during fast scrolling at position 
 					var panel = (LoopingSelectorPanel)scrollViewer.Content;
 					Assert.IsGreaterThan(0, panel.Children.Count, "Should have realized items");
 
-					foreach (var child in panel.Children)
+					foreach (var item in panel.Children.Cast<LoopingSelectorItem>())
 					{
-						var item = (LoopingSelectorItem)child;
-						var peer = FrameworkElementAutomationPeer.CreatePeerForElement(item) as LoopingSelectorItemAutomationPeer;
+						if (FrameworkElementAutomationPeer.CreatePeerForElement(item) is not LoopingSelectorItemAutomationPeer peer)
+						{
+							Assert.Fail("LoopingSelectorItem must create a LoopingSelectorItemAutomationPeer.");
+							return;
+						}
 
-						Assert.IsNotNull(peer, "LoopingSelectorItem must create a LoopingSelectorItemAutomationPeer.");
 						Assert.AreSame(item, peer.Owner, "The peer must be constructed with its owner.");
 						Assert.AreEqual(AutomationControlType.ListItem, peer.GetAutomationControlType());
 						Assert.AreEqual(nameof(LoopingSelectorItem), peer.GetClassName());
