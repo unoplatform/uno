@@ -1,0 +1,118 @@
+<UserControl
+	x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.When_VisualState_Setter_Binding"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<UserControl.Resources>
+		<ControlTemplate x:Key="TriggeredTemplate" TargetType="ContentControl">
+			<Grid>
+				<VisualStateManager.VisualStateGroups>
+					<VisualStateGroup>
+						<VisualState x:Name="Flagged">
+							<VisualState.StateTriggers>
+								<StateTrigger IsActive="{Binding IsFlagged}" />
+							</VisualState.StateTriggers>
+							<VisualState.Setters>
+								<Setter Target="TemplateLabel.Text" Value="{Binding FlaggedText}" />
+							</VisualState.Setters>
+						</VisualState>
+					</VisualStateGroup>
+				</VisualStateManager.VisualStateGroups>
+				<TextBlock x:Name="TemplateLabel" Text="initial" />
+			</Grid>
+		</ControlTemplate>
+		<ControlTemplate x:Key="TriggeredContentTemplate" TargetType="ContentControl">
+			<Grid DataContext="{TemplateBinding Content}">
+				<VisualStateManager.VisualStateGroups>
+					<VisualStateGroup>
+						<VisualState x:Name="Flagged">
+							<VisualState.StateTriggers>
+								<StateTrigger IsActive="{Binding IsFlagged}" />
+							</VisualState.StateTriggers>
+							<VisualState.Setters>
+								<Setter Target="TemplateLabel.Text" Value="{Binding FlaggedText}" />
+							</VisualState.Setters>
+						</VisualState>
+					</VisualStateGroup>
+				</VisualStateManager.VisualStateGroups>
+				<TextBlock x:Name="TemplateLabel" Text="initial" />
+			</Grid>
+		</ControlTemplate>
+	</UserControl.Resources>
+
+	<Grid>
+		<VisualStateManager.VisualStateGroups>
+			<VisualStateGroup x:Name="TriggeredGroup">
+				<VisualState x:Name="Triggered">
+					<VisualState.StateTriggers>
+						<StateTrigger IsActive="{Binding IsFlagged}" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="TriggeredFirst.Text" Value="{Binding FlaggedText}" />
+						<Setter Target="TriggeredSecond.Text" Value="{Binding OtherText}" />
+						<Setter Target="TriggeredPlain.Text" Value="state applied" />
+					</VisualState.Setters>
+				</VisualState>
+			</VisualStateGroup>
+			<VisualStateGroup x:Name="ManualGroup">
+				<VisualState x:Name="ManualA">
+					<VisualState.Setters>
+						<Setter Target="ManualFirst.Text" Value="{Binding FlaggedText}" />
+						<Setter Target="ManualSecond.Text" Value="{Binding OtherText}" />
+					</VisualState.Setters>
+				</VisualState>
+				<VisualState x:Name="ManualB">
+					<VisualState.Setters>
+						<Setter Target="ManualFirst.Text" Value="{Binding OtherText}" />
+					</VisualState.Setters>
+				</VisualState>
+			</VisualStateGroup>
+			<VisualStateGroup x:Name="MixedGroup">
+				<VisualState x:Name="MixedTriggered">
+					<VisualState.StateTriggers>
+						<StateTrigger IsActive="False" />
+					</VisualState.StateTriggers>
+				</VisualState>
+				<VisualState x:Name="MixedManual">
+					<VisualState.Setters>
+						<Setter Target="MixedLabel.Text" Value="{Binding FlaggedText}" />
+					</VisualState.Setters>
+				</VisualState>
+			</VisualStateGroup>
+			<VisualStateGroup x:Name="AlwaysActiveGroup">
+				<VisualState x:Name="AlwaysActive">
+					<VisualState.StateTriggers>
+						<StateTrigger IsActive="True" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="AlwaysActiveLabel.Text" Value="{Binding FlaggedText}" />
+					</VisualState.Setters>
+				</VisualState>
+			</VisualStateGroup>
+			<VisualStateGroup x:Name="KeyFrameGroup">
+				<VisualState x:Name="KeyFrameTriggered">
+					<VisualState.StateTriggers>
+						<StateTrigger IsActive="{Binding IsFlagged}" />
+					</VisualState.StateTriggers>
+					<Storyboard>
+						<ObjectAnimationUsingKeyFrames Storyboard.TargetName="KeyFrameLabel" Storyboard.TargetProperty="Text">
+							<DiscreteObjectKeyFrame KeyTime="0" Value="{Binding FlaggedText}" />
+						</ObjectAnimationUsingKeyFrames>
+					</Storyboard>
+				</VisualState>
+			</VisualStateGroup>
+		</VisualStateManager.VisualStateGroups>
+
+		<StackPanel>
+			<TextBlock x:Name="TriggeredFirst" x:FieldModifier="public" Text="initial" />
+			<TextBlock x:Name="TriggeredSecond" x:FieldModifier="public" Text="initial" />
+			<TextBlock x:Name="TriggeredPlain" x:FieldModifier="public" Text="initial" />
+			<TextBlock x:Name="ManualFirst" x:FieldModifier="public" Text="initial" />
+			<TextBlock x:Name="ManualSecond" x:FieldModifier="public" Text="initial" />
+			<TextBlock x:Name="MixedLabel" x:FieldModifier="public" Text="initial" />
+			<TextBlock x:Name="AlwaysActiveLabel" x:FieldModifier="public" Text="initial" />
+			<TextBlock x:Name="KeyFrameLabel" x:FieldModifier="public" Text="initial" />
+			<ContentControl x:Name="InheritedHost" x:FieldModifier="public" Template="{StaticResource TriggeredTemplate}" />
+			<ContentControl x:Name="ContentHost" x:FieldModifier="public" Content="{Binding}" Template="{StaticResource TriggeredContentTemplate}" />
+		</StackPanel>
+	</Grid>
+</UserControl>
