@@ -1,7 +1,7 @@
 namespace Uno.UI.Runtime {
-	// Shared helper for creating emscripten-managed WebGL contexts (window.GL) with a
-	// WebGL 1.0 fallback. Used by both WebGlBrowserRenderer (the onscreen Skia render
-	// surface) and WasmNativeOpenGLWrapper (GLCanvasElement's offscreen contexts).
+	// Helper for creating emscripten-managed WebGL contexts (window.GL) with a WebGL 1.0
+	// fallback, used by WebGlBrowserRenderer (the onscreen Skia render surface). The native
+	// shim behind GLCanvasElement's offscreen contexts reuses fixStridedUploads.
 	export class EmscriptenWebGL {
 		public static assertGL(): any {
 			const anyGL = (<any>window).GL;

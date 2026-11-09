@@ -45,6 +45,64 @@ void uno_glTexImage3D(int target, int level, int internalformat, int width, int 
 	glTexImage3D(target, level, uno_promote_internalformat(internalformat, type), width, height, depth, border, format, type, UNO_PTR(pixels));
 }
 
+// GLCanvasElement's offscreen context. Created, bound and destroyed from JS that runs in the calling
+// thread's own realm, so under threading the handle lives in the UI thread's GL table, where the
+// native GL calls look it up. A JSImport would run on the browser main thread instead.
+EM_JS(int, uno_gl_js_create_context, (), {
+	var canvas = typeof document !== "undefined" ? document.createElement("canvas") : new OffscreenCanvas(1, 1);
+	canvas.width = 1;
+	canvas.height = 1;
+
+	// GLCanvasElement reads pixels back from an FBO, so the drawing buffer is never shown.
+	var attrs = {
+		alpha: 1, depth: 1, stencil: 8, antialias: 0,
+		premultipliedAlpha: 1, preserveDrawingBuffer: 1,
+		preferLowPowerToHighPerformance: 0, failIfMajorPerformanceCaveat: 0,
+		majorVersion: 2, minorVersion: 0,
+		enableExtensionsByDefault: 1, explicitSwapControl: 0,
+		renderViaOffscreenBackBuffer: 0,
+	};
+
+	var ctx = GL.createContext(canvas, attrs);
+	if (!ctx) {
+		attrs.majorVersion = 1;
+		ctx = GL.createContext(canvas, attrs);
+	}
+	if (!ctx || ctx < 0) {
+		return 0;
+	}
+
+	// The strided upload fix lives in the framework's TS bundle, which only the main thread loads.
+	var runtime = globalThis.Uno && globalThis.Uno.UI && globalThis.Uno.UI.Runtime;
+	if (runtime && runtime.EmscriptenWebGL) {
+		runtime.EmscriptenWebGL.fixStridedUploads(GL.getContext(ctx).GLctx);
+	}
+
+	return ctx;
+});
+
+// Returns the previous handle, or -1 when the handle is unknown to this thread.
+EM_JS(int, uno_gl_js_make_current, (int handle), {
+	var previous = GL.currentContext ? GL.currentContext.handle : 0;
+	return GL.makeContextCurrent(handle) ? previous : -1;
+});
+
+EM_JS(void, uno_gl_js_destroy_context, (int handle), {
+	if (GL.currentContext && GL.currentContext.handle === handle) {
+		GL.makeContextCurrent(0);
+	}
+	GL.deleteContext(handle);
+});
+
+EMSCRIPTEN_KEEPALIVE
+int uno_gl_create_context(void) { return uno_gl_js_create_context(); }
+
+EMSCRIPTEN_KEEPALIVE
+int uno_gl_make_current(int handle) { return uno_gl_js_make_current(handle); }
+
+EMSCRIPTEN_KEEPALIVE
+void uno_gl_destroy_context(int handle) { uno_gl_js_destroy_context(handle); }
+
 // Central resolver: emscripten's native GL for every entry point, with the two promotion wrappers
 // substituted for the calls that need WebGL2 unsized->sized internal-format promotion. Returns a
 // wasm function-table index (0 = not available, the framework then falls back to its JS shim).
