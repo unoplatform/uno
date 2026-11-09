@@ -54,12 +54,16 @@ public partial class Given_ListViewItemPresenter
 		}
 	}
 
-	// Shrinks the list so most containers are recycled while the theme changes, then brings them back.
+	// Recycles most containers while the theme changes, then brings them back. Shrinking alone doesn't recycle: the panel
+	// keeps valid containers when its window shrinks, as on WinUI. Scrolling far away moves them out of the window.
 	private static async Task SwitchWithRecycledContainers(ListView list, Action switchTheme)
 	{
 		var realized = GetPresenters(list).ToHashSet();
+		var scrollViewer = list.FindFirstDescendant<ScrollViewer>()!;
 
 		list.Height = 40;
+		await WindowHelper.WaitForIdle();
+		scrollViewer.ChangeView(null, scrollViewer.ScrollableHeight, null, disableAnimation: true);
 		await WindowHelper.WaitForIdle();
 
 		var recycled = realized.Except(GetPresenters(list)).ToArray();
@@ -68,10 +72,12 @@ public partial class Given_ListViewItemPresenter
 		switchTheme();
 		await WindowHelper.WaitForIdle();
 
+		scrollViewer.ChangeView(null, 0, null, disableAnimation: true);
 		list.Height = 400;
 		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitForIdle();
 
-		Assert.IsTrue(GetPresenters(list).Intersect(recycled).Any(), "Restoring the height should bring recycled containers back");
+		Assert.IsTrue(GetPresenters(list).Intersect(recycled).Any(), "Restoring the list should bring recycled containers back");
 	}
 
 	// A list built after the switch resolves every brush once, in the current theme.
@@ -100,10 +106,11 @@ public partial class Given_ListViewItemPresenter
 		}
 	}
 
+	// The panel keeps recycled containers as its children (ModernCollectionBasePanel::RecycleLinkedContainer), so only the realized ones count.
 	private static IEnumerable<ListViewItemPresenter> GetPresenters(ListView list)
 		=> list.ItemsPanelRoot!.Children
 			.OfType<ListViewItem>()
-			.Where(item => item.Visibility == Visibility.Visible && item.IsLoaded)
+			.Where(item => item.GetVirtualizationInformationOrNull() is { IsRealized: true })
 			.Select(item => (ListViewItemPresenter)VisualTreeHelper.GetChild(item, 0));
 
 	private static string DescribeBrushes(ListViewItemPresenter presenter)
