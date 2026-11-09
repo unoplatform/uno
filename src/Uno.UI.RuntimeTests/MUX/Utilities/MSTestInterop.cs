@@ -162,14 +162,15 @@ namespace Common
 			Assert.Fail(args.Length == 0 ? message : string.Format(message, args));
 		}
 
+		// Accepts derived types, as WinUI tests rely on: Throws<Exception> against an HRESULT failure.
 		public static void Throws<T>(Action action, string message) where T : Exception
 		{
-			Assert.ThrowsExactly<T>(action, message);
+			Assert.Throws<T>(action, message);
 		}
 
 		public static void Throws<T>(Action action) where T : Exception
 		{
-			Assert.ThrowsExactly<T>(action);
+			Assert.Throws<T>(action);
 		}
 	}
 }
