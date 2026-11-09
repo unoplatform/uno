@@ -497,6 +497,129 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		}
 
 		[TestMethod]
+		[DataRow("noise", false)]
+		[DataRow("noise", true)]
+		[DataRow("pdf", false)]
+		[DataRow("pdf", true)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25549")]
+		public async Task When_SetSource_Undecodable_Stream(string format, bool useAsync)
+		{
+			var bitmapImage = new BitmapImage();
+			var opened = false;
+			string failure = null;
+			bitmapImage.ImageOpened += (_, _) => opened = true;
+			bitmapImage.ImageFailed += (_, e) => failure = e.ErrorMessage;
+
+			using var stream = await OpenTestStream(format);
+			if (useAsync)
+			{
+				await bitmapImage.SetSourceAsync(stream);
+				Assert.IsNotNull(failure, "ImageFailed should be raised before SetSourceAsync completes.");
+			}
+			else
+			{
+				bitmapImage.SetSource(stream);
+			}
+
+			Assert.AreEqual(0, bitmapImage.PixelWidth);
+			Assert.AreEqual(0, bitmapImage.PixelHeight);
+
+			var imageFailed = false;
+			var image = new Image { Width = 50, Height = 50 };
+			image.ImageFailed += (_, _) => imageFailed = true;
+			image.Source = bitmapImage;
+			WindowHelper.WindowContent = image;
+
+			await WindowHelper.WaitFor(() => imageFailed || opened, message: "The image neither failed nor opened.");
+
+			Assert.IsFalse(opened, "An undecodable stream should not open.");
+			Assert.IsNotNull(failure, "BitmapImage.ImageFailed should be raised.");
+			Assert.AreEqual(0, bitmapImage.PixelWidth);
+			Assert.AreEqual(0, bitmapImage.PixelHeight);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25549")]
+		public async Task When_SetSource_Undecodable_Then_Decodable_Stream()
+		{
+			var bitmapImage = new BitmapImage();
+			var opened = false;
+			string failure = null;
+			bitmapImage.ImageOpened += (_, _) => opened = true;
+			bitmapImage.ImageFailed += (_, e) => failure = e.ErrorMessage;
+
+			using (var undecodable = await OpenTestStream("noise"))
+			{
+				bitmapImage.SetSource(undecodable);
+			}
+
+			using var stream = await OpenTestStream("png");
+			bitmapImage.SetSource(stream);
+
+			Assert.AreEqual(200, bitmapImage.PixelWidth);
+			Assert.AreEqual(300, bitmapImage.PixelHeight);
+
+			WindowHelper.WindowContent = new Image { Width = 200, Height = 300, Source = bitmapImage };
+			await WindowHelper.WaitFor(() => opened || failure is not null, message: "The image neither opened nor failed.");
+
+			Assert.IsNull(failure, $"ImageFailed: {failure}");
+			Assert.AreEqual(200, bitmapImage.PixelWidth);
+			Assert.AreEqual(300, bitmapImage.PixelHeight);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[DataRow(false)]
+		[DataRow(true)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25549")]
+		public async Task When_SetSource_Stream_Only_Browser_Decodes(bool useAsync)
+		{
+			var bitmapImage = new BitmapImage();
+			var opened = false;
+			string failure = null;
+			bitmapImage.ImageOpened += (_, _) => opened = true;
+			bitmapImage.ImageFailed += (_, e) => failure = e.ErrorMessage;
+
+			using var stream = await OpenTestStream("avif");
+			if (useAsync)
+			{
+				await bitmapImage.SetSourceAsync(stream);
+			}
+			else
+			{
+				bitmapImage.SetSource(stream);
+			}
+
+			WindowHelper.WindowContent = new Image { Width = 50, Height = 50, Source = bitmapImage };
+			await WindowHelper.WaitFor(() => opened || failure is not null, message: "The image neither opened nor failed.");
+
+			Assert.IsNull(failure, $"ImageFailed: {failure}");
+			Assert.AreEqual(6, bitmapImage.PixelWidth);
+			Assert.AreEqual(4, bitmapImage.PixelHeight);
+		}
+
+		// A 6x4 AVIF. Skia has no AVIF codec, so only the browser can decode it.
+		private const string Avif6x4 =
+			"AAAAIGZ0eXBhdmlmAAAAAGF2aWZtaWYxbWlhZk1BMUIAAADrbWV0YQAAAAAAAAAhaGRscgAAAAAAAAAAcGljdAAAAAAAAAAAAAAAAAAAAAAOcGl0bQAAAAAAAQAAAB5pbG9jAAAAAEQAAAEAAQAAAAEAAAETAAAAHAAAAChpaW5mAAAAAAABAAAAGmluZmUCAAAAAAEAAGF2MDFDb2xvcgAAAABqaXBycAAAAEtpcGNvAAAAFGlzcGUAAAAAAAAABgAAAAQAAAAQcGl4aQAAAAADCAgIAAAADGF2MUOBAAwAAAAAE2NvbHJuY2x4AAEADQAGgAAAABdpcG1hAAAAAAAAAAEAAQQBAoMEAAAAJG1kYXQSAAoFGAhuwIQyERZABhhhhAAAeUzXIRpJxjcI";
+
+		private static async Task<IRandomAccessStream> OpenTestStream(string format)
+		{
+			switch (format)
+			{
+				case "noise":
+					var noise = new byte[1024];
+					new Random(1234).NextBytes(noise);
+					return new MemoryStream(noise).AsRandomAccessStream();
+				case "avif":
+					return new MemoryStream(Convert.FromBase64String(Avif6x4)).AsRandomAccessStream();
+				case "png":
+					return await (await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/test_image_200_300.png"))).OpenReadAsync();
+				default:
+					return await (await StorageFile.GetFileFromApplicationUriAsync(new Uri($"ms-appx:///Assets/Formats/uno-overalls.{format}"))).OpenReadAsync();
+			}
+		}
+
+		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Browser_Workers_Are_Reused()
 		{

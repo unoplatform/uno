@@ -24,7 +24,13 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		private unsafe void DecodeStreamIntoBuffer()
 		{
+			// Null when Skia can't decode the data: the buffer then keeps its current pixels.
 			using var img = SKImage.FromEncodedData(_stream.AsStream());
+			if (img is null)
+			{
+				return;
+			}
+
 			var info = img.Info;
 
 			fixed (byte* data = &MemoryMarshal.GetReference(_buffer.Span))
