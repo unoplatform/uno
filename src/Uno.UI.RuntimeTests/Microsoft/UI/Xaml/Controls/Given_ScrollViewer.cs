@@ -1199,6 +1199,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(320, outerScrollViewer.VerticalOffset);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ChangeView_Then_ViewChanging_Precedes_ViewChanged()
+		{
+			var SUT = new ScrollViewer { Height = 100, Width = 100, Content = new Border { Height = 1000 } };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			List<string> events = new();
+			SUT.ViewChanging += (_, e) => events.Add($"changing next={e.NextView.VerticalOffset} final={e.FinalView.VerticalOffset} inertial={e.IsInertial} sv={SUT.VerticalOffset}");
+			SUT.ViewChanged += (_, e) => events.Add($"changed {SUT.VerticalOffset} intermediate={e.IsIntermediate}");
+
+			SUT.ChangeView(null, 200, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+
+			// MUX Reference ScrollViewer_Partial.cpp, RaiseViewChanging: raised with the next view, before the offsets change.
+			CollectionAssert.AreEqual(
+				new[] { "changing next=200 final=200 inertial=False sv=0", "changed 200 intermediate=False" },
+				events,
+				string.Join(" | ", events));
+
+			events.Clear();
+			SUT.ChangeView(null, 500, null, disableAnimation: false);
+			await WindowHelper.WaitFor(() => events.Any(e => e.StartsWith("changed 500", StringComparison.Ordinal)));
+
+			var changing = events.Where(e => e.StartsWith("changing", StringComparison.Ordinal)).ToArray();
+			Assert.IsGreaterThan(1, changing.Length, string.Join(" | ", events));
+			Assert.IsTrue(changing.All(e => e.Contains("final=500", StringComparison.Ordinal)), string.Join(" | ", events));
+			Assert.IsTrue(changing.SkipLast(1).All(e => e.Contains("inertial=True", StringComparison.Ordinal)), string.Join(" | ", events));
+		}
+
 		// The inner content is stretched past its desired size, so the inner viewport is taller than that content
 		// asks for: the request must still reach the outer ScrollViewer instead of being dropped as out of view.
 		[TestMethod]
