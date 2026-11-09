@@ -154,14 +154,14 @@ partial class ListViewBaseItem
 	}
 
 	// Called when the user presses a pointer down over the ListViewBaseItem.
-	protected override void OnPointerPressed(PointerRoutedEventArgs pArgs)
+	protected override void OnPointerPressed(PointerRoutedEventArgs e)
 	{
 		bool isVisualStateChangePending = false;
 
 		// Uno-specific: read Handled before the base call; WinUI reads it after (SelectorItem sets it unconditionally).
-		bool isHandled = pArgs.Handled;
+		bool isHandled = e.Handled;
 
-		base.OnPointerPressed(pArgs);
+		base.OnPointerPressed(e);
 
 		// TODO: We may want to move this functionality into an OnPointerPressed/Released
 		// handler.  It would be weird if mouse raised ItemClick for
@@ -172,10 +172,10 @@ partial class ListViewBaseItem
 
 		if (!isHandled)
 		{
-			var spPointer = pArgs.Pointer;
+			var spPointer = e.Pointer;
 			var pointerDeviceType = spPointer.PointerDeviceType;
 			var spListView = GetParentListView();
-			var spPointerPoint = pArgs.GetCurrentPoint(this);
+			var spPointerPoint = e.GetCurrentPoint(this);
 
 			// TODO: Ignore the PointerPressed if we've already "captured" input
 			// from another device (via InteractionManager)
@@ -272,7 +272,7 @@ partial class ListViewBaseItem
 				}
 
 				// Touch down.
-				m_tpLastTouchPressedArgs = pArgs;
+				m_tpLastTouchPressedArgs = e;
 
 				if (shouldSwipeContinue)
 				{
@@ -315,7 +315,7 @@ partial class ListViewBaseItem
 			// Uno-specific: never clear the Handled flag SelectorItem set.
 			if (isHandled)
 			{
-				pArgs.Handled = true;
+				e.Handled = true;
 			}
 		}
 
@@ -327,7 +327,7 @@ partial class ListViewBaseItem
 
 	// Called when the user holds a pointer down over the
 	// ListViewBaseItem (Holding gesture).
-	protected override void OnHolding(HoldingRoutedEventArgs pArgs)
+	protected override void OnHolding(HoldingRoutedEventArgs e)
 	{
 		bool wasHolding = m_isHolding;
 
@@ -335,13 +335,13 @@ partial class ListViewBaseItem
 		{
 			m_isHolding = false;
 
-			base.OnHolding(pArgs);
+			base.OnHolding(e);
 
-			var pointerDeviceType = pArgs.PointerDeviceType;
+			var pointerDeviceType = e.PointerDeviceType;
 
 			if (pointerDeviceType == PointerDeviceType.Touch)
 			{
-				var holdingState = pArgs.HoldingState;
+				var holdingState = e.HoldingState;
 				m_isHolding = (holdingState == HoldingState.Started);
 
 				// TODO Uno: AutomaticDragHelper.HandleHoldingEventArgs - no AutomaticDragHelper.
@@ -367,7 +367,7 @@ partial class ListViewBaseItem
 								if (!canReorderItems)
 								{
 									CreateHoldingVisual();
-									TransformHoldingVisual(pArgs);
+									TransformHoldingVisual(e);
 								}
 							}
 							else
@@ -393,7 +393,7 @@ partial class ListViewBaseItem
 	}
 
 	// Called when the user releases a pointer over the ListViewBaseItem.
-	protected override void OnPointerReleased(PointerRoutedEventArgs pArgs)
+	protected override void OnPointerReleased(PointerRoutedEventArgs e)
 	{
 		bool isVisualStateChangePending = false;
 
@@ -401,17 +401,17 @@ partial class ListViewBaseItem
 		m_isHolding = false;
 		DestroyHoldingVisual();
 
-		base.OnPointerReleased(pArgs);
+		base.OnPointerReleased(e);
 
 		// TODO: Ignore the PointerReleased if we've already "captured" input
 		// from another device (via InteractionManager)
 
-		bool isHandled = pArgs.Handled;
+		bool isHandled = e.Handled;
 
-		var spPointer = pArgs.Pointer;
+		var spPointer = e.Pointer;
 		var pointerDeviceType = spPointer.PointerDeviceType;
 
-		var gestureFollowing = pArgs.GestureFollowing;
+		var gestureFollowing = e.GestureFollowing;
 		bool rightTappedPending = gestureFollowing == GestureModes.RightTapped;
 
 		// TODO Uno: selection gesture trace id (m_itemSelectionGestureId) not ported.
@@ -419,7 +419,7 @@ partial class ListViewBaseItem
 		// Check if this is a mouse button up
 		if (pointerDeviceType == PointerDeviceType.Mouse || pointerDeviceType == PointerDeviceType.Pen)
 		{
-			var spPointerPoint = pArgs.GetCurrentPoint(this);
+			var spPointerPoint = e.GetCurrentPoint(this);
 			var spPointerProperties = spPointerPoint.Properties;
 			bool isLeftButtonPressed = spPointerProperties.IsLeftButtonPressed;
 			bool isRightButtonPressed = spPointerProperties.IsRightButtonPressed;
@@ -482,7 +482,7 @@ partial class ListViewBaseItem
 			isVisualStateChangePending = true;
 		}
 
-		pArgs.Handled = isHandled;
+		e.Handled = isHandled;
 
 		// TODO Uno: CancelPendingTapInteractionForPointerId - no pending tap list.
 
@@ -496,12 +496,12 @@ partial class ListViewBaseItem
 	// CancelPendingTapInteractionForPointerId (LBI:858-903) - click/selection stay on SelectorItem.
 
 	// Called when a pointer enters a ListViewBaseItem.
-	protected override void OnPointerEntered(PointerRoutedEventArgs pArgs)
+	protected override void OnPointerEntered(PointerRoutedEventArgs e)
 	{
-		base.OnPointerEntered(pArgs);
+		base.OnPointerEntered(e);
 
 		// Only update m_shouldEnterPointerOver if the pointer type isn't touch
-		var pointerDeviceType = pArgs.Pointer.PointerDeviceType;
+		var pointerDeviceType = e.Pointer.PointerDeviceType;
 		if (pointerDeviceType != PointerDeviceType.Touch)
 		{
 			m_shouldEnterPointerOver = true;
@@ -509,19 +509,19 @@ partial class ListViewBaseItem
 		}
 	}
 
-	protected override void OnPointerCanceled(PointerRoutedEventArgs pArgs)
+	protected override void OnPointerCanceled(PointerRoutedEventArgs e)
 	{
-		base.OnPointerCanceled(pArgs);
+		base.OnPointerCanceled(e);
 
 		// TODO Uno: CancelPendingTapInteractionForPointerId - no pending tap list.
 	}
 
 	// Called when a pointer leaves a ListViewBaseItem.
-	protected override void OnPointerExited(PointerRoutedEventArgs pArgs)
+	protected override void OnPointerExited(PointerRoutedEventArgs e)
 	{
-		base.OnPointerExited(pArgs);
+		base.OnPointerExited(e);
 
-		var pointerDeviceType = pArgs.Pointer.PointerDeviceType;
+		var pointerDeviceType = e.Pointer.PointerDeviceType;
 
 		// TODO Uno: CancelPendingTapInteractionForPointerId - no pending tap list.
 
@@ -563,12 +563,12 @@ partial class ListViewBaseItem
 	}
 
 	// Called when a pointer moves within a ListViewBaseItem.
-	protected override void OnPointerMoved(PointerRoutedEventArgs pArgs)
+	protected override void OnPointerMoved(PointerRoutedEventArgs e)
 	{
-		base.OnPointerMoved(pArgs);
+		base.OnPointerMoved(e);
 
-		bool isHandled = pArgs.Handled;
-		var pointerDeviceType = pArgs.Pointer.PointerDeviceType;
+		bool isHandled = e.Handled;
+		var pointerDeviceType = e.Pointer.PointerDeviceType;
 		if (!isHandled)
 		{
 			// Our behavior is different between mouse and touch.
@@ -593,12 +593,12 @@ partial class ListViewBaseItem
 				// If another item is dragging, prevent a drag from happening.
 				if (GetParentListView() is { } spListView && spListView.IsInExclusiveInteraction())
 				{
-					StopCheckingForMouseDrag(pArgs.Pointer);
+					StopCheckingForMouseDrag(e.Pointer);
 				}
 				else
 				{
-					var spPointer = pArgs.Pointer;
-					var spPointerPoint = pArgs.GetCurrentPoint(this);
+					var spPointer = e.Pointer;
+					var spPointerPoint = e.GetCurrentPoint(this);
 					var newMousePosition = spPointerPoint.Position;
 					var isInContact = spPointerPoint.IsInContact;
 
@@ -644,15 +644,15 @@ partial class ListViewBaseItem
 		=> type == global::Windows.Devices.Input.PointerDeviceType.Touch;
 
 	// Called when the ListViewBaseItem or its children lose pointer capture.
-	protected override void OnPointerCaptureLost(PointerRoutedEventArgs pArgs)
+	protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
 	{
 		bool isVisualStateChangePending = false;
 
-		base.OnPointerCaptureLost(pArgs);
+		base.OnPointerCaptureLost(e);
 
 		// TODO Uno: CancelPendingTapInteractionForPointerId - no pending tap list.
 
-		var pointerDeviceType = pArgs.Pointer.PointerDeviceType;
+		var pointerDeviceType = e.Pointer.PointerDeviceType;
 		if (pointerDeviceType == PointerDeviceType.Mouse || pointerDeviceType == PointerDeviceType.Pen)
 		{
 			// We're not necessarily going to get a PointerReleased on capture lost, so reset this flag here.
@@ -720,12 +720,12 @@ partial class ListViewBaseItem
 	}
 
 	// Called when a pointer makes a right-tap gesture on a ListViewBaseItem.
-	protected override void OnRightTapped(RightTappedRoutedEventArgs pArgs)
+	protected override void OnRightTapped(RightTappedRoutedEventArgs e)
 	{
-		base.OnRightTapped(pArgs);
+		base.OnRightTapped(e);
 
-		bool isHandled = pArgs.Handled;
-		var pointerDeviceType = pArgs.PointerDeviceType;
+		bool isHandled = e.Handled;
+		var pointerDeviceType = e.PointerDeviceType;
 
 		// Only do interaction for right click, not press-and-hold (the latter will be done in PointerReleased).
 		if (!isHandled && pointerDeviceType != PointerDeviceType.Touch)
@@ -735,7 +735,7 @@ partial class ListViewBaseItem
 			if (spListView is not null)
 			{
 				spListView.FocusItem(FocusState.Programmatic, this);
-				pArgs.Handled = isHandled;
+				e.Handled = isHandled;
 			}
 		}
 
@@ -761,15 +761,15 @@ partial class ListViewBaseItem
 	// MUX Reference ListViewBaseItem_Partial.cpp, lines 1252-1271 (OnContextRequestedImpl): ported in SelectorItem.
 
 	// Called when the ListViewBaseItem receives focus.
-	protected override void OnGotFocus(RoutedEventArgs pArgs)
+	protected override void OnGotFocus(RoutedEventArgs e)
 	{
 		bool notifyParent = false;
 		var focusState = FocusState.Unfocused;
 
-		base.OnGotFocus(pArgs);
+		base.OnGotFocus(e);
 
 		var hasFocus = HasFocus();
-		var spOriginalSource = pArgs.OriginalSource;
+		var spOriginalSource = e.OriginalSource;
 		if (spOriginalSource is not null)
 		{
 			if (spOriginalSource is UIElement spFocusedElement)
@@ -784,9 +784,9 @@ partial class ListViewBaseItem
 	}
 
 	// Called when the ListViewBaseItem loses focus.
-	protected override void OnLostFocus(RoutedEventArgs pArgs)
+	protected override void OnLostFocus(RoutedEventArgs e)
 	{
-		base.OnLostFocus(pArgs);
+		base.OnLostFocus(e);
 
 		// clear the KeyboardPressed boolean
 		m_isKeyboardPressed = false;
@@ -1155,13 +1155,13 @@ partial class ListViewBaseItem
 	}
 
 	// Handles when a key is pressed down on the ListViewBaseItem.
-	protected override void OnKeyDown(KeyRoutedEventArgs pArgs)
+	protected override void OnKeyDown(KeyRoutedEventArgs e)
 	{
 		var spListView = GetParentListView();
 
 		// Ignore already handled events
-		base.OnKeyDown(pArgs);
-		bool isHandled = pArgs.Handled;
+		base.OnKeyDown(e);
+		bool isHandled = e.Handled;
 
 		if (!isHandled && spListView is not null && spListView.IsInExclusiveInteraction())
 		{
@@ -1173,8 +1173,8 @@ partial class ListViewBaseItem
 		if (!isHandled)
 		{
 			// get the released key
-			var originalKey = pArgs.OriginalKey;
-			var modifiers = pArgs.KeyboardModifiers;
+			var originalKey = e.OriginalKey;
+			var modifiers = e.KeyboardModifiers;
 
 			switch (originalKey)
 			{
@@ -1233,18 +1233,18 @@ partial class ListViewBaseItem
 
 		if (isHandled)
 		{
-			pArgs.Handled = true;
+			e.Handled = true;
 		}
 	}
 
 	// Handles when a key is released on the ListViewBaseItem.
-	protected override void OnKeyUp(KeyRoutedEventArgs pArgs)
+	protected override void OnKeyUp(KeyRoutedEventArgs e)
 	{
 		var spListView = GetParentListView();
 
 		// Ignore already handled events
-		base.OnKeyUp(pArgs);
-		bool isHandled = pArgs.Handled;
+		base.OnKeyUp(e);
+		bool isHandled = e.Handled;
 
 		if (!isHandled && spListView is not null && spListView.IsInExclusiveInteraction())
 		{
@@ -1254,7 +1254,7 @@ partial class ListViewBaseItem
 		}
 
 		// get the released key
-		var originalKey = pArgs.OriginalKey;
+		var originalKey = e.OriginalKey;
 
 		// This code needs to always execute to prevent getting stuck in Pressed state.
 		try
@@ -1280,7 +1280,7 @@ partial class ListViewBaseItem
 
 			if (isHandled)
 			{
-				pArgs.Handled = true;
+				e.Handled = true;
 			}
 		}
 		finally
@@ -1590,18 +1590,18 @@ partial class ListViewBaseItem
 	}
 
 	// Called when the user drags over this ListViewBaseItem
-	protected override void OnDragOver(DragEventArgs args)
+	protected override void OnDragOver(DragEventArgs e)
 	{
 		var spListView = GetParentListView();
 
 		// TODO Uno: Uno's live reorder lays the dragged container out under the pointer, where WinUI has an empty gap; don't swallow the reorder DragOver.
-		if (spListView is not null && !spListView.IsLiveReorderPrimaryContainer(this, args))
+		if (spListView is not null && !spListView.IsLiveReorderPrimaryContainer(this, e))
 		{
 			bool isDragOver = false;
 			Point dragPointRelativeToLVBI = default;
 			Orientation panelOrientation = Orientation.Vertical;
 
-			dragPointRelativeToLVBI = args.GetPosition(this);
+			dragPointRelativeToLVBI = e.GetPosition(this);
 			panelOrientation = spListView.GetPanelOrientation();
 
 			isDragOver = IsDragOver(dragPointRelativeToLVBI, panelOrientation);
@@ -1609,7 +1609,7 @@ partial class ListViewBaseItem
 			if (isDragOver)
 			{
 				spListView.SetDragOverItem(this);
-				args.Handled = true;
+				e.Handled = true;
 			}
 			else
 			{

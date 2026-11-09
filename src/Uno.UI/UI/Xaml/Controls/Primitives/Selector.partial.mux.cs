@@ -101,16 +101,16 @@ partial class Selector
 #endif
 	}
 
-	protected override void OnKeyDown(KeyRoutedEventArgs pArgs)
+	protected override void OnKeyDown(KeyRoutedEventArgs e)
 	{
 		// Ignore already handled events
-		if (pArgs is null)
+		if (e is null)
 		{
-			throw new ArgumentNullException(nameof(pArgs));
+			throw new ArgumentNullException(nameof(e));
 		}
 
-		base.OnKeyDown(pArgs);
-		var isHandled = pArgs.Handled;
+		base.OnKeyDown(e);
+		var isHandled = e.Handled;
 		if (isHandled)
 		{
 			return;
@@ -121,7 +121,7 @@ partial class Selector
 		if (m_tpScrollViewer is not null)
 		{
 			var modifiers = GetKeyboardModifiers();
-			var key = pArgs.Key;
+			var key = e.Key;
 			var messageZoomDirection = ScrollViewer.GetKeyboardMessageZoomAction(modifiers, key);
 			if (messageZoomDirection != ZoomDirection_None)
 			{
@@ -133,7 +133,7 @@ partial class Selector
 		// Update when we've handled the event
 		if (isHandled)
 		{
-			pArgs.Handled = isHandled;
+			e.Handled = isHandled;
 		}
 	}
 
@@ -1117,22 +1117,22 @@ partial class Selector
 		}
 	}
 
-	protected override void PrepareContainerForItemOverride(DependencyObject pElement, object pItem)
+	protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
 	{
 		var newIndex = -1;
 		var hasItem = false;
 
-		if (pElement is null)
+		if (element is null)
 		{
-			throw new ArgumentNullException(nameof(pElement));
+			throw new ArgumentNullException(nameof(element));
 		}
 
 		try
 		{
-			base.PrepareContainerForItemOverride(pElement, pItem);
+			base.PrepareContainerForItemOverride(element, item);
 
 			// TODO Uno: a plain Selector generates ContentPresenter containers, which have no selection state.
-			if (pElement is not SelectorItem pSelectorItemNoRef)
+			if (element is not SelectorItem pSelectorItemNoRef)
 			{
 				return;
 			}
@@ -1193,7 +1193,7 @@ partial class Selector
 
 			// Check if the SelectorItem is a data virtualized placeholder
 			// We do not call ShowPlaceholderIfVirtualized because it queries data we already have and updates the visual state which we do too
-			pSelectorItemNoRef.m_isPlaceholder = pItem is null;
+			pSelectorItemNoRef.m_isPlaceholder = item is null;
 
 			pSelectorItemNoRef.UpdateVisualState(false);
 		}
@@ -1203,19 +1203,19 @@ partial class Selector
 		}
 	}
 
-	protected override void ClearContainerForItemOverride(DependencyObject pElement, object pItem)
+	protected override void ClearContainerForItemOverride(DependencyObject element, object item)
 	{
-		base.ClearContainerForItemOverride(pElement, pItem);
+		base.ClearContainerForItemOverride(element, item);
 
 		// TODO Uno: a plain Selector generates ContentPresenter containers, which have no selection state.
-		if (pElement is not SelectorItem spSelectorItem)
+		if (element is not SelectorItem spSelectorItem)
 		{
 			return;
 		}
 
-		var spStoredItem = pItem as DependencyObject;
+		var spStoredItem = item as DependencyObject;
 
-		if (spStoredItem != pElement)
+		if (spStoredItem != element)
 		{
 			var virtualizationInformation = spSelectorItem.GetVirtualizationInformationOrNull();
 			var isContainerFromTemplateRoot = virtualizationInformation is not null && virtualizationInformation.IsContainerFromTemplateRoot;
