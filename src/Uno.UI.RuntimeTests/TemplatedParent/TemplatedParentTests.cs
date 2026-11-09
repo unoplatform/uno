@@ -238,26 +238,22 @@ public partial class TemplatedParentTests // tests
 		await UITestHelper.Load(setup, x => x.IsLoaded);
 
 		// item-template members should have content-presenter as templated-parent.
+		// Without a Header or Footer, ItemsPresenter collapses their ContentControls (ItemsPresenter_Partial.cpp, MeasureOverride),
+		// so their templates are never applied.
 		var tree = setup.SUT.TreeGraph(DebugVT_TP);
 		var expectations = """
 		0	ItemsControl#SUT // TP=<null>
 		1		ItemsPresenter // TP=ItemsControl#SUT
 		2			ContentControl // TP=<null>
-		3				ContentPresenter // TP=ContentControl
-		4			StackPanel // TP=ItemsPresenter
-		5				ContentPresenter // TP=<null>
-		6					TextBlock // TP=ContentPresenter
-		7				ContentPresenter // TP=<null>
-		8					TextBlock // TP=ContentPresenter
-		9				ContentPresenter // TP=<null>
-		10					TextBlock // TP=ContentPresenter
-		11			ContentControl // TP=<null>
-		12				ContentPresenter // TP=ContentControl
+		3			StackPanel // TP=ItemsPresenter
+		4				ContentPresenter // TP=<null>
+		5					TextBlock // TP=ContentPresenter
+		6				ContentPresenter // TP=<null>
+		7					TextBlock // TP=ContentPresenter
+		8				ContentPresenter // TP=<null>
+		9					TextBlock // TP=ContentPresenter
+		10			ContentControl // TP=<null>
 		""";
-#if NEED_CUSTOM_ADJUSTMENTS_FOR_CP_BYPASS
-		// skip ContentControls' ContentPresenter that were bypassed
-		expectations = SkipLines(expectations, 3, 12);
-#endif
 		VerifyTree(expectations, setup);
 	}
 
