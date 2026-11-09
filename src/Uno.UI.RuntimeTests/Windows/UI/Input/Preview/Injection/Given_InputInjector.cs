@@ -244,6 +244,55 @@ public class Given_InputInjector
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[DataRow(PointerDeviceType.Touch)]
+	[DataRow(PointerDeviceType.Pen)]
+	public async Task When_Move_With_TimeOffset_Then_FrameId_Advances(PointerDeviceType type)
+	{
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			// Input injection is not supported in XamlIslands
+			return;
+		}
+
+		var border = new Border
+		{
+			Background = new SolidColorBrush(Colors.DeepPink),
+			Width = 200,
+			Height = 200,
+		};
+
+		var frameIds = new List<uint>();
+		border.PointerMoved += (s, e) => frameIds.Add(e.GetCurrentPoint(null).FrameId);
+
+		WindowContent = border;
+		await WaitForLoaded(border);
+		await WaitForIdle();
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+
+		IInjectedPointer pointer = type == PointerDeviceType.Touch ? injector.GetFinger() : injector.GetPen();
+		using var disposable = (IDisposable)pointer;
+		var bounds = border.GetAbsoluteBounds();
+
+		pointer.Press(new Point(bounds.Left + 20, bounds.Top + 100));
+		pointer.MoveTo(new Point(bounds.Left + 60, bounds.Top + 100), 0, 10);
+		pointer.MoveTo(new Point(bounds.Left + 100, bounds.Top + 100), 0, 10);
+		pointer.Release();
+
+		await WaitForIdle();
+
+		// A drag ignores events that don't come with a newer frame, as duplicates.
+		Assert.IsTrue(frameIds.Count >= 2, $"Got {frameIds.Count} moves.");
+		for (var i = 1; i < frameIds.Count; i++)
+		{
+			Assert.IsTrue(frameIds[i] > frameIds[i - 1], $"Frame ids don't advance: {string.Join(", ", frameIds)}");
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_PenMove_PointerMovedIsRaised()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)
