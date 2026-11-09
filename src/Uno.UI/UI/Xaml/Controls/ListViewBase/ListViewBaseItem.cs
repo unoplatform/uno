@@ -9,6 +9,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 // UNO ONLY: public because subclasses are public; WinUI hides it from IDL.
 // All members of this class MUST be internal (or private protected).
+[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 public abstract partial class ListViewBaseItem : SelectorItem
 {
 	internal bool IsDraggable
