@@ -61,6 +61,9 @@ To fix this issue, add the following to your `.csproj` file to ensure the correc
 </PropertyGroup>
 ```
 
+> [!NOTE]
+> Remove this property when you migrate to Uno Platform 7.0: the `Uno.Sdk` picks the Windows SDK projection, and setting it fails the build. See [The Windows SDK projection is picked by the `Uno.Sdk`](xref:Uno.Development.MigratingToUno7.ProjectSetup#the-windows-sdk-projection-is-picked-by-the-unosdk).
+
 ### Uno Extensions
 
 Uno Platform 6.0 introduces a breaking change to the `Http` Uno Feature:
