@@ -5690,7 +5690,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Height = 400,
 				ItemsSource = source,
 				ItemTemplate = FixedSizeItemTemplate,
-				ItemContainerTransitions = null, // A container fading out on AddDeleteThemeTransition can't be reused, by design.
 			};
 
 			await UITestHelper.Load(SUT, x => x.IsLoaded && SUT.ContainerFromIndex(7) is { });
@@ -5726,7 +5725,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				CanReorderItems = true,
 				ItemsSource = source,
 				ItemTemplate = FixedSizeItemTemplate,
-				ItemContainerTransitions = null, // A container fading out on AddDeleteThemeTransition can't be reused, by design.
 			};
 
 			await UITestHelper.Load(SUT, x => x.IsLoaded && SUT.ContainerFromIndex(7) is { });
