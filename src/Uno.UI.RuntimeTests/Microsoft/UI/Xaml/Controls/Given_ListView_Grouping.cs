@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -327,10 +327,11 @@ public class Given_ListView_Grouping
 		Assert.IsNotNull(text);
 		var textBounds = Bounds(text);
 		Point point = new(textBounds.X + textBounds.Width / 2, textBounds.Y + textBounds.Height / 2);
-		var hits = VisualTreeHelper.FindElementsInHostCoordinates(point, list).ToList();
+		// FindElementsInHostCoordinates yields document order on Uno, so ask the pointer's hit test directly.
+		var (hit, _) = VisualTreeHelper.HitTest(point, list.XamlRoot?.VisualTree.RootElement);
 
-		Assert.IsNotEmpty(hits);
-		Assert.IsTrue(IsDescendantOf(hits.First(), header), $"Topmost element at the header was {hits.First()}");
+		Assert.IsNotNull(hit);
+		Assert.IsTrue(IsDescendantOf(hit, header), $"Topmost element at the header was {hit}");
 		Assert.IsGreaterThanOrEqualTo(Bounds(sv).Top - Tolerance, headerBounds.Top);
 	}
 
