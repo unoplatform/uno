@@ -310,17 +310,10 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(ZoomMode),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
-					ZoomMode.Disabled,
-					propertyChangedCallback: (o, e) => ((ScrollViewer)o).OnZoomModeChanged((ZoomMode)e.NewValue)
+					ZoomMode.Disabled
 				)
 			);
 
-		private void OnZoomModeChanged(ZoomMode zoomMode)
-		{
-			OnZoomModeChangedPartial(zoomMode);
-		}
-
-		partial void OnZoomModeChangedPartial(ZoomMode zoomMode);
 		#endregion
 
 		#region MinZoomFactor (DP)
@@ -966,7 +959,8 @@ namespace Microsoft.UI.Xaml.Controls
 			OnApplyTemplatePartial();
 
 			// Apply correct initial zoom settings
-			OnZoomModeChanged(ZoomMode);
+			_presenter?.OnMinZoomFactorChanged(MinZoomFactor);
+			_presenter?.OnMaxZoomFactorChanged(MaxZoomFactor);
 
 			OnBringIntoViewOnFocusChangeChangedPartial(BringIntoViewOnFocusChange);
 
@@ -1544,7 +1538,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private double ValidateOffsetIntent(double offset, double extent, double viewport, float? zoomFactor)
 		{
 			var zoom = ZoomFactor;
-			if (zoomFactor is float z && !float.IsNaN(z) && ZoomMode == ZoomMode.Enabled)
+			if (zoomFactor is float z && !float.IsNaN(z))
 			{
 				// The same bounds the presenter applies the zoom with.
 				var min = Math.Max(0.1f, MinZoomFactor);
@@ -1957,26 +1951,5 @@ namespace Microsoft.UI.Xaml.Controls
 			);
 		}
 
-#nullable disable
-		partial void OnZoomModeChangedPartial(ZoomMode zoomMode)
-		{
-			if (_presenter is ScrollContentPresenter scp)
-			{
-				switch (zoomMode)
-				{
-					case ZoomMode.Disabled:
-						// When zoom is disabled, set min/max to 1 to prevent any zooming
-						scp.OnMinZoomFactorChanged(1f);
-						scp.OnMaxZoomFactorChanged(1f);
-						break;
-					case ZoomMode.Enabled:
-						// When zoom is enabled, use the actual min/max values
-						scp.OnMinZoomFactorChanged(MinZoomFactor);
-						scp.OnMaxZoomFactorChanged(MaxZoomFactor);
-						break;
-				}
-			}
-		}
-#nullable enable
 	}
 }
