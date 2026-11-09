@@ -1107,6 +1107,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			await UITestHelper.Load(setup);
 
 			// step 0: starting with parent expanded
+			// Pins Uno-only select-on-load (#15214). This isn't what WinUI does with {Binding}.
 			Assert.AreEqual(targetItem, tvm.SelectedItem, "[step0]invalid tvm.SelectedItem");
 			Assert.AreEqual(targetItem, SUT.SelectedItem, "[step0]invalid SUT.SelectedItem");
 			Assert.AreEqual(targetItem, SUT.SelectedNode?.Content, "[step0]invalid SUT.SelectedNode.Content");
@@ -1175,6 +1176,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			await UITestHelper.Load(setup);
 
 			// step 0: starting with parent expanded
+			// Pins Uno-only select-on-load (#15214). This isn't what WinUI does with {Binding}.
 			Assert.AreEqual(targetItem, tvm.SelectedItem, "[step0]invalid tvm.SelectedItem");
 			Assert.AreEqual(targetItem, SUT.SelectedItem, "[step0]invalid SUT.SelectedItem");
 			Assert.AreEqual(targetItem, SUT.SelectedNode?.Content, "[step0]invalid SUT.SelectedNode.Content");
