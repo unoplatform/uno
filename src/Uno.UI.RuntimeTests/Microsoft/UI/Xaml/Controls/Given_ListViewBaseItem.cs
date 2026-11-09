@@ -446,6 +446,46 @@ public class Given_ListViewBaseItem
 #if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
+	[DataRow(7, false)]
+	[DataRow(9, true)]
+	public async Task When_Mouse_Moves_Then_Drag_Starts_Past_Twice_SM_CXDRAG(int distanceAt100, bool expectDrag)
+	{
+		var (list, item, _) = await Setup();
+		list.CanDragItems = true;
+		var starts = 0;
+		list.DragItemsStarting += (s, e) => starts++;
+		await WindowHelper.WaitForIdle();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available");
+		using var mouse = injector.GetMouse();
+
+		// ListViewBaseItem::IsOutsideDragRectangle: more than SM_CXDRAG (4 px at 100%) x 2.
+		var scale = list.XamlRoot!.RasterizationScale;
+		var from = Center(item);
+		mouse.Press(from);
+		await WindowHelper.WaitForIdle();
+		try
+		{
+			mouse.MoveTo(new Point(from.X + Math.Round(distanceAt100 * scale), from.Y), 1);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(expectDrag ? 1 : 0, starts);
+
+			// The item and the drag gesture must not both start a drag.
+			mouse.MoveTo(new Point(from.X + 60, from.Y), 6);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, starts);
+		}
+		finally
+		{
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
 	public async Task When_Dragged_Over_Center_Zone_Enters_DragOver()
 	{
 		var (list, target, targetRecorder) = await Setup();
