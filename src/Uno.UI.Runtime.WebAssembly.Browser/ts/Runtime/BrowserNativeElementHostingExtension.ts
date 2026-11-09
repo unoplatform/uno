@@ -63,9 +63,21 @@ namespace Uno.UI.NativeElementHosting {
 			return false;
 		}
 
-		public static attachNativeElement(content: string) {
+		/** The managed UnoElementId of each attached element, keyed by element reference (not by the spoofable DOM id). */
+		private static attachedElements = new WeakMap<HTMLElement, number>();
+
+		private static onNativeElementFocusedMethod: (unoElementId: number) => void;
+		private static onNativeElementBlurredMethod: (unoElementId: number) => void;
+
+		/** The attached element whose iframe was reported focused, until this window gets focus back. */
+		private static focusedIframeElementId: number | null = null;
+
+		public static attachNativeElement(content: string, unoElementId: number) {
 			let element = this.getElementOrThrow(content);
 			element.hidden = false;
+
+			BrowserHtmlElement.attachedElements.set(element, unoElementId);
+			BrowserHtmlElement.ensureFocusListener();
 		}
 
 		public static detachNativeElement(content: string) {
@@ -75,6 +87,77 @@ namespace Uno.UI.NativeElementHosting {
 
 			let element = this.getElementOrThrow(content);
 			element.hidden = true;
+
+			BrowserHtmlElement.attachedElements.delete(element);
+		}
+
+		// The pointer events that move browser focus into a hosted element are left to the browser and never
+		// reach XAML, so focus entering one is reported explicitly to move XAML focus along with it.
+		private static ensureFocusListener() {
+			if (BrowserHtmlElement.onNativeElementFocusedMethod) {
+				return;
+			}
+
+			const exports = Uno.UI.Runtime.WebAssemblyWindowWrapper.getAssemblyExports().Uno.UI.Runtime.BrowserNativeElementHostingExtension;
+			BrowserHtmlElement.onNativeElementFocusedMethod = exports.OnNativeElementFocused;
+			BrowserHtmlElement.onNativeElementBlurredMethod = exports.OnNativeElementBlurred;
+
+			document.addEventListener("focusin", evt => {
+				const unoElementId = BrowserHtmlElement.findAttachedElementId(evt.target);
+				if (unoElementId !== null) {
+					BrowserHtmlElement.onNativeElementFocusedMethod(unoElementId);
+				}
+			}, { capture: true });
+
+			// Focus moving within the same hosted element isn't a loss.
+			document.addEventListener("focusout", evt => {
+				const unoElementId = BrowserHtmlElement.findAttachedElementId(evt.target);
+				if (unoElementId !== null && BrowserHtmlElement.findAttachedElementId(evt.relatedTarget) !== unoElementId) {
+					BrowserHtmlElement.onNativeElementBlurredMethod(unoElementId);
+				}
+			}, { capture: true });
+
+			// Focus moving into an iframe raises no focusin in this document, only a blur of this window,
+			// with the iframe already active. Focus leaving it again only raises a focus of this window.
+			window.addEventListener("blur", evt => {
+				if (evt.target === window && document.activeElement instanceof HTMLIFrameElement) {
+					const unoElementId = BrowserHtmlElement.findAttachedElementId(document.activeElement);
+					if (unoElementId !== null) {
+						BrowserHtmlElement.focusedIframeElementId = unoElementId;
+						BrowserHtmlElement.onNativeElementFocusedMethod(unoElementId);
+					}
+				}
+			}, { capture: true });
+
+			window.addEventListener("focus", evt => {
+				const unoElementId = BrowserHtmlElement.focusedIframeElementId;
+				if (evt.target === window && unoElementId !== null) {
+					BrowserHtmlElement.focusedIframeElementId = null;
+					if (BrowserHtmlElement.findAttachedElementId(document.activeElement) !== unoElementId) {
+						BrowserHtmlElement.onNativeElementBlurredMethod(unoElementId);
+					}
+				}
+			}, { capture: true });
+		}
+
+		private static findAttachedElementId(target: EventTarget | null): number | null {
+			const hostElement = document.getElementById("uno-native-element-host");
+			if (!hostElement) {
+				return null;
+			}
+
+			let node = target as Node | null;
+			while (node) {
+				if (node.parentNode === hostElement) {
+					return node instanceof HTMLElement
+						? BrowserHtmlElement.attachedElements.get(node) ?? null
+						: null;
+				}
+
+				node = node.parentNode ?? (node.getRootNode() instanceof ShadowRoot ? (node.getRootNode() as ShadowRoot).host : null);
+			}
+
+			return null;
 		}
 
 		public static arrangeNativeElement(content: string, x: number, y: number, width: number, height: number) {

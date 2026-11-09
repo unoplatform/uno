@@ -94,6 +94,13 @@ internal sealed partial class FocusSynchronizer
 				return;
 			}
 
+			if (Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(focusedElement)?.IsNativeElementFocusOwner(focusedElement) == true)
+			{
+				// A hosted native element inside it holds browser focus: don't pull focus back to the semantic DOM.
+				TrackFocusedElement(focusedElement);
+				return;
+			}
+
 			var semanticHandle = _accessibility.ResolveToSemanticHandle(focusedElement);
 			if (semanticHandle == IntPtr.Zero)
 			{
@@ -140,6 +147,13 @@ internal sealed partial class FocusSynchronizer
 		var handle = element.Visual.Handle;
 		if (handle == IntPtr.Zero)
 		{
+			return;
+		}
+
+		if (Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(element)?.IsNativeElementFocusOwner(element) == true)
+		{
+			// A hosted native element inside it holds browser focus: don't pull focus back to the semantic DOM.
+			TrackFocusedElement(element);
 			return;
 		}
 
