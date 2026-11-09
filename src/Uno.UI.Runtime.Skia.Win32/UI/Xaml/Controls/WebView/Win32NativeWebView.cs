@@ -139,7 +139,18 @@ internal partial class Win32NativeWebView : Win32NativeWebViewBase, ISupportsVir
 		_nativeWebView.HistoryChanged += EventHandlerBuilder<object>(static (@this, o, a) => @this.CoreWebView2_HistoryChanged(o, a));
 		_nativeWebView.DocumentTitleChanged += EventHandlerBuilder<object>(static (@this, o, a) => @this.OnNativeTitleChanged(o, a));
 		_nativeWebView.WebResourceRequested += NativeWebView2_WebResourceRequested;
+		_controller.GotFocus += EventHandlerBuilder<object>(static (@this, o, a) => @this.Controller_GotFocus());
 		UpdateDocumentTitle();
+	}
+
+	private void Controller_GotFocus()
+	{
+		// See Win32NativeAotWebView.Controller_GotFocus: the browser's native child HWND took Win32
+		// focus without XAML seeing the click, so move XAML focus off the previously focused element.
+		if (_coreWebView.Owner is Control { IsTabStop: true, FocusState: FocusState.Unfocused } owner)
+		{
+			owner.Focus(FocusState.Pointer);
+		}
 	}
 
 	private void ForwardBackgroundToPresenter()
