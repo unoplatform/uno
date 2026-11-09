@@ -167,6 +167,10 @@ public abstract partial class ModernCollectionBasePanel
 		}
 		else
 		{
+#if HAS_UNO
+			ReclaimUnloadingContainerForItem(spItem);
+#endif
+
 			isOwnContainer = spIHost.IsItemItsOwnContainer(spItem);
 			if (isOwnContainer) // Is the item a container in its own right?
 			{
@@ -832,6 +836,30 @@ public abstract partial class ModernCollectionBasePanel
 			}
 		}
 	}
+
+#if HAS_UNO
+	// TODO Uno: WinUI fades an LTE, so it recycles the container right away and the item's return finds it at the
+	// back of the queue. Here the container itself fades: ending its unload puts it in the same place.
+	private void ReclaimUnloadingContainerForItem(object? spItem)
+	{
+		if (Children.UnloadingElements is not { Count: > 0 } unloadingElements)
+		{
+			return;
+		}
+
+		for (var i = 0; i < unloadingElements.Count; i++)
+		{
+			var spContainer = unloadingElements[i];
+			if (!GetElementIsHeader(spContainer) && Equals(GetVirtualizationInformationFromElement(spContainer)!.Item, spItem))
+			{
+				m_unloadingElements.Remove(spContainer);
+				CoreImports.UIElement_CancelTransition(spContainer);
+				ReloadUnloadedElements();
+				return;
+			}
+		}
+	}
+#endif
 
 	// Associates the item to the container.
 	internal void LinkContainerToItem(UIElement spContainer, object? spItem)

@@ -54,6 +54,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		internal IReadOnlyList<View> UnloadingElements => m_pUnloadingStorage;
+
 		// CUIElementCollection::RemoveAllUnloadingChildren
 		internal void RemoveAllUnloadingChildren()
 		{
