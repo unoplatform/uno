@@ -121,9 +121,6 @@ public enum UnoFeature
 	GLCanvas,
 
 	[UnoArea(UnoArea.Core)]
-	WebGpuCanvas,
-
-	[UnoArea(UnoArea.Core)]
 	SpellChecking,
 
 	[UnoArea(UnoArea.Core)]

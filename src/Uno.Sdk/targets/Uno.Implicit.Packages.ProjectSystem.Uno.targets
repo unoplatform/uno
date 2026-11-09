@@ -11,9 +11,11 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Composition.Skia" ProjectSystem="true" />
 	</ItemGroup>
 
-	<!-- The WebGPU backend is additive: it coexists with Skia and the runtime negotiates which one to use. -->
+	<!-- The WebGPU backend is additive: it coexists with Skia and the runtime negotiates which one to use.
+	     WebGpuCanvasElement comes with it, since it draws only with the WebGPU backend. -->
 	<ItemGroup Condition="$(UnoFeatures.Contains(';webgpu;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Composition.WebGpu" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics3DWebGpu" ProjectSystem="true" />
 	</ItemGroup>
 
 	<!-- SVG ships a SkiaSharp add-in over a neutral seam that Uno.WinUI also implements without SkiaSharp, so
@@ -21,10 +23,6 @@
 	     managed engine instead. Lottie needs no package: Skottie comes with the Skia backend. -->
 	<ItemGroup Condition="$(UnoFeatures.Contains(';skia;')) AND $(UnoFeatures.Contains(';svg;')) AND $(IsUnoHead) == 'true'">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Svg" ProjectSystem="true" />
-	</ItemGroup>
-
-	<ItemGroup Condition="$(UnoFeatures.Contains(';webgpucanvas;'))">
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics3DWebGpu" ProjectSystem="true" />
 	</ItemGroup>
 
 	<ItemGroup Condition="$(UnoFeatures.Contains(';spellchecking;'))">
