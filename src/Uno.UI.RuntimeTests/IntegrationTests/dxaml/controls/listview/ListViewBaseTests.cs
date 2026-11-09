@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference: dxaml\test\managed\enterprise\Moco\ListViewBaseTests.cs, commit bac7a9c33ff
 
@@ -413,6 +413,7 @@ public partial class ListViewBaseTests
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task VerifyDragItemsEventsFiredUsingMouse()
 	{
 		ListView list = null;
@@ -522,7 +523,12 @@ public partial class ListViewBaseTests
 		Log.Comment("Bounds: " + bounds.ToString());
 		Log.Comment("Center: " + center.ToString());
 
+#if HAS_UNO
+		// TODO Uno: FindElementsInHostCoordinates yields document order, where WinUI yields the topmost element first.
+		return VisualTreeHelper.FindElementsInHostCoordinates(center, target).Last();
+#else
 		return VisualTreeHelper.FindElementsInHostCoordinates(center, target).First();
+#endif
 	}
 
 	public static async Task PressHoldAndDragFromCenter(FrameworkElement target, int relX, int relY, double velocity, uint holdTime)
@@ -554,6 +560,7 @@ public partial class ListViewBaseTests
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task VerifyDragItemsEventsFiredUsingTouch()
 	{
 		ListView list = null;
@@ -769,6 +776,7 @@ public partial class ListViewBaseTests
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task CanReorderUsingMouse()
 	{
 		ListView list = null;
@@ -821,6 +829,7 @@ public partial class ListViewBaseTests
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task CanReorderUsingTouch()
 	{
 		ListView list = null;
@@ -872,12 +881,14 @@ public partial class ListViewBaseTests
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task ValidateListViewVisualStateOnCaptureLostTouch()
 	{
 		await ValidateListViewItemPointerOverVisualStateOnCaptureLost(false /* isPenInsteadOfTouch */);
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task ValidateListViewVisualStateOnCaptureLostPen()
 	{
 		await ValidateListViewItemPointerOverVisualStateOnCaptureLost(true /* isPenInsteadOfTouch */);
