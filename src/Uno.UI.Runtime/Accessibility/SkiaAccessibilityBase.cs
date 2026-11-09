@@ -390,6 +390,11 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 			_isAutomaticPropertyCheckScheduled = owner.DispatcherQueue.TryEnqueue(
 				Microsoft.UI.Dispatching.DispatcherQueuePriority.Low,
 				CheckAutomaticPropertyChanges);
+			if (!_isAutomaticPropertyCheckScheduled)
+			{
+				// The dispatcher is shutting down: nothing will run the check, so don't hold on to the elements.
+				_pendingAutomaticPropertyOwners.Clear();
+			}
 		}
 	}
 
