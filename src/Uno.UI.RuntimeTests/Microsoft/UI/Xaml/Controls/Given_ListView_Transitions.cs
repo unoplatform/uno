@@ -505,13 +505,14 @@ public class Given_ListView_Transitions
 
 	private static async Task<(ListView List, ScrollViewer ScrollViewer, List<TransitionGroup> Groups)> LoadGroupedList(
 		TransitionCollection transitions,
-		bool settle = true)
+		bool settle = true,
+		int itemsPerGroup = 8)
 	{
 		List<TransitionGroup> groups = new();
 		for (var g = 0; g < 5; g++)
 		{
 			TransitionGroup group = new() { Key = $"Group {g}" };
-			foreach (var i in Enumerable.Range(0, 8))
+			foreach (var i in Enumerable.Range(0, itemsPerGroup))
 			{
 				group.Add($"G{g}I{i}");
 			}
@@ -571,7 +572,9 @@ public class Given_ListView_Transitions
 	[TestMethod]
 	public async Task When_Grouped_Item_Added_Then_Next_Header_Moves_And_Rests()
 	{
-		var (list, _, groups) = await LoadGroupedList(Transitions(new AddDeleteThemeTransition()));
+		// MUX Reference ModernCollectionBasePanel_Partial.cpp, ArrangeElements: an element outside the visible window before and after
+		// the change doesn't transition, so the next header has to be in view.
+		var (list, _, groups) = await LoadGroupedList(Transitions(new AddDeleteThemeTransition()), itemsPerGroup: 3);
 		var next = RealizedHeader(list, "Group 1");
 		double before = next.TransformToVisual(list).TransformPoint(default).Y;
 
