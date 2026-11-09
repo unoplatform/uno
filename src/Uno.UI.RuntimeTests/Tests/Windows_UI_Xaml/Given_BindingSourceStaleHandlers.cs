@@ -363,7 +363,7 @@ public class Given_BindingSourceStaleHandlers
 	private static int CallbackCount(DependencyObject source, DependencyProperty property)
 	{
 #if HAS_UNO
-		var details = source.GetPropertyDetails(property);
+		var details = ((IDependencyObjectStoreProvider)source).Store.GetPropertyDetails(property);
 		var manager = typeof(DependencyPropertyDetails)
 			.GetField("_callbackManager", BindingFlags.Instance | BindingFlags.NonPublic)!
 			.GetValue(details);
