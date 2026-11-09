@@ -68,17 +68,7 @@ EM_JS(int, uno_gl_js_create_context, (), {
 		attrs.majorVersion = 1;
 		ctx = GL.createContext(canvas, attrs);
 	}
-	if (!ctx || ctx < 0) {
-		return 0;
-	}
-
-	// The strided upload fix lives in the framework's TS bundle, which only the main thread loads.
-	var runtime = globalThis.Uno && globalThis.Uno.UI && globalThis.Uno.UI.Runtime;
-	if (runtime && runtime.EmscriptenWebGL) {
-		runtime.EmscriptenWebGL.fixStridedUploads(GL.getContext(ctx).GLctx);
-	}
-
-	return ctx;
+	return ctx > 0 ? ctx : 0;
 });
 
 // Returns the previous handle, or -1 when the handle is unknown to this thread.
@@ -94,8 +84,167 @@ EM_JS(void, uno_gl_js_destroy_context, (int handle), {
 	GL.deleteContext(handle);
 });
 
+// With MAXIMUM_MEMORY above 2GB, emscripten avoids its garbage-free WebGL2 upload path (Firefox bug
+// 1838218) and slices the source as height * width rows, ignoring UNPACK_ROW_LENGTH and SKIP_*.
+// Skia uploads glyph atlas patches with a row length, so WebGL rejected them and glyphs went blank.
+// Re-slice such views to the strided size WebGL validates against. The 3D uploads aren't wrapped:
+// Skia doesn't use them. Lives here because every thread loads dotnet.native.js, so the main surface,
+// the render worker and GLCanvasElement share this one copy.
+// Installed on the realm's global, where the runtime tests reach it with a context of their own.
+EM_JS(void, uno_gl_js_install_strided_fix, (), {
+	if (globalThis.unoGlFixStridedUploads) {
+		return;
+	}
+
+	globalThis.unoGlFixStridedUploads = function (gl) {
+		if (!gl || gl.__unoStridedUploadsFixed || typeof gl.UNPACK_ROW_LENGTH !== "number") {
+			return;
+		}
+		gl.__unoStridedUploadsFixed = true;
+
+		var bytesPerPixel = function (format, type) {
+			switch (type) {
+				case gl.UNSIGNED_SHORT_5_6_5:
+				case gl.UNSIGNED_SHORT_4_4_4_4:
+				case gl.UNSIGNED_SHORT_5_5_5_1:
+					return 2;
+				case gl.UNSIGNED_INT_2_10_10_10_REV:
+				case gl.UNSIGNED_INT_10F_11F_11F_REV:
+				case gl.UNSIGNED_INT_5_9_9_9_REV:
+				case gl.UNSIGNED_INT_24_8:
+					return 4;
+			}
+
+			var componentSize;
+			switch (type) {
+				case gl.UNSIGNED_BYTE:
+				case gl.BYTE:
+					componentSize = 1; break;
+				case gl.UNSIGNED_SHORT:
+				case gl.SHORT:
+				case gl.HALF_FLOAT:
+					componentSize = 2; break;
+				case gl.UNSIGNED_INT:
+				case gl.INT:
+				case gl.FLOAT:
+					componentSize = 4; break;
+				default:
+					return 0;
+			}
+
+			switch (format) {
+				case gl.RED:
+				case gl.RED_INTEGER:
+				case gl.ALPHA:
+				case gl.LUMINANCE:
+				case gl.DEPTH_COMPONENT:
+					return componentSize;
+				case gl.RG:
+				case gl.RG_INTEGER:
+				case gl.LUMINANCE_ALPHA:
+					return componentSize * 2;
+				case gl.RGB:
+				case gl.RGB_INTEGER:
+					return componentSize * 3;
+				case gl.RGBA:
+				case gl.RGBA_INTEGER:
+					return componentSize * 4;
+				default:
+					return 0;
+			}
+		};
+
+		var unpack = { alignment: 4, rowLength: 0, skipRows: 0, skipPixels: 0 };
+		var pixelStorei = gl.pixelStorei;
+		gl.pixelStorei = function (pname, param) {
+			switch (pname) {
+				case gl.UNPACK_ALIGNMENT: unpack.alignment = param; break;
+				case gl.UNPACK_ROW_LENGTH: unpack.rowLength = param; break;
+				case gl.UNPACK_SKIP_ROWS: unpack.skipRows = param; break;
+				case gl.UNPACK_SKIP_PIXELS: unpack.skipPixels = param; break;
+			}
+			return pixelStorei.call(gl, pname, param);
+		};
+
+		var isStrided = function () {
+			return unpack.rowLength !== 0 || unpack.skipRows !== 0 || unpack.skipPixels !== 0;
+		};
+
+		var resize = function (width, height, format, type, pixels) {
+			if (!ArrayBuffer.isView(pixels)) {
+				return pixels;
+			}
+
+			var bpp = bytesPerPixel(format, type);
+			if (!bpp || width <= 0 || height <= 0) {
+				return pixels;
+			}
+
+			var alignment = unpack.alignment;
+			var rowBytes = Math.ceil(((unpack.rowLength || width) * bpp) / alignment) * alignment;
+			var required = (unpack.skipRows + height - 1) * rowBytes + (unpack.skipPixels + width) * bpp;
+			if (pixels.byteLength >= required || pixels.byteOffset + required > pixels.buffer.byteLength) {
+				return pixels;
+			}
+
+			// Rounding up to whole elements must not run past the end of the buffer.
+			var elementSize = pixels.BYTES_PER_ELEMENT || 1;
+			var length = Math.min(Math.ceil(required / elementSize), Math.floor((pixels.buffer.byteLength - pixels.byteOffset) / elementSize));
+			return new pixels.constructor(pixels.buffer, pixels.byteOffset, length);
+		};
+
+		var texImage2D = gl.texImage2D;
+		gl.texImage2D = function () {
+			// (target, level, internalformat, width, height, border, format, type, pixels)
+			if (arguments.length !== 9 || !isStrided()) {
+				return texImage2D.apply(gl, arguments);
+			}
+			var args = Array.prototype.slice.call(arguments);
+			args[8] = resize(args[3], args[4], args[6], args[7], args[8]);
+			return texImage2D.apply(gl, args);
+		};
+
+		var texSubImage2D = gl.texSubImage2D;
+		gl.texSubImage2D = function () {
+			// (target, level, xoffset, yoffset, width, height, format, type, pixels)
+			if (arguments.length !== 9 || !isStrided()) {
+				return texSubImage2D.apply(gl, arguments);
+			}
+			var args = Array.prototype.slice.call(arguments);
+			args[8] = resize(args[4], args[5], args[6], args[7], args[8]);
+			return texSubImage2D.apply(gl, args);
+		};
+	};
+});
+
+EM_JS(void, uno_gl_js_fix_strided_uploads, (int handle), {
+	var context = GL.getContext(handle);
+	if (context) {
+		globalThis.unoGlFixStridedUploads(context.GLctx);
+	}
+});
+
+// The browser main thread has no GL context of its own under threading, so it gets the global at startup.
+__attribute__((constructor))
+static void uno_gl_init(void) { uno_gl_js_install_strided_fix(); }
+
 EMSCRIPTEN_KEEPALIVE
-int uno_gl_create_context(void) { return uno_gl_js_create_context(); }
+void uno_gl_fix_strided_uploads(int handle)
+{
+	uno_gl_js_install_strided_fix();
+	uno_gl_js_fix_strided_uploads(handle);
+}
+
+EMSCRIPTEN_KEEPALIVE
+int uno_gl_create_context(void)
+{
+	int handle = uno_gl_js_create_context();
+	if (handle != 0)
+	{
+		uno_gl_fix_strided_uploads(handle);
+	}
+	return handle;
+}
 
 EMSCRIPTEN_KEEPALIVE
 int uno_gl_make_current(int handle) { return uno_gl_js_make_current(handle); }

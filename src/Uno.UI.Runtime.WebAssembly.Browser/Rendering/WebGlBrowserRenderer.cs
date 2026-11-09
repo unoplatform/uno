@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
@@ -33,6 +34,9 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 				Samples: jsObject.GetPropertyAsInt32("samples"),
 				Depth: jsObject.GetPropertyAsInt32("depth")
 			);
+
+			NativeMethods.uno_gl_fix_strided_uploads(jsObject.GetPropertyAsInt32("glCtxHandle"));
+
 			renderer = new WebGlBrowserRenderer(jsInfo);
 			typeof(WebGlBrowserRenderer).LogInfo()?.Info($"WebGL context created successfully: {jsInfo}");
 			return true;
@@ -72,5 +76,8 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 
 		[JSImport($"globalThis.Uno.UI.Runtime.{nameof(WebGlBrowserRenderer)}.makeCurrent")]
 		internal static partial void MakeCurrent(JSObject nativeInstance);
+
+		[DllImport("uno_gl_shim", CallingConvention = CallingConvention.Cdecl)]
+		internal static extern void uno_gl_fix_strided_uploads(int handle);
 	}
 }

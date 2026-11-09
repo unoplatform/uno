@@ -76,8 +76,12 @@ internal static partial class RenderWorker
 			// Wait for GL context to be ready.
 			var glInfo = await NativeMethods.GLReady();
 
+			var glContextHandle = glInfo.GetPropertyAsInt32("glContextHandle");
+
+			NativeMethods.uno_gl_fix_strided_uploads(glContextHandle);
+
 			context = new WasmRenderWorkerGraphicsContext(
-				glInfo.GetPropertyAsInt32("glContextHandle"),
+				glContextHandle,
 				(uint)glInfo.GetPropertyAsInt32("fboId"),
 				glInfo.GetPropertyAsInt32("stencil"),
 				glInfo.GetPropertyAsInt32("samples"));
@@ -128,6 +132,9 @@ internal static partial class RenderWorker
 	{
 		[LibraryImport("*", EntryPoint = "pthread_self")]
 		internal static partial int PThreadSelf();
+
+		[DllImport("uno_gl_shim", CallingConvention = CallingConvention.Cdecl)]
+		internal static extern void uno_gl_fix_strided_uploads(int handle);
 
 		[JSImport("globalThis.Uno.UI.Runtime.RenderWorker.transferAndSetupGL")]
 		internal static partial void TransferCanvasToWorker(string canvasId, int targetPthreadId, JSObject window);
