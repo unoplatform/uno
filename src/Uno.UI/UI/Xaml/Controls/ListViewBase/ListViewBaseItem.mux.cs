@@ -210,6 +210,7 @@ partial class ListViewBaseItem
 						}
 						if (dragActive)
 						{
+							m_lastMouseLeftButtonDownPosition = spPointerPoint.Position;
 							BeginCheckingForMouseDrag(spPointer);
 						}
 					}
@@ -243,6 +244,7 @@ partial class ListViewBaseItem
 							}
 							if (dragActive)
 							{
+								m_lastMouseLeftButtonDownPosition = spPointerPoint.Position;
 								BeginCheckingForMouseDrag(spPointer);
 							}
 						}
@@ -593,30 +595,53 @@ partial class ListViewBaseItem
 				{
 					StopCheckingForMouseDrag(pArgs.Pointer);
 				}
+				else
+				{
+					var spPointer = pArgs.Pointer;
+					var spPointerPoint = pArgs.GetCurrentPoint(this);
+					var newMousePosition = spPointerPoint.Position;
+					var isInContact = spPointerPoint.IsInContact;
 
-				// TODO Uno: the drag itself (ShouldStartMouseDrag, EnsureDragDropVisual, TryStartDrag, LBI:1048-1091) is started by
-				// UIElement's drag gesture (CanDrag), Uno's AutomaticDragHelper, which calls OnDragGestureStarting through OnDragGesture.
+					if (ShouldStartMouseDrag(newMousePosition) && (pointerDeviceType != PointerDeviceType.Pen || isInContact))
+					{
+						StopCheckingForMouseDrag(spPointer);
+
+						// TODO: We don't get a MouseLeave on this
+						// element after a drag and drop.  Manually reset the mouse over
+						// state as a workaround. Note that this isn't quite right yet (user
+						// might drop really close to the drag start point). Should be fixed
+						// during stabilization.
+						m_shouldEnterPointerOver = false;
+						ChangeVisualState(true);
+
+						// TODO Uno: EnsureDragDropVisual - no DragDropVisual, Uno draws the drag visual with DragUI.
+
+						// Try the drag. Continuing our previous gesture is not applicable here.
+						var didStartDrag = TryStartDrag(spPointerPoint);
+
+						if (!didStartDrag)
+						{
+							// ListView did not start Drag, maybe the LVI will
+							StartDragIfEnabled(spPointerPoint);
+						}
+					}
+				}
 			}
 		}
 	}
 
-	// MUX Reference ListViewBaseItem_Partial.cpp, lines 1062-1070 and 1784-1789
-	// Uno-specific: runs when Uno's own drag gesture starts the item drag (ListViewBase.OnItemContainerDragStarting).
+	// MUX Reference ListViewBaseItem_Partial.cpp, lines 1784-1789 (TryStartDrag's callback)
+	// Called when we're about to start the drag. NOTE! Can still fail after this.
 	internal void OnDragGestureStarting(Pointer pointer)
 	{
 		StopCheckingForMouseDrag(pointer);
-
-		// TODO: We don't get a MouseLeave on this
-		// element after a drag and drop.  Manually reset the mouse over
-		// state as a workaround. Note that this isn't quite right yet (user
-		// might drop really close to the drag start point). Should be fixed
-		// during stabilization.
-		m_shouldEnterPointerOver = false;
-		ChangeVisualState(true);
-
-		// Called when we're about to start the drag (TryStartDrag's callback).
 		ReleasePointerCapture(pointer);
 	}
+
+	// Mouse and pen drags are detected by the item (OnPointerMoved), as in WinUI.
+	// TODO Uno: touch keeps UIElement's hold-and-pan drag gesture, standing in for AutomaticDragHelper's DManip path.
+	private protected override bool IsDragGestureEnabled(global::Windows.Devices.Input.PointerDeviceType type)
+		=> type == global::Windows.Devices.Input.PointerDeviceType.Touch;
 
 	// Called when the ListViewBaseItem or its children lose pointer capture.
 	protected override void OnPointerCaptureLost(PointerRoutedEventArgs pArgs)
@@ -977,8 +1002,67 @@ partial class ListViewBaseItem
 		}
 	}
 
-	// TODO Uno: ShouldStartMouseDrag, IsOutsideDragRectangle and GetDragVisual (LBI:1727-1878) are not ported: UIElement's
-	// drag gesture decides when the drag starts (tap range rather than SM_CXDRAG x 2), and Uno draws the drag visual with DragUI.
+	// Return TRUE if we're tracking the mouse and newMousePosition is outside the drag
+	// rectangle centered at m_lastMouseLeftButtonDownPosition (see IsOutsideDragRectangle).
+	private bool ShouldStartMouseDrag(Point newMousePosition)
+		=> m_isCheckingForMouseDrag && IsOutsideDragRectangle(newMousePosition, m_lastMouseLeftButtonDownPosition);
+
+	// Notify our parent ListViewBase (if any) that the user has requested
+	// a drag operation with the specified input pointer.
+	// TODO Uno: the operation is started with StartDragAsync, whose DragStarting ListViewBase.OnItemContainerDragStarting
+	// hands to OnDragGesture; the WinUI pointer/visual/callback arguments flow through there.
+	private bool TryStartDrag(Microsoft.UI.Input.PointerPoint pointerPoint)
+	{
+		var pDidStartDrag = false;
+
+		var spListView = GetParentListView();
+		if (spListView is not null)
+		{
+			// Check that the ListView accepts reorder or drag
+			bool canListViewDragOrReorderItems = spListView.GetIsDragEnabled();
+
+			if (canListViewDragOrReorderItems)
+			{
+				// DragStarting is raised synchronously, so OnDragGesture has run when this returns.
+				_ = StartDragAsync(pointerPoint);
+
+				pDidStartDrag = spListView.IsContainerDragDropOwner(this);
+			}
+		}
+
+		return pDidStartDrag;
+	}
+
+	// Starts a UIElement's Drag and Drop if CanDrag==True
+	private void StartDragIfEnabled(Microsoft.UI.Input.PointerPoint pointerPoint)
+	{
+		if (CanDrag)
+		{
+			_ = StartDragAsync(pointerPoint);
+		}
+	}
+
+	// Returns TRUE if testPoint is outside of the rectangle
+	// defined by the SM_CXDRAG and SM_CYDRAG system metrics and
+	// dragRectangleCenter.
+	private bool IsOutsideDragRectangle(Point testPoint, Point dragRectangleCenter)
+	{
+		double dx = Math.Abs(testPoint.X - dragRectangleCenter.X);
+		double dy = Math.Abs(testPoint.Y - dragRectangleCenter.Y);
+
+		// TODO Uno: GetSystemMetrics is Win32-only. It returns the 4 px default in physical pixels of the system DPI,
+		// which WinUI compares with DIPs: scale it the same way.
+		var scale = XamlRoot?.RasterizationScale ?? 1.0;
+		double maxDx = SM_CXDRAG * scale;
+		double maxDy = SM_CYDRAG * scale;
+
+		maxDx *= LISTVIEWBASEITEM_MOUSE_DRAG_THRESHOLD_MULTIPLIER;
+		maxDy *= LISTVIEWBASEITEM_MOUSE_DRAG_THRESHOLD_MULTIPLIER;
+
+		return (dx > maxDx || dy > maxDy);
+	}
+
+	// TODO Uno: GetDragVisual (LBI:1822-1858) is not ported: Uno draws the drag visual with DragUI.
 
 	// Clears flags related to ongoing pointer input in response to a manipulation starting
 	// or container recycle.

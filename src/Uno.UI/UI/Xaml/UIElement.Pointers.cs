@@ -331,6 +331,11 @@ namespace Microsoft.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
+			if (!that.IsDragGestureEnabled(args.Pointer.Type))
+			{
+				args.Settings &= ~GestureSettingsHelper.DragAndDrop;
+			}
+
 			that.SafeRaiseEvent(ManipulationStartingEvent, new ManipulationStartingRoutedEventArgs(src, that, args));
 #if UNO_HAS_MANAGED_POINTERS
 			if (args.Settings is not GestureSettings.None)
@@ -819,6 +824,11 @@ namespace Microsoft.UI.Xaml
 		#endregion
 
 		#region Drag And Drop (recognizer settings / custom bubbling / drag starting event)
+		/// <summary>
+		/// Whether the gesture recognizer starts the CanDrag drag for this kind of pointer, for elements that detect the drag gesture themselves.
+		/// </summary>
+		private protected virtual bool IsDragGestureEnabled(PointerDeviceType type) => true;
+
 		private void UpdateDragAndDrop(bool isEnabled)
 		{
 			// Note: The drag and drop recognizer setting is only driven by the CanDrag,
