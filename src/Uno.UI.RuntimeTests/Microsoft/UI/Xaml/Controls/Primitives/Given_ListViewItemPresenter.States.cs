@@ -300,22 +300,23 @@ public partial class Given_ListViewItemPresenter
 		await WindowHelper.WaitForLoaded(list);
 		await WindowHelper.WaitForIdle();
 
-		list.SelectedIndex = 0;
+		// Item 0 stays realized as the stacking strategy's special item (StackingLayoutStrategyImpl::NeedsSpecialItem), so select item 1.
+		list.SelectedIndex = 1;
 		await WindowHelper.WaitForIdle();
 
-		var container = (ListViewItem)list.ContainerFromIndex(0);
+		var container = (ListViewItem)list.ContainerFromIndex(1);
 		var presenter = (ListViewItemPresenter)VisualTreeHelper.GetChild(container, 0);
 		Assert.IsNotNull(presenter.m_selectionIndicatorRectangle);
 
 		var scrollViewer = list.FindFirstDescendant<ScrollViewer>()!;
-		for (var offset = 100.0; offset < 4000 && list.IndexFromContainer(container) is 0 or -1; offset += 100)
+		for (var offset = 100.0; offset < 4000 && list.IndexFromContainer(container) is 1 or -1; offset += 100)
 		{
 			scrollViewer.ChangeView(null, offset, null, disableAnimation: true);
 			await WindowHelper.WaitForIdle();
 		}
 
 		var reusedIndex = list.IndexFromContainer(container);
-		Assert.IsTrue(reusedIndex > 0, "the selected container was not reused");
+		Assert.IsTrue(reusedIndex > 1, "the selected container was not reused");
 		Assert.IsFalse(container.IsSelected);
 
 		// Re-preparing flips IsSelected with transitions (SelectorItem::OnIsSelectedChanged), so the hide animation may still be running.
@@ -329,7 +330,7 @@ public partial class Given_ListViewItemPresenter
 		scrollViewer.ChangeView(null, 0, null, disableAnimation: true);
 		await WindowHelper.WaitForIdle();
 
-		var container0 = (ListViewItem)list.ContainerFromIndex(0);
+		var container0 = (ListViewItem)list.ContainerFromIndex(1);
 		var presenter0 = (ListViewItemPresenter)VisualTreeHelper.GetChild(container0, 0);
 		Assert.IsTrue(container0.IsSelected);
 		await ChromeTestHelper.WaitForNoRunningAnimation(presenter0);
