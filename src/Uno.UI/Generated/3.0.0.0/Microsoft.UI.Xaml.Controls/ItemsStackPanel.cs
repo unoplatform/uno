@@ -5,85 +5,24 @@ namespace Microsoft.UI.Xaml.Controls;
 #if false
 [global::Uno.NotImplemented]
 #endif
-#if false // The hand-written partial derives from ModernCollectionBasePanel.
 public partial class ItemsStackPanel : global::Microsoft.UI.Xaml.Controls.Panel
 {
 	// Skipping already declared property AreStickyGroupHeadersEnabledProperty
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty CacheLengthProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(CacheLength), typeof(double),
-		typeof(global::Microsoft.UI.Xaml.Controls.ItemsStackPanel),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
-#endif
+	// Skipping already declared property CacheLengthProperty
 	// Skipping already declared property GroupHeaderPlacementProperty
 	// Skipping already declared property GroupPaddingProperty
 	// Skipping already declared property OrientationProperty
 	// Skipping already declared property AreStickyGroupHeadersEnabled
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public double CacheLength
-	{
-		get
-		{
-			return (double)this.GetValue(CacheLengthProperty);
-		}
-		set
-		{
-			this.SetValue(CacheLengthProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public int FirstCacheIndex
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsStackPanel", "FirstCacheIndex");
-		}
-	}
-#endif
+	// Skipping already declared property CacheLength
+	// Skipping already declared property FirstCacheIndex
 	// Skipping already declared property FirstVisibleIndex
 	// Skipping already declared property GroupHeaderPlacement
 	// Skipping already declared property GroupPadding
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Controls.ItemsUpdatingScrollMode ItemsUpdatingScrollMode
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsStackPanel", "ItemsUpdatingScrollMode");
-		}
-		set
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsStackPanel", "ItemsUpdatingScrollMode");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public int LastCacheIndex
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsStackPanel", "LastCacheIndex");
-		}
-	}
-#endif
+	// Skipping already declared property ItemsUpdatingScrollMode
+	// Skipping already declared property LastCacheIndex
 	// Skipping already declared property LastVisibleIndex
 	// Skipping already declared property Orientation
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Controls.PanelScrollingDirection ScrollingDirection
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsStackPanel", "ScrollingDirection");
-		}
-	}
-#endif
+	// Skipping already declared property ScrollingDirection
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsStackPanel.ItemsStackPanel()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.ItemsStackPanel()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.AreStickyGroupHeadersEnabledProperty.get
@@ -109,4 +48,3 @@ public partial class ItemsStackPanel : global::Microsoft.UI.Xaml.Controls.Panel
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.Orientation.set
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsStackPanel.ScrollingDirection.get
 }
-#endif

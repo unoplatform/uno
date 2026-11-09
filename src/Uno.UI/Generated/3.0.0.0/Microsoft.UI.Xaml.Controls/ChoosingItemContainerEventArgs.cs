@@ -7,61 +7,11 @@ namespace Microsoft.UI.Xaml.Controls;
 #endif
 public partial class ChoosingItemContainerEventArgs
 {
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool IsContainerPrepared
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "IsContainerPrepared");
-		}
-		set
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "IsContainerPrepared");
-		}
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public object Item
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "Item");
-		}
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Controls.Primitives.SelectorItem ItemContainer
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "ItemContainer");
-		}
-		set
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "ItemContainer");
-		}
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public int ItemIndex
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "ItemIndex");
-		}
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public ChoosingItemContainerEventArgs()
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs", "ChoosingItemContainerEventArgs()");
-	}
-#endif
+	// Skipping already declared property IsContainerPrepared
+	// Skipping already declared property Item
+	// Skipping already declared property ItemContainer
+	// Skipping already declared property ItemIndex
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.ChoosingItemContainerEventArgs()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.ChoosingItemContainerEventArgs()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.IsContainerPrepared.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs.IsContainerPrepared.set

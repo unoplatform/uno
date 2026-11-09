@@ -7,26 +7,8 @@ namespace Microsoft.UI.Xaml.Controls;
 #endif
 public partial class GroupStyleSelector
 {
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public GroupStyleSelector()
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.GroupStyleSelector", "GroupStyleSelector()");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.GroupStyleSelector.GroupStyleSelector()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyleSelector.GroupStyleSelector()
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Controls.GroupStyle SelectGroupStyle(object group, uint level)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.GroupStyleSelector", "SelectGroupStyle(object group, uint level)");
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	protected virtual global::Microsoft.UI.Xaml.Controls.GroupStyle SelectGroupStyleCore(object group, uint level)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.GroupStyleSelector", "SelectGroupStyleCore(object group, uint level)");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.GroupStyleSelector.SelectGroupStyle(object, uint)
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.GroupStyleSelector.SelectGroupStyleCore(object, uint)
 }

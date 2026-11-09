@@ -54,37 +54,7 @@ public partial class ItemsPresenter : global::Microsoft.UI.Xaml.FrameworkElement
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.HeaderTransitions.set
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.Padding.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsPresenter.Padding.set
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public event global::System.EventHandler<object> HorizontalSnapPointsChanged
-	{
-		[global::Uno.NotImplemented("__SKIA__")]
-		add
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsPresenter", "event HorizontalSnapPointsChanged");
-		}
-		[global::Uno.NotImplemented("__SKIA__")]
-		remove
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsPresenter", "event HorizontalSnapPointsChanged");
-		}
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public event global::System.EventHandler<object> VerticalSnapPointsChanged
-	{
-		[global::Uno.NotImplemented("__SKIA__")]
-		add
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsPresenter", "event VerticalSnapPointsChanged");
-		}
-		[global::Uno.NotImplemented("__SKIA__")]
-		remove
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsPresenter", "event VerticalSnapPointsChanged");
-		}
-	}
-#endif
+	// Skipping already declared event Microsoft.UI.Xaml.Controls.ItemsPresenter.HorizontalSnapPointsChanged
+	// Skipping already declared event Microsoft.UI.Xaml.Controls.ItemsPresenter.VerticalSnapPointsChanged
 	// Processing: Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo
 }

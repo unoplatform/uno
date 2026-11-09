@@ -5,18 +5,10 @@ namespace Microsoft.UI.Xaml.Controls;
 #if false
 [global::Uno.NotImplemented]
 #endif
-#if false // The hand-written partial derives from ModernCollectionBasePanel.
 public partial class ItemsWrapGrid : global::Microsoft.UI.Xaml.Controls.Panel
 {
 	// Skipping already declared property AreStickyGroupHeadersEnabledProperty
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty CacheLengthProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(CacheLength), typeof(double),
-		typeof(global::Microsoft.UI.Xaml.Controls.ItemsWrapGrid),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
-#endif
+	// Skipping already declared property CacheLengthProperty
 	// Skipping already declared property GroupHeaderPlacementProperty
 	// Skipping already declared property GroupPaddingProperty
 	// Skipping already declared property ItemHeightProperty
@@ -24,76 +16,18 @@ public partial class ItemsWrapGrid : global::Microsoft.UI.Xaml.Controls.Panel
 	// Skipping already declared property MaximumRowsOrColumnsProperty
 	// Skipping already declared property OrientationProperty
 	// Skipping already declared property AreStickyGroupHeadersEnabled
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public double CacheLength
-	{
-		get
-		{
-			return (double)this.GetValue(CacheLengthProperty);
-		}
-		set
-		{
-			this.SetValue(CacheLengthProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public int FirstCacheIndex
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "FirstCacheIndex");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public int FirstVisibleIndex
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "FirstVisibleIndex");
-		}
-	}
-#endif
+	// Skipping already declared property CacheLength
+	// Skipping already declared property FirstCacheIndex
+	// Skipping already declared property FirstVisibleIndex
 	// Skipping already declared property GroupHeaderPlacement
 	// Skipping already declared property GroupPadding
 	// Skipping already declared property ItemHeight
 	// Skipping already declared property ItemWidth
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public int LastCacheIndex
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "LastCacheIndex");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public int LastVisibleIndex
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "LastVisibleIndex");
-		}
-	}
-#endif
+	// Skipping already declared property LastCacheIndex
+	// Skipping already declared property LastVisibleIndex
 	// Skipping already declared property MaximumRowsOrColumns
 	// Skipping already declared property Orientation
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Controls.PanelScrollingDirection ScrollingDirection
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsWrapGrid", "ScrollingDirection");
-		}
-	}
-#endif
+	// Skipping already declared property ScrollingDirection
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemsWrapGrid()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ItemsWrapGrid()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.AreStickyGroupHeadersEnabledProperty.get
@@ -126,4 +60,3 @@ public partial class ItemsWrapGrid : global::Microsoft.UI.Xaml.Controls.Panel
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.Orientation.set
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsWrapGrid.ScrollingDirection.get
 }
-#endif

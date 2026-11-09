@@ -12,213 +12,44 @@ public partial class ListViewBase : global::Microsoft.UI.Xaml.Controls.Primitive
 	// Skipping already declared property DataFetchSizeProperty
 	// Skipping already declared property FooterProperty
 	// Skipping already declared property FooterTemplateProperty
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty FooterTransitionsProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(FooterTransitions), typeof(global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection),
-		typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection)));
-#endif
+	// Skipping already declared property FooterTransitionsProperty
 	// Skipping already declared property HeaderProperty
 	// Skipping already declared property HeaderTemplateProperty
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty HeaderTransitionsProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(HeaderTransitions), typeof(global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection),
-		typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection)));
-#endif
+	// Skipping already declared property HeaderTransitionsProperty
 	// Skipping already declared property IncrementalLoadingThresholdProperty
 	// Skipping already declared property IncrementalLoadingTriggerProperty
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty IsActiveViewProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(IsActiveView), typeof(bool),
-		typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
-#endif
+	// Skipping already declared property IsActiveViewProperty
 	// Skipping already declared property IsItemClickEnabledProperty
 	// Skipping already declared property IsMultiSelectCheckBoxEnabledProperty
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty IsSwipeEnabledProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(IsSwipeEnabled), typeof(bool),
-		typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty IsZoomedInViewProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(IsZoomedInView), typeof(bool),
-		typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty ReorderModeProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(ReorderMode), typeof(global::Microsoft.UI.Xaml.Controls.ListViewReorderMode),
-		typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ListViewReorderMode)));
-#endif
+	// Skipping already declared property IsSwipeEnabledProperty
+	// Skipping already declared property IsZoomedInViewProperty
+	// Skipping already declared property ReorderModeProperty
 	// Skipping already declared property SelectionModeProperty
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty SemanticZoomOwnerProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(SemanticZoomOwner), typeof(global::Microsoft.UI.Xaml.Controls.SemanticZoom),
-		typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.SemanticZoom)));
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty ShowsScrollingPlaceholdersProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(ShowsScrollingPlaceholders), typeof(bool),
-		typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
-#endif
+	// Skipping already declared property SemanticZoomOwnerProperty
+	// Skipping already declared property ShowsScrollingPlaceholdersProperty
 	// Skipping already declared property SingleSelectionFollowsFocusProperty
 	// Skipping already declared property CanDragItems
 	// Skipping already declared property CanReorderItems
 	// Skipping already declared property DataFetchSize
 	// Skipping already declared property Footer
 	// Skipping already declared property FooterTemplate
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection FooterTransitions
-	{
-		get
-		{
-			return (global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection)this.GetValue(FooterTransitionsProperty);
-		}
-		set
-		{
-			this.SetValue(FooterTransitionsProperty, value);
-		}
-	}
-#endif
+	// Skipping already declared property FooterTransitions
 	// Skipping already declared property Header
 	// Skipping already declared property HeaderTemplate
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection HeaderTransitions
-	{
-		get
-		{
-			return (global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection)this.GetValue(HeaderTransitionsProperty);
-		}
-		set
-		{
-			this.SetValue(HeaderTransitionsProperty, value);
-		}
-	}
-#endif
+	// Skipping already declared property HeaderTransitions
 	// Skipping already declared property IncrementalLoadingThreshold
 	// Skipping already declared property IncrementalLoadingTrigger
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool IsActiveView
-	{
-		get
-		{
-			return (bool)this.GetValue(IsActiveViewProperty);
-		}
-		set
-		{
-			this.SetValue(IsActiveViewProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
-		}
-	}
-#endif
+	// Skipping already declared property IsActiveView
 	// Skipping already declared property IsItemClickEnabled
 	// Skipping already declared property IsMultiSelectCheckBoxEnabled
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool IsSwipeEnabled
-	{
-		get
-		{
-			return (bool)this.GetValue(IsSwipeEnabledProperty);
-		}
-		set
-		{
-			this.SetValue(IsSwipeEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
-		}
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool IsZoomedInView
-	{
-		get
-		{
-			return (bool)this.GetValue(IsZoomedInViewProperty);
-		}
-		set
-		{
-			this.SetValue(IsZoomedInViewProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
-		}
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Controls.ListViewReorderMode ReorderMode
-	{
-		get
-		{
-			return (global::Microsoft.UI.Xaml.Controls.ListViewReorderMode)this.GetValue(ReorderModeProperty);
-		}
-		set
-		{
-			this.SetValue(ReorderModeProperty, value);
-		}
-	}
-#endif
+	// Skipping already declared property IsSwipeEnabled
+	// Skipping already declared property IsZoomedInView
+	// Skipping already declared property ReorderMode
 	// Skipping already declared property SelectedItems
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::System.Collections.Generic.IReadOnlyList<global::Microsoft.UI.Xaml.Data.ItemIndexRange> SelectedRanges
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListViewBase", "SelectedRanges");
-		}
-	}
-#endif
+	// Skipping already declared property SelectedRanges
 	// Skipping already declared property SelectionMode
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Controls.SemanticZoom SemanticZoomOwner
-	{
-		get
-		{
-			return (global::Microsoft.UI.Xaml.Controls.SemanticZoom)this.GetValue(SemanticZoomOwnerProperty);
-		}
-		set
-		{
-			this.SetValue(SemanticZoomOwnerProperty, value);
-		}
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool ShowsScrollingPlaceholders
-	{
-		get
-		{
-			return (bool)this.GetValue(ShowsScrollingPlaceholdersProperty);
-		}
-		set
-		{
-			this.SetValue(ShowsScrollingPlaceholdersProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
-		}
-	}
-#endif
+	// Skipping already declared property SemanticZoomOwner
+	// Skipping already declared property ShowsScrollingPlaceholders
 	// Skipping already declared property SingleSelectionFollowsFocus
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.ListViewBase()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.ListViewBase()
@@ -244,63 +75,15 @@ public partial class ListViewBase : global::Microsoft.UI.Xaml.Controls.Primitive
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.ShowsScrollingPlaceholdersProperty.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.SingleSelectionFollowsFocusProperty.get
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.ScrollIntoView(object)
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void SelectAll()
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "SelectAll()");
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Windows.Foundation.IAsyncOperation<global::Microsoft.UI.Xaml.Data.LoadMoreItemsResult> LoadMoreItemsAsync()
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListViewBase", "LoadMoreItemsAsync()");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.SelectAll()
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.LoadMoreItemsAsync()
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.ScrollIntoView(object, Microsoft.UI.Xaml.Controls.ScrollIntoViewAlignment)
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void SetDesiredContainerUpdateDuration(global::System.TimeSpan duration)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "SetDesiredContainerUpdateDuration(TimeSpan duration)");
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void SelectRange(global::Microsoft.UI.Xaml.Data.ItemIndexRange itemIndexRange)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "SelectRange(ItemIndexRange itemIndexRange)");
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void DeselectRange(global::Microsoft.UI.Xaml.Data.ItemIndexRange itemIndexRange)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "DeselectRange(ItemIndexRange itemIndexRange)");
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool IsDragSource()
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListViewBase", "IsDragSource()");
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Windows.Foundation.IAsyncOperation<bool> TryStartConnectedAnimationAsync(global::Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation animation, object item, string elementName)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListViewBase", "TryStartConnectedAnimationAsync(ConnectedAnimation animation, object item, string elementName)");
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation PrepareConnectedAnimation(string key, object item, string elementName)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListViewBase", "PrepareConnectedAnimation(string key, object item, string elementName)");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.SetDesiredContainerUpdateDuration(System.TimeSpan)
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.SelectRange(Microsoft.UI.Xaml.Data.ItemIndexRange)
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.DeselectRange(Microsoft.UI.Xaml.Data.ItemIndexRange)
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.IsDragSource()
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.TryStartConnectedAnimationAsync(Microsoft.UI.Xaml.Media.Animation.ConnectedAnimation, object, string)
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.PrepareConnectedAnimation(string, object, string)
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.ChoosingGroupHeaderContainer.add
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.ChoosingGroupHeaderContainer.remove
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.ChoosingItemContainer.add
@@ -313,55 +96,25 @@ public partial class ListViewBase : global::Microsoft.UI.Xaml.Controls.Primitive
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.DragItemsStarting.remove
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.ItemClick.add
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.ItemClick.remove
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void InitializeViewChange()
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "InitializeViewChange()");
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void CompleteViewChange()
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "CompleteViewChange()");
-	}
-#endif
-#if false
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.InitializeViewChange()
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.CompleteViewChange()
+#if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]
 	public void MakeVisible(global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation item)
 	{
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "MakeVisible(SemanticZoomLocation item)");
 	}
 #endif
-#if false
+#if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]
 	public void StartViewChangeFrom(global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation source, global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation destination)
 	{
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "StartViewChangeFrom(SemanticZoomLocation source, SemanticZoomLocation destination)");
 	}
 #endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void StartViewChangeTo(global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation source, global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation destination)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "StartViewChangeTo(SemanticZoomLocation source, SemanticZoomLocation destination)");
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void CompleteViewChangeFrom(global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation source, global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation destination)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "CompleteViewChangeFrom(SemanticZoomLocation source, SemanticZoomLocation destination)");
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void CompleteViewChangeTo(global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation source, global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation destination)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "CompleteViewChangeTo(SemanticZoomLocation source, SemanticZoomLocation destination)");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.StartViewChangeTo(Microsoft.UI.Xaml.Controls.SemanticZoomLocation, Microsoft.UI.Xaml.Controls.SemanticZoomLocation)
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.CompleteViewChangeFrom(Microsoft.UI.Xaml.Controls.SemanticZoomLocation, Microsoft.UI.Xaml.Controls.SemanticZoomLocation)
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.CompleteViewChangeTo(Microsoft.UI.Xaml.Controls.SemanticZoomLocation, Microsoft.UI.Xaml.Controls.SemanticZoomLocation)
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.CanDragItems.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.CanDragItems.set
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.CanReorderItems.get
@@ -406,38 +159,8 @@ public partial class ListViewBase : global::Microsoft.UI.Xaml.Controls.Primitive
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.ShowsScrollingPlaceholders.set
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.SingleSelectionFollowsFocus.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.SingleSelectionFollowsFocus.set
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ListViewBase, global::Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs> ChoosingGroupHeaderContainer
-	{
-		[global::Uno.NotImplemented("__SKIA__")]
-		add
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "event ChoosingGroupHeaderContainer");
-		}
-		[global::Uno.NotImplemented("__SKIA__")]
-		remove
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "event ChoosingGroupHeaderContainer");
-		}
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ListViewBase, global::Microsoft.UI.Xaml.Controls.ChoosingItemContainerEventArgs> ChoosingItemContainer
-	{
-		[global::Uno.NotImplemented("__SKIA__")]
-		add
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "event ChoosingItemContainer");
-		}
-		[global::Uno.NotImplemented("__SKIA__")]
-		remove
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "event ChoosingItemContainer");
-		}
-	}
-#endif
+	// Skipping already declared event Microsoft.UI.Xaml.Controls.ListViewBase.ChoosingGroupHeaderContainer
+	// Skipping already declared event Microsoft.UI.Xaml.Controls.ListViewBase.ChoosingItemContainer
 	// Skipping already declared event Microsoft.UI.Xaml.Controls.ListViewBase.ContainerContentChanging
 	// Skipping already declared event Microsoft.UI.Xaml.Controls.ListViewBase.DragItemsCompleted
 	// Skipping already declared event Microsoft.UI.Xaml.Controls.ListViewBase.DragItemsStarting
