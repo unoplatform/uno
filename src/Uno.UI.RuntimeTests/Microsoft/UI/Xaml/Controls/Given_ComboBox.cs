@@ -326,13 +326,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task Check_Dropdown_Measure_Count()
+		[DataRow(-1)]
+		[DataRow(250)]
+		public async Task Check_Dropdown_Measure_Count(int selectedIndex)
 		{
 			var source = Enumerable.Range(0, 500).ToArray();
 			var SUT = new ComboBox
 			{
 				ItemsSource = source,
-				ItemsPanel = MeasureCountCarouselPanelTemplate
+				ItemsPanel = MeasureCountCarouselPanelTemplate,
+				SelectedIndex = selectedIndex
 			};
 
 			try
@@ -354,7 +357,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				NumberAssert.Greater(MeasureCountCarouselPanel.ArrangeCount, 0);
 
 				// The panel grows its cache in 40px steps, one measure each (ModernCollectionBasePanel::SetRealizationWindowFromVisibleWindow),
-				// so the count isn't fixed. What must hold is that layout settles.
+				// so give it time to settle, then check it stays settled.
 				await Task.Delay(1500);
 				await WindowHelper.WaitForIdle();
 				var measureCount = MeasureCountCarouselPanel.MeasureCount;
@@ -364,7 +367,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(measureCount, MeasureCountCarouselPanel.MeasureCount, "Measure should settle");
 				Assert.AreEqual(arrangeCount, MeasureCountCarouselPanel.ArrangeCount, "Arrange should settle");
 
-				const int MaxAllowedCount = 30;
+				// 4 on Skia desktop: first pass, recycle on a disconnected window, two cache-growth steps.
+				const int MaxAllowedCount = 5;
 				NumberAssert.Less(measureCount, MaxAllowedCount);
 				NumberAssert.Less(arrangeCount, MaxAllowedCount);
 			}
