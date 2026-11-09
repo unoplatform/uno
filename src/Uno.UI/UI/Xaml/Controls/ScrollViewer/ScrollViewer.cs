@@ -1144,16 +1144,16 @@ namespace Microsoft.UI.Xaml.Controls
 		// internal so runtime tests can drive the scrollbar-drag path directly.
 		internal void OnVerticalScrollBarScrolled(object sender, ScrollEventArgs e)
 		{
-			// We animate only if the user clicked in the scroll bar, and disable otherwise
-			// (especially, we disable animation when dragging the thumb)
+			// MUX Reference ScrollContentPresenter_Partial.cpp: PageDownImpl sets the offset directly, so a track click is not animated.
+			// TODO Uno: WinUI's LineDownImpl sets the offset directly too, but here the line buttons still animate.
 
 			// On Windows, ScrollViewer ignores ScrollBar's SmallChange/LargeChange values.
 			// No matter how SmallChange/LargeChange are set, ScrollViewer will always scroll by 16 (instead of SmallChange)
 			// or ScrollViewer's Height (instead of LargeChange).
 			var (immediate, offset) = e.ScrollEventType switch
 			{
-				ScrollEventType.LargeIncrement => (false, VerticalOffset + ActualHeight),
-				ScrollEventType.LargeDecrement => (false, VerticalOffset - ActualHeight),
+				ScrollEventType.LargeIncrement => (true, VerticalOffset + ActualHeight),
+				ScrollEventType.LargeDecrement => (true, VerticalOffset - ActualHeight),
 				ScrollEventType.SmallIncrement => (false, VerticalOffset + 16),
 				ScrollEventType.SmallDecrement => (false, VerticalOffset - 16),
 				_ => (true, e.NewValue)
@@ -1173,16 +1173,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnHorizontalScrollBarScrolled(object sender, ScrollEventArgs e)
 		{
-			// We animate only if the user clicked in the scroll bar, and disable otherwise
-			// (especially, we disable animation when dragging the thumb)
+			// MUX Reference ScrollContentPresenter_Partial.cpp: PageRightImpl sets the offset directly, so a track click is not animated.
+			// TODO Uno: WinUI's LineRightImpl sets the offset directly too, but here the line buttons still animate.
 
 			// On Windows, ScrollViewer ignores ScrollBar's SmallChange/LargeChange values.
 			// No matter how SmallChange/LargeChange are set, ScrollViewer will always scroll by 16 (instead of SmallChange)
 			// or ScrollViewer's Width (instead of LargeChange).
 			var (immediate, offset) = e.ScrollEventType switch
 			{
-				ScrollEventType.LargeIncrement => (false, HorizontalOffset + ActualWidth),
-				ScrollEventType.LargeDecrement => (false, HorizontalOffset - ActualWidth),
+				ScrollEventType.LargeIncrement => (true, HorizontalOffset + ActualWidth),
+				ScrollEventType.LargeDecrement => (true, HorizontalOffset - ActualWidth),
 				ScrollEventType.SmallIncrement => (false, HorizontalOffset + 16),
 				ScrollEventType.SmallDecrement => (false, HorizontalOffset - 16),
 				_ => (true, e.NewValue)
