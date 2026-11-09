@@ -426,7 +426,10 @@ public class Given_ListViewBaseItem
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(2, item.TemplateSettings.DragItemsCount);
-			Assert.AreEqual("MultipleReorderingPrimary", LastState(recorder, DragStates), string.Join(", ", recorder.States));
+			// The primary item shows MultipleReorderingPrimary until the drag visual is captured, then becomes a placeholder
+			// (StartDragAsyncOperation::OnRenderCompleted -> DragDrop::HidePrimaryDraggedItem).
+			Assert.IsTrue(recorder.States.Contains("MultipleReorderingPrimary"), string.Join(", ", recorder.States));
+			Assert.AreEqual("ReorderedPlaceholder", LastState(recorder, DragStates), string.Join(", ", recorder.States));
 			Assert.AreEqual("ReorderingTarget", LastState(secondRecorder, DragStates), string.Join(", ", secondRecorder.States));
 		}
 		finally
