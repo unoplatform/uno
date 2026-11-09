@@ -31,25 +31,25 @@ partial class ListViewBaseHeaderItem
 		ChangeVisualState(false);
 	}
 
-	protected override void OnGotFocus(RoutedEventArgs pArgs)
+	protected override void OnGotFocus(RoutedEventArgs e)
 	{
-		base.OnGotFocus(pArgs);
+		base.OnGotFocus(e);
 		ChangeVisualState(false);
 
 		GetParent()?.GroupHeaderItemFocused(this);
 	}
 
-	protected override void OnLostFocus(RoutedEventArgs pArgs)
+	protected override void OnLostFocus(RoutedEventArgs e)
 	{
-		base.OnLostFocus(pArgs);
+		base.OnLostFocus(e);
 		ChangeVisualState(true);
 
 		GetParent()?.GroupHeaderItemUnfocused(this);
 	}
 
-	protected override void OnKeyDown(KeyRoutedEventArgs pArgs)
+	protected override void OnKeyDown(KeyRoutedEventArgs e)
 	{
-		base.OnKeyDown(pArgs);
+		base.OnKeyDown(e);
 
 		var spParent = GetParent();
 
@@ -57,8 +57,8 @@ partial class ListViewBaseHeaderItem
 		{
 			bool isHandled = false;
 
-			VirtualKey originalKey = pArgs.OriginalKey;
-			VirtualKey key = pArgs.Key;
+			VirtualKey originalKey = e.OriginalKey;
+			VirtualKey key = e.Key;
 
 			// for gamepad, this action happens on key up. Toggling sezo on KeyDown will cause a key up
 			// in the other view and toggle it back.
@@ -76,15 +76,15 @@ partial class ListViewBaseHeaderItem
 
 			if (isHandled)
 			{
-				pArgs.Handled = true;
+				e.Handled = true;
 			}
 		}
 	}
 
 	// Handle Key Up for gamepad and toggle
-	protected override void OnKeyUp(KeyRoutedEventArgs pArgs)
+	protected override void OnKeyUp(KeyRoutedEventArgs e)
 	{
-		base.OnKeyUp(pArgs);
+		base.OnKeyUp(e);
 
 		var spParent = GetParent();
 
@@ -92,8 +92,8 @@ partial class ListViewBaseHeaderItem
 		{
 			bool isHandled = false;
 
-			VirtualKey originalKey = pArgs.OriginalKey;
-			VirtualKey key = pArgs.Key;
+			VirtualKey originalKey = e.OriginalKey;
+			VirtualKey key = e.Key;
 
 			if (originalKey == VirtualKey.GamepadA)
 			{
@@ -102,15 +102,15 @@ partial class ListViewBaseHeaderItem
 
 			if (isHandled)
 			{
-				pArgs.Handled = true;
+				e.Handled = true;
 			}
 		}
 	}
 
 	// Called when the user presses a pointer down over the ListViewBaseHeaderItem.
-	protected override void OnPointerPressed(PointerRoutedEventArgs pArgs)
+	protected override void OnPointerPressed(PointerRoutedEventArgs e)
 	{
-		base.OnPointerPressed(pArgs);
+		base.OnPointerPressed(e);
 
 		if (!m_IsPressed)
 		{
@@ -121,10 +121,10 @@ partial class ListViewBaseHeaderItem
 	}
 
 	// Called when the user releases a pointer over the ListViewBaseHeaderItem.
-	protected override void OnPointerReleased(PointerRoutedEventArgs pArgs)
+	protected override void OnPointerReleased(PointerRoutedEventArgs e)
 	{
 		// WinUI quirk: the base OnPointerPressed is invoked here, not OnPointerReleased.
-		base.OnPointerPressed(pArgs);
+		base.OnPointerPressed(e);
 
 		m_IsPressed = false;
 
@@ -139,15 +139,15 @@ partial class ListViewBaseHeaderItem
 			var semanticZoomOwner = spParent.SemanticZoomOwner;
 			if (semanticZoomOwner is not null)
 			{
-				pArgs.Handled = true;
+				e.Handled = true;
 			}
 		}
 	}
 
 	// Called when the ListViewBaseHeaderItem or its children lose pointer capture.
-	protected override void OnPointerCaptureLost(PointerRoutedEventArgs pArgs)
+	protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
 	{
-		base.OnPointerCaptureLost(pArgs);
+		base.OnPointerCaptureLost(e);
 
 		m_IsPressed = false;
 		m_IsPointerOver = false;
@@ -156,9 +156,9 @@ partial class ListViewBaseHeaderItem
 	}
 
 	// Called when a pointer enters a ListViewBaseHeaderItem.
-	protected override void OnPointerEntered(PointerRoutedEventArgs pArgs)
+	protected override void OnPointerEntered(PointerRoutedEventArgs e)
 	{
-		base.OnPointerEntered(pArgs);
+		base.OnPointerEntered(e);
 
 		m_IsPointerOver = true;
 
@@ -166,9 +166,9 @@ partial class ListViewBaseHeaderItem
 	}
 
 	// Called when a pointer exits a ListViewBaseHeaderItem.
-	protected override void OnPointerExited(PointerRoutedEventArgs pArgs)
+	protected override void OnPointerExited(PointerRoutedEventArgs e)
 	{
-		base.OnPointerExited(pArgs);
+		base.OnPointerExited(e);
 
 		m_IsPressed = false;
 		m_IsPointerOver = false;
@@ -242,24 +242,24 @@ partial class ListViewBaseHeaderItem
 	// TODO Uno: WinUI returns E_NOTIMPL after zeroing the point.
 	internal Point GetDropOffsetToRoot() => default;
 
-	protected override void OnTapped(TappedRoutedEventArgs pArgs)
+	protected override void OnTapped(TappedRoutedEventArgs e)
 	{
-		base.OnTapped(pArgs);
+		base.OnTapped(e);
 
-		if (!pArgs.Handled)
+		if (!e.Handled)
 		{
 			var spParent = GetParent();
 			if (spParent is not null)
 			{
 				bool isHandled = spParent.OnHeaderItemTap(this);
-				pArgs.Handled = isHandled;
+				e.Handled = isHandled;
 			}
 		}
 	}
 
-	protected override Size ArrangeOverride(Size arrangeSize)
+	protected override Size ArrangeOverride(Size finalSize)
 	{
-		var returnValue = base.ArrangeOverride(arrangeSize);
+		var returnValue = base.ArrangeOverride(finalSize);
 		m_invalidateGroupBoundsCache = true;
 		return returnValue;
 	}

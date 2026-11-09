@@ -840,11 +840,11 @@ partial class ListViewBase
 
 	// Called when the user drags into this ListViewBase.
 	protected override void OnDragEnter(
-		DragEventArgs pArgs)
+		DragEventArgs e)
 	{
 		bool dropCausesReorder = false;
 
-		ArgumentNullException.ThrowIfNull(pArgs);
+		ArgumentNullException.ThrowIfNull(e);
 
 		m_isDraggingOverSelf = (m_tpPrimaryDraggedContainer != null);
 
@@ -853,7 +853,7 @@ partial class ListViewBase
 		{
 			DragUIOverride spDragUIOverride;
 
-			spDragUIOverride = pArgs.DragUIOverride;
+			spDragUIOverride = e.DragUIOverride;
 
 			// by default ListView doesn't show a glyph and a caption
 			if (spDragUIOverride != null)
@@ -863,31 +863,31 @@ partial class ListViewBase
 			}
 
 			// isHandled == True means that we are reordering
-			pArgs.Handled = true;
+			e.Handled = true;
 		}
 
 		UpdateDropTargetDropEffect(false, false /*isLeaving*/);
-		base.OnDragEnter(pArgs);
+		base.OnDragEnter(e);
 		AutomationPeer.RaiseEventIfListener(this, AutomationEvents.DragEnter);
 	}
 
 	// Called when the user drags out of this ListViewBase.
 	protected override void OnDragLeave(
-		DragEventArgs pArgs)
+		DragEventArgs e)
 	{
 		bool dropCausesReorder = false;
 
-		ArgumentNullException.ThrowIfNull(pArgs);
+		ArgumentNullException.ThrowIfNull(e);
 
 		dropCausesReorder = DropCausesReorder();
 		if (dropCausesReorder)
 		{
-			pArgs.Handled = true;
+			e.Handled = true;
 		}
 
 		SetPendingAutoPanVelocity(PanVelocity.Stationary());
 
-		base.OnDragLeave(pArgs);
+		base.OnDragLeave(e);
 
 		// stop the timer
 		StopLiveReorderTimer();
@@ -1037,20 +1037,20 @@ partial class ListViewBase
 
 	// Called when the user drags over this ListViewBase.
 	protected override void OnDragOver(
-		DragEventArgs pArgs)
+		DragEventArgs e)
 	{
 		bool isHandled = false;
 
-		ArgumentNullException.ThrowIfNull(pArgs);
+		ArgumentNullException.ThrowIfNull(e);
 
 		m_dragAcceptedOperation = DataPackageOperation.None;
 
 		// We want the developer to handle the drag over first to set the AcceptedOperation
-		base.OnDragOver(pArgs);
+		base.OnDragOver(e);
 
-		m_dragAcceptedOperation = pArgs.AcceptedOperation;
+		m_dragAcceptedOperation = e.AcceptedOperation;
 
-		isHandled = pArgs.Handled;
+		isHandled = e.Handled;
 
 		if (!isHandled)
 		{
@@ -1066,20 +1066,20 @@ partial class ListViewBase
 
 				spItemsHostAsUIE = spItemsHost;
 
-				m_lastDragOverPoint = pArgs.GetPosition(spItemsHostAsUIE);
+				m_lastDragOverPoint = e.GetPosition(spItemsHostAsUIE);
 				isHandled = ProcessDragOverAt(m_lastDragOverPoint);
-				pArgs.Handled = isHandled;
+				e.Handled = isHandled;
 
 				dropCausesReorder = DropCausesReorder();
 
 				if (dropCausesReorder)
 				{
 					// isHandled == True means that we are reordering
-					pArgs.AcceptedOperation = DataPackageOperation.Move;
+					e.AcceptedOperation = DataPackageOperation.Move;
 				}
 
 				// See what our edge scrolling action should be...
-				dragPointRelativeToLVB = pArgs.GetPosition(this);
+				dragPointRelativeToLVB = e.GetPosition(this);
 				panVelocity = ComputeEdgeScrollVelocity(dragPointRelativeToLVB);
 				// And request it.
 				SetPendingAutoPanVelocity(panVelocity);
@@ -1089,13 +1089,13 @@ partial class ListViewBase
 
 	// Called when the user drops onto this ListViewBase.
 	protected override void OnDrop(
-		DragEventArgs pArgs)
+		DragEventArgs e)
 	{
 		bool isHandled = false;
 
-		ArgumentNullException.ThrowIfNull(pArgs);
+		ArgumentNullException.ThrowIfNull(e);
 
-		isHandled = pArgs.Handled;
+		isHandled = e.Handled;
 
 		if (!isHandled)
 		{
@@ -1110,11 +1110,11 @@ partial class ListViewBase
 
 				spItemsHost = ItemsPanelRoot!;
 				spItemsHostAsUIE = spItemsHost;
-				dropPointRelativeToPanel = pArgs.GetPosition(spItemsHostAsUIE);
+				dropPointRelativeToPanel = e.GetPosition(spItemsHostAsUIE);
 				OnReorderDrop(dropPointRelativeToPanel);
 
-				pArgs.AcceptedOperation = DataPackageOperation.Move;
-				pArgs.Handled = true;
+				e.AcceptedOperation = DataPackageOperation.Move;
+				e.Handled = true;
 			}
 			else
 			{
@@ -1122,12 +1122,12 @@ partial class ListViewBase
 			}
 		}
 
-		base.OnDrop(pArgs);
+		base.OnDrop(e);
 
 		if (m_tpDragOverItem != null)
 		{
 			// Reset the dragged-over item and potentially switch to the pointer-over visual state.
-			((ListViewBaseItem)m_tpDragOverItem).LeaveDragOver(this, pArgs);
+			((ListViewBaseItem)m_tpDragOverItem).LeaveDragOver(this, e);
 		}
 
 		CompleteDrop();

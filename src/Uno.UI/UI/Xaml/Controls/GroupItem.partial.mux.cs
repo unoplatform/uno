@@ -387,13 +387,13 @@ partial class GroupItem
 	}
 
 	// Called when the GroupItem receives focus.
-	protected override void OnGotFocus(RoutedEventArgs pArgs)
+	protected override void OnGotFocus(RoutedEventArgs e)
 	{
 		FocusState focusState = FocusState.Programmatic;
 
-		base.OnGotFocus(pArgs);
+		base.OnGotFocus(e);
 
-		var spOriginalSource = pArgs.OriginalSource;
+		var spOriginalSource = e.OriginalSource;
 		if (spOriginalSource is UIElement spFocusedElement)
 		{
 			focusState = spFocusedElement.FocusState;
@@ -404,13 +404,13 @@ partial class GroupItem
 	}
 
 	// Called when the GroupItem loses focus.
-	protected override void OnLostFocus(RoutedEventArgs pArgs)
+	protected override void OnLostFocus(RoutedEventArgs e)
 	{
 		FocusState focusState = FocusState.Unfocused;
 
-		base.OnLostFocus(pArgs);
+		base.OnLostFocus(e);
 
-		var spOriginalSource = pArgs.OriginalSource;
+		var spOriginalSource = e.OriginalSource;
 		if (spOriginalSource is UIElement spFocusedElement)
 		{
 			focusState = spFocusedElement.FocusState;
@@ -504,9 +504,9 @@ partial class GroupItem
 	// Provides the behavior for the Arrange pass of layout.  Classes
 	// can override this method to define their own Arrange pass
 	// behavior.
-	protected override Size ArrangeOverride(Size arrangeSize)
+	protected override Size ArrangeOverride(Size finalSize)
 	{
-		var returnValue = base.ArrangeOverride(arrangeSize);
+		var returnValue = base.ArrangeOverride(finalSize);
 
 		if (m_tpItemsControl != null)
 		{

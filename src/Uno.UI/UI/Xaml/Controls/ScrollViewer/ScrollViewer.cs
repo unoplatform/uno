@@ -985,18 +985,18 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#region Content forwarding to the ScrollContentPresenter
-		protected override void OnContentChanged(object? oldValue, object? newValue)
+		protected override void OnContentChanged(object? oldContent, object? newContent)
 		{
-			base.OnContentChanged(oldValue, newValue);
+			base.OnContentChanged(oldContent, newContent);
 
 			if (_presenter is not null)
 			{
-				ApplyScrollContentPresenterContent(newValue);
+				ApplyScrollContentPresenterContent(newContent);
 			}
 
 			UpdateSizeChangedSubscription();
 
-			_snapPointsInfo = newValue as IScrollSnapPointsInfo;
+			_snapPointsInfo = newContent as IScrollSnapPointsInfo;
 		}
 
 		private void ApplyScrollContentPresenterContent(object? content)
@@ -1777,11 +1777,11 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
-		protected override void OnKeyDown(KeyRoutedEventArgs args)
+		protected override void OnKeyDown(KeyRoutedEventArgs e)
 		{
-			base.OnKeyDown(args);
+			base.OnKeyDown(e);
 
-			var key = args.Key;
+			var key = e.Key;
 
 			// WinUI stops keyboard scrolling if TemplatedParentHandlesScrolling
 			// but interestingly that doesn't seem to affect pointer wheel scrolling
@@ -1791,10 +1791,10 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			if (FocusHelper.IsGamepadNavigationDirection(args.OriginalKey) ||
-				FocusHelper.IsGamepadPageNavigationDirection(args.OriginalKey))
+			if (FocusHelper.IsGamepadNavigationDirection(e.OriginalKey) ||
+				FocusHelper.IsGamepadPageNavigationDirection(e.OriginalKey))
 			{
-				args.Handled = ProcessGamepadNavigation(key, args.OriginalKey);
+				e.Handled = ProcessGamepadNavigation(key, e.OriginalKey);
 				return;
 			}
 
@@ -1830,7 +1830,7 @@ namespace Microsoft.UI.Xaml.Controls
 							var newVerticalOffset = (VerticalOffset + viewportCenterY) * zoomRatio - viewportCenterY;
 
 							ChangeView(newHorizontalOffset, newVerticalOffset, newZoom, disableAnimation: false);
-							args.Handled = true;
+							e.Handled = true;
 						}
 						return;
 					}
@@ -1841,7 +1841,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var oldVerticalOffset = Presenter.TargetVerticalOffset;
 
 			// Check whether scrolling is allowed and focus can be moved.
-			var (shouldScroll, shouldMoveFocus) = HandleKeyDownForXYNavigation(args);
+			var (shouldScroll, shouldMoveFocus) = HandleKeyDownForXYNavigation(e);
 
 			if (!shouldScroll)
 			{
@@ -1874,21 +1874,21 @@ namespace Microsoft.UI.Xaml.Controls
 				if (canScrollHorizontally && key is VirtualKey.Left or VirtualKey.Right)
 				{
 					ScrollToHorizontalOffset(newOffset);
-					args.Handled = !NumericExtensions.AreClose(oldHorizontalOffset, Presenter.TargetHorizontalOffset);
+					e.Handled = !NumericExtensions.AreClose(oldHorizontalOffset, Presenter.TargetHorizontalOffset);
 				}
 				else if (canScrollVertically && key is not (VirtualKey.Left or VirtualKey.Right))
 				{
 					ScrollToVerticalOffset(newOffset);
-					args.Handled = !NumericExtensions.AreClose(oldVerticalOffset, Presenter.TargetVerticalOffset);
+					e.Handled = !NumericExtensions.AreClose(oldVerticalOffset, Presenter.TargetVerticalOffset);
 				}
 
-				args.Handled |= key is VirtualKey.PageUp or VirtualKey.PageDown;
+				e.Handled |= key is VirtualKey.PageUp or VirtualKey.PageDown;
 			}
 
-			if (args.Handled && shouldMoveFocus)
+			if (e.Handled && shouldMoveFocus)
 			{
 				// Continue bubbling the event so that the focus can be moved.
-				args.Handled = false;
+				e.Handled = false;
 			}
 
 			// This gets the delta that should be applied when arrow keys are pressed as a function of the

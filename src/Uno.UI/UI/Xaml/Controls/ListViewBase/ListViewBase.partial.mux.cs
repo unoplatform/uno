@@ -416,25 +416,25 @@ partial class ListViewBase
 	}
 
 	// Called when a pointer moves within a ListViewBase.
-	protected override void OnPointerMoved(PointerRoutedEventArgs pArgs)
+	protected override void OnPointerMoved(PointerRoutedEventArgs e)
 	{
-		if (pArgs is null)
+		if (e is null)
 		{
-			throw new ArgumentNullException(nameof(pArgs));
+			throw new ArgumentNullException(nameof(e));
 		}
 
-		base.OnPointerMoved(pArgs);
+		base.OnPointerMoved(e);
 
 		// XAML Drag and Drop on desktop uses drag events to track drag operations
 		// TODO Uno: DragDrop.GetUseCoreDragDrop does not exist, Uno never uses core drag and drop.
 		const bool useCoreDragDrop = false;
 		if (!useCoreDragDrop)
 		{
-			if (!pArgs.Handled)
+			if (!e.Handled)
 			{
 				bool wasGestureHandled = false;
 
-				var spPointerPoint = pArgs.GetCurrentPoint(this);
+				var spPointerPoint = e.GetCurrentPoint(this);
 				if (spPointerPoint is null)
 				{
 					throw new ArgumentNullException(nameof(spPointerPoint));
@@ -442,32 +442,32 @@ partial class ListViewBase
 
 				Point newPosition = spPointerPoint.Position;
 
-				var spPointer = pArgs.Pointer;
+				var spPointer = e.Pointer;
 				wasGestureHandled = OnDragMoveGesture(spPointer, newPosition);
 				if (wasGestureHandled)
 				{
-					pArgs.Handled = true;
+					e.Handled = true;
 				}
 			}
 		}
 	}
 
 	// Called when the user releases a pointer over the ListViewBase.
-	protected override void OnPointerReleased(PointerRoutedEventArgs pArgs)
+	protected override void OnPointerReleased(PointerRoutedEventArgs e)
 	{
-		if (pArgs is null)
+		if (e is null)
 		{
-			throw new ArgumentNullException(nameof(pArgs));
+			throw new ArgumentNullException(nameof(e));
 		}
 
-		base.OnPointerReleased(pArgs);
+		base.OnPointerReleased(e);
 
 		// XAML Drag and Drop on desktop uses drag events to track drag operations
 		// TODO Uno: DragDrop.GetUseCoreDragDrop does not exist, Uno never uses core drag and drop.
 		const bool useCoreDragDrop = false;
 		if (!useCoreDragDrop)
 		{
-			if (!pArgs.Handled)
+			if (!e.Handled)
 			{
 				bool wasGestureHandled = false;
 				Point dropPoint = default;
@@ -479,35 +479,35 @@ partial class ListViewBase
 					return;
 				}
 
-				var spPointerPoint = pArgs.GetCurrentPoint(spVisualRootAsUIE);
+				var spPointerPoint = e.GetCurrentPoint(spVisualRootAsUIE);
 				dropPoint = spPointerPoint.Position;
 
-				var spPointer = pArgs.Pointer;
+				var spPointer = e.Pointer;
 				wasGestureHandled = OnDropGesture(
 					spPointer,
 					dropPoint);
 
 				if (wasGestureHandled)
 				{
-					pArgs.Handled = true;
+					e.Handled = true;
 				}
 			}
 		}
 	}
 
 	// Called when the ListViewBase or its children lose mouse capture.
-	protected override void OnPointerCaptureLost(PointerRoutedEventArgs pArgs)
+	protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
 	{
 		bool isOriginalSource = false;
 
-		base.OnPointerCaptureLost(pArgs);
+		base.OnPointerCaptureLost(e);
 
 		// If we are the original source, terminate any mouse-initiated drag.
 		// We must check the source because the ListViewItem (our child) will
 		// relinquish mouse capture to us when a drag starts, thus causing this
 		// method to be called with the child as the original source. We don't want to
 		// terminate the drag at that time, hence this check.
-		var spSource = pArgs.OriginalSource;
+		var spSource = e.OriginalSource;
 		isOriginalSource = ReferenceEquals(spSource, this);
 
 		if (isOriginalSource)
@@ -522,8 +522,8 @@ partial class ListViewBase
 				return;
 			}
 
-			var spPointer = pArgs.Pointer;
-			var spPointerPoint = pArgs.GetCurrentPoint(spVisualRootAsUIE);
+			var spPointer = e.Pointer;
+			var spPointerPoint = e.GetCurrentPoint(spVisualRootAsUIE);
 			dropPoint = spPointerPoint.Position;
 
 			wasGestureHandled = OnDropGesture(
@@ -532,7 +532,7 @@ partial class ListViewBase
 
 			if (wasGestureHandled)
 			{
-				pArgs.Handled = true;
+				e.Handled = true;
 			}
 		}
 	}
@@ -638,16 +638,16 @@ partial class ListViewBase
 		}
 	}
 
-	protected override Size ArrangeOverride(Size arrangeSize)
+	protected override Size ArrangeOverride(Size finalSize)
 	{
 		// allow panel to arrange
-		var returnValue = base.ArrangeOverride(arrangeSize);
+		var returnValue = base.ArrangeOverride(finalSize);
 
 		// In case of DataVirtualization, if number of of items on screen are less than availableSize,
 		// this will trigger to LoadMoreItems
 		if (m_scrollHostOffsetChangeAction == ScrollHostOffsetChangeAction.ScrollHostOffsetChangeAction_IncrementalEdgeTrigger)
 		{
-			LoadMoreItemsIfNeeded(arrangeSize);
+			LoadMoreItemsIfNeeded(finalSize);
 		}
 
 		// also executed from OnScrollHostPropertyChanged
