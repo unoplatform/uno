@@ -46,6 +46,7 @@ public class Given_AutomationPropertiesDefaults
 		var button = new Button();
 		var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button);
 
+		// LocalizedControlType is left out: an unset value makes the peer fall back to the control type's name.
 		Assert.IsNotNull(peer);
 		Assert.AreEqual(string.Empty, peer.GetAcceleratorKey(), "AcceleratorKey");
 		Assert.AreEqual(string.Empty, peer.GetAccessKey(), "AccessKey");
@@ -54,5 +55,38 @@ public class Given_AutomationPropertiesDefaults
 		Assert.AreEqual(string.Empty, peer.GetItemStatus(), "ItemStatus");
 		Assert.AreEqual(string.Empty, peer.GetItemType(), "ItemType");
 		Assert.AreEqual(string.Empty, peer.GetLocalizedLandmarkType(), "LocalizedLandmarkType");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_String_Properties_Are_Cleared_Then_Empty_String_Is_Returned()
+	{
+		var button = new Button();
+		var properties = new[]
+		{
+			AutomationProperties.AcceleratorKeyProperty,
+			AutomationProperties.AccessKeyProperty,
+			AutomationProperties.FullDescriptionProperty,
+			AutomationProperties.HelpTextProperty,
+			AutomationProperties.ItemStatusProperty,
+			AutomationProperties.ItemTypeProperty,
+			AutomationProperties.LocalizedControlTypeProperty,
+			AutomationProperties.LocalizedLandmarkTypeProperty,
+		};
+
+		foreach (var property in properties)
+		{
+			button.SetValue(property, "value");
+			button.ClearValue(property);
+		}
+
+		Assert.AreEqual(string.Empty, AutomationProperties.GetAcceleratorKey(button), "AcceleratorKey");
+		Assert.AreEqual(string.Empty, AutomationProperties.GetAccessKey(button), "AccessKey");
+		Assert.AreEqual(string.Empty, AutomationProperties.GetFullDescription(button), "FullDescription");
+		Assert.AreEqual(string.Empty, AutomationProperties.GetHelpText(button), "HelpText");
+		Assert.AreEqual(string.Empty, AutomationProperties.GetItemStatus(button), "ItemStatus");
+		Assert.AreEqual(string.Empty, AutomationProperties.GetItemType(button), "ItemType");
+		Assert.AreEqual(string.Empty, AutomationProperties.GetLocalizedControlType(button), "LocalizedControlType");
+		Assert.AreEqual(string.Empty, AutomationProperties.GetLocalizedLandmarkType(button), "LocalizedLandmarkType");
 	}
 }
