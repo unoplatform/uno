@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
@@ -325,8 +326,8 @@ namespace Uno.UI.RemoteControl.Host
 
 				var targetFrameworkAttr = assembly.GetCustomAttribute<TargetFrameworkAttribute>();
 				var runtimeText = targetFrameworkAttr is not null
-					? $"dotnet v{Environment.Version} (Assembly target: {targetFrameworkAttr.FrameworkDisplayName})"
-					: $"dotnet v{Environment.Version}";
+					? $"{RuntimeInformation.FrameworkDescription} (Assembly target: {targetFrameworkAttr.FrameworkDisplayName})"
+					: RuntimeInformation.FrameworkDescription;
 #if DEBUG
 				var lastWriteTime = File.GetLastWriteTime(location);
 #endif

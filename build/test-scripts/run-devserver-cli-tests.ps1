@@ -1842,12 +1842,19 @@ function Test-PackageContent {
         # A host built with a release-candidate SDK must start on any RC of its major, not only on the SDK's own RC.
         $runtimeConfig = Get-Content ([System.IO.Path]::ChangeExtension($hostDll, '.runtimeconfig.json')) -Raw | ConvertFrom-Json
         $rollForward = $runtimeConfig.runtimeOptions.rollForward
-        foreach ($framework in $runtimeConfig.runtimeOptions.frameworks) {
-            if ($framework.version -match '-rc\.' -and ($framework.version -notmatch '^\d+\.0\.0-rc\.1$' -or $rollForward -ne 'LatestMinor')) {
-                throw "Host $tfm requires $($framework.name) $($framework.version) (rollForward: $rollForward); a release-candidate host must require <major>.0.0-rc.1 with rollForward LatestMinor"
+        $frameworks = @($runtimeConfig.runtimeOptions.frameworks)
+        if ($frameworks.Count -eq 0) {
+            throw "Host $tfm runtimeconfig.json lists no frameworks"
+        }
+        foreach ($framework in $frameworks) {
+            $isPinnedPrerelease = $framework.version -match '-' -and $framework.version -notmatch '-preview\.'
+            if ($isPinnedPrerelease -and ($framework.version -notmatch '^\d+\.0\.0-rc\.1$' -or $rollForward -ne 'LatestMinor')) {
+                throw "Host $tfm requires $($framework.name) $($framework.version) (rollForward: $rollForward). " +
+                    "Expected <major>.0.0-rc.1 with rollForward LatestMinor, so the host starts on any RC and runs on the newest one; " +
+                    "set by _UnoAcceptAnyReleaseCandidateRuntime in src/Uno.UI.RemoteControl.Host/Uno.UI.RemoteControl.Host.csproj."
             }
         }
-        Write-Log " Host runtime: $(($runtimeConfig.runtimeOptions.frameworks | ForEach-Object { "$($_.name) $($_.version)" }) -join ', ') (rollForward: $rollForward)"
+        Write-Log " Host runtime: $(($frameworks | ForEach-Object { "$($_.name) $($_.version)" }) -join ', ') (rollForward: $rollForward)"
     }
 
     Remove-Item $extractDir -Recurse -Force -ErrorAction SilentlyContinue

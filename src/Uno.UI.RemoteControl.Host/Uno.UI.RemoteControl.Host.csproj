@@ -89,8 +89,8 @@
 	</ItemGroup>
 
 	<!--
-		A release-candidate SDK pins its exact runtime build in runtimeconfig.json, so a host built with RC3 won't start
-		where only RC1 or RC2 is installed. RCs are API-complete: accept any RC of that major.
+		A release-candidate SDK pins its own runtime build in runtimeconfig.json, so the host won't start on an earlier RC.
+		RCs are go-live and expected to be API-stable, so accept any RC of that major.
 	-->
 	<Target Name="_UnoAcceptAnyReleaseCandidateRuntime" AfterTargets="ProcessFrameworkReferences">
 		<ItemGroup>
