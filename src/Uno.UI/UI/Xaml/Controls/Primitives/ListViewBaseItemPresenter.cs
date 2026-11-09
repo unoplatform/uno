@@ -12,6 +12,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 // UNO ONLY: public because subclasses are public; WinUI hides it from IDL.
 // All new members of this class MUST be internal (or private protected); overrides of existing public API are fine.
+[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 public abstract partial class ListViewBaseItemPresenter : ContentPresenter
 {
 	// Ports CDependencyProperty::GetDefaultValue for the presenter DPs (DependencyProperty.cpp:159-193).
