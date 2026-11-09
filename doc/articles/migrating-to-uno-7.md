@@ -64,7 +64,7 @@ If your app is already a single `Sdk="Uno.Sdk"` project on .NET 10 or later, thi
 **Only if it applies to your app:**
 
 - Remove [`net9.0-*`](xref:Uno.Development.MigratingToUno7.ProjectSetup#net-9-is-no-longer-supported) and [`net*-maccatalyst`](xref:Uno.Development.MigratingToUno7.ProjectSetup#mac-catalyst-is-removed) targets.
-- [Clean up `UnoFeatures`](#4-clean-up-unofeatures): remove `Lottie` (and `Prism`, once a Prism release built for 7.0 is out), and check the `Skia` rules if you list `WebGpu` or draw with Skia on Windows.
+- [Clean up `UnoFeatures`](#4-clean-up-unofeatures): remove `Prism` and `Lottie`, and check the `Skia` rules if you list `WebGpu` or draw with Skia on Windows.
 - On iOS and tvOS, [migrate saved settings at startup](xref:Uno.Development.MigratingToUno7.AppStartup#application-settings-on-ios-and-tvos) if you use `LocalSettings` or `RoamingSettings`. Otherwise updating users lose access to them, and the build won't warn you.
 
 Everything else lives on [linked pages](#the-rest-of-the-guide) you only need to open when something applies to you.
@@ -77,7 +77,7 @@ Everything else lives on [linked pages](#the-rest-of-the-guide) you only need to
 | A project created before Uno Platform 6.0 that still selects a renderer | Follow the [Uno Platform 6.0 migration guide](xref:Uno.Development.MigratingToUno6) first. |
 | Separate head projects (`*.Mobile`, `*.Wasm`, `*.Skia.*`, …) or an app on `Microsoft.NET.Sdk` | [Convert to the `Uno.Sdk`](xref:Uno.Development.MigratingToUno7.ProjectSetup#the-unosdk-is-required-for-applications) first, since these no longer build. |
 | A class library or NuGet package | Read [Libraries and conditional code](xref:Uno.Development.MigratingToUno7.Libraries) as well. |
-| An app or library that uses Prism | Wait for a [Prism release built for Uno Platform 7.0](xref:Uno.Development.MigratingToUno7.Packages#prism-uno-feature-removed). The current packages (9.0.537 and earlier) don't build with it. |
+| An app or library that uses Prism | Remove the `Prism` Uno Feature as part of the upgrade. The current Prism packages (9.0.537 and earlier) don't build with 7.0, so [add Prism back as packages](xref:Uno.Development.MigratingToUno7.Packages#prism-uno-feature-removed) once a release built for Uno Platform 7.0 is out. |
 
 ## Upgrade step by step
 
@@ -116,7 +116,7 @@ Windows heads now build against Windows App SDK 2.x, so [packaged apps need the 
 ### 4. Clean up `UnoFeatures`
 
 - `skiarenderer` is now implied in an app, so you can usually remove it. Replace it with `Skia` instead if the app also lists `WebGpu` and still draws with SkiaSharp, since `WebGpu` turns off the implied `Skia`.
-- Once a Prism release built for Uno Platform 7.0 is available, remove `Prism` and [reference its packages yourself](xref:Uno.Development.MigratingToUno7.Packages#prism-uno-feature-removed). The current ones (9.0.537 and earlier) don't build with 7.0. The build reports `UNOB0035` while `UnoFeatures` still lists `Prism`.
+- Remove `Prism`. The build reports `UNOB0035` while `UnoFeatures` still lists it. The current Prism packages (9.0.537 and earlier) don't build with 7.0, so [add Prism back as packages](xref:Uno.Development.MigratingToUno7.Packages#prism-uno-feature-removed) once a release built for Uno Platform 7.0 is available.
 - Remove `Lottie` and any reference to `Uno.WinUI.Lottie`. [Lottie needs no package on Uno Platform targets now](xref:Uno.Development.MigratingToUno7.Packages#unowinuilottie-package-and-lottie-uno-feature-removed). A project that also targets Windows still references `CommunityToolkit.WinUI.Lottie` for that target.
 - If code built for Windows uses `SKCanvasElement`, `SKXamlCanvas`, Toolkit Skia controls such as `ShadowContainer` or SkiaSharp itself, list `Skia` and set `<UnoEnableSkiaOnWinAppSdk>true</UnoEnableSkiaOnWinAppSdk>`. Skia is off on Windows without that property, even when listed, and [the build fails until you set it](xref:Uno.Development.MigratingToUno7.Packages#skia-uno-feature-off-on-windows-winappsdk).
 - If your library uses `SKCanvasElement`, the `SkiaExtensions` conversions or Toolkit Skia controls, [list `Skia`](xref:Uno.Development.MigratingToUno7.Packages#skia-uno-feature-no-longer-implied-on-libraries).

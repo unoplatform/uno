@@ -99,7 +99,7 @@ See also: [Which target frameworks should a library keep](xref:Uno.Development.M
 
 ### `Prism` Uno Feature removed
 
-The `Uno.Sdk` no longer references Prism. The Prism packages published so far (`Prism.Uno.WinUI` 9.0.537 and earlier) were built against Uno Platform 5 and don't build with 7.0. Remove `Prism` from `UnoFeatures`, and add a `PackageReference` to `Prism.DryIoc.Uno.WinUI` in the app (or `Prism.Uno.WinUI` in a library), with a Prism release built for Uno Platform 7.0. The build reports [UNOB0035](xref:Build.Solution.error-codes#unob0035-the-prism-uno-feature-is-no-longer-supported) while `UnoFeatures` still lists `Prism`, and the `PrismVersion` property is silently ignored. A `Navigation` entry next to `Prism` now references `Uno.Extensions.Navigation`, which the `Prism` feature used to leave out.
+The `Uno.Sdk` no longer references Prism. The Prism packages published so far (`Prism.Uno.WinUI` 9.0.537 and earlier) were built against Uno Platform 5 and don't build with 7.0. Remove `Prism` from `UnoFeatures` right away. Once a Prism release built for Uno Platform 7.0 is available, add Prism back with a `PackageReference` to `Prism.DryIoc.Uno.WinUI` in the app (or `Prism.Uno.WinUI` in a library). The build reports [UNOB0035](xref:Build.Solution.error-codes#unob0035-the-prism-uno-feature-is-no-longer-supported) while `UnoFeatures` still lists `Prism`, and the `PrismVersion` property is silently ignored. A `Navigation` entry next to `Prism` now references `Uno.Extensions.Navigation`, which the `Prism` feature used to leave out.
 
 ### `webview` Uno Feature only brings the native WebView2 loader (Desktop)
 
