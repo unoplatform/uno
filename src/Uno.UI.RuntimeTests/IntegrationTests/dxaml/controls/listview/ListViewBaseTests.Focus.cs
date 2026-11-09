@@ -1103,7 +1103,9 @@ public partial class ListViewBaseTests
 		await runScenario(async () => { await TestServices.KeyboardHelper.Tab(); }, async () => { await TestServices.KeyboardHelper.ShiftTab(); }, firstFocusableChild, lastFocusableChild);
 
 		Log.Comment("Run Scenario with Down/Up.");
-		await runScenario(async () => { await TestServices.KeyboardHelper.Down(); }, async () => { await TestServices.KeyboardHelper.Up(); }, firstFocusableChild, firstFocusableChild);
+		// UNO TODO: the C++ test expects firstFocusableChild for Up. WinUI 3 with real keys lands on the nearer lastFocusableChild,
+		// the XY candidate, with the same layout and steps (sandbox key probe, focusChildren.ofSelected).
+		await runScenario(async () => { await TestServices.KeyboardHelper.Down(); }, async () => { await TestServices.KeyboardHelper.Up(); }, firstFocusableChild, lastFocusableChild);
 
 		// The following scenarios use horizontal navigation, so change the orientation of the panel.
 		UIExecutor.Execute(() => { root.Orientation = Orientation.Horizontal; });
