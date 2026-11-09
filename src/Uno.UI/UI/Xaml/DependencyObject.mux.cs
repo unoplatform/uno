@@ -237,11 +237,11 @@ public partial class DependencyObject
 		{
 			// Get logical parent so popups and flyouts inherit theme changes.
 			// MUX: GetInheritanceParentInternal(TRUE /* fLogicalParent */), framework.cpp:3113-3146.
-			// In Uno the logical inheritance parent is FrameworkElement.Parent
+			// In Uno the logical inheritance parent is FrameworkElement.InheritanceParent
 			// (LogicalParentOverride ?? Store.Parent): a Popup sets its Child's LogicalParentOverride
 			// to itself, so the content follows the opener's theme rather than the PopupRoot it is
-			// visually reparented under.
-			parent = thisAsFe.Parent;
+			// visually reparented under. Unlike the public Parent, it doesn't hide an items host panel.
+			parent = thisAsFe.InheritanceParent;
 		}
 		else
 		{
