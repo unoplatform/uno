@@ -71,7 +71,10 @@ public partial class AutomationPeer : DependencyObject
 	/// Gets the AutomationPeer that is the parent of this AutomationPeer.
 	/// </summary>
 	/// <returns>The parent peer.</returns>
-	public AutomationPeer? GetParent() => _parent;
+	public AutomationPeer? GetParent() => GetAPParent();
+
+	// MUX Reference CAutomationPeer::GetAPParent; CFrameworkElementAutomationPeer walks to the logical parent.
+	private protected virtual AutomationPeer? GetAPParent() => _parent;
 
 	/// <summary>
 	/// Gets the accelerator key combination for the element that is associated with the UI Automation peer.

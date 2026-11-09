@@ -355,6 +355,8 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		}
 	}
 
+	private protected override AutomationPeer GetAPParent() => GetLogicalAPParent();
+
 	protected override void ShowContextMenuCore()
 	{
 		// MUX Reference CFrameworkElementAutomationPeer::ShowContextMenuHelper
