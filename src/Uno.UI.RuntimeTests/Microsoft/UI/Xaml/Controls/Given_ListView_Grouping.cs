@@ -93,6 +93,60 @@ public class Given_ListView_Grouping
 		return list;
 	}
 
+	private sealed class FixedGroupStyleSelector : GroupStyleSelector
+	{
+		public GroupStyle Style { get; init; }
+
+		protected override GroupStyle SelectGroupStyleCore(object group, uint level) => Style;
+	}
+
+	private static FixedGroupStyleSelector SelectorWith(string headerText, bool hidesIfEmpty = false) => new()
+	{
+		Style = new GroupStyle
+		{
+			HidesIfEmpty = hidesIfEmpty,
+			HeaderTemplate = Template($"<TextBlock Text='{headerText}' Height='40' />"),
+		},
+	};
+
+	[TestMethod]
+	public async Task When_GroupStyleSelector_Swapped_After_Load_Then_Headers_Use_New_Style()
+	{
+		var list = CreateList(CreateGroups(3, 2));
+		list.GroupStyle.Clear();
+		list.GroupStyleSelector = SelectorWith("First");
+		await Load(list);
+		Assert.IsNotNull(FindFirst<TextBlock>(Headers(list)[0], t => t.Text == "First"));
+
+		list.GroupStyleSelector = SelectorWith("Second");
+		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(3, Headers(list).Count);
+		foreach (var header in Headers(list))
+		{
+			Assert.IsNotNull(FindFirst<TextBlock>(header, t => t.Text == "Second"));
+		}
+	}
+
+	[TestMethod]
+	public async Task When_GroupStyleSelector_Swapped_After_Load_Then_HidesIfEmpty_Follows()
+	{
+		var groups = CreateGroups(3, 2);
+		groups[1].Clear();
+		var list = CreateList(groups);
+		list.GroupStyle.Clear();
+		list.GroupStyleSelector = SelectorWith("Header", hidesIfEmpty: false);
+		await Load(list);
+		Assert.AreEqual(3, Headers(list).Count);
+
+		list.GroupStyleSelector = SelectorWith("Header", hidesIfEmpty: true);
+		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(2, Headers(list).Count);
+	}
+
 	private static async Task<T> Load<T>(T list)
 		where T : ListViewBase
 	{
