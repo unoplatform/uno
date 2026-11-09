@@ -277,11 +277,10 @@ namespace Uno.UI
 		public static class ListViewBase
 		{
 			/// <summary>
-			/// Sets the value to use for <see cref="ItemsStackPanel.CacheLength"/> and <see cref="ItemsWrapGrid.CacheLength"/> if not set
-			/// explicitly in Xaml or code. Higher values will cache more views either side of the visible window, improving list scroll
-			/// performance at the expense of consuming more memory and taking longer to initially load. Setting this to null will leave
-			/// the default value at the UWP default of 4.0.
+			/// No longer used: <see cref="ItemsStackPanel.CacheLength"/> and <see cref="ItemsWrapGrid.CacheLength"/> default to 4.0,
+			/// as on WinUI. Set <c>CacheLength</c> on the panel instead.
 			/// </summary>
+			[Obsolete("FeatureConfiguration.ListViewBase.DefaultCacheLength has no effect since the WinUI port of ListViewBase. Set CacheLength on ItemsStackPanel or ItemsWrapGrid instead.")]
 			public static double? DefaultCacheLength { get; set; } = 1.0;
 		}
 
