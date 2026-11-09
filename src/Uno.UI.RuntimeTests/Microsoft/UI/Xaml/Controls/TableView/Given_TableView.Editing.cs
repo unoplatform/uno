@@ -387,11 +387,14 @@ public partial class Given_TableView
 				break;
 		}
 
+		// An item from a replaced source is reported as Cancel with nothing written.
+		var itemStaysInSource = trigger != ForcedClose.ItemsSourceReplaced;
+
 		Assert.IsFalse(table.IsEditing, "the veto is ignored on a forced close");
 		Assert.IsNull(FindEditor(table));
-		Assert.AreEqual("Forced", items[1].Name, "the valid pending value reaches the item");
+		Assert.AreEqual(itemStaysInSource ? "Forced" : "Ada0", items[1].Name, "only an item still in the source receives the pending value");
 		Assert.AreEqual(1, raised.Count);
-		Assert.AreEqual(TableViewEditAction.Commit, raised[0].EditAction);
+		Assert.AreEqual(itemStaysInSource ? TableViewEditAction.Commit : TableViewEditAction.Cancel, raised[0].EditAction);
 		Assert.AreSame(items[1], raised[0].Item);
 	}
 
@@ -435,15 +438,13 @@ public partial class Given_TableView
 		await PressAsync("f2");
 		FindEditor(table)!.Text = "";
 
-		// The forced close writes, sees the blocking error, and reports Cancel. TerminateEditForReset's write
-		// does not set m_editSourceWritten, so FinishEditTeardown's cancel path skips the rollback and the
-		// rejected value stays on the item, as in WinUI.
+		// The forced close writes, sees the blocking error, reports Cancel and rolls the write back.
 		table.IsReadOnly = true;
 
 		Assert.IsFalse(table.IsEditing);
 		Assert.AreEqual(1, raised.Count);
 		Assert.AreEqual(TableViewEditAction.Cancel, raised[0].EditAction);
-		Assert.AreEqual("", item.Name);
+		Assert.AreEqual("Ada", item.Name);
 	}
 
 	[TestMethod]

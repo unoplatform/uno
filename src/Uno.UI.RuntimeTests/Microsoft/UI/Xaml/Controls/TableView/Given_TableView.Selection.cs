@@ -54,10 +54,10 @@ public partial class Given_TableView
 		Assert.AreEqual(0, GetFocusedRowIndex(table), "Home focuses the first row");
 		Assert.AreEqual(0, table.SelectedIndex);
 
-		// GetEstimatedRowsPerPage: viewport height over a realized data row's height.
+		// GetPageTargetRow: PageDown lands on the last row fully in view.
 		var rowsPerPage = Math.Max(1, (int)(GetBodyScroller(table).ViewportHeight / GetRow(table, 0)!.ActualHeight));
 		await PressAsync("pagedown");
-		Assert.AreEqual(Math.Min(items.Count - 1, rowsPerPage), table.SelectedIndex, "PageDown moves by the estimated rows per page");
+		Assert.AreEqual(Math.Min(items.Count - 1, rowsPerPage - 1), table.SelectedIndex, "PageDown lands on the last row in view");
 		Assert.AreEqual(table.SelectedIndex, GetFocusedRowIndex(table));
 
 		// Up on the first row does not move the selection; unlike Home/End/PageUp/PageDown the key is
@@ -70,8 +70,8 @@ public partial class Given_TableView
 	[TestMethod]
 	public async Task When_Keyboard_Entry_From_Header()
 	{
-		// TableView_Keyboard.cpp: Up/Down are clamped inside the header band (TryHandleHeaderVerticalKey),
-		// while from the header PageDown enters the rows at rowsPerPage - 1 and End at the last row.
+		// TableView_Keyboard.cpp: Down enters the body in the header's column (TryHandleHeaderVerticalKey),
+		// and from the header PageDown enters the rows at the last row fully in view.
 		var items = People(30);
 		var table = CreateTable(items);
 		await LoadAsync(table);
@@ -81,8 +81,8 @@ public partial class Given_TableView
 		table.Select(5);
 		await FocusHeaderAsync();
 		await PressAsync("down");
-		Assert.AreEqual(5, table.SelectedIndex, "Down stays inside the header band");
-		Assert.AreEqual(-1, GetFocusedRowIndex(table), "focus stays on the header");
+		Assert.AreEqual(5, table.SelectedIndex, "Down keeps the selection");
+		Assert.AreEqual(5, GetFocusedRowIndex(table), "Down enters the body at the selected row");
 
 		table.DeselectAll();
 		await FocusHeaderAsync();
@@ -91,10 +91,11 @@ public partial class Given_TableView
 		Assert.AreEqual(expectedPageEntry, table.SelectedIndex, "the first PageDown lands on rowsPerPage - 1");
 		Assert.AreEqual(expectedPageEntry, GetFocusedRowIndex(table));
 
+		// Home/End stay inside the header band and never navigate the rows.
 		await FocusHeaderAsync();
 		await PressAsync("end");
-		Assert.AreEqual(items.Count - 1, table.SelectedIndex, "End enters at the last row");
-		Assert.AreEqual(items.Count - 1, GetFocusedRowIndex(table));
+		Assert.AreEqual(expectedPageEntry, table.SelectedIndex, "End leaves the selection alone");
+		Assert.AreEqual(-1, GetFocusedRowIndex(table), "End keeps focus on the header band");
 
 		async Task FocusHeaderAsync()
 		{
@@ -188,7 +189,7 @@ public partial class Given_TableView
 
 		try
 		{
-			// Row-selection Space excludes Alt and Ctrl, so Ctrl+Space leaves the selection alone.
+			// Row-selection Space excludes only Alt, and Ctrl toggles the focused row off.
 			await KeyboardHelper.PressKeySequence("$d$_ctrl#$d$_space#$u$_space#$u$_ctrl");
 			await WindowHelper.WaitForIdle();
 		}
@@ -197,8 +198,8 @@ public partial class Given_TableView
 			await ReleaseCtrlAsync();
 		}
 
-		Assert.AreEqual(2, table.SelectedIndex, "Ctrl+Space is not a row-selection gesture");
-		Assert.AreSame(items[2], table.SelectedItem);
+		Assert.AreEqual(-1, table.SelectedIndex, "Ctrl+Space deselects the focused row");
+		Assert.AreEqual(2, GetFocusedRowIndex(table), "without moving focus");
 	}
 
 	[TestMethod]

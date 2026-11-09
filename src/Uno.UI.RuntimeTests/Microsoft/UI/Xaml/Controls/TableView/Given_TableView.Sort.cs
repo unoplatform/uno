@@ -201,22 +201,14 @@ public partial class Given_TableView
 		var sortedCount = 0;
 		table.Sorted += (_, _) => sortedCount++;
 
-		// OnColumnCanSortChanged asks for SortByColumn(column, None), but CanSortColumn already
-		// rejects the opted-out column, so the request is a no-op and the sort stays applied.
-		// The code wins over its own comment ("must not keep an active sort applied to it").
+		// A clear skips the CanSort gate, so opting out removes the active sort.
 		name.CanSort = false;
 		await WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(SortDirection.Ascending, name.SortDirection);
-		AssertRowOrder(table, items, SortDirection.Ascending);
-		Assert.AreEqual(0, sortedCount);
-		Assert.IsNull(FindSortIndicator(GetHeaderCell(table, name)), "the rebuilt header drops the chevron");
-
-		// ClearSort does not go through CanSortColumn, so it still clears the column.
-		Assert.IsTrue(table.ClearSort());
-		await WindowHelper.WaitForIdle();
 		Assert.AreEqual(SortDirection.None, name.SortDirection);
 		AssertRowOrder(table, items, SortDirection.None);
+		Assert.AreEqual(1, sortedCount);
+		Assert.IsNull(FindSortIndicator(GetHeaderCell(table, name)), "the rebuilt header drops the chevron");
 	}
 
 	[TestMethod]
@@ -975,9 +967,9 @@ public partial class Given_TableView
 		name.HeaderTemplateSelector = selector;
 		await LoadAsync(table);
 
-		var presenter = GetHeaderCell(table, name).Children.OfType<ContentPresenter>().First();
-		Assert.AreSame(selector, presenter.ContentTemplateSelector);
-		Assert.AreEqual(DependencyProperty.UnsetValue, presenter.ReadLocalValue(ContentPresenter.ContentTemplateProperty), "the template is not applied alongside the selector");
+		var header = GetHeaderCell(table, name);
+		Assert.AreSame(selector, header.ContentTemplateSelector);
+		Assert.IsNull(header.ContentTemplate, "the template is not applied alongside the selector");
 
 		var texts = Descendants(GetHeaderCell(table, name)).OfType<TextBlock>().Select(t => t.Text).ToList();
 		CollectionAssert.Contains(texts, "FromSelector");
@@ -987,8 +979,8 @@ public partial class Given_TableView
 		name.HeaderTemplateSelector = null;
 		await WindowHelper.WaitForIdle();
 
-		presenter = GetHeaderCell(table, name).Children.OfType<ContentPresenter>().First();
-		Assert.AreSame(name.HeaderTemplate, presenter.ContentTemplate);
+		header = GetHeaderCell(table, name);
+		Assert.AreSame(name.HeaderTemplate, header.ContentTemplate);
 		texts = Descendants(GetHeaderCell(table, name)).OfType<TextBlock>().Select(t => t.Text).ToList();
 		CollectionAssert.Contains(texts, "FromTemplate");
 
@@ -1053,7 +1045,7 @@ public partial class Given_TableView
 		CollectionAssert.AreEqual(expected.Select(p => p.Name).ToList(), GetRowNames(table), $"row order for {direction}");
 	}
 
-	private static Control? FindSortIndicator(Grid headerCell)
+	private static Control? FindSortIndicator(FrameworkElement headerCell)
 		=> Descendants(headerCell).OfType<Control>().FirstOrDefault(c => c.GetType().Name == "SortIndicator");
 
 	private static void AssertIndicator(TableView table, TableViewColumn column, SortDirection direction)

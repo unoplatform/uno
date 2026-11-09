@@ -177,13 +177,15 @@ public partial class Given_TableView
 		table.GridLinesVisibility = visibility;
 		await WindowHelper.WaitForIdle();
 
+		// The header row's separator comes from the template, whatever GridLinesVisibility says.
 		var headerRow = FindByName<Border>(table, "PART_HeaderRow")!;
-		Assert.AreEqual(horizontal ? 1.0 : 0.0, headerRow.BorderThickness.Bottom, "header row bottom line");
+		Assert.AreEqual(1.0, headerRow.BorderThickness.Bottom, "header row bottom line");
 
 		foreach (var headerCell in GetHeaderCells(table))
 		{
-			var gridLine = headerCell.Children.OfType<Border>().Single(b => b.Name == "TableViewHeaderGridLine");
-			Assert.AreEqual(vertical ? Visibility.Visible : Visibility.Collapsed, gridLine.Visibility, "header vertical line");
+			// The header separator stays whatever GridLinesVisibility says; only terminal suppression hides it.
+			var gridLine = FindByName<Border>(headerCell, "PART_GridLine")!;
+			Assert.AreEqual(Visibility.Visible, gridLine.Visibility, "header vertical line");
 		}
 
 		foreach (var row in GetRealizedRows(table))
@@ -221,9 +223,9 @@ public partial class Given_TableView
 		foreach (var headerCell in GetHeaderCells(table))
 		{
 			Assert.AreEqual(rowMinHeight, headerCell.MinHeight, "header MinHeight");
-			var presenter = headerCell.Children.OfType<ContentPresenter>().First();
+			Assert.AreEqual(new Thickness(8, headerPaddingTop, 8, headerPaddingTop), headerCell.Padding, "header padding");
 			// Sortable headers reserve the chevron's SortIndicatorSize (16) on the trailing edge.
-			Assert.AreEqual(new Thickness(8, headerPaddingTop, 8 + 16, headerPaddingTop), presenter.Padding, "header padding");
+			Assert.AreEqual(16.0, FindByName<ContentPresenter>(headerCell, "PART_ContentPresenter")!.Margin.Right, "header sort reserve");
 		}
 	}
 
@@ -592,7 +594,7 @@ public partial class Given_TableView
 
 		var headerCell = GetHeaderCell(table, name);
 		// A plain string header renders through a trimming TextBlock.
-		Assert.AreEqual("Renamed", ((TextBlock)headerCell.Children.OfType<ContentPresenter>().First().Content).Text);
+		Assert.AreEqual("Renamed", ((TextBlock)headerCell.Content).Text);
 		Assert.AreEqual("Renamed", AutomationProperties.GetName(headerCell));
 
 		name.Header = "A much, much longer header than any of the cell values below it";
@@ -767,11 +769,11 @@ public partial class Given_TableView
 	private static UIElement? GetCellContent(Grid cell)
 		=> cell.Children.Count > 0 ? cell.Children[0] : null;
 
-	private static List<Grid> GetHeaderCells(TableView table)
-		=> FindByName<Panel>(table, "PART_HeaderHost")!.Children.OfType<Grid>().ToList();
+	private static List<TableViewColumnHeader> GetHeaderCells(TableView table)
+		=> FindByName<Panel>(table, "PART_HeaderHost")!.Children.OfType<TableViewColumnHeader>().ToList();
 
-	private static Grid GetHeaderCell(TableView table, TableViewColumn column)
-		=> GetHeaderCells(table).Single(c => ReferenceEquals(c.Tag, column));
+	private static TableViewColumnHeader GetHeaderCell(TableView table, TableViewColumn column)
+		=> GetHeaderCells(table).Single(c => ReferenceEquals(c.Column, column));
 
 	private static string? GetCellText(TableViewRow row, int columnIndex)
 		=> (GetCellContent(GetCells(row)[columnIndex]) as TextBlock)?.Text;

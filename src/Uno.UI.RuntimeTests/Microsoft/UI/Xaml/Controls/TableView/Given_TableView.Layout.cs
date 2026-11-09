@@ -63,9 +63,8 @@ public partial class Given_TableView
 	[TestMethod]
 	public async Task When_Auto_Width_Tracks_Realized_Content()
 	{
-		// TableView_Layout.cpp: "Auto is shrink-capable: each measure pass re-derives the width from
-		// the currently pulled measured max (header + realized rows)". The column follows the widest
-		// realized cell in both directions (CGrid parity), it does not latch a grow-only maximum.
+		// TableView_Layout.cpp: "Auto is grow-only within a data set, so a column never narrows as rows
+		// scroll out (ResetColumnDesiredWidths)".
 		var items = new ObservableCollection<Person>(People(4));
 		var table = CreateTable(items);
 		var name = table.Columns[0];
@@ -88,12 +87,13 @@ public partial class Given_TableView
 		}
 
 		items.Remove(wide);
-		await WindowHelper.WaitFor(() => name.ActualWidth < grown - 50, message: "Auto column did not follow the widest realized cell back down");
-		Assert.AreEqual(initial, name.ActualWidth, LayoutTolerance);
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual(grown, name.ActualWidth, LayoutTolerance, "Auto does not narrow within a data set");
 
 		// A new data set re-resolves from scratch.
-		table.ItemsSource = new ObservableCollection<Person> { wide };
-		await WindowHelper.WaitFor(() => name.ActualWidth > initial + 50, message: "Auto column did not resolve against the new data set");
+		table.ItemsSource = new ObservableCollection<Person>(People(4));
+		await WindowHelper.WaitFor(() => name.ActualWidth < grown - 50, message: "Auto column did not re-resolve against the new data set");
+		Assert.AreEqual(initial, name.ActualWidth, LayoutTolerance);
 	}
 
 	[TestMethod]
@@ -588,7 +588,7 @@ public partial class Given_TableView
 		}
 	}
 
-	private static FrameworkElement? FindGripper(Grid headerCell)
+	private static FrameworkElement? FindGripper(FrameworkElement headerCell)
 		=> Descendants(headerCell).OfType<FrameworkElement>().FirstOrDefault(e => e.GetType().Name == "ResizeGripper");
 }
 
