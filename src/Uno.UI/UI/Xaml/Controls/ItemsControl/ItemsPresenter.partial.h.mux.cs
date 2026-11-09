@@ -42,6 +42,7 @@ public partial class ItemsPresenter
 	// Header and footer: see HeaderContentControl and FooterContentControl.
 
 	private bool m_bCanLoadFooter;                       // Specifies whether we can load the footer.
+	private bool m_hasArrangedPanel;                     // TODO Uno: Whether m_lastFooterArrangeRect is known yet, see DelayLoadFooter.
 	private WeakReference<ScrollViewer>? m_wrScrollViewer; // Weak ref to our ScrollViewer.
 
 	// Specifies how close from the footer we should be before

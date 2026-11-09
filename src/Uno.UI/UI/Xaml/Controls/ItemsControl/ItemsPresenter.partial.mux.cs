@@ -163,7 +163,9 @@ public partial class ItemsPresenter
 
 	internal void DelayLoadFooter(Rect? pFutureViewportRect, bool updateLayout)
 	{
-		if (!m_bCanLoadFooter)
+		// TODO Uno: Loaded comes before the first arrange with a panel (WinUI has one by then), and a footer rect of 0 would
+		// always look close enough. The arrange calls back here.
+		if (!m_bCanLoadFooter && m_hasArrangedPanel)
 		{
 			ScrollViewer? spScrollViewer = null;
 			m_wrScrollViewer?.TryGetTarget(out spScrollViewer);
@@ -500,6 +502,7 @@ public partial class ItemsPresenter
 		m_lastHeaderArrangeRect = headerRect;
 		m_lastFooterArrangeRect = footerRect;
 		m_lastPanelArrangeRect = panelRect;
+		m_hasArrangedPanel = true;
 		DelayLoadFooter();
 
 		returnValue = finalSize;
