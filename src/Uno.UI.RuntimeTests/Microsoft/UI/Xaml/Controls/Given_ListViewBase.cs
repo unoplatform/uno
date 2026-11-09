@@ -4807,9 +4807,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var lv = setup as ListView ?? setup.FindFirstDescendant<ListView>(); // get the LV itself, or the TabListView within TabView used for header
 			var sv = lv.FindFirstDescendant<ScrollViewer>();
 
-			// Selector only scrolls to a newly selected item while it has focus (m_focusedIndex != -1).
-			((Control)lv.ContainerFromIndex(0)).Focus(FocusState.Programmatic);
-			await WindowHelper.WaitForIdle();
+			if (setup is ListView)
+			{
+				// Selector only scrolls to a newly selected item while it has focus (m_focusedIndex != -1).
+				// TabView scrolls without it: WinUI lands on offset 4830 either way.
+				((Control)lv.ContainerFromIndex(0)).Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+			}
 
 			SetSelectedItem(source.ElementAt(50));
 

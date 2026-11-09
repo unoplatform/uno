@@ -50,12 +50,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_Width_Is_Zero_Then_ViewportHeight_Is_Published()
 		{
-			var SUT = new ScrollViewer { Height = 300, HorizontalAlignment = HorizontalAlignment.Left, VerticalScrollBarVisibility = ScrollBarVisibility.Disabled };
+			// Matches WinUI, which reports a 0x500 viewport here.
+			var list = new ListView { Height = 500, HorizontalAlignment = HorizontalAlignment.Left };
 
-			await UITestHelper.Load(SUT, x => x.IsLoaded && x.ActualHeight > 0);
+			await UITestHelper.Load(list, x => x.IsLoaded && x.ActualHeight > 0);
+			var SUT = list.FindFirstDescendant<ScrollViewer>();
 
-			Assert.AreEqual(0, SUT.ActualWidth);
-			Assert.AreEqual(300, SUT.ViewportHeight);
+			Assert.AreEqual(0, SUT.ViewportWidth);
+			Assert.AreEqual(500, SUT.ViewportHeight);
 		}
 
 		[TestMethod]
