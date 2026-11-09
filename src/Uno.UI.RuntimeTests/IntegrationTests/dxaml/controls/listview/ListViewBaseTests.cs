@@ -524,8 +524,9 @@ public partial class ListViewBaseTests
 		Log.Comment("Center: " + center.ToString());
 
 #if HAS_UNO
-		// TODO Uno: FindElementsInHostCoordinates yields document order, where WinUI yields the topmost element first.
-		return VisualTreeHelper.FindElementsInHostCoordinates(center, target).Last();
+		// TODO Uno: FindElementsInHostCoordinates yields document order and includes collapsed elements (#25267),
+		// where WinUI yields the topmost hit-testable element first. Use the pointer hit test instead.
+		return VisualTreeHelper.HitTest(center, target.XamlRoot?.VisualTree.RootElement).element;
 #else
 		return VisualTreeHelper.FindElementsInHostCoordinates(center, target).First();
 #endif
