@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -13,12 +14,15 @@ using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Tests.Common;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.DevTools.Input;
 
 using static Private.Infrastructure.TestServices;
@@ -221,24 +225,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			return new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
 		}
 
-		// UNO TODO: InputHelper has no PressHoldAndPanFromCenter; this mirrors InputHelper.PanFromCenter with a hold before the pan.
-		private static void PressHoldAndPanFromCenter(FrameworkElement element, int relX, int relY, double velocityFactor, int holdTime)
-		{
-			MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
-			{
-				using var finger = InputInjector.TryCreate()?.GetFinger() ?? throw new InvalidOperationException("Failed to create finger");
-				var center = GetCenterOfElement(element);
-
-				const uint steps = 10;
-				var durationInMilliseconds = Math.Sqrt((double)relX * relX + (double)relY * relY) / velocityFactor;
-
-				finger.Press(center);
-				Thread.Sleep(holdTime);
-				finger.MoveTo(new Point(center.X + relX, center.Y + relY), steps, (uint)Math.Max(1, durationInMilliseconds / steps));
-				finger.Release();
-			});
-		}
-
 		private static async Task VerifyDragOverState<T>(ListViewBase listViewBase)
 			where T : FrameworkElement
 		{
@@ -296,7 +282,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			await WindowHelper.WaitForIdle();
 
 			// Drag the item to the folder
-			PressHoldAndPanFromCenter(itemAsFE,
+			await ListViewBaseTestsInput.PressHoldAndPanFromCenter(itemAsFE,
 				(int)(folderCenter.X - itemCenter.X) /* relX */,
 				(int)(folderCenter.Y - itemCenter.Y) /* relY */,
 				0.1 /* velocityFactor */,
@@ -438,7 +424,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("The ported XAML is not this test's: the C++ test's XAML still has to be brought over.")]
 		[Description("Validates that the textblock reflows in multiple selection mode.")]
 		public async Task ValidateMultiLineTextBlock()
 		{
@@ -449,57 +434,11 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 			// Set a consistent window size and zoom scale, so that the DComp tree is predictable.
 			WindowHelper.SetWindowSizeOverride(new Size(400.0f, 600.0f));
 
-			await RunOnUIThread(() =>
-			{
-				var rootPanel = XamlReader.Load("""
-				<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' x:Name='root'>
-				    <Grid.ColumnDefinitions>
-				        <ColumnDefinition/>
-				        <ColumnDefinition/>
-				    </Grid.ColumnDefinitions>
-				    <StackPanel Grid.Column='0'>
-				        <" + type + L" " + style + L" x:Name='normal' Content='Normal'/>
-				        <" + type + L" " + style + L" x:Name='pointerOver' Content='Pointer Over'/>
-				        <" + type + L" " + style + L" x:Name='disabled' Content='Disabled'/>
-				        <" + type + L" " + style + L" x:Name='normalSelected' Content='Selected'/>
-				        <" + type + L" " + style + L" x:Name='pointerOverSelected' Content='Pointer Over Selected'/>
-				        <" + type + L" " + style + L" x:Name='disabledSelected' Content='Disabled Selected'/>
-				    </StackPanel>
-				    <StackPanel Grid.Column='1'>
-				        <" + type + L" " + style + L" x:Name='multiSelect' Content='Multi Select'/>
-				        <" + type + L" " + style + L" x:Name='multiSelectSelected' Content='MS Selected'/>
-				        <" + type + L" " + style + L" x:Name='multiSelectDisabled' Content='MS Disabled'/>
-				        <" + type + L" " + style + L" x:Name='multiSelectSelectedDisabled' Content='MS Selected Disabled'/>
-				    </StackPanel>
-				</Grid>
-				""") as StackPanel;
-				VERIFY_IS_NOT_NULL(rootPanel);
-
-				WindowHelper.WindowContent = rootPanel;
-			});
-			await WindowHelper.WaitForIdle();
-
-			Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison);
-		}
-
-		[TestMethod]
-		[Description("Validates that the checkmark supports RTL situations.")]
-		[Ignore("The ported XAML is not this test's: the C++ test's XAML still has to be brought over.")]
-		public async Task ValidateRTLSupportForCheckMark()
-		{
-			// MockDComp should be injected and detached per test, since it keeps information like the surfaces
-			// that get created.
-			// UNO TODO: WUCRenderingScopeGuard has no equivalent.
-
-			// Set a consistent window size and zoom scale, so that the DComp tree is predictable.
-			WindowHelper.SetWindowSizeOverride(new Size(400.0f, 600.0f));
-
-			ListView listView = null;
-			GridView gridView = null;
+			StackPanel rootPanel = null;
 
 			await RunOnUIThread(() =>
 			{
-				var rootPanel = XamlReader.Load("""
+				rootPanel = XamlReader.Load("""
 				<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' x:Name='root'>
 				    <ListView Margin='0,12,0,0' Background='LightCoral' SelectionMode='Multiple' Width='300'>
 				        <ListViewItem Background='LightBlue'>
@@ -521,6 +460,57 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				""") as StackPanel;
 				VERIFY_IS_NOT_NULL(rootPanel);
 
+				WindowHelper.WindowContent = rootPanel;
+			});
+			await WindowHelper.WaitForIdle();
+
+			Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison);
+
+			// TODO Uno: no MockDComp masters, so check the reflow they would show.
+			await RunOnUIThread(() =>
+			{
+				foreach (var listView in rootPanel.Children.OfType<ListView>())
+				{
+					var wrapped = (TextBlock)((ListViewItem)listView.Items[0]).Content;
+					var trimmed = (TextBlock)((ListViewItem)listView.Items[1]).Content;
+					var item = (ListViewItem)listView.Items[0];
+
+					VERIFY_IS_TRUE(wrapped.ActualHeight >= 2 * trimmed.ActualHeight, $"wrapped {wrapped.ActualHeight}, trimmed {trimmed.ActualHeight}");
+					VERIFY_IS_TRUE(wrapped.ActualWidth < item.ActualWidth, $"The check box must take room from the text: {wrapped.ActualWidth} of {item.ActualWidth}");
+				}
+			});
+		}
+
+		[TestMethod]
+		[Description("Validates that the checkmark supports RTL situations.")]
+		public async Task ValidateRTLSupportForCheckMark()
+		{
+			// MockDComp should be injected and detached per test, since it keeps information like the surfaces
+			// that get created.
+			// UNO TODO: WUCRenderingScopeGuard has no equivalent.
+
+			// Set a consistent window size and zoom scale, so that the DComp tree is predictable.
+			WindowHelper.SetWindowSizeOverride(new Size(400.0f, 600.0f));
+
+			ListView listView = null;
+			GridView gridView = null;
+
+			await RunOnUIThread(() =>
+			{
+				var rootPanel = XamlReader.Load("""
+				<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' x:Name='root'>
+				    <ListView x:Name='listView' SelectionMode='Multiple' Width='300' FlowDirection='RightToLeft'>
+				        <ListViewItem Content='Item 1' />
+				        <ListViewItem Content='Item 2' Style='{ThemeResource ListViewItemExpanded}'/>
+				    </ListView>
+				    <GridView x:Name='gridView' SelectionMode='Multiple' Width='300' FlowDirection='RightToLeft'>
+				        <GridViewItem Content='Item 1' />
+				        <GridViewItem Content='Item 2' Style='{ThemeResource GridViewItemExpanded}'/>
+				    </GridView>
+				</StackPanel>
+				""") as StackPanel;
+				VERIFY_IS_NOT_NULL(rootPanel);
+
 				listView = (ListView)rootPanel.FindName("listView");
 				VERIFY_IS_NOT_NULL(listView);
 
@@ -537,8 +527,85 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				gridView.SelectAll();
 			});
 			await WindowHelper.WaitForIdle();
+			await Task.Delay(500);
 
 			Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison);
+
+			// TODO Uno: no MockDComp masters, so check that the check box itself mirrors.
+			var listViewRtl = await GetCheckBoxCenterX(listView);
+			var gridViewRtl = await GetCheckBoxCenterX(gridView);
+
+			await RunOnUIThread(() =>
+			{
+				listView.FlowDirection = FlowDirection.LeftToRight;
+				gridView.FlowDirection = FlowDirection.LeftToRight;
+			});
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(500);
+
+			var listViewLtr = await GetCheckBoxCenterX(listView);
+			var gridViewLtr = await GetCheckBoxCenterX(gridView);
+
+			VERIFY_IS_TRUE(listViewRtl > 0.5 && listViewLtr < 0.5, $"ListViewItem check box at {listViewLtr:P0} LTR, {listViewRtl:P0} RTL");
+			VERIFY_IS_TRUE(Math.Abs(1 - listViewRtl - listViewLtr) < 0.05, $"ListViewItem check box at {listViewLtr:P0} LTR, {listViewRtl:P0} RTL");
+			VERIFY_IS_TRUE(Math.Abs(1 - gridViewRtl - gridViewLtr) < 0.05, $"GridViewItem check box at {gridViewLtr:P0} LTR, {gridViewRtl:P0} RTL");
+		}
+
+		// Where the check box of the first item is drawn, as a fraction of the item's width: the pixels that change most on selection.
+		// The window is captured, as a capture of the item alone leaves out the list's RTL mirroring.
+		private static async Task<double> GetCheckBoxCenterX(ListViewBase list)
+		{
+			FrameworkElement root = null;
+			Rect bounds = default;
+			await RunOnUIThread(() =>
+			{
+				root = (FrameworkElement)WindowHelper.WindowContent;
+				var item = (FrameworkElement)list.ContainerFromIndex(0);
+				var listOffset = list.ActualOffset;
+
+				// The list mirrors its whole content, so the item is drawn at its offset counted from the right.
+				var itemOffset = item.TransformToVisual(list).TransformPoint(default);
+				var x = list.FlowDirection == FlowDirection.RightToLeft
+					? listOffset.X + list.ActualWidth - itemOffset.X - item.ActualWidth
+					: listOffset.X + itemOffset.X;
+				bounds = new Rect(x, listOffset.Y + itemOffset.Y, item.ActualWidth, item.ActualHeight);
+			});
+
+			// The selection animations need to settle before the two captures differ only by the check box.
+			long sum = 0;
+			long count = 0;
+			for (var attempt = 0; attempt < 5 && count == 0; attempt++)
+			{
+				await Task.Delay(500);
+				var selected = await UITestHelper.ScreenShot(root);
+
+				await RunOnUIThread(() => list.DeselectRange(new ItemIndexRange(0, 1)));
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(500 * (attempt + 1));
+				var deselected = await UITestHelper.ScreenShot(root);
+
+				await RunOnUIThread(() => list.SelectRange(new ItemIndexRange(0, 1)));
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(500 * (attempt + 1));
+
+				for (var y = (int)bounds.Top; y < (int)bounds.Bottom; y++)
+				{
+					for (var x = (int)bounds.Left; x < (int)bounds.Right; x++)
+					{
+						var a = selected.GetPixel(x, y);
+						var b = deselected.GetPixel(x, y);
+						if (Math.Abs(a.R - b.R) + Math.Abs(a.G - b.G) + Math.Abs(a.B - b.B) > 120)
+						{
+							sum += x;
+							count++;
+						}
+					}
+				}
+			}
+
+			VERIFY_IS_TRUE(count > 0, $"Selecting the item must draw the check box in {bounds}.");
+
+			return ((double)sum / count - bounds.Left) / bounds.Width;
 		}
 
 		[TestMethod]
@@ -1492,7 +1559,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("Requires touch flick injection (InputHelper.Flick is not available)")]
 		[Description("Validates that we don't hit the Pressed visual state while panning.")]
 		public async Task VerifyNoPressedStateWhenPanning()
 		{
@@ -1669,7 +1735,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("Requires touch press-hold-and-pan injection; injected touch drags are unreliable")]
 		[Description("Validates that DragOver state is being invoked when drag enters drop zone 20/60/20")]
 		public async Task VerifyDragOverStateForLVI()
 		{
@@ -1774,7 +1839,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[Ignore("Requires touch press-hold-and-pan injection; injected touch drags are unreliable")]
 		[Description("Validates that DragOver state is being invoked when drag enters drop zone 30/40/30")]
 		public async Task VerifyDragOverStateForGVI()
 		{

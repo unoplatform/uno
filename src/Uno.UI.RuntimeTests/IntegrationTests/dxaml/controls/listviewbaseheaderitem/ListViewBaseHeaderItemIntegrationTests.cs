@@ -160,7 +160,6 @@ public class ListViewBaseHeaderItemIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-	[Ignore("Disabled upstream: the WinUI test is marked Ignore=True (and excluded on WindowsCore).")]
 	public async Task CanGotoPointerOverVisualState()
 	{
 		Grid rootPanel = null;

@@ -31,13 +31,40 @@ namespace Private.Infrastructure
 	{
 		public static class InputHelper
 		{
+			private static readonly System.Collections.Generic.Dictionary<PointerFinger, Finger> _dynamicFingers = new();
+
+			// Presses the finger if it's up, otherwise moves it there, as the C++ helper does.
 			public static void DynamicPressCenter(UIElement element, double x, double y, PointerFinger finger)
 			{
-				throw new System.NotImplementedException();
+				EnsureInputInjectorSupported();
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				{
+					var topLeft = element.TransformToVisual(WindowHelper.XamlRoot.Content).TransformPoint(new Point(0, 0));
+					var target = new Point(topLeft.X + element.RenderSize.Width / 2 + x, topLeft.Y + element.RenderSize.Height / 2 + y);
+
+					if (_dynamicFingers.TryGetValue(finger, out var injected))
+					{
+						injected.MoveTo(target, 1, 0);
+					}
+					else
+					{
+						injected = InputInjector.TryCreate()?.GetFinger() ?? throw new InvalidOperationException("Failed to create finger");
+						_dynamicFingers[finger] = injected;
+						injected.Press(target);
+					}
+				});
 			}
+
 			public static void DynamicRelease(PointerFinger finger)
 			{
-				throw new System.NotImplementedException();
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				{
+					if (_dynamicFingers.Remove(finger, out var injected))
+					{
+						injected.Release();
+						injected.Dispose();
+					}
+				});
 			}
 
 			public static void MoveMouse(Point position)
