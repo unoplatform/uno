@@ -7,8 +7,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 #endif
 public partial class CarouselPanel : global::Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo
 {
-// Skipping already declared property AreHorizontalSnapPointsRegular
-// Skipping already declared property AreVerticalSnapPointsRegular
+	// Skipping already declared property AreHorizontalSnapPointsRegular
+	// Skipping already declared property AreVerticalSnapPointsRegular
 #if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]
 	public bool CanHorizontallyScroll
@@ -218,8 +218,8 @@ public partial class CarouselPanel : global::Microsoft.UI.Xaml.Controls.Primitiv
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel", "MakeVisible(UIElement visual, Rect rectangle)");
 	}
 #endif
-// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.GetIrregularSnapPoints
-// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.GetRegularSnapPoints
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.GetIrregularSnapPoints(Microsoft.UI.Xaml.Controls.Orientation, Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment)
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.GetRegularSnapPoints(Microsoft.UI.Xaml.Controls.Orientation, Microsoft.UI.Xaml.Controls.Primitives.SnapPointsAlignment, out float)
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.HorizontalSnapPointsChanged.add
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.HorizontalSnapPointsChanged.remove
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.VerticalSnapPointsChanged.add
@@ -238,7 +238,7 @@ public partial class CarouselPanel : global::Microsoft.UI.Xaml.Controls.Primitiv
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.VerticalOffset.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.ViewportHeight.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.ViewportWidth.get
-// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.HorizontalSnapPointsChanged
-// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.VerticalSnapPointsChanged
+	// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.HorizontalSnapPointsChanged
+	// Skipping already declared event Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.VerticalSnapPointsChanged
 	// Processing: Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo
 }

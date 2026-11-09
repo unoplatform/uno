@@ -537,21 +537,6 @@ public partial class ScrollViewer : global::Microsoft.UI.Xaml.Controls.ContentCo
 	}
 #endif
 	// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollViewer.ViewChanged
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public event global::System.EventHandler<global::Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs> ViewChanging
-	{
-		[global::Uno.NotImplemented("__SKIA__")]
-		add
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "event ViewChanging");
-		}
-		[global::Uno.NotImplemented("__SKIA__")]
-		remove
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "event ViewChanging");
-		}
-	}
-#endif
+	// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollViewer.ViewChanging
 	// Processing: Microsoft.UI.Xaml.Controls.IScrollAnchorProvider
 }

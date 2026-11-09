@@ -8,45 +8,18 @@ namespace Microsoft.UI.Xaml.Controls;
 public partial class ItemsControl : global::Microsoft.UI.Xaml.Controls.Control, global::Microsoft.UI.Xaml.Controls.IItemContainerMapping
 {
 	// Skipping already declared property DisplayMemberPathProperty
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty GroupStyleSelectorProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(GroupStyleSelector), typeof(global::Microsoft.UI.Xaml.Controls.GroupStyleSelector),
-		typeof(global::Microsoft.UI.Xaml.Controls.ItemsControl),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.GroupStyleSelector)));
-#endif
+	// Skipping already declared property GroupStyleSelectorProperty
 	// Skipping already declared property IsGroupingProperty
 	// Skipping already declared property ItemContainerStyleProperty
 	// Skipping already declared property ItemContainerStyleSelectorProperty
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty ItemContainerTransitionsProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(ItemContainerTransitions), typeof(global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection),
-		typeof(global::Microsoft.UI.Xaml.Controls.ItemsControl),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection)));
-#endif
+	// Skipping already declared property ItemContainerTransitionsProperty
 	// Skipping already declared property ItemTemplateProperty
 	// Skipping already declared property ItemTemplateSelectorProperty
 	// Skipping already declared property ItemsPanelProperty
 	// Skipping already declared property ItemsSourceProperty
 	// Skipping already declared property DisplayMemberPath
 	// Skipping already declared property GroupStyle
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Controls.GroupStyleSelector GroupStyleSelector
-	{
-		get
-		{
-			return (global::Microsoft.UI.Xaml.Controls.GroupStyleSelector)this.GetValue(GroupStyleSelectorProperty);
-		}
-		set
-		{
-			this.SetValue(GroupStyleSelectorProperty, value);
-		}
-	}
-#endif
+	// Skipping already declared property GroupStyleSelector
 	// Skipping already declared property IsGrouping
 #if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]
@@ -60,20 +33,7 @@ public partial class ItemsControl : global::Microsoft.UI.Xaml.Controls.Control, 
 #endif
 	// Skipping already declared property ItemContainerStyle
 	// Skipping already declared property ItemContainerStyleSelector
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection ItemContainerTransitions
-	{
-		get
-		{
-			return (global::Microsoft.UI.Xaml.Media.Animation.TransitionCollection)this.GetValue(ItemContainerTransitionsProperty);
-		}
-		set
-		{
-			this.SetValue(ItemContainerTransitionsProperty, value);
-		}
-	}
-#endif
+	// Skipping already declared property ItemContainerTransitions
 	// Skipping already declared property ItemTemplate
 	// Skipping already declared property ItemTemplateSelector
 	// Skipping already declared property Items
@@ -94,13 +54,7 @@ public partial class ItemsControl : global::Microsoft.UI.Xaml.Controls.Control, 
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemTemplateSelectorProperty.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsPanelProperty.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsControl.ItemsSourceProperty.get
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.DependencyObject GroupHeaderContainerFromItemContainer(global::Microsoft.UI.Xaml.DependencyObject itemContainer)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ItemsControl", "GroupHeaderContainerFromItemContainer(DependencyObject itemContainer)");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.GroupHeaderContainerFromItemContainer(Microsoft.UI.Xaml.DependencyObject)
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.IsItemItsOwnContainerOverride(object)
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.GetContainerForItemOverride()
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.ClearContainerForItemOverride(Microsoft.UI.Xaml.DependencyObject, object)
@@ -110,13 +64,7 @@ public partial class ItemsControl : global::Microsoft.UI.Xaml.Controls.Control, 
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.OnItemContainerStyleSelectorChanged(Microsoft.UI.Xaml.Controls.StyleSelector, Microsoft.UI.Xaml.Controls.StyleSelector)
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.OnItemTemplateChanged(Microsoft.UI.Xaml.DataTemplate, Microsoft.UI.Xaml.DataTemplate)
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.OnItemTemplateSelectorChanged(Microsoft.UI.Xaml.Controls.DataTemplateSelector, Microsoft.UI.Xaml.Controls.DataTemplateSelector)
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	protected virtual void OnGroupStyleSelectorChanged(global::Microsoft.UI.Xaml.Controls.GroupStyleSelector oldGroupStyleSelector, global::Microsoft.UI.Xaml.Controls.GroupStyleSelector newGroupStyleSelector)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ItemsControl", "OnGroupStyleSelectorChanged(GroupStyleSelector oldGroupStyleSelector, GroupStyleSelector newGroupStyleSelector)");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.OnGroupStyleSelectorChanged(Microsoft.UI.Xaml.Controls.GroupStyleSelector, Microsoft.UI.Xaml.Controls.GroupStyleSelector)
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.ItemFromContainer(Microsoft.UI.Xaml.DependencyObject)
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.ContainerFromItem(object)
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ItemsControl.IndexFromContainer(Microsoft.UI.Xaml.DependencyObject)
