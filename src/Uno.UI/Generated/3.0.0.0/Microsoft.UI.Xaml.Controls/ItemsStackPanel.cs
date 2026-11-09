@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls;
 #if false
 [global::Uno.NotImplemented]
 #endif
-public partial class ItemsStackPanel : global::Microsoft.UI.Xaml.Controls.Panel
+public partial class ItemsStackPanel
 {
 	// Skipping already declared property AreStickyGroupHeadersEnabledProperty
 	// Skipping already declared property CacheLengthProperty

@@ -98,20 +98,8 @@ public partial class ListViewBase : global::Microsoft.UI.Xaml.Controls.Primitive
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.ItemClick.remove
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.InitializeViewChange()
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.CompleteViewChange()
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void MakeVisible(global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation item)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "MakeVisible(SemanticZoomLocation item)");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void StartViewChangeFrom(global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation source, global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation destination)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "StartViewChangeFrom(SemanticZoomLocation source, SemanticZoomLocation destination)");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.MakeVisible(Microsoft.UI.Xaml.Controls.SemanticZoomLocation)
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.StartViewChangeFrom(Microsoft.UI.Xaml.Controls.SemanticZoomLocation, Microsoft.UI.Xaml.Controls.SemanticZoomLocation)
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.StartViewChangeTo(Microsoft.UI.Xaml.Controls.SemanticZoomLocation, Microsoft.UI.Xaml.Controls.SemanticZoomLocation)
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.CompleteViewChangeFrom(Microsoft.UI.Xaml.Controls.SemanticZoomLocation, Microsoft.UI.Xaml.Controls.SemanticZoomLocation)
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.CompleteViewChangeTo(Microsoft.UI.Xaml.Controls.SemanticZoomLocation, Microsoft.UI.Xaml.Controls.SemanticZoomLocation)
