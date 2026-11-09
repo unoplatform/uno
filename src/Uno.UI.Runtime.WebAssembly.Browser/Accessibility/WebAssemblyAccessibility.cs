@@ -178,7 +178,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	// Zoom factor each semantic scroll port's descendants were last positioned at (see OnScrollSourceViewChanged).
 	private readonly ConditionalWeakTable<UIElement, StrongBox<float>> _scrollPortZoomFactors = new();
-	private readonly Stack<UIElement> _scrollPortReemitStack = new();
 
 	/// <summary>
 	/// Handles of elements pruned from the AOM because they were Visibility=Collapsed at build/add
@@ -802,13 +801,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		_scrollPortZoomFactors.AddOrUpdate(scrollPort, new StrongBox<float>(zoomFactor));
-
-		_scrollPortReemitStack.Clear();
-		_scrollPortReemitStack.Push(scrollPort);
-		while (_scrollPortReemitStack.Count > 0)
+		// Only runs when the zoom changes, so a local stack keeps the walk safe from re-entrant scroll notifications.
+		var pending = new Stack<UIElement>();
+		pending.Push(scrollPort);
+		while (pending.Count > 0)
 		{
-			foreach (var child in _scrollPortReemitStack.Pop().GetChildren())
+			foreach (var child in pending.Pop().GetChildren())
 			{
 				// Elements without a semantic element have nothing to position.
 				if (_semanticParentMap.ContainsKey(child.Visual.Handle))
@@ -816,9 +814,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					OnSizeOrOffsetChanged(child.Visual);
 				}
 
-				_scrollPortReemitStack.Push(child);
+				pending.Push(child);
 			}
 		}
+
+		// Recorded once the walk is done, so an interrupted walk is retried on the next scroll.
+		_scrollPortZoomFactors.AddOrUpdate(scrollPort, new StrongBox<float>(zoomFactor));
 	}
 
 	protected override void OnSizeOrOffsetChanged(Visual visual)
