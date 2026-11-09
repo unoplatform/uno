@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference: dxaml\test\managed\enterprise\Moco\ListViewBaseTests.cs, commit bac7a9c33ff
 
@@ -520,6 +520,7 @@ public partial class ListViewBaseTests
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task DoesRestoreFocusToPreviouslyFocusedItemWhenTabbingBackIn()
 	{
 		ListView listView = null;
@@ -687,6 +688,7 @@ public partial class ListViewBaseTests
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	[TestProperty("Description", "If focus is set to a ListViewItem programmatically (or via 2D navigation) and the item is then selected, it should not require 2 tabs to move focus out of the ListView.")]
 	public async Task DoesNotRequireTwoTabsToMoveFocusWhenItemIsFocusedProgrammaticallyAndThenSelected()
 	{
@@ -913,6 +915,7 @@ public partial class ListViewBaseTests
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	[TestProperty("Description", "When a ListView is the root focusable control in the tree, validate that focus does not get trapped within the header sub-tree with multiple focusable controls.")]
 	public async Task CanTabOutOfHeaderWithMultipleFocusableChildren()
 	{
@@ -933,11 +936,12 @@ public partial class ListViewBaseTests
 													   <ListViewItem Content='Item 1'/>
 												   </ListView>");
 
-			button1 = (Button)listView.FindName("button1");
-
 			TestServices.WindowHelper.WindowContent = listView;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
+
+		// TODO Uno: FindName walks the visual tree, and the header and footer only join it once loaded.
+		UIExecutor.Execute(() => button1 = (Button)listView.FindName("button1"));
 
 		UIExecutor.Execute(() =>
 		{
@@ -968,6 +972,7 @@ public partial class ListViewBaseTests
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	[TestProperty("Description", "When a ListView is the root focusable control in the tree, validate that focus does not get trapped within the footer sub-tree with multiple focusable controls.")]
 	public async Task CanShiftTabOutOfFooterWithMultipleFocusableChildren()
 	{
@@ -988,11 +993,12 @@ public partial class ListViewBaseTests
 													   <ListViewItem Content='Item 1'/>
 												   </ListView>");
 
-			button2 = (Button)listView.FindName("button2");
-
 			TestServices.WindowHelper.WindowContent = listView;
 		});
 		await TestServices.WindowHelper.WaitForIdle();
+
+		// TODO Uno: FindName walks the visual tree, and the header and footer only join it once loaded.
+		UIExecutor.Execute(() => button2 = (Button)listView.FindName("button2"));
 
 		UIExecutor.Execute(() =>
 		{
@@ -1015,6 +1021,7 @@ public partial class ListViewBaseTests
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	[TestProperty("Description", "If the selected item's container is not focusable, validate that focus is sent to children instead.")]
 	public async Task DoesFocusChildrenOfSelectedItemIfContainerIsNotFocusable()
 	{
