@@ -221,7 +221,11 @@ partial class ItemsControl : IGeneratorHost
 
 	GroupStyle IGeneratorHost.GetGroupStyle(ICollectionViewGroup group, uint level)
 	{
-		// TODO Uno: GroupStyleSelector is not implemented.
+		// a. Use global selector
+		if (GroupStyleSelector?.SelectGroupStyle(group, level) is { } selectedGroupStyle)
+		{
+			return selectedGroupStyle;
+		}
 
 		// b. lookup in GroupStyle list
 		var groupStyles = GroupStyle;
