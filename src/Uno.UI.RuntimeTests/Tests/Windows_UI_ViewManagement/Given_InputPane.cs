@@ -277,7 +277,7 @@ public class Given_InputPane
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit)] // Android disabled as flaky on 6.x: https://github.com/unoplatform/uno/issues/26221
 	public async Task When_AutoSuggestBox_In_Moved_Content_Then_Suggestions_Fit_Visible_Area()
 	{
 		var autoSuggestBox = new AutoSuggestBox { MaxSuggestionListHeight = 2000 };
