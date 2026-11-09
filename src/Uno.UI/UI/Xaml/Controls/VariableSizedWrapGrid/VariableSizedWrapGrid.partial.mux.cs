@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls;
 //      it is growing on Column direction
 //
 //      Both classes are nested inside the VariableSizedWrapGrid class
-partial class VariableSizedWrapGrid : IOrientedPanel
+partial class VariableSizedWrapGrid : IOrientedPanel, IKeyboardNavigationPanel
 {
 	private static int ToAdjustedIndex(int value) => value + 1;
 	private static int FromAdjustedIndex(int value) => value - 1;
@@ -381,6 +381,34 @@ partial class VariableSizedWrapGrid : IOrientedPanel
 		{
 			rowSpan = 1;
 		}
+	}
+
+	bool IKeyboardNavigationPanel.SupportsKeyNavigationAction(KeyNavigationAction action) => SupportsKeyNavigationAction(action);
+
+	void IKeyboardNavigationPanel.GetTargetIndexFromNavigationAction(
+		uint sourceIndex,
+		ElementType sourceType,
+		KeyNavigationAction action,
+		bool allowWrap,
+		uint itemIndexHintForHeaderNavigation,
+		out uint computedTargetIndex,
+		out ElementType computedTargetType,
+		out bool actionValidForSourceIndex)
+	{
+		GetTargetIndexFromNavigationAction(
+			(int)sourceIndex,
+			sourceType,
+			action,
+			allowWrap,
+			(int)itemIndexHintForHeaderNavigation,
+			out var targetIndex,
+			out _,
+			out actionValidForSourceIndex);
+
+		computedTargetIndex = (uint)targetIndex;
+
+		// The source leaves the type as the caller initialized it. This panel only has items.
+		computedTargetType = ElementType.ItemContainer;
 	}
 
 	internal bool SupportsKeyNavigationAction(KeyNavigationAction action)
