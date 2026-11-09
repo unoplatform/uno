@@ -5,7 +5,7 @@ using Windows.Globalization;
 
 namespace Uno.UI.Tests.Windows_Globalization;
 
-[TestClass]
+[UITestClass]
 public class Given_Language
 {
 	[TestMethod]

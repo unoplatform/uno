@@ -2127,7 +2127,7 @@ public class TableViewColumnResizeTests : TableViewApiTestBase
 	{
 		var widths = new double[factors.Length];
 		var open = Enumerable.Range(0, factors.Length).ToList();
-		for (bool clamped = true; clamped && open.Count > 0; )
+		for (bool clamped = true; clamped && open.Count > 0;)
 		{
 			clamped = false;
 			var unit = available / open.Sum(i => factors[i]);

@@ -8,7 +8,7 @@ using Windows.Foundation;
 
 namespace Uno.UI.Tests.Helpers;
 
-[TestClass]
+[UITestClass]
 public class Given_ValueConversionHelpers
 {
 	[TestMethod]

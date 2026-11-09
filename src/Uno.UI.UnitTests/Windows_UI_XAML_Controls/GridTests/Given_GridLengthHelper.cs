@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.GridTests;
 
-[TestClass]
+[UITestClass]
 public partial class Given_GridLengthHelper
 {
 	[TestMethod]

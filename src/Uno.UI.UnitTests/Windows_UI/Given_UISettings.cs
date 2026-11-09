@@ -6,7 +6,7 @@ using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Tests.Windows_UI;
 
-[TestClass]
+[UITestClass]
 public class Given_UISettings
 {
 	[TestMethod]

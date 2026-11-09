@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.Tabular;
 
-[TestClass]
+[UITestClass]
 public class Given_ShapingHelpers
 {
 	private sealed class Person(string name)

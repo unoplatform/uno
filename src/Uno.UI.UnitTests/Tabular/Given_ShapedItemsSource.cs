@@ -14,7 +14,7 @@ namespace Uno.UI.Tests.Tabular;
 
 // Flat projections only: the grouped projection goes through GroupedSourceAdapter, which must be
 // constructed on a UI thread, so grouping is covered by the TableView runtime tests.
-[TestClass]
+[UITestClass]
 public class Given_ShapedItemsSource
 {
 	private sealed class Entry

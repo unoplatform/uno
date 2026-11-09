@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.Tabular;
 
-[TestClass]
+[UITestClass]
 public class Given_ShapingPipeline
 {
 	private sealed record Entry(string Name, int Rank);

@@ -7,7 +7,7 @@ using Uno.UI.Helpers.WinUI;
 
 namespace Uno.UI.Tests.Helpers;
 
-[TestClass]
+[UITestClass]
 public class Given_ObjectIdentityHelper
 {
 	[TestMethod]
