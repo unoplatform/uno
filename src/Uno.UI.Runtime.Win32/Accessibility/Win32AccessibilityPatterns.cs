@@ -666,7 +666,8 @@ internal sealed class UiaTextProviderWrapper : IUiaTextProvider
 	internal static Windows.Foundation.Point ToClientPoint(UiaPoint screenLocation, Win32Accessibility accessibility)
 	{
 		var clientPoint = new Windows.Foundation.Point(screenLocation.X, screenLocation.Y);
-		accessibility.TransformScreenToClient(ref clientPoint);
+		var transformed = accessibility.TransformScreenToClient(ref clientPoint);
+		System.Diagnostics.Debug.Assert(transformed); // VERIFY in WinUI: a failure is only asserted, the call goes on.
 		return clientPoint;
 	}
 
@@ -768,7 +769,8 @@ internal sealed class UiaTextRangeProviderWrapper : IUiaTextRangeProvider, IUiaT
 			var rect = new Windows.Foundation.Rect(rects[i], rects[i + 1], rects[i + 2], rects[i + 3]);
 
 			// Transform to the screen coordinate point from the client point
-			_accessibility.TransformClientToScreen(ref rect);
+			var transformed = _accessibility.TransformClientToScreen(ref rect);
+			System.Diagnostics.Debug.Assert(transformed); // VERIFY in WinUI: a failure is only asserted, the call goes on.
 
 			rects[i] = rect.X;
 			rects[i + 1] = rect.Y;
