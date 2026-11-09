@@ -33,6 +33,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private (double hOffset, double vOffset, bool isIntermediate) _lastScrolledEvent;
 
+		/// <summary>Where the content is drawn. <see cref="VerticalOffset"/> is already at the target of an animated scroll.</summary>
+		internal double LastPublishedVerticalOffset => _lastScrolledEvent.vOffset;
+
 		// Set while an update replaces the running scroll animation, so the one cut short does not report its stop as final.
 		private bool _isReplacingScrollAnimation;
 
