@@ -917,6 +917,13 @@ public partial class TabView : Control
 		{
 			SelectedIndex = listView.SelectedIndex;
 			SelectedItem = listView.SelectedItem;
+
+			// TODO Uno: On WinUI tab 50 of 100 is already realized here (measured), so TabViewItem brings itself into
+			// view when selected. Uno virtualizes the tabs, so bring in a tab that isn't realized.
+			if (listView.SelectedItem is { } selectedItem && listView.ContainerFromItem(selectedItem) is null)
+			{
+				listView.ScrollIntoView(selectedItem);
+			}
 		}
 
 		UpdateTabContent();
