@@ -267,6 +267,11 @@ namespace Microsoft.UI.Xaml
 
 		internal bool HasParent() => Parent != null;
 
+		// MUX Reference framework.cpp, GetInheritanceParentInternal(true): the logical parent, falling back to the visual parent.
+		// Unlike Parent, this doesn't hide the items host panel, so resource lookup still reaches the ItemsControl's ancestors.
+		internal DependencyObject InheritanceParent =>
+			LogicalParentOverride ?? ((DependencyObject)this).Parent as DependencyObject;
+
 		public global::System.Uri BaseUri
 		{
 			get

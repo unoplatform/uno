@@ -1641,7 +1641,7 @@ namespace Microsoft.UI.Xaml
 				// lazily materialised resource can run arbitrary XAML initialization from the loop body.
 				if (_advanceFrom is { } previous)
 				{
-					_candidate = previous.Parent;
+					_candidate = previous.InheritanceParent;
 					_advanceFrom = null;
 				}
 
@@ -1656,7 +1656,7 @@ namespace Microsoft.UI.Xaml
 							return true;
 						}
 
-						_candidate = fe.Parent;
+						_candidate = fe.InheritanceParent;
 					}
 					else
 					{
