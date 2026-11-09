@@ -270,8 +270,35 @@
         href: migrating-from-previous-releases.md
       - name: Upgrading to Single Project
         href: xref:Uno.Development.MigratingToSingleProject
-      - name: Upgrading to Uno 7.0
-        href: xref:Uno.Development.MigratingToUno7
+      - name: Upgrading to Uno Platform 7.0
+        topicHref: xref:Uno.Development.MigratingToUno7
+        items:
+        - name: Upgrade steps
+          href: xref:Uno.Development.MigratingToUno7
+        - name: Errors, symptoms and code search
+          href: xref:Uno.Development.MigratingToUno7.Lookup
+        - name: Project format, target frameworks and OS versions
+          href: xref:Uno.Development.MigratingToUno7.ProjectSetup
+        - name: Packages and Uno Features
+          href: xref:Uno.Development.MigratingToUno7.Packages
+        - name: Namespace, assembly and host renames
+          href: xref:Uno.Development.MigratingToUno7.Renames
+        - name: App startup, activation and platform state
+          href: xref:Uno.Development.MigratingToUno7.AppStartup
+        - name: Libraries and conditional code
+          href: xref:Uno.Development.MigratingToUno7.Libraries
+        - name: Removed public APIs
+          href: xref:Uno.Development.MigratingToUno7.RemovedApis
+        - name: WinUI API alignment
+          href: xref:Uno.Development.MigratingToUno7.WinUIParity
+        - name: Removed feature flags
+          href: xref:Uno.Development.MigratingToUno7.FeatureFlags
+        - name: XAML and default styles
+          href: xref:Uno.Development.MigratingToUno7.Xaml
+        - name: Behavior changes to re-test
+          href: xref:Uno.Development.MigratingToUno7.Behavior
+        - name: Full checklist
+          href: xref:Uno.Development.MigratingToUno7.Checklist
       - name: Upgrading to Uno 6.0
         href: xref:Uno.Development.MigratingToUno6
       - name: Upgrading to Uno 5.0
