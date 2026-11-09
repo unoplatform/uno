@@ -6,7 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Uno.UI.Extensions;
+using Windows.System;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data
@@ -41,7 +45,71 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data
 			Assert.AreEqual(expectedRange.Length, selectionRanges[0].Length, "selectionRanges[0] == { 3..3, count = 1 }");
 		}
 
-#if HAS_UNO // On Windows this test fails, because the SelectedIndex remains -1, even though visually the item is selected
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(ListViewSelectionMode.Multiple)]
+		[DataRow(ListViewSelectionMode.Extended)]
+		public async Task When_CtrlA_With_Partial_Selection_Then_All_Selected(ListViewSelectionMode mode)
+		{
+			var source = SelectionSource.Create(10, isPreselected: x => x < 5);
+			var lv = new ListView { ItemsSource = source, SelectionMode = mode };
+
+			WindowHelper.WindowContent = lv;
+			await WindowHelper.WaitForLoaded(lv);
+
+			await PressCtrlA(lv);
+
+			Assert.AreEqual(10, source.Count(x => x.Selected));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_CtrlA_With_Adjacent_Ranges_Covering_All_Then_All_Deselected()
+		{
+			var source = SelectionSource.Create(10, isPreselected: x => true);
+			var lv = new ListView { ItemsSource = source, SelectionMode = ListViewSelectionMode.Multiple };
+
+			WindowHelper.WindowContent = lv;
+			await WindowHelper.WaitForLoaded(lv);
+
+			// ListViewBase::OnKeyDown merges the ranges, so split ones still mean "everything is selected".
+			source.GetSelectedRangesOverride = () => new[] { new ItemIndexRange(5, 5), new ItemIndexRange(0, 5) };
+
+			await PressCtrlA(lv);
+
+			Assert.AreEqual(0, source.Count(x => x.Selected));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_CtrlA_With_Gap_In_Ranges_Then_All_Selected()
+		{
+			var source = SelectionSource.Create(10, isPreselected: x => x != 4);
+			var lv = new ListView { ItemsSource = source, SelectionMode = ListViewSelectionMode.Multiple };
+
+			WindowHelper.WindowContent = lv;
+			await WindowHelper.WaitForLoaded(lv);
+
+			await PressCtrlA(lv);
+
+			Assert.AreEqual(10, source.Count(x => x.Selected));
+		}
+
+		// ListViewBase only handles the keys its items forward.
+		private static async Task PressCtrlA(ListView lv)
+		{
+			var item = (ListViewItem)lv.ContainerFromIndex(0);
+			item.Focus(FocusState.Keyboard);
+			await WindowHelper.WaitForIdle();
+
+			item.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(item, VirtualKey.A, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
+		}
+#endif
+
+		// As on Windows: with ISelectionInfo, Selector::PrepareContainerForItemOverride only sets the container's
+		// IsSelected (Selector_Partial.cpp), so the SelectedIndex stays -1 although the item shows as selected.
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_PreselectOne()
@@ -51,10 +119,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data
 
 			WindowHelper.WindowContent = lv;
 			await WindowHelper.WaitForLoaded(lv);
+			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(3, lv.SelectedIndex, "SelectedIndex should be 3");
+			Assert.AreEqual(-1, lv.SelectedIndex);
+			Assert.IsTrue(((ListViewItem)lv.ContainerFromIndex(3)).IsSelected, "The container should show as selected");
 		}
-#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
