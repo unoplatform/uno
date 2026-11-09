@@ -14,6 +14,7 @@
 		     On Windows this is relocated next to the SDK cache (see _AnchorWgpuWasmCacheToToolchainDrive below);
 		     this obj\ default is the non-Windows path and the last-resort fallback. -->
 		<WgpuWasmCacheDir>$(MSBuildThisFileDirectory)obj\wgpu-wasm-emcache\</WgpuWasmCacheDir>
+		<_UnoWebGpuAppWasmCachePath Condition="'$(_UnoWebGpuAppWasmCachePath)' == ''">$(WasmCachePath)</_UnoWebGpuAppWasmCachePath>
 		<WasmCachePath>$(WgpuWasmCacheDir)</WasmCachePath>
 	</PropertyGroup>
 
@@ -49,8 +50,9 @@
 	     other emcc processes still reading it. -->
 	<Target Name="_AnchorWgpuWasmCacheToToolchainDrive"
 			BeforeTargets="_PrepareForBrowserWasmBuildNative;_SeedWgpuWasmCache;_ProvisionEmdawnWebGpu"
+			DependsOnTargets="_UnoWebGpuDetectSkiaSharpEmdawn"
 			Condition="'$(OS)' == 'Windows_NT' and '$(EmscriptenSdkToolsPath)' != ''">
-		<PropertyGroup>
+		<PropertyGroup Condition="'$(_UnoWebGpuSkiaSharpEmdawn)' != 'true'">
 			<_WgpuToolchainDrive>$([System.IO.Path]::GetPathRoot($(EmscriptenSdkToolsPath)))</_WgpuToolchainDrive>
 			<_WgpuCacheName>wgpu-wasm-emcache-$([MSBuild]::StableStringHash('$(EmscriptenSdkToolsPath)').ToString('X8'))</_WgpuCacheName>
 			<!-- Drive-root fallback: always on the toolchain drive; used only when LocalAppData is elsewhere. -->
@@ -77,11 +79,12 @@
 	     sanity.txt names the toolchain of the machine that built the workload, so emcc would erase the copy; without
 	     one it keeps the copy and writes its own. -->
 	<Target Name="_SeedWgpuWasmCache" BeforeTargets="_GenerateManagedToNative;_WasmCompileNativeSources;Build"
+			DependsOnTargets="_UnoWebGpuDetectSkiaSharpEmdawn"
 			Condition="!Exists('$(WgpuWasmCacheDir)sysroot') and '$(EmscriptenCacheSdkCacheDir)' != '' and Exists('$(EmscriptenCacheSdkCacheDir)')">
-		<ItemGroup>
+		<ItemGroup Condition="'$(_UnoWebGpuSkiaSharpEmdawn)' != 'true'">
 			<_WgpuSdkCacheFiles Include="$(EmscriptenCacheSdkCacheDir)\**\*" Exclude="$(EmscriptenCacheSdkCacheDir)\sanity.txt" />
 		</ItemGroup>
-		<Copy SourceFiles="@(_WgpuSdkCacheFiles)"
+		<Copy Condition="'$(_UnoWebGpuSkiaSharpEmdawn)' != 'true'" SourceFiles="@(_WgpuSdkCacheFiles)"
 			DestinationFiles="@(_WgpuSdkCacheFiles->'$(WgpuWasmCacheDir)%(RecursiveDir)%(Filename)%(Extension)')"
 			SkipUnchangedFiles="true" />
 	</Target>
