@@ -563,9 +563,9 @@ partial class ListViewBase
 	}
 
 	// Handles when a key is pressed down on the ListViewBase.
-	protected override void OnKeyDown(KeyRoutedEventArgs pArgs)
+	protected override void OnKeyDown(KeyRoutedEventArgs e)
 	{
-		using var modifiersScope = SetCurrentInputModifiers(pArgs.KeyboardModifiers);
+		using var modifiersScope = SetCurrentInputModifiers(e.KeyboardModifiers);
 
 #if !HAS_UNO // LVB_DEBUG
 		// TODO Uno: gps->DebugTrace has no equivalent.
@@ -591,8 +591,8 @@ partial class ListViewBase
 		SetHandleKeyDownArgsFromItem(false /* fFromItem */);
 
 		// Ignore already handled events
-		base.OnKeyDown(pArgs);
-		isHandled = pArgs.Handled;
+		base.OnKeyDown(e);
+		isHandled = e.Handled;
 		if (isHandled)
 		{
 			return;
@@ -602,12 +602,12 @@ partial class ListViewBase
 		{
 			// During an exclusive interaction (drag/drop), disable all keyboard interaction.
 			// Handle the event, since other controls don't have the necessary context around drag/drop interactions.
-			pArgs.Handled = true;
+			e.Handled = true;
 			return;
 		}
 
-		originalKey = pArgs.OriginalKey;
-		key = pArgs.Key;
+		originalKey = e.OriginalKey;
+		key = e.Key;
 
 		// If gamepad keys, we want to handle keys that come from items, headers, listview etc.
 		// For Keyboard home/end/page keys, if the key came from something other than an item, we scroll the ScrollViewer.
@@ -619,7 +619,7 @@ partial class ListViewBase
 				key == VirtualKey.PageDown)
 			{
 				ElementScrollViewerScrollInDirection(key);
-				pArgs.Handled = true;
+				e.Handled = true;
 			}
 
 			return;
@@ -640,7 +640,7 @@ partial class ListViewBase
 			// symmetrical for keyboard and pointer input?
 			case VirtualKey.Enter:
 			{
-				spOriginalSource = pArgs.OriginalSource;
+				spOriginalSource = e.OriginalSource;
 
 				if (spOriginalSource is not null && IsListViewBaseItem(spOriginalSource))
 				{
@@ -657,7 +657,7 @@ partial class ListViewBase
 
 				if ((modifiers & VirtualKeyModifiers.Menu) == 0)
 				{
-					spOriginalSource = pArgs.OriginalSource;
+					spOriginalSource = e.OriginalSource;
 
 					if (spOriginalSource is not null && IsListViewBaseItem(spOriginalSource))
 					{
@@ -1159,24 +1159,24 @@ partial class ListViewBase
 
 		if (isHandled)
 		{
-			pArgs.Handled = true;
+			e.Handled = true;
 		}
 	}
 
 	// Handles when a key is released on the ListViewBase.
-	protected override void OnKeyUp(KeyRoutedEventArgs pArgs)
+	protected override void OnKeyUp(KeyRoutedEventArgs e)
 	{
 #if !HAS_UNO // LVB_DEBUG
 		// TODO Uno: gps->DebugTrace has no equivalent.
 		IGNOREHR(gps->DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, L"LVB(%s)[0x%p]: OnKeyUp.", ctl::is<xaml_controls::IGridView>(this) ? L"GV" : L"LV", this));
 #endif
 
-		base.OnKeyUp(pArgs);
+		base.OnKeyUp(e);
 		if (IsInExclusiveInteraction())
 		{
 			// During an exclusive interaction (drag/drop), disable all keyboard interaction.
 			// Handle the event, since other controls don't have the necessary context around drag/drop interactions.
-			pArgs.Handled = true;
+			e.Handled = true;
 		}
 		else
 		{
@@ -2549,13 +2549,13 @@ partial class ListViewBase
 
 
 	// Called when the ListView receives focus.
-	protected override void OnGotFocus(RoutedEventArgs pArgs)
+	protected override void OnGotFocus(RoutedEventArgs e)
 	{
-		base.OnGotFocus(pArgs);
+		base.OnGotFocus(e);
 
 		if (!IsFocusEngagementEnabled || IsFocusEngaged)
 		{
-			var spOriginalSource = pArgs.OriginalSource;
+			var spOriginalSource = e.OriginalSource;
 			var isOriginalSource = ReferenceEquals(spOriginalSource, this);
 
 			if (isOriginalSource)
@@ -2567,11 +2567,11 @@ partial class ListViewBase
 	}
 
 	// Called when the ListView loses focus.
-	protected override void OnLostFocus(RoutedEventArgs pArgs)
+	protected override void OnLostFocus(RoutedEventArgs e)
 	{
-		base.OnLostFocus(pArgs);
+		base.OnLostFocus(e);
 
-		var spOriginalSource = pArgs.OriginalSource;
+		var spOriginalSource = e.OriginalSource;
 		var isOriginalSource = ReferenceEquals(spOriginalSource, this);
 		if (isOriginalSource)
 		{

@@ -404,18 +404,18 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private static readonly PointerEventHandler _onPointerExitedOrCanceled = (snd, e) => ((SelectorItem)snd).CleanUpPointerState(e);
 
 		/// <inheritdoc />
-		protected override void OnPointerEntered(PointerRoutedEventArgs args)
+		protected override void OnPointerEntered(PointerRoutedEventArgs e)
 		{
-			base.OnPointerEntered(args);
-			UpdateCommonStatesWithoutNeedsLayout(true, (PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.Begin);
+			base.OnPointerEntered(e);
+			UpdateCommonStatesWithoutNeedsLayout(true, (PointerDeviceType)e.Pointer.PointerDeviceType, ManipulationUpdateKind.Begin);
 		}
 
 		/// <inheritdoc />
-		protected override void OnPointerPressed(PointerRoutedEventArgs args)
+		protected override void OnPointerPressed(PointerRoutedEventArgs e)
 		{
 			if (ShouldHandlePressed
 				&& IsItemClickEnabled
-				&& args.GetCurrentPoint(null) is { Properties.IsLeftButtonPressed: true } point)
+				&& e.GetCurrentPoint(null) is { Properties.IsLeftButtonPressed: true } point)
 			{
 				// Note: We do allow PointerCaptureResult.AlreadyCaptured as if element has been flagged as CanDrag
 				//		 (common in ListView that do allow re-ordering ;) ),
@@ -430,10 +430,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				_canRaiseClickOnPointerRelease = true;
 			}
 
-			args.Handled = ShouldHandlePressed;
+			e.Handled = ShouldHandlePressed;
 
-			base.OnPointerPressed(args);
-			UpdateCommonStatesWithoutNeedsLayout(true, (PointerDeviceType)args.Pointer.PointerDeviceType, ManipulationUpdateKind.Begin);
+			base.OnPointerPressed(e);
+			UpdateCommonStatesWithoutNeedsLayout(true, (PointerDeviceType)e.Pointer.PointerDeviceType, ManipulationUpdateKind.Begin);
 		}
 
 		/// <inheritdoc />

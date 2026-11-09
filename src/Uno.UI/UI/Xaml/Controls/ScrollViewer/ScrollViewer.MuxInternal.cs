@@ -137,7 +137,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnPointerPressed(PointerRoutedEventArgs pArgs)
+		protected override void OnPointerPressed(PointerRoutedEventArgs e)
 		{
 			// If our templated parent is handling mouse button, we should not take
 			// focus away.  They're handling it, not us.
@@ -146,17 +146,17 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var spPointerPoint = pArgs.GetCurrentPoint(this);
+			var spPointerPoint = e.GetCurrentPoint(this);
 			var spPointerProperties = spPointerPoint.Properties;
 			m_isPointerLeftButtonPressed = spPointerProperties.IsLeftButtonPressed;
 
 			// Don't handle PointerPressed event to raise up
 		}
 
-		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		protected override void OnPointerReleased(PointerRoutedEventArgs e)
 		{
-			base.OnPointerReleased(args);
-			var handled = args.Handled;
+			base.OnPointerReleased(e);
+			var handled = e.Handled;
 			if (handled)
 			{
 				return;
@@ -169,7 +169,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// Reset the pointer left button pressed state
 				m_isPointerLeftButtonPressed = false;
 
-				//var gestureFollowing = args.GestureFollowing;
+				//var gestureFollowing = e.GestureFollowing;
 
 				//if (gestureFollowing == GestureModes.RightTapped)
 				//{
@@ -187,7 +187,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					if (isFocusedOnLightDismissPopupOfFlyout)
 					{
-						args.Handled = true;
+						e.Handled = true;
 					}
 					else
 					{
@@ -208,14 +208,14 @@ namespace Microsoft.UI.Xaml.Controls
 							// - ScrollViewer.IsTabStop is False and
 							// - Currently focused element is within this ScrollViewer.
 							// In that case, leave the focus as is by marking this event handled.
-							args.Handled = true;
+							e.Handled = true;
 						}
 						else
 						{
 							// Focus now.
 							// Set focus to the ScrollViewer to capture key input for scrolling
 							var focused = Focus(FocusState.Pointer);
-							args.Handled = focused;
+							e.Handled = focused;
 						}
 					}
 				}
