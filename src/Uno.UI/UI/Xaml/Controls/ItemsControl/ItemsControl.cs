@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -371,6 +371,29 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public IObservableVector<GroupStyle> GroupStyle { get; } = new ObservableVector<GroupStyle>();
 
+		#region GroupStyleSelector DependencyProperty
+		public GroupStyleSelector GroupStyleSelector
+		{
+			get => (GroupStyleSelector)GetValue(GroupStyleSelectorProperty);
+			set => SetValue(GroupStyleSelectorProperty, value);
+		}
+
+		public static DependencyProperty GroupStyleSelectorProperty { get; } =
+			DependencyProperty.Register(
+				nameof(GroupStyleSelector),
+				typeof(GroupStyleSelector),
+				typeof(ItemsControl),
+				new FrameworkPropertyMetadata(
+					default(GroupStyleSelector),
+					(s, e) => ((ItemsControl)s).OnGroupStyleSelectorChanged((GroupStyleSelector)e.OldValue, (GroupStyleSelector)e.NewValue)));
+
+		protected virtual void OnGroupStyleSelectorChanged(GroupStyleSelector oldGroupStyleSelector, GroupStyleSelector newGroupStyleSelector)
+		{
+			Refresh();
+			UpdateItems(null);
+		}
+		#endregion
+
 		#region IsGrouping DependencyProperty
 		public bool IsGrouping
 		{
@@ -410,15 +433,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
-		internal bool AreEmptyGroupsHidden => CollectionGroups != null && (GroupStyle.FirstOrDefault()?.HidesIfEmpty ?? false);
+		internal bool AreEmptyGroupsHidden => CollectionGroups != null && (GetGroupStyle()?.HidesIfEmpty ?? false);
 
 		private IObservableVector<object> CollectionGroups => (GetItems() as ICollectionView)?.CollectionGroups;
 
 
-		internal GroupStyle GetGroupStyle()
-		{
-			return GroupStyle.FirstOrDefault();
-		}
+		internal GroupStyle GetGroupStyle() => ((global::DirectUI.IGeneratorHost)this).GetGroupStyle(null, 0);
 
 		/// <summary>
 		/// Get the index for the next item after <paramref name="currentItem"/>.
