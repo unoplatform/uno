@@ -189,6 +189,39 @@ namespace Windows.ApplicationModel.DataTransfer
 			return dataPackage.GetView();
 		}
 
+		internal static bool IsTextAvailable()
+		{
+			var manager = ContextHelper.Current.GetSystemService(Context.ClipboardService) as ClipboardManager;
+			if (manager?.HasPrimaryClip != true ||
+				manager.PrimaryClipDescription?.HasMimeType("text/*") != true)
+			{
+				return false;
+			}
+
+			// Metadata only: reading PrimaryClip makes Android 12+ show its "pasted from your clipboard" toast.
+			if (OperatingSystem.IsAndroidVersionAtLeast(28))
+			{
+				return true;
+			}
+
+			// Before API 28, Clear() leaves an empty text clip behind, so the metadata alone can't tell.
+			var clip = manager.PrimaryClip;
+			if (clip is null)
+			{
+				return false;
+			}
+
+			for (var index = 0; index < clip.ItemCount; index++)
+			{
+				if (!string.IsNullOrEmpty(clip.GetItemAt(index)?.Text))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		public static void Clear()
 		{
 			if (ContextHelper.Current.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
