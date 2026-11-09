@@ -402,6 +402,8 @@ public partial class TreeViewList : ListView
 		}
 
 #if HAS_UNO // #15214: workaround for initial selection being lost
+		// TODO Uno: Deviates from WinUI, probably temporary. With {Binding}, WinUI doesn't select from a preset
+		// SelectedItem or model IsSelected on load (#15214). Compare compiled x:Bind on WinUI, then align.
 		// Done here rather than in OnContainerContentChanging: that is raised once the container has its
 		// template, and TreeViewItem.OnApplyTemplate would first reset IsSelected from the unselected node.
 		if (itemContainer.IsSelected || ListViewModel.TreeView.PendingSelectedItem == item)
