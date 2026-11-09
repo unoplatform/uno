@@ -170,6 +170,56 @@ public class Given_ListView_Transitions
 	}
 
 	[TestMethod]
+	[DataRow(0)]
+	[DataRow(30)]
+	public async Task When_Item_Returns_Mid_Delete_Then_Container_Is_Reused(int delayMs)
+	{
+		var (list, items, panel) = await LoadList(Transitions(new AddDeleteThemeTransition()));
+		var removed = (UIElement)list.ContainerFromIndex(1);
+
+		items.RemoveAt(1);
+		if (delayMs > 0)
+		{
+			await Task.Delay(delayMs);
+			Assert.IsFalse(panel.Children.Contains(removed), "The delete should still be running");
+			Assert.AreSame(panel.Visual, removed.Visual.Parent, "The delete should still be running");
+		}
+
+		items.Insert(3, "Item 1");
+		await WindowHelper.WaitForIdle();
+		await Task.Delay(AnimationsDone);
+
+		Assert.AreSame(removed, list.ContainerFromIndex(3), "The returning item keeps its container");
+		Assert.IsTrue(panel.Children.Contains(removed));
+		AssertAtRest(removed);
+		Assert.AreEqual("Item 1", ((ContentControl)removed).Content);
+	}
+
+	[TestMethod]
+	public async Task When_Other_Item_Added_Mid_Delete_Then_Delete_Finishes()
+	{
+		var (list, items, panel) = await LoadList(Transitions(new AddDeleteThemeTransition()));
+		var removed = (UIElement)list.ContainerFromIndex(1);
+
+		items.RemoveAt(1);
+		items.Insert(3, "Other");
+
+		var lowestWhileUnloading = 1f;
+		var stopwatch = Stopwatch.StartNew();
+		while (stopwatch.ElapsedMilliseconds < 1000 && ReferenceEquals(removed.Visual.Parent, panel.Visual) && !panel.Children.Contains(removed))
+		{
+			lowestWhileUnloading = Math.Min(lowestWhileUnloading, removed.Visual.Opacity);
+			await Task.Delay(8);
+		}
+
+		await WindowHelper.WaitForIdle();
+		Assert.IsLessThan(1f, lowestWhileUnloading, "The delete keeps playing");
+		Assert.AreNotSame(removed, list.ContainerFromIndex(3));
+		Assert.IsNull(list.ContainerFromItem("Item 1"));
+		AssertAtRest(removed);
+	}
+
+	[TestMethod]
 	public async Task When_Remove_During_Add_Then_Consistent()
 	{
 		var (list, items, panel) = await LoadList(Transitions(new AddDeleteThemeTransition()));
