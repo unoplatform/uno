@@ -91,19 +91,21 @@ public class Given_WasmSemanticPositioning
 	private static async Task AssertSemanticRectMatchesAsync(FrameworkElement element)
 	{
 		var expected = element.TransformToVisual(null).TransformBounds(new Rect(0, 0, element.ActualWidth, element.ActualHeight));
-		Rect? actual = null;
-		await UITestHelper.WaitFor(
-			() =>
-			{
-				actual = GetSemanticElementRect(element);
-				return actual is { } a
-					&& Math.Abs(a.X - expected.X) < 1.5
-					&& Math.Abs(a.Y - expected.Y) < 1.5
-					&& Math.Abs(a.Width - expected.Width) < 1.5
-					&& Math.Abs(a.Height - expected.Height) < 1.5;
-			},
-			timeoutMS: 3000,
-			message: $"The semantic node of {element.GetType().Name} should be at {expected}, was {actual}");
+		var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+		Rect? actual;
+		while (!Matches(actual = GetSemanticElementRect(element)) && stopwatch.ElapsedMilliseconds < 3000)
+		{
+			await Task.Delay(50);
+		}
+
+		Assert.IsTrue(Matches(actual), $"The semantic node of {element.GetType().Name} should be at {expected}, was {actual?.ToString() ?? "missing"}.");
+
+		bool Matches(Rect? rect)
+			=> rect is { } a
+				&& Math.Abs(a.X - expected.X) < 1.5
+				&& Math.Abs(a.Y - expected.Y) < 1.5
+				&& Math.Abs(a.Width - expected.Width) < 1.5
+				&& Math.Abs(a.Height - expected.Height) < 1.5;
 	}
 
 	private sealed partial class ProbePage : UserControl
