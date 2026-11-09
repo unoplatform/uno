@@ -58,7 +58,6 @@
 		     backslash as an escape and eats it, so a Windows path would lose its separators. -->
 		<_UnoWgpuPortPath>$(UnoWebGpuPortDir)emdawnwebgpu.port.py</_UnoWgpuPortPath>
 		<_UnoWgpuPortPath>$(_UnoWgpuPortPath.Replace('\', '/'))</_UnoWgpuPortPath>
-		<EmccExtraLDFlags>$(EmccExtraLDFlags) --use-port=$(_UnoWgpuPortPath) -sDEFAULT_TO_CXX=1</EmccExtraLDFlags>
 		<!-- emcc must BUILD the port, which needs a writable cache; the SDK's own is frozen. emscripten
 		     rejects a relative EM_CACHE outright, and MSBuild resolves a relative path against the working
 		     directory at evaluation time, not the project, so anchor it on the project explicitly. -->
@@ -73,14 +72,15 @@
 		</ItemGroup>
 	</Target>
 
-	<!-- SkiaSharp 4.155+ links its own emdawnwebgpu into every WebAssembly app. A second copy would load the same JS
-	     libraries twice and fail the link, and both are the same standard webgpu.h ABI, so use SkiaSharp's. -->
-	<Target Name="_UnoWebGpuUseSkiaSharpEmdawn" BeforeTargets="_BrowserWasmWriteRspForLinking"
-			Condition="'$(_UnoWebGpuWasm)' == 'true' and '$(_SkiaSharpUseEmdawnwebgpu)' == 'true' and '$(ShouldIncludeNativeSkiaSharp)' == 'True' and Exists('$(_SkiaSharpEmdawnwebgpuPkg)/webgpu/src/library_webgpu.js')">
+	<!-- Links our port unless SkiaSharp (4.155+) links its own emdawnwebgpu: a second copy would load the same JS
+	     libraries twice and fail the link, and both are the same standard webgpu.h ABI. Decided at link time, when
+	     SkiaSharp's properties are set whatever the import order. -->
+	<Target Name="_UnoWebGpuLinkEmdawn" BeforeTargets="_BrowserWasmWriteRspForLinking" Condition="'$(_UnoWebGpuWasm)' == 'true'">
 		<PropertyGroup>
-			<EmccExtraLDFlags>$(EmccExtraLDFlags.Replace('--use-port=$(_UnoWgpuPortPath)', ''))</EmccExtraLDFlags>
+			<_UnoWebGpuSkiaSharpEmdawn Condition="'$(_SkiaSharpUseEmdawnwebgpu)' == 'true' and '$(ShouldIncludeNativeSkiaSharp)' == 'True' and Exists('$(_SkiaSharpEmdawnwebgpuPkg)/webgpu/src/library_webgpu.js')">true</_UnoWebGpuSkiaSharpEmdawn>
+			<EmccExtraLDFlags Condition="'$(_UnoWebGpuSkiaSharpEmdawn)' != 'true'">$(EmccExtraLDFlags) --use-port=$(_UnoWgpuPortPath) -sDEFAULT_TO_CXX=1</EmccExtraLDFlags>
 		</PropertyGroup>
-		<Message Importance="normal" Text="Uno WebGPU: linking SkiaSharp's emdawnwebgpu ($(_SkiaSharpEmdawnwebgpuPkg)) instead of Uno's." />
+		<Message Importance="normal" Condition="'$(_UnoWebGpuSkiaSharpEmdawn)' == 'true'" Text="Uno WebGPU: linking SkiaSharp's emdawnwebgpu ($(_SkiaSharpEmdawnwebgpuPkg)) instead of Uno's." />
 	</Target>
 
 	<!-- On Windows the writable cache must sit on the emscripten toolchain's drive: building a system-lib variant
