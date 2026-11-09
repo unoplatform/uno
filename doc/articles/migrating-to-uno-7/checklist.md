@@ -17,7 +17,7 @@ Part of [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7). E
 
 ## Packages and Uno Features
 
-- Remove `<UnoFeatures>skiarenderer</UnoFeatures>` (now implicit in apps) — and any native-only feature switches. In a library that uses `SKCanvasElement`, the `SkiaExtensions` conversions or Toolkit Skia controls, replace it with `Skia`. [Details](xref:Uno.Development.MigratingToUno7.ProjectSetup#rendering-is-skia-everywhere).
+- Remove `<UnoFeatures>skiarenderer</UnoFeatures>` (now implicit in apps) — and any native-only feature switches. Replace it with `Skia` instead if the app also lists `WebGpu` and still draws with SkiaSharp, or in a library that uses `SKCanvasElement`, the `SkiaExtensions` conversions or Toolkit Skia controls. Code built for Windows that draws with Skia also needs `<UnoEnableSkiaOnWinAppSdk>true</UnoEnableSkiaOnWinAppSdk>`. [Details](xref:Uno.Development.MigratingToUno7.ProjectSetup#rendering-is-skia-everywhere).
 - Remove references to the deleted assemblies/types and to native element hosting. [Details](xref:Uno.Development.MigratingToUno7.RemovedApis#native-rendering-types-and-helpers).
 - Remove manual `ConfigureUniversalImageLoader();` (Android) and other native bootstrap. [Details](xref:Uno.Development.MigratingToUno7.Packages#unouniversalimageloader-no-longer-injected-android).
 

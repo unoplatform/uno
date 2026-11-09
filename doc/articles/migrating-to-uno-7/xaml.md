@@ -8,7 +8,7 @@ Part of [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).
 
 **Read this if** your XAML uses `clr-namespace:`, `XamlDefault*` or `NativeDefault*` styles, hand-merged Fluent dictionaries or relative URIs, or doesn't merge `XamlControlsResources`.
 
-**Skip it if** your XAML is plain WinUI markup and your app merges `XamlControlsResources`. Conditional prefixes such as `skia:` are covered in [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7.Libraries#removed-xaml-prefixes).
+**Skip it if** your XAML is plain WinUI markup with no relative URIs, and your app merges `XamlControlsResources`. Conditional prefixes such as `skia:` are covered in [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7.Libraries#removed-xaml-prefixes).
 
 ## Markup that no longer builds
 

@@ -6,9 +6,9 @@ uid: Uno.Development.MigratingToUno7.Packages
 
 Part of [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).
 
-**Read this if** you have explicit Uno Platform `PackageReference`s, list `Prism`, `Lottie` or `Skia` in `UnoFeatures`, restore with lock files, or your code uses AndroidX, `LibVLCSharp`, `SKXamlCanvas` or `Microsoft.Windows.Compatibility` directly.
+**Read this if** you have explicit Uno Platform `PackageReference`s, list `Prism`, `Lottie` or `Skia` in `UnoFeatures`, restore with lock files, sideload a packaged Windows app, or your code uses AndroidX, `LibVLCSharp`, `SKXamlCanvas` or `Microsoft.Windows.Compatibility` directly.
 
-**Skip it if** your project uses the `Uno.Sdk` with default `UnoFeatures` and your code only uses Uno Platform APIs.
+**Skip it if** none of that applies: your project uses the `Uno.Sdk` with default `UnoFeatures` and no lock files, and your code only uses Uno Platform APIs.
 
 ## The rule of thumb
 
