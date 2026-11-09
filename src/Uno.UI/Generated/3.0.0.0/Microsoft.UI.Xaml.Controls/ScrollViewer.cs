@@ -537,7 +537,7 @@ public partial class ScrollViewer : global::Microsoft.UI.Xaml.Controls.ContentCo
 	}
 #endif
 	// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollViewer.ViewChanged
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public event global::System.EventHandler<global::Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs> ViewChanging
 	{

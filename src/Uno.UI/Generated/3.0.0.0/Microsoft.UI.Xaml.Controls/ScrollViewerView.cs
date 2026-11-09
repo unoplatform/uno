@@ -2,17 +2,17 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls;
 
-#if __SKIA__
+#if false
 [global::Uno.NotImplemented]
 #endif
 public partial class ScrollViewerView
 {
-#if __SKIA__
+#if false
 	internal ScrollViewerView()
 	{
 	}
 #endif
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public double HorizontalOffset
 	{
@@ -22,7 +22,7 @@ public partial class ScrollViewerView
 		}
 	}
 #endif
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public double VerticalOffset
 	{
@@ -32,7 +32,7 @@ public partial class ScrollViewerView
 		}
 	}
 #endif
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public float ZoomFactor
 	{
