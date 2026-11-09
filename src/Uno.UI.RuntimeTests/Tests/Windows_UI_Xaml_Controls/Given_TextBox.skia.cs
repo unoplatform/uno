@@ -8170,7 +8170,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// The empty-field variant only started reaching the lock once an empty box stopped swallowing the tap: it
 		// now places the Android insertion handle like a filled one, which is what used to arm the clamp.
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)] // Android disabled as flaky on 6.x: https://github.com/unoplatform/uno/issues/26221
 		public Task When_Touch_Tap_Empty_Does_Not_Lock_ScrollViewer_Android()
 			=> AssertTouchCaretDoesNotLockScrollViewer(
 				"",
