@@ -32,6 +32,18 @@ public abstract partial class ModernCollectionBasePanel
 	private List<UIElement> m_previousStickyClippedContainers = new();
 #endif
 
+#if HAS_UNO
+	// TODO Uno: WinUI's curves follow the content in DManip. Here they follow the offset the presenter last drew: layout reads
+	// ScrollViewer.VerticalOffset, which trails an intermediate view until the deferred ViewChanged.
+	private double GetStickyCurveOffset()
+	{
+		ScrollViewer? spScrollViewer = null;
+		m_wrScrollViewer?.TryGetTarget(out spScrollViewer);
+
+		return spScrollViewer?.Presenter?.LastPublishedVerticalOffset ?? m_windowState.m_lastScrollOffset.Y;
+	}
+#endif
+
 	// Configure or update the sticky behavior of a header
 	private void ConfigureStickyHeader(
 		UIElement spHeader,
@@ -123,7 +135,7 @@ public abstract partial class ModernCollectionBasePanel
 		{
 			// DManip wasn't responsible for the ScrollViewer change, so we need to manually evaluate the secondary content curve and update translate transform on Headers
 #if HAS_UNO
-			pWrapper.UpdateHeaderPosition(m_windowState.m_lastScrollOffset.Y);
+			pWrapper.UpdateHeaderPosition(GetStickyCurveOffset());
 #else
 			pWrapper.UpdateHeaderPosition();
 #endif
@@ -480,7 +492,7 @@ public abstract partial class ModernCollectionBasePanel
 		{
 			// DManip wasn't responsible for the ScrollViewer change, so we need to manually evaluate the secondary content curve
 #if HAS_UNO
-			UpdateItemClippingTransform(m_windowState.m_lastScrollOffset.Y);
+			UpdateItemClippingTransform(GetStickyCurveOffset());
 #else
 			m_tpItemClippingRelationship.UpdateDependencyProperties();
 #endif
