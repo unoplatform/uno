@@ -199,6 +199,10 @@ partial class ListViewBase
 						{
 							sender.DropCompleted -= callbackPtr;
 
+							// DragDrop::CleanupDragDrop
+							spOriginatingItem.SetDragVisualCaptured(false);
+							spOriginatingItem.SetDragIsGrabbed(false);
+
 							if (wpThis.TryGetTarget(out var spThis))
 							{
 								spThis.OnDragCompleted(args, spItems!);

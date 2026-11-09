@@ -13,7 +13,6 @@ partial class ListViewBaseItem : DirectUI.ITransitionContextProvider
 	// UIAutomation Property: whether or not this element is currently grabbed (i.e. being dragged).
 	private bool m_fDragIsGrabbed;
 
-#if false
 	// The ZIndex used by ListViewBaseItem during user interaction.
 	// Note that ZIndex==1 is used by opaque headers which should be above rest items but below dragged one
 	private const int LISTVIEWBASEITEM_INTERACTION_ZINDEX = 2;
@@ -23,20 +22,12 @@ partial class ListViewBaseItem : DirectUI.ITransitionContextProvider
 	private const string LISTVIEWBASEITEM_NO_SELECTION_HINT_STATE_NAME = "NoSelectionHint";
 	// The name of the NoReorderHint VisualState.
 	private const string LISTVIEWBASEITEM_NO_REORDER_HINT_STATE_NAME = "NoReorderHint";
-#endif
 	// The name of the content container template part (the bit that becomes the drag visual).
 	private const string LISTVIEWBASEITEM_CONTENT_CONTAINER_PART_NAME = "ContentContainer";
 	// (phone only) The name of the checkbox container template part (used to determine the source of a PointerPress).
 	private const string LISTVIEWBASEITEM_CHECKBOX_CONTAINER_PART_NAME = "CheckboxContainer";
 
-#if false
-	// The standard Windows mouse drag box size is defined by SM_CXDRAG and SM_CYDRAG.
-	// ListViewBaseItem uses the standard box size with dimensions multiplied by this constant.
-	// This arrangement is in place as accidentally triggering a drag was deemed too easy while
-	// selecting several items with the mouse in quick succession.
-	// See bug 103860: Jupiter moco: Reorder  kicks in before DropTargetItemThemeAnimation starts
-	private const double LISTVIEWBASEITEM_MOUSE_DRAG_THRESHOLD_MULTIPLIER = 2.0;
-#endif
+	// TODO Uno: LISTVIEWBASEITEM_MOUSE_DRAG_THRESHOLD_MULTIPLIER belongs to IsOutsideDragRectangle, which is not ported.
 
 	// The delay time before going to the Pressed state after the initial touch
 	private const int LISTVIEWBASEITEM_TOUCH_PRESSED_DELAY = 100;
@@ -51,20 +42,18 @@ partial class ListViewBaseItem : DirectUI.ITransitionContextProvider
 	private const double GRIDVIEWITEM_DRAGOVER_OUTSIDE_MARGIN = 0.3;
 
 	private static readonly Point s_center = new(0.5f, 0.5f);
-#if false
-	private const double s_holdingVisualOpacity = 0.8;
-	private const double s_holdingVisualScale = 1.05;
-#endif
+	// TODO Uno: s_holdingVisualOpacity / s_holdingVisualScale belong to the holding LTE, which is not ported.
 
-#if false
-	// Latest position the mouse left button was pushed. Used to initiate a mouse drag and drop.
-	private Point m_lastMouseLeftButtonDownPosition;
-#endif
+	// TODO Uno: m_lastMouseLeftButtonDownPosition is only read by the unported ShouldStartMouseDrag and TryStartDrag.
 
 	// Latest position the user first made contact with the screen.
 	private Point m_lastTouchDownPosition;
 
-	// TODO Uno: m_tpNoSelectionHintTimeline / m_tpNoReorderHintTimeline and their Completed handlers (hint storyboards not ported).
+	// The Storyboards of the NoSelectionHint and NoReorderHint VisualStates, and their Completed handlers.
+	private Media.Animation.Timeline? m_tpNoSelectionHintTimeline;
+	private Media.Animation.Timeline? m_tpNoReorderHintTimeline;
+	private global::System.EventHandler<object>? m_epNoSelectionHintTimelineCompletedHandler;
+	private global::System.EventHandler<object>? m_epNoReorderHintTimelineCompletedHandler;
 
 	// The ContentContainer template part.
 	private UIElement? m_tpContentContainer;
@@ -108,7 +97,6 @@ partial class ListViewBaseItem : DirectUI.ITransitionContextProvider
 	// Whether or not the user is Holding over this ListViewBaseItem.
 	private bool m_isHolding;
 
-#if false
 	// If this is TRUE, this ListViewBaseItem is in a selection hint visual state.
 	private bool m_inSelectionHintState;
 
@@ -124,13 +112,7 @@ partial class ListViewBaseItem : DirectUI.ITransitionContextProvider
 	// "Far enough away" is defined via system metrics SM_CXDRAG and SM_CYDRAG.
 	private bool m_isCheckingForMouseDrag;
 
-	// Set when we're handing off a drag gesture to our ListViewBase.
-	// Used to prevent the release of the CrossSlideViewport on CaptureLost,
-	// since we need that viewport even after the swipe has completed (it prevents
-	// a pan from occurring). However, we want to release the viewport in other
-	// CaptureLost invocations.
-	private bool m_isStartingDrag;
-#endif
+	// TODO Uno: m_isStartingDrag guards the CrossSlideViewport release, and Uno has no cross-slide viewport.
 
 	// This boolean is set to true after we take a capture of the drag visual
 	private bool m_dragVisualCaptured;

@@ -62,11 +62,11 @@ partial class ListViewBaseItem
 	// Apply a template to the ListViewBaseItem.
 	protected override void OnApplyTemplate()
 	{
-		// TODO Uno: UnregisterNoHintVisualStateHandlers - hint storyboards not ported.
+		UnregisterNoHintVisualStateHandlers();
 
 		base.OnApplyTemplate();
 
-		// TODO Uno: RegisterNoHintVisualStateHandlers - live for Grid-rooted templates (e.g. ListViewItemExpanded).
+		RegisterNoHintVisualStateHandlers();
 
 		// Grab the ContentContainer template part.
 		m_tpContentContainer = GetTemplateChild(LISTVIEWBASEITEM_CONTENT_CONTAINER_PART_NAME) as UIElement;
@@ -88,8 +88,70 @@ partial class ListViewBaseItem
 		ChangeVisualState(false);
 	}
 
-	// TODO Uno: AttachTransitionCompleted / RegisterNoHintVisualStateHandlers / UnregisterNoHintVisualStateHandlers (LBI:313-405)
-	// are live for Grid-rooted templates (e.g. ListViewItemExpanded) but not ported.
+	// Registers a handler to be called when the ListViewBaseItem completes a transition to the named VisualState.
+	private Media.Animation.Timeline? AttachTransitionCompleted(
+		string pszStateName,
+		EventHandler<object> callableHandler)
+	{
+		// TODO: We shouldn't be registering on a VisualState's Storyboard.Completed
+		// here. Instead, we should listen to VSG.CurrentStateChanged. There's a bug preventing us from
+		// doing so: 101520 - CurrentStateChanged event fires immediately, before animation completes.
+		// Current workaround will fail if there are VisualTransitions in the VSG.
+
+		// Try to find the VisualState.
+		// TODO Uno: VisualStateManager::TryGetState is not ported, so the groups are searched here.
+		if (this.GetTemplateRoot() is FrameworkElement templateRoot &&
+			VisualStateManager.GetVisualStateGroups(templateRoot) is { } groups)
+		{
+			foreach (var group in groups)
+			{
+				foreach (var state in group.States)
+				{
+					if (state.Name == pszStateName && state.Storyboard is { } spStoryboard)
+					{
+						// Register for Completed on the Storyboard.
+						spStoryboard.Completed += callableHandler;
+						return spStoryboard;
+					}
+				}
+			}
+		}
+
+		return null;
+	}
+
+	// Registers event handlers on the Storyboard within the NoSelectionHint
+	// VisualState.
+	private void RegisterNoHintVisualStateHandlers()
+	{
+		m_epNoSelectionHintTimelineCompletedHandler ??= (s, e) => OnNoSelectionHintStoryboardCompleted();
+		m_tpNoSelectionHintTimeline = AttachTransitionCompleted(
+			LISTVIEWBASEITEM_NO_SELECTION_HINT_STATE_NAME,
+			m_epNoSelectionHintTimelineCompletedHandler);
+
+		m_epNoReorderHintTimelineCompletedHandler ??= (s, e) => OnNoReorderHintStoryboardCompleted();
+		m_tpNoReorderHintTimeline = AttachTransitionCompleted(
+			LISTVIEWBASEITEM_NO_REORDER_HINT_STATE_NAME,
+			m_epNoReorderHintTimelineCompletedHandler);
+	}
+
+	// Unregisters all event handlers on the Storyboard within the NoSelectionHint
+	// VisualState.
+	private void UnregisterNoHintVisualStateHandlers()
+	{
+		if (m_tpNoSelectionHintTimeline is not null)
+		{
+			m_tpNoSelectionHintTimeline.Completed -= m_epNoSelectionHintTimelineCompletedHandler;
+		}
+
+		if (m_tpNoReorderHintTimeline is not null)
+		{
+			m_tpNoReorderHintTimeline.Completed -= m_epNoReorderHintTimelineCompletedHandler;
+		}
+
+		m_tpNoSelectionHintTimeline = null;
+		m_tpNoReorderHintTimeline = null;
+	}
 
 	// Called when the user presses a pointer down over the ListViewBaseItem.
 	protected override void OnPointerPressed(PointerRoutedEventArgs pArgs)
@@ -137,7 +199,20 @@ partial class ListViewBaseItem
 
 					// TODO Uno: EnqueuePendingTapInteractionForPointerId - click stays on SelectorItem.
 
-					// TODO Uno: BeginCheckingForMouseDrag (LBI:469-484) - mouse drag threshold not ported.
+					if (spListView is not null && !spListView.IsInExclusiveInteraction())
+					{
+						bool dragActive = spListView.GetIsDragEnabled();
+
+						// ListView does not support D&D but maybe the ListViewItem has CanDrag==True
+						if (!dragActive)
+						{
+							dragActive = CanDrag;
+						}
+						if (dragActive)
+						{
+							BeginCheckingForMouseDrag(spPointer);
+						}
+					}
 				}
 
 				// If the right mouse button was the one pressed...
@@ -155,7 +230,22 @@ partial class ListViewBaseItem
 						m_isRightButtonPressed = true;
 						isVisualStateChangePending = true;
 
-						// TODO Uno: EnqueuePendingTapInteractionForPointerId + BeginCheckingForMouseDrag (LBI:502-519).
+						// TODO Uno: EnqueuePendingTapInteractionForPointerId - click stays on SelectorItem.
+
+						if (spListView is not null && !spListView.IsInExclusiveInteraction())
+						{
+							bool dragActive = spListView.GetIsDragEnabled();
+
+							// ListView does not support D&D but maybe the ListViewItem has CanDrag==True
+							if (!dragActive)
+							{
+								dragActive = CanDrag;
+							}
+							if (dragActive)
+							{
+								BeginCheckingForMouseDrag(spPointer);
+							}
+						}
 					}
 				}
 			}
@@ -352,7 +442,9 @@ partial class ListViewBaseItem
 			}
 
 			// Terminate any mouse drag gesture tracking.
-			// TODO Uno: StopCheckingForMouseDrag - mouse drag threshold not ported.
+			// TODO Uno: the capture is left to the InputManager, which releases it after this event: releasing it here
+			// raises a CaptureLost that cancels SelectorItem's click, which is raised after this handler.
+			m_isCheckingForMouseDrag = false;
 		}
 		else if (pointerDeviceType == PointerDeviceType.Touch)
 		{
@@ -480,7 +572,10 @@ partial class ListViewBaseItem
 			// Our behavior is different between mouse and touch.
 			// It's up to us to detect mouse drag gestures - if we
 			// detect one here, tell our parent to start a drag drop.
-			if (pointerDeviceType == PointerDeviceType.Mouse || pointerDeviceType == PointerDeviceType.Pen)
+			// TODO Uno: the gesture recognizer keeps the dragging pointer captured on the item, so it still gets the
+			// moves of its own drag, which WinUI's drag/drop service takes away.
+			if ((pointerDeviceType == PointerDeviceType.Mouse || pointerDeviceType == PointerDeviceType.Pen)
+				&& GetParentListView()?.IsContainerDragDropOwner(this) != true)
 			{
 				// Desired behavior when a user touches a container that currently
 				// has a mouse hover visual is to clear the hover visual, then re-instate
@@ -493,15 +588,24 @@ partial class ListViewBaseItem
 					ChangeVisualState(true);
 				}
 
-				// TODO Uno: mouse drag detection (LBI:1041-1092: IsInExclusiveInteraction, ShouldStartMouseDrag, TryStartDrag) not ported.
+				// If another item is dragging, prevent a drag from happening.
+				if (GetParentListView() is { } spListView && spListView.IsInExclusiveInteraction())
+				{
+					StopCheckingForMouseDrag(pArgs.Pointer);
+				}
+
+				// TODO Uno: the drag itself (ShouldStartMouseDrag, EnsureDragDropVisual, TryStartDrag, LBI:1048-1091) is started by
+				// UIElement's drag gesture (CanDrag), Uno's AutomaticDragHelper, which calls OnDragGestureStarting through OnDragGesture.
 			}
 		}
 	}
 
-	// MUX Reference ListViewBaseItem_Partial.cpp, lines 1064-1070
+	// MUX Reference ListViewBaseItem_Partial.cpp, lines 1062-1070 and 1784-1789
 	// Uno-specific: runs when Uno's own drag gesture starts the item drag (ListViewBase.OnItemContainerDragStarting).
-	internal void OnDragGestureStarting()
+	internal void OnDragGestureStarting(Pointer pointer)
 	{
+		StopCheckingForMouseDrag(pointer);
+
 		// TODO: We don't get a MouseLeave on this
 		// element after a drag and drop.  Manually reset the mouse over
 		// state as a workaround. Note that this isn't quite right yet (user
@@ -509,6 +613,9 @@ partial class ListViewBaseItem
 		// during stabilization.
 		m_shouldEnterPointerOver = false;
 		ChangeVisualState(true);
+
+		// Called when we're about to start the drag (TryStartDrag's callback).
+		ReleasePointerCapture(pointer);
 	}
 
 	// Called when the ListViewBaseItem or its children lose pointer capture.
@@ -747,8 +854,57 @@ partial class ListViewBaseItem
 		ChangeVisualStateWithContextNewStyle(bUseTransitions);
 	}
 
-	// TODO Uno: OnNoSelectionHintStoryboardCompleted / OnNoReorderHintStoryboardCompleted / UpdateTopmost /
-	// MakeTopmost / ClearTopmost (LBI:1516-1595) are live for Grid-rooted templates (e.g. ListViewItemExpanded) but not ported.
+	// Called when the NoSelectionHint VisualState's Storyboard completes.
+	private void OnNoSelectionHintStoryboardCompleted()
+	{
+		m_inSelectionHintState = false;
+		UpdateTopmost();
+	}
+
+	// Called when the NoReorderingHint VisualState's Storyboard completes.
+	private void OnNoReorderHintStoryboardCompleted()
+	{
+		m_inReorderHintState = false;
+		UpdateTopmost();
+	}
+
+	// Sets this ListViewBaseItem to the appropriate Z-Order,
+	// based on whether it is in a Hint state.
+	private void UpdateTopmost()
+	{
+		if (m_inSelectionHintState || m_inReorderHintState)
+		{
+			MakeTopmost();
+		}
+		else
+		{
+			ClearTopmost();
+		}
+	}
+
+	// Raises this ListViewBaseItem above its siblings.
+	private void MakeTopmost()
+	{
+		if (!m_isTopmost)
+		{
+			// TODO: Use a Storyboard to avoid overwriting a user-set value. Work item: 102347.
+			Canvas.SetZIndex(this, LISTVIEWBASEITEM_INTERACTION_ZINDEX);
+
+			m_isTopmost = true;
+		}
+	}
+
+	// Restores this ListViewBaseItem to its default Z-Order.
+	private void ClearTopmost()
+	{
+		if (m_isTopmost)
+		{
+			// TODO: Use a Storyboard to avoid overwriting a user-set value. Work item: 102347.
+			Canvas.SetZIndex(this, LISTVIEWBASEITEM_REST_ZINDEX);
+
+			m_isTopmost = false;
+		}
+	}
 
 	// determines if this element should be transitioned using the passed in transition
 	DirectUI.ThemeTransitionContext DirectUI.ITransitionContextProvider.GetCurrentTransitionContext(int layoutTickId)
@@ -798,7 +954,31 @@ partial class ListViewBaseItem
 	bool DirectUI.ITransitionContextProvider.IsCollectionMutatingFast()
 		=> Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(this) is DirectUI.IChildTransitionContextProvider spContextProviderPanel && spContextProviderPanel.IsCollectionMutatingFast();
 
-	// TODO Uno: GetDropOffsetToRoot (LBI:1678-1931) not ported.
+	// TODO Uno: GetDropOffsetToRoot (LBI:1678-1696) not ported, its only caller is the core DragDrop drop animation.
+
+	// Begin tracking the mouse cursor in order to fire a drag start if the pointer
+	// moves a certain distance away from m_lastMouseLeftButtonDownPosition.
+	private void BeginCheckingForMouseDrag(Pointer pPointer)
+	{
+		ArgumentNullException.ThrowIfNull(pPointer);
+		m_isCheckingForMouseDrag = CapturePointer(pPointer);
+	}
+
+	// Stop tracking the mouse cursor.
+	private void StopCheckingForMouseDrag(Pointer pPointer)
+	{
+		ArgumentNullException.ThrowIfNull(pPointer);
+
+		// Do not call ReleasePointerCapture() more times than we called CapturePointer()
+		if (m_isCheckingForMouseDrag)
+		{
+			m_isCheckingForMouseDrag = false;
+			ReleasePointerCapture(pPointer);
+		}
+	}
+
+	// TODO Uno: ShouldStartMouseDrag, IsOutsideDragRectangle and GetDragVisual (LBI:1727-1878) are not ported: UIElement's
+	// drag gesture decides when the drag starts (tap range rather than SM_CXDRAG x 2), and Uno draws the drag visual with DragUI.
 
 	// Clears flags related to ongoing pointer input in response to a manipulation starting
 	// or container recycle.
@@ -824,12 +1004,10 @@ partial class ListViewBaseItem
 	internal void ClearInteractionState()
 	{
 		ClearPointerState();
-#if false
 		m_isCheckingForMouseDrag = false;
 		m_inReorderHintState = false;
 		m_inSelectionHintState = false;
 		m_isTopmost = false;
-#endif
 	}
 
 	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
@@ -888,9 +1066,7 @@ partial class ListViewBaseItem
 		m_inCheckboxPressedForTouch = false;
 		m_isLeftButtonPressed = false;
 		m_isRightButtonPressed = false;
-#if false
 		m_isCheckingForMouseDrag = false;
-#endif
 		m_isKeyboardPressed = false;
 	}
 

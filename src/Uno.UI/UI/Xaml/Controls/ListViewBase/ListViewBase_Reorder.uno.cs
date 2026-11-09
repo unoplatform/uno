@@ -118,16 +118,23 @@ partial class ListViewBase
 						draggedItemContainer.OnTouchDragStarted();
 					}
 
-					draggedItemContainer.OnDragGestureStarting();
+					draggedItemContainer.OnDragGestureStarting(pointer);
 				});
 
 			if (wasCanceled)
 			{
 				innerArgs.Cancel = true;
 			}
-			else if (that.CanReorderItems && that.AllowDrop)
+			else
 			{
-				innerArgs.Data.SetData(ReorderOwnerFormatId, that);
+				if (that.CanReorderItems && that.AllowDrop)
+				{
+					innerArgs.Data.SetData(ReorderOwnerFormatId, that);
+				}
+
+				// WinUI's DragDrop::HidePrimaryDraggedItem, once the drag visual is captured. Uno captures it with DragUI
+				// as the drag starts, and DragDrop::CleanupDragDrop's reset is in OnDragGesture's DropCompleted handler.
+				draggedItemContainer.SetDragVisualCaptured(true);
 			}
 		}
 		finally
