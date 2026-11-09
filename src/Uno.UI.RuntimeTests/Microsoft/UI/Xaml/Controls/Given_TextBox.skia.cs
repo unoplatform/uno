@@ -1169,73 +1169,79 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Tab_Moves_Focus_TextBox_Does_Not_Insert_Tab()
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22818")]
+		[DataRow(false, '\t')]
+		[DataRow(true, '\t')]
+		[DataRow(true, '\u0019')]
+		public async Task When_Tab_Moves_Focus_TextBox_Does_Not_Insert_Tab(bool reverse, char unicode)
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
 
-			var textBox = new TextBox();
-			var button = new Button
-			{
-				Content = "Next"
-			};
+			var textBox = new TextBox { Text = "text" };
+			var previous = new Button { Content = "Previous" };
+			var next = new Button { Content = "Next" };
 			var stackPanel = new StackPanel
 			{
-				Children =
-				{
-					textBox,
-					button,
-				}
+				Children = { previous, textBox, next }
 			};
 
-			WindowHelper.WindowContent = stackPanel;
-			await WindowHelper.WaitForIdle();
-			await WindowHelper.WaitForLoaded(textBox);
+			try
+			{
+				await UITestHelper.Load(stackPanel);
+				Assert.IsTrue(textBox.Focus(FocusState.Programmatic));
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(textBox, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 
-			textBox.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitForIdle();
+				var modifiers = reverse ? VirtualKeyModifiers.Shift : VirtualKeyModifiers.None;
+				textBox.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(textBox, VirtualKey.Tab, modifiers, unicodeKey: unicode));
+				await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(textBox, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
-
-			await KeyboardHelper.Tab();
-			await WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(string.Empty, textBox.Text);
-			Assert.AreEqual(button, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+				Assert.AreEqual("text", textBox.Text);
+				Assert.AreEqual(reverse ? previous : next, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
 		}
 
 		[TestMethod]
-		public async Task When_Tab_Moves_Focus_PasswordBox_Does_Not_Insert_Tab()
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22818")]
+		[DataRow(false, '\t')]
+		[DataRow(true, '\t')]
+		[DataRow(true, '\u0019')]
+		public async Task When_Tab_Moves_Focus_PasswordBox_Does_Not_Insert_Tab(bool reverse, char unicode)
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
 
-			var passwordBox = new PasswordBox();
-			var button = new Button
-			{
-				Content = "Next"
-			};
+			var passwordBox = new PasswordBox { Password = "secret" };
+			var previous = new Button { Content = "Previous" };
+			var next = new Button { Content = "Next" };
 			var stackPanel = new StackPanel
 			{
-				Children =
-				{
-					passwordBox,
-					button,
-				}
+				Children = { previous, passwordBox, next }
 			};
 
-			WindowHelper.WindowContent = stackPanel;
-			await WindowHelper.WaitForIdle();
-			await WindowHelper.WaitForLoaded(passwordBox);
+			try
+			{
+				await UITestHelper.Load(stackPanel);
+				Assert.IsTrue(passwordBox.Focus(FocusState.Programmatic));
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(passwordBox, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 
-			passwordBox.Focus(FocusState.Programmatic);
-			await WindowHelper.WaitForIdle();
+				var modifiers = reverse ? VirtualKeyModifiers.Shift : VirtualKeyModifiers.None;
+				passwordBox.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(passwordBox, VirtualKey.Tab, modifiers, unicodeKey: unicode));
+				await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(passwordBox, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
-
-			await KeyboardHelper.Tab();
-			await WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(string.Empty, passwordBox.Password);
-			Assert.AreEqual(button, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+				Assert.AreEqual("secret", passwordBox.Password);
+				Assert.AreEqual(reverse ? previous : next, FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
 		}
 
 		[TestMethod]
