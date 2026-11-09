@@ -94,14 +94,12 @@ internal partial class WebAssemblyAccessibility
 		// An element without a peer is crossed by FrameworkElementAutomationPeer.GetChildrenCore, so the scope
 		// above it still applies, unless it is the container of a reported item peer, which owns its children.
 		var childrenSource = peer ?? reportedPeer;
-		if (childrenSource is null)
+		childScope = childrenSource switch
 		{
-			childScope = scope;
-		}
-		else
-		{
-			childScope = element.GetChildren().Count == 0 ? null : CreatePeerChildrenScope(childrenSource);
-		}
+			null => scope,
+			_ when element.GetChildren().Count == 0 => null,
+			_ => CreatePeerChildrenScope(childrenSource),
+		};
 
 		return true;
 	}
