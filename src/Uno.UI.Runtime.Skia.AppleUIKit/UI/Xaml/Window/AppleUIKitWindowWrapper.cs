@@ -64,6 +64,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		if (Window.ContentHostOverride is null)
 		{
 			NativeWindowHelpers.TryCreateExtendedSplashScreen(_nativeWindow);
+			UnoUISceneDelegate.SetAppWindow(_nativeWindow);
 		}
 
 		_inputPane = InputPane.GetForCurrentView();
@@ -118,7 +119,15 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal RootViewController MainController => _mainController;
 
-	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
+	internal void OnNativeVisibilityChanged(bool visible)
+	{
+		// The scene enters the foreground as it connects, before the window is shown: Show() must still raise
+		// the first VisibilityChanged.
+		if (WasShown || !UnoUISceneDelegate.UsesSceneLifecycle)
+		{
+			IsVisible = visible;
+		}
+	}
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
