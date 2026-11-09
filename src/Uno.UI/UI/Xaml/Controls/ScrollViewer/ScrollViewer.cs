@@ -89,6 +89,8 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		public event EventHandler<ScrollViewerViewChangedEventArgs>? ViewChanged;
 
+		public event EventHandler<ScrollViewerViewChangingEventArgs>? ViewChanging;
+
 		internal event SizeChangedEventHandler? ExtentSizeChanged;
 
 		public ScrollViewer()
@@ -1197,6 +1199,24 @@ namespace Microsoft.UI.Xaml.Controls
 				shouldSnap: true);
 		}
 		#endregion
+
+		// MUX Reference ScrollViewer_Partial.cpp, RaiseViewChanging.
+		// Raised synchronously, unlike an intermediate ViewChanged: whatever tracks the view moves in the frame the content moves.
+		internal void RaiseViewChanging(
+			double nextHorizontalOffset,
+			double nextVerticalOffset,
+			float nextZoomFactor,
+			double finalHorizontalOffset,
+			double finalVerticalOffset,
+			bool isInertial)
+		{
+			if (ViewChanging is { } handler)
+			{
+				ScrollViewerView nextView = new(nextHorizontalOffset, nextVerticalOffset, nextZoomFactor);
+				ScrollViewerView finalView = new(finalHorizontalOffset, finalVerticalOffset, nextZoomFactor);
+				handler(this, new ScrollViewerViewChangingEventArgs(nextView, finalView, isInertial));
+			}
+		}
 
 		// Presenter to Control, i.e. OnPresenterScrolled
 		internal void OnPresenterScrolled(double horizontalOffset, double verticalOffset, bool isIntermediate)

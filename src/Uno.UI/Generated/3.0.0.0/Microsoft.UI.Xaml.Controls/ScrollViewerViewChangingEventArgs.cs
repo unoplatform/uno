@@ -2,17 +2,17 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls;
 
-#if __SKIA__
+#if false
 [global::Uno.NotImplemented]
 #endif
 public partial class ScrollViewerViewChangingEventArgs
 {
-#if __SKIA__
+#if false
 	internal ScrollViewerViewChangingEventArgs()
 	{
 	}
 #endif
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public global::Microsoft.UI.Xaml.Controls.ScrollViewerView FinalView
 	{
@@ -22,7 +22,7 @@ public partial class ScrollViewerViewChangingEventArgs
 		}
 	}
 #endif
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public bool IsInertial
 	{
@@ -32,7 +32,7 @@ public partial class ScrollViewerViewChangingEventArgs
 		}
 	}
 #endif
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented("__SKIA__")]
 	public global::Microsoft.UI.Xaml.Controls.ScrollViewerView NextView
 	{
