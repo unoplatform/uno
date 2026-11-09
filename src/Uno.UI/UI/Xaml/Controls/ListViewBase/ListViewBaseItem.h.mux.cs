@@ -27,7 +27,16 @@ partial class ListViewBaseItem : DirectUI.ITransitionContextProvider
 	// (phone only) The name of the checkbox container template part (used to determine the source of a PointerPress).
 	private const string LISTVIEWBASEITEM_CHECKBOX_CONTAINER_PART_NAME = "CheckboxContainer";
 
-	// TODO Uno: LISTVIEWBASEITEM_MOUSE_DRAG_THRESHOLD_MULTIPLIER belongs to IsOutsideDragRectangle, which is not ported.
+	// The standard Windows mouse drag box size is defined by SM_CXDRAG and SM_CYDRAG.
+	// ListViewBaseItem uses the standard box size with dimensions multiplied by this constant.
+	// This arrangement is in place as accidentally triggering a drag was deemed too easy while
+	// selecting several items with the mouse in quick succession.
+	// See bug 103860: Jupiter moco: Reorder  kicks in before DropTargetItemThemeAnimation starts
+	private const double LISTVIEWBASEITEM_MOUSE_DRAG_THRESHOLD_MULTIPLIER = 2.0;
+
+	// TODO Uno: the Win32 default of GetSystemMetrics(SM_CXDRAG / SM_CYDRAG).
+	private const double SM_CXDRAG = 4;
+	private const double SM_CYDRAG = 4;
 
 	// The delay time before going to the Pressed state after the initial touch
 	private const int LISTVIEWBASEITEM_TOUCH_PRESSED_DELAY = 100;
@@ -44,7 +53,8 @@ partial class ListViewBaseItem : DirectUI.ITransitionContextProvider
 	private static readonly Point s_center = new(0.5f, 0.5f);
 	// TODO Uno: s_holdingVisualOpacity / s_holdingVisualScale belong to the holding LTE, which is not ported.
 
-	// TODO Uno: m_lastMouseLeftButtonDownPosition is only read by the unported ShouldStartMouseDrag and TryStartDrag.
+	// Latest position the mouse left button was pushed. Used to initiate a mouse drag and drop.
+	private Point m_lastMouseLeftButtonDownPosition;
 
 	// Latest position the user first made contact with the screen.
 	private Point m_lastTouchDownPosition;
