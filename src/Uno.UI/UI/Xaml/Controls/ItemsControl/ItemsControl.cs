@@ -686,9 +686,16 @@ namespace Microsoft.UI.Xaml.Controls
 			if (CustomItemsHost is { } customItemsHost)
 			{
 				customItemsHost.RegisterItemsHost(this);
+				var focusState = HasFocus() ? (Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(this)?.FocusedElement as UIElement)?.FocusState : null;
 				customItemsHost.Refresh();
+				if (focusState is { } previousFocusState)
+				{
+					OnFocusedContainerRefreshed(previousFocusState);
+				}
 			}
 		}
+
+		private protected virtual void OnFocusedContainerRefreshed(FocusState focusState) { }
 
 		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 		private void TrySnapshotNonObservableSource(object source)
