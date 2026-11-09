@@ -69,11 +69,11 @@ public partial class ListViewBase
 	// Forces content to scroll until the coordinate space of the SemanticZoomLocation is
 	// visible.
 	public void MakeVisible(
-		SemanticZoomLocation pItem)
+		SemanticZoomLocation item)
 	{
 #if !HAS_UNO // TODO Uno: SemanticZoom is not implemented.
 		object? spItem;
-		SemanticZoomLocation spSemanticLocation = pItem;
+		SemanticZoomLocation spSemanticLocation = item;
 		bool isJumpListEnabled = false;
 		bool isZoomedInView = false;
 
@@ -312,8 +312,8 @@ public partial class ListViewBase
 	//  in the first case we can use the focused element
 	//  in the second case we need to find out what the closest element is to the center point
 	public void StartViewChangeFrom(
-		SemanticZoomLocation pSource,
-		SemanticZoomLocation pDestination)
+		SemanticZoomLocation source,
+		SemanticZoomLocation destination)
 	{
 #if !HAS_UNO // TODO Uno: SemanticZoom is not implemented.
 		try
@@ -324,16 +324,16 @@ public partial class ListViewBase
 			// the container that represents our source.
 			DependencyObject? spContainer = null;
 
-			if (pSource is not null)
+			if (source is not null)
 			{
-				spItem = pSource.Item;
+				spItem = source.Item;
 				if (spItem is null)
 				{
 					Point zoomPoint = default;
 					bool validZoomPoint = false;
 					bool jumpListAlignmentBehavior = false;
 
-					zoomPoint = pSource.ZoomPoint;
+					zoomPoint = source.ZoomPoint;
 
 					validZoomPoint = zoomPoint.X != 0 || zoomPoint.Y != 0;
 
@@ -558,9 +558,9 @@ public partial class ListViewBase
 								bottomAlignment = true;
 							}
 							FindFirstItem(startIndex, out sourceIndex, out spItem);
-							if (pDestination is not null)
+							if (destination is not null)
 							{
-								SemanticZoomLocation spDestination = pDestination;
+								SemanticZoomLocation spDestination = destination;
 								spDestination.SetIsBottomAlignment(bottomAlignment);
 							}
 						}
@@ -595,7 +595,7 @@ public partial class ListViewBase
 					if (spItem is not null)
 					{
 						// Set the focused item as the SourceItem
-						pSource.Item = spItem;
+						source.Item = spItem;
 					}
 
 					// set the destination bounding box
@@ -635,14 +635,14 @@ public partial class ListViewBase
 							boundingBox.Height = (float)dActualHeight;
 							boundingBox.X = relativeToThis.X;
 							boundingBox.Y = relativeToThis.Y;
-							pSource.Bounds = boundingBox;
+							source.Bounds = boundingBox;
 						}
 						else
 						{
 							Rect boundingBox = default;
 							boundingBox.X = zoomPoint.X;
 							boundingBox.Y = zoomPoint.Y;
-							pSource.Bounds = boundingBox;
+							source.Bounds = boundingBox;
 						}
 					}
 				}
@@ -657,11 +657,11 @@ public partial class ListViewBase
 				object? spDestination;
 
 				// Create a SemanticZoomLocation if we don't have one yet
-				if (pDestination is not null)
+				if (destination is not null)
 				{
 					// If there's no DestinationItem currently set, then will use its group
 					// name (or the first item in the group if heading the other direction)
-					spDestination = pDestination.Item;
+					spDestination = destination.Item;
 					if (spDestination is null && spItem is not null)
 					{
 						bool isZoomedInView = false;
@@ -713,7 +713,7 @@ public partial class ListViewBase
 						if (spDestination is not null)
 						{
 							// Set the group key as the DestinationItem
-							pDestination.Item = spDestination;
+							destination.Item = spDestination;
 						}
 					}
 				}
