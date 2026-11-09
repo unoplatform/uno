@@ -2128,6 +2128,8 @@
 		  <!-- Legacy ListView layouter removed; ModernCollectionBasePanel replaces it. -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout" reason="Removed with the ListView WinUI port; the layouter was Uno-only (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout/RelativeHeaderPlacement" reason="Removed with the ListView WinUI port; the layouter was Uno-only (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ScrollViewerView" reason="Sealed as in WinUI (ListView WinUI port, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs" reason="Sealed as in WinUI (ListView WinUI port, breaking changes for 7.0)" />
 		  <!-- Fluent V1 public surface, removed with the Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.XamlControlsResourcesV1" reason="Removed XamlControlsResourcesV1; it sourced an empty V1 dictionary and had no consumers (BC71, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FluentTheme.v1.GlobalStaticResources" reason="Generated with the removed Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0)" />
@@ -2443,6 +2445,7 @@
 		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.ControlsResourcesVersion::value__" reason="Removed with the ControlsResourcesVersion enum (BC71, breaking changes for 7.0)" />
 		  <!-- ControlsResourcesVersionProperty is declared as a get-only property today, but the 6.6.x base may expose it as a DP field; cover both shapes (paired with the <Properties>/<Methods> entries). -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.XamlControlsResources::ControlsResourcesVersionProperty" reason="Removed the ControlsResourcesVersionProperty DP with its property (BC71, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.Primitives.Selector::m_skipFocusSuggestion" reason="Uno-only protected field; WinUI Selector has no such member (breaking changes for 7.0)" />
 		  <!-- Any remaining member of the deleted Uno.UI.FluentTheme.v1 assembly or of XamlControlsResourcesV1 (see the <Assemblies>/<Types> entries above). Regex because the generated GlobalStaticResources member set is not reproducible locally. -->
 		  <Member fullName=".+ Uno\.UI\.FluentTheme\.v1\..+" reason="Member of the removed Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0)" isRegex="true" />
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.XamlControlsResourcesV1(::|\.).+" reason="Member of the removed XamlControlsResourcesV1 type (BC71, breaking changes for 7.0)" isRegex="true" />
@@ -2908,6 +2911,17 @@
 		  <Member fullName="Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout Microsoft.UI.Xaml.Controls.VirtualizingPanel.GetLayouter()" reason="Removed with the ListView WinUI port; the layouter was Uno-only (breaking changes for 7.0)" />
 		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.MeasureOverride(Windows.Foundation.Size availableSize)" reason="Now inherited from ModernCollectionBasePanel (breaking changes for 7.0)" />
 		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.ArrangeOverride(Windows.Foundation.Size finalSize)" reason="Now inherited from ModernCollectionBasePanel (breaking changes for 7.0)" />
+		  <!-- ListView WinUI port: panel/presenter overrides now live on ModernCollectionBasePanel / hidden Uno-only bases, or lost their Uno-only signature. -->
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.ItemsStackPanel.MeasureOverride(Windows.Foundation.Size availableSize)" reason="Now inherited from ModernCollectionBasePanel (breaking changes for 7.0)" />
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.ItemsStackPanel.ArrangeOverride(Windows.Foundation.Size finalSize)" reason="Now inherited from ModernCollectionBasePanel (breaking changes for 7.0)" />
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.ItemsPresenter.MeasureOverride(Windows.Foundation.Size size)" reason="Override parameter renamed to availableSize (breaking changes for 7.0)" />
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.ListViewBase.ArrangeOverride(Windows.Foundation.Size finalSize)" reason="Override parameter renamed with the ListView WinUI port (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ListViewBase.OnDataContextChanged(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Uno-only override removed with the ListView WinUI port (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ListViewBase.OnItemsSourceChanged(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Uno-only override removed with the ListView WinUI port (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ListViewBase.OnKeyDown(Microsoft.UI.Xaml.Input.KeyRoutedEventArgs args)" reason="Override parameter renamed with the ListView WinUI port (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.PrepareContainerForItemOverride(Microsoft.UI.Xaml.DependencyObject element, System.Object item)" reason="Override parameters renamed with the ListView WinUI port (breaking changes for 7.0)" />
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.MeasureOverride(Windows.Foundation.Size availableSize)" reason="Now handled by the ListView item bases (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ItemsControl Microsoft.UI.Xaml.Controls.GroupItem.GetTemplatedItemsControl()" reason="Uno-only public method; WinUI GroupItem has no such member (breaking changes for 7.0)" />
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion Microsoft.UI.Xaml.Controls.XamlControlsResources.get_ControlsResourcesVersion()" reason="Removed with the XamlControlsResources.ControlsResourcesVersion property (BC71, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.XamlControlsResources.set_ControlsResourcesVersion(Microsoft.UI.Xaml.Controls.ControlsResourcesVersion value)" reason="Removed with the XamlControlsResources.ControlsResourcesVersion property (BC71, breaking changes for 7.0)" />
@@ -3816,6 +3830,8 @@
 		  <!-- Legacy ListView layouter removed; ModernCollectionBasePanel replaces it. -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout" reason="Removed with the ListView WinUI port; the layouter was Uno-only (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout/RelativeHeaderPlacement" reason="Removed with the ListView WinUI port; the layouter was Uno-only (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ScrollViewerView" reason="Sealed as in WinUI (ListView WinUI port, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs" reason="Sealed as in WinUI (ListView WinUI port, breaking changes for 7.0)" />
 		  <!-- Uno-only Android host types moved out of the WinUI namespaces into the host namespace; WinUI has no counterpart. -->
 		  <Member fullName="Microsoft.UI.Xaml.ApplicationActivity" reason="Moved Uno-only ApplicationActivity to Uno.UI.Runtime.Android (breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.NativeApplication" reason="Moved Uno-only NativeApplication to Uno.UI.Runtime.Android (breaking changes for 7.0)" />
@@ -4183,6 +4199,7 @@
 		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Controls.ControlsResourcesVersion::value__" reason="Removed with the ControlsResourcesVersion enum (BC71, breaking changes for 7.0)" />
 		  <!-- ControlsResourcesVersionProperty is declared as a get-only property today, but the 6.6.x base may expose it as a DP field; cover both shapes (paired with the <Properties>/<Methods> entries). -->
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.XamlControlsResources::ControlsResourcesVersionProperty" reason="Removed the ControlsResourcesVersionProperty DP with its property (BC71, breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.Primitives.Selector::m_skipFocusSuggestion" reason="Uno-only protected field; WinUI Selector has no such member (breaking changes for 7.0)" />
 		  <!-- Any remaining member of the deleted Uno.UI.FluentTheme.v1 assembly or of XamlControlsResourcesV1 (see the <Assemblies>/<Types> entries above). Regex because the generated GlobalStaticResources member set is not reproducible locally. -->
 		  <Member fullName=".+ Uno\.UI\.FluentTheme\.v1\..+" reason="Member of the removed Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0)" isRegex="true" />
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.XamlControlsResourcesV1(::|\.).+" reason="Member of the removed XamlControlsResourcesV1 type (BC71, breaking changes for 7.0)" isRegex="true" />
@@ -4664,6 +4681,17 @@
 		  <Member fullName="Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout Microsoft.UI.Xaml.Controls.VirtualizingPanel.GetLayouter()" reason="Removed with the ListView WinUI port; the layouter was Uno-only (breaking changes for 7.0)" />
 		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.MeasureOverride(Windows.Foundation.Size availableSize)" reason="Now inherited from ModernCollectionBasePanel (breaking changes for 7.0)" />
 		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.Primitives.CarouselPanel.ArrangeOverride(Windows.Foundation.Size finalSize)" reason="Now inherited from ModernCollectionBasePanel (breaking changes for 7.0)" />
+		  <!-- ListView WinUI port: panel/presenter overrides now live on ModernCollectionBasePanel / hidden Uno-only bases, or lost their Uno-only signature. -->
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.ItemsStackPanel.MeasureOverride(Windows.Foundation.Size availableSize)" reason="Now inherited from ModernCollectionBasePanel (breaking changes for 7.0)" />
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.ItemsStackPanel.ArrangeOverride(Windows.Foundation.Size finalSize)" reason="Now inherited from ModernCollectionBasePanel (breaking changes for 7.0)" />
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.ItemsPresenter.MeasureOverride(Windows.Foundation.Size size)" reason="Override parameter renamed to availableSize (breaking changes for 7.0)" />
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.ListViewBase.ArrangeOverride(Windows.Foundation.Size finalSize)" reason="Override parameter renamed with the ListView WinUI port (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ListViewBase.OnDataContextChanged(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Uno-only override removed with the ListView WinUI port (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ListViewBase.OnItemsSourceChanged(Microsoft.UI.Xaml.DependencyPropertyChangedEventArgs e)" reason="Uno-only override removed with the ListView WinUI port (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ListViewBase.OnKeyDown(Microsoft.UI.Xaml.Input.KeyRoutedEventArgs args)" reason="Override parameter renamed with the ListView WinUI port (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Primitives.Selector.PrepareContainerForItemOverride(Microsoft.UI.Xaml.DependencyObject element, System.Object item)" reason="Override parameters renamed with the ListView WinUI port (breaking changes for 7.0)" />
+		  <Member fullName="Windows.Foundation.Size Microsoft.UI.Xaml.Controls.Primitives.SelectorItem.MeasureOverride(Windows.Foundation.Size availableSize)" reason="Now handled by the ListView item bases (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ItemsControl Microsoft.UI.Xaml.Controls.GroupItem.GetTemplatedItemsControl()" reason="Uno-only public method; WinUI GroupItem has no such member (breaking changes for 7.0)" />
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion Microsoft.UI.Xaml.Controls.XamlControlsResources.get_ControlsResourcesVersion()" reason="Removed with the XamlControlsResources.ControlsResourcesVersion property (BC71, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.XamlControlsResources.set_ControlsResourcesVersion(Microsoft.UI.Xaml.Controls.ControlsResourcesVersion value)" reason="Removed with the XamlControlsResources.ControlsResourcesVersion property (BC71, breaking changes for 7.0)" />
