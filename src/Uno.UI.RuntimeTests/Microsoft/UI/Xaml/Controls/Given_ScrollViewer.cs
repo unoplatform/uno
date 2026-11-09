@@ -48,6 +48,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_Width_Is_Zero_Then_ViewportHeight_Is_Published()
+		{
+			var SUT = new ScrollViewer { Height = 300, HorizontalAlignment = HorizontalAlignment.Left, VerticalScrollBarVisibility = ScrollBarVisibility.Disabled };
+
+			await UITestHelper.Load(SUT, x => x.IsLoaded && x.ActualHeight > 0);
+
+			Assert.AreEqual(0, SUT.ActualWidth);
+			Assert.AreEqual(300, SUT.ViewportHeight);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		[RequiresFullWindow]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaTvOS)] // tvOS: https://github.com/unoplatform/uno/issues/25151
 		[RequiresScaling(1f)] // Asserts exact measure/arrange sizes against the requested ones.
