@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -12,6 +11,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
+using static Uno.UI.RuntimeTests.Helpers.LeakTestHelper;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -301,6 +301,42 @@ public class Given_CommandCanExecuteChanged
 	}
 #endif
 
+	// The common case: a page and its view model become unreachable together. The command must not wait for the removal
+	// of a subscription of a button that died with it, queued to the dispatcher, before it can be collected.
+	[TestMethod]
+	// 6.x only: the owner's DependencyObjectStore has a finalizer (master removed it), so the store keeps what it references
+	// alive until finalizers run. Single-threaded WASM runs them only from the event loop, and the mobile runtimes fail too.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaMobile)]
+	[RunsOnUIThread]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
+#endif
+	public async Task When_Owner_And_Command_Dropped_Together_Then_Command_Collected_Without_Dispatcher()
+	{
+		await WindowHelper.WaitForIdle();
+		var (ownerRef, commandRef) = CreateWithOwnCommand();
+
+		// Don't yield to the dispatcher here: the command must not depend on queued work to be collected.
+		CollectWithoutDispatcher([commandRef]);
+
+		if (ownerRef.IsAlive)
+		{
+			Assert.Inconclusive("The button was not collected without yielding on this platform.");
+		}
+
+		Assert.IsFalse(commandRef.IsAlive, "The command is kept alive by the cleanup of a button that died with it.");
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static (WeakReference owner, WeakReference command) CreateWithOwnCommand()
+	{
+		var command = new TestCommand();
+		var button = new Button { Command = command, DataContext = new object() };
+
+		// Tracks resurrection: a short weak reference is cleared even while finalization still keeps the command alive.
+		return (new WeakReference(button), new WeakReference(command, trackResurrection: true));
+	}
+
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static List<WeakReference> CreateNeverLoaded(string controlType, ICommand command)
 	{
@@ -353,35 +389,6 @@ public class Given_CommandCanExecuteChanged
 			case MenuFlyoutItem item:
 				item.Command = command;
 				break;
-		}
-	}
-
-	// Collects at least 3 times, pumping the dispatcher in between so the removals posted by finalizers run.
-	private static async Task CollectAsync(List<WeakReference> refs, Func<bool>? until = null)
-	{
-		until ??= () => !refs.Any(r => r.IsAlive);
-		var sw = Stopwatch.StartNew();
-		var timeout = TimeSpan.FromSeconds(10);
-		var minIterations = 3;
-
-		while (minIterations-- > 0 || (!until() && sw.Elapsed < timeout))
-		{
-			GC.Collect(2);
-			GC.WaitForPendingFinalizers();
-			GC.Collect(2);
-
-			// Some platforms need a yield before weak references are cleared, as in Given_BindingMemoryLeak.
-#if __SKIA__
-			if (OperatingSystem.IsBrowser() || OperatingSystem.IsLinux() || OperatingSystem.IsIOS() || OperatingSystem.IsAndroid())
-#endif
-			{
-				await Task.Yield();
-				GC.Collect(2);
-				GC.WaitForPendingFinalizers();
-				GC.Collect(2);
-			}
-
-			await WindowHelper.WaitForIdle();
 		}
 	}
 
