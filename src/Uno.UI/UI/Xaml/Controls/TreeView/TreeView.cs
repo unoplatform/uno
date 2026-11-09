@@ -278,6 +278,8 @@ public partial class TreeView : Control
 				ListControl?.ListViewModel?.SelectSingleItem(args.NewValue);
 			}
 #else // #15214: workaround for initial selection being lost
+			// TODO Uno: Deviates from WinUI, probably temporary. With {Binding}, WinUI doesn't select from a preset
+			// SelectedItem or model IsSelected on load (#15214). Compare compiled x:Bind on WinUI, then align.
 			PendingSelectedItem = null;
 			if (args.NewValue != selected)
 			{
