@@ -296,6 +296,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			{
 				await UITestHelper.Load(selector, x => x.IsLoaded);
 
+				if (selector is ComboBox comboBox)
+				{
+					// A closed ComboBox has no item containers, and WinUI fails item peer calls with UIA_E_ELEMENTNOTAVAILABLE then.
+					comboBox.IsDropDownOpen = true;
+					await TestServices.WindowHelper.WaitFor(() => comboBox.ContainerFromIndex(2) is not null);
+				}
+
 				var peer = (ItemsControlAutomationPeer)FrameworkElementAutomationPeer.CreatePeerForElement(selector);
 				var beta = (ISelectionItemProvider)peer.CreateItemAutomationPeer("Beta").GetPattern(PatternInterface.SelectionItem);
 				var gamma = (ISelectionItemProvider)peer.CreateItemAutomationPeer("Gamma").GetPattern(PatternInterface.SelectionItem);
@@ -319,6 +326,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			}
 			finally
 			{
+				if (selector is ComboBox comboBox)
+				{
+					comboBox.IsDropDownOpen = false;
+				}
+
 				TestServices.WindowHelper.WindowContent = null;
 			}
 		}
