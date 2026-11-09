@@ -29,7 +29,7 @@ public partial class SelectorAutomationPeer : ItemsControlAutomationPeer, ISelec
 		return base.GetPatternCore(patternInterface);
 	}
 
-	public bool CanSelectMultiple => SelectorOwner is { } selector && !selector.IsSingleSelection;
+	public bool CanSelectMultiple => SelectorOwner is { CanSelectMultiple: true };
 
 	public bool IsSelectionRequired => false;
 

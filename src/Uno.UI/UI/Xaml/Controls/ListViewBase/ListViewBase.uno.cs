@@ -15,8 +15,6 @@ partial class ListViewBase
 	/// </summary>
 	public bool RefreshOnCollectionChanged { get; set; }
 
-	internal override bool IsSingleSelection => SelectionMode == ListViewSelectionMode.Single;
-
 	// TODO Uno: The panel is created on ItemsPresenter's Loaded, after the first arrange. WinUI has it by then, so that
 	// arrange can start the incremental load of an empty source.
 	private protected override void OnItemsPanelRootPrepared()
