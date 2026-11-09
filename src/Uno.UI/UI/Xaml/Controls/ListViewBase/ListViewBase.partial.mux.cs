@@ -388,6 +388,18 @@ partial class ListViewBase
 		ScrollIntoViewAlignment alignment,
 		bool disableAnimation)
 	{
+#if HAS_UNO
+		// TODO Uno: the first measure creates the panel here, and it can follow Loaded, where WinUI already has it.
+		if (IsLoaded && ItemsPanelRoot is null)
+		{
+			ScheduleDeferredScrollCommand(
+				deferredItem => ScrollIntoViewWithOptionalAnimation(deferredItem!, alignment, disableAnimation),
+				item,
+				DeferPoint.ItemsHostAvailable);
+			return;
+		}
+#endif
+
 		bool isHeader = false;
 		bool isFooter = false;
 
