@@ -65,7 +65,7 @@ public partial class ItemsPresenter : FrameworkElement, IScrollSnapPointsInfo
 	[GeneratedDependencyProperty]
 	public static DependencyProperty FooterTemplateProperty { get; } = CreateFooterTemplateProperty();
 
-	public TransitionCollection HeaderTransitions
+	public TransitionCollection? HeaderTransitions
 	{
 		get => GetHeaderTransitionsValue();
 		set => SetHeaderTransitionsValue(value);
@@ -76,7 +76,7 @@ public partial class ItemsPresenter : FrameworkElement, IScrollSnapPointsInfo
 	[GeneratedDependencyProperty]
 	public static DependencyProperty HeaderTransitionsProperty { get; } = CreateHeaderTransitionsProperty();
 
-	public TransitionCollection FooterTransitions
+	public TransitionCollection? FooterTransitions
 	{
 		get => GetFooterTransitionsValue();
 		set => SetFooterTransitionsValue(value);

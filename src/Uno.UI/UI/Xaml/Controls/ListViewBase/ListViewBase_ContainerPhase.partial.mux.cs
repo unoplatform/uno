@@ -605,7 +605,7 @@ public partial class ListViewBase
 
 								if (contentShouldBeSet)
 								{
-									object item;
+									object? item;
 									item = args.Item;
 
 									// the below is now very expensive
@@ -668,7 +668,7 @@ public partial class ListViewBase
 										if (templateComponent is not null)
 										{
 											// we have a template component, lets use that
-											object item;
+											object? item;
 											int requestedPhase = -1;
 
 											item = args.Item;
