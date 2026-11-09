@@ -111,8 +111,8 @@ public partial class ScrollContentPresenter
 		Rect nextTargetRect = new Rect(
 			targetRect.X * zoomFactor - targetZoomedHorizontalOffset - appliedOffsetX,
 			targetRect.Y * zoomFactor - targetZoomedVerticalOffset - appliedOffsetY,
-			Math.Min(targetRect.Width * zoomFactor, viewportWidth),
-			Math.Min(targetRect.Height * zoomFactor, viewportHeight));
+			targetRect.Width * zoomFactor,
+			targetRect.Height * zoomFactor);
 
 		Rect viewportRect = new Rect(
 			0.0f,
@@ -129,6 +129,10 @@ public partial class ScrollContentPresenter
 			targetZoomedVerticalOffset != zoomedVerticalOffset)
 		{
 			Scroller.ChangeView(targetZoomedHorizontalOffset, targetZoomedVerticalOffset, zoomFactor, !args.AnimationDesired);
+
+			// MUX Reference ScrollContentPresenter_Partial.cpp, MakeVisibleImpl: only a scroller that moved clips the rect to its
+			// viewport. One that didn't hands the whole rect to its parents, so focus padding survives a nested non-scrolling list.
+			nextTargetRect = RectHelper.Intersect(nextTargetRect, viewportRect);
 		}
 		else
 		{
