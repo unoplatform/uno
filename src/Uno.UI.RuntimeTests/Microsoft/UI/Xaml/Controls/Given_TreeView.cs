@@ -123,7 +123,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var mouse = injector.GetMouse();
 
-			var first = treeView.RootNodes[0];
+			// Not the first row: ItemsStackPanel keeps item 0 realized as its special item, like WinUI.
+			var first = treeView.RootNodes[1];
 			await SelectNode(treeView, first);
 			await ScrollUntilVirtualized(treeView, scrollViewer, first);
 			var offsetBeforeClick = scrollViewer.VerticalOffset;
@@ -162,7 +163,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		{
 			var (treeView, scrollViewer) = await LoadRootNodesTree(100);
 
-			var first = treeView.RootNodes[0];
+			// Not the first row: ItemsStackPanel keeps item 0 realized as its special item, like WinUI.
+			var first = treeView.RootNodes[1];
 			await SelectNode(treeView, first);
 			await ScrollUntilVirtualized(treeView, scrollViewer, first);
 			var target = GetItemNearestViewportCenter(treeView, treeView.RootNodes);
@@ -204,7 +206,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		{
 			var nodes = Enumerable.Range(1, 100).Select(i => new TestTreeNodeModel("Node " + i, isExpanded: false)).ToList();
 			var treeView = new TreeView { Height = 300, Width = 300, ItemTemplate = TreeViewItemTemplate, ItemsSource = nodes };
-			await UITestHelper.Load(treeView);
+			var elsewhere = new Button { Content = "Elsewhere" };
+			await UITestHelper.Load(new StackPanel { Children = { elsewhere, treeView } }, _ => treeView.IsLoaded);
 			var scrollViewer = treeView.FindFirstChild<ScrollViewer>();
 			Assert.IsNotNull(scrollViewer);
 
@@ -220,19 +223,23 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 			}
 
-			var first = nodes[0];
+			// Not the first row: ItemsStackPanel keeps item 0 realized as its special item, like WinUI.
+			var first = nodes[1];
 			await Click(first);
 			Assert.IsTrue(first.IsSelected, "The two-way binding must push the selection into the model.");
+			// The panel never recycles the focused container.
+			elsewhere.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
 
 			scrollViewer.ChangeView(null, scrollViewer.ScrollableHeight, null, disableAnimation: true);
-			await WindowHelper.WaitFor(() => treeView.ContainerFromItem(first) is null, timeoutMS: 3000, message: "Node 1 must be virtualized away for this scenario.");
+			await WindowHelper.WaitFor(() => treeView.ContainerFromItem(first) is null, timeoutMS: 3000, message: "Node 2 must be virtualized away for this scenario.");
 			await WindowHelper.WaitForIdle();
 
 			var second = GetItemNearestViewportCenter(treeView, nodes).Item;
 			await Click(second);
 
 			scrollViewer.ChangeView(null, 0, null, disableAnimation: true);
-			await WindowHelper.WaitFor(() => treeView.ContainerFromItem(first) is TreeViewItem, message: "Node 1 must be realized after scrolling to the top.");
+			await WindowHelper.WaitFor(() => treeView.ContainerFromItem(first) is TreeViewItem, message: "Node 2 must be realized after scrolling to the top.");
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreSame(second, treeView.SelectedItem, "Scrolling back must not select the previously selected row again.");
