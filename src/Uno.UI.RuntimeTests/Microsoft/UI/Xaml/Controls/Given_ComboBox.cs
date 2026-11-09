@@ -353,9 +353,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				NumberAssert.Greater(MeasureCountCarouselPanel.MeasureCount, 0);
 				NumberAssert.Greater(MeasureCountCarouselPanel.ArrangeCount, 0);
 
-				const int MaxAllowedCount = 5;
-				NumberAssert.Less(MeasureCountCarouselPanel.MeasureCount, MaxAllowedCount);
-				NumberAssert.Less(MeasureCountCarouselPanel.ArrangeCount, MaxAllowedCount);
+				// The panel grows its cache in 40px steps, one measure each (ModernCollectionBasePanel::SetRealizationWindowFromVisibleWindow),
+				// so the count isn't fixed. What must hold is that layout settles.
+				await Task.Delay(1500);
+				await WindowHelper.WaitForIdle();
+				var measureCount = MeasureCountCarouselPanel.MeasureCount;
+				var arrangeCount = MeasureCountCarouselPanel.ArrangeCount;
+				await Task.Delay(500);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(measureCount, MeasureCountCarouselPanel.MeasureCount, "Measure should settle");
+				Assert.AreEqual(arrangeCount, MeasureCountCarouselPanel.ArrangeCount, "Arrange should settle");
+
+				const int MaxAllowedCount = 30;
+				NumberAssert.Less(measureCount, MaxAllowedCount);
+				NumberAssert.Less(arrangeCount, MaxAllowedCount);
 			}
 			finally
 			{
