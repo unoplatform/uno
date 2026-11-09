@@ -17,6 +17,8 @@ using Windows.Foundation.Collections;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
+// UNO ONLY: public because ItemsStackPanel, ItemsWrapGrid and CarouselPanel are public; WinUI keeps it internal.
+[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 public abstract partial class ModernCollectionBasePanel
 {
 	private protected ModernCollectionBasePanel()

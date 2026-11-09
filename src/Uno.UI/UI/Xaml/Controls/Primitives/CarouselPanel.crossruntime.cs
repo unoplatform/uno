@@ -9,6 +9,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 // Not a port of WinUI's OrientedVirtualizingPanel-based CarouselPanel, which needs IScrollInfo and a working
 // ItemContainerGenerator. Uno borrows the ItemsStackPanel stacking strategy instead, and does not carousel.
+// TODO Uno: port the real OrientedVirtualizingPanel-based CarouselPanel, see #26199.
 public partial class CarouselPanel : ModernCollectionBasePanel, IOrientedPanel
 {
 	public CarouselPanel()
