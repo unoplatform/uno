@@ -146,14 +146,14 @@ public abstract partial class ModernCollectionBasePanel
 			spCollectionGroups = spCollectionView.CollectionGroups;
 			if (spCollectionGroups is not null)
 			{
+				m_tpObservableItemsSource = spCollectionGroups;
+
 #if !HAS_UNO // TODO Uno: The groups change ahead of the flat items here, so Selector.OnItemsSourceGroupsChanged notifies the panel in WinUI's order.
 				VectorChangedEventHandler<object> spItemCollectionVectorChangedHandler = NotifyOfGroupsChanged;
 
 #if MCBP_DEBUG
 				global::System.Diagnostics.Debug.WriteLine("MCBP: Hooked up to the GroupChanged events");
 #endif
-
-				m_tpObservableItemsSource = spCollectionGroups;
 
 				spCollectionGroups.VectorChanged += spItemCollectionVectorChangedHandler;
 				m_observableItemsSourceChangedToken.Disposable = Disposable.Create(() => spCollectionGroups.VectorChanged -= spItemCollectionVectorChangedHandler);

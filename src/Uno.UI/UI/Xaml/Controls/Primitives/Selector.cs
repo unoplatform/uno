@@ -217,7 +217,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				static int GroupSize(object group) => group is ICollectionViewGroup { GroupItems: { } items } ? items.Count : 0;
 
-				if (changes is [{ CollectionChange: CollectionChange.Reset }] || changes.Count == 0 && c.Action is not (NotifyCollectionChangedAction.Add or NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Replace))
+				if (changes is [{ CollectionChange: CollectionChange.Reset }])
 				{
 					NotifyGroup(CollectionChange.Reset, 0);
 					NotifyCustomItemsHost(panel, new VectorChangedEventArgs(CollectionChange.Reset, 0));
