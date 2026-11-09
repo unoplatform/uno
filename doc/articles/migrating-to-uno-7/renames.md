@@ -8,7 +8,7 @@ Part of [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).
 
 **Read this if** your code or XAML names `Uno.UI.Toolkit`, a `Uno.UI.Runtime.Skia.*` or `Uno.WinUI.Runtime.Skia.*` type or package, or an assembly-qualified type name such as `Type.GetType("…, Uno.UI")`.
 
-**Skip it if** the compiler finds none of these names. The two Android head classes every app has to rename are covered by [the upgrade steps](xref:Uno.Development.MigratingToUno7#upgrade-step-by-step).
+**Skip it if** [searching your files](xref:Uno.Development.MigratingToUno7.Lookup#search-your-code) finds none of these names, including in strings and in trimming or IL merge configuration. The compiler can't see those, so a clean build isn't enough. The two Android head classes every app has to rename are covered by [the upgrade steps](xref:Uno.Development.MigratingToUno7#upgrade-step-by-step).
 
 ## `Uno.UI.Toolkit` types move to the `Uno.UI.*` namespaces
 

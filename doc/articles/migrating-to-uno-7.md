@@ -64,7 +64,8 @@ If your app is already a single `Sdk="Uno.Sdk"` project on .NET 10 or later, thi
 **Only if it applies to your app:**
 
 - Remove [`net9.0-*`](xref:Uno.Development.MigratingToUno7.ProjectSetup#net-9-is-no-longer-supported) and [`net*-maccatalyst`](xref:Uno.Development.MigratingToUno7.ProjectSetup#mac-catalyst-is-removed) targets.
-- On iOS and tvOS, [migrate saved settings at startup](xref:Uno.Development.MigratingToUno7.AppStartup#application-settings-on-ios-and-tvos) if you use `LocalSettings` or `RoamingSettings`.
+- [Clean up `UnoFeatures`](#4-clean-up-unofeatures): remove `Prism` and `Lottie`, and check the `Skia` rules if you list `WebGpu` or draw with Skia on Windows.
+- On iOS and tvOS, [migrate saved settings at startup](xref:Uno.Development.MigratingToUno7.AppStartup#application-settings-on-ios-and-tvos) if you use `LocalSettings` or `RoamingSettings`. Otherwise updating users lose access to them, and the build won't warn you.
 
 Everything else lives on [linked pages](#the-rest-of-the-guide) you only need to open when something applies to you.
 
@@ -113,10 +114,11 @@ Windows heads now build against Windows App SDK 2.x, so [packaged apps need the 
 
 ### 4. Clean up `UnoFeatures`
 
-- `skiarenderer` is now implied in an app. You can remove it.
+- `skiarenderer` is now implied in an app, so you can usually remove it. Replace it with `Skia` instead if the app also lists `WebGpu` and still draws with SkiaSharp, since `WebGpu` turns off the implied `Skia`.
 - Remove `Prism` and add [the packages yourself](xref:Uno.Development.MigratingToUno7.Packages#prism-uno-feature-removed). The build reports `UNOB0035` until you do.
 - Remove `Lottie` and any reference to `Uno.WinUI.Lottie`. [Lottie needs no package on Uno Platform targets now](xref:Uno.Development.MigratingToUno7.Packages#unowinuilottie-package-and-lottie-uno-feature-removed). A project that also targets Windows still references `CommunityToolkit.WinUI.Lottie` for that target.
-- If your Windows head or your library uses `SKCanvasElement` or Toolkit Skia controls such as `ShadowContainer`, add `Skia`. See [Windows heads](xref:Uno.Development.MigratingToUno7.Packages#skia-uno-feature-off-on-windows-winappsdk) and [libraries](xref:Uno.Development.MigratingToUno7.Packages#skia-uno-feature-no-longer-implied-on-libraries).
+- If code built for Windows uses `SKCanvasElement`, `SKXamlCanvas`, Toolkit Skia controls such as `ShadowContainer` or SkiaSharp itself, list `Skia` and set `<UnoEnableSkiaOnWinAppSdk>true</UnoEnableSkiaOnWinAppSdk>`. Skia is off on Windows without that property, even when listed, and [the build fails until you set it](xref:Uno.Development.MigratingToUno7.Packages#skia-uno-feature-off-on-windows-winappsdk).
+- If your library uses `SKCanvasElement`, the `SkiaExtensions` conversions or Toolkit Skia controls, [list `Skia`](xref:Uno.Development.MigratingToUno7.Packages#skia-uno-feature-no-longer-implied-on-libraries).
 
 Your code may use a package that used to arrive implicitly, such as AndroidX or `LibVLCSharp`. [Add those explicitly](xref:Uno.Development.MigratingToUno7.Packages#packages-no-longer-referenced-implicitly).
 
@@ -153,23 +155,11 @@ Then delete the `bin` and `obj` folders and build each target framework. Use [Er
 
 Rendering now goes through Skia on every target, and Vulkan is the default on Android, Linux and Windows. Re-baseline visual or snapshot tests, and re-test text, lists and scrolling, IME, pickers, and safe-area or notch handling on devices. Then check for [the changes the compiler won't catch](xref:Uno.Development.MigratingToUno7.Lookup#changes-the-compiler-wont-catch), starting with these:
 
+- [iOS and tvOS settings](xref:Uno.Development.MigratingToUno7.AppStartup#application-settings-on-ios-and-tvos) move to a new store, so updating users lose access to them unless you did step 6.
 - [`ItemClickCommand="{Binding}"`](xref:Uno.Development.MigratingToUno7.RemovedApis#listviewbaseitemclickcommand-and-listviewbasecommand) on a `ListView` or `GridView` still compiles but no longer does anything.
 - [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7.Libraries#removed-xaml-prefixes) such as `skia:` silently change what your markup does.
 - [`PrimaryLanguageOverride`](xref:Uno.Development.MigratingToUno7.FeatureFlags#applicationlanguagesuselegacyprimarylanguageoverride) no longer swaps the culture immediately.
 - [`Window.SystemBackdrop`](xref:Uno.Development.MigratingToUno7.Behavior#systembackdrop-no-longer-rewrites-your-contents-backgrounds) no longer makes your backgrounds transparent.
-
-## Who is affected the most
-
-- Apps that **opted out** of the Skia renderer on mobile by omitting
-  `<UnoFeatures>skiarenderer</UnoFeatures>` and relying on native rendering.
-- Apps that used the **native WebAssembly DOM** renderer (`Uno.WinUI.WebAssembly`). See the [details](xref:Uno.Development.MigratingToUno7.Packages#unowinuiwebassembly-package-removed-and-the-older-unowinuiruntimewebassembly).
-- Code that referenced native rendering types, native element hosting, or native-only
-  `FeatureConfiguration` flags (see [Removed public APIs](xref:Uno.Development.MigratingToUno7.RemovedApis) and [Removed feature flags](xref:Uno.Development.MigratingToUno7.FeatureFlags)).
-- Apps that still build a **Mac Catalyst** (`net*-maccatalyst`) head. See the [details](xref:Uno.Development.MigratingToUno7.ProjectSetup#mac-catalyst-is-removed).
-- Apps and libraries that still target **.NET 9** (`net9.0-*`). See the [details](xref:Uno.Development.MigratingToUno7.ProjectSetup#net-9-is-no-longer-supported).
-
-Apps already running on Skia on every target need only recompile against 7.0 and remove
-native bootstrap/heads.
 
 ## The rest of the guide
 

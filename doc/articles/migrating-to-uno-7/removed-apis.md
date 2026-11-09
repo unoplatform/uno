@@ -8,7 +8,7 @@ Part of [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).
 
 **Read this if** the compiler reports a missing type or member after the upgrade, particularly native views, HTML interop, `ListViewBase.ItemClickCommand`, `GetTemplateChild`, or C# shortcuts such as `Brush brush = Colors.Red`.
 
-**Skip it if** your code builds cleanly. `ItemClickCommand` set with `{Binding}` is the exception: it [still compiles but does nothing](xref:Uno.Development.MigratingToUno7.Lookup#changes-the-compiler-wont-catch).
+**Skip it if** your code builds cleanly, with two exceptions. `ItemClickCommand` set with `{Binding}` [still compiles but does nothing](xref:Uno.Development.MigratingToUno7.Lookup#changes-the-compiler-wont-catch), and [removed native style keys](#native-default-styles) such as `Style="{StaticResource NativeDefaultButton}"` only fail at run time.
 
 ## Native rendering types and helpers
 
