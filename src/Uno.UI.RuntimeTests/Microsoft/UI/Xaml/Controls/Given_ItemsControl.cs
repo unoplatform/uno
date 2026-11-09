@@ -124,6 +124,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_IsItsOwnItemContainer_Then_Gets_Ancestor_Implicit_Style()
+		{
+			var implicitStyle = new Style(typeof(Button));
+			implicitStyle.Setters.Add(new Setter(FrameworkElement.WidthProperty, 123d));
+
+			var button = new Button { Content = "item" };
+			var SUT = new ItemsControl();
+			SUT.Items.Add(button);
+
+			var root = new Grid();
+			root.Resources[typeof(Button)] = implicitStyle;
+			root.Children.Add(SUT);
+
+			WindowHelper.WindowContent = root;
+			await WindowHelper.WaitForLoaded(button);
+
+			// The items host panel isn't the item's public Parent, but resource lookup still goes through it.
+			Microsoft.VisualStudio.TestTools.UnitTesting.Assert.AreEqual(123d, button.Width);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_IsItsOwnItemContainer_FromSource()
 		{
 			var SUT = new ItemsControl();
