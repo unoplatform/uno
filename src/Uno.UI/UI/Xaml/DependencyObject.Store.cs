@@ -1042,7 +1042,7 @@ namespace Microsoft.UI.Xaml
 				WeakReferenceReturnDisposable releaseWeakDelegate,
 				IDisposable callbackManagerCookie,
 				ManagedWeakReference doStoreRef)
-				: base(callback.Target, doStoreRef.CloneWeakReference())
+				: base(callback.Target, doStoreRef.Target)
 			{
 				_callback = callback;
 				_releaseWeakDelegate = releaseWeakDelegate;
@@ -1109,7 +1109,7 @@ namespace Microsoft.UI.Xaml
 				WeakReferenceReturnDisposable weakCallbackRelease,
 				ManagedWeakReference instanceRef,
 				ExplicitPropertyChangedCallback callback)
-				: base(callback.Target, instanceRef.CloneWeakReference())
+				: base(callback.Target, instanceRef.Target)
 			{
 				_weakCallback = weakCallback;
 				_weakCallbackRelease = weakCallbackRelease;
@@ -1220,7 +1220,7 @@ namespace Microsoft.UI.Xaml
 				var instanceRef = SelfWeakReference;
 
 				return new RegisterParentChangedCallbackConditionalDisposable(
-					instanceRef.CloneWeakReference(),
+					this,
 					instanceRef,
 					weakCallbackRef,
 					weakCallback,
@@ -1243,7 +1243,7 @@ namespace Microsoft.UI.Xaml
 			private ParentChangedCallback _callback;
 
 			public RegisterParentChangedCallbackConditionalDisposable(
-				WeakReference conditionSource,
+				object conditionSource,
 				ManagedWeakReference doStoreRef,
 				ManagedWeakReference weakCallbackRef,
 				ParentChangedCallback weakCallback,
