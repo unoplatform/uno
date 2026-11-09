@@ -14,6 +14,19 @@ To upgrade to the latest version of Uno Platform, [follow our guide](xref:Uno.De
 
 This change is tracked by [issue #26577](https://github.com/unoplatform/uno/issues/26577).
 
+### More items are realized outside the viewport
+
+`ItemsStackPanel` and `ItemsWrapGrid` now default to a `CacheLength` of 4.0, as on WinUI, instead of
+1.0, and `FeatureConfiguration.ListViewBase.DefaultCacheLength` no longer has an effect. Set
+`CacheLength` on the panel in the `ItemsPanel` template to realize fewer items.
+
+### Item container transitions play
+
+The default `ListView` and `GridView` styles set `ItemContainerTransitions`, and they now run as on
+WinUI: added items fade in, removed items fade out, and their neighbors slide. A removed item's
+container stays in the panel until its animation ends. Set `ItemContainerTransitions` to an empty
+`TransitionCollection` to turn them off.
+
 ## Uno Platform 7.0
 
 Uno Platform 7.0 is the Skia-unification major release: Skia is the rendering engine on every
