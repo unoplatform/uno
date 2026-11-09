@@ -79,10 +79,11 @@ public class Given_WasmAccessibleTextBoxFocus
 		second.Focus(FocusState.Keyboard);
 		await SettleAsync();
 
-		// Make the tab stop stale, then have the browser (a screen reader, or Tab) land on the focused radio.
+		// DOM focus leaves the radio while XAML focus stays (e.g. a screen reader's virtual cursor), the tab stop goes
+		// stale, then the browser lands on the focused radio again. Focusing the already-active element raises nothing.
 		var firstId = GetSemanticElementId(first);
 		var secondId = GetSemanticElementId(second);
-		InvokeBrowserJs($"(function(){{document.getElementById('{firstId}').tabIndex = 0; document.getElementById('{secondId}').tabIndex = -1; document.getElementById('{secondId}').focus(); return 'ok';}})()");
+		InvokeBrowserJs($"(function(){{const s = document.getElementById('{secondId}'); s.blur(); document.getElementById('{firstId}').tabIndex = 0; s.tabIndex = -1; s.focus(); return 'ok';}})()");
 		await SettleAsync();
 
 		CollectionAssert.AreEqual(new[] { "GotFocus" }, log, string.Join(", ", log));
