@@ -37,16 +37,7 @@ public static partial class GlobalizationPreferences
 		}
 	}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-	public static string HomeGeographicRegion
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.UserProfile.GlobalizationPreferences", "HomeGeographicRegion");
-		}
-	}
-#endif
+	// Skipping already declared property HomeGeographicRegion
 #if false || false || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 	public static global::System.Collections.Generic.IReadOnlyList<string> Languages

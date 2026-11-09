@@ -24,6 +24,16 @@ namespace Microsoft.UI.Xaml.Input
 			PointerId = args.PointerId;
 		}
 
+		/// <summary>
+		/// Used when the event is raised without a gesture (automation), at the top-left corner of the source.
+		/// </summary>
+		internal RightTappedRoutedEventArgs(UIElement originalSource, PointerDeviceType pointerDeviceType)
+			: base(originalSource)
+		{
+			_originalSource = originalSource;
+			PointerDeviceType = pointerDeviceType;
+		}
+
 		public bool Handled { get; set; }
 
 		public PointerDeviceType PointerDeviceType { get; }

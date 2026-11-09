@@ -1,0 +1,199 @@
+﻿<!--  Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information.  -->
+<!--  MUX Reference Samples\TableViewSampleApp\App.xaml, tag winui3/release/2.5.4-experimental, commit 7b127093475  -->
+<!--
+    TODO Uno: the WinUI sample declares these templates in App.xaml (which also merges XamlControlsResources and
+    TabularControlsResources). SamplesApp hosts many samples, so they live in this dictionary instead, and the
+    Tabular resources are merged by SamplesApp.Shared/App.xaml.
+-->
+<ResourceDictionary
+    x:Class="MUXControlsTestApp.TableViewSampleResources"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--  TemplateColumn cell: a progress-bar visual bound to Score.  -->
+    <DataTemplate x:Key="ScoreCell">
+        <Grid Padding="8,2">
+            <ProgressBar
+                Height="6"
+                VerticalAlignment="Center"
+                Maximum="100"
+                Minimum="0"
+                Value="{Binding Score}" />
+        </Grid>
+    </DataTemplate>
+
+    <!--  Column.HeaderTemplate: custom icon + text header.  -->
+    <DataTemplate x:Key="StarHeader">
+        <StackPanel Orientation="Horizontal" Spacing="4">
+            <FontIcon FontSize="12" Glyph="&#xE734;" />
+            <TextBlock FontWeight="SemiBold" Text="Score" />
+        </StackPanel>
+    </DataTemplate>
+
+    <!--  TableView.EmptyTemplate.  -->
+    <DataTemplate x:Key="EmptyState">
+        <StackPanel
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Spacing="6">
+            <FontIcon
+                FontSize="28"
+                Glyph="&#xE7BA;"
+                Opacity="0.6" />
+            <TextBlock Opacity="0.7" Text="No data — EmptyTemplate is showing" />
+        </StackPanel>
+    </DataTemplate>
+
+    <!--
+        Bio: word-wrapped, making rows variable-height. Safe after the RebuildCells
+        re-entrancy fix; exercises variable row height + wrapping in the control.
+    -->
+    <DataTemplate x:Key="BioCell">
+        <TextBlock
+            Padding="8,4"
+            VerticalAlignment="Center"
+            Text="{Binding Bio}"
+            TextWrapping="Wrap" />
+    </DataTemplate>
+
+    <!--
+        Joined: editable date via DatePicker (TwoWay). Safe again after the RebuildCells
+        re-entrancy fix (recycled rows rebuild cells off-tree instead of restamping live).
+    -->
+    <DataTemplate x:Key="JoinedCell">
+        <DatePicker
+            Margin="8,4"
+            VerticalAlignment="Center"
+            Date="{Binding Joined, Mode=TwoWay}" />
+    </DataTemplate>
+
+    <!--
+        Notes: a real editable template column. The DISPLAY cell is a TextBlock; the editor
+        lives in NotesEditCell and is swapped in only while the cell is being edited. A
+        TextBox here instead would look editable while the control considered the cell
+        read-only, and would show its own clear button on focus - two editing models at
+        once.
+    -->
+    <DataTemplate x:Key="NotesCell">
+        <TextBlock
+            Margin="8,4"
+            VerticalAlignment="Center"
+            Text="{Binding Notes}" />
+    </DataTemplate>
+
+    <!--
+        Editor for Notes. Classic {Binding}, not {x:Bind}: the commit finds the editor's
+        bindings through GetBindingExpression, which only sees {Binding}.
+    -->
+    <DataTemplate x:Key="NotesEditCell">
+        <TextBox VerticalAlignment="Center" Text="{Binding Notes, Mode=TwoWay}" />
+    </DataTemplate>
+
+    <!--  Image: dummy avatar.  -->
+    <DataTemplate x:Key="ImageCell">
+        <Image
+            Width="32"
+            Height="32"
+            Margin="8,4"
+            VerticalAlignment="Center"
+            Source="{Binding Avatar}" />
+    </DataTemplate>
+
+    <!--
+        Editable cell for the all-Auto page: multi-line + wrapping TextBox with NO fixed width,
+        so typing a longer line grows the Auto COLUMN width and adding lines grows the Auto ROW
+        height. Both directions can be tested live.
+    -->
+    <DataTemplate x:Key="AutoEditCell">
+        <TextBox
+            Margin="6,4"
+            VerticalAlignment="Top"
+            AcceptsReturn="True"
+            Text="{Binding Notes, Mode=TwoWay}" />
+    </DataTemplate>
+
+    <!--
+        Interactive + expandable cells for the Interactive cells page. Every column hosts an
+        Expander (expand/collapse is interactive and changes the cell's desired size, so Auto
+        columns grow to fit and Star columns wrap/clip). Several also embed an editable TextBox.
+    -->
+
+    <!--  Header = Name; expand to edit Notes.  -->
+    <DataTemplate x:Key="ExpandNameCell">
+        <Expander
+            Margin="4,2"
+            HorizontalAlignment="Left"
+            Header="{Binding Name}">
+            <TextBox
+                MinWidth="120"
+                AcceptsReturn="True"
+                Text="{Binding Notes, Mode=TwoWay}"
+                TextWrapping="Wrap" />
+        </Expander>
+    </DataTemplate>
+
+    <!--  Header = Role; expand to see City and edit Notes.  -->
+    <DataTemplate x:Key="ExpandRoleCell">
+        <Expander
+            Margin="4,2"
+            HorizontalAlignment="Left"
+            Header="{Binding Role}">
+            <StackPanel Spacing="4">
+                <TextBlock Text="{Binding City}" />
+                <TextBox MinWidth="120" Text="{Binding Notes, Mode=TwoWay}" />
+            </StackPanel>
+        </Expander>
+    </DataTemplate>
+
+    <!--  Header = "Bio"; expand to read the wrapping Bio (variable-length content).  -->
+    <DataTemplate x:Key="ExpandBioCell">
+        <Expander
+            Margin="4,2"
+            HorizontalAlignment="Left"
+            Header="Bio">
+            <TextBlock
+                MaxWidth="360"
+                Text="{Binding Bio}"
+                TextWrapping="Wrap" />
+        </Expander>
+    </DataTemplate>
+
+    <!--  Header = "Image"; expand to reveal a per-row-sized image (different sizes per row).  -->
+    <DataTemplate x:Key="ExpandImageCell">
+        <Expander
+            Margin="4,2"
+            HorizontalAlignment="Left"
+            Header="Image">
+            <Image
+                Width="{Binding ImageSize}"
+                Height="{Binding ImageSize}"
+                Source="{Binding Avatar}"
+                Stretch="Uniform" />
+        </Expander>
+    </DataTemplate>
+
+    <!--
+        Grows in WIDTH during interaction: dragging the Slider widens the inner bar, so the
+        cell's desired width changes and an Auto column re-sizes its width live (Star/Pixel
+        columns instead clip the bar to the fixed column width).
+    -->
+    <DataTemplate x:Key="GrowWidthCell">
+        <StackPanel
+            Margin="4,2"
+            HorizontalAlignment="Left"
+            Spacing="4">
+            <Slider
+                x:Name="WidthSlider"
+                Width="180"
+                Maximum="400"
+                Minimum="40"
+                Value="80" />
+            <Border
+                Width="{Binding Value, ElementName=WidthSlider}"
+                Height="20"
+                HorizontalAlignment="Left"
+                Background="{ThemeResource AccentFillColorDefaultBrush}"
+                CornerRadius="4" />
+        </StackPanel>
+    </DataTemplate>
+</ResourceDictionary>

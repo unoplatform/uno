@@ -217,7 +217,12 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				{
 					var contentOwner = unknownContent;
 
-					return LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance, settings: s) as _View;
+					var view = LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance, settings: s) as _View;
+
+					// Template content loads long after Build drained the queue.
+					RunPostActions();
+
+					return view;
 				};
 
 				// We're validating the content here to ensure that any parse exception is
@@ -1257,6 +1262,10 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 									binding.RelativeSource = RelativeSource.TemplatedParent;
 									break;
 
+								case "self":
+									binding.RelativeSource = RelativeSource.Self;
+									break;
+
 								default:
 									throw new NotSupportedException($"RelativeSource {relativeSourceValue} is not supported");
 							}
@@ -1615,12 +1624,17 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			return Uno.UI.DataBinding.BindingPropertyHelper.Convert(propertyType, memberValue);
 		}
 
-		private void ApplyPostActions(object? instance)
+		private void RunPostActions()
 		{
 			while (_postActions.Count != 0)
 			{
 				_postActions.Dequeue()();
 			}
+		}
+
+		private void ApplyPostActions(object? instance)
+		{
+			RunPostActions();
 
 			if (instance is FrameworkElement fe)
 			{

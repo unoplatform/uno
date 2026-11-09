@@ -117,6 +117,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private static string WinUICompactPathSuffix = Path.Combine("DensityStyles", "Compact.xaml");
 
+		// Merged by Uno.UI.FluentTheme/FluentMerge.targets. The theme file can't be named themeresources.xaml on disk:
+		// the merge task matches inputs to outputs by file name, which would collide with the Fluent one.
+		private static string TabularGenericPathSuffix = Path.Combine("Tabular", "Themes", "generic.xaml");
+		private static string TabularThemeResourcePathSuffix = Path.Combine("Tabular", "Themes", "tabular_themeresources.xaml");
+
 		internal Lazy<INamedTypeSymbol?> AssemblyMetadataSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ElementStubSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ContentControlSymbol { get; }
@@ -1029,6 +1034,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								// For Uno assembly, we expose WinUI resources using same uri as on Windows
 								RegisterForFile(XamlFilePathHelper.WinUIThemeResourceFileName, XamlFilePathHelper.WinUIThemeResourceURL);
 								RegisterForFile(WinUICompactPathSuffix, XamlFilePathHelper.WinUICompactURL);
+
+								// Tabular controls (TableView) ship their own resources, as the Microsoft.UI.Xaml.Controls.Tabular binary does on Windows
+								RegisterForFile(TabularThemeResourcePathSuffix, XamlFilePathHelper.TabularThemeResourceURL);
+								RegisterForFile(TabularGenericPathSuffix, XamlFilePathHelper.TabularGenericURL);
 							}
 
 							void RegisterForFile(string baseFilePath, string url)

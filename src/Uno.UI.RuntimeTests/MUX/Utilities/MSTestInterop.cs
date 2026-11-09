@@ -158,17 +158,19 @@ namespace Common
 
 		public static void Fail(string message, params object[] args)
 		{
-			Assert.Fail(string.Format(message, args));
+			// Like Log, a message with braces and no arguments is literal, not a format string.
+			Assert.Fail(args.Length == 0 ? message : string.Format(message, args));
 		}
 
+		// Accepts derived types, as WinUI tests rely on: Throws<Exception> against an HRESULT failure.
 		public static void Throws<T>(Action action, string message) where T : Exception
 		{
-			Assert.ThrowsExactly<T>(action, message);
+			Assert.Throws<T>(action, message);
 		}
 
 		public static void Throws<T>(Action action) where T : Exception
 		{
-			Assert.ThrowsExactly<T>(action);
+			Assert.Throws<T>(action);
 		}
 	}
 }

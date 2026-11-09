@@ -32,6 +32,9 @@ public partial class AutomationPeer : DependencyObject
 	/// <returns>True if there are listeners for the event.</returns>
 	public static bool ListenerExists(AutomationEvents eventId) => ListenerExistsHelper(eventId);
 
+	// AutomationEvents.Notification is commented out of the public enum (experimental in WinUI).
+	internal const AutomationEvents NotificationEvent = (AutomationEvents)30;
+
 	#region Public Properties
 
 	/// <summary>
@@ -68,7 +71,10 @@ public partial class AutomationPeer : DependencyObject
 	/// Gets the AutomationPeer that is the parent of this AutomationPeer.
 	/// </summary>
 	/// <returns>The parent peer.</returns>
-	public AutomationPeer? GetParent() => _parent;
+	public AutomationPeer? GetParent() => GetAPParent();
+
+	// MUX Reference CAutomationPeer::GetAPParent; CFrameworkElementAutomationPeer walks to the logical parent.
+	private protected virtual AutomationPeer? GetAPParent() => _parent;
 
 	/// <summary>
 	/// Gets the accelerator key combination for the element that is associated with the UI Automation peer.
@@ -321,8 +327,8 @@ public partial class AutomationPeer : DependencyObject
 	/// Gets an IRawElementProviderSimple for the specified peer.
 	/// </summary>
 	/// <param name="peer">The automation peer.</param>
-	/// <returns>The raw element provider.</returns>
-	protected internal IRawElementProviderSimple ProviderFromPeer(AutomationPeer? peer) => new IRawElementProviderSimple(peer);
+	/// <returns>The raw element provider, or null when <paramref name="peer"/> is null.</returns>
+	protected internal IRawElementProviderSimple? ProviderFromPeer(AutomationPeer? peer) => peer is null ? null : new IRawElementProviderSimple(peer);
 
 	#endregion
 

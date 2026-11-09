@@ -1,0 +1,66 @@
+﻿<!--  Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information.  -->
+<!--  MUX Reference Samples\TableViewSampleApp\SelectionPage.xaml, tag winui3/release/2.5.4-experimental, commit 7b127093475  -->
+<Page
+    x:Class="MUXControlsTestApp.SelectionPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:tv="using:Microsoft.UI.Xaml.Controls.Tabular"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Padding="12" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Spacing="2">
+            <TextBlock
+                FontSize="18"
+                FontWeight="SemiBold"
+                Text="Row selection (single)" />
+            <TextBlock
+                FontSize="12"
+                Opacity="0.7"
+                Text="Click a row, or move with Up/Down/Home/End/PageUp/PageDown — selection follows the keyboard cursor. Space selects the focused row without moving. Watch the 'SelectionChanged fired Nx' counter: 'Insert above selected' must NOT increment it (the same item stays selected, only its index shifts), while 'Remove selected' must increment it once as the selection clears. Toggle SelectionMode to None to see selection cleared and every gesture become a no-op."
+                TextWrapping="Wrap" />
+        </StackPanel>
+
+        <StackPanel
+            Grid.Row="1"
+            VerticalAlignment="Center"
+            Orientation="Horizontal"
+            Spacing="8">
+            <TextBlock VerticalAlignment="Center" Text="SelectionMode:" />
+            <ComboBox x:Name="ModeCombo" SelectionChanged="Mode_Changed">
+                <ComboBoxItem Content="Single" IsSelected="True" />
+                <ComboBoxItem Content="None" />
+            </ComboBox>
+
+            <Button Click="SelectFirst_Click" Content="Select index 0" />
+            <Button Click="SelectLast_Click" Content="Select last" />
+            <Button Click="DeselectAll_Click" Content="Deselect all" />
+            <Button Click="InsertAbove_Click" Content="Insert above selected" />
+            <Button Click="RemoveSelected_Click" Content="Remove selected" />
+        </StackPanel>
+
+        <Border
+            Grid.Row="2"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="6">
+            <tv:TableView
+                x:Name="Table"
+                SelectionChanged="Table_SelectionChanged"
+                SelectionMode="Single" />
+        </Border>
+
+        <TextBlock
+            x:Name="StatusText"
+            Grid.Row="3"
+            FontFamily="Consolas"
+            FontSize="12"
+            TextWrapping="Wrap" />
+    </Grid>
+</Page>

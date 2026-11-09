@@ -54,6 +54,12 @@
 		<Compile Remove="$(MSBuildThisFileDirectory)Uno\UI\Xaml\Controls\Validation\**" />
 		<None Include="$(MSBuildThisFileDirectory)Uno\UI\Xaml\Controls\Validation\**"
 		      Link="Uno\UI\Xaml\Controls\Validation\%(RecursiveDir)%(Filename)%(Extension)" />
+
+		<!-- The referenced WinAppSDK does not ship the Tabular (TableView) binary -->
+		<Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\TableViewTests\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\TableViewTests\**" />
+		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\TableViewTests\**"
+		      Link="Microsoft\UI\Xaml\Controls\TableViewTests\%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 	<!-- SkiaSharp-free build: SKCanvasElement exposes raw SKCanvas (Uno.WinUI.Graphics2DSK) and cannot be neutral. -->
 	<ItemGroup Condition="'$(UnoDrawingBackendSkia)'=='false'">

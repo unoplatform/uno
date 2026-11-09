@@ -31,11 +31,7 @@ namespace Uno.UI.Xaml.Input
 			}
 			else if (dependencyObject is TextBlock textBlock)
 			{
-				// TODO Uno: Should call a specific version of the GetFocusChildren, for now fall back to UIElement behavior
-				//focusChildren = GetFocusChildren<CDOCollection>(static_cast<CTextBlock*>(object));
-				// Uno Doc: the IReadOnlyList check makes it so that on __CROSSRUNTIME__, we don't create a new list
-				var children = VisualTreeHelper.GetChildren(textBlock);
-				return children as IReadOnlyList<DependencyObject> ?? children.ToList();
+				return textBlock.GetFocusableChildren();
 			}
 			else if (dependencyObject is UIElement uiElement)
 			{

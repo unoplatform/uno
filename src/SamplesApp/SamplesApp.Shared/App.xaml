@@ -5,9 +5,10 @@
     xmlns:local="using:SamplesApp"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:not_win="http://uno.ui/not_win"
+    xmlns:not_winappsdk="http://uno.ui/not_winappsdk#using:Microsoft.UI.Xaml.Controls.Tabular"
     xmlns:uc="using:Uno.UI.Controls"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    mc:Ignorable="not_win">
+    mc:Ignorable="not_win not_winappsdk">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.ThemeDictionaries>
@@ -32,6 +33,8 @@
 
             <ResourceDictionary.MergedDictionaries>
                 <win:XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+                <!--  TableView resources; the Windows head references a WinAppSDK without the Tabular binary  -->
+                <not_winappsdk:TabularControlsResources />
                 <ResourceDictionary Source="ms-appx:///Microsoft/UI/Xaml/Controls/ListView/MeasureDetectorControl/MeasureDetectorControl.xaml" />
             </ResourceDictionary.MergedDictionaries>
 

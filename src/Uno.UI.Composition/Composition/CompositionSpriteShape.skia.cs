@@ -223,13 +223,16 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		internal override bool HitTest(Point point)
+		internal override bool HitTest(Point point) => HitTest(point, treatNullFillAsSolid: false);
+
+		/// <param name="treatNullFillAsSolid">Tests the fill geometry even without a fill brush, as WinUI's InvisibleHitTestMode does.</param>
+		internal bool HitTest(Point point, bool treatNullFillAsSolid)
 		{
 			if (_geometryWithTransformations is { } geometryWithTransformations)
 			{
 				point = CombinedTransformMatrix.Inverse().Transform(point);
 
-				if (FillBrush is { } && geometryWithTransformations.FillContains(new Vector2((float)point.X, (float)point.Y)))
+				if ((FillBrush is { } || treatNullFillAsSolid) && geometryWithTransformations.FillContains(new Vector2((float)point.X, (float)point.Y)))
 				{
 					return true;
 				}

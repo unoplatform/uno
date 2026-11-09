@@ -9,6 +9,9 @@ public partial class Popup
 	private bool m_fIsLightDismiss;
 	private bool m_shouldTakeFocus = true;
 
+	// The IsLightDismissEnabled value captured when the popup opened.
+	internal bool IsLightDismiss => m_fIsLightDismiss;
+
 	internal bool IsFlyout => AssociatedFlyout is not null;
 
 	internal void SetShouldTakeFocus(bool value) => m_shouldTakeFocus = value;

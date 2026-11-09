@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Input
 
 			Pointers = args.Pointers;
 			PointerDeviceType = args.PointerDeviceType;
-			Position = UIElement.GetTransform(container, null).Inverse().Transform(args.Position);
+			Position = UIElement.GetManipulationRelativePosition(container, args.Position);
 			Delta = args.Delta;
 			Cumulative = args.Cumulative;
 			Velocities = args.Velocities;

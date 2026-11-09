@@ -1,0 +1,27 @@
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference controls\dev\TableView\TableView.idl, tag winui3/main, commit 79209e041
+
+#nullable enable
+
+using System;
+
+namespace Microsoft.UI.Xaml.Controls.Tabular;
+
+/// <summary>
+/// Defines which headers a <see cref="TableView"/> displays.
+/// </summary>
+[global::Windows.Foundation.Metadata.Experimental]
+[Flags]
+public enum TableViewHeadersVisibility : uint
+{
+	/// <summary>
+	/// No headers.
+	/// </summary>
+	None = 0,
+
+	/// <summary>
+	/// Column-header strip.
+	/// </summary>
+	Column = 1,
+}

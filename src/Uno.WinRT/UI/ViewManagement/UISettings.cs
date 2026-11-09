@@ -154,15 +154,33 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		[NotImplemented]
-		public uint DoubleClickTime
+		public uint DoubleClickTime => GetDoubleClickTime();
+
+		// Allocation-free read for framework code that needs the value per input event.
+		// Not cached, so a change made in the mouse control panel takes effect immediately.
+		// GestureRecognizer's multi-tap delay reads this too, so DoubleTapped and double-click agree.
+		internal static uint GetDoubleClickTime()
 		{
-			get
+#if __SKIA__
+			if (OperatingSystem.IsWindows())
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.UISettings", "DoubleClickTime");
-				return 250;
+				return NativeMethods.GetDoubleClickTime();
 			}
+#endif
+
+			// TODO Uno: no host source for the double-click time on this target; the Windows default stands in.
+			return DefaultDoubleClickTime;
 		}
+
+		private const uint DefaultDoubleClickTime = 500;
+
+#if __SKIA__
+		private static class NativeMethods
+		{
+			[global::System.Runtime.InteropServices.DllImport("user32.dll")]
+			internal static extern uint GetDoubleClickTime();
+		}
+#endif
 
 		[NotImplemented]
 		public global::Windows.UI.ViewManagement.HandPreference HandPreference

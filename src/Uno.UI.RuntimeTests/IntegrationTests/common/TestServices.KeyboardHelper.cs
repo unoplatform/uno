@@ -176,16 +176,14 @@ namespace Private.Infrastructure
 						{
 							var keyArgs = new KeyRoutedEventArgs(element, vKey, activeModifiers);
 
+							// Raised even when the preview handled it, like InputManager: handledEventsToo handlers still run.
 							var mainEvent = keyDownCodePos == 0 ? UIElement.KeyDownEvent : UIElement.KeyUpEvent;
 							if (TargetSupportsPreviewKeyEvents())
 							{
 								var previewEvent = keyDownCodePos == 0 ? UIElement.PreviewKeyDownEvent : UIElement.PreviewKeyUpEvent;
 								await RaiseOnElementDispatcherAsync(element, previewEvent, keyArgs, true);
 							}
-							if (!keyArgs.Handled)
-							{
-								await RaiseOnElementDispatcherAsync(element, mainEvent, keyArgs);
-							}
+							await RaiseOnElementDispatcherAsync(element, mainEvent, keyArgs);
 						}
 
 						// If modifiers were changed, update modifiers variable
@@ -238,10 +236,7 @@ namespace Private.Infrastructure
 									{
 										await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyDownEvent, keyDownArgs, true);
 									}
-									if (!keyDownArgs.Handled)
-									{
-										await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, keyDownArgs);
-									}
+									await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, keyDownArgs);
 								}
 							}
 
@@ -253,19 +248,13 @@ namespace Private.Infrastructure
 								{
 									await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyDownEvent, keyDownArgs, true);
 								}
-								if (!keyDownArgs.Handled)
-								{
-									await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, keyDownArgs);
-								}
+								await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, keyDownArgs);
 								var keyUpArgs = new KeyRoutedEventArgs(element, vKey, modifiers);
 								if (TargetSupportsPreviewKeyEvents())
 								{
 									await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyUpEvent, keyUpArgs, true);
 								}
-								if (!keyUpArgs.Handled)
-								{
-									await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, keyUpArgs);
-								}
+								await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, keyUpArgs);
 							}
 
 							if (shouldShift)
@@ -277,10 +266,7 @@ namespace Private.Infrastructure
 									{
 										await RaiseOnElementDispatcherAsync(element, UIElement.PreviewKeyUpEvent, keyUpArgs, true);
 									}
-									if (!keyUpArgs.Handled)
-									{
-										await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, keyUpArgs);
-									}
+									await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, keyUpArgs);
 								}
 							}
 

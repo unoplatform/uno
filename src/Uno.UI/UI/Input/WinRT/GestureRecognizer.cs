@@ -26,7 +26,8 @@ namespace Windows.UI.Input
 		internal const int TapMaxXDelta = 10;
 		internal const int TapMaxYDelta = 10;
 
-		internal const ulong MultiTapMaxDelayMicroseconds = 500000;
+		// The system double-click time, read per tap like Win32's ::GetDoubleClickTime().
+		internal static ulong MultiTapMaxDelayMicroseconds => (ulong)global::Windows.UI.ViewManagement.UISettings.GetDoubleClickTime() * 1000UL;
 
 		internal const long HoldMinDelayMicroseconds = 800000;
 		internal const float HoldMinPressure = .75f;
@@ -226,6 +227,10 @@ namespace Windows.UI.Input
 			=> _manipulation?.RunInertiaSync();
 
 		public void CompleteGesture()
+			=> StopGesture(callbackForManipulationCompleted: true);
+
+		/// <returns>The pointers of a started manipulation that was stopped without raising ManipulationCompleted, null otherwise.</returns>
+		internal PointerIdentifier[] StopGesture(bool callbackForManipulationCompleted)
 		{
 			// Capture the list in order to avoid alteration while enumerating
 			var gestures = _gestures;
@@ -240,7 +245,7 @@ namespace Windows.UI.Input
 				gesture.ProcessComplete();
 			}
 
-			_manipulation?.Complete();
+			return _manipulation?.Stop(callbackForManipulationCompleted);
 		}
 
 		/// <returns>The set of events that can be raised by this recognizer for this pointer ID</returns>

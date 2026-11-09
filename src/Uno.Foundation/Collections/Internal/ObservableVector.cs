@@ -12,14 +12,10 @@ internal class ObservableVector<T> : IObservableVector<T>, IObservableVector, IL
 		get { return _list[index]; }
 		set
 		{
-			var originalValue = _list[index];
+			// Like WinRT single_threaded_observable_vector::SetAt, re-setting the same instance still raises ItemChanged.
+			_list[index] = value;
 
-			if (!ReferenceEquals(originalValue, value))
-			{
-				_list[index] = value;
-
-				RaiseVectorChanged(CollectionChange.ItemChanged, index);
-			}
+			RaiseVectorChanged(CollectionChange.ItemChanged, index);
 		}
 	}
 
@@ -40,6 +36,20 @@ internal class ObservableVector<T> : IObservableVector<T>, IObservableVector, IL
 	public virtual void Clear()
 	{
 		_list.Clear();
+
+		RaiseVectorChanged(CollectionChange.Reset, 0);
+	}
+
+	/// <summary>
+	/// Replaces the contents and raises a single <see cref="CollectionChange.Reset"/>, as WinRT's IVector.ReplaceAll does.
+	/// </summary>
+	internal virtual void ReplaceAll(IEnumerable<T> items)
+	{
+		// Snapshot first: items may enumerate this vector.
+		var newItems = items.ToArray();
+
+		_list.Clear();
+		_list.AddRange(newItems);
 
 		RaiseVectorChanged(CollectionChange.Reset, 0);
 	}

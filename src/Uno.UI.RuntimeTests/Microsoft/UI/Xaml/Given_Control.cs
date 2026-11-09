@@ -553,11 +553,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			allControlTypes = allControlTypes.Except(builtInControls);
 
 			var url = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.WinUIThemeResourceURL);
+			// The Tabular controls ship their styles from their own dictionary, as the Tabular binary does on Windows.
+			var tabularUrl = new Uri("ms-appx:///Microsoft.UI.Xaml.Controls.Tabular/Themes/generic.xaml");
 
 			StringBuilder nonWinUI = new StringBuilder();
 			foreach (var controlInstance in allControlTypes.Select(t => Activator.CreateInstance(t) as Control))
 			{
-				Assert.AreEqual(url, controlInstance.DefaultStyleResourceUri, $"DefaultStyleResourceUri mismatch for {controlInstance.GetType()}");
+				var controlType = controlInstance.GetType();
+				var isTabular = controlType.Namespace!.StartsWith("Microsoft.UI.Xaml.Controls.Tabular", StringComparison.Ordinal) ||
+					controlType.Name is "ResizeGripper" or "SortIndicator";
+				Assert.AreEqual(isTabular ? tabularUrl : url, controlInstance.DefaultStyleResourceUri, $"DefaultStyleResourceUri mismatch for {controlInstance.GetType()}");
 				Assert.IsNotNull(Style.GetDefaultStyleForInstance(controlInstance, controlInstance.GetType()), $"Default style not found for {controlInstance.GetType()}");
 			}
 		}

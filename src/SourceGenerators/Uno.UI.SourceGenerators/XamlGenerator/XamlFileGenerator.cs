@@ -315,6 +315,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				writer.AppendLineIndented("#pragma warning disable CS0114");
 				writer.AppendLineIndented("#pragma warning disable CS0108");
+				// Using an [Experimental] type from XAML must not warn in code the user cannot edit.
+				writer.AppendLineIndented("#pragma warning disable CS8305");
 				if (_generatorContext.GetMSBuildPropertyValue("_IsUnoUISolution") == "true")
 				{
 					// Uno.UI's boxing analyzer would otherwise flag the literals we emit here, which no

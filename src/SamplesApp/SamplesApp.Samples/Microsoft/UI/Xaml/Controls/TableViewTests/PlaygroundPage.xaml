@@ -1,0 +1,179 @@
+﻿<!--  Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information.  -->
+<!--  MUX Reference Samples\TableViewSampleApp\PlaygroundPage.xaml, tag winui3/release/2.5.4-experimental, commit 7b127093475  -->
+<Page
+    x:Class="MUXControlsTestApp.PlaygroundPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:tv="using:Microsoft.UI.Xaml.Controls.Tabular"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid Padding="12" ColumnSpacing="12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!--  Feature panel: one control per TableView API, to play with live.  -->
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel Spacing="6">
+                <TextBlock
+                    FontSize="18"
+                    FontWeight="SemiBold"
+                    Text="TableView Playground" />
+                <TextBlock
+                    FontSize="12"
+                    Opacity="0.7"
+                    Text="Columns: Name (Text/Auto), Role &amp; City (Text/*), Score (Template/120px). Tweak any control below to exercise the API live."
+                    TextWrapping="Wrap" />
+
+                <TextBlock
+                    Margin="0,8,0,0"
+                    FontWeight="SemiBold"
+                    Text="Name column width" />
+                <ComboBox
+                    x:Name="WidthCombo"
+                    HorizontalAlignment="Stretch"
+                    SelectionChanged="Width_Changed">
+                    <ComboBoxItem Content="Auto" IsSelected="True" />
+                    <ComboBoxItem Content="Pixel 200" />
+                    <ComboBoxItem Content="Star *1" />
+                    <ComboBoxItem Content="Star *2" />
+                </ComboBox>
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <ToggleButton
+                        x:Name="MinW"
+                        Click="MinW_Toggle"
+                        Content="MinWidth 120" />
+                    <ToggleButton
+                        x:Name="MaxW"
+                        Click="MaxW_Toggle"
+                        Content="MaxWidth 160" />
+                </StackPanel>
+
+                <TextBlock
+                    Margin="0,8,0,0"
+                    FontWeight="SemiBold"
+                    Text="Columns" />
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <ToggleButton
+                        x:Name="CityVis"
+                        Click="CityVis_Toggle"
+                        Content="City visible"
+                        IsChecked="True" />
+                    <Button Click="AddCol_Click" Content="Add" />
+                    <Button Click="RemoveCol_Click" Content="Remove last" />
+                </StackPanel>
+
+                <TextBlock
+                    Margin="0,8,0,0"
+                    FontWeight="SemiBold"
+                    Text="HeadersVisibility" />
+                <ComboBox
+                    x:Name="HeadersCombo"
+                    HorizontalAlignment="Stretch"
+                    SelectionChanged="Headers_Changed">
+                    <ComboBoxItem Content="Column" IsSelected="True" />
+                    <ComboBoxItem Content="None" />
+                </ComboBox>
+
+                <TextBlock
+                    Margin="0,8,0,0"
+                    FontWeight="SemiBold"
+                    Text="GridLinesVisibility" />
+                <ComboBox
+                    x:Name="GridLinesCombo"
+                    HorizontalAlignment="Stretch"
+                    SelectionChanged="GridLines_Changed">
+                    <ComboBoxItem Content="All" IsSelected="True" />
+                    <ComboBoxItem Content="Horizontal" />
+                    <ComboBoxItem Content="Vertical" />
+                    <ComboBoxItem Content="None" />
+                </ComboBox>
+
+                <TextBlock
+                    Margin="0,8,0,0"
+                    FontWeight="SemiBold"
+                    Text="Density" />
+                <ComboBox
+                    x:Name="DensityCombo"
+                    HorizontalAlignment="Stretch"
+                    SelectionChanged="Density_Changed">
+                    <ComboBoxItem Content="Compact" />
+                    <ComboBoxItem Content="Standard" IsSelected="True" />
+                    <ComboBoxItem Content="Comfortable" />
+                </ComboBox>
+
+                <TextBlock
+                    Margin="0,8,0,0"
+                    FontWeight="SemiBold"
+                    Text="Row banding" />
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <Button Click="RowBg_Click" Content="RowBackground" />
+                    <Button Click="AltBg_Click" Content="Alternating" />
+                    <Button Click="ClearBg_Click" Content="Clear" />
+                </StackPanel>
+
+                <TextBlock
+                    Margin="0,8,0,0"
+                    FontWeight="SemiBold"
+                    Text="More" />
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <ToggleButton
+                        x:Name="FreezeToggle"
+                        Click="Freeze_Toggle"
+                        Content="Freeze 1st col" />
+                    <ToggleButton
+                        x:Name="ReadOnlyToggle"
+                        Click="ReadOnly_Toggle"
+                        Content="IsReadOnly" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <ToggleButton
+                        x:Name="HeaderTmplToggle"
+                        Click="HeaderTmpl_Toggle"
+                        Content="Score HeaderTemplate" />
+                    <ToggleButton
+                        x:Name="EmptyToggle"
+                        Click="Empty_Toggle"
+                        Content="Clear data" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!--
+            The control under test, with a live read of the bound Item objects beneath it so a
+            committed edit can be seen on the source and not just in the cell that displayed it.
+        -->
+        <Grid Grid.Column="1" RowSpacing="6">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Border
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="6">
+                <tv:TableView x:Name="Table" />
+            </Border>
+
+            <Border
+                Grid.Row="1"
+                Padding="12,8"
+                Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}"
+                BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="6">
+                <StackPanel Spacing="4">
+                    <TextBlock Style="{StaticResource BodyStrongTextBlockStyle}" Text="Live data source" />
+                    <TextBlock
+                        x:Name="SourceDump"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        IsTextSelectionEnabled="True"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>
