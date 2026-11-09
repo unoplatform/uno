@@ -431,7 +431,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		internal virtual void OnItemClicked(int clickedIndex, VirtualKeyModifiers modifiers) => SelectedIndex = clickedIndex;
 
 		// SelectorItem's caller.
-		internal void NotifyListItemSelected(SelectorItem pSelectorItem, bool oldValue, bool bIsSelected) =>
+		internal virtual void NotifyListItemSelected(SelectorItem pSelectorItem, bool oldValue, bool bIsSelected) =>
 			NotifyListItemSelected(pSelectorItem, bIsSelected);
 
 		internal void MakeSingleSelection(int index, bool animateIfBringIntoView, object selectedItem, FocusNavigationDirection focusNavigationDirection = FocusNavigationDirection.None) =>

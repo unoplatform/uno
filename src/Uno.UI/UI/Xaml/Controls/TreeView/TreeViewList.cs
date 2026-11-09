@@ -421,15 +421,15 @@ public partial class TreeViewList : ListView
 		=> m_staleSelectionItem is not null && node is not null
 			&& (ReferenceEquals(node, m_staleSelectionItem) || ReferenceEquals(node.Content, m_staleSelectionItem));
 
-	internal override void ChangeSelectedItem(object item, bool oldIsSelected, bool newIsSelected)
+	internal override void NotifyListItemSelected(Primitives.SelectorItem pSelectorItem, bool oldValue, bool bIsSelected)
 	{
 		// A stale IsSelected pushed by the item's binding while its container is prepared must not change the selection.
-		if (m_staleSelectionItem is not null && ReferenceEquals(item, m_staleSelectionItem))
+		if (m_staleSelectionItem is not null && ReferenceEquals(ItemFromContainer(pSelectorItem), m_staleSelectionItem))
 		{
 			return;
 		}
 
-		base.ChangeSelectedItem(item, oldIsSelected, newIsSelected);
+		base.NotifyListItemSelected(pSelectorItem, oldValue, bIsSelected);
 	}
 #endif
 
