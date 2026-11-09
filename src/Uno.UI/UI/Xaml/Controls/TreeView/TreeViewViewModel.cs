@@ -643,9 +643,7 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 		if (m_TreeViewList != null)
 		{
 			var container = m_TreeViewList.ContainerFromNode(targetNode);
-			// TODO Uno: WinUI still reaches the container of a node leaving the view, and a two-way
-			// IsSelected binding then clears the model. #15214 needs the model to keep it for re-selection.
-			if (container != null && IndexOfNode(targetNode, out _))
+			if (container != null)
 			{
 				var targetItem = (TreeViewItem)container;
 				targetItem.UpdateSelectionVisual(selectionState);
