@@ -1838,6 +1838,16 @@ function Test-PackageContent {
             throw "Package missing Host binary for $tfm at tools/rc/host/$tfm/"
         }
         Write-Log " Host binary present: tools/rc/host/$tfm/ ($(((Get-Item $hostDll).Length / 1KB).ToString('N0')) KB)"
+
+        # A host built with a release-candidate SDK must start on any RC of its major, not only on the SDK's own RC.
+        $runtimeConfig = Get-Content ([System.IO.Path]::ChangeExtension($hostDll, '.runtimeconfig.json')) -Raw | ConvertFrom-Json
+        $rollForward = $runtimeConfig.runtimeOptions.rollForward
+        foreach ($framework in $runtimeConfig.runtimeOptions.frameworks) {
+            if ($framework.version -match '-rc\.' -and ($framework.version -notmatch '^\d+\.0\.0-rc\.1$' -or $rollForward -ne 'LatestMinor')) {
+                throw "Host $tfm requires $($framework.name) $($framework.version) (rollForward: $rollForward); a release-candidate host must require <major>.0.0-rc.1 with rollForward LatestMinor"
+            }
+        }
+        Write-Log " Host runtime: $(($runtimeConfig.runtimeOptions.frameworks | ForEach-Object { "$($_.name) $($_.version)" }) -join ', ') (rollForward: $rollForward)"
     }
 
     Remove-Item $extractDir -Recurse -Force -ErrorAction SilentlyContinue

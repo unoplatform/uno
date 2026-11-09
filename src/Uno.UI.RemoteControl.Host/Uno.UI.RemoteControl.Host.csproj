@@ -88,6 +88,24 @@
 		</None>
 	</ItemGroup>
 
+	<!--
+		A release-candidate SDK pins its exact runtime build in runtimeconfig.json, so a host built with RC3 won't start
+		where only RC1 or RC2 is installed. RCs are API-complete: accept any RC of that major.
+	-->
+	<Target Name="_UnoAcceptAnyReleaseCandidateRuntime" AfterTargets="ProcessFrameworkReferences">
+		<ItemGroup>
+			<_UnoReleaseCandidateRuntimeFramework Include="@(RuntimeFramework)" Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(Version)', '-rc\.'))" />
+			<RuntimeFramework Condition="$([System.Text.RegularExpressions.Regex]::IsMatch('%(RuntimeFramework.Version)', '-rc\.'))">
+				<Version>$([System.Text.RegularExpressions.Regex]::Replace('%(RuntimeFramework.Version)', '-rc\..*$', '-rc.1'))</Version>
+			</RuntimeFramework>
+		</ItemGroup>
+
+		<!-- For a prerelease request, "minor" resolves to the oldest installed RC; run on the newest one instead. -->
+		<PropertyGroup Condition="'@(_UnoReleaseCandidateRuntimeFramework)' != ''">
+			<RollForward>LatestMinor</RollForward>
+		</PropertyGroup>
+	</Target>
+
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
 			<_OverridePackageId>uno.winui</_OverridePackageId>
