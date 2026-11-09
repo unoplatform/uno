@@ -69,10 +69,34 @@ public class Given_WasmAccessibleTextBoxFocus
 		Assert.AreEqual(FocusState.Keyboard, textBox.FocusState);
 	}
 
-	private static async Task<(T Control, List<string> Log)> LoadAsync<T>(T control) where T : Control
+	[TestMethod]
+	public async Task When_Focused_Radio_Gets_Browser_Focus_Then_Roving_Tab_Stop_Follows()
+	{
+		var first = new RadioButton { Content = "First", GroupName = "roving" };
+		var second = new RadioButton { Content = "Second", GroupName = "roving" };
+		var (_, log) = await LoadAsync(second, new StackPanel { Children = { first, second } });
+
+		second.Focus(FocusState.Keyboard);
+		await SettleAsync();
+
+		// Make the tab stop stale, then have the browser (a screen reader, or Tab) land on the focused radio.
+		var firstId = GetSemanticElementId(first);
+		var secondId = GetSemanticElementId(second);
+		InvokeBrowserJs($"(function(){{document.getElementById('{firstId}').tabIndex = 0; document.getElementById('{secondId}').tabIndex = -1; document.getElementById('{secondId}').focus(); return 'ok';}})()");
+		await SettleAsync();
+
+		CollectionAssert.AreEqual(new[] { "GotFocus" }, log, string.Join(", ", log));
+		Assert.AreEqual("0", InvokeBrowserJs($"(function(){{return String(document.getElementById('{secondId}').tabIndex);}})()"), "The focused radio should be the tab stop.");
+		Assert.AreEqual("-1", InvokeBrowserJs($"(function(){{return String(document.getElementById('{firstId}').tabIndex);}})()"), "The other radio should leave the tab order.");
+	}
+
+	private static Task<(T Control, List<string> Log)> LoadAsync<T>(T control) where T : Control
+		=> LoadAsync(control, null);
+
+	private static async Task<(T Control, List<string> Log)> LoadAsync<T>(T control, Panel container) where T : Control
 	{
 		var other = new Button { Content = "Other" };
-		await UITestHelper.Load(new StackPanel { Children = { other, control } });
+		await UITestHelper.Load(container is null ? new StackPanel { Children = { other, control } } : new StackPanel { Children = { other, container } });
 
 		EnableAccessibilityThroughDom();
 		await UITestHelper.WaitFor(() => SemanticElementExists(control), message: "The semantic node should be created once accessibility is enabled.");
@@ -89,6 +113,8 @@ public class Given_WasmAccessibleTextBoxFocus
 	private static async Task SettleAsync()
 	{
 		await UITestHelper.WaitForIdle();
+		// The bounce this guards against comes back through browser focus events and then the dispatcher, a few
+		// frames later; there is no event to wait on for "nothing else happened".
 		await Task.Delay(300);
 		await UITestHelper.WaitForIdle();
 	}
