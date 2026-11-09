@@ -61,6 +61,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	private bool _isAccessibilityEnabled;
 	private bool _isCreatingAOM;
 	private IntPtr _rootElementHandle;
+	private HashSet<UIElement>? _movedPrunedElements;
+	private bool _isPrunedRepositioningScheduled;
 	public override bool IsAccessibilityEnabled => _isAccessibilityEnabled;
 
 	// Subsystem managers (initialized during accessibility activation)
@@ -846,7 +848,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 						// semantic descendants without changing their own offsets, so nothing else re-positions them.
 						if (handle != _rootElementHandle)
 						{
-							UpdateSemanticDescendantsPositioning(rootElement);
+							QueueSemanticDescendantsPositioning(rootElement);
 						}
 					}
 					else
@@ -878,6 +880,64 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			var transformedRect = transform.Transform(localRect);
 			NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
 		}
+	}
+
+	// A layout pass moves nested pruned elements one after the other, and reports a child before the parent that
+	// moves it. They're collected and walked once, after layout, from the outermost one only.
+	private void QueueSemanticDescendantsPositioning(UIElement prunedElement)
+	{
+		(_movedPrunedElements ??= new HashSet<UIElement>(ReferenceEqualityComparer.Instance)).Add(prunedElement);
+		if (!_isPrunedRepositioningScheduled)
+		{
+			_isPrunedRepositioningScheduled = prunedElement.DispatcherQueue.TryEnqueue(FlushSemanticDescendantsPositioning);
+			if (!_isPrunedRepositioningScheduled)
+			{
+				_movedPrunedElements.Clear();
+			}
+		}
+	}
+
+	private void FlushSemanticDescendantsPositioning()
+	{
+		_isPrunedRepositioningScheduled = false;
+		if (_movedPrunedElements is not { Count: > 0 } moved)
+		{
+			return;
+		}
+
+		_movedPrunedElements = null;
+		if (!IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		foreach (var element in moved)
+		{
+			if (!HasMovedPrunedAncestor(element, moved))
+			{
+				UpdateSemanticDescendantsPositioning(element);
+			}
+		}
+	}
+
+	// The walk from a moved pruned ancestor stops at the first semantic node, so only pruned ancestors below
+	// that node already cover this element.
+	private bool HasMovedPrunedAncestor(UIElement element, HashSet<UIElement> moved)
+	{
+		for (var parent = element.GetParent() as UIElement; parent is not null; parent = parent.GetParent() as UIElement)
+		{
+			if (_semanticParentMap.ContainsKey(parent.Visual.Handle))
+			{
+				return false;
+			}
+
+			if (moved.Contains(parent))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/// <summary>

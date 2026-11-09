@@ -47,6 +47,26 @@ public class Given_WasmSemanticPositioning
 	}
 
 	[TestMethod]
+	public async Task When_Nested_Pruned_Ancestors_Move_Then_Semantic_Node_Follows()
+	{
+		var button = new Button { Content = "Probe" };
+		var panel = new StackPanel { Children = { button } };
+		var border = new Border { Padding = new Thickness(10), Child = panel };
+		await UITestHelper.Load(new Grid { Width = 600, Height = 400, Children = { border } });
+
+		EnableAccessibilityThroughDom();
+		await UITestHelper.WaitFor(() => SemanticElementExists(button), message: "The semantic node should be created once accessibility is enabled.");
+		await AssertSemanticRectMatchesAsync(button);
+
+		// Both pruned ancestors move in the same layout pass.
+		border.Margin = new Thickness(50, 40, 0, 0);
+		border.Padding = new Thickness(30);
+		await UITestHelper.WaitForIdle();
+
+		await AssertSemanticRectMatchesAsync(button);
+	}
+
+	[TestMethod]
 	public async Task When_Content_Is_Replaced_By_New_Instance_Then_Semantic_Nodes_Are_Positioned()
 	{
 		// What C# Hot Reload does to an updated page: the instance is replaced by a new one of the same type.
@@ -76,11 +96,14 @@ public class Given_WasmSemanticPositioning
 			() =>
 			{
 				actual = GetSemanticElementRect(element);
-				return actual is { } a && Math.Abs(a.X - expected.X) < 1.5 && Math.Abs(a.Y - expected.Y) < 1.5;
+				return actual is { } a
+					&& Math.Abs(a.X - expected.X) < 1.5
+					&& Math.Abs(a.Y - expected.Y) < 1.5
+					&& Math.Abs(a.Width - expected.Width) < 1.5
+					&& Math.Abs(a.Height - expected.Height) < 1.5;
 			},
 			timeoutMS: 3000,
-			message: $"The semantic node of {element.GetType().Name} should be at {expected}");
-		Assert.IsNotNull(actual, $"actual={actual}");
+			message: $"The semantic node of {element.GetType().Name} should be at {expected}, was {actual}");
 	}
 
 	private sealed partial class ProbePage : UserControl
