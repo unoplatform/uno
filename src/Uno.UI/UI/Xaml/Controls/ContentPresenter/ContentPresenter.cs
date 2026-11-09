@@ -1364,6 +1364,51 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 	}
 
+	/// <summary>
+	/// Called by the platform's native element hosting when the hosted native element (or one of its
+	/// descendants) takes platform keyboard focus.
+	/// </summary>
+	/// <remarks>
+	/// The pointer press that moved platform focus never reaches XAML, so the previously focused element would
+	/// keep XAML focus (and e.g. a TextBox its caret) while the keystrokes go to the native element.
+	/// XAML focus moves to the nearest focusable ancestor, or is cleared if there is none.
+	/// Uno specific: WinUI keeps the focused element in that last case and marks its window as unfocused instead.
+	/// The platforms don't say what moved focus, so the move is reported as <see cref="FocusState.Pointer"/>,
+	/// which draws no keyboard focus visual around the native element.
+	/// </remarks>
+	internal void OnNativeElementGotFocus()
+	{
+		if (!_nativeElementAttached || Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(this) is not { } focusManager)
+		{
+			return;
+		}
+
+		focusManager.OnNativeElementGotFocus(this, FindNativeElementFocusTarget());
+	}
+
+	/// <summary>
+	/// Called by the platform's native element hosting when the hosted native element loses platform focus to something outside XAML.
+	/// </summary>
+	internal void OnNativeElementLostFocus()
+		=> Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(this)?.OnNativeElementLostFocus(this);
+
+	internal bool IsNativeElementAttached => _nativeElementAttached;
+
+	private UIElement FindNativeElementFocusTarget()
+	{
+		for (var parent = VisualTreeHelper.GetParent(this); parent is not null; parent = VisualTreeHelper.GetParent(parent))
+		{
+			if (Uno.UI.Xaml.Input.FocusProperties.IsFocusable(parent))
+			{
+				return Uno.UI.Xaml.Input.FocusSelection.ShouldUpdateFocus(parent, FocusState.Pointer)
+					? parent as UIElement
+					: null;
+			}
+		}
+
+		return null;
+	}
+
 	private Size MeasureNativeElement(Size childMeasuredSize, Size availableSize)
 	{
 		global::System.Diagnostics.Debug.Assert(IsNativeHost);

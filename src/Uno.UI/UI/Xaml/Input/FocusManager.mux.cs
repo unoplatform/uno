@@ -1883,7 +1883,7 @@ namespace Microsoft.UI.Xaml.Input
 
 			// TODO Uno specific: We need to do a full redraw, as render loop does not yet check for focus visuals rendering.
 			UpdateFocusRect(focusNavigationDirection, false);
-			FocusNative(_focusedElement as UIElement);
+			UpdateNativeFocus(); // Uno specific: moves platform focus, unless a hosted native element already holds it
 			_contentRoot.InputManager.Pointers.NotifyFocusChanged(); // Note: This sounds like a duplicate of the NotifyFocusChanged done a few lines below (1944). We need to evaluate if this is still relevant or if we can just remove that uno-specific call.
 
 			// At this point the focused pointer has been switched.  So success is true
