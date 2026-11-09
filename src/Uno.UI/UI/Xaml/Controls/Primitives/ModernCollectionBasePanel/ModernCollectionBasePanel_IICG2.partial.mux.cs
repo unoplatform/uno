@@ -351,6 +351,12 @@ public abstract partial class ModernCollectionBasePanel
 			SetElementIsHeader(spContainer, false);
 
 			LinkContainerToItem(spContainer, spItem);
+
+			// TODO Uno: Uno starts item drags through UIElement.CanDrag, which the skipped preparation would have set.
+			if (shouldSkipContainerPreparation)
+			{
+				(spIHost as ListViewBase)?.PrepareContainerForDragDrop(spContainer);
+			}
 		}
 
 		SetElementEmptySizeInGarbageSection(spContainer!);
