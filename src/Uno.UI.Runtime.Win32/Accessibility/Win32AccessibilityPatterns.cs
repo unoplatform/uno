@@ -902,7 +902,7 @@ internal sealed class UiaItemContainerProviderWrapper : IUiaItemContainerProvide
 		0 => null,
 		// Other ids become (APAutomationProperties)0, which GetAutomationPropertyFromUIAXcpEnum rejects with
 		// UIA_E_INVALIDOPERATION, the HRESULT of InvalidOperationException.
-		_ => throw new InvalidOperationException("UIA_OPERATION_CANNOT_BE_PERFORMED"),
+		_ => throw new InvalidOperationException($"FindItemByProperty does not support UIA property id {propertyId}."),
 	};
 }
 
