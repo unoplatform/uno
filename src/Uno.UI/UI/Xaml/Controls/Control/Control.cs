@@ -213,7 +213,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					null,
-					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, // WinUI also has AffectsMeasure here, but we only do this conditionally in SetUpdateControlTemplate.
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, // WinUI also has AffectsMeasure here, handled by OnTemplateChanged.
 					(s, e) => ((Control)s)?.OnTemplateChanged(e)));
 
 		private protected virtual void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
@@ -239,6 +239,9 @@ namespace Microsoft.UI.Xaml.Controls
 					RemoveChild(pUIElement);
 					//IFC(GetContext()->RemoveNameScope(this, Jupiter::NameScoping::NameScopeType::TemplateNameScope));
 				}
+
+				// WinUI registers Template with AffectsMeasure: the new template applies on the next measure.
+				InvalidateMeasure();
 			}
 		}
 
