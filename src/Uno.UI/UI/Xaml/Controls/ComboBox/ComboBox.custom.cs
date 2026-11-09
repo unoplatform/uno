@@ -535,9 +535,10 @@ public partial class ComboBox : Selector
 
 			OnNextLayout(() =>
 			{
-				if (panel is ModernCollectionBasePanel)
+				// Like OnOpen, only scroll when an item is selected: a ScrollIntoView resets the panel's cache buffers.
+				if (panel is ModernCollectionBasePanel && SelectedIndex >= 0)
 				{
-					CenterSelectedItem(Math.Max(SelectedIndex, 0));
+					CenterSelectedItem(SelectedIndex);
 					OnNextLayout(FocusOpeningItem);
 				}
 				else
