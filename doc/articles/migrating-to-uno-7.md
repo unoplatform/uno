@@ -1083,6 +1083,15 @@ List selection scrolling was also realigned with WinUI:
   Clicking or keyboard navigation still brings the item into view, since they focus the list.
   In `Multiple` mode only the first selection is brought into view. Call
   `ScrollIntoView(item)` after selecting if you need the old behavior.
+- **More items are realized outside the viewport.** `ItemsStackPanel` and `ItemsWrapGrid`
+  now default to a `CacheLength` of 4.0, as on WinUI, instead of 1.0, and
+  `FeatureConfiguration.ListViewBase.DefaultCacheLength` no longer has an effect. Set
+  `CacheLength` on the panel in the `ItemsPanel` template to realize fewer items.
+- **Item container transitions play.** The default `ListView` and `GridView` styles set
+  `ItemContainerTransitions`, and they now run as on WinUI: added items fade in, removed items
+  fade out, and their neighbours slide. A removed item's container stays in the panel until its
+  animation ends. Set `ItemContainerTransitions` to an empty `TransitionCollection` to turn
+  them off.
 
 Independently of rendering, `Uno.WinUI.MSAL`'s `WithUnoHelpers()` changed on WebAssembly:
 

@@ -49,6 +49,12 @@ By default, `ComboBox` popup is placed in such a way that the currently selected
 
 As on WinUI, a touch or pen hold is a right-tap: it raises no `Tapped` nor `DoubleTapped`, and a `ListView` or `GridView` item raises no `ItemClick` nor selection when it is released. Set `Uno.WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold` to `false` at startup to report a hold as a tap, and to raise `ItemClick` and selection on its release, as earlier versions of Uno Platform did. Default: `true`.
 
+## ListView and GridView
+
+### Cache length
+
+`Uno.UI.FeatureConfiguration.ListViewBase.DefaultCacheLength` has no effect and is obsolete. `ItemsStackPanel` and `ItemsWrapGrid` now default to a `CacheLength` of 4.0, as on WinUI, where earlier versions of Uno Platform defaulted to 1.0. To keep fewer items realized outside the viewport, set `CacheLength` on the panel in the `ItemsPanel` template.
+
 ## Input validation
 
 Set `Uno.UI.FeatureConfiguration.InputValidation.IsEnabled` to `true` at startup, before any page is created, to surface the `INotifyDataErrorInfo` errors of a binding source on the bound control. Default: `false`. The `Uno.UI.FeatureConfiguration.InputValidation.ValidationProperties` map selects which property of a control type is validated. See [Input validation](xref:Uno.Features.InputValidation).
