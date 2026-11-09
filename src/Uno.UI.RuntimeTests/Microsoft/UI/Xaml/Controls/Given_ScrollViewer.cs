@@ -1199,6 +1199,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(320, outerScrollViewer.VerticalOffset);
 		}
 
+		// MUX Reference ScrollContentPresenter_Partial.cpp, MakeVisibleImpl: a scroller that doesn't move hands its parents the whole rect.
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresFullWindow]
+		public async Task When_Nested_Scroller_Does_Not_Move_Then_Rect_Past_Its_Viewport_Reaches_Outer()
+		{
+			var item = new Border { Background = new SolidColorBrush(Colors.Red), Width = 100, Height = 100 };
+			var innerScrollViewer = new ScrollViewer
+			{
+				Height = 100,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+				VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
+				VerticalScrollMode = ScrollMode.Disabled,
+				Content = item,
+			};
+			var outerScrollViewer = new ScrollViewer
+			{
+				Height = 200,
+				Width = 200,
+				Content = new StackPanel
+				{
+					Children =
+					{
+						new Border { Height = 300 },
+						innerScrollViewer,
+						new Border { Height = 300 },
+					},
+				},
+			};
+
+			WindowHelper.WindowContent = outerScrollViewer;
+			await WindowHelper.WaitForLoaded(outerScrollViewer);
+			await WindowHelper.WaitForIdle();
+
+			// Extends 20 below the item, past the inner viewport, as the focus padding does.
+			item.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = false, TargetRect = new Rect(0, 0, 100, 120) });
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, innerScrollViewer.VerticalOffset);
+			Assert.AreEqual(300 + 120 - 200, outerScrollViewer.VerticalOffset, 0.5);
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_ChangeView_Then_ViewChanging_Precedes_ViewChanged()
