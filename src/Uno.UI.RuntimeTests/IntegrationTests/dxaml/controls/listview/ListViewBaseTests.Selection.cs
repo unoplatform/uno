@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference: dxaml\test\managed\enterprise\Moco\ListViewBaseTests.cs, commit bac7a9c33ff
 
@@ -239,6 +239,9 @@ public partial class ListViewBaseTests
 
 		await TestServices.WindowHelper.WaitForIdle();
 
+		// TODO Uno: WinUI recycles on removal and fades a copy. Here the container fades, and recycles when that ends.
+		await TestServices.WindowHelper.WaitFor(() => logger.RecycleCalls.Count > 0);
+
 		UIExecutor.Execute(() =>
 		{
 			Verify.AreEqual(1, logger.RecycleCalls.Count);
@@ -445,6 +448,7 @@ public partial class ListViewBaseTests
 	}
 
 	[TestMethod]
+	[RequiresFullWindow]
 	public async Task ValidateFocusAfterItemDeletion()
 	{
 		ListView list = null;
