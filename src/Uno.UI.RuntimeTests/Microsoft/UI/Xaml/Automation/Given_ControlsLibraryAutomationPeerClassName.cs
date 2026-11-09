@@ -29,7 +29,9 @@ public class Given_ControlsLibraryAutomationPeerClassName
 	[DataRow(typeof(MenuBarItem), "Microsoft.UI.Xaml.Controls.MenuBarItem")]
 	[DataRow(typeof(NavigationViewItem), "Microsoft.UI.Xaml.Controls.NavigationViewItem")]
 	[DataRow(typeof(NumberBox), "Microsoft.UI.Xaml.Controls.NumberBox")]
+#if HAS_UNO // PagerControl is a prerelease control, not in the WinAppSDK public API.
 	[DataRow(typeof(PagerControl), "Microsoft.UI.Xaml.Controls.PagerControl")]
+#endif
 	[DataRow(typeof(PersonPicture), "Microsoft.UI.Xaml.Controls.PersonPicture")]
 	[DataRow(typeof(PipsPager), "Microsoft.UI.Xaml.Controls.PipsPager")]
 	[DataRow(typeof(ProgressBar), "Microsoft.UI.Xaml.Controls.ProgressBar")]
