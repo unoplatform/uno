@@ -458,7 +458,13 @@ namespace Microsoft.UI.Xaml.Controls
 				// For the OnPresenterScrolled, we cannot rely only on the `updated` flag, we must also check for the isIntermediate flag!
 				if (_lastScrolledEvent != (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate))
 				{
+					var offsetsChanged = _lastScrolledEvent.hOffset != updatedHorizontalOffset || _lastScrolledEvent.vOffset != updatedVerticalOffset;
 					_lastScrolledEvent = (updatedHorizontalOffset, updatedVerticalOffset, isIntermediate);
+
+					if (offsetsChanged)
+					{
+						RaiseViewChanging(updatedHorizontalOffset, updatedVerticalOffset);
+					}
 
 					Scroller?.OnPresenterScrolled(updatedHorizontalOffset, updatedVerticalOffset, isIntermediate);
 
@@ -469,6 +475,31 @@ namespace Microsoft.UI.Xaml.Controls
 				ScrollOffsets = new Point(updatedHorizontalOffset, updatedVerticalOffset);
 				InvalidateViewport();
 			}
+		}
+
+		private void RaiseViewChanging(double nextHorizontalOffset, double nextVerticalOffset)
+		{
+			if (Scroller is not { } scroller)
+			{
+				return;
+			}
+
+			var (finalHorizontalOffset, finalVerticalOffset, isInertial) = (_isWheelMotionRunning, _isFlingRunning, _runningScrollAnimation) switch
+			{
+				(true, _, _) => (_wheelMotionH.ProjectedEnd, _wheelMotionV.ProjectedEnd, true),
+				(_, true, _) => (_flingH.FinalPosition, _flingV.FinalPosition, true),
+				// An animated scroll has already moved the offsets to its target.
+				(_, _, not null) => (HorizontalOffset, VerticalOffset, true),
+				_ => (nextHorizontalOffset, nextVerticalOffset, false),
+			};
+
+			scroller.RaiseViewChanging(
+				nextHorizontalOffset,
+				nextVerticalOffset,
+				_zoomFactor,
+				Math.Clamp(finalHorizontalOffset, 0, Math.Max(0, scroller.ScrollableWidth)),
+				Math.Clamp(finalVerticalOffset, 0, Math.Max(0, scroller.ScrollableHeight)),
+				isInertial);
 		}
 
 		private void Update(UIElement view, double horizontalOffset, double verticalOffset, float zoom, ScrollOptions options)

@@ -458,14 +458,6 @@ public abstract partial class ModernCollectionBasePanel
 					}
 				}
 
-#if HAS_UNO
-				// TODO Uno: ViewChanging is never raised and no DManip drives the sticky headers, so every view change moves them.
-				if (shouldInvalidate && m_bUseStickyHeaders)
-				{
-					UpdateStickyHeaders(new Size(visibleWindow.Width, visibleWindow.Height));
-				}
-#endif
-
 				// Make sure that we don't setup transitions during manipulation.
 				bool isIntermediate;
 				isIntermediate = pArgs.IsIntermediate;
