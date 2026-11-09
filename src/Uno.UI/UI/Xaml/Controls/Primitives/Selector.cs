@@ -121,11 +121,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Whether or not this Selector allows multiple selection
 		internal virtual bool CanSelectMultiple => false;
 
-		/// <summary>
-		/// This is always true for <see cref="FlipView"/> and <see cref="ComboBox"/>, and depends on the value of <see cref="ListViewBase.SelectionMode"/> for <see cref="ListViewBase"/>.
-		/// </summary>
-		internal virtual bool IsSingleSelection => true;
-
 		internal override void OnItemsSourceSingleCollectionChanged(object sender, NotifyCollectionChangedEventArgs c, int section)
 		{
 			var isItemsHostNotified = false;
