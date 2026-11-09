@@ -66,6 +66,23 @@
 		<WasmCachePath>$(WgpuWasmCacheDir)</WasmCachePath>
 	</PropertyGroup>
 
+	<!-- WebGpuInit.ts reaches emdawnwebgpu's runtime object through Module.WebGPU, whichever copy is linked. -->
+	<Target Name="_UnoWebGpuExportRuntimeObject" BeforeTargets="_BrowserWasmWriteRspForLinking" Condition="'$(_UnoWebGpuWasm)' == 'true'">
+		<ItemGroup>
+			<EmccExportedRuntimeMethod Include="WebGPU" Exclude="@(EmccExportedRuntimeMethod)" />
+		</ItemGroup>
+	</Target>
+
+	<!-- SkiaSharp 4.155+ links its own emdawnwebgpu into every WebAssembly app. A second copy would load the same JS
+	     libraries twice and fail the link, and both are the same standard webgpu.h ABI, so use SkiaSharp's. -->
+	<Target Name="_UnoWebGpuUseSkiaSharpEmdawn" BeforeTargets="_BrowserWasmWriteRspForLinking"
+			Condition="'$(_UnoWebGpuWasm)' == 'true' and '$(_SkiaSharpUseEmdawnwebgpu)' == 'true' and '$(ShouldIncludeNativeSkiaSharp)' == 'True' and Exists('$(_SkiaSharpEmdawnwebgpuPkg)/webgpu/src/library_webgpu.js')">
+		<PropertyGroup>
+			<EmccExtraLDFlags>$(EmccExtraLDFlags.Replace('--use-port=$(_UnoWgpuPortPath)', ''))</EmccExtraLDFlags>
+		</PropertyGroup>
+		<Message Importance="normal" Text="Uno WebGPU: linking SkiaSharp's emdawnwebgpu ($(_SkiaSharpEmdawnwebgpuPkg)) instead of Uno's." />
+	</Target>
+
 	<!-- On Windows the writable cache must sit on the emscripten toolchain's drive: building a system-lib variant
 	     computes a relpath between the two, which throws across drives. Resolved in a target because the workload
 	     sets EmscriptenSdkToolsPath after this file is imported. The folder is per toolchain: emcc clears a cache built
