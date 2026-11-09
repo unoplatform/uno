@@ -23,6 +23,33 @@ namespace Uno.UI.Composition.Drawing;
 public static class FontFallback
 {
 	private static IFontFallbackService? _noto;
+	private static Uri _notoFontsBaseUri = NotoFontFallbackService.DefaultBaseUri;
+
+	/// <summary>
+	/// Where the browser downloads the Noto fallback fonts from. Defaults to <c>https://raw.githubusercontent.com/</c>,
+	/// the notofonts repositories on GitHub. Point it at your own origin, or at fonts bundled in the app package
+	/// (<c>ms-appx:///</c>), when a Content-Security-Policy or an offline deployment blocks GitHub: each font is read
+	/// from the same path under this base, e.g.
+	/// <c>{base}notofonts/notofonts.github.io/main/fonts/NotoSansArabic/hinted/ttf/NotoSansArabic-Regular.ttf</c>.
+	/// Set it before text first renders; fonts already fetched are kept. Only the browser downloads fallback fonts.
+	/// </summary>
+	/// <exception cref="ArgumentException">The URI is not absolute.</exception>
+	public static Uri NotoFontsBaseUri
+	{
+		get => _notoFontsBaseUri;
+		set
+		{
+			ArgumentNullException.ThrowIfNull(value);
+			if (!value.IsAbsoluteUri)
+			{
+				throw new ArgumentException($"The Noto fonts base URI must be absolute: '{value}'.", nameof(value));
+			}
+
+			// A base without a trailing slash would drop its last segment when the font path is combined with it.
+			_notoFontsBaseUri = value.AbsolutePath.EndsWith('/') ? value : new Uri(value.AbsoluteUri + "/");
+		}
+	}
+
 	// One IFont per resolved family+style: text segmentation breaks wherever the font instance changes, so
 	// minting a new one per codepoint would split a fallback run into single-character segments and lose the
 	// shaping across them (joining scripts render disconnected).
