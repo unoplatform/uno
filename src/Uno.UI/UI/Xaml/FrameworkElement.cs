@@ -533,7 +533,8 @@ namespace Microsoft.UI.Xaml
 
 		private static Thickness GetFocusVisualSecondaryThicknessDefaultValue() => new Thickness(1);
 
-		[GeneratedDependencyProperty(DefaultValue = default(Brush))]
+		// The default depends on the element's theme (DependencyProperty.GetDefaultValue), so it can't be cached.
+		[GeneratedDependencyProperty(DefaultValue = default(Brush), LocalCache = false)]
 		public static DependencyProperty FocusVisualSecondaryBrushProperty { get; } = CreateFocusVisualSecondaryBrushProperty();
 
 		public Brush FocusVisualSecondaryBrush
@@ -559,7 +560,8 @@ namespace Microsoft.UI.Xaml
 			set => SetFocusVisualPrimaryBrushValue(value);
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = default(Brush))]
+		// The default depends on the element's theme (DependencyProperty.GetDefaultValue), so it can't be cached.
+		[GeneratedDependencyProperty(DefaultValue = default(Brush), LocalCache = false)]
 		public static DependencyProperty FocusVisualPrimaryBrushProperty { get; } = CreateFocusVisualPrimaryBrushProperty();
 
 		public Thickness FocusVisualMargin
