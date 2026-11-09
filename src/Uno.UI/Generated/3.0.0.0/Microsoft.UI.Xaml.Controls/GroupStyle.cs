@@ -71,21 +71,6 @@ public partial class GroupStyle : global::System.ComponentModel.INotifyPropertyC
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.HidesIfEmpty.set
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.Panel.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.GroupStyle.Panel.set
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public event global::System.ComponentModel.PropertyChangedEventHandler PropertyChanged
-	{
-		[global::Uno.NotImplemented("__SKIA__")]
-		add
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.GroupStyle", "event PropertyChanged");
-		}
-		[global::Uno.NotImplemented("__SKIA__")]
-		remove
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.GroupStyle", "event PropertyChanged");
-		}
-	}
-#endif
+	// Skipping already declared event Microsoft.UI.Xaml.Controls.GroupStyle.PropertyChanged
 	// Processing: System.ComponentModel.INotifyPropertyChanged
 }

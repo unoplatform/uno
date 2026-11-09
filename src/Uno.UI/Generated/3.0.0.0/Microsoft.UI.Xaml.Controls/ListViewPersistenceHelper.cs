@@ -7,23 +7,11 @@ namespace Microsoft.UI.Xaml.Controls;
 #endif
 public partial class ListViewPersistenceHelper
 {
-#if false
+#if __SKIA__
 	internal ListViewPersistenceHelper()
 	{
 	}
 #endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static string GetRelativeScrollPosition(global::Microsoft.UI.Xaml.Controls.ListViewBase listViewBase, global::Microsoft.UI.Xaml.Controls.ListViewItemToKeyHandler itemToKeyHandler)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper", "GetRelativeScrollPosition(ListViewBase listViewBase, ListViewItemToKeyHandler itemToKeyHandler)");
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Windows.Foundation.IAsyncAction SetRelativeScrollPositionAsync(global::Microsoft.UI.Xaml.Controls.ListViewBase listViewBase, string relativeScrollPosition, global::Microsoft.UI.Xaml.Controls.ListViewKeyToItemHandler keyToItemHandler)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper", "SetRelativeScrollPositionAsync(ListViewBase listViewBase, string relativeScrollPosition, ListViewKeyToItemHandler keyToItemHandler)");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.GetRelativeScrollPosition(Microsoft.UI.Xaml.Controls.ListViewBase, Microsoft.UI.Xaml.Controls.ListViewItemToKeyHandler)
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewPersistenceHelper.SetRelativeScrollPositionAsync(Microsoft.UI.Xaml.Controls.ListViewBase, string, Microsoft.UI.Xaml.Controls.ListViewKeyToItemHandler)
 }

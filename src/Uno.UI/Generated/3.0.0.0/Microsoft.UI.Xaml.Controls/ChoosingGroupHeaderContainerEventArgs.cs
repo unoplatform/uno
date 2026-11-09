@@ -7,47 +7,10 @@ namespace Microsoft.UI.Xaml.Controls;
 #endif
 public partial class ChoosingGroupHeaderContainerEventArgs
 {
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public object Group
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs", "Group");
-		}
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Controls.ListViewBaseHeaderItem GroupHeaderContainer
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs", "GroupHeaderContainer");
-		}
-		set
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs", "GroupHeaderContainer");
-		}
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public int GroupIndex
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs", "GroupIndex");
-		}
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public ChoosingGroupHeaderContainerEventArgs()
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs", "ChoosingGroupHeaderContainerEventArgs()");
-	}
-#endif
+	// Skipping already declared property Group
+	// Skipping already declared property GroupHeaderContainer
+	// Skipping already declared property GroupIndex
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.ChoosingGroupHeaderContainerEventArgs()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.ChoosingGroupHeaderContainerEventArgs()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.Group.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ChoosingGroupHeaderContainerEventArgs.GroupHeaderContainer.get

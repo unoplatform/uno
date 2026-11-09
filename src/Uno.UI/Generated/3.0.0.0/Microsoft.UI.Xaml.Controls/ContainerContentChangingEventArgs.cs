@@ -12,32 +12,11 @@ public partial class ContainerContentChangingEventArgs
 	// Skipping already declared property Item
 	// Skipping already declared property ItemContainer
 	// Skipping already declared property ItemIndex
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public uint Phase
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs", "Phase");
-		}
-	}
-#endif
+	// Skipping already declared property Phase
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.ContainerContentChangingEventArgs()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.ContainerContentChangingEventArgs()
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void RegisterUpdateCallback(global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ListViewBase, global::Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs> callback)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs", "RegisterUpdateCallback(TypedEventHandler<ListViewBase, ContainerContentChangingEventArgs> callback)");
-	}
-#endif
-#if false
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void RegisterUpdateCallback(uint callbackPhase, global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.ListViewBase, global::Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs> callback)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs", "RegisterUpdateCallback(uint callbackPhase, TypedEventHandler<ListViewBase, ContainerContentChangingEventArgs> callback)");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.RegisterUpdateCallback(Windows.Foundation.TypedEventHandler<Microsoft.UI.Xaml.Controls.ListViewBase, Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs>)
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.RegisterUpdateCallback(uint, Windows.Foundation.TypedEventHandler<Microsoft.UI.Xaml.Controls.ListViewBase, Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs>)
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.Handled.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.Handled.set
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs.InRecycleQueue.get
