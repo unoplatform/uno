@@ -50,16 +50,21 @@ partial class ResizeGripper
 	// arrive to complete the drag and IsDragging would stay true for the rest of this instance's life.
 	private void OnUnloaded(object sender, RoutedEventArgs args)
 	{
-		// A re-parent raises Loaded before the stale Unloaded.
-		if (IsLoaded)
+		// Uno specific: Unloaded is raised synchronously on removal, not after a re-parent's Loaded as
+		// in WinUI, so wait for the current tick to finish. Loaded may not have run by then either.
+		DispatcherQueue.TryEnqueue(() =>
 		{
-			return;
-		}
+			// A re-parent raises Loaded before the stale Unloaded.
+			if (IsActiveInVisualTree)
+			{
+				return;
+			}
 
-		m_isPointerOver = false;
-		EndDrag(true /* canceled */);
-		// A press that never became a manipulation has no drag to end but still holds the capture.
-		ReleaseCapturedPointer();
+			m_isPointerOver = false;
+			EndDrag(true /* canceled */);
+			// A press that never became a manipulation has no drag to end but still holds the capture.
+			ReleaseCapturedPointer();
+		});
 	}
 
 	private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs args)

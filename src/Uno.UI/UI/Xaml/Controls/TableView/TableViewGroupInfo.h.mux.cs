@@ -25,8 +25,7 @@ namespace Microsoft.UI.Xaml.Controls.Tabular;
 // announces an expansion change -- announcing across a recycle would report the wrong group.
 // bool SameGroupKey(winrt::IInspectable const& left, winrt::IInspectable const& right) noexcept;
 // (ported as a static member of TableViewGroupInfo in TableViewGroupInfo.mux.cs)
-// TODO Uno: Windows.Foundation.IStringable is covered by the ToString override.
-partial class TableViewGroupInfo : ICustomPropertyProvider
+partial class TableViewGroupInfo : ICustomPropertyProvider, global::Windows.Foundation.IStringable
 {
 	// TableViewGroupInfo(
 	//     winrt::IInspectable const& key,

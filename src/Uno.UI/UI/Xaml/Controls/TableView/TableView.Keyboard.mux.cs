@@ -162,12 +162,15 @@ partial class TableView
 		return null;
 	}
 
+	// Uno specific: ContentStart.VisualParent is null for a TextBlock's inlines (no ITextView).
+	private static FrameworkElement? GetTextElementHost(TextElement textElement) => textElement.GetContainingFrameworkElement();
+
 	private static DependencyObject? GetFocusedVisual(XamlRoot root)
 	{
 		var focused = FocusManager.GetFocusedElement(root) as DependencyObject;
 		if (focused is TextElement textElement)
 		{
-			return textElement.ContentStart?.VisualParent;
+			return GetTextElementHost(textElement);
 		}
 		return focused;
 	}
@@ -493,7 +496,7 @@ partial class TableView
 		var oldFocus = args.OldFocusedElement;
 		if (oldFocus is TextElement textElement)
 		{
-			oldFocus = textElement.ContentStart?.VisualParent;
+			oldFocus = GetTextElementHost(textElement);
 		}
 		var oldElement = oldFocus as FrameworkElement;
 		bool oldRemoved = oldElement is not null && (oldElement.XamlRoot is null || !oldElement.IsLoaded) &&
@@ -601,7 +604,7 @@ partial class TableView
 		{
 			if (element is TextElement textElement)
 			{
-				element = textElement.ContentStart?.VisualParent;
+				element = GetTextElementHost(textElement);
 			}
 			return element is not null && originHeader is not null &&
 				(element == originHeader || SharedHelpers.IsAncestor(element, originHeader, false /* checkVisibility */));
@@ -2882,7 +2885,7 @@ partial class TableView
 		DependencyObject? node = element;
 		if (element is TextElement textElement)
 		{
-			node = textElement.ContentStart?.VisualParent;
+			node = GetTextElementHost(textElement);
 		}
 		while (repeater is not null && node is not null)
 		{
@@ -2956,7 +2959,7 @@ partial class TableView
 	{
 		// A Hyperlink is checked through its host text element.
 		var link = targetObject as Hyperlink;
-		var target = link is not null ? link.ContentStart?.VisualParent as UIElement : targetObject as UIElement;
+		var target = link is not null ? GetTextElementHost(link) : targetObject as UIElement;
 		if (target is null || target.XamlRoot is null || target.Visibility != Visibility.Visible || !(link is not null ? link.IsTabStop : target.IsTabStop))
 		{
 			return false;

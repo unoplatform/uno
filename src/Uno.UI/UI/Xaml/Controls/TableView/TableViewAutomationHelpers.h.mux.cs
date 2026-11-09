@@ -476,7 +476,10 @@ internal static class TableViewAutomationHelpers
 				return false;
 			}
 			var flyout = element.ContextFlyout;
-			return flyout is not null && !(local is Microsoft.UI.Xaml.Data.BindingExpression && flyout is TextCommandBarFlyout);
+			// Uno specific: ReadLocalValue returns the bound value, not the BindingExpression.
+			var isBound = local is Microsoft.UI.Xaml.Data.BindingExpression ||
+				(element as FrameworkElement)?.GetBindingExpression(UIElement.ContextFlyoutProperty) is not null;
+			return flyout is not null && !(isBound && flyout is TextCommandBarFlyout);
 		}
 		return element.ContextFlyout is not null;
 	}
