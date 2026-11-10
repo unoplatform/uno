@@ -401,6 +401,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 						//Balance(true /* isOnSnapPoint */);
 						Balance(false);
+
+						// Balance(true) commits the selection whatever the item state. ViewChanging has moved
+						// the state off Expanded during the scroll, so Balance(false) alone would drop it.
+						if (_itemState != ItemState.Expanded)
+						{
+							UpdateSelectedItem();
+						}
+
 						if (_itemState == ItemState.ManipulationInProgress)
 						{
 							TransitionItemsState(ItemState.Expanded);
