@@ -1,4 +1,5 @@
-﻿using static Uno.UI.SourceGenerators.Tests.DependencyPropertyGeneratorTests.DependencyPropertyGeneratorHarness;
+﻿using Microsoft.CodeAnalysis;
+using static Uno.UI.SourceGenerators.Tests.DependencyPropertyGeneratorTests.DependencyPropertyGeneratorHarness;
 
 namespace Uno.UI.SourceGenerators.Tests.DependencyPropertyGeneratorTests;
 
@@ -628,6 +629,28 @@ public partial class Given_DependencyPropertyGenerator
 			"""));
 
 		run.ShouldSucceed().ShouldContain(HintName, "public partial string MyValue", "public partial int? Count");
+	}
+
+	[TestMethod]
+	public async Task When_Property_Type_Is_Nullable_Reference_Annotations_Are_Kept()
+	{
+		var run = await RunAsync(InstanceType("""
+			[GeneratedDependencyProperty(DefaultValue = null)]
+			public partial string? MyValue { get; set; }
+
+			[GeneratedDependencyProperty]
+			public static partial string? GetAttached(DependencyObject target);
+			"""));
+
+		run.ShouldSucceed();
+
+		// The generated part is nullable-oblivious, so it neither conflicts with the annotated declaration nor hides it.
+		run.OutputCompilation.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Warning && d.Id is not ("CS1701" or "CS0436"))
+			.Should().BeEmpty();
+
+		var type = run.OutputCompilation.GetTypeByMetadataName("Mynamespace.C")!;
+		type.GetMembers("MyValue").OfType<IPropertySymbol>().Single().NullableAnnotation.Should().Be(NullableAnnotation.Annotated);
+		type.GetMembers("GetAttached").OfType<IMethodSymbol>().Single().ReturnNullableAnnotation.Should().Be(NullableAnnotation.Annotated);
 	}
 
 	[TestMethod]
