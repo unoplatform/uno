@@ -16,18 +16,15 @@ public partial class Visual
 	// pixel centers: without a margin a thin ring at a fractional offset could lose every pixel to the native element.
 	private const float NativeClipAntialiasingMargin = 1f;
 
-	private enum PaintedAreaKind : byte
-	{
-		// Can't be bounded more tightly than the visual's clip.
-		Unbounded,
-		// Bounded, but the exact area isn't known.
-		BoundsOnly,
-		// The exact area is known; null geometry when nothing is painted.
-		Exact,
-	}
+	/// <summary>
+	/// What a visual paints itself. Null bounds: it can't be bounded more tightly than its clip. Null geometry: the exact
+	/// area isn't known. <see cref="NothingPainted"/>: it paints nothing. The geometry stays owned by the visual.
+	/// </summary>
+	private readonly record struct PaintedArea(Rect? Bounds, IGeometry? Geometry);
 
-	// The geometry stays owned by the visual: callers must not release it.
-	private readonly record struct PaintedArea(PaintedAreaKind Kind, Rect Bounds, IGeometry? Geometry);
+	// Shared and never released: only ever compared by reference. Lazy, as the geometry factory is set up by the host.
+	private static readonly Lazy<IGeometry> _nothingPainted = new(() => GeometryFactory.Current.CreateRectangleGeometry(default));
+	private static IGeometry NothingPainted => _nothingPainted.Value;
 
 	private PaintedArea? _paintedArea;
 	private float _nativeClipCutScale;
@@ -58,25 +55,27 @@ public partial class Visual
 		PaintedArea area;
 		if (!CanPaint())
 		{
-			area = new(PaintedAreaKind.Exact, default, null);
+			area = new(default(Rect), NothingPainted);
 		}
 		else if (TryBuildPaintedGeometry(out var geometry))
 		{
-			if (geometry is { IsEmpty: true })
+			if (geometry is null or { IsEmpty: true })
 			{
-				geometry.Release();
-				geometry = null;
+				geometry?.Release();
+				area = new(default(Rect), NothingPainted);
 			}
-
-			area = new(PaintedAreaKind.Exact, geometry?.Bounds ?? default, geometry);
+			else
+			{
+				area = new(geometry.Bounds, geometry);
+			}
 		}
 		else if (PaintsWithinOwnSize)
 		{
-			area = new(PaintedAreaKind.BoundsOnly, new Rect(0, 0, Math.Max(0f, Size.X), Math.Max(0f, Size.Y)), null);
+			area = new(new Rect(0, 0, Math.Max(0f, Size.X), Math.Max(0f, Size.Y)), null);
 		}
 		else
 		{
-			area = new(PaintedAreaKind.Unbounded, default, null);
+			area = new(null, null);
 		}
 
 		_paintedArea = area;
@@ -90,8 +89,8 @@ public partial class Visual
 	private protected bool TryGetPaintedBounds(out Rect bounds)
 	{
 		var area = GetPaintedArea();
-		bounds = area.Bounds;
-		return area.Kind != PaintedAreaKind.Unbounded;
+		bounds = area.Bounds ?? default;
+		return area.Bounds is not null;
 	}
 
 	/// <summary>
@@ -101,15 +100,13 @@ public partial class Visual
 	/// </summary>
 	private bool TryGetNativeClipCut(float scale, out IGeometry? cut)
 	{
-		var area = GetPaintedArea();
-
 		cut = null;
-		if (area.Kind != PaintedAreaKind.Exact)
+		if (GetPaintedArea().Geometry is not { } painted)
 		{
 			return false;
 		}
 
-		if (area.Geometry is not { } painted)
+		if (ReferenceEquals(painted, NothingPainted))
 		{
 			return true;
 		}
@@ -135,7 +132,10 @@ public partial class Visual
 
 	private void InvalidatePaintedArea()
 	{
-		_paintedArea?.Geometry?.Release();
+		if (_paintedArea?.Geometry is { } geometry && !ReferenceEquals(geometry, NothingPainted))
+		{
+			geometry.Release();
+		}
 		_paintedArea = null;
 		_nativeClipCut?.Release();
 		_nativeClipCut = null;
