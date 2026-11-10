@@ -178,7 +178,8 @@ namespace Microsoft.UI.Composition
 		/// local space, or null when it paints nothing. Used to build a precise per-visual damage region. The caller
 		/// owns and disposes the returned geometry.
 		/// </summary>
-		internal IGeometry? BuildRenderGeometry()
+		/// <param name="paintingBrushesOnly">Leave out the parts whose brush paints nothing (e.g. a transparent fill).</param>
+		internal IGeometry? BuildRenderGeometry(bool paintingBrushesOnly = false)
 		{
 			if (_geometryWithTransformations is not { } geometryWithTransformations)
 			{
@@ -187,12 +188,12 @@ namespace Microsoft.UI.Composition
 
 			IGeometry? result = null;
 
-			if (FillBrush is not null && _fillGeometryWithTransformations is { } fillGeometryWithTransformations)
+			if (IsPainted(FillBrush) && _fillGeometryWithTransformations is { } fillGeometryWithTransformations)
 			{
 				result = GetTrimmedFilledGeometry(fillGeometryWithTransformations, Geometry);
 			}
 
-			if (StrokeBrush is not null && StrokeThickness > 0)
+			if (IsPainted(StrokeBrush) && StrokeThickness > 0)
 			{
 				var strokeGeometry = GetTrimmedStrokeGeometry(geometryWithTransformations);
 				if (result is null)
@@ -209,6 +210,8 @@ namespace Microsoft.UI.Composition
 			}
 
 			return result;
+
+			bool IsPainted(CompositionBrush? brush) => paintingBrushesOnly ? brush?.CanPaint() ?? false : brush is not null;
 		}
 
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)

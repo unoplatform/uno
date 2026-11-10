@@ -168,6 +168,17 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal virtual bool CanPaint() => false;
 
 	/// <summary>
+	/// The area this visual's own content paints, in local coordinates, which native elements drawn under it are
+	/// clipped out of. False when it isn't known more tightly than the visual's clip; otherwise <paramref name="painted"/>
+	/// is null when nothing is painted, or a reference the caller releases. It must cover every painted pixel.
+	/// </summary>
+	internal virtual bool TryGetPaintedGeometry(out IGeometry? painted)
+	{
+		painted = null;
+		return false;
+	}
+
+	/// <summary>
 	/// Set while the owning element has no layout slot, i.e. it has never been arranged (or was
 	/// re-parented and not arranged since). <see cref="ArrangeOffset"/>/<see cref="Size"/> are unset then,
 	/// and a visual's content is not bounded by its Size, so painting would draw at the parent's origin,
@@ -837,9 +848,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			localClip = clipFromParent;
 		}
 
-		if (IsNativeHostVisual || CanPaint())
+		if (IsNativeHostVisual)
 		{
-			clipPath = clipPath.Combine(localClip, IsNativeHostVisual ? GeometryCombineMode.Union : GeometryCombineMode.Difference);
+			clipPath = clipPath.Combine(localClip, GeometryCombineMode.Union);
+		}
+		else if (CanPaint())
+		{
+			clipPath = SubtractPaintedArea(clipPath, localClip, planar ? localMatrix : null);
 		}
 
 		if (IsNativeHostVisual && !localClip.IsEmpty)
@@ -868,6 +883,36 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		localClip.Release();
 		return clipPath;
+	}
+
+	private IGeometry SubtractPaintedArea(IGeometry clipPath, IGeometry localClip, Matrix3x2? localMatrix)
+	{
+		// No native element is visible under this visual, so there is nothing to cut and no geometry worth building.
+		if (clipPath.IsEmpty || !Intersects(clipPath.Bounds, localClip.Bounds))
+		{
+			return clipPath;
+		}
+
+		if (localMatrix is not { } matrix || !TryGetPaintedGeometry(out var painted))
+		{
+			return clipPath.Combine(localClip, GeometryCombineMode.Difference);
+		}
+
+		if (painted is null)
+		{
+			return clipPath;
+		}
+
+		var paintedInRoot = painted.Transform(matrix);
+		painted.Release();
+		var covered = paintedInRoot.Combine(localClip, GeometryCombineMode.Intersect);
+		paintedInRoot.Release();
+		var result = clipPath.Combine(covered, GeometryCombineMode.Difference);
+		covered.Release();
+		return result;
+
+		static bool Intersects(Rect a, Rect b)
+			=> a.Left < b.Right && b.Left < a.Right && a.Top < b.Bottom && b.Top < a.Bottom;
 	}
 
 	internal IGeometry GetTotalClipPath(bool skipPostPaintingClipping)

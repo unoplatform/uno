@@ -388,6 +388,42 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		(BorderBrush?.CanPaint() ?? false) ||
 		base.CanPaint();
 
+	internal override bool TryGetPaintedGeometry(out IGeometry? painted)
+	{
+		// Subclasses (e.g. the SkiaSharp and WebGPU canvases) paint content of their own, which only they can bound.
+		if (GetType() != typeof(BorderVisual))
+		{
+			return base.TryGetPaintedGeometry(out painted);
+		}
+
+		painted = null;
+		UpdatePathsAndCornerClip();
+
+		if (_backgroundBrush?.CanPaint() ?? false)
+		{
+			// With a border brush, the pre-painting clip already carries the rounded outer edge, which covers both
+			// the background and the ring. Without corners to cut, the bounds are close enough.
+			if (_borderPathOuterRect is not null || _cornerRadius == default(CornerRadius) || GetPath(_backgroundShape) is not { } background)
+			{
+				return false;
+			}
+
+			painted = background.Transform(Matrix3x2.CreateTranslation(_backgroundShape!.Offset));
+			return true;
+		}
+
+		if ((_borderBrush?.CanPaint() ?? false) && GetPath(_borderShape) is { } ring)
+		{
+			ring.AddRef();
+			painted = ring;
+		}
+
+		return true;
+
+		static IGeometry? GetPath(CompositionSpriteShape? shape)
+			=> (shape?.Geometry as CompositionPathGeometry)?.Path?.GeometrySource as IGeometry;
+	}
+
 	// The background fill and border ring both live inside (0, 0, Size.X, Size.Y) by construction.
 	internal override bool PaintsWithinOwnSize => true;
 

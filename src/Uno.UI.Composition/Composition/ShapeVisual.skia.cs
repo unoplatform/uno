@@ -224,32 +224,98 @@ public partial class ShapeVisual
 			{
 				continue;
 			}
-			if (sprite.BuildRenderGeometry() is not { } geometry)
+			if (BuildShapeGeometryInVisual(sprite, paintingBrushesOnly: false) is not { } geometry)
 			{
 				continue;
-			}
-			// The shape's own transform, which CompositionShape.Render applies before painting it. Without it the
-			// silhouette is the untransformed geometry, so a shape carrying an Offset or a rotation -- typical of
-			// LottieGen output -- casts its shadow in the wrong place.
-			if (sprite.GetRenderTransform() is { IsIdentity: false } shapeTransform)
-			{
-				var untransformed = geometry;
-				geometry = geometry.Transform(shapeTransform);
-				untransformed.Dispose();
-			}
-
-			if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
-			{
-				var m = Matrix3x2.CreateTranslation(-viewBox.Offset.X, -viewBox.Offset.Y)
-					* Matrix3x2.CreateScale(Size.X / viewBox.Size.X, Size.Y / viewBox.Size.Y);
-				var previous = geometry;
-				geometry = geometry.Transform(m);
-				previous.Dispose();
 			}
 			output.Add((geometry, alpha));
 		}
 
 		return true;
+	}
+
+	// Past these, the boolean ops cost more per frame than a rectangular cut-out of a native element is worth.
+	private const int MaxPaintedGeometryShapes = 16;
+	private const int MaxPaintedGeometrySegments = 1024;
+
+	internal override bool TryGetPaintedGeometry(out IGeometry? painted)
+	{
+		painted = null;
+		if (_shapes is not { Count: > 0 } shapes || Size.X == 0 || Size.Y == 0)
+		{
+			return true;
+		}
+
+		if (shapes.Count > MaxPaintedGeometryShapes)
+		{
+			return false;
+		}
+
+		for (var i = 0; i < shapes.Count; i++)
+		{
+			if (shapes[i] is not CompositionSpriteShape sprite)
+			{
+				painted?.Release();
+				painted = null;
+				return false;
+			}
+
+			if (BuildShapeGeometryInVisual(sprite, paintingBrushesOnly: true) is not { } geometry)
+			{
+				continue;
+			}
+
+			if (painted is null)
+			{
+				painted = geometry;
+			}
+			else
+			{
+				var previous = painted;
+				painted = previous.Combine(geometry, GeometryCombineMode.Union);
+				previous.Release();
+				geometry.Release();
+			}
+
+			if (painted.SegmentCount > MaxPaintedGeometrySegments)
+			{
+				painted.Release();
+				painted = null;
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	// What a sprite shape paints, in this visual's coordinates: its own transform (an Offset or rotation, typical of
+	// LottieGen output), then the ViewBox, as CompositionShape.Render and Paint apply them.
+	private IGeometry? BuildShapeGeometryInVisual(CompositionSpriteShape sprite, bool paintingBrushesOnly)
+	{
+		if (sprite.BuildRenderGeometry(paintingBrushesOnly) is not { } geometry)
+		{
+			return null;
+		}
+
+		if (sprite.GetRenderTransform() is { IsIdentity: false } shapeTransform)
+		{
+			var untransformed = geometry;
+			geometry = geometry.Transform(shapeTransform);
+			untransformed.Dispose();
+		}
+
+		if (ViewBox is { } viewBox)
+		{
+			var m = Matrix3x2.CreateTranslation(-viewBox.Offset.X, -viewBox.Offset.Y)
+				* Matrix3x2.CreateScale(
+					viewBox.Size.X > 0 ? Size.X / viewBox.Size.X : 1,
+					viewBox.Size.Y > 0 ? Size.Y / viewBox.Size.Y : 1);
+			var previous = geometry;
+			geometry = geometry.Transform(m);
+			previous.Dispose();
+		}
+
+		return geometry;
 	}
 
 	/// <remarks>This does NOT take the clipping into account.</remarks>
