@@ -1103,7 +1103,7 @@ public partial class ListViewBaseTests
 		await runScenario(async () => { await TestServices.KeyboardHelper.Tab(); }, async () => { await TestServices.KeyboardHelper.ShiftTab(); }, firstFocusableChild, lastFocusableChild);
 
 		Log.Comment("Run Scenario with Down/Up.");
-		// UNO TODO: the C++ test expects firstFocusableChild for Up. WinUI 3 with real keys lands on the nearer lastFocusableChild,
+		// UNO TODO: the upstream test expects firstFocusableChild for Up. WinUI 3 with real keys lands on the nearer lastFocusableChild,
 		// the XY candidate, with the same layout and steps (sandbox key probe, focusChildren.ofSelected).
 		await runScenario(async () => { await TestServices.KeyboardHelper.Down(); }, async () => { await TestServices.KeyboardHelper.Up(); }, firstFocusableChild, lastFocusableChild);
 
@@ -1112,14 +1112,17 @@ public partial class ListViewBaseTests
 		await TestServices.WindowHelper.WaitForIdle();
 
 		Log.Comment("Run Scenario with Right/Left.");
-		await runScenario(async () => { await TestServices.KeyboardHelper.Right(); }, async () => { await TestServices.KeyboardHelper.Left(); }, firstFocusableChild, firstFocusableChild);
+		// UNO TODO: the upstream test expects firstFocusableChild. WinUI 3 with real keys lands on the XY candidate
+		// lastFocusableChild both ways (sandbox key probe, horizontal.right/left).
+		await runScenario(async () => { await TestServices.KeyboardHelper.Right(); }, async () => { await TestServices.KeyboardHelper.Left(); }, lastFocusableChild, lastFocusableChild);
 
 		// The next scenario requires us to be in RTL.
 		UIExecutor.Execute(() => { root.FlowDirection = FlowDirection.RightToLeft; });
 		await TestServices.WindowHelper.WaitForIdle();
 
 		Log.Comment("Run Scenario with Left/Right (RTL-case).");
-		await runScenario(async () => { await TestServices.KeyboardHelper.Left(); }, async () => { await TestServices.KeyboardHelper.Right(); }, firstFocusableChild, firstFocusableChild);
+		// UNO TODO: as above (sandbox key probe, rtl.left/right).
+		await runScenario(async () => { await TestServices.KeyboardHelper.Left(); }, async () => { await TestServices.KeyboardHelper.Right(); }, lastFocusableChild, lastFocusableChild);
 	}
 
 
