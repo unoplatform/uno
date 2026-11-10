@@ -9,12 +9,14 @@ using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Xaml.Core.Scaling;
 using Windows.Foundation;
 
 namespace Uno.UI.Xaml.Core;
 
 // TODO Uno: The input pane, sticky app bar, popup and caret handling of the source are not ported.
-// Global bounds are in logical pixels, so its conversions to physical pixels are not needed either.
+// Global bounds are in logical pixels, so its conversions to physical pixels are not needed either,
+// except for the innermost scroller sizes, see GetInnermostScrollableScrollerWidthAndHeight.
 internal static class BringIntoViewHandler
 {
 	private const float ExtraPixelsForBringIntoView = 20;
@@ -62,6 +64,12 @@ internal static class BringIntoViewHandler
 				if (horizontalContentScrollable || verticalContentScrollable)
 				{
 					var rectCurrentScrollerGlobal = GetScrollerGlobalBounds(presenter);
+
+					// WinUI leaves these sizes in DIPs but compares them with the focused rect in physical pixels,
+					// so above 100% scale the padding gets dropped earlier. Uno works in DIPs, so divide to match.
+					var scale = RootScale.GetRasterizationScaleForElement(presenter);
+					rectCurrentScrollerGlobal.Width /= scale;
+					rectCurrentScrollerGlobal.Height /= scale;
 
 					if (!horizontalFound && horizontalContentScrollable)
 					{
