@@ -135,9 +135,21 @@ public partial class ShapeVisual
 	{
 		localBounds = default;
 
-		if (_shapes is not { Count: > 0 } shapes)
+		if (_shapes is not { Count: > 0 })
 		{
 			return ShadowState is null;
+		}
+
+		return base.TryGetLocalContentBounds(out localBounds);
+	}
+
+	private protected override bool TryGetPaintedBounds(out Rect bounds)
+	{
+		bounds = default;
+
+		if (_shapes is not { Count: > 0 } shapes)
+		{
+			return true;
 		}
 
 		var any = false;
@@ -181,12 +193,65 @@ public partial class ShapeVisual
 				sy * acc.Height);
 		}
 
-		if (ShadowState is not null)
+		bounds = acc;
+		return true;
+	}
+
+	private protected override bool TryBuildPaintedGeometry(out IGeometry? geometry)
+	{
+		geometry = null;
+
+		if (_shapes is not { Count: > 0 } shapes)
 		{
-			return TryGetShadowSilhouetteBounds(acc, out localBounds);
+			return true;
 		}
 
-		localBounds = acc;
+		IGeometry? painted = null;
+		foreach (var shape in shapes)
+		{
+			if (!shape.CanPaint())
+			{
+				continue;
+			}
+
+			// Only sprite shapes describe what they paint; for anything else the bounds are used.
+			if (shape is not CompositionSpriteShape sprite || sprite.BuildRenderGeometry() is not { } shapeGeometry)
+			{
+				painted?.Dispose();
+				return false;
+			}
+
+			if (sprite.GetRenderTransform() is { IsIdentity: false } shapeTransform)
+			{
+				var untransformed = shapeGeometry;
+				shapeGeometry = shapeGeometry.Transform(shapeTransform);
+				untransformed.Dispose();
+			}
+
+			if (painted is null)
+			{
+				painted = shapeGeometry;
+			}
+			else
+			{
+				var union = painted.Combine(shapeGeometry, GeometryCombineMode.Union);
+				painted.Dispose();
+				shapeGeometry.Dispose();
+				painted = union;
+			}
+		}
+
+		// Paint applies the ViewBox as a translate-then-scale before the shapes.
+		if (painted is not null && ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
+		{
+			var m = Matrix3x2.CreateTranslation(-viewBox.Offset.X, -viewBox.Offset.Y)
+				* Matrix3x2.CreateScale(Size.X / viewBox.Size.X, Size.Y / viewBox.Size.Y);
+			var untransformed = painted;
+			painted = painted.Transform(m);
+			untransformed.Dispose();
+		}
+
+		geometry = painted;
 		return true;
 	}
 

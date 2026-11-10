@@ -187,12 +187,12 @@ namespace Microsoft.UI.Composition
 
 			IGeometry? result = null;
 
-			if (FillBrush is not null && _fillGeometryWithTransformations is { } fillGeometryWithTransformations)
+			if ((FillBrush?.CanPaint() ?? false) && _fillGeometryWithTransformations is { } fillGeometryWithTransformations)
 			{
 				result = GetTrimmedFilledGeometry(fillGeometryWithTransformations, Geometry);
 			}
 
-			if (StrokeBrush is not null && StrokeThickness > 0)
+			if ((StrokeBrush?.CanPaint() ?? false) && StrokeThickness > 0)
 			{
 				var strokeGeometry = GetTrimmedStrokeGeometry(geometryWithTransformations);
 				if (result is null)
