@@ -18,7 +18,8 @@ namespace Microsoft.UI.Xaml
 
 		public T FindFirstParent<T>(bool includeCurrent) where T : class
 		{
-			var view = includeCurrent ? (DependencyObject)this : this.Parent;
+			// Not Parent: it hides an items host panel, which would end the walk at an item container.
+			var view = includeCurrent ? (DependencyObject)this : InheritanceParent;
 			while (view != null)
 			{
 				var typed = view as T;
