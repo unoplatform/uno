@@ -442,7 +442,8 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 	//     RRETURN(hr);
 	// }
 
-	private void GetModernItemsControlChildrenChildrenHelper(IList<ItemAutomationPeer> pNewChildrenCollection)
+	// Uno: containers receives the realized container of each added peer, as a duplicate item maps to one peer but several containers.
+	private void GetModernItemsControlChildrenChildrenHelper(IList<ItemAutomationPeer> pNewChildrenCollection, IList<UIElement>? containers = null)
 	{
 		if (Owner is not ItemsControl owner || owner.ItemsPanelRoot is not ModernCollectionBasePanel modernPanel)
 		{
@@ -463,6 +464,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 				{
 					containerPeer.EventsSource = itemPeer;
 					pNewChildrenCollection.Add(itemPeer);
+					containers?.Add(itemContainer);
 				}
 			}
 		}
@@ -589,7 +591,8 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 					if (spModernPanel != null)
 					{
 						// Modern Panel without grouping (Virtualizing)
-						GetModernItemsControlChildrenChildrenHelper(spNewChildrenCollection);
+						var realizedContainers = new List<UIElement>();
+						GetModernItemsControlChildrenChildrenHelper(spNewChildrenCollection, realizedContainers);
 
 						int nItems = spNewChildrenCollection.Count;
 						for (int idx = 0; idx < nItems; idx++)
@@ -597,7 +600,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 							var spItemAP = spNewChildrenCollection[idx];
 							if (spItemAP != null)
 							{
-								AddChild(spItemAP, spItemAP.GetContainer());
+								AddChild(spItemAP, realizedContainers[idx]);
 							}
 						}
 					}
