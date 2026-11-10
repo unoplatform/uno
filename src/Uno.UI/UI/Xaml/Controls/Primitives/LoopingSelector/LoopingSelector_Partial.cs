@@ -473,7 +473,19 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			if (!_isWithinScrollChange && !_isWithinArrangeOverride)
 			{
-				Balance(false /* isOnSnapPoint */);
+				// UNO: like an intermediate ViewChanged, leave the selection to the final ViewChanged.
+				// Committing it mid-animation lets a key press start the next scroll from a moving offset.
+				var prevSkip = _skipSelectionChangeUntilFinalViewChanged;
+				_skipSelectionChangeUntilFinalViewChanged = true;
+				try
+				{
+					Balance(false /* isOnSnapPoint */);
+				}
+				finally
+				{
+					_skipSelectionChangeUntilFinalViewChanged = prevSkip;
+				}
+
 				// The Focus transition doesn't occur sometimes when flicking
 				// on one ScrollViewer, than another before the first flick completes.
 				// This is a possible ScrollViewer bug. Any time a manipulation
