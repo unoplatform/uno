@@ -377,6 +377,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		InvalidateParentChildrenPicture(false);
 		// Own content feeds ancestor silhouettes; own caches are gated on PaintDirty directly.
 		InvalidateParentShadowCaches(includeSelf: false);
+		OnPaintInvalidated();
+	}
+
+	/// <summary>For caches derived from what this visual paints, which <see cref="InvalidatePaint"/> makes stale.</summary>
+	private protected virtual void OnPaintInvalidated()
+	{
 	}
 
 	/// <summary>

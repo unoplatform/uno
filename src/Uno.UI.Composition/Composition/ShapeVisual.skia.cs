@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using Uno.Extensions;
 using Uno.UI.Composition;
 using Windows.Foundation;
 
@@ -29,14 +30,11 @@ public partial class ShapeVisual
 
 		// TODO: ViewBox.Stretch, ViewBox.HorizontalAlignmentRatio and ViewBox.VerticalAlignmentRatio
 		// Scoped to the shapes: repainting every frame paints straight into the session the children draw in next.
-		var viewBox = ViewBox;
-		if (viewBox is not null)
+		var viewBoxMatrix = GetViewBoxMatrix();
+		if (viewBoxMatrix is { } m)
 		{
 			session.Session.Save();
-			session.Session.Scale(
-				viewBox.Size.X > 0 ? Size.X / viewBox.Size.X : 1,
-				viewBox.Size.Y > 0 ? Size.Y / viewBox.Size.Y : 1);
-			session.Session.Translate(-viewBox.Offset.X, -viewBox.Offset.Y); // translate before scaling
+			session.Session.Concat(new Matrix4x4(m));
 		}
 
 		if (_shapes is { Count: not 0 } shapes)
@@ -47,7 +45,7 @@ public partial class ShapeVisual
 			}
 		}
 
-		if (viewBox is not null)
+		if (viewBoxMatrix is not null)
 		{
 			session.Session.Restore();
 		}
@@ -169,16 +167,9 @@ public partial class ShapeVisual
 			return true;
 		}
 
-		// Paint applies the ViewBox as a translate-then-scale (see Paint); the bounds follow it.
-		if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
+		if (GetViewBoxMatrix() is { } viewBoxMatrix)
 		{
-			var sx = Size.X / viewBox.Size.X;
-			var sy = Size.Y / viewBox.Size.Y;
-			acc = new Rect(
-				sx * (acc.X - viewBox.Offset.X),
-				sy * (acc.Y - viewBox.Offset.Y),
-				sx * acc.Width,
-				sy * acc.Height);
+			acc = acc.Transform(viewBoxMatrix);
 		}
 
 		if (ShadowState is not null)
@@ -234,11 +225,44 @@ public partial class ShapeVisual
 		return true;
 	}
 
-	// Past these, the boolean ops cost more per frame than a rectangular cut-out of a native element is worth.
+	// Past these, the boolean ops cost more than cutting the whole clip out of a native element is worth.
 	private const int MaxPaintedGeometryShapes = 16;
 	private const int MaxPaintedGeometrySegments = 1024;
 
+	// The last TryGetPaintedGeometry answer, kept until the next paint invalidation: it is asked every frame.
+	private bool _hasPaintedGeometry;
+	private bool _isPaintedGeometryBounded;
+	private IGeometry? _paintedGeometry;
+
 	internal override bool TryGetPaintedGeometry(out IGeometry? painted)
+	{
+		if (!_hasPaintedGeometry)
+		{
+			_isPaintedGeometryBounded = TryBuildPaintedGeometry(out _paintedGeometry);
+			_hasPaintedGeometry = true;
+		}
+
+		painted = _paintedGeometry;
+		painted?.AddRef();
+		return _isPaintedGeometryBounded;
+	}
+
+	private protected override void OnPaintInvalidated() => ReleasePaintedGeometry();
+
+	private protected override void DisposeInternal()
+	{
+		ReleasePaintedGeometry();
+		base.DisposeInternal();
+	}
+
+	private void ReleasePaintedGeometry()
+	{
+		_paintedGeometry?.Release();
+		_paintedGeometry = null;
+		_hasPaintedGeometry = false;
+	}
+
+	private bool TryBuildPaintedGeometry(out IGeometry? painted)
 	{
 		painted = null;
 		if (_shapes is not { Count: > 0 } shapes || Size.X == 0 || Size.Y == 0)
@@ -297,26 +321,30 @@ public partial class ShapeVisual
 			return null;
 		}
 
-		if (sprite.GetRenderTransform() is { IsIdentity: false } shapeTransform)
+		var transform = sprite.GetRenderTransform();
+		if (GetViewBoxMatrix() is { } viewBoxMatrix)
 		{
-			var untransformed = geometry;
-			geometry = geometry.Transform(shapeTransform);
-			untransformed.Dispose();
+			transform *= viewBoxMatrix;
 		}
 
-		if (ViewBox is { } viewBox)
+		if (transform.IsIdentity)
 		{
-			var m = Matrix3x2.CreateTranslation(-viewBox.Offset.X, -viewBox.Offset.Y)
+			return geometry;
+		}
+
+		var transformed = geometry.Transform(transform);
+		geometry.Release();
+		return transformed;
+	}
+
+	// The ViewBox maps its Offset to the origin, then scales its Size to this visual's (an empty axis isn't scaled).
+	private Matrix3x2? GetViewBoxMatrix()
+		=> ViewBox is { } viewBox
+			? Matrix3x2.CreateTranslation(-viewBox.Offset.X, -viewBox.Offset.Y)
 				* Matrix3x2.CreateScale(
 					viewBox.Size.X > 0 ? Size.X / viewBox.Size.X : 1,
-					viewBox.Size.Y > 0 ? Size.Y / viewBox.Size.Y : 1);
-			var previous = geometry;
-			geometry = geometry.Transform(m);
-			previous.Dispose();
-		}
-
-		return geometry;
-	}
+					viewBox.Size.Y > 0 ? Size.Y / viewBox.Size.Y : 1)
+			: null;
 
 	/// <remarks>This does NOT take the clipping into account.</remarks>
 	internal override bool HitTest(Point point)
