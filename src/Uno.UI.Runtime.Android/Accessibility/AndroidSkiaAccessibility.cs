@@ -195,13 +195,14 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 		_helper?.ClearAdapter();
 		_helper = null;
 
+		// Removals aren't routed without a helper, so the next Configure starts over from the current tree.
+		ReleaseTreeState();
+
 		// Clear batched state so a posted flush cannot target a replacement helper.
-		_pendingDirtyHandles.Clear();
 		_pendingInvalidationHandles.Clear();
 		_flushingInvalidationHandles.Clear();
 		_pendingInvalidationVirtualIds.Clear();
 		_flushingInvalidationVirtualIds.Clear();
-		_pendingScrollSubscriptionRoots.Clear();
 		_eventLog.Clear();
 		_recordEvents = false;
 		_invalidationFlushScheduled = false;

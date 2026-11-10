@@ -231,6 +231,153 @@ public class Given_ApplicationActivity
 		Assert.IsFalse(firstPresent!.Value.Partial, "The first frame on the recreated render image repainted only its damage region, leaving the rest of the window blank.");
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("Finishes and reopens the activity through reflection, which NativeAOT trims away.")]
+#endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26212")]
+	public async Task When_Finished_And_Reopened_Then_Window_Keeps_Its_Host_And_Presents()
+	{
+		var border = new Microsoft.UI.Xaml.Controls.Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red),
+		};
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(border);
+		var host = GetWindowHost();
+		Assert.IsNotNull(host);
+
+		await FinishAndReopen();
+
+		Assert.AreSame(host, GetWindowHost(), "The window outlives its activity, so it must keep its host.");
+
+		var target = (Microsoft.UI.Xaml.Media.CompositionTarget)border.Visual.CompositionTarget!;
+		var presented = 0;
+		EventHandler<Microsoft.UI.Xaml.Media.FramePresentedInfo> onPresented = (_, _) => Interlocked.Increment(ref presented);
+		target.FramePresented += onPresented;
+		try
+		{
+			border.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Blue);
+			await TestServices.WindowHelper.WaitFor(() => Volatile.Read(ref presented) > 0, timeoutMS: 5000, message: "no frame was presented after the app was reopened");
+		}
+		finally
+		{
+			target.FramePresented -= onPresented;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("Finishes and reopens the activity through reflection, which NativeAOT trims away.")]
+#endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26212")]
+	public async Task When_Finished_And_Reopened_Then_Frame_Drivers_Tick()
+	{
+		var border = new Microsoft.UI.Xaml.Controls.Border { Width = 100, Height = 100 };
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(border);
+
+		await FinishAndReopen();
+
+		// What a touch fling or a ScrollView's inertia subscribes to: a dropped driver leaves them frozen.
+		var target = (Microsoft.UI.Xaml.Media.CompositionTarget)border.Visual.CompositionTarget!;
+		var ticks = 0;
+		EventHandler<long> driver = (_, _) => ticks++;
+		target.FrameStarting += driver;
+		try
+		{
+			await TestServices.WindowHelper.WaitFor(() => ticks > 1, timeoutMS: 5000, message: "a frame driver subscribed after the app was reopened never ticked");
+		}
+		finally
+		{
+			target.FrameStarting -= driver;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("Finishes and reopens the activity through reflection, which NativeAOT trims away.")]
+#endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26212")]
+	public async Task When_Finished_And_Reopened_Then_Running_Animation_Continues()
+	{
+		var border = new Microsoft.UI.Xaml.Controls.Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red),
+		};
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(border);
+
+		var visual = border.Visual;
+		var animation = visual.Compositor.CreateScalarKeyFrameAnimation();
+		animation.InsertKeyFrame(0, 1);
+		animation.InsertKeyFrame(1, 0.1f);
+		animation.Duration = TimeSpan.FromSeconds(1);
+		animation.IterationBehavior = Microsoft.UI.Composition.AnimationIterationBehavior.Forever;
+		visual.StartAnimation(nameof(Microsoft.UI.Composition.Visual.Opacity), animation);
+		try
+		{
+			await FinishAndReopen();
+
+			var opacity = visual.Opacity;
+			await TestServices.WindowHelper.WaitFor(() => visual.Opacity != opacity, timeoutMS: 5000, message: "an animation running when the activity finished did not continue after the app was reopened");
+		}
+		finally
+		{
+			visual.StopAnimation(nameof(Microsoft.UI.Composition.Visual.Opacity));
+		}
+	}
+
+	/// <summary>
+	/// Finishes the activity while the process and the window live on, as Back does on any Android below 12 and on a
+	/// root activity that isn't the launcher one, then opens the app again.
+	/// </summary>
+	[DynamicDependency("GetHostForRoot", "Uno.UI.Hosting.XamlRootMap", "Uno.UI")]
+	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("get_Wrapper", "Uno.UI.Runtime.Android.ApplicationActivity", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("get_CurrentActivity", "Uno.UI.Xaml.Controls.NativeWindowWrapper", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("_awaitingFirstFrame", "Uno.UI.Xaml.Controls.NativeWindowWrapper", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("Finish", "Android.App.Activity", "Mono.Android")]
+	[DynamicDependency("get_IsDestroyed", "Android.App.Activity", "Mono.Android")]
+	[DynamicDependency("get_ApplicationContext", "Android.Content.ContextWrapper", "Mono.Android")]
+	[DynamicDependency("get_PackageManager", "Android.Content.ContextWrapper", "Mono.Android")]
+	[DynamicDependency("get_PackageName", "Android.Content.ContextWrapper", "Mono.Android")]
+	[DynamicDependency("StartActivity(Android.Content.Intent)", "Android.Content.ContextWrapper", "Mono.Android")]
+	[DynamicDependency("GetLaunchIntentForPackage", "Android.Content.PM.PackageManager", "Mono.Android")]
+	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "These assemblies only exist on Android, the only platform this helper runs on.")]
+	private static async Task FinishAndReopen()
+	{
+		var original = GetWindowActivity();
+		Assert.IsNotNull(original);
+		var wrapper = GetMember(original, "Wrapper");
+		var context = GetMember(original, "ApplicationContext");
+		var packageManager = GetMember(original, "PackageManager");
+		var launchIntent = packageManager.GetType()
+			.GetMethod("GetLaunchIntentForPackage", new[] { typeof(string) })!
+			.Invoke(packageManager, new[] { GetMember(original, "PackageName") });
+		Assert.IsNotNull(launchIntent);
+
+		original.GetType().GetMethod("Finish", Type.EmptyTypes)!.Invoke(original, null);
+
+		// A successor started before this completes would take the window over instead of finding it without an activity.
+		await TestServices.WindowHelper.WaitFor(() => GetMember(original, "IsDestroyed") is true, timeoutMS: 15000, message: "the activity should be destroyed");
+
+		context.GetType().GetMethod("StartActivity", new[] { launchIntent.GetType() })!.Invoke(context, new[] { launchIntent });
+
+		await TestServices.WindowHelper.WaitFor(() => !ReferenceEquals(GetMember(wrapper, "CurrentActivity"), original), timeoutMS: 15000, message: "the app should reopen");
+		await TestServices.WindowHelper.WaitFor(() => GetField(wrapper, "_awaitingFirstFrame") is 0, timeoutMS: 15000, message: "the reopened window should present its first frame");
+	}
+
 	private static object GetMember(object instance, string name)
 		=> instance.GetType()
 			.GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
@@ -245,18 +392,18 @@ public class Given_ApplicationActivity
 	// The runtime tests don't reference Mono.Android or the Android host, hence the reflection.
 	private static object GetWindowActivity()
 	{
-		if (TestServices.WindowHelper.XamlRoot is not { } xamlRoot)
-		{
-			return null;
-		}
-
-		var host = typeof(Microsoft.UI.Xaml.XamlRoot).Assembly.GetType("Uno.UI.Hosting.XamlRootMap")
-			?.GetMethod("GetHostForRoot", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public)
-			?.Invoke(null, new object[] { xamlRoot });
+		var host = GetWindowHost();
 
 		return host?.GetType()
 			.GetProperty("Activity", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
 			?.GetValue(host);
 	}
+
+	private static object GetWindowHost()
+		=> TestServices.WindowHelper.XamlRoot is { } xamlRoot
+			? typeof(Microsoft.UI.Xaml.XamlRoot).Assembly.GetType("Uno.UI.Hosting.XamlRootMap")
+				?.GetMethod("GetHostForRoot", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public)
+				?.Invoke(null, new object[] { xamlRoot })
+			: null;
 }
 #endif

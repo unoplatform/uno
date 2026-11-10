@@ -457,7 +457,8 @@ namespace Microsoft.UI.Xaml
 
 
 			// Initialize all windows that have been created before the application was initialized.
-			foreach (var window in ApplicationHelper.Windows)
+			// Snapshot: initializing a hosted ALC window removes it from ApplicationHelper.Windows.
+			foreach (var window in ApplicationHelper.WindowsInternal.ToArray())
 			{
 				window.Initialize();
 			}

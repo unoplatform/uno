@@ -257,7 +257,7 @@ To suppress it:
 
 This application head references packages that ship their implementation under `uno-runtime/` — such as `Uno.WinRT` and `Uno.Foundation` — but no Uno Platform runtime host package was detected (each `Uno.WinUI.Runtime.*` package declares itself by setting the `UnoHasRuntimeHost` MSBuild property), so the reference assemblies would be deployed and every call into them would throw `NotImplementedException` at runtime.
 
-The usual cause is an explicit reference to a `Uno.WinUI.Runtime.Skia.*` host package, which predates the 7.0 rename and does not declare the runtime host. Those ids receive no 7.0 builds, so replace each one with its renamed `Uno.WinUI.Runtime.*` id (`Uno.WinUI.Runtime.Skia.Headless` becomes `Uno.WinUI.Runtime.Headless`; see the [Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7) for the full mapping), then align every `Uno.*` package version and restore again.
+The usual cause is an explicit reference to a `Uno.WinUI.Runtime.Skia.*` host package, which predates the 7.0 rename and does not declare the runtime host. Those ids receive no 7.0 builds, so replace each one with its renamed `Uno.WinUI.Runtime.*` id (`Uno.WinUI.Runtime.Skia.Headless` becomes `Uno.WinUI.Runtime.Headless`; see the [Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7.Packages#unowinuiruntimeskia-host-packages-renamed-to-unowinuiruntime) for the full mapping), then align every `Uno.*` package version and restore again.
 
 When such an older runtime host is detected, this is reported as an error. Otherwise it is a warning, since an executable project that is not an application, such as a test project, can legitimately run against the reference assemblies.
 
@@ -293,7 +293,7 @@ Uno Platform 7.0 removed the `*.Apple.cs`, `*.iOSmacOS.cs`, and `*.reference.cs`
 | `*.iOSmacOS.cs` | `*.iOS.cs`. It named the native macOS target, which was removed in 7.0 |
 | `*.reference.cs` | Delete the file, or fold it into a `*.crossruntime.cs` file. It was gated on a build flavor that an application never selected, so it compiled for no target framework |
 
-`*.skia.cs` is still recognized, but it now compiles for every target framework except the WinAppSDK one, not only for `netX.0-desktop`. See [Platform targeting in multi-targeted libraries](xref:Uno.Development.MigratingToUno7) for the other changes.
+`*.skia.cs` is still recognized, but it now compiles for every target framework except the WinAppSDK one, not only for `netX.0-desktop`. See [Platform targeting in multi-targeted libraries](xref:Uno.Development.MigratingToUno7.Libraries#platform-targeting-in-multi-targeted-libraries) for the other changes.
 
 ### UNOB0029: Uno Platform application projects must use the Uno.Sdk
 
@@ -301,7 +301,7 @@ Starting with Uno Platform 7.0, an application must be built with the [`Uno.Sdk`
 
 To fix this, migrate your application to the Uno.Sdk by following the [Migrating Projects to Single Project](xref:Uno.Development.MigratingToSingleProject) guide.
 
-This diagnostic is only raised for application projects (`Exe` and `WinExe`). Class libraries that reference the `Uno.WinUI` package directly are not affected, and neither are Windows App SDK heads or test projects (`IsTestProject` set to `true`, which `Microsoft.NET.Test.Sdk` and the common test runners do for you).
+This diagnostic is only raised for application projects (`Exe` and `WinExe`). Class libraries that reference the `Uno.WinUI` package directly are not affected, and neither are Windows App SDK heads or test projects (`IsTestProject` or `IsTestingPlatformApplication` set to `true`, which `Microsoft.NET.Test.Sdk`, `MSTest.Sdk` and the common test runners do for you).
 
 If your project is an executable that merely links `Uno.WinUI` as a library — a console harness or a benchmark runner, for instance — disable the check:
 
@@ -345,7 +345,7 @@ To stop the Uno.Sdk from adding it at all, set `UnoDisableHotTesting` to `true`.
 
 ### UNOB0030: The SkiaRenderer Uno Feature is ignored in a library
 
-Starting with Uno Platform 7.0, the renderer is chosen by the app, not by its libraries. In an app, the legacy `SkiaRenderer` feature is still mapped to `Skia`. In a library it is ignored, so the library doesn't make SkiaSharp a dependency of every app that uses it, including apps that render with WebGPU only.
+Starting with Uno Platform 7.0, the renderer is chosen by the app, not by its libraries. On the Uno Platform targets of an app, the legacy `SkiaRenderer` feature is still mapped to `Skia`. In a library it is ignored, so the library doesn't make SkiaSharp a dependency of every app that uses it, including apps that render with WebGPU only.
 
 To fix this:
 
@@ -380,7 +380,21 @@ To fix this, set `OutputType` in the project file or in `Directory.Build.props`,
 
 Uno Platform 7.0 removed the Mac Catalyst target framework, and the native macOS target was removed before it; macOS is served by the `desktop` target framework instead. Projects created with older templates can still contain a `Platforms/MacCatalyst/` or `Platforms/MacOS/` folder (or a `MacCatalyst/` or `MacOS/` folder at the project root). The Uno.Sdk leaves their files out of every target framework and reports this warning, since none of them can use that code.
 
-To fix this, move anything still needed to `Platforms/Desktop/`, and delete the folder. Code that should only run on macOS goes in an `OperatingSystem.IsMacOS()` check there. See [Mac Catalyst is removed](xref:Uno.Development.MigratingToUno7#mac-catalyst-is-removed) for the other migration steps.
+To fix this, move anything still needed to `Platforms/Desktop/`, and delete the folder. Code that should only run on macOS goes in an `OperatingSystem.IsMacOS()` check there. See [Mac Catalyst is removed](xref:Uno.Development.MigratingToUno7.ProjectSetup#mac-catalyst-is-removed) for the other migration steps.
+
+### UNOB0034: Lottie XAML on WinAppSDK needs the CommunityToolkit.WinUI.Lottie package
+
+`AnimatedVisualPlayer`, `LottieVisualSource` and `ThemableLottieVisualSource` are built into Uno Platform, so the Uno Platform targets need no package for them. On Windows (WinAppSDK), `LottieVisualSource` and `ThemableLottieVisualSource` come from the [CommunityToolkit.WinUI.Lottie](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie) NuGet package instead, which the Uno.Sdk doesn't reference. The Uno.Sdk reports this warning on the Windows target for each XAML file that declares the `using:CommunityToolkit.WinUI.Lottie` namespace while no reference to that package resolves. Without it, the build only fails with the XAML compiler's `WMC0001: Unknown type 'LottieVisualSource'`.
+
+To fix this, reference the package for the Windows target framework:
+
+```xml
+<ItemGroup Condition="$(TargetFramework.Contains('windows10'))">
+    <PackageReference Include="CommunityToolkit.WinUI.Lottie" />
+</ItemGroup>
+```
+
+With [central package management](https://learn.microsoft.com/nuget/consume-packages/central-package-management), add its version to `Directory.Packages.props`, for example `<PackageVersion Include="CommunityToolkit.WinUI.Lottie" Version="8.2.250604" />`. Otherwise, set the `Version` on the `PackageReference`.
 
 ### UNOB0035: The Prism Uno Feature is no longer supported
 
@@ -389,6 +403,15 @@ Starting with Uno Platform 7.0, the `Uno.Sdk` no longer references [Prism](https
 The Prism packages published so far (`Prism.Uno.WinUI` 9.0.537 and earlier) were built against Uno Platform 5 and don't build with Uno Platform 7.0.
 
 To fix this, remove `Prism` from `UnoFeatures`, and reference Prism's packages directly, using a Prism release built for Uno Platform 7.0: add a `PackageReference` to `Prism.DryIoc.Uno.WinUI` in an app, or to `Prism.Uno.WinUI` in a library, and to `Prism.Uno.WinUI.Markup` if the project uses C# Markup. When the solution uses Central Package Management, as the Uno Platform templates do, the version goes in `Directory.Packages.props`. The `PrismVersion` property no longer has any effect and can be removed.
+
+### UNOB0036: MauiEmbedding now selects Uno.Maui.Embedding
+
+The `MauiEmbedding` Uno Feature used to select the native embedding of MAUI controls through Uno.Extensions (`Uno.Extensions.Maui.*`). That feature is now named `MauiNativeEmbedding`, and `MauiEmbedding` selects `Uno.Maui.Embedding` and `Uno.Maui.Handlers`. The build reports this warning when `MauiEmbedding` is listed without `MauiNativeEmbedding` and either:
+
+- the project references an `Uno.Extensions.Maui` package, or
+- the target framework is Android, iOS, Mac Catalyst or Windows App SDK. `Uno.Maui.Embedding` embeds MAUI views on the desktop and WebAssembly targets only, while the native embedding also ran on these targets. Apps created from a template that lists `MauiEmbedding` for all targets get the warning on these targets.
+
+To fix this, if the project relies on the native embedding of Uno.Extensions, replace `MauiEmbedding` with `MauiNativeEmbedding` in `UnoFeatures`. If it intends to use `Uno.Maui.Embedding`, remove the `Uno.Extensions.Maui` package references. On the Android, iOS, Mac Catalyst and Windows App SDK targets, an app that keeps these targets but does not need MAUI views on them can add `UNOB0036` to `NoWarn`.
 
 ## Compiler Errors
 
@@ -484,7 +507,29 @@ Uno Platform 7.0 names every conditional XAML prefix after a target framework, a
 | `not_mux` | Remove it with the markup using it. It dates from UWP support and never applied |
 | `xamarin`, `legacy` listed in `mc:Ignorable` | Drop the prefix from the markup using it |
 
-The diagnostic is raised on the `xmlns` declaration. The same names remain valid as ordinary namespace aliases, so a declaration using the `using:` form — for instance `xmlns:skia="using:SkiaSharp.Views.Windows"` or `xmlns:legacy="using:Uno.UI.Controls.Legacy"` — is not reported. `legacy` is only reported when it is listed in `mc:Ignorable`, which is where it used to act as a condition. See [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7#removed-xaml-prefixes).
+The diagnostic is raised on the `xmlns` declaration. The same names remain valid as ordinary namespace aliases, so a declaration using the `using:` form — for instance `xmlns:skia="using:SkiaSharp.Views.Windows"` or `xmlns:legacy="using:Uno.UI.Controls.Legacy"` — is not reported. `legacy` is only reported when it is listed in `mc:Ignorable`, which is where it used to act as a condition. See [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7.Libraries#removed-xaml-prefixes).
+
+### UXAML0008
+
+**An `[assembly: ApiExtension]` registration names a type the application cannot access**
+
+The application registers the `[assembly: ApiExtension]` declarations of every assembly it references, in its own generated code. A registration whose extended, extension or owner type is not accessible from the application, typically because it is `internal`, cannot be emitted there, so it is skipped and reported instead of failing the build with `CS0122`.
+
+The warning is raised in the application, but the fix belongs in the library that declares the attribute: make the types it names `public`.
+
+```diff
+  [assembly: ApiExtension(typeof(IMyExtension), typeof(MyExtension))]
+
+- internal interface IMyExtension
++ public interface IMyExtension
+  {
+  }
+
+- internal sealed class MyExtension : IMyExtension
++ public sealed class MyExtension : IMyExtension
+```
+
+Until the library is updated, the skipped extension is not registered, so `ApiExtensibility.CreateInstance` finds no implementation for it.
 
 ## VS Code Errors
 

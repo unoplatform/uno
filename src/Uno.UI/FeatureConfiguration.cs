@@ -407,7 +407,7 @@ namespace Uno.UI
 			/// Enables the platform-native developer tools for the <see cref="WebView2"/> control.
 			/// </summary>
 			/// <remarks>
-			/// <para>Defaults to <c>true</c> in DEBUG builds and <c>false</c> in RELEASE builds.</para>
+			/// <para>Defaults to <c>false</c>.</para>
 			/// <para>Per-platform behavior:</para>
 			/// <list type="bullet">
 			///   <item><description>Windows / Linux (Skia): toggles Chromium DevTools (right-click "Inspect" / F12).</description></item>

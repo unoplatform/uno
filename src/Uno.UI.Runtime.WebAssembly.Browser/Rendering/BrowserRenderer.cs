@@ -105,8 +105,23 @@ internal partial class BrowserRenderer
 		}
 
 		_pendingInvalidate = true;
-		_nativeInstance ??= NativeMethods.CreateInstance(this, WebAssemblyWindowWrapper.Instance.CanvasId);
-		NativeMethods.Invalidate(_nativeInstance);
+		ScheduleFrame();
+	}
+
+	// _pendingInvalidate holds back every later request until a frame clears it, so a frame that could not be scheduled
+	// must release it, or rendering stops for good.
+	private void ScheduleFrame()
+	{
+		try
+		{
+			_nativeInstance ??= NativeMethods.CreateInstance(this, WebAssemblyWindowWrapper.Instance.CanvasId);
+			NativeMethods.Invalidate(_nativeInstance);
+		}
+		catch
+		{
+			_pendingInvalidate = false;
+			throw;
+		}
 	}
 
 	[JSExport]
@@ -140,15 +155,13 @@ internal partial class BrowserRenderer
 		// the render pump stalls and the splash screen is never removed (#23586).
 		if (_host.RootElement is not { Visual.CompositionTarget: CompositionTarget compositionTarget })
 		{
-			if (_pendingInvalidate && _nativeInstance is not null)
+			if (_pendingInvalidate)
 			{
-				NativeMethods.Invalidate(_nativeInstance);
+				ScheduleFrame();
 			}
 
 			return;
 		}
-
-		_pendingInvalidate = false;
 
 		_renderStopwatch.Restart();
 
@@ -160,7 +173,11 @@ internal partial class BrowserRenderer
 		if (_context is null)
 		{
 			// Async context init not finished yet — re-arm so we render as soon as it's ready (unless it failed).
-			if (!_initFailed && _nativeInstance is not null) { NativeMethods.Invalidate(_nativeInstance); }
+			if (!_initFailed)
+			{
+				_pendingInvalidate = true;
+				ScheduleFrame();
+			}
 			return;
 		}
 
@@ -174,9 +191,12 @@ internal partial class BrowserRenderer
 		{
 			// The GPU is still behind on earlier frames: keep the request and try again on the next frame callback.
 			_pendingInvalidate = true;
-			NativeMethods.Invalidate(_nativeInstance!);
+			ScheduleFrame();
 			return;
 		}
+
+		// Cleared only now, as the frame is delivered: a request made from here on schedules the next one.
+		_pendingInvalidate = false;
 
 		// The context owns the surface/present; the backend (whichever won negotiation) wraps the acquired target.
 		// The renderer is per-window (bound to this window's context), installed on its CompositionTarget each frame.

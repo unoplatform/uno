@@ -175,7 +175,7 @@ namespace Uno.UI.Runtime.AppleUIKit
 		/// </summary>
 		internal Uno.UI.Composition.Drawing.ISwapChain? CreateGraphicsContext()
 			=> Device is { } device && _queue is { } queue
-				? new AppleMetalGraphicsContext(device, queue, () => CurrentDrawable)
+				? new AppleMetalGraphicsContext(device, queue, () => CurrentDrawable, QueueRender)
 				: null;
 
 		public void StopRender()
