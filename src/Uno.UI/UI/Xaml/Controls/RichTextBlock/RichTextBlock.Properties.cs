@@ -14,6 +14,7 @@ using Windows.Foundation;
 using Microsoft.UI.Input;
 using Uno;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Dispatching;
 using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -522,7 +523,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnIsTextTrimmedChanged()
 		{
-			_isTextTrimmedChanged?.Invoke(this, new());
+			// WinUI queues this event, so handlers run after the layout pass that changed the value (#26187).
+			if (_isTextTrimmedChanged is not null)
+			{
+				NativeDispatcher.Main.Enqueue(() => _isTextTrimmedChanged?.Invoke(this, new()));
+			}
 		}
 
 		#endregion

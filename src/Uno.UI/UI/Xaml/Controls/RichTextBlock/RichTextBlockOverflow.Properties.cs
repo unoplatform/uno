@@ -7,6 +7,7 @@
 using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
+using Uno.UI.Dispatching;
 using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -139,14 +140,19 @@ namespace Microsoft.UI.Xaml.Controls
 			remove => _isTextTrimmedChanged -= value;
 		}
 
-		// Sets IsTextTrimmed and raises IsTextTrimmedChanged when the value flips.
+		// Sets IsTextTrimmed and, when the value flips, queues IsTextTrimmedChanged to run after layout
+		// as WinUI does (#26187).
 #pragma warning disable IDE0051 // Called from the Skia layout partial, which the reference build excludes.
 		private void SetIsTextTrimmed(bool value)
 		{
 			if (IsTextTrimmed != value)
 			{
 				IsTextTrimmed = value;
-				_isTextTrimmedChanged?.Invoke(this, new IsTextTrimmedChangedEventArgs());
+
+				if (_isTextTrimmedChanged is not null)
+				{
+					NativeDispatcher.Main.Enqueue(() => _isTextTrimmedChanged?.Invoke(this, new IsTextTrimmedChangedEventArgs()));
+				}
 			}
 		}
 #pragma warning restore IDE0051
