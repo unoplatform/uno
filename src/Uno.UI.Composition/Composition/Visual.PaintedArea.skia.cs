@@ -17,14 +17,10 @@ public partial class Visual
 	private const float NativeClipAntialiasingMargin = 1f;
 
 	/// <summary>
-	/// What a visual paints itself. Null bounds: it can't be bounded more tightly than its clip. Null geometry: the exact
-	/// area isn't known. <see cref="NothingPainted"/>: it paints nothing. The geometry stays owned by the visual.
+	/// What a visual paints itself. Null bounds: it can't be bounded more tightly than its clip; empty bounds: it paints
+	/// nothing. Null geometry: the exact area isn't known. The geometry stays owned by the visual.
 	/// </summary>
 	private readonly record struct PaintedArea(Rect? Bounds, IGeometry? Geometry);
-
-	// Shared and never released: only ever compared by reference. Lazy, as the geometry factory is set up by the host.
-	private static readonly Lazy<IGeometry> _nothingPainted = new(() => GeometryFactory.Current.CreateRectangleGeometry(default));
-	private static IGeometry NothingPainted => _nothingPainted.Value;
 
 	private PaintedArea? _paintedArea;
 	private float _nativeClipCutScale;
@@ -55,14 +51,14 @@ public partial class Visual
 		PaintedArea area;
 		if (!CanPaint())
 		{
-			area = new(default(Rect), NothingPainted);
+			area = new(default(Rect), null);
 		}
 		else if (TryBuildPaintedGeometry(out var geometry))
 		{
 			if (geometry is null or { IsEmpty: true })
 			{
 				geometry?.Release();
-				area = new(default(Rect), NothingPainted);
+				area = new(default(Rect), null);
 			}
 			else
 			{
@@ -101,14 +97,15 @@ public partial class Visual
 	private bool TryGetNativeClipCut(float scale, out IGeometry? cut)
 	{
 		cut = null;
-		if (GetPaintedArea().Geometry is not { } painted)
-		{
-			return false;
-		}
-
-		if (ReferenceEquals(painted, NothingPainted))
+		var area = GetPaintedArea();
+		if (area.Bounds is { } bounds && IsRectEmpty(bounds))
 		{
 			return true;
+		}
+
+		if (area.Geometry is not { } painted)
+		{
+			return false;
 		}
 
 		if (_nativeClipCut is null || _nativeClipCutScale != scale)
@@ -132,10 +129,7 @@ public partial class Visual
 
 	private void InvalidatePaintedArea()
 	{
-		if (_paintedArea?.Geometry is { } geometry && !ReferenceEquals(geometry, NothingPainted))
-		{
-			geometry.Release();
-		}
+		_paintedArea?.Geometry?.Release();
 		_paintedArea = null;
 		_nativeClipCut?.Release();
 		_nativeClipCut = null;
