@@ -37,7 +37,6 @@
 		// a blur immediately followed by a focus is a TextBox-to-TextBox move, and detaching
 		// would needlessly dismiss the soft keyboard (see blur).
 		private static detachGeneration: number = 0;
-		private static isInSelectionChange: boolean;
 		private static acceptsReturn: boolean;
 		private static isComposing: boolean;
 		// Set once the composition changes the text: Gboard marks an existing word as composing (to offer
@@ -51,7 +50,9 @@
 		// The input's value as last synced with the TextBox, either way. A commit the browser applied without an input
 		// event yet leaves the value ahead of it.
 		private static syncedValue: string | null = null;
-		private static isSyncingFromNative: boolean;
+		// Counts the TextBox's writes to the input (text, selection). A notification queued for the UI thread carries
+		// the count it was taken at, so the TextBox can tell it is behind one of them (see getSelectionState).
+		private static pushGeneration: number = 0;
 		private static enterHandledByKeyDown: boolean;
 		private static compositionGeneration: number = 0;
 
@@ -99,57 +100,23 @@
 
 				BrowserInvisibleTextBoxViewExtension.installTrailingClickGuard();
 
-				if (WebAssemblyThreading.isThreadingEnabled()) {
-					document.onselectionchange = () => {
-						const input = document.activeElement;
-
-						if (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) {
-							const restoresSelection = BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange
-								&& BrowserInvisibleTextBoxViewExtension.isAssignedValueCaret(input);
-							BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange = false;
-							if (!restoresSelection) {
-								// Snapshot direction + positions before any later setSelectionRange can flip them.
-								const backward = input.selectionDirection == "backward";
-								const start = backward ? input.selectionEnd : input.selectionStart;
-								const length = backward
-									? input.selectionStart - input.selectionEnd
-									: input.selectionEnd - input.selectionStart;
-								BrowserInvisibleTextBoxViewExtension.enqueue(async () => {
-									BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
-									try {
-										await BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChangedAsync(start, length);
-									}
-									finally {
-										BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
-									}
-								});
-							}
+				document.onselectionchange = () => {
+					const input = document.activeElement;
+					if (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) {
+						const restoresSelection = BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange
+							&& BrowserInvisibleTextBoxViewExtension.isAssignedValueCaret(input);
+						BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange = false;
+						if (restoresSelection) {
+							input.setSelectionRange(BrowserInvisibleTextBoxViewExtension.nextSelectionStart, BrowserInvisibleTextBoxViewExtension.nextSelectionEnd, BrowserInvisibleTextBoxViewExtension.nextSelectionDirection);
+							return;
 						}
-					}
-				} else {
-					document.onselectionchange = () => {
-						let input = document.activeElement;
-						if (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) {
-							BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
-							try {
-								const restoresSelection = BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange
-									&& BrowserInvisibleTextBoxViewExtension.isAssignedValueCaret(input);
-								BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange = false;
-								if (restoresSelection) {
-									input.setSelectionRange(BrowserInvisibleTextBoxViewExtension.nextSelectionStart, BrowserInvisibleTextBoxViewExtension.nextSelectionEnd, BrowserInvisibleTextBoxViewExtension.nextSelectionDirection);
-								}
-								else {
-									if (input.selectionDirection == "backward") {
-										BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionEnd, input.selectionStart - input.selectionEnd);
-									} else {
-										BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionStart, input.selectionEnd - input.selectionStart);
-									}
-								}
-							}
-							finally {
-								// Left set, it would keep every later caret move from reaching the input.
-								BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
-							}
+
+						const [start, length] = BrowserInvisibleTextBoxViewExtension.selectionOf(input);
+						if (WebAssemblyThreading.isThreadingEnabled()) {
+							// Applied later on the UI thread, which reads the selection the input has by then.
+							BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChangedAsync(start, length));
+						} else {
+							BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(start, length);
 						}
 					}
 				}
@@ -162,17 +129,26 @@
 				BrowserInvisibleTextBoxViewExtension.interopQueue.then(work).catch(() => { });
 		}
 
-		// The MT counterpart of runSyncingFromNative: the managed side runs later, so the flag is held across the awaited call.
-		private static enqueueSyncingFromNative(work: () => Promise<any>): void {
-			BrowserInvisibleTextBoxViewExtension.enqueue(async () => {
-				BrowserInvisibleTextBoxViewExtension.isSyncingFromNative = true;
-				try {
-					await work();
-				}
-				finally {
-					BrowserInvisibleTextBoxViewExtension.isSyncingFromNative = false;
-				}
-			});
+		private static selectionOf(input: HTMLInputElement | HTMLTextAreaElement): [number, number] {
+			const backward = input.selectionDirection == "backward";
+			const start = backward ? input.selectionEnd : input.selectionStart;
+			const length = backward ? input.selectionStart - input.selectionEnd : input.selectionEnd - input.selectionStart;
+			return [start, length];
+		}
+
+		// [pushGeneration, start, length] of the focused input, or empty. The UI thread applies the input's
+		// notifications later than the browser sends them, and may have written to the input in between.
+		public static getSelectionState(): number[] {
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (input == null || document.activeElement !== input) {
+				return [];
+			}
+			const [start, length] = BrowserInvisibleTextBoxViewExtension.selectionOf(input);
+			return [BrowserInvisibleTextBoxViewExtension.pushGeneration, start, length];
+		}
+
+		public static getValue(): string {
+			return BrowserInvisibleTextBoxViewExtension.inputElement?.value ?? "";
 		}
 
 		// Assigning the value moves the caret to its end, which the pending restore undoes. Chrome fires no
@@ -274,6 +250,7 @@
 			input.style.top = BrowserInvisibleTextBoxViewExtension.keepsInputOffscreen ? BrowserInvisibleTextBoxViewExtension.offscreenTop : "0px";
 			input.style.left = "0px";
 			input.value = text;
+			BrowserInvisibleTextBoxViewExtension.pushGeneration++;
 
 			input.setAttribute("inputmode", inputMode);
 			input.setAttribute("enterkeyhint", enterKeyHint);
@@ -292,13 +269,11 @@
 					// A replaced input would push its text into the TextBox that now owns the shared input.
 					return;
 				}
-				BrowserInvisibleTextBoxViewExtension.runSyncingFromNative(() => {
-					if (BrowserInvisibleTextBoxViewExtension.isComposing && isActiveComposition()) {
-						BrowserInvisibleTextBoxViewExtension.syncCompositionFromInput(input);
-					} else {
-						BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
-					}
-				});
+				if (BrowserInvisibleTextBoxViewExtension.isComposing && isActiveComposition()) {
+					BrowserInvisibleTextBoxViewExtension.syncCompositionFromInput(input);
+				} else {
+					BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
+				}
 			};
 
 			if (WebAssemblyThreading.isThreadingEnabled()) {
@@ -386,34 +361,32 @@
 				if (!isActiveComposition()) {
 					return;
 				}
-				BrowserInvisibleTextBoxViewExtension.runSyncingFromNative(() => {
-					// Firefox dispatches the commit's input event after compositionend. The committed value still belongs
-					// to the composition: the TextBox ends it with its final text, and RichEditBox keeps one undo step.
-					if (input.value !== BrowserInvisibleTextBoxViewExtension.syncedValue) {
-						BrowserInvisibleTextBoxViewExtension.syncCompositionFromInput(input);
-					}
+				// Firefox dispatches the commit's input event after compositionend. The committed value still belongs
+				// to the composition: the TextBox ends it with its final text, and RichEditBox keeps one undo step.
+				if (input.value !== BrowserInvisibleTextBoxViewExtension.syncedValue) {
+					BrowserInvisibleTextBoxViewExtension.syncCompositionFromInput(input);
+				}
 
-					const wasReported = BrowserInvisibleTextBoxViewExtension.isCompositionReported;
-					const textDiffers = BrowserInvisibleTextBoxViewExtension.pendingText !== null;
-					BrowserInvisibleTextBoxViewExtension.resetComposition();
-					if (wasReported) {
-						const data = ev.data;
-						if (WebAssemblyThreading.isThreadingEnabled()) {
-							BrowserInvisibleTextBoxViewExtension.enqueueSyncingFromNative(() => data.length > 0
-								? BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompletedAsync(data)
-								: BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCanceledAsync());
-						} else if (data.length > 0) {
-							BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(data);
-						} else {
-							BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCanceled();
-						}
+				const wasReported = BrowserInvisibleTextBoxViewExtension.isCompositionReported;
+				const textDiffers = BrowserInvisibleTextBoxViewExtension.pendingText !== null;
+				BrowserInvisibleTextBoxViewExtension.resetComposition();
+				if (wasReported) {
+					const data = ev.data;
+					if (WebAssemblyThreading.isThreadingEnabled()) {
+						BrowserInvisibleTextBoxViewExtension.enqueue(() => data.length > 0
+							? BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompletedAsync(data)
+							: BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCanceledAsync());
+					} else if (data.length > 0) {
+						BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(data);
+					} else {
+						BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCanceled();
 					}
-					if (textDiffers) {
-						// The TextBox re-applies its edits (a TextChanging filter, MaxLength) to the committed value and
-						// pushes the result to the input.
-						BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
-					}
-				});
+				}
+				if (textDiffers) {
+					// The TextBox re-applies its edits (a TextChanging filter, MaxLength) to the committed value and
+					// pushes the result to the input.
+					BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
+				}
 			});
 
 			document.body.appendChild(input);
@@ -445,7 +418,7 @@
 			BrowserInvisibleTextBoxViewExtension.isCompositionReported = true;
 			const cursorPosition = Math.max(0, Math.min(caret - start, text.length));
 			if (WebAssemblyThreading.isThreadingEnabled()) {
-				BrowserInvisibleTextBoxViewExtension.enqueueSyncingFromNative(async () => {
+				BrowserInvisibleTextBoxViewExtension.enqueue(async () => {
 					if (starts) {
 						await BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionStartedAsync();
 					}
@@ -459,17 +432,6 @@
 			}
 		}
 
-		// Marks a TextBox update made in response to the input, whose echo back to the input must not be applied.
-		private static runSyncingFromNative(action: () => void) {
-			const wasSyncing = BrowserInvisibleTextBoxViewExtension.isSyncingFromNative;
-			BrowserInvisibleTextBoxViewExtension.isSyncingFromNative = true;
-			try {
-				action();
-			} finally {
-				BrowserInvisibleTextBoxViewExtension.isSyncingFromNative = wasSyncing;
-			}
-		}
-
 		private static syncCompositionFromInput(input: HTMLInputElement | HTMLTextAreaElement) {
 			// Before the text sync, so the TextBox knows the change belongs to the composition.
 			BrowserInvisibleTextBoxViewExtension.reportComposition(input);
@@ -478,20 +440,11 @@
 
 		private static syncTextFromInput(input: HTMLInputElement | HTMLTextAreaElement) {
 			BrowserInvisibleTextBoxViewExtension.syncedValue = input.value;
-			const backward = input.selectionDirection == "backward";
-			const start = backward ? input.selectionEnd : input.selectionStart;
-			const length = backward ? input.selectionStart - input.selectionEnd : input.selectionEnd - input.selectionStart;
+			const [start, length] = BrowserInvisibleTextBoxViewExtension.selectionOf(input);
 			if (WebAssemblyThreading.isThreadingEnabled()) {
 				const value = input.value;
-				BrowserInvisibleTextBoxViewExtension.enqueueSyncingFromNative(async () => {
-					BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
-					try {
-						await BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChangedAsync(value, start, length);
-					}
-					finally {
-						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
-					}
-				});
+				const generation = BrowserInvisibleTextBoxViewExtension.pushGeneration;
+				BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChangedAsync(value, start, length, generation));
 			} else {
 				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, start, length);
 			}
@@ -804,6 +757,7 @@
 					BrowserInvisibleTextBoxViewExtension.nextSelectionEnd = input.selectionEnd;
 					BrowserInvisibleTextBoxViewExtension.nextSelectionDirection = input.selectionDirection;
 					input.value = text;
+					BrowserInvisibleTextBoxViewExtension.pushGeneration++;
 					BrowserInvisibleTextBoxViewExtension.waitingSelectionValue = input.value;
 					BrowserInvisibleTextBoxViewExtension.syncedValue = input.value;
 				}
@@ -819,6 +773,7 @@
 			start = Math.max(0, Math.min(start, input.value.length));
 			const end = Math.max(start, Math.min(start + length, input.value.length));
 			input.setRangeText(replacement, start, end, "preserve");
+			BrowserInvisibleTextBoxViewExtension.pushGeneration++;
 			BrowserInvisibleTextBoxViewExtension.syncedValue = input.value;
 		}
 
@@ -870,27 +825,26 @@
 			}
 		}
 
-		public static updateSelection(start: number, length: number, direction: "forward" | "backward") {
-			if (!BrowserInvisibleTextBoxViewExtension.isInSelectionChange) {
-				const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+		// syncingFromNative: the TextBox is applying a change the input reported, so this echoes the input's own state.
+		public static updateSelection(start: number, length: number, direction: "forward" | "backward", syncingFromNative: boolean) {
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 
-				// While a composition edits the text, only a caret the user moved elsewhere (a tap) is pushed, which
-				// lets the IME commit the composition. Echoes of the input's own selection would disturb it.
-				if (BrowserInvisibleTextBoxViewExtension.isCompositionReported
-					&& (BrowserInvisibleTextBoxViewExtension.isSyncingFromNative
-						|| (input?.selectionStart === start && input?.selectionEnd === start + length))) {
-					return;
-				}
-
-				// See comment in setText.
-				if (BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange) {
-					BrowserInvisibleTextBoxViewExtension.nextSelectionStart = start;
-					BrowserInvisibleTextBoxViewExtension.nextSelectionEnd = start + length;
-					BrowserInvisibleTextBoxViewExtension.nextSelectionDirection = direction;
-				}
-
-				input?.setSelectionRange(start, start + length, direction);
+			// While a composition edits the text, only a caret the user moved elsewhere (a tap) is pushed, which
+			// lets the IME commit the composition. Echoes of the input's own selection would disturb it.
+			if (BrowserInvisibleTextBoxViewExtension.isCompositionReported
+				&& (syncingFromNative || (input?.selectionStart === start && input?.selectionEnd === start + length))) {
+				return;
 			}
+
+			// See comment in setText.
+			if (BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange) {
+				BrowserInvisibleTextBoxViewExtension.nextSelectionStart = start;
+				BrowserInvisibleTextBoxViewExtension.nextSelectionEnd = start + length;
+				BrowserInvisibleTextBoxViewExtension.nextSelectionDirection = direction;
+			}
+
+			BrowserInvisibleTextBoxViewExtension.pushGeneration++;
+			input?.setSelectionRange(start, start + length, direction);
 		}
 	}
 }

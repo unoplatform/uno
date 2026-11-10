@@ -19,6 +19,11 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	private bool _isNativeInputActive;
 	private bool _suppressSoftwareKeyboard;
 
+	// Set while the TextBox applies a change the input reported, so what it writes back is known to be an echo.
+	private static bool _isSyncingFromNative;
+	// Set while a selection the input reported is applied: pushing it back would only bounce.
+	private static bool _isApplyingNativeSelection;
+
 	public BrowserInvisibleTextBoxViewExtension(TextBoxView view)
 	{
 		_view = view;
@@ -68,8 +73,21 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		}
 	}
 
+	internal static void RunSyncingFromNative(Action action)
+	{
+		_isSyncingFromNative = true;
+		try
+		{
+			RunFromNative(action);
+		}
+		finally
+		{
+			_isSyncingFromNative = false;
+		}
+	}
+
 	[JSExport]
-	private static void OnInputTextChanged(string text, int selectionStart, int selectionLength) => RunFromNative(() =>
+	private static void OnInputTextChanged(string text, int selectionStart, int selectionLength) => RunSyncingFromNative(() =>
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
 		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
@@ -87,8 +105,17 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	});
 
 	[JSExport]
-	private static Task OnInputTextChangedAsync(string text, int selectionStart, int selectionLength)
+	private static Task OnInputTextChangedAsync(string text, int selectionStart, int selectionLength, int generation)
 	{
+		// Queued by the browser thread: if the TextBox has written to the input since, the input's state is what counts.
+		var state = NativeMethods.GetSelectionState();
+		if (state.Length > 0 && state[0] != generation)
+		{
+			text = NativeMethods.GetValue();
+			selectionStart = state[1];
+			selectionLength = state[2];
+		}
+
 		OnInputTextChanged(text, selectionStart, selectionLength);
 
 		return Task.CompletedTask;
@@ -144,24 +171,40 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		=> Task.FromResult(GetNativePasteSourceLimit());
 
 	[JSExport]
-	private static void OnSelectionChanged(int selectionStart, int selectionLength) => RunFromNative(() =>
+	private static void OnSelectionChanged(int selectionStart, int selectionLength) => RunSyncingFromNative(() =>
 	{
-		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
-		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
-		switch (FocusManager.GetFocusedElement(xamlRoot!))
+		_isApplyingNativeSelection = true;
+		try
 		{
-			case ITextBoxHost { Core: { } core }:
-				core.SelectInternal(selectionStart, selectionLength);
-				break;
-			case RichEditBox richEditBox:
-				richEditBox.SelectFromNative(selectionStart, selectionLength);
-				break;
+			var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
+			// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
+			switch (FocusManager.GetFocusedElement(xamlRoot!))
+			{
+				case ITextBoxHost { Core: { } core }:
+					core.SelectInternal(selectionStart, selectionLength);
+					break;
+				case RichEditBox richEditBox:
+					richEditBox.SelectFromNative(selectionStart, selectionLength);
+					break;
+			}
+		}
+		finally
+		{
+			_isApplyingNativeSelection = false;
 		}
 	});
 
 	[JSExport]
 	private static Task OnSelectionChangedAsync(int selectionStart, int selectionLength)
 	{
+		// Queued by the browser thread: the TextBox may have moved the caret since, so the input's selection is read now.
+		var state = NativeMethods.GetSelectionState();
+		if (state.Length > 0)
+		{
+			selectionStart = state[1];
+			selectionLength = state[2];
+		}
+
 		OnSelectionChanged(selectionStart, selectionLength);
 
 		return Task.CompletedTask;
@@ -255,7 +298,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			InvalidateLayout(); // we create the native <input /> object in Focus, so we should make sure to update the layout
 			NativeMethods.SetTextPredictionEnabled(GetTextPredictionEnabled());
 			NativeMethods.SetSpellCheckEnabled(GetSpellCheckEnabled());
-			NativeMethods.UpdateSelection(SelectionStart, SelectionLength, SelectionDirection);
+			PushSelection(SelectionStart, SelectionLength);
 		}
 	}
 
@@ -346,7 +389,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	{
 		if (IsHostFocused)
 		{
-			NativeMethods.UpdateSelection(SelectionStart, SelectionLength, SelectionDirection);
+			PushSelection(SelectionStart, SelectionLength);
 		}
 	}
 
@@ -384,7 +427,17 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			// when this TextBox is the one in focus
 			return;
 		}
-		NativeMethods.UpdateSelection(start, length, SelectionDirection);
+		PushSelection(start, length);
+	}
+
+	private void PushSelection(int start, int length)
+	{
+		if (_isApplyingNativeSelection)
+		{
+			return;
+		}
+
+		NativeMethods.UpdateSelection(start, length, SelectionDirection, _isSyncingFromNative);
 	}
 
 	// Since we don't actually use the <input /> visually, do we don't need to take care of any of the visual aspects
@@ -475,7 +528,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		public static partial void UpdatePosition(double x, double y);
 
 		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.updateSelection")]
-		public static partial void UpdateSelection(int start, int length, string direction);
+		public static partial void UpdateSelection(int start, int length, string direction, bool syncingFromNative);
+
+		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.getSelectionState")]
+		[return: JSMarshalAs<JSType.Array<JSType.Number>>]
+		public static partial int[] GetSelectionState();
+
+		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.getValue")]
+		public static partial string GetValue();
 
 		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.setEnterKeyHint")]
 		public static partial void SetEnterKeyHint(string setEnterKeyHint);
