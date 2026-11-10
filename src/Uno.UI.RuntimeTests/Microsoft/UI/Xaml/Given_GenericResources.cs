@@ -66,14 +66,14 @@ public class Given_GenericResources
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12839")]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
-	public async Task When_GridView_Default_Style_Uses_WrapPanel()
+	public async Task When_GridView_Default_Style_Uses_ItemsWrapGrid()
 	{
-		// ItemsWrapGrid is not implemented on Skia, so the overlay swaps in a WrapPanel.
+		// The overlay no longer replaces WinUI's GridView style now that ItemsWrapGrid is ported.
 		var sut = new GridView { Width = 200, Height = 200, ItemsSource = new[] { 1, 2, 3 } };
 
 		await UITestHelper.Load(sut, x => x.IsLoaded);
 
-		Assert.IsInstanceOfType<WrapPanel>(sut.ItemsPanelRoot);
+		Assert.IsInstanceOfType<ItemsWrapGrid>(sut.ItemsPanelRoot);
 	}
 
 	[TestMethod]
