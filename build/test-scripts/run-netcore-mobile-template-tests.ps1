@@ -236,6 +236,8 @@ $projects =
     @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @("-f", "net11.0-android"), @("macOS", "NetCore")),
     @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @("-f", "net11.0-ios"), @("macOS", "NetCore")),
     @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @("-p:Platform=x64", "-p:TargetFramework=net11.0-windows10.0.26100"), @()),
+    # An explicit WindowsSdkPackageVersion wins over the Uno.Sdk default minimum revision (NETSDK1230 without it, #26174)
+    @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @("-p:Platform=x64", "-p:TargetFramework=net11.0-windows10.0.26100", "-p:WindowsSdkPackageVersion=10.0.26100.87"), @()),
 
     # Ensure that build can happen even if a RID is specified
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0"), @("macOS", "NetCore")),
