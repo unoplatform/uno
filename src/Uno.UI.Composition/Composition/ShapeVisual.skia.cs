@@ -143,60 +143,6 @@ public partial class ShapeVisual
 		return base.TryGetLocalContentBounds(out localBounds);
 	}
 
-	private protected override bool TryGetPaintedBounds(out Rect bounds)
-	{
-		bounds = default;
-
-		if (_shapes is not { Count: > 0 } shapes)
-		{
-			return true;
-		}
-
-		var any = false;
-		var acc = default(Rect);
-		for (var i = 0; i < shapes.Count; i++)
-		{
-			// A shape this doesn't know how to bound leaves the whole visual unbounded.
-			if (shapes[i] is not CompositionSpriteShape sprite)
-			{
-				return false;
-			}
-
-			if (sprite.TryGetRenderBounds(out var shapeBounds))
-			{
-				if (any)
-				{
-					acc.Union(shapeBounds);
-				}
-				else
-				{
-					acc = shapeBounds;
-					any = true;
-				}
-			}
-		}
-
-		if (!any)
-		{
-			return true;
-		}
-
-		// Paint applies the ViewBox as a translate-then-scale (see Paint); the bounds follow it.
-		if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
-		{
-			var sx = Size.X / viewBox.Size.X;
-			var sy = Size.Y / viewBox.Size.Y;
-			acc = new Rect(
-				sx * (acc.X - viewBox.Offset.X),
-				sy * (acc.Y - viewBox.Offset.Y),
-				sx * acc.Width,
-				sy * acc.Height);
-		}
-
-		bounds = acc;
-		return true;
-	}
-
 	private protected override bool TryBuildPaintedGeometry(out IGeometry? geometry)
 	{
 		geometry = null;
@@ -214,11 +160,16 @@ public partial class ShapeVisual
 				continue;
 			}
 
-			// Only sprite shapes describe what they paint; for anything else the bounds are used.
-			if (shape is not CompositionSpriteShape sprite || sprite.BuildRenderGeometry() is not { } shapeGeometry)
+			// Only sprite shapes describe what they paint; anything else leaves the visual unbounded.
+			if (shape is not CompositionSpriteShape sprite)
 			{
 				painted?.Dispose();
 				return false;
+			}
+
+			if (sprite.BuildRenderGeometry() is not { } shapeGeometry)
+			{
+				continue;
 			}
 
 			if (sprite.GetRenderTransform() is { IsIdentity: false } shapeTransform)

@@ -7,51 +7,89 @@ using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Composition;
 
-// What this visual's own content paints (children excluded), in its local coordinates, at two precisions: cheap
-// bounds for damage tracking, and the exact area for the native-element clip, which cuts native elements only where
-// XAML paints over them. Both describe the same painting; a visual overriding one should override the other.
+// What this visual's own content paints (children excluded), in its local coordinates. It is computed once per paint
+// invalidation: damage tracking uses its bounds (rects are far cheaper to clip to than paths), and the native-element
+// clip uses its exact geometry, so native elements are only cut out where XAML actually paints over them.
 public partial class Visual
 {
 	// Antialiasing partly paints the pixels along the painted edges, and hosts turn the native clip into a region by
 	// pixel centers: without a margin a thin ring at a fractional offset could lose every pixel to the native element.
 	private const float NativeClipAntialiasingMargin = 1f;
 
-	private bool _hasPaintedGeometry;
-	private bool _isPaintedGeometryKnown;
+	private enum PaintedAreaKind : byte
+	{
+		NotComputed,
+		// Can't be bounded more tightly than the visual's clip.
+		Unbounded,
+		// Bounded, but the exact area isn't known.
+		BoundsOnly,
+		// The exact area is known; null geometry when nothing is painted.
+		Exact,
+	}
+
+	private PaintedAreaKind _paintedAreaKind;
+	private Rect _paintedBounds;
 	private IGeometry? _paintedGeometry;
 	private float _nativeClipCutScale;
 	private IGeometry? _nativeClipCut;
 
 	/// <summary>
-	/// Bounds of what this visual paints itself, in local coordinates; an empty rect when it paints nothing.
-	/// False when it can't be bounded more tightly than its clip.
-	/// </summary>
-	private protected virtual bool TryGetPaintedBounds(out Rect bounds)
-	{
-		bounds = default;
-		if (!CanPaint())
-		{
-			return true;
-		}
-
-		if (PaintsWithinOwnSize)
-		{
-			bounds = new Rect(0, 0, Math.Max(0f, Size.X), Math.Max(0f, Size.Y));
-			return true;
-		}
-
-		return false;
-	}
-
-	/// <summary>
 	/// Builds the exact area this visual paints itself, in local coordinates: null when it paints nothing. False when
-	/// it isn't known more tightly than <see cref="TryGetPaintedBounds"/>. Translucent paint counts as painted.
-	/// Only called once per paint invalidation, so it may build geometry; the caller owns the result.
+	/// it isn't known, in which case the visual is bounded by its Size when it <see cref="PaintsWithinOwnSize"/>.
+	/// Translucent paint counts as painted. Only called when <see cref="CanPaint"/>, once per paint invalidation;
+	/// the caller owns the result.
 	/// </summary>
 	private protected virtual bool TryBuildPaintedGeometry(out IGeometry? geometry)
 	{
 		geometry = null;
 		return false;
+	}
+
+	/// <summary>
+	/// Bounds of what this visual paints itself, in local coordinates; an empty rect when it paints nothing.
+	/// False when it can't be bounded more tightly than its clip.
+	/// </summary>
+	private protected bool TryGetPaintedBounds(out Rect bounds)
+	{
+		EnsurePaintedArea();
+		bounds = _paintedBounds;
+		return _paintedAreaKind != PaintedAreaKind.Unbounded;
+	}
+
+	private void EnsurePaintedArea()
+	{
+		if (_paintedAreaKind != PaintedAreaKind.NotComputed)
+		{
+			return;
+		}
+
+		_paintedBounds = default;
+		if (!CanPaint())
+		{
+			_paintedAreaKind = PaintedAreaKind.Exact;
+		}
+		else if (TryBuildPaintedGeometry(out var geometry))
+		{
+			_paintedAreaKind = PaintedAreaKind.Exact;
+			if (geometry is { IsEmpty: false })
+			{
+				_paintedGeometry = geometry;
+				_paintedBounds = geometry.Bounds;
+			}
+			else
+			{
+				geometry?.Release();
+			}
+		}
+		else if (PaintsWithinOwnSize)
+		{
+			_paintedAreaKind = PaintedAreaKind.BoundsOnly;
+			_paintedBounds = new Rect(0, 0, Math.Max(0f, Size.X), Math.Max(0f, Size.Y));
+		}
+		else
+		{
+			_paintedAreaKind = PaintedAreaKind.Unbounded;
+		}
 	}
 
 	/// <summary>
@@ -61,19 +99,15 @@ public partial class Visual
 	/// </summary>
 	private bool TryGetNativeClipCut(float scale, out IGeometry? cut)
 	{
-		if (!_hasPaintedGeometry)
-		{
-			_hasPaintedGeometry = true;
-			_isPaintedGeometryKnown = TryBuildPaintedGeometry(out _paintedGeometry);
-		}
+		EnsurePaintedArea();
 
 		cut = null;
-		if (!_isPaintedGeometryKnown)
+		if (_paintedAreaKind != PaintedAreaKind.Exact)
 		{
 			return false;
 		}
 
-		if (_paintedGeometry is not { IsEmpty: false } painted)
+		if (_paintedGeometry is not { } painted)
 		{
 			return true;
 		}
@@ -99,8 +133,7 @@ public partial class Visual
 
 	private void InvalidatePaintedArea()
 	{
-		_hasPaintedGeometry = false;
-		_isPaintedGeometryKnown = false;
+		_paintedAreaKind = PaintedAreaKind.NotComputed;
 		_paintedGeometry?.Release();
 		_paintedGeometry = null;
 		_nativeClipCut?.Release();
