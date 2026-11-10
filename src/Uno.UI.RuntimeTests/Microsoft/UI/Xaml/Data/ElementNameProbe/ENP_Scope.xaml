@@ -1,0 +1,109 @@
+<UserControl x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data.ElementNameProbe.ENP_Scope"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<UserControl.Resources>
+		<SolidColorBrush x:Key="UcResBrush" Color="{Binding ElementName=SrcRect, Path=Fill.Color}" />
+	</UserControl.Resources>
+
+	<StackPanel x:Name="Root" x:FieldModifier="public">
+		<StackPanel.Resources>
+			<SolidColorBrush x:Key="PanelResBrush" Color="{Binding ElementName=SrcRect, Path=Fill.Color}" />
+		</StackPanel.Resources>
+
+		<Rectangle x:Name="SrcRect" Width="10" Height="10" Fill="Red" />
+		<TextBlock x:Name="Src" Text="src" />
+
+		<!-- S1: brush in UserControl.Resources, used by an element -->
+		<Border x:Name="S1" x:FieldModifier="public" Width="10" Height="10" Background="{StaticResource UcResBrush}" />
+
+		<!-- S2: brush in a nested panel's Resources, used by an element -->
+		<Border x:Name="S2" x:FieldModifier="public" Width="10" Height="10" Background="{StaticResource PanelResBrush}" />
+
+		<!-- S3: inline brush (non-FE target, mentor = the Border) -->
+		<Border x:Name="S3" x:FieldModifier="public" Width="10" Height="10">
+			<Border.Background>
+				<SolidColorBrush Color="{Binding ElementName=SrcRect, Path=Fill.Color}" />
+			</Border.Background>
+		</Border>
+
+		<!-- S4: Run inside a TextBlock -->
+		<TextBlock x:Name="S4" x:FieldModifier="public">
+			<Run Text="{Binding ElementName=Src, Path=Text}" />
+		</TextBlock>
+
+		<!-- S5: Button.Flyout content -->
+		<Button x:Name="S5Button" x:FieldModifier="public" Content="b">
+			<Button.Flyout>
+				<Flyout>
+					<TextBlock x:Name="S5" x:FieldModifier="public" Text="{Binding ElementName=Src, Path=Text}" />
+				</Flyout>
+			</Button.Flyout>
+		</Button>
+
+		<!-- S6: ToolTip content -->
+		<Border Width="10" Height="10" Background="Transparent">
+			<ToolTipService.ToolTip>
+				<ToolTip x:Name="S6Tip" x:FieldModifier="public">
+					<TextBlock x:Name="S6" x:FieldModifier="public" Text="{Binding ElementName=Src, Path=Text}" />
+				</ToolTip>
+			</ToolTipService.ToolTip>
+		</Border>
+
+		<!-- S7: Popup child -->
+		<Popup x:Name="S7Popup" x:FieldModifier="public">
+			<TextBlock x:Name="S7" x:FieldModifier="public" Text="{Binding ElementName=Src, Path=Text}" />
+		</Popup>
+
+		<!-- S8: ContentControl.ContentTemplate -->
+		<ContentControl x:Name="S8" x:FieldModifier="public" Content="x">
+			<ContentControl.ContentTemplate>
+				<DataTemplate>
+					<TextBlock Tag="probe" Text="{Binding ElementName=Src, Path=Text}" />
+				</DataTemplate>
+			</ContentControl.ContentTemplate>
+		</ContentControl>
+
+		<!-- S9: DataTemplate nested in a DataTemplate -->
+		<ContentControl x:Name="S9" x:FieldModifier="public" Content="x">
+			<ContentControl.ContentTemplate>
+				<DataTemplate>
+					<ContentControl Content="y">
+						<ContentControl.ContentTemplate>
+							<DataTemplate>
+								<TextBlock Tag="probe" Text="{Binding ElementName=Src, Path=Text}" />
+							</DataTemplate>
+						</ContentControl.ContentTemplate>
+					</ContentControl>
+				</DataTemplate>
+			</ContentControl.ContentTemplate>
+		</ContentControl>
+
+		<!-- S10: ItemsControl.ItemTemplate -->
+		<ItemsControl x:Name="S10" x:FieldModifier="public">
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Tag="probe" Text="{Binding ElementName=Src, Path=Text}" />
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
+
+		<!-- S11: ListView.ItemTemplate -->
+		<ListView x:Name="S11" x:FieldModifier="public" Height="60">
+			<ListView.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Tag="probe" Text="{Binding ElementName=Src, Path=Text}" />
+				</DataTemplate>
+			</ListView.ItemTemplate>
+		</ListView>
+
+		<!-- S12: ItemsRepeater.ItemTemplate -->
+		<ItemsRepeater x:Name="S12" x:FieldModifier="public">
+			<ItemsRepeater.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Tag="probe" Text="{Binding ElementName=Src, Path=Text}" />
+				</DataTemplate>
+			</ItemsRepeater.ItemTemplate>
+		</ItemsRepeater>
+	</StackPanel>
+</UserControl>
