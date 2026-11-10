@@ -209,6 +209,9 @@ In your project, you may need to add the following lines (or uncomment them if y
 </PropertyGroup>
 ```
 
+> [!NOTE]
+> When you migrate to Uno Platform 7.0, remove this property: the `Uno.Sdk` picks the Windows SDK projection, and `.38` can fail with `CS1705`. See [The Windows SDK projection is picked by the `Uno.Sdk`](xref:Uno.Development.MigratingToUno7.ProjectSetup#the-windows-sdk-projection-is-picked-by-the-unosdk).
+
 Additionally, you may also get the following error message:
 
 ```text
