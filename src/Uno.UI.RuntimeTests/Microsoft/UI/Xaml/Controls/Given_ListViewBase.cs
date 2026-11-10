@@ -2391,7 +2391,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[RequiresScaling(1.5f)] // WinUI 3 probe at 150%: the focus padding is applied above the item only
 		public async Task When_Arrow_keys_ListView_Only_Scrolled_As_Needed()
+		{
+			var (sv, itemHeight) = await ArrowDownThroughList();
+
+			sv.VerticalOffset.Should().BeApproximately(itemHeight * 3 - 120, 2);
+
+			await KeyboardHelper.Down();
+			await WindowHelper.WaitForIdle();
+
+			sv.VerticalOffset.Should().BeApproximately(itemHeight * 4 - 120, 2);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[RequiresScaling(1f)]
+		public async Task When_Arrow_keys_ListView_Scrolled_With_Padding_At_100_Percent()
+		{
+			var (sv, itemHeight) = await ArrowDownThroughList();
+
+			// At 100% the 20 px focus padding also fits below the item
+			sv.VerticalOffset.Should().BeApproximately(itemHeight * 3 + 20 - 120, 2);
+		}
+
+		private static async Task<(ScrollViewer ScrollViewer, double ItemHeight)> ArrowDownThroughList()
 		{
 			var SUT = new ListView
 			{
@@ -2417,7 +2441,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
 
-			sv.VerticalOffset.Should().BeApproximately(lvi.ActualHeight * 3 - 120, 2);
+			return (sv, lvi.ActualHeight);
 		}
 
 		[TestMethod]
