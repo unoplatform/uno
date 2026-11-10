@@ -1525,7 +1525,12 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				await RunOnUIThread(() =>
 				{
 					VERIFY_ARE_EQUAL(scrollViewer.HorizontalOffset, 0.0);
+#if HAS_UNO
+					// Open Sans (Uno's default font) renders each line 1 device px taller than Segoe UI at 150% scale.
+					VERIFY_ARE_EQUAL(scrollViewer.VerticalOffset, 430.0);
+#else
 					VERIFY_ARE_EQUAL(scrollViewer.VerticalOffset, 426.0);
+#endif
 					VERIFY_ARE_EQUAL(scrollViewer.ZoomFactor, 1.0f);
 					VERIFY_ARE_EQUAL(outerListView.SelectedIndex, -1);
 				});
