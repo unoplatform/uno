@@ -209,6 +209,32 @@ public class Given_AcrylicBrush
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_AcrylicBrush_Over_Saturated_Background_Dark_Theme()
+	{
+		// The luminosity layer is a Luminosity blend: it replaces the backdrop's luminance but keeps its hue.
+		// Composited as a plain overlay instead, its 0.96 opacity hides the backdrop behind a flat dark grey.
+		using var _ = ThemeHelper.UseDarkTheme();
+
+		var outerBorder = (Border)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+			"<Border xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'" +
+			"        Background='Red' Width='100' Height='100'" +
+			"        HorizontalAlignment='Left' VerticalAlignment='Top'>" +
+			"    <Border Width='100' Height='100'" +
+			"            Background='{ThemeResource AcrylicInAppFillColorDefaultBrush}' />" +
+			"</Border>");
+
+		await UITestHelper.Load(outerBorder);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var screenshot = await UITestHelper.ScreenShot(outerBorder);
+		var centerColor = screenshot.GetPixel(50, 50);
+
+		Assert.IsTrue(centerColor.R - Math.Max(centerColor.G, centerColor.B) > 0x40,
+			$"Expected the red backdrop's hue to show through the acrylic, but got {centerColor}.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_TintLuminosityOpacity_Is_Set_By_ThemeResources()
 	{
 		// WinUI's XamlControlsResources programmatically sets TintLuminosityOpacity
