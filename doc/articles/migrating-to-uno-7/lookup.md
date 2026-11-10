@@ -119,7 +119,7 @@ Each row is a literal string to search for across your C#, XAML and MSBuild file
 | `AdaptNative`, `HtmlId`, `HtmlElementAttribute`, `SetHtmlAttribute`, `RegisterHtmlEventHandler` | [Native element hosting](xref:Uno.Development.MigratingToUno7.RemovedApis#native-element-hosting) |
 | `BindableView`, `BindableUIView`, `Android.Views.View`, `UIKit.UIView` | [Native base classes](xref:Uno.Development.MigratingToUno7.RemovedApis#native-base-classes--identity) |
 | `NativeDefault`, `IsNativeStyle`, `UseNativePopup`, `AreDimensionsConstrained` | [Native rendering types and helpers](xref:Uno.Development.MigratingToUno7.RemovedApis#native-rendering-types-and-helpers) |
-| `IJSObject`, `InvokeJSWithInterop`, `TSInteropMessage` | [WebAssembly interop](xref:Uno.Development.MigratingToUno7.RemovedApis#webassembly-interop) |
+| `IJSObject`, `InvokeJSWithInterop`, `InvokeAsync`, `InvokeJSUnmarshalled`, `TSInteropMessage` | [WebAssembly interop](xref:Uno.Development.MigratingToUno7.RemovedApis#webassembly-interop) |
 | `ItemClickCommand`, and `Command=` on `ListView` or `GridView` | [`ItemClickCommand`](xref:Uno.Development.MigratingToUno7.RemovedApis#listviewbaseitemclickcommand-and-listviewbasecommand) |
 | `GetTemplateChild`, `VisualTreeHelper.GetChildren` | [`GetTemplateChild`](xref:Uno.Development.MigratingToUno7.RemovedApis#controlgettemplatechild-is-no-longer-public), [`GetChildren`](xref:Uno.Development.MigratingToUno7.RemovedApis#visualtreehelpergetchildren-is-no-longer-public) |
 | `WindowSizeChangedEventHandler`, `VisibilityChangedEventArgs` | [`Window` events](xref:Uno.Development.MigratingToUno7.RemovedApis#window-events) |
