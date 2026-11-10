@@ -17,12 +17,12 @@ The following image file types are supported as `Content` assets:
 |                                    | `.bmp` (Win BMP) | `.gif` | `.heic` (Apple) | `.jpg` & `.jpeg` (JFIF) | `.png` | `.webp` | `.pdf` | `.svg` |
 | ---------------------------------- | :--------------: | :----: | :-------------: | :---------------------: | :----: | :-----: | :----: | :----: |
 | WinUI                              |        ✔️        |   ✔️   |       ❌        |           ✔️            |   ✔️   |   ✔️    |   ❌   |   ✔️   |
-| Skia renderer¹                     |        ✔️        |  ✔️²   |       ❌³       |           ✔️            |   ✔️   |   ✔️²   |   ❌   |  ✔️⁴   |
+| Uno Platform targets¹              |        ✔️        |  ✔️²   |       ❌³       |           ✔️            |   ✔️   |   ✔️²   |   ❌   |  ✔️⁴   |
 | Android native renderer (6.x)¹     |       ❌⁵        |  ✔️⁶   |       ❌⁵       |           ✔️            |   ✔️   |   ❌⁵   |   ❌   |  ✔️⁴   |
 | iOS/tvOS native renderer (6.x)¹    |        ✔️        |  ✔️⁶   |       ✔️        |           ✔️            |   ✔️   |   ✔️⁶   |   ❌   |  ✔️⁴   |
 | WebAssembly native renderer (6.x)¹ |        ✔️        |  ✔️²   |       ❌³       |           ✔️            |   ✔️   |   ✔️²   |  ❌³   |   ✔️   |
 
-1. The Skia renderer is the default on every target except the Windows App SDK head, which uses WinUI. In 6.x, Android, iOS/tvOS and WebAssembly use it when `UnoFeatures` includes `SkiaRenderer` (the default for new projects), and the native renderers otherwise. An app using only the WebGPU renderer decodes images with a managed decoder instead, which doesn't load animated WebP, lossy WebP with transparency, or BMP other than uncompressed 8, 24 and 32-bit.
+1. This row covers every Uno Platform target except the Windows App SDK head, which uses WinUI (the row above). In Uno Platform 6.x, Android, iOS/tvOS and WebAssembly use this shared rendering when `UnoFeatures` includes `SkiaRenderer` (the default for new projects), and the native renderers otherwise. An app built without SkiaSharp, for example one using only the WebGPU renderer, decodes images with a managed decoder instead. It doesn't load animated WebP, lossy WebP with transparency, or BMP other than uncompressed 8, 24 and 32-bit.
 2. Animated images always play. `BitmapImage.AutoPlay`, `IsPlaying`, `Play()` and `Stop()` are not implemented.
 3. Depends on the browser on WebAssembly. For example, Safari decodes `.heic` and Chrome doesn't.
 4. Uno Platform 6.x needs the `Svg` Uno feature. See [Using SVG images](xref:Uno.Features.SVG).
