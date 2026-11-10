@@ -161,7 +161,7 @@ public class Given_InputInjector
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm | RuntimeTestPlatforms.NativeWinUI)] // NativeWinUI: flaky on 6.x, https://github.com/unoplatform/uno/issues/26221
 	public async Task When_MouseMove_PointerEventsAreRaised()
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)
