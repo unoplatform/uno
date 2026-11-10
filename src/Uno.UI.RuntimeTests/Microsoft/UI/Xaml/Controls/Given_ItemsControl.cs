@@ -144,6 +144,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Microsoft.VisualStudio.TestTools.UnitTesting.Assert.AreEqual(123d, button.Width);
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_IsItsOwnItemContainer_Then_FindFirstParent_Reaches_ItemsControl()
+		{
+			var button = new Button { Content = "item" };
+			var SUT = new ItemsControl();
+			SUT.Items.Add(button);
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(button);
+
+			Microsoft.VisualStudio.TestTools.UnitTesting.Assert.IsNull(button.Parent);
+			Microsoft.VisualStudio.TestTools.UnitTesting.Assert.AreSame(SUT, button.FindFirstParent<ItemsControl>());
+		}
+#endif
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_IsItsOwnItemContainer_FromSource()
