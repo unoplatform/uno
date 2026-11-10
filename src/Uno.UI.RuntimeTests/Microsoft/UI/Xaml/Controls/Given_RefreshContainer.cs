@@ -153,7 +153,8 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			var finger = injector.GetFinger();
 
-			ImageAssert.HasPixels(await UITestHelper.ScreenShot(sut), ExpectedPixels.At(50, 1).Pixel(Colors.Chartreuse));
+			// The default ItemContainerTransitions include an EntranceThemeTransition, so the items fade in on load, as on WinUI.
+			await AssertTopPixelEventually(sut, Colors.Chartreuse);
 
 			// Make sure to abort any pending direct manip
 			finger.Tap(rect.Location.Offset(-1, -1));
