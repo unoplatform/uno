@@ -183,6 +183,7 @@ internal partial class BrowserRenderer
 
 		if (WebAssemblyThreading.IsThreadingEnabled)
 		{
+			_pendingInvalidate = false;
 			RenderWorker.SignalFrameAvailable();
 			return;
 		}
