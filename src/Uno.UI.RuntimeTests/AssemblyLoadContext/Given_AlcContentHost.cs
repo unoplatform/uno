@@ -30,6 +30,9 @@ namespace Uno.UI.RuntimeTests.Tests.AssemblyLoadContext;
 [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types manipulated here have been marked earlier")]
 public class Given_AlcContentHost
 {
+	// Launch argument making AlcApp build a headless-only host (see AlcApp's Program.cs).
+	private const string HeadlessHostArgument = "--host=headless";
+
 	private TestAssemblyLoadContext? _testAlc;
 	private TestAssemblyLoadContext? _testAlcSecondary;
 	private AlcContentHost? _contentHost;
@@ -133,6 +136,105 @@ public class Given_AlcContentHost
 		Assert.IsNotNull(testBrush, "TestAccentBrush should be a SolidColorBrush");
 		Assert.AreEqual(Windows.UI.Color.FromArgb(0xFF, 0x6B, 0x4C, 0xE0), testBrush!.Color,
 			"TestAccentBrush should have the expected color");
+	}
+
+	/// <summary>
+	/// A headless host started while a primary host (X11 here) already owns the process must run the app
+	/// as a secondary one: no new event loop, the primary's dispatcher / window factory left alone, and the
+	/// started instance launched even though it is not Application.Current.
+	/// </summary>
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26280")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_HeadlessSecondaryAlcApp_Then_LaunchedOnPrimaryDispatcher()
+	{
+		var dispatchOverride = GetDispatcherOverride("DispatchOverride");
+		var hasThreadAccessOverride = GetDispatcherOverride("HasThreadAccessOverride");
+		var primaryApplication = Application.Current;
+		Assert.IsNotNull(dispatchOverride, "A primary host should have installed its dispatcher");
+
+		var contentHost = await StartSecondaryAlcAppAsync(new[] { HeadlessHostArgument });
+
+		var (appType, testWindow) = GetSecondaryAppState();
+		Assert.IsNotNull(testWindow, "OnLaunched should have run for the headless secondary app");
+
+		var secondaryApp = appType.GetProperty("Instance", BindingFlags.NonPublic | BindingFlags.Static)!.GetValue(null) as Application;
+		Assert.IsNotNull(secondaryApp, "The secondary app instance should have been created");
+		Assert.AreNotSame(secondaryApp, Application.Current, "A secondary app is not Application.Current");
+		Assert.AreSame(primaryApplication, Application.Current, "The primary application should still be current");
+
+		Assert.IsNotNull(contentHost.Content, "ContentHost.Content should be set by the headless secondary app");
+		Assert.IsTrue(contentHost.Resources.ContainsKey("TestAccentBrush"),
+			"TestAccentBrush should be available from secondary app resources");
+
+		Assert.AreSame(dispatchOverride, GetDispatcherOverride("DispatchOverride"), "The primary dispatcher should still be installed");
+		Assert.AreSame(hasThreadAccessOverride, GetDispatcherOverride("HasThreadAccessOverride"), "The primary thread-access check should still be installed");
+		Assert.IsTrue(((Func<bool>)GetDispatcherOverride("HasThreadAccessOverride")!)(), "The test should still run on the primary dispatcher thread");
+	}
+
+	/// <summary>
+	/// After the headless secondary app's content is cleared and its host shut down, the primary host must
+	/// be unaffected: same dispatcher, same window, still rendering, and the process-wide
+	/// SkipVisualTreePainting flag unchanged.
+	/// </summary>
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26280")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_HeadlessSecondaryAlcApp_Unloaded_Then_PrimaryHostUnaffected()
+	{
+		var dispatchOverride = GetDispatcherOverride("DispatchOverride");
+		var hasThreadAccessOverride = GetDispatcherOverride("HasThreadAccessOverride");
+		var skipVisualTreePainting = FeatureConfiguration.Rendering.SkipVisualTreePainting;
+		var primaryWindow = TestServices.WindowHelper.CurrentTestWindow;
+
+		var contentHost = await StartSecondaryAlcAppAsync(new[] { HeadlessHostArgument });
+		var (appType, testWindow) = GetSecondaryAppState();
+		Assert.IsNotNull(testWindow, "OnLaunched should have run for the headless secondary app");
+		Assert.IsNotNull(contentHost.Content, "ContentHost.Content should be set by the headless secondary app");
+
+		// Clear the secondary app's content, then shut its host down.
+		testWindow!.Content = null;
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.IsNull(contentHost.Content, "Clearing the secondary window content should clear the host");
+
+		var programType = appType.Assembly.GetType("AlcTestApp.Program");
+		var host = programType!.GetProperty("Host", BindingFlags.NonPublic | BindingFlags.Static)!.GetValue(null) as IDisposable;
+		Assert.IsNotNull(host, "The secondary app's host should be available");
+		host!.Dispose();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreSame(dispatchOverride, GetDispatcherOverride("DispatchOverride"), "The primary dispatcher should be untouched");
+		Assert.AreSame(hasThreadAccessOverride, GetDispatcherOverride("HasThreadAccessOverride"), "The primary thread-access check should be untouched");
+		Assert.AreSame(primaryWindow, TestServices.WindowHelper.CurrentTestWindow, "The primary window should be untouched");
+		Assert.AreEqual(skipVisualTreePainting, FeatureConfiguration.Rendering.SkipVisualTreePainting,
+			"SkipVisualTreePainting should keep the value it had before the secondary app");
+
+		// The primary dispatcher still runs work posted from another thread.
+		var dispatched = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+		await Task.Run(() => primaryWindow.DispatcherQueue.TryEnqueue(() => dispatched.TrySetResult(true)));
+		Assert.IsTrue(await Task.WhenAny(dispatched.Task, Task.Delay(TimeSpan.FromSeconds(10))) == dispatched.Task,
+			"The primary dispatcher should still process work");
+
+		// ...and the primary window still renders.
+		WindowHelper.ContentHostOverride = null;
+		var border = new Border { Width = 40, Height = 40, Background = new SolidColorBrush(Microsoft.UI.Colors.Red) };
+		await UITestHelper.Load(border);
+		var bitmap = await UITestHelper.ScreenShot(border);
+		ImageAssert.HasColorAt(bitmap, 20, 20, Microsoft.UI.Colors.Red, tolerance: 3);
+	}
+
+	// The Skia dispatcher hooks are internal to the runtime assembly, which the tests compile against as a reference assembly.
+	private static Delegate? GetDispatcherOverride(string name)
+		=> typeof(Windows.UI.Core.CoreDispatcher)
+			.GetProperty(name, BindingFlags.NonPublic | BindingFlags.Static)!
+			.GetValue(null) as Delegate;
+
+	private (Type appType, Window? testWindow) GetSecondaryAppState()
+	{
+		var alcAppAssembly = _testAlc!.Assemblies.First(a => a.GetName().Name == "Uno.UI.RuntimeTests.AlcApp");
+		var appType = alcAppAssembly.GetType("AlcTestApp.App")!;
+		var testWindow = appType.GetField("TestWindow", BindingFlags.NonPublic | BindingFlags.Static)!.GetValue(null) as Window;
+		return (appType, testWindow);
 	}
 
 	/// <summary>
