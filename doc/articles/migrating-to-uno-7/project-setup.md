@@ -149,6 +149,20 @@ Rename it to `UnoSplashScreenBackgroundColor`, and use `BackgroundColor` instead
 `UnoSplashScreen` items. WebAssembly apps that never set a splash color now get a loader that follows the
 browser theme instead of white. See [Splash screen](xref:Uno.Development.SplashScreen).
 
+## The Windows SDK projection is picked by the `Uno.Sdk`
+
+Some Uno Platform 7.0 Windows packages, such as the Hot Design client that Debug builds reference, are built against the
+`.87` Windows SDK projection (WinRT.Runtime 2.3). In a `Sdk="Uno.Sdk"` project, the `Uno.Sdk` sets
+`WindowsSdkPackageMinimumRevision` to `87` for Windows targets unless the project picks a projection itself
+(`WindowsSdkPackageVersion` or `UseWindowsSDKPreview`), so no project setting is needed.
+
+If your project sets `WindowsSdkPackageVersion` (in the `.csproj`, a `Directory.Build.props` or `.targets` file, or as an
+environment variable), remove it. To keep it, use the `.87` revision of your target framework's Windows SDK build, such
+as `10.0.26100.87` for `net10.0-windows10.0.26100`. An older revision, such as the `10.0.19041.57` suggested by the
+[Uno Platform 6.0 migration](xref:Uno.Development.MigratingToUno6), can fail with `CS1705` on `WinRT.Runtime`.
+
+To require a later projection without pinning the full version, set `WindowsSdkPackageMinimumRevision` instead.
+
 ## Related pages
 
 - [Packages and Uno Features](xref:Uno.Development.MigratingToUno7.Packages) for what the `Uno.Sdk` references for you.

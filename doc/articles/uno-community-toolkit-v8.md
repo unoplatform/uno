@@ -77,6 +77,8 @@ When using the Uno Platform solution templates, add the following to your applic
     >   <WinAppSdkVersion>1.5.240607001</WinAppSdkVersion>
     > </PropertyGroup>
     > ```
+    >
+    > With Uno Platform 7.0 and later, leave out both properties: the `Uno.Sdk` picks the Windows SDK projection, and a 1.x `WinAppSdkVersion` fails restore with `NU1605`. If you keep them, use a `.87` revision for `WindowsSdkPackageVersion` and 2.4.0 or later for `WinAppSdkVersion`. See [The Windows SDK projection is picked by the `Uno.Sdk`](xref:Uno.Development.MigratingToUno7.ProjectSetup#the-windows-sdk-projection-is-picked-by-the-unosdk) and [Windows App SDK minimum](xref:Uno.Development.MigratingToUno7.Packages#windows-app-sdk-minimum-raised-from-1x-to-240).
 
     ### [Multi-Head Project Template (Legacy) [WinUI / WinAppSDK]](#tab/multihead-winui)
 
