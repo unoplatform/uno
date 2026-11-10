@@ -156,11 +156,14 @@ public partial class CompositionTarget
 	private readonly Lock _frameGate = new();
 	private readonly Lock _xamlRootBoundsGate = new();
 
-	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested
+	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested.
+	// The two clip geometry fields must not be static: each composition target (window) has its own
+	// clip, keyed on its own frame, so a static cache lets one window overwrite another's.
+	// On hosts that render each window on its own thread it is also a data race.
 	private Size _lastCanvasSize = Size.Empty;
-	private static IGeometry? _lastNativeClipPath;
+	private IGeometry? _lastNativeClipPath;
 	private float _lastRasterizationScale = 1;
-	private static IGeometry? _lastScaledNativeClipPath;
+	private IGeometry? _lastScaledNativeClipPath;
 
 	// only set on the UI thread and under _frameGate, only read under _frameGate
 	// UNO_FORCE_FULL_REPAINT=1 disables damage-clipped partial repaints (benchmarking: measures true full-frame cost).
