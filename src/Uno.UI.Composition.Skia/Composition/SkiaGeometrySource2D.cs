@@ -3,6 +3,7 @@
 using System;
 using System.Numerics;
 using SkiaSharp;
+using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 using Windows.Graphics;
@@ -12,6 +13,9 @@ namespace Microsoft.UI.Composition
 	internal partial class SkiaGeometrySource2D : DrawingResource, IGeometrySource2D, IGeometry
 	{
 		private readonly SKPath _geometry;
+		// TightBounds walks the path on every call, and the path never changes.
+		private Rect? _bounds;
+		private static bool _hasLoggedOpFailure;
 
 		public SkiaGeometrySource2D(SKPath source)
 		{
@@ -47,7 +51,7 @@ namespace Microsoft.UI.Composition
 
 		#region IGeometry (backend-neutral handle)
 
-		Rect IGeometry.Bounds => _geometry.TightBounds.ToRect();
+		Rect IGeometry.Bounds => _bounds ??= _geometry.TightBounds.ToRect();
 
 		GeometryFillRule IGeometry.FillRule => _geometry.FillType == SKPathFillType.EvenOdd ? GeometryFillRule.EvenOdd : GeometryFillRule.NonZero;
 
@@ -76,6 +80,12 @@ namespace Microsoft.UI.Composition
 			if (_geometry.Op(lease.Path, op) is { } combined)
 			{
 				return new SkiaGeometrySource2D(combined);
+			}
+
+			if (!_hasLoggedOpFailure && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				_hasLoggedOpFailure = true;
+				this.Log().Warn($"A path {op} failed; the result falls back (further failures are not logged).");
 			}
 
 			// The boolean failed (a non-finite or pathological contour). IGeometry has no failure channel, so this
