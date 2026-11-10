@@ -67,6 +67,8 @@ public class Given_SystemFocusVisual
 
 		var transform = focusVisual.TransformToVisual(TestServices.WindowHelper.XamlRoot.VisualTree.RootElement);
 		var initialPoint = transform.TransformPoint(default);
+		// Focusing brings the button in with WinUI's 20px padding, which already scrolls the viewer a little.
+		var initialOffset = scrollViewer.VerticalOffset;
 
 		scrollViewer.ChangeView(null, 100, null, true);
 
@@ -83,7 +85,7 @@ public class Given_SystemFocusVisual
 
 		transform = focusVisual.TransformToVisual(TestServices.WindowHelper.XamlRoot.VisualTree.RootElement);
 		var scrolledPoint = transform.TransformPoint(default);
-		Assert.AreEqual(initialPoint.Y - 100, scrolledPoint.Y, 0.5);
+		Assert.AreEqual(initialPoint.Y - (100 - initialOffset), scrolledPoint.Y, 0.5);
 	}
 
 	[TestMethod]
