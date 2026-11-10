@@ -170,7 +170,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <summary>
 	/// The area this visual's own content paints, in local coordinates, which native elements drawn under it are
 	/// clipped out of. False when it isn't known more tightly than the visual's clip; otherwise <paramref name="painted"/>
-	/// is null when nothing is painted, or a reference the caller releases. It must cover every painted pixel.
+	/// is null when nothing is painted, or a reference the caller owns and releases. It must cover every painted pixel;
+	/// translucent paint counts as opaque, since a native element can't be blended with it. Shadows are handled by the caller.
 	/// </summary>
 	internal virtual bool TryGetPaintedGeometry(out IGeometry? painted)
 	{
@@ -888,12 +889,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private IGeometry SubtractPaintedArea(IGeometry clipPath, IGeometry localClip, Matrix3x2? localMatrix)
 	{
 		// No native element is visible under this visual, so there is nothing to cut and no geometry worth building.
-		if (clipPath.IsEmpty || !Intersects(clipPath.Bounds, localClip.Bounds))
+		if (clipPath.IsEmpty || IsRectEmpty(Intersect(clipPath.Bounds, localClip.Bounds)))
 		{
 			return clipPath;
 		}
 
-		if (localMatrix is not { } matrix || !TryGetPaintedGeometry(out var painted))
+		// A shadow paints around the visual's own content, inside its clip.
+		if (ShadowState is not null || localMatrix is not { } matrix || !TryGetPaintedGeometry(out var painted))
 		{
 			return clipPath.Combine(localClip, GeometryCombineMode.Difference);
 		}
@@ -905,15 +907,35 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		var paintedInRoot = painted.Transform(matrix);
 		painted.Release();
-		var covered = paintedInRoot.Combine(localClip, GeometryCombineMode.Intersect);
+		using var fringe = paintedInRoot.GetStrokeFillGeometry(AntialiasingFringe);
+		var widened = paintedInRoot.Combine(fringe, GeometryCombineMode.Union);
+		var paintedIsEmpty = paintedInRoot.IsEmpty;
 		paintedInRoot.Release();
+		var covered = widened.Combine(localClip, GeometryCombineMode.Intersect);
+		widened.Release();
+
+		// The intersection also comes back empty when the boolean op fails, and cutting nothing would let the native
+		// element cover this visual: cut the whole clip instead.
+		if (covered.IsEmpty && !paintedIsEmpty)
+		{
+			covered.Release();
+			return clipPath.Combine(localClip, GeometryCombineMode.Difference);
+		}
+
 		var result = clipPath.Combine(covered, GeometryCombineMode.Difference);
 		covered.Release();
 		return result;
-
-		static bool Intersects(Rect a, Rect b)
-			=> a.Left < b.Right && b.Left < a.Right && a.Top < b.Bottom && b.Top < a.Bottom;
 	}
+
+	// Antialiasing partly paints the pixels along the painted edges, and a host turns the clip into a region by pixel
+	// centers: without a margin, a 1px ring at a fractional offset could lose every pixel to the native element.
+	private static readonly StrokeStyle AntialiasingFringe = new()
+	{
+		Thickness = 2,
+		StartCap = StrokeCap.Round,
+		EndCap = StrokeCap.Round,
+		LineJoin = StrokeJoin.Round,
+	};
 
 	internal IGeometry GetTotalClipPath(bool skipPostPaintingClipping)
 	{

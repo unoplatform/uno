@@ -390,7 +390,8 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 	internal override bool TryGetPaintedGeometry(out IGeometry? painted)
 	{
-		// Subclasses (e.g. the SkiaSharp and WebGPU canvases) paint content of their own, which only they can bound.
+		// Subclasses (the SkiaSharp, WebGPU and GL canvases) paint content of their own, which only they can bound.
+		// Checking the exact type keeps any future subclass on the safe bounds by default.
 		if (GetType() != typeof(BorderVisual))
 		{
 			return base.TryGetPaintedGeometry(out painted);
@@ -399,7 +400,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		painted = null;
 		UpdatePathsAndCornerClip();
 
-		if (_backgroundBrush?.CanPaint() ?? false)
+		if (PaintsBackground())
 		{
 			// With a border brush, the pre-painting clip already carries the rounded outer edge, which covers both
 			// the background and the ring. Without corners to cut, the bounds are close enough.
@@ -408,7 +409,16 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 				return false;
 			}
 
-			painted = background.Transform(Matrix3x2.CreateTranslation(_backgroundShape!.Offset));
+			if (_backgroundShape!.Offset == Vector2.Zero)
+			{
+				background.AddRef();
+				painted = background;
+			}
+			else
+			{
+				painted = background.Transform(Matrix3x2.CreateTranslation(_backgroundShape.Offset));
+			}
+
 			return true;
 		}
 
@@ -423,6 +433,11 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		static IGeometry? GetPath(CompositionSpriteShape? shape)
 			=> (shape?.Geometry as CompositionPathGeometry)?.Path?.GeometrySource as IGeometry;
 	}
+
+	// A brush transition fills with colors the target brush doesn't have, e.g. while fading towards Transparent.
+	private bool PaintsBackground()
+		=> _backgroundBrush is not null
+			&& (_backgroundBrush.CanPaint() || (_backgroundShape is { } shape && Compositor.TryGetEffectiveBackgroundColor(shape, out _)));
 
 	// The background fill and border ring both live inside (0, 0, Size.X, Size.Y) by construction.
 	internal override bool PaintsWithinOwnSize => true;
