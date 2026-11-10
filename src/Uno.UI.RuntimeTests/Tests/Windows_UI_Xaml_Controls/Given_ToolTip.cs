@@ -522,6 +522,196 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+#if HAS_UNO
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+#if RUNTIME_NATIVE_AOT
+		[Ignore("NativeAOT GC behavior may differ for leak detection tests")]
+#endif
+		[DataRow("Pending")]
+		[DataRow("OwnerRemoved")]
+		[DataRow("Click")]
+		[DataRow("IsOpen")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+		public async Task When_ToolTip_Closed_And_Owner_Removed_Then_Owner_Not_Rooted(string closedBy)
+		{
+			var host = new StackPanel { Width = 300, Height = 300 };
+			await UITestHelper.Load(host);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			try
+			{
+				var ownerRef = await ShowToolTipThenRemoveOwner(host, mouse, closedBy);
+
+				Assert.IsTrue(await TestHelper.TryWaitUntilCollected(ownerRef), $"The ToolTip owner is still rooted after the ToolTip closed by {closedBy}.");
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+				mouse.MoveBy(0, 200);
+				await UITestHelper.WaitForIdle();
+			}
+		}
+
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+		private static async Task<WeakReference> ShowToolTipThenRemoveOwner(StackPanel host, Mouse mouse, string closedBy)
+		{
+			var owner = new Button { Content = "Owner", Width = 120, Height = 40 };
+			var toolTip = new ToolTip { Content = "ToolTip" };
+			ToolTipService.SetToolTip(owner, toolTip);
+			host.Children.Add(owner);
+			await TestServices.WindowHelper.WaitForLoaded(owner);
+
+			mouse.MoveTo(owner.GetAbsoluteBoundsRect().GetCenter());
+			if (closedBy == "Pending")
+			{
+				await UITestHelper.WaitForIdle();
+				Assert.IsFalse(toolTip.IsOpen, "The ToolTip opened before the owner was removed.");
+			}
+			else
+			{
+				await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay + 300));
+				Assert.IsTrue(toolTip.IsOpen, "The ToolTip did not open.");
+			}
+
+			switch (closedBy)
+			{
+				case "Click":
+					mouse.Press();
+					mouse.Release();
+					break;
+				case "IsOpen":
+					toolTip.IsOpen = false;
+					break;
+			}
+			await UITestHelper.WaitForIdle();
+
+			host.Children.Clear();
+			await UITestHelper.WaitForIdle();
+
+			return new WeakReference(owner);
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+		public async Task When_Automatic_ToolTip_Reopened_By_App_Then_ShowDuration_Does_Not_Close_It()
+		{
+			var owner = new Button { Content = "Owner", Width = 120, Height = 40 };
+			var toolTip = new ToolTip { Content = "ToolTip" };
+			ToolTipService.SetToolTip(owner, toolTip);
+			await UITestHelper.Load(owner);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			try
+			{
+				mouse.MoveTo(owner.GetAbsoluteBoundsRect().GetCenter());
+				await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay + 300));
+				Assert.IsTrue(toolTip.IsOpen, "The ToolTip did not open.");
+
+				toolTip.IsOpen = false;
+				await UITestHelper.WaitForIdle();
+				toolTip.IsOpen = true;
+				await UITestHelper.WaitForIdle();
+				Assert.IsTrue(toolTip.IsOpen, "The ToolTip did not reopen.");
+
+				await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDuration + 500));
+				Assert.IsTrue(toolTip.IsOpen, "The automatic ShowDuration timer closed a ToolTip the app reopened.");
+			}
+			finally
+			{
+				toolTip.IsOpen = false;
+				mouse.MoveBy(0, 200);
+				await UITestHelper.WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+		public async Task When_Pending_ToolTip_Opened_And_Closed_By_App_Then_Still_Opens_Automatically()
+		{
+			var owner = new Button { Content = "Owner", Width = 120, Height = 40 };
+			var toolTip = new ToolTip { Content = "ToolTip" };
+			ToolTipService.SetToolTip(owner, toolTip);
+			await UITestHelper.Load(owner);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			try
+			{
+				mouse.MoveTo(owner.GetAbsoluteBoundsRect().GetCenter());
+				await UITestHelper.WaitForIdle();
+				Assert.IsFalse(toolTip.IsOpen, "premise: the ToolTip is still waiting to open");
+				Assert.AreSame(toolTip, ToolTipService.CurrentToolTipForTesting, "premise: the service holds the pending ToolTip");
+
+				// Back to back, so the show delay cannot elapse while the app holds the ToolTip open.
+				toolTip.IsOpen = true;
+				toolTip.IsOpen = false;
+
+				Assert.AreSame(toolTip, ToolTipService.CurrentToolTipForTesting, "The app closing the ToolTip cancelled the pending automatic open.");
+				await UITestHelper.WaitFor(() => toolTip.IsOpen, timeoutMS: 5000, message: "The hovered ToolTip did not open after the app opened and closed it.");
+			}
+			finally
+			{
+				toolTip.IsOpen = false;
+				mouse.MoveBy(0, 200);
+				await UITestHelper.WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+		public async Task When_Pending_ToolTip_Opened_By_App_Then_ShowDuration_Does_Not_Close_It()
+		{
+			// As in WinUI, the service does not take over a ToolTip the app opened during the show delay.
+			var owner = new Button { Content = "Owner", Width = 120, Height = 40 };
+			var toolTip = new ToolTip { Content = "ToolTip" };
+			ToolTipService.SetToolTip(owner, toolTip);
+			await UITestHelper.Load(owner);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			try
+			{
+				mouse.MoveTo(owner.GetAbsoluteBoundsRect().GetCenter());
+				await UITestHelper.WaitForIdle();
+				Assert.IsFalse(toolTip.IsOpen, "premise: the ToolTip is still waiting to open");
+				Assert.AreSame(toolTip, ToolTipService.CurrentToolTipForTesting, "premise: the service holds the pending ToolTip");
+
+				toolTip.IsOpen = true;
+
+				await UITestHelper.WaitFor(
+					() => ToolTipService.CurrentToolTipForTesting is null,
+					timeoutMS: FeatureConfiguration.ToolTip.ShowDelay + 2000,
+					message: "The service kept a ToolTip the app opened during the show delay.");
+				await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDuration + 500));
+				Assert.IsTrue(toolTip.IsOpen, "The automatic ShowDuration timer closed a ToolTip the app opened.");
+			}
+			finally
+			{
+				toolTip.IsOpen = false;
+				mouse.MoveBy(0, 200);
+				await UITestHelper.WaitForIdle();
+			}
+		}
+#endif
+
 		// ---------------------------------------------------------------------------
 		// {ThemeResource} inheritance for popup-hosted (ToolTip) content — kahua #484.
 		//
