@@ -111,7 +111,7 @@ In `<TargetFrameworks>`, in every project:
 - iOS and tvOS 15.0, and Android API 24. A head that pins a lower `SupportedOSPlatformVersion` keeps it, but that combination is no longer tested, so raise it.
 - WinAppSDK `10.0.19041.0`. The same goes for a head that pins a lower `TargetPlatformMinVersion`.
 
-Windows heads now build against Windows App SDK 2.x, so [packaged apps need the Windows App Runtime 2.4.0 or later](xref:Uno.Development.MigratingToUno7.Packages#windows-app-sdk-minimum-raised-from-1x-to-240) on your users' machines. If you pin `WinAppSdkVersion` to 1.x, restore fails until you raise it to 2.4.0 or later.
+Windows heads now build against Windows App SDK 2.x, so [packaged apps need the Windows App Runtime 2.4.0 or later](xref:Uno.Development.MigratingToUno7.Packages#windows-app-sdk-minimum-raised-from-1x-to-240) on your users' machines. If you pin `WinAppSdkVersion` to 1.x, restore fails until you raise it to 2.4.0 or later. If you set `WindowsSdkPackageVersion`, [remove it or use a `.87` revision](xref:Uno.Development.MigratingToUno7.ProjectSetup#the-windows-sdk-projection-is-picked-by-the-unosdk), or the Windows build can fail with `CS1705`.
 
 ### 4. Clean up `UnoFeatures`
 

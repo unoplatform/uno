@@ -14,6 +14,7 @@ Look up the code or message you got, then follow the link for the fix.
 |---|---|---|
 | `NU1202` | A project still targets `net9.0-*` | [.NET 9 is no longer supported](xref:Uno.Development.MigratingToUno7.ProjectSetup#net-9-is-no-longer-supported) |
 | `NU1605` | `WinAppSdkVersion` is pinned to 1.x | [Windows App SDK minimum](xref:Uno.Development.MigratingToUno7.Packages#windows-app-sdk-minimum-raised-from-1x-to-240) |
+| `CS1705` on `WinRT.Runtime` | `WindowsSdkPackageVersion` selects a projection older than `.87` | [Windows SDK projection](xref:Uno.Development.MigratingToUno7.ProjectSetup#the-windows-sdk-projection-is-picked-by-the-unosdk) |
 | `MSB4100` | A condition uses the removed `IsMacCatalyst` or `IsIOSOrCatalyst` | [Mac Catalyst is removed](xref:Uno.Development.MigratingToUno7.ProjectSetup#mac-catalyst-is-removed) |
 | `CS0104` on `ScrollViewer`, `ComboBox` or `ScrollContentPresenter` | `using Uno.UI.Xaml.Controls;` next to the WinUI namespace | [`Uno.UI.Toolkit` types](xref:Uno.Development.MigratingToUno7.Renames#unouitoolkit-types-move-to-the-unoui-namespaces) |
 | `ThumbnailMode` not found | `Windows.Storage.ThumbnailMode` is removed | [`Windows.Storage.ThumbnailMode`](xref:Uno.Development.MigratingToUno7.WinUIParity#windowsstoragethumbnailmode-is-removed) |
@@ -102,6 +103,7 @@ Each row is a literal string to search for across your C#, XAML and MSBuild file
 | `net9.0` | [.NET 9 is no longer supported](xref:Uno.Development.MigratingToUno7.ProjectSetup#net-9-is-no-longer-supported) |
 | `maccatalyst`, `__MACCATALYST__`, `IsMacCatalyst`, `IsIOSOrCatalyst`, `MacCatalystProjectFolder` | [Mac Catalyst is removed](xref:Uno.Development.MigratingToUno7.ProjectSetup#mac-catalyst-is-removed) |
 | `SupportedOSPlatformVersion`, `TargetPlatformMinVersion` | [Minimum OS versions](xref:Uno.Development.MigratingToUno7.ProjectSetup#minimum-os-versions-raised) |
+| `WindowsSdkPackageVersion` | [Windows SDK projection](xref:Uno.Development.MigratingToUno7.ProjectSetup#the-windows-sdk-projection-is-picked-by-the-unosdk) |
 | `UnoDisableHotRestartHelperGeneration` | [iOS Hot Restart](xref:Uno.Development.MigratingToUno7.ProjectSetup#ios-hot-restart-is-not-supported) |
 | `UnoSplashScreenColor` | [`UnoSplashScreenColor` removed](xref:Uno.Development.MigratingToUno7.ProjectSetup#unosplashscreencolor-removed) |
 | `UnoRuntimeIdentifier`, `UnoUIRuntimeIdentifier`, `UnoWinRTRuntimeIdentifier` | [Runtime identifier properties](xref:Uno.Development.MigratingToUno7.Libraries#runtime-identifier-properties-removed) |
