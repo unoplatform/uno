@@ -62,10 +62,10 @@ public class Given_WasmAccessibleTextBoxFocus
 		var (textBox, log) = await LoadAsync(new TextBox { Text = "hello" });
 
 		// What a screen reader (or Tab in the semantic DOM) does: focus the semantic node itself.
-		InvokeBrowserJs($"(function(){{document.getElementById('{GetSemanticElementId(textBox)}').focus(); return 'ok';}})()");
+		var raised = MoveDomFocus(GetSemanticElementId(textBox), "focus");
 		await SettleAsync();
 
-		CollectionAssert.AreEqual(new[] { "GotFocus" }, log, string.Join(", ", log));
+		CollectionAssert.AreEqual(new[] { "GotFocus" }, log, $"{string.Join(", ", log)} (browser raised focus: {raised})");
 		Assert.AreEqual(FocusState.Keyboard, textBox.FocusState);
 	}
 
@@ -83,11 +83,14 @@ public class Given_WasmAccessibleTextBoxFocus
 		// stale, then the browser lands on the focused radio again. Focusing the already-active element raises nothing.
 		var firstId = GetSemanticElementId(first);
 		var secondId = GetSemanticElementId(second);
-		InvokeBrowserJs($"(function(){{const s = document.getElementById('{secondId}'); s.blur(); document.getElementById('{firstId}').tabIndex = 0; s.tabIndex = -1; s.focus(); return 'ok';}})()");
+		var blurRaised = MoveDomFocus(secondId, "blur");
+		InvokeBrowserJs($"(function(){{document.getElementById('{firstId}').tabIndex = 0; document.getElementById('{secondId}').tabIndex = -1; return 'ok';}})()");
+		var focusRaised = MoveDomFocus(secondId, "focus");
 		await SettleAsync();
 
-		CollectionAssert.AreEqual(new[] { "GotFocus" }, log, string.Join(", ", log));
-		Assert.AreEqual("0", InvokeBrowserJs($"(function(){{return String(document.getElementById('{secondId}').tabIndex);}})()"), "The focused radio should be the tab stop.");
+		var raised = $"(browser raised blur: {blurRaised}, focus: {focusRaised})";
+		CollectionAssert.AreEqual(new[] { "GotFocus" }, log, $"{string.Join(", ", log)} {raised}");
+		Assert.AreEqual("0", InvokeBrowserJs($"(function(){{return String(document.getElementById('{secondId}').tabIndex);}})()"), $"The focused radio should be the tab stop {raised}.");
 		Assert.AreEqual("-1", InvokeBrowserJs($"(function(){{return String(document.getElementById('{firstId}').tabIndex);}})()"), "The other radio should leave the tab order.");
 	}
 
@@ -110,6 +113,16 @@ public class Given_WasmAccessibleTextBoxFocus
 		control.LostFocus += (_, _) => log.Add("LostFocus");
 		return (control, log);
 	}
+
+	/// <summary>
+	/// Calls focus() or blur() on a semantic element and returns whether the browser raised the matching event.
+	/// </summary>
+	/// <remarks>
+	/// Chrome holds focus and blur events back while its window lacks OS focus, as on the CI agents, so the event is
+	/// raised by hand when the browser didn't.
+	/// </remarks>
+	private static bool MoveDomFocus(string id, string method)
+		=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{id}'); let raised = false; const mark = () => raised = true; e.addEventListener('{method}', mark); e.{method}(); e.removeEventListener('{method}', mark); if (!raised) {{ e.dispatchEvent(new FocusEvent('{method}')); }} return String(raised);}})()") == "true";
 
 	private static async Task SettleAsync()
 	{
