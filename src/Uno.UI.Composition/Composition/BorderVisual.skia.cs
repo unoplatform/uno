@@ -390,12 +390,6 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 	private protected override bool TryBuildPaintedGeometry(out IGeometry? geometry)
 	{
-		// Subclasses (the SkiaSharp, WebGPU and GL canvases) paint content of their own, which only they can describe.
-		if (GetType() != typeof(BorderVisual))
-		{
-			return base.TryBuildPaintedGeometry(out geometry);
-		}
-
 		geometry = null;
 		UpdatePathsAndCornerClip();
 
