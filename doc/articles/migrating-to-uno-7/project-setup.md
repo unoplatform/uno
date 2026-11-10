@@ -151,14 +151,15 @@ browser theme instead of white. See [Splash screen](xref:Uno.Development.SplashS
 
 ## The Windows SDK projection is picked by the `Uno.Sdk`
 
-Uno Platform 7.0's Windows assemblies are built against the `.87` Windows SDK projection (WinRT.Runtime 2.3). For
-Windows targets, the `Uno.Sdk` sets `WindowsSdkPackageMinimumRevision` to `87` unless the project picks a projection
-itself (`WindowsSdkPackageVersion` or `UseWindowsSDKPreview`), so no project setting is needed.
+Some Uno Platform 7.0 Windows packages, such as the Hot Design client that Debug builds reference, are built against the
+`.87` Windows SDK projection (WinRT.Runtime 2.3). In a `Sdk="Uno.Sdk"` project, the `Uno.Sdk` sets
+`WindowsSdkPackageMinimumRevision` to `87` for Windows targets unless the project picks a projection itself
+(`WindowsSdkPackageVersion` or `UseWindowsSDKPreview`), so no project setting is needed.
 
-If your project sets `WindowsSdkPackageVersion`, in the `.csproj`, a `Directory.Build.props` or `.targets` file or as an
-environment variable, remove it, or use a `.87` or later revision. The [Uno Platform 6.0 migration](xref:Uno.Development.MigratingToUno6)
-suggested `10.0.19041.57`: a projection older than `.87` fails with `CS1705`, because Uno's Windows assemblies need
-WinRT.Runtime 2.3.
+If your project sets `WindowsSdkPackageVersion` (in the `.csproj`, a `Directory.Build.props` or `.targets` file, or as an
+environment variable), remove it. To keep it, use the `.87` revision of your target framework's Windows SDK build, such
+as `10.0.26100.87` for `net10.0-windows10.0.26100`. An older revision, such as the `10.0.19041.57` suggested by the
+[Uno Platform 6.0 migration](xref:Uno.Development.MigratingToUno6), can fail with `CS1705` on `WinRT.Runtime`.
 
 To require a later projection without pinning the full version, set `WindowsSdkPackageMinimumRevision` instead.
 
