@@ -657,6 +657,14 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 @group(2) @binding(1) var clipMask: texture_2d<f32>;
 @group(2) @binding(2) var coverageTex: texture_2d<f32>;
 @group(2) @binding(3) var covSmp: sampler;
+fn acrLum(c: vec3<f32>) -> f32 { return dot(c, vec3<f32>(0.3, 0.59, 0.11)); }
+fn acrSetLum(c: vec3<f32>, l: f32) -> vec3<f32> {
+  var r = c + (l - acrLum(c));
+  let m = acrLum(r); let n = min(r.r, min(r.g, r.b)); let x = max(r.r, max(r.g, r.b));
+  if (n < 0.0) { r = m + (r - m) * m / max(m - n, 1e-6); }
+  if (x > 1.0) { r = m + (r - m) * (1.0 - m) / max(x - m, 1e-6); }
+  return r;
+}
 @vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> VOut { var o: VOut; o.p = place(pos); o.uv = uv; o.rp = pos; return o; }
 @fragment fn fs(i: VOut) -> @location(0) vec4<f32> {
   // Analytic box-filter coverage of the quad's own edges, in pixels via the uv derivatives -- the rounded-rect
@@ -685,9 +693,10 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
     c = fp * c.a;
 
   } else if (u.op.w > 0.5) {
-    // Acrylic backdrop composite: blurred backdrop -> luminosity blend (tint = lum rgb/a) -> procedural grain
-    // (off.x = noise opacity), opaque within the region. One draw replaces the blurred-image + luminosity overlay.
-    var rgb = mix(c.rgb, u.tint.rgb, u.tint.a);
+    // Acrylic backdrop composite: blurred backdrop -> Luminosity blend (tint = luminosity colour) -> Color blend
+    // (m0 = tint colour) -> procedural grain (off.x = noise opacity), opaque within the region.
+    var rgb = mix(c.rgb, acrSetLum(c.rgb, acrLum(u.tint.rgb)), u.tint.a);
+    rgb = mix(rgb, acrSetLum(u.m0.rgb, acrLum(rgb)), u.m0.a);
     let nz = (fract(sin(dot(floor(i.p.xy), vec2<f32>(12.9898, 78.233))) * 43758.5453) - 0.5) * 2.0 * u.off.x;
     rgb = clamp(rgb + vec3<f32>(nz), vec3<f32>(0.0), vec3<f32>(1.0));
     c = vec4<f32>(rgb, 1.0);
