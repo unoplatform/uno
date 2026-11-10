@@ -749,7 +749,7 @@ public class Given_ItemsRepeater_FastScroll
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22495")]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Wasm)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_BrowserScrollBarThumbTracked_Then_OffsetIsDeferredUntilDispatcher()
 	{
 #if HAS_UNO
