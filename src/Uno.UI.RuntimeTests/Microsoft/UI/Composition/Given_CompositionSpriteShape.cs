@@ -399,23 +399,24 @@ public class Given_CompositionSpriteShape
 			$"Stroke height mismatch. Expected ~{expectedStrokePixels}px (±{tolerance}), got {strokePixels:F2}px (physical coverage: {coveragePhysical:F2}, scale: {rasterizationScale}).");
 	}
 
-	// Regression guard for damage-region rendering: the bounds a shape reports for the damage region
-	// (TryGetRenderBounds) must match the transform CompositionShape.Render applies to the canvas — its
-	// Offset and CombinedTransformMatrix (Scale/Rotation around CenterPoint). Before the fix these ignored
+	// Regression guard for damage-region rendering: the bounds a shape visual reports for the damage region
+	// must match the transform CompositionShape.Render applies to the canvas — its Offset and
+	// CombinedTransformMatrix (Scale/Rotation around CenterPoint). Before the fix these ignored
 	// Offset/Rotation, so an animating AnimatedIcon (whose shapes rotate about a centre and are offset)
 	// damaged the wrong region and left the previous frame's pixels un-erased.
 	[TestMethod]
 	[RunsOnUIThread]
 	public void When_Shape_Offset_Then_RenderBounds_Track_Offset()
 	{
-		var shape = CreateUnitRectShape(20, 10);
+		var (visual, shape) = CreateUnitRectShapeVisual(20, 10);
 
-		Assert.IsTrue(shape.TryGetRenderBounds(out var baseline));
+		Assert.IsTrue(visual.TryGetLocalContentBounds(out var baseline));
 		AssertRectClose(new Rect(0, 0, 20, 10), baseline);
 
+		// Also checks the painted area cached on the visual is dropped when one of its shapes changes.
 		shape.Offset = new Vector2(100, 50);
 
-		Assert.IsTrue(shape.TryGetRenderBounds(out var moved));
+		Assert.IsTrue(visual.TryGetLocalContentBounds(out var moved));
 		AssertRectClose(new Rect(100, 50, 20, 10), moved);
 	}
 
@@ -423,15 +424,24 @@ public class Given_CompositionSpriteShape
 	[RunsOnUIThread]
 	public void When_Shape_Rotated_Then_RenderBounds_Track_Rotation()
 	{
-		var shape = CreateUnitRectShape(20, 10);
+		var (visual, shape) = CreateUnitRectShapeVisual(20, 10);
 		shape.CenterPoint = new Vector2(10, 5);
 		shape.RotationAngleInDegrees = 90;
 
 		// A 20x10 rect rotated 90° about its centre (10,5) becomes a 10x20 AABB centred at (10,5).
 		var expected = new Rect(5, -5, 10, 20);
 
-		Assert.IsTrue(shape.TryGetRenderBounds(out var rotated));
+		Assert.IsTrue(visual.TryGetLocalContentBounds(out var rotated));
 		AssertRectClose(expected, rotated);
+	}
+
+	private static (ShapeVisual visual, CompositionSpriteShape shape) CreateUnitRectShapeVisual(float width, float height)
+	{
+		var visual = Compositor.GetSharedCompositor().CreateShapeVisual();
+		visual.Size = new Vector2(200, 200);
+		var shape = CreateUnitRectShape(width, height);
+		visual.Shapes.Add(shape);
+		return (visual, shape);
 	}
 
 	private static CompositionSpriteShape CreateUnitRectShape(float width, float height)

@@ -246,54 +246,9 @@ namespace Microsoft.UI.Composition
 			return false;
 		}
 
-		/// <summary>
-		/// Bounds of what this shape actually paints, in its parent visual's coordinates; false when it paints
-		/// nothing. Used to bound the visual's damage to its shapes instead of falling back to its clip.
-		/// </summary>
-		internal bool TryGetRenderBounds(out Rect bounds)
-		{
-			bounds = default;
-			var any = false;
-
-			if ((FillBrush?.CanPaint() ?? false) && _fillGeometryWithTransformations is { } fillGeometry)
-			{
-				bounds = fillGeometry.Bounds;
-				any = true;
-			}
-
-			if ((StrokeBrush?.CanPaint() ?? false) && StrokeThickness > 0 && _geometryWithTransformations is { } strokeGeometry)
-			{
-				// The stroke straddles the geometry, so it reaches half a thickness out; a full thickness also
-				// covers what joins and caps add beyond that.
-				var b = strokeGeometry.Bounds;
-				var strokeBounds = new Rect(
-					b.X - StrokeThickness,
-					b.Y - StrokeThickness,
-					b.Width + 2 * StrokeThickness,
-					b.Height + 2 * StrokeThickness);
-
-				if (any)
-				{
-					bounds.Union(strokeBounds);
-				}
-				else
-				{
-					bounds = strokeBounds;
-					any = true;
-				}
-			}
-
-			if (any && GetRenderTransform() is { IsIdentity: false } m)
-			{
-				bounds = bounds.Transform(m);
-			}
-
-			return any;
-		}
-
 		// What CompositionShape.Render applies to the session before painting: the shape's CombinedTransformMatrix
 		// (Scale/Rotation/TransformMatrix around CenterPoint) and then its Offset, matching the Translate + Concat
-		// order there. TryGetRenderBounds must apply it too so damage matches the painted pixels.
+		// order there. BuildRenderGeometry callers must apply it too so the painted area matches the painted pixels.
 		internal Matrix3x2 GetRenderTransform()
 		{
 			var transform = CombinedTransformMatrix;
