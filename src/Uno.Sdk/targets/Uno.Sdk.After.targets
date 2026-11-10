@@ -120,4 +120,14 @@
 	<!-- Include any additional targets that packages defined by other packages -->
 	<Import Project="$(AfterUnoSdkTargets)" Condition="'$(AfterUnoSdkTargets)' != ''"/>
 
+	<!--
+		Uno's Windows assemblies are built against the .87 Windows SDK projection (WinRT.Runtime 2.3). The .NET 10 SDK
+		defaults to .57 (WinRT.Runtime 2.2), which fails with CS1705. A minimum never lowers a newer SDK's default.
+		Set here, after the .NET SDK and Directory.Build.targets, so a WindowsSdkPackageVersion or UseWindowsSDKPreview the
+		project picked anywhere is seen: the .NET SDK rejects either one together with a minimum revision (NETSDK1230, #26174).
+	-->
+	<PropertyGroup Condition=" '$(IsWinAppSdk)' == 'true' AND '$(WindowsSdkPackageMinimumRevision)' == '' AND '$(WindowsSdkPackageVersion)' == '' AND '$(UseWindowsSDKPreview)' != 'true' ">
+		<WindowsSdkPackageMinimumRevision>87</WindowsSdkPackageMinimumRevision>
+	</PropertyGroup>
+
 </Project>
