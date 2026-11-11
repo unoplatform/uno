@@ -18,10 +18,12 @@
 		<DevServerMSBuildToolsVersion>18.0.2</DevServerMSBuildToolsVersion>
 	</PropertyGroup>
 
+	<!-- SDK 11.0.100 ships Roslyn 5.12.0; this build is from the dotnet-tools feed until 5.12 reaches nuget.org (spec 061) -->
 	<PropertyGroup Condition="'$(TargetFramework)'=='net11.0'">
-		<DevServerRoslynVersion>5.6.0</DevServerRoslynVersion>
-		<DevServerMSBuildVersion>18.7.1</DevServerMSBuildVersion>
-		<DevServerMSBuildToolsVersion>18.7.1</DevServerMSBuildToolsVersion>
+		<DevServerRoslynVersion>5.12.0-1.26529.118</DevServerRoslynVersion>
+		<DevServerMSBuildVersion>18.12.2</DevServerMSBuildVersion>
+		<DevServerMSBuildToolsVersion>18.12.2</DevServerMSBuildToolsVersion>
+		<DevServerExtensionsVersion>10.0.10</DevServerExtensionsVersion>
 	</PropertyGroup>
 
 </Project>
