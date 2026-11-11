@@ -379,4 +379,30 @@ public partial class Given_KeyFrameAnimation
 			TestServices.WindowHelper.WindowContent = null;
 		}
 	}
+	[TestMethod]
+	public async Task When_QuaternionKeyFrameAnimation_On_Orientation()
+	{
+		var (host, visual) = await Given_CompositionAnimationGroup.LoadSpriteVisual();
+		var compositor = visual.Compositor;
+		var target = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, MathF.PI / 2);
+
+		var orientation = compositor.CreateQuaternionKeyFrameAnimation();
+		orientation.InsertKeyFrame(1, target);
+		orientation.Duration = TimeSpan.FromMilliseconds(100);
+		orientation.Target = nameof(Visual.Orientation);
+
+		try
+		{
+			await Given_CompositionAnimationGroup.RunInBatch(compositor, () => visual.StartAnimation(nameof(Visual.Orientation), orientation));
+
+			Assert.AreEqual(target.X, visual.Orientation.X, 0.001f);
+			Assert.AreEqual(target.Y, visual.Orientation.Y, 0.001f);
+			Assert.AreEqual(target.Z, visual.Orientation.Z, 0.001f);
+			Assert.AreEqual(target.W, visual.Orientation.W, 0.001f);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
 }
