@@ -1,0 +1,10 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:local="using:Uno.UI.Tests.App.Views">
+
+	<!-- Default style for GenericXamlMergedControl - tests MergedDictionary discovery -->
+	<Style TargetType="local:GenericXamlMergedControl">
+		<Setter Property="TestTag" Value="FromMergedDictionary" />
+	</Style>
+
+</ResourceDictionary>
