@@ -36,6 +36,30 @@ In a class library, a single `net10.0` target framework combined with these runt
 > [!NOTE]
 > [JSImport/JSExport](xref:Uno.Wasm.Bootstrap.JSInterop) and [BrowserHtmlElement](xref:Uno.Interop.WasmJavaScript1) are available on all platforms targeting .NET 7 and later, and code using those APIs to be conditionally excluded at compile time, and should only use `OperatingSystem` conditions.
 
+### RuntimePlatformHelper
+
+`OperatingSystem.IsXXX` tells you the operating system, but not which Uno Platform target is running on it. For example, `OperatingSystem.IsWindows()` is `true` both for native WinUI on Windows App SDK and for the Skia Desktop target on Windows. `RuntimePlatformHelper.Current` returns the exact target:
+
+```csharp
+using Uno.UI.Helpers;
+
+var platform = RuntimePlatformHelper.Current;
+
+if (platform == UnoRuntimePlatform.SkiaX11)
+{
+    // Do something specific to Skia Desktop on Linux
+}
+
+if (platform.IsSkia())
+{
+    // Do something for every target rendered by Uno Platform
+}
+```
+
+The available values are `NativeWinUI`, `SkiaWin32`, `SkiaX11`, `SkiaMacOS`, `SkiaIslands`, `SkiaWasm`, `SkiaAndroid`, `SkiaIOS`, `SkiaTvOS`, `SkiaFrameBuffer` and `SkiaHeadless`. The `IsSkia()`, `IsWindowsAppSdk()`, `IsDesktop()`, `IsMobile()`, `IsWasm()`, `IsAndroid()`, `IsIOS()` and `IsTvOS()` extension methods group them.
+
+The platform is registered when the Uno Platform host is created, so `RuntimePlatformHelper.Current` returns `Unknown` if it is read before that, for example from a static constructor that runs before `Main` builds the host.
+
 ## `#if` conditionals
 
 The most basic means of authoring platform-specific code is to use `#if` conditionals:
