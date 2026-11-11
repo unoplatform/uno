@@ -361,7 +361,9 @@ internal sealed class TextInputPlugin
 		var request = ++_hideRequest;
 		_view.PostDelayed(() =>
 		{
-			if (request == _hideRequest && _activeHost is null)
+			// Only a TextBox that shows the keyboard cancels the hide (ShowTextInput bumps the request): one that
+			// merely takes focus, read-only or with the keyboard suppressed, must still see it hidden.
+			if (request == _hideRequest)
 			{
 				HideRequestCount++;
 				_imm?.HideSoftInputFromWindow(_view.ApplicationWindowToken, 0);
