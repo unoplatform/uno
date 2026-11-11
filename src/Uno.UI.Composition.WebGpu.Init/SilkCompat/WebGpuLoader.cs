@@ -32,6 +32,14 @@ internal static class WebGpuLoader
 	/// <summary>The library the "webgpu" [DllImport]s bound to, once one has been called.</summary>
 	internal static IntPtr Resolved { get; private set; }
 
+	/// <summary>
+	/// A Dawn build to use instead of wgpu-native (UNO_WEBGPU_DAWN, a path to its library). Dawn implements the same
+	/// webgpu.h, so only wgpu-native's own functions need standing in for.
+	/// </summary>
+	internal static string? DawnPath { get; } = OperatingSystem.IsBrowser() ? null : Environment.GetEnvironmentVariable("UNO_WEBGPU_DAWN") is { Length: > 0 } path ? path : null;
+
+	internal static bool IsDawn => DawnPath is not null;
+
 	private static IntPtr Resolve(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
 	{
 		var handle = ResolveCore(libraryName);
@@ -47,6 +55,11 @@ internal static class WebGpuLoader
 		if (libraryName != "webgpu")
 		{
 			return IntPtr.Zero;
+		}
+
+		if (DawnPath is { } dawn)
+		{
+			return NativeLibrary.Load(dawn);
 		}
 
 		// iOS/tvOS (and any statically-linked host): wgpu-native is a static lib linked into the app, not a

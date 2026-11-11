@@ -431,7 +431,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		Api.BufferMapAsync(buf, MapMode.Read, 0, (nuint)total, new PfnBufferMapCallback(&OnMap), (void*)GCHandle.ToIntPtr(mh));
 		while (!mapped[0]) { _ = Wgpu.DevicePoll(Dev, true, null); }
 		mh.Free();
-		var mp = (byte*)Api.BufferGetMappedRange(buf, 0, (nuint)total);
+		// A buffer mapped for reading is read through the const range: Dawn returns null for the writable one.
+		var mp = (byte*)Api.BufferGetConstMappedRange(buf, 0, (nuint)total);
 		// Unpadded straight out of the mapped range into the image's own buffer — no intermediate array.
 		var image = new WebGpuReadbackImage(w, h, new ReadOnlySpan<byte>(mp, (int)total), padded, sourceIsBgra);
 		Api.BufferUnmap(buf);
