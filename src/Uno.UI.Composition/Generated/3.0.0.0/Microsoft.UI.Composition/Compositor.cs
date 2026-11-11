@@ -127,13 +127,7 @@ public partial class Compositor : global::System.IDisposable
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateDropShadow()");
 	}
 #endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Composition.ImplicitAnimationCollection CreateImplicitAnimationCollection()
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateImplicitAnimationCollection()");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateImplicitAnimationCollection()
 #if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]
 	public global::Microsoft.UI.Composition.LayerVisual CreateLayerVisual()

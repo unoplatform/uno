@@ -49,6 +49,11 @@ namespace Microsoft.UI.Composition
 			get => _offset;
 			set
 			{
+				if (TryStartImplicitAnimation(nameof(Offset), _offset, value))
+				{
+					return;
+				}
+
 				if (SetProperty(ref _offset, value))
 				{
 					OnOffsetChanged(value);
@@ -63,14 +68,38 @@ namespace Microsoft.UI.Composition
 			get => _arrangeOffset;
 			set
 			{
+				var previousArrangeOffset = _arrangeOffset;
 				if (SetProperty(ref _arrangeOffset, value))
 				{
 					OnArrangeOffsetChanged(value);
+					OnLayoutOffsetChanged(previousArrangeOffset, value);
 				}
 			}
 		}
 
 		partial void OnArrangeOffsetChanged(Vector3 value);
+
+		// On WinUI the layout offset is written to the hand-off visual's Offset, so a layout move triggers the
+		// "Offset" implicit animation. Uno keeps it apart in ArrangeOffset: compensate Offset so the visual stays
+		// where it was, then animate Offset back to its assigned value.
+		private void OnLayoutOffsetChanged(Vector3 previousArrangeOffset, Vector3 arrangeOffset)
+		{
+			if (ImplicitAnimations is not { } implicitAnimations
+				|| IsWritingAnimationValue
+				|| !implicitAnimations.ContainsKey(nameof(Offset)))
+			{
+				return;
+			}
+
+			var assignedOffset = GetImplicitAnimationFinalValue(nameof(Offset)) is Vector3 finalOffset ? finalOffset : _offset;
+			var compensatedOffset = _offset + previousArrangeOffset - arrangeOffset;
+
+			SetWithoutImplicitAnimation(() => Offset = compensatedOffset);
+			if (!StartImplicitAnimation(nameof(Offset), assignedOffset))
+			{
+				SetWithoutImplicitAnimation(() => Offset = assignedOffset);
+			}
+		}
 
 		public bool IsVisible
 		{
@@ -95,7 +124,16 @@ namespace Microsoft.UI.Composition
 		public Vector3 CenterPoint
 		{
 			get => _centerPoint;
-			set { SetProperty(ref _centerPoint, value); OnCenterPointChanged(value); }
+			set
+			{
+				if (TryStartImplicitAnimation(nameof(CenterPoint), _centerPoint, value))
+				{
+					return;
+				}
+
+				SetProperty(ref _centerPoint, value);
+				OnCenterPointChanged(value);
+			}
 		}
 
 		partial void OnCenterPointChanged(Vector3 value);
@@ -103,7 +141,16 @@ namespace Microsoft.UI.Composition
 		public Vector3 Scale
 		{
 			get => _scale;
-			set { SetProperty(ref _scale, value); OnScaleChanged(value); }
+			set
+			{
+				if (TryStartImplicitAnimation(nameof(Scale), _scale, value))
+				{
+					return;
+				}
+
+				SetProperty(ref _scale, value);
+				OnScaleChanged(value);
+			}
 		}
 
 		partial void OnScaleChanged(Vector3 value);
@@ -111,7 +158,16 @@ namespace Microsoft.UI.Composition
 		public Quaternion Orientation
 		{
 			get => _orientation;
-			set { SetProperty(ref _orientation, value); OnOrientationChanged(value); }
+			set
+			{
+				if (TryStartImplicitAnimation(nameof(Orientation), _orientation, value))
+				{
+					return;
+				}
+
+				SetProperty(ref _orientation, value);
+				OnOrientationChanged(value);
+			}
 		}
 
 		partial void OnOrientationChanged(Quaternion value);
@@ -119,13 +175,30 @@ namespace Microsoft.UI.Composition
 		public float RotationAngleInDegrees
 		{
 			get => (float)MathEx.ToDegree(_rotationAngle);
-			set => RotationAngle = (float)MathEx.ToRadians(value);
+			set
+			{
+				if (TryStartImplicitAnimation(nameof(RotationAngleInDegrees), RotationAngleInDegrees, value))
+				{
+					return;
+				}
+
+				RotationAngle = (float)MathEx.ToRadians(value);
+			}
 		}
 
 		public float RotationAngle
 		{
 			get => _rotationAngle;
-			set { SetProperty(ref _rotationAngle, value); OnRotationAngleChanged(value); }
+			set
+			{
+				if (TryStartImplicitAnimation(nameof(RotationAngle), _rotationAngle, value))
+				{
+					return;
+				}
+
+				SetProperty(ref _rotationAngle, value);
+				OnRotationAngleChanged(value);
+			}
 		}
 
 		partial void OnRotationAngleChanged(float value);
@@ -135,6 +208,11 @@ namespace Microsoft.UI.Composition
 			get => _size;
 			set
 			{
+				if (TryStartImplicitAnimation(nameof(Size), _size, value))
+				{
+					return;
+				}
+
 				if (SetProperty(ref _size, value))
 				{
 					OnSizeChanged(value);
@@ -147,7 +225,15 @@ namespace Microsoft.UI.Composition
 		public float Opacity
 		{
 			get => _opacity;
-			set => SetProperty(ref _opacity, value);
+			set
+			{
+				if (TryStartImplicitAnimation(nameof(Opacity), _opacity, value))
+				{
+					return;
+				}
+
+				SetProperty(ref _opacity, value);
+			}
 		}
 
 		internal bool IsHighContrastOpacityOverrideActive { get; set; }
@@ -155,7 +241,16 @@ namespace Microsoft.UI.Composition
 		public Vector3 RotationAxis
 		{
 			get => _rotationAxis;
-			set { SetProperty(ref _rotationAxis, value); OnRotationAxisChanged(value); }
+			set
+			{
+				if (TryStartImplicitAnimation(nameof(RotationAxis), _rotationAxis, value))
+				{
+					return;
+				}
+
+				SetProperty(ref _rotationAxis, value);
+				OnRotationAxisChanged(value);
+			}
 		}
 
 		partial void OnRotationAxisChanged(Vector3 value);

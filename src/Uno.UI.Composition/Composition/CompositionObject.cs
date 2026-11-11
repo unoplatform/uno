@@ -19,6 +19,9 @@ namespace Microsoft.UI.Composition
 	{
 		private CompositionPropertySet? _properties;
 		private Dictionary<string, CompositionAnimation>? _animations;
+		private ImplicitAnimationCollection? _implicitAnimations;
+		private Dictionary<string, ImplicitAnimationRun>? _implicitRuns;
+		private int _animationValueWriteDepth;
 		private bool _isFinalizable = true;
 
 		internal CompositionObject()
@@ -46,6 +49,126 @@ namespace Microsoft.UI.Composition
 		public CoreDispatcher Dispatcher => CoreDispatcher.Main;
 
 		public string? Comment { get; set; }
+
+		public ImplicitAnimationCollection? ImplicitAnimations
+		{
+			get => _implicitAnimations;
+			set => _implicitAnimations = value;
+		}
+
+		/// <summary>True while an animation writes its value, which must not trigger implicit animations.</summary>
+		internal bool IsWritingAnimationValue => _animationValueWriteDepth > 0;
+
+		private void ApplyAnimationValue(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? value)
+		{
+			_animationValueWriteDepth++;
+			try
+			{
+				SetAnimatableProperty(propertyName, subPropertyName, value);
+			}
+			finally
+			{
+				_animationValueWriteDepth--;
+			}
+		}
+
+		/// <summary>
+		/// Assigns a property bypassing implicit animations, the way an animation writes it.
+		/// </summary>
+		internal void SetWithoutImplicitAnimation(Action set)
+		{
+			_animationValueWriteDepth++;
+			try
+			{
+				set();
+			}
+			finally
+			{
+				_animationValueWriteDepth--;
+			}
+		}
+
+		/// <summary>
+		/// Called by a property setter before it stores <paramref name="newValue"/>. Starts the implicit animation
+		/// registered for <paramref name="propertyName"/>, if any. Returns true when the setter must not store the
+		/// value itself, because an animation now drives the property towards it (or it already does).
+		/// </summary>
+		private protected bool TryStartImplicitAnimation<T>(string propertyName, T currentValue, T newValue)
+			where T : struct
+		{
+			if (_implicitAnimations is null || _animationValueWriteDepth > 0 || !_implicitAnimations.ContainsKey(propertyName))
+			{
+				return false;
+			}
+
+			// The property's value is the one it was last assigned, not the in-flight animated one.
+			if (GetImplicitAnimationFinalValue(propertyName) is T assignedValue)
+			{
+				if (EqualityComparer<T>.Default.Equals(assignedValue, newValue))
+				{
+					return true;
+				}
+			}
+			else if (EqualityComparer<T>.Default.Equals(currentValue, newValue))
+			{
+				return false;
+			}
+
+			return StartImplicitAnimation(propertyName, newValue);
+		}
+
+		/// <summary>
+		/// Starts the implicit animation for <paramref name="propertyName"/> towards <paramref name="finalValue"/>.
+		/// Returns true if an animation now drives the whole property.
+		/// </summary>
+		internal bool StartImplicitAnimation(string propertyName, object finalValue)
+		{
+			if (_implicitAnimations is null || !_implicitAnimations.TryGetValue(propertyName, out var animation))
+			{
+				return false;
+			}
+
+			try
+			{
+				StartAnimationGroupCore(animation, propertyName, finalValue);
+			}
+			catch (Exception ex)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError($"Failed to start the implicit animation for '{propertyName}': {ex.Message}");
+				}
+
+				return false;
+			}
+
+			if (_animations?.TryGetValue(propertyName, out var running) == true && running.Template is not null)
+			{
+				(_implicitRuns ??= new(StringComparer.OrdinalIgnoreCase))[propertyName] = new(running, finalValue);
+				return true;
+			}
+
+			return false;
+		}
+
+		/// <summary>The value an implicit animation still running on <paramref name="propertyName"/> is heading to.</summary>
+		internal object? GetImplicitAnimationFinalValue(string propertyName)
+		{
+			if (_implicitRuns is null || !_implicitRuns.TryGetValue(propertyName, out var run))
+			{
+				return null;
+			}
+
+			if (_animations?.TryGetValue(propertyName, out var running) == true && running == run.Animation)
+			{
+				return run.FinalValue;
+			}
+
+			_implicitRuns.Remove(propertyName);
+			return null;
+		}
+
+		private readonly record struct ImplicitAnimationRun(CompositionAnimation Animation, object FinalValue);
 
 		private CompositionPropertySet GetProperties()
 		{
@@ -175,7 +298,7 @@ namespace Microsoft.UI.Composition
 				StopAnimation(propertyName);
 			}
 
-			_animations ??= new();
+			_animations ??= new(StringComparer.OrdinalIgnoreCase);
 			_animations[propertyName] = animation;
 			SetFinalizable(true);
 			animation.AnimationFrame += ReEvaluateAnimation;
@@ -183,7 +306,7 @@ namespace Microsoft.UI.Composition
 
 			try
 			{
-				this.SetAnimatableProperty(firstPropertyName, subPropertyName, animationValue);
+				ApplyAnimationValue(firstPropertyName, subPropertyName, animationValue);
 			}
 			catch (Exception ex)
 			{
@@ -255,7 +378,7 @@ namespace Microsoft.UI.Composition
 						subPropertyName = default;
 					}
 
-					this.SetAnimatableProperty(firstPropertyName, subPropertyName, animation.Evaluate());
+					ApplyAnimationValue(firstPropertyName, subPropertyName, animation.Evaluate());
 					animation.OnEvaluatedValueApplied();
 				}
 			}
@@ -310,7 +433,7 @@ namespace Microsoft.UI.Composition
 						subPropertyName = default;
 					}
 
-					this.SetAnimatableProperty(firstPropertyName, subPropertyName, animation.Evaluate(progress));
+					ApplyAnimationValue(firstPropertyName, subPropertyName, animation.Evaluate(progress));
 				}
 			}
 			finally

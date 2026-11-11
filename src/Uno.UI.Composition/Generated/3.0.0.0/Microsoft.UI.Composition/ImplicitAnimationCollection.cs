@@ -2,77 +2,17 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.UI.Composition;
 
-#if __SKIA__
+#if false
 [global::Uno.NotImplemented]
 #endif
 public partial class ImplicitAnimationCollection : global::Microsoft.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, global::Microsoft.UI.Composition.ICompositionAnimationBase>>, global::System.Collections.IEnumerable, global::System.Collections.Generic.IDictionary<string, global::Microsoft.UI.Composition.ICompositionAnimationBase>, global::System.Collections.Generic.ICollection<global::System.Collections.Generic.KeyValuePair<string, global::Microsoft.UI.Composition.ICompositionAnimationBase>>
 {
-#if __SKIA__
-	internal ImplicitAnimationCollection()
-	{
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::System.Collections.Generic.ICollection<string> Keys
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.ImplicitAnimationCollection", "Keys");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::System.Collections.Generic.ICollection<global::Microsoft.UI.Composition.ICompositionAnimationBase> Values
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.ImplicitAnimationCollection", "Values");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public int Count
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.ImplicitAnimationCollection", "Count");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool IsReadOnly
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.ImplicitAnimationCollection", "IsReadOnly");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Composition.ICompositionAnimationBase this[string key]
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.ImplicitAnimationCollection", "this[string key]");
-		}
-		set
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.ImplicitAnimationCollection", "this[string key]");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<string, global::Microsoft.UI.Composition.ICompositionAnimationBase>> GetEnumerator()
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.ImplicitAnimationCollection", "GetEnumerator()");
-	}
-#endif
+	// Skipping already declared property Keys
+	// Skipping already declared property Values
+	// Skipping already declared property Count
+	// Skipping already declared property IsReadOnly
+	// Skipping already declared property this[string]
+	// Skipping already declared method Microsoft.UI.Composition.ImplicitAnimationCollection.GetEnumerator()
 	// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.System.Collections.IEnumerable.GetEnumerator()
 	// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.Keys.get
 	// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.Values.get
@@ -80,81 +20,17 @@ public partial class ImplicitAnimationCollection : global::Microsoft.UI.Composit
 	// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.IsReadOnly.get
 	// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.this[string].get
 	// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.this[string].set
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void Add(string key, global::Microsoft.UI.Composition.ICompositionAnimationBase value)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.ImplicitAnimationCollection", "Add(string key, ICompositionAnimationBase value)");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool ContainsKey(string key)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.ImplicitAnimationCollection", "ContainsKey(string key)");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool Remove(string key)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.ImplicitAnimationCollection", "Remove(string key)");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool TryGetValue(string key, out global::Microsoft.UI.Composition.ICompositionAnimationBase value)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.ImplicitAnimationCollection", "TryGetValue(string key, out ICompositionAnimationBase value)");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void Add(global::System.Collections.Generic.KeyValuePair<string, global::Microsoft.UI.Composition.ICompositionAnimationBase> item)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.ImplicitAnimationCollection", "Add(KeyValuePair<string, ICompositionAnimationBase> item)");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void Clear()
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.ImplicitAnimationCollection", "Clear()");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool Contains(global::System.Collections.Generic.KeyValuePair<string, global::Microsoft.UI.Composition.ICompositionAnimationBase> item)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.ImplicitAnimationCollection", "Contains(KeyValuePair<string, ICompositionAnimationBase> item)");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, global::Microsoft.UI.Composition.ICompositionAnimationBase>[] array, int arrayIndex)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.ImplicitAnimationCollection", "CopyTo(KeyValuePair<string, ICompositionAnimationBase>[] array, int arrayIndex)");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Composition.ImplicitAnimationCollection.Add(string, Microsoft.UI.Composition.ICompositionAnimationBase)
+	// Skipping already declared method Microsoft.UI.Composition.ImplicitAnimationCollection.ContainsKey(string)
+	// Skipping already declared method Microsoft.UI.Composition.ImplicitAnimationCollection.Remove(string)
+	// Skipping already declared method Microsoft.UI.Composition.ImplicitAnimationCollection.TryGetValue(string, out Microsoft.UI.Composition.ICompositionAnimationBase)
+	// Skipping already declared method Microsoft.UI.Composition.ImplicitAnimationCollection.Add(System.Collections.Generic.KeyValuePair<string, Microsoft.UI.Composition.ICompositionAnimationBase>)
+	// Skipping already declared method Microsoft.UI.Composition.ImplicitAnimationCollection.Clear()
+	// Skipping already declared method Microsoft.UI.Composition.ImplicitAnimationCollection.Contains(System.Collections.Generic.KeyValuePair<string, Microsoft.UI.Composition.ICompositionAnimationBase>)
+	// Skipping already declared method Microsoft.UI.Composition.ImplicitAnimationCollection.CopyTo(System.Collections.Generic.KeyValuePair<string, Microsoft.UI.Composition.ICompositionAnimationBase>[], int)
 	// Forced skipping of method Microsoft.UI.Composition.ImplicitAnimationCollection.System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Microsoft.UI.Composition.ICompositionAnimationBase>>.Remove(System.Collections.Generic.KeyValuePair<string, Microsoft.UI.Composition.ICompositionAnimationBase>)
 	// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Microsoft.UI.Composition.ICompositionAnimationBase>>
 	// Processing: System.Collections.IEnumerable
-#if __SKIA__
-	// DeclaringType: System.Collections.IEnumerable
-	[global::Uno.NotImplemented("__SKIA__")]
-	 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-	{
-		throw new global::System.NotSupportedException();
-	}
-#endif
 	// Processing: System.Collections.Generic.IDictionary<string, Microsoft.UI.Composition.ICompositionAnimationBase>
 	// Processing: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Microsoft.UI.Composition.ICompositionAnimationBase>>
-#if __SKIA__
-	// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Microsoft.UI.Composition.ICompositionAnimationBase>>
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool Remove(global::System.Collections.Generic.KeyValuePair<string, global::Microsoft.UI.Composition.ICompositionAnimationBase> item)
-	{
-		throw new global::System.NotSupportedException();
-	}
-#endif
 }

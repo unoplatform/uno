@@ -19,20 +19,7 @@ public partial class CompositionObject : global::System.IDisposable, global::Mic
 		}
 	}
 #endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Composition.ImplicitAnimationCollection ImplicitAnimations
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionObject", "ImplicitAnimations");
-		}
-		set
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionObject", "ImplicitAnimations");
-		}
-	}
-#endif
+	// Skipping already declared property ImplicitAnimations
 	// Skipping already declared property Properties
 #if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]

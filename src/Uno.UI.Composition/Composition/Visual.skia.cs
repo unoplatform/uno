@@ -422,6 +422,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		get => _anchorPoint;
 		set
 		{
+			if (TryStartImplicitAnimation(nameof(AnchorPoint), _anchorPoint, value))
+			{
+				return;
+			}
+
 			SetProperty(ref _anchorPoint, value);
 		}
 	}

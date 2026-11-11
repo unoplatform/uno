@@ -71,6 +71,9 @@ namespace Microsoft.UI.Composition
 		public CompositionAnimationGroup CreateAnimationGroup()
 			=> new CompositionAnimationGroup(this);
 
+		public ImplicitAnimationCollection CreateImplicitAnimationCollection()
+			=> new ImplicitAnimationCollection(this);
+
 		public CompositionScopedBatch CreateScopedBatch(CompositionBatchTypes batchType)
 			=> new CompositionScopedBatch(this, batchType);
 

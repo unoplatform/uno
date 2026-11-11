@@ -131,6 +131,28 @@ namespace Microsoft.UI.Composition
 		private void SetValue<T>(string propertyName, T value, bool stopAnimation)
 			where T : struct
 		{
+			// Visual.Properties["Translation"] is an animatable Visual property, so assigning it can trigger
+			// the owner's implicit animation (CommunityToolkit's TranslationAnimation relies on it).
+			if (stopAnimation
+				&& !IsWritingAnimationValue
+				&& Owner is { ImplicitAnimations: { } implicitAnimations, IsWritingAnimationValue: false } implicitOwner
+				&& implicitOwner != this
+				&& implicitAnimations.ContainsKey(propertyName))
+			{
+				var hasCurrent = _properties.TryGetValue(propertyName, out var current);
+				if (implicitOwner.GetImplicitAnimationFinalValue(propertyName) is T assigned
+					? EqualityComparer<T>.Default.Equals(assigned, value)
+					: hasCurrent && current is T currentValue && EqualityComparer<T>.Default.Equals(currentValue, value))
+				{
+					return;
+				}
+
+				if (hasCurrent && implicitOwner.StartImplicitAnimation(propertyName, value))
+				{
+					return;
+				}
+			}
+
 			if (stopAnimation)
 			{
 				StopAnimation(propertyName);
