@@ -537,12 +537,22 @@ internal static class DevServerProcessHelper
 			return DirectSpawnResult.Ready;
 		}
 
-		var ready = await WaitForTcpReadyAsync(port, readinessTimeoutMs);
+		var ready = await WaitForTcpReadyAsync(port, readinessTimeoutMs, () => process.HasExited);
 		if (!ready)
 		{
 			var died = process.HasExited;
 			if (died)
 			{
+				// Let the host's last output lines reach the log before reporting the failure.
+				using var drain = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+				try
+				{
+					await process.WaitForExitAsync(drain.Token);
+				}
+				catch (OperationCanceledException)
+				{
+				}
+
 				logger.LogError("Host process died (exit code {ExitCode}) before becoming ready.", process.ExitCode);
 			}
 			else
@@ -635,13 +645,18 @@ internal static class DevServerProcessHelper
 		return null;
 	}
 
-	private static async Task<bool> WaitForTcpReadyAsync(int port, int timeoutMs)
+	private static async Task<bool> WaitForTcpReadyAsync(int port, int timeoutMs, Func<bool> hasExited)
 	{
 		var sw = System.Diagnostics.Stopwatch.StartNew();
 		var endpoint = new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, port);
 
 		while (sw.ElapsedMilliseconds < timeoutMs)
 		{
+			if (hasExited())
+			{
+				return false;
+			}
+
 			try
 			{
 				using var tcp = new System.Net.Sockets.TcpClient();
