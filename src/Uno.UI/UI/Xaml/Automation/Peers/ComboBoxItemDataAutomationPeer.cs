@@ -6,7 +6,9 @@ using Microsoft.UI.Xaml.Automation.Provider;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
-public partial class ComboBoxItemDataAutomationPeer : SelectorItemAutomationPeer, IScrollItemProvider
+// ISelectionItemProvider is listed again so that calls made through the pattern reach the overrides
+// below, as WinUI's virtual SelectImpl/AddToSelectionImpl/RemoveFromSelectionImpl do.
+public partial class ComboBoxItemDataAutomationPeer : SelectorItemAutomationPeer, IScrollItemProvider, ISelectionItemProvider
 {
 	public ComboBoxItemDataAutomationPeer(object item, ComboBoxAutomationPeer parent) : base(item, parent)
 	{
