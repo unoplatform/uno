@@ -811,6 +811,26 @@ public class Given_BindingExpression
 	[TestMethod]
 	[RunsOnUIThread]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19420")]
+	public async Task When_ElementName_Code_Name_Changed_While_Live()
+	{
+		var renamed = new TextBlock { Name = "RenamedCodeName", Text = "renamed" };
+		var namedLate = new TextBlock { Text = "named late" };
+		var root = new StackPanel { Children = { renamed, namedLate } };
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		renamed.Name = "NameAfterRename";
+		namedLate.Name = "NameSetWhileLive";
+
+		var newName = await AddElementNameTarget(root, "NameAfterRename");
+		var setWhileLive = await AddElementNameTarget(root, "NameSetWhileLive");
+
+		Assert.AreEqual("renamed", newName.Text);
+		Assert.AreEqual("named late", setWhileLive.Text);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19420")]
 	public async Task When_ElementName_Targets_A_Template_Part_From_Outside()
 	{
 		var button = new Button { Content = "button" };

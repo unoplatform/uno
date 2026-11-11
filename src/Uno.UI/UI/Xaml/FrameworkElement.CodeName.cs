@@ -74,6 +74,19 @@ public partial class FrameworkElement
 		return anchor;
 	}
 
+	/// <summary>
+	/// Moves the registration of a live element to its new name, as WinUI's CDependencyObject::SetName does.
+	/// </summary>
+	private void UpdateCodeName()
+	{
+		UnregisterCodeName();
+
+		if (IsActiveInVisualTree)
+		{
+			RegisterCodeName();
+		}
+	}
+
 	private void UnregisterCodeName()
 	{
 		if (_codeNameRegistration is { } registration)
