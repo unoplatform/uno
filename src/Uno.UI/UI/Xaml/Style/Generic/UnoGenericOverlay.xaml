@@ -103,7 +103,7 @@
 		</Setter>
 	</Style>
 
-	<!-- WinUI's FlipView style, except VirtualizingStackPanel is not implemented on Skia so the panel is a StackPanel. -->
+	<!-- WinUI's FlipView style, except the panel is a StackPanel: Uno's VirtualizingStackPanel doesn't implement AreScrollSnapPointsRegular yet (#26336). -->
 	<Style TargetType="FlipView">
 		<Setter Property="Background" Value="{ThemeResource FlipViewBackground}" />
 		<Setter Property="BorderThickness" Value="0" />
