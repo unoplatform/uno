@@ -1,6 +1,7 @@
 # Hot Reload: Align the net11 Dev-Server Host with the SDK 11 Compiler (Roslyn 5.12)
 
-Status: **implemented, pending restore against the `dotnet-tools` feed and runtime validation** (see Test plan).
+Status: **implemented; unit and end-to-end runtime validation done on SDK 11.0.100**. Manual app scenarios and the
+package inspection remain (see Test plan).
 Issue: [uno#26316](https://github.com/unoplatform/uno/issues/26316).
 Builds on: [spec 053](../053-hotreload-workspace-analyzer-flavor-skew/spec.md) (R2 alignment rule, R5/R6 capability
 fixes), [spec 060](../060-hotreload-architecture/spec.md) (test suites).
@@ -32,12 +33,22 @@ and carries forward every check that the 4.14 → 5.6 bump needed.
 
 ### R1 — Package source for Roslyn 5.12 (temporary)
 
-Add the `dotnet-tools` feed to `NuGet.Config`, the way `52f889ab97` did in 2024 (removed again in `c069e88a02`
-once nuget.org caught up).
+Add the `dotnet-tools` feed to the net11 block of `src/Uno.DevServer.Roslyn.props` as a
+`RestoreAdditionalProjectSources` entry, **not** to `NuGet.Config`:
 
 ```xml
-<add key="dotnet-tools" value="https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json" />
+<RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json</RestoreAdditionalProjectSources>
 ```
+
+In 2024 (`52f889ab97`, removed again in `c069e88a02`) the feed went into `NuGet.Config`. That makes every restore in
+the repository depend on the feed: a machine or CI mirror that cannot reach it fails to restore all of Uno for a pin
+only the net11 dev-server needs. Only the restore graphs that resolve the net11 Roslyn line get the source:
+
+- `Uno.HotReload` and `Uno.UI.RemoteControl.Server.Processors` (the host flavor);
+- `Uno.HotReload.Tests` and `Uno.UI.SourceGenerators.Tests` (they reference `Uno.HotReload` and import the props).
+
+The Host, `Uno.UI.RemoteControl` and the apps reference the Processors with `ReferenceOutputAssembly=false`, so the
+Roslyn packages are not in their restore graph and they need no extra source.
 
 **No `packageSourceMapping`**, as in 2024. Once any mapping exists, NuGet ignores every source without one, and
 CI adds the `uno-dev` and `uno-features` feeds at run time with `dotnet nuget add source`
@@ -92,26 +103,41 @@ leaves `SpecifiedLanguageVersion` at `Default` with no diagnostic at all.
 
 Detection therefore uses what the workspace does know:
 
-- the SDK always passes an explicit `/langversion` for .NET 5+ projects: `Microsoft.CSharp.Core.targets` sets an
-  empty `LangVersion` to `_MaxSupportedLangVersion`, which is `TFM major + 4`;
+- the SDK always passes an explicit `/langversion`: `Microsoft.CSharp.Core.targets` sets an empty `LangVersion` to
+  `_MaxSupportedLangVersion`, which is `9 + (major - 5)` for a .NET 5+ target framework (capped at the SDK
+  compiler's newest version);
 - `EmbeddedRoslyn.MaxCSharpVersion` is the embedded compiler's newest major version.
 
-`EmbeddedRoslyn.WarnOnUnsupportedLanguageVersions` warns once per C# project whose specified version is `Default`,
-`Latest` or `LatestMajor` and whose target framework defaults to a C# version above `MaxCSharpVersion`. An explicit
-version the embedded compiler can parse is honored as-is and never warns, so the `LangVersion` workaround the
-warning suggests silences it. It runs right after `WarnOnAnalyzerLoadFailures`, on the same solution snapshot.
+`EmbeddedRoslyn.WarnOnUnsupportedLanguageVersions` warns per C# project whose specified version is `Default`,
+`Latest`, `LatestMajor` or `Preview` and whose target framework defaults to a C# version above `MaxCSharpVersion`.
+These four resolve against the compiler, so when the SDK default is out of the embedded compiler's reach they all
+mean an older C# here than in the build. An explicit version the embedded compiler can parse is honored as-is and
+never warns, so the `LangVersion` workaround the warning suggests silences it. It runs right after
+`WarnOnAnalyzerLoadFailures`, on the same solution snapshot, so it repeats when the solution is reloaded (a file add).
 
 Example on the 5.6 embed with a `net11.0` project:
 
 ```text
-Project 'Cs15Check' targets net11.0, whose default C# version is 15.0, but the hot-reload compiler (Roslyn 5.6)
-supports up to C# 14.0: any C# 15 syntax in this project will block hot reload with compilation errors the build
-does not report, XAML-only edits included. Update the Uno Platform packages, or set <LangVersion>14.0</LangVersion>
-in the project.
+Project 'Cs15Check' (net11.0) defaults to C# 15.0, but the hot-reload compiler (Roslyn 5.6) supports up to C# 14.0:
+C# 15 syntax will block hot reload with errors the build does not have, XAML-only edits included. Update the Uno
+Platform packages, or set <LangVersion>14.0</LangVersion> in the project.
 ```
 
-Not done: repeating the warning next to "Hot reload blocked by …" in `HotReloadManager`. That needs per-project
-state carried into the emit path; the load-time warning already lands in the same log.
+The load-time warning is one line among many, and every blocked edit afterwards lists only the compile errors. So
+`HotReloadManager` follows "Hot reload blocked by …" with a hint for each blocking project the same check flags
+(`EmbeddedRoslyn.GetUnsupportedLanguageVersionHint`). The check is a pure function of the project, so no state is
+carried into the emit path:
+
+```text
+Hot reload blocked by 3 compilation error(s) in Cs15Check (edited: MainPage.xaml, HotReloadInfo.g.cs).
+'Cs15Check' defaults to C# 15.0, but the hot-reload compiler (Roslyn 5.6) supports up to C# 14.0: errors on C# 15
+syntax above are not build errors.
+```
+
+Not detected: an explicit numbered `LangVersion` newer than the embedded compiler on a target framework whose
+default it supports (`<LangVersion>15.0</LangVersion>` on `net10.0` with a 5.6 host). The dropped value surfaces as
+`Default`, which an explicit `<LangVersion>default</LangVersion>` also produces, so it cannot be told apart without
+a false warning.
 
 ## Checks carried over from the 5.6 bump
 
@@ -135,12 +161,17 @@ them.
 ## New guardrails
 
 - **G1 — language-version guard test.** In `Uno.HotReload.Tests`, assert that the embedded Roslyn can parse the
-  `MaxSupportedLangVersion` of the SDK the host flavor serves (C# 15 for net11). It fails the day a new host flavor
-  is added on an old Roslyn line, which no check caught for net11.
+  `MaxSupportedLangVersion` of the SDK building the test project (C# 15 for net11). The test project targets
+  `$(NetUnitTests)` only, so it guards that one host flavor; it fails the day that flavor sits on an old Roslyn
+  line, which no check caught for net11.
 - **G2 — C# 15 in the end-to-end app.** HRApp inherits `LangVersion` 13.0 from `src/Directory.Build.props`, so it
-  cannot see this bug. Give HRApp's net11 build the SDK default `LangVersion` plus one file with C# 15 syntax, and
-  add a XAML-only edit test.
-- **G3 — R5 warning test.** A project with `LangVersion` higher than the embedded maximum produces the warning once.
+  cannot see this bug. Give HRApp's net11 build the SDK default `LangVersion` plus one file with C# 15 syntax. No
+  new test is needed: every existing HRApp test recompiles that file, so the XAML-only edit tests (`Given_TextBlock`,
+  `Given_Frame`, …) are the XAML-only edit test. They fail on a 5.6 host and pass on 5.12 (see Status).
+- **G3 — R5 warning tests.** A project whose target framework defaults to a C# version above the embedded maximum
+  produces the warning once for `Default`, `Latest`, `LatestMajor` and `Preview`, a platform target framework
+  included; a supported default or an explicit supported version does not. A blocked reload of such a project is
+  followed by the hint.
 
 ## Non-goals
 
@@ -173,17 +204,24 @@ Label evidence as **Compile**, **Unit** or **Runtime**. Compile-only is not runt
 
 | Step | Status | Evidence |
 |---|---|---|
-| 1 | **Partial** | `Uno.UI.RemoteControl.Server.Processors` (net10.0 + net11.0) Release: 0 warnings, 0 errors — with the net11 line overridden to 5.6 on the command line, because the 5.12 packages could not be downloaded on the authoring machine (`*.vsblob.vsassets.io` does not resolve there) |
-| 3 | **Partial** | `Uno.HotReload.Tests` on net11.0 against 5.6: 169 passed, 1 failed — the failure is G1, red as designed ("Roslyn 5.6 supports up to C# 14, but the SDK defaults this target framework to C# 15.0"). Needs a rerun on 5.12 for green |
-| G2 | **Compile, outside the repo** | Labeled `continue` builds on SDK 11.0.100 with the default `LangVersion=15.0` and fails with CS9327 under 14.0 |
-| 2, 4–8 | Not run | Need the 5.12 restore |
+| 1 | **Compile, done** | `Uno.UI.RemoteControl.Server.Processors` (with `Uno.HotReload`) Release, analyzers on, every target framework, on 5.12: 0 warnings, 0 errors (C9) |
+| R1 | **Compile, done** | With no `dotnet-tools` entry in `NuGet.Config` and an empty package folder (`NUGET_PACKAGES`), `Uno.HotReload`, the Processors, `Uno.HotReload.Tests` and `Uno.UI.SourceGenerators.Tests` restore: 5.12 from the feed, 5.6 from nuget.org |
+| 3 | **Unit, done** | `Uno.HotReload.Tests` on net11.0 against 5.12: 175 passed, 0 failed, 1 skipped (Unix-only), G1 and G3 included. The test assemblies load `5.12.0-1.26529.118`, the same build (commit `297acf930f`) as the SDK's own compiler |
+| R4 (part) | **Compile, done** | The net11 Processors output has no `Microsoft.Build*.dll` (MSBuild `18.12.2` loads from the SDK), Microsoft.Extensions `10.0.10`, and 147 Roslyn binaries with valid .NET/Microsoft Authenticode signatures |
+| 6 | **Runtime, done** | HRApp suite against a source-built net11 DevServer on SDK 11.0.100 (the `Given_HotReloadWorkspace` setup, driven directly): **5.12** — 36 passed, 0 failed, 11 skipped (existing `[Ignore]`), 97 metadata updates in one session (C1, C3), no compile errors, no R5 warning. **5.6** (same code, net11 line overridden) — `Given_TextBlock` 4/4 fail with the issue's symptom: XAML-only edits `Emit status: Blocked`, CS1002/CS0103/CS0201 on `continue outer;`; the R5 warning is logged once and the hint follows every blocked line (G2, R5) |
+| 4 | **Unit, done** | `Uno.UI.SourceGenerators.Tests` `MetadataUpdateTests` on 5.12: 244 passed, 0 failed, 7 skipped (C10; needs a Debug `Uno.UI` net11.0 build first) |
+| 2, 5, 7, 8 | Not run | Package-graph diff, package inspection, manual app scenarios and the net10 regression |
 
 ## Rollout
 
 One PR: R1–R5 and G1–G3, closes #26316. G1 is red until the bump lands, so the two cannot be split.
 
-Follow-up issue (file when the PR merges): replace the feed build with the nuget.org 5.12 release once published,
-and remove the `dotnet-tools` feed.
+Follow-up issue, filed with the PR rather than after it: replace the feed build with the nuget.org 5.12 release once
+published, and remove the `RestoreAdditionalProjectSources` entry.
+
+Downstream alignment: `Uno.HotReload.dll` is also consumed standalone through raw `HintPath` references. Its net11
+flavor now binds to the 5.12 assemblies, so such a consumer must ship the same Roslyn line (from the same feed until
+nuget.org has it) before it takes this build.
 
 ## Open questions
 
