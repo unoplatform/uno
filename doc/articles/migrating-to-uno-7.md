@@ -149,6 +149,7 @@ Libraries built against 6.x are binary-incompatible with 7.0, and many of the fa
 
 - Update every third-party Uno Platform library to a version built for 7.0.
 - Recompile every library of your own against 7.0.
+- If you use Uno Themes, Uno Toolkit or Uno Extensions, the `Uno.Sdk` moves them to a new major. Read their upgrade notes: [Uno Themes 9](xref:Uno.Themes.Material.Migration#upgrading-to-uno-themes-v9), [Uno Toolkit 11](xref:Toolkit.Migration#upgrading-to-uno-toolkit-110) and [Uno Extensions 8](xref:Uno.Extensions.Migration#upgrading-to-extensions-80).
 
 Then delete the `bin` and `obj` folders and build each target framework. Use [Errors, symptoms and code search](xref:Uno.Development.MigratingToUno7.Lookup) to go from each error to its fix.
 
