@@ -485,6 +485,11 @@ public partial class ComboBox : Selector
 		set { SetValue(LightDismissOverlayBackgroundProperty, value); }
 	}
 
+	private protected override bool ScrollsSelectionIntoView => true;
+
+	private protected override void ScrollItemIntoView(object item, ScrollIntoViewAlignment alignment, bool animateIfBringIntoView)
+		=> ScrollIntoView(item, alignment);
+
 	internal void ScrollIntoView(object item, ScrollIntoViewAlignment alignment = ScrollIntoViewAlignment.Default)
 		=> ScrollIntoViewManaged(item, alignment);
 

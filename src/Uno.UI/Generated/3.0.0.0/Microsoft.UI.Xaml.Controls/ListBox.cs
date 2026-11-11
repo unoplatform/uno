@@ -7,78 +7,17 @@ namespace Microsoft.UI.Xaml.Controls;
 #endif
 public partial class ListBox : global::Microsoft.UI.Xaml.Controls.Primitives.Selector
 {
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty SelectionModeProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(SelectionMode), typeof(global::Microsoft.UI.Xaml.Controls.SelectionMode),
-		typeof(global::Microsoft.UI.Xaml.Controls.ListBox),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.SelectionMode)));
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty SingleSelectionFollowsFocusProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(SingleSelectionFollowsFocus), typeof(bool),
-		typeof(global::Microsoft.UI.Xaml.Controls.ListBox),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::System.Collections.Generic.IList<object> SelectedItems
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ListBox", "SelectedItems");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Controls.SelectionMode SelectionMode
-	{
-		get
-		{
-			return (global::Microsoft.UI.Xaml.Controls.SelectionMode)this.GetValue(SelectionModeProperty);
-		}
-		set
-		{
-			this.SetValue(SelectionModeProperty, value);
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool SingleSelectionFollowsFocus
-	{
-		get
-		{
-			return (bool)this.GetValue(SingleSelectionFollowsFocusProperty);
-		}
-		set
-		{
-			this.SetValue(SingleSelectionFollowsFocusProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
-		}
-	}
-#endif
+	// Skipping already declared property SelectionModeProperty
+	// Skipping already declared property SingleSelectionFollowsFocusProperty
+	// Skipping already declared property SelectedItems
+	// Skipping already declared property SelectionMode
+	// Skipping already declared property SingleSelectionFollowsFocus
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListBox.ListBox()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.ListBox()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SelectionModeProperty.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SingleSelectionFollowsFocusProperty.get
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void ScrollIntoView(object item)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListBox", "ScrollIntoView(object item)");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void SelectAll()
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListBox", "SelectAll()");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListBox.ScrollIntoView(object)
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.ListBox.SelectAll()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SelectedItems.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SelectionMode.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ListBox.SelectionMode.set
