@@ -332,6 +332,13 @@ internal sealed class StartCommandHandler
 		_logger.LogInformation("Starting DevServer in direct mode: {Command} {Args}",
 			startInfo.FileName, startInfo.Arguments);
 
+		if (DevServerProcessHelper.GetAddedDotnetRoot(startInfo) is { } dotnetRoot)
+		{
+			_logger.LogInformation(
+				"The host will use the .NET in {DotnetRoot} ({Variable}), the one that picked its version: it isn't the machine-wide install.",
+				dotnetRoot.Value, dotnetRoot.Name);
+		}
+
 		var result = await _spawnProcess(startInfo);
 
 		if (ShouldRetryInSafeMode(result, addins, effectiveParsed.Solution))
