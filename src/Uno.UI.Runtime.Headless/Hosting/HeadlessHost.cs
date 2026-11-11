@@ -44,7 +44,7 @@ public class HeadlessHost : UnoPlatformHost, IApplicationHost, IDisposable
 		_eventLoop = new EventLoop();
 		_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
 
-		RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.SkiaHeadless);
+		RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.Headless);
 	}
 
 	protected override void Initialize()

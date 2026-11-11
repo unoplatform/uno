@@ -65,7 +65,7 @@ internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHos
 
 		_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
 
-		RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.SkiaWasm);
+		RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.Wasm);
 	}
 
 	protected override void Initialize() { }

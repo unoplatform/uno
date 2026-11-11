@@ -28,7 +28,7 @@ internal sealed class AndroidHost : UnoPlatformHost, IApplicationHost
 	{
 		_appBuilder = appBuilder ?? throw new ArgumentNullException(nameof(appBuilder));
 
-		RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.SkiaAndroid);
+		RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.Android);
 	}
 
 	protected override void Initialize()

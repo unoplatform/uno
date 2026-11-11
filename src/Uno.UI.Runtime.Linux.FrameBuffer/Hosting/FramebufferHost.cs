@@ -56,7 +56,7 @@ namespace Uno.UI.Runtime.Linux.FrameBuffer
 
 			builder.AttachHost(this);
 
-			RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.SkiaFrameBuffer);
+			RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.FrameBuffer);
 		}
 
 		// Called by the setter FramebufferHostBuilder.Orientation hands out, with an already validated value.

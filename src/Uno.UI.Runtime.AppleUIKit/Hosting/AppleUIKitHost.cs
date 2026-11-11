@@ -29,7 +29,7 @@ internal class AppleUIKitHost : UnoPlatformHost, IApplicationHost
 		_appBuilder = appBuilder ?? throw new ArgumentNullException(nameof(appBuilder));
 		_uiApplicationDelegateOverride = uiApplicationDelegateOverride;
 
-		RuntimePlatformHelper.SetHostPlatform(OperatingSystem.IsTvOS() ? UnoRuntimePlatform.SkiaTvOS : UnoRuntimePlatform.SkiaIOS);
+		RuntimePlatformHelper.SetHostPlatform(OperatingSystem.IsTvOS() ? UnoRuntimePlatform.TvOS : UnoRuntimePlatform.IOS);
 	}
 
 	internal static ApplicationInitializationCallback? CreateAppAction { get; private set; }

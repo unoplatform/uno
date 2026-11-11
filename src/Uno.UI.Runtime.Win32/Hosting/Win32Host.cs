@@ -132,7 +132,7 @@ public class Win32Host : UnoPlatformHost, IApplicationHost
 			mediaExtensionType.GetMethod("PreloadVlc", BindingFlags.Static | BindingFlags.Public)?.Invoke(null, null);
 		}
 
-		RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.SkiaWin32);
+		RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.Win32);
 
 		_appBuilder = appBuilder;
 		Win32EventLoop.Schedule(() =>

@@ -75,7 +75,7 @@ public class MacOSHost : UnoPlatformHost, IApplicationHost
 		_appBuilder = appBuilder;
 		_instanceAppBuilder = appBuilder;
 
-		RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.SkiaMacOS);
+		RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.MacOS);
 	}
 
 	internal static MacOSHost Current => _current!;

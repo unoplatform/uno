@@ -175,7 +175,7 @@ public partial class X11ApplicationHost : UnoPlatformHost, IApplicationHost, IDi
 			mediaExtensionType.GetMethod("PreloadVlc", BindingFlags.Static | BindingFlags.Public)?.Invoke(null, null);
 		}
 
-		RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.SkiaX11);
+		RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.X11);
 
 		_appBuilder = appBuilder;
 

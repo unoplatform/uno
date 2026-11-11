@@ -11,57 +11,57 @@ public enum UnoRuntimePlatform
 	Unknown = 0,
 
 	/// <summary>
-	/// Native WinUI on Windows App SDK.
+	/// WinUI on Windows App SDK, rendered by WinUI rather than by Uno Platform.
 	/// </summary>
-	NativeWinUI = 1,
+	WindowsAppSdk = 1,
 
 	/// <summary>
-	/// Skia rendering on Windows (Win32).
+	/// Windows (Win32).
 	/// </summary>
-	SkiaWin32 = 2,
+	Win32 = 2,
 
 	/// <summary>
-	/// Skia rendering on Linux (X11).
+	/// Linux (X11).
 	/// </summary>
-	SkiaX11 = 3,
+	X11 = 3,
 
 	/// <summary>
-	/// Skia rendering on macOS.
+	/// macOS.
 	/// </summary>
-	SkiaMacOS = 4,
+	MacOS = 4,
 
 	/// <summary>
-	/// Skia rendering hosted as an island inside a non-Uno Platform application.
+	/// An island hosted inside a non-Uno Platform application.
 	/// </summary>
-	SkiaIslands = 5,
+	Islands = 5,
 
 	/// <summary>
-	/// Skia rendering in the browser (WebAssembly).
+	/// The browser (WebAssembly).
 	/// </summary>
-	SkiaWasm = 6,
+	Wasm = 6,
 
 	/// <summary>
-	/// Skia rendering on Android.
+	/// Android.
 	/// </summary>
-	SkiaAndroid = 7,
+	Android = 7,
 
 	/// <summary>
-	/// Skia rendering on iOS.
+	/// iOS.
 	/// </summary>
-	SkiaIOS = 8,
+	IOS = 8,
 
 	/// <summary>
-	/// Skia rendering on tvOS.
+	/// tvOS.
 	/// </summary>
-	SkiaTvOS = 9,
+	TvOS = 9,
 
 	/// <summary>
-	/// Skia rendering on the Linux framebuffer.
+	/// The Linux framebuffer.
 	/// </summary>
-	SkiaFrameBuffer = 10,
+	FrameBuffer = 10,
 
 	/// <summary>
-	/// Skia rendering without a display (headless host).
+	/// Headless, without a display.
 	/// </summary>
-	SkiaHeadless = 11,
+	Headless = 11,
 }
