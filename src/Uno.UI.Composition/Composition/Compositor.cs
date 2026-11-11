@@ -63,6 +63,9 @@ namespace Microsoft.UI.Composition
 		public ColorKeyFrameAnimation CreateColorKeyFrameAnimation()
 			=> new ColorKeyFrameAnimation(this);
 
+		public QuaternionKeyFrameAnimation CreateQuaternionKeyFrameAnimation()
+			=> new QuaternionKeyFrameAnimation(this);
+
 #if __SKIA__
 		public PathKeyFrameAnimation CreatePathKeyFrameAnimation()
 			=> new PathKeyFrameAnimation(this);

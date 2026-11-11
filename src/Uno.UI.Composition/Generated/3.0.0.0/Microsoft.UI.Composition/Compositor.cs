@@ -82,13 +82,7 @@ public partial class Compositor : global::System.IDisposable
 	// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateInsetClip(float, float, float, float)
 	// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateLinearEasingFunction()
 	// Skipping already declared method Microsoft.UI.Composition.Compositor.CreatePropertySet()
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Composition.QuaternionKeyFrameAnimation CreateQuaternionKeyFrameAnimation()
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateQuaternionKeyFrameAnimation()");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateQuaternionKeyFrameAnimation()
 	// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateScalarKeyFrameAnimation()
 	// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateScopedBatch(Microsoft.UI.Composition.CompositionBatchTypes)
 	// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateSpriteVisual()

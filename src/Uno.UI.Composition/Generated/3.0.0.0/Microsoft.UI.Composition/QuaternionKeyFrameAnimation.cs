@@ -2,28 +2,11 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.UI.Composition;
 
-#if __SKIA__
+#if false
 [global::Uno.NotImplemented]
 #endif
 public partial class QuaternionKeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
 {
-#if __SKIA__
-	internal QuaternionKeyFrameAnimation()
-	{
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void InsertKeyFrame(float normalizedProgressKey, global::System.Numerics.Quaternion value)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.QuaternionKeyFrameAnimation", "InsertKeyFrame(float normalizedProgressKey, Quaternion value)");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void InsertKeyFrame(float normalizedProgressKey, global::System.Numerics.Quaternion value, global::Microsoft.UI.Composition.CompositionEasingFunction easingFunction)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.QuaternionKeyFrameAnimation", "InsertKeyFrame(float normalizedProgressKey, Quaternion value, CompositionEasingFunction easingFunction)");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Composition.QuaternionKeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Quaternion)
+	// Skipping already declared method Microsoft.UI.Composition.QuaternionKeyFrameAnimation.InsertKeyFrame(float, System.Numerics.Quaternion, Microsoft.UI.Composition.CompositionEasingFunction)
 }
