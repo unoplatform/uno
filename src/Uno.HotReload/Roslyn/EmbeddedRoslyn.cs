@@ -52,38 +52,55 @@ internal static class EmbeddedRoslyn
 	/// <see cref="MaxCSharpVersion"/> (spec 061 R5). The workspace loader drops a
 	/// <c>/langversion</c> the embedded compiler cannot parse without any diagnostic, so such a
 	/// project silently compiles with an older C# and only surfaces as parse errors on the first
-	/// edit — XAML-only edits included.
+	/// edit — XAML-only edits included. Runs on every solution load, so a reload repeats it.
 	/// </summary>
-	internal static void WarnOnUnsupportedLanguageVersions(Solution solution, IReporter reporter)
+	internal static void WarnOnUnsupportedLanguageVersions(Solution solution, IReporter reporter, CancellationToken ct = default)
 	{
 		try
 		{
 			foreach (var project in solution.Projects)
 			{
+				ct.ThrowIfCancellationRequested();
+
 				if (IsCompiledWithOlderCSharpThanItsSdkDefault(project, out var targetFramework, out var sdkDefaultVersion))
 				{
 					reporter.Warn(
-						$"Project '{project.Name}' targets {targetFramework}, whose default C# version is {sdkDefaultVersion}.0, but the "
-						+ $"hot-reload compiler (Roslyn {Version.ToString(2)}) supports up to C# {MaxCSharpVersion}.0: any C# {sdkDefaultVersion} "
-						+ $"syntax in this project will block hot reload with compilation errors the build does not report, XAML-only edits "
-						+ $"included. Update the Uno Platform packages, or set <LangVersion>{MaxCSharpVersion}.0</LangVersion> in the project.");
+						$"Project '{project.Name}' ({targetFramework}) defaults to C# {sdkDefaultVersion}.0, but the hot-reload compiler "
+						+ $"(Roslyn {Version.ToString(2)}) supports up to C# {MaxCSharpVersion}.0: C# {sdkDefaultVersion} syntax will block hot "
+						+ $"reload with errors the build does not have, XAML-only edits included. Update the Uno Platform packages, or set "
+						+ $"<LangVersion>{MaxCSharpVersion}.0</LangVersion> in the project.");
 				}
 			}
 		}
-		catch (Exception e)
+		catch (Exception e) when (e is not OperationCanceledException)
 		{
 			// Diagnostics-only sweep: it must never take down the workspace load it observes.
-			reporter.Warn($"Language version check failed (hot reload continues): {e.Message}");
+			reporter.Warn($"Language version check failed (hot reload continues): {e.GetType().Name}: {e.Message}");
 		}
 	}
+
+	/// <summary>
+	/// The line appended to a blocked hot reload of <paramref name="project"/> when its compile errors
+	/// may come from a C# version the embedded compiler does not support, or <see langword="null"/>.
+	/// </summary>
+	internal static string? GetUnsupportedLanguageVersionHint(Project project)
+		=> IsCompiledWithOlderCSharpThanItsSdkDefault(project, out _, out var sdkDefaultVersion)
+			? $"'{project.Name}' defaults to C# {sdkDefaultVersion}.0, but the hot-reload compiler (Roslyn {Version.ToString(2)}) "
+				+ $"supports up to C# {MaxCSharpVersion}.0: errors on C# {sdkDefaultVersion} syntax above are not build errors."
+			: null;
 
 	private static bool IsCompiledWithOlderCSharpThanItsSdkDefault(Project project, [NotNullWhen(true)] out string? targetFramework, out int sdkDefaultVersion)
 	{
 		targetFramework = null;
 		sdkDefaultVersion = 0;
 
-		// An explicit, parseable LangVersion is honored by the embedded compiler as-is.
-		if (project.ParseOptions is not CSharpParseOptions { SpecifiedLanguageVersion: LanguageVersion.Default or LanguageVersion.Latest or LanguageVersion.LatestMajor })
+		// Versions relative to the compiler resolve to an older C# here than in the build whenever the
+		// build's compiler is newer. An explicit numbered LangVersion the embedded compiler can parse is
+		// honored as-is; one it cannot parse is dropped and also surfaces as Default.
+		if (project.ParseOptions is not CSharpParseOptions
+			{
+				SpecifiedLanguageVersion: LanguageVersion.Default or LanguageVersion.Latest or LanguageVersion.LatestMajor or LanguageVersion.Preview
+			})
 		{
 			return false;
 		}
@@ -94,23 +111,28 @@ internal static class EmbeddedRoslyn
 	}
 
 	/// <summary>
-	/// The SDK's default C# version for a .NET 5+ target framework: <c>major + 4</c>, as computed
-	/// by <c>_MaxSupportedLangVersion</c> in the SDK's <c>Microsoft.CSharp.Core.targets</c>.
+	/// The SDK's default C# version for a .NET 5+ target framework: <c>9 + (major - 5)</c>, as
+	/// computed by <c>_MaxSupportedLangVersion</c> in the SDK's <c>Microsoft.CSharp.Core.targets</c>
+	/// (which also caps it at the SDK compiler's newest version, unknown here).
 	/// </summary>
 	private static bool TryGetSdkDefaultCSharpVersion(string targetFramework, out int csharpVersion)
 	{
 		csharpVersion = 0;
 
-		var versionEnd = targetFramework.IndexOf('.');
-		if (!targetFramework.StartsWith("net", StringComparison.OrdinalIgnoreCase)
-			|| versionEnd < 4
-			|| !int.TryParse(targetFramework.AsSpan(3, versionEnd - 3), NumberStyles.None, CultureInfo.InvariantCulture, out var major)
+		if (!RoslynExtensions.TryParseShortTargetFramework(targetFramework, out var frameworkVersion, out _))
+		{
+			return false;
+		}
+
+		var versionEnd = frameworkVersion.IndexOf('.');
+		if (versionEnd < 4
+			|| !int.TryParse(frameworkVersion.AsSpan(3, versionEnd - 3), NumberStyles.None, CultureInfo.InvariantCulture, out var major)
 			|| major < 5)
 		{
 			return false;
 		}
 
-		csharpVersion = major + 4;
+		csharpVersion = 9 + (major - 5);
 		return true;
 	}
 
