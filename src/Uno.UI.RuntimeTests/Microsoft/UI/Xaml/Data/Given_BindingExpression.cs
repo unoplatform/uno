@@ -1,9 +1,11 @@
 using System.Threading.Tasks;
 using Combinatorial.MSTest;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
+using SamplesApp.UITests;
 using Uno.Disposables;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
@@ -629,5 +631,31 @@ public class Given_BindingExpression
 		{
 			Assert.Fail($"Invalid expectation: [{sut.Name}]{sut.Text}");
 		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19420")]
+	public async Task When_ElementName_Source_Added_In_Code_Before_Load()
+	{
+		var sut = new ElementName_CodeAddedSource(addSourceInLoaded: false);
+		await UITestHelper.Load(sut, x => x.IsLoaded);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("Hello, World!", sut.Bound.Text);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19420")]
+	public async Task When_ElementName_Source_Added_In_Code_After_Load()
+	{
+		var sut = new ElementName_CodeAddedSource(addSourceInLoaded: true);
+		await UITestHelper.Load(sut, x => x.IsLoaded);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// The name is looked up once, when the target loads, so a source added afterwards is not picked up (as on WinUI).
+		Assert.AreEqual(2, sut.ParentSP.Children.Count);
+		Assert.AreEqual("", sut.Bound.Text);
 	}
 }

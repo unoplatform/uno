@@ -997,6 +997,11 @@ namespace Microsoft.UI.Xaml
 
 			base.EnterImpl(@params, depth);
 
+			if (@params.IsLive)
+			{
+				RegisterCodeName();
+			}
+
 			////Check for focus chrome property.
 			//if (@params.IsLive)
 			//{
@@ -1055,6 +1060,11 @@ namespace Microsoft.UI.Xaml
 		// UNO TODO: Not yet ported
 		internal override void LeaveImpl(LeaveParams @params)
 		{
+			if (@params.IsLive)
+			{
+				UnregisterCodeName();
+			}
+
 			// The way this works on WinUI is that when an element enters the visual tree, all values
 			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
 			// are entered as well.

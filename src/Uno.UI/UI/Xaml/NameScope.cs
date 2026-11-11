@@ -6,6 +6,7 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml.Markup;
 
 namespace Microsoft.UI.Xaml
@@ -14,6 +15,7 @@ namespace Microsoft.UI.Xaml
 	public class NameScope : INameScope
 	{
 		private Dictionary<string, ManagedWeakReference> _names = new Dictionary<string, ManagedWeakReference>();
+		private Dictionary<string, ManagedWeakReference> _codeNames;
 		private ManagedWeakReference _ownerRef;
 
 		public NameScope()
@@ -55,6 +57,49 @@ namespace Microsoft.UI.Xaml
 		{
 			_names.Remove(name);
 		}
+
+		/// <summary>
+		/// Registers an element whose name was set in code when it entered the live tree. Kept apart from
+		/// the XAML-registered names so that only ElementName resolution sees it. The last one registered wins,
+		/// as in WinUI's name table.
+		/// </summary>
+		internal void RegisterCodeName(string name, DependencyObject element)
+		{
+			_codeNames ??= new Dictionary<string, ManagedWeakReference>();
+
+			if (_codeNames.TryGetValue(name, out var existing))
+			{
+				if (ReferenceEquals(existing.Target, element))
+				{
+					return;
+				}
+
+				WeakReferencePool.ReturnWeakReference(this, existing);
+			}
+
+			_codeNames[name] = WeakReferencePool.RentWeakReference(this, element);
+		}
+
+		internal void UnregisterCodeName(string name, DependencyObject element)
+		{
+			if (_codeNames is not null
+				&& _codeNames.TryGetValue(name, out var existing)
+				&& (existing.Target is null || ReferenceEquals(existing.Target, element)))
+			{
+				_codeNames.Remove(name);
+				WeakReferencePool.ReturnWeakReference(this, existing);
+
+				if (_codeNames.Count == 0)
+				{
+					_codeNames = null;
+				}
+			}
+		}
+
+		// A code name is registered after the XAML ones were parsed, so it overwrites them in WinUI's single table.
+		private object FindNameOrCodeName(string name)
+			=> (_codeNames is not null && _codeNames.TryGetValue(name, out var element) ? element.Target : null)
+				?? FindName(name);
 
 		#region NameScope attached property
 
@@ -107,14 +152,22 @@ namespace Microsoft.UI.Xaml
 		internal static object FindInNamescopes(DependencyObject caller, string name)
 		{
 			var parent = caller;
+			UIElement lastElement = null;
+			var sawNameScope = false;
 			while (parent != null)
 			{
 				var scope = NameScope.GetNameScope(parent);
-				var target = scope?.FindName(name);
+				sawNameScope |= scope is not null;
+				var target = scope is NameScope nameScope ? nameScope.FindNameOrCodeName(name) : scope?.FindName(name);
 
 				if (target != null)
 				{
 					return target;
+				}
+
+				if (parent is UIElement element)
+				{
+					lastElement = element;
 				}
 
 				var newParent = parent.GetParent() as DependencyObject;
@@ -136,7 +189,10 @@ namespace Microsoft.UI.Xaml
 				parent = newParent;
 			}
 
-			return null;
+			// The per-tree scope only holds names of elements outside any namescope, so only such a caller sees them.
+			return sawNameScope
+				? null
+				: VisualTree.GetForElement(lastElement, VisualTree.LookupOptions.NoFallback)?.CodeNameScope?.FindNameOrCodeName(name);
 		}
 	}
 }

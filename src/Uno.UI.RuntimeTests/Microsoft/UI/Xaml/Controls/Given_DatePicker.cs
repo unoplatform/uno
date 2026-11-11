@@ -414,6 +414,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #endif
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19420")]
+		public async Task When_Flyout_Opened_Overlays_Bind_To_LoopingSelectors()
+		{
+			// The native style opens the platform dialog on Android, which has no overlays.
+			var datePicker = new DatePicker { UseNativeStyle = false };
+			TestServices.WindowHelper.WindowContent = datePicker;
+			await TestServices.WindowHelper.WaitForLoaded(datePicker);
+
+			try
+			{
+				await DateTimePickerHelper.OpenDateTimePicker(datePicker);
+				var (day, month, year) = await DateTimePickerHelper.GetDayMonthYearLoopingSelectorsFromOpenFlyout();
+				var presenter = await DateTimePickerHelper.GetOpenDatePickerFlyoutPresenter();
+
+				// The template binds each overlay by ElementName to a LoopingSelector that the presenter creates and names in code.
+				var overlays = VisualTreeUtils.FindVisualChildrenByType<MonochromaticOverlayPresenter>(presenter).ToArray();
+				CollectionAssert.AreEquivalent(new object[] { day, month, year }, overlays.Select(o => o.SourceElement).ToArray());
+				foreach (var overlay in overlays)
+				{
+					Assert.AreEqual(Grid.GetColumn((Microsoft.UI.Xaml.FrameworkElement)overlay.SourceElement), Grid.GetColumn(overlay));
+				}
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
 		private static void CheckDateTimeTextBlockPartPosition(DatePicker datePicker, string id, int expectedColumn)
 		{
 			var textBlock = MUXControlsTestApp.Utilities.VisualTreeUtils.FindVisualChildByName(datePicker, id) as TextBlock;
