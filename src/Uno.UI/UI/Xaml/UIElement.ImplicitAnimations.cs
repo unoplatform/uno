@@ -193,6 +193,7 @@ public partial class UIElement
 			if (Visibility != Visibility.Visible)
 			{
 				Visual.IsVisible = false;
+				UpdateOpacity();
 			}
 
 			FlushPendingKeepVisibleOperations();

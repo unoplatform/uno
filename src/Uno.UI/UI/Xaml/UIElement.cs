@@ -1582,7 +1582,8 @@ namespace Microsoft.UI.Xaml
 
 		private void UpdateOpacity()
 		{
-			Visual.Opacity = Visibility == Visibility.Visible ? (float)Opacity : 0;
+			// A collapsed element kept visible for an implicit Hide animation renders at its opacity until the animation completes.
+			Visual.Opacity = Visibility == Visibility.Visible || IsKeepVisible() ? (float)Opacity : 0;
 		}
 
 		internal ContainerVisual Visual
@@ -1825,8 +1826,8 @@ namespace Microsoft.UI.Xaml
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{
 			UpdateHitTest();
-			UpdateOpacity();
 			OnVisibilityChangedForImplicitShowHideAnimations(newValue);
+			UpdateOpacity();
 
 			if (newValue == Visibility.Collapsed)
 			{
