@@ -59,7 +59,7 @@ variables:
   linuxVMImage: 'ubuntu-24.04'
   linuxScaledPool: 'Ubuntu2404-20251016'
   macOSVMImage: 'xcode-27'
-  xCodeRoot: '/Applications/Xcode_27.app'
+  xCodeRoot: '/Applications/Xcode_27.2.app'
 
   # Offline validation to improve build performance
   NUGET_CERT_REVOCATION_MODE: offline
@@ -70,8 +70,8 @@ variables:
 
   enable_dotnet_cache: true
   enable_emsdk_cache: true
-  GlobalUnoCheckVersion: '1.35.0-dev.118'
-  DotNetSdkVersion: '11.0.100-rc.3.26522.148'
+  GlobalUnoCheckVersion: '1.35.0-dev.119'
+  DotNetSdkVersion: '11.0.100'
 
   netCurrentTargetFramework: 'net11.0'
   netPreviousTargetFramework: 'net10.0'
