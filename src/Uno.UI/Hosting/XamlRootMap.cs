@@ -36,6 +36,7 @@ internal static class XamlRootMap
 		_map[xamlRoot] = host;
 		_reverseMap[host] = xamlRoot;
 		xamlRoot.VisualTree.ContentRoot.SetHost(host); // Note: This might be a duplicated call but it's supported by ContentRoot and safe
+		xamlRoot.VisualTree.ContentRoot.CompositionTarget.OnHostAttached();
 
 		Registered?.Invoke(null, xamlRoot);
 	}

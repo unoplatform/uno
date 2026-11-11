@@ -1042,7 +1042,7 @@ namespace Microsoft.UI.Xaml
 				WeakReferenceReturnDisposable releaseWeakDelegate,
 				IDisposable callbackManagerCookie,
 				ManagedWeakReference doStoreRef)
-				: base(callback.Target, doStoreRef.CloneWeakReference())
+				: base(callback.Target, doStoreRef.Target)
 			{
 				_callback = callback;
 				_releaseWeakDelegate = releaseWeakDelegate;
@@ -1109,7 +1109,7 @@ namespace Microsoft.UI.Xaml
 				WeakReferenceReturnDisposable weakCallbackRelease,
 				ManagedWeakReference instanceRef,
 				ExplicitPropertyChangedCallback callback)
-				: base(callback.Target, instanceRef.CloneWeakReference())
+				: base(callback.Target, instanceRef.Target)
 			{
 				_weakCallback = weakCallback;
 				_weakCallbackRelease = weakCallbackRelease;
@@ -1220,7 +1220,7 @@ namespace Microsoft.UI.Xaml
 				var instanceRef = SelfWeakReference;
 
 				return new RegisterParentChangedCallbackConditionalDisposable(
-					instanceRef.CloneWeakReference(),
+					this,
 					instanceRef,
 					weakCallbackRef,
 					weakCallback,
@@ -1243,7 +1243,7 @@ namespace Microsoft.UI.Xaml
 			private ParentChangedCallback _callback;
 
 			public RegisterParentChangedCallbackConditionalDisposable(
-				WeakReference conditionSource,
+				object conditionSource,
 				ManagedWeakReference doStoreRef,
 				ManagedWeakReference weakCallbackRef,
 				ParentChangedCallback weakCallback,
@@ -1753,6 +1753,13 @@ namespace Microsoft.UI.Xaml
 			if (childStore != null)
 			{
 				Propagate(childStore);
+
+				// A non-FE store keeps its DataContext outside the property table: a child joining after it arrived
+				// (e.g. the second Setter of a lazily-built VisualState) gets the cached one.
+				if (_dataContextProperty is null && _properties?.InheritedDataContext is { } inheritedDataContext)
+				{
+					CallChildCallback(childStore, instanceRef, FrameworkElement.DataContextProperty, inheritedDataContext);
+				}
 			}
 			else
 			{

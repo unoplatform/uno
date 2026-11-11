@@ -73,17 +73,14 @@ public partial class CompositionTarget
 	private bool _renderRequestedAfterAheadOfTimePaint; // only set or read under _renderingStateGate
 	private bool _shouldEnqueueRenderOnNextNativePlatformFrameRequested = true; // only set from the UI thread, only reset from the rendering/gpu thread
 
-	// When the host stops delivering frames, the outstanding request latches and every later one coalesces into
-	// it, so the app goes quiet with nothing in the log to say why. Written from the rendering thread, read from
-	// the UI thread.
+	// Every host answers a request with a frame, so a request left unanswered is a host bug that would otherwise
+	// leave the app silently frozen. Written from the rendering thread, read from the UI thread.
 	private long _lastNativeFrameTimestamp = Stopwatch.GetTimestamp();
+	private long _renderRequestTimestamp; // only set or read under _renderingStateGate
 	private long _lastStalledRenderLogTimestamp;
 	private int _stalledRenderReports;
 
-	/// <summary>How long a render request may stay outstanding before it is reported as a stall.</summary>
 	private const int StalledRenderReportMs = 2000;
-
-	/// <summary>Minimum interval between stall reports, so a stalled window logs once rather than per request.</summary>
 	private const int StalledRenderReportIntervalMs = 5000;
 
 	/// <summary>Reports per stall, so a window the host legitimately stopped drawing (minimized) doesn't log forever.</summary>
@@ -109,6 +106,7 @@ public partial class CompositionTarget
 			if (!_renderedAheadOfTime && !RenderRequested)
 			{
 				RenderRequested = true;
+				_renderRequestTimestamp = Stopwatch.GetTimestamp();
 				shouldEnqueue = true;
 			}
 			else if (_renderedAheadOfTime)
@@ -116,67 +114,88 @@ public partial class CompositionTarget
 				_renderRequestedAfterAheadOfTimePaint = true;
 
 				// Still ask for a frame. Clearing this state depends on one arriving to run the render callback,
-				// and the only other request is the one the ahead-of-time paint made, so if that is lost nothing
-				// asks again and rendering waits for the stall recovery instead.
+				// and the only other request is the one the ahead-of-time paint made.
 				shouldEnqueue = true;
 			}
 			AssertRenderStateMachine();
 			LogRenderState();
 		}
 
-		// Re-invalidating a request the host never answered is what keeps a lost frame from stopping rendering
-		// for good: the request latches, every later one coalesces into it, and nothing else would ever ask again.
-		if (shouldEnqueue || IsRenderRequestStalled())
+		if (shouldEnqueue)
 		{
-			if (ContentRoot.XamlRoot is { } xamlRoot && XamlRootMap.GetHostForRoot(xamlRoot) is { } host)
-			{
-				host.InvalidateRender();
-			}
+			AskHostForFrame();
 			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(ICompositionTarget.RequestNewFrame)} invalidated render");
 		}
 		else
 		{
 			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(ICompositionTarget.RequestNewFrame)} found no need to invalidate render.");
+			ReportIfRenderRequestStalled();
 		}
 	}
 
 	/// <summary>
-	/// Whether a render request has been outstanding while the host produced no frame, so the request should be
-	/// re-issued. Rate-limited, so a host that is merely slow re-asks at most once per
-	/// <see cref="StalledRenderReportIntervalMs"/> rather than on every request. Also reports it: a stall that
-	/// recovers this way is invisible otherwise, and it is the one signal that separates "the host stopped
-	/// drawing" from "nothing asked for a frame".
+	/// Logs a render request the host has left unanswered. Only reports: re-asking or re-arming the handshake would
+	/// queue a second render for a frame that is merely slow.
 	/// </summary>
-	private bool IsRenderRequestStalled()
+	private void ReportIfRenderRequestStalled()
 	{
-		var sinceFrameMs = (long)Stopwatch.GetElapsedTime(Interlocked.Read(ref _lastNativeFrameTimestamp)).TotalMilliseconds;
-		if (sinceFrameMs < StalledRenderReportMs)
+		long requestTimestamp;
+		lock (_renderingStateGate)
 		{
-			return false;
+			requestTimestamp = _renderRequestTimestamp;
+		}
+
+		// Measured from the request, not the last frame: an idle window gets no frames, so that would age a new request.
+		var requestAgeMs = (long)Stopwatch.GetElapsedTime(requestTimestamp).TotalMilliseconds;
+		if (Interlocked.Read(ref _lastNativeFrameTimestamp) >= requestTimestamp
+			|| requestAgeMs < StalledRenderReportMs
+			|| _stalledRenderReports >= MaxStalledRenderReports)
+		{
+			return;
 		}
 
 		var lastLog = Interlocked.Read(ref _lastStalledRenderLogTimestamp);
 		if (lastLog != 0 && Stopwatch.GetElapsedTime(lastLog).TotalMilliseconds < StalledRenderReportIntervalMs)
 		{
-			return false;
+			return;
 		}
 
 		Interlocked.Exchange(ref _lastStalledRenderLogTimestamp, Stopwatch.GetTimestamp());
+		_stalledRenderReports++;
 
-		// The frame we are about to ask for has to reach the UI thread, and this handshake is the other half that
-		// can be left holding a lost frame: it is cleared when a frame is taken and only set again by the render
-		// callback that frame was supposed to schedule.
-		Interlocked.Exchange(ref _shouldEnqueueRenderOnNextNativePlatformFrameRequested, true);
-
-		if (_stalledRenderReports++ < MaxStalledRenderReports && this.Log().IsEnabled(LogLevel.Warning))
+		if (this.Log().IsEnabled(LogLevel.Warning))
 		{
 			this.Log().Warn(
-				$"CompositionTarget#{GetHashCode()}: a render request has been outstanding for {sinceFrameMs}ms with no "
+				$"CompositionTarget#{GetHashCode()}: a render request has been outstanding for {requestAgeMs}ms with no "
 				+ $"frame from the host (renderRequested={_renderRequested}, renderedAheadOfTime={_renderedAheadOfTime}, "
-				+ $"requestedAfterAheadOfTimePaint={_renderRequestedAfterAheadOfTimePaint}); asking again.");
+				+ $"requestedAfterAheadOfTimePaint={_renderRequestedAfterAheadOfTimePaint}).");
+		}
+	}
+
+	/// <summary>
+	/// Called once the window's host is registered. A request made before it existed latched with nobody asked, and
+	/// every later request coalesces into it, so the new host is asked for the frame it is owed.
+	/// </summary>
+	internal void OnHostAttached()
+	{
+		bool isWaitingForFrame;
+		lock (_renderingStateGate)
+		{
+			isWaitingForFrame = RenderRequested || _renderedAheadOfTime;
 		}
 
-		return true;
+		if (isWaitingForFrame)
+		{
+			AskHostForFrame();
+		}
+	}
+
+	private void AskHostForFrame()
+	{
+		if (ContentRoot.XamlRoot is { } xamlRoot && XamlRootMap.GetHostForRoot(xamlRoot) is { } host)
+		{
+			host.InvalidateRender();
+		}
 	}
 
 	private void EnqueueRenderCallback()

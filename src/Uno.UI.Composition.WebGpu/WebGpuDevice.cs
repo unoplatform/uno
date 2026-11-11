@@ -568,7 +568,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		GradientPipe = Pipeline(gradMod, gradLayout, &straight, ColorFormat, F2, F2);
 		GradientPipeD = DepthPipeline(gradMod, gradLayout, &straight, ColorFormat, F2, F2);
 		ImgBgl = Bgl(TextureEntry(0, TextureSampleType.Float), SamplerEntry(1), UniformEntry(2, ShaderStage.Fragment, ImageUniformBytes));
-		var image = Module(ClipStructFn + ImageWgsl);
+		var image = Module(ClipStructFn + NonSeparableBlendWgsl + ImageWgsl);
 		var imageLayout = ColourLayout(ImgBgl, ClipBgl, SiteBgl);
 		ImagePipe = Pipeline(image, imageLayout, &over, ColorFormat, F2, F2);
 		ImagePipeD = DepthPipeline(image, imageLayout, &over, ColorFormat, F2, F2);
@@ -588,7 +588,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		BlurBgl = Api.RenderPipelineGetBindGroupLayout(BlurPipe, 0);
 		CompositeSrcOver = Pipeline(Module(CompositeWgsl), null, &over, ColorFormat);
 		CompositeBgl = Api.RenderPipelineGetBindGroupLayout(CompositeSrcOver, 0);
-		CompositeBlend = Pipeline(Module(CompositeBlendWgsl), null, &replace, ColorFormat);
+		CompositeBlend = Pipeline(Module(NonSeparableBlendWgsl + CompositeBlendWgsl), null, &replace, ColorFormat);
 		CompositeBlendBgl = Api.RenderPipelineGetBindGroupLayout(CompositeBlend, 0);
 		EffectCombine = Pipeline(Module(EffectCombineWgsl), null, &replace, ColorFormat);
 		EffectCombineBgl = Api.RenderPipelineGetBindGroupLayout(EffectCombine, 0);
