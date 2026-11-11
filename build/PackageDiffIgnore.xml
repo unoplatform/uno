@@ -5693,6 +5693,20 @@
 		  <Member fullName="Windows\.Foundation\.TypedEventHandler.+(::|\.)DataContextChanged" reason="DataContext restricted to FrameworkElement" isRegex="true" />
 	  </Events>
 	</IgnoreSet>
+	<!-- 7.0.32 is now the published stable baseline generatepkgdiff resolves to (CompareVersion matches on
+	     Major.Minor), so the 6.7 set above is no longer consulted for packages that have a 7.0 stable.
+	     Only the breaking changes merged after the 7.0 release go here. -->
+	<IgnoreSet baseVersion="7.0">
+	  <Methods>
+		  <!-- Legacy WASM interop whose JavaScript (AsyncInteropHelper, MonoSupport) shipped only with the DOM heads removed in 7.0; it could no longer run. -->
+		  <Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Uno.Foundation.WebAssemblyRuntime.InvokeAsync(System.String promiseCode)" reason="Removed legacy WASM eval-based async interop; its JavaScript is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Uno.Foundation.WebAssemblyRuntime.InvokeAsync(System.String promiseCode, System.Threading.CancellationToken ct)" reason="Removed legacy WASM eval-based async interop; its JavaScript is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.Foundation.WebAssemblyRuntime.DispatchAsyncResult(System.Int64 handle, System.String result)" reason="Removed with InvokeAsync, its only caller (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.Foundation.WebAssemblyRuntime.DispatchAsyncError(System.Int64 handle, System.String error)" reason="Removed with InvokeAsync, its only caller (breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0)" reason="Removed legacy WASM unmarshalled interop; its JavaScript dispatcher is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1)" reason="Removed legacy WASM unmarshalled interop; its JavaScript dispatcher is no longer shipped (breaking changes for 7.0)" />
+	  </Methods>
+	</IgnoreSet>
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
 		NOT what will be published by the PR in progress.
