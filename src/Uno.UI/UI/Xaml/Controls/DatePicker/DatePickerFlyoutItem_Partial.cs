@@ -1,4 +1,11 @@
-﻿namespace Microsoft.UI.Xaml.Controls
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference DatePickerFlyoutItem_Partial.cpp, commit d505d1ddf
+
+using System;
+using Microsoft.UI.Xaml.Data;
+
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class DatePickerFlyoutItem : DependencyObject
 	{
@@ -27,59 +34,51 @@
 		//		spInnerFactory));
 		//}
 
-		////void GetCustomPropertyImpl(string name, out xaml.Data.ICustomProperty returnValue)
-		////{
-		////	//UNREFERENCED_PARAMETER(name);
-		////	//ARG_VALIDRETURNPOINTER(returnValue);
-		////	returnValue = null;
-		////}
+		public ICustomProperty GetCustomProperty(string name)
+		{
+			//UNREFERENCED_PARAMETER(name);
+			//ARG_VALIDRETURNPOINTER(returnValue);
+			return null;
+		}
 
-		////void GetIndexedPropertyImpl(string name, wxaml_interop.TypeName type, out xaml.Data.ICustomProperty returnValue)
-		////{
-		////	UNREFERENCED_PARAMETER(name);
-		////	UNREFERENCED_PARAMETER(type);
-		////	ARG_VALIDRETURNPOINTER(returnValue);
-		////	returnValue = null;
-		////}
+		public ICustomProperty GetIndexedProperty(string name, Type type)
+		{
+			//UNREFERENCED_PARAMETER(name);
+			//UNREFERENCED_PARAMETER(type);
+			//ARG_VALIDRETURNPOINTER(returnValue);
+			return null;
+		}
 
-		//void GetStringRepresentationImpl(out string plainText)
-		//{
+		public string GetStringRepresentation()
+		{
+			string primaryText;
+			string secondaryText;
+			string outputText;
 
-		//	string primaryText;
-		//	string primaryTextWithSpace;
-		//	string secondaryText;
-		//	string outputText;
+			primaryText = PrimaryText;
+			secondaryText = SecondaryText;
+			if (primaryText != null && secondaryText != null)
+			{
+				outputText = string.Concat(primaryText, " ", secondaryText);
+			}
+			else if (primaryText != null)
+			{
+				outputText = primaryText;
+			}
+			else if (secondaryText != null)
+			{
+				outputText = secondaryText;
+			}
+			else
+			{
+				outputText = "";
+			}
 
-		//	primaryText = PrimaryText;
-		//	secondaryText = SecondaryText;
-		//	if (primaryText != null && secondaryText != null)
-		//	{
-		//		primaryText.Concat(wrl_wrappers.Hstring(" "), primaryTextWithSpace);
-		//		primaryTextWithSpace.Concat(secondaryText, outputText);
-		//	}
-		//	else if (primaryText != null)
-		//	{
-		//		primaryText.CopyTo(outputText);
-		//	}
-		//	else if (secondaryText != null)
-		//	{
-		//		secondaryText.CopyTo(outputText);
-		//	}
-		//	else
-		//	{
-		//		wrl_wrappers.Hstring("").CopyTo(outputText);
-		//	}
+			return outputText;
+		}
 
-		//	outputText.CopyTo(plainText);
-		//}
-
-		//void get_TypeImpl(out wxaml_interop.TypeName type)
-		//{
-
-		//	type.Kind = wxaml_interop.TypeKind_Primitive;
-		//	wrl_wrappers.Hstring(RuntimeClass_Microsoft_UI_Xaml_Controls_DatePickerFlyoutItem).CopyTo(type.Name);
-		//}
-
+		// WinUI reports TypeKind_Primitive with the runtime class name.
+		public Type Type => typeof(DatePickerFlyoutItem);
 
 		public string SecondaryText
 		{
@@ -105,27 +104,7 @@
 				typeof(global::Microsoft.UI.Xaml.Controls.DatePickerFlyoutItem),
 				new FrameworkPropertyMetadata(default(string)));
 
-		public override string ToString()
-		{
-			var primaryText = PrimaryText;
-			var secondaryText = SecondaryText;
-
-			if (primaryText != null && secondaryText != null)
-			{
-				return string.Concat(primaryText, " ", secondaryText);
-			}
-			else if (primaryText != null)
-			{
-				return primaryText;
-			}
-			else if (secondaryText != null)
-			{
-				return secondaryText;
-			}
-			else
-			{
-				return "";
-			}
-		}
+		// Uno-specific: also surfaces the item text where only ToString() is consulted.
+		public override string ToString() => GetStringRepresentation();
 	}
 }

@@ -165,6 +165,29 @@ from `System.Runtime.InteropServices.JavaScript` — the recommended, source-gen
 (thread-safe, CSP-compliant, no `eval`). The string-based `WebAssemblyRuntime.InvokeJS(string)`
 is *not* removed, but it is a legacy eval-based API and is not recommended for new code.
 
+<<<<<<< HEAD
+=======
+### `WebAssemblyRuntime.InvokeAsync` and `InvokeJSUnmarshalled`
+
+`WebAssemblyRuntime.InvokeAsync` and `WebAssemblyRuntime.InvokeJSUnmarshalled` both
+called JavaScript that shipped only with the WebAssembly DOM heads removed in 7.0, so they
+failed at runtime in a Skia app. `InvokeAsync`'s `DispatchAsyncResult` and
+`DispatchAsyncError` callbacks are removed with it. Replace a call to `InvokeAsync` with a
+[JSImport](xref:Uno.Wasm.Bootstrap.JSInterop) method that returns `Task<string>`, which
+awaits the JavaScript promise without evaluating code from a string:
+
+```csharp
+// Before
+var title = await WebAssemblyRuntime.InvokeAsync("Promise.resolve(document.title)");
+
+// After: getTitle is exported by your own JavaScript module
+[JSImport("getTitle", "myModule")]
+static partial Task<string> GetTitleAsync();
+
+var title = await GetTitleAsync();
+```
+
+>>>>>>> origin/master
 ### TypeScript interop marker
 
 `Uno.Foundation.Interop.TSInteropMessageAttribute` and its

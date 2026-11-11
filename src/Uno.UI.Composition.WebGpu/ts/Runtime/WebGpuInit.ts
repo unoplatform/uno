@@ -1,10 +1,15 @@
 namespace Uno.UI.Runtime {
 	// Browser WebGPU device bring-up, SkiaSharp-Graphite-style: create the adapter+device in JavaScript
 	// (navigator.gpu, awaited as a Task via [JSImport]) and graft the JS GPUDevice into emdawnwebgpu's C
-	// handle table via Module.unoWebGpuImportDevice (installed by the emdawn __postset patch). This avoids the
+	// handle table via emdawnwebgpu's own WebGPU.importJsDevice (Module.WebGPU, an exported runtime method). This avoids the
 	// in-WASM wgpuInstanceProcessEvents pump, which hangs when driven from a managed call stack on the browser.
 	export class WebGpuInit {
 		private static framesInFlight = 0;
+
+		// emdawnwebgpu's runtime object, from whichever copy the app links (Uno's, or SkiaSharp's when it brings one).
+		private static get webGpu(): any {
+			return (window as any).Module?.WebGPU;
+		}
 
 		// Counts a presented frame until the queue has finished everything submitted so far (the queue is FIFO, so
 		// that covers the frame's own work).
@@ -53,12 +58,12 @@ namespace Uno.UI.Runtime {
 				// A lost device otherwise only shows up later as every async operation aborting, with no reason given.
 				device.lost.then((info: any) => console.error("WebGpuInit: device lost (" + info.reason + "): " + info.message));
 				device.addEventListener("uncapturederror", (e: any) => console.error("WebGpuInit: uncaptured error: " + e.error?.message));
-				const module = (window as any).Module;
-				if (!module || typeof module.unoWebGpuImportDevice !== "function") {
-					console.error("WebGpuInit: Module.unoWebGpuImportDevice is missing (emdawn __postset patch not applied?)");
+				const webGpu = WebGpuInit.webGpu;
+				if (!webGpu || typeof webGpu.importJsDevice !== "function") {
+					console.error("WebGpuInit: Module.WebGPU.importJsDevice is missing (WebGPU not exported as a runtime method?)");
 					return 0;
 				}
-				const devicePtr = module.unoWebGpuImportDevice(device, instancePtr) >>> 0;
+				const devicePtr = webGpu.importJsDevice(device, instancePtr) >>> 0;
 				console.log("WebGpuInit: imported device ptr=" + devicePtr);
 				return devicePtr;
 			} catch (e) {
@@ -69,15 +74,14 @@ namespace Uno.UI.Runtime {
 
 		// Returns the live JS object emdawn's handle table holds for a wgpu handle pointer (reverse of import).
 		public static getJsObject(handlePtr: number): any {
-			const module = (window as any).Module;
-			return module && typeof module.unoWebGpuJsObject === "function" ? module.unoWebGpuJsObject(handlePtr >>> 0) : null;
+			return WebGpuInit.webGpu?.Internals?.jsObjects[handlePtr >>> 0] ?? null;
 		}
 
 		// Creates the offscreen resolve texture in JS (JS-primary) and imports it into emdawn's handle table.
 		public static createAndImportOffscreenTexture(device: any, width: number, height: number, usage: number): number {
-			const module = (window as any).Module;
-			if (!module || typeof module.unoWebGpuImportTexture !== "function") {
-				console.error("WebGpuInit.createAndImportOffscreenTexture: Module.unoWebGpuImportTexture is missing");
+			const webGpu = WebGpuInit.webGpu;
+			if (!webGpu || typeof webGpu.importJsTexture !== "function") {
+				console.error("WebGpuInit.createAndImportOffscreenTexture: Module.WebGPU.importJsTexture is missing");
 				return 0;
 			}
 			const tex = device.createTexture({
@@ -86,7 +90,7 @@ namespace Uno.UI.Runtime {
 				sampleCount: 1,
 				usage: usage >>> 0,
 			});
-			return module.unoWebGpuImportTexture(tex, 0) >>> 0;
+			return webGpu.importJsTexture(tex, 0) >>> 0;
 		}
 
 		// Maps a readback buffer (by its wgpu handle ptr) off the event loop and inspects it as RGBA8 (rows padded to
@@ -95,9 +99,7 @@ namespace Uno.UI.Runtime {
 		// an actual screenshot — the only way to observe WebGPU output where SwiftShader can't composite the canvas.
 		public static async mapReadStats(bufferPtr: number, w: number, h: number, bytesPerRow: number): Promise<number> {
 			try {
-				const module = (window as any).Module;
-				const buffer = module && typeof module.unoWebGpuJsObject === "function"
-					? module.unoWebGpuJsObject(bufferPtr) : null;
+				const buffer = WebGpuInit.getJsObject(bufferPtr);
 				if (!buffer) {
 					console.error("WebGpuInit.mapReadStats: no JS buffer for ptr=" + bufferPtr);
 					return -1;
@@ -137,9 +139,7 @@ namespace Uno.UI.Runtime {
 		// base64 string. Used by SnapshotAsync (RenderTargetBitmap) — the only way to complete a GPU->CPU map on
 		// WASM's single JS thread. (base64 marshals cleanly as a string; adequate for occasional RTB.)
 		public static async mapReadBase64(bufferPtr: number, byteLen: number): Promise<string> {
-			const module = (window as any).Module;
-			const buffer = module && typeof module.unoWebGpuJsObject === "function"
-				? module.unoWebGpuJsObject(bufferPtr) : null;
+			const buffer = WebGpuInit.getJsObject(bufferPtr);
 			if (!buffer) {
 				console.error("WebGpuInit.mapReadBase64: no JS buffer for ptr=" + bufferPtr);
 				return "";

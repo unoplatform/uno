@@ -10,7 +10,6 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.Extensions;
 using Uno.Foundation;
-using Uno.Foundation.Interop;
 using Uno.Foundation.Logging;
 using Windows.Foundation.Collections;
 
