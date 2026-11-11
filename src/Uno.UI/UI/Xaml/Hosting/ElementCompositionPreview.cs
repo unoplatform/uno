@@ -2,6 +2,7 @@
 
 using System.Linq;
 using Microsoft.UI.Composition;
+using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml.Hosting;
 
@@ -71,6 +72,20 @@ public partial class ElementCompositionPreview
 		element.Visual.Children.InsertAtTop(container);
 #endif
 	}
+
+	/// <summary>
+	/// Sets an animation to run when the element is shown: when it enters the live tree, or it (or an ancestor)
+	/// becomes visible.
+	/// </summary>
+	public static void SetImplicitShowAnimation(UIElement element, ICompositionAnimationBase? animation)
+		=> element.SetImplicitShowHideAnimation(ImplicitAnimationType.Show, animation);
+
+	/// <summary>
+	/// Sets an animation to run when the element is hidden: when it leaves the live tree, or it (or an ancestor)
+	/// is collapsed. The element keeps rendering until the animation completes.
+	/// </summary>
+	public static void SetImplicitHideAnimation(UIElement element, ICompositionAnimationBase? animation)
+		=> element.SetImplicitShowHideAnimation(ImplicitAnimationType.Hide, animation);
 
 #if __SKIA__
 	public static void SetIsTranslationEnabled(UIElement element, bool value)

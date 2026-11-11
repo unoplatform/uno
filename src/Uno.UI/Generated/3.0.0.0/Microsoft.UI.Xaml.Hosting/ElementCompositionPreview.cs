@@ -23,20 +23,8 @@ public partial class ElementCompositionPreview
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Hosting.ElementCompositionPreview", "GetScrollViewerManipulationPropertySet(ScrollViewer scrollViewer)");
 	}
 #endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static void SetImplicitShowAnimation(global::Microsoft.UI.Xaml.UIElement element, global::Microsoft.UI.Composition.ICompositionAnimationBase animation)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Hosting.ElementCompositionPreview", "SetImplicitShowAnimation(UIElement element, ICompositionAnimationBase animation)");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static void SetImplicitHideAnimation(global::Microsoft.UI.Xaml.UIElement element, global::Microsoft.UI.Composition.ICompositionAnimationBase animation)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Hosting.ElementCompositionPreview", "SetImplicitHideAnimation(UIElement element, ICompositionAnimationBase animation)");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.SetImplicitShowAnimation(Microsoft.UI.Xaml.UIElement, Microsoft.UI.Composition.ICompositionAnimationBase)
+	// Skipping already declared method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.SetImplicitHideAnimation(Microsoft.UI.Xaml.UIElement, Microsoft.UI.Composition.ICompositionAnimationBase)
 	// Skipping already declared method Microsoft.UI.Xaml.Hosting.ElementCompositionPreview.SetIsTranslationEnabled(Microsoft.UI.Xaml.UIElement, bool)
 #if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]

@@ -151,6 +151,9 @@ namespace Uno.UI.Xaml.Core
 			// Loaded has been raised for what this pass brought back into the tree: release the undisplayed images now due.
 			PendingImageReleases.OnLayoutPassCompleted();
 
+			// As in WinUI (DCompTreeHost::UpdateImplicitShowHideAnimations), once per frame, just before rendering.
+			Instance.ImplicitShowHideAnimations.Update();
+
 #if __SKIA__
 			foreach (var window in ApplicationHelper.WindowsInternal)
 			{
@@ -211,6 +214,11 @@ namespace Uno.UI.Xaml.Core
 		/// (activated around theme walks via BeginCachingThemeResources, xcpcore.cpp:8015).
 		/// </summary>
 		internal Microsoft.UI.Xaml.ThemeWalkResourceCache ThemeWalkResourceCache { get; } = new();
+
+		/// <summary>
+		/// Implicit Show/Hide animation bookkeeping, which WinUI keeps on DCompTreeHost.
+		/// </summary>
+		internal ImplicitShowHideAnimations ImplicitShowHideAnimations { get; } = new();
 
 		/// <summary>
 		/// Provides the content root coordinator.

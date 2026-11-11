@@ -1,4 +1,4 @@
-using Windows.Foundation;
+﻿using Windows.Foundation;
 using System.Linq;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -1641,6 +1641,15 @@ namespace Microsoft.UI.Xaml
 
 			var currentParent = child.GetParent() as UIElement;
 
+			if (currentParent is not null && currentParent.IsUnloadingElement(child))
+			{
+				// The child is re-added while its Hide animation plays (CUIElement::OnAssociationFailure):
+				// cancel the animation and finish its removal first.
+				child.CancelImplicitAnimation(ImplicitAnimationType.Hide);
+				child.SetKeepVisible(false);
+				currentParent = child.GetParent() as UIElement;
+			}
+
 			// Remove child from current parent, if any
 			if (currentParent != this && currentParent != null)
 			{
@@ -1789,6 +1798,16 @@ namespace Microsoft.UI.Xaml
 
 		private void InnerRemoveChild(UIElement child)
 		{
+			if (TryMoveToImplicitAnimationUnloadingStorage(child))
+			{
+				return;
+			}
+
+			CompleteChildRemoval(child);
+		}
+
+		private void CompleteChildRemoval(UIElement child)
+		{
 			child.SetParent(null);
 			if (Visual != null)
 			{
@@ -1807,6 +1826,7 @@ namespace Microsoft.UI.Xaml
 		{
 			UpdateHitTest();
 			UpdateOpacity();
+			OnVisibilityChangedForImplicitShowHideAnimations(newValue);
 
 			if (newValue == Visibility.Collapsed)
 			{
@@ -1976,7 +1996,13 @@ namespace Microsoft.UI.Xaml
 			=> Visual.IsVisible = true;
 
 		partial void HideVisual()
-			=> Visual.IsVisible = false;
+		{
+			// An element kept visible renders while collapsed, until the implicit Hide animation in its subtree completes.
+			if (!IsKeepVisible())
+			{
+				Visual.IsVisible = false;
+			}
+		}
 
 		public void StartAnimation(ICompositionAnimationBase animation)
 		{

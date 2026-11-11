@@ -1644,6 +1644,8 @@ namespace Microsoft.UI.Xaml
 
 				var eventManager = this.GetContext().EventManager;
 				eventManager.RemoveRequest(this);
+
+				OnLeaveForImplicitShowHideAnimations();
 			}
 			// --------- UNO Specific END ---------
 

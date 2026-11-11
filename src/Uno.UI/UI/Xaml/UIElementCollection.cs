@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public void RemoveAt(int index)
 		{
 			var item = RemoveAtCore(index);
-			item.SetParent(null);
+			ClearParent(item);
 
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
 		}
@@ -45,7 +45,7 @@ namespace Microsoft.UI.Xaml.Controls
 				value.SetParent(_owner);
 
 				var previousItem = SetAtIndexCore(index, value);
-				previousItem.SetParent(null);
+				ClearParent(previousItem);
 
 				OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, value, previousItem, index));
 			}
@@ -76,7 +76,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (item is DependencyObject provider)
 				{
-					item.SetParent(null);
+					ClearParent(item);
 				}
 			}
 
@@ -98,6 +98,16 @@ namespace Microsoft.UI.Xaml.Controls
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, items.ToList()));
 		}
 
+		// A child removed while a Hide animation plays in its subtree stays parented (in the owner's unloading
+		// storage) until the animation completes.
+		private void ClearParent(UIElement item)
+		{
+			if (!_owner.IsUnloadingElement(item))
+			{
+				item.SetParent(null);
+			}
+		}
+
 		public bool Contains(UIElement item)
 		{
 			return ContainsCore(item);
@@ -112,9 +122,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (item != null)
 			{
-				item.SetParent(null);
-
 				var removed = RemoveCore(item);
+				ClearParent(item);
+
 				OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
 				return removed;
 			}
