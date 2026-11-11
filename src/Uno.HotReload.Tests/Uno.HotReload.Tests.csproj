@@ -7,6 +7,9 @@
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
+	<!-- Same Roslyn line, pins and package source as the Uno.HotReload flavor under test -->
+	<Import Project="../Uno.DevServer.Roslyn.props" />
+
 	<ItemGroup>
 		<PackageReference Include="AwesomeAssertions" />
 	</ItemGroup>

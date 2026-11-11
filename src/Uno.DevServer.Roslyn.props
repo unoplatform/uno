@@ -24,6 +24,8 @@
 		<DevServerMSBuildVersion>18.12.2</DevServerMSBuildVersion>
 		<DevServerMSBuildToolsVersion>18.12.2</DevServerMSBuildToolsVersion>
 		<DevServerExtensionsVersion>10.0.10</DevServerExtensionsVersion>
+		<!-- Only the projects restoring this line need the feed: a repo-wide source would make every restore depend on it -->
+		<RestoreAdditionalProjectSources>$(RestoreAdditionalProjectSources);https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet-tools/nuget/v3/index.json</RestoreAdditionalProjectSources>
 	</PropertyGroup>
 
 </Project>
