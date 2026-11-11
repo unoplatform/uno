@@ -34,7 +34,7 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="SkiaSharp" version="4.151.1" />
 			</group>
-			<group targetFramework="net11.0-ios27.0">
+			<group targetFramework="net11.0-ios27.2">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="SkiaSharp" version="4.151.1" />
 			</group>
@@ -42,7 +42,7 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="SkiaSharp" version="4.151.1" />
 			</group>
-			<group targetFramework="net11.0-tvos27.0">
+			<group targetFramework="net11.0-tvos27.2">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="SkiaSharp" version="4.151.1" />
 			</group>

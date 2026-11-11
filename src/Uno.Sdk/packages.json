@@ -154,7 +154,7 @@
 			"Microsoft.Extensions.Logging.Console"
 		],
 		"versionOverride": {
-			"net11.0": "11.0.0-rc.3.26522.148"
+			"net11.0": "11.0.0"
 		}
 	},
 	{
@@ -306,7 +306,7 @@
 			"Microsoft.Maui.Graphics"
 		],
 		"versionOverride": {
-			"net11.0": "11.0.0-rc.2.26505.5"
+			"net11.0": "11.0.0"
 		}
 	},
 	{
