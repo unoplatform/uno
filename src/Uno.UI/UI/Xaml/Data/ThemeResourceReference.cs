@@ -97,6 +97,26 @@ internal sealed class ThemeResourceReference
 	/// </summary>
 	public BindingPath? SetterBindingPath { get; }
 
+	private WeakReference<DependencyObject>? _resolutionOwner;
+
+	/// <summary>
+	/// The object whose theme this reference resolves under, when that is not the object the
+	/// reference is registered on.
+	/// </summary>
+	/// <remarks>
+	/// WinUI keeps a VSM setter's live theme binding on the CSetter (ThemeResource.cpp:189-198), so it
+	/// resolves under the setter's own theme (Theming.cpp:367-379) and the target only ever receives a
+	/// resolved value (VisualStateSetterHelper.cpp:186). Uno registers the reference on the target
+	/// instead so the existing re-application path can reach it, so the resolution owner is pinned here
+	/// to keep WinUI's resolution semantics: the target's own RequestedTheme — which the same visual
+	/// state may have just set as a boundary — must not re-scope the value (#24021).
+	/// </remarks>
+	internal DependencyObject? ResolutionOwner
+	{
+		get => _resolutionOwner is not null && _resolutionOwner.TryGetTarget(out var owner) ? owner : null;
+		set => _resolutionOwner = value is null ? null : new WeakReference<DependencyObject>(value);
+	}
+
 	// MUX Reference: CThemeResource::CThemeResource(ThemeWalkResourceCache*) +
 	// SetInitialValueAndTargetDictionary (ThemeResource.cpp:32-51): construct with the key, pin the
 	// providing dictionary, and store the initially resolved value.
@@ -140,7 +160,7 @@ internal sealed class ThemeResourceReference
 	/// LastResolvedValue. Does NOT do tree-walk — that's handled by UpdateThemeReference
 	/// (matching WinUI's UpdateThemeReference which walks ancestors before calling RefreshValue).
 	/// </remarks>
-	public object? RefreshValue(ThemeWalkResourceCache? cache = null, bool preferAppResourceOverride = false)
+	public object? RefreshValue(ThemeWalkResourceCache? cache = null)
 	{
 		var theme = ResourceDictionary.GetActiveBaseTheme();
 
@@ -158,15 +178,14 @@ internal sealed class ThemeResourceReference
 
 			if (dict.TryGetValue(ResourceKey, out var value, shouldCheckSystem: false))
 			{
-				// MUX: Resources.cpp:668-682 (GetKeyFromThemeDictionariesNoRef) — "Always allow
+				// MUX: Resources.cpp:675-684 (GetKeyFromThemeDictionariesNoRef) — "Always allow
 				// Application.Resources to override values found in the global ThemeDictionaries"
-				// (GetKeyOverrideFromApplicationResourcesNoRef). When this ref is pinned to a global/framework
-				// theme dictionary (a control template's {ThemeResource} pins to generic/Fluent), an app-level
-				// override of the same key must still win on re-resolution outside an ancestor walk — e.g. a
-				// storyboard keyframe re-begun on a visual-state re-entry would otherwise revert to the stock
-				// value. The caller passes preferAppResourceOverride for those framework-pinned cases (keyframes);
-				// dict.IsSystemDictionary covers Uno.UI's own generic dictionaries.
-				if ((preferAppResourceOverride || dict.IsSystemDictionary)
+				// (GetKeyOverrideFromApplicationResourcesNoRef), gated on IsGlobalThemeDictionaries(). When
+				// this ref is pinned to a framework/global theme dictionary (a control template's
+				// {ThemeResource} pins to generic/Fluent), an app-level override of the same key must still
+				// win on re-resolution outside an ancestor walk — e.g. a storyboard keyframe re-begun on a
+				// visual-state re-entry would otherwise revert to the stock value.
+				if (dict.IsGlobalThemeDictionaries
 					&& Uno.UI.ResourceResolver.TryApplicationResourceOverride(ResourceKey, out var appOverride))
 				{
 					value = appOverride;
@@ -260,6 +279,7 @@ internal sealed class ThemeResourceReference
 		// Share the same pinned dictionary (and the initial-theme flag, like the C++ copy ctor).
 		clone._targetDictionary = _targetDictionary;
 		clone.IsValueFromInitialTheme = IsValueFromInitialTheme;
+		clone._resolutionOwner = _resolutionOwner;
 		return clone;
 	}
 }
