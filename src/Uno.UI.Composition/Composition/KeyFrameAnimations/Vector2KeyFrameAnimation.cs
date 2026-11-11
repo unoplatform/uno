@@ -18,6 +18,14 @@ public partial class Vector2KeyFrameAnimation : KeyFrameAnimation
 
 	private protected override int KeyFrameCountCore => _keyFrames.Count;
 
+	internal override CompositionAnimation CloneTemplate()
+	{
+		var clone = new Vector2KeyFrameAnimation(Compositor);
+		CopyKeyFrames(_keyFrames, clone._keyFrames);
+		CopyKeyFrameSettingsTo(clone);
+		return clone;
+	}
+
 	public void InsertKeyFrame(float normalizedProgressKey, Vector2 value, CompositionEasingFunction easingFunction)
 		=> _keyFrames[normalizedProgressKey] = new() { Value = value, EasingFunction = easingFunction };
 

@@ -16,6 +16,14 @@ public partial class BooleanKeyFrameAnimation : KeyFrameAnimation
 
 	private protected override int KeyFrameCountCore => _keyFrames.Count;
 
+	internal override CompositionAnimation CloneTemplate()
+	{
+		var clone = new BooleanKeyFrameAnimation(Compositor);
+		CopyKeyFrames(_keyFrames, clone._keyFrames);
+		CopyKeyFrameSettingsTo(clone);
+		return clone;
+	}
+
 	public void InsertKeyFrame(float normalizedProgressKey, bool value)
 		=> _keyFrames[normalizedProgressKey] = new() { Value = value };
 

@@ -111,13 +111,7 @@ public partial class Compositor : global::System.IDisposable
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateAmbientLight()");
 	}
 #endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Composition.CompositionAnimationGroup CreateAnimationGroup()
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateAnimationGroup()");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateAnimationGroup()
 	// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateBackdropBrush()
 #if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]

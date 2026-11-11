@@ -68,6 +68,9 @@ namespace Microsoft.UI.Composition
 			=> new PathKeyFrameAnimation(this);
 #endif
 
+		public CompositionAnimationGroup CreateAnimationGroup()
+			=> new CompositionAnimationGroup(this);
+
 		public CompositionScopedBatch CreateScopedBatch(CompositionBatchTypes batchType)
 			=> new CompositionScopedBatch(this, batchType);
 

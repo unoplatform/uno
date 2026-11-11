@@ -58,6 +58,27 @@ namespace Microsoft.UI.Composition
 
 		internal event EventHandler? Stopped;
 
+		private protected void CopyKeyFrameSettingsTo(KeyFrameAnimation clone)
+		{
+			clone.Duration = Duration;
+			clone.IterationCount = IterationCount;
+			clone.IterationBehavior = IterationBehavior;
+			clone.DelayTime = DelayTime;
+			clone.DelayBehavior = DelayBehavior;
+			clone.StopBehavior = StopBehavior;
+			clone.Direction = Direction;
+			clone.Comment = Comment;
+			CopyParametersTo(clone);
+		}
+
+		private protected static void CopyKeyFrames<T>(SortedDictionary<float, AnimationKeyFrame<T>> source, SortedDictionary<float, AnimationKeyFrame<T>> destination)
+		{
+			foreach (var (key, value) in source)
+			{
+				destination[key] = value;
+			}
+		}
+
 		// Creates the evaluator for a concrete keyframe type and returns the value the property takes on start.
 		private protected object? StartEvaluator<T>(
 			AnimationKeyFrame<T> startValue,

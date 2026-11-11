@@ -23,6 +23,14 @@ public partial class PathKeyFrameAnimation : KeyFrameAnimation
 
 	private protected override int KeyFrameCountCore => _keyFrames.Count;
 
+	internal override CompositionAnimation CloneTemplate()
+	{
+		var clone = new PathKeyFrameAnimation(Compositor);
+		CopyKeyFrames(_keyFrames, clone._keyFrames);
+		CopyKeyFrameSettingsTo(clone);
+		return clone;
+	}
+
 	public void InsertKeyFrame(float normalizedProgressKey, CompositionPath path)
 		=> InsertKeyFrame(normalizedProgressKey, path, Compositor.GetDefaultEasingFunction());
 

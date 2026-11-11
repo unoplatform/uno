@@ -20,6 +20,15 @@ public partial class ColorKeyFrameAnimation : KeyFrameAnimation
 
 	private protected override int KeyFrameCountCore => _keyFrames.Count;
 
+	internal override CompositionAnimation CloneTemplate()
+	{
+		var clone = new ColorKeyFrameAnimation(Compositor);
+		CopyKeyFrames(_keyFrames, clone._keyFrames);
+		clone.InterpolationColorSpace = InterpolationColorSpace;
+		CopyKeyFrameSettingsTo(clone);
+		return clone;
+	}
+
 	public void InsertKeyFrame(float normalizedProgressKey, Color value)
 		=> InsertKeyFrame(normalizedProgressKey, value, Compositor.GetDefaultEasingFunction());
 

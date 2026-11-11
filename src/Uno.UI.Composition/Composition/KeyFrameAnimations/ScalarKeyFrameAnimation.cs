@@ -19,6 +19,14 @@ public partial class ScalarKeyFrameAnimation : KeyFrameAnimation
 
 	private protected override int KeyFrameCountCore => _keyFrames.Count;
 
+	internal override CompositionAnimation CloneTemplate()
+	{
+		var clone = new ScalarKeyFrameAnimation(Compositor);
+		CopyKeyFrames(_keyFrames, clone._keyFrames);
+		CopyKeyFrameSettingsTo(clone);
+		return clone;
+	}
+
 	public void InsertKeyFrame(float normalizedProgressKey, float value)
 		=> InsertKeyFrame(normalizedProgressKey, value, Compositor.GetDefaultEasingFunction());
 

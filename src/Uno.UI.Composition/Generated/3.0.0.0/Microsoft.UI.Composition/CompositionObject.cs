@@ -50,20 +50,8 @@ public partial class CompositionObject : global::System.IDisposable, global::Mic
 #endif
 	// Skipping already declared method Microsoft.UI.Composition.CompositionObject.StartAnimation(string, Microsoft.UI.Composition.CompositionAnimation)
 	// Skipping already declared method Microsoft.UI.Composition.CompositionObject.StopAnimation(string)
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void StartAnimationGroup(global::Microsoft.UI.Composition.ICompositionAnimationBase value)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionObject", "StartAnimationGroup(ICompositionAnimationBase value)");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void StopAnimationGroup(global::Microsoft.UI.Composition.ICompositionAnimationBase value)
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionObject", "StopAnimationGroup(ICompositionAnimationBase value)");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Composition.CompositionObject.StartAnimationGroup(Microsoft.UI.Composition.ICompositionAnimationBase)
+	// Skipping already declared method Microsoft.UI.Composition.CompositionObject.StopAnimationGroup(Microsoft.UI.Composition.ICompositionAnimationBase)
 	// Skipping already declared method Microsoft.UI.Composition.CompositionObject.TryGetAnimationController(string)
 	// Skipping already declared method Microsoft.UI.Composition.CompositionObject.StartAnimation(string, Microsoft.UI.Composition.CompositionAnimation, Microsoft.UI.Composition.AnimationController)
 	// Skipping already declared method Microsoft.UI.Composition.CompositionObject.Dispose()

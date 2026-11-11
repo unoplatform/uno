@@ -68,12 +68,94 @@ namespace Microsoft.UI.Composition
 		// TODO: Clone the animation object to support scenarios where the same animation is used on multiple objects
 
 		public void StartAnimation(string propertyName, CompositionAnimation animation)
-		{
 			// Snapshot the animation for this target (WinUI semantics). ExpressionAnimation clones so a
 			// reusable instance reconfigured per target (LottieGen's _reusableExpressionAnimation) stays
 			// bound to the reference parameters it had when started here; other animations share.
-			animation = animation.CloneAnimation();
+			=> StartAnimationCore(propertyName, animation.CloneAnimation());
 
+		public void StartAnimationGroup(ICompositionAnimationBase value)
+			=> StartAnimationGroupCore(value, triggerPropertyName: null, triggerFinalValue: null);
+
+		public void StopAnimationGroup(ICompositionAnimationBase value)
+		{
+			ArgumentNullException.ThrowIfNull(value);
+
+			foreach (var animation in GetGroupMembers(value))
+			{
+				var target = animation.Target;
+				if (_animations?.TryGetValue(target, out var running) == true
+					&& (running == animation || running.Template == animation))
+				{
+					StopAnimation(target);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Starts every member of <paramref name="value"/> on the property named by its Target. When started by an implicit
+		/// trigger, members animating <paramref name="triggerPropertyName"/> get <paramref name="triggerFinalValue"/> as this.FinalValue.
+		/// </summary>
+		internal void StartAnimationGroupCore(ICompositionAnimationBase value, string? triggerPropertyName, object? triggerFinalValue)
+		{
+			ArgumentNullException.ThrowIfNull(value);
+
+			var members = GetGroupMembers(value);
+			foreach (var animation in members)
+			{
+				if (string.IsNullOrEmpty(animation.Target))
+				{
+					throw new ArgumentException("Every animation started as part of a group must have its Target set.", nameof(value));
+				}
+			}
+
+			foreach (var animation in members)
+			{
+				var instance = animation.CloneTemplate();
+				instance.Template = animation;
+
+				if (triggerPropertyName is not null)
+				{
+					instance.PendingFinalValue = GetTriggerFinalValue(animation.Target, triggerPropertyName, triggerFinalValue);
+				}
+
+				StartAnimationCore(animation.Target, instance);
+			}
+		}
+
+		private static CompositionAnimation[] GetGroupMembers(ICompositionAnimationBase value)
+			=> value switch
+			{
+				CompositionAnimationGroup group => group.GetAnimations(),
+				CompositionAnimation animation => [animation],
+				_ => throw new ArgumentException($"Unsupported animation type '{value.GetType()}'.", nameof(value)),
+			};
+
+		// An animation on the triggering property (or one of its channels) ends at the assigned value; any other
+		// member resolves this.FinalValue to its own property's current value.
+		private static object? GetTriggerFinalValue(string target, string triggerPropertyName, object? triggerFinalValue)
+		{
+			if (triggerFinalValue is null)
+			{
+				return null;
+			}
+
+			if (target.Equals(triggerPropertyName, StringComparison.OrdinalIgnoreCase))
+			{
+				return triggerFinalValue;
+			}
+
+			if (target.Length > triggerPropertyName.Length + 1
+				&& target[triggerPropertyName.Length] == '.'
+				&& target.StartsWith(triggerPropertyName, StringComparison.OrdinalIgnoreCase))
+			{
+				return GetSubProperty(target.Substring(triggerPropertyName.Length + 1), triggerFinalValue);
+			}
+
+			return null;
+		}
+
+		private void StartAnimationCore(string propertyName, CompositionAnimation animation)
+		{
 			ReadOnlySpan<char> firstPropertyName;
 			ReadOnlySpan<char> subPropertyName;
 			var firstDotIndex = propertyName.IndexOf('.');

@@ -150,6 +150,15 @@ public partial class CompositionAnimation
 	// (keyframe animations) share the instance; ExpressionAnimation overrides this to snapshot.
 	internal virtual CompositionAnimation CloneAnimation() => this;
 
+	/// <summary>
+	/// Snapshots the animation so it can run on a target independently of any other start of the same
+	/// instance. Used by group and implicit starts, where one animation commonly runs on many visuals at once.
+	/// </summary>
+	internal virtual CompositionAnimation CloneTemplate() => CloneAnimation();
+
+	/// <summary>The animation this instance was snapshotted from by <see cref="CloneTemplate"/>, if any.</summary>
+	internal CompositionAnimation? Template { get; set; }
+
 	private protected void CopyParametersTo(CompositionAnimation other)
 	{
 		foreach (var (key, value) in ReferenceParameters)
