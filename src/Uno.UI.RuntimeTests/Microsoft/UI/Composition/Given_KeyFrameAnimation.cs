@@ -333,4 +333,50 @@ public partial class Given_KeyFrameAnimation
 		}
 	}
 #endif
+	[TestMethod]
+	[DataRow(AnimationDelayBehavior.SetInitialValueAfterDelay)]
+	[DataRow(AnimationDelayBehavior.SetInitialValueBeforeDelay)]
+	public async Task When_DelayTime_Then_Animation_Starts_After_Delay(AnimationDelayBehavior delayBehavior)
+	{
+		var (host, visual) = await Given_CompositionAnimationGroup.LoadSpriteVisual();
+		var compositor = visual.Compositor;
+
+		var opacity = compositor.CreateScalarKeyFrameAnimation();
+		opacity.InsertKeyFrame(0, 0);
+		opacity.InsertKeyFrame(1, 0.5f);
+		opacity.Duration = TimeSpan.FromMilliseconds(100);
+		opacity.DelayTime = TimeSpan.FromSeconds(1);
+		opacity.DelayBehavior = delayBehavior;
+
+		try
+		{
+			var completed = new TaskCompletionSource();
+			var batch = compositor.CreateScopedBatch(CompositionBatchTypes.Animation);
+			batch.Completed += (_, _) => completed.TrySetResult();
+			visual.StartAnimation(nameof(Visual.Opacity), opacity);
+			batch.End();
+
+			await TestServices.WindowHelper.WaitForIdle();
+			var duringDelay = await UITestHelper.ScreenShot(host);
+			if (delayBehavior == AnimationDelayBehavior.SetInitialValueAfterDelay)
+			{
+				// The property keeps its value until the delay elapses.
+				ImageAssert.HasColorAt(duringDelay, 5, 5, Microsoft.UI.Colors.Red, tolerance: 5);
+			}
+			else
+			{
+				// The initial keyframe (Opacity 0) applies right away.
+				ImageAssert.DoesNotHaveColorAt(duringDelay, 5, 5, Microsoft.UI.Colors.Red, tolerance: 5);
+			}
+
+			Assert.IsFalse(completed.Task.IsCompleted, "The animation completed before its delay elapsed.");
+
+			await TestServices.WindowHelper.WaitFor(() => completed.Task.IsCompleted, timeoutMS: 5000);
+			Assert.AreEqual(0.5f, visual.Opacity, 0.001f);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
 }
