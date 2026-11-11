@@ -42,6 +42,38 @@ public class Given_ElementCompositionPreview_ImplicitShowHide
 	}
 
 	[TestMethod]
+	public async Task When_Hide_Animation_Starts_From_Current_Opacity_And_Collapsed()
+	{
+		// Like CommunityToolkit's OpacityAnimation To="0": no keyframe at 0, so the animation starts from the
+		// visual's opacity at the time the element is collapsed, which must still be its visible opacity.
+		var (host, target) = await LoadTarget();
+		var compositor = ElementCompositionPreview.GetElementVisual(target).Compositor;
+		var opacity = compositor.CreateScalarKeyFrameAnimation();
+		opacity.InsertExpressionKeyFrame(0.99f, "this.StartingValue");
+		opacity.InsertKeyFrame(1, 0);
+		opacity.Duration = TimeSpan.FromMilliseconds(AnimationMilliseconds);
+		opacity.Target = nameof(Visual.Opacity);
+		var group = compositor.CreateAnimationGroup();
+		group.Add(opacity);
+		ElementCompositionPreview.SetImplicitHideAnimation(target, group);
+
+		try
+		{
+			target.Visibility = Visibility.Collapsed;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var during = await UITestHelper.ScreenShot(host);
+			ImageAssert.HasColorAt(during, 10, 10, Colors.Red, tolerance: 5);
+
+			await WaitForColor(host, 10, 10, expectRed: false);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	public async Task When_Hide_Animation_And_Removed_Then_Unloaded_After_Complete()
 	{
 		var (host, target) = await LoadTarget();
