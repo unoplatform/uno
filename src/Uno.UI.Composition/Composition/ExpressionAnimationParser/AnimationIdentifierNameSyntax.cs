@@ -18,11 +18,14 @@ internal class AnimationIdentifierNameSyntax : AnimationExpressionSyntax
 
 	public override object Evaluate(CompositionAnimation expressionAnimation)
 	{
-		if (_expressionAnimation is not null)
+		if (ReferenceEquals(_expressionAnimation, expressionAnimation))
 		{
 			return _result!;
 		}
 
+		// Keyframe expressions are parsed once and shared by every instance of the animation started
+		// from the same template, so the cached resolution is only valid for the animation it came from.
+		Dispose();
 		_expressionAnimation = expressionAnimation;
 
 		var identifierValue = (string)Identifier.Value!;

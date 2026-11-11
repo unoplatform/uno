@@ -53,8 +53,7 @@ public partial class ScalarKeyFrameAnimation : KeyFrameAnimation
 		float Lerp(AnimationKeyFrame<float> value1, AnimationKeyFrame<float> value2, float amount)
 			=> float.Lerp(Resolve(value1), Resolve(value2), value2.EasingFunction.Ease(amount));
 
-		_keyframeEvaluator = new KeyFrameEvaluator<float>(startValue, finalValue, Duration, _keyFrames, Lerp, IterationCount, IterationBehavior, Compositor, Resolve);
-		return Resolve(startValue);
+		return StartEvaluator(startValue, finalValue, _keyFrames, Lerp, Resolve);
 	}
 
 	private static float ResolveScalarKeyFrameValue(KeyFrameAnimation animation, AnimationKeyFrame<float> frame)

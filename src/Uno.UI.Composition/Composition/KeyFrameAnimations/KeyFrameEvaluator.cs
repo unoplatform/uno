@@ -18,6 +18,10 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 	private readonly Compositor _compositor;
 	private long _lastTimestamp;
 
+	// DelayTime: wall-clock ticks still to elapse before the playhead starts moving, and the value held meanwhile.
+	private long _remainingDelayTicks;
+	private readonly T _delayValue;
+
 	// Like a composition commit, an animation starts at the first frame that evaluates it, not when it was
 	// requested: a start between frames would otherwise show the time since the request in that first frame.
 	private bool _isAwaitingFirstFrame = true;
@@ -42,8 +46,12 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 		int iterationCount,
 		AnimationIterationBehavior iterationBehavior,
 		Compositor compositor,
-		Func<AnimationKeyFrame<T>, T> resolve = null)
+		Func<AnimationKeyFrame<T>, T> resolve = null,
+		TimeSpan delay = default,
+		T delayValue = default)
 	{
+		_remainingDelayTicks = Math.Max(delay.Ticks, 0);
+		_delayValue = delayValue;
 		_initialValue = initialValue;
 		_finalValue = finalValue;
 		_duration = duration;
@@ -58,6 +66,14 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 
 	private T Resolve(AnimationKeyFrame<T> frame) => _resolve is null ? frame.Value : _resolve(frame);
 
+	private bool IsDelaying => _remainingDelayTicks > 0;
+
+	/// <summary>
+	/// The value the property takes when the animation starts: the held delay value while a delay is pending,
+	/// the initial keyframe otherwise.
+	/// </summary>
+	public T InitialValue => IsDelaying ? _delayValue : Resolve(_initialValue);
+
 	public (object Value, bool ShouldStop) Evaluate()
 	{
 		if (_isAwaitingFirstFrame)
@@ -67,6 +83,11 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 		}
 
 		var currentProgress = UpdateProgress(out var shouldStop);
+		if (IsDelaying)
+		{
+			return (_delayValue, false);
+		}
+
 		if (shouldStop)
 		{
 			return (PlaybackRate < 0 ? Resolve(_initialValue) : Resolve(_finalValue), true);
@@ -154,6 +175,7 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 
 	public void Seek(float progress)
 	{
+		_remainingDelayTicks = 0;
 		_playhead = ClampPlayhead(progress);
 		_lastTimestamp = _compositor.AnimationTimestampInTicks;
 	}
@@ -201,7 +223,7 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 				return TimeSpan.Zero;
 			}
 
-			var remainingTicks = remainingProgress * _duration.Ticks / Math.Abs(_playbackRate);
+			var remainingTicks = remainingProgress * _duration.Ticks / Math.Abs(_playbackRate) + _remainingDelayTicks;
 			return TimeSpan.FromTicks((long)Math.Ceiling(remainingTicks));
 		}
 	}
@@ -223,6 +245,18 @@ internal sealed class KeyFrameEvaluator<T> : IKeyFrameEvaluator
 		}
 
 		_lastTimestamp = now;
+
+		if (_remainingDelayTicks > 0)
+		{
+			// The delay runs on the wall clock; only the time left over after it moves the playhead.
+			var consumed = Math.Min(_remainingDelayTicks, delta);
+			_remainingDelayTicks -= consumed;
+			delta -= consumed;
+			if (delta <= 0)
+			{
+				return;
+			}
+		}
 
 		if (_duration == TimeSpan.Zero || _playbackRate == 0.0f)
 		{

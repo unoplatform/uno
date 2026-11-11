@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -43,8 +43,7 @@ public partial class BooleanKeyFrameAnimation : KeyFrameAnimation
 
 		// Boolean keyframes don't interpolate; hold the lower keyframe's value.
 		Func<AnimationKeyFrame<bool>, AnimationKeyFrame<bool>, float, bool> lerp = (value1, value2, _) => Resolve(value1);
-		_keyframeEvaluator = new KeyFrameEvaluator<bool>(startValue, finalValue, Duration, _keyFrames, lerp, IterationCount, IterationBehavior, Compositor, Resolve);
-		return Resolve(startValue);
+		return StartEvaluator(startValue, finalValue, _keyFrames, lerp, Resolve);
 	}
 
 	private static bool ResolveBooleanKeyFrameValue(KeyFrameAnimation animation, AnimationKeyFrame<bool> frame)

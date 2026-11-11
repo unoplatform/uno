@@ -73,12 +73,52 @@ public partial class CompositionAnimation
 	// per target, so this reaches zero only once every target has stopped.
 	internal int StartedObjectCount => _startedObjects.Count;
 
+	// Values exposed to expressions as 'this.StartingValue', 'this.FinalValue' and 'this.CurrentValue'.
+	internal object? StartingValue { get; private set; }
+
+	internal object? FinalValue { get; private set; }
+
+	// Set by an implicit animation trigger right before Start, to the value the property was assigned.
+	internal object? PendingFinalValue { get; set; }
+
+	private string _animatedPropertyName = "";
+	private string _animatedSubPropertyName = "";
+
+	internal object? CurrentValue
+		=> AnimationTargetObject is { } target ? TryGetPropertyValue(target, _animatedPropertyName, _animatedSubPropertyName) : null;
+
 	internal virtual object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
 		AnimationTargetObject = compositionObject;
+		_animatedPropertyName = propertyName.ToString();
+		_animatedSubPropertyName = subPropertyName.ToString();
+		StartingValue = TryGetPropertyValue(compositionObject, _animatedPropertyName, _animatedSubPropertyName);
+
+		// Outside of an implicit trigger, FinalValue is the last value the property was set to, i.e. the starting one.
+		FinalValue = PendingFinalValue ?? StartingValue;
+		PendingFinalValue = null;
+
 		_startedObjects.Add(compositionObject);
 		Compositor.RegisterAnimation(this, compositionObject);
 		return null;
+	}
+
+	private static object? TryGetPropertyValue(CompositionObject target, string propertyName, string subPropertyName)
+	{
+		if (target is CompositionPropertySet propertySet && !propertySet.TryGetValueNonGeneric(propertyName, out _))
+		{
+			// Starting an animation on a property that doesn't exist yet is valid; it has no starting value.
+			return null;
+		}
+
+		try
+		{
+			return target.GetAnimatableProperty(propertyName, subPropertyName);
+		}
+		catch (Exception)
+		{
+			return null;
+		}
 	}
 
 	internal virtual object? Evaluate() => null;

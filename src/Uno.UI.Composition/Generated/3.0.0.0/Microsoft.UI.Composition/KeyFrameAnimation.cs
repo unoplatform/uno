@@ -7,20 +7,7 @@ namespace Microsoft.UI.Composition;
 #endif
 public partial class KeyFrameAnimation : global::Microsoft.UI.Composition.CompositionAnimation
 {
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Composition.AnimationDelayBehavior DelayBehavior
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.KeyFrameAnimation", "DelayBehavior");
-		}
-		set
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.KeyFrameAnimation", "DelayBehavior");
-		}
-	}
-#endif
+	// Skipping already declared property DelayBehavior
 	// Skipping already declared property DelayTime
 	// Skipping already declared property Direction
 	// Skipping already declared property Duration

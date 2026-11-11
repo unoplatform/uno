@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -51,8 +51,7 @@ public partial class Vector2KeyFrameAnimation : KeyFrameAnimation
 		Vector2 Lerp(AnimationKeyFrame<Vector2> value1, AnimationKeyFrame<Vector2> value2, float amount)
 			=> Vector2.Lerp(Resolve(value1), Resolve(value2), value2.EasingFunction.Ease(amount));
 
-		_keyframeEvaluator = new KeyFrameEvaluator<Vector2>(startValue, finalValue, Duration, _keyFrames, Lerp, IterationCount, IterationBehavior, Compositor, Resolve);
-		return Resolve(startValue);
+		return StartEvaluator(startValue, finalValue, _keyFrames, Lerp, Resolve);
 	}
 
 	private static Vector2 ResolveVector2KeyFrameValue(KeyFrameAnimation animation, AnimationKeyFrame<Vector2> frame)

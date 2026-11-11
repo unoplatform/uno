@@ -45,8 +45,9 @@ namespace Microsoft.UI.Composition
 
 		public TimeSpan Duration { get; set; }
 
-		[NotImplemented]
 		public TimeSpan DelayTime { get; set; }
+
+		public AnimationDelayBehavior DelayBehavior { get; set; }
 
 		public int KeyFrameCount => KeyFrameCountCore;
 
@@ -56,6 +57,26 @@ namespace Microsoft.UI.Composition
 		public AnimationDirection Direction { get; set; }
 
 		internal event EventHandler? Stopped;
+
+		// Creates the evaluator for a concrete keyframe type and returns the value the property takes on start.
+		private protected object? StartEvaluator<T>(
+			AnimationKeyFrame<T> startValue,
+			AnimationKeyFrame<T> finalValue,
+			SortedDictionary<float, AnimationKeyFrame<T>> keyFrames,
+			Func<AnimationKeyFrame<T>, AnimationKeyFrame<T>, float, T> lerp,
+			Func<AnimationKeyFrame<T>, T>? resolve)
+		{
+			var initialValue = resolve is null ? startValue.Value : resolve(startValue);
+
+			// SetInitialValueAfterDelay (the default) leaves the property untouched until the delay elapses.
+			var delayValue = DelayBehavior != AnimationDelayBehavior.SetInitialValueBeforeDelay && StartingValue is T currentValue
+				? currentValue
+				: initialValue;
+
+			var evaluator = new KeyFrameEvaluator<T>(startValue, finalValue, Duration, keyFrames, lerp, IterationCount, IterationBehavior, Compositor, resolve!, DelayTime, delayValue);
+			_keyframeEvaluator = evaluator;
+			return evaluator.InitialValue;
+		}
 
 		private bool _stopOnceValueApplied;
 

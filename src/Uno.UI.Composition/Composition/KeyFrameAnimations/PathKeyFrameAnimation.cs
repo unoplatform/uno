@@ -46,8 +46,7 @@ public partial class PathKeyFrameAnimation : KeyFrameAnimation
 		CompositionPath? Lerp(AnimationKeyFrame<CompositionPath?> value1, AnimationKeyFrame<CompositionPath?> value2, float amount)
 			=> InterpolatePath(value1.Value, value2.Value, value2.EasingFunction.Ease(amount));
 
-		_keyframeEvaluator = new KeyFrameEvaluator<CompositionPath?>(startValue, finalValue, Duration, _keyFrames, Lerp, IterationCount, IterationBehavior, Compositor);
-		return startValue.Value;
+		return StartEvaluator(startValue, finalValue, _keyFrames, Lerp, resolve: null);
 	}
 
 	private CompositionPath? InterpolatePath(CompositionPath? from, CompositionPath? to, float amount)

@@ -26,6 +26,9 @@ public partial class ColorKeyFrameAnimation : KeyFrameAnimation
 	public void InsertKeyFrame(float normalizedProgressKey, Color value, CompositionEasingFunction easingFunction)
 		=> _keyFrames[normalizedProgressKey] = new() { Value = value, EasingFunction = easingFunction };
 
+	private protected override void InsertExpressionKeyFrameCore(float normalizedProgressKey, string value, CompositionEasingFunction easingFunction)
+		=> _keyFrames[normalizedProgressKey] = new() { Value = default, EasingFunction = easingFunction, ParsedExpression = new ExpressionAnimationParser(value).Parse() };
+
 	internal override object? Start(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, CompositionObject compositionObject)
 	{
 		base.Start(propertyName, subPropertyName, compositionObject);
@@ -46,12 +49,14 @@ public partial class ColorKeyFrameAnimation : KeyFrameAnimation
 
 		var colorSpace = InterpolationColorSpace;
 
+		Color Resolve(AnimationKeyFrame<Color> frame)
+			=> frame.ParsedExpression is null ? frame.Value : SubPropertyHelpers.ValidateValue<Color>(frame.ParsedExpression.Evaluate(this));
+
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		Color Lerp(AnimationKeyFrame<Color> value1, AnimationKeyFrame<Color> value2, float amount)
-			=> LerpColor(value1.Value, value2.Value, value2.EasingFunction.Ease(amount), colorSpace);
+			=> LerpColor(Resolve(value1), Resolve(value2), value2.EasingFunction.Ease(amount), colorSpace);
 
-		_keyframeEvaluator = new KeyFrameEvaluator<Color>(startValue, finalValue, Duration, _keyFrames, Lerp, IterationCount, IterationBehavior, Compositor);
-		return startValue.Value;
+		return StartEvaluator(startValue, finalValue, _keyFrames, Lerp, Resolve);
 	}
 
 	// TODO Uno: RgbLinear/HslLinear should interpolate in linear-light space; they currently fall back
