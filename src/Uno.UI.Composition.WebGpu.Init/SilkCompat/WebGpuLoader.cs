@@ -36,7 +36,10 @@ internal static class WebGpuLoader
 	/// A Dawn build to use instead of wgpu-native (UNO_WEBGPU_DAWN, a path to its library). Dawn implements the same
 	/// webgpu.h, so only wgpu-native's own functions need standing in for.
 	/// </summary>
-	internal static string? DawnPath { get; } = OperatingSystem.IsBrowser() ? null : Environment.GetEnvironmentVariable("UNO_WEBGPU_DAWN") is { Length: > 0 } path ? path : null;
+	internal static string? DawnPath => _dawnPath.Value;
+
+	// Read on first use, not at module initialization: Android sets UNO_* variables from the launch intent in OnCreate.
+	private static readonly Lazy<string?> _dawnPath = new(() => OperatingSystem.IsBrowser() ? null : Environment.GetEnvironmentVariable("UNO_WEBGPU_DAWN") is { Length: > 0 } path ? path : null);
 
 	internal static bool IsDawn => DawnPath is not null;
 
