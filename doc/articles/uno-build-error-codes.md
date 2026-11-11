@@ -401,6 +401,8 @@ The rest of the build is unaffected. If you need the package:
 
 To stop the Uno.Sdk from adding it at all, set `UnoDisableHotTesting` to `true`.
 
+<a name="unob0030"></a>
+
 ### UNOB0030: The SkiaRenderer Uno Feature is ignored in a library
 
 Starting with Uno Platform 7.0, the renderer is chosen by the app, not by its libraries. On the Uno Platform targets of an app, the legacy `SkiaRenderer` feature is still mapped to `Skia`. In a library it is ignored, so the library doesn't make SkiaSharp a dependency of every app that uses it, including apps that render with WebGPU only.
@@ -446,6 +448,8 @@ Uno Platform 7.0 removed the Mac Catalyst target framework, and the native macOS
 
 To fix this, move anything still needed to `Platforms/Desktop/`, and delete the folder. Code that should only run on macOS goes in an `OperatingSystem.IsMacOS()` check there. See [Mac Catalyst is removed](xref:Uno.Development.MigratingToUno7.ProjectSetup#mac-catalyst-is-removed) for the other migration steps.
 
+<a name="unob0034"></a>
+
 ### UNOB0034: Lottie XAML on WinAppSDK needs the CommunityToolkit.WinUI.Lottie package
 
 `AnimatedVisualPlayer`, `LottieVisualSource` and `ThemableLottieVisualSource` are built into Uno Platform, so the Uno Platform targets need no package for them. On Windows (WinAppSDK), `LottieVisualSource` and `ThemableLottieVisualSource` come from the [CommunityToolkit.WinUI.Lottie](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie) NuGet package instead, which the Uno.Sdk doesn't reference. The Uno.Sdk reports this warning on the Windows target for each XAML file that declares the `using:CommunityToolkit.WinUI.Lottie` namespace while no reference to that package resolves. Without it, the build only fails with the XAML compiler's `WMC0001: Unknown type 'LottieVisualSource'`.
@@ -469,6 +473,8 @@ Starting with Uno Platform 7.0, the `Uno.Sdk` no longer references [Prism](https
 The Prism packages published so far (`Prism.Uno.WinUI` 9.0.537 and earlier) were built against Uno Platform 5 and don't build with Uno Platform 7.0.
 
 To fix this, remove `Prism` from `UnoFeatures`, and reference Prism's packages directly, using a Prism release built for Uno Platform 7.0: add a `PackageReference` to `Prism.DryIoc.Uno.WinUI` in an app, or to `Prism.Uno.WinUI` in a library, and to `Prism.Uno.WinUI.Markup` if the project uses C# Markup. When the solution uses Central Package Management, as the Uno Platform templates do, the version goes in `Directory.Packages.props`. The `PrismVersion` property no longer has any effect and can be removed.
+
+<a name="unob0036"></a>
 
 ### UNOB0036: MauiEmbedding now selects Uno.Maui.Embedding
 
