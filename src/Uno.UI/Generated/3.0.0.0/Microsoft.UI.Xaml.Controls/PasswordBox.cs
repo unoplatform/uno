@@ -18,14 +18,7 @@ public partial class PasswordBox : global::Microsoft.UI.Xaml.Controls.Control
 	// Skipping already declared property PasswordProperty
 	// Skipping already declared property PasswordRevealModeProperty
 	// Skipping already declared property PlaceholderTextProperty
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool),
-		typeof(global::Microsoft.UI.Xaml.Controls.PasswordBox),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
-#endif
+	// Skipping already declared property PreventKeyboardDisplayOnProgrammaticFocusProperty
 	// Skipping already declared property SelectionFlyoutProperty
 	// Skipping already declared property SelectionHighlightColorProperty
 #if __SKIA__
@@ -47,20 +40,7 @@ public partial class PasswordBox : global::Microsoft.UI.Xaml.Controls.Control
 	// Skipping already declared property PasswordChar
 	// Skipping already declared property PasswordRevealMode
 	// Skipping already declared property PlaceholderText
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public bool PreventKeyboardDisplayOnProgrammaticFocus
-	{
-		get
-		{
-			return (bool)this.GetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty);
-		}
-		set
-		{
-			this.SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
-		}
-	}
-#endif
+	// Skipping already declared property PreventKeyboardDisplayOnProgrammaticFocus
 	// Skipping already declared property SelectionFlyout
 	// Skipping already declared property SelectionHighlightColor
 #if __SKIA__

@@ -1,10 +1,15 @@
 ﻿#if __SKIA__
 #nullable enable
 using System;
+using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Windowing;
 
@@ -141,6 +146,58 @@ public class Given_AndroidSkiaXamlRootHost
 		finally
 		{
 			currentField.SetValue(null, saved);
+		}
+	}
+
+	[TestMethod]
+#if RUNTIME_NATIVE_AOT
+	// Reads internal host members through reflection, which NativeAOT trims away.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)]
+#endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26212")]
+	[DynamicDependency("get_Accessibility", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("DetachRenderView", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("TryConfigureHelper", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("_scrollViewerSubscriptions", "Uno.UI.Runtime.SkiaAccessibilityBase", "Uno.UI.Runtime")]
+	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "These assemblies only exist on Android, the only platform this test runs on.")]
+	public async Task When_Render_View_Detached_Then_Scroll_Subscriptions_Are_Released()
+	{
+		var scrollViewer = new ScrollViewer { Width = 100, Height = 100, Content = new Border { Width = 100, Height = 300 } };
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(scrollViewer);
+
+		var xamlRoot = scrollViewer.XamlRoot!;
+		var host = GetHostForCurrentWindow();
+		Assert.IsNotNull(host);
+		var accessibility = GetMember(host, "Accessibility");
+		Assert.IsNotNull(accessibility);
+		var subscriptions = (ICollection)accessibility.GetType().BaseType!
+			.GetField("_scrollViewerSubscriptions", BindingFlags.Instance | BindingFlags.NonPublic)!
+			.GetValue(accessibility)!;
+
+		// Reading the event log makes the bridge track the tree, as an accessibility client would.
+		AccessibilityPeerHelper.AndroidAccessibilityEventsAccessor?.Invoke(xamlRoot);
+		try
+		{
+			Assert.AreNotEqual(0, subscriptions.Count, "A tracked tree must subscribe to its scroll sources.");
+
+			try
+			{
+				host.GetType().GetMethod("DetachRenderView", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(host, null);
+
+				// Removals aren't routed while detached, so a subscription left here pins its removed subtree.
+				Assert.AreEqual(0, subscriptions.Count, "Detaching must release the scroll subscriptions.");
+			}
+			finally
+			{
+				host.GetType().GetMethod("TryConfigureHelper", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(host, null);
+			}
+
+			Assert.AreNotEqual(0, subscriptions.Count, "The next render view must track the tree again.");
+		}
+		finally
+		{
+			AccessibilityBridgeHelper.DisableMobileAccessibility(xamlRoot);
 		}
 	}
 

@@ -67,7 +67,13 @@ public enum UnoFeature
 	Logging,
 
 	[UnoArea(UnoArea.Extensions)]
+	MauiNativeEmbedding,
+
+	[UnoArea(UnoArea.Core)]
 	MauiEmbedding,
+
+	[UnoArea(UnoArea.Core)]
+	Retarget,
 
 	[UnoArea(UnoArea.Extensions)]
 	MVUX,
@@ -113,9 +119,6 @@ public enum UnoFeature
 
 	[UnoArea(UnoArea.Core)]
 	GLCanvas,
-
-	[UnoArea(UnoArea.Core)]
-	WebGpuCanvas,
 
 	[UnoArea(UnoArea.Core)]
 	SpellChecking,

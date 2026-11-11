@@ -4,6 +4,9 @@ namespace Microsoft.UI.Xaml.Controls {
         private static unoExports: any;
         private static cachedPackageBase: string | null = null;
 
+        // The last URL known for each frame, because the location of a cross-origin document can't be read.
+        private static readonly lastKnownUrls = new WeakMap<HTMLIFrameElement, string>();
+
         public static buildImports(assembly: string) {
             if (!WebView.unoExports) {
                 (<any>window.Module).getAssemblyExports(assembly)
@@ -34,7 +37,8 @@ namespace Microsoft.UI.Xaml.Controls {
         }
 
         static getDocumentTitle(htmlId: string): string {
-            return (<HTMLIFrameElement>document.getElementById(htmlId)).contentDocument.title;
+            // A cross-origin document has no contentDocument.
+            return (<HTMLIFrameElement>document.getElementById(htmlId)).contentDocument?.title ?? "";
         }
 
         static setAttribute(htmlId: string, name: string, value: string) {
@@ -48,14 +52,55 @@ namespace Microsoft.UI.Xaml.Controls {
         static navigate(htmlId: string, url: string) {
             const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
             if (iframe) {
+                WebView.lastKnownUrls.set(iframe, WebView.toAbsoluteUrl(url));
                 try {
                     if (iframe.contentWindow) {
                         iframe.contentWindow.location.href = url;
                     }
-                } catch (e) {
+                } catch {
                     // Fall back to setAttribute if contentWindow access fails (cross-origin)
                     iframe.setAttribute("src", url);
                 }
+            }
+        }
+
+        static navigateToString(htmlId: string, html: string) {
+            const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
+            if (iframe) {
+                // The URL of a srcdoc document, which the browser hides in a sandboxed frame. It's recorded before srcdoc is set,
+                // so a load that follows right away finds it.
+                WebView.lastKnownUrls.set(iframe, "about:srcdoc");
+                iframe.setAttribute("srcdoc", html);
+            }
+        }
+
+        // The URL of the frame's document or, when the browser hides it, the last URL known for the frame. Reading it doesn't
+        // change that last URL, so a navigation that hasn't loaded yet keeps the URL it recorded.
+        static getCurrentUrl(htmlId: string): string | null {
+            const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
+            return iframe?.contentWindow ? WebView.readUrl(iframe).url : null;
+        }
+
+        private static readUrl(iframe: HTMLIFrameElement): { url: string | null, isCrossOrigin: boolean } {
+            try {
+                return { url: iframe.contentWindow.location.href, isCrossOrigin: false };
+            } catch (e) {
+                if ((e as DOMException)?.name !== "SecurityError") {
+                    throw e;
+                }
+
+                // The browser hides the location of a cross-origin document (another site, a data: URL, a sandboxed page).
+                return { url: WebView.lastKnownUrls.get(iframe) ?? null, isCrossOrigin: true };
+            }
+        }
+
+        // Resolves a URL as navigating the frame does, since a virtual host mapping navigates to a path relative to the app.
+        private static toAbsoluteUrl(url: string): string {
+            try {
+                return new URL(url, document.baseURI).href;
+            } catch {
+                // The browser can't navigate to it either.
+                return url;
             }
         }
 
@@ -99,8 +144,17 @@ namespace Microsoft.UI.Xaml.Controls {
 
         private static onLoad(event: Event) {
             const iframe = event.currentTarget as HTMLIFrameElement;
-            const absoluteUrl = iframe.contentWindow.location.href;
-            WebView.unoExports.DispatchLoadEvent(iframe.id, absoluteUrl);
+            const { url, isCrossOrigin } = WebView.readUrl(iframe);
+            if (!isCrossOrigin && url !== null) {
+                WebView.lastKnownUrls.set(iframe, url);
+            }
+
+            WebView.unoExports.DispatchLoadEvent(iframe.id, url);
+
+            if (isCrossOrigin) {
+                // Such a document can't be hooked for NewWindowRequested either.
+                return;
+            }
 
             try {
                 if (iframe.contentWindow && WebView.unoExports.DispatchNewWindowRequested) {
@@ -150,10 +204,8 @@ namespace Microsoft.UI.Xaml.Controls {
                     });
                 }
             } catch (e) {
-                // This can fail if the iframe content is cross-origin.
-                // We log this as a warning, as it's a known browser security feature.
-                // https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy
-                console.warn("Uno.WebView: Could not attach NewWindowRequested handlers. This is expected if the iframe content is cross-origin.", e);
+                // Cross-origin documents were skipped above, so a failure here is unexpected.
+                console.warn("Uno.WebView: Could not attach NewWindowRequested handlers.", e);
             }
         }
     }

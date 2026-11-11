@@ -27,6 +27,12 @@ With C# Markup, you can define both the layout and the logic of your application
 
 For more information, see our overview of [C# Markup](xref:Uno.Extensions.Markup.Overview).
 
+## Reactor
+
+[Reactor](xref:Uno.Features.Reactor) is a different way to write your UI in C#: instead of building pages and binding them to view models, you write components whose `Render()` method returns the UI for the current state, and Reactor updates the controls when that state changes. Reactor support is in preview.
+
+For more information, see [Using Reactor](xref:Uno.Features.Reactor) and the [Reactor on Uno Platform README](https://github.com/unoplatform/uno.microsoft-ui-reactor/blob/uno/src/Reactor.Uno/README.md).
+
 ## Related documentation
 
 - [WinUI Development topics](xref:Uno.Development.WinUIDevelopmentDoc)

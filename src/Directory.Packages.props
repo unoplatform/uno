@@ -10,11 +10,7 @@
 		<MicrosoftTestingPlatformVersion>2.2.1</MicrosoftTestingPlatformVersion>
 		<SkiaSharpVersion>4.151.1</SkiaSharpVersion>
 		<HarfbuzzSharpVersion>14.2.1.1</HarfbuzzSharpVersion>
-		<UnoICUVersion>77.3.2</UnoICUVersion>
-		<!-- Uno.icu-tvos was introduced after that line and only ships 77.4.0-dev.1, which in turn
-		     is not published for -wasm/-win. Same ICU major, so the _77 symbol suffix still matches.
-		     Fold this back into UnoICUVersion once one version exists for every platform. -->
-		<UnoICUTvOSVersion>77.4.0-dev.1</UnoICUTvOSVersion>
+		<UnoICUVersion>77.4.1</UnoICUVersion>
 		<UnoXamlMergeTaskVersion>1.27.0-dev.44</UnoXamlMergeTaskVersion>
 
 		<!-- Roslyn line for tools and tests. Dev-server hosts take theirs from Uno.DevServer.Roslyn.props (spec 053). -->
@@ -100,11 +96,11 @@
 		<PackageVersion Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.9.28" />
 		<PackageVersion Include="Microsoft.VSSDK.BuildTools" Version="17.7.2196" />
 		<PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.2592.51" />
-		<PackageVersion Include="Microsoft.Win32.SystemEvents" Version="11.0.0-rc.2.26504.105" />
+		<PackageVersion Include="Microsoft.Win32.SystemEvents" Version="11.0.0-rc.3.26522.148" />
 		<PackageVersion Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
-		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2526" />
+		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
 		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools.WinApp" Version="0.7.1" />
-		<PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
+		<PackageVersion Include="Microsoft.WindowsAppSDK" Version="2.5.1" />
 		<PackageVersion Include="ModelContextProtocol" Version="1.1.0" />
 		<PackageVersion Include="ModelContextProtocol.AspNetCore" Version="1.1.0" />
 		<PackageVersion Include="Mono.Cecil" Version="0.11.6" />
@@ -176,7 +172,7 @@
 		<PackageVersion Include="Uno.Fonts.OpenSans" Version="2.9.4" />
 		<PackageVersion Include="Uno.icu-ios" Version="$(UnoICUVersion)" />
 		<PackageVersion Include="Uno.icu-macos" Version="$(UnoICUVersion)" />
-		<PackageVersion Include="Uno.icu-tvos" Version="$(UnoICUTvOSVersion)" />
+		<PackageVersion Include="Uno.icu-tvos" Version="$(UnoICUVersion)" />
 		<PackageVersion Include="Uno.icu-wasm" Version="$(UnoICUVersion)" />
 		<PackageVersion Include="Uno.icu-win" Version="$(UnoICUVersion)" />
 		<PackageVersion Include="Uno.MonoAnalyzers" Version="1.0.0" />

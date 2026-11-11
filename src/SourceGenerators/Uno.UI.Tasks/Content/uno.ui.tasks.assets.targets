@@ -170,7 +170,12 @@
 		</ItemGroup>
 
 		<ItemGroup>
-			<ReferenceCopyLocalPaths Include="@(_UnoPriFiles)"/>
+			<!-- The transforms above copy the assembly's metadata (DestinationSubPath, AssetType...), which makes
+				 the marker collide with its assembly, e.g. in the .NET 11 WASM SDK relative-path dedup. -->
+			<ReferenceCopyLocalPaths Include="@(_UnoPriFiles)"
+									 KeepMetadata="NuGetPackageId;NuGetPackageVersion;PublishFolderType">
+				<DestinationSubPath>%(Filename)%(Extension)</DestinationSubPath>
+			</ReferenceCopyLocalPaths>
 		</ItemGroup>
 	</Target>
 

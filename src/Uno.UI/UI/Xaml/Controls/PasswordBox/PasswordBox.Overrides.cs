@@ -30,6 +30,13 @@ partial class PasswordBox
 		_core.OnRightTapped(e);
 	}
 
+	protected override void OnTapped(TappedRoutedEventArgs e)
+	{
+		base.OnTapped(e);
+
+		_core.OnTapped(e);
+	}
+
 	protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs args)
 	{
 		base.OnDoubleTapped(args);

@@ -9,9 +9,9 @@ namespace Microsoft.UI.Xaml
 
 		internal static GridLength OneStar { get; } = new GridLength(1.0f, GridUnitType.Star);
 
-		public static GridLength FromPixels(double pixels) => new GridLength((float)pixels, GridUnitType.Pixel);
+		public static GridLength FromPixels(double pixels) => new GridLength(pixels, GridUnitType.Pixel);
 
-		public static GridLength FromValueAndType(double value, GridUnitType type) => new GridLength((float)value, type);
+		public static GridLength FromValueAndType(double value, GridUnitType type) => new GridLength(value, type);
 
 		public static bool GetIsAbsolute(GridLength target) => target.IsAbsolute;
 

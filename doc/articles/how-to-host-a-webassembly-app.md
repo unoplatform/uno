@@ -8,6 +8,7 @@ uid: Uno.Development.HostWebAssemblyApp
   - [Azure Static WebApps](guides/azure-static-webapps.md)
   - [Nginx](#nginx)
   - [Apache](#apache)
+  - [Subdirectory hosting](#subdirectory-hosting)
 
 Regardless of the web server (or reverse proxy) software used, the support the following Content (MIME) types are always needed:
 
@@ -23,6 +24,37 @@ The output of the webassembly build is generally immutable and can be cached ind
 - Other files at the root of the output package
 
 These files should be refreshed regularly in order to avoid app files inconsistencies.
+
+## Subdirectory hosting
+
+By default, an Uno.Sdk WebAssembly app expects to be hosted at the root of the domain. To host it below the domain root, such as at `https://<user>.github.io/<repository>/`, set `WasmShellWebAppBasePath` to `./` in the project file:
+
+```xml
+<PropertyGroup>
+  <WasmShellWebAppBasePath>./</WasmShellWebAppBasePath>
+</PropertyGroup>
+```
+
+This makes the generated WebAssembly framework and bootstrapper asset URLs relative to the app's `index.html`, instead of pointing to the domain root. Publish the app and deploy the contents of `wwwroot` to the subdirectory:
+
+```bash
+dotnet publish -f net10.0-browserwasm -c Release -o ./publish
+```
+
+The published files are in `./publish/wwwroot`. To set the property for a single publish without changing the project file, use:
+
+```bash
+dotnet publish -f net10.0-browserwasm -c Release -o ./publish -p:WasmShellWebAppBasePath=./
+```
+
+For a one-off development build, pass the same property to `dotnet build`:
+
+```bash
+dotnet build -f net10.0-browserwasm -p:WasmShellWebAppBasePath=./
+```
+
+> [!NOTE]
+> The relative base path fixes asset loading, but does not configure deep-link fallback. GitHub Pages does not automatically rewrite unknown routes to `index.html`, so refreshing a deep-linked URL can return a 404 unless a Pages-compatible fallback is added.
 
 ## Nginx
 

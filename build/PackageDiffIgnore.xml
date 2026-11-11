@@ -2154,6 +2154,8 @@
 		  <Member fullName="Uno.UI.FeatureConfiguration/Control" reason="Removed empty FeatureConfiguration.Control holder after deleting UseLegacyContentAlignment (BC45, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/ContentPresenter" reason="Removed empty FeatureConfiguration.ContentPresenter holder after deleting UseImplicitContentFromTemplatedParent, unread since the native renderers were removed (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/ProgressRing" reason="Removed empty FeatureConfiguration.ProgressRing holder after deleting ProgressRingAsset/DeterminateProgressRingAsset; use ProgressRing.IndeterminateSource/DeterminateSource instead (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Uno.UI.Controls.Legacy.ProgressRing" reason="Removed the legacy ellipse-based ProgressRing; use Microsoft.UI.Xaml.Controls.ProgressRing (breaking changes for 7.0, uno#25018)" />
+		  <Member fullName="Uno.UI.Controls.Legacy.Primitives.ProgressRingTemplateSettings" reason="Removed with the legacy ProgressRing (breaking changes for 7.0, uno#25018)" />
 		  <Member fullName="Uno.WinRTFeatureConfiguration/Focus" reason="Removed empty WinRTFeatureConfiguration.Focus holder after deleting EnableExperimentalKeyboardFocus, unread since the native iOS renderer was removed (BC56, breaking changes for 7.0)" />
 		  <!-- PrettyPrint/ViewExtensions were accidentally public in the WinAppSDK Uno.UI.Extras.dll (the WINAPPSDK||WINDOWS_UWP guard was always false there); made internal to match the intended Skia-only public surface. Still public in the Skia Uno.UI.dll build, so these entries are dark for every other diffed package. -->
 		  <Member fullName="Uno.UI.Extensions.PrettyPrint" reason="Made internal on WinAppSDK; still public in the Skia Uno.UI.dll build (breaking changes for 7.0)" />
@@ -3465,6 +3467,14 @@
 		  <!-- Interop helper whose only purpose was marshalling IJSObject arguments; removed with the IJSObject mechanism. -->
 		  <Member fullName="System.String Uno.Foundation.WebAssemblyRuntime.InvokeJSWithInterop(System.FormattableString formattable)" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
 
+		  <!-- Legacy WASM interop whose JavaScript (AsyncInteropHelper, MonoSupport) shipped only with the DOM heads removed in 7.0; it could no longer run. -->
+		  <Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Uno.Foundation.WebAssemblyRuntime.InvokeAsync(System.String promiseCode)" reason="Removed legacy WASM eval-based async interop; its JavaScript is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Uno.Foundation.WebAssemblyRuntime.InvokeAsync(System.String promiseCode, System.Threading.CancellationToken ct)" reason="Removed legacy WASM eval-based async interop; its JavaScript is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.Foundation.WebAssemblyRuntime.DispatchAsyncResult(System.Int64 handle, System.String result)" reason="Removed with InvokeAsync, its only caller (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.Foundation.WebAssemblyRuntime.DispatchAsyncError(System.Int64 handle, System.String error)" reason="Removed with InvokeAsync, its only caller (breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0)" reason="Removed legacy WASM unmarshalled interop; its JavaScript dispatcher is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1)" reason="Removed legacy WASM unmarshalled interop; its JavaScript dispatcher is no longer shipped (breaking changes for 7.0)" />
+
 		  <!-- ColorKeyFrameCollection shadow-block accessors/methods (paired with the <Properties> entry above); base DependencyObjectCollection<T> still satisfies IList<ColorKeyFrame>. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.Animation\.ColorKeyFrameCollection(::|\.)(get_Size|GetEnumerator|Add|Clear|Contains|CopyTo|Remove|get_Count|set_Count|get_IsReadOnly|set_IsReadOnly|IndexOf|Insert|RemoveAt|get_Item|set_Item)\(.*\)" reason="Removed ColorKeyFrameCollection binary-compat shadow members; provided by base DependencyObjectCollection&lt;T&gt; (BC67, breaking changes for 7.0)" isRegex="true" />
 
@@ -3849,6 +3859,8 @@
 		  <Member fullName="Uno.UI.FeatureConfiguration/Control" reason="Removed empty FeatureConfiguration.Control holder after deleting UseLegacyContentAlignment (BC45, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/ContentPresenter" reason="Removed empty FeatureConfiguration.ContentPresenter holder after deleting UseImplicitContentFromTemplatedParent, unread since the native renderers were removed (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Uno.UI.FeatureConfiguration/ProgressRing" reason="Removed empty FeatureConfiguration.ProgressRing holder after deleting ProgressRingAsset/DeterminateProgressRingAsset; use ProgressRing.IndeterminateSource/DeterminateSource instead (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Uno.UI.Controls.Legacy.ProgressRing" reason="Removed the legacy ellipse-based ProgressRing; use Microsoft.UI.Xaml.Controls.ProgressRing (breaking changes for 7.0, uno#25018)" />
+		  <Member fullName="Uno.UI.Controls.Legacy.Primitives.ProgressRingTemplateSettings" reason="Removed with the legacy ProgressRing (breaking changes for 7.0, uno#25018)" />
 		  <Member fullName="Uno.WinRTFeatureConfiguration/Focus" reason="Removed empty WinRTFeatureConfiguration.Focus holder after deleting EnableExperimentalKeyboardFocus, unread since the native iOS renderer was removed (BC56, breaking changes for 7.0)" />
 		  <!-- PrettyPrint/ViewExtensions were accidentally public in the WinAppSDK Uno.UI.Extras.dll (the WINAPPSDK||WINDOWS_UWP guard was always false there); made internal to match the intended Skia-only public surface. Still public in the Skia Uno.UI.dll build, so these entries are dark for every other diffed package. -->
 		  <Member fullName="Uno.UI.Extensions.PrettyPrint" reason="Made internal on WinAppSDK; still public in the Skia Uno.UI.dll build (breaking changes for 7.0)" />
@@ -5213,6 +5225,14 @@
 		  <!-- Interop helper whose only purpose was marshalling IJSObject arguments; removed with the IJSObject mechanism. -->
 		  <Member fullName="System.String Uno.Foundation.WebAssemblyRuntime.InvokeJSWithInterop(System.FormattableString formattable)" reason="Removed legacy WASM IJSObject DOM-interop API (BC02, breaking changes for 7.0)" />
 
+		  <!-- Legacy WASM interop whose JavaScript (AsyncInteropHelper, MonoSupport) shipped only with the DOM heads removed in 7.0; it could no longer run. -->
+		  <Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Uno.Foundation.WebAssemblyRuntime.InvokeAsync(System.String promiseCode)" reason="Removed legacy WASM eval-based async interop; its JavaScript is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Uno.Foundation.WebAssemblyRuntime.InvokeAsync(System.String promiseCode, System.Threading.CancellationToken ct)" reason="Removed legacy WASM eval-based async interop; its JavaScript is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.Foundation.WebAssemblyRuntime.DispatchAsyncResult(System.Int64 handle, System.String result)" reason="Removed with InvokeAsync, its only caller (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.Foundation.WebAssemblyRuntime.DispatchAsyncError(System.Int64 handle, System.String error)" reason="Removed with InvokeAsync, its only caller (breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0)" reason="Removed legacy WASM unmarshalled interop; its JavaScript dispatcher is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1)" reason="Removed legacy WASM unmarshalled interop; its JavaScript dispatcher is no longer shipped (breaking changes for 7.0)" />
+
 		  <!-- ColorKeyFrameCollection shadow-block accessors/methods (paired with the <Properties> entry above); base DependencyObjectCollection<T> still satisfies IList<ColorKeyFrame>. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.Animation\.ColorKeyFrameCollection(::|\.)(get_Size|GetEnumerator|Add|Clear|Contains|CopyTo|Remove|get_Count|set_Count|get_IsReadOnly|set_IsReadOnly|IndexOf|Insert|RemoveAt|get_Item|set_Item)\(.*\)" reason="Removed ColorKeyFrameCollection binary-compat shadow members; provided by base DependencyObjectCollection&lt;T&gt; (BC67, breaking changes for 7.0)" isRegex="true" />
 
@@ -5672,6 +5692,20 @@
 		  <!-- DataContext restricted to FrameworkElement — DataContextChanged removed from UIElement and every non-FE DependencyObject. -->
 		  <Member fullName="Windows\.Foundation\.TypedEventHandler.+(::|\.)DataContextChanged" reason="DataContext restricted to FrameworkElement" isRegex="true" />
 	  </Events>
+	</IgnoreSet>
+	<!-- 7.0.32 is now the published stable baseline generatepkgdiff resolves to (CompareVersion matches on
+	     Major.Minor), so the 6.7 set above is no longer consulted for packages that have a 7.0 stable.
+	     Only the breaking changes merged after the 7.0 release go here. -->
+	<IgnoreSet baseVersion="7.0">
+	  <Methods>
+		  <!-- Legacy WASM interop whose JavaScript (AsyncInteropHelper, MonoSupport) shipped only with the DOM heads removed in 7.0; it could no longer run. -->
+		  <Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Uno.Foundation.WebAssemblyRuntime.InvokeAsync(System.String promiseCode)" reason="Removed legacy WASM eval-based async interop; its JavaScript is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Uno.Foundation.WebAssemblyRuntime.InvokeAsync(System.String promiseCode, System.Threading.CancellationToken ct)" reason="Removed legacy WASM eval-based async interop; its JavaScript is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.Foundation.WebAssemblyRuntime.DispatchAsyncResult(System.Int64 handle, System.String result)" reason="Removed with InvokeAsync, its only caller (breaking changes for 7.0)" />
+		  <Member fullName="System.Void Uno.Foundation.WebAssemblyRuntime.DispatchAsyncError(System.Int64 handle, System.String error)" reason="Removed with InvokeAsync, its only caller (breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0)" reason="Removed legacy WASM unmarshalled interop; its JavaScript dispatcher is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1)" reason="Removed legacy WASM unmarshalled interop; its JavaScript dispatcher is no longer shipped (breaking changes for 7.0)" />
+	  </Methods>
 	</IgnoreSet>
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 

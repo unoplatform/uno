@@ -38,6 +38,9 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	public VkQueue MainQueueHandle => new() { Handle = _device!.MainQueueHandle };
 	public uint GraphicsQueueFamilyIndex => _device!.GraphicsQueueFamilyIndex;
 
+	/// <summary>LUID of the adapter the device runs on, or null when the driver doesn't report one.</summary>
+	internal long? DeviceLuid => VulkanDevice.GetDeviceLuid(_instanceApi!, PhysicalDeviceHandle);
+
 	// --- Neutral device face (consumed by the host's IVulkanDeviceContext) ---
 	// The Skia GRContext lives in the Skia backend now; this subsystem is Vulkan-native only and just exposes the
 	// device details + the per-frame render image, so the backend builds its own GRContext-Vulkan over them.
@@ -103,7 +106,7 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 			try
 			{
 				// Create device (checks surface presentation support)
-				_device = VulkanDevice.Create((VulkanInstance)_instance, _instanceApi, vkSurface);
+				_device = VulkanDevice.Create((VulkanInstance)_instance, _instanceApi, vkSurface, preferDiscrete: factory.PrefersDiscreteDevice);
 			}
 			finally
 			{
@@ -171,7 +174,8 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		_instanceApi = new VulkanInstanceApi(_instance);
 		var instance = (VulkanInstance)_instance;
 		_device = VulkanDevice.Create(instance, _instanceApi,
-			supportsPresentation: (physicalDevice, queueFamily) => factory.SupportsPresentation(instance, physicalDevice, queueFamily));
+			supportsPresentation: (physicalDevice, queueFamily) => factory.SupportsPresentation(instance, physicalDevice, queueFamily),
+			preferDiscrete: factory.PrefersDiscreteDevice);
 		_deviceApi = new VulkanDeviceApi(_device);
 	}
 
@@ -302,7 +306,10 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		RenderImageHasContent = true;
 
 		// Try to acquire next swapchain image without retrying.
-		var acquireResult = _display.TryAcquireNextImage();
+		// Acquiring from a null swapchain crashes in the driver, so a failed recovery is picked up again instead.
+		var acquireResult = _display.IsSwapchainMissing
+			? (int)VkResult.VK_ERROR_SURFACE_LOST_KHR
+			: _display.TryAcquireNextImage();
 		if (acquireResult != 0) // VK_SUCCESS = 0
 		{
 			// Swapchain out of date — recreate it now.
@@ -313,7 +320,14 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 			try
 			{
 				_deviceApi.DeviceWaitIdle(DeviceHandle);
-				_display.RecreateSwapchainSafe();
+				if (acquireResult == (int)VkResult.VK_ERROR_SURFACE_LOST_KHR)
+				{
+					_display.RecreateSurface();
+				}
+				else
+				{
+					_display.RecreateSwapchainSafe();
+				}
 
 				// Retry acquire after recreation
 				acquireResult = _display.TryAcquireNextImage();

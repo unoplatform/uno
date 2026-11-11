@@ -13,11 +13,16 @@
 //   the subscription teardown on Unload is still required to avoid leaks through the default
 //   StackLayout; the only difference on enhanced-lifecycle is that the OnLoaded re-layout
 //   pass is no longer forced.
+// - SubscribeToItemsSourceView holds the repeater weakly, like WinUI's raw-'this' delegate,
+//   since a repeater that never loads never unloads to remove its data-source subscription.
+//   The handler is removed once the repeater is collected.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -51,9 +56,7 @@ partial class ItemsRepeater : IPanel
 
 		if (_dataSourceSubscriptionsRevoker.Disposable is null && m_itemsSourceView is { } itemsSourceView)
 		{
-			itemsSourceView.CollectionChanged += OnItemsSourceViewChanged;
-			_dataSourceSubscriptionsRevoker.Disposable = Disposable.Create(() =>
-				itemsSourceView.CollectionChanged -= OnItemsSourceViewChanged);
+			_dataSourceSubscriptionsRevoker.Disposable = SubscribeToItemsSourceView(itemsSourceView, this);
 		}
 
 		// Uno specific: re-supply the effective provider so layout-provided defaults survive an
@@ -70,9 +73,8 @@ partial class ItemsRepeater : IPanel
 		_layoutSubscriptionsRevoker.Disposable = null;
 		_dataSourceSubscriptionsRevoker.Disposable = null;
 
-		// Uno specific: TransitionManager subscribes a strong .NET delegate to the provider's
-		// TransitionCompleted and holds the repeater through m_owner, so a shared or externally
-		// retained provider would keep the unloaded repeater alive. Paired with ReattachToProvider above.
+		// Uno specific: removes the provider's TransitionCompleted handler right away rather than once the repeater
+		// is collected (see TransitionManager.uno.cs). Paired with ReattachToProvider above.
 		m_transitionManager.DetachFromProvider();
 
 		if (m_itemsSourceView is not null)
@@ -84,5 +86,28 @@ partial class ItemsRepeater : IPanel
 			//		 This is expected to only flag containers as recyclable and should not have any significant perf impact.
 			OnItemsSourceViewChanged(m_itemsSourceView, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 		}
+	}
+
+	// Static so the handler cannot capture the repeater. Only the repeater references the returned subscription, whose
+	// finalizer removes the handler from a view that outlives it (see the file header).
+	private static IDisposable SubscribeToItemsSourceView(ItemsSourceView view, ItemsRepeater repeater)
+	{
+		var weakRepeater = new WeakReference<ItemsRepeater>(repeater);
+		NotifyCollectionChangedEventHandler handler = (sender, args) =>
+		{
+			if (weakRepeater.TryGetTarget(out var target))
+			{
+				target.OnItemsSourceViewChanged(sender, args);
+			}
+		};
+
+		view.CollectionChanged += handler;
+		return new WeakSourceSubscription<ItemsSourceView, NotifyCollectionChangedEventHandler>(
+			view,
+			handler,
+			static (v, h) => v.CollectionChanged -= h,
+			onDisposed: null,
+			typeof(ItemsRepeater),
+			"an ItemsSourceView subscription");
 	}
 }

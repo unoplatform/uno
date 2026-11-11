@@ -10,11 +10,12 @@ To upgrade to the latest version of Uno Platform, [follow our guide](xref:Uno.De
 
 Uno Platform 7.0 is the Skia-unification major release: Skia is the rendering engine on every
 target, the native Android, iOS/UIKit and WebAssembly DOM renderers are retired, and the public
-API surface is realigned with WinUI. It carries the breaking changes deferred since 2022, so
-plan for a recompile of every Uno-dependent library rather than a drop-in package bump.
+API surface is realigned with WinUI.
 
-**[Read the full "Migrating to Uno Platform 7.0" guide](xref:Uno.Development.MigratingToUno7)**
-for the removed APIs, type-hierarchy changes, behavioral changes and the migration checklist.
+**[Follow the "Migrating to Uno Platform 7.0" guide](xref:Uno.Development.MigratingToUno7)**
+for the upgrade steps. It links to the removed APIs, type-hierarchy changes, behavioral changes and the full migration checklist.
+
+Uno Themes, Uno Toolkit and Uno Extensions also move to a new major with 7.0. See their upgrade notes: [Uno Themes 9](xref:Uno.Themes.Material.Migration#upgrading-to-uno-themes-v9), [Uno Toolkit 11](xref:Toolkit.Migration#upgrading-to-uno-toolkit-110) and [Uno Extensions 8](xref:Uno.Extensions.Migration#upgrading-to-extensions-80).
 
 ## Uno Platform 6.6
 
@@ -41,6 +42,21 @@ This change was introduced in [PR #22377](https://github.com/unoplatform/uno/pul
 On the Linux Framebuffer target, the default mouse wheel scroll direction is now inverted from the raw device values, so scrolling behaves consistently with the other targets. If your app relied on the previous direction, call `ReverseMouseWheel()` on the Framebuffer host builder to restore it.
 
 This change was introduced in [PR #22924](https://github.com/unoplatform/uno/pull/22924).
+
+### Element-level theming on Skia and WebAssembly
+
+Uno Platform 6.6 implements WinUI-compatible element-level theming on the Skia and WebAssembly targets. Setting `FrameworkElement.RequestedTheme` — including on the root element, which is what `Uno.Toolkit.UI.SystemThemeHelper.SetApplicationTheme`/`SetRootTheme` do — now themes that element's subtree only, exactly as it does on WinUI.
+
+Previously, setting the root element's `RequestedTheme` also switched the application-level theme (an Uno-specific behavior WinUI never had). After upgrading:
+
+- `Application.Current.RequestedTheme` no longer changes when a root element's theme is set. It keeps reporting the application-level theme, which follows the OS unless set in the `Application` constructor.
+- Programmatic resource lookups (`ResourceDictionary` indexer/`TryGetValue`, or helpers such as the Community Toolkit's `FindResource`) keep resolving `ThemeDictionaries` against the application-level theme, matching WinUI. The UI itself still updates: `{ThemeResource}` references inside the themed subtree re-resolve against the element theme.
+
+If your code — tests in particular — needs the theme-specific value of a resource, read the effective value from an element in the themed subtree (`element.ActualTheme`, or a theme-bound property such as a control's `Foreground`), or query the theme dictionary explicitly, for example `(ResourceDictionary)resources.ThemeDictionaries["Dark"]`.
+
+The native Android and native iOS UI targets retain the previous behavior.
+
+This change was introduced in [PR #22803](https://github.com/unoplatform/uno/pull/22803).
 
 ### Uno.Extensions MVUX bindable generation tool
 
@@ -194,6 +210,9 @@ In your project, you may need to add the following lines (or uncomment them if y
     <WindowsSdkPackageVersion>10.0.19041.38</WindowsSdkPackageVersion>
 </PropertyGroup>
 ```
+
+> [!NOTE]
+> When you migrate to Uno Platform 7.0, remove this property: the `Uno.Sdk` picks the Windows SDK projection, and `.38` can fail with `CS1705`. See [The Windows SDK projection is picked by the `Uno.Sdk`](xref:Uno.Development.MigratingToUno7.ProjectSetup#the-windows-sdk-projection-is-picked-by-the-unosdk).
 
 Additionally, you may also get the following error message:
 
