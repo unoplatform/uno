@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Navigation;
 using Uno.Disposables;
 using Uno.UI.RuntimeTests.Helpers;
 using Combinatorial.MSTest;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -524,6 +525,302 @@ public class Given_Frame
 		Assert.IsInstanceOfType(SUT.Content, typeof(SecondPage));
 	}
 
+	[TestMethod]
+	public async Task When_Entrance_Transition_First_Frame_Of_New_Page_Is_Hidden()
+	{
+#if __SKIA__
+		var frame = new Frame { Width = 300, Height = 200, ContentTransitions = new TransitionCollection { new NavigationThemeTransition() } };
+		var button = new Button { Content = "Navigate" };
+		button.Click += (_, _) => frame.Navigate(typeof(SecondPage), null, new EntranceNavigationTransitionInfo());
+		TestServices.WindowHelper.WindowContent = new StackPanel { Children = { button, frame } };
+		await TestServices.WindowHelper.WaitForLoaded(button);
+
+		frame.Navigate(typeof(FirstPage));
+		await TestServices.WindowHelper.WaitFor(() => frame.Content is FirstPage { IsLoaded: true });
+		await TestServices.WindowHelper.WaitForIdle();
+
+		double? firstOpacity = null;
+		var compositionTarget = (Microsoft.UI.Xaml.Media.CompositionTarget)frame.Visual.CompositionTarget!;
+		Action onFrameRendered = () =>
+		{
+			if (firstOpacity is null && frame.Content is SecondPage page)
+			{
+				firstOpacity = page.Opacity;
+			}
+		};
+
+		var injector = global::Windows.UI.Input.Preview.Injection.InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = global::Uno.UI.DevTools.Input.InputInjectorExtensions.GetMouse(injector);
+		var buttonBounds = button.GetAbsoluteBounds();
+		var center = new global::Windows.Foundation.Point(buttonBounds.X + buttonBounds.Width / 2, buttonBounds.Y + buttonBounds.Height / 2);
+		mouse.MoveTo(center);
+
+		compositionTarget.FrameRendered += onFrameRendered;
+		try
+		{
+			mouse.Press(center);
+			mouse.Release();
+			await TestServices.WindowHelper.WaitFor(() => firstOpacity is not null);
+		}
+		finally
+		{
+			compositionTarget.FrameRendered -= onFrameRendered;
+		}
+
+		// Entrance holds the incoming page at opacity 0 before fading it in; a fully opaque first frame is the flash.
+		Assert.AreEqual(0, firstOpacity!.Value, 0.01, "The first frame showing the new page should still have it hidden.");
+#else
+		await Task.CompletedTask;
+		Assert.Inconclusive("Inspects Uno's recorded frames.");
+#endif
+	}
+
+	#region Navigation transition orchestration
+
+	[TestMethod]
+	public async Task When_NavigationThemeTransition_Unload_Uses_New_Page_Transitions()
+	{
+		var frame = await CreateTransitionFrame(new NavigationThemeTransition { DefaultNavigationTransitionInfo = new EntranceNavigationTransitionInfo() });
+
+		frame.Navigate(typeof(FirstPage));
+		await WaitForTransitionsToSettle(frame);
+		var oldPage = (Page)frame.Content;
+
+		// The new page asks for no animation, which WinUI also applies to the page navigated away from.
+		using var oldPageOpacity = MinOpacityTracker.Start(oldPage);
+		frame.Navigate(typeof(SuppressTransitionPage));
+		await WaitForTransitionsToSettle(frame);
+
+		Assert.AreEqual(1.0, oldPageOpacity.MinOpacity, 0.001, "The outgoing page should use the new page's SuppressNavigationTransitionInfo.");
+	}
+
+	[TestMethod]
+	public async Task When_Navigating_Outgoing_Page_Rendered_Until_Exit_Completes()
+	{
+#if HAS_UNO
+		var frame = await CreateTransitionFrame(new NavigationThemeTransition { DefaultNavigationTransitionInfo = new EntranceNavigationTransitionInfo() });
+
+		frame.Navigate(typeof(FirstPage));
+		await WaitForTransitionsToSettle(frame);
+		var oldPage = (Page)frame.Content;
+		var oldVisual = oldPage.Visual;
+
+		var renderedWithOldPage = 0;
+		var compositionTarget = (Microsoft.UI.Xaml.Media.CompositionTarget)frame.Visual.CompositionTarget!;
+		Action onFrameRendered = () =>
+		{
+			if (oldVisual.Parent is not null)
+			{
+				renderedWithOldPage++;
+			}
+		};
+
+		compositionTarget.FrameRendered += onFrameRendered;
+		try
+		{
+			frame.Navigate(typeof(SecondPage));
+
+			// Logically gone right away, as WinUI's unloading elements are no longer children.
+			Assert.IsNull(Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(oldPage));
+			Assert.IsNotNull(oldVisual.Parent, "The outgoing page's visual should stay in the tree while its exit storyboard runs.");
+
+			await TestServices.WindowHelper.WaitFor(() => renderedWithOldPage > 0);
+			await TestServices.WindowHelper.WaitFor(() => oldVisual.Parent is null, timeoutMS: 3000, message: "The outgoing page's visual should be removed once its exit storyboard completes.");
+		}
+		finally
+		{
+			compositionTarget.FrameRendered -= onFrameRendered;
+		}
+#else
+		await Task.CompletedTask;
+		Assert.Inconclusive("Inspects Uno's composition visuals.");
+#endif
+	}
+
+	[TestMethod]
+	public async Task When_Navigating_With_BackStack_Implicit_NavigationThemeTransition()
+	{
+		var frame = await CreateTransitionFrame(null);
+
+		using var initialOpacity = new MinOpacityTracker();
+		frame.Navigate(typeof(FirstPage));
+		initialOpacity.Track((UIElement)frame.Content);
+		await WaitForTransitionsToSettle(frame);
+
+		Assert.AreEqual(1.0, initialOpacity.MinOpacity, 0.001, "The initial page has no transitions and an empty back stack, so it should not animate.");
+
+		using var oldPageOpacity = MinOpacityTracker.Start((UIElement)frame.Content);
+		using var newPageOpacity = new MinOpacityTracker();
+		frame.Navigate(typeof(SecondPage));
+		newPageOpacity.Track((UIElement)frame.Content);
+		await WaitForTransitionsToSettle(frame);
+
+		Assert.IsTrue(newPageOpacity.MinOpacity < 0.5, $"The implicit NavigationThemeTransition should fade the new page in (min opacity {newPageOpacity.MinOpacity}).");
+		Assert.IsTrue(oldPageOpacity.MinOpacity < 0.99, $"With the navigation committed the old page is no longer the initial page, so it should start fading out (min opacity {oldPageOpacity.MinOpacity}).");
+	}
+
+	[TestMethod]
+	public async Task When_Page_Transitions_Has_NavigationThemeTransition()
+	{
+		var frame = await CreateTransitionFrame(null);
+
+		// The initial navigation only animates when a NavigationThemeTransition is found on the page or the frame.
+		using var pageOpacity = new MinOpacityTracker();
+		frame.Navigate(typeof(NavigationThemeTransitionPage));
+		pageOpacity.Track((UIElement)frame.Content);
+		await WaitForTransitionsToSettle(frame);
+
+		Assert.IsTrue(pageOpacity.MinOpacity < 0.5, $"Page.Transitions' NavigationThemeTransition should animate the page in (min opacity {pageOpacity.MinOpacity}).");
+	}
+
+	[TestMethod]
+	public async Task When_Navigating_Default_Transition_Info_Stored_On_Committed_Entry()
+	{
+		var frame = await CreateTransitionFrame(new NavigationThemeTransition { DefaultNavigationTransitionInfo = new DrillInNavigationTransitionInfo() });
+
+		var firstInfo = new EntranceNavigationTransitionInfo();
+		frame.Navigate(typeof(FirstPage), null, firstInfo);
+		await WaitForTransitionsToSettle(frame);
+
+		frame.Navigate(typeof(SecondPage));
+		await WaitForTransitionsToSettle(frame);
+
+		// WinUI stores the transition's default on the current entry once the navigation is committed,
+		// so the entry of the page navigated away from keeps its own info.
+		Assert.AreEqual(1, frame.BackStack.Count);
+		Assert.AreSame(firstInfo, frame.BackStack[0].NavigationTransitionInfo);
+	}
+
+	[TestMethod]
+	public async Task When_Cached_Page_Reshown_No_Stale_Animated_Values()
+	{
+		var frame = await CreateTransitionFrame(new NavigationThemeTransition { DefaultNavigationTransitionInfo = new EntranceNavigationTransitionInfo() });
+
+		frame.Navigate(typeof(CachedTransitionPage));
+		await WaitForTransitionsToSettle(frame);
+		var cachedPage = (Page)frame.Content;
+
+		frame.Navigate(typeof(SecondPage));
+		await WaitForTransitionsToSettle(frame);
+
+		frame.GoBack(new SuppressNavigationTransitionInfo());
+		await WaitForTransitionsToSettle(frame);
+
+		Assert.AreSame(cachedPage, frame.Content);
+		Assert.AreEqual(1.0, cachedPage.Opacity, 0.001, "The exit animation's opacity should not stick to the cached page.");
+		Assert.AreEqual(0.0, (cachedPage.RenderTransform as TranslateTransform)?.Y ?? 0.0, 0.001, "The exit animation's translation should not stick to the cached page.");
+	}
+
+	[TestMethod]
+	[DataRow("DrillIn")]
+	[DataRow("SlideFromLeft")]
+	[DataRow("Entrance")]
+	[DataRow("Common")]
+	[DataRow("Continuum")]
+	public async Task When_Cached_Page_Reshown_App_Opacity_Preserved(string transition)
+	{
+		NavigationTransitionInfo info = transition switch
+		{
+			"DrillIn" => new DrillInNavigationTransitionInfo(),
+			"SlideFromLeft" => new SlideNavigationTransitionInfo { Effect = SlideNavigationTransitionEffect.FromLeft },
+			"Entrance" => new EntranceNavigationTransitionInfo(),
+			"Common" => new CommonNavigationTransitionInfo(),
+			_ => new ContinuumNavigationTransitionInfo(),
+		};
+		var frame = await CreateTransitionFrame(new NavigationThemeTransition { DefaultNavigationTransitionInfo = info });
+
+		frame.Navigate(typeof(CachedTransitionPage));
+		await WaitForTransitionsToSettle(frame);
+		var cachedPage = (Page)frame.Content;
+
+		// The transitions still replace RenderTransform/Projection until a TransitionTarget equivalent exists (#25876).
+		var appOrigin = new global::Windows.Foundation.Point(0.25, 0.75);
+		cachedPage.Opacity = 0.6;
+		cachedPage.RenderTransformOrigin = appOrigin;
+
+		frame.Navigate(typeof(SecondPage));
+		await WaitForTransitionsToSettle(frame);
+
+		frame.GoBack(new SuppressNavigationTransitionInfo());
+		await WaitForTransitionsToSettle(frame);
+
+		Assert.AreSame(cachedPage, frame.Content);
+		Assert.AreEqual(0.6, cachedPage.Opacity, 0.001, "The app's opacity should survive the exit and the suppressed return.");
+		Assert.AreEqual(appOrigin, cachedPage.RenderTransformOrigin, "The app's transform origin should survive the exit and the suppressed return.");
+	}
+
+	[TestMethod]
+	public async Task When_Navigating_Again_Before_Transition_Ends_Cached_Page_Not_Stale()
+	{
+		var frame = await CreateTransitionFrame(new NavigationThemeTransition { DefaultNavigationTransitionInfo = new DrillInNavigationTransitionInfo() });
+
+		frame.Navigate(typeof(CachedTransitionPage));
+		await WaitForTransitionsToSettle(frame);
+		var cachedPage = (Page)frame.Content;
+
+		frame.Navigate(typeof(SecondPage));
+		await TestServices.WindowHelper.WaitForIdle();
+		frame.GoBack(new DrillInNavigationTransitionInfo());
+		await TestServices.WindowHelper.WaitForIdle();
+		frame.Navigate(typeof(ThirdPage));
+		await WaitForTransitionsToSettle(frame);
+
+		frame.GoBack(new SuppressNavigationTransitionInfo());
+		await WaitForTransitionsToSettle(frame);
+
+		Assert.AreSame(cachedPage, frame.Content);
+		Assert.AreEqual(1.0, cachedPage.Opacity, 0.001, "Interrupted transitions should not leave their values on the cached page.");
+		Assert.AreEqual(1.0, (cachedPage.RenderTransform as ScaleTransform)?.ScaleX ?? 1.0, 0.001);
+	}
+
+	private static async Task<Frame> CreateTransitionFrame(NavigationThemeTransition contentTransition)
+	{
+		var frame = new Frame { Width = 300, Height = 200 };
+		if (contentTransition is not null)
+		{
+			frame.ContentTransitions = new TransitionCollection { contentTransition };
+		}
+
+		TestServices.WindowHelper.WindowContent = frame;
+		await TestServices.WindowHelper.WaitForLoaded(frame);
+		return frame;
+	}
+
+	// The longest built-in navigation storyboard (DrillIn) runs for under 800ms.
+	private static async Task WaitForTransitionsToSettle(Frame frame)
+	{
+		await TestServices.WindowHelper.WaitFor(() => frame.Content is FrameworkElement { IsLoaded: true });
+		await Task.Delay(1000);
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	private sealed class MinOpacityTracker : IDisposable
+	{
+		private UIElement _element;
+
+		public double MinOpacity { get; private set; } = double.MaxValue;
+
+		public static MinOpacityTracker Start(UIElement element)
+		{
+			var tracker = new MinOpacityTracker();
+			tracker.Track(element);
+			return tracker;
+		}
+
+		public void Track(UIElement element)
+		{
+			_element = element;
+			MinOpacity = Math.Min(MinOpacity, element.Opacity);
+			CompositionTarget.Rendering += OnRendering;
+		}
+
+		private void OnRendering(object sender, object e) => MinOpacity = Math.Min(MinOpacity, _element.Opacity);
+
+		public void Dispose() => CompositionTarget.Rendering -= OnRendering;
+	}
+
+	#endregion
+
 	[TestCleanup]
 	public void Cleanup()
 	{
@@ -546,6 +843,30 @@ internal partial class SecondPage : Page
 
 internal partial class ThirdPage : Page
 {
+}
+
+internal partial class CachedTransitionPage : Page
+{
+	public CachedTransitionPage()
+	{
+		NavigationCacheMode = NavigationCacheMode.Required;
+	}
+}
+
+internal partial class NavigationThemeTransitionPage : Page
+{
+	public NavigationThemeTransitionPage()
+	{
+		Transitions = new TransitionCollection { new NavigationThemeTransition() };
+	}
+}
+
+internal partial class SuppressTransitionPage : Page
+{
+	public SuppressTransitionPage()
+	{
+		Transitions = new TransitionCollection { new NavigationThemeTransition { DefaultNavigationTransitionInfo = new SuppressNavigationTransitionInfo() } };
+	}
 }
 
 internal partial class DisallowNavigatingFromPage : Page

@@ -14,7 +14,7 @@ using Uno.UI.Helpers.Boxes;
 namespace Microsoft.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "KeyFrames")]
-	public partial class DoubleAnimationUsingKeyFrames : Timeline, ITimeline, IKeyFramesProvider
+	public partial class DoubleAnimationUsingKeyFrames : Timeline, ITimeline, IKeyFramesProvider, INewTimelineTick
 	{
 		private readonly Stopwatch _activeDuration = new Stopwatch();
 		private bool _wasBeginScheduled;
@@ -76,25 +76,36 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 				_wasBeginScheduled = true;
 
-				_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-				{
-					_wasBeginScheduled = false;
-
-					if (KeyFrames.Count < 1 || // nothing to do
-						_wasRequestedToStop // was requested to stop, between Begin() and dispatched here
-					)
-					{
-						return;
-					}
-
-					_activeDuration.Restart();
-					_replayCount = 1;
-
-					//Start the animation
-					Play();
-				}
-				);
+				_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, RunScheduledBegin);
+				NewTimelinesTick.Register(this);
 			}
+		}
+
+		bool INewTimelineTick.IsAwaitingNewTimelineTick => _wasBeginScheduled;
+
+		void INewTimelineTick.TickNewTimeline() => RunScheduledBegin();
+
+		private void RunScheduledBegin()
+		{
+			if (!_wasBeginScheduled)
+			{
+				return;
+			}
+
+			_wasBeginScheduled = false;
+
+			if (KeyFrames.Count < 1 || // nothing to do
+				_wasRequestedToStop // was requested to stop, between Begin() and dispatched here
+			)
+			{
+				return;
+			}
+
+			_activeDuration.Restart();
+			_replayCount = 1;
+
+			//Start the animation
+			Play();
 		}
 
 		void ITimeline.Pause()

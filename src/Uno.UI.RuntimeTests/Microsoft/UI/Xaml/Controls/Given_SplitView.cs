@@ -571,4 +571,65 @@ public class Given_SplitView
 			Assert.AreEqual(HorizontalAlignment.Right, paneRoot.HorizontalAlignment);
 		}
 	}
+
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Overlay_Pane_Opened_By_Click_First_Visible_Frame_Is_Not_Open()
+	{
+#if __SKIA__ && HAS_INPUT_INJECTOR
+		var sut = new SplitView
+		{
+			Width = SplitViewWidth,
+			Height = SplitViewHeight,
+			DisplayMode = SplitViewDisplayMode.Overlay,
+			OpenPaneLength = TestOpenPaneLength,
+			Pane = new Border { Background = new SolidColorBrush(Colors.Red) },
+			Content = new Border { Background = new SolidColorBrush(Colors.Blue) },
+		};
+		var button = new Button { Content = "Open" };
+		button.Click += (_, _) => sut.IsPaneOpen = true;
+		await UITestHelper.Load(new StackPanel { Children = { button, sut } });
+
+		var paneRoot = sut.FindFirstDescendant<Grid>("PaneRoot") ?? throw new InvalidOperationException("PaneRoot not found");
+		var paneTransform = (CompositeTransform)paneRoot.RenderTransform;
+
+		double? firstVisibleX = null;
+		var compositionTarget = (CompositionTarget)sut.Visual.CompositionTarget!;
+		Action onFrameRendered = () =>
+		{
+			if (firstVisibleX is null && paneRoot.Visibility == Visibility.Visible)
+			{
+				firstVisibleX = paneTransform.TranslateX;
+			}
+		};
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+		var buttonBounds = button.GetAbsoluteBounds();
+		var center = new Point(buttonBounds.X + buttonBounds.Width / 2, buttonBounds.Y + buttonBounds.Height / 2);
+		mouse.MoveTo(center);
+
+		compositionTarget.FrameRendered += onFrameRendered;
+		try
+		{
+			mouse.Press(center);
+			mouse.Release();
+			await UITestHelper.WaitFor(() => firstVisibleX is not null);
+		}
+		finally
+		{
+			compositionTarget.FrameRendered -= onFrameRendered;
+		}
+
+		// The transition slides the pane in from -OpenPaneLength; a first frame at 0 is the open pane flashing.
+		Assert.IsTrue(firstVisibleX <= -TestOpenPaneLength / 2, $"The first frame showing the pane should have it mostly off-screen, but its TranslateX was {firstVisibleX}.");
+#else
+		await Task.CompletedTask;
+		Assert.Inconclusive("Inspects Uno's recorded frames through injected input.");
+#endif
+	}
 }

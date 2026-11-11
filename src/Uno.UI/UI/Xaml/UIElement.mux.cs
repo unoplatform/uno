@@ -1228,6 +1228,13 @@ namespace Microsoft.UI.Xaml
 			//	}
 			//}
 
+			// Uno: stands in for m_enteredTreeCounter. Only pages are tracked: NavigationThemeTransition is the only
+			// transition using the layout transition machinery, and it only animates pages.
+			if (@params.IsLive && !IsActiveInVisualTree && this is Controls.Page)
+			{
+				Media.Animation.Transition.OnElementEnteredTree(this);
+			}
+
 			// Pass updated params to children.
 			// MUX Reference: uielement.cpp:1356 — CUIElement::EnterImpl calls CDependencyObject::EnterImpl
 			// here. The CDependencyObject layer lives on DependencyObject (DependencyObject.mux.cs).

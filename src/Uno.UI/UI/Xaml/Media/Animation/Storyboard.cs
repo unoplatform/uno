@@ -35,6 +35,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private readonly Stopwatch _activeDuration = new Stopwatch();
 		private int _replayCount = 1;
 		private int _runningChildren;
+
+		/// <summary>
+		/// The element whose layout transition this storyboard runs (WinUI's m_pLayoutTransitionCompletedData).
+		/// </summary>
+		internal UIElement LayoutTransitionTarget { get; set; }
 		private bool _hasFillingChildren;
 		private bool _hasScheduledCompletion;
 
