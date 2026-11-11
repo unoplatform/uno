@@ -15,4 +15,9 @@
 		<ProjectReference Include="..\Uno.HotReload\Uno.HotReload.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<!-- Read by Given_EmbeddedRoslyn: the embedded Roslyn must accept the SDK's default C# version (spec 061 G1) -->
+		<AssemblyMetadata Include="SdkMaxSupportedLangVersion" Value="$(MaxSupportedLangVersion)" />
+	</ItemGroup>
+
 </Project>

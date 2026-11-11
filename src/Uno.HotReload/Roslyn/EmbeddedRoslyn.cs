@@ -1,11 +1,15 @@
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Uno.HotReload.Tracking;
+using Uno.HotReload.Utils;
 
 namespace Uno.HotReload.Roslyn;
 
@@ -37,6 +41,78 @@ internal static class EmbeddedRoslyn
 	/// SDK's own unconditional assignment is ignored and the selected flavors are loadable.
 	/// </summary>
 	internal static string CompilerApiVersion { get; } = $"roslyn{Version.Major}.{Version.Minor}";
+
+	/// <summary>
+	/// The newest C# major version the embedded compiler accepts as a <c>LangVersion</c>.
+	/// </summary>
+	internal static int MaxCSharpVersion { get; } = (int)LanguageVersion.LatestMajor.MapSpecifiedToEffectiveVersion() / 100;
+
+	/// <summary>
+	/// Emits one warning per C# project whose SDK-default language version is newer than
+	/// <see cref="MaxCSharpVersion"/> (spec 061 R5). The workspace loader drops a
+	/// <c>/langversion</c> the embedded compiler cannot parse without any diagnostic, so such a
+	/// project silently compiles with an older C# and only surfaces as parse errors on the first
+	/// edit — XAML-only edits included.
+	/// </summary>
+	internal static void WarnOnUnsupportedLanguageVersions(Solution solution, IReporter reporter)
+	{
+		try
+		{
+			foreach (var project in solution.Projects)
+			{
+				if (IsCompiledWithOlderCSharpThanItsSdkDefault(project, out var targetFramework, out var sdkDefaultVersion))
+				{
+					reporter.Warn(
+						$"Project '{project.Name}' targets {targetFramework}, whose default C# version is {sdkDefaultVersion}.0, but the "
+						+ $"hot-reload compiler (Roslyn {Version.ToString(2)}) supports up to C# {MaxCSharpVersion}.0: any C# {sdkDefaultVersion} "
+						+ $"syntax in this project will block hot reload with compilation errors the build does not report, XAML-only edits "
+						+ $"included. Update the Uno Platform packages, or set <LangVersion>{MaxCSharpVersion}.0</LangVersion> in the project.");
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			// Diagnostics-only sweep: it must never take down the workspace load it observes.
+			reporter.Warn($"Language version check failed (hot reload continues): {e.Message}");
+		}
+	}
+
+	private static bool IsCompiledWithOlderCSharpThanItsSdkDefault(Project project, [NotNullWhen(true)] out string? targetFramework, out int sdkDefaultVersion)
+	{
+		targetFramework = null;
+		sdkDefaultVersion = 0;
+
+		// An explicit, parseable LangVersion is honored by the embedded compiler as-is.
+		if (project.ParseOptions is not CSharpParseOptions { SpecifiedLanguageVersion: LanguageVersion.Default or LanguageVersion.Latest or LanguageVersion.LatestMajor })
+		{
+			return false;
+		}
+
+		return project.TryGetTargetFramework(out targetFramework)
+			&& TryGetSdkDefaultCSharpVersion(targetFramework, out sdkDefaultVersion)
+			&& sdkDefaultVersion > MaxCSharpVersion;
+	}
+
+	/// <summary>
+	/// The SDK's default C# version for a .NET 5+ target framework: <c>major + 4</c>, as computed
+	/// by <c>_MaxSupportedLangVersion</c> in the SDK's <c>Microsoft.CSharp.Core.targets</c>.
+	/// </summary>
+	private static bool TryGetSdkDefaultCSharpVersion(string targetFramework, out int csharpVersion)
+	{
+		csharpVersion = 0;
+
+		var versionEnd = targetFramework.IndexOf('.');
+		if (!targetFramework.StartsWith("net", StringComparison.OrdinalIgnoreCase)
+			|| versionEnd < 4
+			|| !int.TryParse(targetFramework.AsSpan(3, versionEnd - 3), NumberStyles.None, CultureInfo.InvariantCulture, out var major)
+			|| major < 5)
+		{
+			return false;
+		}
+
+		csharpVersion = major + 4;
+		return true;
+	}
 
 	/// <summary>
 	/// Forces the materialization of every analyzer reference of <paramref name="solution"/> and
