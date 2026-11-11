@@ -37,6 +37,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal override bool IsSingleSelection => SelectionMode == ListViewSelectionMode.Single;
 		internal bool IsSelectionMultiple => SelectionMode == ListViewSelectionMode.Multiple || SelectionMode == ListViewSelectionMode.Extended;
+
+		internal override IList<object> MultiSelectionItems => IsSelectionMultiple ? SelectedItems : null;
+
+		private protected override bool ScrollsSelectionIntoView => true;
+
+		private protected override void ScrollItemIntoView(object item, ScrollIntoViewAlignment alignment, bool animateIfBringIntoView)
+			=> ScrollIntoView(item, alignment);
 		private bool _modifyingSelectionInternally;
 		private readonly List<object> _oldSelectedItems = new List<object>();
 
