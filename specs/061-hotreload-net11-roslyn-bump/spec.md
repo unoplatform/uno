@@ -168,6 +168,7 @@ them.
   cannot see this bug. Give HRApp's net11 build the SDK default `LangVersion` plus one file with C# 15 syntax. No
   new test is needed: every existing HRApp test recompiles that file, so the XAML-only edit tests (`Given_TextBlock`,
   `Given_Frame`, …) are the XAML-only edit test. They fail on a 5.6 host and pass on 5.12 (see Status).
+  `Given_CSharpLatestSyntax` also edits a method body inside the C# 15 file and checks the new body runs.
 - **G3 — R5 warning tests.** A project whose target framework defaults to a C# version above the embedded maximum
   produces the warning once for `Default`, `Latest`, `LatestMajor` and `Preview`, a platform target framework
   included; a supported default or an explicit supported version does not. A blocked reload of such a project is
@@ -208,7 +209,7 @@ Label evidence as **Compile**, **Unit** or **Runtime**. Compile-only is not runt
 | R1 | **Compile, done** | With no `dotnet-tools` entry in `NuGet.Config` and an empty package folder (`NUGET_PACKAGES`), `Uno.HotReload`, the Processors, `Uno.HotReload.Tests` and `Uno.UI.SourceGenerators.Tests` restore: 5.12 from the feed, 5.6 from nuget.org |
 | 3 | **Unit, done** | `Uno.HotReload.Tests` on net11.0 against 5.12: 175 passed, 0 failed, 1 skipped (Unix-only), G1 and G3 included. The test assemblies load `5.12.0-1.26529.118`, the same build (commit `297acf930f`) as the SDK's own compiler |
 | R4 (part) | **Compile, done** | The net11 Processors output has no `Microsoft.Build*.dll` (MSBuild `18.12.2` loads from the SDK), Microsoft.Extensions `10.0.10`, and 147 Roslyn binaries with valid .NET/Microsoft Authenticode signatures |
-| 6 | **Runtime, done** | HRApp suite against a source-built net11 DevServer on SDK 11.0.100 (the `Given_HotReloadWorkspace` setup, driven directly): **5.12** — 36 passed, 0 failed, 11 skipped (existing `[Ignore]`), 97 metadata updates in one session (C1, C3), no compile errors, no R5 warning. **5.6** (same code, net11 line overridden) — `Given_TextBlock` 4/4 fail with the issue's symptom: XAML-only edits `Emit status: Blocked`, CS1002/CS0103/CS0201 on `continue outer;`; the R5 warning is logged once and the hint follows every blocked line (G2, R5) |
+| 6 | **Runtime, done** | HRApp suite against a source-built net11 DevServer on SDK 11.0.100 (the `Given_HotReloadWorkspace` setup, driven directly): **5.12** — 36 passed, 0 failed, 11 skipped (existing `[Ignore]`), 97 metadata updates in one session (C1, C3), no compile errors, no R5 warning. **5.6** (same code, net11 line overridden) — `Given_TextBlock` 4/4 fail with the issue's symptom: XAML-only edits `Emit status: Blocked`, CS1002/CS0103/CS0201 on `continue outer;`; the R5 warning is logged once and the hint follows every blocked line (G2, R5). `Given_CSharpLatestSyntax` (an edit inside the C# 15 method): passes on 5.12 with 1 metadata update for the edit and 1 for the undo; fails on 5.6 with the same three errors on the edited file |
 | 4 | **Unit, done** | `Uno.UI.SourceGenerators.Tests` `MetadataUpdateTests` on 5.12: 244 passed, 0 failed, 7 skipped (C10; needs a Debug `Uno.UI` net11.0 build first) |
 | 2, 5, 7, 8 | Not run | Package-graph diff, package inspection, manual app scenarios and the net10 regression |
 
