@@ -95,7 +95,7 @@ cd MyApp
 dotnet run -f net10.0-desktop
 ```
 
-The template creates a single project for Android, iOS, WebAssembly and desktop. Use `-platforms` to choose fewer targets, for example `-platforms desktop wasm`.
+The template creates a single project for Android, iOS, WebAssembly and desktop, with a solution file next to it. Use `-platforms` to choose fewer targets, for example `-platforms desktop wasm`.
 
 To run on another target, change the target framework:
 
