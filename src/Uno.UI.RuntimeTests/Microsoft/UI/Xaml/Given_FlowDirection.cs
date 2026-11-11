@@ -12,6 +12,7 @@ using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Shapes;
@@ -726,6 +727,98 @@ public class Given_FlowDirection
 
 		var screenshot = await UITestHelper.ScreenShot(host);
 		ImageAssert.HasColorAt(screenshot, new Point(50, 20), Colors.Lime, tolerance: 20);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	public async Task When_RTL_Element_Overflows_Nested_RTL_LTR_RTL()
+	{
+		using var _ = UITestHelper.ResetWindowContent();
+
+		// The innermost element lays out lime on its left (host 0-100) and red on its right (host 100-200), clipped to the 150px slot.
+		var rtlElement = new Border { Width = 200, Height = 40, FlowDirection = FlowDirection.RightToLeft, HorizontalAlignment = HorizontalAlignment.Left, Child = CreateRedLimeColumns() };
+		var ltrHost = new Grid { Width = 150, Height = 40, FlowDirection = FlowDirection.LeftToRight, Background = new SolidColorBrush(Colors.White), Children = { rtlElement } };
+		var rtlOuter = new Grid { Width = 150, Height = 40, FlowDirection = FlowDirection.RightToLeft, Children = { ltrHost } };
+		var root = new Grid { Children = { rtlOuter }, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+
+		TestServices.WindowHelper.WindowContent = root;
+		await TestServices.WindowHelper.WaitForLoaded(root);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// The outer grid and the LTR host each mirror, so on screen the host is not mirrored: lime then red.
+		var screenshot = await UITestHelper.ScreenShot(rtlOuter);
+		var y = screenshot.Height / 2;
+		ImageAssert.HasColorAt(screenshot, screenshot.Width * 25 / 150, y, Colors.Lime, tolerance: 20);
+		ImageAssert.HasColorAt(screenshot, screenshot.Width * 75 / 150, y, Colors.Lime, tolerance: 20);
+		ImageAssert.HasColorAt(screenshot, screenshot.Width * 125 / 150, y, Colors.Red, tolerance: 20);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	public async Task When_RTL_Panel_Overflows_LTR_Slot()
+	{
+		using var _ = UITestHelper.ResetWindowContent();
+
+		// Panels apply their layout clip in the parent's coordinates (an ancestor clip), and WinUI mirrors it there too
+		// (CFrameworkElement::UpdateLayoutClip): the 100px slot at the left of the parent becomes its 100-200 range.
+		var rtlPanel = CreateRedLimeColumns();
+		rtlPanel.Width = 200;
+		rtlPanel.Height = 40;
+		rtlPanel.FlowDirection = FlowDirection.RightToLeft;
+		rtlPanel.HorizontalAlignment = HorizontalAlignment.Left;
+		var host = new Grid { Width = 100, Height = 40, HorizontalAlignment = HorizontalAlignment.Left, Background = new SolidColorBrush(Colors.White), Children = { rtlPanel } };
+		var root = new Grid { Width = 200, Background = new SolidColorBrush(Colors.Blue), Children = { host }, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+
+		TestServices.WindowHelper.WindowContent = root;
+		await TestServices.WindowHelper.WaitForLoaded(root);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var screenshot = await UITestHelper.ScreenShot(root);
+		var y = screenshot.Height / 2;
+		ImageAssert.HasColorAt(screenshot, screenshot.Width * 50 / 200, y, Colors.White, tolerance: 20);
+		ImageAssert.HasColorAt(screenshot, screenshot.Width * 150 / 200, y, Colors.Red, tolerance: 20);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	public async Task When_RTL_TextBlock_Overflows_Slot()
+	{
+		// https://github.com/unoplatform/uno/issues/24423
+		using var _ = UITestHelper.ResetWindowContent();
+
+		// Left-to-right text in a right-to-left layout starts at the right edge and overflows on the left, so only its end is visible.
+		var textBlock = new TextBlock { FontSize = 24, FontWeight = Microsoft.UI.Text.FontWeights.Bold };
+		textBlock.Inlines.Add(new Run { Text = "WWWWWWWWWW", Foreground = new SolidColorBrush(Colors.Red) });
+		textBlock.Inlines.Add(new Run { Text = "WWWWWWWW", Foreground = new SolidColorBrush(Colors.Lime) });
+		var host = new Grid { Width = 100, Height = 40, FlowDirection = FlowDirection.RightToLeft, Background = new SolidColorBrush(Colors.White), Children = { textBlock } };
+		var root = new Grid { Children = { host }, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+
+		TestServices.WindowHelper.WindowContent = root;
+		await TestServices.WindowHelper.WaitForLoaded(root);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var screenshot = await UITestHelper.ScreenShot(host);
+		var width = screenshot.Width;
+		var height = screenshot.Height;
+		ImageAssert.HasColorInRectangle(screenshot, new System.Drawing.Rectangle(0, 0, width / 4, height), Colors.Lime, tolerance: 20);
+		ImageAssert.HasColorInRectangle(screenshot, new System.Drawing.Rectangle(width * 3 / 4, 0, width / 4, height), Colors.Lime, tolerance: 20);
+		ImageAssert.DoesNotHaveColorInRectangle(screenshot, new System.Drawing.Rectangle(0, 0, width, height), Colors.Red, tolerance: 20);
+	}
+
+	private static Grid CreateRedLimeColumns()
+	{
+		var grid = new Grid
+		{
+			ColumnDefinitions = { new ColumnDefinition(), new ColumnDefinition() },
+		};
+		var second = new Border { Background = new SolidColorBrush(Colors.Lime) };
+		Grid.SetColumn(second, 1);
+		grid.Children.Add(new Border { Background = new SolidColorBrush(Colors.Red) });
+		grid.Children.Add(second);
+		return grid;
 	}
 
 	[TestMethod]
