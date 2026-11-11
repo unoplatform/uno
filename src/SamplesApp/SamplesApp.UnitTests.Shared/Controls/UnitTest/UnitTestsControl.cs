@@ -1146,6 +1146,7 @@ namespace Uno.UI.Samples.Tests
 				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
 					ResetLastInputDeviceType();
+					TrackInputPane();
 
 					// KeyboardStateTracker is process-wide static state. Tests that raise
 					// synthetic KeyDown events without matching KeyUp (crashes, unbalanced
@@ -1181,6 +1182,10 @@ namespace Uno.UI.Samples.Tests
 						TestServices.WindowHelper.WindowContent = null;
 					}
 				});
+
+#if HAS_UNO
+				await WaitForInputPaneSettledAsync();
+#endif
 			}
 
 			async Task RunCleanup(object instance, UnitTestClassInfo testClassInfo, UnitTestMethodInfo testMethod, string testName, bool runsOnUIThread)
@@ -1240,6 +1245,55 @@ namespace Uno.UI.Samples.Tests
 		}
 
 #if HAS_UNO
+		private static readonly Stopwatch _inputPaneClock = Stopwatch.StartNew();
+		private static long _lastInputPaneChangeTicks = -1; // Written from the UI thread, read by the cleanup.
+		private static bool _isTrackingInputPane;
+
+		private static void TrackInputPane()
+		{
+			if (_isTrackingInputPane || !OperatingSystem.IsAndroid())
+			{
+				return;
+			}
+
+			_isTrackingInputPane = true;
+			var inputPane = InputPane.GetForCurrentView();
+			inputPane.Showing += (_, _) => Volatile.Write(ref _lastInputPaneChangeTicks, _inputPaneClock.Elapsed.Ticks);
+			inputPane.Hiding += (_, _) => Volatile.Write(ref _lastInputPaneChangeTicks, _inputPaneClock.Elapsed.Ticks);
+		}
+
+		// The Android keyboard's show and hide requests complete asynchronously and out of order, and InputPane.Visible
+		// can read false while one is still in flight. A test that used the keyboard would hand the next one an
+		// occlusion that changes mid-test, so wait for the keyboard to be hidden and its occlusion to stay put.
+		private async Task WaitForInputPaneSettledAsync()
+		{
+			if (!OperatingSystem.IsAndroid() || Volatile.Read(ref _lastInputPaneChangeTicks) < 0)
+			{
+				return;
+			}
+
+			var inputPane = InputPane.GetForCurrentView();
+			var quietPeriod = TimeSpan.FromMilliseconds(500);
+			var deadline = _inputPaneClock.Elapsed + TimeSpan.FromSeconds(5);
+			while (_inputPaneClock.Elapsed < deadline)
+			{
+				if (inputPane.Visible)
+				{
+					await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() => inputPane.TryHide());
+				}
+				else if (_inputPaneClock.Elapsed - TimeSpan.FromTicks(Volatile.Read(ref _lastInputPaneChangeTicks)) >= quietPeriod)
+				{
+					Volatile.Write(ref _lastInputPaneChangeTicks, -1);
+					return;
+				}
+
+				await Task.Delay(50);
+			}
+
+			_log?.Warn($"The input pane did not settle hidden within 5s after the test (visible: {inputPane.Visible}).");
+			Volatile.Write(ref _lastInputPaneChangeTicks, -1);
+		}
+
 		private static void ResetLastInputDeviceType()
 		{
 			// Some tests inject keyboard input, which can then mean that subsequent tests will display
