@@ -15,6 +15,8 @@ API surface is realigned with WinUI.
 **[Follow the "Migrating to Uno Platform 7.0" guide](xref:Uno.Development.MigratingToUno7)**
 for the upgrade steps. It links to the removed APIs, type-hierarchy changes, behavioral changes and the full migration checklist.
 
+Uno Themes, Uno Toolkit and Uno Extensions also move to a new major with 7.0. See their upgrade notes: [Uno Themes 9](xref:Uno.Themes.Material.Migration#upgrading-to-uno-themes-v9), [Uno Toolkit 11](xref:Toolkit.Migration#upgrading-to-uno-toolkit-110) and [Uno Extensions 8](xref:Uno.Extensions.Migration#upgrading-to-extensions-80).
+
 ## Uno Platform 6.6
 
 Uno Platform 6.6 contains a breaking change related to the removal of legacy Windows Phone namespaces, along with a few platform behavior changes to be aware of when upgrading.
