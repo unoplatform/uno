@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using SamplesApp.UITests;
@@ -841,6 +842,24 @@ public class Given_BindingExpression
 
 		// Template parts live in their template's namescope only.
 		Assert.AreEqual("", target.Text);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19420")]
+	public async Task When_ElementName_Targets_XamlReader_Content_From_Outside()
+	{
+		const string Xmlns = "xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'";
+		var fragment = (FrameworkElement)XamlReader.Load($"<StackPanel {Xmlns} x:Name='ReaderRootName'><TextBlock x:Name='ReaderInnerName' Text='inner' /></StackPanel>");
+		var root = new StackPanel { Children = { fragment } };
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		var inner = await AddElementNameTarget(root, "ReaderInnerName");
+		var fragmentRoot = await AddElementNameTarget(root, "ReaderRootName", "Name");
+
+		// Loaded content is a namescope of its own, root included (as on WinUI).
+		Assert.AreEqual("", inner.Text);
+		Assert.AreEqual("", fragmentRoot.Text);
 	}
 
 	[TestMethod]
