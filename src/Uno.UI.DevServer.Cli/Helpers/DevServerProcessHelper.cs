@@ -551,6 +551,7 @@ internal static class DevServerProcessHelper
 				}
 				catch (OperationCanceledException)
 				{
+					logger.LogDebug("The host's output was still open 2 s after it exited; reporting the failure without it.");
 				}
 
 				logger.LogError("Host process died (exit code {ExitCode}) before becoming ready.", process.ExitCode);

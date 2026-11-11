@@ -28,7 +28,7 @@ internal static class DotnetRootLocator
 		var root = Path.GetDirectoryName(dotnet);
 
 		// The first match is what Windows runs: when it isn't a .NET install (e.g. a package manager shim), don't guess.
-		if (dotnet is null || string.IsNullOrEmpty(root) || !Directory.Exists(Path.Combine(root, "host", "fxr")))
+		if (dotnet is null || string.IsNullOrEmpty(root) || !Directory.Exists(Path.Join(root, "host", "fxr")))
 		{
 			return null;
 		}
@@ -61,10 +61,11 @@ internal static class DotnetRootLocator
 		}
 		catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or System.Security.SecurityException)
 		{
+			// An unreadable registry falls through to the default folder, as it does for the .NET host.
 		}
 
 		var programFiles = Environment.GetEnvironmentVariable(architecture == Architecture.X86 ? "ProgramFiles(x86)" : "ProgramFiles");
-		return string.IsNullOrEmpty(programFiles) ? null : Path.Combine(programFiles, "dotnet");
+		return string.IsNullOrEmpty(programFiles) ? null : Path.Join(programFiles, "dotnet");
 	}
 
 	public static Architecture? TryGetArchitecture(string executablePath)
@@ -82,7 +83,7 @@ internal static class DotnetRootLocator
 				_ => null,
 			};
 		}
-		catch (Exception)
+		catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or BadImageFormatException or ArgumentException or NotSupportedException)
 		{
 			// Not readable or not an executable image: the caller then sets nothing.
 			return null;
@@ -104,7 +105,7 @@ internal static class DotnetRootLocator
 		{
 			try
 			{
-				var candidate = Path.Combine(Path.GetFullPath(entry), DotnetExecutable);
+				var candidate = Path.Join(Path.GetFullPath(entry), DotnetExecutable);
 				if (File.Exists(candidate))
 				{
 					return candidate;

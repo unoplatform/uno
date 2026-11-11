@@ -25,7 +25,7 @@ public class Given_AppHostDotnetRoot
 	[TestInitialize]
 	public void Setup()
 	{
-		_tempDir = Path.Combine(Path.GetTempPath(), "uno-dotnet-root-tests-" + Guid.NewGuid().ToString("N"));
+		_tempDir = Path.Join(Path.GetTempPath(), "uno-dotnet-root-tests-" + Guid.NewGuid().ToString("N"));
 		Directory.CreateDirectory(_tempDir);
 	}
 
@@ -38,6 +38,7 @@ public class Given_AppHostDotnetRoot
 		}
 		catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
 		{
+			// Best effort: a temp folder left behind doesn't change any test result.
 		}
 	}
 
@@ -49,7 +50,7 @@ public class Given_AppHostDotnetRoot
 		var muxerRoot = CreateInstall("muxer");
 		var pathRoot = CreateInstall("on-path");
 
-		var install = DotnetRootLocator.TryLocate(Path.Combine(muxerRoot, "dotnet.exe"), pathRoot);
+		var install = DotnetRootLocator.TryLocate(Path.Join(muxerRoot, "dotnet.exe"), pathRoot);
 
 		install.Should().Be(new DotnetInstall(muxerRoot, RuntimeInformation.ProcessArchitecture));
 	}
@@ -135,7 +136,7 @@ public class Given_AppHostDotnetRoot
 		var environment = NewEnvironment();
 
 		DevServerProcessHelper.SetAppHostDotnetRoot(
-			environment, CreateAppHost(), Path.Combine(root, "dotnet.exe"), root, NoMachineWideInstall);
+			environment, CreateAppHost(), Path.Join(root, "dotnet.exe"), root, NoMachineWideInstall);
 
 		environment.Should().ContainSingle()
 			.Which.Should().Be(new KeyValuePair<string, string?>(ArchitectureVariable, root));
@@ -152,7 +153,7 @@ public class Given_AppHostDotnetRoot
 		var environment = NewEnvironment();
 
 		DevServerProcessHelper.SetAppHostDotnetRoot(
-			environment, CreateAppHost(), Path.Combine(muxerRoot, "dotnet.exe"), pathRoot, NoMachineWideInstall);
+			environment, CreateAppHost(), Path.Join(muxerRoot, "dotnet.exe"), pathRoot, NoMachineWideInstall);
 
 		environment.Should().BeEmpty();
 	}
@@ -288,12 +289,12 @@ public class Given_AppHostDotnetRoot
 		=> new(StringComparer.OrdinalIgnoreCase);
 
 	private string CreateFolder(string name)
-		=> Directory.CreateDirectory(Path.Combine(_tempDir, name)).FullName;
+		=> Directory.CreateDirectory(Path.Join(_tempDir, name)).FullName;
 
 	// Any executable image of this process's architecture stands in for the host .exe and for dotnet.exe.
 	private string CreateAppHost()
 	{
-		var appHost = Path.Combine(CreateFolder("host"), "Uno.UI.RemoteControl.Host.exe");
+		var appHost = Path.Join(CreateFolder("host"), "Uno.UI.RemoteControl.Host.exe");
 		File.Copy(Environment.ProcessPath!, appHost, overwrite: true);
 		return appHost;
 	}
@@ -303,10 +304,10 @@ public class Given_AppHostDotnetRoot
 		var root = CreateFolder(name);
 		if (withHostFxr)
 		{
-			Directory.CreateDirectory(Path.Combine(root, "host", "fxr"));
+			Directory.CreateDirectory(Path.Join(root, "host", "fxr"));
 		}
 
-		var dotnet = Path.Combine(root, "dotnet.exe");
+		var dotnet = Path.Join(root, "dotnet.exe");
 		if (!validExecutable)
 		{
 			File.WriteAllText(dotnet, "not an executable");
