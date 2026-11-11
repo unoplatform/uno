@@ -3,6 +3,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Android;
@@ -26,6 +27,8 @@ internal sealed class AndroidHost : UnoPlatformHost, IApplicationHost
 	public AndroidHost(Func<Application> appBuilder)
 	{
 		_appBuilder = appBuilder ?? throw new ArgumentNullException(nameof(appBuilder));
+
+		RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.SkiaAndroid);
 	}
 
 	protected override void Initialize()

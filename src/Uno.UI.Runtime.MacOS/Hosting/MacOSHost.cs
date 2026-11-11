@@ -9,6 +9,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.MacOS;
@@ -73,6 +74,8 @@ public class MacOSHost : UnoPlatformHost, IApplicationHost
 		_current = this;
 		_appBuilder = appBuilder;
 		_instanceAppBuilder = appBuilder;
+
+		RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.SkiaMacOS);
 	}
 
 	internal static MacOSHost Current => _current!;

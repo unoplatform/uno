@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Foundation;
 using Microsoft.UI.Xaml;
 using UIKit;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime;
 using Uno.UI.Runtime.AppleUIKit.Extensions;
@@ -27,6 +28,8 @@ internal class AppleUIKitHost : UnoPlatformHost, IApplicationHost
 	{
 		_appBuilder = appBuilder ?? throw new ArgumentNullException(nameof(appBuilder));
 		_uiApplicationDelegateOverride = uiApplicationDelegateOverride;
+
+		RuntimePlatformHelper.SetHostPlatform(OperatingSystem.IsTvOS() ? UnoRuntimePlatform.SkiaTvOS : UnoRuntimePlatform.SkiaIOS);
 	}
 
 	internal static ApplicationInitializationCallback? CreateAppAction { get; private set; }

@@ -4,6 +4,7 @@ using Uno.Extensions.ApplicationModel.Core;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Runtime.Linux.FrameBuffer.UI;
@@ -54,6 +55,8 @@ namespace Uno.UI.Runtime.Linux.FrameBuffer
 			_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
 
 			builder.AttachHost(this);
+
+			RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.SkiaFrameBuffer);
 		}
 
 		// Called by the setter FramebufferHostBuilder.Orientation hands out, with an already validated value.

@@ -12,6 +12,7 @@ using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Graphics;
 using Uno.Media.Playback;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.NativeElementHosting;
 using Uno.UI.Runtime.WebAssembly.Browser.Graphics;
@@ -63,6 +64,8 @@ internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHos
 		_appBuilder = appBuilder;
 
 		_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
+
+		RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.SkiaWasm);
 	}
 
 	protected override void Initialize() { }

@@ -17,6 +17,7 @@ using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
 using Uno.Helpers.Theming;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime;
 using Uno.UI.Runtime.Extensions.System;
@@ -173,6 +174,8 @@ public partial class X11ApplicationHost : UnoPlatformHost, IApplicationHost, IDi
 		{
 			mediaExtensionType.GetMethod("PreloadVlc", BindingFlags.Static | BindingFlags.Public)?.Invoke(null, null);
 		}
+
+		RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.SkiaX11);
 
 		_appBuilder = appBuilder;
 
