@@ -17,6 +17,9 @@
        <!-- Required until https://github.com/dotnet/sdk/issues/36666 is released -->
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 
+		<!-- SDK default C# version instead of the repo's 13.0, so every hot reload compiles CSharpLatestSyntax.cs (spec 061 G2) -->
+		<LangVersion></LangVersion>
+
 		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
 		<!-- CS8619: https://github.com/unoplatform/uno.ui.runtimetests.engine/issues/174#issuecomment-2104088957 -->
 		<NoWarn>$(NoWarn);CS1998;CS8619;IDE0051;IDE0055;NU1903;MSB3277</NoWarn>
