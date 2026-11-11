@@ -89,7 +89,7 @@ namespace Microsoft.UI.Xaml
 	4. Add the exact event type handling to UIElement.InvokeHandler method.
 	5. If the event does not have an OnXYZ method on UIElement, FrameworkElement, or Control, you are done. Otherwise:
 	6. Update the code in ImplementedRoutedEventsGenerator to generate the flag correctly when one of the aforementioned classes has an override.
-	7. Add the handler attachment code in SubscribeToOverridenRoutedEvents in UIElement, FrameworkElement, or Control (depending on which level the method is declared).
+	7. Add the handler attachment code in Control.SubscribeToOverridenRoutedEvents, or dispatch it from InvokeClassHandlerCore for UIElement-level overrides.
 	 
 	 */
 
