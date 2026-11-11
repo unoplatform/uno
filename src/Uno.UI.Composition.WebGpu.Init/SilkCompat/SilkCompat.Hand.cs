@@ -115,6 +115,15 @@ internal static unsafe partial class Xlate
 			o = (WGPURequestAdapterOptions*)a.Alloc(sizeof(WGPURequestAdapterOptions));
 			Fill((SW.RequestAdapterOptions*)options, o, ref a);
 		}
+		if (DawnBackend != WGPUBackendType.Undefined)
+		{
+			if (o == null)
+			{
+				o = (WGPURequestAdapterOptions*)a.Alloc(sizeof(WGPURequestAdapterOptions));
+				*o = default;
+			}
+			o->BackendType = DawnBackend;
+		}
 		var info = new WGPURequestAdapterCallbackInfo
 		{
 			Mode = Spontaneous,

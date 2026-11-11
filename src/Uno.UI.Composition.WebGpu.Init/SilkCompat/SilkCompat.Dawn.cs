@@ -17,6 +17,19 @@ internal static unsafe partial class Xlate
 	// WGPUFeatureName_ImplicitDeviceSynchronization, Dawn's own: the device locks itself around every call.
 	private const uint DawnImplicitDeviceSynchronization = 0x00050004;
 
+	// UNO_WEBGPU_BACKENDS picks the backend on Dawn too, through the adapter request rather than wgpu-native's
+	// instance extras (Dawn rejects those).
+	private static readonly WGPUBackendType DawnBackend = !WebGpuLoader.IsDawn ? WGPUBackendType.Undefined
+		: (Environment.GetEnvironmentVariable("UNO_WEBGPU_BACKENDS") ?? "").Split(',')[0].Trim().ToLowerInvariant() switch
+		{
+			"vulkan" => WGPUBackendType.Vulkan,
+			"dx12" => WGPUBackendType.D3D12,
+			"dx11" => WGPUBackendType.D3D11,
+			"metal" => WGPUBackendType.Metal,
+			"gl" => WGPUBackendType.OpenGLES,
+			_ => WGPUBackendType.Undefined,
+		};
+
 	private static IntPtr _dawnInstance;
 	private static long _dawnSubmissions;
 	private static readonly ConcurrentDictionary<ulong, ulong> _dawnPending = new();
