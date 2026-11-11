@@ -289,6 +289,10 @@ partial class ItemsRepeater
 				{
 					m_itemTemplateWrapper = new ItemTemplateWrapper(selector);
 				}
+				else if (newValue is IElementFactory elementFactory)
+				{
+					m_itemTemplateWrapper = new ElementFactoryShimAdapter(elementFactory);
+				}
 				else if (newValue != null)
 				{
 					throw new ArgumentException("ItemTemplate", "ItemTemplate");

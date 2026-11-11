@@ -697,6 +697,12 @@ partial class ItemsRepeater
 			{
 				m_itemTemplateWrapper = new ItemTemplateWrapper(selector);
 			}
+#if HAS_UNO
+			else if (newValue is IElementFactory elementFactory)
+			{
+				m_itemTemplateWrapper = new ElementFactoryShimAdapter(elementFactory);
+			}
+#endif
 			else
 			{
 				throw new ArgumentException("ItemTemplate", "ItemTemplate");
