@@ -113,7 +113,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 							.WithCollectibleAnalyzerReferences(_reporter);
 
 						EmbeddedRoslyn.WarnOnAnalyzerLoadFailures(solution, _reporter, ct2);
-						EmbeddedRoslyn.WarnOnUnsupportedLanguageVersions(solution, _reporter);
+						EmbeddedRoslyn.WarnOnUnsupportedLanguageVersions(solution, _reporter, ct2);
 
 						return solution;
 					}

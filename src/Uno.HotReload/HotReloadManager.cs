@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno.HotReload.Diffing;
 using Uno.HotReload.Microsoft;
+using Uno.HotReload.Roslyn;
 using Uno.HotReload.Tracking;
 using Uno.HotReload.Utils;
 using Uno.Threading;
@@ -400,6 +401,14 @@ public sealed class HotReloadManager : IDisposable
 							$"{string.Join(", ", audit.BlockingProjects)} " +
 							$"(edited: {FormatFileNames(files)}).");
 						diagnosticsReporter.ReportCompilationDiagnostics(audit.Errors);
+						foreach (var hint in auditedProjects
+							.Where(p => audit.BlockingProjects.Contains(p.Name))
+							.Select(EmbeddedRoslyn.GetUnsupportedLanguageVersionHint)
+							.OfType<string>()
+							.Distinct())
+						{
+							_tracker.Output(hint);
+						}
 						outcome = HotReloadOperationResult.Failed;
 						break;
 

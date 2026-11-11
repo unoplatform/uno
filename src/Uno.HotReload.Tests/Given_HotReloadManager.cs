@@ -3,6 +3,7 @@ using AwesomeAssertions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Uno.HotReload.Diffing;
+using Uno.HotReload.Roslyn;
 using Uno.HotReload.Tests.TestUtils;
 using Uno.HotReload.Tracking;
 
@@ -318,6 +319,47 @@ public class Given_HotReloadManager
 		harness.Reporter.Outputs.Should().Contain(
 			o => o.Contains("Hot reload blocked") && o.Contains("TestProject") && o.Contains("Broken.cs"),
 			"the blocked-compilation line names the audited project and the edited file (spec 054 R2)");
+		harness.Reporter.Outputs.Should().NotContain(
+			o => o.Contains("hot-reload compiler"),
+			"a project without a resolvable target framework gets no language-version hint");
+	}
+
+	[TestMethod]
+	[Description(
+		"Spec 061 R5: when a blocked project's target framework defaults to a C# version newer than the embedded " +
+		"compiler, the blocked line is followed by a hint that its errors are not build errors. The load-time " +
+		"warning alone is easy to miss: it is the only line that names the cause.")]
+	public async Task When_CompilationErrorsInProjectOnNewerCSharp_Then_BlockedLineIsFollowedByHint()
+	{
+		using var temp = new TempDirectory();
+		var netMajor = EmbeddedRoslyn.MaxCSharpVersion + 1 - 4;
+		// A real assembly at a ref-pack path, so the project both compiles and resolves its target framework.
+		var refPath = Path.Join(temp.Path, "dotnet", "packs", "Microsoft.NETCore.App.Ref", $"{netMajor}.0.0", "ref", $"net{netMajor}.0", "System.Runtime.dll");
+		Directory.CreateDirectory(Path.GetDirectoryName(refPath)!);
+		File.Copy(typeof(object).Assembly.Location, refPath);
+
+		using var harness = new HotReloadManagerHarness(
+			_ => Task.FromResult<(ImmutableArray<Update>, ImmutableArray<Diagnostic>)>(([], [])),
+			onUpdate: solution =>
+			{
+				var projectId = solution.ProjectIds[0];
+				var broken = solution
+					.WithProjectParseOptions(projectId, new CSharpParseOptions(LanguageVersion.Default))
+					.AddMetadataReference(projectId, MetadataReference.CreateFromFile(refPath))
+					.AddDocument(DocumentId.CreateNewId(projectId), "Broken.cs", "public class Broken {", filePath: "/work/Broken.cs");
+				return new SolutionUpdateResult(broken, ChangeSet.IgnoreAll([]));
+			},
+			warmCompilation: true);
+
+		var batch = ImmutableHashSet.Create("/work/Broken.cs");
+		await harness.Manager.ProcessFileChanges(Task.FromResult(batch), CancellationToken.None).WaitAsync(_testTimeout);
+
+		harness.Tracker.Last!.Result.Should().Be(HotReloadOperationResult.Failed);
+		var outputs = harness.Reporter.Outputs.ToList();
+		var blocked = outputs.FindIndex(o => o.Contains("Hot reload blocked"));
+		blocked.Should().BeGreaterThanOrEqualTo(0);
+		outputs.Skip(blocked + 1).Should().ContainSingle(
+			o => o.Contains($"'TestProject' defaults to C# {netMajor + 4}.0") && o.Contains($"supports up to C# {EmbeddedRoslyn.MaxCSharpVersion}.0"));
 	}
 
 	// ── Spec 054: scope the blocked-compilation audit to the pass's change-set ──
