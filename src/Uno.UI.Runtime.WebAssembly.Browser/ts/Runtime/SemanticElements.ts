@@ -698,29 +698,15 @@ namespace Uno.UI.Runtime {
 			// not hardcoded here (FR-028).
 			Accessibility.updateElementFocusability(element, isFocusable);
 
-			this.setAriaStringAttribute(element, 'aria-label', selectedValue);
+			SemanticElements.setComboBoxValue(element, selectedValue);
 
 			const callbacks = this.getCallbacks();
 
-			// Keyboard handlers for expand/collapse (WAI-ARIA combobox pattern)
-			element.addEventListener('keydown', (e) => {
-				if (e.key === 'Enter' || e.key === ' ' || (e.key === 'ArrowDown' && e.altKey)) {
-					e.preventDefault();
-					if (callbacks.onExpandCollapse) {
-						callbacks.onExpandCollapse(handle);
-					}
-				} else if (e.key === 'Escape') {
-					// Escape collapses an open popup (WAI-ARIA combobox pattern)
-					if (element.getAttribute('aria-expanded') === 'true') {
-						e.preventDefault();
-						if (callbacks.onExpandCollapse) {
-							callbacks.onExpandCollapse(handle);
-						}
-					}
-				}
-			});
+			// Keys are not handled here: they bubble to the document listener and reach the XAML ComboBox,
+			// which opens, navigates, commits and cancels by itself. A handler here would act on the same
+			// key press a second time.
 
-			// Click handler for expand/collapse
+			// Click handler for expand/collapse (assistive technology activation)
 			element.addEventListener('click', (e) => {
 				e.preventDefault();
 				if (callbacks.onExpandCollapse) {
@@ -926,13 +912,28 @@ namespace Uno.UI.Runtime {
 		 */
 		public static updateActiveDescendant(containerHandle: number, activeItemHandle: number): void {
 			const container = document.getElementById(`uno-semantics-${containerHandle}`);
-			if (container) {
-				if (activeItemHandle !== 0) {
-					const activeId = `uno-semantics-${activeItemHandle}`;
+			if (!container) {
+				return;
+			}
+
+			if (activeItemHandle === 0) {
+				container.removeAttribute('aria-activedescendant');
+				return;
+			}
+
+			const activeId = `uno-semantics-${activeItemHandle}`;
+			const apply = () => {
+				// A reference to a missing option is ignored by the browser and never announced.
+				if (document.getElementById(activeId) && container.getAttribute('aria-expanded') !== 'false') {
 					container.setAttribute('aria-activedescendant', activeId);
-				} else {
-					container.removeAttribute('aria-activedescendant');
 				}
+			};
+
+			if (document.getElementById(activeId)) {
+				apply();
+			} else {
+				// The option is created by a batched mutation; point at it once it exists.
+				SemanticElements.scheduleVirtualizedMutation(apply);
 			}
 		}
 
@@ -940,9 +941,51 @@ namespace Uno.UI.Runtime {
 		 * Updates the selected state of a list item element.
 		 */
 		public static updateSelectionState(handle: number, selected: boolean): void {
+			const apply = () => {
+				const element = document.getElementById(`uno-semantics-${handle}`);
+				if (element) {
+					element.setAttribute('aria-selected', String(selected));
+				}
+			};
+
+			if (document.getElementById(`uno-semantics-${handle}`)) {
+				apply();
+			} else {
+				// A virtualized item is created by a batched mutation; apply once it exists.
+				SemanticElements.scheduleVirtualizedMutation(apply);
+			}
+		}
+
+		/**
+		 * Updates the value of a combobox element: the text of its selected item.
+		 */
+		public static updateComboBoxValue(handle: number, value: string | null): void {
 			const element = document.getElementById(`uno-semantics-${handle}`);
 			if (element) {
-				element.setAttribute('aria-selected', String(selected));
+				SemanticElements.setComboBoxValue(element, value);
+			}
+		}
+
+		// A role="combobox" that is not an <input> takes its value from its text content. The value
+		// is kept in a text node so the element children (e.g. an editable text box) stay untouched.
+		private static setComboBoxValue(element: HTMLElement, value: string | null): void {
+			let textNode: Text | null = null;
+			for (let i = 0; i < element.childNodes.length; i++) {
+				const node = element.childNodes[i];
+				if (node.nodeType === Node.TEXT_NODE) {
+					textNode = node as Text;
+					break;
+				}
+			}
+
+			if (value) {
+				if (textNode) {
+					textNode.data = value;
+				} else {
+					element.insertBefore(document.createTextNode(value), element.firstChild);
+				}
+			} else if (textNode) {
+				textNode.remove();
 			}
 		}
 
