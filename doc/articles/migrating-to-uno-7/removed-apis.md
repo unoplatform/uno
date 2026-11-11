@@ -165,8 +165,6 @@ from `System.Runtime.InteropServices.JavaScript` — the recommended, source-gen
 (thread-safe, CSP-compliant, no `eval`). The string-based `WebAssemblyRuntime.InvokeJS(string)`
 is *not* removed, but it is a legacy eval-based API and is not recommended for new code.
 
-<<<<<<< HEAD
-=======
 ### `WebAssemblyRuntime.InvokeAsync` and `InvokeJSUnmarshalled`
 
 `WebAssemblyRuntime.InvokeAsync` and `WebAssemblyRuntime.InvokeJSUnmarshalled` both
@@ -187,7 +185,6 @@ static partial Task<string> GetTitleAsync();
 var title = await GetTitleAsync();
 ```
 
->>>>>>> origin/master
 ### TypeScript interop marker
 
 `Uno.Foundation.Interop.TSInteropMessageAttribute` and its
