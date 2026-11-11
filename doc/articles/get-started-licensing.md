@@ -37,6 +37,7 @@ If you've already set up **Visual Studio** by following the [Get Started on Visu
    >
    > [!NOTE]
    > If the notification doesn’t appear, access the Studio app by clicking on **Extensions** > **Uno Platform** > **Studio...**.
+   > The notification and this menu item appear once the Dev Server has started. If neither shows up, see [Dev Server troubleshooting](xref:Uno.DevServer#troubleshooting).
    >
    > ![Visual Studio Menu](Assets/uno-settings-vs.png)
 
@@ -58,6 +59,7 @@ If you’ve already set up **Visual Studio Code** by following the [Get Started 
 
    > [!NOTE]
    > If the notification doesn’t appear, access the Studio app by selecting **View** > **Command Palette...** and typing `Uno Platform: Open Studio`.
+   > The notification and this command appear once the Dev Server has started. If neither shows up, see [Dev Server troubleshooting](xref:Uno.DevServer#troubleshooting).
    >
    > ![Visual Studio Code Menu](Assets/uno-settings-vsc.jpeg)
 
@@ -75,6 +77,7 @@ If you’ve already set up **JetBrains Rider** by following the [Get Started on 
 
    > [!NOTE]
    > If the notification doesn’t appear, access the Studio app by selecting **Tools** > **Uno Platform** > **Studio...**.
+   > The notification and this menu item appear once the Dev Server has started. If neither shows up, see [Dev Server troubleshooting](xref:Uno.DevServer#troubleshooting).
    >
    > ![JetBrains Rider Menu](Assets/uno-settings-rider.png)
 
