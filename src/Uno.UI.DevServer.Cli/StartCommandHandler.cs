@@ -36,6 +36,11 @@ internal sealed class StartCommandHandler
 	/// </summary>
 	internal const string SafeModeAddInsValue = ";";
 
+	// The .NET host's CoreHostLibMissingFailure and FrameworkMissingFailure (error_codes.h). Windows only:
+	// elsewhere the host runs through `dotnet` and exit codes are cut to 8 bits.
+	private const int DotnetNotFoundExitCode = unchecked((int)0x80008083);
+	private const int DotnetFrameworkMissingExitCode = unchecked((int)0x80008096);
+
 	private readonly ILogger _logger;
 	private readonly IDevServerLookup _lookup;
 	private readonly Func<int, string, Task<bool>> _rebindIdeChannel;
@@ -341,6 +346,29 @@ internal sealed class StartCommandHandler
 
 		var result = await _spawnProcess(startInfo);
 
+		if (HostDiedWith(result, DotnetNotFoundExitCode))
+		{
+			var (install, variable) = DescribeHostDotnet(hostPath);
+			_logger.LogError(
+				"The DevServer host could not start because it found no {Install} (exit code 0x80008083). " +
+				"If it is installed in a custom folder, set {Variable} to that folder.",
+				install, variable);
+
+			return result.ExitCode;
+		}
+
+		if (HostDiedWith(result, DotnetFrameworkMissingExitCode))
+		{
+			var (_, variable) = DescribeHostDotnet(hostPath);
+			_logger.LogError(
+				"The DevServer host could not start because the .NET runtime it needs is missing (exit code 0x80008096). " +
+				"The host output above names that version and the .NET folder it used: install it there, " +
+				"or set {Variable} to a .NET folder that has it.",
+				variable);
+
+			return result.ExitCode;
+		}
+
 		if (ShouldRetryInSafeMode(result, addins, effectiveParsed.Solution))
 		{
 			_logger.LogWarning(
@@ -373,14 +401,26 @@ internal sealed class StartCommandHandler
 
 	/// <summary>
 	/// A safe-mode retry is worthwhile only when the host process died before becoming
-	/// ready (a startup crash, not a readiness timeout) AND the launch would actually
-	/// have loaded add-ins — either pre-resolved paths or MSBuild discovery via the
-	/// solution. <see cref="SafeModeAddInsValue"/> itself yields zero paths, so a
-	/// safe-mode launch can never trigger a second retry.
+	/// ready (a startup crash, not a readiness timeout), .NET itself did start (no add-in
+	/// is loaded otherwise), AND the launch would actually have loaded add-ins — either
+	/// pre-resolved paths or MSBuild discovery via the solution. <see cref="SafeModeAddInsValue"/>
+	/// itself yields zero paths, so a safe-mode launch can never trigger a second retry.
 	/// </summary>
 	internal static bool ShouldRetryInSafeMode(DirectSpawnResult result, string? addins, string? solution)
 		=> result.Failure == DirectSpawnFailure.DiedBeforeReady
+			&& !HostDiedWith(result, DotnetNotFoundExitCode)
+			&& !HostDiedWith(result, DotnetFrameworkMissingExitCode)
 			&& WouldLoadAddIns(addins, solution);
+
+	private static bool HostDiedWith(DirectSpawnResult result, int exitCode)
+		=> result.Failure == DirectSpawnFailure.DiedBeforeReady && result.HostExitCode == exitCode;
+
+	// The host .exe only runs on .NET of its own architecture (x64 for the shipped one), and reads the matching variable
+	// first: a plain DOTNET_ROOT would also send other apphosts to that folder.
+	private static (string Install, string Variable) DescribeHostDotnet(string hostPath)
+		=> DotnetRootLocator.TryGetArchitecture(hostPath) is { } architecture
+			? ($"{architecture.ToString().ToLowerInvariant()} .NET install", DevServerProcessHelper.GetDotnetRootVariableName(architecture))
+			: (".NET install", "DOTNET_ROOT");
 
 	private static bool WouldLoadAddIns(string? addins, string? solution)
 		=> addins is not null
