@@ -1045,7 +1045,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (!ShouldItemsControlManageChildren)
 			{
-				if (IsItemsHostGeneratingContainers)
+				// Also covers a VirtualizingStackPanel under a Selector, whose layout generates the containers there.
+				if (ItemsPanelRoot is IVirtualizingPanel)
 				{
 					OnGeneratingItemsHostItemsChanged(args);
 				}

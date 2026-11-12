@@ -144,6 +144,49 @@ public class Given_ListBox
 	}
 
 	[TestMethod]
+	public async Task When_ItemsSource_Changes_Then_Containers_Updated()
+	{
+		var source = new System.Collections.ObjectModel.ObservableCollection<string>(Enumerable.Range(0, 100).Select(i => $"Item {i}"));
+		var sut = new ListBox
+		{
+			Width = 200,
+			Height = 200,
+			ItemsSource = source,
+		};
+
+		try
+		{
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+			await WaitForContainer(0, "Item 0", "initial");
+
+			source.Insert(0, "Inserted");
+			await WaitForContainer(0, "Inserted", "after insert");
+			await WaitForContainer(1, "Item 0", "after insert");
+
+			source.RemoveAt(0);
+			await WaitForContainer(0, "Item 0", "after remove");
+
+			source[0] = "Replaced";
+			await WaitForContainer(0, "Replaced", "after replace");
+
+			var shown = sut.ItemsPanelRoot.Children.OfType<ListBoxItem>().Where(c => c.ActualHeight > 0).Select(c => c.Content as string).ToArray();
+			Assert.AreEqual(shown.Length, shown.Distinct().Count(), "An item is shown by more than one container.");
+			Assert.IsTrue(shown.All(source.Contains), $"A container shows a stale item ({string.Join(", ", shown.Except(source))}).");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+
+		async Task WaitForContainer(int index, string content, string step)
+			=> await WindowHelper.WaitFor(
+				() => sut.ContainerFromIndex(index) is ListBoxItem { ActualHeight: > 0 } container && Equals(container.Content, content),
+				timeoutMS: 5000,
+				message: $"{step}: expected the container at {index} to show '{content}', got " +
+					(sut.ContainerFromIndex(index) is ListBoxItem c ? $"'{c.Content}' at height {c.ActualHeight}" : "none"));
+	}
+
+	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/1362")]
 	public async Task When_SelectedIndex_Set_Then_SelectedItems_Updated()
 	{

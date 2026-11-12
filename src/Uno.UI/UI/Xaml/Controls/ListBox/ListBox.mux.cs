@@ -358,18 +358,6 @@ partial class ListBox
 		}
 	}
 
-	// Uno specific: on a virtualizing panel the base doesn't update the containers (ShouldItemsControlManageChildren is
-	// false), so the panel's layout is refreshed instead, like ComboBox does.
-	private protected override void UpdateItems(NotifyCollectionChangedEventArgs args)
-	{
-		base.UpdateItems(args);
-
-		if (VirtualizingPanel is not null)
-		{
-			Refresh();
-		}
-	}
-
 	// Uno specific: replacing ItemsSource clears a multi-selection, as WinUI does, even the items that the new source shares.
 	// Without this, the multi-mode pruning of OnItemsSourceSingleCollectionChanged would keep those.
 	protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
