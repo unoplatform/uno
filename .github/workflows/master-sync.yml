@@ -764,7 +764,7 @@ jobs:
           is_received() {
             git merge-base --is-ancestor "$2" "origin/${RELEASE}" \
               || has_pick "$received" "$2" \
-              || grep -qiE "\((partial )?backport (of )?#$1\)" <<<"$received"
+              || grep -qiE "\\((partial )?backport (of )?#$1\\)" <<<"$received"
           }
 
           PENDING=()
@@ -813,6 +813,31 @@ jobs:
           if [ "$DRY_RUN" = "true" ]; then
             note "would backport ${#PENDING[@]} PR(s) (dry-run)"
             exit 0
+          fi
+
+          # Rebuilding would drop the commits people pushed, and keeping the branch would
+          # land the unwanted picks: stop it from merging and ask for a hand cleanup.
+          if [ -n "$STALE" ] && [ "$HAS_HUMAN_WORK" = "1" ]; then
+            SMARKER="<!-- master-sync-bot:backport-stale -->"
+            pr="$(open_pr "$SYNC_BRANCH")"
+            if [ -n "$pr" ]; then
+              gh pr merge "$pr" --disable-auto >/dev/null 2>&1 || true
+              gh pr ready "$pr" --undo >/dev/null 2>&1 || true
+              gh label create 'sync-failed' --color 'b60205' --description 'Automated master→feature sync could not complete' >/dev/null 2>&1 || true
+              gh pr edit "$pr" --add-label 'sync-failed' >/dev/null 2>&1 || true
+              seen="$(gh pr view "$pr" --json comments --jq "[.comments[] | select(.body | contains(\"$SMARKER\"))] | length" 2>/dev/null || echo 0)"
+              if [ "${seen:-0}" = "0" ]; then
+                gh pr comment "$pr" --body "$(printf '%s\n' "$SMARKER" \
+                  "> [!CAUTION]" \
+                  "> This branch carries picks that are no longer wanted (label removed, or backported another way):${STALE}. It also has commits pushed by hand, so the bot will not rebuild it; this PR is a draft with auto-merge off until it is cleaned up." \
+                  "" \
+                  "Drop those picks from \`${SYNC_BRANCH}\` (e.g. an interactive rebase) and force-push, or delete the branch to let the next run rebuild it without your commits. [Run](${RUN_URL})")" \
+                  >/dev/null 2>&1 || true
+              fi
+            fi
+            echo "::error title=backport needs cleanup::${SYNC_BRANCH} has hand-pushed commits and unwanted picks:${STALE}"
+            note "❌ unwanted picks${STALE} on a branch with hand-pushed commits — PR #${pr:-?} quarantined, clean it up by hand"
+            exit 1
           fi
 
           if [ "$SYNC_EXISTS" = "1" ] && [ -z "$STALE" ] && [ "$HAS_HUMAN_WORK" = "1" ]; then
@@ -941,7 +966,7 @@ jobs:
 
           extra=()
           if [ -n "$STALE" ]; then
-            extra+=("> [!NOTE]" "> **Rebuilt** from \`${RELEASE}\`: the previous branch carried picks no longer wanted (label removed, or backported another way):${STALE}. Commits pushed to it by hand must be redone." "")
+            extra+=("> [!NOTE]" "> **Rebuilt** from \`${RELEASE}\`: the previous branch carried picks no longer wanted (label removed, or backported another way):${STALE}." "")
           fi
           if [ "${#CONFLICTED[@]}" -gt 0 ]; then
             extra+=("### Needs a manual backport (${#CONFLICTED[@]})" "" \
