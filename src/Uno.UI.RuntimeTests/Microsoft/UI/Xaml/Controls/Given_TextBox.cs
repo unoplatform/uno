@@ -1289,5 +1289,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			return (lowestTextRow, highestSquiggleRow);
 		}
+
+		[TestMethod]
+		public async Task When_XBind_TwoWay_PropertyChanged_ViewModel_Nulled()
+		{
+			var page = new TextBox_XBind_TwoWay_Null_ViewModel();
+
+			WindowHelper.WindowContent = page;
+			await WindowHelper.WaitForLoaded(page);
+
+			var viewModel = page.ViewModel;
+			Assert.IsNotNull(viewModel);
+
+			page.TextBox.Text = "Something";
+			Assert.AreEqual("Something", viewModel.Text);
+
+			page.ViewModel = null;
+			page.UpdateBindings();
+
+			page.TextBox.Text = "Something else";
+
+			Assert.AreEqual("Something else", page.TextBox.Text);
+			Assert.AreEqual("Something", viewModel.Text, "The detached ViewModel must not receive updates.");
+		}
 	}
 }
