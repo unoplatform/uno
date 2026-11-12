@@ -549,6 +549,18 @@ namespace Uno.Analyzers.Tests
 		public Task When_UnoUI_Consumer_Symbol_Stub(Consumer consumer, bool expected)
 			=> VerifyStubAsync(consumer, "Uno.UI", ["__ANDROID__"], expected);
 
+		// A Uno.UI member implemented on WebAssembly only, such as WebView2.Close().
+		[TestMethod]
+		[DataRow(Consumer.DesktopExe, true)]
+		[DataRow(Consumer.DesktopLibrary, true)]
+		[DataRow(Consumer.WasmExe, false)]
+		[DataRow(Consumer.AndroidLibrary, true)]
+		[DataRow(Consumer.IOSLibrary, true)]
+		[DataRow(Consumer.TvOSLibrary, true)]
+		[DataRow(Consumer.NetLibrary, false)]
+		public Task When_UnoUI_Stub_Is_Implemented_On_Wasm_Only(Consumer consumer, bool expected)
+			=> VerifyStubAsync(consumer, "Uno.UI", ["__DESKTOP__", "__ANDROID__", "__APPLE_UIKIT__"], expected);
+
 		[TestMethod]
 		[DataRow(Consumer.DesktopExe, true)]
 		[DataRow(Consumer.DesktopLibrary, true)]

@@ -127,6 +127,9 @@ public partial class WebView2 : Control, IWebView
 	/// Targets whose web view can't release its browser yet report this method as not implemented once the web view exists,
 	/// and the control keeps working.
 	/// </remarks>
+	// Uno.UI is a single build, so the analyzer matches these against the app's own symbols: every target but
+	// WebAssembly, whose web view is the only one implementing ISupportsClose.
+	[global::Uno.NotImplemented("__DESKTOP__", "__ANDROID__", "__APPLE_UIKIT__")]
 	public void Close()
 	{
 		if (_coreWebView2 is not { } coreWebView2)
