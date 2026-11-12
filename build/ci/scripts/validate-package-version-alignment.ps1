@@ -1,63 +1,105 @@
 #!/usr/bin/env pwsh
 <#
 .SYNOPSIS
-    Fails when a package version written by hand outside src/Directory.Packages.props drifts from
-    the version Uno is built against.
+    Fails when a package version written by hand drifts from the version Uno is built against.
 
 .DESCRIPTION
     Several files repeat the versions of Uno's dependencies, and a version bump must change all of
-    them together:
+    them together. The source of truth (-Source) holds the versions Uno is built against. Each entry
+    of -Files says how to read one or more other files (Kind):
 
-      - src/Directory.Packages.props: the versions Uno is built against (the source of truth).
-      - build/nuget/*.nuspec: the dependency floors of the packed Uno packages. An app resolves
-        these floors, so a floor below the build version gives the app an older package than the
-        one Uno was compiled against.
-      - src/Uno.Sdk/packages.json: the Uno.Sdk.Private manifest, which pins the packages the
-        Uno.Sdk references directly. A pin below a nuspec floor fails the app's restore (NU1605).
-      - build/**: CI scripts passing -p:SkiaSharpVersion=... explicitly.
+      - NuspecFloor: dependency floors of the packed Uno packages (build/nuget/*.nuspec). An app
+        resolves these floors, so a floor below the build version gives the app an older package
+        than the one Uno was compiled against, and .NET fails to load it at runtime.
+      - SdkManifest: Uno.Sdk manifests (packages.json), which pin the packages the Uno.Sdk
+        references directly. A pin below a nuspec floor fails the app's restore (NU1605).
+      - MSBuildArgs: CI scripts passing -p:SkiaSharpVersion=... (or /p:, -property:) explicitly.
 
     Checks:
-      1. Every nuspec dependency on a package Uno is built against declares that same version
-         (except the documented $KnownFloorExceptions).
-      2. Every Uno.Sdk.Private manifest pin is at or above the nuspec floor of the same package.
-      3. SkiaSharp and HarfBuzzSharp match exactly everywhere: Directory.Packages.props uses the
-         shared property, and the nuspecs, the manifest and CI scripts use its value. SkiaSharp
-         checks its native library at startup, and an app whose managed SkiaSharp and native
-         libSkiaSharp differ fails with "The version of the native libSkiaSharp library (...) is
-         incompatible with this version of SkiaSharp".
+      1. Every nuspec dependency on a package in -Source declares that same version (except the
+         -FloorExceptions).
+      2. Every manifest pin is at or above the nuspec floor of the same package. A floor in a
+         <group targetFramework="net11.0..."> is compared with the manifest net11.0 override when
+         there is one, otherwise with the base version.
+      3. SkiaSharp and HarfBuzzSharp match exactly everywhere: -Source uses the shared property,
+         and the nuspecs, the manifests and CI scripts use its value. SkiaSharp checks its native
+         library at startup, and an app whose managed SkiaSharp and native libSkiaSharp differ fails
+         with "The version of the native libSkiaSharp library (...) is incompatible with this
+         version of SkiaSharp".
 
     Unlike validate-packages-json.ps1, this check needs no network and fails on every branch.
 
 .PARAMETER RepoRoot
     Repository root. Defaults to three levels above this script.
+
+.PARAMETER Source
+    The file holding the versions Uno is built against, relative to RepoRoot.
+
+.PARAMETER Files
+    The files to check against Source: an array of @{ Path = '<path>'; Kind = '<kind>' }, where Path
+    is relative to RepoRoot ('dir/file', 'dir/*.ext' or 'dir/**/*.ext') and Kind is NuspecFloor,
+    SdkManifest or MSBuildArgs. Defaults to the files of the uno repository. A Path that matches no
+    file fails the check, except an MSBuildArgs wildcard (a repository may have no script of a type).
+
+.PARAMETER FloorExceptions
+    Nuspec floors allowed below the build version: @{ '<package id>' = '<allowed floor>' }. Keep it
+    empty when possible: .NET binds by assembly version, so an app that resolves a floor below the
+    version Uno is built against fails to load it, even when the API it uses exists (see
+    https://github.com/unoplatform/uno/issues/26332). An entry needs a tracking issue.
 #>
 param(
-    [string]$RepoRoot = (Join-Path $PSScriptRoot '../../..')
+    [string]$RepoRoot = (Join-Path $PSScriptRoot '../../..'),
+    [string]$Source = 'src/Directory.Packages.props',
+    [object[]]$Files = @(
+        @{ Path = 'build/nuget/*.nuspec';      Kind = 'NuspecFloor' }
+        @{ Path = 'src/Uno.Sdk/packages.json'; Kind = 'SdkManifest' }
+        @{ Path = 'build/**/*.yml';            Kind = 'MSBuildArgs' }
+        @{ Path = 'build/**/*.ps1';            Kind = 'MSBuildArgs' }
+        @{ Path = 'build/**/*.sh';             Kind = 'MSBuildArgs' }
+        @{ Path = 'build/**/*.props';          Kind = 'MSBuildArgs' }
+        @{ Path = 'build/**/*.targets';        Kind = 'MSBuildArgs' }
+    ),
+    [hashtable]$FloorExceptions = @{}
 )
 
 $ErrorActionPreference = 'Stop'
 $RepoRoot = (Resolve-Path $RepoRoot).Path
 
 # Package families whose managed and native packages must have the exact same version everywhere.
-# Prefix = package id prefix; Property = the Directory.Packages.props property holding the version.
+# Prefix = package id prefix; Property = the -Source property holding the version.
 # Note: PowerShell variable names are case-insensitive, so no other variable may be named $families.
 $Families = @(
     @{ Prefix = 'SkiaSharp';     Property = 'SkiaSharpVersion' }
     @{ Prefix = 'HarfBuzzSharp'; Property = 'HarfbuzzSharpVersion' }
 )
 
-# Nuspec floors allowed below the build version: package id = the allowed floor. Keep this empty
-# when possible. .NET binds by assembly version, so an app that resolves a floor below the version
-# Uno is built against fails to load it at runtime, even when the API it uses exists (see
-# https://github.com/unoplatform/uno/issues/26332 for Svg.Skia 3.0.6 vs 5.2.3). An entry needs a
-# comment with the reason and a tracking issue.
-$KnownFloorExceptions = @{}
+$Kinds = @('NuspecFloor', 'SdkManifest', 'MSBuildArgs')
 
 $errors = [System.Collections.Generic.List[string]]::new()
 $checked = 0
 
 function Get-RelativePath([string]$Path) {
     [System.IO.Path]::GetRelativePath($RepoRoot, $Path).Replace('\', '/')
+}
+
+# Resolves 'dir/file', 'dir/*.ext' or 'dir/**/*.ext' (relative to RepoRoot) to files.
+function Resolve-FilePattern([string]$Pattern) {
+    $segments = $Pattern.Replace('\', '/').Trim('/') -split '/'
+    $first = -1
+    for ($i = 0; $i -lt $segments.Count; $i++) { if ($segments[$i] -match '[*?]') { $first = $i; break } }
+    if ($first -lt 0) {
+        $file = Join-Path $RepoRoot ($segments -join '/')
+        return @(if (Test-Path $file -PathType Leaf) { Get-Item $file })
+    }
+    $base = if ($first -eq 0) { $RepoRoot } else { Join-Path $RepoRoot ($segments[0..($first - 1)] -join '/') }
+    $rest = $segments[$first..($segments.Count - 1)]
+    $leaf = $rest[-1]
+    if ($rest.Count -eq 2 -and $rest[0] -eq '**') { $recurse = $true }
+    elseif ($rest.Count -eq 1) { $recurse = $false }
+    else { throw "Unsupported path '$Pattern' in -Files: use 'dir/file', 'dir/*.ext' or 'dir/**/*.ext'." }
+    if (-not (Test-Path $base -PathType Container)) { return @() }
+    # -like is case-insensitive on every OS, unlike -Filter.
+    @(Get-ChildItem -Path $base -File -Recurse:$recurse | Where-Object { $_.Name -like $leaf })
 }
 
 # A nuspec dependency version can be a range ("[1.0]", "[1.0,2.0)"): use its lower bound.
@@ -127,9 +169,30 @@ function Get-XmlElements([string]$Text, [string]$Element) {
     }
 }
 
-# --- Source of truth: src/Directory.Packages.props ---------------------------------------------
-$propsPath = Join-Path $RepoRoot 'src/Directory.Packages.props'
-if (-not (Test-Path $propsPath)) { throw "Not found: $propsPath" }
+# --- Files to check ------------------------------------------------------------------------------
+$filesByKind = @{}
+foreach ($k in $Kinds) { $filesByKind[$k] = [System.Collections.Generic.List[System.IO.FileInfo]]::new() }
+foreach ($entry in $Files) {
+    $path = $entry.Path; $kind = $entry.Kind
+    if (-not $path -or -not $kind) { throw "Each -Files entry needs a Path and a Kind: @{ Path = 'dir/*.ext'; Kind = 'NuspecFloor' }." }
+    if ($Kinds -notcontains $kind) { throw "Unknown Kind '$kind' for '$path' in -Files: use $($Kinds -join ', ')." }
+    $found = Resolve-FilePattern $path
+    if ($found.Count -eq 0) {
+        # A repository may have no script of a given type, but a missing nuspec, manifest or named
+        # file is most likely a typo in -Files, which would leave versions unchecked.
+        if ($kind -eq 'MSBuildArgs' -and $path -match '[*?]') { Write-Host "Note: '$path' ($kind) matches no file."; continue }
+        $errors.Add("-Files: '$path' ($kind) matches no file.")
+        continue
+    }
+    foreach ($f in $found) {
+        if (-not ($filesByKind[$kind] | Where-Object { $_.FullName -eq $f.FullName })) { $filesByKind[$kind].Add($f) }
+    }
+}
+
+# --- Source of truth --------------------------------------------------------------------------------
+$propsPath = Join-Path $RepoRoot $Source
+if (-not (Test-Path $propsPath -PathType Leaf)) { throw "-Source not found: $propsPath" }
+$sourceName = Get-RelativePath $propsPath
 $propsText = (Get-Content $propsPath -Raw) -replace "`r`n", "`n"
 
 $properties = @{}
@@ -150,7 +213,7 @@ foreach ($e in Get-XmlElements $propsText 'PackageVersion') {
     $raw = $e.Attributes['version']
     if (-not $id -or -not $raw) {
         # Fail loudly rather than leave a pin unchecked.
-        $errors.Add("src/Directory.Packages.props:$($e.Line): can't read the package id and Version of $($e.Text). Write it as <PackageVersion Include=`"Id`" Version=`"x`" />.")
+        $errors.Add("${sourceName}:$($e.Line): can't read the package id and Version of $($e.Text). Write it as <PackageVersion Include=`"Id`" Version=`"x`" />.")
         continue
     }
     $pin = @{ Id = $id; Version = (Resolve-Properties $raw); Raw = $raw; Line = $e.Line; Overrides = [System.Collections.Generic.List[object]]::new() }
@@ -163,26 +226,25 @@ foreach ($u in $updates) {
 }
 
 foreach ($family in $Families) {
-    if (-not $properties.ContainsKey($family.Property)) { throw "<$($family.Property)> not found in src/Directory.Packages.props." }
+    if (-not $properties.ContainsKey($family.Property)) { throw "<$($family.Property)> not found in $sourceName." }
     $family.Version = $properties[$family.Property]
     Write-Host "$($family.Prefix)*: $($family.Version) (`$($($family.Property)))"
 }
 
-# --- 3a. Families use their shared property in Directory.Packages.props -----------------------
+# --- 3a. Families use their shared property in the source of truth ------------------------------
 foreach ($pin in @($corePins.Values) + @($updates)) {
     $family = Get-Family $pin.Id
     if ($family) {
         $checked++
         if ($pin.Raw -ne "`$($($family.Property))") {
-            $errors.Add("src/Directory.Packages.props:$($pin.Line): $($pin.Id) uses '$($pin.Raw)'; use `$($($family.Property)) so it moves with the other $($family.Prefix) packages.")
+            $errors.Add("${sourceName}:$($pin.Line): $($pin.Id) uses '$($pin.Raw)'; use `$($($family.Property)) so it moves with the other $($family.Prefix) packages.")
         }
     }
 }
 
-# --- 1. Nuspec floors match the build version -----------------------------------------------------
+# --- 1. Nuspec floors match the build version (Kind NuspecFloor) -------------------------------------
 $nuspecFloors = @{}   # package id (lower) -> list of @{ Version; Where; Tfm }
-$nuspecs = Get-ChildItem -Path (Join-Path $RepoRoot 'build/nuget') -Filter '*.nuspec' -File -ErrorAction SilentlyContinue
-foreach ($nuspec in $nuspecs) {
+foreach ($nuspec in $filesByKind['NuspecFloor']) {
     $text = (Get-Content $nuspec.FullName -Raw) -replace "`r`n", "`n"
     # <group targetFramework="..."> spans, so each floor knows the framework it applies to.
     $tfmGroups = @([regex]::Matches((Remove-XmlComments $text), '<group\b([^>]*)>(.*?)</group>', 'Singleline, IgnoreCase') | ForEach-Object {
@@ -204,16 +266,16 @@ foreach ($nuspec in $nuspecs) {
         $checked++
         $allowed = @($pin.Version) + @($pin.Overrides | ForEach-Object { $_.Version })
         if ($allowed -contains $version) { continue }
-        if ($KnownFloorExceptions.ContainsKey($pin.Id) -and $KnownFloorExceptions[$pin.Id] -eq $version) { continue }
+        if ($FloorExceptions.ContainsKey($pin.Id) -and $FloorExceptions[$pin.Id] -eq $version) { continue }
         $hint = if (Get-Family $id) { ' An app whose managed and native versions differ fails at startup.' } else { '' }
-        $errors.Add("${where}: $id is $version; Uno is built against $($pin.Version) (src/Directory.Packages.props:$($pin.Line)).$hint")
+        $errors.Add("${where}: $id is $version; Uno is built against $($pin.Version) (${sourceName}:$($pin.Line)).$hint")
     }
 }
 
-# --- 2 + 3b. Uno.Sdk.Private manifest ---------------------------------------------------------
-$manifestPath = Join-Path $RepoRoot 'src/Uno.Sdk/packages.json'
-if (Test-Path $manifestPath) {
-    $groups = Get-Content $manifestPath -Raw | ConvertFrom-Json
+# --- 2 + 3b. Uno.Sdk manifests (Kind SdkManifest) --------------------------------------------------
+foreach ($manifest in $filesByKind['SdkManifest']) {
+    $manifestName = Get-RelativePath $manifest.FullName
+    $groups = Get-Content $manifest.FullName -Raw | ConvertFrom-Json
     foreach ($group in $groups) {
         if ($group.version -notmatch '^\d') { continue }   # placeholders such as DefaultUnoVersion
         $pins = @(@{ Name = 'version'; Value = $group.version; Tfm = $null })
@@ -227,7 +289,7 @@ if (Test-Path $manifestPath) {
             foreach ($p in $pins) {
                 $checked++
                 if ($p.Value -ne $family.Version) {
-                    $errors.Add("src/Uno.Sdk/packages.json: group '$($group.group)' $($p.Name) is $($p.Value); expected $($family.Version) (`$($($family.Property))).")
+                    $errors.Add("${manifestName}: group '$($group.group)' $($p.Name) is $($p.Value); expected $($family.Version) (`$($($family.Property)) in $sourceName).")
                 }
             }
         }
@@ -247,23 +309,18 @@ if (Test-Path $manifestPath) {
                 }
                 foreach ($p in $applicable) {
                     $checked++
-                    if ((Compare-PackageVersion $p.Value $floor.Version "src/Uno.Sdk/packages.json group '$($group.group)' vs $($floor.Where)") -lt 0) {
-                        $errors.Add("src/Uno.Sdk/packages.json: group '$($group.group)' $($p.Name) $($p.Value) is below the $package floor $($floor.Version) in $($floor.Where); apps would fail to restore (NU1605).")
+                    if ((Compare-PackageVersion $p.Value $floor.Version "$manifestName group '$($group.group)' vs $($floor.Where)") -lt 0) {
+                        $errors.Add("${manifestName}: group '$($group.group)' $($p.Name) $($p.Value) is below the $package floor $($floor.Version) in $($floor.Where); apps would fail to restore (NU1605).")
                     }
                 }
             }
         }
     }
 }
-else {
-    Write-Host "Skipped: src/Uno.Sdk/packages.json not found."
-}
 
-# --- 3c. CI and build scripts passing the version explicitly (-p:, /p:, -property:, --property:) ---
+# --- 3c. CI and build scripts passing the version explicitly (Kind MSBuildArgs) --------------------
 $self = (Resolve-Path $PSCommandPath).Path
-$scripts = Get-ChildItem -Path (Join-Path $RepoRoot 'build') -Recurse -File -Include '*.yml', '*.yaml', '*.ps1', '*.sh', '*.props', '*.targets' |
-    Where-Object { $_.FullName -ne $self }
-foreach ($script in $scripts) {
+foreach ($script in ($filesByKind['MSBuildArgs'] | Where-Object { $_.FullName -ne $self })) {
     $lines = Get-Content $script.FullName
     for ($i = 0; $i -lt $lines.Count; $i++) {
         foreach ($family in $Families) {
@@ -278,7 +335,8 @@ foreach ($script in $scripts) {
     }
 }
 
-Write-Host "Checked $checked version references against src/Directory.Packages.props."
+$counts = ($Kinds | ForEach-Object { "$($filesByKind[$_].Count) $_" }) -join ', '
+Write-Host "Checked $checked version references against $sourceName ($counts files)."
 
 if ($errors.Count -gt 0) {
     Write-Host ""
@@ -288,7 +346,7 @@ if ($errors.Count -gt 0) {
         if ($env:TF_BUILD) { Write-Host "##vso[task.logissue type=error]$e" }
     }
     Write-Host ""
-    Write-Host "When you change a version in src/Directory.Packages.props, update the nuspecs in build/nuget and src/Uno.Sdk/packages.json in the same change." -ForegroundColor Yellow
+    Write-Host "When you change a version in $sourceName, update the nuspecs and the Uno.Sdk manifests in the same change." -ForegroundColor Yellow
     exit 1
 }
 
