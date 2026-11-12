@@ -93,7 +93,7 @@
 	},
 	{
 		"group": "SkiaSharp",
-		"version": "4.151.1",
+		"version": "4.156.0",
 		"packages": [
 			"SkiaSharp.Skottie",
 			"SkiaSharp.Views.WinUI",
@@ -108,7 +108,7 @@
 	},
 	{
 		"group": "HarfBuzzSharp",
-		"version": "14.4.0",
+		"version": "14.4.0.100",
 		"packages": [
 			"HarfBuzzSharp.NativeAssets.Android",
 			"HarfBuzzSharp.NativeAssets.iOS",
