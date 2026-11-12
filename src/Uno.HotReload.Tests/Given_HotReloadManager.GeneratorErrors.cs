@@ -1,9 +1,11 @@
 using System.Collections.Immutable;
 using AwesomeAssertions;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Text;
 using Uno.HotReload.Diffing;
+using Uno.HotReload.Roslyn;
 using Uno.HotReload.Tests.TestUtils;
 using Uno.HotReload.Tracking;
 
@@ -151,6 +153,35 @@ public sealed class Given_HotReloadManager_GeneratorErrors
 	}
 
 	[TestMethod]
+	[Description(
+		"Spec 061 R5: a reload blocked by a XAML generator error is also followed by the language-version hint, " +
+		"since that error can come from code-behind the embedded compiler cannot parse (an unresolved x:Bind member).")]
+	public async Task When_XamlErrorInProjectOnNewerCSharp_Then_BlockedLineIsFollowedByHint()
+	{
+		using var temp = new TempDirectory();
+		var netMajor = EmbeddedRoslyn.MaxCSharpVersion + 1 - 4;
+		// A ref-pack path, so the project resolves a target framework whose default C# is above the embedded maximum.
+		var refPath = Path.Join(temp.Path, "dotnet", "packs", "Microsoft.NETCore.App.Ref", $"{netMajor}.0.0", "ref", $"net{netMajor}.0", "System.Runtime.dll");
+		Directory.CreateDirectory(Path.GetDirectoryName(refPath)!);
+		File.Copy(typeof(object).Assembly.Location, refPath);
+
+		using var scenario = new Scenario((solution, projectId) => solution
+			.WithProjectParseOptions(projectId, new CSharpParseOptions(LanguageVersion.Default))
+			.WithProjectMetadataReferences(projectId, [MetadataReference.CreateFromFile(refPath)]));
+		scenario.Set(Xaml, BrokenXaml);
+
+		await scenario.Edit(Xaml);
+
+		scenario.LastResult.Should().Be(HotReloadOperationResult.Failed);
+		scenario.EmitCount.Should().Be(0);
+		scenario.LastUpdate.Diagnostics.Select(d => d.Id).Should().BeEquivalentTo(["UXAML0001", "UNOHR0002"]);
+		var outputs = scenario.Harness.Reporter.Outputs.ToList();
+		var blocked = outputs.FindIndex(o => o.Contains("blocked by 1 source generator error(s)", StringComparison.Ordinal));
+		blocked.Should().BeGreaterThanOrEqualTo(0);
+		outputs.Skip(blocked + 1).Should().ContainSingle(o => o.Contains($"defaults to C# {netMajor + 4}.0", StringComparison.Ordinal));
+	}
+
+	[TestMethod]
 	[Description("#25527: once the XAML is fixed, the next pass applies normally.")]
 	public async Task When_XamlErrorFixed_Then_EditApplies()
 	{
@@ -178,11 +209,13 @@ public sealed class Given_HotReloadManager_GeneratorErrors
 			[Xaml] = ValidXaml,
 			[Resw] = ValidResw,
 		};
+		private readonly Func<Solution, ProjectId, Solution>? _configure;
 		private int _emitCount;
 		private int _pass;
 
-		public Scenario()
+		public Scenario(Func<Solution, ProjectId, Solution>? configure = null)
 		{
+			_configure = configure;
 			Harness = new HotReloadManagerHarness(
 				_ =>
 				{
@@ -216,6 +249,7 @@ public sealed class Given_HotReloadManager_GeneratorErrors
 				.AddDocument(DocumentId.CreateNewId(appId), "MainPage.xaml.cs", $"public partial class MainPage {{ public int Pass => {++_pass}; }}", filePath: CodeBehind)
 				.AddAdditionalDocument(DocumentId.CreateNewId(appId), "MainPage.xaml", SourceText.From(_content[Xaml]), filePath: Xaml)
 				.AddAdditionalDocument(DocumentId.CreateNewId(appId), "Resources.resw", SourceText.From(_content[Resw]), filePath: Resw);
+			solution = _configure?.Invoke(solution, appId) ?? solution;
 
 			return new SolutionUpdateResult(solution, ChangeSet.IgnoreAll([]));
 		}
