@@ -130,6 +130,15 @@
 				BrowserInvisibleTextBoxViewExtension.interopQueue.then(work).catch(() => { });
 		}
 
+		// Resolves once the UI thread has applied every queued notification, including those a notification queues.
+		public static async whenInteropIdle(): Promise<void> {
+			let tail: Promise<any>;
+			do {
+				tail = BrowserInvisibleTextBoxViewExtension.interopQueue;
+				await tail;
+			} while (tail !== BrowserInvisibleTextBoxViewExtension.interopQueue);
+		}
+
 		private static selectionOf(input: HTMLInputElement | HTMLTextAreaElement): [number, number] {
 			const backward = input.selectionDirection == "backward";
 			const start = backward ? input.selectionEnd : input.selectionStart;
