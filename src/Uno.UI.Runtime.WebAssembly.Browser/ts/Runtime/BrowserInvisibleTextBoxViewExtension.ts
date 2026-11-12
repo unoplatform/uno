@@ -487,11 +487,13 @@
 				// A key press starts here, and the line break that may follow belongs to this keydown.
 				// Whatever an earlier press of the same key left behind is over. The keydown of another key
 				// leaves an Enter that is still down alone. A keydown without a code may be a soft
-				// keyboard's Enter, so it counts as a press of it.
+				// keyboard's Enter, so it counts as a press of it, unless it names another key.
 				const enterCode = BrowserInvisibleTextBoxViewExtension.enterCodeOf(ev);
 				BrowserInvisibleTextBoxViewExtension.lastKeyDownEnterCode = enterCode;
 				BrowserInvisibleTextBoxViewExtension.lastKeyDownNamedEnter = false;
-				const isOtherKey = ev.code !== "" && ev.code !== "Unidentified" && enterCode === ""
+				const hasCode = ev.code !== "" && ev.code !== "Unidentified";
+				const namesKey = ev.key !== "" && ev.key !== "Unidentified" && ev.key !== "Process";
+				const isOtherKey = (hasCode || namesKey) && enterCode === ""
 					&& ev.key !== "Enter" && ev.keyCode !== 13;
 				if (!isOtherKey) {
 					BrowserInvisibleTextBoxViewExtension.enterKeyDowns.delete(enterCode);

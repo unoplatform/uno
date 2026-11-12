@@ -154,6 +154,35 @@ public partial class Given_TextBox
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25173")]
+	public async Task When_SoftKeyboard_Key_Goes_Down_Before_Enter_Named_On_Release_After_Line_Break_Is_Released()
+	{
+		using var _ = UITestHelper.ResetWindowContent();
+
+		var SUT = await LoadFocusedTextBox("abc");
+		var keys = TrackEnterKey(SUT);
+
+		DispatchKeyDown("Unidentified", code: "", keyCode: 229);
+		DispatchBeforeInput("insertLineBreak");
+		try
+		{
+			// A soft keyboard's key without a code that names another key is not a press of Enter either.
+			DispatchKeyDown("Backspace", code: "", keyCode: 8);
+			DispatchKeyUp("Enter", code: "", keyCode: 13);
+			await WindowHelper.WaitForIdle();
+
+			CollectionAssert.AreEqual(new[] { "down", "up" }, keys);
+		}
+		finally
+		{
+			DispatchKeyUp("Backspace", code: "", keyCode: 8);
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25173")]
 	[DataRow("Enter", 13, true, DisplayName = "Enter named on its press")]
 	[DataRow("Process", 229, false, DisplayName = "Enter named on its release only")]
 	public async Task When_Hardware_Keyboard_Enter_Follows_Line_Break_Without_Key_Events(string keyOnPress, int keyCodeOnPress, bool lineBreakFollows)
