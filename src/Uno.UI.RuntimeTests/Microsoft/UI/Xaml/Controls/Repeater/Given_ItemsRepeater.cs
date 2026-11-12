@@ -1356,6 +1356,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			}
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Custom_ElementFactory_Delegates_To_DataTemplate_Then_Items_Are_Realized()
+		{
+			var template = (DataTemplate)XamlReader.Load("""
+				<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+					<TextBlock Text="{Binding}" />
+				</DataTemplate>
+				""");
+			var items = new[] { "Item_0", "Item_1", "Item_2" };
+			var sut = new ItemsRepeater
+			{
+				ItemsSource = items,
+				ItemTemplate = new DelegatingElementFactory(template),
+			};
+
+			TestServices.WindowHelper.WindowContent = sut;
+			try
+			{
+				await TestServices.WindowHelper.WaitForLoaded(sut);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var texts = Enumerable.Range(0, items.Length).Select(i => (sut.TryGetElement(i) as TextBlock)?.Text).ToArray();
+				CollectionAssert.AreEqual(items, texts, $"Realized: [{string.Join(", ", texts)}]");
+
+				sut.ItemsSource = new[] { "Other" };
+
+				await TestHelper.RetryAssert(() =>
+				{
+					var element = sut.TryGetElement(0) as TextBlock;
+					Assert.AreEqual("Other", element?.Text, $"Element 0: {element?.GetType().Name ?? "<none>"}, DataContext '{element?.DataContext}'");
+				});
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		// A factory that hands each call to a DataTemplate, through DataTemplate's own IElementFactory implementation.
+		private sealed partial class DelegatingElementFactory(DataTemplate template) : global::Microsoft.UI.Xaml.IElementFactory
+		{
+			public UIElement GetElement(global::Microsoft.UI.Xaml.ElementFactoryGetArgs args) => template.GetElement(args);
+
+			public void RecycleElement(global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs args) => template.RecycleElement(args);
+		}
+
 		private sealed partial class RecordingElementFactory : global::Microsoft.UI.Xaml.IElementFactory
 		{
 			private readonly Func<object?, UIElement> _create;
