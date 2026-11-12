@@ -1407,6 +1407,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_NonVirtualizing_Layout_Resets_Then_Custom_ElementFactory_Recycles_Without_Parent()
+		{
+			var factory = new RecordingElementFactory();
+			var items = new[] { "Item_0", "Item_1", "Item_2" };
+			var sut = new ItemsRepeater
+			{
+				Layout = new StackNonVirtualizingLayout(),
+				ItemsSource = items,
+				ItemTemplate = factory,
+			};
+
+			TestServices.WindowHelper.WindowContent = sut;
+			try
+			{
+				await TestServices.WindowHelper.WaitForLoaded(sut);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var realized = Enumerable.Range(0, items.Length).Select(i => sut.TryGetElement(i)).ToArray();
+				var texts = realized.Select(e => (e as TextBlock)?.Text).ToArray();
+				CollectionAssert.AreEqual(items, texts, $"Realized: [{string.Join(", ", texts)}]");
+
+				// A non-virtualizing layout clears every element and then empties Children, so the repeater
+				// recycles without an owner: Parent is null, so the factory doesn't hand the elements back to it.
+				sut.ItemsSource = new[] { "Other" };
+
+				await TestHelper.RetryAssert(() =>
+				{
+					foreach (var element in realized)
+					{
+						var calls = factory.RecycleCalls.Where(c => ReferenceEquals(c.Element, element)).ToArray();
+						Assert.AreEqual(1, calls.Length, $"'{(element as TextBlock)?.Text}' should be recycled exactly once.");
+						Assert.IsNull(calls[0].Parent, $"'{(element as TextBlock)?.Text}' should be recycled without a Parent, got {calls[0].Parent?.GetType().Name}.");
+					}
+					Assert.AreEqual("Other", (sut.TryGetElement(0) as TextBlock)?.Text);
+				});
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_ItemsView_ItemTemplate_Is_Custom_ElementFactory_Then_Items_Are_Realized()
 		{
 			var sut = new ItemsView
@@ -1550,6 +1594,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			}
 		}
 
+		// WinUI throws "ItemTemplate cannot be changed during layout" here. Uno's dynamic template update
+		// (ItemsRepeater.Templates.cs) swaps the new template in during layout, through its own copy of
+		// the template resolution.
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ItemTemplate_Set_To_Custom_ElementFactory_During_Layout_Then_It_Realizes_The_Next_Items()
+		{
+			var template = (DataTemplate)XamlReader.Load("""
+				<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+					<Border>
+						<TextBlock Text="{Binding}" />
+					</Border>
+				</DataTemplate>
+				""");
+			var factory = new RecordingElementFactory();
+			var sut = new ItemsRepeater
+			{
+				ItemsSource = new[] { "Item_0", "Item_1", "Item_2" },
+				ItemTemplate = template,
+			};
+
+			// ElementPrepared is raised from the measure pass, while the layout is in progress.
+			void OnElementPrepared(ItemsRepeater sender, ItemsRepeaterElementPreparedEventArgs args)
+			{
+				sut.ElementPrepared -= OnElementPrepared;
+				sut.ItemTemplate = factory;
+			}
+			sut.ElementPrepared += OnElementPrepared;
+
+			TestServices.WindowHelper.WindowContent = sut;
+			try
+			{
+				await TestServices.WindowHelper.WaitForLoaded(sut);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.AreSame(factory, sut.ItemTemplate);
+				var requested = factory.GetCalls.Select(c => c.Data).ToArray();
+				CollectionAssert.IsSubsetOf(new[] { "Item_1", "Item_2" }, requested, $"GetElement Data: [{string.Join(", ", requested)}]");
+
+				sut.ItemsSource = new[] { "Other" };
+
+				await TestHelper.RetryAssert(() => Assert.AreEqual("Other", (sut.TryGetElement(0) as TextBlock)?.Text));
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
 		// An IElementFactoryShim that isn't an ElementFactory, so it reaches the controls through ElementFactoryShimAdapter.
 		private sealed class RecordingElementFactoryShim : IElementFactoryShim
 		{
@@ -1567,6 +1660,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 				=> RecycleCalls.Add(args.Element);
 		}
 #endif
+
+		// A vertical stack. The MUX tests' NonVirtualStackLayout is a *.mux.cs file, which the WinUI head doesn't compile.
+		private sealed partial class StackNonVirtualizingLayout : NonVirtualizingLayout
+		{
+#if HAS_UNO
+			protected internal override Size MeasureOverride(NonVirtualizingLayoutContext context, Size availableSize)
+#else
+			protected override Size MeasureOverride(NonVirtualizingLayoutContext context, Size availableSize)
+#endif
+			{
+				double width = 0, height = 0;
+				foreach (var element in context.Children)
+				{
+					element.Measure(availableSize);
+					width = Math.Max(width, element.DesiredSize.Width);
+					height += element.DesiredSize.Height;
+				}
+
+				return new Size(width, height);
+			}
+
+#if HAS_UNO
+			protected internal override Size ArrangeOverride(NonVirtualizingLayoutContext context, Size finalSize)
+#else
+			protected override Size ArrangeOverride(NonVirtualizingLayoutContext context, Size finalSize)
+#endif
+			{
+				double offset = 0;
+				foreach (var element in context.Children)
+				{
+					element.Arrange(new Rect(0, offset, element.DesiredSize.Width, element.DesiredSize.Height));
+					offset += element.DesiredSize.Height;
+				}
+
+				return finalSize;
+			}
+		}
 
 		// A factory that hands each call to a DataTemplate, through DataTemplate's own IElementFactory implementation.
 		private sealed partial class DelegatingElementFactory(DataTemplate template) : global::Microsoft.UI.Xaml.IElementFactory
