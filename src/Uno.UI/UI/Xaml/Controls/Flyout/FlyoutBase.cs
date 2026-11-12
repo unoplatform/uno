@@ -1252,12 +1252,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						horizontalOffset = availableWindowRect.X + availableWindowRect.Width - presenterSize.Width;
 					}
 				}
-				else if (horizontalOffset < availableWindowRect.X)
+				else if (isRightToLeft && horizontalOffset < availableWindowRect.X)
 				{
 					if (m_isPositionedAtPoint)
 					{
-						// Open towards the other side of the point when the presenter does not fit on this side (e.g. a right-to-left menu
-						// opened close to the left edge of the window).
+						// Like WinUI, only right-to-left opens towards the other side of the point when the presenter doesn't fit on the
+						// left (e.g. a menu opened close to the left edge of the window). Left-to-right is clamped below.
 						horizontalOffset += Math.Min(presenterSize.Width, availableWindowRect.X + availableWindowRect.Width - (horizontalOffset + presenterSize.Width));
 					}
 				}

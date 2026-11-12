@@ -933,10 +933,12 @@ public class Given_FlowDirection
 	[DataRow(FlowDirection.LeftToRight, FlyoutPlacementMode.Right)]
 	[DataRow(FlowDirection.RightToLeft, FlyoutPlacementMode.Left)]
 	[DataRow(FlowDirection.RightToLeft, FlyoutPlacementMode.Right)]
-	public async Task When_Flyout_Shown_At_Point_With_Side_Placement(FlowDirection flowDirection, FlyoutPlacementMode placement)
+	[DataRow(FlowDirection.LeftToRight, FlyoutPlacementMode.Top)]
+	[DataRow(FlowDirection.RightToLeft, FlyoutPlacementMode.Top)]
+	public async Task When_Flyout_Shown_At_Point_With_Placement(FlowDirection flowDirection, FlyoutPlacementMode placement)
 	{
 		// WinUI places a right-to-left flyout shown at a point by its top-right corner, using the placement offsets of left-to-right.
-		// So Right opens on the left of the point, and Left ends one presenter width before the point.
+		// So Right opens on the left of the point, Left ends one presenter width before the point and Top half a width before it.
 		using var _ = UITestHelper.ResetWindowContent();
 		var content = new Border { Width = 80, Height = 40, Background = new SolidColorBrush(Colors.Red) };
 		var flyout = new Flyout { Content = content, Placement = placement };
@@ -962,12 +964,55 @@ public class Given_FlowDirection
 			var expectedRight = (flowDirection, placement) switch
 			{
 				(FlowDirection.LeftToRight, FlyoutPlacementMode.Left) => expectedPoint.X,
-				(FlowDirection.LeftToRight, _) => expectedPoint.X + bounds.Width,
+				(FlowDirection.LeftToRight, FlyoutPlacementMode.Right) => expectedPoint.X + bounds.Width,
+				(FlowDirection.LeftToRight, _) => expectedPoint.X + bounds.Width / 2,
 				(_, FlyoutPlacementMode.Left) => expectedPoint.X - bounds.Width,
-				_ => expectedPoint.X,
+				(_, FlyoutPlacementMode.Right) => expectedPoint.X,
+				_ => expectedPoint.X - bounds.Width / 2,
 			};
 
 			Assert.AreEqual(expectedRight, bounds.Right, 2, $"Unexpected horizontal position for {placement} in {flowDirection}.");
+		}
+		finally
+		{
+			flyout.Hide();
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[DataRow(FlowDirection.LeftToRight)]
+	[DataRow(FlowDirection.RightToLeft)]
+	public async Task When_Flyout_Shown_At_Point_Near_Left_Edge(FlowDirection flowDirection)
+	{
+		// A flyout that doesn't fit on the left of the window is moved to its left edge. Only right-to-left first tries the other side of the point.
+		using var _ = UITestHelper.ResetWindowContent();
+		var content = new Border { Width = 80, Height = 40, Background = new SolidColorBrush(Colors.Red) };
+		var flyout = new Flyout { Content = content, Placement = FlyoutPlacementMode.Top };
+		var target = new Border { Width = 200, Height = 200, Background = new SolidColorBrush(Colors.LightGray), FlowDirection = flowDirection, HorizontalAlignment = HorizontalAlignment.Left };
+		var root = new Grid { Children = { target } };
+
+		TestServices.WindowHelper.WindowContent = root;
+		await TestServices.WindowHelper.WaitForLoaded(target);
+
+		// 20 from the left edge of the window, whichever flow direction the target has.
+		var position = new Point(flowDirection is FlowDirection.LeftToRight ? 20 : 180, 100);
+		flyout.ShowAt(target, new FlyoutShowOptions { Position = position });
+
+		try
+		{
+			await TestServices.WindowHelper.WaitForLoaded(content);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var presenter = content.FindFirstParent<FlyoutPresenter>();
+			Assert.IsNotNull(presenter);
+			var bounds = GetVisualBounds(presenter);
+			var rootBounds = GetVisualBounds(root);
+			var expectedPoint = target.TransformToVisual(null).TransformPoint(position);
+
+			Assert.AreEqual(rootBounds.Left + 20, expectedPoint.X, 2, "The point should be near the left edge of the window.");
+			Assert.AreEqual(rootBounds.Left, bounds.Left, 2, "The flyout should be moved to the left edge of the window.");
 		}
 		finally
 		{
