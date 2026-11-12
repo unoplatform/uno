@@ -46,13 +46,12 @@ $Families = @(
     @{ Prefix = 'HarfBuzzSharp'; Property = 'HarfbuzzSharpVersion' }
 )
 
-# Nuspec floors deliberately below the build version: package id = the allowed floor, with the reason.
-$KnownFloorExceptions = @{
-    # Uno.UI.Svg only uses Svg.Skia's SKSvg (constructor, FromSvg, Picture), present in 3.0.6, and
-    # the public Uno.Sdk 7.0 pins Svg.Skia 3.0.6: raising this floor without raising that pin in the
-    # same Uno.Sdk makes Android/iOS restores fail with NU1605.
-    'Svg.Skia' = '3.0.6'
-}
+# Nuspec floors allowed below the build version: package id = the allowed floor. Keep this empty
+# when possible. .NET binds by assembly version, so an app that resolves a floor below the version
+# Uno is built against fails to load it at runtime, even when the API it uses exists (see
+# https://github.com/unoplatform/uno/issues/26332 for Svg.Skia 3.0.6 vs 5.2.3). An entry needs a
+# comment with the reason and a tracking issue.
+$KnownFloorExceptions = @{}
 
 $errors = [System.Collections.Generic.List[string]]::new()
 $checked = 0
@@ -107,11 +106,15 @@ function Get-Family([string]$PackageId) {
     return $null
 }
 
+# Blanks out XML comments but keeps their line breaks, so line numbers and offsets stay right.
+function Remove-XmlComments([string]$Text) {
+    [regex]::Replace($Text, '<!--.*?-->', { param($c) [regex]::Replace($c.Value, '[^\n]', ' ') }, 'Singleline')
+}
+
 # Finds the <Element ...> tags in an XML text, whatever the attribute order or line breaks, and
-# skips commented-out ones. Returns @{ Attributes (lower-case names); Line; Text } per tag.
+# skips commented-out ones. Returns @{ Attributes (lower-case names); Line; Index; Text } per tag.
 function Get-XmlElements([string]$Text, [string]$Element) {
-    # Blank out comments but keep their line breaks, so line numbers stay right.
-    $clean = [regex]::Replace($Text, '<!--.*?-->', { param($c) [regex]::Replace($c.Value, '[^\n]', ' ') }, 'Singleline')
+    $clean = Remove-XmlComments $Text
     $lineStarts = [System.Collections.Generic.List[int]]::new(); $lineStarts.Add(0)
     for ($i = 0; $i -lt $clean.Length; $i++) { if ($clean[$i] -eq "`n") { $lineStarts.Add($i + 1) } }
     foreach ($m in [regex]::Matches($clean, "<$Element\b([^>]*)>", 'IgnoreCase')) {
@@ -120,7 +123,7 @@ function Get-XmlElements([string]$Text, [string]$Element) {
             $attributes[$a.Groups[1].Value.ToLowerInvariant()] = $a.Groups[2].Value
         }
         $line = $lineStarts.BinarySearch($m.Index); if ($line -lt 0) { $line = (-bnot $line) - 1 }
-        @{ Attributes = $attributes; Line = $line + 1; Text = ($m.Value -replace '\s+', ' ') }
+        @{ Attributes = $attributes; Line = $line + 1; Index = $m.Index; Text = ($m.Value -replace '\s+', ' ') }
     }
 }
 
@@ -130,7 +133,7 @@ if (-not (Test-Path $propsPath)) { throw "Not found: $propsPath" }
 $propsText = (Get-Content $propsPath -Raw) -replace "`r`n", "`n"
 
 $properties = @{}
-foreach ($m in [regex]::Matches($propsText, '<(\w+)>\s*([^<\s]+)\s*</\1>')) {
+foreach ($m in [regex]::Matches((Remove-XmlComments $propsText), '<(\w+)>\s*([^<\s]+)\s*</\1>')) {
     if (-not $properties.ContainsKey($m.Groups[1].Value)) { $properties[$m.Groups[1].Value] = $m.Groups[2].Value }
 }
 function Resolve-Properties([string]$Value) {
@@ -177,10 +180,14 @@ foreach ($pin in @($corePins.Values) + @($updates)) {
 }
 
 # --- 1. Nuspec floors match the build version -----------------------------------------------------
-$nuspecFloors = @{}   # package id (lower) -> list of @{ Version; Where }
+$nuspecFloors = @{}   # package id (lower) -> list of @{ Version; Where; Tfm }
 $nuspecs = Get-ChildItem -Path (Join-Path $RepoRoot 'build/nuget') -Filter '*.nuspec' -File -ErrorAction SilentlyContinue
 foreach ($nuspec in $nuspecs) {
     $text = (Get-Content $nuspec.FullName -Raw) -replace "`r`n", "`n"
+    # <group targetFramework="..."> spans, so each floor knows the framework it applies to.
+    $tfmGroups = @([regex]::Matches((Remove-XmlComments $text), '<group\b([^>]*)>(.*?)</group>', 'Singleline, IgnoreCase') | ForEach-Object {
+        @{ Start = $_.Index; End = $_.Index + $_.Length; Tfm = [regex]::Match($_.Groups[1].Value, 'targetFramework\s*=\s*"([^"]*)"', 'IgnoreCase').Groups[1].Value }
+    })
     foreach ($e in Get-XmlElements $text 'dependency') {
         $where = "$(Get-RelativePath $nuspec.FullName):$($e.Line)"
         $id = $e.Attributes['id']
@@ -188,8 +195,9 @@ foreach ($nuspec in $nuspecs) {
         $rawVersion = $e.Attributes['version']
         if (-not $rawVersion -or $rawVersion -like 'to-be-set*') { continue }   # no floor, or Uno's own packages versioned by CI
         $version = Get-LowerBound $rawVersion
+        $tfm = ($tfmGroups | Where-Object { $e.Index -ge $_.Start -and $e.Index -lt $_.End } | Select-Object -First 1).Tfm
         if (-not $nuspecFloors.ContainsKey($id.ToLowerInvariant())) { $nuspecFloors[$id.ToLowerInvariant()] = [System.Collections.Generic.List[object]]::new() }
-        $nuspecFloors[$id.ToLowerInvariant()].Add(@{ Version = $version; Where = $where })
+        $nuspecFloors[$id.ToLowerInvariant()].Add(@{ Version = $version; Where = $where; Tfm = $tfm })
 
         $pin = $corePins[$id.ToLowerInvariant()]
         if (-not $pin) { continue }
@@ -208,9 +216,9 @@ if (Test-Path $manifestPath) {
     $groups = Get-Content $manifestPath -Raw | ConvertFrom-Json
     foreach ($group in $groups) {
         if ($group.version -notmatch '^\d') { continue }   # placeholders such as DefaultUnoVersion
-        $pins = @(@{ Name = 'version'; Value = $group.version })
+        $pins = @(@{ Name = 'version'; Value = $group.version; Tfm = $null })
         if ($group.versionOverride) {
-            foreach ($o in $group.versionOverride.PSObject.Properties) { $pins += @{ Name = "$($o.Name) override"; Value = $o.Value } }
+            foreach ($o in $group.versionOverride.PSObject.Properties) { $pins += @{ Name = "$($o.Name) override"; Value = $o.Value; Tfm = $o.Name.ToLowerInvariant() } }
         }
 
         # 3b. SkiaSharp / HarfBuzzSharp groups are exactly the build version.
@@ -224,12 +232,20 @@ if (Test-Path $manifestPath) {
             }
         }
 
-        # 2. Every pin is at or above the nuspec floors of its packages.
+        # 2. Every pin is at or above the nuspec floors of its packages. A floor in a
+        #    <group targetFramework="net11.0-..."> is compared with the net11.0 override when the group
+        #    has one, otherwise with the base version; a floor outside any group, with every pin.
         foreach ($package in $group.packages) {
             $floors = $nuspecFloors[$package.ToLowerInvariant()]
             if (-not $floors) { continue }
             foreach ($floor in $floors) {
-                foreach ($p in $pins) {
+                $applicable = $pins
+                if ($floor.Tfm) {
+                    $floorTfm = ($floor.Tfm -split '-')[0].ToLowerInvariant()
+                    $override = $pins | Where-Object { $_.Tfm -eq $floorTfm } | Select-Object -First 1
+                    $applicable = if ($override) { @($override) } else { @($pins[0]) }
+                }
+                foreach ($p in $applicable) {
                     $checked++
                     if ((Compare-PackageVersion $p.Value $floor.Version "src/Uno.Sdk/packages.json group '$($group.group)' vs $($floor.Where)") -lt 0) {
                         $errors.Add("src/Uno.Sdk/packages.json: group '$($group.group)' $($p.Name) $($p.Value) is below the $package floor $($floor.Version) in $($floor.Where); apps would fail to restore (NU1605).")

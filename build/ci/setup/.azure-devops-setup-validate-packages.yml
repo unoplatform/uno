@@ -11,6 +11,8 @@ steps:
 
 - task: PowerShell@2
   displayName: Validate package version alignment (nuspecs, Uno.Sdk.Private, SkiaSharp)
+  # Report alignment problems even when the network-based check above failed.
+  condition: succeededOrFailed()
   inputs:
     pwsh: true
     filePath: build/ci/scripts/validate-package-version-alignment.ps1
