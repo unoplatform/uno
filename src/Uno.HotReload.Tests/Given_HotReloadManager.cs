@@ -320,7 +320,7 @@ public class Given_HotReloadManager
 			o => o.Contains("Hot reload blocked") && o.Contains("TestProject") && o.Contains("Broken.cs"),
 			"the blocked-compilation line names the audited project and the edited file (spec 054 R2)");
 		harness.Reporter.Outputs.Should().NotContain(
-			o => o.Contains("hot-reload compiler"),
+			o => o.Contains("supports up to C#"),
 			"a project without a resolvable target framework gets no language-version hint");
 	}
 
@@ -360,6 +360,9 @@ public class Given_HotReloadManager
 		blocked.Should().BeGreaterThanOrEqualTo(0);
 		outputs.Skip(blocked + 1).Should().ContainSingle(
 			o => o.Contains($"'TestProject' defaults to C# {netMajor + 4}.0") && o.Contains($"supports up to C# {EmbeddedRoslyn.MaxCSharpVersion}.0"));
+		harness.Tracker.Last!.Diagnostics.Should().NotBeNull();
+		harness.Tracker.Last!.Diagnostics!.Value.Should().ContainSingle(d => d.Id == "UNOHR0002",
+			"the hint must reach the IDE and app status, not only the dev-server console");
 	}
 
 	// ── Spec 054: scope the blocked-compilation audit to the pass's change-set ──
