@@ -160,7 +160,7 @@ partial class ViewManager
 			if (m_ElementFactoryRecycleArgs == null)
 			{
 				// Create one.
-				m_ElementFactoryRecycleArgs = new ElementFactoryRecycleArgs();
+				m_ElementFactoryRecycleArgs = new global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs();
 			}
 
 			var context = m_ElementFactoryRecycleArgs;
@@ -729,7 +729,7 @@ partial class ViewManager
 
 			if (m_ElementFactoryGetArgs == null)
 			{
-				m_ElementFactoryGetArgs = new ElementFactoryGetArgs();
+				m_ElementFactoryGetArgs = new global::Microsoft.UI.Xaml.ElementFactoryGetArgs();
 			}
 
 			var args = m_ElementFactoryGetArgs;

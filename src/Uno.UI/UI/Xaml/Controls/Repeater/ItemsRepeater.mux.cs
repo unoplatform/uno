@@ -670,43 +670,48 @@ partial class ItemsRepeater
 
 		// Clear flag for bug #776
 		m_isItemTemplateEmpty = false;
-		m_itemTemplateWrapper = newValue as IElementFactoryShim;
-		if (m_itemTemplateWrapper == null)
+
+		// DataTemplate and DataTemplateSelector implement IElementFactory so
+		// the wrapper is likely not required but removing it now has some compat
+		// implications, so keeping the logic as it is for now. For example, ownership
+		// of the items is with Repeater today because the wrapper is doing the
+		// recycling as opposed to the DataTemplate.
+		if (newValue is DataTemplate dataTemplate)
 		{
-			// ItemTemplate set does not implement IElementFactoryShim. We also
-			// want to support DataTemplate and DataTemplateSelectors automagically.
-			if (newValue is DataTemplate dataTemplate) // Implements IElementFactory but not IElementFactoryShim
+			m_itemTemplateWrapper = new ItemTemplateWrapper(dataTemplate);
+			if (dataTemplate.LoadContent() is FrameworkElement content)
 			{
-				m_itemTemplateWrapper = new ItemTemplateWrapper(dataTemplate);
-				if (dataTemplate.LoadContent() is FrameworkElement content)
-				{
-					// Due to bug https://github.com/microsoft/microsoft-ui-xaml/issues/3057, we need to get the framework
-					// to take ownership of the extra implicit ref that was returned by LoadContent. The simplest way to do
-					// this is to add it to a Children collection and immediately remove it.
-					var children = Children;
-					children.Add(content);
-					children.RemoveAt(children.Count - 1);
-				}
-				else
-				{
-					// We have a DataTemplate which is empty, so we need to set it to true
-					m_isItemTemplateEmpty = true;
-				}
+				// Due to bug https://github.com/microsoft/microsoft-ui-xaml/issues/3057, we need to get the framework
+				// to take ownership of the extra implicit ref that was returned by LoadContent. The simplest way to do
+				// this is to add it to a Children collection and immediately remove it.
+				var children = Children;
+				children.Add(content);
+				children.RemoveAt(children.Count - 1);
 			}
-			else if (newValue is DataTemplateSelector selector) // Implements IElementFactory but not IElementFactoryShim
-			{
-				m_itemTemplateWrapper = new ItemTemplateWrapper(selector);
-			}
-#if HAS_UNO
-			else if (newValue is IElementFactory elementFactory)
-			{
-				m_itemTemplateWrapper = new ElementFactoryShimAdapter(elementFactory);
-			}
-#endif
 			else
 			{
-				throw new ArgumentException("ItemTemplate", "ItemTemplate");
+				// We have a DataTemplate which is empty, so we need to set it to true
+				m_isItemTemplateEmpty = true;
 			}
+		}
+		else if (newValue is DataTemplateSelector selector)
+		{
+			m_itemTemplateWrapper = new ItemTemplateWrapper(selector);
+		}
+		else if (newValue is IElementFactory customElementFactory)
+		{
+			m_itemTemplateWrapper = customElementFactory;
+		}
+#if HAS_UNO
+		// TODO Uno: remove with IElementFactoryShim.
+		else if (newValue is IElementFactoryShim shim)
+		{
+			m_itemTemplateWrapper = new ElementFactoryShimAdapter(shim);
+		}
+#endif
+		else
+		{
+			throw new ArgumentException("ItemTemplate", "ItemTemplate");
 		}
 
 		InvalidateMeasure();

@@ -23,4 +23,7 @@ public partial class ElementFactoryGetArgs
 	/// Gets or sets the UIElement that is expected to be the parent of the realized element from GetElement.
 	/// </summary>
 	public UIElement? Parent { get; set; }
+
+	// Not part of the public contract: ItemsRepeater sets it for its test hooks, as WinUI does.
+	internal int Index { get; set; }
 }

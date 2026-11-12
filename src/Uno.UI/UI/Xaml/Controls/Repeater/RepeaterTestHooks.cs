@@ -21,8 +21,10 @@ namespace Microsoft.UI.Private.Controls
 		/* static */
 		public static int GetElementFactoryElementIndex(object getArgs)
 		{
-			var args = getArgs as ElementFactoryGetArgs;
-			return args.Index;
+			// Uno: either args family (see IElementFactoryShim).
+			return getArgs is global::Microsoft.UI.Xaml.ElementFactoryGetArgs xamlArgs
+				? xamlArgs.Index
+				: ((ElementFactoryGetArgs)getArgs).Index;
 		}
 
 		/* static */

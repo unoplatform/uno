@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Shapes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal partial class ItemTemplateWrapper : IElementFactoryShim
+	internal partial class ItemTemplateWrapper : global::Microsoft.UI.Xaml.IElementFactory
 	{
 		private DataTemplate m_dataTemplate;
 		private DataTemplateSelector m_dataTemplateSelector;
@@ -35,7 +35,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#region IElementFactory
-		public UIElement GetElement(ElementFactoryGetArgs args)
+		public UIElement GetElement(global::Microsoft.UI.Xaml.ElementFactoryGetArgs args)
 		{
 			var selectedTemplate = m_dataTemplate ?? m_dataTemplateSelector.SelectTemplate(args.Data);
 			// Check if selected template we got is valid
@@ -93,7 +93,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return element;
 		}
 
-		public void RecycleElement(ElementFactoryRecycleArgs args)
+		public void RecycleElement(global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs args)
 		{
 			var element = args.Element;
 			DataTemplate selectedTemplate = m_dataTemplate ?? element.GetValue(RecyclePool.OriginTemplateProperty) as DataTemplate;

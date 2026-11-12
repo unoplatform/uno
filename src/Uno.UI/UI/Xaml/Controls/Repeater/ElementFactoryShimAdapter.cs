@@ -2,43 +2,53 @@
 
 namespace Microsoft.UI.Xaml.Controls;
 
-// Lets ItemsRepeater, which calls its ItemTemplate through IElementFactoryShim, use any Microsoft.UI.Xaml.IElementFactory as WinUI does.
-internal sealed class ElementFactoryShimAdapter : IElementFactoryShim
+// Lets an IElementFactoryShim that isn't also a Microsoft.UI.Xaml.IElementFactory be used as an ItemTemplate,
+// since the controls only consume IElementFactory, as in WinUI. ElementFactory implements both, so it doesn't need this.
+// TODO Uno: remove with IElementFactoryShim.
+internal sealed class ElementFactoryShimAdapter : global::Microsoft.UI.Xaml.IElementFactory
 {
-	private readonly global::Microsoft.UI.Xaml.ElementFactoryGetArgs _getArgs = new();
-	private readonly global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs _recycleArgs = new();
+	private readonly IElementFactoryShim _shim;
 
-	public ElementFactoryShimAdapter(IElementFactory factory) => Factory = factory;
+	// Spare args, taken while in use so a re-entrant call allocates its own instead of clearing the caller's.
+	private ElementFactoryGetArgs? _getArgs;
+	private ElementFactoryRecycleArgs? _recycleArgs;
 
-	internal IElementFactory Factory { get; }
+	public ElementFactoryShimAdapter(IElementFactoryShim shim) => _shim = shim;
 
-	public UIElement GetElement(ElementFactoryGetArgs args)
+	public UIElement GetElement(global::Microsoft.UI.Xaml.ElementFactoryGetArgs args)
 	{
-		_getArgs.Data = args.Data;
-		_getArgs.Parent = args.Parent;
+		var shimArgs = _getArgs ?? new ElementFactoryGetArgs();
+		_getArgs = null;
 		try
 		{
-			return Factory.GetElement(_getArgs);
+			shimArgs.Data = args.Data;
+			shimArgs.Parent = args.Parent;
+			shimArgs.Index = args.Index;
+			return _shim.GetElement(shimArgs);
 		}
 		finally
 		{
-			_getArgs.Data = null;
-			_getArgs.Parent = null;
+			shimArgs.Data = null;
+			shimArgs.Parent = null;
+			_getArgs = shimArgs;
 		}
 	}
 
-	public void RecycleElement(ElementFactoryRecycleArgs args)
+	public void RecycleElement(global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs args)
 	{
-		_recycleArgs.Element = args.Element;
-		_recycleArgs.Parent = args.Parent;
+		var shimArgs = _recycleArgs ?? new ElementFactoryRecycleArgs();
+		_recycleArgs = null;
 		try
 		{
-			Factory.RecycleElement(_recycleArgs);
+			shimArgs.Element = args.Element;
+			shimArgs.Parent = args.Parent;
+			_shim.RecycleElement(shimArgs);
 		}
 		finally
 		{
-			_recycleArgs.Element = null;
-			_recycleArgs.Parent = null;
+			shimArgs.Element = null;
+			shimArgs.Parent = null;
+			_recycleArgs = shimArgs;
 		}
 	}
 }
