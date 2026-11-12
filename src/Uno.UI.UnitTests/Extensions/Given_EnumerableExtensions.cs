@@ -9,7 +9,7 @@ using Uno.Extensions.Specialized;
 
 namespace Umbrella.Views.UI.Tests.Shared.Extensions
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_EnumerableExtensions
 	{
 		private Mock<IList> _listMock;

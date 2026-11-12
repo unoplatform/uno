@@ -41,7 +41,7 @@ public class MacOSHost : UnoPlatformHost, IApplicationHost
 
 	static MacOSHost()
 	{
-		MacOSWindowHost.Register(); // must be initialized first to load libSkiaSharp
+		MacOSWindowHost.Register();
 
 		MacOSAnalyticsInfoExtension.Register();
 		MacOSApplicationViewExtension.Register();
@@ -54,6 +54,7 @@ public class MacOSHost : UnoPlatformHost, IApplicationHost
 		MacOSFolderPickerExtension.Register();
 		MacOSLauncherExtension.Register();
 		MacOSNativeElementHostingExtension.Register();
+		MacOSNativeViewPeer.Register();
 		MacOSNativeWindowFactoryExtension.Register();
 		MacOSSystemThemeHelperExtension.Register();
 		MacOSTextScaleFactorExtension.Register();

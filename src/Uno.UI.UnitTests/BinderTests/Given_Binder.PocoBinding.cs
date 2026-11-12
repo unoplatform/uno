@@ -17,7 +17,7 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests.DependencyPropertyPath
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_Binder_PocoBinding
 	{
 		[TestMethod]

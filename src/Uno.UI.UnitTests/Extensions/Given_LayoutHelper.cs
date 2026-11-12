@@ -6,7 +6,7 @@ using Uno.Extensions;
 
 namespace Uno.UI.Tests.Extensions
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_LayoutHelper
 	{
 		[TestMethod]

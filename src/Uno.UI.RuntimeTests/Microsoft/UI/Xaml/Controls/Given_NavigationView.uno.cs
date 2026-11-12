@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -41,6 +41,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public partial class Given_NavigationView
 	{
+		[TestMethod]
+		public async Task When_BackButtonVisible_Auto_Then_Hidden_Only_On_TV()
+		{
+			var navView = new Microsoft.UI.Xaml.Controls.NavigationView
+			{
+				IsBackButtonVisible = Microsoft.UI.Xaml.Controls.NavigationViewBackButtonVisible.Auto,
+				IsBackEnabled = true,
+				Height = 500,
+				Width = 400,
+			};
+
+			await UITestHelper.Load(navView);
+
+			// Like WinUI on Xbox, a TV remote's Menu/B button goes back, so there is no on-screen back button by default.
+			var backButton = navView.FindFirstDescendant<Button>("NavigationViewBackButton");
+			Assert.IsNotNull(backButton);
+			Assert.AreEqual(OperatingSystem.IsTvOS() ? Visibility.Collapsed : Visibility.Visible, backButton.Visibility);
+		}
+
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/14059")]
 #if !HAS_INPUT_INJECTOR
@@ -265,6 +284,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				act.Should().NotThrow("Clearing MenuItems should not throw an exception.");
 				Assert.IsEmpty(nv.MenuItems, "MenuItems should be empty after clearing.");
 			}
+		}
+
+		[TestMethod]
+		[DataRow(NavigationViewPaneDisplayMode.Left)]
+		[DataRow(NavigationViewPaneDisplayMode.LeftCompact)]
+		[DataRow(NavigationViewPaneDisplayMode.LeftMinimal)]
+		[DataRow(NavigationViewPaneDisplayMode.Top)]
+		public async Task When_Idle_Then_Layout_Settles(NavigationViewPaneDisplayMode mode)
+		{
+			NavigationView nv = new()
+			{
+				PaneDisplayMode = mode,
+				IsSettingsVisible = false,
+				Width = 800,
+				Height = 500,
+				Content = new TextBlock { Text = "Hello" },
+			};
+			nv.MenuItems.Add(new NavigationViewItem { Content = "One" });
+			nv.MenuItems.Add(new NavigationViewItem { Content = "Two" });
+
+			await UITestHelper.Load(nv);
+			await WindowHelper.WaitForIdle();
+
+			// Let the ItemsRepeater realization cache finish growing, which takes a few idle-driven passes.
+			await Task.Delay(1000);
+
+			var layoutPasses = 0;
+			void OnLayoutUpdated(object sender, object e) => layoutPasses++;
+
+			nv.LayoutUpdated += OnLayoutUpdated;
+			try
+			{
+				await Task.Delay(500);
+			}
+			finally
+			{
+				nv.LayoutUpdated -= OnLayoutUpdated;
+			}
+
+			Assert.IsLessThan(3, layoutPasses, $"Layout keeps running while idle ({layoutPasses} passes in 500 ms).");
 		}
 	}
 

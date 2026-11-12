@@ -125,13 +125,22 @@ namespace Uno.UI.Dispatching
 		}
 
 #if __ANDROID__ || __WASM__ || __SKIA__ || __APPLE_UIKIT__ || IS_UNIT_TESTS
+		// Renders while Low/Idle work waits before one such item runs ahead of the next render. A UI thread that is
+		// busy every frame (rendering plus the per-frame Normal tick) would otherwise never reach those queues.
+		// Counted per composition target, so with several windows it is reached sooner than three frames.
+		private const int MaxRendersBeforeLowPriorityItem = 3;
+
+		private int _rendersWhileLowPriorityWaits;
+
 		private static void DispatchItems()
 		{
 			// Currently, we have a singleton NativeDispatcher.
 			// We want DispatchItems to be static to avoid delegate allocations.
 			var @this = NativeDispatcher.Main;
 
-			Action? action = @this.TryGetRenderAction();
+			Action? action =
+				@this.TryDequeueStarvedLowPriorityItem() ??
+				@this.TryGetRenderAction();
 
 			if (action is null)
 			{
@@ -151,6 +160,11 @@ namespace Uno.UI.Dispatching
 							if (Interlocked.Decrement(ref @this._globalCount) > 0)
 							{
 								@this.EnqueueNative(@this._currentPriority);
+							}
+
+							if (p >= (int)NativeDispatcherPriority.Low)
+							{
+								@this._rendersWhileLowPriorityWaits = 0;
 							}
 
 							if (@this._currentPriority == NativeDispatcherPriority.Normal)
@@ -203,6 +217,46 @@ namespace Uno.UI.Dispatching
 			}
 		}
 
+		private Action? TryDequeueStarvedLowPriorityItem()
+		{
+			if (_rendersWhileLowPriorityWaits < MaxRendersBeforeLowPriorityItem)
+			{
+				return null;
+			}
+
+			lock (_gate)
+			{
+				// Only ahead of rendering: High and Normal work (await continuations included) still runs first, as
+				// in WinUI, and in a saturated loop the frame's Normal tick has already run when the next render is due.
+				if (_queues[(int)NativeDispatcherPriority.High].Count > 0 || _queues[(int)NativeDispatcherPriority.Normal].Count > 0)
+				{
+					return null;
+				}
+
+				for (var p = (int)NativeDispatcherPriority.Low; p <= (int)NativeDispatcherPriority.Idle; p++)
+				{
+					if (_queues[p].Count > 0)
+					{
+						var action = Unsafe.As<Action>(_queues[p].Dequeue());
+						_currentPriority = (NativeDispatcherPriority)p;
+						_rendersWhileLowPriorityWaits = 0;
+
+						if (Interlocked.Decrement(ref _globalCount) > 0)
+						{
+							EnqueueNative(_currentPriority);
+						}
+
+						this.LogTrace()?.Trace($"Running starved {_currentPriority} job ahead of rendering: queue states=[{string.Join("] [", _queues.Select(q => q.Count))}]");
+
+						return action;
+					}
+				}
+
+				_rendersWhileLowPriorityWaits = 0;
+				return null;
+			}
+		}
+
 		private Action? TryGetRenderAction()
 		{
 			lock (_gate)
@@ -216,6 +270,11 @@ namespace Uno.UI.Dispatching
 							_compositionTargets[compositionTarget] = (renderAction: null, normalItemsToProcessBeforeNextRenderAction: _queues[(int)NativeDispatcherPriority.Normal].Count);
 
 							_currentPriority = NativeDispatcherPriority.High;
+
+							if (_queues[(int)NativeDispatcherPriority.Low].Count + _queues[(int)NativeDispatcherPriority.Idle].Count > 0)
+							{
+								_rendersWhileLowPriorityWaits++;
+							}
 
 							if (Interlocked.Decrement(ref _globalCount) > 0)
 							{
@@ -491,12 +550,18 @@ namespace Uno.UI.Dispatching
 			{
 				EnqueueNative(priority);
 			}
+			else
+			{
+				OnEnqueuedBehindPendingDispatch(priority);
+			}
 		}
 
 		/// <summary>
 		/// Enqueues an operation on the native UI thread.
 		/// </summary>
 		partial void EnqueueNative(NativeDispatcherPriority priority);
+
+		partial void OnEnqueuedBehindPendingDispatch(NativeDispatcherPriority priority);
 
 		partial void Initialize();
 

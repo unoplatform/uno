@@ -7,7 +7,7 @@ using System;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_Element_Theme
 	{
 		[TestInitialize]

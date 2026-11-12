@@ -30,12 +30,23 @@ namespace Uno.UI.Tests
 			Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
 			Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
 
-			// The unit-test process does not own a real Skia host (Win32/X11/...); install
-			// no-op overrides for the NativeDispatcher hooks so DependencyQueue access does
-			// not throw. The Skia variant's GetHasThreadAccess() / EnqueueNative()
-			// require these to be set, and the runtime hosts normally do that on startup.
+			// The unit-test process does not own a real Skia host (Win32/X11/...), so it installs the
+			// NativeDispatcher hooks the hosts normally set on startup. Work dispatched from another thread
+			// (e.g. a DispatcherQueueTimer tick) is queued to the UI thread instead of running layout there
+			// concurrently with the test. On the UI thread it runs inline, which the tests rely on.
 			Uno.UI.Dispatching.NativeDispatcher.HasThreadAccessOverride = () => true;
-			Uno.UI.Dispatching.NativeDispatcher.DispatchOverride = (action, _) => action();
+			Uno.UI.Dispatching.NativeDispatcher.DispatchBehindPendingOverride = () => UnitTestUIThread.IsCurrent;
+			Uno.UI.Dispatching.NativeDispatcher.DispatchOverride = (action, _) =>
+			{
+				if (UnitTestUIThread.IsCurrent)
+				{
+					action();
+				}
+				else
+				{
+					UnitTestUIThread.Post(static state => ((System.Action)state!)(), action);
+				}
+			};
 
 			// A real Skia host initializes the package manifest on startup (Application's
 			// ctor does it too, but reflection-based tests such as the DependencyProperty

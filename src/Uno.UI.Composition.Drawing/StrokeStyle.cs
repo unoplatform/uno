@@ -16,7 +16,7 @@ public readonly record struct StrokeStyle
 	public StrokeJoin LineJoin { get; init; }
 	public float MiterLimit { get; init; }
 
-	/// <summary>Dash intervals in multiples of <see cref="Thickness"/> (as authored), or null for a solid stroke.</summary>
+	/// <summary>Dash intervals in geometry units (as Composition takes them), or null for a solid stroke.</summary>
 	public float[]? DashArray { get; init; }
 	public float DashOffset { get; init; }
 

@@ -214,6 +214,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1, containers.Count(x => x.Visibility == Visibility.Visible), "Only one PivotItem should be visible");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(false)]
+		[DataRow(true)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21729")]
+		public async Task When_PivotItem_Has_Wrapping_Text_Then_Measured_With_Pivot_Width(bool inScrollViewer)
+		{
+			const double PivotWidth = 300;
+
+			var textBlock = new TextBlock
+			{
+				TextWrapping = TextWrapping.Wrap,
+				Text = string.Concat(Enumerable.Repeat("Lorem ipsum dolor sit amet, consectetur adipiscing elit. ", 10)),
+			};
+
+			FrameworkElement content = inScrollViewer
+				? new ScrollViewer { Content = new StackPanel { Children = { textBlock } } }
+				: textBlock;
+
+			var pivot = new Pivot
+			{
+				Width = PivotWidth,
+				Height = 300,
+				Items = { new PivotItem { Header = "One", Content = content } },
+			};
+
+			await UITestHelper.Load(pivot);
+
+			Assert.IsLessThanOrEqualTo(PivotWidth, textBlock.DesiredSize.Width, "Wrapping text should be measured with the Pivot's width");
+			Assert.IsLessThanOrEqualTo(PivotWidth, textBlock.ActualWidth, "Wrapping text should not exceed the Pivot's width");
+			Assert.IsGreaterThan(textBlock.FontSize * 3, textBlock.ActualHeight, "Text should wrap to multiple lines");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3596")]
+		public async Task When_Multiple_Items_Then_Headers_Not_Stretched()
+		{
+			const double PivotWidth = 400;
+
+			var pivot = new Pivot
+			{
+				Width = PivotWidth,
+				Height = 200,
+				Items =
+				{
+					new PivotItem { Header = "One", Content = new TextBlock { Text = "Content 1" } },
+					new PivotItem { Header = "Two", Content = new TextBlock { Text = "Content 2" } },
+					new PivotItem { Header = "Three", Content = new TextBlock { Text = "Content 3" } },
+				},
+			};
+
+			await UITestHelper.Load(pivot);
+
+			var headers = pivot.GetAllChildren(null, false)
+				.OfType<PivotHeaderItem>()
+				.Where(h => h.ActualWidth > 0)
+				.ToArray();
+
+			Assert.IsGreaterThanOrEqualTo(3, headers.Length, "All headers should be laid out");
+			foreach (var header in headers)
+			{
+				Assert.IsLessThan(PivotWidth / 2, header.ActualWidth, $"Header '{header.Content}' should not stretch across the Pivot");
+			}
+		}
+
 		private class MyContext
 		{
 			public MyContext()

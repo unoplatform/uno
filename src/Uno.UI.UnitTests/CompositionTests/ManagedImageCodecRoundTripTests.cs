@@ -11,7 +11,7 @@ namespace Uno.UI.Tests.CompositionTests;
 // Round-trips the SkiaSharp-free ManagedImageEncoder through the ManagedImageDecoder (used here as the oracle):
 // lossless formats (BMP/PNG) must reproduce pixels exactly; palette formats (GIF) must be exact after ≤256-colour
 // quantization and must round-trip transparency; JPEG (lossy) must stay within a tight per-channel average.
-[TestClass]
+[UITestClass]
 public class ManagedImageCodecRoundTripTests
 {
 	[TestMethod]
@@ -304,7 +304,7 @@ public class ManagedImageCodecRoundTripTests
 // crafted chunk length must not spin the chunk walker forever, and header-declared dimensions must not drive an
 // unbounded allocation. The [Timeout]s make the infinite-loop cases fail-before / pass-after (the loop never returns
 // pre-fix); the outsized-dimension cases assert a clean rejection instead of a multi-gigabyte allocation.
-[TestClass]
+[UITestClass]
 public class Given_ManagedImageDecoder_Hardening
 {
 	[TestMethod]

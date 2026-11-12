@@ -8,8 +8,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Uno.WebGpu.Native;
-using static Uno.WebGpu.Native.WGPU;
+using Silk.NET.WebGPU;
 using Uno.UI.Composition.Drawing;
 using Uno.Foundation.Logging;
 using Windows.Graphics.Effects.Interop;
@@ -23,7 +22,34 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 	// A save frame carries the matrix/clip to restore. Layer frames additionally redirect emitted commands into
 	// a sub-list until Restore, which composites that sub-list (as a LayerCmd) back onto the parent.
 	private struct SaveEntry { public Matrix4x4 M; public ClipData Clip; public bool IsLayer; public List<WebGpuCommand> ParentTarget; public int CompositeMode; public float[] ColorMatrix; public WebGpuEffectFilter Effect; public float[] PendingColorMatrix; }
-	private readonly Stack<SaveEntry> _stack = new();
+	private Stack<SaveEntry> _stack;
+	private Stack<SaveEntry> PushStack => _stack ??= RentStack();
+	private int Depth => _stack?.Count ?? 0;
+
+	// A recorder is created per recording, so a fresh stack regrew (copying its entries) on every recording.
+	[ThreadStatic] private static Stack<Stack<SaveEntry>> _stackPool;
+	private const int MaxPooledStacks = 16;
+
+	private static Stack<SaveEntry> RentStack()
+		=> _stackPool is { Count: > 0 } pool ? pool.Pop() : new Stack<SaveEntry>(8);
+
+	// Only an empty stack goes back: a recorder may be finished mid-session and then keep drawing (the present
+	// session's overlay does), and it re-rents on its next save.
+	private void ReturnStack()
+	{
+		if (_stack is not { Count: 0 } stack)
+		{
+			return;
+		}
+
+		_stack = null;
+		var pool = _stackPool ??= new();
+		if (pool.Count < MaxPooledStacks)
+		{
+			pool.Push(stack);
+		}
+	}
+
 	private Matrix4x4 _m = Matrix4x4.Identity;
 	private ClipData _clip = ClipData.None;
 	private float[] _pendingColorMatrix;   // active effect colour matrix, applied per DrawImage in the image shader
@@ -38,44 +64,88 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 
 	public Matrix4x4 TotalMatrix => _m;
 	public void SetMatrix(in Matrix4x4 matrix) => _m = matrix;
-	public void Concat(in Matrix4x4 matrix) => _m = matrix * _m;
-	public void Translate(float dx, float dy) => _m = Matrix4x4.CreateTranslation(dx, dy, 0) * _m;
+	public void Concat(in Matrix4x4 matrix)
+	{
+		// Most visuals only offset their children; a full 4x4 multiply per visual dominated recording.
+		if (IsTranslation2D(matrix))
+		{
+			Translate(matrix.M41, matrix.M42);
+		}
+		else
+		{
+			_m = matrix * _m;
+		}
+	}
+
+	// Equivalent to CreateTranslation(dx, dy, 0) * _m: only the translation row changes.
+	public void Translate(float dx, float dy)
+	{
+		_m.M41 += dx * _m.M11 + dy * _m.M21;
+		_m.M42 += dx * _m.M12 + dy * _m.M22;
+		_m.M43 += dx * _m.M13 + dy * _m.M23;
+		_m.M44 += dx * _m.M14 + dy * _m.M24;
+	}
+
+	// Exact on purpose: a near miss takes the full multiply, while a tolerance would drop a small scale or skew.
+	private static bool IsTranslation2D(in Matrix4x4 m)
+		=> m.M11 == 1 && m.M12 == 0 && m.M13 == 0 && m.M14 == 0
+		&& m.M21 == 0 && m.M22 == 1 && m.M23 == 0 && m.M24 == 0
+		&& m.M31 == 0 && m.M32 == 0 && m.M33 == 1 && m.M34 == 0
+		&& m.M43 == 0 && m.M44 == 1;
+
 	public void Scale(float sx, float sy) => _m = Matrix4x4.CreateScale(sx, sy, 1) * _m;
 	// Returns the PRE-push depth, matching SKCanvas.Save(): RestoreToCount(count) pops entries while Count > count,
 	// so it must be handed the depth to restore *to* (before this save). Returning the post-push count made
 	// RestoreToCount a no-op, leaking _m/_clip across sibling visuals (identity-local visuals — e.g. opaque
 	// container backgrounds — inherited a sibling's transform and painted over content).
-	public int Save() { var pre = _stack.Count; _stack.Push(new SaveEntry { M = _m, Clip = _clip, PendingColorMatrix = _pendingColorMatrix }); return pre; }
-	public int SaveCount => _stack.Count;
+	public int Save() { var pre = Depth; PushStack.Push(new SaveEntry { M = _m, Clip = _clip, PendingColorMatrix = _pendingColorMatrix }); return pre; }
+	public int SaveCount => Depth;
 	public object NativeSurface => null;
 	public IDrawingFactory Factory => _factory;
 	public void Restore()
 	{
-		if (_stack.Count == 0) { return; }
+		if (Depth == 0) { return; }
 		var t = _stack.Pop(); _m = t.M; _clip = t.Clip; _pendingColorMatrix = t.PendingColorMatrix;
 		if (t.IsLayer)
 		{
 			var layerCmds = _target;
 			_target = t.ParentTarget;
+			// A single image can't overlap itself, so its shader applies the layer's matrix exactly and the offscreen
+			// pass is skipped (the effect-brush recipe case).
+			if (t.ColorMatrix is not null && t.CompositeMode == 0 && t.Effect is null && layerCmds is [ImageCmd { ColorMatrix: null } im])
+			{
+				im.ColorMatrix = t.ColorMatrix;
+				_target.Add(im);
+				return;
+			}
 			_target.Add(new LayerCmd { Commands = layerCmds, CompositeMode = t.CompositeMode, ColorMatrix = t.ColorMatrix, ShadowEffect = t.Effect, Clip = _clip });
 		}
 	}
-	public void RestoreToCount(int count) { while (_stack.Count > count) { Restore(); } }
+	public void RestoreToCount(int count) { while (Depth > count) { Restore(); } }
 
 	private void PushLayer(int compositeMode, float[] colorMatrix, WebGpuEffectFilter effect = null)
 	{
-		_stack.Push(new SaveEntry { M = _m, Clip = _clip, IsLayer = true, ParentTarget = _target, CompositeMode = compositeMode, ColorMatrix = colorMatrix, Effect = effect, PendingColorMatrix = _pendingColorMatrix });
+		PushStack.Push(new SaveEntry { M = _m, Clip = _clip, IsLayer = true, ParentTarget = _target, CompositeMode = compositeMode, ColorMatrix = colorMatrix, Effect = effect, PendingColorMatrix = _pendingColorMatrix });
 		_target = new List<WebGpuCommand>();
 	}
 	public void SaveLayer() => PushLayer(0, null);
 	public void SaveLayer(IColorFilter colorFilter)
 	{
-		// A 4x5 colour-matrix filter (effect brush): apply it directly in the image shader — matching the original
-		// webgpu branch's AddImage(colorMatrix) — instead of an offscreen layer. Scope it to the matching Restore.
-		if ((colorFilter as WebGpuColorFilter)?.Matrix is { } matrix)
+		if ((colorFilter as WebGpuColorFilter)?.Matrix is { Length: >= 20 } matrix)
 		{
-			_stack.Push(new SaveEntry { M = _m, Clip = _clip, PendingColorMatrix = _pendingColorMatrix });
-			_pendingColorMatrix = matrix;
+			// When the matrix keeps alpha (e.g. the alpha mask), applying it to each draw equals applying it to the
+			// composited layer, so it is folded into the draws until the matching Restore. Any other matrix (an
+			// opacity fade) has to see the content as a whole, or overlapping draws stack.
+			if (KeepsAlpha(matrix))
+			{
+				PushStack.Push(new SaveEntry { M = _m, Clip = _clip, PendingColorMatrix = _pendingColorMatrix });
+				_pendingColorMatrix = matrix;
+			}
+			else
+			{
+				PushLayer(0, matrix);
+				_pendingColorMatrix = null;
+			}
 			return;
 		}
 
@@ -90,6 +160,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 
 		PushLayer(0, null);
 	}
+	private static bool KeepsAlpha(float[] m) => m[15] == 0f && m[16] == 0f && m[17] == 0f && m[18] == 1f && m[19] == 0f;
 	public void SaveLayerMask() => PushLayer(1, null);   // 1 = DstIn composite
 	public void SaveLayer(IEffectFilter filter) => PushLayer(0, null, filter as WebGpuEffectFilter);
 	// Device-space AABB of a mapped rect (its 4 corners), for the scissor / fast reject.
@@ -697,7 +768,11 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 		_target.Add(new BackdropCmd { Effect = fx, Opacity = opacity, Clip = _clip });
 	}
 
-	public IRenderRecord Finish() => _data;
+	public IRenderRecord Finish()
+	{
+		ReturnStack();
+		return _data;
+	}
 
 	// A retained sub-recording (the SKPicture equivalent) is recorded at identity; replaying it here adds a node
 	// carrying the current matrix and clip. The recording's commands are never copied or transformed: the present

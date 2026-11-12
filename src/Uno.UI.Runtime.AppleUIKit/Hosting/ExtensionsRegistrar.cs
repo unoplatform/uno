@@ -36,10 +36,11 @@ internal class ExtensionsRegistrar
 			o => (o as RootViewController)?.KeyboardInputSource ?? throw new ArgumentException($"{nameof(o)} must be a {nameof(RootViewController)} instance"));
 		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new UIKitNativeElementHostingExtension(o));
 		ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new InvisibleTextBoxViewExtension(o));
-		ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => AppleUIKitImeTextBoxExtension.Instance);
+		ApiExtensibility.Register<IImeSessionHost>(typeof(IHostScopedImeTextBoxExtension), _ => new AppleUIKitImeTextBoxExtension());
 		ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new MediaPlayerPresenterExtension(o));
 		ApiExtensibility.Register<InputPane>(typeof(IInputPaneExtension), o => new InputPaneExtension());
 #if !__TVOS__
+		ApiExtensibility.Register(typeof(ITextCommandBarFlyoutCommandsExtension), _ => AppleUIKitTextFlyoutCommands.Instance);
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new UIKitNativeWebViewProvider(o));
 #endif
 		// GLCanvasElement (OpenGL ES via EAGL) - available on iOS/tvOS only.

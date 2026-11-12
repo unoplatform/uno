@@ -40,6 +40,24 @@ namespace Microsoft.UI.Composition
 
 		public IImage? Image => FrameProvider?.CurrentImage;
 
+		/// <summary>
+		/// The memory held by the decoded frames and the texture drawn from the current one, 4 bytes per pixel of each.
+		/// </summary>
+		internal long DecodedByteCount => _framesByteCount + (_texture is { } texture ? (long)texture.PixelWidth * texture.PixelHeight * 4 : 0);
+
+		private long _framesByteCount;
+
+		private static long GetByteCount(ImageFrames frames)
+		{
+			long count = 0;
+			foreach (var frame in frames.Frames)
+			{
+				count += (long)frame.PixelWidth * frame.PixelHeight * 4;
+			}
+
+			return count;
+		}
+
 		private IImage? _texturedImage;
 		private ITexture? _texture;
 		// When true, this surface retains a backend texture directly (e.g. a rendered SVG) with no CPU IImage /
@@ -57,7 +75,7 @@ namespace Microsoft.UI.Composition
 		/// The framework-owned GPU texture for the current frame's image, created once via the active backend
 		/// factory and reused across frames (recreated only when the frame changes). Disposed with the surface.
 		/// </summary>
-		internal ITexture? GetTexture()
+		internal ITexture? GetTexture(IDrawingFactory factory)
 		{
 			// A directly-retained texture (e.g. rendered SVG) is already backend-resident — return it as-is,
 			// no derive-from-IImage / no readback. Its lifetime is the surface's.
@@ -72,10 +90,8 @@ namespace Microsoft.UI.Composition
 				DisposeTexture();
 				return null;
 			}
-			// Keyed on the factory as well as the image: a texture belongs to one device, and a renderer re-bind
-			// (an Android GL context loss, or another window registering) leaves the cached one bound to a device
-			// nothing draws on any more.
-			var factory = DrawingFactory.Current;
+			// Keyed on the factory as well as the image: a texture belongs to one device, and the factory comes from
+			// the session being painted, so two windows on different devices each get their own.
 			if (!ReferenceEquals(img, _texturedImage) || !ReferenceEquals(factory, _textureFactory))
 			{
 				DisposeTexture();
@@ -100,7 +116,9 @@ namespace Microsoft.UI.Composition
 		/// uploaded through the backend) as a surface.</summary>
 		internal CompositionImageSurface(IImage image)
 		{
-			FrameProvider = FrameProviderFactory.Create(ImageEncoderDecoder.Current.CreateFrames(image), null);
+			var frames = ImageEncoderDecoder.Current.CreateFrames(image);
+			FrameProvider = FrameProviderFactory.Create(frames, null);
+			_framesByteCount = GetByteCount(frames);
 		}
 
 		/// <summary>Wraps a backend-resident texture (e.g. a rendered SVG) as a retained surface, with no CPU
@@ -119,12 +137,31 @@ namespace Microsoft.UI.Composition
 			SetFrameProviderAndOnFrameChanged(null, null);
 		}
 
-		private void SetFrameProviderAndOnFrameChanged(IFrameProvider? provider, Action? onFrameChanged)
+		private void SetFrameProviderAndOnFrameChanged(IFrameProvider? provider, Action? onFrameChanged, long decodedByteCount = 0)
 		{
 			DisposeTexture();
 			FrameProvider = provider;
 			_onFrameChanged = onFrameChanged;
+			_framesByteCount = decodedByteCount;
 		}
+
+		/// <summary>
+		/// Releases the decoded frames and texture now, for an image nothing displays anymore, instead of leaving them
+		/// to the finalizer. <see cref="Image"/> is null afterwards; loading frames again makes the surface usable.
+		/// </summary>
+		internal void ReleaseFrames()
+		{
+			if (CanReleaseFrames)
+			{
+				SetFrameProviderAndOnFrameChanged(null, null);
+			}
+		}
+
+		/// <summary>
+		/// Whether <see cref="ReleaseFrames"/> releases anything: a retained texture is the content itself, which nothing
+		/// could decode again.
+		/// </summary>
+		internal bool CanReleaseFrames => !_retainedTexture;
 
 		internal (bool success, object nativeResult) LoadFromStream(Stream imageStream) => LoadFromStream(null, null, imageStream);
 
@@ -139,7 +176,7 @@ namespace Microsoft.UI.Composition
 					return (false, "Failed to decode image");
 				}
 
-				SetFrameProviderAndOnFrameChanged(FrameProviderFactory.Create(frames, onFrameChanged), onFrameChanged);
+				SetFrameProviderAndOnFrameChanged(FrameProviderFactory.Create(frames, onFrameChanged), onFrameChanged, GetByteCount(frames));
 				GC.KeepAlive(onFrameChanged);
 				return (true, "Success");
 			}
@@ -156,8 +193,10 @@ namespace Microsoft.UI.Composition
 		internal void CopyPixels(int pixelWidth, int pixelHeight, ReadOnlyMemory<byte> data)
 		{
 			var frames = ImageEncoderDecoder.Current.CreateFrames(ImageEncoderDecoder.Current.CreateImage(pixelWidth, pixelHeight, data.Span));
-			SetFrameProviderAndOnFrameChanged(FrameProviderFactory.Create(frames, null), null);
+			SetFrameProviderAndOnFrameChanged(FrameProviderFactory.Create(frames, null), null, GetByteCount(frames));
 		}
+
+		private protected override bool HasOwnFinalizer => true;
 
 		~CompositionImageSurface()
 		{

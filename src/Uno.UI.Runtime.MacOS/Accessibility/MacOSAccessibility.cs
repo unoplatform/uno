@@ -40,6 +40,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 	private bool _isCreatingAOM;
 	private nint _activeModalHandle;
 	private nint _modalTriggerHandle;
+	private WeakReference<UIElement>? _rootElement;
 
 	/// <summary>
 	/// Registers the process-wide native callbacks. Must be called once from
@@ -50,7 +51,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 		NativeUno.uno_accessibility_set_callbacks(&OnNativeInvoke, &OnNativeFocus);
 		NativeUno.uno_accessibility_set_range_callbacks(&OnNativeIncrement, &OnNativeDecrement);
 		NativeUno.uno_accessibility_set_expand_collapse_callback(&OnNativeExpandCollapse);
-		NativeUno.uno_accessibility_set_value_callback(&OnNativeSetValue);
+		NativeUno.uno_accessibility_set_text_callbacks(&OnNativeSetText, &OnNativeSetSelection);
 		NativeUno.uno_accessibility_set_tree_requested_callback(&OnNativeTreeRequested);
 	}
 
@@ -88,6 +89,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 			if (_byWindow.TryGetValue(window, out var accessibility) && !accessibility.IsDisposed)
 			{
 				accessibility._clientRequestedTree = true;
+				AccessibilityRouter.EnsureTreeNotifications();
 				if (accessibility.RootElementProvider?.Invoke() is { } rootElement)
 				{
 					accessibility.BuildTree(rootElement);
@@ -271,7 +273,12 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	private static void OnNativeSetValue(nint handle, nint valuePtr)
+	private static void OnNativeSetText(
+		nint handle,
+		nint valuePtr,
+		int selectionStart,
+		int selectionEnd,
+		int selectionIsBackward)
 	{
 		if (handle == nint.Zero || valuePtr == nint.Zero)
 		{
@@ -284,11 +291,65 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 			if (value != null &&
 				GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 			{
-				var peer = owner.GetOrCreateAutomationPeer();
-				if (peer?.GetPattern(PatternInterface.Value) is IValueProvider valueProvider &&
-					!valueProvider.IsReadOnly)
+				if (owner is RichEditBox richEditBox)
 				{
-					valueProvider.SetValue(value);
+					richEditBox.ApplyAccessibilityTextInput(
+						value,
+						selectionStart,
+						selectionEnd,
+						selectionIsBackward != 0);
+				}
+				else
+				{
+					var peer = owner.GetOrCreateAutomationPeer();
+					if (peer?.GetPattern(PatternInterface.Value) is IValueProvider valueProvider &&
+						!valueProvider.IsReadOnly)
+					{
+						valueProvider.SetValue(value);
+						if (owner is TextBox textBox)
+						{
+							var start = Math.Clamp(selectionStart, 0, textBox.Text.Length);
+							var end = Math.Clamp(selectionEnd, start, textBox.Text.Length);
+							textBox.Select(start, end - start);
+						}
+					}
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			ApplicationExtensions.RaiseRecoverableUnhandledExceptionOrLog(Application.Current, e, typeof(MacOSAccessibility));
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnNativeSetSelection(
+		nint handle,
+		int selectionStart,
+		int selectionEnd,
+		int selectionIsBackward)
+	{
+		if (handle == nint.Zero)
+		{
+			return;
+		}
+
+		try
+		{
+			if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
+			{
+				if (owner is RichEditBox richEditBox)
+				{
+					richEditBox.ApplyAccessibilitySelection(
+						selectionStart,
+						selectionEnd,
+						selectionIsBackward != 0);
+				}
+				else if (owner is TextBox { IsReadOnly: false } textBox)
+				{
+					var start = Math.Clamp(selectionStart, 0, textBox.Text.Length);
+					var end = Math.Clamp(selectionEnd, start, textBox.Text.Length);
+					textBox.Select(start, end - start);
 				}
 			}
 		}
@@ -309,6 +370,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
+		_rootElement = new(rootElement);
 		_accessibilityTreeInitialized = true;
 		InitializeAccessibilityTree(rootElement);
 		NativeUno.uno_accessibility_post_layout_changed(_windowHandle);
@@ -631,6 +693,10 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 			{
 				NativeUno.uno_accessibility_update_description(handle, pb.PlaceholderText);
 			}
+			else if (feap.Owner is RichEditBox reb && !string.IsNullOrEmpty(reb.Header?.ToString()) && !string.IsNullOrEmpty(reb.PlaceholderText))
+			{
+				NativeUno.uno_accessibility_update_description(handle, reb.PlaceholderText);
+			}
 		}
 
 		if (!string.IsNullOrEmpty(attributes.RoleDescription))
@@ -646,6 +712,21 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 		if (peer.IsPassword())
 		{
 			NativeUno.uno_accessibility_update_is_password(handle, true);
+		}
+
+		if (owner is RichEditBox richEditBox)
+		{
+			NativeUno.uno_accessibility_update_value(handle, richEditBox.GetAccessibilityText());
+			NativeUno.uno_accessibility_update_read_only(handle, richEditBox.IsReadOnly);
+			richEditBox.GetAccessibilitySelection(
+				out var selectionStart,
+				out var selectionEnd,
+				out var selectionIsBackward);
+			NativeUno.uno_accessibility_update_selection(
+				handle,
+				selectionStart,
+				selectionEnd - selectionStart,
+				selectionIsBackward);
 		}
 
 		if (owner is ComboBox comboBox && peer.GetPattern(PatternInterface.Value) is not IValueProvider)
@@ -747,6 +828,11 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 		if (controlType == AutomationControlType.Text)
 		{
 			return "text";
+		}
+
+		if (controlType == AutomationControlType.Edit && owner is RichEditBox)
+		{
+			return "textarea";
 		}
 
 		if (controlType == AutomationControlType.Edit && owner is TextBox textBox && textBox.AcceptsReturn)
@@ -865,63 +951,104 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		// Match WinUI: resolve the EventsSource so ListItem/TabItem/TreeItem events target the data
-		// peer the client sees. ResolveProviderPeer returns `this` for every other peer.
+		var sourcePeer = peer;
 		peer = peer.ResolveProviderPeer(resolveEventsSource: true);
 
-		base.NotifyAutomationEvent(peer, eventId);
+		base.NotifyAutomationEvent(sourcePeer, eventId);
 
 		switch (eventId)
 		{
-			case AutomationEvents.InvokePatternOnInvoked when TryGetPeerOwner(peer, out _):
-			case AutomationEvents.SelectionItemPatternOnElementSelected when TryGetPeerOwner(peer, out _):
+			case AutomationEvents.InvokePatternOnInvoked when TryGetPeerOwner(peer, sourcePeer, out _):
+			case AutomationEvents.SelectionItemPatternOnElementSelected when TryGetPeerOwner(peer, sourcePeer, out _):
 			case AutomationEvents.SelectionPatternOnInvalidated:
 				NativeUno.uno_accessibility_post_layout_changed(_windowHandle);
 				break;
 
-			case AutomationEvents.TextPatternOnTextSelectionChanged when TryGetPeerOwner(peer, out var textElement):
-				if (textElement is ITextBoxHost { Core: { } core })
+			case AutomationEvents.TextPatternOnTextSelectionChanged when TryGetPeerOwner(peer, sourcePeer, out var textElement):
+				if (textElement is ITextBoxHost { Core: { } textBox })
 				{
 					NativeUno.uno_accessibility_update_selection(
 						textElement.Visual.Handle,
-						core.SelectionStart,
-						core.SelectionLength);
+						textBox.SelectionStart,
+						textBox.SelectionLength,
+						false);
+				}
+				else if (textElement is RichEditBox richEditBox)
+				{
+					richEditBox.GetAccessibilitySelection(
+						out var selectionStart,
+						out var selectionEnd,
+						out var selectionIsBackward);
+					NativeUno.uno_accessibility_update_selection(
+						textElement.Visual.Handle,
+						selectionStart,
+						selectionEnd - selectionStart,
+						selectionIsBackward);
 				}
 				break;
 
-			case AutomationEvents.LiveRegionChanged when TryGetPeerOwner(peer, out var liveElement):
+			case AutomationEvents.LiveRegionChanged when TryGetPeerOwner(peer, sourcePeer, out var liveElement):
 				if (_activeModalHandle != nint.Zero && !IsDescendantOf(liveElement, _activeModalHandle))
 				{
 					break;
 				}
 
 				NativeUno.uno_accessibility_post_live_region_changed(liveElement.Visual.Handle);
-
-				var label = ResolveLabel(peer);
-				if (!string.IsNullOrEmpty(label))
-				{
-					var liveSetting = AutomationProperties.GetLiveSetting(liveElement);
-					if (liveSetting == AutomationLiveSetting.Assertive)
-					{
-						AnnounceAssertive(label);
-					}
-					else
-					{
-						AnnouncePolite(label);
-					}
-				}
 				break;
 		}
+	}
+
+	protected override void OnTextControlStateChanged(UIElement element)
+	{
+		if (element is not RichEditBox richEditBox || !_accessibilityTreeInitialized)
+		{
+			return;
+		}
+
+		NativeUno.uno_accessibility_update_value(element.Visual.Handle, richEditBox.GetAccessibilityText());
+		NativeUno.uno_accessibility_update_read_only(element.Visual.Handle, richEditBox.IsReadOnly);
+		richEditBox.GetAccessibilitySelection(
+			out var selectionStart,
+			out var selectionEnd,
+			out var selectionIsBackward);
+		NativeUno.uno_accessibility_update_selection(
+			element.Visual.Handle,
+			selectionStart,
+			selectionEnd - selectionStart,
+			selectionIsBackward);
 	}
 
 	protected override void SetNativeFocus(nint handle)
 		=> NativeUno.uno_accessibility_set_focused(handle);
 
+	protected override void OnAccessibilityViewChanged(
+		UIElement element,
+		AccessibilityView oldValue,
+		AccessibilityView newValue)
+	{
+		if (!_accessibilityTreeInitialized ||
+			_rootElement is null ||
+			!_rootElement.TryGetTarget(out var rootElement))
+		{
+			return;
+		}
+
+		NativeUno.uno_accessibility_init_context(_windowHandle);
+		InitializeAccessibilityTree(rootElement);
+		NativeUno.uno_accessibility_post_children_changed(_windowHandle);
+	}
+
 	protected override void OnNativeStructureChanged()
 		=> NativeUno.uno_accessibility_post_children_changed(_windowHandle);
 
 	protected override void AnnounceOnPlatform(string text, bool assertive)
-		=> NativeUno.uno_accessibility_announce(_windowHandle, text, assertive);
+		=> NativeDispatcher.Main.Enqueue(() =>
+		{
+			if (!IsDisposed)
+			{
+				NativeUno.uno_accessibility_announce(_windowHandle, text, assertive);
+			}
+		});
 
 	protected override void DisposeCore()
 	{
@@ -938,6 +1065,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 		_byWindow.Remove(windowHandle);
 		_windowHandle = nint.Zero;
 		_accessibilityTreeInitialized = false;
+		_rootElement = null;
 		_activeModalHandle = nint.Zero;
 		_modalTriggerHandle = nint.Zero;
 

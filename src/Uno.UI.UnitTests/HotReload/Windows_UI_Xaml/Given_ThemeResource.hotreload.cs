@@ -10,7 +10,7 @@ using Windows.Foundation;
 
 namespace Uno.UI.Tests.HotReload.Windows_UI_Xaml
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_ThemeResource_HotReload
 	{
 		[TestInitialize]

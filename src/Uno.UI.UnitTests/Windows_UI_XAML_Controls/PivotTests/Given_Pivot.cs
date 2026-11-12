@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.PivotTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_Pivot
 	{
 		[TestInitialize]

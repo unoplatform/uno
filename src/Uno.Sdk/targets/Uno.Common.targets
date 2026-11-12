@@ -1,23 +1,16 @@
 <Project>
 
 	<PropertyGroup>
-		<!-- Where the sdk's own task assembly sits, so package targets can use its tasks without guessing. -->
-		<UnoSdkTasksAssembly Condition="'$(UnoSdkTasksAssembly)' == ''">$(MSBuildThisFileDirectory)netstandard2.0\Uno.Sdk_v0.dll</UnoSdkTasksAssembly>
-	</PropertyGroup>
-
-	<PropertyGroup>
 		<!-- We do this to make sure that we include Resizetizer by default. Libraries using Uno.Sdk should have this set to true -->
 		<IsPackable Condition=" '$(IsPackable)' == '' ">$([MSBuild]::ValueOrDefault('$(GeneratePackageOnBuild)', 'false'))</IsPackable>
 
-		<_IsUnoSingleProjectAndLegacy>false</_IsUnoSingleProjectAndLegacy>
-		<_IsUnoSingleProjectAndLegacy Condition=" $(SingleProject) == 'true' OR $(UnoSingleProject) == 'true' ">true</_IsUnoSingleProjectAndLegacy>
+		<_IsUnoSingleProject>false</_IsUnoSingleProject>
+		<_IsUnoSingleProject Condition=" $(UnoSingleProject) == 'true' ">true</_IsUnoSingleProject>
 
 		<_ImplicitRestoreOutputType>$([MSBuild]::ValueOrDefault('$(OutputType)', 'Library'))</_ImplicitRestoreOutputType>
 		<IsUnoHead Condition=" '$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe' ">true</IsUnoHead>
 		<_InitialOutputType>$([MSBuild]::ValueOrDefault('$(OutputType)', 'Library'))</_InitialOutputType>
 		<_InitialOutputType Condition="$(TargetFramework) == '' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">Library</_InitialOutputType>
-		<_IsStandaloneWasmHead>false</_IsStandaloneWasmHead>
-		<_IsStandaloneWasmHead Condition=" $(MSBuildProjectName.EndsWith('.Wasm')) or $(MSBuildProjectName.EndsWith('.WebAssembly')) ">true</_IsStandaloneWasmHead>
 		<_IsExecutable>false</_IsExecutable>
 		<_IsExecutable Condition=" '$(_InitialOutputType)' == 'WinExe' OR '$(_InitialOutputType)' == 'Exe' ">true</_IsExecutable>
 
@@ -39,7 +32,7 @@
 		<PlatformsProjectFolder Condition=" '$(PlatformsProjectFolder)' == '' ">Platforms\</PlatformsProjectFolder>
 		<PlatformsProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(PlatformsProjectFolder)'))</PlatformsProjectFolder>
 		<PlatformsProjectFolder Condition=" !Exists('$(PlatformsProjectFolder)') "></PlatformsProjectFolder>
-		<IsUnoHead Condition="$(_IsUnoSingleProjectAndLegacy) == 'true' AND $(_IsExecutable) == 'true'">true</IsUnoHead>
+		<IsUnoHead Condition="$(_IsUnoSingleProject) == 'true' AND $(_IsExecutable) == 'true'">true</IsUnoHead>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -63,6 +56,12 @@
 		<WindowsProjectFolder Condition=" '$(WindowsProjectFolder)' == '' ">$(PlatformsProjectFolder)Windows\</WindowsProjectFolder>
 		<WindowsProjectFolder>$([MSBuild]::EnsureTrailingSlash('$(WindowsProjectFolder)'))</WindowsProjectFolder>
 		<WindowsProjectFolder Condition=" !Exists('$(WindowsProjectFolder)') ">$([MSBuild]::EnsureTrailingSlash('Windows'))</WindowsProjectFolder>
+
+		<!-- Mac Catalyst and the native macOS head are gone: no head builds a leftover folder of theirs (UNOB0033). -->
+		<_UnoMacCatalystProjectFolder Condition=" Exists('$(PlatformsProjectFolder)MacCatalyst') ">$(PlatformsProjectFolder)MacCatalyst\</_UnoMacCatalystProjectFolder>
+		<_UnoMacCatalystProjectFolder Condition=" '$(_UnoMacCatalystProjectFolder)' == '' AND Exists('MacCatalyst') ">MacCatalyst\</_UnoMacCatalystProjectFolder>
+		<_UnoMacOSProjectFolder Condition=" Exists('$(PlatformsProjectFolder)MacOS') ">$(PlatformsProjectFolder)MacOS\</_UnoMacOSProjectFolder>
+		<_UnoMacOSProjectFolder Condition=" '$(_UnoMacOSProjectFolder)' == '' AND Exists('MacOS') ">MacOS\</_UnoMacOSProjectFolder>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -95,7 +94,7 @@
 	<Import Project="Uno.Implicit.Packages.targets"
 		Condition=" $(DisableImplicitUnoPackages) != 'true' AND $(TargetFramework) != '' " />
 
-	<PropertyGroup Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">
+	<PropertyGroup Condition=" $(_IsUnoSingleProject) == 'true' AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">
 		<OutputType>Library</OutputType>
 	</PropertyGroup>
 
@@ -112,6 +111,10 @@
 			Condition=" $(IsBrowserWasm) != 'true' AND '$(WasmProjectFolder)'!='' " />
 		<_IgnorePlatformFiles Include="$(WindowsProjectFolder)**"
 			Condition=" $(IsWinAppSdk) != 'true' AND '$(WindowsProjectFolder)'!='' " />
+		<_IgnorePlatformFiles Include="$(_UnoMacCatalystProjectFolder)**"
+			Condition=" '$(_UnoMacCatalystProjectFolder)'!='' " />
+		<_IgnorePlatformFiles Include="$(_UnoMacOSProjectFolder)**"
+			Condition=" '$(_UnoMacOSProjectFolder)'!='' " />
 		<Compile Remove="@(_IgnorePlatformFiles)" />
 		<Page Remove="@(_IgnorePlatformFiles)" />
 		<Content Remove="@(_IgnorePlatformFiles)" />
@@ -148,6 +151,21 @@
 			   AND $(TargetFrameworks.Contains('desktop')) ">
 		<ProjectCapability Include="DotNetWslLaunch" />
 	</ItemGroup>
+
+	<Target Name="_UnoWarnRetiredPlatformFolders"
+			BeforeTargets="CoreCompile"
+			Condition=" '$(DesignTimeBuild)' != 'true' AND ('$(_UnoMacCatalystProjectFolder)' != '' OR '$(_UnoMacOSProjectFolder)' != '') ">
+		<Warning Code="UNOB0033"
+				 File="$(MSBuildProjectFullPath)"
+				 HelpLink="https://aka.platform.uno/UNOB0033"
+				 Condition=" '$(_UnoMacCatalystProjectFolder)' != '' "
+				 Text="The '$(_UnoMacCatalystProjectFolder)' folder is not built: Mac Catalyst was removed in Uno Platform 7.0, and macOS is served by the desktop target framework. Move anything still needed to $(PlatformsProjectFolder)Desktop and delete the folder. (See https://aka.platform.uno/UNOB0033)" />
+		<Warning Code="UNOB0033"
+				 File="$(MSBuildProjectFullPath)"
+				 HelpLink="https://aka.platform.uno/UNOB0033"
+				 Condition=" '$(_UnoMacOSProjectFolder)' != '' "
+				 Text="The '$(_UnoMacOSProjectFolder)' folder is not built: the native macOS target was removed, and macOS is served by the desktop target framework. Move anything still needed to $(PlatformsProjectFolder)Desktop and delete the folder. (See https://aka.platform.uno/UNOB0033)" />
+	</Target>
 
 	<!-- Define the default folder for Hot Design previews, so they can be excluded in Release -->
 	<PropertyGroup Condition="'$(UnoDisableHotDesign)' != 'true'">

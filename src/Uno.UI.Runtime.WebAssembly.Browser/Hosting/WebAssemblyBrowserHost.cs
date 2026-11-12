@@ -20,6 +20,9 @@ using Uno.UI.Xaml.Controls.Extensions;
 using Windows.Graphics.Display;
 using Windows.Media.Playback;
 using Microsoft.UI.Xaml.Media;
+using Uno.Helpers;
+using Microsoft.Windows.AppLifecycle;
+using Windows.ApplicationModel.Activation;
 
 namespace Uno.UI.Runtime.WebAssembly.Browser;
 
@@ -30,6 +33,9 @@ internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHos
 	private readonly bool _forceSoftwareRendering;
 	private readonly Func<Application> _appBuilder;
 	private BrowserRenderer? _renderer;
+
+	// Read by the CompositionTarget the first time it needs a backend.
+	Uno.UI.Composition.Drawing.IDrawingFactory? IXamlRootHost.Renderer => _renderer?.Factory;
 	private readonly ManualResetEvent _terminationGate = new(false);
 
 	/// <summary>
@@ -92,6 +98,7 @@ internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHos
 	protected async override Task RunLoop()
 	{
 		var wasRunning = _isRunning;
+		Application? app = null;
 
 		_isRunning = true;
 
@@ -104,7 +111,7 @@ internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHos
 				BrowserHtmlElement.Initialize();
 			}
 
-			var app = _appBuilder();
+			app = _appBuilder();
 			app.Host = this;
 
 			if (!wasRunning)
@@ -128,10 +135,23 @@ internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHos
 
 		try
 		{
+			if (!wasRunning)
+			{
+				// Once per page: AppInstance is shared, so a secondary ALC host must not re-push
+				// the activation the primary one already consumed.
+				TryReportProtocolActivation();
+			}
+
 			Application.Start(CreateApp);
 
 			if (!wasRunning)
 			{
+				// OnLaunched runs after Start returns here; a throw must fault RunAsync as it does on the other hosts.
+				if (app?.DeferredLaunch is { } launch)
+				{
+					await launch;
+				}
+
 				// Secondary ALCs should not block the main loop
 				await Task.Delay(-1);
 			}
@@ -152,6 +172,33 @@ internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHos
 
 	internal void RemoveSplashScreen() => NativeMethods.RemoveLoading();
 
+	/// <summary>
+	/// Reports a protocol activation carried in the page's query string.
+	/// </summary>
+	/// <remarks>
+	/// <c>navigator.registerProtocolHandler</c> always navigates the browser, so a protocol
+	/// activation on WebAssembly is always a cold start. There is no running-app case to report,
+	/// and <see cref="AppInstance.Activated"/> consequently never fires for it on this target.
+	/// </remarks>
+	private static void TryReportProtocolActivation()
+	{
+		var arguments = NativeMethods.GetSearchParams();
+		if (string.IsNullOrEmpty(arguments))
+		{
+			return;
+		}
+
+		if (ProtocolActivationParser.TryParseActivationUri(arguments, out var activationUri, out var remainingArguments))
+		{
+			// The activation key is Uno's transport, not something the app asked to be launched with.
+			Application.SetArguments(remainingArguments);
+
+			AppInstance.GetCurrent().SetOrRaiseActivation(
+				AppActivationArguments.CreateProtocol(
+					new ProtocolActivatedEventArgs(activationUri, ApplicationExecutionState.NotRunning)));
+		}
+	}
+
 	// Graphics initialization runs before the app has launched its window, and the contract is nullable for
 	// exactly that: asserting one exists crashed the browser host before it could render.
 	UIElement? IXamlRootHost.RootElement => Window.CurrentSafe?.RootElement;
@@ -162,5 +209,8 @@ internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHos
 		public static partial void PersistBootstrapperLoader();
 		[JSImport("globalThis.Uno.UI.Runtime.WebAssemblyWindowWrapper.removeLoading")]
 		public static partial void RemoveLoading();
+
+		[JSImport("globalThis.Uno.UI.Runtime.WebAssemblyWindowWrapper.getSearchParams")]
+		public static partial string GetSearchParams();
 	}
 }

@@ -9,7 +9,7 @@ using Uno.UI.Tests.Windows_UI_Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_Conditional_Xaml
 	{
 		[TestMethod]

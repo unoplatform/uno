@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Private.Infrastructure;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -35,6 +36,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var xamlRoot = await completionSource.Task;
 			Assert.AreEqual(Window.Current.Content, xamlRoot.Content);
 			Assert.AreEqual(Window.Current.Content!.RenderSize, xamlRoot.Size);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Loaded_ContentIslandEnvironment_Matches_AppWindow()
+		{
+			if (TestServices.WindowHelper.IsXamlIsland)
+			{
+				return;
+			}
+
+			var border = new Border { Width = 10, Height = 10 };
+			await UITestHelper.Load(border);
+
+			var environment = border.XamlRoot!.ContentIslandEnvironment;
+
+			Assert.IsNotNull(environment);
+			Assert.AreEqual(TestServices.WindowHelper.CurrentTestWindow.AppWindow.Id, environment.AppWindowId);
 		}
 	}
 }

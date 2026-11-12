@@ -9,6 +9,7 @@ using UIKit;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime;
 using Uno.UI.Runtime.AppleUIKit;
 using Uno.UI.Runtime.AppleUIKit.UI.Xaml;
 using Windows.Foundation;
@@ -28,11 +29,13 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	private readonly InputPane _inputPane;
 	private readonly XamlRoot _xamlRoot;
 	private readonly CompositeDisposable _subscriptions = new();
+	private bool _isClosed;
 
 	// Captured at construction: ContentHostOverride is ambient static state that is only valid
 	// while the window is being created, but it is needed again when the scene connects.
 	private readonly bool _isAlcHosted;
 	private readonly bool _requiresScene;
+	private readonly bool _isAppSceneWindow;
 
 	private AppleUIKitWindow? _nativeWindow;
 	private bool _isPendingShow;
@@ -44,13 +47,19 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	{
 		_xamlRoot = xamlRoot;
 		_isAlcHosted = Window.ContentHostOverride is not null;
-		_requiresScene = UnoUISceneDelegate.HasSceneManifest && !_isAlcHosted;
+		_requiresScene = AppleUIKitLifecycle.Mode == AppleUIKitLifecycleMode.ManifestScene && !_isAlcHosted;
+		_isAppSceneWindow = AppleUIKitLifecycle.Mode == AppleUIKitLifecycleMode.AdoptedScene && !_isAlcHosted;
 
 		_mainController = new RootViewController();
 		_mainController.SetXamlRoot(xamlRoot);
 		XamlRootMap.Register(xamlRoot, _mainController);
 		_mainController.View!.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
+		// Initialize the per-window accessibility adapter. Activation is deferred
+		// until the window is actually shown or receives a native activation signal.
+		var accessibility = new AppleUIKitAccessibility(xamlRoot, _mainController);
+		_mainController.SetAccessibility(accessibility);
+
 
 		_inputPane = InputPane.GetForCurrentView();
 
@@ -81,7 +90,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		}
 		else
 		{
-			if (!UnoUISceneDelegate.HasSceneManifest)
+			if (AppleUIKitLifecycle.Mode == AppleUIKitLifecycleMode.App)
 			{
 				Instance ??= this;
 			}
@@ -102,6 +111,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	/// render into their host's window, so they must never own or request one.
 	/// </summary>
 	internal bool RequiresScene => _requiresScene;
+
+	/// <summary>
+	/// Gets a value indicating whether this is the window of an app in <see cref="AppleUIKitLifecycleMode.AdoptedScene"/>
+	/// mode, which is created up front and hosted in the application scene.
+	/// </summary>
+	internal bool IsAppSceneWindow => _isAppSceneWindow;
 
 	public override AppleUIKitWindow? NativeWindow => _nativeWindow;
 
@@ -157,6 +172,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		{
 			return;
 		}
+		AccessibilityRouter.SetActive(_mainController);
 
 		if (_xamlRoot.Content is FrameworkElement { IsLoaded: false } fe)
 		{
@@ -170,6 +186,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 				}
 
 				NativeWindowHelpers.TransitionFromSplashScreen(nativeWindow, _mainController);
+
+				// Guarantee a tree build once the root content is fully loaded.
+				// The constructor-level ScheduleRebuild covers content that already existed
+				// when the adapter was created; this covers the common path where Window.Content
+				// is set before Show() and the root FrameworkElement raises Loaded here.
+				_mainController.TriggerInitialBuild();
 			}
 
 			fe.Loaded += OnLoaded;
@@ -182,11 +204,20 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			}
 
 			NativeWindowHelpers.TransitionFromSplashScreen(nativeWindow, _mainController);
+			_mainController.TriggerInitialBuild();
 		}
 	}
 
 	protected override void CloseCore()
 	{
+		if (_isClosed)
+		{
+			return;
+		}
+
+		_isClosed = true;
+		_mainController.DisposeAccessibility();
+		XamlRootMap.Unregister(_xamlRoot);
 		MarkHidden();
 
 		if (!_isSceneDisconnected &&
@@ -196,6 +227,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			// A secondary window must also tear down its scene, otherwise the OS keeps showing it
 			// in the app switcher after the XAML window is gone.
 			UnoUISceneDelegate.DestroyScene(scene);
+		}
+
+		if (_isAppSceneWindow)
+		{
+			AdoptedSceneBinder.OnWindowClosed(this);
 		}
 
 		SceneWindowRegistry.Remove(this);
@@ -209,8 +245,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		if (MarkVisible())
 		{
 			// The first window returning to the foreground drives the app-level events.
-			Application.Current?.RaiseResuming();
-			Application.Current?.RaiseLeavingBackground(() => OnNativeVisibilityChanged(true));
+			AppleUIKitLifecycle.RaiseAppLeavingBackground(() => OnNativeVisibilityChanged(true));
 		}
 		else
 		{
@@ -224,7 +259,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		if (MarkHidden())
 		{
-			Application.Current?.RaiseEnteredBackground(() => Application.Current?.RaiseSuspending());
+			AppleUIKitLifecycle.RaiseAppEnteredBackground();
 		}
 	}
 
@@ -250,9 +285,45 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_nativeWindow = null;
 	}
 
-	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
+	/// <summary>
+	/// Moves the window into <paramref name="scene"/>, in <see cref="AppleUIKitLifecycleMode.AdoptedScene"/> mode.
+	/// </summary>
+	internal void AttachToScene(UIWindowScene scene)
+	{
+		if (_nativeWindow is not { } window)
+		{
+			return;
+		}
 
-	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
+		window.WindowScene = scene;
+		window.Frame = scene.CoordinateSpace.Bounds;
+
+		// Shown before, possibly in a scene that has since disconnected and hidden it, or made key and visible by
+		// the splash screen before it had a scene.
+		if (WasShown || !window.Hidden)
+		{
+			window.MakeKeyAndVisible();
+		}
+	}
+
+	internal void OnNativeVisibilityChanged(bool visible)
+	{
+		// A scene can enter the foreground before the app shows its window: Show() must still raise the first
+		// VisibilityChanged.
+		if (WasShown)
+		{
+			IsVisible = visible;
+		}
+	}
+
+	internal void OnNativeActivated(CoreWindowActivationState state)
+	{
+		ActivationState = state;
+		if (state != CoreWindowActivationState.Deactivated)
+		{
+			AccessibilityRouter.SetActive(_mainController);
+		}
+	}
 
 	internal void OnNativeClosed() => RaiseClosing();
 

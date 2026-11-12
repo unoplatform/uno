@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -24,18 +23,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		public async Task When_DescribedBy_Set_Then_Peer_Returns_It()
 		{
 			var target = new TextBlock { Text = "Description", Name = "DescTarget" };
-			var described = new TextBox();
+			var described = new TextBox { PlaceholderText = "Enter value" };
 			var panel = new StackPanel { Children = { target, described } };
 			await UITestHelper.Load(panel);
 
-			described.SetValue(AutomationProperties.DescribedByProperty, new List<DependencyObject> { target });
+			AutomationProperties.GetDescribedBy(described).Add(target);
 
 			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(described);
+			var targetPeer = FrameworkElementAutomationPeer.CreatePeerForElement(target);
 			Assert.IsNotNull(peer);
+			Assert.IsNotNull(targetPeer);
 
 			var describedBy = peer.GetDescribedBy()?.ToList();
 			Assert.IsNotNull(describedBy, "DescribedBy must not be null when set");
-			Assert.IsTrue(describedBy.Count > 0, "DescribedBy must include the target peer");
+			Assert.IsTrue(describedBy.Contains(targetPeer), "DescribedBy must include the configured target peer");
 		}
 #endif
 
@@ -49,7 +50,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			var panel = new StackPanel { Children = { controller, controlled } };
 			await UITestHelper.Load(panel);
 
-			controller.SetValue(AutomationProperties.ControlledPeersProperty, new List<UIElement> { controlled });
+			AutomationProperties.GetControlledPeers(controller).Add(controlled);
 
 			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(controller);
 			Assert.IsNotNull(peer);

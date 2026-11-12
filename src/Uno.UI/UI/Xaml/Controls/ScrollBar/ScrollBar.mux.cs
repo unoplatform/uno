@@ -128,7 +128,7 @@ public partial class ScrollBar
 			{
 				strAutomationName = AutomationProperties.GetName(m_tpElementHorizontalLargeIncrease);
 
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALLARGEINCREASE");
 					AutomationProperties.SetName(m_tpElementHorizontalLargeIncrease as RepeatButton, strAutomationName);
@@ -140,7 +140,7 @@ public partial class ScrollBar
 			{
 				strAutomationName = AutomationProperties.GetName(m_tpElementHorizontalSmallIncrease);
 
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALSMALLINCREASE");
 					AutomationProperties.SetName(m_tpElementHorizontalSmallIncrease, strAutomationName);
@@ -153,7 +153,7 @@ public partial class ScrollBar
 			{
 				strAutomationName = AutomationProperties.GetName(m_tpElementHorizontalLargeDecrease);
 
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALLARGEDECREASE");
 					AutomationProperties.SetName(m_tpElementHorizontalLargeDecrease, strAutomationName);
@@ -166,7 +166,7 @@ public partial class ScrollBar
 			{
 				strAutomationName = AutomationProperties.GetName(m_tpElementHorizontalSmallDecrease);
 
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALSMALLDECREASE");
 					AutomationProperties.SetName(m_tpElementHorizontalSmallDecrease, strAutomationName);
@@ -179,7 +179,7 @@ public partial class ScrollBar
 			{
 				strAutomationName = AutomationProperties.GetName(m_tpElementHorizontalThumb);
 
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_HORIZONTALTHUMB");
 					AutomationProperties.SetName(m_tpElementHorizontalThumb, strAutomationName);
@@ -196,7 +196,7 @@ public partial class ScrollBar
 			{
 				strAutomationName = AutomationProperties.GetName(m_tpElementVerticalLargeIncrease);
 
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALALLARGEINCREASE");
 					AutomationProperties.SetName(m_tpElementVerticalLargeIncrease, strAutomationName);
@@ -210,7 +210,7 @@ public partial class ScrollBar
 			{
 				strAutomationName = AutomationProperties.GetName(m_tpElementVerticalSmallIncrease);
 
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALSMALLINCREASE");
 					AutomationProperties.SetName(m_tpElementVerticalSmallIncrease, strAutomationName);
@@ -223,7 +223,7 @@ public partial class ScrollBar
 			{
 				strAutomationName = AutomationProperties.GetName(m_tpElementVerticalLargeDecrease);
 
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALLARGEDECREASE");
 					AutomationProperties.SetName(m_tpElementVerticalLargeDecrease, strAutomationName);
@@ -236,7 +236,7 @@ public partial class ScrollBar
 			{
 				strAutomationName = AutomationProperties.GetName(m_tpElementVerticalSmallDecrease);
 
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALSMALLDECREASE");
 					AutomationProperties.SetName(m_tpElementVerticalSmallDecrease, strAutomationName);
@@ -249,7 +249,7 @@ public partial class ScrollBar
 			{
 				strAutomationName = AutomationProperties.GetName(m_tpElementVerticalThumb);
 
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					strAutomationName = DXamlCore.Current.GetLocalizedResourceString("UIA_SCROLLBAR_VERTICALTHUMB");
 					AutomationProperties.SetName(m_tpElementVerticalThumb as Thumb, strAutomationName);

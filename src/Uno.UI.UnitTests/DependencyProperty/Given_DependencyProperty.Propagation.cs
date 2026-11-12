@@ -23,7 +23,7 @@ using System.Diagnostics;
 
 namespace Uno.UI.Tests.BinderTests.Propagation
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_DependencyProperty_Propagation
 	{
 		[TestInitialize]

@@ -11,13 +11,14 @@ using Windows.UI.Text;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// The default providers' codepoint fallback: what to render when neither the requested family nor the backend's own
+/// The default providers' fallback: what to render when neither the requested family nor the backend's own
 /// installed-font lookup covers a codepoint. Backend-agnostic — it drives the given <see cref="IFontProvider"/>'s own
 /// <see cref="IFontProvider.CreateFont"/>/<see cref="IFont.ContainsGlyph"/>, so both the Skia and managed providers get
 /// the same fallback. Platform-selected at runtime: the browser fetches Noto fonts on demand (no broadly-covering
 /// installed fonts there); Android scans its bundled system fonts; other platforms rely on the backend lookup and add
 /// nothing here. Public so a backend provider (which stands only on this assembly's public seam) can reuse it from its
-/// <see cref="IFontProvider.MatchCharacterAsync"/>; a third-party provider may call it or supply its own fallback.
+/// <see cref="IFontProvider.MatchFamilyAsync"/>/<see cref="IFontProvider.MatchCharacterAsync"/>; a third-party provider
+/// may call it or supply its own fallback.
 /// </summary>
 public static class FontFallback
 {
@@ -58,7 +59,12 @@ public static class FontFallback
 			return null;
 		}
 
-		var font = provider.CreateFont(ReadAllBytes(stream), family, weight, stretch, style, fontSize);
+		IFont? font;
+		using (var file = provider.LoadFontFile(stream))
+		{
+			font = file.CreateFont(family, weight, stretch, style, fontSize);
+		}
+
 		lock (_fetchedGate)
 		{
 			if (_fetched.TryGetValue(key, out var raced))
@@ -98,7 +104,13 @@ public static class FontFallback
 			}
 
 			using var stream = await noto.GetFontStreamForFontFamily(family, weight, stretch, style);
-			var font = stream is null ? null : provider.CreateFont(ReadAllBytes(stream), family, weight, stretch, style, fontSize);
+			IFont? font = null;
+			if (stream is not null)
+			{
+				using var file = provider.LoadFontFile(stream);
+				font = file.CreateFont(family, weight, stretch, style, fontSize);
+			}
+
 			lock (_fetchedGate)
 			{
 				// A concurrent miss may have raced us here; keep whichever instance got stored first so every
@@ -141,7 +153,9 @@ public static class FontFallback
 				IFont? created = null;
 				try
 				{
-					created = provider.CreateFont(File.ReadAllBytes(fonts[i].path), null, weight, stretch, style, fontSize);
+					using var stream = File.OpenRead(fonts[i].path);
+					using var file = provider.LoadFontFile(stream);
+					created = file.CreateFont(null, weight, stretch, style, fontSize);
 				}
 				catch
 				{
@@ -182,9 +196,10 @@ public static class FontFallback
 				{
 					try
 					{
-						var bytes = File.ReadAllBytes(path);
+						using var stream = File.OpenRead(path);
+						using var file = provider.LoadFontFile(stream);
 						// The probe is only used for ContainsGlyph, so the style/size are immaterial.
-						if (provider.CreateFont(bytes, null, new FontWeight(400), FontStretch.Normal, FontStyle.Normal, 16f) is { } probe)
+						if (file.CreateFont(null, new FontWeight(400), FontStretch.Normal, FontStyle.Normal, 16f) is { } probe)
 						{
 							loaded.Add((path, probe));
 						}
@@ -211,17 +226,5 @@ public static class FontFallback
 		{
 			return Array.Empty<string>();
 		}
-	}
-
-	private static byte[] ReadAllBytes(Stream stream)
-	{
-		if (stream is MemoryStream ms && ms.TryGetBuffer(out var seg) && seg.Offset == 0 && seg.Count == seg.Array!.Length)
-		{
-			return seg.Array;
-		}
-
-		using var copy = new MemoryStream();
-		stream.CopyTo(copy);
-		return copy.ToArray();
 	}
 }

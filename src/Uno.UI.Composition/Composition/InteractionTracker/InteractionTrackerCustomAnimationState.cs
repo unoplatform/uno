@@ -143,7 +143,7 @@ internal sealed class InteractionTrackerCustomAnimationState : InteractionTracke
 	{
 		// State changes to inertia with inertia modifiers evaluated using requested velocity as initial velocity.
 		// TODO: inertia modifiers not yet implemented.
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocityInPixelsPerSecond, requestId, isFromPointerWheel: false));
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, velocityInPixelsPerSecond, requestId));
 	}
 
 	internal override void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, int requestId)

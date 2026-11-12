@@ -23,46 +23,99 @@ public partial class CompositionTarget
 {
 	internal static (bool invertNativeElementClipPath, bool applyScalingToNativeElementClipPath) FrameRenderingOptions { get; set; } = (false, true);
 
-	/// <summary>
-	/// The active rendering backend that owns the frame record/present lifecycle. A head may install its own
-	/// (e.g. WebGPU); otherwise it falls back to the registered backend's default, throwing if none is registered.
-	/// </summary>
 	// Per-window backend factory: each CompositionTarget presents through the factory bound to its OWN window's
 	// graphics context. This must be per-window (not a process-wide static) because a GRContext is bound to the
 	// context it was created on (e.g. one GL/Vulkan context per X11 window), so a single renderer cannot be shared
-	// across windows — doing so crashes when one window's context is torn down. Each head installs it per frame.
+	// across windows — doing so crashes when one window's context is torn down.
 	private IDrawingFactory? _renderer;
 
-	internal IDrawingFactory Renderer
-	{
-		get => _renderer
-			?? DrawingRegistration.DefaultRenderer
-			?? throw new global::System.InvalidOperationException(
-				"No graphics backend registered. Register one through the host builder (.GraphicsBackend) and/or the head must set CompositionTarget.Renderer before the first frame.");
-		set
-		{
-			// Invalidate on ANY change, including the first assignment from null: the getter already falls back to a
-			// default renderer, so frames may have been recorded before a head assigns its own (async on WASM/WebGPU).
-			var changed = !ReferenceEquals(_renderer, value);
-			_renderer = value;
+	// Resolved once, on the UI thread: a window keeps its host, so the render thread can read the host's backend
+	// without walking the visual tree.
+	private IXamlRootHost? _host;
 
-			// The retained frame and cached per-visual recordings belong to the previous backend and can't be replayed
-			// by the new one; discard them and request a fresh frame so the tree re-records under the new renderer.
-			if (changed)
+	/// <summary>
+	/// The rendering backend that owns this window's frame record/present lifecycle.
+	/// </summary>
+	internal IDrawingFactory Renderer
+		=> ResolveRenderer()
+			?? throw new global::System.InvalidOperationException(
+				"No graphics backend registered for this window. The host must negotiate one and expose it as IXamlRootHost.Renderer.");
+
+	/// <summary>
+	/// The backend for this window, read from its host whenever one is needed.
+	/// <para>
+	/// Pulled rather than pushed: a host that assigned it while drawing would be claiming the backend AFTER a frame
+	/// could already have been recorded without one. Reading it here cannot race the recording that needs it, so no
+	/// frame is ever recorded under a backend other than the one that presents it.
+	/// </para>
+	/// <para>
+	/// A host can replace its backend, as Android does when a surface is re-created and the old backend disposed.
+	/// Whatever was recorded for the old one is then dropped.
+	/// </para>
+	/// </summary>
+	private IDrawingFactory? ResolveRenderer()
+	{
+		if (_host is null)
+		{
+			var xamlRoot = ContentRoot.VisualTree.RootElement?.XamlRoot;
+			_host = xamlRoot is not null ? XamlRootMap.GetHostForRoot(xamlRoot) : null;
+			if (_host is null)
 			{
-				InvalidateAllRecordings();
+				return null;
 			}
 		}
+
+		var current = _host.Renderer;
+		var previous = Interlocked.Exchange(ref _renderer, current);
+		if (previous is not null && !ReferenceEquals(previous, current))
+		{
+			OnRendererReplaced();
+		}
+
+		return current;
+	}
+
+	private void OnRendererReplaced()
+	{
+		(FrameHold frame, IGeometry nativeElementClipPath, Rect[]? damage)? staleFrame;
+		lock (_frameGate)
+		{
+			staleFrame = _lastRenderedFrame;
+			_lastRenderedFrame = null;
+		}
+		staleFrame?.frame.OnPipelineReleased();
+
+		// This can be the render thread, and walking the tree from there races the UI thread changing it.
+		if (NativeDispatcher.Main.HasThreadAccess)
+		{
+			InvalidateRecordings();
+		}
+		else
+		{
+			NativeDispatcher.Main.Enqueue(InvalidateRecordings, NativeDispatcherPriority.Normal);
+		}
+	}
+
+	private void InvalidateRecordings()
+	{
+		if (ContentRoot?.VisualTree?.RootElement?.Visual is { } rootVisual)
+		{
+			rootVisual.InvalidatePaintRecursive();
+		}
+
+		((ICompositionTarget)this).RequestNewFrame();
+
+		// A request still latched from before the swap absorbs the one above without asking the host for a frame,
+		// and a swap is exactly when the view that request went to may have stopped drawing.
+		AskHostForFrame();
 	}
 
 	// Non-throwing peek at renderer availability. False while a declared backend initializes asynchronously (WASM
 	// WebGPU device import): Render() must SKIP the frame rather than force the throwing renderer getter.
-	private bool HasRenderer => _renderer is not null || DrawingRegistration.DefaultRenderer is not null;
+	private bool HasRenderer => ResolveRenderer() is not null;
 
-	// Visuals record through their own target's backend rather than the process-wide factory; null before one
-	// is registered, where the caller falls back to that factory.
-	global::Uno.UI.Composition.Drawing.IDrawingFactory? ICompositionTarget.Renderer
-		=> _renderer ?? DrawingRegistration.DefaultRenderer;
+	// Visuals record through their own target's backend rather than the process-wide factory.
+	global::Uno.UI.Composition.Drawing.IDrawingFactory? ICompositionTarget.Renderer => ResolveRenderer();
 
 	// Neutral→typed narrowing for phase-2 present: downcast the target to its bound kind and dispatch to the
 	// backend's typed IDrawingFactory<TTarget>.BeginPresent, keeping the single cast Uno-side.
@@ -77,47 +130,6 @@ public partial class CompositionTarget
 			_ => throw new global::System.NotSupportedException(
 				$"The active backend cannot present onto a render target of type {target.GetType().Name}."),
 		};
-
-	private static void InvalidateAllRecordings()
-	{
-		foreach (var kvp in _targets)
-		{
-			var target = kvp.Key;
-
-			(FrameHold frame, IGeometry nativeElementClipPath, Rect[]? damage)? staleFrame;
-			lock (target._frameGate)
-			{
-				staleFrame = target._lastRenderedFrame;
-				target._lastRenderedFrame = null;
-			}
-			if (staleFrame is { } sf)
-			{
-				sf.frame.OnPipelineReleased();
-			}
-
-			// The hosts assign Renderer from their rendering thread, and walking the tree from there races the UI
-			// thread building and tearing down visuals mid-test (a null child, then a NullReferenceException deep
-			// in the walk). A renderer change is rare, so costing it one frame of stale recordings is cheap.
-			if (NativeDispatcher.Main.HasThreadAccess)
-			{
-				InvalidateRecordingsCore(target);
-			}
-			else
-			{
-				NativeDispatcher.Main.Enqueue(() => InvalidateRecordingsCore(target), NativeDispatcherPriority.Normal);
-			}
-		}
-	}
-
-	private static void InvalidateRecordingsCore(CompositionTarget target)
-	{
-		if (target.ContentRoot?.VisualTree?.RootElement?.Visual is { } rootVisual)
-		{
-			rootVisual.InvalidatePaintRecursive();
-		}
-
-		((ICompositionTarget)target).RequestNewFrame();
-	}
 
 	private static readonly long _startTimestamp = Compositor.GetSharedCompositor().TimestampInTicks;
 	// We're using this table as a set with weakref keys. values are always null
@@ -144,11 +156,14 @@ public partial class CompositionTarget
 	private readonly Lock _frameGate = new();
 	private readonly Lock _xamlRootBoundsGate = new();
 
-	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested
+	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested.
+	// The two clip geometry fields must not be static: each composition target (window) has its own
+	// clip, keyed on its own frame, so a static cache lets one window overwrite another's.
+	// On hosts that render each window on its own thread it is also a data race.
 	private Size _lastCanvasSize = Size.Empty;
-	private static IGeometry? _lastNativeClipPath;
+	private IGeometry? _lastNativeClipPath;
 	private float _lastRasterizationScale = 1;
-	private static IGeometry? _lastScaledNativeClipPath;
+	private IGeometry? _lastScaledNativeClipPath;
 
 	// only set on the UI thread and under _frameGate, only read under _frameGate
 	// UNO_FORCE_FULL_REPAINT=1 disables damage-clipped partial repaints (benchmarking: measures true full-frame cost).
@@ -197,6 +212,29 @@ public partial class CompositionTarget
 
 	internal event Action? FrameRendered;
 
+	/// <summary>
+	/// Raised on the presenting thread once a frame reached the swapchain. Diagnostics only (scroll smoothness probe);
+	/// a repeated <see cref="FramePresentedInfo.Sequence"/> means the previous frame was shown again.
+	/// </summary>
+	internal event EventHandler<FramePresentedInfo>? FramePresented;
+
+	private long _recordSequence;
+
+	// Set by Draw, raised once the swapchain presented; only touched from the presenting thread.
+	private (long Sequence, bool Unchanged, bool Partial)? _pendingPresent;
+
+	private void RaiseFramePresented()
+	{
+		if (_pendingPresent is { } pending)
+		{
+			_pendingPresent = null;
+			FramePresented?.Invoke(this, new FramePresentedInfo(pending.Sequence, Stopwatch.GetTimestamp(), pending.Unchanged, pending.Partial));
+		}
+	}
+
+	/// <summary>Sequence number of the frame most recently recorded by <see cref="Render"/>; UI thread only.</summary>
+	internal long LastRecordedSequence => _recordSequence;
+
 	private static event EventHandler<object>? _rendering;
 
 	public static event EventHandler<object>? Rendering
@@ -244,7 +282,7 @@ public partial class CompositionTarget
 		if (!HasRenderer)
 		{
 			// Declared backend still initializing (async WebGPU device import on WASM); skip the frame rather than
-			// fall back to another backend — a fresh frame is requested once the head installs CompositionTarget.Renderer.
+			// fall back to another backend — a fresh frame is requested once the host has one to expose.
 			return;
 		}
 
@@ -342,7 +380,7 @@ public partial class CompositionTarget
 
 			frameDamage.ClampTo(frameRect);
 
-			_lastRenderedFrame = (new FrameHold(frame), path, frameDamage.Detach(damageScale));
+			_lastRenderedFrame = (new FrameHold(frame) { Sequence = ++_recordSequence }, path, frameDamage.Detach(damageScale));
 		}
 
 		_fpsHelper.OnFrameRecorded();
@@ -383,7 +421,7 @@ public partial class CompositionTarget
 		if (nativeVisualsZOrderChanged)
 		{
 			_nativeVisualsInZOrder = nativeVisualsInZOrder;
-			ContentPresenter.OnNativeHostsRenderOrderChanged(nativeVisualsInZOrder);
+			ContentPresenter.OnNativeHostsRenderOrderChanged(this, nativeVisualsInZOrder);
 		}
 
 		FrameRendered?.Invoke();
@@ -429,6 +467,12 @@ public partial class CompositionTarget
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
 		var phaseDrawT0 = _logFramePhases ? Stopwatch.GetTimestamp() : 0;
+
+		// Before borrowing the frame: if the backend was replaced, this drops the frame recorded for the old one.
+		if (ResolveRenderer() is not { } renderer)
+		{
+			return FrameRenderHelper.EmptyClipPath;
+		}
 
 		(FrameHold frame, IGeometry nativeElementClipPath, Rect[]? damage)? lastRenderedFrameNullable;
 		lock (_frameGate)
@@ -494,16 +538,20 @@ public partial class CompositionTarget
 			var useDamage = damageEligible && !overlayEnabled && !_forceFullRepaint && !drawsOutsideDamage && rootTransform is null;
 
 			using var fpsHelperDisposable = _fpsHelper.BeginFrame();
-			using (var present = BeginPresent(Renderer, target, useDamage ? ToDevicePixels(lastRenderedFrame.damage!, rasterizationScale) : default))
+			var presentedUnchanged = false;
+			using (var present = BeginPresent(renderer, target, useDamage ? ToDevicePixels(lastRenderedFrame.damage!, rasterizationScale) : default))
 			{
 				// Detach returns null both for "nothing was damaged" and for "no damage information", but a frame
 				// is only ever recorded with tracking on, so on an unresized frame null means nothing changed. The
 				// target still holds the previous frame, so the clear+replay is skipped rather than repainted whole.
+				// Not under an overlay: it has to land on a fresh frame, or it blends into its last copy.
 				var nothingChanged = !resized
 					&& lastRenderedFrame.damage is null
 					&& preservesContents
 					&& !overlayEnabled
-					&& !_forceFullRepaint;
+					&& !_forceFullRepaint
+					&& !drawsOutsideDamage;
+				presentedUnchanged = nothingChanged;
 
 				// Scaling (DPI) is applied through the neutral session so it works for any backend.
 				present.Save();
@@ -538,6 +586,11 @@ public partial class CompositionTarget
 				// orientation + DPI transform as the content.
 				overlay?.Invoke(present);
 				present.Restore();
+			}
+
+			if (FramePresented is not null)
+			{
+				_pendingPresent = (lastRenderedFrame.frame.Sequence, presentedUnchanged, useDamage);
 			}
 
 			// This frame's damage is now presented; drop it so Render's carry-forward doesn't re-damage it next frame.
@@ -654,6 +707,8 @@ public partial class CompositionTarget
 
 		public IRenderRecord Record { get; } = record;
 
+		public long Sequence { get; init; }
+
 		public void Retain()
 		{
 			lock (_gate)
@@ -764,3 +819,9 @@ public partial class CompositionTarget
 		}
 	}
 }
+
+/// <param name="Sequence">The presented frame's <see cref="CompositionTarget.LastRecordedSequence"/>.</param>
+/// <param name="Timestamp">A <see cref="Stopwatch.GetTimestamp"/> taken right after the swapchain presented.</param>
+/// <param name="Unchanged">The frame carried no damage, so the target was left as it was.</param>
+/// <param name="Partial">Only the frame's damage region was repainted; the rest of the target was kept.</param>
+internal readonly record struct FramePresentedInfo(long Sequence, long Timestamp, bool Unchanged, bool Partial);

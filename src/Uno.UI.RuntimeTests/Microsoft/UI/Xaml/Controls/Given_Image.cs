@@ -73,11 +73,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var yellowBounds = ImageAssert.GetColorBounds(screenshot, Color.FromArgb(255, 255, 249, 75), tolerance: 10); // 20x20
 			var pinkBounds = ImageAssert.GetColorBounds(screenshot, Color.FromArgb(255, 255, 35, 233), tolerance: 10); // 12x20
 
-			Assert.AreEqual(new Rect(20, 20, 59, 59), orangeBounds);
-			Assert.AreEqual(new Rect(20, 30, 59, 19), redBounds);
-			Assert.AreEqual(new Rect(20, 40, 19, 19), greenBounds);
-			Assert.AreEqual(new Rect(44, 40, 19, 19), yellowBounds);
-			Assert.AreEqual(new Rect(68, 40, 11, 19), pinkBounds);
+			// The image is drawn at a fraction of its size: a filtered downscale blends the pixel on each edge between two
+			// bands, so a band may lose up to a pixel on every side it shares with another colour.
+			AssertBandBounds(new Rect(20, 20, 59, 59), orangeBounds);
+			AssertBandBounds(new Rect(20, 30, 59, 19), redBounds);
+			AssertBandBounds(new Rect(20, 40, 19, 19), greenBounds);
+			AssertBandBounds(new Rect(44, 40, 19, 19), yellowBounds);
+			AssertBandBounds(new Rect(68, 40, 11, 19), pinkBounds);
+
+			static void AssertBandBounds(Rect expected, Rect actual)
+			{
+				var off = Math.Max(
+					Math.Max(Math.Abs(actual.Left - expected.Left), Math.Abs(actual.Top - expected.Top)),
+					Math.Max(Math.Abs(actual.Right - expected.Right), Math.Abs(actual.Bottom - expected.Bottom)));
+				Assert.IsTrue(off <= 1, $"Expected {expected} (each edge within 1px), got {actual}.");
+			}
 		}
 
 		[TestMethod]
@@ -494,6 +504,156 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
 			TestServices.WindowHelper.WindowContent = image;
 			await WindowHelper.WaitForLoaded(image);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // No sockets in the browser
+		public async Task When_SVGImageSource_Assigned_While_Opening()
+		{
+			// The source starts opening as soon as its UriSource is set, so an Image given the source in the same tick
+			// subscribes while that open is still in flight. A slow server keeps it in flight deterministically.
+			const string svg = "<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><rect width='100' height='100' fill='red'/></svg>";
+			using var server = new System.Net.Sockets.TcpListener(System.Net.IPAddress.Loopback, 0);
+			server.Start();
+			var port = ((System.Net.IPEndPoint)server.LocalEndpoint).Port;
+			var serving = ServeOnceAsync(server, svg);
+
+			var svgImageSource = new SvgImageSource(new Uri($"http://127.0.0.1:{port}/red.svg"));
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			var imageOpened = false;
+			image.ImageOpened += (_, _) => imageOpened = true;
+
+			var border = new Border() { Background = new SolidColorBrush(Colors.White), Child = image };
+			await UITestHelper.Load(border);
+			await serving;
+			await WindowHelper.WaitFor(() => imageOpened);
+
+			var screenshot = await UITestHelper.ScreenShot(border);
+			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height / 2, Colors.Red, tolerance: 10);
+
+			static async Task ServeOnceAsync(System.Net.Sockets.TcpListener server, string body)
+			{
+				using var client = await server.AcceptTcpClientAsync();
+				using var stream = client.GetStream();
+				var buffer = new byte[4096];
+				_ = await stream.ReadAsync(buffer);
+				await Task.Delay(200);
+
+				var payload = Encoding.UTF8.GetBytes(body);
+				var header = Encoding.ASCII.GetBytes($"HTTP/1.1 200 OK\r\nContent-Type: image/svg+xml\r\nContent-Length: {payload.Length}\r\nConnection: close\r\n\r\n");
+				try
+				{
+					await stream.WriteAsync(header);
+					await stream.WriteAsync(payload);
+				}
+				catch (System.IO.IOException)
+				{
+					// The client gave up on the request; the assertions report the outcome.
+				}
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(false, DisplayName = "Same Image")]
+		[DataRow(true, DisplayName = "Another Image")]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.NativeWinUI)] // Loopback image server
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25114")]
+		public async Task When_Source_Shown_Again_While_It_Opens_Again_Then_AutoSized_Image_Keeps_Its_Size(bool anotherImage)
+		{
+			// A source nothing displayed for more than the release delay (1 s, as on WinUI) may have released its pixels: with the
+			// bitmap cache off, its URI downloads again once it is shown again. An auto-sized Image showing it then, the one that
+			// showed it before or another one (a recycled item), must have the image's size meanwhile, not lay out at 0×0.
+			using var server = await GatedImageServer.StartAsync();
+			server.ReleaseResponses();
+#if HAS_UNO
+			var cacheWasEnabled = FeatureConfiguration.Image.EnableBitmapImageCache;
+			var maxUndisplayedImageBytes = FeatureConfiguration.Image.MaxUndisplayedImageBytes;
+#endif
+
+			try
+			{
+#if HAS_UNO
+				FeatureConfiguration.Image.EnableBitmapImageCache = false;
+				FeatureConfiguration.Image.MaxUndisplayedImageBytes = 0; // Released once the pass after it left ends.
+#endif
+				var bitmap = new BitmapImage(server.Uri);
+				var image = CreateAutoSizedImage(bitmap);
+				var opened = false;
+				image.ImageOpened += (_, _) => opened = true;
+				var panel = new StackPanel { Children = { image } };
+
+				await UITestHelper.Load(panel, x => x.IsLoaded);
+				await WindowHelper.WaitFor(() => opened, message: "Pre-condition: the image opens");
+				await WindowHelper.WaitForIdle();
+				var size = new Size(image.ActualWidth, image.ActualHeight);
+				Assert.IsTrue(size.Width > 0 && size.Height > 0, "Pre-condition: the Image takes the size of its image");
+
+				server.HoldResponses();
+				panel.Children.Remove(image);
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(1500);
+
+				// The layout changed meanwhile, so a returning Image is measured again.
+				panel.Width = 300;
+				var shown = anotherImage ? CreateAutoSizedImage(bitmap) : image;
+				panel.Children.Add(shown);
+				await UITestHelper.WaitForLoaded(shown, x => x.IsLoaded);
+				await WindowHelper.WaitForIdle();
+#if HAS_UNO
+				await WindowHelper.WaitFor(() => server.RequestCount == 2, message: "Pre-condition: the released image downloads again");
+				await WindowHelper.WaitForIdle();
+#endif
+				Assert.AreEqual(size, new Size(shown.ActualWidth, shown.ActualHeight), "The Image has the image's size while its source opens again");
+
+				server.ReleaseResponses();
+#if HAS_UNO
+				await WindowHelper.WaitFor(() => bitmap.IsOpened, message: "Pre-condition: the source opens again");
+#endif
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(size, new Size(shown.ActualWidth, shown.ActualHeight), "The Image keeps that size once its source opened again");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+#if HAS_UNO
+				FeatureConfiguration.Image.EnableBitmapImageCache = cacheWasEnabled;
+				FeatureConfiguration.Image.MaxUndisplayedImageBytes = maxUndisplayedImageBytes;
+#endif
+			}
+
+			static Image CreateAutoSizedImage(ImageSource source) => new Image
+			{
+				Stretch = Stretch.None,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Source = source,
+			};
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25114")]
+		public async Task When_Image_Never_In_Tree_Then_Source_Not_Opened()
+		{
+			// As on WinUI, an Image opens its source once it is in the live tree.
+			var bitmap = new BitmapImage();
+			var opened = 0;
+			var failed = 0;
+			bitmap.ImageOpened += (_, _) => opened++;
+			bitmap.ImageFailed += (_, _) => failed++;
+			bitmap.UriSource = new Uri("ms-appx:///Assets/square100.png");
+			var image = new Image { Source = bitmap };
+
+			await Task.Delay(1000);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, opened, "An Image outside the tree must not open its source");
+			Assert.AreEqual(0, failed, "An Image outside the tree must not open its source");
+
+			await UITestHelper.Load(image);
+			await WindowHelper.WaitFor(() => opened == 1, message: "The Image opens its source once in the tree");
+			WindowHelper.WindowContent = null;
 		}
 
 		[TestMethod]

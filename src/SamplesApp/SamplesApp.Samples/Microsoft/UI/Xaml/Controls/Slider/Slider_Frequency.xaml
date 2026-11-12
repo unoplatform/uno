@@ -20,7 +20,6 @@
             Minimum="0"
             SnapsTo="StepValues"
             StepFrequency="1"
-            Style="{StaticResource XamlDefaultSlider}"
             Value="{Binding [SliderValue], Mode=TwoWay}" />
         <TextBlock>
             <Run Text="Horizontal Value: " />

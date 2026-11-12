@@ -30,13 +30,19 @@ internal static class FontDetailsCache
 		FontStyle Style,
 		float FontSize);
 
-	private static readonly Dictionary<FontEntry, Task<IFont?>> _fontCache = new();
+	// FontSize is continuous, so an animation requests an unbounded number of entries. Two generations keep the cache
+	// O(1) and bounded: a full generation becomes the previous one, and whatever is still in use moves back on its next
+	// lookup. Dropped fonts are only re-created; the typefaces behind them stay with the font provider.
+	private const int MaxFontsPerGeneration = 512;
+
+	private static Dictionary<FontEntry, (FontDetails details, Task<FontDetails> loadedTask)> _fonts = new();
+	private static Dictionary<FontEntry, (FontDetails details, Task<FontDetails> loadedTask)> _previousFonts = new();
 	private static readonly object _fontCacheGate = new();
 
-	// Bytes of loaded URI fonts, keyed by the manifest-resolved uri (which is the source uri when there is no
+	// Loaded URI font files, keyed by the manifest-resolved uri (which is the source uri when there is no
 	// manifest). An IFont bakes the size, so a new size of an already-loaded file must resolve synchronously —
 	// otherwise it briefly renders the default font (flicker) and the memoized sync FontDetails stays wrong.
-	private static readonly Dictionary<string, byte[]> _fontDataByUri = new();
+	private static readonly Dictionary<string, IFontFile> _fontFileByUri = new();
 	// Manifest resolution per (source uri, weight, style, stretch): lets a warm font skip the async
 	// .manifest probe so the whole resolution completes synchronously.
 	private static readonly Dictionary<(string SourceUri, int Weight, FontStyle Style, FontStretch Stretch), Uri> _manifestUriCache = new();
@@ -87,7 +93,7 @@ internal static class FontDetailsCache
 		return resolved;
 	}
 
-	private static async Task<byte[]?> LoadFontBytesAsync(Uri uri)
+	private static async Task<IFontFile?> LoadFontFileAsync(Uri uri)
 	{
 		if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Debug))
 		{
@@ -97,9 +103,8 @@ internal static class FontDetailsCache
 		try
 		{
 			using var stream = await AppDataUriEvaluator.ToStream(uri, CancellationToken.None);
-			using var buffer = new MemoryStream();
-			await stream.CopyToAsync(buffer, CancellationToken.None);
-			return buffer.ToArray();
+			// LoadFontFile reads synchronously; keep that file I/O off the UI thread, as the async copy did.
+			return await Task.Run(() => FontProvider.LoadFontFile(stream));
 		}
 		catch (Exception e)
 		{
@@ -133,62 +138,44 @@ internal static class FontDetailsCache
 			// its IFont without ever falling back to the default font.
 			var resolvedUri = await ResolveManifestUriAsync(uri, weight, style, stretch);
 
-			byte[]? cachedData;
+			IFontFile? fontFile;
 			lock (_fontDataGate)
 			{
-				_fontDataByUri.TryGetValue(resolvedUri.OriginalString, out cachedData);
+				_fontFileByUri.TryGetValue(resolvedUri.OriginalString, out fontFile);
 			}
 
-			if (cachedData is null)
+			if (fontFile is null)
 			{
-				cachedData = await LoadFontBytesAsync(resolvedUri);
-				if (cachedData is null)
+				fontFile = await LoadFontFileAsync(resolvedUri);
+				if (fontFile is null)
 				{
 					return null;
 				}
 
 				lock (_fontDataGate)
 				{
-					_fontDataByUri[resolvedUri.OriginalString] = cachedData;
+					// Concurrent first loads of one file (e.g. several preloaded styles) must share one copy.
+					if (_fontFileByUri.TryGetValue(resolvedUri.OriginalString, out var raced))
+					{
+						fontFile.Dispose();
+						fontFile = raced;
+					}
+					else
+					{
+						_fontFileByUri[resolvedUri.OriginalString] = fontFile;
+					}
 				}
 			}
 
-			return manager.CreateFont(cachedData, familyNameHint, weight, stretch, style, fontSize);
+			return fontFile.CreateFont(familyNameHint, weight, stretch, style, fontSize);
 		}
 
-		// A family the platform does not have may still be fetchable by name -- master consulted the fallback
-		// source before the platform lookup, which is the only way a browser resolves a named Noto family.
-		if (await FontFallback.MatchFamilyAsync(manager, name, weight, stretch, style, fontSize) is { } fetched)
-		{
-			return fetched;
-		}
-
-		return manager.MatchFamily(name, weight, stretch, style, fontSize);
+		return await manager.MatchFamilyAsync(name, weight, stretch, style, fontSize);
 	}
 
-	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<FontDetails> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((
-		string? name,
-		float fontSize,
-		FontWeight weight,
-		FontStretch stretch,
-		FontStyle style) =>
+	private static (FontDetails details, Task<FontDetails> loadedTask) CreateFont(FontEntry key, FontWeight weight, FontStretch stretch, FontStyle style)
 	{
-		if (name == null || string.Equals(name, "XamlAutoFontFamily", StringComparison.OrdinalIgnoreCase))
-		{
-			name = FeatureConfiguration.Font.DefaultTextFontFamily;
-		}
-
-		var key = new FontEntry(name, weight.Weight, stretch, style, fontSize);
-
-		Task<IFont?> fontTask;
-		lock (_fontCacheGate)
-		{
-			if (!_fontCache.TryGetValue(key, out var nullableTask))
-			{
-				_fontCache[key] = nullableTask = GetFontInternal(name, weight, stretch, style, fontSize);
-			}
-			fontTask = nullableTask;
-		}
+		var fontTask = GetFontInternal(key.Name, weight, stretch, style, key.FontSize);
 
 		var canChange = !fontTask.IsCompleted; // don't read from task.IsCompleted again, it could've changed
 		var font = !canChange ? fontTask.Result : null;
@@ -202,14 +189,13 @@ internal static class FontDetailsCache
 					: $"{key} could not be found, using system default");
 			}
 
-			font = FontProvider.MatchFamily(FeatureConfiguration.Font.DefaultTextFontFamily, weight, stretch, style, fontSize)
-				?? FontProvider.GetDefaultFont(weight, stretch, style, fontSize);
+			font = FontProvider.MatchFamily(FeatureConfiguration.Font.DefaultTextFontFamily, weight, stretch, style, key.FontSize)
+				?? FontProvider.GetDefaultFont(weight, stretch, style, key.FontSize);
 		}
 
-		var details = FontDetails.Create(font, fontSize);
-		var detailsTask = AwaitDetails(fontTask, details, key, fontSize);
-		return (details, detailsTask);
-	});
+		var details = FontDetails.Create(font, key.FontSize);
+		return (details, AwaitDetails(fontTask, details, key, key.FontSize));
+	}
 
 	private static async Task<FontDetails> AwaitDetails(Task<IFont?> task, FontDetails fallback, FontEntry key, float fontSize)
 	{
@@ -243,7 +229,37 @@ internal static class FontDetailsCache
 		float fontSize,
 		FontWeight weight,
 		FontStretch stretch,
-		FontStyle style) => _getFont(name, fontSize, weight, stretch, style);
+		FontStyle style)
+	{
+		if (name == null || string.Equals(name, "XamlAutoFontFamily", StringComparison.OrdinalIgnoreCase))
+		{
+			name = FeatureConfiguration.Font.DefaultTextFontFamily;
+		}
+
+		var key = new FontEntry(name, weight.Weight, stretch, style, fontSize);
+
+		lock (_fontCacheGate)
+		{
+			if (_fonts.TryGetValue(key, out var font))
+			{
+				return font;
+			}
+
+			if (!_previousFonts.Remove(key, out font))
+			{
+				font = CreateFont(key, weight, stretch, style);
+			}
+
+			if (_fonts.Count >= MaxFontsPerGeneration)
+			{
+				_previousFonts = _fonts;
+				_fonts = new();
+			}
+
+			_fonts[key] = font;
+			return font;
+		}
+	}
 
 	public static Task<FontDetails?> GetFontForCodepoint(
 		int codepoint,

@@ -22,9 +22,8 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("SamplesApp.Windows")]
 
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics2DSK")]
-[assembly: InternalsVisibleTo("Uno.UI.Lottie")]
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DGL")]
+[assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DWebGpu")]
 
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp")]
-[assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]

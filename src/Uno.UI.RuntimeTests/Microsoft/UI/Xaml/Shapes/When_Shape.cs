@@ -275,6 +275,110 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 		}
 
 		[TestMethod]
+		public async Task When_StrokeDashArray_Then_Relative_To_StrokeThickness()
+		{
+			// XAML dashes are multiples of StrokeThickness: {2, 2} at thickness 5 alternates every 10px,
+			// and every 20px once the thickness becomes 10.
+			var container = new Grid { Width = 220, Height = 40, Background = new SolidColorBrush(Colors.White) };
+			var line = new Line
+			{
+				X1 = 10,
+				Y1 = 20,
+				X2 = 210,
+				Y2 = 20,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 5,
+				StrokeDashArray = new DoubleCollection { 2, 2 },
+			};
+			container.Children.Add(line);
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+			for (var i = 0; i < 8; i++)
+			{
+				ImageAssert.HasColorAt(screenshot, 15 + i * 10, 20, i % 2 == 0 ? Colors.Red : Colors.White, tolerance: 30);
+			}
+
+			line.StrokeThickness = 10;
+			await UITestHelper.WaitForIdle();
+			screenshot = await UITestHelper.ScreenShot(container);
+			for (var i = 0; i < 4; i++)
+			{
+				ImageAssert.HasColorAt(screenshot, 20 + i * 20, 20, i % 2 == 0 ? Colors.Red : Colors.White, tolerance: 30);
+			}
+		}
+
+		// Dashes scale by the declared StrokeThickness, not the layout-rounded one the stroke is drawn with.
+		[TestMethod]
+		public async Task When_StrokeThickness_Fractional_Then_Dashes_Use_Declared_Thickness()
+		{
+			var container = new Grid { Width = 220, Height = 40, Background = new SolidColorBrush(Colors.White) };
+			container.Children.Add(new Line
+			{
+				X1 = 10,
+				Y1 = 20,
+				X2 = 210,
+				Y2 = 20,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 2.6,
+				StrokeDashArray = new DoubleCollection { 5, 5 },
+			});
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// 13px dashes and gaps.
+			for (var i = 0; i < 12; i++)
+			{
+				ImageAssert.HasColorAt(screenshot, 16 + i * 13, 20, i % 2 == 0 ? Colors.Red : Colors.White, tolerance: 30);
+			}
+		}
+
+		// WinUI's EllipseGeometry figure starts at 3 o'clock, so that is where its dash pattern begins.
+		[TestMethod]
+		public async Task When_EllipseGeometry_Dashed_Then_Pattern_Starts_At_Three_OClock()
+		{
+			var container = new Grid { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.White) };
+			container.Children.Add(new Path
+			{
+				Data = new EllipseGeometry { Center = new Point(50, 50), RadiusX = 40, RadiusY = 40 },
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 4,
+				StrokeDashArray = new DoubleCollection { 1.5, 500 },
+			});
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			ImageAssert.HasColorAt(screenshot, 90, 53, Colors.Red, tolerance: 30);
+			ImageAssert.HasColorAt(screenshot, 53, 10, Colors.White, tolerance: 30);
+		}
+
+		// WinUI starts a rounded Rectangle's figure, and so its dash pattern, where the top-left arc begins.
+		[TestMethod]
+		public async Task When_Rectangle_Rounded_Dashed_Then_Pattern_Starts_At_Top_Left_Arc()
+		{
+			var container = new Grid { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.White) };
+			container.Children.Add(new Rectangle
+			{
+				Width = 84,
+				Height = 84,
+				RadiusX = 20,
+				RadiusY = 20,
+				Stroke = new SolidColorBrush(Colors.Red),
+				StrokeThickness = 4,
+				StrokeDashArray = new DoubleCollection { 1.5, 500 },
+			});
+
+			await UITestHelper.Load(container);
+			var screenshot = await UITestHelper.ScreenShot(container);
+
+			// The outline is inset by half the thickness: the arc starts at (10, 30) and ends at (30, 10).
+			ImageAssert.HasColorAt(screenshot, 10, 27, Colors.Red, tolerance: 30);
+			ImageAssert.HasColorAt(screenshot, 33, 10, Colors.White, tolerance: 30);
+		}
+
+		[TestMethod]
 		public async Task When_StrokeLineCap_Properties_Are_Set()
 		{
 			// Verify that setting cap properties doesn't crash and the properties are stored correctly
@@ -834,6 +938,78 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 			Assert.IsTrue(MathEx.ApproxEqual(100, SUT.LayoutSlotWithMarginsAndAlignments.Height, 1E-3));
 		}
 #endif
+
+		[TestMethod]
+		public void When_Fill_Default_Is_Null()
+		{
+			Assert.IsNull(new Rectangle().Fill);
+			Assert.IsNull(new Ellipse().Fill);
+			Assert.IsNull(new Path().Fill);
+			Assert.IsNull(new Line().Fill);
+			Assert.IsNull(new Polygon().Fill);
+			Assert.IsNull(new Polyline().Fill);
+		}
+
+		[TestMethod]
+		public void When_Fill_Set_To_Null_Explicitly()
+		{
+			var sut = new Rectangle { Fill = new SolidColorBrush(Colors.Red) };
+			Assert.IsNotNull(sut.Fill);
+
+			sut.Fill = null;
+			Assert.IsNull(sut.Fill);
+
+			sut.Fill = new SolidColorBrush(Colors.Red);
+			sut.ClearValue(Shape.FillProperty);
+			Assert.IsNull(sut.Fill);
+		}
+
+		[TestMethod]
+		public void When_Fill_Set_On_One_Shape_Others_Stay_Unfilled()
+		{
+			var existingRectangle = new Rectangle();
+			var existingEllipse = new Ellipse();
+
+			var sut = new Rectangle { Fill = new SolidColorBrush(Colors.Red) };
+
+			Assert.IsNotNull(sut.Fill);
+			Assert.IsNull(existingRectangle.Fill);
+			Assert.IsNull(existingEllipse.Fill);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_Fill_Null_Or_Transparent_HitTesting()
+		{
+#if HAS_UNO
+			var noFillNoStroke = new Rectangle { Name = "NoFillNoStroke", Width = 40, Height = 40 };
+			var transparentFill = new Rectangle { Name = "TransparentFill", Width = 40, Height = 40, Fill = new SolidColorBrush(Colors.Transparent) };
+			var strokeOnly = new Rectangle { Name = "StrokeOnly", Width = 40, Height = 40, Stroke = new SolidColorBrush(Colors.Black), StrokeThickness = 2 };
+
+			var root = new StackPanel { Name = "Root", Background = new SolidColorBrush(Colors.Transparent), Spacing = 20, Padding = new Thickness(20) };
+			root.Children.Add(noFillNoStroke);
+			root.Children.Add(transparentFill);
+			root.Children.Add(strokeOnly);
+
+			using var resetWindowContent = UITestHelper.ResetWindowContent();
+			TestServices.WindowHelper.WindowContent = root;
+			await TestServices.WindowHelper.WaitForLoaded(root);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			static Point Center(FrameworkElement e) => e.TransformToVisual(null).TransformPoint(new Point(e.ActualWidth / 2, e.ActualHeight / 2));
+			static Point TopEdge(FrameworkElement e) => e.TransformToVisual(null).TransformPoint(new Point(e.ActualWidth / 2, 1));
+
+			static string HitName(Point p)
+				=> (VisualTreeHelper.HitTest(p, TestServices.WindowHelper.XamlRoot?.VisualTree.RootElement).element as FrameworkElement)?.Name ?? string.Empty;
+
+			Assert.AreEqual("Root", HitName(Center(noFillNoStroke)));
+			Assert.AreEqual("TransparentFill", HitName(Center(transparentFill)));
+			Assert.AreEqual("Root", HitName(Center(strokeOnly)), "A null Fill interior must not be hit.");
+			Assert.AreEqual("StrokeOnly", HitName(TopEdge(strokeOnly)), "The stroke itself must be hit.");
+#else
+			await Task.CompletedTask;
+#endif
+		}
 
 #if HAS_UNO
 		[TestMethod]

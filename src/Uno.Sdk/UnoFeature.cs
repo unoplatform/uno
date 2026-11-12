@@ -67,7 +67,13 @@ public enum UnoFeature
 	Logging,
 
 	[UnoArea(UnoArea.Extensions)]
+	MauiNativeEmbedding,
+
+	[UnoArea(UnoArea.Core)]
 	MauiEmbedding,
+
+	[UnoArea(UnoArea.Core)]
+	Retarget,
 
 	[UnoArea(UnoArea.Extensions)]
 	MVUX,
@@ -100,16 +106,13 @@ public enum UnoFeature
 
 	Mvvm,
 
-	Prism,
+	Reactor,
 
 	[UnoArea(UnoArea.Core)]
 	Skia,
 
 	[UnoArea(UnoArea.Core)]
 	WebGpu,
-
-	[UnoArea(UnoArea.Core)]
-	Lottie,
 
 	[UnoArea(UnoArea.Core)]
 	Svg,

@@ -1,0 +1,52 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--  Checked toggles use a subtle fill, not the accent fill. Merged per element (header, pane), never at the shell root: it would restyle the samples' toggles.  -->
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="AppBarToggleButtonBackgroundChecked" Color="{ThemeResource SubtleFillColorSecondary}" />
+            <SolidColorBrush x:Key="AppBarToggleButtonBackgroundCheckedPointerOver" Color="{ThemeResource SubtleFillColorTertiary}" />
+            <SolidColorBrush x:Key="AppBarToggleButtonBackgroundCheckedPressed" Color="{ThemeResource SubtleFillColorTertiary}" />
+            <SolidColorBrush x:Key="AppBarToggleButtonBackgroundCheckedDisabled" Color="{ThemeResource SubtleFillColorDisabled}" />
+            <SolidColorBrush x:Key="AppBarToggleButtonForegroundChecked" Color="{ThemeResource TextFillColorPrimary}" />
+            <SolidColorBrush x:Key="AppBarToggleButtonForegroundCheckedPointerOver" Color="{ThemeResource TextFillColorPrimary}" />
+            <SolidColorBrush x:Key="AppBarToggleButtonForegroundCheckedPressed" Color="{ThemeResource TextFillColorSecondary}" />
+            <SolidColorBrush x:Key="AppBarToggleButtonForegroundCheckedDisabled" Color="{ThemeResource TextFillColorDisabled}" />
+            <SolidColorBrush x:Key="AppBarToggleButtonBorderBrushChecked" Color="{ThemeResource ControlFillColorTransparent}" />
+            <SolidColorBrush x:Key="AppBarToggleButtonBorderBrushCheckedPointerOver" Color="{ThemeResource ControlFillColorTransparent}" />
+            <SolidColorBrush x:Key="ToggleButtonBackgroundChecked" Color="{ThemeResource SubtleFillColorSecondary}" />
+            <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedPointerOver" Color="{ThemeResource SubtleFillColorTertiary}" />
+            <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedPressed" Color="{ThemeResource SubtleFillColorTertiary}" />
+            <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedDisabled" Color="{ThemeResource SubtleFillColorDisabled}" />
+            <SolidColorBrush x:Key="ToggleButtonForegroundChecked" Color="{ThemeResource TextFillColorPrimary}" />
+            <SolidColorBrush x:Key="ToggleButtonForegroundCheckedPointerOver" Color="{ThemeResource TextFillColorPrimary}" />
+            <SolidColorBrush x:Key="ToggleButtonForegroundCheckedPressed" Color="{ThemeResource TextFillColorSecondary}" />
+            <SolidColorBrush x:Key="ToggleButtonForegroundCheckedDisabled" Color="{ThemeResource TextFillColorDisabled}" />
+            <SolidColorBrush x:Key="ToggleButtonBorderBrushChecked" Color="{ThemeResource ControlStrokeColorDefault}" />
+            <SolidColorBrush x:Key="ToggleButtonBorderBrushCheckedPointerOver" Color="{ThemeResource ControlStrokeColorDefault}" />
+            <SolidColorBrush x:Key="ToggleButtonBorderBrushCheckedPressed" Color="{ThemeResource ControlStrokeColorDefault}" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="AppBarToggleButtonBackgroundChecked" Color="{ThemeResource SubtleFillColorSecondary}" />
+            <SolidColorBrush x:Key="AppBarToggleButtonBackgroundCheckedPointerOver" Color="{ThemeResource SubtleFillColorTertiary}" />
+            <SolidColorBrush x:Key="AppBarToggleButtonBackgroundCheckedPressed" Color="{ThemeResource SubtleFillColorTertiary}" />
+            <SolidColorBrush x:Key="AppBarToggleButtonBackgroundCheckedDisabled" Color="{ThemeResource SubtleFillColorDisabled}" />
+            <SolidColorBrush x:Key="AppBarToggleButtonForegroundChecked" Color="{ThemeResource TextFillColorPrimary}" />
+            <SolidColorBrush x:Key="AppBarToggleButtonForegroundCheckedPointerOver" Color="{ThemeResource TextFillColorPrimary}" />
+            <SolidColorBrush x:Key="AppBarToggleButtonForegroundCheckedPressed" Color="{ThemeResource TextFillColorSecondary}" />
+            <SolidColorBrush x:Key="AppBarToggleButtonForegroundCheckedDisabled" Color="{ThemeResource TextFillColorDisabled}" />
+            <SolidColorBrush x:Key="AppBarToggleButtonBorderBrushChecked" Color="{ThemeResource ControlFillColorTransparent}" />
+            <SolidColorBrush x:Key="AppBarToggleButtonBorderBrushCheckedPointerOver" Color="{ThemeResource ControlFillColorTransparent}" />
+            <SolidColorBrush x:Key="ToggleButtonBackgroundChecked" Color="{ThemeResource SubtleFillColorSecondary}" />
+            <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedPointerOver" Color="{ThemeResource SubtleFillColorTertiary}" />
+            <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedPressed" Color="{ThemeResource SubtleFillColorTertiary}" />
+            <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedDisabled" Color="{ThemeResource SubtleFillColorDisabled}" />
+            <SolidColorBrush x:Key="ToggleButtonForegroundChecked" Color="{ThemeResource TextFillColorPrimary}" />
+            <SolidColorBrush x:Key="ToggleButtonForegroundCheckedPointerOver" Color="{ThemeResource TextFillColorPrimary}" />
+            <SolidColorBrush x:Key="ToggleButtonForegroundCheckedPressed" Color="{ThemeResource TextFillColorSecondary}" />
+            <SolidColorBrush x:Key="ToggleButtonForegroundCheckedDisabled" Color="{ThemeResource TextFillColorDisabled}" />
+            <SolidColorBrush x:Key="ToggleButtonBorderBrushChecked" Color="{ThemeResource ControlStrokeColorDefault}" />
+            <SolidColorBrush x:Key="ToggleButtonBorderBrushCheckedPointerOver" Color="{ThemeResource ControlStrokeColorDefault}" />
+            <SolidColorBrush x:Key="ToggleButtonBorderBrushCheckedPressed" Color="{ThemeResource ControlStrokeColorDefault}" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

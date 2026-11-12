@@ -15,7 +15,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Media_Animation
             }
 
 	 */
-	[TestClass]
+	[UITestClass]
 	public class Given_Ease
 	{
 		private readonly record struct TestInfo(double StartValue, double FinalValue);

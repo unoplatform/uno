@@ -18,7 +18,11 @@ namespace Private.Infrastructure
 
 		public class Utilities
 		{
+#if !WINAPPSDK
+			internal static bool IsXBox { get; } = XboxUtility.IsOnXbox();
+#else
 			internal static bool IsXBox { get; }
+#endif
 			internal static void VerifyMockDCompOutput(MockDComp.SurfaceComparison comparison, string step) { }
 			internal static void VerifyMockDCompOutput(MockDComp.SurfaceComparison comparison) { }
 

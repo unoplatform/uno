@@ -18,9 +18,14 @@ internal record UnitTestMethodInfo
 	private readonly IList<PointerDeviceType> _injectedPointerTypes;
 
 	public UnitTestMethodInfo(object testClassInstance, MethodInfo method)
+		: this(testClassInstance.GetType(), method)
+	{
+	}
+
+	public UnitTestMethodInfo(Type testClassType, MethodInfo method)
 	{
 		Method = method;
-		RunsOnUIThread = testClassInstance is SamplesApp.UITests.SampleControlUITestBase ||
+		RunsOnUIThread = typeof(SamplesApp.UITests.SampleControlUITestBase).IsAssignableFrom(testClassType) ||
 			HasCustomAttribute<RunsOnUIThreadAttribute>(method) ||
 			HasCustomAttribute<RunsOnUIThreadAttribute>(method.DeclaringType);
 		RequiresFullWindow =

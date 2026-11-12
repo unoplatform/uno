@@ -1,7 +1,9 @@
 ﻿#nullable enable
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using SkiaSharp;
 using Windows.UI.Text;
@@ -36,37 +38,116 @@ internal sealed class SkiaFontProvider : IFontProvider
 	// shaping (e.g. Arabic joining).
 	private readonly Dictionary<(string Family, int Weight, FontStretch Stretch, FontStyle Style, float Size), IFont> _matchedFamilyCache = new();
 	private readonly object _matchCharacterGate = new();
+	// Typefaces don't depend on the size, so a new FontSize only costs an SKFont. A miss is cached too: the
+	// "still loading" path probes a family that isn't installed once per size.
+	private readonly Dictionary<(string Family, int Weight, FontStretch Stretch, FontStyle Style), SkiaFontFace?> _familyFaces = new();
+	private readonly Dictionary<(int Weight, FontStretch Stretch, FontStyle Style), SkiaFontFace> _defaultFaces = new();
+	private readonly Dictionary<(string Family, string PostScriptName, int Weight, FontStretch Stretch, FontStyle Style), SkiaFontFace> _matchedFaces = new();
+	private readonly object _facesGate = new();
+	private readonly bool _enableFallback;
+
+	public SkiaFontProvider(bool enableFallback = true) => _enableFallback = enableFallback;
 
 	public IFont? CreateFont(byte[] data, string? familyNameHint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
 	{
 		using var skData = SKData.CreateCopy(data);
+		return CreateFont(skData, familyNameHint, weight, stretch, style, fontSize);
+	}
+
+	public IFontFile LoadFontFile(Stream stream) => new SkiaFontFile(ReadToNativeData(stream));
+
+	private static SKData ReadToNativeData(Stream stream)
+	{
+		// Straight into native memory: a managed staging copy would be a large-object-heap array per font file,
+		// charged against the gen2 budget on the startup preload path.
+		if (stream.CanSeek)
+		{
+			var length = checked((int)(stream.Length - stream.Position));
+			var data = SKData.Create(length);
+			try
+			{
+				unsafe
+				{
+					stream.ReadExactly(new Span<byte>((void*)data.Data, length));
+				}
+
+				return data;
+			}
+			catch
+			{
+				data.Dispose();
+				throw;
+			}
+		}
+
+		using var native = new SKDynamicMemoryWStream();
+		var buffer = ArrayPool<byte>.Shared.Rent(81920);
+		try
+		{
+			int read;
+			while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
+			{
+				native.Write(buffer, read);
+			}
+		}
+		finally
+		{
+			ArrayPool<byte>.Shared.Return(buffer);
+		}
+
+		return native.DetachAsData();
+	}
+
+	private static IFont? CreateFont(SKData skData, string? familyNameHint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+	{
+		var face = CreateFace(skData, familyNameHint, weight, stretch, style);
+		return face is null ? null : MakeFont(face, fontSize);
+	}
+
+	private static SkiaFontFace? CreateFace(SKData skData, string? familyNameHint, FontWeight weight, FontStretch stretch, FontStyle style)
+	{
 		var typeface = string.IsNullOrEmpty(familyNameHint)
 			? SKTypeface.FromData(skData, 0)
 			: SelectFaceByFamily(skData, familyNameHint);
 
-		if (typeface is null)
-		{
-			return null;
-		}
-
-		return MakeFont(ApplyVariableFontAxes(typeface, weight, stretch, style), fontSize);
+		return typeface is null ? null : new SkiaFontFace(ApplyVariableFontAxes(typeface, weight, stretch, style));
 	}
 
 	public IFont? MatchFamily(string familyName, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
 	{
-		// FromFamilyName may return null (https://github.com/mono/SkiaSharp/issues/1058) or an empty typeface
-		// on some platforms when the family isn't found; treat both as "not found".
-		var typeface = SKTypeface.FromFamilyName(familyName, weight.ToSkiaWeight(), stretch.ToSkiaWidth(), style.ToSkiaSlant());
-		if (typeface is null || typeface.IsEmpty)
-		{
-			return null;
-		}
-
-		return MakeFont(ApplyVariableFontAxes(typeface, weight, stretch, style), fontSize);
+		var face = GetFamilyFace(familyName, weight, stretch, style);
+		return face is null ? null : MakeFont(face, fontSize);
 	}
+
+	private SkiaFontFace? GetFamilyFace(string familyName, FontWeight weight, FontStretch stretch, FontStyle style)
+	{
+		var key = (familyName, weight.Weight, stretch, style);
+		lock (_facesGate)
+		{
+			if (!_familyFaces.TryGetValue(key, out var face))
+			{
+				// FromFamilyName may return null (https://github.com/mono/SkiaSharp/issues/1058) or an empty typeface
+				// on some platforms when the family isn't found; treat both as "not found".
+				var typeface = SKTypeface.FromFamilyName(familyName, weight.ToSkiaWeight(), stretch.ToSkiaWidth(), style.ToSkiaSlant());
+				face = typeface is null || typeface.IsEmpty ? null : new SkiaFontFace(ApplyVariableFontAxes(typeface, weight, stretch, style));
+				_familyFaces[key] = face;
+			}
+
+			return face;
+		}
+	}
+
+	public async ValueTask<IFont?> MatchFamilyAsync(string familyName, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+		=> (_enableFallback ? await FontFallback.MatchFamilyAsync(this, familyName, weight, stretch, style, fontSize) : null)
+			?? MatchFamily(familyName, weight, stretch, style, fontSize);
 
 	public ValueTask<IFont?> MatchCharacterAsync(int codepoint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
 	{
+		if (!_enableFallback)
+		{
+			return default;
+		}
+
 		var key = (codepoint, weight.Weight, stretch, style, fontSize);
 		lock (_matchCharacterGate)
 		{
@@ -96,7 +177,7 @@ internal sealed class SkiaFontProvider : IFontProvider
 		var font = familyFont is not null && familyFont.ContainsGlyph(codepoint)
 			? familyFont
 			: MatchStyledFamily(typeface.FamilyName, codepoint, weight, stretch, style, fontSize)
-				?? MakeFont(ApplyVariableFontAxes(typeface, weight, stretch, style), fontSize);
+				?? MakeFont(GetMatchedFace(typeface, weight, stretch, style), fontSize);
 
 		lock (_matchCharacterGate)
 		{
@@ -115,62 +196,71 @@ internal sealed class SkiaFontProvider : IFontProvider
 
 	public IFont GetDefaultFont(FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
 	{
-		var typeface = SKTypeface.FromFamilyName(null, weight.ToSkiaWeight(), stretch.ToSkiaWidth(), style.ToSkiaSlant())
-			?? SKTypeface.FromFamilyName(null);
-		return MakeFont(typeface, fontSize);
+		var key = (weight.Weight, stretch, style);
+		SkiaFontFace? face;
+		lock (_facesGate)
+		{
+			if (!_defaultFaces.TryGetValue(key, out face))
+			{
+				var typeface = SKTypeface.FromFamilyName(null, weight.ToSkiaWeight(), stretch.ToSkiaWidth(), style.ToSkiaSlant())
+					?? SKTypeface.FromFamilyName(null);
+				_defaultFaces[key] = face = new SkiaFontFace(typeface);
+			}
+		}
+
+		return MakeFont(face, fontSize);
+	}
+
+	private SkiaFontFace GetMatchedFace(SKTypeface typeface, FontWeight weight, FontStretch stretch, FontStyle style)
+	{
+		var key = (typeface.FamilyName, typeface.PostScriptName, weight.Weight, stretch, style);
+		lock (_facesGate)
+		{
+			if (!_matchedFaces.TryGetValue(key, out var face))
+			{
+				_matchedFaces[key] = face = new SkiaFontFace(ApplyVariableFontAxes(typeface, weight, stretch, style));
+			}
+
+			return face;
+		}
 	}
 
 	/// <summary>
 	/// Resolves <paramref name="familyName"/> for the requested style, or <c>null</c> when the family is unknown or
 	/// its styled face no longer covers <paramref name="codepoint"/> (family lookup can land on a default face).
 	/// </summary>
-	private static IFont? MatchStyledFamily(string familyName, int codepoint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+	private IFont? MatchStyledFamily(string familyName, int codepoint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
 	{
 		if (string.IsNullOrEmpty(familyName))
 		{
 			return null;
 		}
 
-		var typeface = SKTypeface.FromFamilyName(familyName, weight.ToSkiaWeight(), stretch.ToSkiaWidth(), style.ToSkiaSlant());
-		if (typeface is null || typeface.IsEmpty)
+		var face = GetFamilyFace(familyName, weight, stretch, style);
+		if (face is null)
 		{
 			return null;
 		}
-
-		var styled = ApplyVariableFontAxes(typeface, weight, stretch, style);
 
 		// Coverage is probed on the SKFont, before it is wrapped: the typeface-level lookups are obsolete in this
 		// SkiaSharp, and a styled face can drop blocks the matched one had -- returning it then renders .notdef.
-		var skFont = new SKFont(styled, fontSize)
-		{
-			Edging = TextEdging,
-			Subpixel = true,
-		};
-
+		var skFont = CreateSKFont(face, fontSize);
 		if (!skFont.ContainsGlyph(codepoint))
 		{
 			skFont.Dispose();
-			if (!ReferenceEquals(styled, typeface))
-			{
-				// The variation clone is ours alone; the family face may be shared by the font manager's cache.
-				styled.Dispose();
-			}
-
 			return null;
 		}
 
-		return new SkiaFont(skFont);
+		return new SkiaFont(skFont, face);
 	}
 
-	private static IFont MakeFont(SKTypeface typeface, float fontSize)
+	private static IFont MakeFont(SkiaFontFace face, float fontSize) => new SkiaFont(CreateSKFont(face, fontSize), face);
+
+	private static SKFont CreateSKFont(SkiaFontFace face, float fontSize) => new(face.Typeface, fontSize)
 	{
-		var skFont = new SKFont(typeface, fontSize)
-		{
-			Edging = TextEdging,
-			Subpixel = true,
-		};
-		return new SkiaFont(skFont);
-	}
+		Edging = TextEdging,
+		Subpixel = true,
+	};
 
 	/// <summary>
 	/// Loads face 0 of <paramref name="data"/>. If the file is a TrueType/OpenType collection (.ttc/.otc),
@@ -281,6 +371,32 @@ internal sealed class SkiaFontProvider : IFontProvider
 		{
 			return typeface;
 		}
+	}
+
+	/// <summary>A font file held in one native buffer; every typeface built from it references that buffer rather than copying it.</summary>
+	private sealed class SkiaFontFile : IFontFile
+	{
+		private readonly SKData _data;
+		private readonly Dictionary<(string? FamilyNameHint, int Weight, FontStretch Stretch, FontStyle Style), SkiaFontFace?> _faces = new();
+
+		public SkiaFontFile(SKData data) => _data = data;
+
+		public IFont? CreateFont(string? familyNameHint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+		{
+			var key = (familyNameHint, weight.Weight, stretch, style);
+			SkiaFontFace? face;
+			lock (_faces)
+			{
+				if (!_faces.TryGetValue(key, out face))
+				{
+					_faces[key] = face = CreateFace(_data, familyNameHint, weight, stretch, style);
+				}
+			}
+
+			return face is null ? null : MakeFont(face, fontSize);
+		}
+
+		public void Dispose() => _data.Dispose();
 	}
 }
 

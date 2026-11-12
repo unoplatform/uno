@@ -2,14 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
-using System.Runtime.InteropServices;
 using Microsoft.UI.Composition;
 using SkiaSharp;
-using HbFont = HarfBuzzSharp.Font;
-using HbFace = HarfBuzzSharp.Face;
 using HbBuffer = HarfBuzzSharp.Buffer;
-using HbBlob = HarfBuzzSharp.Blob;
 
 namespace Uno.UI.Composition.Drawing;
 
@@ -17,17 +14,9 @@ namespace Uno.UI.Composition.Drawing;
 /// (an implementation detail of this handle), fed from the typeface's own sfnt tables.</summary>
 internal sealed class SkiaFont : IFont
 {
-	private static readonly uint _colrTag = Tag("COLR");
-	private static readonly uint _cbdtTag = Tag("CBDT");
-	private static readonly uint _sbixTag = Tag("sbix");
-	private static readonly uint _svgTag = Tag("SVG ");
-
-	// HarfBuzz shapes in font-design units at this fixed scale; Shape() converts the output back to pixels.
-	private const int ShapeScale = 512;
-
 	private readonly SKFont _font;
+	private readonly SkiaFontFace _face;
 	private readonly SKFontMetrics _metrics;
-	private HbFont? _hbFont;
 	// Per-glyph caches (this instance is kept stable by SkiaFontProvider, so they survive across paints): repaints
 	// reuse the neutral outline / rasterized pixels instead of re-extracting them. Coords are glyph-local; the pen
 	// offset is applied at replay.
@@ -39,14 +28,14 @@ internal sealed class SkiaFont : IFont
 	private IGeometryFactory? _geometryFactory;
 	private readonly Dictionary<ushort, RasterGlyph?> _colorGlyphs = new();
 
-	public SkiaFont(SKFont font)
+	public SkiaFont(SKFont font, SkiaFontFace face)
 	{
 		_font = font;
+		_face = face;
 		_metrics = font.Metrics;
-		HasColorGlyphs = HasColorTables(font.Typeface);
 	}
 
-	public bool HasColorGlyphs { get; }
+	public bool HasColorGlyphs => _face.HasColorGlyphs;
 
 	internal SKFont NativeFont => _font;
 
@@ -69,35 +58,8 @@ internal sealed class SkiaFont : IFont
 
 	public ushort GetGlyphIndex(int codepoint) => _font.GetGlyph(codepoint);
 
-	// ASCII coverage bitmap: text layout probes ContainsGlyph per character (a SkiaSharp P/Invoke), which
-	// dominates short-label re-layout; this instance is provider-cached so the one-time probe amortizes.
-	private ulong _asciiCoverageLo, _asciiCoverageHi;
-	private bool _asciiCoverageInitialized;
-
 	public bool ContainsGlyph(int codepoint)
-	{
-		if ((uint)codepoint < 128)
-		{
-			if (!_asciiCoverageInitialized)
-			{
-				for (var c = 0; c < 128; c++)
-				{
-					if (_font.ContainsGlyph(c))
-					{
-						if (c < 64) { _asciiCoverageLo |= 1UL << c; }
-						else { _asciiCoverageHi |= 1UL << (c - 64); }
-					}
-				}
-				_asciiCoverageInitialized = true;
-			}
-
-			return codepoint < 64
-				? (_asciiCoverageLo & (1UL << codepoint)) != 0
-				: (_asciiCoverageHi & (1UL << (codepoint - 64))) != 0;
-		}
-
-		return _font.ContainsGlyph(codepoint);
-	}
+		=> (uint)codepoint < 128 ? _face.ContainsAsciiGlyph(codepoint, _font) : _font.ContainsGlyph(codepoint);
 
 	public float GetGlyphAdvance(ushort glyph)
 	{
@@ -105,7 +67,7 @@ internal sealed class SkiaFont : IFont
 		return _font.MeasureText(glyphs, null);
 	}
 
-	public string FamilyName => _font.Typeface?.FamilyName ?? string.Empty;
+	public string FamilyName => _face.Typeface.FamilyName ?? string.Empty;
 
 	// One reusable shaping buffer per thread: creating/destroying a native buffer per Shape call is a real
 	// cost when short labels re-shape every frame.
@@ -146,18 +108,36 @@ internal sealed class SkiaFont : IFont
 		return buffer;
 	}
 
-	private GlyphRun ShapeBuffer(HbBuffer buffer, ReadOnlySpan<char> text, TextDirection direction, bool enableLigatures)
+	public GlyphRun Shape(ReadOnlySpan<char> text, TextDirection direction, in ShapingOptions options)
 	{
-		if (enableLigatures)
+		if (options with { DisableLigatures = false } == default)
 		{
-			GetHarfBuzzFont().Shape(buffer);
-		}
-		else
-		{
-			// Disable the OpenType 'liga' feature (a run may span multiple chars that must stay separately addressable).
-			GetHarfBuzzFont().Shape(buffer, new HarfBuzzSharp.Feature(new HarfBuzzSharp.Tag('l', 'i', 'g', 'a'), 0));
+			return Shape(text, direction, !options.DisableLigatures);
 		}
 
+		var buffer = FillBuffer(text);
+		buffer.Direction = direction == TextDirection.RightToLeft ? HarfBuzzSharp.Direction.RightToLeft : HarfBuzzSharp.Direction.LeftToRight;
+		HarfBuzzShapingOptions.Apply(buffer, options);
+		_face.HarfBuzzFont.Shape(buffer, HarfBuzzShapingOptions.GetFeatures(options));
+		return ReadGlyphRun(buffer);
+	}
+
+	public bool TryGetTable(uint tag, [NotNullWhen(true)] out byte[]? data)
+	{
+		data = _face.ReadTable(tag);
+		return data is not null;
+	}
+
+	private GlyphRun ShapeBuffer(HbBuffer buffer, ReadOnlySpan<char> text, TextDirection direction, bool enableLigatures)
+	{
+		_face.HarfBuzzFont.Shape(buffer, HarfBuzzShapingOptions.GetFeatures(new ShapingOptions { DisableLigatures = !enableLigatures }));
+		var run = ReadGlyphRun(buffer);
+		_shapeCache.Add(text, direction, enableLigatures, run);
+		return run;
+	}
+
+	private GlyphRun ReadGlyphRun(HbBuffer buffer)
+	{
 		var infos = buffer.GetGlyphInfoSpan();
 		var pos = buffer.GetGlyphPositionSpan();
 		var count = buffer.Length;
@@ -165,7 +145,7 @@ internal sealed class SkiaFont : IFont
 		var offsets = new Vector2[count];
 		var advances = new float[count];
 		var clusters = new int[count];
-		var scale = _font.Size / (float)ShapeScale;
+		var scale = _font.Size / (float)SkiaFontFace.ShapeScale;
 		for (var i = 0; i < count; i++)
 		{
 			glyphs[i] = (ushort)infos[i].Codepoint;
@@ -174,56 +154,7 @@ internal sealed class SkiaFont : IFont
 			advances[i] = pos[i].XAdvance * scale;
 		}
 
-		var run = new GlyphRun(glyphs, offsets, advances, clusters);
-		_shapeCache.Add(text, direction, enableLigatures, run);
-		return run;
-	}
-
-	private HbFont GetHarfBuzzFont()
-	{
-		if (_hbFont is null)
-		{
-			var face = new HbFace((_, tag) => CreateTableBlob((uint)tag));
-			face.UnitsPerEm = _font.Typeface?.UnitsPerEm ?? 0;
-			var font = new HbFont(face);
-			font.SetScale(ShapeScale, ShapeScale);
-			font.SetFunctionsOpenType();
-			_hbFont = font;
-		}
-
-		return _hbFont;
-	}
-
-	private HbBlob? CreateTableBlob(uint tag)
-	{
-		var typeface = _font.Typeface;
-		if (typeface is null)
-		{
-			return null;
-		}
-
-		// GetTableData throws when the table is absent (HarfBuzz probes optional tags), so size-check first.
-		var fourByteTag = new SKFourByteTag(tag);
-		var size = typeface.GetTableSize(fourByteTag);
-		if (size == 0)
-		{
-			return null;
-		}
-
-		var bytes = new byte[size];
-		unsafe
-		{
-			fixed (byte* p = bytes)
-			{
-				if (!typeface.TryGetTableData(fourByteTag, 0, size, (IntPtr)p))
-				{
-					return null;
-				}
-			}
-		}
-
-		var handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-		return new HbBlob(handle.AddrOfPinnedObject(), bytes.Length, HarfBuzzSharp.MemoryMode.ReadOnly, handle.Free);
+		return new GlyphRun(glyphs, offsets, advances, clusters);
 	}
 
 	public void BuildGlyphRun(IGeometryFactory geometry, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<GlyphRunElement> elements)
@@ -431,24 +362,4 @@ internal sealed class SkiaFont : IFont
 			InkTop = inkTop;
 		}
 	}
-
-	private static bool HasColorTables(SKTypeface? typeface)
-	{
-		if (typeface is null)
-		{
-			return false;
-		}
-
-		foreach (var tag in typeface.GetTableTags())
-		{
-			if (tag == _colrTag || tag == _cbdtTag || tag == _sbixTag || tag == _svgTag)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private static uint Tag(string tag) => (uint)((tag[0] << 24) | (tag[1] << 16) | (tag[2] << 8) | tag[3]);
 }

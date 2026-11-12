@@ -30,11 +30,47 @@ internal class ImeCompositionEventArgs : EventArgs
 	/// </summary>
 	public bool TextAlreadyApplied { get; }
 
-	public ImeCompositionEventArgs(string text, int cursorPosition = -1, int resolvedLength = 0, bool textAlreadyApplied = false)
+	/// <summary>
+	/// Index of the composition in the TextBox text when the platform already applied it, or -1 if not available.
+	/// </summary>
+	public int CompositionStart { get; }
+
+	public ImeCompositionEventArgs(string text, int cursorPosition = -1, int resolvedLength = 0, bool textAlreadyApplied = false, int compositionStart = -1)
 	{
 		Text = text;
 		CursorPosition = cursorPosition;
 		ResolvedLength = resolvedLength;
 		TextAlreadyApplied = textAlreadyApplied;
+		CompositionStart = compositionStart;
 	}
+}
+
+/// <summary>
+/// Event args for an IME result that commits a prefix while continuing composition.
+/// </summary>
+internal sealed class ImePartialCompositionEventArgs : EventArgs
+{
+	public ImePartialCompositionEventArgs(
+		string committedText,
+		string compositionText,
+		int cursorPosition,
+		int resolvedLength,
+		bool textAlreadyApplied = false)
+	{
+		CommittedText = committedText;
+		CompositionText = compositionText;
+		CursorPosition = cursorPosition;
+		ResolvedLength = resolvedLength;
+		TextAlreadyApplied = textAlreadyApplied;
+	}
+
+	public string CommittedText { get; }
+
+	public string CompositionText { get; }
+
+	public int CursorPosition { get; }
+
+	public int ResolvedLength { get; }
+
+	public bool TextAlreadyApplied { get; }
 }

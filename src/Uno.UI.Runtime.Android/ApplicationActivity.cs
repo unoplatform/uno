@@ -19,6 +19,8 @@ using Uno.Helpers.Theming;
 using Uno.UI;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Dispatching;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime;
 using Uno.UI.Runtime.Android;
 using Uno.UI.Xaml.Controls;
 using Windows.Devices.Sensors;
@@ -193,6 +195,14 @@ namespace Uno.UI.Runtime.Android
 				return base.DispatchGenericMotionEvent(ev);
 			}
 
+			// TalkBack's touch exploration turns finger touches into hover probes, which only the view tree routes to the
+			// render view's accessibility helper. They are screen reader gestures, never XAML pointer input.
+			if (IsTouchExplorationHover(ev))
+			{
+				base.DispatchGenericMotionEvent(ev);
+				return true;
+			}
+
 			var nativelyHandled = false;
 			if (_nativeLayerHost?.Path?.FillContains(new global::System.Numerics.Vector2(ev.GetX(), ev.GetY())) ?? false)
 			{
@@ -211,6 +221,12 @@ namespace Uno.UI.Runtime.Android
 			// as we assume that anyway we are the fully opaque (i.e. the pointer should not be dispatch to any element under this current ApplicationActivity).
 			return true;
 		}
+
+		private bool IsTouchExplorationHover(MotionEvent ev)
+			=> ev.ActionMasked is MotionEventActions.HoverEnter or MotionEventActions.HoverMove or MotionEventActions.HoverExit
+				&& ev.IsFromSource(InputSourceType.Touchscreen)
+				&& ev.GetToolType(0) == MotionEventToolType.Finger
+				&& _renderView?.ExploreByTouchHelper.IsTouchExplorationEnabled is true;
 
 		public override bool DispatchTouchEvent(MotionEvent? ev)
 		{
@@ -346,6 +362,16 @@ namespace Uno.UI.Runtime.Android
 
 				// Index 0 keeps it under the native layer host.
 				RelativeLayout.AddView(_renderViewAsView, 0);
+
+				// A XamlRoot host registered before OnStart can only attach its accessibility adapter
+				// once this activity's render view exists.
+				foreach (var pair in XamlRootMap.Enumerate())
+				{
+					if (pair.Value is AndroidSkiaXamlRootHost androidHost && ReferenceEquals(androidHost.Activity, this))
+					{
+						androidHost.TryConfigureHelper();
+					}
+				}
 			}
 
 			// The window was handed over in OnCreate, before this render view existed; state bound to
@@ -369,10 +395,10 @@ namespace Uno.UI.Runtime.Android
 			}
 		}
 
-		private IUnoRenderView CreateRenderView()
+		private IUnoRenderView CreateRenderView(bool allowWebGpu = true)
 		{
 			// Pick the Android view class matching the registered backend's context kind (host reads the neutral kind).
-			if (global::Uno.UI.Composition.Drawing.GraphicsRegistry.HasBackendPreferring(
+			if (allowWebGpu && global::Uno.UI.Composition.Drawing.GraphicsRegistry.HasBackendPreferring(
 				global::Uno.UI.Composition.Drawing.GraphicsContextKind.WebGpu))
 			{
 				try
@@ -416,27 +442,30 @@ namespace Uno.UI.Runtime.Android
 		}
 
 		/// <summary>
-		/// Swaps the active render view for the GL/canvas one after a GPU backend failed to initialize on its own
-		/// render thread. <see cref="CreateRenderView"/>'s try/catch only covers the view constructor, so without
-		/// this a failed negotiation leaves a dead render thread and a permanently black window.
+		/// Replaces a render view whose GPU backend failed to initialize on its own render thread.
+		/// <see cref="CreateRenderView"/>'s try/catch only covers the view constructor, so without this a failed
+		/// negotiation leaves a dead render thread and a permanently black window. A failed WebGPU view goes through
+		/// the rest of the view chain (Vulkan, then canvas), so a registered fallback backend gets the same view a
+		/// non-WebGPU app would; any other failed view gets the GL/canvas one.
 		/// </summary>
-		internal void FallbackToCanvasView()
+		internal void ReplaceFailedRenderView(IUnoRenderView failedView)
 		{
-			// A null render view means OnDestroy already tore the stack down.
+			// A null layout means OnDestroy already tore the stack down.
 			var layout = RelativeLayout;
-			if (layout is null || _renderView is null or UnoCanvasView)
+			if (layout is null || failedView is UnoCanvasView)
 			{
 				return;
 			}
 
 			RunOnUiThread(() =>
 			{
-				if (_renderView is null or UnoCanvasView)
+				if (!ReferenceEquals(_renderView, failedView))
 				{
 					return;
 				}
 
-				typeof(ApplicationActivity).Log().Warn("Falling back to the OpenGL ES/software render view.");
+				var replacement = failedView is UnoWebGpuView ? CreateRenderView(allowWebGpu: false) : new UnoCanvasView(this);
+				typeof(ApplicationActivity).Log().Warn($"Falling back to the {replacement.GetType().Name} render view.");
 
 				if (_renderViewAsView is { } failed)
 				{
@@ -446,15 +475,15 @@ namespace Uno.UI.Runtime.Android
 					layout.Post(() => failed.Dispose());
 				}
 
-				var canvasView = new UnoCanvasView(this);
-				canvasView.LayoutParameters = new ViewGroup.LayoutParams(
+				var replacementView = (View)replacement;
+				replacementView.LayoutParameters = new ViewGroup.LayoutParams(
 					ViewGroup.LayoutParams.MatchParent,
 					ViewGroup.LayoutParams.MatchParent);
-				_renderView = canvasView;
-				_renderViewAsView = canvasView;
+				_renderView = replacement;
+				_renderViewAsView = replacementView;
 
 				// Index 0 keeps it under the native layer host, as in OnStart.
-				layout.AddView(canvasView, 0);
+				layout.AddView(replacementView, 0);
 
 				InvalidateRender();
 			});
@@ -470,7 +499,6 @@ namespace Uno.UI.Runtime.Android
 			}
 
 			_renderView?.InvalidateRender();
-			RelativeLayout.Invalidate();
 		}
 
 		private void OnInsetsChanged(Thickness insets)
@@ -525,6 +553,16 @@ namespace Uno.UI.Runtime.Android
 			base.OnResume();
 
 			RaiseConfigurationChanges();
+
+			// Activate accessibility routing for the foreground window.
+			foreach (var pair in XamlRootMap.Enumerate())
+			{
+				if (pair.Value is IAccessibilityOwner { Accessibility: { } } owner)
+				{
+					AccessibilityRouter.SetActive(owner);
+					break;
+				}
+			}
 
 			//WebAuthenticationBroker.OnResume();
 		}
@@ -585,6 +623,11 @@ namespace Uno.UI.Runtime.Android
 			if (IsFinishing && _wrapper is { } wrapper && ReferenceEquals(wrapper.CurrentActivity, this))
 			{
 				wrapper.OnNativeClosed();
+
+				// The window and its host outlive this activity: the next one adopts them in OnStart.
+				// Until then the wrapper, which assumes it always has an activity, keeps pointing at this one,
+				// so AndroidSkiaXamlRootHost.GetActivity filters out destroyed activities.
+				wrapper.XamlRootHost?.DetachRenderView();
 			}
 		}
 

@@ -7,6 +7,7 @@ using Windows.System;
 using Windows.UI;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Input;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Internal;
@@ -15,6 +16,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
@@ -36,7 +38,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 using SelectionDetails = (int start, int length, bool selectionEndsAtTheStart);
 
-internal sealed partial class TextBoxCore : ITextSelectionGripperHost
+internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxViewHost, ITextViewEditorHost
 {
 	private TextSelectionGripperPresenter _gripperPresenter;
 
@@ -66,6 +68,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 	// will be one "run"/"action". However, there are some arbitrary exceptions, so that is only a rule of thumb.
 	private bool _currentlyTyping;
 	private bool _suppressCurrentlyTyping;
+	private bool _isApplyingNativeInput;
 	private SelectionDetails _selectionWhenTypingStarted;
 	private string _textWhenTypingStarted;
 
@@ -74,6 +77,11 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 	private readonly List<HistoryRecord> _history = new(); // the selection of an action is what was selected right before it happened. Might turn out to be unnecessary.
 
 	private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(0.5) };
+	private ScrollViewer _imeScrollViewer;
+	private bool _isImeLayoutTrackingAttached;
+	private bool _imeGeometryTrackingRequested;
+	private (int start, int length, bool backward)? _lastImeSelection;
+	private ImeLayoutState? _lastImeLayoutState;
 
 	private MenuFlyout _proofingMenu;
 
@@ -83,11 +91,137 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 
 	internal ContentControl ContentElement => _contentElement;
 
+	Control ITextBoxViewHost.Owner => Owner;
+
+	string ITextBoxViewHost.Text => Text;
+
+	bool ITextBoxViewHost.IsSpellCheckEnabled => IsSpellCheckEnabled;
+
+	bool ITextBoxViewHost.IsColorFontEnabled => true;
+
+	FontFamily ITextBoxViewHost.FontFamily => Owner.FontFamily;
+
+	double ITextBoxViewHost.FontSize => Owner.FontSize;
+
+	global::Windows.UI.Text.FontStyle ITextBoxViewHost.FontStyle => Owner.FontStyle;
+
+	global::Windows.UI.Text.FontStretch ITextBoxViewHost.FontStretch => Owner.FontStretch;
+
+	global::Windows.UI.Text.FontWeight ITextBoxViewHost.FontWeight => Owner.FontWeight;
+
+	FlowDirection ITextBoxViewHost.FlowDirection => FlowDirection;
+
+	TextWrapping ITextBoxViewHost.TextWrapping => TextWrapping;
+
+	TextAlignment ITextBoxViewHost.TextAlignment => TextAlignment;
+
+	TextReadingOrder ITextBoxViewHost.TextReadingOrder => TextReadingOrder.UseFlowDirection;
+
+	void ITextBoxViewHost.UpdateLayout() => Owner.UpdateLayout();
+
+	ContentControl ITextBoxViewHost.ContentElement => _contentElement;
+
+	// An edit the platform's input field already applied, with the caret it left there. Like a key the TextBox handles,
+	// it extends the current typing run: its own caret move doesn't end the run, so undo takes back the whole of it.
+	internal void ApplyNativeInput(string text, int selectionStart, int selectionLength)
+	{
+		_isApplyingNativeInput = true;
+		try
+		{
+			// Pending so the text change itself lands the caret here instead of passing through 0.
+			SetPendingSelection(selectionStart, selectionLength);
+			TextBoxView.UpdateTextFromNative(text);
+			SelectInternal(selectionStart, selectionLength);
+		}
+		finally
+		{
+			_isApplyingNativeInput = false;
+		}
+	}
+
+	// The platform's input field already applied this edit. It is typing, undoable like a key the TextBox handles, and a
+	// read-only TextBox refuses it (TextBoxView then puts its text back in the field).
+	string ITextBoxViewHost.ProcessTextInput(string newText, int selectionStart, int selectionLength)
+	{
+		if (IsReadOnly)
+		{
+			return Text;
+		}
+
+		var textBefore = Text;
+		var startsTypingRun = !_currentlyTyping;
+		TrySetCurrentlyTyping(true);
+		_clearHistoryOnTextChanged = false;
+		try
+		{
+			var text = ProcessTextInput(newText);
+			if (startsTypingRun && text == textBefore)
+			{
+				// A refused edit (MaxLength, BeforeTextChanging) isn't typing: its run would record an undo step that
+				// changes nothing.
+				_currentlyTyping = false;
+			}
+
+			return text;
+		}
+		finally
+		{
+			_clearHistoryOnTextChanged = true;
+		}
+	}
+
+	bool ITextBoxViewHost.IsComposing => IsComposing;
+
+	int ITextBoxViewHost.CompositionUnderlineStart => CompositionUnderlineStart;
+
+	int ITextBoxViewHost.CompositionUnderlineLength => CompositionUnderlineLength;
+
+	bool ITextBoxViewHost.IsTextAlignmentSetToDefault => !IsTextAlignmentExplicitlySet;
+
+	private TextViewEditor _editorField;
+
+	// The shared keyboard navigation/edit engine, also used by RichEditBox.
+	private TextViewEditor _editor => _editorField ??= new TextViewEditor(this);
+
+	TextBoxView ITextViewEditorHost.TextBoxView => _textBoxView;
+
+	string ITextViewEditorHost.Text => Text;
+
+	bool ITextViewEditorHost.HasPointerCapture => HasPointerCapture;
+
+	float ITextViewEditorHost.CaretXOffset => _caretXOffset;
+
+	bool ITextViewEditorHost.TryGetUpDownResult(
+		int selectionStart,
+		int selectionLength,
+		bool shift,
+		bool ctrl,
+		bool up,
+		out int result)
+	{
+		result = 0;
+		return false;
+	}
+
+	void ITextViewEditorHost.TrySetCurrentlyTyping(bool value) => TrySetCurrentlyTyping(value);
+
+	void ITextViewEditorHost.CommitReplace(string oldText, string newText, int caret) => CommitAction(new ReplaceAction(oldText, newText, caret));
+
+	void ITextViewEditorHost.CommitDelete(string oldText, string newText, int selectionStart, int selectionLength) => CommitAction(new DeleteAction(oldText, newText, selectionStart, selectionLength));
+
 	static TextBoxCore()
 	{
 		_platformCtrlKey = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
 		_ = ApiExtensibility.CreateInstance(null, out _textBoxNotificationsSingleton);
 		InitializeIme();
+	}
+
+	// Test hook: replaces the platform notifications (e.g. the Android soft keyboard and autofill) until disposed.
+	internal static IDisposable SetNotificationsProviderForTesting(ITextBoxNotificationsProviderSingleton provider)
+	{
+		var original = _textBoxNotificationsSingleton;
+		_textBoxNotificationsSingleton = provider;
+		return Disposable.Create(() => _textBoxNotificationsSingleton = original);
 	}
 
 	internal CaretDisplayMode CaretMode
@@ -155,12 +289,15 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 
 		try
 		{
-			var content = Clipboard.GetContent();
-			CanPasteClipboardContent = content?.Contains(StandardDataFormats.Text) ?? false;
+			CanPasteClipboardContent = Clipboard.IsTextAvailable();
 		}
-		catch
+		catch (Exception error)
 		{
 			CanPasteClipboardContent = false;
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Unable to query clipboard text availability: {error}");
+			}
 		}
 	}
 
@@ -272,14 +409,27 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 
 	partial void OnUnloadedPartial()
 	{
+		EndImeSession();
+		DetachImeGeometryTracking();
 		// Unload can happen mid-drag without an intervening blur (e.g. ListView/ItemsRepeater
 		// recycling), which would otherwise strand IsCaretDragActive permanently true.
 		CancelCaretDrag();
+		EndCaretLoupe();
+		CancelDeferredTouchFlyout();
+		_iosHoldTimer?.Stop();
 		_forceFocusedVisualState = false;
 		_timer.Stop();
 		_gripperPresenter?.Hide();
 		CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 		_clipboardChangeSubscription.Disposable = null;
+	}
+
+	partial void OnLoadedPartial()
+	{
+		if (_imeGeometryTrackingRequested)
+		{
+			AttachImeGeometryTracking();
+		}
 	}
 
 	partial void OnIsReadonlyChangedPartial() => UpdateCanPasteClipboardContent();
@@ -298,7 +448,17 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 		TextBoxView?.UpdateFont();
 	}
 
-	partial void OnInputScopeChangedPartial(InputScope newValue) => TextBoxView?.UpdateProperties();
+	partial void OnInputScopeChangedPartial(InputScope newValue)
+	{
+		TextBoxView?.UpdateProperties();
+		ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.InputScope);
+	}
+
+	partial void OnAcceptsReturnChangedPartial(bool newValue)
+	{
+		TextBoxView?.UpdateProperties();
+		ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.AcceptsReturn);
+	}
 
 	partial void OnIsSpellCheckEnabledChangedPartial(bool newValue)
 	{
@@ -307,9 +467,14 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 			TextBoxView.DisplayBlock.IsSpellCheckEnabled = newValue;
 			TextBoxView.UpdateProperties();
 		}
+		ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.SpellCheck);
 	}
 
-	partial void OnIsTextPredictionEnabledChangedPartial(bool newValue) => TextBoxView?.UpdateProperties();
+	partial void OnIsTextPredictionEnabledChangedPartial(bool newValue)
+	{
+		TextBoxView?.UpdateProperties();
+		ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextPrediction);
+	}
 
 	partial void OnMaxLengthChangedPartial(int newValue) => TextBoxView?.UpdateMaxLength();
 
@@ -355,26 +520,95 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 				_gripperPresenter ??= new TextSelectionGripperPresenter(this);
 			}
 
+			TextBoxView.AttachSpellCheckSquiggles(ContentElement);
 			TextBoxView.SetTextNative(Text);
 		}
+
+		if (_imeGeometryTrackingRequested)
+		{
+			AttachImeGeometryTracking();
+		}
 	}
+
+	private void AttachImeGeometryTracking()
+	{
+		if (!_isImeLayoutTrackingAttached)
+		{
+			Owner.LayoutUpdated += OnImeLayoutUpdated;
+			_isImeLayoutTrackingAttached = true;
+		}
+
+		var scrollViewer = _contentElement as ScrollViewer;
+		if (ReferenceEquals(_imeScrollViewer, scrollViewer))
+		{
+			return;
+		}
+
+		if (_imeScrollViewer is not null)
+		{
+			_imeScrollViewer.ViewChanged -= OnImeScrollViewerViewChanged;
+		}
+
+		_imeScrollViewer = scrollViewer;
+		if (_imeScrollViewer is not null)
+		{
+			_imeScrollViewer.ViewChanged += OnImeScrollViewerViewChanged;
+		}
+	}
+
+	private void DetachImeGeometryTracking()
+	{
+		if (_isImeLayoutTrackingAttached)
+		{
+			Owner.LayoutUpdated -= OnImeLayoutUpdated;
+			_isImeLayoutTrackingAttached = false;
+		}
+
+		if (_imeScrollViewer is not null)
+		{
+			_imeScrollViewer.ViewChanged -= OnImeScrollViewerViewChanged;
+			_imeScrollViewer = null;
+		}
+	}
+
+	private void OnImeLayoutUpdated(object sender, object args)
+	{
+		// LayoutUpdated fires after every layout pass in the window, so only push when something the IME sees has moved.
+		var layoutState = new ImeLayoutState(
+			UIElement.GetTransform(Owner, null),
+			Owner.ActualSize,
+			Owner.XamlRoot?.RasterizationScale ?? 1,
+			Text,
+			SelectionStart,
+			SelectionLength);
+		if (layoutState == _lastImeLayoutState)
+		{
+			return;
+		}
+
+		_lastImeLayoutState = layoutState;
+		ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
+	}
+
+	private void OnImeScrollViewerViewChanged(object sender, ScrollViewerViewChangedEventArgs args)
+		=> ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
 
 	partial void OnFocusStateChangedPartial(FocusState focusState, bool initial)
 	{
 		_clipboardChangeSubscription.Disposable = null;
-		TextBoxView?.OnFocusStateChanged(focusState);
 
 		if (focusState != FocusState.Unfocused)
 		{
 			CaretMode = CaretDisplayMode.ThumblessCaretShowing;
-			_textBoxNotificationsSingleton?.OnFocused(this);
-			StartImeSession();
+			RequestPlatformTextInput(focusState);
 			UpdateCanPasteClipboardContent();
 			Clipboard.ContentChanged += OnClipboardContentChanged;
 			_clipboardChangeSubscription.Disposable = Disposable.Create(() => Clipboard.ContentChanged -= OnClipboardContentChanged);
 		}
 		else
 		{
+			TextBoxView?.OnFocusStateChanged(focusState);
+
 			// Ported from: TextBoxBase.cpp UpdateFocusState (lines 4996-5008)
 			// Check if focus is moving to a text control flyout before deciding to unfocus.
 			_forceFocusedVisualState = ShouldForceFocusedVisualState();
@@ -391,8 +625,11 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 
 		if (focusState == FocusState.Unfocused && !_forceFocusedVisualState)
 		{
+			IsSoftwareKeyboardSuppressed = false;
 			EndImeSession();
 			TrySetCurrentlyTyping(false);
+			EndCaretLoupe();
+			CancelDeferredTouchFlyout();
 			CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 			if (SelectionFlyout?.IsOpen == true)
 			{
@@ -405,6 +642,102 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 			_timer.Stop();
 		}
 		UpdateDisplaySelection();
+	}
+
+	private bool _isPlatformTextInputRequestPending;
+	private bool _isPendingPlatformTextInputFromTap;
+
+	// A TextBox focused while a pointer release is processed can lose the focus before the release completes (e.g. a ScrollViewer focuses
+	// its first TextBox before a Tapped handler moves the focus away, like in WinUI). Opening the soft keyboard right away would flash it.
+	private void RequestPlatformTextInput(FocusState focusState, bool fromTap = false)
+	{
+		if (_isPlatformTextInputRequestPending)
+		{
+			_isPendingPlatformTextInputFromTap |= fromTap;
+			return;
+		}
+
+#if UNO_HAS_MANAGED_POINTERS
+		if (Owner.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleaseCompleted(OnPointerReleaseCompleted) is true)
+		{
+			_isPlatformTextInputRequestPending = true;
+			_isPendingPlatformTextInputFromTap = fromTap;
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug("Platform text input deferred until the pointer release has completed.");
+			}
+
+			return;
+		}
+#endif
+
+		StartPlatformTextInput(focusState, fromTap);
+	}
+
+	private void OnPointerReleaseCompleted()
+	{
+		var fromTap = _isPendingPlatformTextInputFromTap;
+		_isPlatformTextInputRequestPending = false;
+		_isPendingPlatformTextInputFromTap = false;
+		if (FocusState is not FocusState.Unfocused and var focusState)
+		{
+			StartPlatformTextInput(focusState, fromTap);
+		}
+		else if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug("Platform text input not started: the focus moved away before the pointer release completed.");
+		}
+	}
+
+	// Tapping an already-focused TextBox re-shows the soft keyboard the user may have hidden. Deferred for the same reason: a Tapped handler can still move the focus away.
+	private void NotifyFocusedAgain()
+	{
+		if (_isPlatformTextInputRequestPending)
+		{
+			return;
+		}
+
+		// A tap opens the keyboard a programmatic focus kept hidden, as WinUI does from OnTappedCore. The focus origin can't
+		// tell: refocusing the focused box only updates it when the coerced focus state changes, so it stays programmatic.
+		if (IsSoftwareKeyboardSuppressed)
+		{
+			RequestPlatformTextInput(FocusState, fromTap: true);
+			return;
+		}
+
+#if UNO_HAS_MANAGED_POINTERS
+		if (Owner.XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleaseCompleted(OnFocusedAgainReleaseCompleted) is true)
+		{
+			return;
+		}
+#endif
+
+		_textBoxNotificationsSingleton?.OnFocused(this);
+	}
+
+	private void OnFocusedAgainReleaseCompleted()
+	{
+		if (FocusState is not FocusState.Unfocused)
+		{
+			_textBoxNotificationsSingleton?.OnFocused(this);
+		}
+	}
+
+	/// <summary>
+	/// Whether the current focus keeps the software keyboard hidden (<c>PreventKeyboardDisplayOnProgrammaticFocus</c>).
+	/// </summary>
+	internal bool IsSoftwareKeyboardSuppressed { get; private set; }
+
+	private void StartPlatformTextInput(FocusState focusState, bool fromTap = false)
+	{
+		// FocusState is coerced to the last input device: the focus request's own state tells whether it was programmatic.
+		var origin = fromTap
+			? FocusState.Pointer
+			: VisualTree.GetFocusManagerForElement(Owner)?.GetRealFocusStateForFocusedElement() ?? focusState;
+		IsSoftwareKeyboardSuppressed = _host.PreventKeyboardDisplayOnProgrammaticFocus && origin == FocusState.Programmatic;
+		TextBoxView?.OnFocusStateChanged(origin, IsSoftwareKeyboardSuppressed);
+		_textBoxNotificationsSingleton?.OnFocused(this);
+		StartImeSession(origin);
 	}
 
 	// Ported from: TextBoxBase.cpp ShouldForceFocusedVisualState (lines 5286-5290)
@@ -447,7 +780,10 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 
 	partial void SelectPartial(int start, int length)
 	{
-		TrySetCurrentlyTyping(false);
+		if (!_isApplyingNativeInput)
+		{
+			TrySetCurrentlyTyping(false);
+		}
 
 		if (!_inSelectInternal)
 		{
@@ -462,7 +798,12 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 
 		// Even when using Skia TextBox, we may need to call Select,
 		// which will update the native input in case of Wasm Skia for example.
-		TextBoxView?.Select(start, length);
+		// Not while the platform loupe shows (a caret or handle drag): on iOS, moving the first responder's selection
+		// makes UIKit dismiss the loupe. EndCaretLoupe syncs the final selection once the drag is over.
+		if (!_isLoupeActive)
+		{
+			TextBoxView?.Select(start, length);
+		}
 
 		if (length == 0 && CaretMode == CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 		{
@@ -478,7 +819,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 			_timer.Start(); // restart
 		}
 
-		if (selectionChanged)
+		if (selectionChanged && !_inSelectInternal)
 		{
 			UpdateScrolling();
 		}
@@ -536,6 +877,14 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 				_lastNotifiedSelection = currentSelection;
 				_textBoxNotificationsSingleton?.NotifySelectionChanged(this);
 			}
+		}
+
+		// Caret blinks re-run this without any change; the IME only needs actual selection moves.
+		var imeSelection = (SelectionStart, SelectionLength, IsBackwardSelection);
+		if (imeSelection != _lastImeSelection)
+		{
+			_lastImeSelection = imeSelection;
+			ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
 		}
 	}
 
@@ -1106,372 +1455,84 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 		=> _pendingSelection = (selectionStart, selectionLength);
 
 	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
-	{
-		// on Apple platforms it is `option` + `delete` (same location as backspace on PC keyboards) that removes the previous word
-		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
-		{
-			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
-		}
-
-		if (HasPointerCapture)
-		{
-			return;
-		}
-		if (selectionLength != 0)
-		{
-			TrySetCurrentlyTyping(false);
-			TrySetCurrentlyTyping(true);
-
-			var start = Math.Min(selectionStart, selectionStart + selectionLength);
-			var end = Math.Max(selectionStart, selectionStart + selectionLength);
-			text = text[..start] + text[end..];
-			selectionLength = 0;
-			selectionStart = start;
-		}
-		else if (selectionStart != 0)
-		{
-			if (ctrl)
-			{
-				// ctrl always ends the previous typing run
-				TrySetCurrentlyTyping(false);
-			}
-			else
-			{
-				// idempotent call to make sure we're starting a new typing run if we're not in one already
-				TrySetCurrentlyTyping(true);
-			}
-
-			var oldText = text;
-			var index = ctrl ? TextBoxView.DisplayBlock.ParsedText.GetWordAt(selectionStart, false).start : selectionStart - 1;
-			text = text[..index] + text[selectionStart..];
-			selectionStart = index;
-
-			if (ctrl)
-			{
-				// typing after ctrl starts a new run, and not a part of the ctrl-backspace run
-				CommitAction(new ReplaceAction(oldText, text, selectionStart));
-			}
-		}
-	}
+		=> _editor.KeyDownBack(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
 
 	private void KeyDownUpArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
-	{
-		// TODO ctrl+up
-		if (HasPointerCapture)
-		{
-			return;
-		}
-		if (Text.Length != 0)
-		{
-			TrySetCurrentlyTyping(false);
-		}
-
-		var start = selectionStart;
-		var end = selectionStart + selectionLength;
-		var newEnd = GetUpDownResult(text, selectionStart, selectionLength, shift, up: true);
-		if (shift)
-		{
-			selectionLength = newEnd - selectionStart;
-		}
-		else
-		{
-			selectionStart = newEnd;
-			selectionLength = 0;
-		}
-
-		args.Handled = selectionStart != start || selectionLength != end - start;
-	}
+		=> _editor.KeyDownUpArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 
 	private void KeyDownDownArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
-	{
-		// TODO ctrl+down
-		if (HasPointerCapture)
-		{
-			return;
-		}
-		if (Text.Length != 0)
-		{
-			TrySetCurrentlyTyping(false);
-		}
-
-		var start = selectionStart;
-		var end = selectionStart + selectionLength;
-		var newEnd = GetUpDownResult(text, selectionStart, selectionLength, shift, up: false);
-		if (shift)
-		{
-			selectionLength = newEnd - selectionStart;
-		}
-		else
-		{
-			selectionStart = newEnd;
-			selectionLength = 0;
-		}
-
-		args.Handled = selectionStart != start || selectionLength != end - start;
-	}
+		=> _editor.KeyDownDownArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 
 	private void KeyDownLeftArrow(KeyRoutedEventArgs args, string text, bool shift, bool ctrl, ref int selectionStart, ref int selectionLength)
-	{
-		// on Apple platforms it is:
-		// * `command` + `left` that moves to the start of the line
-		// * `option` + `left` that moves to the previous word
-		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
-		{
-			if (ctrl)
-			{
-				KeyDownHome(args, text, ctrl: false, shift, ref selectionStart, ref selectionLength);
-				return;
-			}
-			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
-		}
-
-		if (HasPointerCapture)
-		{
-			return;
-		}
-		if (Text.Length != 0)
-		{
-			TrySetCurrentlyTyping(false);
-		}
-
-		if (!shift && selectionStart == 0 && selectionLength == 0 || shift && selectionStart + selectionLength == 0)
-		{
-			return;
-		}
-
-		args.Handled = true;
-
-		if (shift)
-		{
-			var end = selectionStart + selectionLength;
-			if (ctrl)
-			{
-				end = TextBoxView.DisplayBlock.ParsedText.GetWordAt(end, false).start;
-			}
-			else
-			{
-				end--;
-			}
-
-			selectionLength = end - selectionStart;
-		}
-		else
-		{
-			if (selectionLength == 0)
-			{
-				selectionStart = ctrl ? TextBoxView.DisplayBlock.ParsedText.GetWordAt(selectionStart, false).start : selectionStart - 1;
-			}
-			else
-			{
-				selectionStart = Math.Min(selectionStart, selectionStart + selectionLength);
-			}
-			selectionLength = 0;
-		}
-	}
+		=> _editor.KeyDownLeftArrow(args, text, shift, ctrl, ref selectionStart, ref selectionLength);
 
 	private void KeyDownRightArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
-	{
-		// on Apple platforms it is:
-		// * `command` + `right` that moves to the end of the line
-		// * `option` + `right` that moves to the next word
-		// * `shift` + `option` + `right` that select the next word
-		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
-		{
-			if (ctrl)
-			{
-				KeyDownEnd(args, text, ctrl: false, shift, ref selectionStart, ref selectionLength);
-				return;
-			}
-			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
-		}
-
-		if (HasPointerCapture)
-		{
-			return;
-		}
-		if (Text.Length != 0)
-		{
-			TrySetCurrentlyTyping(false);
-		}
-
-		var moveOutRight = !shift && selectionStart == text.Length && selectionLength == 0 || shift && selectionStart + selectionLength == Text.Length;
-		if (!moveOutRight)
-		{
-			args.Handled = true;
-
-			if (shift)
-			{
-				var end = selectionStart + selectionLength;
-				if (ctrl)
-				{
-					var chunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(end, true);
-					end = chunk.start + chunk.length;
-				}
-				else
-				{
-					end++;
-				}
-
-				selectionLength = end - selectionStart;
-			}
-			else
-			{
-				if (selectionLength == 0)
-				{
-					if (ctrl)
-					{
-						var chunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(selectionStart, true);
-						selectionStart = chunk.start + chunk.length;
-					}
-					else
-					{
-						selectionStart += 1;
-					}
-				}
-				else
-				{
-					selectionStart = Math.Max(selectionStart, selectionStart + selectionLength);
-				}
-				selectionLength = 0;
-			}
-		}
-	}
+		=> _editor.KeyDownRightArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 
 	private void KeyDownHome(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
-	{
-		if (HasPointerCapture)
-		{
-			return;
-		}
-		if (Text.Length != 0)
-		{
-			TrySetCurrentlyTyping(false);
-		}
-
-		var start = selectionStart;
-		var end = selectionStart + selectionLength;
-		if (shift)
-		{
-			selectionLength = ctrl ? -selectionStart : TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength).start - selectionStart;
-		}
-		else
-		{
-			selectionStart = ctrl ? 0 : TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength).start;
-			selectionLength = 0;
-		}
-		args.Handled = selectionStart != start || selectionLength != end - start;
-	}
+		=> _editor.KeyDownHome(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 
 	private void KeyDownEnd(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
-	{
-		if (HasPointerCapture)
-		{
-			return;
-		}
-		if (Text.Length != 0)
-		{
-			TrySetCurrentlyTyping(false);
-		}
-
-		var start = selectionStart;
-		var end = selectionStart + selectionLength;
-		if (shift)
-		{
-			if (ctrl)
-			{
-				selectionLength = text.Length - selectionStart;
-			}
-			else
-			{
-				var line = TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength);
-				selectionLength = line.start + line.length - selectionStart;
-			}
-		}
-		else
-		{
-			if (ctrl)
-			{
-				selectionStart = text.Length;
-			}
-			else
-			{
-				var line = TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength);
-				selectionStart = line.start + line.length;
-				if (line.length > 0 && selectionStart < text.Length && text[selectionStart - 1] == '\r')
-				{
-					// a newline is part of the line just before it, but End shouldn't go past the newline
-					selectionStart--;
-				}
-			}
-			selectionLength = 0;
-		}
-		args.Handled = selectionStart != start || selectionLength != end - start;
-	}
+		=> _editor.KeyDownEnd(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 
 	private void KeyDownDelete(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
-	{
-		// on Apple platforms it is `option` + `delete>` that removes the next word
-		if (DeviceTargetHelper.UsesAppleKeyboardLayout)
-		{
-			ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Menu);
-		}
-
-		if (HasPointerCapture)
-		{
-			return;
-		}
-		TrySetCurrentlyTyping(false);
-		args.Handled = true;
-		var oldText = text;
-		if (selectionLength != 0)
-		{
-			var start = Math.Min(selectionStart, selectionStart + selectionLength);
-			var end = Math.Max(selectionStart, selectionStart + selectionLength);
-			text = text[..start] + text[end..];
-			CommitAction(new DeleteAction(oldText, text, selectionStart, selectionLength));
-			selectionLength = 0;
-			selectionStart = start;
-		}
-		else if (selectionStart != text.Length)
-		{
-			if (shift)
-			{
-				// On WinUI, shift-delete doesn't do anything if nothing is selected for some reason
-				// We still end the previous typing run
-				return;
-			}
-			int index;
-			if (ctrl)
-			{
-				var chunk = TextBoxView.DisplayBlock.ParsedText.GetWordAt(selectionStart, true);
-				index = chunk.start + chunk.length;
-			}
-			else
-			{
-				index = selectionStart + 1;
-			}
-			text = text[..selectionStart] + text[index..];
-			// On WinUI, when ctrl-delete is Undone, the deleted text actually gets selected even though initially, nothing was selected
-			CommitAction(new DeleteAction(oldText, text, selectionStart, ctrl ? index - selectionStart : 0));
-		}
-	}
+		=> _editor.KeyDownDelete(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
 
 	/// <summary>
 	/// Takes a possibly-negative selection length, indicating a selection that goes backwards.
 	/// This makes the calculations a lot more natural.
 	/// </summary>
-	internal void SelectInternal(int selectionStart, int selectionLength)
+	internal bool SelectInternal(int selectionStart, int selectionLength)
 	{
+		// Clamp both ends the same way Select does, so the direction and caret offset describe
+		// the selection that actually gets applied.
+		var textLength = Text.Length;
+		var anchor = Math.Min(selectionStart, textLength);
+		var caret = Math.Min(selectionStart + selectionLength, textLength);
+		var normalizedStart = Math.Min(anchor, caret);
+		var normalizedLength = Math.Abs(caret - anchor);
+
+		var originalSelection = _selection;
+		var originalCaretXOffset = _caretXOffset;
+		var rangeChanges = normalizedStart != originalSelection.start || normalizedLength != originalSelection.length;
+
 		_inSelectInternal = true;
-		_selection.selectionEndsAtTheStart = selectionLength < 0;
-		if (DisplayBlockInlines is { }) // this check is important because on start up, the Inlines haven't been created yet.
+		try
 		{
-			_caretXOffset = selectionLength >= 0 ?
-				(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Left :
-				(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Right;
+			// The native overlay reads IsBackwardSelection during Select, before this method returns.
+			// Publish the direction first, then restore it below if SelectionChanging rejects the update.
+			_selection.selectionEndsAtTheStart = caret < anchor;
+			if (DisplayBlockInlines is { })
+			{
+				var caretRect = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(caret);
+				_caretXOffset = (float)(caret >= anchor ? caretRect.Left : caretRect.Right);
+			}
+
+			if (!Select(normalizedStart, normalizedLength))
+			{
+				_selection = originalSelection;
+				_caretXOffset = originalCaretXOffset;
+				return false;
+			}
+
+			if (rangeChanges)
+			{
+				// SelectPartial already refreshed the display; scrolling waits for the final direction.
+				UpdateScrolling();
+			}
+			else if (_selection.selectionEndsAtTheStart != originalSelection.selectionEndsAtTheStart || _caretXOffset != originalCaretXOffset)
+			{
+				// Select is a no-op when only the direction flips, but the caret moved to the other end.
+				UpdateDisplaySelection();
+				UpdateScrolling();
+			}
+
+			return true;
 		}
-		Select(Math.Min(selectionStart, selectionStart + selectionLength), Math.Abs(selectionLength));
-		_inSelectInternal = false;
+		finally
+		{
+			_inSelectInternal = false;
+		}
 	}
 
 	private void TimerOnTick(object sender, object e)
@@ -1487,76 +1548,6 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 				CaretMode = CaretDisplayMode.ThumblessCaretHidden;
 			}
 		}
-	}
-
-	/// <summary>
-	/// There are 2 concepts of a "line", there's a line that ends at end-of-text, \r, \n, etc.
-	/// and then there's an actual rendered line that may end due to wrapping and not a line break.
-	/// This method cares about the second kind of lines.
-	/// </summary>
-	private int GetUpDownResult(string text, int selectionStart, int selectionLength, bool shift, bool up)
-	{
-		if (text.Length == 0)
-		{
-			return 0;
-		}
-
-		var (startLineStart, startLineLength, startLineFirst, startLineLast, startLineIndex) = TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart);
-		var (endLineStart, endLineLength, endLineFirst, endLineLast, endLineIndex) = TextBoxView.DisplayBlock.ParsedText.GetLineAt(selectionStart + selectionLength);
-
-		if (up && shift && endLineFirst)
-		{
-			return 0; // first line, goes to the beginning
-		}
-		else if (!up && shift && endLineLast)
-		{
-			return text.Length; // last line, goes to the end
-		}
-		else if (!up && !shift && (startLineLast || endLineLast))
-		{
-			return text.Length; // last line, goes to the end
-		}
-
-		int newLineIndex;
-		if (up)
-		{
-			if (selectionLength < 0 || shift)
-			{
-				newLineIndex = !endLineFirst ? endLineIndex - 1 : endLineIndex;
-			}
-			else
-			{
-				newLineIndex = !startLineFirst ? startLineIndex - 1 : startLineIndex;
-			}
-		}
-		else
-		{
-			if (selectionLength > 0 || shift)
-			{
-				newLineIndex = !endLineLast ? endLineIndex + 1 : endLineIndex;
-			}
-			else
-			{
-				newLineIndex = !startLineLast ? startLineIndex + 1 : startLineIndex;
-			}
-		}
-
-		var rect = TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength);
-		var x = _caretXOffset;
-		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
-		var index = Math.Max(0, TextBoxView.DisplayBlock.ParsedText.GetIndexAt(new Point(x, y), true, true));
-		var (newLineStart, newLineLength, newLineFirst, newLineLast, _) = TextBoxView.DisplayBlock.ParsedText.GetLineAt(index);
-		if (text.Length > index - 1
-			&& newLineLength > 1 // this check is for cases where the line has nothing but \r (i.e. is empty)
-			&& index - 1 >= 0
-			&& index == newLineStart + newLineLength
-			&& (text[index - 1] == '\r' || text[index - 1] == ' '))
-		{
-			// if we're past \r or space, we will actually be at the beginning of the next line, so we take a step back
-			index--;
-		}
-
-		return index;
 	}
 
 	private InlineCollection DisplayBlockInlines => TextBoxView?.DisplayBlock.Inlines;
@@ -1592,6 +1583,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 	partial void OnTextChangedPartial()
 	{
 		CancelCompositionOnExternalChange();
+		_touchMultiTapAnchor = null;
 
 		// Ported from: TextBoxBase.cpp TxNotify EN_CHANGE (line 3113)
 		// Close the selection flyout when text changes.
@@ -1612,6 +1604,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 		}
 
 		_textBoxNotificationsSingleton?.NotifyValueChanged(this);
+		ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
 	}
 
 	private string RemoveLF(string baseString)
@@ -1867,9 +1860,24 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 
 	void ITextSelectionGripperHost.MoveGripperCaret(int index) => Select(index, 0);
 
-	void ITextSelectionGripperHost.ScrollForGripper(bool isEndGripper) => UpdateScrolling(isEndGripper);
+	void ITextSelectionGripperHost.ScrollForGripper(bool isEndGripper)
+	{
+		UpdateScrolling(isEndGripper);
 
-	void ITextSelectionGripperHost.OnGripperPressed() => DismissSelectionFlyoutForPointerPress();
+		// Called on every handle move, so it doubles as the drag tick for the iOS magnifier.
+		UpdateCaretLoupe(isEndGripper ? SelectionStart + SelectionLength : SelectionStart);
+	}
+
+	void ITextSelectionGripperHost.OnGripperPressed()
+	{
+		// A tap on a handle toggles the menu, like a tap on the selection (see OnGripperTapped).
+		_selectionFlyoutOpenAtPress = SelectionFlyout?.IsOpen == true;
+		// A handle press is a new touch too: drop a menu still waiting on the previous tap.
+		CancelDeferredTouchFlyout();
+		DismissSelectionFlyoutForPointerPress();
+	}
+
+	void ITextSelectionGripperHost.OnGripperPointerLost() => EndCaretLoupe();
 
 	// Dismiss the selection flyout (the floating copy/paste bar) when a touch interaction begins, so it
 	// doesn't linger next to a context menu opened on the same gesture.
@@ -1877,6 +1885,8 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 
 	void ITextSelectionGripperHost.RequestGripperContextMenu(PointerRoutedEventArgs args)
 	{
+		EndCaretLoupe();
+
 		// Ported from TextBoxBase.cpp OnGripperHeld: a held gripper opens the context flyout.
 		var contextArgs = new ContextRequestedEventArgs();
 		contextArgs.SetGlobalPoint(args.GetCurrentPoint(null).Position);
@@ -1884,35 +1894,90 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 	}
 
 	void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args, bool allowEmptySelection)
-		=> QueueUpdateSelectionFlyoutVisibility(
+	{
+		// The handle interaction is over (released), so the magnifier goes away.
+		EndCaretLoupe();
+
+		if (_suppressGripperTapFlyout)
+		{
+			// The tap hid the menu (see OnGripperTapped).
+			_suppressGripperTapFlyout = false;
+			_deferGripperTapFlyout = false;
+			return;
+		}
+
+		if (_deferGripperTapFlyout)
+		{
+			// A triple-tap may still follow this double-tap (see OnGripperTapped).
+			_deferGripperTapFlyout = false;
+			QueueDeferredTouchFlyout(args.GetCurrentPoint(Owner).Position, forSelection: true);
+			return;
+		}
+
+		QueueUpdateSelectionFlyoutVisibility(
 			args.Pointer.PointerDeviceType,
 			args.GetCurrentPoint(Owner).Position,
 			// The single insertion handle only exists under the mobile (iOS/Android) conventions; tapping it
 			// re-opens the flyout even over a collapsed caret. Desktop never gets the empty-selection flyout.
 			allowEmptySelection: allowEmptySelection && TouchSelectionConvention != TouchTextSelectionConvention.Desktop);
+	}
 
-	void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, int anchorIndex)
+	bool ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, int anchorIndex)
 	{
-		// The insertion handle (EndOnly gripper) sits over the character it points at, so the second tap of
-		// a double-tap lands on the handle instead of the text. Fold it into the same multi-tap counter as
-		// OnPointerReleasedPartial (press-to-press) so the double-tap still selects the word.
-		var repeatedPresses = _lastPointerDown.point is { } previous && IsTouchMultiTap(previous, press)
-			? _lastPointerDown.repeatedPresses + 1
-			: 0;
-		_lastPointerDown = (press, repeatedPresses);
+		var displayBlock = TextBoxView.DisplayBlock;
+		var anchorRect = displayBlock.ParsedText.GetRectForIndex(anchorIndex);
+		// Without an inverse (a singular transform), the tap counts as one at the handle.
+		var fingerPoint = ToTouchTextPoint(displayBlock.TransformToVisual(null).Inverse?.TransformPoint(press.Position) ?? new Point(anchorRect.X, anchorRect.Y));
 
-		// Act on the character the handle points at, not the finger's position on the thumb (which hangs below
-		// the caret line and would jump the caret to the end of the text).
-		if (TouchSelectionConvention != TouchTextSelectionConvention.Desktop && repeatedPresses >= 1)
+		// The insertion handle's thumb hangs over the line below the caret. A tap there, as quick after the tap on the
+		// text as a double-tap, is meant for that line's text. Any other tap is on the handle, which shows the paste
+		// flyout (native Android).
+		var isMobile = TouchSelectionConvention != TouchTextSelectionConvention.Desktop;
+		var tapsTextBelow = isMobile
+			&& _caretMode == CaretDisplayMode.CaretWithThumbsOnlyEndShowing
+			&& QuicklyFollowsTextTap(press)
+			&& GetTextLineTop(fingerPoint) != anchorRect.Y;
+		// Anywhere else on the handle, the tap is on the handle's line, under the finger.
+		var textPoint = tapsTextBelow ? fingerPoint : new Point(fingerPoint.X, anchorRect.Y + anchorRect.Height / 2);
+
+		// The insertion handle (EndOnly gripper) sits over the character it points at, so the taps of a double-tap
+		// can land on the handle instead of the text. Fold them into the same multi-tap counter as
+		// OnPointerReleasedPartial (press-to-press) so the double-tap still selects the word.
+		var repeatedPresses = CountTouchPress(press, textPoint, GetCharacterIndexAt(textPoint), onHandle: !tapsTextBelow);
+
+		if (TouchSelectionConvention == TouchTextSelectionConvention.iOS && repeatedPresses >= 2)
 		{
-			TouchSelectWordAt(anchorIndex);
+			// After a double-tap the word's handles sit over it, so the third tap of a triple-tap often lands on one.
+			TouchSelectParagraphAt(anchorIndex);
+		}
+		else if (isMobile && repeatedPresses >= 1 && _touchMultiTapAnchor is { } anchor)
+		{
+			TouchSelectWordAt(anchor.character);
+
+			// iOS: a triple-tap may follow, so the flyout must not open (and swallow it) yet.
+			_deferGripperTapFlyout = TouchSelectionConvention == TouchTextSelectionConvention.iOS;
+		}
+		else if (tapsTextBelow)
+		{
+			TouchTap(textPoint, wasFocused: true);
 		}
 		else if (_caretMode != CaretDisplayMode.CaretWithThumbsBothEndsShowing)
 		{
+			// Act on the character the handle points at, not the finger's position on the thumb (which hangs below
+			// the caret line and would jump the caret to the end of the text).
 			TouchTapAt(anchorIndex);
+		}
+		else if (TouchSelectionConvention == TouchTextSelectionConvention.iOS)
+		{
+			// Native iOS: a handle sits over its selection (a short word is mostly covered by them), so a tap on one
+			// toggles the edit menu like a tap on the selection. Opening waits out the multi-tap window.
+			_suppressGripperTapFlyout = _selectionFlyoutOpenAtPress;
+			_deferGripperTapFlyout = !_selectionFlyoutOpenAtPress;
 		}
 		// Both thumbs showing: the tap grabbed a selection edge, so keep the selection (native iOS/Android)
 		// instead of collapsing it to a caret. The presenter re-shows the selection flyout on release.
+
+		return !tapsTextBelow;
 	}
 	#endregion
 
@@ -1938,4 +2003,6 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 		// — reads back Handled
 		return _host.RaiseContextMenuOpening(rootPoint.X, rootPoint.Y);
 	}
+
+	private readonly record struct ImeLayoutState(Matrix3x2 Transform, Vector2 Size, double Scale, string Text, int SelectionStart, int SelectionLength);
 }

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
-	public partial struct RepeatBehavior : IEquatable<RepeatBehavior>
+	public partial struct RepeatBehavior : IEquatable<RepeatBehavior>, IFormattable
 	{
 		public static RepeatBehavior Forever => new RepeatBehavior() { Type = RepeatBehaviorType.Forever };
 
@@ -84,9 +84,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			=> ToString(CultureInfo.InvariantCulture);
 
 		public string ToString(IFormatProvider formatProvider)
+			=> ConvertToString(null, formatProvider);
+
+		string IFormattable.ToString(string format, IFormatProvider formatProvider)
+			=> ConvertToString(format, formatProvider);
+
+		private string ConvertToString(string format, IFormatProvider formatProvider)
 			=> Type switch
 			{
-				RepeatBehaviorType.Count => Count.ToString(formatProvider) + "x",
+				RepeatBehaviorType.Count => Count.ToString(format, formatProvider) + "x",
 				RepeatBehaviorType.Duration => Duration.ToXamlString(formatProvider),
 				RepeatBehaviorType.Forever => ForeverLiteral,
 

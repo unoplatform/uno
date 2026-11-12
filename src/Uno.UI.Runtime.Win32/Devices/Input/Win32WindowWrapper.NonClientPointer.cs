@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
@@ -15,26 +14,15 @@ namespace Uno.UI.Runtime.Win32;
 
 partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 {
-	private readonly Dictionary<NonClientRegionKind, RectInt32[]> _regionRects = new();
-	public void ClearAllRegionRects()
-		=> _regionRects.Clear();
+	private readonly NonClientRegionSet _regionRects = new();
 
-	public void ClearRegionRects(NonClientRegionKind region)
-		=> _regionRects.Remove(region);
+	public void ClearAllRegionRects() => _regionRects.ClearAll();
 
-	public RectInt32[] GetRegionRects(NonClientRegionKind region)
-		=> _regionRects.TryGetValue(region, out var list) ? list : Array.Empty<RectInt32>();
+	public void ClearRegionRects(NonClientRegionKind region) => _regionRects.Clear(region);
 
-	public void SetRegionRects(NonClientRegionKind region, RectInt32[] rects)
-	{
-		if (rects.Length == 0)
-		{
-			_regionRects.Remove(region);
-			return;
-		}
+	public RectInt32[] GetRegionRects(NonClientRegionKind region) => _regionRects.Get(region);
 
-		_regionRects[region] = rects;
-	}
+	public void SetRegionRects(NonClientRegionKind region, RectInt32[] rects) => _regionRects.Set(region, rects);
 
 	private Win32NonClientHitTestKind NonClientAreaHitTest(HWND hWnd, WPARAM wParam, LPARAM lParam)
 	{
@@ -121,30 +109,11 @@ partial class Win32WindowWrapper : INativeInputNonClientPointerSource
 		var clientOrigin = default(System.Drawing.Point);
 		PInvoke.ClientToScreen(hWnd, ref clientOrigin);
 
-		bool hasCustomDragRects = false;
-		if (!onResizeBorder)
+		bool hasCustomDragRects = _regionRects.HasRects(NonClientRegionKind.Caption);
+		if (!onResizeBorder
+			&& _regionRects.HitTest(new PointInt32(ptMouse.X - clientOrigin.X, ptMouse.Y - clientOrigin.Y)) is { } kind)
 		{
-			// Go through all the available rects
-			foreach (var region in _regionRects)
-			{
-				if (region.Key == NonClientRegionKind.Caption && region.Value.Length > 0)
-				{
-					hasCustomDragRects = true;
-				}
-
-				foreach (var rect in region.Value)
-				{
-					var adjustedRect = new RectInt32(
-						rect.X + clientOrigin.X,
-						rect.Y + clientOrigin.Y,
-						rect.Width,
-						rect.Height);
-					if (adjustedRect.Contains(new PointInt32(ptMouse.X, ptMouse.Y)))
-					{
-						return RegionKindToHitTest(region.Key);
-					}
-				}
-			}
+			return RegionKindToHitTest(kind);
 		}
 
 		// Fall back to default caption if we have a title bar and no custom drag rects.

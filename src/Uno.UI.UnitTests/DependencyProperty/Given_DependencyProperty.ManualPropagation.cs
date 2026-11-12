@@ -21,7 +21,7 @@ using Uno.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests.ManualPropagation
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_DependencyProperty_ManualPropagation
 	{
 		[TestInitialize]

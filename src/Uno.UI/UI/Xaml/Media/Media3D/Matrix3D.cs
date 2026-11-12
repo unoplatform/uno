@@ -164,17 +164,16 @@ public partial struct Matrix3D : IFormattable
 	}
 
 	/// <inheritdoc/>
-	public override string ToString() => ToString(null, null);
+	public override string ToString() => ConvertToString(null, null);
 
 	/// <summary>
 	/// Creates a string representation of this Matrix3D.
 	/// </summary>
-	public string ToString(IFormatProvider provider) => ToString(null, provider);
+	public string ToString(IFormatProvider provider) => ConvertToString(null, provider);
 
-	/// <summary>
-	/// Creates a string representation of this Matrix3D.
-	/// </summary>
-	public string ToString(string format, IFormatProvider provider)
+	string IFormattable.ToString(string format, IFormatProvider provider) => ConvertToString(format, provider);
+
+	private string ConvertToString(string format, IFormatProvider provider)
 	{
 		if (IsIdentity)
 		{

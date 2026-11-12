@@ -42,6 +42,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		}
 
 		[TestMethod]
+		[DataRow("Child.Grid.Column")]
+		[DataRow("Child.(Grid.Column)")]
+		public async Task When_VisualState_Setter_Targets_Attached_Property(string target)
+		{
+			// WinUI accepts the attached property both bare and in parentheses (its SplitView template uses the bare form).
+			var root = (UserControl)XamlReader.Load($$"""
+				<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+							 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<Grid>
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup>
+								<VisualState x:Name="Moved">
+									<VisualState.Setters>
+										<Setter Target="{{target}}" Value="1" />
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+						<Border x:Name="Child" />
+					</Grid>
+				</UserControl>
+				""");
+
+			try
+			{
+				WindowHelper.WindowContent = root;
+				await WindowHelper.WaitForLoaded(root, static e => e.IsLoaded);
+
+				VisualStateManager.GoToState(root, "Moved", useTransitions: false);
+
+				Assert.AreEqual(1, Grid.GetColumn((Border)root.FindName("Child")));
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public void When_Xmlns_ClrNamespace()
 		{
 			// WinUI only supports the "using:" form; the WPF-style "clr-namespace:" is rejected (BC42).

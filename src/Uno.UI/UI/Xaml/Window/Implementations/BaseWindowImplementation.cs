@@ -74,8 +74,20 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 	public string Title
 	{
-		get => NativeWindowWrapper!.Title;
-		set => NativeWindowWrapper!.Title = value;
+		get => NativeWindowWrapper is { } wrapper ? wrapper.Title : Window.AppWindow.Title;
+		set
+		{
+			if (NativeWindowWrapper is { } wrapper)
+			{
+				wrapper.Title = value;
+			}
+			else
+			{
+				// No native window yet (or none at all for a hosted ALC window): AppWindow caches the
+				// title and applies it if a native window is attached later.
+				Window.AppWindow.Title = value;
+			}
+		}
 	}
 
 	public Rect Bounds => NativeWindowWrapper?.Bounds ?? default;
@@ -253,6 +265,9 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 		// (which will eventually be removed as a legacy API as well.
 		var coreWindowActivatedEventArgs = new Windows.UI.Core.WindowActivatedEventArgs(state);
 		CoreWindow?.OnActivated(coreWindowActivatedEventArgs);
+		InputActivationListener.SetStateForWindowId(
+			Window.AppWindow.Id,
+			state == CoreWindowActivationState.Deactivated ? InputActivationState.Deactivated : InputActivationState.Activated);
 		RaiseActivated(activatedEventArgs);
 		SystemThemeHelper.RefreshSystemTheme();
 		if (!FeatureConfiguration.DebugOptions.PreventKeyboardStateTrackerFromResettingOnWindowActivationChange)

@@ -9,7 +9,7 @@ internal interface IInvisibleTextBoxView
 {
 	string? Text { get; }
 
-	bool IsCompatible(TextBoxCore core);
+	bool IsCompatible(IImeSessionHost host);
 
 	bool BecomeFirstResponder();
 
@@ -26,6 +26,14 @@ internal interface IInvisibleTextBoxView
 	/// </summary>
 	void SetKeyboardAccessoryView(UIView? accessoryView);
 
+	/// <summary>
+	/// Keeps the soft keyboard (and its accessory) hidden while this input is first responder, so that it still takes
+	/// hardware keyboard input.
+	/// </summary>
+	void SetSoftwareKeyboardSuppressed(bool suppressed);
+
+	void NotifyImePositionChanged();
+
 	UITextAutocapitalizationType AutocapitalizationType { get; set; }
 
 	UIKeyboardType KeyboardType { get; set; }
@@ -41,6 +49,8 @@ internal interface IInvisibleTextBoxView
 	UIReturnKeyType ReturnKeyType { get; set; }
 
 	UIKeyboardAppearance KeyboardAppearance { get; set; }
+
+	global::Foundation.NSString TextContentType { get; set; }
 
 	UITextPosition BeginningOfDocument { get; }
 

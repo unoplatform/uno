@@ -3695,6 +3695,7 @@ public partial class ScrollPresenter : FrameworkElement, IScrollAnchorProvider, 
 			// In our case, we can't do that as there is no multi inheritance in C#.
 			// We use BorderLayerRenderer to draw the background.
 			this.UpdateBackground();
+			OnBackgroundChangedPartial();
 
 			//Panel thisAsPanel = this;
 

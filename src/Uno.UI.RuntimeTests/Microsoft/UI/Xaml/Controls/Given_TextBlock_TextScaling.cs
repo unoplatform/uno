@@ -50,6 +50,13 @@ public class Given_TextBlock_TextScaling
 			$"TextScaleFactor should be a positive value, got {uiSettings.TextScaleFactor}");
 	}
 
+	// The simulators run at the default content size category, which is no text scaling. tvOS's body
+	// text is 29pt rather than iOS's 17pt, so a fixed iOS baseline scaled all tvOS text by 1.7.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaUIKit)]
+	public void When_Default_Content_Size_TextScaleFactor_Is_One()
+		=> Assert.AreEqual(1.0, new UISettings().TextScaleFactor, 0.01);
+
 #if __SKIA__
 	[TestMethod]
 	public async Task When_TextScaleFactorEnabled_Size_Is_Larger()

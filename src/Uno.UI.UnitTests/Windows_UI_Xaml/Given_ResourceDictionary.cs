@@ -23,7 +23,7 @@ using Colors = Microsoft.UI.Colors;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_ResourceDictionary
 	{
 		[TestInitialize]

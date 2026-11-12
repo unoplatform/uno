@@ -49,7 +49,7 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 
 	internal override void ReceiveInertiaStarting(Point linearVelocity)
 	{
-		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, new Vector3((float)linearVelocity.X, (float)linearVelocity.Y, 0), requestId: 0, isFromPointerWheel: false));
+		_interactionTracker.ChangeState(new InteractionTrackerInertiaState(_interactionTracker, new Vector3((float)linearVelocity.X, (float)linearVelocity.Y, 0), requestId: 0));
 	}
 
 	internal override void ReceivePointerWheel(double delta, bool isHorizontal)

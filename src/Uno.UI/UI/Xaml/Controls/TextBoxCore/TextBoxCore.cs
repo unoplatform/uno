@@ -103,7 +103,15 @@ internal sealed partial class TextBoxCore
 	private bool CanPasteClipboardContent
 	{
 		get => _host.CanPasteClipboardContent;
-		set => _host.CanPasteClipboardContent = value;
+		set
+		{
+			if (_host.CanPasteClipboardContent != value)
+			{
+				_host.CanPasteClipboardContent = value;
+				// A peer that doesn't exist yet reads the fresh value when it gets created.
+				_host.Owner.CachedAutomationPeer?.InvalidatePeer();
+			}
+		}
 	}
 #endif
 
@@ -142,6 +150,7 @@ internal sealed partial class TextBoxCore
 	private GeneralTransform TransformToVisual(UIElement visual) => _host.Owner.TransformToVisual(visual);
 
 	// Platform hooks, implemented in TextBoxCore.Input.cs.
+	partial void OnLoadedPartial();
 	partial void OnUnloadedPartial();
 	partial void SetInputReturnTypePlatform(InputReturnType inputReturnType);
 	partial void OnTextChangedPartial();
@@ -247,6 +256,7 @@ internal sealed partial class TextBoxCore
 
 	internal void OnLoadedCore()
 	{
+		OnLoadedPartial();
 		// This workaround is added in OnLoaded rather than OnApplyTemplate.
 		// Apparently, sometimes (e.g, Material style), the TextBox style setters are executed after OnApplyTemplate
 		// So, the style setters would override what the workaround does.
@@ -290,9 +300,10 @@ internal sealed partial class TextBoxCore
 		bool isPointerCaptureRequired =
 			true;
 
+		_wasFocusedOnPointerPressed = FocusState != FocusState.Unfocused;
+
 		if (ShouldFocusOnPointerPressed(args)) // UWP Captures if the pointer is not Touch
 		{
-			var wasFocused = FocusState != FocusState.Unfocused;
 			if (isPointerCaptureRequired)
 			{
 				if (CapturePointer(args.Pointer))
@@ -304,14 +315,6 @@ internal sealed partial class TextBoxCore
 			{
 				_host.Owner.Focus(FocusState.Pointer);
 			}
-
-#if __SKIA__
-			if (wasFocused)
-			{
-				// See comment in OnPointerReleased for why we do this
-				_textBoxNotificationsSingleton?.OnFocused(this);
-			}
-#endif
 		}
 
 		args.Handled = true;
@@ -332,26 +335,26 @@ internal sealed partial class TextBoxCore
 			{
 				_host.Owner.Focus(FocusState.Pointer);
 			}
-#if __SKIA__
-			if (wasFocused)
-			{
-				// We already call UpdateFocusState in TextBoxView when focus changes, but this is not enough.
-				// UpdateFocusState should be called here even if the TextBox was already focused.
-				// This is to support re-showing the keyboard when clicking on an already-focused TextBox.
-				// For example:
-				// 1. User taps on TextBox and it gained focus and soft keyboard was shown.
-				// 2. User hides the keyboard, but TextBox is still focused.
-				// 3. User taps on TextBox again. In this case, we want to call UpdateFocusState so that the soft keyboard is re-shown again.
-				//
-				// This approach feels hacky though and may not handle programmatic focus properly, i.e, when programmatic focus is requested on an already-focused TextBox. This is a niche case though.
-				_textBoxNotificationsSingleton?.OnFocused(this);
-			}
-#endif
 		}
 
 		args.Handled = true;
 
 		OnPointerReleasedPartial(args, wasFocused);
+	}
+
+	private bool _wasFocusedOnPointerPressed;
+
+	// Tapping a box that was already focused re-shows the keyboard the user may have hidden, as WinUI does from
+	// OnTappedCore; a drag (selecting, or panning) is no tap, so it doesn't. A tap that focuses the box already shows
+	// it through the focus change.
+	internal void OnTapped(TappedRoutedEventArgs args)
+	{
+#if __SKIA__
+		if (_wasFocusedOnPointerPressed && FocusState != FocusState.Unfocused)
+		{
+			NotifyFocusedAgain();
+		}
+#endif
 	}
 
 	// Entry points for hooks whose caller stayed on the control.
@@ -365,7 +368,8 @@ internal sealed partial class TextBoxCore
 
 	internal void OnPointerCaptureLost(PointerRoutedEventArgs e) => OnPointerCaptureLostPartial(e);
 
-	internal void Select(int start, int length)
+	/// <returns><c>false</c> only when a SelectionChanging handler rejected the update.</returns>
+	internal bool Select(int start, int length)
 	{
 		if (start < 0)
 		{
@@ -397,15 +401,18 @@ internal sealed partial class TextBoxCore
 
 		if (SelectionStart == start && SelectionLength == length)
 		{
-			return;
+			return true;
 		}
 
-		if (_host.RaiseSelectionChanging(start, length))
+		if (!_host.RaiseSelectionChanging(start, length))
 		{
-			SelectPartial(start, length);
-			_host.RaiseSelectionChanged();
-			SelectionChanged?.Invoke(this, new RoutedEventArgs(_host.Owner));
+			return false;
 		}
+
+		SelectPartial(start, length);
+		_host.RaiseSelectionChanged();
+		SelectionChanged?.Invoke(this, new RoutedEventArgs(_host.Owner));
+		return true;
 	}
 
 	/// <summary>
@@ -541,10 +548,32 @@ internal sealed partial class TextBoxCore
 #endif
 	}
 
-	internal void OnGotFocusCore()
+	internal void OnGotFocusCore(RoutedEventArgs args)
 	{
+		var owner = _host.Owner;
+
+		// From WinUI TextBoxBase::OnGotFocus:
+		// Verify that this textbox is still the focused element.
+		// This is to account for a scenario where a new element gains focus
+		// between focus manager queueing the GotFocus event and it being raised.
+		if (owner.XamlRoot is { } xamlRoot)
+		{
+			// Only return if this TextBox is the original source of the OnGotFocus event.
+			// Other controls may directly call this OnGotFocus function and we do not want
+			// to block those calls.
+			if (ReferenceEquals(args.OriginalSource, owner) && !ReferenceEquals(FocusManager.GetFocusedElement(xamlRoot), owner))
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug("GotFocus raised after the focus moved to another element, it is not brought into view.");
+				}
+
+				return;
+			}
+		}
+
 		_forceFocusedVisualState = false;
-		_host.Owner.StartBringIntoView(new BringIntoViewOptions
+		owner.StartBringIntoView(new BringIntoViewOptions
 		{
 			AnimationDesired = false
 		});
@@ -726,7 +755,14 @@ internal sealed partial class TextBoxCore
 	{
 		if (_placeHolder != null)
 		{
-			_placeHolder.Visibility = Text.IsNullOrEmpty() ? Visibility.Visible : Visibility.Collapsed;
+			var isEmpty = Text.IsNullOrEmpty();
+			if (!isEmpty && Owner.GetValue(Microsoft.UI.Xaml.Automation.AutomationProperties.DescribedByProperty) is global::System.Collections.Generic.IList<DependencyObject> { Count: > 0 })
+			{
+				// Matches WinUI's UpdatePlaceholderTextPresenterVisibility: a hidden placeholder must not keep describing the control.
+				DirectUI.TextBoxPlaceholderTextHelper.ClearPlaceholderTextBlockDescribedBy(Owner);
+			}
+
+			_placeHolder.Visibility = isEmpty ? Visibility.Visible : Visibility.Collapsed;
 		}
 	}
 
@@ -950,6 +986,7 @@ internal sealed partial class TextBoxCore
 				// The all to ProcessTextInput may be recursing, we only want to restore
 				// the state on the last one.
 				_isInputModifyingText = false;
+				_platformTextApplyInProgress = false;
 			}
 		}
 

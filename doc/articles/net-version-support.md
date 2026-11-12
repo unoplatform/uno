@@ -10,7 +10,24 @@ This page lists supported .NET versions and [C# language versions](https://learn
 
 ## Table of supported versions
 
-# [**Uno Platform 6.4 and later**](#tab/uno64)
+# [**Uno Platform 7.0 and later**](#tab/uno70)
+
+| Platform                                   | Default .NET version | Default C# version | Min .NET version | Min C# version | Max .NET version | Max C# version |
+|--------------------------------------------|:--------------------:|:------------------:|:----------------:|:--------------:|:----------------:|:--------------:|
+| WebAssembly                                | .NET 10              | 14                 | .NET 10          | 14             | .NET 11          | 15             |
+| Skia Desktop                               | .NET 10              | 14                 | .NET 10          | 14             | .NET 11          | 15             |
+| WinAppSDK                                  | .NET 10              | 14                 | .NET 10          | 14             | .NET 11          | 15             |
+| iOS, Android                               | .NET 10              | 14                 | .NET 10          | 14             | .NET 11          | 15             |
+
+### Notes
+
+- In Uno Platform 7.0, support for .NET 9 has been removed. Retarget `net9.0-*` projects to `net10.0-*` before upgrading. See [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7.ProjectSetup#net-9-is-no-longer-supported).
+- .NET 10 remains the default for new Uno Platform projects. As a Long Term Support (LTS) release, it is supported **until November 2028**.
+- [.NET 11.0](https://learn.microsoft.com/dotnet/core/whats-new/dotnet-11/overview), the successor to .NET 10, includes C# 15 support and runs Android and iOS apps on the CoreCLR runtime.
+  As a Standard Term Support (STS) release, it is supported for **two years (until November 14, 2028)**.
+  Create a .NET 11 project with `dotnet new unoapp -tfm net11.0`, or follow [Upgrading from .NET 10 to .NET 11](xref:Uno.Development.MigratingFromNet10ToNet11) for an existing one. Use the latest Uno Platform 7.0 service release, as the first 7.0 releases were built against .NET 11 release candidates.
+
+# [**Uno Platform 6.4 to 6.x**](#tab/uno64)
 
 | Platform                                   | Default .NET version | Default C# version | Min .NET version | Min C# version | Max .NET version | Max C# version |
 |--------------------------------------------|:--------------------:|:------------------:|:----------------:|:--------------:|:----------------:|:--------------:|
@@ -29,7 +46,7 @@ This page lists supported .NET versions and [C# language versions](https://learn
 
 - [.NET 10.0](https://learn.microsoft.com/en-us/dotnet/core/whats-new/dotnet-10/overview), the successor to .NET 9, includes improvements in performance, C# 14 support, and long-term platform stability.
   As a Long Term Support (LTS) release, it will be supported for **three years (until November 2028)**.
-  .NET 10 is now the stable and default runtime option for new Uno Platform projects, while .NET 9 remains supported.
+  .NET 10 is now the stable and default runtime option for new Uno Platform projects. Uno Platform 6.x still supports .NET 9; 7.0 removes it.
 
 # [**Uno Platform 6.3**](#tab/uno63)
 

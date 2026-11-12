@@ -91,4 +91,55 @@ public class Given_Program
 	{
 		Program.IsMcpMode(new[] { "--log-level", "trace", "list" }).Should().BeFalse();
 	}
+
+	[TestMethod]
+	public void IsAppCommand_WhenArgsAreEmpty_ReturnsFalse()
+	{
+		Program.IsAppCommand(Array.Empty<string>()).Should().BeFalse();
+	}
+
+	[TestMethod]
+	[DataRow("app")]
+	[DataRow("APP")]
+	public void IsAppCommand_WhenAppIsTheCommand_ReturnsTrue(string command)
+	{
+		Program.IsAppCommand(new[] { command, "tools" }).Should().BeTrue();
+	}
+
+	[TestMethod]
+	[DataRow("--solution-dir", "C:/src/MyApp")]
+	[DataRow("--log-level", "trace")]
+	[DataRow("-l", "trace")]
+	[DataRow("--file-log", "out.log")]
+	[DataRow("-fl", "out.log")]
+	public void IsAppCommand_WhenAppFollowsGlobalOptions_ReturnsTrue(string option, string value)
+	{
+		Program.IsAppCommand(new[] { option, value, "app", "tools" }).Should().BeTrue();
+	}
+
+	[TestMethod]
+	[DataRow("--solution-dir")]
+	[DataRow("--file-log")]
+	[DataRow("-fl")]
+	public void IsAppCommand_WhenAppIsOnlyAnOptionValue_ReturnsFalse(string option)
+	{
+		Program.IsAppCommand(new[] { option, "app", "list" }).Should().BeFalse();
+	}
+
+	[TestMethod]
+	[DataRow("start")]
+	[DataRow("stop")]
+	[DataRow("list")]
+	[DataRow("disco")]
+	[DataRow("health")]
+	public void IsAppCommand_WhenCommandIsNotApp_ReturnsFalse(string command)
+	{
+		Program.IsAppCommand(new[] { command }).Should().BeFalse();
+	}
+
+	[TestMethod]
+	public void IsAppCommand_WhenMcpServe_ReturnsFalse()
+	{
+		Program.IsAppCommand(new[] { "mcp", "serve" }).Should().BeFalse();
+	}
 }

@@ -15,7 +15,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.ItemsControlTests_CustomContainer
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_ListViewBase_CustomContainer
 	{
 		[TestMethod]

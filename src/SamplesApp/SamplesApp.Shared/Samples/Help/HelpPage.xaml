@@ -4,246 +4,208 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:SamplesApp.Samples.Help"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-    <ScrollViewer Padding="24">
-        <StackPanel MaxWidth="600" Spacing="24">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ms-appx:///Controls/UITests/Views/Styles/Shell/ShellResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-            <!--  Header  -->
-            <StackPanel Spacing="8">
-                <TextBlock
-                    FontSize="28"
-                    FontWeight="SemiBold"
-                    Text="Samples App Help" />
-                <TextBlock
-                    Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
-                    Text="A guide to using the Uno Platform Samples application"
-                    TextWrapping="Wrap" />
-            </StackPanel>
+            <Style
+                x:Key="HelpCardTitleStyle"
+                BasedOn="{StaticResource BodyStrongTextBlockStyle}"
+                TargetType="TextBlock">
+                <Setter Property="AutomationProperties.HeadingLevel" Value="Level2" />
+                <Setter Property="Margin" Value="0,0,0,8" />
+            </Style>
 
-            <!--  Keyboard Shortcuts  -->
-            <StackPanel Spacing="12">
-                <TextBlock
-                    FontSize="20"
-                    FontWeight="SemiBold"
-                    Text="Keyboard Shortcuts" />
+            <Style
+                x:Key="HelpSecondaryTextStyle"
+                BasedOn="{StaticResource CaptionTextBlockStyle}"
+                TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{ThemeResource TextFillColorSecondaryBrush}" />
+                <Setter Property="TextWrapping" Value="WrapWholeWords" />
+            </Style>
 
-                <Grid
-                    Padding="16"
-                    Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
-                    CornerRadius="8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+            <Style x:Key="HelpSyntaxScrollerStyle" TargetType="ScrollViewer">
+                <Setter Property="HorizontalScrollBarVisibility" Value="Auto" />
+                <Setter Property="HorizontalScrollMode" Value="Auto" />
+                <Setter Property="VerticalScrollBarVisibility" Value="Disabled" />
+                <Setter Property="VerticalScrollMode" Value="Disabled" />
+            </Style>
 
+            <DataTemplate x:Key="HelpKeyTemplate" x:DataType="local:HelpKey">
+                <Grid>
+                    <Border
+                        VerticalAlignment="Center"
+                        Style="{StaticResource ShellKeycapStyle}"
+                        Visibility="{x:Bind CapVisibility}">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Style="{StaticResource CaptionTextBlockStyle}"
+                            Text="{x:Bind Text}" />
+                    </Border>
                     <TextBlock
-                        Grid.Row="0"
-                        Grid.Column="0"
-                        Margin="0,0,24,8"
-                        FontFamily="Consolas"
-                        FontWeight="SemiBold"
-                        Text="Ctrl+F" />
-                    <TextBlock
-                        Grid.Row="0"
-                        Grid.Column="1"
-                        Margin="0,0,0,8"
-                        Text="Focus the search box" />
-
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Margin="0,0,24,8"
-                        FontFamily="Consolas"
-                        FontWeight="SemiBold"
-                        Text="F5" />
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Margin="0,0,0,8"
-                        Text="Reload the current sample" />
-
-                    <TextBlock
-                        Grid.Row="2"
-                        Grid.Column="0"
-                        Margin="0,0,24,8"
-                        FontFamily="Consolas"
-                        FontWeight="SemiBold"
-                        Text="Alt+Left" />
-                    <TextBlock
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        Margin="0,0,0,8"
-                        Text="Navigate to the previous sample" />
-
-                    <TextBlock
-                        Grid.Row="3"
-                        Grid.Column="0"
-                        Margin="0,0,24,8"
-                        FontFamily="Consolas"
-                        FontWeight="SemiBold"
-                        Text="Alt+Right" />
-                    <TextBlock
-                        Grid.Row="3"
-                        Grid.Column="1"
-                        Margin="0,0,0,8"
-                        Text="Navigate to the next sample" />
-
-                    <TextBlock
-                        Grid.Row="4"
-                        Grid.Column="0"
-                        Margin="0,0,24,8"
-                        FontFamily="Consolas"
-                        FontWeight="SemiBold"
-                        Text="Ctrl+Shift+F" />
-                    <TextBlock
-                        Grid.Row="4"
-                        Grid.Column="1"
-                        Margin="0,0,0,8"
-                        Text="Open the Favorites view" />
-
-                    <TextBlock
-                        Grid.Row="5"
-                        Grid.Column="0"
-                        Margin="0,0,24,8"
-                        FontFamily="Consolas"
-                        FontWeight="SemiBold"
-                        Text="Ctrl+H" />
-                    <TextBlock
-                        Grid.Row="5"
-                        Grid.Column="1"
-                        Margin="0,0,0,8"
-                        Text="Open the History view" />
-
-                    <TextBlock
-                        Grid.Row="6"
-                        Grid.Column="0"
-                        Margin="0,0,24,8"
-                        FontFamily="Consolas"
-                        FontWeight="SemiBold"
-                        Text="Ctrl+P" />
-                    <TextBlock
-                        Grid.Row="6"
-                        Grid.Column="1"
-                        Margin="0,0,0,8"
-                        Text="Open the Playground" />
-
-                    <TextBlock
-                        Grid.Row="7"
-                        Grid.Column="0"
-                        Margin="0,0,24,8"
-                        FontFamily="Consolas"
-                        FontWeight="SemiBold"
-                        Text="Ctrl+T" />
-                    <TextBlock
-                        Grid.Row="7"
-                        Grid.Column="1"
-                        Margin="0,0,0,8"
-                        Text="Open the Runtime Tests" />
-
-                    <TextBlock
-                        Grid.Row="8"
-                        Grid.Column="0"
-                        Margin="0,0,24,0"
-                        FontFamily="Consolas"
-                        FontWeight="SemiBold"
-                        Text="F1" />
-                    <TextBlock
-                        Grid.Row="8"
-                        Grid.Column="1"
-                        Text="Open this Help page" />
+                        VerticalAlignment="Center"
+                        Style="{StaticResource HelpSecondaryTextStyle}"
+                        Text="{x:Bind Text}"
+                        Visibility="{x:Bind SeparatorVisibility}" />
                 </Grid>
-            </StackPanel>
+            </DataTemplate>
 
-            <!--  Navigation Tips  -->
-            <StackPanel Spacing="12">
-                <TextBlock
-                    FontSize="20"
-                    FontWeight="SemiBold"
-                    Text="Navigation" />
+            <DataTemplate x:Key="HelpShortcutTemplate" x:DataType="local:HelpShortcutRow">
+                <!--  Panels have no automation peer, so the label TextBlock carries the row's name, keys and note.  -->
+                <local:HelpShortcutRowPanel MinHeight="40" Margin="0,6">
+                    <StackPanel>
+                        <TextBlock
+                            AutomationProperties.AutomationId="{x:Bind Id}"
+                            AutomationProperties.Name="{x:Bind AutomationName}"
+                            Style="{StaticResource BodyTextBlockStyle}"
+                            Text="{x:Bind Label}"
+                            TextWrapping="Wrap" />
+                        <TextBlock
+                            AutomationProperties.AccessibilityView="Raw"
+                            Style="{StaticResource HelpSecondaryTextStyle}"
+                            Text="{x:Bind Note}"
+                            Visibility="{x:Bind NoteVisibility}" />
+                    </StackPanel>
+                    <ItemsControl
+                        AutomationProperties.AccessibilityView="Raw"
+                        ItemTemplate="{StaticResource HelpKeyTemplate}"
+                        ItemsSource="{x:Bind Keys}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="4" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </local:HelpShortcutRowPanel>
+            </DataTemplate>
 
+            <DataTemplate x:Key="HelpCommandLineTemplate" x:DataType="local:HelpCommandLineRow">
+                <!--  Arguments never wrap: a line broken at a dash or a dot gets copied wrong. Narrow windows scroll them sideways.  -->
+                <StackPanel Padding="0,6" Spacing="4">
+                    <ScrollViewer Style="{StaticResource HelpSyntaxScrollerStyle}">
+                        <TextBlock
+                            Style="{StaticResource ShellMonospaceTextStyle}"
+                            Text="{x:Bind Syntax}"
+                            TextWrapping="NoWrap" />
+                    </ScrollViewer>
+                    <TextBlock Style="{StaticResource HelpSecondaryTextStyle}" Text="{x:Bind Description}" />
+                    <ScrollViewer Style="{StaticResource HelpSyntaxScrollerStyle}" Visibility="{x:Bind ExamplesVisibility}">
+                        <TextBlock
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Style="{StaticResource ShellMonospaceTextStyle}"
+                            Text="{x:Bind Examples}"
+                            TextWrapping="NoWrap" />
+                    </ScrollViewer>
+                </StackPanel>
+            </DataTemplate>
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <ScrollViewer x:Name="HelpScroller" Padding="24,16">
+        <StackPanel
+            MaxWidth="760"
+            HorizontalAlignment="Stretch"
+            Spacing="24">
+
+            <Border Style="{StaticResource ShellCardStyle}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource HelpCardTitleStyle}" Text="Keyboard shortcuts" />
+                    <ItemsControl
+                        x:Name="ShellHelpShortcuts"
+                        AutomationProperties.AutomationId="ShellHelpShortcuts"
+                        ItemTemplate="{StaticResource HelpShortcutTemplate}"
+                        ItemsSource="{x:Bind Shortcuts}" />
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShellCardStyle}">
                 <StackPanel Spacing="8">
-                    <TextBlock TextWrapping="Wrap">
-                        <Run FontWeight="SemiBold">Library:</Run>
-                        <Run>Browse samples organized by category. Select a category, then select a sample to view it.</Run>
-                    </TextBlock>
+                    <TextBlock Style="{StaticResource HelpCardTitleStyle}" Text="Finding samples" />
                     <TextBlock TextWrapping="Wrap">
                         <Run FontWeight="SemiBold">Search:</Run>
-                        <Run>Use the search box to quickly find samples by name. Press Enter to open a single result.</Run>
+                        <Run>type in the search box. Enter opens the top result, Ctrl+Enter lists every result in the browser, Esc clears the search.</Run>
                     </TextBlock>
                     <TextBlock TextWrapping="Wrap">
-                        <Run FontWeight="SemiBold">Favorites:</Run>
-                        <Run>Click the heart icon to add samples to your favorites for quick access.</Run>
+                        <Run FontWeight="SemiBold">Browser tabs:</Run>
+                        <Run>Recent keeps the samples you opened last, Favorites the ones you starred, Library lists every category.</Run>
                     </TextBlock>
                     <TextBlock TextWrapping="Wrap">
-                        <Run FontWeight="SemiBold">History:</Run>
-                        <Run>Recently viewed samples are saved for easy navigation back.</Run>
-                    </TextBlock>
-                </StackPanel>
-            </StackPanel>
-
-            <!--  Toolbar Options  -->
-            <StackPanel Spacing="12">
-                <TextBlock
-                    FontSize="20"
-                    FontWeight="SemiBold"
-                    Text="Toolbar Options" />
-
-                <StackPanel Spacing="8">
-                    <TextBlock TextWrapping="Wrap">
-                        <Run FontWeight="SemiBold">Theme:</Run>
-                        <Run>Switch between Light, Dark, or System theme.</Run>
+                        <Run FontWeight="SemiBold">Manual tests:</Run>
+                        <Run>the chip next to the tabs narrows the Library to samples that need a human to check them.</Run>
                     </TextBlock>
                     <TextBlock TextWrapping="Wrap">
-                        <Run FontWeight="SemiBold">Fluent Styles:</Run>
-                        <Run>Toggle WinUI Fluent design styling.</Run>
-                    </TextBlock>
-                    <TextBlock TextWrapping="Wrap">
-                        <Run FontWeight="SemiBold">RTL:</Run>
-                        <Run>Test right-to-left text flow.</Run>
-                    </TextBlock>
-                    <TextBlock TextWrapping="Wrap">
-                        <Run FontWeight="SemiBold">FPS Indicator:</Run>
-                        <Run>Show frame rate counter for performance monitoring.</Run>
+                        <Run FontWeight="SemiBold">Deep links:</Run>
+                        <Run>right-click or long-press a sample, or use Copy link in the header, to share a link that opens it directly.</Run>
                     </TextBlock>
                 </StackPanel>
-            </StackPanel>
+            </Border>
 
-            <!--  Quick Access  -->
-            <StackPanel Spacing="12">
-                <TextBlock
-                    FontSize="20"
-                    FontWeight="SemiBold"
-                    Text="Quick Access" />
-
+            <Border Style="{StaticResource ShellCardStyle}">
                 <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource HelpCardTitleStyle}" Text="Working with a sample" />
                     <TextBlock TextWrapping="Wrap">
-                        <Run FontWeight="SemiBold">Runtime Tests:</Run>
-                        <Run>Access the unit test runner from the toolbar button (beaker icon).</Run>
+                        <Run FontWeight="SemiBold">Header commands:</Run>
+                        <Run>on a sample page, previous, next and reload move through samples, and the star adds the sample to Favorites. What does not fit moves into the more menu.</Run>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap">
+                        <Run FontWeight="SemiBold">Info:</Run>
+                        <Run>shows the sample type, link, launch argument and source file, each with a copy button.</Run>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap">
+                        <Run FontWeight="SemiBold">Quick settings:</Run>
+                        <Run>theme, right-to-left, Fluent styles and the description strip. All settings opens the full list.</Run>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap">
+                        <Run FontWeight="SemiBold">Focus mode:</Run>
+                        <Run>hides the shell so only the sample remains. Use the button in the corner or the focus mode shortcut to get back.</Run>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShellCardStyle}">
+                <StackPanel Spacing="8">
+                    <TextBlock Style="{StaticResource HelpCardTitleStyle}" Text="Tools" />
+                    <TextBlock TextWrapping="Wrap">
+                        <Run FontWeight="SemiBold">Runtime tests:</Run>
+                        <Run>run the Uno Platform runtime tests inside the app, with a filter and a live result list.</Run>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap">
+                        <Run FontWeight="SemiBold">Benchmarks:</Run>
+                        <Run>run BenchmarkDotNet classes and download the results. Only shown in builds that include them.</Run>
                     </TextBlock>
                     <TextBlock TextWrapping="Wrap">
                         <Run FontWeight="SemiBold">Playground:</Run>
-                        <Run>Open the playground sample for experimentation.</Run>
+                        <Run>a blank page for quick experiments.</Run>
                     </TextBlock>
                     <TextBlock TextWrapping="Wrap">
-                        <Run FontWeight="SemiBold">New Window:</Run>
-                        <Run>Open the samples app in a new window for side-by-side comparison.</Run>
+                        <Run FontWeight="SemiBold">Record screenshots:</Run>
+                        <Run>on Home, captures every sample in turn with the shell hidden.</Run>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" Visibility="{x:Bind NewWindowVisibility}">
+                        <Run FontWeight="SemiBold">Open in new window:</Run>
+                        <Run>in the more menu, opens the sample in a second window for side-by-side comparison.</Run>
                     </TextBlock>
                 </StackPanel>
-            </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource ShellCardStyle}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource HelpCardTitleStyle}" Text="Command line &amp; deep links" />
+                    <ItemsControl
+                        x:Name="ShellHelpCommandLine"
+                        AutomationProperties.AutomationId="ShellHelpCommandLine"
+                        ItemTemplate="{StaticResource HelpCommandLineTemplate}"
+                        ItemsSource="{x:Bind CommandLine}" />
+                </StackPanel>
+            </Border>
 
         </StackPanel>
     </ScrollViewer>

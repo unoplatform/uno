@@ -88,6 +88,8 @@ To disable the native Android highlighting of focused elements, the `styles.xml`
 
 Please note, that this will disable all the highlights, even in embedded native controls you may host within the Uno Platform app.
 
+The same XAML also drives the Siri Remote on Apple TV, see [Support for Apple TV](xref:Uno.Features.AppleTv).
+
 ## Shipping a TV-only app alongside a phone app
 
 The opt-in described above produces a single APK that targets both phones and Android TVs. If you need to publish a separate experience on each form factor (for example, because the TV UI diverges substantially from the phone UI), the recommended approach is to ship **two separate Uno Platform apps**:

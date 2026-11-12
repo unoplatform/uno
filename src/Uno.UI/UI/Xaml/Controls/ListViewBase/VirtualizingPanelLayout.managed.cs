@@ -501,7 +501,6 @@ namespace Microsoft.UI.Xaml.Controls
 			OwnerPanel.ShouldInterceptInvalidate = ShouldMeasuredBreadthStretch;
 
 			Generator.ClearScrappedViews();
-			Generator.UpdateVisibilities();
 
 			OwnerPanel.ShouldInterceptInvalidate = false;
 		}
@@ -719,11 +718,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (ScrollOrientation == Orientation.Vertical)
 			{
-				ScrollViewer?.ChangeView(null, ScrollViewer.VerticalOffset + scrollAdjustment, null, disableAnimation: true);
+				ScrollViewer?.ChangeViewForLayoutAdjustment(null, ScrollViewer.VerticalOffset + scrollAdjustment);
 			}
 			else
 			{
-				ScrollViewer?.ChangeView(ScrollViewer.HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
+				ScrollViewer?.ChangeViewForLayoutAdjustment(ScrollViewer.HorizontalOffset + scrollAdjustment, null);
 			}
 		}
 

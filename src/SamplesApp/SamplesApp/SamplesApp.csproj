@@ -53,6 +53,9 @@
 		<!-- WinUI keeps the old head's name, which is deliberately absent from the Uno.UI.Extras /
 		     Uno.Foundation IVT lists — that is what avoids the duplicate-type collision there. -->
 		<AssemblyName Condition="'$(_Platform)' == 'windows'">SamplesApp.Windows</AssemblyName>
+		<!-- WinUI runtime tests are the parity oracle, so they must run on the referenced Windows App SDK.
+		     A framework-dependent MSIX binds to the newest runtime on the machine instead. -->
+		<WindowsAppSDKSelfContained Condition="'$(_Platform)' == 'windows'">true</WindowsAppSDKSelfContained>
 
 		<!--
 		Every non-WinUI TFM renders with Skia, so the runtime variant is Generic on all of them, and this
@@ -107,6 +110,8 @@
 		<UnoDrawingBackendSkia Condition="'$(UnoDrawingBackendSkia)'==''">true</UnoDrawingBackendSkia>
 		<!-- wgpu-native publishes no tvOS slice, so the backend's P/Invokes have nothing to link against there. -->
 		<UnoDrawingBackendWebGpu Condition="'$(UnoDrawingBackendWebGpu)'=='' and '$(_Platform)' == 'tvos'">false</UnoDrawingBackendWebGpu>
+		<!-- WinUI renders natively, so its head has no use for the wgpu-native download or webgpu.dll. -->
+		<UnoDrawingBackendWebGpu Condition="'$(_Platform)' == 'windows'">false</UnoDrawingBackendWebGpu>
 		<UnoDrawingBackendWebGpu Condition="'$(UnoDrawingBackendWebGpu)'==''">true</UnoDrawingBackendWebGpu>
 		<DefineConstants Condition="'$(UnoDrawingBackendSkia)'=='true'">$(DefineConstants);UNO_DRAWING_SKIA</DefineConstants>
 		<DefineConstants Condition="'$(UnoDrawingBackendWebGpu)'=='true'">$(DefineConstants);UNO_DRAWING_WEBGPU</DefineConstants>
@@ -118,10 +123,16 @@
 	     [DllImport("webgpu")] resolves there. Without it the WebGPU backend fails graphics init with a
 	     DllNotFoundException and the app never leaves its loading screen. -->
 	<Import Project="..\..\Uno.UI.Composition.WebGpu.Init\wgpu-wasm.targets" Condition="'$(_Platform)' == 'browserwasm' AND '$(UnoDrawingBackendWebGpu)'!='false'" />
+	<!-- iOS links the static wgpu-native through the package's own wiring, so the iOS lanes test what apps get. -->
+	<Import Project="..\..\Uno.UI.Composition.WebGpu\package\Uno.WinUI.Composition.WebGpu.targets" Condition="'$(_Platform)' == 'ios' AND '$(UnoDrawingBackendWebGpu)'!='false'" />
+	<!-- Except the native trim: its detection task ships only in the Uno.Sdk package, and this head reaches WebGPU anyway. -->
+	<PropertyGroup Condition="'$(_Platform)' == 'ios'">
+		<_UnoWebGpuNativeTrim>false</_UnoWebGpuNativeTrim>
+	</PropertyGroup>
 
 	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true'">
 		<ProjectReference Include="..\..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
+		<ProjectReference Include="..\..\Uno.UI.Composition.Skia\Uno.UI.Composition.Skia.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 		<ProjectReference Include="..\..\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" Condition="'$(UnoDrawingBackendWebGpu)'!='false'" />
 
 		<!-- Backend registration shared by every head's entry point. -->
@@ -139,12 +150,12 @@
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Extras\Uno.UI.Extras.Generic.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Skia.csproj" />
-		<!-- Lottie, Svg and Graphics2DSK are SkiaSharp-backed: a Skia-free build drops them. -->
-		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
+		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Generic.csproj" />
+		<!-- Svg and Graphics2DSK are SkiaSharp-backed: a Skia-free build drops them. -->
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.SpellChecking\Uno.WinUI.SpellChecking.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DWebGpu\Uno.WinUI.Graphics3DWebGpu.csproj" Condition="'$(UnoDrawingBackendWebGpu)'!='false'" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 
 	</ItemGroup>
@@ -212,9 +223,10 @@
 		<PackageReference Include="BenchmarkDotNet" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
-		<PackageReference Include="Microsoft.Graph" Condition="'$(Configuration)'!='Debug'" />
+		<!-- Not on wasm: Microsoft.Graph alone is ~40 MB of the staging download, for a single MSAL sample. -->
+		<PackageReference Include="Microsoft.Graph" Condition="'$(Configuration)'!='Debug' AND '$(_Platform)' != 'browserwasm'" />
 		<!-- Override vulnerable transitive Microsoft.Kiota.Abstractions 1.9.1 pulled in by Microsoft.Graph -->
-		<PackageReference Include="Microsoft.Kiota.Abstractions" Condition="'$(Configuration)'!='Debug'" />
+		<PackageReference Include="Microsoft.Kiota.Abstractions" Condition="'$(Configuration)'!='Debug' AND '$(_Platform)' != 'browserwasm'" />
 	</ItemGroup>
 
 	<!-- Skia-only packages (desktop/wasm/android/ios/tvos, NOT windows) -->
@@ -227,6 +239,11 @@
 	<!-- Desktop-specific packages -->
 	<ItemGroup Condition="'$(_Platform)' == 'desktop'">
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.macOS" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.Win32" />
+		<PackageReference Include="SkiaSharp.NativeAssets.macOS" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Win32" />
 		<PackageReference Include="Microsoft.Web.WebView2" Aliases="MsWebView2" />
 		<PackageReference Include="VideoLAN.LibVLC.Windows" />
 		<!-- Pins BenchmarkDotNet's transitive System.Management from 4.5.0 to 8.0.0 -->
@@ -235,7 +252,8 @@
 
 	<!-- browserwasm packages -->
 	<ItemGroup Condition="'$(_Platform)' == 'browserwasm'">
-		<PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
+		<PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.WebAssembly" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" />
 		<!-- Pins BenchmarkDotNet's transitive System.Management from 4.5.0 to 8.0.0 -->
 		<PackageReference Include="System.Management" />
@@ -265,8 +283,12 @@
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<NoWarn>$(NoWarn);NU1903;NU1902</NoWarn>
 		<NoWarn>$(NoWarn);$(_UnoTrimmingNoWarn);IL2007;IL2045;IL2090</NoWarn>
-		<PublishTrimmed>false</PublishTrimmed>
-		<WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
+		<!-- Partial: only assemblies marked trimmable (mostly the BCL) are trimmed. Full trimming strips the
+		     reflection-resolved drawing backends and the app fails at Build() with no backend. -->
+		<PublishTrimmed Condition="'$(Configuration)' != 'Debug'">true</PublishTrimmed>
+		<TrimMode>partial</TrimMode>
+		<!-- Trimming turns this off by default; the runtime tests harness serializes its results by reflection. -->
+		<JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
 		<WasmIncludeFullIcuData>true</WasmIncludeFullIcuData>
 		<InvariantGlobalization>false</InvariantGlobalization>
 		<WasmShellLoadAllSatelliteResources>true</WasmShellLoadAllSatelliteResources>
@@ -281,7 +303,7 @@
 		<WasmShellEnableDotnetJsFingerprinting>false</WasmShellEnableDotnetJsFingerprinting>
 		<!--
 		This wwwroot is mounted at two roots: the runtime tests serve it at localhost:8000/ and PR
-		staging from /pr-<N>/wasm-skia-net9/. Uno.Sdk defaults this to "/" for deep-link routing, which
+		staging from /pr-<N>/wasm-skia/. Uno.Sdk defaults this to "/" for deep-link routing, which
 		bakes absolute /package_<hash>/ paths into index.html and uno-config.js and 404s under any
 		sub-folder. SamplesApp routes by query string, so "./" (the bootstrapper default, and what the
 		pre-unification head used) is the correct value.
@@ -289,12 +311,10 @@
 		<WasmShellWebAppBasePath>./</WasmShellWebAppBasePath>
 	</PropertyGroup>
 	<!-- Opt-in AOT publish for the perf lane (-p:UnoWasmAot=true). Head-scoped: RunAOTCompilation/PublishTrimmed set
-	     globally break the netstandard2.0 generator projects in the graph. Only the opt-in (BCL) assemblies are trimmed:
-	     full trimming strips the reflection-resolved drawing seams and the app fails at Build() with no backend. -->
+	     globally break the netstandard2.0 generator projects in the graph. -->
 	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(UnoWasmAot)' == 'true'">
 		<RunAOTCompilation>true</RunAOTCompilation>
 		<PublishTrimmed>true</PublishTrimmed>
-		<TrimMode>partial</TrimMode>
 	</PropertyGroup>
 	<!-- Interpreted under AOT: the cross-compiler runs out of memory on the giant ones, the Windows-compat shims reference
 	     assemblies absent from the publish set, and the rest is sample/test infrastructure off the render path. The
@@ -303,10 +323,6 @@
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Graph.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\SamplesApp.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Uno.UI.RuntimeTests.dll" />
-		<!-- The WebGPU interop layer stays interpreted: its wgpu callbacks take WGPUStringView by value, and an
-		     AOT-compiled call site and Dawn disagree on that shape, so the app traps with "function signature
-		     mismatch" on the first render. Nothing on the hot path lives here - the renderer itself is AOT. -->
-		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Uno.UI.Composition.WebGpu.Init.dll" />
 		<!-- HarfBuzz reaches back into managed code through DelegateProxies.ReferenceTableProxyImplementation
 		     while creating a font; AOT-compiled, that native-to-managed wrapper does not match what HarfBuzz
 		     calls, and the app dies during startup with "function signature mismatch" (symbolicated stack:
@@ -333,6 +349,8 @@
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Skia.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Model.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Custom.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.SceneGraph.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Animation.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Silk.NET.OpenGL.dll" />
 	</ItemGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(Configuration)'=='Debug'">
@@ -368,6 +386,7 @@
 
 	<ItemGroup Condition="'$(_Platform)' == 'android'">
 		<PackageReference Include="SkiaSharp.NativeAssets.Android" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.Android" />
 		<PackageReference Include="Uno.UniversalImageLoader" />
 		<PackageReference Include="Xamarin.AndroidX.Browser" />
 		<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" />
@@ -477,12 +496,13 @@
 
 	<ItemGroup Condition="'$(_Platform)' == 'ios'">
 		<PackageReference Include="SkiaSharp.NativeAssets.iOS" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.iOS" />
 		<PackageReference Include="Uno.Extensions.Logging.OSLog" />
 	</ItemGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'ios'">
 		<!-- https://github.com/dotnet/runtime/issues/109966 -->
 		<_IsDedupEnabled>false</_IsDedupEnabled>
-		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">iossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">iossimulator-arm64</RuntimeIdentifier>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(_Platform)' == 'ios' AND '$(BuildForTestFlight)' == 'true'">
@@ -493,6 +513,7 @@
 
 	<ItemGroup Condition="'$(_Platform)' == 'tvos'">
 		<PackageReference Include="SkiaSharp.NativeAssets.TvOS" />
+		<PackageReference Include="HarfBuzzSharp.NativeAssets.tvOS" />
 
 		<!--
 		AwesomeAssertions annotates its API with JetBrains.Annotations but does not declare a package
@@ -506,7 +527,7 @@
 		<PackageReference Include="JetBrains.Annotations" />
 	</ItemGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'tvos'">
-		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">tvossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">tvossimulator-arm64</RuntimeIdentifier>
 
 		<!-- Only a default: a contributor or CI without that profile installed can override it. -->
 		<CodesignProvision Condition="'$(CodesignProvision)' == ''">Uno Dev Samples</CodesignProvision>
@@ -619,7 +640,7 @@
 	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true' AND '$(_Platform)' != 'browserwasm'">
 		<PackageReference Include="Uno.Resizetizer" />
 		<UnoIcon Include="Assets\Icons\icon.svg" ForegroundFile="Assets\Icons\icon_foreground.svg" ForegroundScale="0.65" Color="#ffffff" />
-		<UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" Color="#ffffff" />
+		<UnoSplashScreen Include="Assets\Splash\splash_screen.svg" BaseSize="128,128" BackgroundColor="#ffffff" />
 	</ItemGroup>
 
 	<!-- Win32 DPI-awareness manifest (desktop only; windows sets its own ApplicationManifest above) -->

@@ -20,7 +20,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 #if !IS_UNIT_TESTS
 	[RuntimeTests.RunsOnUIThread]
 #endif
-	[TestClass]
+	[UITestClass]
 	public class Given_ItemsControl
 	{
 #if __CROSSRUNTIME__

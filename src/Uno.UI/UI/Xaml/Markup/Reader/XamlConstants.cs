@@ -50,6 +50,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			public const string MediaImaging = BaseXamlNamespace + ".Media.Imaging";
 			public const string Shapes = BaseXamlNamespace + ".Shapes";
 			public const string Input = BaseXamlNamespace + ".Input";
+			public const string Automation = BaseXamlNamespace + ".Automation";
 
 			public static readonly string[] PresentationNamespaces =
 			{
@@ -69,6 +70,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				Text,
 				Documents,
 				XamlText,
+				Automation,
 				"System",
 			};
 

@@ -27,7 +27,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Indicates whether ScrollViewer should ignore mouse wheel scroll events (not zoom).
 		internal bool ArePointerWheelEventsIgnored { get; set; }
-		internal bool IsInManipulation => IsInDirectManipulation || m_isInConstantVelocityPan;
+		// Uno drives touch scrolling, its inertia and snapping from the presenter rather than through DirectManipulation.
+		internal bool IsInManipulation => IsInDirectManipulation || m_isInConstantVelocityPan || (_presenter as ScrollContentPresenter)?.IsInMotion == true;
 
 		/// <summary>
 		/// Gets or set whether the <see cref="ScrollViewer"/> will allow scrolling outside of the ScrollViewer's Child bound.

@@ -420,7 +420,8 @@ public partial class BreadcrumbBar : Control
 				if (itemsRepeater.TryGetElement(itemToIndex) is { } element)
 				{
 					element.SetValue(AutomationProperties.PositionInSetProperty, Boxer.Box(accessibilityIndex));
-					element.SetValue(AutomationProperties.SizeOfSetProperty, visibleItemsCount);
+					// WinUI boxes the uint and lets the property system convert it; Uno's stores it as-is.
+					element.SetValue(AutomationProperties.SizeOfSetProperty, Boxer.Box((int)visibleItemsCount));
 				}
 			}
 		}

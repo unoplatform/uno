@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.RoutedEventTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_TappedRoutedEvent
 	{
 		[TestMethod]

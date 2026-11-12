@@ -12,7 +12,7 @@ using Uno.UI.Tests.Helpers;
 
 namespace Uno.UI.Tests.CollectionViewTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_CollectionViewSource
 	{
 		[TestMethod]

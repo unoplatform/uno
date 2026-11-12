@@ -10,6 +10,7 @@ using ObjCRuntime;
 using UIKit;
 using Uno.Helpers.Theming;
 using Uno.UI.Helpers;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.AppleUIKit.Hosting;
 using Windows.Devices.Sensors;
 using Windows.Graphics.Display;
@@ -17,21 +18,86 @@ using Uno.UI.Runtime.AppleUIKit.UI.Xaml;
 using Uno.UI.Dispatching;
 using System.Threading;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Runtime;
 
 namespace Uno.UI.Runtime.AppleUIKit;
 
-internal class RootViewController : UINavigationController, IAppleUIKitXamlRootHost
+internal class RootViewController : UINavigationController, IAppleUIKitXamlRootHost, IAccessibilityOwner
 {
 	private IAppleUIKitRenderView? _renderView;
 	// The negotiated graphics context (Skia-on-Metal or WebGPU-on-CAMetalLayer). The host names no backend.
 	private ISwapChain? _context;
 	private IDrawingFactory? _renderer;
+
+	// Read by this window's CompositionTarget when it needs a backend. Implicit rather than explicit: the iOS
+	// trimmer preserves this NSObject subclass's members by name and can't resolve an explicit member's dotted one.
+	public IDrawingFactory? Renderer => _renderer;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
 	private TopViewLayer? _topViewLayer;
 	private UIView? _nativeOverlayLayer;
 	private string? _lastSvgClipPath;
+	private AppleUIKitAccessibility? _accessibility;
 	private readonly UnoKeyboardInputSource _keyboardInputSource = new();
+#if __TVOS__
+	private TvRemoteInputHandler? _remoteInput;
+#endif
+
+	// IAccessibilityOwner
+
+	public SkiaAccessibilityBase? Accessibility => _accessibility;
+
+	internal void SetAccessibility(AppleUIKitAccessibility accessibility)
+		=> _accessibility = accessibility;
+
+	internal void DisposeAccessibility()
+	{
+		if (_accessibility is { } acc)
+		{
+			// Contract order (mobile-adapter-contract §1): dispose the adapter, then notify the router.
+			acc.Dispose();
+			AccessibilityRouter.NotifyDisposed(this);
+			_accessibility = null;
+		}
+	}
+
+	/// <summary>
+	/// Forwards an initial-build trigger to the accessibility adapter once content is loaded.
+	/// Called from <see cref="NativeWindowWrapper.ShowCore"/> after the root element's Loaded event.
+	/// </summary>
+	internal void TriggerInitialBuild() => _accessibility?.TriggerInitialBuild();
+
+	/// <summary>Exposes the render view, which hosts the accessibility elements.</summary>
+	internal UIView? RenderView => _renderView as UIView;
+
+	/// <summary>Resolves the accessibility element at a point of the render view, for VoiceOver touch exploration.</summary>
+	internal NSObject? AccessibilityHitTest(CGPoint point) => _accessibility?.HitTest(point);
+
+	/// <summary>The accessibility elements the render view reports to clients.</summary>
+	internal NSObject[]? GetAccessibilityElements() => _accessibility?.GetAccessibilityElementsForClient();
+
+	internal nint GetAccessibilityElementCount() => GetAccessibilityElements()?.Length ?? 0;
+
+	internal NSObject? GetAccessibilityElementAt(nint index)
+		=> GetAccessibilityElements() is { } elements && index >= 0 && index < elements.Length
+			? elements[index]
+			: null;
+
+	internal nint GetIndexOfAccessibilityElement(NSObject? element)
+	{
+		if (element is not null && GetAccessibilityElements() is { } elements)
+		{
+			for (var i = 0; i < elements.Length; i++)
+			{
+				if (ReferenceEquals(elements[i], element))
+				{
+					return i;
+				}
+			}
+		}
+
+		return NSRange.NotFound;
+	}
 
 	public RootViewController()
 	{
@@ -94,6 +160,10 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		_topViewLayer.AddSubview(_nativeOverlayLayer);
 		view.AddSubview(_topViewLayer);
 
+#if __TVOS__
+		RemoteInput.AttachSwipeRecognizers(view);
+#endif
+
 		// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13847.
 
 #if !__TVOS__
@@ -130,10 +200,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		}
 
 		var ct = RootElement?.Visual.CompositionTarget as CompositionTarget;
-		if (ct is not null)
-		{
-			ct.Renderer = _renderer!;
-		}
 		var clipGeometry = ct?.OnNativePlatformFrameRequested(_context);
 
 		if (clipGeometry is not null)
@@ -149,16 +215,37 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 			case GraphicsContextKind.Metal:
 				var metalView = new UnoMetalView();
 				metalView.SetOwner(this);
-				_renderView = metalView;
-				return metalView.CreateGraphicsContext();
+				return AdoptRenderView(metalView, metalView.CreateGraphicsContext);
 			case GraphicsContextKind.WebGpu:
 				var webgpuView = new UnoWebGpuMetalView();
 				webgpuView.SetOwner(this);
-				_renderView = webgpuView;
-				return webgpuView.CreateGraphicsContext();
+				return AdoptRenderView(webgpuView, webgpuView.CreateGraphicsContext);
 			default:
 				return null;
 		}
+	}
+
+	// A view whose context fails is disposed, so negotiation can move on to the next kind without its display link
+	// keeping it alive.
+	private ISwapChain? AdoptRenderView<TView>(TView view, Func<ISwapChain?> createContext)
+		where TView : UIView, IAppleUIKitRenderView
+	{
+		try
+		{
+			if (createContext() is { } context)
+			{
+				_renderView = view;
+				return context;
+			}
+		}
+		catch
+		{
+			view.Dispose();
+			throw;
+		}
+
+		view.Dispose();
+		return null;
 	}
 
 	private void UpdateNativeClipping(IGeometry geometry)
@@ -334,6 +421,10 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	/// </summary>
 	internal UnoKeyboardInputSource KeyboardInputSource => _keyboardInputSource;
 
+#if __TVOS__
+	private TvRemoteInputHandler RemoteInput => _remoteInput ??= new(_keyboardInputSource);
+#endif
+
 	// This will handle when the status bar is showed / hidden by the system on iPhones
 	public override void ViewSafeAreaInsetsDidChange()
 	{
@@ -358,6 +449,32 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 #endif
 		base.MotionEnded(motion, evt);
 	}
+
+#if __TVOS__
+	public override void PressesBegan(NSSet<UIPress> presses, UIPressesEvent evt)
+	{
+		if (RemoteInput.OnPressesBegan(presses) is { } unhandled)
+		{
+			base.PressesBegan(unhandled, evt);
+		}
+	}
+
+	public override void PressesEnded(NSSet<UIPress> presses, UIPressesEvent evt)
+	{
+		if (RemoteInput.OnPressesEnded(presses) is { } unhandled)
+		{
+			base.PressesEnded(unhandled, evt);
+		}
+	}
+
+	public override void PressesCancelled(NSSet<UIPress> presses, UIPressesEvent evt)
+	{
+		if (RemoteInput.OnPressesEnded(presses) is { } unhandled)
+		{
+			base.PressesCancelled(unhandled, evt);
+		}
+	}
+#endif
 
 	public bool CanAutorotate { get; set; } = true;
 

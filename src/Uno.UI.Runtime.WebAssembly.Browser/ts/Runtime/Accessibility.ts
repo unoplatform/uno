@@ -7,6 +7,13 @@ namespace Uno.UI.Runtime {
 		private static semanticsRoot: HTMLDivElement;
 		private static containerElement: HTMLElement;
 		private static debugModeEnabled: boolean = false;
+		// Last geometry applied to each semantic scroll port, and the position its pending managed sync settled at.
+		private static scrollPortStates = new WeakMap<HTMLElement, {
+			extentWidth: number, extentHeight: number,
+			overflowX: string, overflowY: string,
+			left: number, top: number,
+			echo: { left: number, top: number } | null,
+		}>();
 
 		private static focusSentinelStart: HTMLDivElement | null = null;
 		private static focusSentinelEnd: HTMLDivElement | null = null;
@@ -20,6 +27,7 @@ namespace Uno.UI.Runtime {
 		private static managedOnToggle: any;
 		private static managedOnRangeValueChange: any;
 		private static managedOnTextInput: any;
+		private static managedOnTextSelectionChanged: any;
 		private static managedOnExpandCollapse: any;
 		private static managedOnSelection: any;
 		private static managedOnFocus: any;
@@ -73,6 +81,7 @@ namespace Uno.UI.Runtime {
 			this.managedOnToggle = accessibilityExports.OnToggle;
 			this.managedOnRangeValueChange = accessibilityExports.OnRangeValueChange;
 			this.managedOnTextInput = accessibilityExports.OnTextInput;
+			this.managedOnTextSelectionChanged = accessibilityExports.OnTextSelectionChanged;
 			this.managedOnExpandCollapse = accessibilityExports.OnExpandCollapse;
 			this.managedOnSelection = accessibilityExports.OnSelection;
 			this.managedOnFocus = accessibilityExports.OnFocus;
@@ -170,6 +179,7 @@ namespace Uno.UI.Runtime {
 				onToggle: this.managedOnToggle,
 				onRangeValueChange: this.managedOnRangeValueChange,
 				onTextInput: this.managedOnTextInput,
+				onTextSelectionChanged: this.managedOnTextSelectionChanged,
 				onExpandCollapse: this.managedOnExpandCollapse,
 				onSelection: this.managedOnSelection,
 				onFocus: this.managedOnFocus,
@@ -188,6 +198,18 @@ namespace Uno.UI.Runtime {
 
 			element.addEventListener('scroll', (e) => {
 				let element = e.target as HTMLElement;
+				const state = this.scrollPortStates.get(element);
+				if (state) {
+					// The echo of a managed sync raises one scroll event: managed code is already at this position,
+					// and forwarding it would cancel in-flight animations or inertia. Any later event is a real scroll.
+					const echo = state.echo;
+					state.echo = null;
+					if (echo && echo.left === element.scrollLeft && echo.top === element.scrollTop) {
+						return;
+					}
+					state.left = element.scrollLeft;
+					state.top = element.scrollTop;
+				}
 				this.managedOnScroll(handle, element.scrollLeft, element.scrollTop);
 			});
 
@@ -322,16 +344,18 @@ namespace Uno.UI.Runtime {
 		 * C# fires focus synchronously but the JS DOM mutation hasn't been flushed yet.
 		 */
 		public static focusSemanticElement(handle: number) {
+			// XAML owns scrolling: a browser scroll of a semantic scroller would be fed back
+			// into the ScrollViewer through the scroll listener.
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.focus();
+				element.focus({ preventScroll: true });
 			} else {
 				// Element might not be in DOM yet due to batched/deferred mutations.
 				// Retry once after the next animation frame.
 				requestAnimationFrame(() => {
 					const retryElement = Accessibility.getSemanticElementByHandle(handle);
 					if (retryElement) {
-						retryElement.focus();
+						retryElement.focus({ preventScroll: true });
 					} else {
 						Accessibility.debugWarn(`[A11y] TS focusSemanticElement: element NOT FOUND handle=${handle} (after retry)`);
 					}
@@ -609,7 +633,10 @@ namespace Uno.UI.Runtime {
 		public static updateAriaLabel(handle: number, automationId: string): void {
 			Accessibility.debugLog(`[A11y] TS updateAriaLabel: handle=${handle} label='${automationId}'`);
 			const element = Accessibility.getSemanticElementByHandle(handle);
-			if (element) {
+			if (element && element.dataset.unoStandaloneText === "true") {
+				// Standalone text is named by its content, and a paragraph prohibits aria-label.
+				element.textContent = automationId;
+			} else if (element) {
 				// Omit an empty/whitespace aria-label rather than emitting aria-label="" (which screen
 				// readers announce as "blank"); a nameless control must carry no aria-label attribute.
 				// Write the TRIMMED value so live-sync matches the creation-time path
@@ -943,11 +970,52 @@ namespace Uno.UI.Runtime {
 			}
 		}
 
-		public static updateNativeScrollOffsets(handle: number, horizontalOffset: number, verticalOffset: number): void {
+		public static updateNativeScrollOffsets(handle: number, horizontalOffset: number, verticalOffset: number, extentWidth: number, extentHeight: number, horizontallyScrollable: boolean, verticallyScrollable: boolean): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
-			if (element) {
+			if (!element) {
+				Accessibility.debugLog(`[A11y] TS updateNativeScrollOffsets: no element for handle=${handle}`);
+				return;
+			}
+
+			// Each write is skipped when unchanged: a single layout pass syncs several times, and
+			// style or scroll writes force the browser to restyle or lay out.
+			let state = Accessibility.scrollPortStates.get(element);
+			if (!state) {
+				state = { extentWidth: NaN, extentHeight: NaN, overflowX: "", overflowY: "", left: NaN, top: NaN, echo: null };
+				Accessibility.scrollPortStates.set(element, state);
+				element.classList.add("uno-semantic-scroll-port");
+			}
+
+			// The extent must be applied first, otherwise the browser clamps the offsets
+			// and echoes the clamped values back through the scroll event.
+			if (state.extentWidth !== extentWidth) {
+				state.extentWidth = extentWidth;
+				element.style.setProperty("--uno-scroll-extent-width", `${extentWidth}px`);
+			}
+			if (state.extentHeight !== extentHeight) {
+				state.extentHeight = extentHeight;
+				element.style.setProperty("--uno-scroll-extent-height", `${extentHeight}px`);
+			}
+
+			// Stays a scroll container (hidden, not visible) so the offsets can still be applied.
+			const overflowX = horizontallyScrollable ? "scroll" : "hidden";
+			if (state.overflowX !== overflowX) {
+				state.overflowX = overflowX;
+				element.style.overflowX = overflowX;
+			}
+			const overflowY = verticallyScrollable ? "scroll" : "hidden";
+			if (state.overflowY !== overflowY) {
+				state.overflowY = overflowY;
+				element.style.overflowY = overflowY;
+			}
+
+			if (state.left !== horizontalOffset || state.top !== verticalOffset) {
+				state.left = horizontalOffset;
+				state.top = verticalOffset;
 				element.scrollLeft = horizontalOffset;
 				element.scrollTop = verticalOffset;
+				// The browser rounds the offsets; layout is already up to date after the writes, so reading is cheap.
+				state.echo = { left: element.scrollLeft, top: element.scrollTop };
 			}
 		}
 

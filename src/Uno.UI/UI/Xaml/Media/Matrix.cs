@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Globalization;
 using System.Numerics;
 using System.Security;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Media
 {
-	public partial struct Matrix
+	public partial struct Matrix : IFormattable
 	{
 		internal Matrix(Matrix3x2 matrix)
 		{
@@ -51,20 +50,29 @@ namespace Microsoft.UI.Xaml.Media
 			=> ToMatrix3x2().GetHashCode();
 
 		public override string ToString()
-			=> ToString(null);
+			=> ConvertToString(null, null);
 
 		public string ToString(IFormatProvider provider)
+			=> ConvertToString(null, provider);
+
+		string IFormattable.ToString(string format, IFormatProvider provider)
+			=> ConvertToString(format, provider);
+
+		private string ConvertToString(string format, IFormatProvider provider)
 		{
 			if (IsIdentity)
 			{
 				return "Identity";
 			}
 
-			// Same list separator rule as WinUI's projection: ';' when the culture's decimal separator is ','.
-			var decimalSeparator = NumberFormatInfo.GetInstance(provider).NumberDecimalSeparator;
-			var separator = decimalSeparator.Length > 0 && decimalSeparator[0] == ',' ? ';' : ',';
-
-			return string.Create(provider, $"{M11}{separator}{M12}{separator}{M21}{separator}{M22}{separator}{OffsetX}{separator}{OffsetY}");
+			return string.Join(
+				TokenizerHelper.GetNumericListSeparator(provider),
+				M11.ToString(format, provider),
+				M12.ToString(format, provider),
+				M21.ToString(format, provider),
+				M22.ToString(format, provider),
+				OffsetX.ToString(format, provider),
+				OffsetY.ToString(format, provider));
 		}
 
 		public Point Transform(Point point)

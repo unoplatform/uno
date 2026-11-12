@@ -23,11 +23,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" />
-		<PackageReference Include="HarfBuzzSharp" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI.Runtime\Uno.UI.Runtime.csproj" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Generic.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />

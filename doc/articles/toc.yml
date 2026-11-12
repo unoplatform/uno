@@ -117,6 +117,8 @@
         href: xref:Uno.Workshop.Counter.CSharp.MVUX
       - name: C# Markup + MVVM
         href: xref:Uno.Workshop.Counter.CSharp.MVVM
+      - name: Reactor
+        href: xref:Uno.Workshop.Counter.Reactor
       - name: Hot Design
         href: xref:Uno.HotDesign.GetStarted.CounterTutorial
     - name: Simple Calc
@@ -201,6 +203,8 @@
         href: xref:Uno.Features.Uno.Sdk
       - name: UI Markup
         href: xref:uno.development.using.markup
+      - name: Using Reactor
+        href: xref:Uno.Features.Reactor
       - name: Platform-specific C# code
         href: platform-specific-csharp.md
       - name: Implicit XAML Namespaces
@@ -227,6 +231,8 @@
         href: xref:Uno.Skia.macOS
       - name: Vulkan Rendering Backend
         href: xref:Uno.Skia.Vulkan
+      - name: WebGPU Rendering Backend
+        href: xref:uno.features.renderer.webgpu
       - name: Getting Started With Tests
         href: xref:Uno.Authoring.Tests
       - name: Logging
@@ -266,12 +272,41 @@
         href: migrating-from-previous-releases.md
       - name: Upgrading to Single Project
         href: xref:Uno.Development.MigratingToSingleProject
-      - name: Upgrading to Uno 7.0
-        href: xref:Uno.Development.MigratingToUno7
+      - name: Upgrading to Uno Platform 7.0
+        topicHref: xref:Uno.Development.MigratingToUno7
+        items:
+        - name: Upgrade steps
+          href: xref:Uno.Development.MigratingToUno7
+        - name: Errors, symptoms and code search
+          href: xref:Uno.Development.MigratingToUno7.Lookup
+        - name: Project format, target frameworks and OS versions
+          href: xref:Uno.Development.MigratingToUno7.ProjectSetup
+        - name: Packages and Uno Features
+          href: xref:Uno.Development.MigratingToUno7.Packages
+        - name: Namespace, assembly and host renames
+          href: xref:Uno.Development.MigratingToUno7.Renames
+        - name: App startup, activation and platform state
+          href: xref:Uno.Development.MigratingToUno7.AppStartup
+        - name: Libraries and conditional code
+          href: xref:Uno.Development.MigratingToUno7.Libraries
+        - name: Removed public APIs
+          href: xref:Uno.Development.MigratingToUno7.RemovedApis
+        - name: WinUI API alignment
+          href: xref:Uno.Development.MigratingToUno7.WinUIParity
+        - name: Removed feature flags
+          href: xref:Uno.Development.MigratingToUno7.FeatureFlags
+        - name: XAML and default styles
+          href: xref:Uno.Development.MigratingToUno7.Xaml
+        - name: Behavior changes to re-test
+          href: xref:Uno.Development.MigratingToUno7.Behavior
+        - name: Full checklist
+          href: xref:Uno.Development.MigratingToUno7.Checklist
       - name: Upgrading to Uno 6.0
         href: xref:Uno.Development.MigratingToUno6
       - name: Upgrading to Uno 5.0
         href: xref:Uno.Development.MigratingToUno5
+      - name: Upgrading from .NET 10 to .NET 11
+        href: xref:Uno.Development.MigratingFromNet10ToNet11
       - name: Upgrading from .NET 9 to .NET 10
         href: xref:Uno.Development.MigratingFromNet9ToNet10
       - name: Upgrading from .NET 8 to .NET 9
@@ -285,6 +320,8 @@
 
     - name: Migrating
       items:
+      - name: .NET MAUI apps on the web and desktop
+        href: xref:Uno.Guides.MauiHandlers
       - name: Xamarin Forms
         topicHref: xref:Uno.XamarinFormsMigration.Overview
         href: guides/xf-migration/toc.yml
@@ -545,6 +582,8 @@
               href: controls/Frame.md
             - name: GLCanvasElement
               href: xref:Uno.Controls.GLCanvasElement
+            - name: WebGpuCanvasElement
+              href: xref:Uno.Controls.WebGpuCanvasElement
             - name: Image
               href: xref:Uno.Features.Image
             - name: ListView and GridView
@@ -569,6 +608,8 @@
               href: features/progressring.md
             - name: RefreshContainer (Pull to Refresh)
               href: controls/RefreshContainer.md
+            - name: RichEditBox
+              href: controls/RichEditBox.md
             - name: ScrollViewer
               href: controls/ScrollViewer.md
             - name: SKCanvasElement
@@ -625,6 +666,8 @@
           href: xref:Uno.Features.Foldable
         - name: Fonts
           href: features/custom-fonts.md
+        - name: Input validation
+          href: features/input-validation.md
         - name: Markup Extensions
           href: features/windows-ui-markup-extensions.md
         - name: Orientation
@@ -669,6 +712,8 @@
         href: features/android-auto.md
       - name: Android TV
         href: features/android-tv.md
+      - name: Apple TV
+        href: features/apple-tv.md
       - name: Wear OS (Android Watch)
         href: features/android-wear.md
       - name: App Actions
@@ -786,6 +831,8 @@
         href: xref:Uno.DevServer
       - name: Diagnostics (disco)
         href: xref:Uno.Features.DevServerDisco
+      - name: Driving the app from a shell (app)
+        href: xref:Uno.Features.DevServerAppCommands
     - name: Xaml Merging
       href: external/uno.xamlmerge.task/doc/toc.yml
     - name: Uno Resizetizer

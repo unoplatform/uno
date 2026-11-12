@@ -144,16 +144,13 @@ If you omit this line, your dialog will look like this:
 
 ![Content dialog without style sample](../Assets/features/contentdialog/withoutstyle.png)
 
-## Overlay Background (iOS/Android)
+## Overlay Background
 
-You can override the overlay background by adding the following resources to the application resources:
+As on WinUI, the overlay behind a `ContentDialog` uses `SystemControlPageBackgroundMediumAltMediumBrush`. You can override it in the application resources, keeping in mind that other controls use the same brush (see [Changing the Overlay background color for ContentDialog question on StackOverflow](https://stackoverflow.com/a/40397576)):
 
 ```xml
-<SolidColorBrush x:Key="ContentDialogLightDismissOverlayBackground" Color="#99000000" />
+<SolidColorBrush x:Key="SystemControlPageBackgroundMediumAltMediumBrush" Color="#99000000" />
 ```
-
-> [!NOTE]
-> There is no specific key to override for this other than `SystemControlPageBackgroundMediumAltMediumBrush` on Windows, see [Changing the Overlay background color for ContentDialog question on StackOverflow](https://stackoverflow.com/a/40397576).
 
 ## Using `MessageDialog`
 

@@ -23,5 +23,10 @@ public interface IUnoPlatformHostBuilder
 	/// </summary>
 	internal void AddDrawingRegistration(Action apply);
 
+	/// <summary>
+	/// Appends a graphics backend to the app's preference list, registered as a whole during <see cref="Build"/>.
+	/// </summary>
+	internal void AddGraphicsBackend(Uno.UI.Composition.Drawing.IGraphicsProvider provider);
+
 	public UnoPlatformHost Build();
 }

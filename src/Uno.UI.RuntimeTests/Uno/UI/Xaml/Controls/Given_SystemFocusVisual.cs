@@ -70,13 +70,14 @@ public class Given_SystemFocusVisual
 
 		scrollViewer.ChangeView(null, 100, null, true);
 
+		// The focus visual follows its element on the next recorded frame, over a second away on the software-rendered lanes.
 		await TestServices.WindowHelper.WaitFor(() =>
 		{
 			transform = focusVisual.TransformToVisual(TestServices.WindowHelper.XamlRoot.VisualTree.RootElement);
 			var currentPoint = transform.TransformPoint(default);
 
 			return currentPoint.Y < initialPoint.Y;
-		});
+		}, timeoutMS: 5000);
 
 		await TestServices.WindowHelper.WaitForIdle();
 

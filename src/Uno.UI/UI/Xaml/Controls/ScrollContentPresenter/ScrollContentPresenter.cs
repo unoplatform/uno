@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public object ScrollOwner
 		{
-			get => _scroller.Target;
+			get => _scroller?.Target;
 			set
 			{
 				if (_scroller is { } oldScroller)
@@ -298,9 +298,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						success = Set(
-							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta),
-							disableAnimation: false);
+						success = AddWheelImpulse(GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta), 0);
 					}
 				}
 				else if (canScrollVertically && !properties.IsHorizontalMouseWheel)
@@ -316,9 +314,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						success = Set(
-							verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
-							disableAnimation: false);
+						success = AddWheelImpulse(0, GetVerticalScrollWheelDelta(DesiredSize, -delta));
 					}
 				}
 

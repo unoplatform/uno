@@ -11,10 +11,17 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// </summary>
 public partial class GridViewItemAutomationPeer : FrameworkElementAutomationPeer
 {
+	private ItemInvokeAdapter _invokeAdapter;
+
 	public GridViewItemAutomationPeer(GridViewItem owner) : base(owner)
 	{
 
 	}
+
+	protected override object GetPatternCore(PatternInterface patternInterface)
+		=> patternInterface == PatternInterface.Invoke && ListViewBaseItemAutomationPeer.ShouldSupportInvokePattern(Owner)
+			? _invokeAdapter ??= new ItemInvokeAdapter(this)
+			: base.GetPatternCore(patternInterface);
 
 	protected override string GetClassNameCore() => nameof(GridViewItem);
 

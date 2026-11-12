@@ -4942,10 +4942,6 @@ public partial class NavigationView : ContentControl
 		if (paneHeaderContentBorderRow != null)
 		{
 			paneHeaderContentBorderRow.MinHeight = paneHeaderContentBorderRowMinHeight;
-
-#if IS_UNO
-			SetHeaderContentMinHeight(paneHeaderContentBorderRowMinHeight);
-#endif
 		}
 
 		var paneContentGridAsUIE = m_paneContentGrid;

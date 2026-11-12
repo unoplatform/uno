@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Shapes;
 
 namespace Uno.UI.Tests.BinderTests
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_DependencyProperty
 	{
 		[ClassInitialize]
@@ -614,7 +614,7 @@ namespace Uno.UI.Tests.BinderTests
 				typeof(DateTime),
 				typeof(MockDependencyObject),
 				new PropertyMetadata(
-					null,
+					default(DateTime),
 					null,
 					Now
 				)
@@ -962,7 +962,7 @@ namespace Uno.UI.Tests.BinderTests
 				typeof(DateTime),
 				typeof(MockDependencyObject),
 				new PropertyMetadata(
-					null,
+					default(DateTime),
 					null,
 					Now
 				)

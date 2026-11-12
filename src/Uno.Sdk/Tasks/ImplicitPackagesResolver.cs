@@ -21,8 +21,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public bool SdkDebugging { get; set; }
 
-	public bool SingleProject { get; set; }
-
 	[Required]
 	public string OutputType { get; set; } = null!;
 
@@ -38,12 +36,11 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	private string TargetFrameworkVersion = null!;
 
-	private string TargetRuntime = null!;
-
-	[Required]
-	public string ProjectName { get; set; } = null!;
-
 	public string? UnoExtensionsVersion { get; set; }
+
+	public string? UnoMauiVersion { get; set; }
+
+	public string? UnoRetargetVersion { get; set; }
 
 	public string? UnoToolkitVersion { get; set; }
 
@@ -54,6 +51,8 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 	public string? MauiVersion { get; set; }
 
 	public string? SkiaSharpVersion { get; set; }
+
+	public string? HarfBuzzSharpVersion { get; set; }
 
 	public string? SvgSkiaVersion { get; set; }
 
@@ -103,13 +102,17 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? CommunityToolkitMvvmVersion { get; set; }
 
-	public string? PrismVersion { get; set; }
+	public string? UnoReactorVersion { get; set; }
 
 	public string? UnoFontsVersion { get; set; }
 
 	public string? AndroidXNavigationVersion { get; set; }
 
 	public string? AndroidXCollectionVersion { get; set; }
+
+	public string? AndroidXFragmentVersion { get; set; }
+
+	public string? AndroidXLifecycleVersion { get; set; }
 
 	public string? AndroidXLeanbackVersion { get; set; }
 
@@ -142,22 +145,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 	{
 		try
 		{
-			if (TargetFramework.Contains('-'))
-			{
-				var frameworkParts = TargetFramework.Split('-');
-				TargetFrameworkVersion = frameworkParts[0];
-				var runtime = frameworkParts[1].ToLowerInvariant();
-				TargetRuntime = runtime;
-			}
-			else
-			{
-				TargetFrameworkVersion = TargetFramework;
-				TargetRuntime = UnoTarget.Reference;
-				if (ProjectName.EndsWith("Skia.Linux.FrameBuffer", StringComparison.InvariantCultureIgnoreCase))
-				{
-					TargetRuntime = UnoTarget.SkiaLinuxFramebuffer;
-				}
-			}
+			TargetFrameworkVersion = TargetFramework.Split('-')[0];
 
 			_manifest = new PackageManifest(Log, TargetFrameworkVersion);
 			if (NuGetVersion.TryParse(_manifest.UnoVersion, out var unoVersion))
@@ -249,6 +237,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.HotDesign, UnoHotDesignVersion)
 			.UpdateManifest(PackageManifest.Group.AppMcp, UnoAppMcpVersion)
 			.UpdateManifest(PackageManifest.Group.SkiaSharp, SkiaSharpVersion)
+			.UpdateManifest(PackageManifest.Group.HarfBuzzSharp, HarfBuzzSharpVersion)
 			.UpdateManifest(PackageManifest.Group.SvgSkia, SvgSkiaVersion)
 			.UpdateManifest(PackageManifest.Group.WinAppSdk, WinAppSdkVersion)
 			.UpdateManifest(PackageManifest.Group.WinAppSdkBuildTools, WinAppSdkBuildToolsVersion)
@@ -256,7 +245,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.MicrosoftLoggingConsole, MicrosoftLoggingVersion)
 			.UpdateManifest(PackageManifest.Group.MsalClient, MicrosoftIdentityClientVersion)
 			.UpdateManifest(PackageManifest.Group.Mvvm, CommunityToolkitMvvmVersion)
-			.UpdateManifest(PackageManifest.Group.Prism, PrismVersion)
+			.UpdateManifest(PackageManifest.Group.Reactor, UnoReactorVersion)
 			.UpdateManifest(PackageManifest.Group.UnoFonts, UnoFontsVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidMaterial, AndroidMaterialVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXSplashScreen, AndroidXSplashScreenVersion)
@@ -267,6 +256,8 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.AndroidXSwipeRefreshLayout, AndroidXSwipeRefreshLayoutVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXNavigation, AndroidXNavigationVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXCollection, AndroidXCollectionVersion)
+			.UpdateManifest(PackageManifest.Group.AndroidXFragment, AndroidXFragmentVersion)
+			.UpdateManifest(PackageManifest.Group.AndroidXLifecycle, AndroidXLifecycleVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXLeanback, AndroidXLeanbackVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXCarApp, AndroidXCarAppVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXWear, AndroidXWearVersion)
@@ -276,6 +267,8 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.Toolkit, UnoToolkitVersion)
 			.UpdateManifest(PackageManifest.Group.Themes, UnoThemesVersion)
 			.UpdateManifest(PackageManifest.Group.Maui, MauiVersion)
+			.UpdateManifest(PackageManifest.Group.UnoMaui, UnoMauiVersion)
+			.UpdateManifest(PackageManifest.Group.UnoRetarget, UnoRetargetVersion)
 			// MauiCompatibility is a separate group only so the net11 override does not apply
 			// to it - MauiVersion must still move all of the MAUI packages together.
 			.UpdateManifest(PackageManifest.Group.MauiCompatibility, MauiVersion);

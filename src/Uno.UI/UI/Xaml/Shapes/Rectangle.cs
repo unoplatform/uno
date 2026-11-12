@@ -78,7 +78,8 @@ namespace Microsoft.UI.Xaml.Shapes
 
 			return radiusX is 0 || radiusY is 0
 				? CompositionGeometry.BuildRectangleGeometry(offset, size)
-				: CompositionGeometry.BuildRoundedRectangleGeometry(offset, size, new Vector2((float)radiusX, (float)radiusY));
+				// WinUI starts a rounded rectangle's figure where the top-left arc begins, which is where dashes start.
+				: CompositionGeometry.BuildRoundedRectangleGeometry(offset, size, new Vector2((float)radiusX, (float)radiusY), startAtTopLeftArc: true);
 		}
 #nullable disable
 		#endregion

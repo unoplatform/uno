@@ -5,14 +5,14 @@ using System.Collections.Generic;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>The registerable Skia backend pair (the built-in default choice; registered like any other backend).</summary>
-public sealed class SkiaGraphicsProvider :
+internal sealed class SkiaGraphicsProvider :
 	IGraphicsProvider<IGLDeviceContext>,
 	IGraphicsProvider<IMetalDeviceContext>,
 	IGraphicsProvider<IVulkanDeviceContext>,
 	IGraphicsProvider<IGraphicsContext>
 {
 	// Negotiation walks this kind order as-is; the host vetoes a kind it can't serve (returns null) and the next
-	// is tried. The app can override the order via the constructor. Default is Vulkan first, then desktop GL,
+	// is tried. The app can override the order through SkiaBackend.CreateGraphicsProvider. Default is Vulkan first, then desktop GL,
 	// GLES, WebGL, Metal, then software — GPU hosts that don't serve Vulkan (macOS→Metal, LinuxFB→GLES, WASM→WebGL)
 	// decline it and fall through, so the single order is safe for every host.
 	private readonly GraphicsContextKind[] _preferred;

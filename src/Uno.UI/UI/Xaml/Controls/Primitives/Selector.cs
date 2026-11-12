@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private bool _disableRaiseSelectionChanged;
 		//private int m_lastFocusedIndex;
 
-		//private bool m_inCollectionChange;
+		private bool m_inCollectionChange;
 
 		/// <summary>
 		/// This is always true for <see cref="FlipView"/> and <see cref="ComboBox"/>, and depends on the value of <see cref="ListViewBase.SelectionMode"/> for <see cref="ListViewBase"/>.
@@ -190,11 +190,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				TryUpdateSelectorItemIsSelected(selectedItem, true);
 			}
 
-			if (SelectedIndex != -1 && IsInLiveTree)
-			{
-				ScrollSelectionIntoView();
-			}
-
 			_isUpdatingSelection = false;
 
 			if (shouldRaiseSelectionChanged)
@@ -204,20 +199,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					wasSelectionUnset ? Array.Empty<object>() : new[] { oldSelectedItem },
 					isSelectionUnset ? Array.Empty<object>() : new[] { selectedItem }
 				);
-			}
-		}
-
-		private void ScrollSelectionIntoView()
-		{
-			if (SelectedIndex == -1 || !IsInLiveTree) return;
-
-			if (this is ListViewBase lvb)
-			{
-				lvb.ScrollIntoView(SelectedItem);
-			}
-			else if (this is ComboBox cb)
-			{
-				cb.ScrollIntoView(SelectedItem);
 			}
 		}
 
@@ -539,6 +520,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal override void OnItemsSourceSingleCollectionChanged(object sender, NotifyCollectionChangedEventArgs c, int section)
 		{
+			var wasInCollectionChange = m_inCollectionChange;
+			m_inCollectionChange = true;
+			try
+			{
+				OnItemsSourceSingleCollectionChangedCore(sender, c, section);
+			}
+			finally
+			{
+				m_inCollectionChange = wasInCollectionChange;
+			}
+		}
+
+		private void OnItemsSourceSingleCollectionChangedCore(object sender, NotifyCollectionChangedEventArgs c, int section)
+		{
 			// Get SelectedIndex before calling base, as a quick workaround for side-effect in FlipView.Android that changes the SelectedIndex, to avoid incrementing it twice
 			var selectedIndexToSet = SelectedIndex;
 			base.OnItemsSourceSingleCollectionChanged(sender, c, section);
@@ -598,6 +593,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs c)
+		{
+			var wasInCollectionChange = m_inCollectionChange;
+			m_inCollectionChange = true;
+			try
+			{
+				OnItemsSourceGroupsChangedCore(sender, c);
+			}
+			finally
+			{
+				m_inCollectionChange = wasInCollectionChange;
+			}
+		}
+
+		private void OnItemsSourceGroupsChangedCore(object sender, NotifyCollectionChangedEventArgs c)
 		{
 			base.OnItemsSourceGroupsChanged(sender, c);
 
@@ -924,23 +933,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			//if (shouldScrollIntoView)
-			//{
-			//	shouldScrollIntoView = CanScrollIntoView();
-			//}
+			if (shouldScrollIntoView)
+			{
+				shouldScrollIntoView = CanScrollIntoView();
+			}
 
-			//if (shouldScrollIntoView)
-			//{
-			//	ScrollIntoView(
-			//		index,
-			//		isGroupItemIndex: false,
-			//		isHeader: false,
-			//		isFooter: false,
-			//		isFromPublicAPI: false,
-			//		ensureContainerRealized: true,
-			//		animateIfBringIntoView,
-			//		ScrollIntoViewAlignment.Default);
-			//}
+			if (shouldScrollIntoView)
+			{
+				ScrollIntoView(index, animateIfBringIntoView, ScrollIntoViewAlignment.Default);
+			}
 
 			if (shouldFocus)
 			{
@@ -953,36 +954,49 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
-#if false
-		private void ScrollIntoView(int index, bool isGroupItemIndex, bool isHeader, bool isFooter, bool isFromPublicAPI, bool ensureContainerRealized, bool animateIfBringIntoView, ScrollIntoViewAlignment @default)
+		// Handler for when a SelectorItem received focus
+		internal void ItemFocused(SelectorItem pSelectorItem)
 		{
+			// Set the focused index correctly
+			var focusedIndex = IndexFromContainer(pSelectorItem);
+			SetFocusedIndex(focusedIndex);
 
-		}
-#endif
-
-#if false
-		bool CanScrollIntoView()
-		{
-			Panel spPanel;
-			bool isItemsHostInvalid = false;
-			bool isInLiveTree = false;
-
-			spPanel = ItemsPanelRoot;
-
-			if (spPanel != null)
+			if (focusedIndex >= 0)
 			{
-				//isItemsHostInvalid = IsItemsHostInvalid;
-
-				if (!isItemsHostInvalid)
-				{
-					//isInLiveTree = IsInLiveTree();
-					isInLiveTree = true;
-				}
+				SetLastFocusedIndex(focusedIndex);
 			}
+		}
+
+		// Handler for when a SelectorItem lost focus
+		internal void ItemUnfocused(SelectorItem pSelectorItem)
+		{
+			// Set the focused index correctly
+			var itemIndex = IndexFromContainer(pSelectorItem);
+
+			// Uno specific: a focused container can be recycled for another item, so its index may no longer match.
+			if (GetFocusedIndex() == itemIndex || !HasFocus())
+			{
+				SetFocusedIndex(-1);
+			}
+		}
+
+		// Called to detect whether we can scroll to the View or not.
+		private bool CanScrollIntoView()
+		{
+			var isItemsHostInvalid = ItemsPanelRoot is null || IsItemsHostInvalid;
+			var isInLiveTree = !isItemsHostInvalid && IsInLiveTree;
 
 			return !isItemsHostInvalid && isInLiveTree && !m_skipScrollIntoView && !m_inCollectionChange;
 		}
-#endif
+
+		private void ScrollIntoView(int index, bool animateIfBringIntoView, ScrollIntoViewAlignment alignment)
+		{
+			// Uno specific: FlipView positions its own viewport (SetOffsetToSelectedIndex).
+			if (this is ListViewBase or ComboBox)
+			{
+				ScrollIntoViewInternal(ItemFromIndex(index), isHeader: false, isFooter: false, isFromPublicAPI: false, alignment, offset: 0, animateIfBringIntoView);
+			}
+		}
 
 		partial void RefreshPartial();
 

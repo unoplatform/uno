@@ -1,4 +1,5 @@
 ﻿using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Core;
 
 namespace Uno.UI.Runtime.AppleUIKit;
@@ -8,9 +9,17 @@ namespace Uno.UI.Runtime.AppleUIKit;
 /// </summary>
 internal sealed class UnoKeyboardInputSource : IUnoKeyboardInputSource
 {
-#pragma warning disable CS0067
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
-#pragma warning restore CS0067
 	event TypedEventHandler<object, CharacterReceivedEventArgs>? IUnoKeyboardInputSource.CharacterReceived { add { } remove { } }
+
+	/// <returns>Whether the app handled the key.</returns>
+	internal bool RaiseKey(VirtualKey key, bool isDown)
+	{
+		var args = new KeyEventArgs("keyboard", key, VirtualKeyModifiers.None, default(CorePhysicalKeyStatus));
+
+		(isDown ? KeyDown : KeyUp)?.Invoke(this, args);
+
+		return args.Handled;
+	}
 }

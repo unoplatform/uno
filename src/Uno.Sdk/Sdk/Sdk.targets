@@ -10,11 +10,15 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+	<!-- Builds a head with a single browserwasm TargetFramework as WebAssembly, before the other targets read it -->
+	<Import Project="$(_UnoSdkTargetsDirectory)Uno.SingleBrowserWasmTargetFramework.targets" />
+
 	<!-- Property Captures -->
 	<Import Project="$(_UnoSdkTargetsDirectory)Uno.PropertyCaptures.targets" />
 
 	<!-- Common Includes -->
 	<Import Project="$(_UnoSdkTargetsDirectory)Uno.Common.targets" />
+	<Import Project="$(_UnoSdkTargetsDirectory)Uno.WebGpu.targets" />
 
 	<!-- Default Includes -->
 	<Import Project="$(_UnoSdkTargetsDirectory)Uno.DefaultItems.targets" Condition=" $(EnableDefaultUnoItems) == 'true' " />

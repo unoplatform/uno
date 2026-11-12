@@ -5,7 +5,7 @@ using Windows.Web.Http.Headers;
 
 namespace Uno.UI.Tests.Windows_Web_Http;
 
-[TestClass]
+[UITestClass]
 public class Given_HttpRequestHeaderCollection
 {
 	private static HttpRequestHeaderCollection GetNewHeaders(Uri uri)

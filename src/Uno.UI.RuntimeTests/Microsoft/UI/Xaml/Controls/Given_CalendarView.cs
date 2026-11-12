@@ -252,7 +252,9 @@ public class Given_CalendarView
 	[TestMethod]
 	// SkiaWasm excluded: rapid-click month scroll animations re-target/rewind under the headless xvfb browser (flaky). #23524
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23524")]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)] // Destabilized by changes in https://github.com/unoplatform/uno/pull/23269
+	// SkiaIOS excluded: the scroll never settles within the wait on the CI simulator. #25428
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25428")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIOS)] // Destabilized by changes in https://github.com/unoplatform/uno/pull/23269
 	public async Task When_NextMonth_InQuickSequence()
 	{
 		var sut = new CalendarView() { DisplayMode = CalendarViewDisplayMode.Month };

@@ -1,0 +1,22 @@
+<Project>
+	<!--
+	Incremental BuildArchive drops the Java resources of AAR/JAR dependencies (META-INF/services, which
+	kotlinx.coroutines Dispatchers.Main needs), fixed in the .NET 11 workload: https://github.com/dotnet/android/issues/11543
+	Repackage from scratch instead; Inputs/Outputs mirror the SDK targets so an up-to-date package is kept.
+	-->
+	<Target Name="_UnoDeleteStaleIntermediateApkEmbed"
+			BeforeTargets="_BuildApkEmbed"
+			Condition=" '$(UnoDisableIncrementalApkWorkaround)' != 'true' AND $([MSBuild]::VersionLessThan('$(TargetFrameworkVersion)', '11.0')) AND '$(EmbedAssembliesIntoApk)' == 'True' "
+			Inputs="$(_BuildApkEmbedInputs)"
+			Outputs="$(_BuildApkEmbedOutputs)">
+		<Delete Files="$(ApkFileIntermediate);$(_BaseZipIntermediate)" />
+	</Target>
+
+	<Target Name="_UnoDeleteStaleIntermediateApkFastDev"
+			BeforeTargets="_BuildApkFastDev"
+			Condition=" '$(UnoDisableIncrementalApkWorkaround)' != 'true' AND $([MSBuild]::VersionLessThan('$(TargetFrameworkVersion)', '11.0')) AND '$(EmbedAssembliesIntoApk)' != 'True' "
+			Inputs="$(_BuildApkFastDevStaticInputs)"
+			Outputs="$(_BuildApkEmbedOutputs)">
+		<Delete Files="$(ApkFileIntermediate);$(_BaseZipIntermediate)" />
+	</Target>
+</Project>

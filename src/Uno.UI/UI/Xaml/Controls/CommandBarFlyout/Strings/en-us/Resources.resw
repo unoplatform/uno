@@ -217,6 +217,22 @@
   <data name="TextCommandLabelSelectAll" xml:space="preserve">
     <value>Select All</value>
   </data>
+  <data name="TextCommandLabelSelect" xml:space="preserve">
+    <value>Select</value>
+    <comment>Uno specific: selects the word at the caret (iOS touch selection flyout).</comment>
+  </data>
+  <data name="TextCommandLabelLookUp" xml:space="preserve">
+    <value>Look Up</value>
+    <comment>Uno specific: shows the system dictionary entry for the selected text.</comment>
+  </data>
+  <data name="TextCommandLabelSearchWeb" xml:space="preserve">
+    <value>Search Web</value>
+    <comment>Uno specific: searches the web for the selected text.</comment>
+  </data>
+  <data name="TextCommandLabelScanText" xml:space="preserve">
+    <value>Scan Text</value>
+    <comment>Uno specific: inserts text captured with the camera.</comment>
+  </data>
   <data name="TextCommandLabelUnderline" xml:space="preserve">
     <value>Underline</value>
   </data>

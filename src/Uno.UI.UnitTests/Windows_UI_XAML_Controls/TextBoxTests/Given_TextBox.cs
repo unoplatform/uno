@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.TextBoxTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_TextBox
 	{
 		[TestMethod]

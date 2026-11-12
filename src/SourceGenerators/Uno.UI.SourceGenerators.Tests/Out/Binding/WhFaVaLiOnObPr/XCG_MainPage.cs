@@ -54,8 +54,8 @@ namespace TestRepro
 					global::Microsoft.UI.Xaml.Controls.ContentControl.ContentProperty,
 					new Microsoft.UI.Xaml.Data.Binding()
 					{
-						Path = @"P",
-						FallbackValue = @"0",
+						Path = "P",
+						FallbackValue = "0",
 					}
 				);
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);

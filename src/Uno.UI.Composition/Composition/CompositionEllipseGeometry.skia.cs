@@ -8,8 +8,12 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionEllipseGeometry : CompositionGeometry
 	{
 		private global::Uno.UI.Composition.Drawing.IGeometry? _geometry;
+		private global::Uno.UI.Composition.Drawing.IGeometry? _dashGeometry;
 
 		internal override IGeometrySource2D? BuildGeometry() => _geometry as IGeometrySource2D;
+
+		internal override global::Uno.UI.Composition.Drawing.IGeometry? BuildDashGeometry()
+			=> _dashGeometry ??= BuildEllipseGeometry(Center, Radius, EllipseFigureStart.Left);
 
 		private global::Uno.UI.Composition.Drawing.IGeometry InternalBuildGeometry()
 			=> BuildEllipseGeometry(Center, Radius);
@@ -20,6 +24,8 @@ namespace Microsoft.UI.Composition
 			{
 				_geometry?.Dispose();
 				_geometry = InternalBuildGeometry();
+				_dashGeometry?.Dispose();
+				_dashGeometry = null;
 			}
 
 			base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
@@ -28,6 +34,7 @@ namespace Microsoft.UI.Composition
 		private protected override void DisposeInternal()
 		{
 			_geometry?.Dispose();
+			_dashGeometry?.Dispose();
 			base.DisposeInternal();
 		}
 	}

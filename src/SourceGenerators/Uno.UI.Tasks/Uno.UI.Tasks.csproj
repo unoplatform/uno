@@ -12,7 +12,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.Build" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Tasks.Core" ExcludeAssets="runtime" />

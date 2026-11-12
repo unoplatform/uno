@@ -256,7 +256,7 @@ internal static class HotReloadHelper
 	/// <summary>
 	/// Gets the project path from the remotecontrol attributes
 	/// </summary>
-	private static string GetProjectPath()
+	internal static string GetProjectPath()
 	{
 		if (Application.Current.GetType().Assembly.GetCustomAttributes(typeof(ProjectConfigurationAttribute), false) is ProjectConfigurationAttribute[] configs)
 		{

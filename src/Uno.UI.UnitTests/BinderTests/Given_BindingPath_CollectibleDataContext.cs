@@ -17,7 +17,7 @@ namespace Uno.UI.Tests.BinderTests
 	/// (host-lifetime) binding exists. The accessors must be dropped in that case, while the
 	/// cheap-rebind optimization stays intact for non-collectible types.
 	/// </summary>
-	[TestClass]
+	[UITestClass]
 	public partial class Given_BindingPath_CollectibleDataContext
 	{
 		[TestMethod]

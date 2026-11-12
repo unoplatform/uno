@@ -38,7 +38,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="HarfBuzzSharp" />
 		<!--
 		Uno.icu-ios only ships iOS slices, and its targets pick the device archives for
 		any RID that does not contain 'iossimulator', so a tvOS head would force-load

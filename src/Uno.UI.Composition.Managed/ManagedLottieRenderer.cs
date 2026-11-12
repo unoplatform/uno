@@ -9,15 +9,12 @@ namespace Uno.UI.Composition.Drawing;
 /// <summary>
 /// The framework's SkiaSharp-free managed Lottie (Bodymovin) engine — an <see cref="ILottieRenderer"/> that parses
 /// the animation JSON and draws each frame straight through the neutral <see cref="IDrawingSession"/> (no Skottie,
-/// no rasterize-to-SKSurface), so Lottie plays on any backend. Resolved as the default only when the Skottie add-in
-/// (Uno.UI.Lottie) isn't referenced, or when a head registers it explicitly. v1 covers the shape-layer subset
+/// no rasterize-to-SKSurface), so Lottie plays on any backend. Resolved as the default only when the Skia backend
+/// (which brings Skottie) isn't present, or when a head registers it explicitly. v1 covers the shape-layer subset
 /// (see <see cref="ManagedLottie"/>).
 /// </summary>
-public sealed class ManagedLottieRenderer : ILottieRenderer
+internal sealed class ManagedLottieRenderer : ILottieRenderer
 {
-	// Reflective bootstrap entry point (found by name from UnoPlatformHostBuilder); keep the type/method name stable.
-	internal static ILottieRenderer CreateLottieRenderer() => new ManagedLottieRenderer();
-
 	public ILottieAnimation? Load(string animationJson, IGeometryFactory geometry)
 		=> ManagedLottie.TryParse(animationJson, out var model) && model is not null
 			? new ManagedLottieAnimation(model, geometry)

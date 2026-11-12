@@ -5,7 +5,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
+using Microsoft.UI.Composition;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -136,6 +138,8 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	public override bool IsAccessibilityEnabled => !IsDisposed && _hwnd != nint.Zero;
 
+	protected override bool PushesTextValue => false;
+
 	public override bool ListenerExistsHelper(AutomationEvents eventId) =>
 		IsAccessibilityEnabled
 		&& (eventId == AutomationEvents.AutomationFocusChanged || AreUiaClientsListening());
@@ -214,7 +218,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	/// </summary>
 	internal Win32RawElementProvider? GetOrCreateProvider(UIElement element)
 	{
-		if (!IsAccessibilityEnabled || Volatile.Read(ref _providerCleanupDepth) > 0)
+		if (!IsAccessibilityEnabled)
 		{
 			return null;
 		}
@@ -222,6 +226,11 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		if (TryGetLiveProvider(element, out var existing))
 		{
 			return existing;
+		}
+
+		if (IsCleaningUpProviders)
+		{
+			return FindLiveProviderForCachedPeer(element);
 		}
 
 		var peer = element.GetOrCreateAutomationPeer();
@@ -271,7 +280,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	internal Win32RawElementProvider? GetProvider(UIElement element)
 	{
-		if (!IsAccessibilityEnabled || Volatile.Read(ref _providerCleanupDepth) > 0)
+		if (!IsAccessibilityEnabled)
 		{
 			return null;
 		}
@@ -279,6 +288,11 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		if (TryGetLiveProvider(element, out var provider))
 		{
 			return provider;
+		}
+
+		if (IsCleaningUpProviders)
+		{
+			return FindLiveProviderForCachedPeer(element);
 		}
 
 		var peer = element.GetOrCreateAutomationPeer();
@@ -298,9 +312,14 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	private Win32RawElementProvider? GetOrCreateProviderForResolvedPeer(AutomationPeer resolvedPeer)
 	{
-		if (!IsAccessibilityEnabled || Volatile.Read(ref _providerCleanupDepth) > 0)
+		if (!IsAccessibilityEnabled)
 		{
 			return null;
+		}
+
+		if (IsCleaningUpProviders)
+		{
+			return FindLiveProviderForResolvedPeer(resolvedPeer);
 		}
 
 		// Fast path: already have a provider keyed by this exact peer.
@@ -379,6 +398,31 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 			return provider;
 		}
+	}
+
+	// UiaDisconnectProvider calls back into the provider it disconnects (e.g. Navigate(Parent)), so lookups
+	// made during CleanupProviders must find connected providers without creating or registering any.
+	private bool IsCleaningUpProviders => Volatile.Read(ref _providerCleanupDepth) > 0;
+
+	private Win32RawElementProvider? FindLiveProviderForCachedPeer(UIElement element)
+		=> element.CachedAutomationPeer is { } peer
+			? FindLiveProviderForResolvedPeer(peer.ResolveProviderPeer(resolveEventsSource: true))
+			: null;
+
+	private Win32RawElementProvider? FindLiveProviderForResolvedPeer(AutomationPeer resolvedPeer)
+	{
+		if (TryGetLiveProvider(resolvedPeer, out var byPeer))
+		{
+			return byPeer;
+		}
+
+		// Same match as the element-keyed reuse in GetOrCreateProviderForResolvedPeer, so a virtual
+		// peer never resolves to the provider of the element that hosts it.
+		return resolvedPeer.TryGetProviderOwner(out var owner)
+			&& TryGetLiveProvider(owner, out var byOwner)
+			&& byOwner.RepresentsPeer(resolvedPeer)
+				? byOwner
+				: null;
 	}
 
 	private void RegisterProviderOwner(UIElement owner, Win32RawElementProvider provider)
@@ -947,7 +991,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	{
 		try
 		{
-			_ = Win32UIAutomationInterop.UiaRaiseStructureChangedEvent(provider, type, runtimeId);
+			_ = Win32UIAutomationInterop.UiaRaiseStructureChangedEvent(provider, type, runtimeId, runtimeId?.Length ?? 0);
 		}
 		catch (Exception ex)
 		{
@@ -1067,6 +1111,11 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			return;
 		}
 
+		if (automationProperty == ValuePatternIdentifiers.ValueProperty && peer.IsPassword())
+		{
+			return;
+		}
+
 		var provider = FindExistingProviderForPeer(peer, resolveEventsSource: true);
 		if (provider is null)
 		{
@@ -1081,8 +1130,18 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 		try
 		{
-			_ = Win32UIAutomationInterop.UiaRaiseAutomationPropertyChangedEvent(
-				provider, propertyId.Value, oldValue, newValue);
+			if (ReferenceEquals(automationProperty, AutomationElementIdentifiers.BoundingRectangleProperty))
+			{
+				Marshal.ThrowExceptionForHR(
+					Win32UIAutomationInterop.UiaRaiseAutomationPropertyChangedEvent(
+						provider, propertyId.Value, null, null));
+			}
+			else
+			{
+				Marshal.ThrowExceptionForHR(
+					Win32UIAutomationInterop.UiaRaiseAutomationPropertyChangedEvent(
+						provider, propertyId.Value, oldValue, newValue));
+			}
 		}
 		catch (Exception ex)
 		{
@@ -1188,6 +1247,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 				case AutomationEvents.TextPatternOnTextSelectionChanged:
 					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
 						provider, Win32UIAutomationInterop.UIA_Text_TextSelectionChangedEventId);
+					break;
+				case AutomationEvents.ConversionTargetChanged:
+					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
+						provider, Win32UIAutomationInterop.UIA_TextEdit_ConversionTargetChangedEventId);
 					break;
 				case AutomationEvents.StructureChanged:
 					// Drop the cached subtree (cascading to virtual peers) and coalesce
@@ -1314,13 +1377,17 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		var dataArray = new string[changedData.Count];
 		for (var i = 0; i < changedData.Count; i++)
 		{
-			dataArray[i] = changedData[i];
+			dataArray[i] = changedData[i] ?? string.Empty;
 		}
 
 		try
 		{
 			// Uno's AutomationTextEditChangeType values match UIA TextEditChangeType exactly.
-			_ = Win32UIAutomationInterop.UiaRaiseTextEditTextChangedEvent(target, (int)changeType, dataArray);
+			var result = Win32UIAutomationInterop.UiaRaiseTextEditTextChangedEvent(target, (int)changeType, dataArray);
+			if (result < 0 && this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"UiaRaiseTextEditTextChangedEvent failed with HRESULT 0x{result:X8}.");
+			}
 		}
 		catch (Exception ex) when (
 			ex is System.Runtime.InteropServices.COMException
@@ -1421,6 +1488,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		if (ReferenceEquals(property, AutomationElementIdentifiers.NameProperty))
 		{
 			return Win32UIAutomationInterop.UIA_NamePropertyId;
+		}
+		if (ReferenceEquals(property, AutomationElementIdentifiers.BoundingRectangleProperty))
+		{
+			return Win32UIAutomationInterop.UIA_BoundingRectanglePropertyId;
 		}
 		if (ReferenceEquals(property, TogglePatternIdentifiers.ToggleStateProperty))
 		{

@@ -23,13 +23,10 @@ internal partial class ListViewBaseItemAutomationPeer : FrameworkElementAutomati
 	{
 		if (patternInterface == PatternInterface.Invoke)
 		{
-			if (Owner is SelectorItem selectorItem)
+			if (ShouldSupportInvokePattern(Owner))
 			{
-				var listViewBase = ItemsControl.ItemsControlFromItemContainer(selectorItem) as ListViewBase;
-				if (listViewBase is not null && listViewBase.IsItemClickEnabled)
-				{
-					return this;
-				}
+				// Create adapter to perfom Invoke action, if needed
+				return _invokeAdapter ??= new ItemInvokeAdapter(this);
 			}
 		}
 
@@ -38,5 +35,13 @@ internal partial class ListViewBaseItemAutomationPeer : FrameworkElementAutomati
 		// on the parent ListViewBase.
 
 		return base.GetPatternCore(patternInterface);
+	}
+
+	// Shared with ListViewItemAutomationPeer and GridViewItemAutomationPeer, whose public base can't be this internal class.
+	internal static bool ShouldSupportInvokePattern(UIElement owner)
+	{
+		// TODO Uno: WinUI also supports Invoke in a SemanticZoom's zoomed-out view, to switch to the zoomed-in view.
+		return owner is SelectorItem listViewBaseItem
+			&& ItemsControl.ItemsControlFromItemContainer(listViewBaseItem) is ListViewBase { IsItemClickEnabled: true };
 	}
 }

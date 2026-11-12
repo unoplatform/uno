@@ -15,7 +15,7 @@ namespace Uno.UI.Svg;
 /// </summary>
 internal sealed class SkiaSvgRenderer : ISvgRenderer
 {
-	public ISvgDocument? Parse(byte[] svg, IGeometryFactory geometry, IDrawingFactory drawing)
+	public ISvgDocument? Parse(byte[] svg, IGeometryFactory geometry)
 	{
 		try
 		{

@@ -48,6 +48,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Dispatcher timer to set correct offset values after size changed
 		DispatcherTimer m_tpFixOffsetTimer;
 
+		// Uno-specific: lets tests wait out the offset fix armed by sizing, which a manipulation would otherwise postpone and replay.
+		internal bool IsFixOffsetPending => m_tpFixOffsetTimer?.IsEnabled == true;
+
 		// Stores a reference to the ButtonLayer part.
 		//Panel* m_pButtonLayerPart;
 
@@ -167,7 +170,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				strAutomationName = AutomationProperties.GetName(m_tpPreviousButtonHorizontalPart);
 
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_PREVIOUS);
 					AutomationProperties.SetName(m_tpPreviousButtonHorizontalPart, strAutomationName);
@@ -185,7 +188,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				strAutomationName = AutomationProperties.GetName(m_tpNextButtonHorizontalPart);
 
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_NEXT);
 					AutomationProperties.SetName(m_tpNextButtonHorizontalPart, strAutomationName);
@@ -204,7 +207,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				strAutomationName = AutomationProperties.GetName(m_tpPreviousButtonVerticalPart);
 
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_PREVIOUS);
 					AutomationProperties.SetName(m_tpPreviousButtonVerticalPart, strAutomationName);
@@ -222,7 +225,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				strAutomationName = AutomationProperties.GetName(m_tpNextButtonVerticalPart);
 
-				if (strAutomationName == null)
+				if (string.IsNullOrEmpty(strAutomationName))
 				{
 					strAutomationName = DXamlCore.GetCurrentNoCreate().GetLocalizedResourceString(UIA_FLIPVIEW_NEXT);
 					AutomationProperties.SetName(m_tpNextButtonVerticalPart, strAutomationName);

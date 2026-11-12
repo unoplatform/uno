@@ -6,18 +6,117 @@
 		<UnoFeatures Condition="!$(UnoFeatures.StartsWith(';'))">;$(UnoFeatures)</UnoFeatures>
 		<UnoFeatures Condition="!$(UnoFeatures.EndsWith(';'))">$(UnoFeatures);</UnoFeatures>
 
-		<!-- A renderer is required, so 'skia' is implied when the app names none. Naming 'webgpu' counts as
-		     naming one, which is what lets an app be SkiaSharp-free. Listing both references both, and Skia
-		     still renders by default; the head opts into WebGPU on the host builder. The legacy
-		     'nativerenderer' token is ignored, and 'skiarenderer' is mapped to 'skia' for backwards
-		     compatibility. -->
+		<!-- Legacy tokens: native rendering is gone, and Lottie is built into Uno.WinUI. -->
 		<UnoFeatures>$(UnoFeatures.Replace(';nativerenderer;', ';'))</UnoFeatures>
+		<UnoFeatures>$(UnoFeatures.Replace(';lottie;', ';'))</UnoFeatures>
+
+		<!-- Prism isn't an Uno.Sdk feature: projects reference Prism's packages themselves (UNOB0035). -->
+		<_UnoPrismFeatureRemoved Condition="$(UnoFeatures.Contains(';prism;'))">true</_UnoPrismFeatureRemoved>
+		<UnoFeatures>$(UnoFeatures.Replace(';prism;', ';'))</UnoFeatures>
+
+		<!-- The renderer is the app's choice. A head maps the legacy 'skiarenderer' to 'skia', and implies 'skia'
+		     when it names no renderer ('webgpu' counts, which keeps an app SkiaSharp-free). A library gets neither,
+		     and lists 'skia' to draw with SkiaSharp. WinAppSDK renders with WinUI, so Skia is off there, even when
+		     listed: a project drawing with SkiaSharp on Windows also sets UnoEnableSkiaOnWinAppSdk.
+		     The target framework is tested directly: IsWinAppSdk is not set yet when the project body sets it. -->
+		<_UnoLibrarySkiaRendererIgnored Condition="'$(IsUnoHead)' != 'true' And $(UnoFeatures.Contains(';skiarenderer;'))">true</_UnoLibrarySkiaRendererIgnored>
+		<_UnoSkiaOffOnWinAppSdk Condition="$(TargetFramework.Contains('windows10')) And '$(UnoEnableSkiaOnWinAppSdk)' != 'true'">true</_UnoSkiaOffOnWinAppSdk>
+		<UnoFeatures Condition="'$(IsUnoHead)' == 'true' And '$(_UnoSkiaOffOnWinAppSdk)' != 'true'">$(UnoFeatures.Replace(';skiarenderer;', ';skia;'))</UnoFeatures>
 		<UnoFeatures>$(UnoFeatures.Replace(';skiarenderer;', ';'))</UnoFeatures>
-		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skia;')) And !$(UnoFeatures.Contains(';webgpu;'))">$(UnoFeatures)skia;</UnoFeatures>
+		<UnoFeatures Condition="'$(_UnoSkiaOffOnWinAppSdk)' == 'true'">$(UnoFeatures.Replace(';skia;', ';'))</UnoFeatures>
+		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skia;')) And !$(UnoFeatures.Contains(';webgpu;')) And !$(TargetFramework.Contains('windows10')) And '$(IsUnoHead)' == 'true'">$(UnoFeatures)skia;</UnoFeatures>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">
+	<Target Name="_UnoWarnLibrarySkiaRendererIgnored"
+			BeforeTargets="CoreCompile"
+			Condition="'$(DesignTimeBuild)' != 'true' and '$(_UnoLibrarySkiaRendererIgnored)' == 'true'">
+		<Warning Code="UNOB0030"
+				 HelpLink="https://aka.platform.uno/UNOB0030"
+				 Text="The SkiaRenderer Uno Feature is ignored in a library: the renderer is the app's choice. Remove it, or replace it with Skia if the library uses SKCanvasElement, the SkiaExtensions conversions or the Uno Toolkit's Skia controls. (See https://aka.platform.uno/UNOB0030)" />
+	</Target>
+
+	<!-- Uno.Microsoft.UI.Reactor has no WinAppSDK build, so the Windows target gets no reference (Uno.Implicit.Packages.ProjectSystem.targets).
+	     Fail here rather than let every Reactor type surface as a CS0246. -->
+	<Target Name="_UnoValidateReactorWinAppSdk"
+			BeforeTargets="CoreCompile"
+			Condition="'$(DesignTimeBuild)' != 'true' and $(UnoFeatures.Contains(';reactor;')) and $(TargetFramework.Contains('windows10'))">
+		<Error Code="UNOB0031"
+			   HelpLink="https://aka.platform.uno/UNOB0031"
+			   Text="The Reactor Uno Feature is not supported on the WinAppSDK target ($(TargetFramework)): Reactor on Uno Platform runs on the Uno Platform targets only. Remove the Windows target framework from this project. (See https://aka.platform.uno/UNOB0031)" />
+	</Target>
+
+	<Target Name="_UnoWarnPrismFeatureRemoved"
+			BeforeTargets="CoreCompile"
+			Condition="'$(DesignTimeBuild)' != 'true' and '$(_UnoPrismFeatureRemoved)' == 'true'">
+		<Warning Code="UNOB0035"
+				 HelpLink="https://aka.platform.uno/UNOB0035"
+				 Text="The Prism Uno Feature is no longer supported, and the Uno.Sdk no longer references Prism. Remove it from UnoFeatures and add a PackageReference to Prism.DryIoc.Uno.WinUI (in an app) or Prism.Uno.WinUI (in a library), with a Prism version built for Uno Platform 7.0. (See https://aka.platform.uno/UNOB0035)" />
+	</Target>
+
+	<!--
+		The MauiEmbedding feature used to be the native embedding through Uno.Extensions (now MauiNativeEmbedding). An app that relied on it either references Uno.Extensions.Maui packages itself,
+		or was created from a template that lists MauiEmbedding for all its targets: Uno.Maui.Embedding embeds MAUI views on the Skia desktop and WebAssembly targets only, so such an app is told
+		on its Android, iOS, Mac Catalyst and Windows App SDK targets, where the native embedding did run.
+	-->
+	<Target Name="_UnoWarnMauiEmbeddingRenamed"
+			BeforeTargets="CoreCompile"
+			Condition="'$(DesignTimeBuild)' != 'true' and $(UnoFeatures.Contains(';mauiembedding;')) and !$(UnoFeatures.Contains(';mauinativeembedding;'))">
+		<PropertyGroup>
+			<_UnoMauiEmbeddingPlatform>$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))</_UnoMauiEmbeddingPlatform>
+		</PropertyGroup>
+		<ItemGroup>
+			<_UnoNativeMauiReference Include="@(PackageReference)" Condition="$([System.String]::Copy('%(Identity)').StartsWith('Uno.Extensions.Maui'))" />
+		</ItemGroup>
+		<Warning Condition="'@(_UnoNativeMauiReference)' != ''" Code="UNOB0036"
+				 HelpLink="https://aka.platform.uno/UNOB0036"
+				 Text="The MauiEmbedding Uno Feature now selects Uno.Maui.Embedding, and this project references Uno.Extensions.Maui packages. If it relied on the native embedding of Uno.Extensions, replace MauiEmbedding with MauiNativeEmbedding in UnoFeatures." />
+		<Warning Condition="'@(_UnoNativeMauiReference)' == '' and ('$(_UnoMauiEmbeddingPlatform)' == 'android' or '$(_UnoMauiEmbeddingPlatform)' == 'ios' or '$(_UnoMauiEmbeddingPlatform)' == 'maccatalyst' or '$(_UnoMauiEmbeddingPlatform)' == 'windows')" Code="UNOB0036"
+				 HelpLink="https://aka.platform.uno/UNOB0036"
+				 Text="The MauiEmbedding Uno Feature now selects Uno.Maui.Embedding, which embeds MAUI views on the desktop and WebAssembly targets only, not on $(TargetFramework). If this app relied on the native embedding of Uno.Extensions on this target, replace MauiEmbedding with MauiNativeEmbedding in UnoFeatures." />
+	</Target>
+
+	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauinativeembedding;'))">
 		<UseMaui>true</UseMaui>
+	</PropertyGroup>
+
+	<!-- MauiEmbedding runs MAUI controls through Uno.WinUI.Retarget, so it implies the retarget feature (AssetTargetFallback, Uno.WinUI.Retarget, pruning of the Windows App SDK). -->
+	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;')) And !$(UnoFeatures.Contains(';retarget;'))">
+		<UnoFeatures>$(UnoFeatures)retarget;</UnoFeatures>
+	</PropertyGroup>
+
+	<!--
+		Retarget: Windows App SDK / WinUI 3 NuGet packages run on Uno through Uno.WinUI.Retarget, which rewrites their Windows builds at the app's build.
+		- A library that ships only platform builds (no neutral net*) has no asset for an Uno head, and restore stops with NU1202: its Windows build is the fallback.
+		  This has to be set here: a package's own build files are not imported until its first restore succeeded.
+		- The Windows App SDK stays out of the restore of the non-Windows target frameworks (a Windows-only library depends on it, its build targets refuse a
+		  project that is not a Windows one, and its assemblies clash with Uno's): PrunePackageReference with a version above any real one. A net*-windows head uses the real Windows App SDK.
+	-->
+	<PropertyGroup Condition="$(UnoFeatures.Contains(';retarget;'))">
+		<AssetTargetFallback>$(AssetTargetFallback);net11.0-windows10.0.19041.0;net11.0-windows10.0.19041;net11.0-windows;net10.0-windows10.0.19041.0;net10.0-windows10.0.19041;net10.0-windows;net9.0-windows10.0.19041.0;net9.0-windows10.0.19041;net8.0-windows10.0.19041.0;net8.0-windows10.0.19041;net8.0-windows10.0.17763.0;net7.0-windows10.0.19041.0;net6.0-windows10.0.19041.0</AssetTargetFallback>
+	</PropertyGroup>
+	<ItemGroup Condition="$(UnoFeatures.Contains(';retarget;')) And !$(TargetFramework.Contains('-windows'))">
+		<PrunePackageReference Include="Microsoft.WindowsAppSDK" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.WindowsAppSDK.Base" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.WindowsAppSDK.Foundation" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.WindowsAppSDK.InteractiveExperiences" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.WindowsAppSDK.Runtime" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.WindowsAppSDK.WinUI" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.WindowsAppSDK.AI" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.WindowsAppSDK.Widgets" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.WindowsAppSDK.DWrite" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.Windows.SDK.BuildTools.MSIX" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.Windows.CsWinRT" Version="99.0.0" />
+		<PrunePackageReference Include="Microsoft.Graphics.Win2D" Version="99.0.0" />
+	</ItemGroup>
+
+	<!--
+		MauiEmbedding: MAUI controls and libraries run on Uno through Uno.Maui.Embedding / Uno.Maui.Handlers (on top of Retarget, which it implies).
+		- MAUI itself must be the version the rewrite rules are written for, not the one of the mauinativeembedding feature (override with MauiVersion). Not applied when mauinativeembedding is also listed.
+		- UseMaui stays off: the project is an Uno project, not a MAUI one (the package turns off MAUI's global usings and default XAML items by itself).
+	-->
+	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;')) And !$(UnoFeatures.Contains(';mauinativeembedding;'))">
+		<MauiVersion Condition="'$(MauiVersion)' == ''">10.0.101</MauiVersion>
 	</PropertyGroup>
 
 </Project>

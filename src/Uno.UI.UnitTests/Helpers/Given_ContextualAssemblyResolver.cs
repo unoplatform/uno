@@ -10,7 +10,7 @@ using Uno.UI.Helpers;
 
 namespace Uno.UI.Tests.Helpers;
 
-[TestClass]
+[UITestClass]
 public class Given_ContextualAssemblyResolver
 {
 	[TestMethod]

@@ -6,6 +6,8 @@
 		<EnableDefaultiOSItems Condition="$(EnableDefaultiOSItems) == ''">false</EnableDefaultiOSItems>
 
 		<IsMSALSupported>true</IsMSALSupported>
+
+		<OptimizePNGs Condition=" '$(OptimizePNGs)' == '' ">false</OptimizePNGs>
 	</PropertyGroup>
 
 	<!--
@@ -37,5 +39,5 @@
 		</ItemGroup>
 	</Target>
 
-	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.iOS.targets" Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' " />
+	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.iOS.targets" Condition=" $(_IsUnoSingleProject) == 'true' " />
 </Project>

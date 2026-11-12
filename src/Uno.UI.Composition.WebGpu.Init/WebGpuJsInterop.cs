@@ -19,25 +19,14 @@ public static partial class WebGpuJsInterop
 	public static partial Task<int> CreateImportedDeviceAsync(int instancePtr);
 
 	/// <summary>Reverse-looks-up the live JS object emdawn's handle table has for a wgpu handle pointer (here: a
-	/// device). Lets the neutral context expose the JS GPUDevice as the honest browser handle.</summary>
+	/// device), for the textures the browser context creates in JS.</summary>
 	[JSImport("globalThis.Uno.UI.Runtime.WebGpuInit.getJsObject")]
 	public static partial JSObject GetJsObject(int handlePtr);
 
-	/// <summary>Imports a JS GPUDevice object into emdawn's handle table under the given instance and returns its
-	/// wgpu WGPUDevice pointer. A backend calls this to convert the neutral JS handle to a native pointer.</summary>
-	[JSImport("globalThis.Uno.UI.Runtime.WebGpuInit.importDevice")]
-	public static partial int ImportDevice(JSObject jsDevice, int instancePtr);
-
-	/// <summary>Creates the offscreen resolve texture in JS (jsDevice.createTexture, rgba8unorm) — JS-primary,
-	/// symmetric with the JS-created device — imports it into emdawn's handle table and returns its wgpu texture
-	/// pointer. The host derives the view (and its JS object) from this.</summary>
+	/// <summary>Creates the offscreen resolve texture in JS (jsDevice.createTexture, rgba8unorm), imports it into
+	/// emdawn's handle table and returns its wgpu texture pointer.</summary>
 	[JSImport("globalThis.Uno.UI.Runtime.WebGpuInit.createAndImportOffscreenTexture")]
 	public static partial int CreateAndImportOffscreenTexture(JSObject jsDevice, int width, int height, int usage);
-
-	/// <summary>Imports a JS GPUTextureView object into emdawn's handle table and returns its wgpu view pointer.
-	/// A backend calls this to convert IWebGpuRenderTarget.JsColorView to a native view it can render into.</summary>
-	[JSImport("globalThis.Uno.UI.Runtime.WebGpuInit.importTextureView")]
-	public static partial int ImportTextureView(JSObject jsView, int parentPtr);
 
 	/// <summary>Maps a readback buffer (by its wgpu handle ptr) off the event loop and inspects it as RGBA8
 	/// (rows padded to <paramref name="bytesPerRow"/>). Returns the non-transparent pixel count, or -1 on failure,

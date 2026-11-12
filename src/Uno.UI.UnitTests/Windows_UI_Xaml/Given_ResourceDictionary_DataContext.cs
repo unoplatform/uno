@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_ResourceDictionary_DataContext
 	{
 		// A shared resource (e.g. a brush in a GlobalStaticResources singleton) is rooted by a long-lived

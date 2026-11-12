@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Private.Infrastructure;
 using SkiaSharp;
 using Uno.Foundation.Extensibility;
@@ -46,12 +48,62 @@ public class Given_SKCanvasElement
 		// A backend without a native SKCanvas (WebGPU) draws through a GL island that comes up a few frames after load;
 		// its output composites on the frame after its first render.
 		await UITestHelper.WaitFor(() => SUT.Rendered, timeoutMS: 5000);
-		await UITestHelper.WaitForRender(2);
+		await UITestHelper.WaitForRender(2, timeoutMS: 5000);
 
 		var bitmap = await UITestHelper.ScreenShot(border);
 
 		ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, 400, 300), Microsoft.UI.Colors.Blue);
 		ImageAssert.DoesNotHaveColorInRectangle(bitmap, new Rectangle(0, 101, 400, 299), Microsoft.UI.Colors.Blue);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25656")]
+	public async Task When_Drawn_Through_Software_Surface_Then_Sharp_At_Device_Scale()
+	{
+		var SUT = new HalfBlackSKCanvasElement { Width = 100, Height = 100 };
+
+		// The path a backend without an SKCanvas takes when no GL island is available: marked as already requested,
+		// or the next paint would still bring up an island and draw through both. Under Skia the element draws into
+		// the SKCanvas directly and none of this applies.
+		typeof(SKCanvasElement).GetField("_islandRequested", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(SUT, true);
+		typeof(SKCanvasElement).GetMethod("OnIslandUnavailable", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(SUT, null);
+
+		await UITestHelper.Load(SUT);
+		await UITestHelper.WaitFor(() => SUT.Rendered, timeoutMS: 5000);
+		await UITestHelper.WaitForRender(2, timeoutMS: 5000);
+
+		var renderer = new RenderTargetBitmap();
+		await renderer.RenderAsync(SUT);
+		var bitmap = await RawBitmap.From(renderer, SUT, implicitScaling: 1);
+
+		// The fill ends on a device pixel boundary: a surface rasterized at 1x and stretched blends the pixels beside it.
+		var edge = (int)Math.Round(50 * SUT.XamlRoot!.RasterizationScale);
+		var row = string.Join(" ", Enumerable.Range(edge - 3, 6).Select(x => $"{x}:{bitmap.GetPixel(x, 20).A}"));
+		Assert.AreEqual(255, bitmap.GetPixel(edge - 1, 20).A, $"inside the fill, at scale {SUT.XamlRoot.RasterizationScale} ({row})");
+		Assert.AreEqual(0, bitmap.GetPixel(edge, 20).A, $"outside the fill, at scale {SUT.XamlRoot.RasterizationScale} ({row})");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25656")]
+	public async Task When_Drawn_Through_GL_Island_Then_Sharp_At_Device_Scale()
+	{
+		// Under a backend without an SKCanvas the element draws through the GL island when Graphics3DGL is present
+		// (falling back to the software surface without a usable GL context); under Skia it draws directly.
+		var SUT = new HalfBlackSKCanvasElement { Width = 100, Height = 100 };
+
+		await UITestHelper.Load(SUT);
+		await UITestHelper.WaitFor(() => SUT.Rendered, timeoutMS: 5000);
+		// The island comes up a few frames after load, and its output composites on the frame after its first render.
+		await UITestHelper.WaitForRender(5, timeoutMS: 5000);
+
+		var renderer = new RenderTargetBitmap();
+		await renderer.RenderAsync(SUT);
+		var bitmap = await RawBitmap.From(renderer, SUT, implicitScaling: 1);
+
+		var edge = (int)Math.Round(50 * SUT.XamlRoot!.RasterizationScale);
+		var row = string.Join(" ", Enumerable.Range(edge - 3, 6).Select(x => $"{x}:{bitmap.GetPixel(x, 20).A}"));
+		Assert.AreEqual(255, bitmap.GetPixel(edge - 1, 20).A, $"inside the fill, at scale {SUT.XamlRoot.RasterizationScale} ({row})");
+		Assert.AreEqual(0, bitmap.GetPixel(edge, 20).A, $"outside the fill, at scale {SUT.XamlRoot.RasterizationScale} ({row})");
 	}
 
 	[TestMethod]
@@ -150,7 +202,9 @@ public class Given_SKCanvasElement
 			{
 				Assert.IsTrue(renderer.Initialized);
 				Assert.AreNotEqual(0u, renderer.Framebuffer);
-				Assert.AreEqual((100, 100), renderer.Size);
+				// The framebuffer is in device pixels.
+				var pixels = (int)Math.Round(100 * island.Element.XamlRoot!.RasterizationScale);
+				Assert.AreEqual((pixels, pixels), renderer.Size);
 			}
 		}
 		finally
@@ -181,6 +235,73 @@ public class Given_SKCanvasElement
 		public void OnUnavailable() => Unavailable = true;
 	}
 
+	[TestMethod]
+	public async Task When_Invalidated_From_Background_Thread()
+	{
+		if (OperatingSystem.IsBrowser())
+		{
+			Assert.Inconclusive("This test requires a multithreaded environment.");
+		}
+
+		// Invalidating disposes this visual's cached recording and those of its ancestors, so doing it
+		// off the UI thread can free a picture the render thread is replaying. The element redraws
+		// continuously here to keep frames in flight while other threads invalidate.
+		//
+		// This covers the supported call pattern rather than the race itself: the window is too
+		// narrow to hit reliably on demand, and this passed even before Invalidate marshalled.
+		var SUT = new CountingSKCanvasElement { Width = 400, Height = 400 };
+		await UITestHelper.Load(SUT);
+		await UITestHelper.WaitFor(() => SUT.RenderCount > 0, timeoutMS: 5000);
+
+		var before = SUT.RenderCount;
+		using var cts = new CancellationTokenSource();
+		var workers = Enumerable.Range(0, 2).Select(_ => Task.Run(() =>
+		{
+			while (!cts.IsCancellationRequested)
+			{
+				SUT.Invalidate();
+				// Past the first call Invalidate only finds a post already pending, so without this the loop has no
+				// GC safe point: CoreCLR on iOS then cannot suspend the thread and the first GC hangs the app.
+				Thread.Yield();
+			}
+		})).ToArray();
+
+		try
+		{
+			await Task.Delay(2000);
+		}
+		finally
+		{
+			await cts.CancelAsync();
+			await Task.WhenAll(workers);
+		}
+
+		Assert.IsTrue(SUT.RenderCount > before, "the element should have kept rendering");
+	}
+
+	private class CountingSKCanvasElement : SKCanvasElement
+	{
+		private readonly SKPaint _paint = new() { Color = SKColors.Blue };
+		private int _renderCount;
+
+		public int RenderCount => Volatile.Read(ref _renderCount);
+
+		protected override void RenderOverride(SKCanvas canvas, Size area)
+		{
+			Interlocked.Increment(ref _renderCount);
+
+			// Paint enough that recording and replaying a frame is not instant, which keeps the
+			// window the invalidating threads are racing against open. Deliberately does not
+			// self-invalidate: that would keep the render loop hot after the test and stop anything
+			// waiting for idle afterwards from ever settling.
+			for (var i = 0; i < 100; i++)
+			{
+				_paint.Color = new SKColor((byte)i, (byte)(255 - i), 0x80);
+				canvas.DrawRect(new SKRect(i % 50, i % 50, (float)area.Width, (float)area.Height), _paint);
+			}
+		}
+	}
+
 	private class BlueFillSKCanvasElement : SKCanvasElement
 	{
 		public bool Rendered { get; private set; }
@@ -190,6 +311,18 @@ public class Given_SKCanvasElement
 			Rendered = true;
 			using var paint = new SKPaint { Color = SKColors.Blue };
 			canvas.DrawRect(new SKRect(0, 0, (float)area.Width, (float)area.Height), paint);
+		}
+	}
+
+	private class HalfBlackSKCanvasElement : SKCanvasElement
+	{
+		public bool Rendered { get; private set; }
+
+		protected override void RenderOverride(SKCanvas canvas, Size area)
+		{
+			Rendered = true;
+			using var paint = new SKPaint { Color = SKColors.Black };
+			canvas.DrawRect(new SKRect(0, 0, 50, (float)area.Height), paint);
 		}
 	}
 

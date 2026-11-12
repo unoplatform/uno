@@ -391,7 +391,7 @@ namespace Microsoft.UI.Xaml
 
 			if (args.TapCount == 1)
 			{
-				that.SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(src, args, that));
+				that.RaiseTappedAfterPointerReleased(src, args);
 			}
 			else // i.e. args.TapCount == 2
 			{
@@ -399,11 +399,32 @@ namespace Microsoft.UI.Xaml
 			}
 		};
 
+		private void RaiseTappedAfterPointerReleased(UIElement src, TappedEventArgs args)
+			=> RaiseAfterPointerReleased(() => SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(src, args, this)));
+
 		private static readonly TypedEventHandler<GestureRecognizer, RightTappedEventArgs> OnRecognizerRightTapped = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
+			// Raise ContextRequested for mouse/pen input after RightTapped.
+			// For touch input, ContextRequested is raised via Holding gesture instead.
+			// This matches WinUI behavior where right-click triggers context menu.
+			// Like WinUI, the content root and the position are resolved before the delayed release, whose handlers might remove the element from the tree.
+			var contextRequestRoot = args.PointerDeviceType is MuxPointerDeviceType.Mouse or MuxPointerDeviceType.Pen
+				? VisualTree.GetContentRootForElement(src)
+				: null;
+
+			// Convert element-relative position to global (app window) coordinates.
+			// args.Position is relative to 'that' (the element with the GestureRecognizer),
+			// but ContextRequestedEventArgs.TryGetPosition expects global coordinates.
+			var contextRequestPosition = contextRequestRoot is null ? default : that.TransformToVisual(null).TransformPoint(args.Position);
+
+			that.RaiseAfterPointerReleased(() => RaiseRightTapped(that, src, args, contextRequestRoot, contextRequestPosition));
+		};
+
+		private static void RaiseRightTapped(UIElement that, UIElement src, RightTappedEventArgs args, ContentRoot contextRequestRoot, Point contextRequestPosition)
+		{
 			var rightTappedArgs = new RightTappedRoutedEventArgs(src, args, that);
 			that.SafeRaiseEvent(RightTappedEvent, rightTappedArgs);
 
@@ -426,27 +447,22 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			// Raise ContextRequested for mouse/pen input after RightTapped.
-			// For touch input, ContextRequested is raised via Holding gesture instead.
-			// This matches WinUI behavior where right-click triggers context menu.
-			var deviceType = args.PointerDeviceType;
-			if (deviceType == MuxPointerDeviceType.Mouse ||
-				deviceType == MuxPointerDeviceType.Pen)
+			contextRequestRoot?.InputManager.ContextMenuProcessor.RaiseContextRequestedEvent(
+				src,
+				contextRequestPosition,
+				isTouchInput: false);
+		}
+
+		private void RaiseAfterPointerReleased(Action raiseGesture)
+		{
+#if UNO_HAS_MANAGED_POINTERS
+			if (XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.TryDeferUntilReleaseBubbled(raiseGesture) is true)
 			{
-				var contentRoot = VisualTree.GetContentRootForElement(src);
-				if (contentRoot != null)
-				{
-					// Convert element-relative position to global (app window) coordinates.
-					// args.Position is relative to 'that' (the element with the GestureRecognizer),
-					// but ContextRequestedEventArgs.TryGetPosition expects global coordinates.
-					var globalPosition = that.TransformToVisual(null).TransformPoint(args.Position);
-					contentRoot.InputManager.ContextMenuProcessor.RaiseContextRequestedEvent(
-						src,
-						globalPosition,
-						isTouchInput: false);
-				}
+				return;
 			}
-		};
+#endif
+			raiseGesture();
+		}
 
 		private static readonly TypedEventHandler<GestureRecognizer, HoldingEventArgs> OnRecognizerHolding = (sender, args) =>
 		{
@@ -515,7 +531,8 @@ namespace Microsoft.UI.Xaml
 		{
 			var recognizer = new GestureRecognizer(this)
 			{
-				PatchCases = WinRTFeatureConfiguration.GestureRecognizer.PatchCasesForUiElement
+				PatchCases = WinRTFeatureConfiguration.GestureRecognizer.PatchCasesForUiElement,
+				SuppressesTapOnHold = WinRTFeatureConfiguration.GestureRecognizer.SuppressTapOnHold
 			};
 
 			// Allow partial parts to subscribe to pointer events (WASM)
@@ -1458,7 +1475,7 @@ namespace Microsoft.UI.Xaml
 		#endregion
 
 		#region Pointer pressed state (Updated by the partial API OnNative***, should not be updated externaly)
-		private readonly HashSet<uint> _pressedPointers = new();
+		private HashSet<uint> _pressedPointers;
 
 		/// <summary>
 		/// Indicates if a pointer was pressed while over the element (i.e. PressedState).
@@ -1471,7 +1488,7 @@ namespace Microsoft.UI.Xaml
 		/// So it means that this flag will be maintained only if you subscribe at least to one pointer event
 		/// (or override one of the OnPointer*** methods).
 		/// </remarks>
-		internal bool IsPointerPressed => _pressedPointers.Count != 0;
+		internal bool IsPointerPressed => _pressedPointers is { Count: > 0 };
 
 		/// <summary>
 		/// Indicates if a pointer was pressed while over the element (i.e. PressedState)
@@ -1490,9 +1507,9 @@ namespace Microsoft.UI.Xaml
 		/// you will get only one 'PointerPressed' and one 'PointerReleased'.
 		/// Same thing if you release left first (press left => press right => release left => release right), and for the pen's barrel button.
 		/// </remarks>
-		internal bool IsPressed(Pointer pointer) => _pressedPointers.Contains(pointer.PointerId);
+		internal bool IsPressed(Pointer pointer) => _pressedPointers?.Contains(pointer.PointerId) ?? false;
 
-		internal bool IsPressed(uint pointerId) => _pressedPointers.Contains(pointerId);
+		internal bool IsPressed(uint pointerId) => _pressedPointers?.Contains(pointerId) ?? false;
 
 		private bool SetPressed(PointerRoutedEventArgs args, bool isPressed, BubblingContext ctx)
 		{
@@ -1515,7 +1532,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (hasNotChanged is false)
 				{
-					_pressedPointers.Add(args.Pointer.PointerId);
+					(_pressedPointers ??= new()).Add(args.Pointer.PointerId);
 				}
 
 				return RaisePointerEvent(PointerPressedEvent, args, ctx);
@@ -1524,14 +1541,14 @@ namespace Microsoft.UI.Xaml
 			{
 				if (hasNotChanged is false)
 				{
-					_pressedPointers.Remove(args.Pointer.PointerId);
+					_pressedPointers?.Remove(args.Pointer.PointerId);
 				}
 
 				return RaisePointerEvent(PointerReleasedEvent, args, ctx);
 			}
 		}
 
-		private void ClearPressed() => _pressedPointers.Clear();
+		private void ClearPressed() => _pressedPointers?.Clear();
 		#endregion
 
 		#region Pointer capture state (Updated by the partial API OnNative***, should not be updated externaly)

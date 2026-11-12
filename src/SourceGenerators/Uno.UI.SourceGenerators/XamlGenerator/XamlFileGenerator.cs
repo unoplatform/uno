@@ -671,10 +671,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						where sym != null
 						from attribute in sym.GetAllAttributes()
 						where SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, apiExtensionAttributeSymbol)
-						select attribute.ConstructorArguments;
+						select (Assembly: sym, Registration: attribute.ConstructorArguments);
 
-			foreach (var registration in query)
+			foreach (var (assembly, registration) in query)
 			{
+				// The registration is emitted into this project's code, which can only name types it can see.
+				if (FindInaccessibleType(registration) is { } inaccessibleType)
+				{
+					_generatorContext.ReportDiagnostic(Diagnostic.Create(
+						XamlCodeGenerationDiagnostics.InaccessibleApiExtensionRule,
+						Location.None,
+						registration.ElementAt(0).Value,
+						assembly.Name,
+						inaccessibleType.ToDisplayString()));
+					continue;
+				}
+
 				if (registration.Length == 2)
 				{
 					writer.AppendLineIndented($"global::Uno.Foundation.Extensibility.ApiExtensibility.Register(typeof(global::{registration.ElementAt(0).Value}), o => new global::{registration.ElementAt(1).Value}(o));");
@@ -705,6 +717,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					throw new InvalidOperationException($"ApiExtensionAttribute should takes 2 to 4 arguments.");
 				}
 			}
+		}
+
+		private ITypeSymbol? FindInaccessibleType(ImmutableArray<TypedConstant> registration)
+		{
+			foreach (var argument in registration)
+			{
+				if (argument.Value is ITypeSymbol type
+					&& !_metadataHelper.Compilation.IsSymbolAccessibleWithin(type, _metadataHelper.Compilation.Assembly))
+				{
+					return type;
+				}
+			}
+
+			return null;
 		}
 
 		private void InitializeRemoteControlClient(IIndentedStringBuilder writer)
@@ -2336,6 +2362,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return null;
 		}
 
+		/// <summary>
+		/// Finds the x:Name or Name of an element, skipping attached properties such as AutomationProperties.Name.
+		/// </summary>
+		private XamlMemberDefinition? FindNameMember(XamlObjectDefinition xamlObjectDefinition)
+		{
+			foreach (var member in xamlObjectDefinition.Members)
+			{
+				if (member.Member.Name == "Name" && !IsAttachedProperty(member))
+				{
+					return member;
+				}
+			}
+
+			return null;
+		}
+
 		private XamlMemberDefinition? FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName, string ns)
 		{
 			foreach (var member in xamlObjectDefinition.Members)
@@ -3631,6 +3673,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									memberGlobalizedType,
 									member.Value,
 									writer.AppliedParameterName);
+
+								// WinUI resolves TargetName when the storyboard begins (VSM tolerates a miss), so a name missing
+								// from this scope gets a runtime-bound subject instead of failing the build.
+								CurrentScope.ReferencedElementNames.Add(member.Value.ToString() ?? "");
 							}
 							else if (
 								member.Member.Name == "TargetName" &&
@@ -4328,6 +4374,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
+						// Binding by name on the host would silently target an unrelated property of the same name.
+						if (declaringType is null
+							&& member.Member.DeclaringType is { } unresolvedOwnerType
+							&& member.Owner is { } hostObject
+							&& FindType(hostObject.Type) is not null
+							&& IsRelevantNamespace(member.Member.PreferredXamlNamespace)
+							&& IsRelevantProperty(member.Member))
+						{
+							GenerateError(
+								writer,
+								$"Property '{unresolvedOwnerType.Name}.{member.Member.Name}' cannot be bound: the type '{unresolvedOwnerType.Name}' could not be found in '{unresolvedOwnerType.PreferredXamlNamespace}'",
+								member);
+						}
+
 						var target = isOwnerDependencyObject ? bindingTarget : $"{bindingTarget}.GetDependencyObjectForXBind()";
 
 						using (writer.Indent($"global::Uno.UI.Xaml.BindingHelper.SetBinding({target},", $"){postfix}"))
@@ -5161,7 +5221,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				if (string.IsNullOrWhiteSpace(memberValue))
 				{
-					throw new XamlGenerationException("The property value is invalid", owner);
+					throw new XamlGenerationException($"The property value is invalid for {memberName} of type {propertyType.Name}", owner);
 				}
 
 				return memberValue!;
@@ -5199,7 +5259,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return GetMemberValue();
 					case SpecialType.System_Single:
 					case SpecialType.System_Double:
-						return GetFloatingPointLiteral(GetMemberValue(), propertyType, owner, owner);
+						// WinUI (CDouble::CreateCValue) parses an empty or whitespace-only value as 0.
+						return string.IsNullOrWhiteSpace(memberValue)
+							? GetFloatingPointLiteral("0", propertyType, owner, owner)
+							: GetFloatingPointLiteral(memberValue!, propertyType, owner, owner);
 					case SpecialType.System_String:
 						return "\"" + DoubleEscape(memberValue) + "\"";
 					case SpecialType.System_Boolean:
@@ -5372,11 +5435,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					if (isTemplateBindingAttachedProperty)
 					{
-						return "@\"(" + memberValue + ")\"";
+						return "\"(" + DoubleEscape(memberValue) + ")\"";
 					}
 					else
 					{
-						return "@\"" + memberValue + "\"";
+						return "\"" + DoubleEscape(memberValue) + "\"";
 					}
 				}
 
@@ -5551,7 +5614,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var targetElement = FindSubElementByName(ownerControl, elementName);
 				if (targetElement != null)
 				{
-					var propertyName = target.Substring(separatorIndex + 1);
+					var propertyName = ParenthesizeBareAttachedProperty(target.Substring(separatorIndex + 1));
 					// Attached properties need to be expanded using the namespace, otherwise the resolution will be
 					// performed at runtime at a higher cost.
 					propertyName = RewriteAttachedPropertyPath(propertyName);
@@ -5575,7 +5638,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Replace("\"", "\\\"")
 				.Replace("\n", "\\n")
 				.Replace("\r", "\\r")
-				.Replace("\t", "\\t");
+				.Replace("\t", "\\t")
+				.Replace("\u0085", "\\u0085")
+				.Replace("\u2028", "\\u2028")
+				.Replace("\u2029", "\\u2029");
 		}
 
 		private static string ParseTimeSpan(string memberValue)
@@ -6034,6 +6100,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				return value;
 			}
+		}
+
+		/// <summary>
+		/// WinUI also accepts an attached property in a setter target without parentheses
+		/// (e.g. <c>ContentRoot.Grid.Column</c>), which the property path syntax would read as a sub-property.
+		/// </summary>
+		private string ParenthesizeBareAttachedProperty(string propertyName)
+		{
+			if (propertyName.IndexOf('(') >= 0)
+			{
+				return propertyName;
+			}
+
+			var parts = propertyName.Split(_dotArray);
+
+			return parts.Length == 2 && FindType(parts[0]) is { } ownerType && IsAttachedProperty(ownerType, parts[1])
+				? "(" + propertyName + ")"
+				: propertyName;
 		}
 
 		private string RewriteAttachedPropertyPath(string value)
@@ -6738,7 +6822,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			foreach (var element in EnumerateSubElements(topLevelControl))
 			{
-				var nameMember = FindMember(element, "Name");
+				var nameMember = FindNameMember(element);
 
 				if (nameMember?.Value is string name)
 				{
@@ -6757,7 +6841,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var list = new List<string>();
 			foreach (var element in EnumerateSubElements(xamlObjectDefinition, stoppingCondition: IsNewScope))
 			{
-				var nameMember = FindMember(element, "Name");
+				var nameMember = FindNameMember(element);
 
 				if (nameMember?.Value is string name)
 				{
@@ -6871,7 +6955,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				|| loadMember?.Value?.ToString()?.ToLowerInvariant() == "false"
 				|| hasLoadMarkup)
 			{
-				var nameMember = FindMember(definition, "Name");
+				var nameMember = FindNameMember(definition);
 				var nameField = nameMember is { Value: string name } ? SanitizeResourceName(name) : null;
 
 				if (loadMember != null && nameMember == null)

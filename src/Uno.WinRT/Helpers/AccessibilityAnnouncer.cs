@@ -1,8 +1,30 @@
-﻿namespace Uno.Helpers;
+﻿#nullable enable
+
+using System;
+
+namespace Uno.Helpers;
 
 internal static partial class AccessibilityAnnouncer
 {
-	internal static IUnoAccessibility AccessibilityImpl { get; set; }
+	private static IUnoAccessibility? _accessibilityImpl;
+
+	internal static IUnoAccessibility? AccessibilityImpl
+	{
+		get => TestAccessibilityImpl ?? _accessibilityImpl;
+		set
+		{
+			if (_accessibilityImpl is not null &&
+				value is not null &&
+				!ReferenceEquals(_accessibilityImpl, value))
+			{
+				throw new InvalidOperationException("AccessibilityImpl should only be set once.");
+			}
+
+			_accessibilityImpl = value;
+		}
+	}
+
+	internal static IUnoAccessibility? TestAccessibilityImpl { get; set; }
 
 	public static void AnnouncePolite(string text)
 	{

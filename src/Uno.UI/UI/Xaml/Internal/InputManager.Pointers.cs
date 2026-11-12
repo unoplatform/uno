@@ -153,6 +153,20 @@ partial class InputManager
 				return;
 			}
 
+#if UNO_HAS_MANAGED_POINTERS
+			if (_pendingRelease is { } pendingRelease)
+			{
+				// The gestures that follow the release (e.g. Tapped) are not raised yet, the PointerManager completes the up once they are.
+				pendingRelease.UnhandledUp ??= args;
+				return;
+			}
+#endif
+
+			CompletePointerUp(args, isHandled, isAfterHandledUp);
+		}
+
+		private PointerEventDispatchResult CompletePointerUp(PointerRoutedEventArgs args, bool isHandled, bool isAfterHandledUp)
+		{
 			// Uno specific: To ensure focus is properly lost when clicking "outside" the app's content,
 			// we set focus here. In the case of UWP, the focus is set to the root ScrollViewer instead,
 			// but Uno does not have it on all targets yet.
@@ -168,12 +182,14 @@ partial class InputManager
 				uiElement.Unfocus();
 			}
 
-			ReleaseCaptures(args.Reset(canBubbleNatively: false));
+			var result = ReleaseCaptures(args.Reset(canBubbleNatively: false));
 
 			// At the end of our "up" processing, we reset the flag to make sure that the native handler (iOS, Android and WASM)
 			// won't try to sent it to us again (if not already the case ^^).
 			// (This could be the case if the args was flagged as handled in the ReleaseCaptures call above, like in RatingControl).
 			args.Handled = isAfterHandledUp;
+
+			return result;
 		}
 
 		// As focus event are either async or cancellable,

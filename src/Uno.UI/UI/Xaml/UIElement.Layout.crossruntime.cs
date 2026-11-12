@@ -449,6 +449,10 @@ namespace Microsoft.UI.Xaml
 					LayoutArrangeCoreCount++;
 					ArrangeCore(finalRect);
 
+					// WinUI calls InvalidateViewport() here (CUIElement::ArrangeInternal) and walks it after layout.
+					// Uno propagates eagerly, so it must run after ArrangeCore has set the new layout slot.
+					OnViewportUpdated();
+
 					SetLayoutFlags(LayoutFlag.FirstArrangeDone);
 
 					break;

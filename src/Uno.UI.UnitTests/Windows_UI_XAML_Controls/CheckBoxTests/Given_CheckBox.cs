@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.CheckBoxTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_CheckBox
 	{
 		[TestMethod]

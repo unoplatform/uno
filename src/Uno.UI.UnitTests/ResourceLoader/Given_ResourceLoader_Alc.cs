@@ -23,7 +23,7 @@ namespace Uno.UI.Tests.ResourceLoaderTests;
 /// context after unload. <see cref="_ResourceLoader.ClearNonDefaultAlcAssemblies"/> (invoked from
 /// the ALC cleanup hook) removes those non-default-ALC assemblies while keeping default-ALC ones.
 /// </summary>
-[TestClass]
+[UITestClass]
 public class Given_ResourceLoader_Alc
 {
 	[TestMethod]

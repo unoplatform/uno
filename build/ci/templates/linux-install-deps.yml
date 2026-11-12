@@ -48,17 +48,27 @@ steps:
         exit 0
       fi
 
-      echo "##vso[task.logissue type=warning]Install from the pre-baked indexes failed; refreshing them and retrying once"
+      echo "##vso[task.logissue type=warning]Install from the pre-baked indexes failed; refreshing them from archive.ubuntu.com and retrying once"
 
       # A timeout-killed apt can leave dpkg half-configured, which would then break this install
       # and, in the WebAssembly job, the Chrome install that follows.
       sudo dpkg --configure -a || true
 
+      # The hosted images read their mirror from this list, Azure's first. apt only moves down the list when a
+      # connection fails, not when a download stalls, so retrying through Azure stalls again: put the main archive first.
+      mirrors=/etc/apt/apt-mirrors.txt
+      if [ -f "$mirrors" ]; then
+        echo "Mirror list was: $(tr '\n\t' '; ' < "$mirrors")"
+        printf '%s\tpriority:1\n%s\tpriority:2\n%s\tpriority:3\n' \
+          https://archive.ubuntu.com/ubuntu/ http://azure.archive.ubuntu.com/ubuntu/ https://security.ubuntu.com/ubuntu/ \
+          | sudo tee "$mirrors" > /dev/null
+      fi
+
       if sudo timeout --kill-after=30s 3m apt-get update $apt_opts && sudo timeout --kill-after=30s 5m apt-get install -y $apt_opts $missing; then
         exit 0
       fi
 
-      echo "##vso[task.logissue type=error]UNOBLD004: Could not install the Linux dependencies within the time budget. The Ubuntu package mirror is most likely not responding -- this is an infrastructure failure, not a code failure."
+      echo "##vso[task.logissue type=error]UNOBLD004: Could not install the Linux dependencies within the time budget from either Ubuntu mirror. This is an infrastructure failure, not a code failure."
       exit 1
     displayName: Install Linux dependencies
     # 6m + 3m + 5m = 14m of apt budget, with this as the hard backstop.

@@ -1,5 +1,6 @@
 ﻿#if __SKIA__
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI;
@@ -97,11 +98,13 @@ public class Given_CompositionTarget
 			var entry = frameData[0];
 			Assert.IsNotNull(entry.Window, "Each entry should name the window the frame belongs to.");
 			// Skia hands out its own SKPicture; a backend with nothing to expose hands out null.
+#if UNO_DRAWING_SKIA
 			if (RuntimeTestsBackendHelper.CurrentBackend == RuntimeTestBackends.Skia)
 			{
 				Assert.IsInstanceOfType(entry.Data, typeof(SkiaSharp.SKPicture), "The Skia backend should expose the recorded frame as an SKPicture.");
 			}
 			else
+#endif
 			{
 				Assert.IsNull(entry.Data, "A backend with no native recording type should expose null.");
 			}
@@ -252,6 +255,37 @@ public class Given_CompositionTarget
 
 		Assert.IsTrue(frames >= 5, $"a silent driver must keep the frame chain alive, got {frames} frames");
 		Assert.IsTrue(ticks >= frames - 2 && ticks <= frames + 2, $"a driver must tick once per frame, got {ticks} ticks for {frames} frames");
+	}
+
+	/// <summary>
+	/// Virtual framebuffers usually can't wait for vsync. Frames must still be paced, or animations tick as fast
+	/// as the CPU renders (a 10 ms scroll animation then raises several ViewChanged events instead of one or two).
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaFrameBuffer)]
+	public async Task When_FrameBuffer_Renders_Continuously_Then_Frames_Are_Paced()
+	{
+		var border = new Border { Width = 50, Height = 50, Background = new SolidColorBrush(Colors.Red) };
+		await UITestHelper.Load(border);
+
+		var target = (CompositionTarget)border.Visual.CompositionTarget!;
+		var ticks = 0;
+		EventHandler<long> driver = (_, _) => ticks++;
+
+		target.FrameStarting += driver;
+		try
+		{
+			await Task.Delay(TimeSpan.FromSeconds(1));
+		}
+		finally
+		{
+			target.FrameStarting -= driver;
+		}
+
+		Assert.IsTrue(ticks >= 5, $"the frame driver should keep ticking, got {ticks} ticks");
+		// 60 fps plus slack for timer jitter.
+		Assert.IsTrue(ticks <= 75, $"frames should be paced to about 60 fps, got {ticks} ticks in one second");
 	}
 
 	/// <summary>
@@ -622,6 +656,65 @@ public class Given_CompositionTarget
 		}
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Frames_Presented_Then_Sequences_Advance()
+	{
+		var border = new Border { Width = 50, Height = 50, Background = new SolidColorBrush(Colors.Red) };
+		await UITestHelper.Load(border);
+
+		var target = (CompositionTarget)border.Visual.CompositionTarget!;
+		List<FramePresentedInfo> presented = new();
+		EventHandler<FramePresentedInfo> onPresented = (_, info) =>
+		{
+			// Raised on the presenting thread.
+			lock (presented)
+			{
+				presented.Add(info);
+			}
+		};
+
+		target.FramePresented += onPresented;
+		var recordedBefore = target.LastRecordedSequence;
+		var colors = new[] { Colors.Blue, Colors.Green, Colors.Yellow, Colors.Red };
+		try
+		{
+			foreach (var color in colors)
+			{
+				var previous = target.LastRecordedSequence;
+				border.Background = new SolidColorBrush(color);
+				await TestServices.WindowHelper.WaitFor(() =>
+				{
+					lock (presented)
+					{
+						return presented.Count > 0 && presented[^1].Sequence > previous;
+					}
+				}, timeoutMS: 5000, message: "each change should present a newly recorded frame");
+			}
+		}
+		finally
+		{
+			target.FramePresented -= onPresented;
+		}
+
+		FramePresentedInfo[] snapshot;
+		lock (presented)
+		{
+			snapshot = presented.ToArray();
+		}
+
+		Assert.IsTrue(snapshot.Select(p => p.Sequence).Distinct().Count() >= colors.Length, $"each change should present a newly recorded frame, got {string.Join(",", snapshot.Select(p => p.Sequence))}");
+		// A frame the render thread was already drawing is presented after subscribing, and newer frames may have
+		// been recorded meanwhile (Android). Every later present takes a frame recorded no earlier than that.
+		Assert.IsTrue(snapshot.Length < 2 || snapshot[1].Sequence >= recordedBefore, $"only the frame in flight when subscribing may predate {recordedBefore}, got {string.Join(",", snapshot.Select(p => p.Sequence))}");
+		for (var i = 1; i < snapshot.Length; i++)
+		{
+			// A re-present repeats the previous sequence; it never goes back to an older frame.
+			Assert.IsTrue(snapshot[i].Sequence >= snapshot[i - 1].Sequence, $"sequence went backwards at {i}: {snapshot[i - 1].Sequence} -> {snapshot[i].Sequence}");
+			Assert.IsTrue(snapshot[i].Timestamp >= snapshot[i - 1].Timestamp, $"timestamp went backwards at {i}");
+		}
+	}
+
 	private static async Task<(int Ticks, int Frames)> CountDriverTicks(CompositionTarget target, EventHandler<long> driver)
 	{
 		var ticks = 0;
@@ -646,6 +739,53 @@ public class Given_CompositionTarget
 		}
 
 		return (ticks, frames);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_Content_Changes_While_Minimized_Then_Restore_Presents_It()
+	{
+		// Skia-on-Metal presents into a minimized window's layer, which keeps that content when restored. WebGPU gets an
+		// Occluded surface instead and presents nothing, so its frame has to be retried once the window shows.
+		if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is not ("1" or "true" or "neutral" or "swapchain"))
+		{
+			Assert.Inconclusive("Only WebGPU skips the present of a hidden window.");
+		}
+
+		var text = new TextBlock { Text = "Before" };
+		var window = new Window { Content = new Border { Child = text } };
+		var activated = false;
+		window.Activated += (_, _) => activated = true;
+		window.Activate();
+		await TestServices.WindowHelper.WaitFor(() => activated);
+		await TestServices.WindowHelper.WaitForLoaded(text);
+
+		var presenter = (Microsoft.UI.Windowing.OverlappedPresenter)window.AppWindow.Presenter;
+		var target = (CompositionTarget)text.Visual.CompositionTarget!;
+		var presentedSinceRestore = 0;
+		EventHandler<FramePresentedInfo> onPresented = (_, _) => presentedSinceRestore++;
+		try
+		{
+			presenter.Minimize();
+			await TestServices.WindowHelper.WaitFor(() => presenter.State == Microsoft.UI.Windowing.OverlappedPresenterState.Minimized);
+			await Task.Delay(1000);
+
+			// The frame for this change is made while the window is hidden, so it cannot reach the screen.
+			text.Text = "After";
+			await Task.Delay(1000);
+
+			target.FramePresented += onPresented;
+			presenter.Restore();
+
+			// Nothing changes after the restore, so only a retried frame can show the new text.
+			await TestServices.WindowHelper.WaitFor(() => presentedSinceRestore > 0, 5000, "The frame made while the window was hidden was never presented.");
+		}
+		finally
+		{
+			target.FramePresented -= onPresented;
+			window.Close();
+		}
 	}
 }
 #endif

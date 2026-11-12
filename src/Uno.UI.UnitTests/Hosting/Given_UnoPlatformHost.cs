@@ -5,7 +5,7 @@ using Uno.UI.Hosting;
 
 namespace Uno.UI.Tests.Hosting
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_UnoPlatformHost
 	{
 		[TestMethod]

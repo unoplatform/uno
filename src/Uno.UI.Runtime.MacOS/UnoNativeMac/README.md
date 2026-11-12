@@ -10,6 +10,5 @@ xcodebuild
 
 and the `build/Release/` directory will contain:
 
-* `libSkiaSharp.dylib`
 * `libUnoNativeMac.dylib`
 * `libUnoNativeMac.dylib.dSYM` - the debugging symbols

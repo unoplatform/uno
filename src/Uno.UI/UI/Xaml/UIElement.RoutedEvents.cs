@@ -198,8 +198,9 @@ namespace Microsoft.UI.Xaml
 			internal bool HandledEventsToo { get; }
 		}
 
-		private readonly Dictionary<RoutedEvent, List<RoutedEventHandlerInfo>> _eventHandlerStore
-			= new Dictionary<RoutedEvent, List<RoutedEventHandlerInfo>>();
+		// Created on first subscription: most elements never add a routed-event handler, and an absent
+		// store reads identically to an empty one at every consumer.
+		private Dictionary<RoutedEvent, List<RoutedEventHandlerInfo>> _eventHandlerStore;
 
 		public event RoutedEventHandler LostFocus
 		{
@@ -443,7 +444,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private protected void InsertHandler(RoutedEvent routedEvent, object handler, bool handledEventsToo = false)
 		{
-			var handlers = _eventHandlerStore.FindOrCreate(routedEvent, () => new List<RoutedEventHandlerInfo>());
+			var handlers = (_eventHandlerStore ??= new()).FindOrCreate(routedEvent, () => new List<RoutedEventHandlerInfo>());
 			if (handlers.Count > 0)
 			{
 				handlers.Insert(0, new RoutedEventHandlerInfo(handler, handledEventsToo));
@@ -458,7 +459,7 @@ namespace Microsoft.UI.Xaml
 
 		public void AddHandler(RoutedEvent routedEvent, object handler, bool handledEventsToo)
 		{
-			var handlers = _eventHandlerStore.FindOrCreate(routedEvent, () => new List<RoutedEventHandlerInfo>());
+			var handlers = (_eventHandlerStore ??= new()).FindOrCreate(routedEvent, () => new List<RoutedEventHandlerInfo>());
 			handlers.Add(new RoutedEventHandlerInfo(handler, handledEventsToo));
 
 			AddHandler(routedEvent, handlers.Count, handler, handledEventsToo);
@@ -506,7 +507,7 @@ namespace Microsoft.UI.Xaml
 
 		public void RemoveHandler(RoutedEvent routedEvent, object handler)
 		{
-			if (_eventHandlerStore.TryGetValue(routedEvent, out var handlers))
+			if (_eventHandlerStore is { } store && store.TryGetValue(routedEvent, out var handlers))
 			{
 				var matchingHandler = handlers.FirstOrDefault(handlerInfo => (handlerInfo.Handler as Delegate).Equals(handler as Delegate));
 
@@ -564,7 +565,7 @@ namespace Microsoft.UI.Xaml
 		partial void RemoveContextMenuHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
 
 		private int CountHandler(RoutedEvent routedEvent)
-			=> _eventHandlerStore.TryGetValue(routedEvent, out var handlers)
+			=> _eventHandlerStore is { } store && store.TryGetValue(routedEvent, out var handlers)
 				? handlers.Count
 				: 0;
 
@@ -639,7 +640,7 @@ namespace Microsoft.UI.Xaml
 			if (!ctx.ModeHasFlag(BubblingMode.IgnoreElement)
 				&& !ctx.IsInternal
 				&& !ctx.IsCleanup
-				&& _eventHandlerStore.TryGetValue(routedEvent, out var handlers)
+				&& _eventHandlerStore is { } store && store.TryGetValue(routedEvent, out var handlers)
 				&& handlers is { Count: > 0 })
 			{
 				// [4] Invoke local handlers
@@ -732,7 +733,7 @@ namespace Microsoft.UI.Xaml
 					break;
 				}
 
-				if (parent._eventHandlerStore.TryGetValue(routedEvent, out var handlers))
+				if (parent._eventHandlerStore is { } parentStore && parentStore.TryGetValue(routedEvent, out var handlers))
 				{
 					foreach (var handler in handlers.ToArray())
 					{

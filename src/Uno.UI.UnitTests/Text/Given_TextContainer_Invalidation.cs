@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.Text
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_TextContainer_Invalidation
 	{
 		private static InlineCollection HostedInlines(params Inline[] inlines)
@@ -42,6 +42,32 @@ namespace Uno.UI.Tests.Text
 
 			rtb.Blocks.GetPositionCount(out var after);
 			Assert.AreEqual(12u, after); // paragraph.Inlines = 2 + (2 + (2+2) + (2+2))
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+		public void When_Batched_Inline_Replacement_Invalidates_Ancestor_Caches()
+		{
+			var span = new Span();
+			span.Inlines.Add(new Run { Text = "AB" });
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(span);
+			var block = new RichTextBlock();
+			block.Blocks.Add(paragraph);
+
+			block.Blocks.GetPositionCount(out var before);
+			Assert.AreEqual(8u, before);
+			paragraph.Inlines.GetPositionCount(out _);
+			span.Inlines.GetPositionCount(out _);
+
+			var replacement = new Run { Text = "ABCDEF" };
+			span.Inlines.ReplaceRange(0, 1, new[] { replacement }, "ABCDEF", updateText: true);
+
+			block.Blocks.GetPositionCount(out var after);
+			Assert.AreEqual(12u, after);
+			block.Blocks.GetRun(3, out _, out _, out _, out var nested, out var characters, out _);
+			Assert.AreSame(replacement, nested);
+			Assert.AreEqual("ABCDEF", characters.ToString());
 		}
 
 		[TestMethod]

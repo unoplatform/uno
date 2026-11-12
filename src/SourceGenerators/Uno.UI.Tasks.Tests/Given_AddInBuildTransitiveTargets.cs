@@ -1,10 +1,9 @@
-﻿using System.Diagnostics;
-using AwesomeAssertions;
+﻿using AwesomeAssertions;
 
 namespace Uno.UI.Tasks.Tests;
 
 /// <summary>
-/// The add-ins' buildTransitive targets reach every consumer (Lottie is referenced implicitly by Uno.Sdk), yet
+/// The add-ins' buildTransitive targets reach every consumer (Svg is referenced implicitly by the Uno.Sdk), yet
 /// nothing in the repository imports them, so a condition MSBuild cannot parse only surfaces in app builds.
 /// </summary>
 [TestClass]
@@ -27,10 +26,6 @@ public class Given_AddInBuildTransitiveTargets
 	}
 
 	[TestMethod]
-	[DataRow("Lottie", "net10.0", "true")]
-	[DataRow("Lottie", "net10.0-desktop", "true")]
-	[DataRow("Lottie", "net10.0-android", "false")]
-	[DataRow("Lottie", "net10.0-browserwasm", "false")]
 	[DataRow("Svg", "net10.0", "true")]
 	[DataRow("Svg", "net10.0-desktop", "true")]
 	[DataRow("Svg", "net10.0-ios", "false")]
@@ -62,29 +57,13 @@ public class Given_AddInBuildTransitiveTargets
 				</Project>
 				""");
 
-			var startInfo = new ProcessStartInfo("dotnet")
-			{
-				RedirectStandardOutput = true,
-				RedirectStandardError = true,
-				UseShellExecute = false,
-				WorkingDirectory = directory,
-			};
-			foreach (var argument in new[] { "msbuild", projectPath, "-nologo", "-nodeReuse:false", $"-getProperty:{property}" })
-			{
-				startInfo.ArgumentList.Add(argument);
-			}
-			startInfo.Environment["MSBUILDDISABLENODEREUSE"] = "1";
+			var result = DotnetMSBuild.Run(directory, [projectPath, $"-getProperty:{property}"]);
 
-			using var process = Process.Start(startInfo)!;
-			var stdout = process.StandardOutput.ReadToEndAsync();
-			var stderr = process.StandardError.ReadToEndAsync();
-			process.WaitForExit();
-
-			return (process.ExitCode, stdout.Result + stderr.Result);
+			return (result.ExitCode, result.Output);
 		}
 		finally
 		{
-			Directory.Delete(directory, recursive: true);
+			DotnetMSBuild.TryDeleteDirectory(directory);
 		}
 	}
 }

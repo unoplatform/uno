@@ -60,6 +60,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	internal IDrawingFactory GraphicsFactory { get; private set; } = null!;
 	private FrameworkElement? _frameThemeSource;
 
+	// The window's CompositionTarget reads this when it first needs a backend, so it never records under
+	// one and presents under another.
+	IDrawingFactory? IXamlRootHost.Renderer => _renderer;
+
 	private Win32Accessibility? _accessibility;
 	private bool _rendererDisposed;
 	private bool _forcePaintOnNextEraseBkgndOrNcPaint = true;
@@ -168,6 +172,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	}
 
 	private void OnSystemThemeChanged(object? _, EventArgs __) => UpdateFrameTheme();
+
+	private bool _canRevealBackdrop = true;
+	private HMONITOR _backdropMonitor;
 
 	private void OnContentActualThemeChanged(FrameworkElement sender, object args) => UpdateFrameTheme();
 
@@ -315,16 +322,25 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			case PInvoke.WM_DPICHANGED:
 				OnWmDpiChanged(wParam, lParam);
 				return new LRESULT(0);
+			case PInvoke.WM_DISPLAYCHANGE:
+				UpdateDisplayInfo();
+				UpdateCanRevealBackdrop(displaysChanged: true);
+				// An idle window otherwise keeps its out-of-date swapchain until something else asks for a frame.
+				_renderThread?.SignalNewFrame();
+				break;
 			case PInvoke.WM_SIZE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_SIZE)} message.");
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
 				UpdateWindowState(wParam);
+				// The largest overlap decides the window's monitor, so a resize can change it without a WM_MOVE.
+				UpdateCanRevealBackdrop();
 				return new LRESULT(0);
 			case PInvoke.WM_MOVE:
 				this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_MOVE)} message.");
 				UpdateDisplayInfo();
 				OnWindowSizeOrLocationChanged();
+				UpdateCanRevealBackdrop();
 				// No present here: the DWM backing surface survives the move, and the OS
 				// invalidates any region needing repaint via WM_PAINT.
 				return new LRESULT(0);
@@ -456,7 +472,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			OnWindowSizeOrLocationChanged(); // In case the window size has changed but WM_SIZE is not fired yet. This happens specifically if the window is starting maximized using _pendingState
 			XamlRoot!.VisualTree.RootElement.UpdateLayout(); // relayout in response to the new window size
 		}
-		// Force an early SKPicture record so the render thread has fresh content to present.
+		// Force an early SKPicture record so the render thread has fresh content to present. The target resolves
+		// its backend from this host on the way in, so the frame is recorded under the backend that presents it.
 		(XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
 		// Signal the render thread and wait briefly for the present to land.
 		// Bounded so an unresponsive GPU does not stall WM_SIZE / WM_MOVE / ShowCore.
@@ -571,7 +588,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// and disposing the context first would destroy the device out from under them. Safe even though
 		// DrawingFactory.Current may still point here -- Dispose frees only the GPU contexts, and everything
 		// reached through Current (recordings, textures, offscreens) is CPU-side.
-		(_renderer as IDisposable)?.Dispose();
+		// On Vulkan every window shares one device and queue, and the GRContext's teardown waits on that queue, so it
+		// runs under the device lock like the other windows' frames.
+		using (_context is Win32VulkanGraphicsContext vulkan ? vulkan.LockDevice() : null)
+		{
+			(_renderer as IDisposable)?.Dispose();
+		}
 		_context.Dispose();
 		_rendererDisposed = true;
 		if (_frameThemeSource is not null)
@@ -605,8 +627,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		{
 			return true;
 		}
-		// Closing should continue, perform suspension.
-		Application.Current.RaiseSuspending();
 		// DefWindowProc destroys the window from here.
 		StopRenderThread();
 		return false;
@@ -769,6 +789,39 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}
 
+	public override PointInt32 ConvertLocalToScreen(Windows.Foundation.Point localPoint)
+		=> TryConvertLocalToScreen(localPoint, out var screenPoint)
+			? screenPoint
+			: base.ConvertLocalToScreen(localPoint);
+
+	public override bool TryConvertLocalToScreen(Windows.Foundation.Point localPoint, out PointInt32 screenPoint)
+	{
+		var scale = RasterizationScale == 0 ? 1 : RasterizationScale;
+		var point = new Point((int)Math.Round(localPoint.X * scale), (int)Math.Round(localPoint.Y * scale));
+		var success = PInvoke.ClientToScreen(_hwnd, ref point);
+		screenPoint = success ? new PointInt32(point.X, point.Y) : default;
+		return success;
+	}
+
+	public override Windows.Foundation.Point ConvertScreenToLocal(PointInt32 screenPoint)
+		=> TryConvertScreenToLocal(screenPoint, out var localPoint)
+			? localPoint
+			: base.ConvertScreenToLocal(screenPoint);
+
+	public override bool TryConvertScreenToLocal(PointInt32 screenPoint, out Windows.Foundation.Point localPoint)
+	{
+		var point = new Point(screenPoint.X, screenPoint.Y);
+		if (!PInvoke.ScreenToClient(_hwnd, ref point))
+		{
+			localPoint = default;
+			return false;
+		}
+
+		var scale = RasterizationScale == 0 ? 1 : RasterizationScale;
+		localPoint = new Windows.Foundation.Point(point.X / scale, point.Y / scale);
+		return true;
+	}
+
 	private unsafe void UpdateWindowPropertiesFromPackage()
 	{
 		if (Windows.ApplicationModel.Package.Current.Logo is { } uri)
@@ -913,6 +966,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// Router owns the framework's single-slot registrations; per-window
 		// Win32Accessibility instances fan out via the router.
 		AccessibilityRouter.EnsureInitialized();
+		AccessibilityRouter.EnsureTreeNotifications();
 
 		// Defer instance creation until the root element is available.
 		// The root element may not be set yet at construction time.
@@ -949,7 +1003,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		_accessibility = new Win32Accessibility(_hwnd.Value, rootElement, rootElement.DispatcherQueue);
 	}
 
-	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
+	public SkiaAccessibilityBase? Accessibility => _accessibility;
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
 
@@ -995,7 +1049,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	/// onto <c>DWMWA_SYSTEMBACKDROP_TYPE</c>, and that attribute needs Windows 11 build 22621.
 	/// </remarks>
 	public override bool IsSystemBackdropSupported(Microsoft.UI.Xaml.Media.SystemBackdrop backdrop)
-		=> backdrop switch
+		=> _canRevealBackdrop && backdrop switch
 		{
 			Microsoft.UI.Xaml.Media.MicaBackdrop
 				=> Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported(),
@@ -1003,6 +1057,36 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 				=> Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.IsSupported(),
 			_ => false,
 		};
+
+	/// <summary>
+	/// Every window shares one Vulkan device, so a window can end up on a display another adapter drives: the app was
+	/// assigned another GPU, the window was dragged across, or its screen was unplugged. That swapchain loses the alpha
+	/// DWM needs, so the window paints its fallback rather than black until it's back on the device's adapter.
+	/// </summary>
+	private void UpdateCanRevealBackdrop(bool displaysChanged = false)
+	{
+		if (_window?.SystemBackdrop is null)
+		{
+			return;
+		}
+
+		var monitor = PInvoke.MonitorFromWindow(_hwnd, MONITOR_FROM_FLAGS.MONITOR_DEFAULTTONEAREST);
+		if (!displaysChanged && monitor == _backdropMonitor)
+		{
+			return;
+		}
+
+		_backdropMonitor = monitor;
+
+		var canReveal = _context is not Win32VulkanGraphicsContext vulkan || vulkan.PresentsDirectlyTo(_hwnd);
+		if (canReveal != _canRevealBackdrop)
+		{
+			_canRevealBackdrop = canReveal;
+			this.LogInfo()?.Info($"The window's display {(canReveal ? "is" : "is not")} driven by the adapter rendering it, so its system backdrop {(canReveal ? "shows" : "falls back to the window background")}.");
+			UpdateClientAreaExtension();
+			_window.RefreshSystemBackdropSupport();
+		}
+	}
 
 	public override unsafe void SetSystemBackdrop(Microsoft.UI.Xaml.Media.SystemBackdrop? backdrop)
 	{
@@ -1053,6 +1137,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// area ("sheet of glass" MARGINS {-1,-1,-1,-1}) so the transparent client pixels reveal the
 		// material instead of black; otherwise it restores the title-bar/border configuration. Keeping
 		// this in the presenter avoids fighting it over the frame margins and corner preference.
+		UpdateCanRevealBackdrop(displaysChanged: true);
 		UpdateFrameTheme();
 		UpdateClientAreaExtension();
 	}

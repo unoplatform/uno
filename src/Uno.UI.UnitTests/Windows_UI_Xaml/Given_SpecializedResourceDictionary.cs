@@ -4,7 +4,7 @@ using ResourceKey = Microsoft.UI.Xaml.SpecializedResourceDictionary.ResourceKey;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_SpecializedResourceDictionary
 	{
 		[TestInitialize]

@@ -71,43 +71,7 @@ cd src/SolutionTemplate
 
 if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
 {
-    ## Configurations are split to work around UWP not building with .NET new
-    $dotnetBuildConfigurations =
-    @(
-        @("Skia.Linux.FrameBuffer", "", "")
-    )
-
-    $dotnetBuildNet6Configurations =
-    @(
-        @("Server", "", ""),
-        @("Skia.Linux.FrameBuffer", "", "")
-    )
-
-    # WinUI - Default
-    pushd UnoAppWinUI
-    for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
-    {
-        $platform=$dotnetBuildNet6Configurations[$i][0];
-        & dotnet build -c Debug $default $dotnetBuildNet6Configurations[$i][1] $dotnetBuildNet6Configurations[$i][2] "UnoAppWinUI.$platform\UnoAppWinUI.$platform.csproj" -bl:../binlogs/UnoAppWinUI.$platform/debug/$i/msbuild.binlog
-        Assert-ExitCodeIsZero
-    }
-
-    if ($IsWindows) 
-    {
-        # Server project build (merge with above loop when .App folder is removed)
-        & dotnet build -c Debug $default "UnoAppWinUI.Server\UnoAppWinUI.Server.csproj"
-
-        # Build with msbuild because of https://github.com/microsoft/WindowsAppSDK/issues/1652
-        # force targetframeworks until we can get WinAppSDK to build with `dotnet build`
-        & $msbuild $debug "/p:Platform=x86" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj" "/p:TargetFrameworks=net11.0-windows10.0.19041;TargetFramework=net11.0-windows10.0.19041" "/bl:../binlogs/UnoAppWinUI.Windows/debug/$i/msbuild.binlog"
-        Assert-ExitCodeIsZero
-    }
-
-    CleanupTree
-
-    popd
-
-    if ($IsWindows) 
+    if ($IsWindows)
     {
         # Uno Library
         # Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
@@ -121,15 +85,6 @@ if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
 
         & $msbuild "@build.rsp"
         Assert-ExitCodeIsZero
-
-        if (!$IsWindows)
-        {
-            # disabled on windows until android 35 is supported in the installed VS instance
-
-            # Uno Cross-Runtime Library
-            & $msbuild $debug /t:Pack MyCrossRuntimeLib\MyCrossRuntimeLib.sln -bl:binlogs/MyCrossRuntimeLib/msbuild.binlog
-            Assert-ExitCodeIsZero
-        }
 
         #
         # Uno Library with assets, Validate assets count
@@ -252,17 +207,16 @@ $projects =
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=WebGpu"), @("NetCore"),
         @(), @(), @("webgpu.dll"), @("Uno.UI.Composition.Skia.dll", "SkiaSharp.dll", "libSkiaSharp.dll")),
 
-    # Lottie and SVG draw through SkiaSharp add-ins over a neutral seam that Uno.WinUI also implements without
-    # SkiaSharp, so both need a Skia renderer to draw with. Lottie rides along with it (pure managed, small);
-    # SVG keeps its own feature. Without Skia, neither add-in ships and the managed engine serves the seam.
+    # Skottie comes with the Skia backend; SVG draws through a SkiaSharp add-in behind its own feature. Without
+    # Skia, neither ships and the managed engines serve the Lottie and SVG seams.
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia"), @("NetCore"),
-        @(), @(), @("Uno.UI.Lottie.dll", "SkiaSharp.Skottie.dll"), @("Uno.UI.Svg.dll")),
+        @(), @(), @("SkiaSharp.Skottie.dll"), @("Uno.UI.Svg.dll")),
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Svg"), @("NetCore"),
         @(), @(), @("Uno.UI.Svg.dll"), @()),
 
-    # No Skia renderer: nothing for either add-in to draw with, even when the feature asks for it.
+    # No Skia renderer: nothing for the SVG add-in to draw with, even when the feature asks for it.
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=WebGpu%3BSvg"), @("NetCore"),
-        @(), @(), @("webgpu.dll"), @("Uno.UI.Lottie.dll", "Uno.UI.Svg.dll", "SkiaSharp.Skottie.dll")),
+        @(), @(), @("webgpu.dll"), @("Uno.UI.Svg.dll", "SkiaSharp.Skottie.dll")),
 
     # 5.6 net-current runtime folder validation
     @(3, "5.6/uno56netcurrent/uno56netcurrent/uno56netcurrent.csproj", @(), @("macOS", "NetCore")),
@@ -282,6 +236,8 @@ $projects =
     @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @("-f", "net11.0-android"), @("macOS", "NetCore")),
     @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @("-f", "net11.0-ios"), @("macOS", "NetCore")),
     @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @("-p:Platform=x64", "-p:TargetFramework=net11.0-windows10.0.26100"), @()),
+    # An explicit WindowsSdkPackageVersion wins over the Uno.Sdk default minimum revision (NETSDK1230 without it, #26174)
+    @(3, "5.6/uno56droidioswasmskia/uno56droidioswasmskia/uno56droidioswasmskia.csproj", @("-p:Platform=x64", "-p:TargetFramework=net11.0-windows10.0.26100", "-p:WindowsSdkPackageVersion=10.0.26100.87"), @()),
 
     # Ensure that build can happen even if a RID is specified
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0"), @("macOS", "NetCore")),
@@ -295,6 +251,10 @@ $projects =
         @(), @(), @("libSkiaSharp.dll"), @("webgpu.dll")),
     @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0-desktop", "-p:UnoFeaturesOverride=Skia%3BWebGpu", "-p:CustomBeforeMicrosoftCommonTargets=$env:BUILD_SOURCESDIRECTORY\build\test-scripts\webgpu-probe\InjectProbe.targets", "-p:UnoWebGpuProbeProject=uno53lib"), @("NetCore"),
         @(), @(), @("webgpu.dll", "libSkiaSharp.dll"), @()),
+
+    # The library names no renderer, so it brings no Skia package to a head that renders with WebGPU only.
+    @(4, "5.3/uno53AppWithLib/uno53AppWithLib/uno53AppWithLib.csproj", @("-f", "net11.0-desktop", "-p:UnoHeadFeaturesOverride=WebGpu"), @("NetCore"),
+        @(), @(), @("webgpu.dll"), @("Uno.UI.Composition.Skia.dll", "Uno.WinUI.Graphics2DSK.dll", "SkiaSharp.dll", "libSkiaSharp.dll")),
 
     ## Note for contributors
     ##
@@ -355,7 +315,6 @@ for($i = 0; $i -lt $projects.Length; $i++)
 
     # Disable most costly features to speed up the build
     $extraArgs=@(
-        "-p:RunAOTCompilation=false",
         "-p:MtouchUseLlvm=false",
         "-p:MtouchLink=none",
         "-p:WasmShellILLinkerEnabled=false",

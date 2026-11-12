@@ -29,15 +29,22 @@ internal static class Win32Helper
 
 	public static unsafe string GetErrorMessage(uint errorCode)
 	{
-		IntPtr* messagePtr = stackalloc IntPtr[1];
+		var message = IntPtr.Zero;
 		var messageLength = PInvoke.FormatMessage(
 			FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_IGNORE_INSERTS,
 			default,
 			errorCode,
 			0,
-			new PWSTR((char*)messagePtr),
+			new PWSTR((char*)&message),
 			0);
-		var message = *messagePtr;
+
+		// The system has no text for some codes, such as those a GPU driver returns from wglMakeCurrent. This only
+		// builds a log message, so it must not throw: a failure here would replace the error it describes.
+		if (messageLength == 0 || message == IntPtr.Zero)
+		{
+			return $"Unknown error 0x{errorCode:X8}";
+		}
+
 		using var messageDisposable = new DisposableStruct<IntPtr>(static m => PInvoke.LocalFree(new HLOCAL(m.ToPointer())), message);
 		return Marshal.PtrToStringUni(message, (int)messageLength);
 	}
@@ -121,7 +128,7 @@ internal static class Win32Helper
 		{
 			if (shouldFree?.Invoke() ?? true)
 			{
-				var success = PInvoke.GlobalFree(handle) != IntPtr.Zero;
+				var success = PInvoke.GlobalFree(handle) == IntPtr.Zero;
 				if (!success) { typeof(GlobalLockDisposable).LogError()?.Error($"{nameof(PInvoke.GlobalFree)} failed: {GetErrorMessage()}"); }
 			}
 		}

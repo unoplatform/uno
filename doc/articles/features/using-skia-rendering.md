@@ -10,7 +10,9 @@ The whole UI Visual Tree is drawn on an hardware accelerated canvas, using Metal
 
 The Skia Rendering backend has a very cheap cost for creating UI elements, which makes it very efficient for large user interfaces.
 
-Starting with Uno Platform 7.0, **it is the only rendering engine**: the native renderers have been removed, and the `Skia` `UnoFeature` (which references the SkiaSharp backend) is implied on every target. The legacy `SkiaRenderer` feature is mapped to `Skia` for backwards compatibility.
+Starting with Uno Platform 7.0, the native renderers have been removed, and **Skia is the default rendering engine**. The `Skia` `UnoFeature` (which references the SkiaSharp backend) is implied on every Uno Platform target of an app when no renderer feature is listed. It is off on Windows (WinAppSDK), which renders with WinUI, even when listed, unless the project sets `<UnoEnableSkiaOnWinAppSdk>true</UnoEnableSkiaOnWinAppSdk>`. The legacy `SkiaRenderer` feature is mapped to `Skia` on the Uno Platform targets of an app for backwards compatibility. A library gets neither, because the renderer is the app's choice: a library that draws with SkiaSharp lists `Skia`.
+
+The opt-in [WebGPU rendering backend](xref:uno.features.renderer.webgpu) (the `WebGpu` `UnoFeature`) counts as a renderer feature: listing `WebGpu` without `Skia` leaves SkiaSharp and its native libraries out of the app. An app that also uses SkiaSharp itself, for example to draw with [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), lists both: `<UnoFeatures>Skia;WebGpu</UnoFeatures>`.
 
 This renderer supports [integrating native views](xref:Uno.Skia.Embedding.Native).
 
@@ -47,16 +49,16 @@ You can use our [Visual Studio Wizard](xref:Uno.GettingStarted.UsingWizard) to c
 
 ## Using Skia rendering for existing apps
 
-Skia rendering requires no opt-in: it is used on every Uno Platform target. There is no MSBuild property or `UnoFeature` to enable or disable it.
+Skia rendering requires no opt-in: it is the default renderer on every Uno Platform target. An app renders with another backend, such as the experimental [WebGPU backend](xref:uno.features.renderer.webgpu), when it registers one on its host builder, or when it lists the `WebGpu` `UnoFeature` without `Skia`, which leaves out SkiaSharp and makes WebGPU the only renderer.
 
 ### Using Skia Desktop
 
-On **macOS**, **Linux**, and **Windows**, using the `netX.0-desktop` target framework, Skia rendering is always used.
+On **macOS**, **Linux**, and **Windows**, using the `netX.0-desktop` target framework, Skia rendering is used by default.
 
 However, when using **WinAppSDK**, the **native WinUI rendering engine** is always used, since that target is not provided by Uno Platform.
 
 > [!NOTE]
-> **Mac Catalyst** is not supported. It was dropped from the templates in Uno Platform 6.0 and the `net*-maccatalyst` target framework was removed entirely in 7.0 — use `netX.0-desktop`, which runs on macOS using Skia for rendering. See the [7.0 migration guide](xref:Uno.Development.MigratingToUno7).
+> **Mac Catalyst** is not supported. It was dropped from the templates in Uno Platform 6.0 and the `net*-maccatalyst` target framework was removed entirely in 7.0 — use `netX.0-desktop`, which runs on macOS using Skia for rendering. See the [7.0 migration guide](xref:Uno.Development.MigratingToUno7.ProjectSetup#mac-catalyst-is-removed).
 
 You can find more details in [Using the Skia Desktop](xref:Uno.Skia.Desktop).
 

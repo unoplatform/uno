@@ -12,19 +12,34 @@
     <Grid>
         <StackPanel>
             <TextBlock Text="x:Uid=ResourceLoader_Simple_tb01" />
-            <TextBlock x:Uid="ResourceLoader_Simple_tb01" Text="Invalid" />
+            <TextBlock
+                x:Name="tb01"
+                x:Uid="ResourceLoader_Simple_tb01"
+                Text="Invalid" />
 
             <TextBlock Text="x:Uid=MyPrefix/ResourceLoader_Simple_tb02" />
-            <TextBlock x:Uid="MyPrefix/ResourceLoader_Simple_tb02" Text="Invalid" />
+            <TextBlock
+                x:Name="tb02"
+                x:Uid="MyPrefix/ResourceLoader_Simple_tb02"
+                Text="Invalid" />
 
             <TextBlock Text="x:Uid=NamedResources/ResourceLoader_Simple_tb02" />
-            <TextBlock x:Uid="/NamedResources/ResourceLoader_Simple_tb02" Text="Invalid" />
+            <TextBlock
+                x:Name="tb03"
+                x:Uid="/NamedResources/ResourceLoader_Simple_tb02"
+                Text="Invalid" />
 
             <TextBlock Text="x:Uid=/NamedResources/MyPrefix/ResourceLoader_Simple_tb02" />
-            <TextBlock x:Uid="/NamedResources/MyPrefix/ResourceLoader_Simple_tb02" Text="Invalid" />
+            <TextBlock
+                x:Name="tb04"
+                x:Uid="/NamedResources/MyPrefix/ResourceLoader_Simple_tb02"
+                Text="Invalid" />
 
             <TextBlock Text="x:Uid=/NamedResources/MyPrefix/MyPrefix2/ResourceLoader_Simple_tb03" />
-            <TextBlock x:Uid="/NamedResources/MyPrefix/MyPrefix2/ResourceLoader_Simple_tb03" Text="Invalid" />
+            <TextBlock
+                x:Name="tb05"
+                x:Uid="/NamedResources/MyPrefix/MyPrefix2/ResourceLoader_Simple_tb03"
+                Text="Invalid" />
         </StackPanel>
     </Grid>
 </UserControl>

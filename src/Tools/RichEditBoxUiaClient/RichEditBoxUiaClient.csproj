@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>$(NetCurrentWinAppSDK)</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<UIAutomationInteropPath>$(MSBuildProjectDirectory)\$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework)\generated\UIAutomationCore.Interop.dll</UIAutomationInteropPath>
+		<TlbImpToolPath Condition="'$(TlbImpToolPath)' == '' and Exists('$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\x64\TlbImp.exe')">$(MSBuildProgramFiles32)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\x64\TlbImp.exe</TlbImpToolPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Reference Include="UIAutomationCore.Interop">
+			<HintPath>$(UIAutomationInteropPath)</HintPath>
+			<Private>true</Private>
+		</Reference>
+	</ItemGroup>
+
+	<Target
+		Name="GenerateUIAutomationInterop"
+		BeforeTargets="ResolveAssemblyReferences"
+		Inputs="$(WINDIR)\System32\UIAutomationCore.dll"
+		Outputs="$(UIAutomationInteropPath)">
+		<Error
+			Condition="'$(TlbImpToolPath)' == ''"
+			Text="TlbImp.exe was not found. Install the .NET Framework 4.8 SDK tools." />
+		<MakeDir Directories="$([System.IO.Path]::GetDirectoryName('$(UIAutomationInteropPath)'))" />
+		<Exec
+			Command="&quot;$(TlbImpToolPath)&quot; &quot;$(WINDIR)\System32\UIAutomationCore.dll&quot; /out:&quot;$(UIAutomationInteropPath)&quot; /namespace:UIAutomationClient /machine:X64 /silent" />
+	</Target>
+</Project>
