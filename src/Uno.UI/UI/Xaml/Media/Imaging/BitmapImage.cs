@@ -39,6 +39,8 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		private void OnUriSourceChanged(DependencyPropertyChangedEventArgs e)
 		{
+			// Also for an equal Uri, which reloads the source (an app refreshing a snapshot), as Uri isn't compared by value.
+			_downloaded = null;
 			if (!object.Equals(e.OldValue, e.NewValue))
 			{
 				UnloadImageData();
@@ -264,7 +266,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				var uri = UriSource is { } uriSource ? global::Uno.UI.Xaml.XamlFilePathHelper.NormalizeMsResourceFilesUri(uriSource) : null;
 				if (uri is null)
 				{
-					_downloaded = null;
 					if (_stream is null)
 					{
 						return ImageData.Empty;
@@ -364,6 +365,18 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 							// The shared load may have completed between the cancellation and the await.
 							ct.ThrowIfCancellationRequested();
+
+							// A shared load another source started failed (e.g. offline), while this one has bytes of its own.
+							if (share is not null && kept is not null && imageData.Kind == ImageDataKind.Error)
+							{
+								share.EndOpen();
+								share = null;
+								imageDataTask = Task.Run(
+									() => ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct, decodeWidth, decodeHeight, encoded: kept, keepEncoded: true),
+									ct);
+								imageData = await imageDataTask.WaitAsync(ct);
+								ct.ThrowIfCancellationRequested();
+							}
 						}
 						catch (OperationCanceledException) when (ct.IsCancellationRequested && share is null)
 						{
@@ -377,8 +390,11 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 							throw;
 						}
 
-						// Before Publish, whose handlers may change the source, which drops them.
-						_downloaded = imageData.Encoded is { } encoded ? (uri, encoded) : null;
+						// Before Publish, whose handlers may change the source, which drops them. A failure keeps them.
+						if (imageData.HasData)
+						{
+							_downloaded = imageData.Encoded is { } encoded ? (uri, encoded) : null;
+						}
 
 						var published = Publish(imageData, version, ct);
 						handedOver = published.IsShared;
