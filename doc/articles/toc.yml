@@ -318,6 +318,8 @@
 
     - name: Migrating
       items:
+      - name: .NET MAUI apps on the web and desktop
+        href: xref:Uno.Guides.MauiHandlers
       - name: Xamarin Forms
         topicHref: xref:Uno.XamarinFormsMigration.Overview
         href: guides/xf-migration/toc.yml
