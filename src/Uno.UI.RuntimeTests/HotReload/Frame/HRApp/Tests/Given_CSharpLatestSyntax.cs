@@ -20,8 +20,9 @@ public class Given_CSharpLatestSyntax : BaseTestClass
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26316")]
 	public async Task When_EditingMethodUsingLatestSyntax_Then_UpdateApplies()
 	{
-		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(60)).Token;
-		var file = Path.Combine(_HR.GetProjectPath(), "CSharpLatestSyntax.cs");
+		using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+		var ct = cts.Token;
+		var file = Path.Join(_HR.GetProjectPath(), "CSharpLatestSyntax.cs");
 
 		Assert.AreEqual(3, CSharpLatestSyntax.CountUntilFirstSkip());
 
