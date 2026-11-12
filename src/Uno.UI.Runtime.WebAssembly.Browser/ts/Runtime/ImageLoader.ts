@@ -81,7 +81,7 @@ onmessage = async (e) => {
 
 		// Copies a decode's pixels into memory the app allocated. The destination is a .NET span: it is only valid during
 		// this call, so the copy must stay synchronous.
-		public static copyPixels(source: Uint8Array, destination: any): void {
+		public static copyPixels(source: Uint8Array, destination: { length: number; set(source: Uint8Array): void }): void {
 			if (source.length !== destination.length) {
 				throw new Error(`Expected ${destination.length} bytes of pixels, got ${source.length}.`);
 			}

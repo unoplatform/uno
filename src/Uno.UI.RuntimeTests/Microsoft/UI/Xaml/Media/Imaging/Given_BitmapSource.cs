@@ -514,7 +514,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 #if UNO_DRAWING_SKIA
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
-		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25541")]
 		public async Task When_Browser_Workers_Are_Reused()
 		{
 			// The workers are called directly because a failed browser decode falls back to SKCodec, so the image would
