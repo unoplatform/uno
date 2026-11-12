@@ -36,6 +36,43 @@ In a class library, a single `net10.0` target framework combined with these runt
 > [!NOTE]
 > [JSImport/JSExport](xref:Uno.Wasm.Bootstrap.JSInterop) and [BrowserHtmlElement](xref:Uno.Interop.WasmJavaScript1) are available on all platforms targeting .NET 7 and later, and code using those APIs to be conditionally excluded at compile time, and should only use `OperatingSystem` conditions.
 
+### RuntimePlatformHelper
+
+`OperatingSystem.IsXXX` tells you the operating system, but not which Uno Platform target is running on it. For example, `OperatingSystem.IsWindows()` is `true` both for WinUI on Windows App SDK and for the Desktop target on Windows. `RuntimePlatformHelper.Current` returns the exact target:
+
+```csharp
+using Uno.UI.Helpers;
+
+var platform = RuntimePlatformHelper.Current;
+
+if (platform == UnoRuntimePlatform.X11)
+{
+    // Do something specific to Desktop on Linux
+}
+
+if (platform.IsMobile())
+{
+    // Do something for Android, iOS and tvOS
+}
+```
+
+The available values are `WindowsAppSdk`, `Win32`, `X11`, `MacOS`, `Islands`, `Wasm`, `Android`, `IOS`, `TvOS`, `FrameBuffer` and `Headless`. The `IsDesktop()` and `IsMobile()` extension methods group them.
+
+The platform is registered when the Uno Platform host is created, so `RuntimePlatformHelper.Current` returns `Unknown` if it is read before that, for example from a static constructor that runs before `Main` builds the host.
+
+#### Renderer
+
+The renderer is independent of the platform: Uno Platform draws with either Skia or WebGPU, and each window picks its renderer when it is created. To check which one draws a given window, pass its `XamlRoot`:
+
+```csharp
+if (RuntimePlatformHelper.IsWebGpu(myElement.XamlRoot))
+{
+    // Do something specific to the WebGPU renderer
+}
+```
+
+`IsSkia` and `IsWebGpu` report the renderer the window actually uses. When WebGPU was requested but is not available, the window falls back to Skia and `IsWebGpu` returns `false`. Both return `false` on Windows App SDK, where WinUI draws the window.
+
 ## `#if` conditionals
 
 The most basic means of authoring platform-specific code is to use `#if` conditionals:

@@ -27,6 +27,7 @@ using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.Media.Playback;
 using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Extensions.System;
 using Uno.UI.Xaml.Controls;
@@ -130,6 +131,8 @@ public class Win32Host : UnoPlatformHost, IApplicationHost
 		{
 			mediaExtensionType.GetMethod("PreloadVlc", BindingFlags.Static | BindingFlags.Public)?.Invoke(null, null);
 		}
+
+		RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.Win32);
 
 		_appBuilder = appBuilder;
 		Win32EventLoop.Schedule(() =>

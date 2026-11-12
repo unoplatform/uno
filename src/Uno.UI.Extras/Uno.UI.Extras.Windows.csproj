@@ -36,6 +36,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<!-- Runtime platform detection: Uno.UI owns it, as the hosts register the platform -->
+		<Compile Include="..\Uno.UI\Helpers\RuntimePlatform\*.cs" Link="Uno.UI\Helpers\RuntimePlatform\%(Filename)%(Extension)" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Collections\EnumerableExtensions.cs" Link="Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Collections\EnumerableExtensions.cs" />
 		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Compatibility\Threading\AsyncLock.cs" Link="Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Compatibility\Threading\AsyncLock.cs" />
 
