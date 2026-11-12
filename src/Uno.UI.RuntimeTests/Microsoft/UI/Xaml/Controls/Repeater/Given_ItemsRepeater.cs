@@ -1395,6 +1395,100 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			}
 		}
 
+#if HAS_UNO // RecyclingElementFactory and RecyclePool are not public in WinUI 3.
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ItemsView_ItemTemplate_Is_RecyclingElementFactory_Then_Items_Are_Realized()
+		{
+			var template = (DataTemplate)XamlReader.Load("""
+				<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+					<ItemContainer>
+						<TextBlock Text="{Binding}" />
+					</ItemContainer>
+				</DataTemplate>
+				""");
+			var sut = new ItemsView
+			{
+				Height = 200,
+				ItemsSource = new[] { "Item_0", "Item_1", "Item_2" },
+				// ItemsView.ItemTemplate is an IElementFactory: this compiles because ElementFactory implements it, as WinUI's does.
+				ItemTemplate = new RecyclingElementFactory
+				{
+					RecyclePool = new RecyclePool(),
+					Templates = new Dictionary<string, DataTemplate> { ["item"] = template },
+				},
+			};
+
+			TestServices.WindowHelper.WindowContent = sut;
+			try
+			{
+				await TestServices.WindowHelper.WaitForLoaded(sut);
+
+				await TestHelper.RetryAssert(() =>
+				{
+					var repeater = sut.GetAllChildren().OfType<ItemsRepeater>().Single();
+					var texts = Enumerable.Range(0, 3).Select(i => ((repeater.TryGetElement(i) as ItemContainer)?.Child as TextBlock)?.Text).ToArray();
+					CollectionAssert.AreEqual(new[] { "Item_0", "Item_1", "Item_2" }, texts, $"Realized: [{string.Join(", ", texts)}]");
+				});
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ItemTemplate_Is_ElementFactoryShim_Then_Items_Are_Realized_And_Recycled()
+		{
+			var factory = new RecordingElementFactoryShim();
+			var items = new[] { "Item_0", "Item_1", "Item_2" };
+			var sut = new ItemsRepeater
+			{
+				ItemsSource = items,
+				ItemTemplate = factory,
+			};
+
+			TestServices.WindowHelper.WindowContent = sut;
+			try
+			{
+				await TestServices.WindowHelper.WaitForLoaded(sut);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var texts = Enumerable.Range(0, items.Length).Select(i => (sut.TryGetElement(i) as TextBlock)?.Text).ToArray();
+				CollectionAssert.AreEqual(items, texts, $"Realized: [{string.Join(", ", texts)}]");
+				Assert.IsTrue(factory.GetCalls.All(c => ReferenceEquals(c.Parent, sut)), "GetElement should receive the repeater as Parent.");
+
+				var realized = Enumerable.Range(0, items.Length).Select(i => sut.TryGetElement(i)).ToArray();
+				sut.ItemsSource = new[] { "Other" };
+				await TestServices.WindowHelper.WaitForIdle();
+
+				CollectionAssert.IsSubsetOf(realized, factory.RecycleCalls.ToArray(), "Every element realized for the old source should be recycled.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		// An IElementFactoryShim that isn't an ElementFactory, so it reaches the controls through ElementFactoryShimAdapter.
+		private sealed class RecordingElementFactoryShim : IElementFactoryShim
+		{
+			public List<(object? Data, UIElement? Parent)> GetCalls { get; } = new();
+
+			public List<UIElement?> RecycleCalls { get; } = new();
+
+			public UIElement GetElement(global::Microsoft.UI.Xaml.Controls.ElementFactoryGetArgs args)
+			{
+				GetCalls.Add((args.Data, args.Parent));
+				return new TextBlock { Text = $"{args.Data}" };
+			}
+
+			public void RecycleElement(global::Microsoft.UI.Xaml.Controls.ElementFactoryRecycleArgs args)
+				=> RecycleCalls.Add(args.Element);
+		}
+#endif
+
 		// A factory that hands each call to a DataTemplate, through DataTemplate's own IElementFactory implementation.
 		private sealed partial class DelegatingElementFactory(DataTemplate template) : global::Microsoft.UI.Xaml.IElementFactory
 		{
