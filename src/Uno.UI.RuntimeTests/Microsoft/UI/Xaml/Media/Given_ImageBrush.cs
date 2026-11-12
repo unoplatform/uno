@@ -205,7 +205,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		public async Task When_SvgImageSource_Reloaded_From_ImageOpened_Then_Each_Raises_Once()
 		{
 			// The first brush's handler reloads the shared source while its first load is still being delivered: the
-			// elements after it still raise ImageOpened for that load, and only for it.
+			// delivery stops there, and the elements after it raise ImageOpened once, for the reload.
 			var svgImageSource = new SvgImageSource();
 			var brush1 = new ImageBrush { ImageSource = svgImageSource };
 			var brush2 = new ImageBrush { ImageSource = svgImageSource };
