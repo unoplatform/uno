@@ -71,7 +71,7 @@ By default, the [Uno.Sdk](xref:Uno.Features.Uno.Sdk) brings a tested set of **Sk
 
 ```xml
 <PropertyGroup>
-   <SkiaSharpVersion>4.148.0</SkiaSharpVersion>
+   <SkiaSharpVersion>4.156.0</SkiaSharpVersion>
 </PropertyGroup>
 ```
 
@@ -88,10 +88,10 @@ If you need to control individual packages instead of using the `SkiaSharpVersio
 
 ```xml
 <ItemGroup>
-   <PackageReference Update="SkiaSharp" Version="4.148.0" />
-   <PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="4.148.0" />
-   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="4.148.0" />
-   <PackageReference Update="HarfBuzzSharp" Version="14.2.0" />
+   <PackageReference Update="SkiaSharp" Version="4.156.0" />
+   <PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="4.156.0" />
+   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="4.156.0" />
+   <PackageReference Update="HarfBuzzSharp" Version="14.4.0.100" />
 </ItemGroup>
 ```
 
