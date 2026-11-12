@@ -325,7 +325,8 @@ public sealed class HotReloadManager : IDisposable
 					$"Hot reload blocked by {blockingGeneratorErrors.Length} source generator error(s) in " +
 					$"{FormatFileNames(xamlFiles)} (edited: {FormatFileNames(files)}).");
 				outcome = HotReloadOperationResult.Failed;
-				diagnostics = generatorErrors;
+				// A XAML error, such as an unresolved x:Bind member, can come from code-behind the embedded compiler cannot parse.
+				diagnostics = generatorErrors.AddRange(ReportLanguageVersionHints(auditedProjects));
 			}
 			else
 			{
@@ -410,20 +411,7 @@ public sealed class HotReloadManager : IDisposable
 							$"{string.Join(", ", audit.BlockingProjects)} " +
 							$"(edited: {FormatFileNames(files)}).");
 						diagnosticsReporter.ReportCompilationDiagnostics(audit.Errors);
-						var hints = auditedProjects
-							.Where(p => audit.BlockingProjects.Contains(p.Name))
-							.Select(EmbeddedRoslyn.GetUnsupportedLanguageVersionHint)
-							.OfType<string>()
-							.Distinct()
-							.ToImmutableArray();
-						foreach (var hint in hints)
-						{
-							_tracker.Output(hint);
-						}
-						// Unlike the compile errors (FIXME above), the hint is carried to clients: as a Warning it passes the
-						// tracker's Warning-and-above filter, so the IDE, the in-app indicator and the app status show the
-						// reason, and it is not one of the compile errors the FIXME's dedup is about.
-						diagnostics = diagnostics.AddRange(hints.Select(hint => Diagnostic.Create(_unsupportedLanguageVersionDescriptor, Location.None, hint)));
+						diagnostics = diagnostics.AddRange(ReportLanguageVersionHints(auditedProjects.Where(p => audit.BlockingProjects.Contains(p.Name))));
 						outcome = HotReloadOperationResult.Failed;
 						break;
 
@@ -481,6 +469,35 @@ public sealed class HotReloadManager : IDisposable
 				Status = HotReloadEmitStatus.Blocked,
 				Diagnostics = [Diagnostic.Create(_emitFailureDescriptor, Location.None, e.Message)],
 			};
+		}
+	}
+
+	/// <summary>
+	/// Follows a "Hot reload blocked by …" line with the language-version hint of each of <paramref name="projects"/>
+	/// the embedded compiler is too old for (spec 061 R5), and returns the hints as <c>UNOHR0002</c> diagnostics.
+	/// Unlike the compile errors, a Warning passes the tracker's filter, so the IDE and the app status show it.
+	/// </summary>
+	private ImmutableArray<Diagnostic> ReportLanguageVersionHints(IEnumerable<Project> projects)
+	{
+		try
+		{
+			var hints = projects
+				.Select(EmbeddedRoslyn.GetUnsupportedLanguageVersionHint)
+				.OfType<string>()
+				.Distinct()
+				.ToImmutableArray();
+			foreach (var hint in hints)
+			{
+				_tracker.Output(hint);
+			}
+
+			return hints.Select(hint => Diagnostic.Create(_unsupportedLanguageVersionDescriptor, Location.None, hint)).ToImmutableArray();
+		}
+		catch (Exception e) when (e is not OperationCanceledException)
+		{
+			// Diagnostics-only: it must never turn the blocked pass it explains into an internal error.
+			_tracker.Verbose($"Language version hint failed (the pass stays blocked): {e}");
+			return [];
 		}
 	}
 
