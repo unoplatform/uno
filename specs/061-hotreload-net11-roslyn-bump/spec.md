@@ -135,6 +135,10 @@ Hot reload blocked by 3 compilation error(s) in Cs15Check (edited: MainPage.xaml
 syntax above are not build errors. Update Uno.Sdk, or set <LangVersion>14.0</LangVersion> in the project.
 ```
 
+The XAML generator's "Hot reload blocked by … source generator error(s)" line gets the same hint, for the change-set's
+projects: a XAML error such as an unresolved `x:Bind` member can come from code-behind the embedded compiler cannot
+parse. Computing the hint never fails the pass: an exception is logged at Verbose and the pass stays blocked.
+
 The hint is also added to the operation's diagnostics as the Warning `UNOHR0002`, so the IDE, the in-app indicator
 and `uno_app_hot_reload_status` show the reason, not only `Failed`. The compile errors themselves still reach the
 dev-server console only (the FIXME in `HotReloadManager`). `UNOHR0002` is documented next to `UNOHR0001` in
@@ -181,7 +185,8 @@ them.
 - **G3 — R5 warning tests.** A project whose target framework defaults to a C# version above the embedded maximum
   produces the warning once for `Default`, `Latest`, `LatestMajor` and `Preview`, a platform target framework
   included; a supported default or an explicit supported version does not. A blocked reload of such a project is
-  followed by the hint, and its diagnostics carry it as `UNOHR0002`.
+  followed by the hint, whether compile errors or a XAML generator error block it, and its diagnostics carry it as
+  `UNOHR0002`.
 
 ## Non-goals
 
@@ -216,7 +221,7 @@ Label evidence as **Compile**, **Unit** or **Runtime**. Compile-only is not runt
 |---|---|---|
 | 1 | **Compile, done** | `Uno.UI.RemoteControl.Server.Processors` (with `Uno.HotReload`) Release, analyzers on, every target framework, on 5.12: 0 warnings, 0 errors (C9) |
 | R1 | **Compile, done** | With no `dotnet-tools` entry in `NuGet.Config` and an empty package folder (`NUGET_PACKAGES`), `Uno.HotReload`, the Processors, `Uno.HotReload.Tests` and `Uno.UI.SourceGenerators.Tests` restore: 5.12 from the feed, 5.6 from nuget.org |
-| 3 | **Unit, done** | `Uno.HotReload.Tests` on net11.0 against 5.12: 175 passed, 0 failed, 1 skipped (Unix-only), G1 and G3 included. The test assemblies load `5.12.0-1.26529.118`, the same build (commit `297acf930f`) as the SDK's own compiler |
+| 3 | **Unit, done** | `Uno.HotReload.Tests` on net11.0 against 5.12: 176 passed, 0 failed, 1 skipped (Unix-only), G1 and G3 included. The test assemblies load `5.12.0-1.26529.118`, the same build (commit `297acf930f`) as the SDK's own compiler |
 | R4 (part) | **Compile, done** | The net11 Processors output has no `Microsoft.Build*.dll` (MSBuild `18.12.2` loads from the SDK), Microsoft.Extensions `10.0.10`, and 147 Roslyn binaries with valid .NET/Microsoft Authenticode signatures |
 | 6 | **Runtime, done** | HRApp suite against a source-built net11 DevServer on SDK 11.0.100 (the `Given_HotReloadWorkspace` setup, driven directly): **5.12** — 36 passed, 0 failed, 11 skipped (existing `[Ignore]`), 97 metadata updates in one session (C1, C3), no compile errors, no R5 warning. **5.6** (same code, net11 line overridden) — `Given_TextBlock` 4/4 fail with the issue's symptom: XAML-only edits `Emit status: Blocked`, CS1002/CS0103/CS0201 on `continue outer;`; the R5 warning is logged once and the hint follows every blocked line (G2, R5). `Given_CSharpLatestSyntax` (an edit inside the C# 15 method): passes on 5.12 with 1 metadata update for the edit and 1 for the undo; fails on 5.6 with the same three errors on the edited file |
 | 4 | **Unit, done** | `Uno.UI.SourceGenerators.Tests` `MetadataUpdateTests` on 5.12: 244 passed, 0 failed, 7 skipped (C10; needs a Debug `Uno.UI` net11.0 build first) |
