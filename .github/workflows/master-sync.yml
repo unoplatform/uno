@@ -79,9 +79,9 @@ on:
 env:
   # Release in the stabilization phase (receives all of master), or '' when none.
   # Every other release/stable/X.Y only receives PRs labeled backport-X.Y.
-  STABILIZATION_BRANCH: 'release/stable/7.0'
+  STABILIZATION_BRANCH: ''
   # Comma-separated master PR numbers kept out of STABILIZATION_BRANCH.
-  STABILIZATION_EXCLUDED_PRS: '25994' # 7.1-dev version bump
+  STABILIZATION_EXCLUDED_PRS: ''
 
 # Permissions are set per-job below (least privilege): enumerate only reads,
 # sync needs write to push branches and manage PRs.
