@@ -929,14 +929,17 @@ public class Given_FlowDirection
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresFullWindow]
-	[DataRow(FlowDirection.LeftToRight)]
-	[DataRow(FlowDirection.RightToLeft)]
-	public async Task When_Flyout_Shown_At_Point_With_Left_Placement(FlowDirection flowDirection)
+	[DataRow(FlowDirection.LeftToRight, FlyoutPlacementMode.Left)]
+	[DataRow(FlowDirection.LeftToRight, FlyoutPlacementMode.Right)]
+	[DataRow(FlowDirection.RightToLeft, FlyoutPlacementMode.Left)]
+	[DataRow(FlowDirection.RightToLeft, FlyoutPlacementMode.Right)]
+	public async Task When_Flyout_Shown_At_Point_With_Side_Placement(FlowDirection flowDirection, FlyoutPlacementMode placement)
 	{
-		// A flyout shown at a point also follows the target's flow direction: Left opens on the right of the point in right-to-left.
+		// WinUI places a right-to-left flyout shown at a point by its top-right corner, using the placement offsets of left-to-right.
+		// So Right opens on the left of the point, and Left ends one presenter width before the point.
 		using var _ = UITestHelper.ResetWindowContent();
 		var content = new Border { Width = 80, Height = 40, Background = new SolidColorBrush(Colors.Red) };
-		var flyout = new Flyout { Content = content, Placement = FlyoutPlacementMode.Left };
+		var flyout = new Flyout { Content = content, Placement = placement };
 		var target = new Border { Width = 200, Height = 200, Background = new SolidColorBrush(Colors.LightGray), FlowDirection = flowDirection };
 		var root = new Grid { Width = 600, Height = 400, Children = { target } };
 
@@ -956,14 +959,15 @@ public class Given_FlowDirection
 			var bounds = GetVisualBounds(presenter);
 			var expectedPoint = target.TransformToVisual(null).TransformPoint(position);
 
-			if (flowDirection is FlowDirection.LeftToRight)
+			var expectedRight = (flowDirection, placement) switch
 			{
-				Assert.AreEqual(expectedPoint.X, bounds.Right, 2, "The flyout should open on the left of the point.");
-			}
-			else
-			{
-				Assert.AreEqual(expectedPoint.X, bounds.Left, 2, "The flyout should open on the right of the point.");
-			}
+				(FlowDirection.LeftToRight, FlyoutPlacementMode.Left) => expectedPoint.X,
+				(FlowDirection.LeftToRight, _) => expectedPoint.X + bounds.Width,
+				(_, FlyoutPlacementMode.Left) => expectedPoint.X - bounds.Width,
+				_ => expectedPoint.X,
+			};
+
+			Assert.AreEqual(expectedRight, bounds.Right, 2, $"Unexpected horizontal position for {placement} in {flowDirection}.");
 		}
 		finally
 		{
