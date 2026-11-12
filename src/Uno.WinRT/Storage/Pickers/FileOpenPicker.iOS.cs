@@ -345,7 +345,7 @@ namespace Windows.Storage.Pickers
 				}
 
 				var preferredExtension = type.PreferredFilenameExtension;
-				var extensions = type.Tags.TryGetValue(_fileNameExtensionTagClass, out var tags) ? tags.ToArray().Select(tag => tag.ToString()) : [];
+				var extensions = type.Tags.TryGetValue(_fileNameExtensionTagClass, out var tags) ? tags.ToArray().OfType<NSString>().Select(tag => tag.ToString()) : [];
 
 				return new PhotoPickerType(
 					(preferredExtension is null ? extensions : extensions.Prepend(preferredExtension)).Distinct().ToArray(),
