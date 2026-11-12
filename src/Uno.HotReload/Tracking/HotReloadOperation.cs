@@ -71,6 +71,11 @@ public class HotReloadOperation
 
 	public HotReloadOperationResult? Result => _result is -1 ? null : (HotReloadOperationResult)_result;
 
+	/// <summary>
+	/// Whether the operation was aborted because it got no result in time, rather than by a newer operation.
+	/// </summary>
+	internal bool IsTimedOut { get; private set; }
+
 	/// <param name="previous">The previous hot-reload operation which has to be considered as aborted when this new one completes.</param>
 	public HotReloadOperation(HotReloadTracker owner, HotReloadOperation? previous, ImmutableHashSet<string>? filePaths = null)
 	{
@@ -87,11 +92,12 @@ public class HotReloadOperation
 
 	// Timer callbacks run on the thread-pool; an exception escaping here would otherwise become an
 	// unobserved task exception. Observe it and route to the owner's reporter.
-	private async Task OnTimeoutAsync()
+	// Internal (not private) so unit tests can time an operation out without waiting for the timer.
+	internal async Task OnTimeoutAsync()
 	{
 		try
 		{
-			await Complete(HotReloadOperationResult.Aborted).ConfigureAwait(false);
+			await Complete(HotReloadOperationResult.Aborted, exception: null, isFromNext: false, diagnostics: null, isTimeout: true).ConfigureAwait(false);
 		}
 		catch (Exception ex)
 		{
@@ -213,7 +219,7 @@ public class HotReloadOperation
 	public ValueTask Complete(HotReloadOperationResult result, Exception? exception = null, ImmutableArray<Diagnostic>? diagnostics = null)
 		=> Complete(result, exception, isFromNext: false, diagnostics: diagnostics);
 
-	private async ValueTask Complete(HotReloadOperationResult result, Exception? exception, bool isFromNext, ImmutableArray<Diagnostic>? diagnostics)
+	private async ValueTask Complete(HotReloadOperationResult result, Exception? exception, bool isFromNext, ImmutableArray<Diagnostic>? diagnostics, bool isTimeout = false)
 	{
 		if (_result is -1
 			&& result is HotReloadOperationResult.NoChanges
@@ -261,6 +267,7 @@ public class HotReloadOperation
 		try
 		{
 			_diagnostics = diagnostics;
+			IsTimedOut = isTimeout;
 
 			CompletionTime = DateTimeOffset.Now;
 			await _timeout.DisposeAsync().ConfigureAwait(false);
@@ -285,6 +292,7 @@ public class HotReloadOperation
 		finally
 		{
 			_completed.TrySetResult();
+			_owner.OnOperationCompleted(this);
 		}
 	}
 
