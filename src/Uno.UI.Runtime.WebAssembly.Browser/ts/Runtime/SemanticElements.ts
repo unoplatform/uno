@@ -917,14 +917,19 @@ namespace Uno.UI.Runtime {
 			}
 
 			if (activeItemHandle === 0) {
+				delete container.dataset.unoActiveDescendant;
 				container.removeAttribute('aria-activedescendant');
 				return;
 			}
 
 			const activeId = `uno-semantics-${activeItemHandle}`;
+			// The latest request wins: one that was deferred must not overwrite a newer one.
+			container.dataset.unoActiveDescendant = activeId;
 			const apply = () => {
 				// A reference to a missing option is ignored by the browser and never announced.
-				if (document.getElementById(activeId) && container.getAttribute('aria-expanded') !== 'false') {
+				if (container.dataset.unoActiveDescendant === activeId &&
+					document.getElementById(activeId) &&
+					container.getAttribute('aria-expanded') !== 'false') {
 					container.setAttribute('aria-activedescendant', activeId);
 				}
 			};
