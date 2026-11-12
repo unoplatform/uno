@@ -14,21 +14,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator;
 internal partial class XamlCodeGeneration
 {
 	private static readonly ConcurrentDictionary<ResourceCacheKey, CachedResource> _cachedResources = new();
+
+	// The cache entry of the last version of each resource file that parsed, by assembly and file.
+	private static readonly ConcurrentDictionary<(string Assembly, string File), ResourceCacheKey> _lastGoodResources = new();
+
 	private static readonly TimeSpan _cacheEntryLifetime = new TimeSpan(hours: 1, minutes: 0, seconds: 0);
 
 	private static void ScavengeCache()
 	{
 		_cachedResources.Remove(kvp => DateTimeOffset.Now - kvp.Value.LastTimeUsed > _cacheEntryLifetime);
+		_lastGoodResources.Remove(kvp => !_cachedResources.ContainsKey(kvp.Value));
 	}
 
 	private struct ResourceCacheKey : IEquatable<ResourceCacheKey>
 	{
-		public ResourceCacheKey(string file, ImmutableArray<byte> checksum)
+		public ResourceCacheKey(string assembly, string file, ImmutableArray<byte> checksum)
 		{
+			Assembly = assembly;
 			File = file;
 			Checksum = checksum;
 		}
 
+		// The keys embed the assembly name, so the same file content must not be shared across assemblies.
+		public string Assembly { get; }
 		public string File { get; }
 		public ImmutableArray<byte> Checksum { get; }
 
@@ -36,11 +44,12 @@ internal partial class XamlCodeGeneration
 			=> obj is ResourceCacheKey key && Equals(key);
 
 		public bool Equals(ResourceCacheKey other)
-			=> File == other.File && ByteSequenceComparer.Equals(Checksum, other.Checksum);
+			=> Assembly == other.Assembly && File == other.File && ByteSequenceComparer.Equals(Checksum, other.Checksum);
 
 		public override int GetHashCode()
 		{
 			var hashCode = 682997901;
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Assembly);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(File);
 			hashCode = hashCode * -1521134295 + ByteSequenceComparer.GetHashCode(Checksum);
 			return hashCode;

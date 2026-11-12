@@ -858,15 +858,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.WithCancellation(ct)
 				.SelectMany(file =>
 				{
+					var lastGoodKey = (_metadataHelper.AssemblyName, file.Identity);
+
 					try
 					{
 						var sourceText = file.File.GetText(ct)!;
-						var cachedFileKey = new ResourceCacheKey(file.Identity, sourceText.GetChecksum());
+						var cachedFileKey = new ResourceCacheKey(_metadataHelper.AssemblyName, file.Identity, sourceText.GetChecksum());
 						var resourceFileName = Path.GetFileNameWithoutExtension(file.Identity);
 
 						if (_cachedResources.TryGetValue(cachedFileKey, out var cachedResource))
 						{
 							_cachedResources[cachedFileKey] = cachedResource.WithUpdatedLastTimeUsed();
+							_lastGoodResources[lastGoodKey] = cachedFileKey;
 							ScavengeCache();
 							return cachedResource.ResourceKeys;
 						}
@@ -885,6 +888,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							.Select(node => new ResourceDetails(_metadataHelper.AssemblyName, resourceFileName, node.GetAttribute("name")))
 							.ToArray() ?? Array.Empty<ResourceDetails>();
 						_cachedResources[cachedFileKey] = new CachedResource(DateTimeOffset.Now, keys);
+						_lastGoodResources[lastGoodKey] = cachedFileKey;
 						return keys;
 					}
 					catch (Exception e)
@@ -897,6 +901,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							message);
 
 						_generatorContext.ReportDiagnostic(diagnostic);
+
+						// Keep serving the last keys this file parsed to, so that a .resw being edited does not strip the
+						// x:Uid lookups from the pages regenerated meanwhile (Hot Reload). The error still fails a build.
+						if (_lastGoodResources.TryGetValue(lastGoodKey, out var lastGoodFileKey)
+							&& _cachedResources.TryGetValue(lastGoodFileKey, out var lastGood))
+						{
+							_cachedResources[lastGoodFileKey] = lastGood.WithUpdatedLastTimeUsed();
+							return lastGood.ResourceKeys;
+						}
 
 						return Array.Empty<ResourceDetails>();
 					}
