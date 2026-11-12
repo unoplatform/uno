@@ -100,6 +100,15 @@ public sealed class HotReloadManager : IDisposable
 		"HotReload",
 		DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
+
+	// Carries the blocked-reload language-version hint to the IDE and app status (spec 061 R5).
+	private static readonly DiagnosticDescriptor _unsupportedLanguageVersionDescriptor = new(
+		"UNOHR0002",
+		"C# version newer than the Hot Reload compiler",
+		"{0}",
+		"HotReload",
+		DiagnosticSeverity.Warning,
+		isEnabledByDefault: true);
 #pragma warning restore RS2008 // Enable analyzer release tracking
 
 	private readonly FastAsyncLock _solutionUpdateGate = new();
@@ -401,14 +410,20 @@ public sealed class HotReloadManager : IDisposable
 							$"{string.Join(", ", audit.BlockingProjects)} " +
 							$"(edited: {FormatFileNames(files)}).");
 						diagnosticsReporter.ReportCompilationDiagnostics(audit.Errors);
-						foreach (var hint in auditedProjects
+						var hints = auditedProjects
 							.Where(p => audit.BlockingProjects.Contains(p.Name))
 							.Select(EmbeddedRoslyn.GetUnsupportedLanguageVersionHint)
 							.OfType<string>()
-							.Distinct())
+							.Distinct()
+							.ToImmutableArray();
+						foreach (var hint in hints)
 						{
 							_tracker.Output(hint);
 						}
+						// Unlike the compile errors (FIXME above), the hint is carried to clients: as a Warning it passes the
+						// tracker's Warning-and-above filter, so the IDE, the in-app indicator and the app status show the
+						// reason, and it is not one of the compile errors the FIXME's dedup is about.
+						diagnostics = diagnostics.AddRange(hints.Select(hint => Diagnostic.Create(_unsupportedLanguageVersionDescriptor, Location.None, hint)));
 						outcome = HotReloadOperationResult.Failed;
 						break;
 
