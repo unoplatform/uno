@@ -993,9 +993,9 @@ public class Given_Image_Release
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
 	public async Task When_Source_Collected_While_Subscribed_Then_Shared_Decode_Not_Kept()
 	{
-		// An ImageBrush keeps its subscription for its lifetime, so a source can be collected while it still counts as
-		// showing its shared decode: the cache must not keep that decode for good, as WinUI's store does not own its
-		// ImageCache.
+		// An ImageBrush collected with its source never ends its subscription (its lease ends only one whose source outlives
+		// it), so the source is collected while it still counts as showing its shared decode: the cache must not keep that
+		// decode for good, as WinUI's store does not own its ImageCache.
 		using var _ = EnableBitmapImageCache();
 		var uri = new Uri(TallAssetUri);
 
@@ -1084,7 +1084,8 @@ public class Given_Image_Release
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
 	public async Task When_Shared_Decode_Released_Then_Decoded_Again_Without_Download()
 	{
-		// The cache keeps the encoded bytes of a downloaded image, so decoding it again after its release downloads nothing.
+		// The cache keeps the encoded bytes of a downloaded image, so another BitmapImage decoding it after the shared decode
+		// was released downloads nothing.
 		using var _ = EnableBitmapImageCache();
 		using var delay = ReleaseAfterLayoutPass();
 		using var bytes = SetMaxBitmapImageCacheBytes(long.MaxValue);
@@ -1102,9 +1103,8 @@ public class Given_Image_Release
 			await WindowHelper.WaitForIdle();
 			Assert.IsNull(surface.Image, "Pre-condition: the shared decode is released once nothing displays it");
 
-			await UITestHelper.Load(image);
-			await WindowHelper.WaitFor(() => bitmap.IsOpened, 10000, "The bitmap must be decoded again once an Image shows it");
-			Assert.AreEqual(2, decoder.Count(100, 100), "Pre-condition: the bitmap is decoded again");
+			await ShowNewBitmap(image, served.Uri);
+			Assert.AreEqual(2, decoder.Count(100, 100), "Pre-condition: the image is decoded again");
 			Assert.AreEqual(1, served.RequestCount, "Decoding again must use the encoded bytes the cache kept");
 
 			// A source that ignores the cache downloads for itself.
@@ -1125,13 +1125,16 @@ public class Given_Image_Release
 	[DataRow("Cache-Control: no-cache", "200 OK", 2)]
 	[DataRow("Cache-Control: max-age=0", "200 OK", 2)]
 	[DataRow("Pragma: no-cache", "200 OK", 2)]
+	[DataRow("Expires: 0", "200 OK", 2)]
+	[DataRow("Expires: Thu, 01 Jan 1970 00:00:00 GMT", "200 OK", 2)]
+	[DataRow("Expires: Fri, 01 Jan 2100 00:00:00 GMT", "200 OK", 1)]
 	// Uno opens an image body whatever the status (WinUI's download likely fails the bind): the row checks only that it is not kept.
 	[DataRow("", "404 Not Found", 2)]
 	[DataRow("", "200 OK", 1)]
 	public async Task When_Response_Not_Reusable_Then_Downloaded_Again(string header, string status, int expectedRequests)
 	{
 		// The cache keeps only the bytes of a successful response that may be reused without asking the server again, so
-		// decoding another one again after its release downloads it again. Otherwise the kept bytes are used.
+		// another BitmapImage decoding it after the shared decode was released downloads it again. Otherwise it uses them.
 		using var _ = EnableBitmapImageCache();
 		using var delay = ReleaseAfterLayoutPass();
 		using var bytes = SetMaxBitmapImageCacheBytes(long.MaxValue);
@@ -1147,8 +1150,7 @@ public class Given_Image_Release
 			await WindowHelper.WaitForIdle();
 			Assert.IsFalse(bitmap.IsOpened, "Pre-condition: the shared decode is released once nothing displays it");
 
-			await UITestHelper.Load(image);
-			await WindowHelper.WaitFor(() => bitmap.IsOpened, 10000, "The bitmap must be decoded again once an Image shows it");
+			await ShowNewBitmap(image, served.Uri);
 			Assert.AreEqual(expectedRequests, served.RequestCount, $"Requests for a '{status}' response with '{header}'");
 		}
 		finally
@@ -1182,8 +1184,7 @@ public class Given_Image_Release
 			await WindowHelper.WaitForIdle();
 			Assert.IsFalse(bitmap.IsOpened, "Pre-condition: the shared decode is released once nothing displays it");
 
-			await UITestHelper.Load(image);
-			await WindowHelper.WaitFor(() => bitmap.IsOpened, 10000, "The bitmap must be decoded again once an Image shows it");
+			await ShowNewBitmap(image, server.Uri);
 			Assert.AreEqual(4, server.RequestCount, "A redirected response must be downloaded again");
 		}
 		finally
@@ -1199,7 +1200,7 @@ public class Given_Image_Release
 	[DataRow(true)]
 	public async Task When_Encoded_Cache_Lowered_Or_Disabled_Then_Kept_Bytes_Dropped(bool disable)
 	{
-		// Lowering the bound, or turning the cache off, drops the bytes kept so far, so the next decode downloads again.
+		// Lowering the bound, or turning the cache off, drops the bytes kept so far, so another BitmapImage downloads again.
 		using var _ = EnableBitmapImageCache();
 		using var delay = ReleaseAfterLayoutPass();
 		using var bytes = SetMaxBitmapImageCacheBytes(long.MaxValue);
@@ -1226,8 +1227,7 @@ public class Given_Image_Release
 				FeatureConfiguration.Image.MaxBitmapImageCacheBytes = long.MaxValue;
 			}
 
-			await UITestHelper.Load(image);
-			await WindowHelper.WaitFor(() => bitmap.IsOpened, 10000, "The bitmap must be decoded again once an Image shows it");
+			await ShowNewBitmap(image, served.Uri);
 			Assert.AreEqual(2, served.RequestCount, "The bytes kept before must have been dropped");
 		}
 		finally
@@ -1259,8 +1259,7 @@ public class Given_Image_Release
 			Assert.IsFalse(bitmap.IsOpened, "Pre-condition: the shared decode is released once nothing displays it");
 			await Task.Delay(500);
 
-			await UITestHelper.Load(image);
-			await WindowHelper.WaitFor(() => bitmap.IsOpened, 10000, "The bitmap must be decoded again once an Image shows it");
+			await ShowNewBitmap(image, served.Uri);
 			Assert.AreEqual(2, served.RequestCount, "Bytes unused past the expiry must have been dropped");
 		}
 		finally
@@ -1274,8 +1273,8 @@ public class Given_Image_Release
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
 	public async Task When_Encoded_Cache_Full_Then_Least_Recently_Used_Dropped()
 	{
-		// The cache has room for the encoded bytes of one of the two images: the one loaded first is dropped, so decoding it
-		// again downloads it again, while the other is decoded again from its bytes.
+		// The cache has room for the encoded bytes of one of the two images: the one loaded first is dropped, so another
+		// BitmapImage decoding it downloads it again, while the other is decoded from its bytes.
 		using var _ = EnableBitmapImageCache();
 		using var delay = ReleaseAfterLayoutPass();
 		using var first = await ServedImage.StartAsync();
@@ -1298,14 +1297,115 @@ public class Given_Image_Release
 			Assert.IsFalse(firstBitmap.IsOpened, "Pre-condition: the shared decodes are released once nothing displays them");
 			Assert.IsFalse(secondBitmap.IsOpened, "Pre-condition: the shared decodes are released once nothing displays them");
 
-			// The second first, so its bytes are looked up before the download of the first adds them again.
-			panel.Children.Add(secondImage);
-			await WindowHelper.WaitFor(() => secondBitmap.IsOpened, 10000, "The second bitmap must be decoded again");
-			panel.Children.Add(firstImage);
-			await WindowHelper.WaitFor(() => firstBitmap.IsOpened, 10000, "The first bitmap must be decoded again");
+			// The second first, so its bytes are looked up before the download of the first adds them again. New BitmapImages,
+			// as the first ones keep their own bytes.
+			var secondAgain = new BitmapImage(second.Uri);
+			panel.Children.Add(new Image { Width = 100, Height = 40, Source = secondAgain });
+			await WindowHelper.WaitFor(() => secondAgain.IsOpened, 10000, "The second image must be decoded again");
+			var firstAgain = new BitmapImage(first.Uri);
+			panel.Children.Add(new Image { Width = 100, Height = 40, Source = firstAgain });
+			await WindowHelper.WaitFor(() => firstAgain.IsOpened, 10000, "The first image must be decoded again");
 
 			Assert.AreEqual(2, first.RequestCount, "The least recently used bytes must be dropped once the cache is full");
 			Assert.AreEqual(1, second.RequestCount, "The bytes within the bound must be kept");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	[DataRow("Cache-Control: no-store", false, false)]
+	[DataRow("", true, false)]
+	[DataRow("", false, true)]
+	public async Task When_Released_Image_Shown_Again_Then_Its_Source_Decodes_Its_Own_Bytes(string header, bool cacheFull, bool ignoreCache)
+	{
+		// As a WinUI BitmapImage keeps its ImageCache and so its encoded data, a BitmapImage keeps the bytes it downloaded
+		// while its UriSource stays: shown again after its pixels were released, it downloads nothing, even when the cache
+		// kept no bytes (a response not to reuse, or no room) or is ignored, so it doesn't fail offline after it opened.
+		using var _ = EnableBitmapImageCache();
+		using var delay = ReleaseAfterLayoutPass();
+		using var bytes = SetMaxBitmapImageCacheBytes(cacheFull ? 0 : long.MaxValue);
+		using var served = await ServedImage.StartAsync(header);
+
+		try
+		{
+			var bitmap = new BitmapImage { CreateOptions = ignoreCache ? BitmapCreateOptions.IgnoreImageCache : BitmapCreateOptions.None, UriSource = served.Uri };
+			var failed = 0;
+			bitmap.ImageFailed += (_, _) => failed++;
+			var image = new Image { Width = 100, Height = 40, Source = bitmap };
+			await LoadAndWaitForOpened(image);
+
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(bitmap.IsOpened, "Pre-condition: the decode is released once nothing displays it");
+
+			await UITestHelper.Load(image);
+			await WindowHelper.WaitFor(() => bitmap.IsOpened, 10000, "The bitmap must be decoded again once an Image shows it");
+			Assert.AreEqual(1, served.RequestCount, "The bitmap must decode the bytes it kept instead of downloading again");
+			Assert.AreEqual(0, failed, "The bitmap must not fail");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_Encoded_Bytes_Unused_Past_Expiry_Then_Dropped_Without_Cache_Use()
+	{
+		// Expired bytes are dropped also while nothing uses the cache, so an idle app doesn't keep them, whether collections
+		// run (whose callback trims too) or not.
+		using var _ = EnableBitmapImageCache();
+		using var delay = ReleaseAfterLayoutPass();
+		using var bytes = SetMaxBitmapImageCacheBytes(long.MaxValue);
+		using var expiry = SetEncodedIdleExpiry(TimeSpan.FromSeconds(1));
+		Uno.Helpers.EncodedImageCache.Clear();
+		using var served = await ServedImage.StartAsync();
+		Uno.Helpers.EncodedImageCache.TrimsOnGen2 = false;
+
+		try
+		{
+			await LoadAndWaitForOpened(new Image { Width = 100, Height = 40, Source = new BitmapImage(served.Uri) });
+			Assert.AreEqual(served.Length, Uno.Helpers.EncodedImageCache.ByteCountForTesting, "Pre-condition: the cache keeps the bytes");
+
+			await WindowHelper.WaitFor(() => Uno.Helpers.EncodedImageCache.ByteCountForTesting == 0, 5000, "Bytes unused past the expiry must be dropped");
+		}
+		finally
+		{
+			Uno.Helpers.EncodedImageCache.TrimsOnGen2 = true;
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_Memory_Pressure_High_Then_Encoded_Bytes_Dropped_Sooner()
+	{
+		// At each gen 2 collection the cache drops bytes sooner the higher the memory pressure, as the bitmap cache it
+		// replaces did: 1 minute of 5 at high pressure.
+		using var _ = EnableBitmapImageCache();
+		using var bytes = SetMaxBitmapImageCacheBytes(long.MaxValue);
+		using var expiry = SetEncodedIdleExpiry(TimeSpan.FromSeconds(5));
+		Uno.Helpers.EncodedImageCache.Clear();
+		using var served = await ServedImage.StartAsync();
+
+		try
+		{
+			await LoadAndWaitForOpened(new Image { Width = 100, Height = 40, Source = new BitmapImage(served.Uri) });
+			await Task.Delay(1500);
+
+			Uno.Helpers.EncodedImageCache.TrimForMemoryPressure(Windows.System.AppMemoryUsageLevel.Medium);
+			Assert.AreEqual(served.Length, Uno.Helpers.EncodedImageCache.ByteCountForTesting, "Bytes used within the expiry at medium pressure must be kept");
+
+			Uno.Helpers.EncodedImageCache.TrimForMemoryPressure(Windows.System.AppMemoryUsageLevel.High);
+			Assert.AreEqual(0, Uno.Helpers.EncodedImageCache.ByteCountForTesting, "Bytes unused for a fifth of the expiry must be dropped at high pressure");
 		}
 		finally
 		{
@@ -3186,6 +3286,16 @@ public class Given_Image_Release
 	private static IDisposable DisableBitmapImageCache() => SetBitmapImageCache(false);
 
 	private static IDisposable EnableBitmapImageCache() => SetBitmapImageCache(true);
+
+	// Shows a new BitmapImage of the uri in the image: unlike the one it showed, it has no bytes of its own.
+	private static async Task<BitmapImage> ShowNewBitmap(Image image, Uri uri)
+	{
+		var bitmap = new BitmapImage(uri);
+		image.Source = bitmap;
+		await UITestHelper.Load(image);
+		await WindowHelper.WaitFor(() => bitmap.IsOpened, 10000, "The new bitmap must be decoded once an Image shows it");
+		return bitmap;
+	}
 
 	private static IDisposable SetBitmapImageCache(bool enabled)
 	{

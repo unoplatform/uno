@@ -565,12 +565,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Source_Shown_Again_While_It_Opens_Again_Then_AutoSized_Image_Keeps_Its_Size(bool anotherImage, bool cached)
 		{
 			// A source nothing displayed for more than the release delay (1 s, as on WinUI) may have released its pixels: with the
-			// bitmap cache off, or a response the cache can't keep, its URI downloads again once it is shown again. An auto-sized
-			// Image showing it then, the one that showed it before or another one (a recycled item), must have the image's size
-			// meanwhile, not lay out at 0×0.
+			// bitmap cache off, its URI downloads again once it is shown again. An auto-sized Image showing it then, the one that
+			// showed it before or another one (a recycled item), must have the image's size meanwhile, not lay out at 0×0.
 			using var server = await GatedImageServer.StartAsync();
 			server.ReleaseResponses();
-			server.ExtraHeader = cached ? "Cache-Control: no-store" : null;
 #if HAS_UNO
 			var cacheWasEnabled = FeatureConfiguration.Image.EnableBitmapImageCache;
 			var maxUndisplayedImageBytes = FeatureConfiguration.Image.MaxUndisplayedImageBytes;
@@ -598,6 +596,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				panel.Children.Remove(image);
 				await WindowHelper.WaitForIdle();
 				await Task.Delay(1500);
+#if HAS_UNO
+				// A source keeps the bytes it downloaded while the cache is on, as on WinUI: off, the released shared decode
+				// downloads again, which leaves an open to hold.
+				FeatureConfiguration.Image.EnableBitmapImageCache = false;
+#endif
 
 				// The layout changed meanwhile, so a returning Image is measured again.
 				panel.Width = 300;
