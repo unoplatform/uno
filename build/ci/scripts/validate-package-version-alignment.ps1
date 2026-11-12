@@ -107,25 +107,56 @@ function Get-Family([string]$PackageId) {
     return $null
 }
 
+# Finds the <Element ...> tags in an XML text, whatever the attribute order or line breaks, and
+# skips commented-out ones. Returns @{ Attributes (lower-case names); Line; Text } per tag.
+function Get-XmlElements([string]$Text, [string]$Element) {
+    # Blank out comments but keep their line breaks, so line numbers stay right.
+    $clean = [regex]::Replace($Text, '<!--.*?-->', { param($c) [regex]::Replace($c.Value, '[^\n]', ' ') }, 'Singleline')
+    $lineStarts = [System.Collections.Generic.List[int]]::new(); $lineStarts.Add(0)
+    for ($i = 0; $i -lt $clean.Length; $i++) { if ($clean[$i] -eq "`n") { $lineStarts.Add($i + 1) } }
+    foreach ($m in [regex]::Matches($clean, "<$Element\b([^>]*)>", 'IgnoreCase')) {
+        $attributes = @{}
+        foreach ($a in [regex]::Matches($m.Groups[1].Value, '([\w.:-]+)\s*=\s*"([^"]*)"')) {
+            $attributes[$a.Groups[1].Value.ToLowerInvariant()] = $a.Groups[2].Value
+        }
+        $line = $lineStarts.BinarySearch($m.Index); if ($line -lt 0) { $line = (-bnot $line) - 1 }
+        @{ Attributes = $attributes; Line = $line + 1; Text = ($m.Value -replace '\s+', ' ') }
+    }
+}
+
 # --- Source of truth: src/Directory.Packages.props ---------------------------------------------
 $propsPath = Join-Path $RepoRoot 'src/Directory.Packages.props'
 if (-not (Test-Path $propsPath)) { throw "Not found: $propsPath" }
-$propsLines = Get-Content $propsPath
-$propsText = $propsLines -join "`n"
+$propsText = (Get-Content $propsPath -Raw) -replace "`r`n", "`n"
 
 $properties = @{}
 foreach ($m in [regex]::Matches($propsText, '<(\w+)>\s*([^<\s]+)\s*</\1>')) {
     if (-not $properties.ContainsKey($m.Groups[1].Value)) { $properties[$m.Groups[1].Value] = $m.Groups[2].Value }
 }
+function Resolve-Properties([string]$Value) {
+    [regex]::Replace($Value, '\$\((\w+)\)', { param($p) if ($properties.ContainsKey($p.Groups[1].Value)) { $properties[$p.Groups[1].Value] } else { $p.Value } })
+}
 
-# Package id (case-insensitive) -> version Uno is built against, with $(Property) resolved.
+# Package id (lower-case) -> @{ Id; Version; Raw; Line; Overrides }. Version is what Uno is built
+# against, with $(Property) resolved. Overrides are the conditional <PackageVersion Update="..."> items.
 $corePins = @{}
-for ($i = 0; $i -lt $propsLines.Count; $i++) {
-    if ($propsLines[$i] -match '<PackageVersion\s+Include="([^"]+)"\s+Version="([^"]+)"') {
-        $id = $Matches[1]; $raw = $Matches[2]
-        $version = [regex]::Replace($raw, '\$\((\w+)\)', { param($p) if ($properties.ContainsKey($p.Groups[1].Value)) { $properties[$p.Groups[1].Value] } else { $p.Value } })
-        $corePins[$id.ToLowerInvariant()] = @{ Id = $id; Version = $version; Raw = $raw; Line = $i + 1 }
+$updates = [System.Collections.Generic.List[object]]::new()
+foreach ($e in Get-XmlElements $propsText 'PackageVersion') {
+    $isInclude = $e.Attributes.ContainsKey('include')
+    $id = if ($isInclude) { $e.Attributes['include'] } else { $e.Attributes['update'] }
+    $raw = $e.Attributes['version']
+    if (-not $id -or -not $raw) {
+        # Fail loudly rather than leave a pin unchecked.
+        $errors.Add("src/Directory.Packages.props:$($e.Line): can't read the package id and Version of $($e.Text). Write it as <PackageVersion Include=`"Id`" Version=`"x`" />.")
+        continue
     }
+    $pin = @{ Id = $id; Version = (Resolve-Properties $raw); Raw = $raw; Line = $e.Line; Overrides = [System.Collections.Generic.List[object]]::new() }
+    if ($isInclude -and -not $corePins.ContainsKey($id.ToLowerInvariant())) { $corePins[$id.ToLowerInvariant()] = $pin }
+    else { $updates.Add($pin) }
+}
+foreach ($u in $updates) {
+    $base = $corePins[$u.Id.ToLowerInvariant()]
+    if ($base) { $base.Overrides.Add($u) }
 }
 
 foreach ($family in $Families) {
@@ -135,7 +166,7 @@ foreach ($family in $Families) {
 }
 
 # --- 3a. Families use their shared property in Directory.Packages.props -----------------------
-foreach ($pin in $corePins.Values) {
+foreach ($pin in @($corePins.Values) + @($updates)) {
     $family = Get-Family $pin.Id
     if ($family) {
         $checked++
@@ -149,24 +180,25 @@ foreach ($pin in $corePins.Values) {
 $nuspecFloors = @{}   # package id (lower) -> list of @{ Version; Where }
 $nuspecs = Get-ChildItem -Path (Join-Path $RepoRoot 'build/nuget') -Filter '*.nuspec' -File -ErrorAction SilentlyContinue
 foreach ($nuspec in $nuspecs) {
-    $lines = Get-Content $nuspec.FullName
-    for ($i = 0; $i -lt $lines.Count; $i++) {
-        foreach ($m in [regex]::Matches($lines[$i], '<dependency\s+id="([^"]+)"\s+version="([^"]+)"', 'IgnoreCase')) {
-            $id = $m.Groups[1].Value
-            if ($m.Groups[2].Value -like 'to-be-set*') { continue }   # Uno's own packages, versioned by CI
-            $version = Get-LowerBound $m.Groups[2].Value
-            $where = "$(Get-RelativePath $nuspec.FullName):$($i + 1)"
-            if (-not $nuspecFloors.ContainsKey($id.ToLowerInvariant())) { $nuspecFloors[$id.ToLowerInvariant()] = [System.Collections.Generic.List[object]]::new() }
-            $nuspecFloors[$id.ToLowerInvariant()].Add(@{ Version = $version; Where = $where })
+    $text = (Get-Content $nuspec.FullName -Raw) -replace "`r`n", "`n"
+    foreach ($e in Get-XmlElements $text 'dependency') {
+        $where = "$(Get-RelativePath $nuspec.FullName):$($e.Line)"
+        $id = $e.Attributes['id']
+        if (-not $id) { $errors.Add("${where}: can't read the id of $($e.Text)."); continue }
+        $rawVersion = $e.Attributes['version']
+        if (-not $rawVersion -or $rawVersion -like 'to-be-set*') { continue }   # no floor, or Uno's own packages versioned by CI
+        $version = Get-LowerBound $rawVersion
+        if (-not $nuspecFloors.ContainsKey($id.ToLowerInvariant())) { $nuspecFloors[$id.ToLowerInvariant()] = [System.Collections.Generic.List[object]]::new() }
+        $nuspecFloors[$id.ToLowerInvariant()].Add(@{ Version = $version; Where = $where })
 
-            $pin = $corePins[$id.ToLowerInvariant()]
-            if (-not $pin) { continue }
-            $checked++
-            if ($version -eq $pin.Version) { continue }
-            if ($KnownFloorExceptions.ContainsKey($pin.Id) -and $KnownFloorExceptions[$pin.Id] -eq $version) { continue }
-            $hint = if (Get-Family $id) { ' An app whose managed and native versions differ fails at startup.' } else { '' }
-            $errors.Add("${where}: $id is $version; Uno is built against $($pin.Version) (src/Directory.Packages.props:$($pin.Line)).$hint")
-        }
+        $pin = $corePins[$id.ToLowerInvariant()]
+        if (-not $pin) { continue }
+        $checked++
+        $allowed = @($pin.Version) + @($pin.Overrides | ForEach-Object { $_.Version })
+        if ($allowed -contains $version) { continue }
+        if ($KnownFloorExceptions.ContainsKey($pin.Id) -and $KnownFloorExceptions[$pin.Id] -eq $version) { continue }
+        $hint = if (Get-Family $id) { ' An app whose managed and native versions differ fails at startup.' } else { '' }
+        $errors.Add("${where}: $id is $version; Uno is built against $($pin.Version) (src/Directory.Packages.props:$($pin.Line)).$hint")
     }
 }
 
@@ -211,7 +243,7 @@ else {
     Write-Host "Skipped: src/Uno.Sdk/packages.json not found."
 }
 
-# --- 3c. CI and build scripts passing the version explicitly (-p:SkiaSharpVersion=..., /p:...) ---
+# --- 3c. CI and build scripts passing the version explicitly (-p:, /p:, -property:, --property:) ---
 $self = (Resolve-Path $PSCommandPath).Path
 $scripts = Get-ChildItem -Path (Join-Path $RepoRoot 'build') -Recurse -File -Include '*.yml', '*.yaml', '*.ps1', '*.sh', '*.props', '*.targets' |
     Where-Object { $_.FullName -ne $self }
@@ -220,7 +252,7 @@ foreach ($script in $scripts) {
     for ($i = 0; $i -lt $lines.Count; $i++) {
         foreach ($family in $Families) {
             # Uno.Sdk spells it HarfBuzzSharpVersion, Directory.Packages.props HarfbuzzSharpVersion: match both.
-            foreach ($m in [regex]::Matches($lines[$i], "[-/]p:$($family.Property)=([0-9][^\s;`"']*)", 'IgnoreCase')) {
+            foreach ($m in [regex]::Matches($lines[$i], "(?:--?|/)(?:p|property):$($family.Property)=([0-9][^\s;`"']*)", 'IgnoreCase')) {
                 $checked++
                 if ($m.Groups[1].Value -ne $family.Version) {
                     $errors.Add("$(Get-RelativePath $script.FullName):$($i + 1): passes $($family.Property)=$($m.Groups[1].Value); expected $($family.Version).")
