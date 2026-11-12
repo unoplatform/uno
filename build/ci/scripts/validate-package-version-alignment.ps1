@@ -68,9 +68,13 @@ function Get-LowerBound([string]$Version) {
 }
 
 # NuGet version order: numeric parts first, then a release sorts above its prereleases, and
-# prerelease labels compare part by part (numbers numerically, below text).
-function Compare-PackageVersion([string]$A, [string]$B) {
-    $pa = $A -split '[-+]', 2; $pb = $B -split '[-+]', 2
+# prerelease labels compare part by part (numbers numerically, below text). Build metadata
+# ("+abc") is ignored, as NuGet does.
+function Compare-PackageVersion([string]$A, [string]$B, [string]$Context) {
+    if ("$A" -notmatch '^\d+(\.\d+)*(-[0-9A-Za-z.-]+)?(\+.*)?$' -or "$B" -notmatch '^\d+(\.\d+)*(-[0-9A-Za-z.-]+)?(\+.*)?$') {
+        throw "Can't compare package versions '$A' and '$B' ($Context): not a NuGet version."
+    }
+    $pa = ($A -split '\+', 2)[0] -split '-', 2; $pb = ($B -split '\+', 2)[0] -split '-', 2
     $na = @($pa[0] -split '\.' | ForEach-Object { [long]$_ }); $nb = @($pb[0] -split '\.' | ForEach-Object { [long]$_ })
     for ($i = 0; $i -lt [Math]::Max($na.Count, $nb.Count); $i++) {
         $x = if ($i -lt $na.Count) { $na[$i] } else { 0 }; $y = if ($i -lt $nb.Count) { $nb[$i] } else { 0 }
@@ -195,7 +199,7 @@ if (Test-Path $manifestPath) {
             foreach ($floor in $floors) {
                 foreach ($p in $pins) {
                     $checked++
-                    if ((Compare-PackageVersion $p.Value $floor.Version) -lt 0) {
+                    if ((Compare-PackageVersion $p.Value $floor.Version "src/Uno.Sdk/packages.json group '$($group.group)' vs $($floor.Where)") -lt 0) {
                         $errors.Add("src/Uno.Sdk/packages.json: group '$($group.group)' $($p.Name) $($p.Value) is below the $package floor $($floor.Version) in $($floor.Where); apps would fail to restore (NU1605).")
                     }
                 }
