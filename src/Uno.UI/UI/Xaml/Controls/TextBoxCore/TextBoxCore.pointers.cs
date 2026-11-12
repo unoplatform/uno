@@ -140,9 +140,9 @@ internal sealed partial class TextBoxCore
 	{
 		if (e.PointerDeviceType == PointerDeviceType.Touch && TouchSelectionConvention != TouchTextSelectionConvention.Desktop)
 		{
-			// A touch right-tap is the release of a hold, which these conventions handled when it started (OnHolding):
-			// moving the caret to the press point here would undo an iOS caret drag. WinUI's CTextBoxBase::OnRightTapped
-			// doesn't move the caret on a touch right-tap either.
+			// A touch right-tap is the release of a hold, which these conventions handled when it started (OnHolding)
+			// or by the iOS hold timer: moving the caret to the press point here would undo an iOS caret drag.
+			// WinUI's CTextBoxBase::OnRightTapped doesn't move the caret on a touch right-tap either.
 			return;
 		}
 
@@ -782,6 +782,14 @@ internal sealed partial class TextBoxCore
 			return;
 		}
 
+		// Like a Holding (OnHolding), the hold takes focus first and doesn't act when it can't. The focus may bring the
+		// text box into view, so the press point is resolved after it.
+		if (!TryFocusForTouchHold())
+		{
+			_iosHoldFired = true;
+			return;
+		}
+
 		if (TextBoxView?.DisplayBlock is not { } displayBlock
 			|| displayBlock.TransformToVisual(null).Inverse is not { } toDisplayBlock
 			|| Owner.TransformToVisual(null).Inverse is not { } toOwner)
@@ -789,12 +797,8 @@ internal sealed partial class TextBoxCore
 			return;
 		}
 
-		// Like a Holding (OnHolding), the hold takes focus first and doesn't act when it can't.
 		_iosHoldFired = true;
-		if (TryFocusForTouchHold())
-		{
-			HandleTouchHold_iOS(toDisplayBlock.TransformPoint(_iosHoldRootPoint), toOwner.TransformPoint(_iosHoldRootPoint));
-		}
+		HandleTouchHold_iOS(toDisplayBlock.TransformPoint(_iosHoldRootPoint), toOwner.TransformPoint(_iosHoldRootPoint));
 	}
 
 	private bool IsAncestorScrollViewerManipulating()
