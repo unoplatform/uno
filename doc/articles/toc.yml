@@ -305,6 +305,8 @@
         href: xref:Uno.Development.MigratingToUno6
       - name: Upgrading to Uno 5.0
         href: xref:Uno.Development.MigratingToUno5
+      - name: Upgrading from .NET 10 to .NET 11
+        href: xref:Uno.Development.MigratingFromNet10ToNet11
       - name: Upgrading from .NET 9 to .NET 10
         href: xref:Uno.Development.MigratingFromNet9ToNet10
       - name: Upgrading from .NET 8 to .NET 9

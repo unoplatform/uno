@@ -17,6 +17,20 @@ for the upgrade steps. It links to the removed APIs, type-hierarchy changes, beh
 
 Uno Themes, Uno Toolkit and Uno Extensions also move to a new major with 7.0. See their upgrade notes: [Uno Themes 9](xref:Uno.Themes.Material.Migration#upgrading-to-uno-themes-v9), [Uno Toolkit 11](xref:Toolkit.Migration#upgrading-to-uno-toolkit-110) and [Uno Extensions 8](xref:Uno.Extensions.Migration#upgrading-to-extensions-80).
 
+### .NET 11
+
+Uno Platform 7.0 supports **.NET 11**. .NET 10 remains the default for new projects, and you can create .NET 11 projects with the project wizard or the CLI (`dotnet new unoapp -tfm net11.0`).
+
+- Use the latest Uno Platform 7.0 service release: the first 7.0 releases were built against .NET 11 release candidates.
+- Moving to .NET 11 requires the **.NET 11 SDK** along with:
+  - **Visual Studio** — [Visual Studio 2026](https://visualstudio.microsoft.com/) version **18.12** or later.
+  - **Visual Studio Code** — the latest version of [Visual Studio Code](https://code.visualstudio.com/Download) and the [C# Dev Kit](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit) extension.
+  - **Rider** — version **2026.3** or later.
+- On .NET 11, Android and iOS apps run on the CoreCLR runtime instead of Mono, so Mono-specific build properties no longer apply.
+- To migrate your project to .NET 11, see our [migration guide](xref:Uno.Development.MigratingFromNet10ToNet11).
+
+For an up-to-date list of **known issues** when using **.NET 11** with Uno Platform, please refer to our [Health Status page](https://aka.platform.uno/health-status).
+
 ## Uno Platform 6.6
 
 Uno Platform 6.6 contains a breaking change related to the removal of legacy Windows Phone namespaces, along with a few platform behavior changes to be aware of when upgrading.
