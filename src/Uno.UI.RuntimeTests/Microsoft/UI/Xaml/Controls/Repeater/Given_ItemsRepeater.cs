@@ -1315,10 +1315,89 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 				var realized = Enumerable.Range(0, items.Length).Select(i => sut.TryGetElement(i)).ToArray();
 				sut.ItemsSource = new[] { "Other" };
+
+				await TestHelper.RetryAssert(() =>
+				{
+					var recycled = factory.RecycleCalls.Select(c => c.Element).ToArray();
+					foreach (var element in realized)
+					{
+						Assert.AreEqual(1, recycled.Count(r => ReferenceEquals(r, element)), $"'{(element as TextBlock)?.Text}' should be recycled exactly once.");
+					}
+					Assert.IsTrue(factory.RecycleCalls.All(c => ReferenceEquals(c.Parent, sut)), "RecycleElement should receive the repeater as Parent.");
+					Assert.AreEqual("Other", (sut.TryGetElement(0) as TextBlock)?.Text);
+				});
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ItemTemplate_Changes_From_Custom_ElementFactory_Then_Its_Elements_Go_Back_To_It()
+		{
+			var factory = new RecordingElementFactory();
+			var items = new[] { "Item_0", "Item_1", "Item_2" };
+			var sut = new ItemsRepeater
+			{
+				ItemsSource = items,
+				ItemTemplate = factory,
+			};
+
+			TestServices.WindowHelper.WindowContent = sut;
+			try
+			{
+				await TestServices.WindowHelper.WaitForLoaded(sut);
 				await TestServices.WindowHelper.WaitForIdle();
 
-				CollectionAssert.IsSubsetOf(realized, factory.RecycleCalls.Select(c => c.Element).ToArray(), "Every element realized for the old source should be recycled.");
-				Assert.IsTrue(factory.RecycleCalls.All(c => ReferenceEquals(c.Parent, sut)), "RecycleElement should receive the repeater as Parent.");
+				var realized = Enumerable.Range(0, items.Length).Select(i => sut.TryGetElement(i)).ToArray();
+				Assert.IsTrue(realized.All(e => e is TextBlock), "The custom factory should realize every item.");
+
+				sut.ItemTemplate = (DataTemplate)XamlReader.Load("""
+					<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+						<Border>
+							<TextBlock Text="{Binding}" />
+						</Border>
+					</DataTemplate>
+					""");
+
+				await TestHelper.RetryAssert(() =>
+				{
+					// The repeater resets before switching, so the old elements go back to the old factory.
+					CollectionAssert.IsSubsetOf(realized, factory.RecycleCalls.Select(c => c.Element).ToArray(), "Every element the custom factory realized should be recycled into it.");
+					var texts = Enumerable.Range(0, items.Length).Select(i => ((sut.TryGetElement(i) as Border)?.Child as TextBlock)?.Text).ToArray();
+					CollectionAssert.AreEqual(items, texts, $"Realized from the DataTemplate: [{string.Join(", ", texts)}]");
+				});
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ItemTemplate_Is_Custom_ElementFactory_Then_Args_Are_Cleared_After_Each_Call()
+		{
+			global::Microsoft.UI.Xaml.ElementFactoryGetArgs? getArgs = null;
+			var factory = new RecordingElementFactory(onGet: args => getArgs = args);
+			var sut = new ItemsRepeater
+			{
+				ItemsSource = new[] { "Item_0", "Item_1" },
+				ItemTemplate = factory,
+			};
+
+			TestServices.WindowHelper.WindowContent = sut;
+			try
+			{
+				await TestServices.WindowHelper.WaitForLoaded(sut);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				// So that the args don't keep the last item, or the repeater, alive.
+				Assert.IsNotNull(getArgs, "GetElement was not called.");
+				Assert.IsNull(getArgs.Data);
+				Assert.IsNull(getArgs.Parent);
 			}
 			finally
 			{
@@ -1500,9 +1579,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 		private sealed partial class RecordingElementFactory : global::Microsoft.UI.Xaml.IElementFactory
 		{
 			private readonly Func<object?, UIElement> _create;
+			private readonly Action<global::Microsoft.UI.Xaml.ElementFactoryGetArgs>? _onGet;
 
-			public RecordingElementFactory(Func<object?, UIElement>? create = null)
-				=> _create = create ?? (data => new TextBlock { Text = $"{data}" });
+			public RecordingElementFactory(Func<object?, UIElement>? create = null, Action<global::Microsoft.UI.Xaml.ElementFactoryGetArgs>? onGet = null)
+			{
+				_create = create ?? (data => new TextBlock { Text = $"{data}" });
+				_onGet = onGet;
+			}
 
 			public List<(object? Data, UIElement? Parent)> GetCalls { get; } = new();
 
@@ -1511,6 +1594,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			public UIElement GetElement(global::Microsoft.UI.Xaml.ElementFactoryGetArgs args)
 			{
 				GetCalls.Add((args.Data, args.Parent));
+				_onGet?.Invoke(args);
 				return _create(args.Data);
 			}
 
