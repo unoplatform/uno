@@ -139,7 +139,8 @@ namespace Uno.Helpers
 		/// <summary>
 		/// Downloads an http or https uri, and tells whether its content may be reused for it without asking the server
 		/// again: only a successful response that was not redirected, without Cache-Control no-store, no-cache or
-		/// max-age=0, or Pragma: no-cache without Cache-Control. Other freshness rules are not checked.
+		/// max-age=0, Pragma: no-cache without Cache-Control, or an Expires date that is invalid or past without a
+		/// max-age. Other freshness rules are not checked.
 		/// </summary>
 		/// <remarks>
 		/// A redirect is seen through RequestMessage.RequestUri, which the browser HttpClient on WebAssembly does not update.
@@ -149,14 +150,38 @@ namespace Uno.Helpers
 			_httpClient ??= new HttpClient();
 			var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseContentRead, ct);
 
-			var headers = response.Headers;
 			var isReusable = response.IsSuccessStatusCode
 				&& response.RequestMessage?.RequestUri == uri
-				&& (headers.CacheControl is { } cacheControl
-					? !cacheControl.NoStore && !cacheControl.NoCache && cacheControl.MaxAge != TimeSpan.Zero
-					: !headers.Pragma.Any(static pragma => string.Equals(pragma.Name, "no-cache", StringComparison.OrdinalIgnoreCase)));
+				&& IsFresh(response);
 
 			return (await response.Content.ReadAsStreamAsync(), isReusable);
+		}
+
+		private static bool IsFresh(HttpResponseMessage response)
+		{
+			var headers = response.Headers;
+			if (headers.CacheControl is { } cacheControl)
+			{
+				if (cacheControl.NoStore || cacheControl.NoCache || cacheControl.MaxAge == TimeSpan.Zero)
+				{
+					return false;
+				}
+
+				// A max-age overrides Expires.
+				if (cacheControl.MaxAge is not null)
+				{
+					return true;
+				}
+			}
+			else if (headers.Pragma.Any(static pragma => string.Equals(pragma.Name, "no-cache", StringComparison.OrdinalIgnoreCase)))
+			{
+				return false;
+			}
+
+			// An Expires that doesn't parse, such as the common "0", means already expired (RFC 9111, section 5.3).
+			var contentHeaders = response.Content.Headers;
+			return !contentHeaders.NonValidated.Contains("Expires")
+				|| contentHeaders.Expires > (headers.Date ?? DateTimeOffset.UtcNow);
 		}
 	}
 }
