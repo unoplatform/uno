@@ -135,8 +135,8 @@ Hot reload blocked by 3 compilation error(s) in Cs15Check (edited: MainPage.xaml
 syntax above are not build errors. Update Uno.Sdk, or set <LangVersion>14.0</LangVersion> in the project.
 ```
 
-The XAML generator's "Hot reload blocked by … source generator error(s)" line gets the same hint, for the change-set's
-projects: a XAML error such as an unresolved `x:Bind` member can come from code-behind the embedded compiler cannot
+The XAML generator's "Hot reload blocked by … source generator error(s)" line gets the same hint, for the projects
+owning the failing XAML files: a XAML error such as an unresolved `x:Bind` member can come from code-behind the embedded compiler cannot
 parse. Computing the hint never fails the pass: an exception is logged at Verbose and the pass stays blocked.
 
 The hint is also added to the operation's diagnostics as the Warning `UNOHR0002`, so the IDE, the in-app indicator
@@ -180,8 +180,9 @@ them.
   cannot see this bug. Give HRApp's net11 build the SDK default `LangVersion` plus one file with C# 15 syntax. No
   new test is needed: every existing HRApp test recompiles that file, so the XAML-only edit tests (`Given_TextBlock`,
   `Given_Frame`, …) are the XAML-only edit test. They fail on a 5.6 host and pass on 5.12 (see Status).
-  `Given_CSharpLatestSyntax` also edits a method body inside the C# 15 file and checks the new body runs. No CI job
-  runs HRApp yet: G2 is a local check until one does, and G1 is the only guard CI enforces.
+  `Given_CSharpLatestSyntax` also edits a method body inside the C# 15 file and checks the new body runs. CI enforces
+  G2 too: the Windows Skia runtime-tests job sets `UnoEnableHRuntimeTests` and runs HRApp through
+  `Given_HotReloadWorkspace.When_HotReloadScenario`, which passed in build 245527.
 - **G3 — R5 warning tests.** A project whose target framework defaults to a C# version above the embedded maximum
   produces the warning once for `Default`, `Latest`, `LatestMajor` and `Preview`, a platform target framework
   included; a supported default or an explicit supported version does not. A blocked reload of such a project is

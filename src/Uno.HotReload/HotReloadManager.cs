@@ -326,7 +326,8 @@ public sealed class HotReloadManager : IDisposable
 					$"{FormatFileNames(xamlFiles)} (edited: {FormatFileNames(files)}).");
 				outcome = HotReloadOperationResult.Failed;
 				// A XAML error, such as an unresolved x:Bind member, can come from code-behind the embedded compiler cannot parse.
-				diagnostics = generatorErrors.AddRange(ReportLanguageVersionHints(auditedProjects));
+				diagnostics = generatorErrors.AddRange(ReportLanguageVersionHints(auditedProjects.Where(
+					p => p.AdditionalDocuments.Any(d => d.FilePath is { } path && xamlFiles.Contains(path)))));
 			}
 			else
 			{
@@ -474,8 +475,8 @@ public sealed class HotReloadManager : IDisposable
 
 	/// <summary>
 	/// Follows a "Hot reload blocked by …" line with the language-version hint of each of <paramref name="projects"/>
-	/// the embedded compiler is too old for (spec 061 R5), and returns the hints as <c>UNOHR0002</c> diagnostics.
-	/// Unlike the compile errors, a Warning passes the tracker's filter, so the IDE and the app status show it.
+	/// the embedded compiler is too old for (spec 061 R5), and returns the hints as <c>UNOHR0002</c> diagnostics, so the
+	/// IDE and the app status show them. The compile errors themselves are not carried (see the FIXME on that branch).
 	/// </summary>
 	private ImmutableArray<Diagnostic> ReportLanguageVersionHints(IEnumerable<Project> projects)
 	{
