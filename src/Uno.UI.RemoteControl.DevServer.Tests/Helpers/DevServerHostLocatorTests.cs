@@ -49,8 +49,9 @@ public class DevServerHostLocatorTests
 		var host = DevServerHostLocator.TryResolve(_hostRoot, dotnetMajorVersion: 11);
 
 		host.Should().NotBeNull();
-		host!.Value.HostPath.Should().Be(Path.Combine(_hostRoot, "net10.0", DevServerHostLocator.HostAssemblyName));
-		host.Value.RequiresMajorRollForward.Should().BeTrue();
+		var (hostPath, requiresMajorRollForward) = host!.Value;
+		hostPath.Should().Be(Path.Combine(_hostRoot, "net10.0", DevServerHostLocator.HostAssemblyName));
+		requiresMajorRollForward.Should().BeTrue();
 	}
 
 	[TestMethod]
@@ -64,8 +65,9 @@ public class DevServerHostLocatorTests
 		var host = DevServerHostLocator.TryResolve(_hostRoot, sdkMajor);
 
 		host.Should().NotBeNull();
-		host!.Value.HostPath.Should().Be(Path.Combine(_hostRoot, expectedTfm, DevServerHostLocator.HostAssemblyName));
-		host.Value.RequiresMajorRollForward.Should().BeFalse();
+		var (hostPath, requiresMajorRollForward) = host!.Value;
+		hostPath.Should().Be(Path.Combine(_hostRoot, expectedTfm, DevServerHostLocator.HostAssemblyName));
+		requiresMajorRollForward.Should().BeFalse();
 	}
 
 	[TestMethod]
@@ -77,8 +79,10 @@ public class DevServerHostLocatorTests
 
 		var host = DevServerHostLocator.TryResolve(_hostRoot, dotnetMajorVersion: 11);
 
-		host!.Value.HostPath.Should().Be(Path.Combine(_hostRoot, "net11.0", DevServerHostLocator.HostAssemblyName));
-		host.Value.RequiresMajorRollForward.Should().BeFalse();
+		host.Should().NotBeNull();
+		var (hostPath, requiresMajorRollForward) = host!.Value;
+		hostPath.Should().Be(Path.Combine(_hostRoot, "net11.0", DevServerHostLocator.HostAssemblyName));
+		requiresMajorRollForward.Should().BeFalse();
 	}
 
 	[TestMethod]
