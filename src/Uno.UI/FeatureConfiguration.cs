@@ -229,8 +229,8 @@ namespace Uno.UI
 			/// <summary>
 			/// The memory, in bytes, that the bitmap cache may use for the encoded bytes of images downloaded over http or https,
 			/// so that other decode sizes and other BitmapImages decode them without downloading them again. Past it, the least
-			/// recently used are dropped first. A BitmapImage keeps the bytes it downloaded itself, outside this bound, for as long
-			/// as its UriSource stays, as on WinUI.
+			/// recently used are dropped first. A BitmapImage keeps the bytes it downloaded itself (the whole file, whatever its
+			/// decode size), outside this bound, for as long as its UriSource stays, as on WinUI.
 			/// </summary>
 			/// <remarks>
 			/// Defaults: 64 MB on desktop, 32 MB on Android, iOS, tvOS and WebAssembly. Lowering it drops what no longer fits.
@@ -254,7 +254,8 @@ namespace Uno.UI
 			/// Enables the bitmap cache: BitmapImages that load the same UriSource with the same decode size share one download
 			/// and one decode, and the encoded bytes of downloaded images are kept (see <see cref="MaxBitmapImageCacheBytes"/>).
 			/// A shared decode is released like any other once nothing displays it (see <see cref="MaxUndisplayedImageBytes"/>).
-			/// Turning it off drops the encoded bytes the cache kept, and a BitmapImage that opens while it is off keeps none.
+			/// Turning it off drops the encoded bytes the cache kept; a BitmapImage that opens while it is off keeps none, and one
+			/// that kept some keeps them until it opens again or its source changes.
 			/// </summary>
 			public static bool EnableBitmapImageCache
 			{
@@ -275,7 +276,7 @@ namespace Uno.UI
 			/// The memory, in bytes, that decoded images nothing displays may keep (0 or more). Such an image keeps its pixels
 			/// for 1 second, as on WinUI, in case it is displayed again; past this limit the oldest are released first, at the
 			/// end of the next layout pass, and with 0 every one of them is. An image counts 4 bytes per pixel of its decoded
-			/// frames and of the texture drawn from it, an image shared through the bitmap cache once.
+			/// frames and of the texture drawn from it, and an image shared through the bitmap cache counts once.
 			/// </summary>
 			/// <remarks>
 			/// Defaults: 128 MB on desktop, 64 MB on Android, iOS and tvOS, 32 MB on WebAssembly (its memory is capped at 2 GB
