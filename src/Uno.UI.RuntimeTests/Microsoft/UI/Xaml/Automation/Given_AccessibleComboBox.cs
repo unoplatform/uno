@@ -168,6 +168,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			}
 		}
 
+		/// <summary>
+		/// As in WinUI (ItemAutomationPeer::GetNameCore), an item peer without a container, or whose container
+		/// provides no name, is named after the item itself: a templated item has no text of its own.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Item_Is_Templated_Then_Item_Peer_Name_Is_Item_Text()
+		{
+			var comboBox = new ComboBox
+			{
+				ItemTemplate = (DataTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+					"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><StackPanel><TextBlock Text='Row'/></StackPanel></DataTemplate>"),
+				ItemsSource = new[] { new NamedItem("Alice") },
+			};
+
+			await UITestHelper.Load(comboBox);
+
+			var peer = (ComboBoxAutomationPeer)FrameworkElementAutomationPeer.CreatePeerForElement(comboBox);
+			Assert.AreEqual("Alice", peer.CreateItemAutomationPeer(comboBox.Items[0]).GetName());
+		}
+
+		private sealed class NamedItem
+		{
+			private readonly string _name;
+
+			public NamedItem(string name) => _name = name;
+
+			public override string ToString() => _name;
+		}
+
 #if __SKIA__
 		/// <summary>
 		/// Verifies that an open ComboBox dropdown exposes its options as a proper WAI-ARIA
@@ -515,27 +545,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		private static string GetDialogCount()
 			=> InvokeBrowserJs("(function(){return String(document.querySelectorAll('[role=dialog]').length);})()");
 
-		private static string GetActiveElementId()
-			=> InvokeBrowserJs("(function(){return document.activeElement ? document.activeElement.id : '';})()");
-
 		// The text nodes of the element itself, without the text of its child elements.
 		private static string GetSemanticText(UIElement element)
 			=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementId(element)}'); if (!e) {{ return ''; }} return Array.from(e.childNodes).filter(function(n){{return n.nodeType === 3;}}).map(function(n){{return n.data;}}).join(''); }})()");
-
-		// A key press as the browser delivers it: on the focused element, bubbling to the document
-		// listener that feeds the XAML keyboard input.
-		private static void PressKeyOnFocusedSemanticElement(string key)
-		{
-			var code = key == " " ? "Space" : key;
-			InvokeBrowserJs(
-				"(function(){" +
-				"const target = document.activeElement || document.body;" +
-				"['keydown','keyup'].forEach(function(type){" +
-				$"target.dispatchEvent(new KeyboardEvent(type, {{ key: '{key}', code: '{code}', bubbles: true, cancelable: true }}));" +
-				"});" +
-				"return 'ok';" +
-				"})()");
-		}
 
 		// Returns "dupP|dialogs": count of standalone <p> whose text matches an option label (duplicate
 		// emission), and count of role=dialog nodes containing any role=option (un-suppressed popup).

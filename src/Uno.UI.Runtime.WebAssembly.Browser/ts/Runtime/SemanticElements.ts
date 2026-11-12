@@ -896,13 +896,22 @@ namespace Uno.UI.Runtime {
 		 * Updates the expanded/collapsed state of a combobox element.
 		 */
 		public static updateExpandCollapseState(handle: number, expanded: boolean): void {
-			const element = document.getElementById(`uno-semantics-${handle}`);
-			if (element) {
-				element.setAttribute('aria-expanded', String(expanded));
-				// Clear activedescendant when collapsing
-				if (!expanded) {
-					element.removeAttribute('aria-activedescendant');
+			const apply = () => {
+				const element = document.getElementById(`uno-semantics-${handle}`);
+				if (element) {
+					element.setAttribute('aria-expanded', String(expanded));
+					// Clear activedescendant when collapsing
+					if (!expanded) {
+						element.removeAttribute('aria-activedescendant');
+					}
 				}
+			};
+
+			if (document.getElementById(`uno-semantics-${handle}`)) {
+				apply();
+			} else {
+				// A virtualized item is created by a batched mutation; apply once it exists.
+				SemanticElements.scheduleVirtualizedMutation(apply);
 			}
 		}
 
@@ -1039,14 +1048,8 @@ namespace Uno.UI.Runtime {
 				}
 			});
 
-			element.addEventListener('keydown', (e) => {
-				if (e.key === 'Enter' || e.key === ' ') {
-					e.preventDefault();
-					if (callbacks.onInvoke) {
-						callbacks.onInvoke(handle);
-					}
-				}
-			});
+			// Enter/Space reach the XAML control through the document key listener, so no separate
+			// keydown handler is needed.
 
 			this.appendToParent(element, parentHandle, index);
 		}

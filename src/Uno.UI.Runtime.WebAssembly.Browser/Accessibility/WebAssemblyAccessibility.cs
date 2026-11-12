@@ -684,6 +684,47 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			offset.X, offset.Y,
 			itemElement.Visual.Size.X, itemElement.Visual.Size.Y,
 			role, label);
+
+		ApplyRealizedItemState(itemElement);
+	}
+
+	/// <summary>
+	/// A realized item is created with a role, a label and its position only: seeds the state the
+	/// factory path would have applied, which later reaches the element only through property changes.
+	/// </summary>
+	private void ApplyRealizedItemState(UIElement itemElement)
+	{
+		if (itemElement.GetOrCreateAutomationPeer() is not { } peer)
+		{
+			return;
+		}
+
+		var handle = itemElement.Visual.Handle;
+		try
+		{
+			if (peer.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider expandCollapseProvider)
+			{
+				var state = expandCollapseProvider.ExpandCollapseState;
+				NativeMethods.UpdateExpandCollapseState(handle, state is ExpandCollapseState.Expanded or ExpandCollapseState.PartiallyExpanded);
+			}
+
+			if (peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
+			{
+				NativeMethods.UpdateSelectionState(handle, selectionItemProvider.IsSelected);
+			}
+			else if (itemElement is SelectorItem selectorItem)
+			{
+				NativeMethods.UpdateSelectionState(handle, selectorItem.IsSelected);
+			}
+		}
+		catch (Exception ex)
+		{
+			// A peer queried before it is fully initialized: the state follows its property changes.
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"[A11y] Initial state of {itemElement.GetType().Name} not applied: {ex.Message}");
+			}
+		}
 	}
 
 	private void TryUnregisterVirtualizedContainer(UIElement element)
