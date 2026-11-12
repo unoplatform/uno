@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<!-- Generates ../SilkCompat.Generated.cs and ../SilkCompat.Native.Generated.cs. Not part of any build: `dotnet run`
+	     it from this folder after changing a header, the renames or the hand-written function list. -->
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>$(NetCurrent)</TargetFramework>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Silk.NET.WebGPU" />
+		<PackageReference Include="Silk.NET.WebGPU.Extensions.WGPU" />
+	</ItemGroup>
+</Project>

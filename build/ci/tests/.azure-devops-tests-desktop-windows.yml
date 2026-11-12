@@ -118,6 +118,26 @@ jobs:
       ArtifactName: runtime-tests-desktop-skia-windows-failures
       ArtifactType: Container
 
+  # An out-of-process UIA client: the only coverage of UiaRaiseStructureChangedEvent's native signature.
+  - pwsh: |
+      $results = "$(build.sourcesdirectory)/build/skia-windows-uia-probe-results.xml"
+      dotnet run --project build/test-scripts/Win32UiaEventProbe -- "$(SamplesAppArtifactPath)/SamplesApp.dll" $results
+      if ($LASTEXITCODE -ne 0) {
+        if (Test-Path "$results.log") { Get-Content "$results.log" -Tail 200 }
+        throw "Win32UiaEventProbe failed."
+      }
+    displayName: Run UIA Structure Event Probe
+    condition: succeededOrFailed()
+
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testRunTitle: 'Windows UIA Structure Event Probe'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/skia-windows-uia-probe-results.xml'
+      failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
+
 # The same artifact and script as the Skia lane, rendering through the WebGPU backend. Hosted agents have no GPU, so
 # wgpu runs on Mesa's lavapipe (llvmpipe behind Vulkan) rather than D3D12 WARP: measured 2.75x faster, which lets the
 # whole suite run in one job (on WARP it took four, about an hour of agent time).
@@ -126,7 +146,7 @@ jobs:
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 0
   # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1); master runs it always.
-  condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.WebGpuTestsRequired'], 'true')))
+  condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.WebGpuTestsRequired'], 'true')))
 
   pool:
     vmImage: 'windows-2025'

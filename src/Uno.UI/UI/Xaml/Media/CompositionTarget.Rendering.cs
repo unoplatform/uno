@@ -104,6 +104,10 @@ public partial class CompositionTarget
 		}
 
 		((ICompositionTarget)this).RequestNewFrame();
+
+		// A request still latched from before the swap absorbs the one above without asking the host for a frame,
+		// and a swap is exactly when the view that request went to may have stopped drawing.
+		AskHostForFrame();
 	}
 
 	// Non-throwing peek at renderer availability. False while a declared backend initializes asynchronously (WASM
@@ -152,11 +156,14 @@ public partial class CompositionTarget
 	private readonly Lock _frameGate = new();
 	private readonly Lock _xamlRootBoundsGate = new();
 
-	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested
+	// Only read and set from the native rendering thread in OnNativePlatformFrameRequested.
+	// The two clip geometry fields must not be static: each composition target (window) has its own
+	// clip, keyed on its own frame, so a static cache lets one window overwrite another's.
+	// On hosts that render each window on its own thread it is also a data race.
 	private Size _lastCanvasSize = Size.Empty;
-	private static IGeometry? _lastNativeClipPath;
+	private IGeometry? _lastNativeClipPath;
 	private float _lastRasterizationScale = 1;
-	private static IGeometry? _lastScaledNativeClipPath;
+	private IGeometry? _lastScaledNativeClipPath;
 
 	// only set on the UI thread and under _frameGate, only read under _frameGate
 	// UNO_FORCE_FULL_REPAINT=1 disables damage-clipped partial repaints (benchmarking: measures true full-frame cost).
@@ -414,7 +421,7 @@ public partial class CompositionTarget
 		if (nativeVisualsZOrderChanged)
 		{
 			_nativeVisualsInZOrder = nativeVisualsInZOrder;
-			ContentPresenter.OnNativeHostsRenderOrderChanged(nativeVisualsInZOrder);
+			ContentPresenter.OnNativeHostsRenderOrderChanged(this, nativeVisualsInZOrder);
 		}
 
 		FrameRendered?.Invoke();
@@ -537,11 +544,13 @@ public partial class CompositionTarget
 				// Detach returns null both for "nothing was damaged" and for "no damage information", but a frame
 				// is only ever recorded with tracking on, so on an unresized frame null means nothing changed. The
 				// target still holds the previous frame, so the clear+replay is skipped rather than repainted whole.
+				// Not under an overlay: it has to land on a fresh frame, or it blends into its last copy.
 				var nothingChanged = !resized
 					&& lastRenderedFrame.damage is null
 					&& preservesContents
 					&& !overlayEnabled
-					&& !_forceFullRepaint;
+					&& !_forceFullRepaint
+					&& !drawsOutsideDamage;
 				presentedUnchanged = nothingChanged;
 
 				// Scaling (DPI) is applied through the neutral session so it works for any backend.

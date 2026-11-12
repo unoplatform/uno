@@ -53,6 +53,9 @@
 		<!-- WinUI keeps the old head's name, which is deliberately absent from the Uno.UI.Extras /
 		     Uno.Foundation IVT lists — that is what avoids the duplicate-type collision there. -->
 		<AssemblyName Condition="'$(_Platform)' == 'windows'">SamplesApp.Windows</AssemblyName>
+		<!-- WinUI runtime tests are the parity oracle, so they must run on the referenced Windows App SDK.
+		     A framework-dependent MSIX binds to the newest runtime on the machine instead. -->
+		<WindowsAppSDKSelfContained Condition="'$(_Platform)' == 'windows'">true</WindowsAppSDKSelfContained>
 
 		<!--
 		Every non-WinUI TFM renders with Skia, so the runtime variant is Generic on all of them, and this
@@ -107,6 +110,8 @@
 		<UnoDrawingBackendSkia Condition="'$(UnoDrawingBackendSkia)'==''">true</UnoDrawingBackendSkia>
 		<!-- wgpu-native publishes no tvOS slice, so the backend's P/Invokes have nothing to link against there. -->
 		<UnoDrawingBackendWebGpu Condition="'$(UnoDrawingBackendWebGpu)'=='' and '$(_Platform)' == 'tvos'">false</UnoDrawingBackendWebGpu>
+		<!-- WinUI renders natively, so its head has no use for the wgpu-native download or webgpu.dll. -->
+		<UnoDrawingBackendWebGpu Condition="'$(_Platform)' == 'windows'">false</UnoDrawingBackendWebGpu>
 		<UnoDrawingBackendWebGpu Condition="'$(UnoDrawingBackendWebGpu)'==''">true</UnoDrawingBackendWebGpu>
 		<DefineConstants Condition="'$(UnoDrawingBackendSkia)'=='true'">$(DefineConstants);UNO_DRAWING_SKIA</DefineConstants>
 		<DefineConstants Condition="'$(UnoDrawingBackendWebGpu)'=='true'">$(DefineConstants);UNO_DRAWING_WEBGPU</DefineConstants>
@@ -118,10 +123,16 @@
 	     [DllImport("webgpu")] resolves there. Without it the WebGPU backend fails graphics init with a
 	     DllNotFoundException and the app never leaves its loading screen. -->
 	<Import Project="..\..\Uno.UI.Composition.WebGpu.Init\wgpu-wasm.targets" Condition="'$(_Platform)' == 'browserwasm' AND '$(UnoDrawingBackendWebGpu)'!='false'" />
+	<!-- iOS links the static wgpu-native through the package's own wiring, so the iOS lanes test what apps get. -->
+	<Import Project="..\..\Uno.UI.Composition.WebGpu\package\Uno.WinUI.Composition.WebGpu.targets" Condition="'$(_Platform)' == 'ios' AND '$(UnoDrawingBackendWebGpu)'!='false'" />
+	<!-- Except the native trim: its detection task ships only in the Uno.Sdk package, and this head reaches WebGPU anyway. -->
+	<PropertyGroup Condition="'$(_Platform)' == 'ios'">
+		<_UnoWebGpuNativeTrim>false</_UnoWebGpuNativeTrim>
+	</PropertyGroup>
 
 	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true'">
 		<ProjectReference Include="..\..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
+		<ProjectReference Include="..\..\Uno.UI.Composition.Skia\Uno.UI.Composition.Skia.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 		<ProjectReference Include="..\..\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" Condition="'$(UnoDrawingBackendWebGpu)'!='false'" />
 
 		<!-- Backend registration shared by every head's entry point. -->
@@ -139,11 +150,12 @@
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Extras\Uno.UI.Extras.Generic.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Generic.csproj" />
 		<!-- Svg and Graphics2DSK are SkiaSharp-backed: a Skia-free build drops them. -->
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.SpellChecking\Uno.WinUI.SpellChecking.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DWebGpu\Uno.WinUI.Graphics3DWebGpu.csproj" Condition="'$(UnoDrawingBackendWebGpu)'!='false'" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 
 	</ItemGroup>
@@ -311,10 +323,6 @@
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Graph.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\SamplesApp.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Uno.UI.RuntimeTests.dll" />
-		<!-- The WebGPU interop layer stays interpreted: its wgpu callbacks take WGPUStringView by value, and an
-		     AOT-compiled call site and Dawn disagree on that shape, so the app traps with "function signature
-		     mismatch" on the first render. Nothing on the hot path lives here - the renderer itself is AOT. -->
-		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Uno.UI.Composition.WebGpu.Init.dll" />
 		<!-- HarfBuzz reaches back into managed code through DelegateProxies.ReferenceTableProxyImplementation
 		     while creating a font; AOT-compiled, that native-to-managed wrapper does not match what HarfBuzz
 		     calls, and the app dies during startup with "function signature mismatch" (symbolicated stack:
@@ -341,6 +349,8 @@
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Skia.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Model.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Custom.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.SceneGraph.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Animation.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Silk.NET.OpenGL.dll" />
 	</ItemGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(Configuration)'=='Debug'">
@@ -492,7 +502,7 @@
 	<PropertyGroup Condition="'$(_Platform)' == 'ios'">
 		<!-- https://github.com/dotnet/runtime/issues/109966 -->
 		<_IsDedupEnabled>false</_IsDedupEnabled>
-		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">iossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">iossimulator-arm64</RuntimeIdentifier>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(_Platform)' == 'ios' AND '$(BuildForTestFlight)' == 'true'">
@@ -517,7 +527,7 @@
 		<PackageReference Include="JetBrains.Annotations" />
 	</ItemGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'tvos'">
-		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">tvossimulator-x64</RuntimeIdentifier>
+		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">tvossimulator-arm64</RuntimeIdentifier>
 
 		<!-- Only a default: a contributor or CI without that profile installed can override it. -->
 		<CodesignProvision Condition="'$(CodesignProvision)' == ''">Uno Dev Samples</CodesignProvision>

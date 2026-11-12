@@ -151,7 +151,7 @@ internal class PackageManifest
 		public const string MicrosoftLoggingConsole = nameof(MicrosoftLoggingConsole);
 		public const string MsalClient = nameof(MsalClient);
 		public const string Mvvm = nameof(Mvvm);
-		public const string Prism = nameof(Prism);
+		public const string Reactor = nameof(Reactor);
 		public const string UnoFonts = nameof(UnoFonts);
 		public const string AndroidMaterial = nameof(AndroidMaterial);
 		public const string AndroidXSplashScreen = nameof(AndroidXSplashScreen);
@@ -162,11 +162,15 @@ internal class PackageManifest
 		public const string AndroidXSwipeRefreshLayout = nameof(AndroidXSwipeRefreshLayout);
 		public const string AndroidXNavigation = nameof(AndroidXNavigation);
 		public const string AndroidXCollection = nameof(AndroidXCollection);
+		public const string AndroidXFragment = nameof(AndroidXFragment);
+		public const string AndroidXLifecycle = nameof(AndroidXLifecycle);
 		public const string AndroidXLeanback = nameof(AndroidXLeanback);
 		public const string AndroidXCarApp = nameof(AndroidXCarApp);
 		public const string AndroidXWear = nameof(AndroidXWear);
 		public const string AndroidXWearTiles = nameof(AndroidXWearTiles);
 		public const string Maui = nameof(Maui);
+		public const string UnoMaui = nameof(UnoMaui);
+		public const string UnoRetarget = nameof(UnoRetarget);
 
 		// Microsoft.Maui.Controls.Compatibility is kept in its own group because it is no
 		// longer built or shipped as of .NET 11 Preview 6, while Microsoft.Maui.Controls and

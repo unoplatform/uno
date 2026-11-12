@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+	<!--
+		Defines UNO_<major>_<minor>_OR_GREATER for every Uno Platform release up to the one this package ships, as .NET
+		does with NET8_0_OR_GREATER, so a library can compile against more than one Uno version. A symbol that is
+		absent means an older Uno, including every release from before these symbols existed.
+	-->
+
+	<PropertyGroup>
+		<!-- Stamped with the package version when packing (PrepareNuGetPackage in build/Uno.UI.Build.csproj). -->
+		<_UnoWinUIPackageVersion>0.0.0</_UnoWinUIPackageVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!--
+			The range of minors (and majors) a symbol is defined for. Every minor of an earlier major is covered, shipped
+			or not, which keeps this free of any list to maintain: on 7.0, UNO_6_29_OR_GREATER is true, as 7.0 is.
+		-->
+		<_UnoVersionPart Include="0;1;2;3;4;5;6;7;8;9;10;11;12;13;14;15;16;17;18;19;20;21;22;23;24;25;26;27;28;29" />
+	</ItemGroup>
+
+	<Target Name="_UnoDefineVersionSymbols"
+			AfterTargets="PrepareForBuild"
+			DependsOnTargets="_UnoParseVersion;_UnoDefineEarlierMajorVersionSymbols"
+			Condition="'$(_UnoWinUIPackageVersion)' != '0.0.0'">
+
+		<ItemGroup>
+			<_UnoVersionSymbol Include="@(_UnoVersionPart->'UNO_$(_UnoVersionMajor)_%(Identity)_OR_GREATER')" Condition="%(_UnoVersionPart.Identity) &lt;= $(_UnoVersionMinor)" />
+		</ItemGroup>
+
+		<PropertyGroup>
+			<DefineConstants>$(DefineConstants);@(_UnoVersionSymbol)</DefineConstants>
+		</PropertyGroup>
+
+		<ItemGroup>
+			<_UnoVersionSymbol Remove="@(_UnoVersionSymbol)" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_UnoParseVersion" Condition="'$(_UnoWinUIPackageVersion)' != '0.0.0'">
+		<PropertyGroup>
+			<!-- 7.0.0-dev.123 -> 7.0.0 -->
+			<_UnoReleaseVersion>$(_UnoWinUIPackageVersion.Split('-')[0])</_UnoReleaseVersion>
+			<_UnoVersionMajor>$([System.Version]::Parse('$(_UnoReleaseVersion)').Major)</_UnoVersionMajor>
+			<_UnoVersionMinor>$([System.Version]::Parse('$(_UnoReleaseVersion)').Minor)</_UnoVersionMinor>
+		</PropertyGroup>
+		<ItemGroup>
+			<!-- The symbols start at 6.0, the major these symbols could first help bridge. -->
+			<_UnoEarlierMajor Include="@(_UnoVersionPart)" Condition="%(_UnoVersionPart.Identity) &gt;= 6 and %(_UnoVersionPart.Identity) &lt; $(_UnoVersionMajor)" />
+		</ItemGroup>
+	</Target>
+
+	<!-- Batched once per earlier major. Items, unlike properties, accumulate across the batches. -->
+	<Target Name="_UnoDefineEarlierMajorVersionSymbols"
+			Outputs="%(_UnoEarlierMajor.Identity)"
+			Condition="'@(_UnoEarlierMajor)' != ''">
+		<PropertyGroup>
+			<_UnoEarlierMajorValue>%(_UnoEarlierMajor.Identity)</_UnoEarlierMajorValue>
+		</PropertyGroup>
+		<ItemGroup>
+			<_UnoVersionSymbol Include="@(_UnoVersionPart->'UNO_$(_UnoEarlierMajorValue)_%(Identity)_OR_GREATER')" />
+		</ItemGroup>
+	</Target>
+
+</Project>

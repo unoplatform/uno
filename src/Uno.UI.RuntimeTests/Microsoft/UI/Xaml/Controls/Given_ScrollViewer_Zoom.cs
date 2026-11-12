@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -41,7 +42,8 @@ public class Given_ScrollViewer_Zoom
 
 		// Change to zoom factor 2.0
 		var result = sut.ChangeView(null, null, 2.0f, disableAnimation: true);
-		await TestServices.WindowHelper.WaitForIdle();
+		// WinUI applies the zoom asynchronously, so WaitForIdle alone can observe the old factor.
+		await TestServices.WindowHelper.WaitFor(() => Math.Abs(sut.ZoomFactor - 2.0f) < 0.01f);
 
 		Assert.IsTrue(result, "ChangeView should return true");
 		Assert.AreEqual(2.0f, sut.ZoomFactor, 0.01f, "Zoom factor should be 2.0 after ChangeView");
@@ -105,7 +107,8 @@ public class Given_ScrollViewer_Zoom
 
 		// Try to zoom below minimum
 		sut.ChangeView(null, null, 0.1f, disableAnimation: true);
-		await TestServices.WindowHelper.WaitForIdle();
+		// WinUI applies the zoom asynchronously, so WaitForIdle alone can observe the old factor.
+		await TestServices.WindowHelper.WaitFor(() => Math.Abs(sut.ZoomFactor - 0.5f) < 0.01f);
 
 		// Zoom should be clamped to minimum
 		Assert.AreEqual(0.5f, sut.ZoomFactor, 0.01f, "Zoom factor should be clamped to MinZoomFactor");
@@ -137,7 +140,8 @@ public class Given_ScrollViewer_Zoom
 
 		// Try to zoom above maximum
 		sut.ChangeView(null, null, 10.0f, disableAnimation: true);
-		await TestServices.WindowHelper.WaitForIdle();
+		// WinUI applies the zoom asynchronously, so WaitForIdle alone can observe the old factor.
+		await TestServices.WindowHelper.WaitFor(() => Math.Abs(sut.ZoomFactor - 4.0f) < 0.01f);
 
 		// Zoom should be clamped to maximum
 		Assert.AreEqual(4.0f, sut.ZoomFactor, 0.01f, "Zoom factor should be clamped to MaxZoomFactor");

@@ -1,5 +1,6 @@
-﻿using Uno.Disposables;
+﻿using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Uno.Disposables;
 using Uno.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Media
@@ -8,32 +9,45 @@ namespace Microsoft.UI.Xaml.Media
 	{
 		private readonly SerialDisposable _sourceSubscription = new SerialDisposable();
 
-		// The SVG source ImageOpened was raised for: WinUI raises it together with the source's Opened, so an SVG source
-		// raises it on a brush once.
+		// Changes on every ImageSource change, so a Subscribe that the app superseded meanwhile is noticed.
+		private int _subscriptionVersion;
+
+		// The SVG source ImageOpened was raised for: an SVG source raises it on a brush once, however often it loads.
 		private SvgImageSource _svgImageOpenedFor;
 
 		internal ImageData? ImageDataCache;
 
 		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue)
 		{
+			// The new source draws nothing until it opens, as on WinUI, where a brush draws its source's surface. The
+			// composition brush lets go of the old image before the subscription can release it.
 			ImageDataCache = default;
+			if (_compositionBrush is CompositionSurfaceBrush surfaceBrush)
+			{
+				surfaceBrush.Surface = null;
+			}
 
 			if (!ReferenceEquals(newValue, _svgImageOpenedFor))
 			{
 				_svgImageOpenedFor = null;
 			}
 
-			_sourceSubscription.Disposable = newValue?.Subscribe(image => OnSourceOpened(newValue, image));
+			var version = ++_subscriptionVersion;
+			var subscription = newValue?.SubscribeWeakly(OnSourceOpened);
+
+			// Subscribing ran app code (an ImageOpened handler) that may have set another ImageSource, subscribed to by now.
+			if (version == _subscriptionVersion)
+			{
+				_sourceSubscription.Disposable = subscription;
+			}
+			else
+			{
+				subscription?.Dispose();
+			}
 		}
 
-		private void OnSourceOpened(ImageSource source, ImageData image)
+		private void OnSourceOpened(ImageData image)
 		{
-			// A delivery already under way when the brush changed source is for the previous source.
-			if (!ReferenceEquals(source, ImageSource))
-			{
-				return;
-			}
-
 			ImageDataCache = image;
 
 			if (image.Kind == ImageDataKind.Error)
@@ -42,7 +56,7 @@ namespace Microsoft.UI.Xaml.Media
 				//		 so the ImageFailed won't be raised if the url is invalid ...
 				OnImageFailed();
 			}
-			else if (source is not SvgImageSource svgImageSource)
+			else if (ImageSource is not SvgImageSource svgImageSource)
 			{
 				OnImageOpened();
 			}

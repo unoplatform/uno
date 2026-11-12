@@ -1003,4 +1003,50 @@ public class Given_Binding
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24827")]
+	public async Task When_XLoad_Subtree_Has_AutomationProperties_Name()
+	{
+		var xamlFile = new XamlFile("MainPage.xaml", """
+			<Page x:Class="TestRepro.MainPage"
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<StackPanel>
+					<Grid x:Name="DeferredPanel" x:Load="{x:Bind IsShown, Mode=OneWay}">
+						<TextBox AutomationProperties.Name="Notes" />
+					</Grid>
+					<Button AutomationProperties.Name="Save" x:Name="SaveButton" x:Load="{x:Bind IsShown, Mode=OneWay}" />
+				</StackPanel>
+			</Page>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public bool IsShown { get; set; }
+
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }

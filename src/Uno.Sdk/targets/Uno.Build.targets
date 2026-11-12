@@ -154,6 +154,29 @@
 
 	</Target>
 
+	<Target Name="UnoFailOnLateBrowserWasmTargetFramework"
+			BeforeTargets="BeforeBuild"
+			Condition="
+				( '$(OutputType)' == 'Exe' OR '$(OutputType)' == 'WinExe' OR '$(IsUnoHead)' == 'true' )
+				AND $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm'
+				AND '$(_DefaultMicrosoftNETSdk)' == 'Microsoft.NET.Sdk' ">
+
+		<!--
+			Sdk.props picks the WebAssembly SDK from $(TargetFramework), which is only known there when it is
+			a global property (-f, or the inner build of TargetFrameworks). A TargetFramework set in the project,
+			in Directory.Build.props or by a file-based app's #:property comes too late, and the head would
+			silently build as a desktop executable. Uno.SingleBrowserWasmTargetFramework.targets moves it to
+			TargetFrameworks when the project is already known to be a head there; this reports the rest, such as
+			an OutputType set in Directory.Build.targets. It reads OutputType itself, as IsUnoHead is computed
+			before such an OutputType is set.
+		-->
+
+		<Error Code="UNOB0032"
+			HelpLink="https://aka.platform.uno/UNOB0032"
+			Text="The '$(TargetFramework)' target framework was set after the Uno.Sdk chose the .NET SDK to build with, and the project was only known to be an app after that too, so it would build as a desktop executable instead of a WebAssembly app. Set OutputType in the project file, or use &lt;TargetFrameworks&gt;$(TargetFramework)&lt;/TargetFrameworks&gt; instead. See for more details: https://aka.platform.uno/UNOB0032" />
+
+	</Target>
+
 	<Target Name="_UnoVSCleanupOtherTFMsForHR"
             Condition="
 				'$(IsImplicitlyTriggeredBuild)' == 'true'

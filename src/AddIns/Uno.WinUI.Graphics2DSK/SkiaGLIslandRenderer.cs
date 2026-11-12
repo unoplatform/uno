@@ -47,7 +47,10 @@ internal sealed class SkiaGLIslandRenderer(SKCanvasElement owner) : IGLIslandRen
 		canvas.Clear(SKColors.Transparent);
 		canvas.Save();
 		canvas.ClipRect(new SKRect(0, 0, width, height));
-		owner.InvokeRenderOverride(canvas, new Size(width, height));
+		// The framebuffer is in device pixels; RenderOverride draws in the element's logical units.
+		var scale = (float)(owner.XamlRoot?.RasterizationScale ?? 1);
+		canvas.Scale(scale);
+		owner.InvokeRenderOverride(canvas, new Size(width / scale, height / scale));
 		canvas.Restore();
 
 		_grContext.Flush();

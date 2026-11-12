@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -290,6 +291,281 @@ public class Given_Window
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public void When_Vulkan_Then_Device_Is_DXGIs_First_Hardware_Adapter()
+	{
+		// WinUI renders on DXGI's first hardware adapter: the primary display's, or the app's choice in the Windows graphics settings.
+		var wrapper = TestServices.WindowHelper.CurrentTestWindow.NativeWrapper;
+		var context = GetField(wrapper, "_context");
+		if (context?.GetType().GetProperty("Kind")?.GetValue(context)?.ToString() != "Vulkan")
+		{
+			Assert.Inconclusive("The window did not negotiate a Vulkan context.");
+		}
+
+		var vulkan = GetField(context, "_vk");
+		var deviceLuid = (long?)vulkan!.GetType().GetProperty("DeviceLuid", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(vulkan);
+
+		if (deviceLuid is null)
+		{
+			Assert.Inconclusive("The driver doesn't report an adapter LUID.");
+		}
+
+		Assert.AreEqual(GetFirstHardwareAdapterLuid(), deviceLuid);
+
+		static object GetField(object target, string name)
+			=> target?.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(target);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public async Task When_Swapchain_Missing_Then_Next_Frame_Recovers()
+	{
+		const BindingFlags Private = BindingFlags.Instance | BindingFlags.NonPublic;
+
+		var wrapper = TestServices.WindowHelper.CurrentTestWindow.NativeWrapper;
+		var context = wrapper.GetType().GetField("_context", Private)!.GetValue(wrapper);
+		if (context?.GetType().GetProperty("Kind")?.GetValue(context)?.ToString() != "Vulkan")
+		{
+			Assert.Inconclusive("The window did not negotiate a Vulkan context.");
+		}
+
+		var vulkan = context.GetType().GetField("_vk", Private)!.GetValue(context)!;
+		var display = vulkan.GetType().GetField("_display", Private)!.GetValue(vulkan)!;
+		var swapchain = display.GetType().GetField("_swapchain", Private)!;
+		ulong SwapchainHandle()
+		{
+			var value = swapchain.GetValue(display)!;
+			return (ulong)value.GetType().GetField("Handle")!.GetValue(value)!;
+		}
+
+		// What a failed RecreateSurface leaves behind during a display transition.
+		using (var deviceLock = (IDisposable)vulkan.GetType().GetMethod("Lock")!.Invoke(vulkan, null)!)
+		{
+			var deviceApi = vulkan.GetType().GetProperty("DeviceApi")!.GetValue(vulkan)!;
+			deviceApi.GetType().GetMethod("DeviceWaitIdle")!.Invoke(deviceApi, [vulkan.GetType().GetProperty("DeviceHandle")!.GetValue(vulkan)]);
+			display.GetType().GetMethod("DestroyCurrentImageViews", Private)!.Invoke(display, null);
+			display.GetType().GetMethod("DestroySwapchain", Private)!.Invoke(display, null);
+		}
+
+		Assert.AreEqual(0UL, SwapchainHandle());
+
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) });
+
+		await TestServices.WindowHelper.WaitFor(() => SwapchainHandle() != 0);
+		await TestServices.WindowHelper.WaitFor(() => (bool)context.GetType().GetProperty("PresentedLastFrame")!.GetValue(context)!);
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public void When_Probing_Vulkan_Devices_Then_Software_Comes_Last_In_Loader_Order()
+	{
+		var getProbeOrder = Type.GetType("Uno.UI.Runtime.Vulkan.Interop.VulkanDevice, Uno.UI.Runtime", throwOnError: true)!
+			.GetMethod("GetProbeOrder", BindingFlags.Static | BindingFlags.NonPublic)!;
+		var typeEnum = getProbeOrder.GetParameters()[0].ParameterType.GetElementType()!;
+
+		// Loader order: software last, otherwise untouched, and a lone software device still gets probed.
+		CollectionAssert.AreEqual(new[] { 1, 2, 0 }, Order(false, "CPU", "INTEGRATED_GPU", "DISCRETE_GPU"));
+		CollectionAssert.AreEqual(new[] { 0, 1 }, Order(false, "DISCRETE_GPU", "INTEGRATED_GPU"));
+		CollectionAssert.AreEqual(new[] { 0 }, Order(false, "CPU"));
+
+		// Discrete first, for the platforms that ask for it.
+		CollectionAssert.AreEqual(new[] { 1, 0, 2 }, Order(true, "INTEGRATED_GPU", "DISCRETE_GPU", "CPU"));
+
+		int[] Order(bool preferDiscrete, params string[] names)
+		{
+			var types = Array.CreateInstance(typeEnum, names.Length);
+			for (var i = 0; i < names.Length; i++)
+			{
+				types.SetValue(Enum.Parse(typeEnum, "VK_PHYSICAL_DEVICE_TYPE_" + names[i]), i);
+			}
+
+			return (int[])getProbeOrder.Invoke(null, [types, preferDiscrete])!;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[DataRow(ElementTheme.Dark, (byte)0x20)]
+	[DataRow(ElementTheme.Light, (byte)0xF3)]
+	public async Task When_SystemBackdrop_Not_Rendered_Then_Root_Paints_Page_Background(ElementTheme theme, byte expected)
+	{
+		var content = new Border { Width = 100, Height = 100 };
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(content);
+
+		var window = TestServices.WindowHelper.CurrentTestWindow;
+		var previousBackdrop = window.SystemBackdrop;
+
+		// The fallback follows the theme of the window's content, as MUX's SystemBackdropConfiguration does.
+		var windowContent = (FrameworkElement)window.Content;
+		var previousTheme = windowContent.RequestedTheme;
+		try
+		{
+			windowContent.RequestedTheme = theme;
+
+			// No head renders a custom backdrop, just as Android, iOS, WebAssembly and X11 don't render Mica.
+			window.SystemBackdrop = new UnrenderedBackdrop();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			AssertPaintsPageBackground((XamlIslandRoot)content.XamlRoot.VisualTree.RootElement, expected);
+		}
+		finally
+		{
+			window.SystemBackdrop = previousBackdrop;
+			windowContent.RequestedTheme = previousTheme;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[DataRow(ElementTheme.Dark, (byte)0x20)]
+	[DataRow(ElementTheme.Light, (byte)0xF3)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public async Task When_Window_On_Another_Adapters_Display_Then_Backdrop_Falls_Back_Until_It_Returns(ElementTheme theme, byte expected)
+	{
+		var wrapper = TestServices.WindowHelper.CurrentTestWindow.NativeWrapper;
+		var context = wrapper.GetType().GetField("_context", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(wrapper);
+		if (context?.GetType().GetProperty("Kind")?.GetValue(context)?.ToString() != "Vulkan")
+		{
+			Assert.Inconclusive("The window did not negotiate a Vulkan context.");
+		}
+
+		var vulkan = context.GetType().GetField("_vk", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(context)!;
+		if (vulkan.GetType().GetProperty("DeviceLuid", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(vulkan) is not long deviceLuid)
+		{
+			Assert.Inconclusive("The driver doesn't report an adapter LUID.");
+			return;
+		}
+
+		var content = new Border { Width = 100, Height = 100 };
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(content);
+		var root = (XamlIslandRoot)content.XamlRoot.VisualTree.RootElement;
+
+		var hwnd = ((Uno.UI.NativeElementHosting.Win32NativeWindow)wrapper.NativeWindow).Hwnd;
+		var luidOverride = Type.GetType("Uno.UI.Runtime.Win32.Vulkan.Win32VulkanSurfaceFactory, Uno.UI.Runtime.Win32", throwOnError: true)!
+			.GetProperty("PresentingAdapterLuidOverride", BindingFlags.Static | BindingFlags.NonPublic)!;
+
+		var window = TestServices.WindowHelper.CurrentTestWindow;
+		var previousBackdrop = window.SystemBackdrop;
+		var windowContent = (FrameworkElement)window.Content;
+		var previousTheme = windowContent.RequestedTheme;
+		var previousSize = window.AppWindow.Size;
+
+		// An OS without Mica stays on the fallback throughout.
+		var materialMode = Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported() ? BackdropBackgroundMode.Transparent : BackdropBackgroundMode.Fallback;
+		try
+		{
+			windowContent.RequestedTheme = theme;
+			luidOverride.SetValue(null, deviceLuid);
+			window.SystemBackdrop = new MicaBackdrop();
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(materialMode, root.BackdropBackground, "The rendering adapter drives the display, so the material shows.");
+
+			// What unplugging a screen or dragging the window to another adapter's screen ends in.
+			luidOverride.SetValue(null, deviceLuid + 1);
+			SendMessage(hwnd, WM_DISPLAYCHANGE, 0, 0);
+			await TestServices.WindowHelper.WaitForIdle();
+			AssertPaintsPageBackground(root, expected);
+
+			luidOverride.SetValue(null, deviceLuid);
+			SendMessage(hwnd, WM_DISPLAYCHANGE, 0, 0);
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(materialMode, root.BackdropBackground, "The material returns with the adapter.");
+
+			// A resize alone can change the window's monitor, with no move: the largest overlap decides it.
+			var backdropMonitor = wrapper.GetType().GetField("_backdropMonitor", BindingFlags.Instance | BindingFlags.NonPublic)!;
+			backdropMonitor.SetValue(wrapper, Activator.CreateInstance(backdropMonitor.FieldType));
+			luidOverride.SetValue(null, deviceLuid + 1);
+			window.AppWindow.Resize(new Windows.Graphics.SizeInt32(previousSize.Width + 1, previousSize.Height));
+			await TestServices.WindowHelper.WaitForIdle();
+			AssertPaintsPageBackground(root, expected);
+		}
+		finally
+		{
+			luidOverride.SetValue(null, null);
+			window.AppWindow.Resize(previousSize);
+			window.SystemBackdrop = previousBackdrop;
+			windowContent.RequestedTheme = previousTheme;
+			SendMessage(hwnd, WM_DISPLAYCHANGE, 0, 0);
+		}
+	}
+
+	private static long? GetFirstHardwareAdapterLuid()
+	{
+		const int EnumAdapters1Slot = 12, GetDesc1Slot = 10;
+		const uint WarpVendorId = 0x1414, WarpDeviceId = 0x8C;
+
+		var iidFactory1 = new Guid("770aae78-f26f-4dba-a829-253c83d1b387");
+		System.Runtime.InteropServices.Marshal.ThrowExceptionForHR(CreateDXGIFactory1(ref iidFactory1, out var factory));
+		try
+		{
+			var enumAdapters = VTableMethod<EnumAdapters1Delegate>(factory, EnumAdapters1Slot);
+			for (uint i = 0; enumAdapters(factory, i, out var adapter) >= 0; i++)
+			{
+				try
+				{
+					System.Runtime.InteropServices.Marshal.ThrowExceptionForHR(VTableMethod<GetDesc1Delegate>(adapter, GetDesc1Slot)(adapter, out var desc));
+					if (desc.VendorId != WarpVendorId || desc.DeviceId != WarpDeviceId)
+					{
+						return desc.AdapterLuid;
+					}
+				}
+				finally
+				{
+					System.Runtime.InteropServices.Marshal.Release(adapter);
+				}
+			}
+		}
+		finally
+		{
+			System.Runtime.InteropServices.Marshal.Release(factory);
+		}
+
+		return null;
+
+		static T VTableMethod<T>(nint comObject, int slot) where T : Delegate
+			=> System.Runtime.InteropServices.Marshal.GetDelegateForFunctionPointer<T>(
+				System.Runtime.InteropServices.Marshal.ReadIntPtr(System.Runtime.InteropServices.Marshal.ReadIntPtr(comObject), slot * nint.Size));
+	}
+
+	private delegate int EnumAdapters1Delegate(nint factory, uint index, out nint adapter);
+
+	private delegate int GetDesc1Delegate(nint adapter, out DXGI_ADAPTER_DESC1 desc);
+
+	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential, CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+	private struct DXGI_ADAPTER_DESC1
+	{
+		[System.Runtime.InteropServices.MarshalAs(System.Runtime.InteropServices.UnmanagedType.ByValTStr, SizeConst = 128)]
+		public string Description;
+		public uint VendorId, DeviceId, SubSysId, Revision;
+		public nuint DedicatedVideoMemory, DedicatedSystemMemory, SharedSystemMemory;
+		public long AdapterLuid;
+		public uint Flags;
+	}
+
+	[System.Runtime.InteropServices.DllImport("dxgi.dll")]
+	private static extern int CreateDXGIFactory1(ref Guid riid, out nint factory);
+
+	private static void AssertPaintsPageBackground(XamlIslandRoot root, byte expected)
+	{
+		Assert.AreEqual(BackdropBackgroundMode.Fallback, root.BackdropBackground);
+
+		var brush = (Microsoft.UI.Composition.CompositionColorBrush)((Microsoft.UI.Composition.BorderVisual)root.Visual).BackgroundBrush;
+		Assert.AreEqual(Windows.UI.Color.FromArgb(0xFF, expected, expected, expected), brush.Color);
+	}
+
+	private sealed class UnrenderedBackdrop : SystemBackdrop;
+
+	private const uint WM_DISPLAYCHANGE = 0x007E;
+
+	[System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "SendMessageW")]
+	private static extern nint SendMessage(nint hWnd, uint msg, nuint wParam, nint lParam);
 #endif
 
 #endif
@@ -571,4 +847,81 @@ public class Given_Window
 		Assert.AreEqual("Test title", window.Title);
 	}
 #endif
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaUIKit)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25510")]
+	public void When_Scene_Lifecycle_Window_Hosted_In_Application_Scene()
+	{
+#if HAS_UNO
+		// UIKit and the runtime are read through reflection, as the Skia runtime tests are built without the Apple
+		// bindings. The iOS SamplesApp declares a scene manifest. The tvOS one has none and sets UnoUseSceneLifecycle,
+		// so it runs the scene lifecycle Uno adopts.
+		static object GetProperty(object target, string name) => target?.GetType().GetProperty(name)?.GetValue(target);
+
+		var usesSceneLifecycle = Type.GetType("Uno.UI.Runtime.AppleUIKit.AppleUIKitLifecycle, Uno.UI.Runtime.AppleUIKit")
+			?.GetProperty("UsesSceneLifecycle", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
+			?.GetValue(null);
+
+		Assert.IsNotNull(usesSceneLifecycle, "AppleUIKitLifecycle.UsesSceneLifecycle was not found.");
+
+		if (usesSceneLifecycle is false)
+		{
+			Assert.Inconclusive("The app runs the app lifecycle, where the window's scene has no delegate.");
+		}
+
+		var nativeWindow = Window.InitialWindow!.NativeWindow;
+		var scene = GetProperty(nativeWindow, "WindowScene");
+
+		Assert.IsNotNull(scene, "The window is not shown in a scene.");
+
+		var sceneDelegate = GetProperty(scene, "Delegate");
+
+		Assert.IsNotNull(sceneDelegate, "The application scene has no delegate.");
+		Assert.AreSame(nativeWindow, GetProperty(sceneDelegate, "Window"), "The scene delegate does not host the window.");
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaUIKit)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25510")]
+	public async Task When_Url_Opened_Then_Activation_Reported()
+	{
+#if HAS_UNO
+		if (OperatingSystem.IsTvOS())
+		{
+			Assert.Inconclusive("tvOS doesn't open an app's own URL.");
+		}
+
+		// The SamplesApp registers this scheme, so the URL comes back to the app. The iOS SamplesApp declares a scene
+		// manifest, so its scene delegate reports it. Without a manifest, the scene delegate Uno adopts forwards it to
+		// the application delegate, whose base implementation reports it. The SamplesApp shows no dialog for the
+		// runtime-tests host.
+		var uri = new Uri($"uno-samples-test://runtime-tests/activation/{Guid.NewGuid():N}");
+		var activated = new TaskCompletionSource<bool>();
+
+		void OnActivated(object sender, Microsoft.Windows.AppLifecycle.AppActivationArguments args)
+		{
+			if (args.Data is global::Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs { Uri: { } activationUri } && activationUri == uri)
+			{
+				activated.TrySetResult(true);
+			}
+		}
+
+		var appInstance = Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent();
+		appInstance.Activated += OnActivated;
+
+		try
+		{
+			Assert.IsTrue(await global::Windows.System.Launcher.LaunchUriAsync(uri), "The URL was not opened.");
+			Assert.AreSame(activated.Task, await Task.WhenAny(activated.Task, Task.Delay(TimeSpan.FromSeconds(10))), "No activation was reported for the URL.");
+		}
+		finally
+		{
+			appInstance.Activated -= OnActivated;
+		}
+#endif
+	}
 }

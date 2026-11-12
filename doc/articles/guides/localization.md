@@ -9,6 +9,8 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 > [!TIP]
 > The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [Localization](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/Localization)
 >
+> This sample targets Uno Platform 5.1.87, which predates Uno Platform 7.0. See [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7) to update it.
+>
 > [!TIP]
 > For a step-by-step guide to installing the prerequisites for your preferred IDE and environment, consult the [Get Started guide](../get-started.md).
 

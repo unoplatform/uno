@@ -28,4 +28,9 @@ public enum X11RenderingBackend
 	/// CPU-based software rendering. No GPU acceleration.
 	/// </summary>
 	Software = 4,
+
+	/// <summary>
+	/// WebGPU, when the app registers the WebGPU graphics backend.
+	/// </summary>
+	WebGpu = 5,
 }

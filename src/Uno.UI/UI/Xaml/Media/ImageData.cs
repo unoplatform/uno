@@ -43,6 +43,17 @@ internal partial struct ImageData
 
 	public bool HasData => Kind != ImageDataKind.Empty && Kind != ImageDataKind.Error;
 
+	/// <summary>
+	/// Whether the data is shared by every source that loads the same cached key, in which case no single source may
+	/// release it. Travels with the result so a cancelled or superseded open releases exactly what it owned.
+	/// </summary>
+	public bool IsShared { get; private init; }
+
+	/// <summary>
+	/// Returns this data marked as shared (see <see cref="IsShared"/>).
+	/// </summary>
+	internal ImageData AsShared() => this with { IsShared = true };
+
 	public ImageDataKind Kind { get; }
 
 	public Exception? Error { get; } = null;

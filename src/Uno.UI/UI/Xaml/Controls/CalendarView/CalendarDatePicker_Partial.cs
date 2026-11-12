@@ -92,7 +92,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
-			//CalendarDatePickerGenerated.OnPropertyChanged2(args);
+			base.OnPropertyChanged2(args);
 
 			if (args.Property == CalendarDatePicker.IsCalendarOpenProperty)
 			{
