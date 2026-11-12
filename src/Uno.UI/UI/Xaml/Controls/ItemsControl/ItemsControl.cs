@@ -125,9 +125,15 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// True if ItemsControl should manage the children of ItemsPanel, false if this is handled by an inheriting class.
+		/// True if ItemsControl should manage the children of ItemsPanel, false if this is handled by an inheriting class or by the panel itself.
 		/// </summary>
-		private protected virtual bool ShouldItemsControlManageChildren { get { return ItemsPanelRoot == InternalItemsPanelRoot; } }
+		private protected virtual bool ShouldItemsControlManageChildren => ItemsPanelRoot == InternalItemsPanelRoot && !IsItemsHostGeneratingContainers;
+
+		/// <summary>
+		/// True if the items panel generates its own containers whatever its owner, like WinUI's modern panels.
+		/// </summary>
+		/// <remarks>A <see cref="VirtualizingStackPanel"/> is excluded: under a plain ItemsControl, WinUI realizes all of its items.</remarks>
+		private protected bool IsItemsHostGeneratingContainers => ItemsPanelRoot is ItemsStackPanel or CarouselPanel;
 
 		internal bool ManagesItemsPanelChildren => ShouldItemsControlManageChildren;
 
@@ -1024,12 +1030,26 @@ namespace Microsoft.UI.Xaml.Controls
 			return itemsPanel;
 		}
 
+		/// <summary>
+		/// Called when the items change while the items panel generates its own containers.
+		/// </summary>
+		private protected virtual void OnGeneratingItemsHostItemsChanged(NotifyCollectionChangedEventArgs args)
+			=> (ItemsPanelRoot as IVirtualizingPanel)?.GetLayouter().Refresh();
+
 		private protected virtual void UpdateItems(NotifyCollectionChangedEventArgs args)
 		{
-			if (ItemsPanelRoot == null
-				|| !ShouldItemsControlManageChildren
-				)
+			if (ItemsPanelRoot == null)
 			{
+				return;
+			}
+
+			if (!ShouldItemsControlManageChildren)
+			{
+				if (IsItemsHostGeneratingContainers)
+				{
+					OnGeneratingItemsHostItemsChanged(args);
+				}
+
 				return;
 			}
 

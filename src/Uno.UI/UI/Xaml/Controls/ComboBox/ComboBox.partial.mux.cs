@@ -912,6 +912,11 @@ partial class ComboBox
 		base.UpdateItems(args);
 		Refresh();
 	}
+
+	// UpdateItems already refreshes the layouter through Refresh.
+	private protected override void OnGeneratingItemsHostItemsChanged(NotifyCollectionChangedEventArgs args)
+	{
+	}
 #endif
 
 	private void OnOpen()

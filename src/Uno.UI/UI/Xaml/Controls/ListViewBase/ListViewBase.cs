@@ -784,6 +784,11 @@ namespace Microsoft.UI.Xaml.Controls
 			return ResolveHeaderOrFooterContext(FooterProperty, FooterTemplateProperty);
 		}
 
+		// Collection changes are forwarded incrementally to the layouter by OnItemsSourceSingleCollectionChanged.
+		private protected override void OnGeneratingItemsHostItemsChanged(NotifyCollectionChangedEventArgs args)
+		{
+		}
+
 		internal override void OnItemsSourceSingleCollectionChanged(object sender, NotifyCollectionChangedEventArgs args, int section)
 		{
 			if (RefreshOnCollectionChanged)
