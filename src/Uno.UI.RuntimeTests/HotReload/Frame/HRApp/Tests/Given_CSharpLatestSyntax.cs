@@ -17,6 +17,7 @@ public class Given_CSharpLatestSyntax : BaseTestClass
 	[Description(
 		"An edit inside a method written with the SDK's default C# version (C# 15 on net11) applies: the dev-server " +
 		"compiler must parse that version, not only tolerate it in untouched files (spec 061 G2, #26316).")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26316")]
 	public async Task When_EditingMethodUsingLatestSyntax_Then_UpdateApplies()
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(60)).Token;
