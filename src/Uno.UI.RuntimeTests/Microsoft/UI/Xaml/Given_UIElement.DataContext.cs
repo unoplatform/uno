@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Extensions;
+using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
@@ -218,6 +219,68 @@ partial class Given_UIElement
 			instructionMap[variant.Instructions[1]](setup2.Host, setup2.Child, setup2.DC, brush);
 			instructionMap[variant.Instructions[2]](setup2.Host, setup2.Child, setup2.DC, brush);
 			Assert.AreNotEqual(Colors.Blue, brush.Color, $"{variant.Label}2. once it has been attached to multiple \"parent\", dc shouldn't propagate anymore even if we only have a single parent now");
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+	public async Task SharedNonFE_ObjectBinding_Subtree_Severed_Then_Bound_Value_Released()
+	{
+		// A shared non-FE value whose object-typed property copies the DataContext itself: once the owner's subtree
+		// leaves the tree (and so loses its inherited DataContext), the copy must be re-resolved to null so the
+		// shared object does not retain the view model.
+		var trigger = new ObjectValueTrigger();
+		BindingOperations.SetBinding(trigger, ObjectValueTrigger.ValueProperty, new Binding());
+
+		var root = new ContentControl();
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		try
+		{
+			var viewModelRef = AttachSubtreeWithTrigger(root, trigger);
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsTrue(viewModelRef.IsAlive);
+			Assert.IsNotNull(trigger.Value, "0. the inherited DataContext is copied into the bound object property");
+
+			root.Content = null;
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsNull(trigger.Value, "1. severing the subtree re-resolves the binding against the lost inheritance context");
+
+			root.DataContext = null;
+			Assert.IsTrue(await TestHelper.TryWaitUntilCollected(viewModelRef), "2. nothing retains the view model once the subtree is gone");
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+
+		GC.KeepAlive(trigger);
+	}
+
+	[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+	private static WeakReference AttachSubtreeWithTrigger(ContentControl root, ObjectValueTrigger trigger)
+	{
+		var viewModel = new object();
+		root.DataContext = viewModel;
+
+		// The element owning the shared trigger sits below the severed root, so its DataContext is inherited.
+		var page = new Border { Child = new Border { Tag = trigger } };
+		root.Content = page;
+
+		return new WeakReference(viewModel);
+	}
+
+	private sealed partial class ObjectValueTrigger : StateTriggerBase
+	{
+		public static DependencyProperty ValueProperty { get; } = DependencyProperty.Register(
+			nameof(Value), typeof(object), typeof(ObjectValueTrigger), new PropertyMetadata(null));
+
+		public object Value
+		{
+			get => GetValue(ValueProperty);
+			set => SetValue(ValueProperty, value);
 		}
 	}
 
