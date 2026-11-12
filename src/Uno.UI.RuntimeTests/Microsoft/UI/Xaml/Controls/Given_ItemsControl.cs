@@ -744,6 +744,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				timeoutMS: 5000,
 				message: $"{step}: expected the container at {index} to show '{content}' at height {height}, got " +
 					(sut.ContainerFromIndex(index) is ContentPresenter c ? $"'{c.Content}' at height {c.ActualHeight}" : "none"));
+
+			// The containers are kept across item changes, so the one at the index can show its item before the layout
+			// pass that recycles the removed ones.
+			await WindowHelper.WaitForIdle();
 		}
 
 		// Recycled containers can linger in the panel, so only the arranged ones are expected to show an item.

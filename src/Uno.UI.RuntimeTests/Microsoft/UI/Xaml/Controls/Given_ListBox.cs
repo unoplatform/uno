@@ -179,11 +179,17 @@ public class Given_ListBox
 		}
 
 		async Task WaitForContainer(int index, string content, string step)
-			=> await WindowHelper.WaitFor(
+		{
+			await WindowHelper.WaitFor(
 				() => sut.ContainerFromIndex(index) is ListBoxItem { ActualHeight: > 0 } container && Equals(container.Content, content),
 				timeoutMS: 5000,
 				message: $"{step}: expected the container at {index} to show '{content}', got " +
 					(sut.ContainerFromIndex(index) is ListBoxItem c ? $"'{c.Content}' at height {c.ActualHeight}" : "none"));
+
+			// The containers are kept across item changes, so the one at the index can show its item before the layout
+			// pass that recycles the removed ones.
+			await WindowHelper.WaitForIdle();
+		}
 	}
 
 	[TestMethod]
@@ -1044,6 +1050,56 @@ public class Given_ListBox
 
 		void AssertContainer(int index)
 			=> Assert.AreEqual($"Item {index}", (sut.ContainerFromIndex(index) as ListBoxItem)?.Content);
+	}
+
+	[TestMethod]
+	public async Task When_Items_Changed_Then_Focus_Kept()
+	{
+		var source = new ObservableCollection<string>(Enumerable.Range(0, 100).Select(i => $"Item {i}"));
+		var sut = new ListBox { Width = 200, Height = 200, ItemsSource = source };
+
+		try
+		{
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+			await WindowHelper.WaitForIdle();
+
+			var result = await FocusManager.TryFocusAsync(sut.ContainerFromIndex(3), FocusState.Keyboard);
+			Assert.IsTrue(result.Succeeded);
+			await WindowHelper.WaitForIdle();
+
+			// An insertion far below the viewport.
+			source.Insert(90, "Inserted below");
+			await WindowHelper.WaitForIdle();
+			AssertFocusOn("Item 3", "after an insertion below");
+
+			// An insertion before the focused item.
+			source.Insert(0, "Inserted above");
+			await WindowHelper.WaitForIdle();
+			AssertFocusOn("Item 3", "after an insertion above");
+
+			source.RemoveAt(50);
+			await WindowHelper.WaitForIdle();
+			AssertFocusOn("Item 3", "after a removal below");
+
+			source.RemoveAt(0);
+			await WindowHelper.WaitForIdle();
+			AssertFocusOn("Item 3", "after a removal above");
+
+			source[60] = "Replaced";
+			await WindowHelper.WaitForIdle();
+			AssertFocusOn("Item 3", "after a replacement");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+
+		void AssertFocusOn(string item, string step)
+		{
+			var focused = FocusManager.GetFocusedElement(sut.XamlRoot);
+			Assert.AreEqual(item, (focused as ListBoxItem)?.Content, $"{step}: the focused element is {focused}");
+			Assert.AreEqual(source.IndexOf(item), sut.IndexFromContainer((DependencyObject)focused), $"{step}: the focused container's index");
+		}
 	}
 
 	// One entry per SelectionChanged event: "+[added]" and/or "-[removed]".
