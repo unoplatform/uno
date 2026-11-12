@@ -8,8 +8,8 @@
 		<CommunityToolkitMvvmVersion>8.2.2</CommunityToolkitMvvmVersion>
 		<MSTestVersion>4.2.1</MSTestVersion>
 		<MicrosoftTestingPlatformVersion>2.2.1</MicrosoftTestingPlatformVersion>
-		<SkiaSharpVersion>4.151.1</SkiaSharpVersion>
-		<HarfbuzzSharpVersion>14.2.1.1</HarfbuzzSharpVersion>
+		<SkiaSharpVersion>4.156.0</SkiaSharpVersion>
+		<HarfbuzzSharpVersion>14.4.0.100</HarfbuzzSharpVersion>
 		<UnoICUVersion>77.4.1</UnoICUVersion>
 		<UnoXamlMergeTaskVersion>1.27.0-dev.44</UnoXamlMergeTaskVersion>
 
@@ -232,6 +232,12 @@
 		<PackageVersion Update="Microsoft.Build.Framework" Version="$(DevServerMSBuildToolsVersion)" />
 		<PackageVersion Update="Microsoft.Build.Tasks.Core" Version="$(DevServerMSBuildToolsVersion)" />
 		<PackageVersion Update="Microsoft.Build.Utilities.Core" Version="$(DevServerMSBuildToolsVersion)" />
+	</ItemGroup>
+
+	<!-- Floor required by Microsoft.CodeAnalysis.Workspaces.MSBuild on the dev-server Roslyn line (spec 061 R3) -->
+	<ItemGroup Condition=" '$(DevServerExtensionsVersion)' != '' ">
+		<PackageVersion Update="Microsoft.Extensions.DependencyInjection" Version="$(DevServerExtensionsVersion)" />
+		<PackageVersion Update="Microsoft.Extensions.Logging" Version="$(DevServerExtensionsVersion)" />
 	</ItemGroup>
 
 	<!-- Only set when validating a specific C# compiler; see MicrosoftNetCompilersToolsetVersion in Directory.Build.props -->

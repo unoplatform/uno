@@ -37,7 +37,7 @@
 			"Uno.Wasm.Bootstrap.Server"
 		],
 		"versionOverride": {
-			"net10.0": "10.1.0-dev.284",
+			"net10.0": "10.1.1",
 			"net11.0": "11.1.0-dev.5"
 		}
 	},
@@ -65,35 +65,35 @@
 	},
 	{
 		"group": "Resizetizer",
-		"version": "2.0.0-dev.36",
+		"version": "2.0.1",
 		"packages": [
 			"Uno.Resizetizer"
 		]
 	},
 	{
 		"group": "sdkextras",
-		"version": "6.4.0-dev.15",
+		"version": "6.4.1",
 		"packages": [
 			"Uno.Sdk.Extras"
 		]
 	},
 	{
 		"group": "settings",
-		"version": "2.0.0-dev.23",
+		"version": "2.0.1",
 		"packages": [
 			"Uno.Settings.DevServer"
 		]
 	},
 	{
 		"group": "hotdesign",
-		"version": "2.0.0-dev.2",
+		"version": "2.0.1",
 		"packages": [
 			"Uno.UI.HotDesign"
 		]
 	},
 	{
 		"group": "SkiaSharp",
-		"version": "4.151.1",
+		"version": "4.156.0",
 		"packages": [
 			"SkiaSharp.Skottie",
 			"SkiaSharp.Views.WinUI",
@@ -108,7 +108,7 @@
 	},
 	{
 		"group": "HarfBuzzSharp",
-		"version": "14.2.1.1",
+		"version": "14.4.0.100",
 		"packages": [
 			"HarfBuzzSharp.NativeAssets.Android",
 			"HarfBuzzSharp.NativeAssets.iOS",
@@ -135,21 +135,21 @@
 	},
 	{
 		"group": "WinAppSdkBuildTools",
-		"version": "10.0.28000.2705",
+		"version": "10.0.28000.2957",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools"
 		]
 	},
 	{
 		"group": "WinAppSdkBuildToolsWinApp",
-		"version": "0.7.1",
+		"version": "0.8.0",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools.WinApp"
 		]
 	},
 	{
 		"group": "MicrosoftLoggingConsole",
-		"version": "10.0.12",
+		"version": "10.0.14",
 		"packages": [
 			"Microsoft.Extensions.Logging.Console"
 		],
@@ -159,7 +159,7 @@
 	},
 	{
 		"group": "MsalClient",
-		"version": "4.87.0",
+		"version": "4.92.0",
 		"packages": [
 			"Microsoft.Identity.Client",
 			"Microsoft.Identity.Client.Extensions.Msal"
@@ -174,14 +174,14 @@
 	},
 	{
 		"group": "Reactor",
-		"version": "0.1.0-dev.77",
+		"version": "0.1.1",
 		"packages": [
 			"Uno.Microsoft.UI.Reactor"
 		]
 	},
 	{
 		"group": "UnoFonts",
-		"version": "2.10.0-dev.9",
+		"version": "2.10.1",
 		"packages": [
 			"Uno.Fonts.OpenSans",
 			"Uno.Fonts.Fluent",
@@ -260,7 +260,7 @@
 	},
 	{
 		"group": "AndroidXWearTiles",
-		"version": "1.6.1",
+		"version": "1.6.2",
 		"packages": [
 			"Xamarin.AndroidX.Wear.Tiles"
 		]
@@ -300,7 +300,7 @@
 	},
 	{
 		"group": "Maui",
-		"version": "10.0.90",
+		"version": "10.0.120",
 		"packages": [
 			"Microsoft.Maui.Controls",
 			"Microsoft.Maui.Graphics"
@@ -311,7 +311,7 @@
 	},
 	{
 		"group": "UnoMaui",
-		"version": "0.1.0-dev.1",
+		"version": "0.1.0-dev.2",
 		"packages": [
 			"Uno.Maui.Embedding",
 			"Uno.Maui.Handlers"
@@ -319,21 +319,21 @@
 	},
 	{
 		"group": "UnoRetarget",
-		"version": "0.1.0-dev.1",
+		"version": "0.1.0-dev.2",
 		"packages": [
 			"Uno.WinUI.Retarget"
 		]
 	},
 	{
 		"group": "MauiCompatibility",
-		"version": "10.0.90",
+		"version": "10.0.120",
 		"packages": [
 			"Microsoft.Maui.Controls.Compatibility"
 		]
 	},
 	{
 		"group": "CSharpMarkup",
-		"version": "7.0.0-dev.33",
+		"version": "7.0.1",
 		"packages": [
 			"Uno.WinUI.Markup",
 			"Uno.Extensions.Markup.Generators"
@@ -341,7 +341,7 @@
 	},
 	{
 		"group": "Extensions",
-		"version": "8.0.0-dev.150",
+		"version": "8.0.1",
 		"packages": [
 			"Uno.Extensions.Authentication.WinUI",
 			"Uno.Extensions.Authentication.MSAL.WinUI",
@@ -372,7 +372,7 @@
 	},
 	{
 		"group": "Toolkit",
-		"version": "11.0.0-dev.157",
+		"version": "11.0.1",
 		"packages": [
 			"Uno.Toolkit.WinUI",
 			"Uno.Toolkit.WinUI.Cupertino",
@@ -385,7 +385,7 @@
 	},
 	{
 		"group": "Themes",
-		"version": "9.0.0-dev.61",
+		"version": "9.0.1",
 		"packages": [
 			"Uno.Material.WinUI",
 			"Uno.Material.WinUI.Markup",
@@ -397,21 +397,21 @@
 	},
 	{
 		"group": "VlcNativeWindowsAssets",
-		"version": "3.0.23.1",
+		"version": "3.0.24",
 		"packages": [
 			"VideoLAN.LibVLC.Windows"
 		]
 	},
 	{
 		"group": "MicrosoftWebView2",
-		"version": "1.0.4191.47",
+		"version": "1.0.4314.35",
 		"packages": [
 			"Microsoft.Web.WebView2"
 		]
 	},
 	{
 		"group": "AppMcp",
-		"version": "2.0.0-dev.7",
+		"version": "2.0.1",
 		"packages": [
 			"Uno.UI.App.Mcp"
 		]
