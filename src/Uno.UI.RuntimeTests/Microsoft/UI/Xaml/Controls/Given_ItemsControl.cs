@@ -606,6 +606,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[DataRow(Orientation.Horizontal)]
+		[DataRow(Orientation.Vertical)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25458")]
+		public async Task When_ItemsStackPanel_Then_Items_Stacked(Orientation orientation)
+		{
+			var SUT = new ItemsControl
+			{
+				Width = 300,
+				Height = 300,
+				ItemTemplate = (DataTemplate)XamlReader.Load(
+					"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><Border Width='20' Height='20'><TextBlock Text='{Binding}' /></Border></DataTemplate>"),
+				ItemsPanel = (ItemsPanelTemplate)XamlReader.Load(
+					$"<ItemsPanelTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><ItemsStackPanel Orientation='{orientation}' /></ItemsPanelTemplate>"),
+				ItemsSource = new[] { "A", "B", "C", "D", "E", "F" },
+			};
+
+			try
+			{
+				await UITestHelper.Load(SUT, x => x.IsLoaded);
+				await WindowHelper.WaitFor(() => SUT.ContainerFromIndex(5) is UIElement { ActualSize.X: > 0 }, timeoutMS: 5000, message: "Expected the last container to be arranged.");
+
+				Assert.AreEqual(6, SUT.ItemsPanelRoot.Children.Count);
+				for (var i = 0; i < 6; i++)
+				{
+					var offset = ((UIElement)SUT.ContainerFromIndex(i)).ActualOffset;
+					var (along, across) = orientation is Orientation.Horizontal ? (offset.X, offset.Y) : (offset.Y, offset.X);
+					Assert.AreEqual(20 * i, along, 1, $"Offset of item {i} along the panel orientation.");
+					Assert.AreEqual(0, across, 1, $"Offset of item {i} across the panel orientation.");
+				}
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25458")]
 		public Task When_ItemsStackPanel_ItemsSource_Changes() => When_ItemsHost_ItemsSource_Changes("ItemsStackPanel");
 
