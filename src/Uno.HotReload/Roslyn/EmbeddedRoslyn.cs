@@ -68,8 +68,7 @@ internal static class EmbeddedRoslyn
 					reporter.Warn(
 						$"Project '{project.Name}' ({targetFramework}) defaults to C# {sdkDefaultVersion}.0, but the hot-reload compiler "
 						+ $"(Roslyn {Version.ToString(2)}) supports up to C# {MaxCSharpVersion}.0: C# {sdkDefaultVersion} syntax will block hot "
-						+ $"reload with errors the build does not have, XAML-only edits included. Update Uno.Sdk, or set "
-						+ $"<LangVersion>{MaxCSharpVersion}.0</LangVersion> in the project.");
+						+ $"reload with errors the build does not have, XAML-only edits included. {Remedy}");
 				}
 			}
 		}
@@ -88,9 +87,11 @@ internal static class EmbeddedRoslyn
 	internal static string? GetUnsupportedLanguageVersionHint(Project project)
 		=> IsCompiledWithOlderCSharpThanItsSdkDefault(project, out _, out var sdkDefaultVersion)
 			? $"'{project.Name}' defaults to C# {sdkDefaultVersion}.0, but the hot-reload compiler (Roslyn {Version.ToString(2)}) "
-				+ $"supports up to C# {MaxCSharpVersion}.0, so errors on C# {sdkDefaultVersion} syntax above are not build errors. "
-				+ $"Update Uno.Sdk, or set <LangVersion>{MaxCSharpVersion}.0</LangVersion> in the project."
+				+ $"supports up to C# {MaxCSharpVersion}.0, so errors on C# {sdkDefaultVersion} syntax above are not build errors. {Remedy}"
 			: null;
+
+	// The fix both messages give: a newer Uno.Sdk brings a newer dev-server compiler.
+	private static string Remedy => $"Update Uno.Sdk, or set <LangVersion>{MaxCSharpVersion}.0</LangVersion> in the project.";
 
 	private static bool IsCompiledWithOlderCSharpThanItsSdkDefault(Project project, [NotNullWhen(true)] out string? targetFramework, out int sdkDefaultVersion)
 	{
