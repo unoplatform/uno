@@ -29,7 +29,7 @@ Tagging is the main driver for planning releases.
 The nightly `master-sync` workflow (`.github/workflows/master-sync.yml`) feeds `release/stable/X.Y` branches in two phases:
 
 - **Stabilization**: right after branching, set `STABILIZATION_BRANCH` to the new release branch. It then receives all of `master` through a merge PR every night. List the master PRs it must not receive (such as the version bump after branching) in `STABILIZATION_EXCLUDED_PRS`.
-- **Service**: once the release is stable, clear `STABILIZATION_BRANCH`. From then on, only master PRs labeled `backport-X.Y` reach `release/stable/X.Y`. Every night they are cherry-picked onto a single `automation/backport/release/stable/X.Y` PR. Create the `backport-X.Y` label when the release branch is created. It can be added to a PR before or after it merges.
+- **Service**: once the release is stable, clear `STABILIZATION_BRANCH`. From then on, only master PRs labeled `backport-X.Y` reach `release/stable/X.Y`. They are cherry-picked onto a single `automation/backport/release/stable/X.Y` PR as soon as such a PR merges (or a merged PR gets the label), and again every night. Create the `backport-X.Y` label when the release branch is created. It can be added to a PR before or after it merges.
 
 A labeled PR that does not cherry-pick cleanly is left out, and its author is asked to backport it by hand, with `(backport #N)` in the title of the backport PR (`@Mergifyio backport release/stable/X.Y` does this). Remove the label to stop the retries.
 

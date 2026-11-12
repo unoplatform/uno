@@ -31,7 +31,8 @@ name: Sync master into feature and release branches
 # 2. Service: once the release is stable, clear STABILIZATION_BRANCH. From then on
 #    only master PRs labeled `backport-X.Y` reach `release/stable/X.Y`. Every run
 #    cherry-picks (`-x`) the labeled PRs it has not received yet, in merge order,
-#    onto ONE `automation/backport/release/stable/X.Y` branch and PR. The label
+#    onto ONE `automation/backport/release/stable/X.Y` branch and PR. It also runs
+#    as soon as such a PR merges, or a merged PR gets the label. The label
 #    may be added before or after the PR merges. A PR is already received when its
 #    merge commit is in the release branch, a release commit was cherry-picked
 #    from it, or a release commit's message says `backport #N` (manual and Mergify
@@ -64,6 +65,11 @@ name: Sync master into feature and release branches
 on:
   schedule:
     - cron: '0 4 * * *' # nightly 04:00 UTC
+  # Backports right away when a labeled PR merges or a merged PR gets labeled.
+  # Safe as pull_request_target: no job checks out or runs the PR's code.
+  pull_request_target:
+    types: [closed, labeled]
+    branches: [master]
   workflow_dispatch:
     inputs:
       activity_days:
@@ -84,15 +90,19 @@ env:
   STABILIZATION_EXCLUDED_PRS: ''
 
 # Permissions are set per-job below (least privilege): enumerate only reads,
-# sync needs write to push branches and manage PRs.
-concurrency:
-  group: master-sync
-  cancel-in-progress: false
+# sync needs write to push branches and manage PRs. Concurrency is per target
+# branch (on the jobs), so a run queued for one release never displaces another's.
 
 jobs:
   enumerate:
-    name: Find active feature branches
-    if: github.repository == 'unoplatform/uno'
+    name: Find sync targets
+    # PR events only matter for a merged PR carrying a backport-X.Y label.
+    if: >-
+      github.repository == 'unoplatform/uno'
+      && (github.event_name != 'pull_request_target'
+          || (github.event.pull_request.merged
+              && ((github.event.action == 'closed' && contains(join(github.event.pull_request.labels.*.name, ' '), 'backport-'))
+                  || (github.event.action == 'labeled' && startsWith(github.event.label.name, 'backport-')))))
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -126,8 +136,14 @@ jobs:
         shell: bash
         env:
           ACTIVITY_DAYS: ${{ github.event.inputs.activity_days || '30' }}
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           set -euo pipefail
+          if [ "$EVENT_NAME" = "pull_request_target" ]; then
+            echo "branches=[]" >> "$GITHUB_OUTPUT"
+            echo "count=0" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           git fetch origin '+refs/heads/feature/*:refs/remotes/origin/feature/*' --prune
           now=$(date +%s)
           cutoff=$(( now - ACTIVITY_DAYS * 86400 ))
@@ -174,9 +190,20 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          EVENT_ACTION: ${{ github.event.action }}
+          ADDED_LABEL: ${{ github.event.label.name }}
+          PR_LABELS: ${{ toJson(github.event.pull_request.labels.*.name) }}
         run: |
           set -euo pipefail
-          labels="$(gh label list --search 'backport-' --limit 200 --json name --jq '.[].name')"
+          # A PR event only backports to the releases that PR is labeled for.
+          if [ "$EVENT_NAME" != "pull_request_target" ]; then
+            labels="$(gh label list --search 'backport-' --limit 200 --json name --jq '.[].name')"
+          elif [ "$EVENT_ACTION" = "labeled" ]; then
+            labels="$ADDED_LABEL"
+          else
+            labels="$(jq -r '.[]' <<<"$PR_LABELS")"
+          fi
           json='[]'
           while read -r label; do
             [[ "$label" =~ ^backport-([0-9]+\.[0-9]+)$ ]] || continue
@@ -205,6 +232,9 @@ jobs:
     needs: enumerate
     if: needs.enumerate.outputs.count != '0'
     runs-on: ubuntu-latest
+    concurrency:
+      group: master-sync-${{ matrix.branch }}
+      cancel-in-progress: false
     permissions:
       contents: write
       pull-requests: write
@@ -661,6 +691,11 @@ jobs:
     needs: enumerate
     if: needs.enumerate.outputs.release_count != '0'
     runs-on: ubuntu-latest
+    # A newer pending run for the same release replaces an older one; both would
+    # pick the same set, so nothing is lost.
+    concurrency:
+      group: master-sync-${{ matrix.release.branch }}
+      cancel-in-progress: false
     permissions:
       contents: write
       pull-requests: write
