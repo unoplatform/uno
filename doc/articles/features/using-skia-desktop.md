@@ -67,33 +67,43 @@ YourAppNamespace.App.ConfigureFilters(); // Enable tracing of the Skia host
 
 ## Upgrading to a later version of SkiaSharp
 
-By default, the [Uno.Sdk](xref:Uno.Features.Uno.Sdk) brings a tested set of **SkiaSharp** dependencies that match the native libraries it ships. To move to a different SkiaSharp version, override the `SkiaSharpVersion` MSBuild property in your project. This retargets the SkiaSharp packages the Uno.Sdk manages, including the platform native-asset packages, to the same version in one place:
+By default, the [Uno.Sdk](xref:Uno.Features.Uno.Sdk) brings a tested set of **SkiaSharp** and **HarfBuzzSharp** packages. To move to a different version, change the native and the managed packages together, to the same version:
+
+- The `SkiaSharpVersion` and `HarfBuzzSharpVersion` properties retarget the native-asset packages the Uno.Sdk references for each platform.
+- The managed `SkiaSharp`, `SkiaSharp.Skottie` and `HarfBuzzSharp` packages come through the Uno Platform packages, so reference them directly at the same version.
+
+In your project file:
 
 ```xml
 <PropertyGroup>
    <SkiaSharpVersion>4.156.0</SkiaSharpVersion>
+   <HarfBuzzSharpVersion>14.4.0.100</HarfBuzzSharpVersion>
 </PropertyGroup>
+<ItemGroup>
+   <PackageReference Include="SkiaSharp" />
+   <PackageReference Include="SkiaSharp.Skottie" />
+   <PackageReference Include="HarfBuzzSharp" />
+</ItemGroup>
 ```
 
-> [!NOTE]
-> A SkiaSharp version mismatch between the managed packages and the bundled native libraries surfaces at runtime, not at build time. Prefer the `SkiaSharpVersion` property so every managed and native SkiaSharp package stays aligned. For the versions the Uno.Sdk manages, see [Using the Uno.Sdk](xref:Uno.Features.Uno.Sdk).
-
-### SkiaSharp 4
-
-SkiaSharp 4.0 reached general availability as `4.148.0`, and Uno Platform is a co-maintainer of SkiaSharp. **Since Uno Platform 7.0, SkiaSharp 4 is the default** — the Uno.Sdk resolves the SkiaSharp package group at a `4.x` version, and you only need to set `SkiaSharpVersion` to move off it. SkiaSharp 4 turns several long-deprecated APIs into compile errors (for example, text APIs that moved from `SKPaint` to `SKFont`), so a project carrying its own SkiaSharp code from `3.x` may need small changes before it builds.
-
-### Pinning packages individually
-
-If you need to control individual packages instead of using the `SkiaSharpVersion` property, reference every **SkiaSharp** and **HarfBuzzSharp** package, including the native-asset packages for each target you build, at the same version. Use `Update` so you retarget the references the Uno.Sdk already provides:
+And in `Directory.Packages.props`:
 
 ```xml
 <ItemGroup>
-   <PackageReference Update="SkiaSharp" Version="4.156.0" />
-   <PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="4.156.0" />
-   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="4.156.0" />
-   <PackageReference Update="HarfBuzzSharp" Version="14.4.0.100" />
+   <PackageVersion Include="SkiaSharp" Version="4.156.0" />
+   <PackageVersion Include="SkiaSharp.Skottie" Version="4.156.0" />
+   <PackageVersion Include="HarfBuzzSharp" Version="14.4.0.100" />
 </ItemGroup>
 ```
+
+If your project doesn't use Central Package Management, set the `Version` on the `PackageReference` items instead.
+
+> [!IMPORTANT]
+> SkiaSharp checks its native library when the app starts. If the managed `SkiaSharp` package and the native `libSkiaSharp` library have different versions, the app fails at startup with "The version of the native libSkiaSharp library (…) is incompatible with this version of SkiaSharp". Setting only `SkiaSharpVersion` moves the native packages but not the managed one, so always reference the managed packages too. For the versions the Uno.Sdk manages, see [Using the Uno.Sdk](xref:Uno.Features.Uno.Sdk).
+
+### SkiaSharp 4
+
+SkiaSharp 4.0 reached general availability as `4.148.0`, and Uno Platform is a co-maintainer of SkiaSharp. **Since Uno Platform 7.0, SkiaSharp 4 is the default** — the Uno.Sdk resolves the SkiaSharp package group at a `4.x` version, and the steps above move it to another version. SkiaSharp 4 turns several long-deprecated APIs into compile errors (for example, text APIs that moved from `SKPaint` to `SKFont`), so a project carrying its own SkiaSharp code from `3.x` may need small changes before it builds.
 
 ## Rendering Backend Selection
 
