@@ -1,6 +1,7 @@
-name: Sync master into feature branches
+name: Sync master into feature and release branches
 
-# Keeps long-lived `feature/*` integration branches current with `master`.
+# Keeps long-lived `feature/*` integration branches current with `master`, and
+# feeds `release/stable/X.Y` branches (see "Release branches" below).
 #
 # Per active feature branch it maintains ONE pull request whose merge brings the
 # latest master in:
@@ -17,13 +18,26 @@ name: Sync master into feature branches
 #
 # "Active" = a `feature/*` branch with a commit within ACTIVITY_DAYS (default 30).
 #
-# Release stabilization (temporary): while a just-branched release is stabilizing,
-# STABILIZATION_BRANCH is synced the same way, every run. Leave it empty between
-# releases to disable. STABILIZATION_EXCLUDED_PRS lists master PRs it must never
-# receive (e.g. the post-branching version bump). Each is recorded as merged with
-# `git merge -s ours` right after merging its parent, so ancestry stays intact and
-# later syncs only bring in what came after it. This needs a merge-commit or
-# squash merged PR; for a rebase-merged one only its last commit would be skipped.
+# Release branches go through two phases:
+#
+# 1. Stabilization: right after branching, STABILIZATION_BRANCH receives ALL of
+#    master by the same merge sync, every run. STABILIZATION_EXCLUDED_PRS lists
+#    master PRs it must never receive (e.g. the post-branching version bump). Each
+#    is recorded as merged with `git merge -s ours` right after merging its parent,
+#    so ancestry stays intact and later syncs only bring in what came after it.
+#    This needs a merge-commit or squash merged PR; for a rebase-merged one only
+#    its last commit would be skipped.
+#
+# 2. Service: once the release is stable, clear STABILIZATION_BRANCH. From then on
+#    only master PRs labeled `backport-X.Y` reach `release/stable/X.Y`. Every run
+#    cherry-picks (`-x`) the labeled PRs it has not received yet, in merge order,
+#    onto ONE `automation/backport/release/stable/X.Y` branch and PR. The label
+#    may be added before or after the PR merges. A PR is already received when its
+#    merge commit is in the release branch, a release commit was cherry-picked
+#    from it, or a release commit's message says `backport #N` (manual and Mergify
+#    backports). A PR that does not cherry-pick cleanly is left out and listed in
+#    the backport PR, and its author is pinged once to backport it by hand. Remove
+#    the label to stop retrying. A rebase-merged PR only brings its last commit.
 #
 # Token: falls back to the default GITHUB_TOKEN, but that is NOT sufficient in
 # general. A sync merge that updates `.github/workflows/**` cannot be pushed by
@@ -63,11 +77,11 @@ on:
         default: false
 
 env:
-  # Temporary 7.0 stabilization sync; set to '' once 7.0 is out.
+  # Release in the stabilization phase (receives all of master), or '' when none.
+  # Every other release/stable/X.Y only receives PRs labeled backport-X.Y.
   STABILIZATION_BRANCH: 'release/stable/7.0'
   # Comma-separated master PR numbers kept out of STABILIZATION_BRANCH.
-  # 25994 = version bump to 7.1-dev after branching 7.0.
-  STABILIZATION_EXCLUDED_PRS: '25994'
+  STABILIZATION_EXCLUDED_PRS: '25994' # 7.1-dev version bump
 
 # Permissions are set per-job below (least privilege): enumerate only reads,
 # sync needs write to push branches and manage PRs.
@@ -82,9 +96,13 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      # Listing the backport-X.Y labels.
+      issues: read
     outputs:
       branches: ${{ steps.list.outputs.branches }}
       count: ${{ steps.list.outputs.count }}
+      releases: ${{ steps.releases.outputs.releases }}
+      release_count: ${{ steps.releases.outputs.count }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -148,6 +166,37 @@ jobs:
             if [ -n "$stab" ]; then
               echo ""
               echo "$stab"
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Enumerate release branches in service
+        id: releases
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          labels="$(gh label list --search 'backport-' --limit 200 --json name --jq '.[].name')"
+          json='[]'
+          while read -r label; do
+            [[ "$label" =~ ^backport-([0-9]+\.[0-9]+)$ ]] || continue
+            branch="release/stable/${BASH_REMATCH[1]}"
+            # Its stabilization merge sync already brings in everything.
+            [ "$branch" = "$STABILIZATION_BRANCH" ] && continue
+            if git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+              json=$(jq -cn --argjson cur "$json" --arg b "$branch" --arg l "$label" '$cur + [{branch: $b, label: $l}]')
+            else
+              echo "::warning::Label '${label}' has no '${branch}' branch to backport to."
+            fi
+          done <<<"$labels"
+          echo "releases=$json" >> "$GITHUB_OUTPUT"
+          echo "count=$(jq 'length' <<<"$json")" >> "$GITHUB_OUTPUT"
+          {
+            echo "### Release branches in service (label-driven backports)"
+            if [ "$(jq 'length' <<<"$json")" -eq 0 ]; then
+              echo "_None._"
+            else
+              jq -r '.[] | "- `\(.label)` → `\(.branch)`"' <<<"$json"
             fi
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -606,3 +655,291 @@ jobs:
             fi
             note "✅ synced ${incoming} commits [\`$range\`] — PR #${pr:-?}"
           fi
+
+  backport:
+    name: 'Backport: ${{ matrix.release.branch }}'
+    needs: enumerate
+    if: needs.enumerate.outputs.release_count != '0'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ${{ fromJson(needs.enumerate.outputs.releases) }}
+    env:
+      SYNC_TOKEN: ${{ secrets.SYNC_BOT_TOKEN || github.token }}
+      HAS_SYNC_BOT_TOKEN: ${{ secrets.SYNC_BOT_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          token: ${{ env.SYNC_TOKEN }}
+
+      - name: Backport labeled PRs into ${{ matrix.release.branch }}
+        shell: bash
+        env:
+          GH_TOKEN: ${{ env.SYNC_TOKEN }}
+          RELEASE: ${{ matrix.release.branch }}
+          LABEL: ${{ matrix.release.label }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+          REVIEW_TEAM: unoplatform/uno-core-team
+          BOT_NAME: 'github-actions[bot]'
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+
+          SYNC_BRANCH="automation/backport/${RELEASE}"
+          TITLE="chore(automation): Backport ${LABEL} PRs → ${RELEASE}"
+          CMARKER="<!-- master-sync-bot:backport-conflict:${RELEASE} -->"
+
+          STATUS=""
+          note() { STATUS="$1"; }
+          trap '{ echo "### \`${RELEASE}\` (\`${LABEL}\`)"; echo "${STATUS:-❌ errored — see logs}"; } >> "$GITHUB_STEP_SUMMARY"' EXIT
+
+          git config user.name "$BOT_NAME"
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+
+          git fetch origin master "${RELEASE}" --prune
+          git fetch origin "${SYNC_BRANCH}" >/dev/null 2>&1 || true
+
+          open_pr() { gh pr list --head "$1" --base "$RELEASE" --state open --json number --jq '.[0].number // empty' 2>/dev/null || true; }
+          # Titles go into markdown: keep entities, generics and @mentions literal.
+          md_escape() { sed 's/&/\&amp;/g; s/</\&lt;/g; s/@/@<!-- -->/g' <<<"$1"; }
+          has_pick() { grep -qF "cherry picked from commit $2" <<<"$1"; }
+
+          # The stabilization merge sync of this release is over: retire its PR.
+          old_pr="$(open_pr "automation/master-sync/${RELEASE}")"
+          if [ -n "$old_pr" ] && [ "$DRY_RUN" != "true" ]; then
+            gh pr close "$old_pr" --delete-branch \
+              --comment "\`${RELEASE}\` is in service: it now only receives master PRs labeled \`${LABEL}\`, through \`${SYNC_BRANCH}\`." || true
+          fi
+
+          # Labeled master PRs, oldest merge first.
+          labeled="$(gh pr list --base master --state merged --label "$LABEL" --limit 1000 \
+                       --json number,mergeCommit,mergedAt,author,title \
+                       --jq 'sort_by(.mergedAt) | .[] | [.number, .mergeCommit.oid, .author.login, .title] | @tsv')" \
+            || { note "❌ could not list \`${LABEL}\` PRs"; exit 1; }
+
+          # What the release already received: merges of master (stabilization), and
+          # release-only commits cherry-picked from a PR or naming its backport.
+          received="$(git log --format=%B "origin/${RELEASE}" --not origin/master)"
+          is_received() {
+            git merge-base --is-ancestor "$2" "origin/${RELEASE}" \
+              || has_pick "$received" "$2" \
+              || grep -qiE "backport (of )?#$1([^0-9]|\$)" <<<"$received"
+          }
+
+          PENDING=()
+          declare -A PR_NUMBER PR_TITLE PR_AUTHOR
+          while IFS=$'\t' read -r n sha author title; do
+            [ -z "${n:-}" ] && continue
+            if [ -z "$sha" ] || ! git merge-base --is-ancestor "$sha" origin/master 2>/dev/null; then
+              echo "::warning::#${n} is labeled ${LABEL} but its merge commit is not on master; skipped."
+              continue
+            fi
+            if is_received "$n" "$sha"; then
+              continue
+            fi
+            PENDING+=("$sha")
+            PR_NUMBER[$sha]="$n"
+            PR_TITLE[$sha]="$title"
+            PR_AUTHOR[$sha]="$author"
+          done <<<"$labeled"
+          echo "Pending: ${#PENDING[@]} PR(s)"
+
+          # A live sync branch is reused, so commits people pushed to it survive.
+          SYNC_EXISTS=0
+          HAS_HUMAN_WORK=0
+          STALE=""
+          if git rev-parse --verify --quiet "origin/${SYNC_BRANCH}" >/dev/null \
+             && ! git merge-base --is-ancestor "origin/${SYNC_BRANCH}" "origin/${RELEASE}"; then
+            SYNC_EXISTS=1
+            if [ -n "$(git log --format='%cn' "origin/${SYNC_BRANCH}" --not "origin/${RELEASE}" | grep -vxF "$BOT_NAME" || true)" ]; then
+              HAS_HUMAN_WORK=1
+            fi
+            # Picks no longer wanted: unlabeled, or received another way meanwhile.
+            while read -r picked; do
+              [ -z "$picked" ] && continue
+              if [[ " ${PENDING[*]} " != *" ${picked} "* ]]; then
+                STALE="${STALE} $(git rev-parse --short "$picked")"
+              fi
+            done < <(git log --format=%B "origin/${SYNC_BRANCH}" --not "origin/${RELEASE}" \
+                       | sed -n 's/^(cherry picked from commit \([0-9a-f]\{40\}\))$/\1/p')
+          fi
+
+          if [ "${#PENDING[@]}" -eq 0 ] && [ "$SYNC_EXISTS" = "0" ]; then
+            note "nothing to backport"
+            exit 0
+          fi
+
+          if [ "$DRY_RUN" = "true" ]; then
+            note "would backport ${#PENDING[@]} PR(s) (dry-run)"
+            exit 0
+          fi
+
+          if [ "$SYNC_EXISTS" = "1" ] && [ -z "$STALE" ] && [ "$HAS_HUMAN_WORK" = "1" ]; then
+            git checkout -B "$SYNC_BRANCH" "origin/${SYNC_BRANCH}"
+            if ! git merge-base --is-ancestor "origin/${RELEASE}" HEAD \
+               && ! git merge --no-ff --no-edit "origin/${RELEASE}"; then
+              git merge --abort 2>/dev/null || true
+              note "❌ \`${RELEASE}\` conflicts with the commits pushed to \`${SYNC_BRANCH}\`; merge it in by hand"
+              exit 1
+            fi
+          elif [ "$SYNC_EXISTS" = "1" ] && [ -z "$STALE" ] \
+               && git merge-base --is-ancestor "origin/${RELEASE}" "origin/${SYNC_BRANCH}"; then
+            git checkout -B "$SYNC_BRANCH" "origin/${SYNC_BRANCH}"
+          else
+            if [ -n "$STALE" ]; then
+              echo "::warning::${SYNC_BRANCH} carries picks no longer wanted:${STALE}; rebuilding from ${RELEASE}."
+            fi
+            git checkout -B "$SYNC_BRANCH" "origin/${RELEASE}"
+          fi
+          start="$(git rev-parse HEAD)"
+
+          # Cherry-pick what the branch lacks. A conflicting PR is left out rather than
+          # committed with markers, so it cannot block the PRs after it.
+          onbranch="$(git log --format=%B HEAD --not "origin/${RELEASE}")"
+          CONFLICTED=()
+          declare -A CONFLICT_FILES
+          for sha in "${PENDING[@]}"; do
+            if has_pick "$onbranch" "$sha"; then
+              continue
+            fi
+            read -ra parents <<<"$(git rev-list --parents -n 1 "$sha")"
+            args=(-x)
+            if [ "${#parents[@]}" -gt 2 ]; then
+              args+=(-m 1)
+            fi
+            if git cherry-pick "${args[@]}" "$sha"; then
+              continue
+            fi
+            if [ -z "$(git ls-files -u)" ] && git diff --cached --quiet; then
+              # Its changes are already there.
+              git cherry-pick --skip
+              continue
+            fi
+            CONFLICT_FILES[$sha]="$(git diff --name-only --diff-filter=U || true)"
+            git cherry-pick --abort
+            CONFLICTED+=("$sha")
+          done
+          picked_now="$(git rev-list --count "${start}..HEAD")"
+
+          # Ping each conflicting PR's author, once per release.
+          for sha in "${CONFLICTED[@]}"; do
+            n="${PR_NUMBER[$sha]}"
+            seen="$(gh pr view "$n" --json comments --jq "[.comments[] | select(.body | contains(\"$CMARKER\"))] | length" 2>/dev/null || echo 0)"
+            if [ "${seen:-0}" != "0" ]; then
+              continue
+            fi
+            who="${PR_AUTHOR[$sha]}"
+            if [[ "$who" == app/* ]]; then
+              who="$REVIEW_TEAM"
+            fi
+            gh pr comment "$n" --body "$(printf '%s\n' "$CMARKER" \
+              "@${who} — this PR is labeled \`${LABEL}\` but does not cherry-pick cleanly onto \`${RELEASE}\`. Conflicting files:" \
+              "" \
+              "$(sed 's/^/- `/; s/$/`/' <<<"${CONFLICT_FILES[$sha]}")" \
+              "" \
+              "Please backport it by hand: open a PR against \`${RELEASE}\` with \`(backport #${n})\` in its title (\`@Mergifyio backport ${RELEASE}\` does that for you). Or remove the label if it should not be backported.")" \
+              >/dev/null 2>&1 || true
+          done
+
+          conflict_lines=()
+          conflict_note=""
+          for sha in "${CONFLICTED[@]}"; do
+            conflict_lines+=("- #${PR_NUMBER[$sha]} $(md_escape "${PR_TITLE[$sha]}") — conflicts in $(paste -sd, <<<"${CONFLICT_FILES[$sha]}" | sed 's/,/, /g')")
+          done
+          if [ "${#CONFLICTED[@]}" -gt 0 ]; then
+            conflict_note=", ${#CONFLICTED[@]} need a manual backport"
+          fi
+
+          pr="$(open_pr "$SYNC_BRANCH")"
+
+          # Nothing left to bring in: retire the PR and branch.
+          if [ "$(git rev-parse HEAD)" = "$(git rev-parse "origin/${RELEASE}")" ]; then
+            if [ -n "$pr" ]; then
+              gh pr close "$pr" --delete-branch --comment "Nothing left to backport into \`${RELEASE}\`; closing." || true
+            elif [ "$SYNC_EXISTS" = "1" ]; then
+              git push origin --delete "$SYNC_BRANCH" || true
+            fi
+            note "nothing to backport${conflict_note}"
+            exit 0
+          fi
+
+          if [ "$SYNC_EXISTS" = "0" ] || [ "$(git rev-parse HEAD)" != "$(git rev-parse "origin/${SYNC_BRANCH}")" ]; then
+            if ! git push --force-with-lease origin "HEAD:refs/heads/${SYNC_BRANCH}"; then
+              why="see the git output above"
+              if [ -n "$(git diff --name-only "origin/${RELEASE}..HEAD" -- '.github/workflows')" ] && [ "${HAS_SYNC_BOT_TOKEN:-false}" != "true" ]; then
+                why="a backported PR updates .github/workflows/** and the default GITHUB_TOKEN may not push workflow files — provision the SYNC_BOT_TOKEN secret (see this workflow's header)"
+              fi
+              echo "::error title=backport push rejected::${RELEASE}: ${why}"
+              if [ -n "$pr" ]; then
+                gh label create 'sync-failed' --color 'b60205' --description 'Automated master→feature sync could not complete' >/dev/null 2>&1 || true
+                gh pr edit "$pr" --add-label 'sync-failed' >/dev/null 2>&1 || true
+              fi
+              note "❌ push rejected — ${why}"
+              exit 1
+            fi
+          fi
+          if [ -n "$pr" ]; then
+            gh pr edit "$pr" --remove-label 'sync-failed' >/dev/null 2>&1 || true
+          fi
+
+          gh label create 'master-sync' --color '1d76db' --description 'Automated master→feature sync PR' --force >/dev/null 2>&1 || true
+          gh label create '🤖 Project automation' --color 'ededed' >/dev/null 2>&1 || true
+
+          # Included = every pending PR whose pick is on the branch now, by the bot or not.
+          onbranch="$(git log --format=%B HEAD --not "origin/${RELEASE}")"
+          pr_lines=()
+          for sha in "${PENDING[@]}"; do
+            if has_pick "$onbranch" "$sha"; then
+              pr_lines+=("- #${PR_NUMBER[$sha]} $(md_escape "${PR_TITLE[$sha]}")")
+            fi
+          done
+          included="${#pr_lines[@]}"
+          if [ "$included" -eq 0 ]; then
+            pr_lines+=("_None picked by the bot; see the commits on this branch._")
+          fi
+
+          extra=()
+          if [ -n "$STALE" ]; then
+            extra+=("> [!NOTE]" "> **Rebuilt** from \`${RELEASE}\`: the previous branch carried picks no longer wanted (label removed, or backported another way):${STALE}. Commits pushed to it by hand must be redone." "")
+          fi
+          if [ "${#CONFLICTED[@]}" -gt 0 ]; then
+            extra+=("### Needs a manual backport (${#CONFLICTED[@]})" "" \
+              "Left out because they do not cherry-pick cleanly; their authors were asked to backport them by hand. A later PR here that builds on one of them may not compile without it." "" \
+              "${conflict_lines[@]}" "")
+          fi
+
+          body="$(printf '%s\n' \
+            "Automated backport — cherry-picks master PRs labeled \`${LABEL}\` into \`${RELEASE}\`." \
+            "" \
+            "- Auto-merge: **enabled** — lands once required CI is green and a reviewer approves." \
+            "- Updates in place as PRs get the label. Remove the label from a PR to drop it from here." \
+            "" \
+            "### Included PRs (${included})" \
+            "" \
+            "${pr_lines[@]}" \
+            "" \
+            "${extra[@]}" \
+            "_Maintained automatically. Generated by [this run](${RUN_URL})._")"
+
+          if [ -z "$pr" ]; then
+            gh pr create --base "$RELEASE" --head "$SYNC_BRANCH" --title "$TITLE" --body "$body" \
+              || { note "❌ PR create failed"; exit 1; }
+            pr="$(open_pr "$SYNC_BRANCH")"
+          else
+            gh pr edit "$pr" --title "$TITLE" --body "$body" >/dev/null \
+              || echo "::warning::Could not update the description of PR #$pr; it still lists the previous run."
+          fi
+
+          gh pr edit "$pr" --add-label '🤖 Project automation' --add-label 'master-sync' >/dev/null 2>&1 || true
+          gh pr edit "$pr" --add-reviewer "$REVIEW_TEAM" >/dev/null 2>&1 || true
+          if [ -n "$pr" ]; then
+            gh pr merge "$pr" --auto --merge >/dev/null 2>&1 \
+              || echo "::warning::Could not enable auto-merge on PR #$pr (check 'Allow auto-merge' / branch protection / token)."
+          fi
+          note "✅ ${included} PR(s), ${picked_now} new commit(s)${conflict_note} — PR #${pr:-?}"
