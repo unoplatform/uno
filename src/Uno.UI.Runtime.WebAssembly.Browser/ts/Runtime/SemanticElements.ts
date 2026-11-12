@@ -1039,14 +1039,8 @@ namespace Uno.UI.Runtime {
 				}
 			});
 
-			element.addEventListener('keydown', (e) => {
-				if (e.key === 'Enter' || e.key === ' ') {
-					e.preventDefault();
-					if (callbacks.onInvoke) {
-						callbacks.onInvoke(handle);
-					}
-				}
-			});
+			// Enter/Space reach the XAML control through the document key listener, so no separate
+			// keydown handler is needed.
 
 			this.appendToParent(element, parentHandle, index);
 		}
