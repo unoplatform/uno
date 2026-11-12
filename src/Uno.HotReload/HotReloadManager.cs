@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Uno.HotReload.Diffing;
 using Uno.HotReload.Microsoft;
+using Uno.HotReload.Roslyn;
 using Uno.HotReload.Tracking;
 using Uno.HotReload.Utils;
 using Uno.Threading;
@@ -98,6 +99,15 @@ public sealed class HotReloadManager : IDisposable
 		"The compiler could not produce a Hot Reload update for this change ({0}). Undo the change to keep going, or restart the app.",
 		"HotReload",
 		DiagnosticSeverity.Error,
+		isEnabledByDefault: true);
+
+	// Carries the blocked-reload language-version hint to the IDE and app status (spec 061 R5).
+	private static readonly DiagnosticDescriptor _unsupportedLanguageVersionDescriptor = new(
+		"UNOHR0002",
+		"C# version newer than the Hot Reload compiler",
+		"{0}",
+		"HotReload",
+		DiagnosticSeverity.Warning,
 		isEnabledByDefault: true);
 #pragma warning restore RS2008 // Enable analyzer release tracking
 
@@ -315,7 +325,9 @@ public sealed class HotReloadManager : IDisposable
 					$"Hot reload blocked by {blockingGeneratorErrors.Length} source generator error(s) in " +
 					$"{FormatFileNames(xamlFiles)} (edited: {FormatFileNames(files)}).");
 				outcome = HotReloadOperationResult.Failed;
-				diagnostics = generatorErrors;
+				// A XAML error, such as an unresolved x:Bind member, can come from code-behind the embedded compiler cannot parse.
+				diagnostics = generatorErrors.AddRange(ReportLanguageVersionHints(auditedProjects.Where(
+					p => p.AdditionalDocuments.Any(d => d.FilePath is { } path && xamlFiles.Contains(path)))));
 			}
 			else
 			{
@@ -400,6 +412,7 @@ public sealed class HotReloadManager : IDisposable
 							$"{string.Join(", ", audit.BlockingProjects)} " +
 							$"(edited: {FormatFileNames(files)}).");
 						diagnosticsReporter.ReportCompilationDiagnostics(audit.Errors);
+						diagnostics = diagnostics.AddRange(ReportLanguageVersionHints(auditedProjects.Where(p => audit.BlockingProjects.Contains(p.Name))));
 						outcome = HotReloadOperationResult.Failed;
 						break;
 
@@ -457,6 +470,35 @@ public sealed class HotReloadManager : IDisposable
 				Status = HotReloadEmitStatus.Blocked,
 				Diagnostics = [Diagnostic.Create(_emitFailureDescriptor, Location.None, e.Message)],
 			};
+		}
+	}
+
+	/// <summary>
+	/// Follows a "Hot reload blocked by …" line with the language-version hint of each of <paramref name="projects"/>
+	/// the embedded compiler is too old for (spec 061 R5), and returns the hints as <c>UNOHR0002</c> diagnostics, so the
+	/// IDE and the app status show them. The compile errors themselves are not carried (see the FIXME on that branch).
+	/// </summary>
+	private ImmutableArray<Diagnostic> ReportLanguageVersionHints(IEnumerable<Project> projects)
+	{
+		try
+		{
+			var hints = projects
+				.Select(EmbeddedRoslyn.GetUnsupportedLanguageVersionHint)
+				.OfType<string>()
+				.Distinct()
+				.ToImmutableArray();
+			foreach (var hint in hints)
+			{
+				_tracker.Output(hint);
+			}
+
+			return hints.Select(hint => Diagnostic.Create(_unsupportedLanguageVersionDescriptor, Location.None, hint)).ToImmutableArray();
+		}
+		catch (Exception e) when (e is not OperationCanceledException)
+		{
+			// Diagnostics-only: it must never turn the blocked pass it explains into an internal error.
+			_tracker.Verbose($"Language version hint failed (the pass stays blocked): {e}");
+			return [];
 		}
 	}
 
