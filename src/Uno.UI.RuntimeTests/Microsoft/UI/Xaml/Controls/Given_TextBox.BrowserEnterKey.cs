@@ -191,14 +191,47 @@ public partial class Given_TextBox
 		var SUT = await LoadFocusedTextBox("abc");
 		var keys = TrackEnterKey(SUT);
 
-		// Chrome on Android sends the action key as a press of Enter without a code for the keyboard input
-		// source to tell the key by. It reaches the TextBox through the beforeinput event.
+		// Chrome on Android sends the action key as a press of Enter without a code. The keyboard input source
+		// tells the key by its name, and the line break that follows does not raise it again.
 		DispatchKeyDown("Enter", code: "", keyCode: 13);
 		DispatchBeforeInput("insertLineBreak");
 		DispatchKeyUp("Enter", code: "", keyCode: 13);
 		await WindowHelper.WaitForIdle();
 
 		CollectionAssert.AreEqual(new[] { "down", "up" }, keys);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25173")]
+	public async Task When_SoftKeyboard_Enter_Has_No_Code_And_TextBox_Accepts_Returns()
+	{
+		using var _ = UITestHelper.ResetWindowContent();
+
+		var SUT = new TextBox { AcceptsReturn = true };
+		await UITestHelper.Load(SUT);
+		await FocusHiddenInput(SUT);
+
+		// The TextBox handles Enter itself here.
+		var keys = new List<string>();
+		SUT.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler((_, e) => AddEnterKey(e, "down")), handledEventsToo: true);
+		SUT.AddHandler(UIElement.KeyUpEvent, new KeyEventHandler((_, e) => AddEnterKey(e, "up")), handledEventsToo: true);
+
+		// The keyboard input source tells a press without a code by its name.
+		DispatchKeyDown("Enter", code: "", keyCode: 13);
+		DispatchKeyUp("Enter", code: "", keyCode: 13);
+		await WindowHelper.WaitForIdle();
+
+		CollectionAssert.AreEqual(new[] { "down", "up" }, keys);
+
+		void AddEnterKey(KeyRoutedEventArgs e, string name)
+		{
+			if (e.Key == VirtualKey.Enter)
+			{
+				keys.Add(name);
+			}
+		}
 	}
 
 	[TestMethod]
@@ -355,9 +388,10 @@ public partial class Given_TextBox
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25173")]
-	[DataRow(true, DisplayName = "Its release goes to the document")]
-	[DataRow(false, DisplayName = "Its release is lost")]
-	public async Task When_Enter_Named_On_Release_After_Line_Break_Moves_Focus_Off_The_TextBox(bool isReleased)
+	[DataRow(true, false, DisplayName = "Its release goes to the document")]
+	[DataRow(false, false, DisplayName = "Its release is lost")]
+	[DataRow(true, true, DisplayName = "A soft keyboard's release goes to the document")]
+	public async Task When_Enter_Named_On_Release_After_Line_Break_Moves_Focus_Off_The_TextBox(bool isReleased, bool softKeyboard)
 	{
 		using var _ = UITestHelper.ResetWindowContent();
 
@@ -380,15 +414,23 @@ public partial class Given_TextBox
 		panel.AddHandler(UIElement.KeyUpEvent, new KeyEventHandler((_, e) => AddEnterKey(e, "up")), handledEventsToo: true);
 
 		// The line break raises the key, its release included, and the press moves focus off the TextBox: its input
-		// is gone by the keyup, which the browser sends to the document.
-		DispatchKeyDown("Process", code: "Enter", keyCode: 229);
+		// is gone by the keyup, which the browser sends to the document. A soft keyboard's keyup has no code, and the
+		// keyboard input source tells it by its name.
+		if (softKeyboard)
+		{
+			DispatchKeyDown("Unidentified", code: "", keyCode: 229);
+		}
+		else
+		{
+			DispatchKeyDown("Process", code: "Enter", keyCode: 229);
+		}
 		DispatchBeforeInput("insertLineBreak");
 		await WindowHelper.WaitForIdle();
 		Assert.IsFalse(HiddenInputExists(), "The hidden native input should be gone once focus is on the button.");
 
 		if (isReleased)
 		{
-			DispatchKeyUpOnDocument("Enter", code: "Enter", keyCode: 13);
+			DispatchKeyUpOnDocument("Enter", code: softKeyboard ? "" : "Enter", keyCode: 13);
 			await WindowHelper.WaitForIdle();
 		}
 

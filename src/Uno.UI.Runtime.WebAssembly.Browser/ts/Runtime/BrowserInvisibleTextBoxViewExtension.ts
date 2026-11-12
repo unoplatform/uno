@@ -54,7 +54,7 @@
 		private static isSyncingFromNative: boolean;
 		// The presses of Enter that are down, by the code of their key ("" for an event that has none, as a
 		// soft keyboard's), so that each is raised once: those whose keydown was seen as Enter's (the ones
-		// that have a code are raised by BrowserKeyboardInputSource), and those the line break raised,
+		// BrowserKeyboardInputSource tells the key of are raised by it), and those the line break raised,
 		// release included. A press can outlive the input it started on (a handler moving focus off it),
 		// so an entry lasts until the keyup of its key, wherever that goes, or its next keydown. A keyup that
 		// never comes (the page losing focus while the key is down) leaves the entry until that keydown; a
@@ -63,6 +63,8 @@
 		private static enterLineBreaks = new Set<string>();
 		// The code of the last keydown when it can be Enter's: the line break that follows is that key's.
 		private static lastKeyDownEnterCode: string = "";
+		// Whether BrowserKeyboardInputSource raised the last keydown as Enter's by its key, as it has no code.
+		private static lastKeyDownNamedEnter: boolean;
 		private static compositionGeneration: number = 0;
 
 		private static waitingAsyncOnSelectionChange: boolean;
@@ -276,8 +278,12 @@
 					// The line break the browser sets out to insert for a keydown BrowserKeyboardInputSource
 					// raised is not another press of the key.
 					const enterCode = BrowserInvisibleTextBoxViewExtension.lastKeyDownEnterCode;
+					const raisedByKeyDown = enterCode === ""
+						? BrowserInvisibleTextBoxViewExtension.lastKeyDownNamedEnter
+						: BrowserInvisibleTextBoxViewExtension.enterKeyDowns.has(enterCode);
 					BrowserInvisibleTextBoxViewExtension.lastKeyDownEnterCode = "";
-					if (enterCode === "" || !BrowserInvisibleTextBoxViewExtension.enterKeyDowns.has(enterCode)) {
+					BrowserInvisibleTextBoxViewExtension.lastKeyDownNamedEnter = false;
+					if (!raisedByKeyDown) {
 						BrowserInvisibleTextBoxViewExtension.enterLineBreaks.add(enterCode);
 						BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
 					}
@@ -422,13 +428,20 @@
 			return ev.code === "Enter" || ev.code === "NumpadEnter" ? ev.code : "";
 		}
 
+		// Whether BrowserKeyboardInputSource raises the event as Enter's: by its code, or by its key when it has no
+		// code (a soft keyboard's Enter).
+		private static isEnterForKeyboardSource(ev: KeyboardEvent): boolean {
+			return BrowserInvisibleTextBoxViewExtension.enterCodeOf(ev) !== "" || (ev.code === "" && ev.key === "Enter");
+		}
+
 		// Called by BrowserKeyboardInputSource for a keydown that reached the document. It raises the one
-		// that has the code of Enter, so the press is recorded here too: it may have started off the
+		// it tells Enter by, so the press is recorded here too: it may have started off the
 		// TextBox inputs, and whatever an earlier press of the key left behind is over.
 		public static onKeyDownAtDocument(ev: KeyboardEvent) {
 			const enterCode = BrowserInvisibleTextBoxViewExtension.enterCodeOf(ev);
 			BrowserInvisibleTextBoxViewExtension.lastKeyDownEnterCode = enterCode;
-			if (enterCode !== "") {
+			BrowserInvisibleTextBoxViewExtension.lastKeyDownNamedEnter = enterCode === "" && ev.key === "Enter";
+			if (BrowserInvisibleTextBoxViewExtension.isEnterForKeyboardSource(ev)) {
 				BrowserInvisibleTextBoxViewExtension.enterLineBreaks.delete(enterCode);
 				BrowserInvisibleTextBoxViewExtension.enterKeyDowns.add(enterCode);
 			}
@@ -444,7 +457,8 @@
 			}
 
 			const enterCode = BrowserInvisibleTextBoxViewExtension.enterCodeOf(ev);
-			const raised = enterCode !== "" && BrowserInvisibleTextBoxViewExtension.enterLineBreaks.has(enterCode);
+			const raised = BrowserInvisibleTextBoxViewExtension.isEnterForKeyboardSource(ev)
+				&& BrowserInvisibleTextBoxViewExtension.enterLineBreaks.has(enterCode);
 			BrowserInvisibleTextBoxViewExtension.endEnterPress(enterCode);
 			return raised;
 		}
@@ -456,6 +470,7 @@
 			BrowserInvisibleTextBoxViewExtension.enterLineBreaks.delete(enterCode);
 			if (BrowserInvisibleTextBoxViewExtension.lastKeyDownEnterCode === enterCode) {
 				BrowserInvisibleTextBoxViewExtension.lastKeyDownEnterCode = "";
+				BrowserInvisibleTextBoxViewExtension.lastKeyDownNamedEnter = false;
 			}
 		}
 
@@ -475,6 +490,7 @@
 				// keyboard's Enter, so it counts as a press of it.
 				const enterCode = BrowserInvisibleTextBoxViewExtension.enterCodeOf(ev);
 				BrowserInvisibleTextBoxViewExtension.lastKeyDownEnterCode = enterCode;
+				BrowserInvisibleTextBoxViewExtension.lastKeyDownNamedEnter = false;
 				const isOtherKey = ev.code !== "" && ev.code !== "Unidentified" && enterCode === ""
 					&& ev.key !== "Enter" && ev.keyCode !== 13;
 				if (!isOtherKey) {
@@ -536,10 +552,10 @@
 					: acceptsReturn;
 
 				// The line break raised the key, its release included. BrowserKeyboardInputSource raises the
-				// release of a keyup that has the code it tells the key by.
+				// release of a keyup it tells the key of.
 				const enterCode = BrowserInvisibleTextBoxViewExtension.enterCodeOf(ev);
 				const raisedByLineBreak = BrowserInvisibleTextBoxViewExtension.enterLineBreaks.has(enterCode);
-				if (raisedByLineBreak && enterCode !== "") {
+				if (raisedByLineBreak && BrowserInvisibleTextBoxViewExtension.isEnterForKeyboardSource(ev)) {
 					// Released along with the line break's press: not to be raised again from the document.
 					ev.stopPropagation();
 				}
@@ -706,6 +722,7 @@
 			BrowserInvisibleTextBoxViewExtension.currentHandle = 0;
 			// Focus left the text inputs: a line break that comes after this is not the last keydown's.
 			BrowserInvisibleTextBoxViewExtension.lastKeyDownEnterCode = "";
+			BrowserInvisibleTextBoxViewExtension.lastKeyDownNamedEnter = false;
 			// Blur explicitly before removing: the .blur() method dispatches synchronously, so it
 			// lands inside the suppression window. WebKit can otherwise defer the implicit blur that
 			// fires on element removal past that window, which would clear the wrong TextBox's focus.
