@@ -734,4 +734,76 @@ public partial class Given_Parser
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task When_Binding_On_Unresolved_Attached_Property_Owner()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:u="using:Does.Not.Exist">
+
+					<StackPanel>
+						<ListView u:ListViewBaseCommand.Command="{Binding ItemCommand}" />
+						<Button u:Missing.Value="{Binding Tag}" />
+					</StackPanel>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState = { Sources = { _emptyCodeBehind } },
+			TestBehaviors = TestBehaviors.SkipGeneratedSourcesCheck,
+		};
+
+		test.ExpectedDiagnostics.AddRange(
+		[
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 8, 4, 8, 4).WithArguments("Property 'ListViewBaseCommand.Command' cannot be bound: the type 'ListViewBaseCommand' could not be found in 'using:Does.Not.Exist'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 9, 4, 9, 4).WithArguments("Property 'Missing.Value' cannot be bound: the type 'Missing' could not be found in 'using:Does.Not.Exist'"),
+		]);
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Binding_On_Resolved_Or_Ignorable_Attached_Property_OK()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+					mc:Ignorable="d">
+
+					<Grid>
+						<ListView
+							Grid.Row="{Binding Row}"
+							ToolTipService.ToolTip="{Binding Tip}"
+							d:DesignItems="{Binding Samples}" />
+					</Grid>
+				</Page>
+
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState = { Sources = { _emptyCodeBehind } },
+			TestBehaviors = TestBehaviors.SkipGeneratedSourcesCheck,
+		};
+
+		await test.RunAsync();
+	}
 }

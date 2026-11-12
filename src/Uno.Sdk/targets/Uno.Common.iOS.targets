@@ -6,6 +6,8 @@
 		<EnableDefaultiOSItems Condition="$(EnableDefaultiOSItems) == ''">false</EnableDefaultiOSItems>
 
 		<IsMSALSupported>true</IsMSALSupported>
+
+		<OptimizePNGs Condition=" '$(OptimizePNGs)' == '' ">false</OptimizePNGs>
 	</PropertyGroup>
 
 	<!--

@@ -19,7 +19,12 @@ public static class ManagedBackend
 	/// A font file used as the default face, for a platform with no enumerable system fonts (the iOS sandbox, the
 	/// browser), where the provider would otherwise have no guaranteed default.
 	/// </param>
-	public static IFontProvider CreateFontProvider(byte[]? bundledDefaultFont) => new ManagedFontProvider(bundledDefaultFont);
+	/// <param name="enableFallback">
+	/// <c>false</c> renders only from the requested fonts: a missing glyph stays missing instead of coming from an
+	/// installed font or, in the browser, a downloaded Noto font.
+	/// </param>
+	public static IFontProvider CreateFontProvider(byte[]? bundledDefaultFont = null, bool enableFallback = true)
+		=> new ManagedFontProvider(bundledDefaultFont, enableFallback);
 
 	public static IImageEncoderDecoder CreateImageDecoder() => new ManagedImageDecoderBackend();
 

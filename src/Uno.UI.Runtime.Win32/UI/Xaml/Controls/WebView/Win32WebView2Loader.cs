@@ -37,7 +37,7 @@ internal static class Win32WebView2Loader
 			if (WebView2Utilities.Initialize(Assembly.GetEntryAssembly(), throwOnError: false).IsError
 				&& !NativeLibrary.TryLoad("WebView2Loader.dll", typeof(WebView2.Functions).Assembly, null, out _))
 			{
-				throw new DllNotFoundException("Cannot load WebView2Loader.dll. Make sure it's deployed next to the application or resolvable through its deps.json.");
+				throw new DllNotFoundException("Cannot load WebView2Loader.dll. Enable the `WebView` UnoFeature, or reference Microsoft.Web.WebView2, so it's deployed next to the application or resolvable through its deps.json.");
 			}
 
 			_loaded = true;

@@ -66,6 +66,18 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 
 	void IImeSessionHost.UpdateTextFromNative(string text, int selectionStart, int selectionLength)
 	{
+		if (IsNativeEchoOfCurrentSelection(selectionStart, selectionLength)
+			&& IsNativeEchoOfCurrentText(text))
+		{
+			// ProcessTextInput is skipped, so clear what its finally would have.
+			if (!_isInputModifyingText)
+			{
+				_platformTextApplyInProgress = false;
+			}
+
+			return;
+		}
+
 		// Pending so the text change itself lands the caret here instead of passing through 0.
 		SetPendingSelection(selectionStart, selectionLength);
 		ProcessTextInput(text);
@@ -73,7 +85,38 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 	}
 
 	void IImeSessionHost.SelectFromNative(int selectionStart, int selectionLength)
-		=> Select(selectionStart, selectionLength);
+	{
+		if (!IsNativeEchoOfCurrentSelection(selectionStart, selectionLength))
+		{
+			Select(selectionStart, selectionLength);
+		}
+	}
+
+	// Native selections are normalized and can't tell which end the caret is on, so re-applying an echo
+	// of the current range would flip a backward selection forward.
+	private bool IsNativeEchoOfCurrentSelection(int selectionStart, int selectionLength)
+		=> selectionStart == _selection.start && selectionLength == _selection.length;
+
+	// Native text reports line breaks as '\n'; compares without allocating a normalized copy per keystroke.
+	private bool IsNativeEchoOfCurrentText(string text)
+	{
+		var current = Text;
+		if (text.Length != current.Length)
+		{
+			return false;
+		}
+
+		for (var i = 0; i < current.Length; i++)
+		{
+			var c = current[i] == '\r' ? '\n' : current[i];
+			if (c != text[i])
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
 
 	bool IImeSessionHost.RaisePaste()
 	{
@@ -84,7 +127,7 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 
 	private static void InitializeIme() => ImeSessionCoordinator.Initialize();
 
-	private void StartImeSession()
+	private void StartImeSession(FocusState focusState)
 	{
 		// Don't route IME composition events to PasswordBox — password text
 		// must not be processed as composition text, even if the extension
@@ -95,7 +138,7 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 			return;
 		}
 
-		ImeSessionCoordinator.StartSession(this);
+		ImeSessionCoordinator.StartSession(this, new ImeSessionActivation(focusState, IsSoftwareKeyboardSuppressed));
 
 		// Geometry tracking costs a LayoutUpdated subscription, so only the TextBox with a live session pays it.
 		_imeGeometryTrackingRequested = true;
@@ -155,7 +198,7 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 		_host.RaiseTextCompositionStarted(new TextCompositionStartedEventArgs(_compositionStartIndex, _compositionLength));
 	}
 
-	void IImeSessionHost.OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied)
+	void IImeSessionHost.OnImeCompositionUpdated(string compositionText, int cursorPosition, int resolvedLength, bool textAlreadyApplied, int compositionStart)
 	{
 		if (IsReadOnly)
 		{
@@ -171,6 +214,11 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 			// Mark the session so key events aren't swallowed by the IsComposing check
 			// (Android key events are independent of composition events).
 			_compositionAppliedByPlatform = true;
+			if (compositionStart >= 0)
+			{
+				// An IME re-composing an existing word starts the composition before the caret.
+				_compositionStartIndex = compositionStart;
+			}
 		}
 		else
 		{
@@ -340,9 +388,12 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 
 		if (_platformTextApplyInProgress)
 		{
-			// The platform already applied the text (e.g., Android EndBatchEdit).
-			// Don't cancel the composition — just clear the flag.
-			_platformTextApplyInProgress = false;
+			// The platform already applied the text (e.g., Android EndBatchEdit), so don't cancel the composition.
+			// While its text is processed, edits by TextChanging handlers belong to it too: ProcessTextInput clears the flag.
+			if (!_isInputModifyingText)
+			{
+				_platformTextApplyInProgress = false;
+			}
 			return;
 		}
 

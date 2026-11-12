@@ -64,6 +64,14 @@ internal static class SolutionFileFinder
 		return directoryName.StartsWith(".codex", StringComparison.OrdinalIgnoreCase);
 	}
 
+	/// <summary><see langword="true"/> for a <c>.sln</c> or <c>.slnx</c> path, the solution files this finder lists.</summary>
+	public static bool IsSolutionFile(string path)
+	{
+		var extension = Path.GetExtension(path.AsSpan());
+		return extension.Equals(".sln", StringComparison.OrdinalIgnoreCase)
+			|| extension.Equals(".slnx", StringComparison.OrdinalIgnoreCase);
+	}
+
 	/// <summary>
 	/// Finds solution files (.sln, .slnx) recursively up to <paramref name="maxDepth"/> levels.
 	/// When inside a git repo, uses <c>git check-ignore</c> to skip ignored directories.

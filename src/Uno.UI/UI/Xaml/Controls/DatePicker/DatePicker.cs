@@ -1277,7 +1277,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// OnPropertyChanged2 methods.
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
-			// DatePickerGenerated.OnPropertyChanged2(args);
+			base.OnPropertyChanged2(args);
 
 			// switch (args.m_pDP.GetIndex())
 			{

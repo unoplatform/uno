@@ -14,6 +14,7 @@ using Windows.Graphics.Interop.Direct2D;
 using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.UI.Helpers;
+using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Linux.FrameBuffer.UI;
 using System.Runtime.CompilerServices;
@@ -38,11 +39,16 @@ namespace Uno.UI.Runtime
 		private readonly uint _crtc;
 		private readonly uint _encoder;
 		// One word, so a request made while a flip is in flight can never slip between the flip handler's
-		// "nothing pending" check and its return to idle.
+		// "nothing pending" check and its return to idle. Only the page-flip thread draws: a request either wakes it
+		// (FlipRequested) or leaves a frame for the flip in flight to draw when it completes (FlipInFlightWithPending).
 		private const int FlipIdle = 0;
 		private const int FlipInFlight = 1;
 		private const int FlipInFlightWithPending = 2;
+		private const int FlipRequested = 3;
+		private const int EINTR = 4;
+		private const short POLLIN = 1;
 		private int _flipState;
+		private readonly int _wakeFd;
 		private readonly GCHandle _selfHandle;
 
 		private LibDrm.drmModeCrtc _savedCrtc;
@@ -248,6 +254,12 @@ namespace Uno.UI.Runtime
 
 			FrameBufferWindowWrapper.Instance.SetSize(new Size(modeInfo.Resolution.Width, modeInfo.Resolution.Height));
 
+			_wakeFd = Libc.eventfd(0, Libc.EFD_CLOEXEC);
+			if (_wakeFd == -1)
+			{
+				throw new InvalidOperationException($"{nameof(Libc.eventfd)} failed ({Marshal.GetLastWin32Error()})");
+			}
+
 			new Thread(PageFlipLoop) { IsBackground = true, Name = "DRM pageflip loop" }.Start();
 		}
 
@@ -285,17 +297,9 @@ namespace Uno.UI.Runtime
 				switch (Volatile.Read(ref _flipState))
 				{
 					case FlipIdle:
-						if (Interlocked.CompareExchange(ref _flipState, FlipInFlight, FlipIdle) == FlipIdle)
+						if (Interlocked.CompareExchange(ref _flipState, FlipRequested, FlipIdle) == FlipIdle)
 						{
-							try
-							{
-								DrawAndFlip();
-							}
-							catch
-							{
-								Volatile.Write(ref _flipState, FlipIdle);
-								throw;
-							}
+							WakePageFlipThread();
 							return;
 						}
 						break;
@@ -310,6 +314,12 @@ namespace Uno.UI.Runtime
 						return;
 				}
 			}
+		}
+
+		private unsafe void WakePageFlipThread()
+		{
+			ulong one = 1;
+			Libc.write(_wakeFd, &one, 8);
 		}
 
 		// Draws the current content, then flips to it. Drawing ahead of the request instead (in the flip handler)
@@ -376,22 +386,41 @@ namespace Uno.UI.Runtime
 				version = 4,
 				page_flip_handler2 = &OnPageFlip
 			};
-			while (true)
+			var fds = stackalloc pollfd[2];
+			while (!_disposed)
 			{
-				var pfd = new pollfd { events = 1, fd = _card };
-				var res = Libc.poll(&pfd, new IntPtr(1), -1);
+				fds[0] = new pollfd { events = POLLIN, fd = _card };
+				fds[1] = new pollfd { events = POLLIN, fd = _wakeFd };
+				var res = Libc.poll(fds, new IntPtr(2), -1);
 				if (res < 0)
 				{
 					var errno = Marshal.GetLastWin32Error();
+					if (errno == EINTR)
+					{
+						// poll(2) is never restarted after a signal handler, whatever SA_RESTART says.
+						continue;
+					}
+
 					var errnoStringPtr = Libc.strerror(errno);
 					var errorString = Marshal.PtrToStringAnsi(errnoStringPtr);
 					throw new InvalidOperationException($"{nameof(Libc.poll)} failed ({errno}) : {errorString}");
 				}
 
-				res = LibDrm.drmHandleEvent(_card, &ctx);
-				if (res != 0)
+				// Flip completions first: a request can only have woken this thread from idle, after the last one landed.
+				if ((fds[0].revents & POLLIN) != 0)
 				{
-					throw new InvalidOperationException($"{nameof(LibDrm.drmHandleEvent)} failed ({res})");
+					res = LibDrm.drmHandleEvent(_card, &ctx);
+					if (res != 0)
+					{
+						throw new InvalidOperationException($"{nameof(LibDrm.drmHandleEvent)} failed ({res})");
+					}
+				}
+
+				if ((fds[1].revents & POLLIN) != 0)
+				{
+					ulong count;
+					Libc.read(_wakeFd, &count, 8);
+					OnRequested();
 				}
 			}
 		}
@@ -414,19 +443,63 @@ namespace Uno.UI.Runtime
 		{
 			try
 			{
-				if (Interlocked.CompareExchange(ref _flipState, FlipInFlight, FlipInFlightWithPending) == FlipInFlightWithPending)
+				// Only a CAS may return the gate to idle: a request can turn InFlight into InFlightWithPending at any
+				// point, and an unconditional write would discard it with nothing left to ask again.
+				while (true)
 				{
-					DrawAndFlip();
-				}
-				else
-				{
-					Volatile.Write(ref _flipState, FlipIdle);
+					switch (Volatile.Read(ref _flipState))
+					{
+						case FlipInFlight:
+							if (Interlocked.CompareExchange(ref _flipState, FlipIdle, FlipInFlight) == FlipInFlight)
+							{
+								return;
+							}
+							break;
+						case FlipInFlightWithPending:
+							if (Interlocked.CompareExchange(ref _flipState, FlipInFlight, FlipInFlightWithPending) == FlipInFlightWithPending)
+							{
+								DrawAndFlip();
+								return;
+							}
+							break;
+						default:
+							throw new InvalidOperationException("A page flip completed while no flip was in flight.");
+					}
 				}
 			}
 			catch (Exception e)
 			{
-				Volatile.Write(ref _flipState, FlipIdle);
-				this.LogError()?.Error($"The DRM page-flip handler failed; the next invalidation re-arms it: {e}");
+				this.LogError()?.Error($"The DRM page-flip handler failed: {e}");
+				ResetFlipStateAfterFailure();
+			}
+		}
+
+		// Starts a frame for a request made while idle. A failed CAS means the request was already served.
+		private void OnRequested()
+		{
+			if (_disposed || Interlocked.CompareExchange(ref _flipState, FlipInFlight, FlipRequested) != FlipRequested)
+			{
+				return;
+			}
+
+			try
+			{
+				DrawAndFlip();
+			}
+			catch (Exception e)
+			{
+				this.LogError()?.Error($"The DRM frame failed: {e}");
+				ResetFlipStateAfterFailure();
+			}
+		}
+
+		// A request that arrived while the failed frame was in progress is still owed a frame. It is posted rather than
+		// served inline, so a persistent failure (lost DRM master) retries at the dispatcher's pace instead of spinning.
+		private void ResetFlipStateAfterFailure()
+		{
+			if (Interlocked.Exchange(ref _flipState, FlipIdle) == FlipInFlightWithPending)
+			{
+				NativeDispatcher.Main.Enqueue(InvalidateRender, NativeDispatcherPriority.Normal);
 			}
 		}
 
@@ -493,6 +566,7 @@ namespace Uno.UI.Runtime
 				return;
 			}
 			_disposed = true;
+			WakePageFlipThread();
 
 			if (_crtcRestored)
 			{

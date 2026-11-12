@@ -258,6 +258,37 @@ public class Given_CompositionTarget
 	}
 
 	/// <summary>
+	/// Virtual framebuffers usually can't wait for vsync. Frames must still be paced, or animations tick as fast
+	/// as the CPU renders (a 10 ms scroll animation then raises several ViewChanged events instead of one or two).
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaFrameBuffer)]
+	public async Task When_FrameBuffer_Renders_Continuously_Then_Frames_Are_Paced()
+	{
+		var border = new Border { Width = 50, Height = 50, Background = new SolidColorBrush(Colors.Red) };
+		await UITestHelper.Load(border);
+
+		var target = (CompositionTarget)border.Visual.CompositionTarget!;
+		var ticks = 0;
+		EventHandler<long> driver = (_, _) => ticks++;
+
+		target.FrameStarting += driver;
+		try
+		{
+			await Task.Delay(TimeSpan.FromSeconds(1));
+		}
+		finally
+		{
+			target.FrameStarting -= driver;
+		}
+
+		Assert.IsTrue(ticks >= 5, $"the frame driver should keep ticking, got {ticks} ticks");
+		// 60 fps plus slack for timer jitter.
+		Assert.IsTrue(ticks <= 75, $"frames should be paced to about 60 fps, got {ticks} ticks in one second");
+	}
+
+	/// <summary>
 	/// A driver on a target whose host is gone can never tick again: the frame that would bring its next tick
 	/// will not come. It has to be dropped, or the compositor keeps counting an animation in flight for the
 	/// rest of the process.
@@ -708,6 +739,53 @@ public class Given_CompositionTarget
 		}
 
 		return (ticks, frames);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_Content_Changes_While_Minimized_Then_Restore_Presents_It()
+	{
+		// Skia-on-Metal presents into a minimized window's layer, which keeps that content when restored. WebGPU gets an
+		// Occluded surface instead and presents nothing, so its frame has to be retried once the window shows.
+		if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is not ("1" or "true" or "neutral" or "swapchain"))
+		{
+			Assert.Inconclusive("Only WebGPU skips the present of a hidden window.");
+		}
+
+		var text = new TextBlock { Text = "Before" };
+		var window = new Window { Content = new Border { Child = text } };
+		var activated = false;
+		window.Activated += (_, _) => activated = true;
+		window.Activate();
+		await TestServices.WindowHelper.WaitFor(() => activated);
+		await TestServices.WindowHelper.WaitForLoaded(text);
+
+		var presenter = (Microsoft.UI.Windowing.OverlappedPresenter)window.AppWindow.Presenter;
+		var target = (CompositionTarget)text.Visual.CompositionTarget!;
+		var presentedSinceRestore = 0;
+		EventHandler<FramePresentedInfo> onPresented = (_, _) => presentedSinceRestore++;
+		try
+		{
+			presenter.Minimize();
+			await TestServices.WindowHelper.WaitFor(() => presenter.State == Microsoft.UI.Windowing.OverlappedPresenterState.Minimized);
+			await Task.Delay(1000);
+
+			// The frame for this change is made while the window is hidden, so it cannot reach the screen.
+			text.Text = "After";
+			await Task.Delay(1000);
+
+			target.FramePresented += onPresented;
+			presenter.Restore();
+
+			// Nothing changes after the restore, so only a retried frame can show the new text.
+			await TestServices.WindowHelper.WaitFor(() => presentedSinceRestore > 0, 5000, "The frame made while the window was hidden was never presented.");
+		}
+		finally
+		{
+			target.FramePresented -= onPresented;
+			window.Close();
+		}
 	}
 }
 #endif

@@ -133,4 +133,4 @@ var unoDefaults = new NSUserDefaults("UnoApplicationData", NSUserDefaultsType.Su
 The `CA92.1` reason covers reading and writing data that only the app itself can access, which matches the `UnoApplicationData` suite.
 
 > [!NOTE]
-> Before Uno Platform 7.0, settings were stored directly in `NSUserDefaults.StandardUserDefaults`. Values written by those versions stay there, and remain invisible to `ApplicationData`, until the app explicitly migrates them. See the [Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7) for details.
+> Before Uno Platform 7.0, settings were stored directly in `NSUserDefaults.StandardUserDefaults`. Values written by those versions stay there, and remain invisible to `ApplicationData`, until the app explicitly migrates them. See the [Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7.AppStartup#application-settings-on-ios-and-tvos) for details.

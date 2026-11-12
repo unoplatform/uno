@@ -9,7 +9,7 @@ When creating an Uno Platform application, developers might want to create elabo
 On Uno Platform targets with Skia rendering, we can utilize the pre-existing internal Skia canvas used to render the application window instead of creating additional Skia surfaces. Unlike `SKXamlCanvas` which doesn't support hardware acceleration on Skia targets yet, hardware acceleration comes out of the box if the Uno application is already using OpenGL to render. Moreover, `SKXamlCanvas` has to make additional buffer copying, which can be skipped with this implementation.
 
 > [!IMPORTANT]
-> The `Uno.WinUI.Graphics2DSK` package which provides the `SKCanvasElement` class is referenced for you by Uno.Sdk automatically on every target. However, the class is only supported (i.e. `SKCanvasElement.IsSupportedOnCurrentPlatform` returns true) on Uno Platform targets that use Skia rendering; the WinAppSDK target renders natively with WinUI and is not supported.
+> The `Uno.WinUI.Graphics2DSK` package which provides the `SKCanvasElement` class is referenced for you by Uno.Sdk through the `Skia` feature, which is implied on an app's Uno Platform targets. A library that uses `SKCanvasElement` lists `Skia` in `UnoFeatures`. However, the class is only supported (i.e. `SKCanvasElement.IsSupportedOnCurrentPlatform` returns true) on Uno Platform targets that use Skia rendering; the WinAppSDK target renders natively with WinUI and is not supported. The `Skia` feature is off on that target, so shared code that references `SKCanvasElement` there either excludes it from the Windows build or sets `<UnoEnableSkiaOnWinAppSdk>true</UnoEnableSkiaOnWinAppSdk>` to compile.
 
 `SKCanvasElement` is an abstract `FrameworkElement` for 2D drawing with Skia. To use `SKCanvasElement`, create a subclass of `SKCanvasElement` and override the `RenderOverride` method, which takes the canvas that will be drawn on and the clipping area inside the canvas.
 
@@ -34,6 +34,9 @@ Attempting to create an `SKCanvasElement` instance when `IsSupportedOnCurrentPla
 ## Full example
 
 For a complete example that showcases how to work with `SKCanvasElement`, see [this sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/SKCanvasElementShowcase) in the Uno.Samples repository
+
+> [!NOTE]
+> This sample targets Uno Platform 6.2.29, which predates Uno Platform 7.0. See [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7) to update it.
 
 ## WinAppSDK Specifics
 

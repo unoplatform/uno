@@ -7,8 +7,8 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Uno.WebGpu.Native;
-using static Uno.WebGpu.Native.WGPU;
+using Silk.NET.WebGPU;
+using Buffer = Silk.NET.WebGPU.Buffer;
 using Uno.UI.Composition.Drawing;
 using Windows.Graphics.Effects.Interop;
 using Windows.Foundation;
@@ -23,7 +23,8 @@ namespace Uno.UI.Composition.WebGpu;
 internal sealed unsafe class WebGpuTexturePool : IDisposable
 {
 	private readonly WebGpuDevice _d;
-	private sealed class Entry { public IntPtr Tex; public IntPtr View; public int W, H, Samples; public WGPUTextureFormat Fmt; public WGPUTextureUsage Usage; public bool InUse; public int LastUsed; }
+	private WebGPU Api => _d.Api;
+	private sealed class Entry { public Texture* Tex; public TextureView* View; public int W, H, Samples; public TextureFormat Fmt; public TextureUsage Usage; public bool InUse; public int LastUsed; }
 	private readonly System.Collections.Generic.List<Entry> _entries = new();
 	// The pool is shared per-device, so an off-loop render (e.g. RenderTargetBitmap) can hit it concurrently
 	// with the on-window render loop. Guard mutation/enumeration so a concurrent Add can't invalidate Rent's walk.
@@ -45,10 +46,10 @@ internal sealed unsafe class WebGpuTexturePool : IDisposable
 				var e = _entries[i];
 				if (!e.InUse && _frameNo - e.LastUsed > EvictAfterFrames)
 				{
-					if (e.View != IntPtr.Zero) { wgpuTextureViewRelease(e.View); }
+					if (e.View != null) { Api.TextureViewRelease(e.View); }
 					// Destroy frees the allocation now; Release drops the handle, which wgpu would otherwise
 					// keep registered (and its memory attributed) for the life of the device.
-					if (e.Tex != IntPtr.Zero) { wgpuTextureDestroy(e.Tex); wgpuTextureRelease(e.Tex); }
+					if (e.Tex != null) { Api.TextureDestroy(e.Tex); Api.TextureRelease(e.Tex); }
 					_entries.RemoveAt(i);
 				}
 				else { e.InUse = false; }
@@ -58,7 +59,7 @@ internal sealed unsafe class WebGpuTexturePool : IDisposable
 		}
 	}
 
-	public IntPtr Rent(int w, int h, int samples, WGPUTextureUsage usage, WGPUTextureFormat fmt)
+	public TextureView* Rent(int w, int h, int samples, TextureUsage usage, TextureFormat fmt)
 	{
 		lock (_gate)
 		{
@@ -66,9 +67,9 @@ internal sealed unsafe class WebGpuTexturePool : IDisposable
 			{
 				if (!e.InUse && e.W == w && e.H == h && e.Samples == samples && e.Fmt == fmt && e.Usage == usage) { e.InUse = true; e.LastUsed = _frameNo; return e.View; }
 			}
-			var td = new WGPUTextureDescriptor { Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 }, Format = fmt, MipLevelCount = 1, SampleCount = (uint)samples, Dimension = WGPUTextureDimension._2D, Usage = usage };
-			var tex = wgpuDeviceCreateTexture(_d.Dev, &td);
-			var view = wgpuTextureCreateView(tex, null);
+			var td = new TextureDescriptor { Size = new Extent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 }, Format = fmt, MipLevelCount = 1, SampleCount = (uint)samples, Dimension = TextureDimension.Dimension2D, Usage = usage };
+			var tex = Api.DeviceCreateTexture(_d.Dev, &td);
+			var view = Api.TextureCreateView(tex, null);
 			_entries.Add(new Entry { Tex = tex, View = view, W = w, H = h, Samples = samples, Fmt = fmt, Usage = usage, InUse = true, LastUsed = _frameNo });
 			return view;
 		}
@@ -77,18 +78,18 @@ internal sealed unsafe class WebGpuTexturePool : IDisposable
 	/// <summary>Marks a rented view free again so it can be re-rented within the SAME frame: for a target that is
 	/// written only inside its own (already-ended) render pass and never sampled after, such as a coverage
 	/// accumulator or an MSAA colour that has resolved.</summary>
-	public void Return(IntPtr view)
+	public void Return(TextureView* view)
 	{
-		if (view == IntPtr.Zero) { return; }
+		if (view == null) { return; }
 		lock (_gate) { foreach (var e in _entries) { if (e.View == view) { e.InUse = false; return; } } }
 	}
 
 	/// <summary>The backing texture for a rented view, or Zero if unknown. Used to flush an offscreen's resolve so
 	/// a later, separately-submitted pass can sample it.</summary>
-	public IntPtr TexForView(IntPtr view)
+	public Texture* TexForView(TextureView* view)
 	{
 		lock (_gate) { foreach (var e in _entries) { if (e.View == view) { return e.Tex; } } }
-		return IntPtr.Zero;
+		return null;
 	}
 
 	public void Dispose()
@@ -97,8 +98,8 @@ internal sealed unsafe class WebGpuTexturePool : IDisposable
 		{
 			foreach (var e in _entries)
 			{
-				if (e.View != IntPtr.Zero) { wgpuTextureViewRelease(e.View); }
-				if (e.Tex != IntPtr.Zero) { wgpuTextureDestroy(e.Tex); wgpuTextureRelease(e.Tex); }
+				if (e.View != null) { Api.TextureViewRelease(e.View); }
+				if (e.Tex != null) { Api.TextureDestroy(e.Tex); Api.TextureRelease(e.Tex); }
 			}
 			_entries.Clear();
 		}
@@ -112,7 +113,8 @@ internal sealed unsafe class WebGpuTexturePool : IDisposable
 internal sealed unsafe class WebGpuBufferPool : IDisposable
 {
 	private readonly WebGpuDevice _d;
-	private sealed class Entry { public IntPtr Buf; public int Cap; public WGPUBufferUsage Usage; public bool InUse; public int LastUsed; }
+	private WebGPU Api => _d.Api;
+	private sealed class Entry { public Buffer* Buf; public int Cap; public BufferUsage Usage; public bool InUse; public int LastUsed; }
 	private readonly System.Collections.Generic.List<Entry> _entries = new();
 	// Shared per-device; guard against concurrent Add invalidating Rent's enumeration (see WebGpuTexturePool).
 	private readonly object _gate = new();
@@ -132,7 +134,7 @@ internal sealed unsafe class WebGpuBufferPool : IDisposable
 				var e = _entries[i];
 				if (!e.InUse && _frameNo - e.LastUsed > EvictAfterFrames)
 				{
-					if (e.Buf != IntPtr.Zero) { wgpuBufferDestroy(e.Buf); wgpuBufferRelease(e.Buf); }
+					if (e.Buf != null) { Api.BufferDestroy(e.Buf); Api.BufferRelease(e.Buf); }
 					_entries.RemoveAt(i);
 				}
 				else { e.InUse = false; }
@@ -145,12 +147,12 @@ internal sealed unsafe class WebGpuBufferPool : IDisposable
 	{
 		lock (_gate)
 		{
-			foreach (var e in _entries) { if (e.Buf != IntPtr.Zero) { wgpuBufferRelease(e.Buf); } }
+			foreach (var e in _entries) { if (e.Buf != null) { Api.BufferRelease(e.Buf); } }
 			_entries.Clear();
 		}
 	}
 
-	public IntPtr Rent(int byteSize, WGPUBufferUsage usage)
+	public Buffer* Rent(int byteSize, BufferUsage usage)
 	{
 		lock (_gate)
 		{
@@ -159,8 +161,8 @@ internal sealed unsafe class WebGpuBufferPool : IDisposable
 				if (!e.InUse && e.Usage == usage && e.Cap >= byteSize) { e.InUse = true; e.LastUsed = _frameNo; return e.Buf; }
 			}
 			int cap = Math.Max(byteSize, 256);
-			var bd = new WGPUBufferDescriptor { Size = (nuint)cap, Usage = usage };
-			var buf = wgpuDeviceCreateBuffer(_d.Dev, &bd);
+			var bd = new BufferDescriptor { Size = (nuint)cap, Usage = usage };
+			var buf = Api.DeviceCreateBuffer(_d.Dev, &bd);
 			_entries.Add(new Entry { Buf = buf, Cap = cap, Usage = usage, InUse = true, LastUsed = _frameNo });
 			return buf;
 		}
@@ -175,7 +177,8 @@ internal sealed unsafe class WebGpuBufferPool : IDisposable
 /// </summary>
 internal sealed unsafe class WebGpuOffscreenPool : IDisposable
 {
-	private sealed class Entry { public IntPtr Tex, View; public int W, H; public int LastUsed; }
+	private sealed class Entry { public Texture* Tex; public TextureView* View; public int W, H; public int LastUsed; }
+	private readonly WebGPU _api;
 	private readonly System.Collections.Generic.List<Entry> _free = new();
 	private readonly object _gate = new();
 	private int _frameNo;
@@ -183,6 +186,8 @@ internal sealed unsafe class WebGpuOffscreenPool : IDisposable
 	// being asked for is given back rather than held for the process's life.
 	private const int EvictAfterFrames = 240;
 	private const int MaxEntries = 48;
+
+	public WebGpuOffscreenPool(WebGPU api) => _api = api;
 
 	public void BeginFrame()
 	{
@@ -199,7 +204,7 @@ internal sealed unsafe class WebGpuOffscreenPool : IDisposable
 		}
 	}
 
-	public bool TryRent(int w, int h, out IntPtr tex, out IntPtr view)
+	public bool TryRent(int w, int h, out Texture* tex, out TextureView* view)
 	{
 		lock (_gate)
 		{
@@ -212,11 +217,11 @@ internal sealed unsafe class WebGpuOffscreenPool : IDisposable
 			}
 		}
 
-		tex = IntPtr.Zero; view = IntPtr.Zero;
+		tex = null; view = null;
 		return false;
 	}
 
-	public void Return(IntPtr tex, IntPtr view, int w, int h)
+	public void Return(Texture* tex, TextureView* view, int w, int h)
 	{
 		var entry = new Entry { Tex = tex, View = view, W = w, H = h };
 		lock (_gate)
@@ -227,10 +232,10 @@ internal sealed unsafe class WebGpuOffscreenPool : IDisposable
 		}
 	}
 
-	private static void Destroy(Entry e)
+	private void Destroy(Entry e)
 	{
-		if (e.View != IntPtr.Zero) { wgpuTextureViewRelease(e.View); }
-		if (e.Tex != IntPtr.Zero) { wgpuTextureDestroy(e.Tex); wgpuTextureRelease(e.Tex); }
+		if (e.View != null) { _api.TextureViewRelease(e.View); }
+		if (e.Tex != null) { _api.TextureDestroy(e.Tex); _api.TextureRelease(e.Tex); }
 	}
 
 	public void Dispose()

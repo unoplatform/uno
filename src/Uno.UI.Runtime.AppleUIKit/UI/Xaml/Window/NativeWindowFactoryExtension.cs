@@ -21,7 +21,7 @@ internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 	// Secondary windows are backed by scenes, so the app must both declare a scene manifest and
 	// opt into multiple scenes for them to be creatable.
 	public bool SupportsMultipleWindows =>
-		UnoUISceneDelegate.HasSceneManifest &&
+		AppleUIKitLifecycle.Mode == AppleUIKitLifecycleMode.ManifestScene &&
 		UIApplication.SharedApplication.SupportsMultipleScenes;
 
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
@@ -38,6 +38,10 @@ internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 			{
 				RequestScene(token);
 			}
+		}
+		else if (wrapper.IsAppSceneWindow)
+		{
+			AdoptedSceneBinder.SetWindow(wrapper);
 		}
 
 		return wrapper;

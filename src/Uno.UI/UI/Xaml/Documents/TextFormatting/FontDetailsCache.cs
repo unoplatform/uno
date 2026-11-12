@@ -30,7 +30,13 @@ internal static class FontDetailsCache
 		FontStyle Style,
 		float FontSize);
 
-	private static readonly Dictionary<FontEntry, Task<IFont?>> _fontCache = new();
+	// FontSize is continuous, so an animation requests an unbounded number of entries. Two generations keep the cache
+	// O(1) and bounded: a full generation becomes the previous one, and whatever is still in use moves back on its next
+	// lookup. Dropped fonts are only re-created; the typefaces behind them stay with the font provider.
+	private const int MaxFontsPerGeneration = 512;
+
+	private static Dictionary<FontEntry, (FontDetails details, Task<FontDetails> loadedTask)> _fonts = new();
+	private static Dictionary<FontEntry, (FontDetails details, Task<FontDetails> loadedTask)> _previousFonts = new();
 	private static readonly object _fontCacheGate = new();
 
 	// Loaded URI font files, keyed by the manifest-resolved uri (which is the source uri when there is no
@@ -164,96 +170,66 @@ internal static class FontDetailsCache
 			return fontFile.CreateFont(familyNameHint, weight, stretch, style, fontSize);
 		}
 
-		// A family the platform does not have may still be fetchable by name -- master consulted the fallback
-		// source before the platform lookup, which is the only way a browser resolves a named Noto family.
-		if (await FontFallback.MatchFamilyAsync(manager, name, weight, stretch, style, fontSize) is { } fetched)
-		{
-			return fetched;
-		}
-
 		// The default family may be one the platform doesn't have (Segoe UI outside Windows): the provider's default font
 		// then stands in for it, rather than the default text font being reported as failing to load.
-		return manager.MatchFamily(name, weight, stretch, style, fontSize)
+		return await manager.MatchFamilyAsync(name, weight, stretch, style, fontSize)
 			?? (string.Equals(name, FeatureConfiguration.Font.DefaultTextFontFamily, StringComparison.OrdinalIgnoreCase)
 				? manager.GetDefaultFont(weight, stretch, style, fontSize)
 				: null);
 	}
 
-	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<FontDetails> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((
-		string? name,
-		float fontSize,
-		FontWeight weight,
-		FontStretch stretch,
-		FontStyle style) =>
+	private static (FontDetails details, Task<FontDetails> loadedTask) CreateFont(FontEntry key, FontWeight weight, FontStretch stretch, FontStyle style)
 	{
-		if (name == null || string.Equals(name, "XamlAutoFontFamily", StringComparison.OrdinalIgnoreCase))
-		{
-			name = FeatureConfiguration.Font.DefaultTextFontFamily;
-		}
-
-		var key = new FontEntry(name, weight.Weight, stretch, style, fontSize);
-
-		Task<IFont?> fontTask;
-		lock (_fontCacheGate)
-		{
-			if (!_fontCache.TryGetValue(key, out var nullableTask))
-			{
-				_fontCache[key] = nullableTask = GetFontInternal(name, weight, stretch, style, fontSize);
-			}
-			fontTask = nullableTask;
-		}
+		var fontTask = GetFontInternal(key.Name, weight, stretch, style, key.FontSize);
 
 		var canChange = !fontTask.IsCompleted; // don't read from task.IsCompleted again, it could've changed
 		var font = !canChange ? fontTask.Result : null;
-		Task<IFont?>? defaultFontTask = null;
 
-		if (font is null)
+		if (font is not null)
 		{
-			if (typeof(Inline).Log().IsEnabled(LogLevel.Debug))
-			{
-				typeof(Inline).Log().LogDebug(canChange
-					? $"{key} is still loading, using system default for now."
-					: $"{key} could not be found, using system default");
-			}
-
-			// The default text font is often a URI-backed font that only the loader resolves: MatchFamily finds nothing
-			// and this would end on the provider's built-in default (Skia's embedded monospace font on WASM).
-			defaultFontTask = GetDefaultFontTask(name, weight, stretch, style, fontSize);
-			font = (defaultFontTask is { IsCompletedSuccessfully: true } ? defaultFontTask.Result : null)
-				?? FontProvider.MatchFamily(FeatureConfiguration.Font.DefaultTextFontFamily, weight, stretch, style, fontSize)
-				?? FontProvider.GetDefaultFont(weight, stretch, style, fontSize);
+			var details = FontDetails.Create(font, key.FontSize);
+			return (details, AwaitDetails(fontTask, null, details, key, key.FontSize));
 		}
 
-		var details = FontDetails.Create(font, fontSize);
-		var detailsTask = AwaitDetails(fontTask, defaultFontTask, details, key, fontSize);
-		return (details, detailsTask);
-	});
+		if (typeof(Inline).Log().IsEnabled(LogLevel.Debug))
+		{
+			typeof(Inline).Log().LogDebug(canChange
+				? $"{key} is still loading, using the default text font for now."
+				: $"{key} could not be found, using the default text font");
+		}
+
+		// The default text font is often a URI-backed font that only the loader resolves: MatchFamily finds nothing
+		// and this would end on the provider's built-in default (Skia's embedded monospace font on WASM).
+		if (GetDefaultTextFont(key, weight, stretch, style) is { } defaultFont)
+		{
+			// The entry's details stay its placeholder once it has loaded, so take the loaded font when it is there.
+			var details = defaultFont.loadedTask.IsCompletedSuccessfully ? defaultFont.loadedTask.Result : defaultFont.details;
+			return (details, AwaitDetails(fontTask, defaultFont.loadedTask, details, key, key.FontSize));
+		}
+
+		var fallback = FontDetails.Create(
+			FontProvider.MatchFamily(FeatureConfiguration.Font.DefaultTextFontFamily, weight, stretch, style, key.FontSize)
+				?? FontProvider.GetDefaultFont(weight, stretch, style, key.FontSize),
+			key.FontSize);
+		return (fallback, AwaitDetails(fontTask, null, fallback, key, key.FontSize));
+	}
 
 	/// <summary>
-	/// Resolves the default text font for a family that could not be resolved, or returns null when the family is
-	/// the default text font itself.
+	/// The default text font, for a family that could not be resolved, or null when the family is the default text
+	/// font itself. Called with <see cref="_fontCacheGate"/> held, which is reentrant.
 	/// </summary>
-	private static Task<IFont?>? GetDefaultFontTask(string name, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+	private static (FontDetails details, Task<FontDetails> loadedTask)? GetDefaultTextFont(FontEntry key, FontWeight weight, FontStretch stretch, FontStyle style)
 	{
 		var defaultName = FeatureConfiguration.Font.DefaultTextFontFamily;
-		if (string.IsNullOrEmpty(defaultName) || string.Equals(name, defaultName, StringComparison.OrdinalIgnoreCase))
+		if (string.IsNullOrEmpty(defaultName) || string.Equals(key.Name, defaultName, StringComparison.OrdinalIgnoreCase))
 		{
 			return null;
 		}
 
-		var key = new FontEntry(defaultName, weight.Weight, stretch, style, fontSize);
-		lock (_fontCacheGate)
-		{
-			if (!_fontCache.TryGetValue(key, out var task))
-			{
-				_fontCache[key] = task = GetFontInternal(defaultName, weight, stretch, style, fontSize);
-			}
-
-			return task;
-		}
+		return GetFont(defaultName, key.FontSize, weight, stretch, style);
 	}
 
-	private static async Task<FontDetails> AwaitDetails(Task<IFont?> task, Task<IFont?>? defaultTask, FontDetails fallback, FontEntry key, float fontSize)
+	private static async Task<FontDetails> AwaitDetails(Task<IFont?> task, Task<FontDetails>? defaultTask, FontDetails fallback, FontEntry key, float fontSize)
 	{
 		IFont? loadedFont = null;
 		Exception? exception = null;
@@ -267,26 +243,17 @@ internal static class FontDetailsCache
 			exception = e;
 		}
 
-		if (loadedFont is null && defaultTask is not null)
-		{
-			try
-			{
-				loadedFont = await defaultTask;
-			}
-			catch (Exception e)
-			{
-				exception ??= e;
-			}
-		}
-
 		if (loadedFont is null)
 		{
-			if (typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
+			// A family name the platform doesn't have quietly gets the default text font, but a provider that threw or a
+			// font file that didn't load is still reported.
+			if ((defaultTask is null || exception is not null || Uri.TryCreate(key.Name, UriKind.Absolute, out _))
+				&& typeof(FontDetailsCache).Log().IsEnabled(LogLevel.Error))
 			{
 				typeof(FontDetailsCache).Log().LogError($"Failed to load {key}", exception);
 			}
 
-			return fallback;
+			return defaultTask is not null ? await defaultTask : fallback;
 		}
 
 		return FontDetails.Create(loadedFont, fontSize);
@@ -297,7 +264,37 @@ internal static class FontDetailsCache
 		float fontSize,
 		FontWeight weight,
 		FontStretch stretch,
-		FontStyle style) => _getFont(name, fontSize, weight, stretch, style);
+		FontStyle style)
+	{
+		if (name == null || string.Equals(name, "XamlAutoFontFamily", StringComparison.OrdinalIgnoreCase))
+		{
+			name = FeatureConfiguration.Font.DefaultTextFontFamily;
+		}
+
+		var key = new FontEntry(name, weight.Weight, stretch, style, fontSize);
+
+		lock (_fontCacheGate)
+		{
+			if (_fonts.TryGetValue(key, out var font))
+			{
+				return font;
+			}
+
+			if (!_previousFonts.Remove(key, out font))
+			{
+				font = CreateFont(key, weight, stretch, style);
+			}
+
+			if (_fonts.Count >= MaxFontsPerGeneration)
+			{
+				_previousFonts = _fonts;
+				_fonts = new();
+			}
+
+			_fonts[key] = font;
+			return font;
+		}
+	}
 
 	public static Task<FontDetails?> GetFontForCodepoint(
 		int codepoint,

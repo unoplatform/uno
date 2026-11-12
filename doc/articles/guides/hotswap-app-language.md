@@ -8,6 +8,8 @@ This guide will walk you through the necessary steps for changing app language a
 
 > [!TIP]
 > The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [RuntimeCultureSwitching sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/RuntimeCultureSwitching)
+>
+> This sample targets Uno Platform 5.1.87, which predates Uno Platform 7.0. See [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7) to update it.
 
 ## Prerequisites
 

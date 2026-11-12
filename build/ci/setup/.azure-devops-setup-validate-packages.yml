@@ -8,3 +8,34 @@ steps:
   env:
     BUILD_SOURCEBRANCH: $(Build.SourceBranch)
     SYSTEM_PULLREQUEST_TARGETBRANCH: $(System.PullRequest.TargetBranch)
+
+- pwsh: |
+    # Files checked against the versions Uno is built against (-Source).
+    # Keep in sync with the -Files default in the script, which local runs use.
+    $files = @(
+      # Minimum versions the Uno packages declare: must equal the build version.
+      @{ Path = 'build/nuget/*.nuspec'; Kind = 'NuspecFloor' }
+
+      # Uno.Sdk.Private pins: must be at or above those minimums (else NU1605).
+      @{ Path = 'src/Uno.Sdk/packages.json'; Kind = 'SdkManifest' }
+
+      # CI scripts passing -p:SkiaSharpVersion= or -p:HarfbuzzSharpVersion= explicitly.
+      @{ Path = 'build/**/*.yml'; Kind = 'MSBuildArgs' }
+      @{ Path = 'build/**/*.ps1'; Kind = 'MSBuildArgs' }
+      @{ Path = 'build/**/*.sh'; Kind = 'MSBuildArgs' }
+      @{ Path = 'build/**/*.props'; Kind = 'MSBuildArgs' }
+      @{ Path = 'build/**/*.targets'; Kind = 'MSBuildArgs' }
+    )
+
+    # Nuspec minimums allowed below the build version: '<package id>' = '<version>'.
+    # Each entry needs a comment with the reason and a tracking issue.
+    $floorExceptions = @{}
+
+    ./build/ci/scripts/validate-package-version-alignment.ps1 `
+      -RepoRoot '$(Build.SourcesDirectory)' `
+      -Source 'src/Directory.Packages.props' `
+      -Files $files `
+      -FloorExceptions $floorExceptions
+  displayName: Validate package version alignment (nuspecs, Uno.Sdk.Private, SkiaSharp)
+  # Report alignment problems even when the network-based check above failed.
+  condition: succeededOrFailed()

@@ -35,7 +35,15 @@ Add the following namespaces:
 
 `AnimatedVisualPlayer`, `LottieVisualSource` and `ThemableLottieVisualSource` are part of Uno Platform, so no package is needed on Uno Platform targets. The Skottie renderer comes with the Skia renderer, which is present by default. See [Lottie renderers](#lottie-renderers) below.
 
-On Windows (WinAppSDK), reference the [`CommunityToolkit.WinUI.Lottie` NuGet package](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie).
+On Windows (WinAppSDK), these types come from the [`CommunityToolkit.WinUI.Lottie` NuGet package](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie), so a project that also targets Windows references it for that target framework:
+
+```xml
+<ItemGroup Condition="$(TargetFramework.Contains('windows10'))">
+    <PackageReference Include="CommunityToolkit.WinUI.Lottie" />
+</ItemGroup>
+```
+
+Without it, the Windows build fails with `WMC0001: Unknown type 'LottieVisualSource'`, and the Uno.Sdk reports [UNOB0034](xref:Build.Solution.error-codes#unob0034-lottie-xaml-on-winappsdk-needs-the-communitytoolkitwinuilottie-package) on the XAML file.
 
 ### Lottie renderers
 
@@ -156,7 +164,7 @@ this is the WinUI contract, C# emitted by [LottieGen](https://aka.ms/lottiegen) 
 
 Before 7.0, Uno's `IAnimatedVisualSource` was a nine-method Uno-only contract in which the source
 drove playback itself. See the
-[Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7) for the old-to-new
+[Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7.RemovedApis#custom-ianimatedvisualsource-implementations) for the old-to-new
 mapping.
 
 ## Limitations

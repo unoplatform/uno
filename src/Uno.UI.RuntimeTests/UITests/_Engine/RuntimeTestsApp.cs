@@ -48,9 +48,8 @@ public partial class RuntimeTestsApp : IApp
 
 	public async Task RunAsync(string metadataName)
 	{
-		// The islands host still carries the .Skia suffix; the samples head does not.
 		var assemblyName = TestServices.WindowHelper.IsXamlIsland
-			? "UnoIslandsSamplesApp.Skia"
+			? "UnoIslandsSamplesApp"
 			: "SamplesApp";
 
 		if (Type.GetType($"{metadataName}, {assemblyName}") is { } sampleType

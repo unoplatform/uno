@@ -35,6 +35,8 @@ partial class TextBox : ITextBoxHost
 
 	bool ITextBoxHost.IsSpellCheckEnabled => IsSpellCheckEnabled;
 
+	bool ITextBoxHost.PreventKeyboardDisplayOnProgrammaticFocus => PreventKeyboardDisplayOnProgrammaticFocus;
+
 	bool ITextBoxHost.IsPassword => false;
 
 	// Never read: only the masking path asks, and only when IsPassword is set.

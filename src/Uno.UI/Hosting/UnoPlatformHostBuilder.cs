@@ -17,6 +17,7 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 {
 	private List<Func<IPlatformHostBuilder>> _hostBuilders = new();
 	private readonly List<Action> _drawingRegistrations = new();
+	private readonly List<Drawing.IGraphicsProvider> _graphicsBackends = new();
 	private Func<Application>? _appBuilder;
 	private Action? _afterInitAction;
 	private Type? _appType;
@@ -44,6 +45,9 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 	void IUnoPlatformHostBuilder.AddDrawingRegistration(Action apply)
 		=> _drawingRegistrations.Add(apply);
 
+	void IUnoPlatformHostBuilder.AddGraphicsBackend(Drawing.IGraphicsProvider provider)
+		=> _graphicsBackends.Add(provider);
+
 	public UnoPlatformHost Build()
 	{
 		if (_appBuilder is null || _appType is null)
@@ -53,6 +57,11 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 
 		// Apply the app-declared drawing registrations before any host runs, so backend + content seams are in
 		// place before the host negotiates graphics and records the first frame.
+		if (_graphicsBackends.Count > 0)
+		{
+			Drawing.GraphicsRegistry.Register(_graphicsBackends.ToArray());
+		}
+
 		foreach (var apply in _drawingRegistrations)
 		{
 			apply();

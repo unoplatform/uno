@@ -287,10 +287,8 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				$"The runtime-enabled package '{packageIdentity}' has no lib/netX.0 reference folder next to '{Path.GetFullPath(runtimeDirectory)}'.");
 		}
 
-		// Uno.UI.MSAL only depends on the WinRT layer (Uno.UWP), so it must follow the
-		// WinRT layer selection to keep its platform-specific helpers (https://github.com/unoplatform/uno/issues/20601).
 		private bool IsWinRTAssembly(string fileNameWithoutExtension)
-			=> fileNameWithoutExtension.ToLower(CultureInfo.InvariantCulture) is "uno.winrt" or "uno.ui.dispatching" or "uno.foundation" or "uno.ui.msal";
+			=> fileNameWithoutExtension.ToLower(CultureInfo.InvariantCulture) is "uno.winrt" or "uno.ui.dispatching" or "uno.foundation";
 
 		private string GetWinRTAssembly(string packageIdentity, string assembly, Version targetFrameworkVersion, WinRTSource winRTSource, string platform)
 		{

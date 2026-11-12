@@ -10,6 +10,8 @@ This tutorial will walk you through adding and implementing the `SettingsCard` c
 
 > [!NOTE]
 > The complete source code that goes along with this guide is available in the [unoplatform/Uno.Samples](https://github.com/unoplatform/Uno.Samples) GitHub repository - [`SettingsCard` Sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/WindowsCommunityToolkit/Version-8.x/UnoWCTSettingsCardSample)
+>
+> This sample targets Uno Platform 5.2.161, which predates Uno Platform 7.0. See [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7) to update it.
 
 ## Prerequisites
 
@@ -75,6 +77,8 @@ When using the Uno Platform solution templates, add the following to your applic
     >   <WinAppSdkVersion>1.5.240607001</WinAppSdkVersion>
     > </PropertyGroup>
     > ```
+    >
+    > With Uno Platform 7.0 and later, leave out both properties: the `Uno.Sdk` picks the Windows SDK projection, and a 1.x `WinAppSdkVersion` fails restore with `NU1605`. If you keep them, use a `.87` revision for `WindowsSdkPackageVersion` and 2.4.0 or later for `WinAppSdkVersion`. See [The Windows SDK projection is picked by the `Uno.Sdk`](xref:Uno.Development.MigratingToUno7.ProjectSetup#the-windows-sdk-projection-is-picked-by-the-unosdk) and [Windows App SDK minimum](xref:Uno.Development.MigratingToUno7.Packages#windows-app-sdk-minimum-raised-from-1x-to-240).
 
     ### [Multi-Head Project Template (Legacy) [WinUI / WinAppSDK]](#tab/multihead-winui)
 

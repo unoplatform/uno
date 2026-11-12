@@ -73,6 +73,22 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 	private GL? _gl;
 	private WriteableBitmap? _backBuffer;
 	private FrameBufferDetails? _details;
+	// The framebuffer's size in pixels: RenderSize times FramebufferScale.
+	private int _pixelWidth;
+	private int _pixelHeight;
+
+	/// <summary>
+	/// Framebuffer pixels per logical unit. 1 for a public <see cref="GLCanvasElement"/>, whose RenderOverride is
+	/// documented to get a viewport equal to its RenderSize.
+	/// </summary>
+	internal virtual double FramebufferScale => 1;
+
+	/// <summary>Rebuilds the framebuffer, e.g. after <see cref="FramebufferScale"/> changed.</summary>
+	internal void RefreshFramebuffer() => UpdateFramebuffer();
+
+	internal int FramebufferPixelWidth => _pixelWidth;
+
+	internal int FramebufferPixelHeight => _pixelHeight;
 #if WINAPPSDK
 	private IntPtr _pixels;
 #endif
@@ -526,12 +542,17 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			return;
 		}
 
+		// The epsilon keeps a product like 33.333 * 3 from truncating a pixel short.
+		var scale = FramebufferScale;
+		_pixelWidth = Math.Max(1, (int)(RenderSize.Width * scale + 1e-3));
+		_pixelHeight = Math.Max(1, (int)(RenderSize.Height * scale + 1e-3));
+
 		using (_nativeOpenGlWrapper!.MakeCurrent())
 		{
 			try
 			{
 				_details?.Dispose();
-				_details = new FrameBufferDetails(_gl, RenderSize);
+				_details = new FrameBufferDetails(_gl, new Windows.Foundation.Size(_pixelWidth, _pixelHeight));
 			}
 			catch (Exception e)
 			{
@@ -551,10 +572,10 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		{
 			Marshal.FreeHGlobal(_pixels);
 		}
-		_pixels = Marshal.AllocHGlobal(((int)RenderSize.Width * (int)RenderSize.Height * BytesPerPixel));
+		_pixels = Marshal.AllocHGlobal(_pixelWidth * _pixelHeight * BytesPerPixel);
 #endif
 
-		_backBuffer = new WriteableBitmap((int)RenderSize.Width, (int)RenderSize.Height);
+		_backBuffer = new WriteableBitmap(_pixelWidth, _pixelHeight);
 		((ImageBrush)Background).ImageSource = _backBuffer;
 
 		if (_initializationDeferred)
@@ -597,7 +618,7 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 		_gl!.BindFramebuffer(GLEnum.Framebuffer, _details.Framebuffer);
 		try
 		{
-			_gl.Viewport(new System.Drawing.Size((int)RenderSize.Width, (int)RenderSize.Height));
+			_gl.Viewport(new System.Drawing.Size(_pixelWidth, _pixelHeight));
 
 			RenderOverride(_gl);
 
@@ -630,25 +651,25 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 			_gl.ReadBuffer(GLEnum.ColorAttachment0);
 
 #if WINAPPSDK
-			_gl.ReadPixels(0, 0, (uint)RenderSize.Width, (uint)RenderSize.Height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)_pixels);
+			_gl.ReadPixels(0, 0, (uint)_pixelWidth, (uint)_pixelHeight, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)_pixels);
 			using (var stream = _backBuffer.PixelBuffer.AsStream())
 			{
-				stream.Write(new ReadOnlySpan<byte>((void*)_pixels, (int)RenderSize.Width * (int)RenderSize.Height * BytesPerPixel));
+				stream.Write(new ReadOnlySpan<byte>((void*)_pixels, _pixelWidth * _pixelHeight * BytesPerPixel));
 			}
 #else
 			Buffer.Cast(_backBuffer.PixelBuffer).ApplyActionOnRawBufferPtr(ptr =>
 			{
 				if (_readbackAsRgbaWithSwap)
 				{
-					_gl.ReadPixels(0, 0, (uint)RenderSize.Width, (uint)RenderSize.Height, GLEnum.Rgba, GLEnum.UnsignedByte, (void*)ptr);
-					SwapRedBlue((byte*)ptr, (int)RenderSize.Width * (int)RenderSize.Height);
+					_gl.ReadPixels(0, 0, (uint)_pixelWidth, (uint)_pixelHeight, GLEnum.Rgba, GLEnum.UnsignedByte, (void*)ptr);
+					SwapRedBlue((byte*)ptr, _pixelWidth * _pixelHeight);
 				}
 				else
 				{
-					_gl.ReadPixels(0, 0, (uint)RenderSize.Width, (uint)RenderSize.Height, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)ptr);
+					_gl.ReadPixels(0, 0, (uint)_pixelWidth, (uint)_pixelHeight, GLEnum.Bgra, GLEnum.UnsignedByte, (void*)ptr);
 				}
 			});
-			_backBuffer.PixelBuffer.Length = (uint)RenderSize.Width * (uint)RenderSize.Height * BytesPerPixel;
+			_backBuffer.PixelBuffer.Length = (uint)(_pixelWidth * _pixelHeight * BytesPerPixel);
 #endif
 
 			// glReadPixels doesn't throw on failure (e.g. an unsupported readback format); it only

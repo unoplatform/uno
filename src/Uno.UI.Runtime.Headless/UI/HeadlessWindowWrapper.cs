@@ -43,8 +43,6 @@ internal sealed class HeadlessWindowWrapper : NativeWindowWrapperBase, IXamlRoot
 			throw new ArgumentOutOfRangeException(nameof(options), $"{nameof(HeadlessWindowOptions)}.{nameof(HeadlessWindowOptions.Scale)} must be a finite, strictly positive value.");
 		}
 
-		XamlRootMap.Register(xamlRoot, this);
-
 		// Negotiate the graphics backend with a no-output software context, mirroring the native hosts:
 		// offscreen consumers (RenderTargetBitmap) require the negotiated DrawingFactory.Current, and the
 		// render cycle needs the negotiated renderer installed on the CompositionTarget.
@@ -54,17 +52,13 @@ internal sealed class HeadlessWindowWrapper : NativeWindowWrapperBase, IXamlRoot
 		var init = Uno.UI.Composition.Drawing.GraphicsRegistry.Initialize();
 		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = true;
 
-		// Create the renderer before publishing bounds: setting bounds can synchronously route an
-		// InvalidateRender back through this wrapper (as IXamlRootHost), which needs a live renderer.
 		_renderer = new HeadlessRenderer(this, init.Context, init.Renderer);
 
 		// The XamlRoot is already associated (base ctor), so bounds can be published synchronously.
 		ApplySize();
 
-		// The CompositionTarget may have requested a frame before this wrapper was registered in the
-		// XamlRootMap; that request is latched (not re-raised), so replay the invalidation now that
-		// render requests can be routed here.
-		_renderer.Invalidate();
+		// Registered last: it asks this wrapper for any frame requested before it existed, which needs the renderer.
+		XamlRootMap.Register(xamlRoot, this);
 	}
 
 	public override object? NativeWindow => null;
