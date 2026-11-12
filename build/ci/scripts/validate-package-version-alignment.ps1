@@ -50,6 +50,7 @@
 param(
     [string]$RepoRoot = (Join-Path $PSScriptRoot '../../..'),
     [string]$Source = 'src/Directory.Packages.props',
+    # Default for local runs. Keep in sync with the list in build/ci/setup/.azure-devops-setup-validate-packages.yml.
     [object[]]$Files = @(
         @{ Path = 'build/nuget/*.nuspec';      Kind = 'NuspecFloor' }
         @{ Path = 'src/Uno.Sdk/packages.json'; Kind = 'SdkManifest' }
@@ -319,6 +320,8 @@ foreach ($manifest in $filesByKind['SdkManifest']) {
 }
 
 # --- 3c. CI and build scripts passing the version explicitly (Kind MSBuildArgs) --------------------
+# This script matches build/**/*.ps1 too: skip it, so an example of a -p:SkiaSharpVersion=<version>
+# argument added to its own comments or messages later can never be reported as a drift.
 $self = (Resolve-Path $PSCommandPath).Path
 foreach ($script in ($filesByKind['MSBuildArgs'] | Where-Object { $_.FullName -ne $self })) {
     $lines = Get-Content $script.FullName

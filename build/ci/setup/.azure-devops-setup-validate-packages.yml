@@ -11,6 +11,7 @@ steps:
 
 - pwsh: |
     # Files checked against the versions Uno is built against (-Source).
+    # Keep in sync with the -Files default in the script, which local runs use.
     $files = @(
       # Minimum versions the Uno packages declare: must equal the build version.
       @{ Path = 'build/nuget/*.nuspec'; Kind = 'NuspecFloor' }
