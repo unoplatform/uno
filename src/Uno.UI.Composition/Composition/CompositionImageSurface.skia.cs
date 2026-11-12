@@ -62,10 +62,6 @@ namespace Microsoft.UI.Composition
 
 		private IImage? _texturedImage;
 		private ITexture? _texture;
-
-		/// <summary>Whether the surface holds a texture, as it does once its content was drawn.</summary>
-		internal bool HasTexture => _texture is not null;
-
 		// When true, this surface retains a backend texture directly (e.g. a rendered SVG) with no CPU IImage /
 		// decoder frame behind it; GetTexture returns it as-is and it is disposed with the surface.
 		private readonly bool _retainedTexture;

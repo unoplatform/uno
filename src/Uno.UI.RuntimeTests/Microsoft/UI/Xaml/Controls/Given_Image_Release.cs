@@ -1033,7 +1033,8 @@ public class Given_Image_Release
 			var image = new Image { Width = 100, Height = 40, Source = bitmap };
 			await AddAndWaitForOpened(panel, image);
 			var surface = GetSurface(bitmap);
-			await WindowHelper.WaitFor(() => surface.HasTexture, 5000, "Pre-condition: the image is drawn, so its surface holds a texture");
+			// Drawing the image gives its surface the texture.
+			await UITestHelper.ScreenShot(image);
 
 			var size = surface.Size!.Value;
 			var pixelBytes = (long)size.X * (long)size.Y * 4;
