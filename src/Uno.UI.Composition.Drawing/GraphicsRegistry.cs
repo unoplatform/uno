@@ -224,7 +224,7 @@ internal static class GraphicsRegistry
 			}
 			catch (Exception e)
 			{
-				attempts.Append($"\n  - {backend.GetType().Name}/{kind}: context factory threw ({e.GetType().Name})");
+				attempts.Append($"\n  - {backend.GetType().Name}/{kind}: context factory threw ({e.GetType().Name}: {e.GetBaseException().Message})");
 				if (typeof(GraphicsRegistry).Log().IsEnabled(LogLevel.Debug))
 				{
 					typeof(GraphicsRegistry).Log().Debug($"Graphics negotiation: {backend.GetType().Name}/{kind} context factory threw: {e}");
