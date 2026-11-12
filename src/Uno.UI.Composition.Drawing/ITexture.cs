@@ -17,11 +17,8 @@ public interface ITexture : IDrawingResource
 	int PixelHeight { get; }
 
 	/// <summary>
-	/// True when this texture draws the pixels of the <see cref="IImage"/> it was created from, through the reference
-	/// it holds on that image (see <see cref="IDrawingFactory.CreateTexture(IImage)"/>), rather than pixels of its own.
-	/// Uno then counts those pixels once, as the image's, toward the memory undisplayed images may keep
-	/// (<c>FeatureConfiguration.Image.MaxUndisplayedImageBytes</c>), so a texture that holds a copy and returns true leaves
-	/// the copy uncounted. False by default.
+	/// True when this texture draws the pixels of the <see cref="IImage"/> it was created from, through a reference
+	/// on that image (see <see cref="IDrawingFactory.CreateTexture(IImage)"/>), holding none of its own. False by default.
 	/// </summary>
 	bool SharesImagePixels => false;
 }

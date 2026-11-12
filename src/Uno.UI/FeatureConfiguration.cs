@@ -235,10 +235,8 @@ namespace Uno.UI
 			/// The memory, in bytes, that decoded images nothing displays may keep (0 or more). Such an image keeps its pixels
 			/// for 1 second, as on WinUI, in case it is displayed again; past this limit the oldest are released first, at the
 			/// end of the next layout pass, and with 0 every one of them is. An image counts 4 bytes per pixel of its decoded
-			/// frames. Where the texture drawn from the current frame is a copy, it counts too: always with the WebGPU renderer,
-			/// and with the Skia renderer only when the app's image decoder isn't Skia's, such as
-			/// <c>ManagedBackend.CreateImageDecoder()</c> (in <c>Uno.UI.Composition.Managed</c>). Images shared through the bitmap
-			/// cache are not counted.
+			/// frames. Where the renderer keeps a separate copy for the texture (e.g. WebGPU), it counts too. Images shared
+			/// through the bitmap cache are not counted.
 			/// </summary>
 			/// <remarks>
 			/// Defaults: 128 MB on desktop, 64 MB on Android, iOS and tvOS, 32 MB on WebAssembly (its memory is capped at 2 GB
