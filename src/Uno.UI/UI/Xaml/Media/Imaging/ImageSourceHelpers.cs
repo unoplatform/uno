@@ -132,16 +132,27 @@ internal static partial class ImageSourceHelpers
 
 #if __SKIA__
 	/// <param name="useEncodedCache">Whether the encoded bytes of a downloaded image are kept and reused (see <see cref="EncodedImageCache"/>).</param>
-	public static async Task<ImageData> GetImageDataFromUriAsCompositionSurface(Uri uri, CancellationToken ct, int? targetWidth = null, int? targetHeight = null, bool useEncodedCache = false)
+	/// <param name="encoded">The encoded bytes of <paramref name="uri"/> that its source kept, decoded instead of downloading it again.</param>
+	/// <param name="keepEncoded">Whether the result of a download carries its encoded bytes (<see cref="ImageData.Encoded"/>), for its source to keep.</param>
+	public static async Task<ImageData> GetImageDataFromUriAsCompositionSurface(
+		Uri uri,
+		CancellationToken ct,
+		int? targetWidth = null,
+		int? targetHeight = null,
+		bool useEncodedCache = false,
+		byte[]? encoded = null,
+		bool keepEncoded = false)
 	{
 		try
 		{
 			var attemptLoadingWithBrowserCanvasApi = !IsAnimatableImageFormat(uri);
-			useEncodedCache &= EncodedImageCache.CanCache(uri);
+			var canCache = EncodedImageCache.CanCache(uri);
+			useEncodedCache &= canCache;
+			keepEncoded &= canCache;
 
-			if (useEncodedCache && EncodedImageCache.TryGet(uri, out var encoded))
+			if (encoded is not null || (useEncodedCache && EncodedImageCache.TryGet(uri, out encoded)))
 			{
-				return await DecodeAsCompositionSurface(encoded, attemptLoadingWithBrowserCanvasApi, targetWidth, targetHeight);
+				return Keep(await DecodeAsCompositionSurface(encoded, attemptLoadingWithBrowserCanvasApi, targetWidth, targetHeight), encoded);
 			}
 
 			byte[] buffer;
@@ -171,12 +182,14 @@ internal static partial class ImageSourceHelpers
 				EncodedImageCache.Add(uri, buffer);
 			}
 
-			return data;
+			return Keep(data, buffer);
 		}
 		catch (Exception e)
 		{
 			return ImageData.FromError(e);
 		}
+
+		ImageData Keep(ImageData data, byte[] bytes) => keepEncoded && data.HasData ? data.WithEncoded(bytes) : data;
 	}
 
 	/// <summary>

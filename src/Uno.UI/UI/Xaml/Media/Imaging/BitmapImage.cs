@@ -211,6 +211,14 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		// TODO: Introduce LRU caching if needed
 		private static readonly Dictionary<string, string> _scaledBitmapPathCache = new();
 
+		// The encoded bytes of the image this source downloaded, kept while its source stays, as a WinUI BitmapImage keeps its
+		// ImageCache and so its encoded data (MUX Reference: CImageSource::SetImageCache — imagesource.cpp,
+		// ImageCache::m_encodedImageData — ImageCache.h): decoding it again after its pixels were released downloads
+		// nothing, whatever the caching headers said, and works offline.
+		private (Uri Uri, byte[] Bytes)? _downloaded;
+
+		private protected override void UnloadImageSourceData() => _downloaded = null;
+
 		private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 		{
 			asyncImage = TryOpenSourceAsync(ct);
@@ -256,6 +264,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				var uri = UriSource is { } uriSource ? global::Uno.UI.Xaml.XamlFilePathHelper.NormalizeMsResourceFilesUri(uriSource) : null;
 				if (uri is null)
 				{
+					_downloaded = null;
 					if (_stream is null)
 					{
 						return ImageData.Empty;
@@ -307,6 +316,10 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					var useCache = FeatureConfiguration.Image.EnableBitmapImageCache
 						&& !CreateOptions.HasFlag(BitmapCreateOptions.IgnoreImageCache);
 
+					// Kept also with IgnoreImageCache, as the source's own: only turning the cache off stops keeping them.
+					var keepEncoded = FeatureConfiguration.Image.EnableBitmapImageCache;
+					var kept = keepEncoded && _downloaded is { } downloaded && downloaded.Uri == uri ? downloaded.Bytes : null;
+
 					// A cached load is shared by every BitmapImage opening the same key, so it never runs on a single
 					// requester's token (cancelling one must not fail the others). Only an uncached load is cancelled with its
 					// sole requester.
@@ -317,7 +330,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 					{
 						share = SharedImageDecode.GetOrStart(
 							new BitmapImageCacheKey(uri, decodeWidth, decodeHeight),
-							() => ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, CancellationToken.None, decodeWidth, decodeHeight, useEncodedCache: true));
+							() => ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, CancellationToken.None, decodeWidth, decodeHeight, useEncodedCache: true, kept, keepEncoded: true));
 
 						share.BeginOpen();
 						imageDataTask = share.Load;
@@ -328,7 +341,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 						{
 							try
 							{
-								return await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct, decodeWidth, decodeHeight);
+								return await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct, decodeWidth, decodeHeight, encoded: kept, keepEncoded: keepEncoded);
 							}
 							catch (Exception e)
 							{
@@ -363,6 +376,9 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 								TaskScheduler.Default);
 							throw;
 						}
+
+						// Before Publish, whose handlers may change the source, which drops them.
+						_downloaded = imageData.Encoded is { } encoded ? (uri, encoded) : null;
 
 						var published = Publish(imageData, version, ct);
 						handedOver = published.IsShared;

@@ -59,6 +59,16 @@ internal partial struct ImageData
 	/// </summary>
 	internal ImageData AsShared(SharedImageDecode share) => this with { Share = share };
 
+	/// <summary>
+	/// The encoded bytes of the download this data was decoded from, for its BitmapImage to keep.
+	/// </summary>
+	public byte[]? Encoded { get; private init; }
+
+	/// <summary>
+	/// Returns this data with the encoded bytes it was decoded from (see <see cref="Encoded"/>).
+	/// </summary>
+	internal ImageData WithEncoded(byte[] encoded) => this with { Encoded = encoded };
+
 	public ImageDataKind Kind { get; }
 
 	public Exception? Error { get; } = null;

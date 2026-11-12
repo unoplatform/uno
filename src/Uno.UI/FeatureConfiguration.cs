@@ -228,8 +228,9 @@ namespace Uno.UI
 
 			/// <summary>
 			/// The memory, in bytes, that the bitmap cache may use for the encoded bytes of images downloaded over http or https,
-			/// so that an image decoded again after its pixels were released is not downloaded again. Past it, the least
-			/// recently used are dropped first.
+			/// so that other decode sizes and other BitmapImages decode them without downloading them again. Past it, the least
+			/// recently used are dropped first. A BitmapImage keeps the bytes it downloaded itself, outside this bound, for as long
+			/// as its UriSource stays, as on WinUI.
 			/// </summary>
 			/// <remarks>
 			/// Defaults: 64 MB on desktop, 32 MB on Android, iOS, tvOS and WebAssembly. Lowering it drops what no longer fits.
@@ -253,7 +254,7 @@ namespace Uno.UI
 			/// Enables the bitmap cache: BitmapImages that load the same UriSource with the same decode size share one download
 			/// and one decode, and the encoded bytes of downloaded images are kept (see <see cref="MaxBitmapImageCacheBytes"/>).
 			/// A shared decode is released like any other once nothing displays it (see <see cref="MaxUndisplayedImageBytes"/>).
-			/// Turning it off drops the encoded bytes kept.
+			/// Turning it off drops the encoded bytes the cache kept, and a BitmapImage that opens while it is off keeps none.
 			/// </summary>
 			public static bool EnableBitmapImageCache
 			{
