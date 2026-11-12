@@ -569,7 +569,7 @@ A known cause is [dotnet/roslyn#86045](https://github.com/dotnet/roslyn/issues/8
 
 ### UNOHR0002
 
-Hot Reload was blocked by compilation errors in a project whose target framework defaults to a newer C# version than the compiler Hot Reload uses. Your build uses the .NET SDK's compiler, but Hot Reload compiles your changes with the compiler embedded in the Uno DevServer. When that compiler is older, syntax from the newer C# version builds fine but fails in Hot Reload, and every change to that project is blocked, XAML-only changes included. The message names the project, its default C# version and the newest version Hot Reload supports.
+Hot Reload was blocked by compilation errors, or by a XAML generator error, in a project whose target framework defaults to a newer C# version than the compiler Hot Reload uses. Your build uses the .NET SDK's compiler, but Hot Reload compiles your changes with the compiler embedded in the Uno DevServer. When that compiler is older, syntax from the newer C# version builds fine but fails in Hot Reload, and every change to that project is blocked, XAML-only changes included. A XAML error can come from the same cause, for example an `x:Bind` to a member declared after that syntax. The message names the project, its default C# version and the newest version Hot Reload supports.
 
 To fix it, either:
 
