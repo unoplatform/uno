@@ -36,6 +36,9 @@ namespace Uno.UI.Runtime {
 
 		private static managedIsAutoEnableAccessibility: any;
 
+		// FeatureConfiguration.AutomationPeer.AutoEnableAccessibility, read once: in MT the managed read is asynchronous.
+		private static autoEnableAccessibility: boolean = false;
+
 		private static createLiveElement(kind: string) {
 			const element = document.createElement("div");
 			element.classList.add("uno-aria-live");
@@ -116,7 +119,8 @@ namespace Uno.UI.Runtime {
 			this.containerElement.appendChild(this.politeElement);
 			this.containerElement.appendChild(this.assertiveElement);
 
-			const autoEnable = await this.managedIsAutoEnableAccessibility();
+			const autoEnable: boolean = await this.managedIsAutoEnableAccessibility();
+			this.autoEnableAccessibility = autoEnable;
 
 			if (!autoEnable) {
 				Accessibility.addEnableAccessibilityButton();
@@ -145,8 +149,8 @@ namespace Uno.UI.Runtime {
 				// Window/RootElement aren't ready yet.
 				Accessibility.debugLog('[A11y] Auto-enabling accessibility (FeatureConfiguration.AutomationPeer.AutoEnableAccessibility = true)');
 				this.managedEnableAccessibility()
-					.then(() => LiveRegion.initialize())
 					.catch(() => Accessibility.debugWarn("[A11y] Couldn't auto-enable accessibility"));
+				LiveRegion.initialize();
 			}
 		}
 
@@ -335,16 +339,8 @@ namespace Uno.UI.Runtime {
 			this.isDepartingFocus = false;
 			LiveRegion.teardown();
 
-			if (WebAssemblyThreading.isThreadingEnabled()) {
-				this.managedIsAutoEnableAccessibility().then((autoEnable: boolean) => {
-					if (!autoEnable && !Accessibility.isEnableAccessibilityButtonActive()) {
-						Accessibility.addEnableAccessibilityButton();
-					}
-				});
-			} else {
-				if (!this.managedIsAutoEnableAccessibility() && !Accessibility.isEnableAccessibilityButtonActive()) {
-					Accessibility.addEnableAccessibilityButton();
-				}
+			if (!this.autoEnableAccessibility && !Accessibility.isEnableAccessibilityButtonActive()) {
+				Accessibility.addEnableAccessibilityButton();
 			}
 		}
 
@@ -358,14 +354,14 @@ namespace Uno.UI.Runtime {
 
 		private static onEnableAccessibilityButtonClicked(evt: MouseEvent) {
 			this.containerElement.removeChild(this.enableAccessibilityButton);
+			// In MT the managed side enables later; the live regions are set up now so the announcement is not lost.
 			this.managedEnableAccessibility()
-				.then(() => {
-					// Initialize subsystem TypeScript modules
-					LiveRegion.initialize();
-
-					this.announceAssertive("Accessibility enabled successfully.");
-				})
 				.catch(() => Accessibility.debugWarn("[A11y] Couldn't enable accessibility"));
+
+			// Initialize subsystem TypeScript modules
+			LiveRegion.initialize();
+
+			this.announceAssertive("Accessibility enabled successfully.");
 		}
 
 		/**
