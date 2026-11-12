@@ -58,7 +58,7 @@
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.9.4" />
 				<dependency id="Uno.WinRT" version="to-be-set-by-ci" />
-				<dependency id="HarfBuzzSharp" version="14.2.1.1" />
+				<dependency id="HarfBuzzSharp" version="14.4.0.100" />
 				<dependency id="Silk.NET.WebGPU" version="2.23.0" />
 			</group>
 
@@ -68,7 +68,7 @@
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.9.4" />
 				<dependency id="Uno.WinRT" version="to-be-set-by-ci" />
-				<dependency id="HarfBuzzSharp" version="14.2.1.1" />
+				<dependency id="HarfBuzzSharp" version="14.4.0.100" />
 				<dependency id="Silk.NET.WebGPU" version="2.23.0" />
 			</group>
 		</dependencies>

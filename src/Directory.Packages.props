@@ -9,7 +9,7 @@
 		<MSTestVersion>4.2.1</MSTestVersion>
 		<MicrosoftTestingPlatformVersion>2.2.1</MicrosoftTestingPlatformVersion>
 		<SkiaSharpVersion>4.156.0</SkiaSharpVersion>
-		<HarfbuzzSharpVersion>14.2.1.1</HarfbuzzSharpVersion>
+		<HarfbuzzSharpVersion>14.4.0.100</HarfbuzzSharpVersion>
 		<UnoICUVersion>77.4.1</UnoICUVersion>
 		<UnoXamlMergeTaskVersion>1.27.0-dev.44</UnoXamlMergeTaskVersion>
 
