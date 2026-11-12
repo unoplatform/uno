@@ -9252,7 +9252,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // Android convention: run on Desktop (dev) + real Android only
-		public async Task When_Touch_LongPress_Not_Focusable_Does_Nothing_Android()
+		public Task When_Touch_LongPress_Not_Focusable_Does_Nothing_Android()
+			=> AssertTouchLongPressNotFocusableDoesNothing(TextBoxCore.TouchTextSelectionConvention.Android);
+
+		// Same for the iOS hold timer (0.5 s), which acts before the Holding: it must not start a caret drag unfocused.
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaIOS)] // iOS convention: run on Desktop (dev) + real iOS only
+		public Task When_Touch_LongPress_Not_Focusable_Does_Nothing_iOS()
+			=> AssertTouchLongPressNotFocusableDoesNothing(TextBoxCore.TouchTextSelectionConvention.iOS);
+
+		private static async Task AssertTouchLongPressNotFocusableDoesNothing(TextBoxCore.TouchTextSelectionConvention convention)
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
 			using var __ = new DisposableAction(() =>
@@ -9266,7 +9276,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Width = 400,
 				Text = "Some Text",
 				IsTabStop = false,
-				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
+				TouchSelectionConvention = convention
 			};
 			var holdStarted = 0;
 			SUT.AddHandler(UIElement.HoldingEvent, new HoldingEventHandler((_, e) => holdStarted += e.HoldingState == Microsoft.UI.Input.HoldingState.Started ? 1 : 0), handledEventsToo: true);
@@ -9290,12 +9300,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(FocusState.Unfocused, SUT.FocusState, "premise: the text box can't take focus");
 			Assert.AreEqual(0, SUT.SelectionLength, "a hold that can't take focus must not select the word");
+			Assert.AreEqual(0, SUT.SelectionStart, "nor move the caret");
+			Assert.AreEqual(0, SUT.PointerCaptures?.Count ?? 0, "nor start a caret drag");
 			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count, "nor open a flyout");
 
 			finger.Release();
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(0, SUT.SelectionLength);
+			Assert.AreEqual(0, SUT.SelectionStart);
 			Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Count);
 		}
 

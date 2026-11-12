@@ -789,8 +789,12 @@ internal sealed partial class TextBoxCore
 			return;
 		}
 
+		// Like a Holding (OnHolding), the hold takes focus first and doesn't act when it can't.
 		_iosHoldFired = true;
-		HandleTouchHold_iOS(toDisplayBlock.TransformPoint(_iosHoldRootPoint), toOwner.TransformPoint(_iosHoldRootPoint));
+		if (TryFocusForTouchHold())
+		{
+			HandleTouchHold_iOS(toDisplayBlock.TransformPoint(_iosHoldRootPoint), toOwner.TransformPoint(_iosHoldRootPoint));
+		}
 	}
 
 	private bool IsAncestorScrollViewerManipulating()
