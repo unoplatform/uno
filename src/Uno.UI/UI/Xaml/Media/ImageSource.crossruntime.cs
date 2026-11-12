@@ -662,7 +662,17 @@ namespace Microsoft.UI.Xaml.Media
 						if (!isEnqueued)
 						{
 							KeepWeakCallbacksWhileOpening(false);
+
+							// Nothing will complete the open: it is stopped, so that a result still to come gives up its use of
+							// a shared decode itself.
+							_opening.Disposable = null;
 						}
+					}
+
+					// A result already at hand is given up here, which releases it or ends that use.
+					if (!isEnqueued && asyncImg.IsCompletedSuccessfully)
+					{
+						Complete(asyncImg.Result);
 					}
 				}
 				else

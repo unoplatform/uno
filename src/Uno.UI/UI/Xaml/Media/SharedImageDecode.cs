@@ -40,8 +40,9 @@ internal sealed class SharedImageDecode
 	private int _opens;
 
 	// The uses of the sources whose subscribers show it, each ended by its source once they let it go, or by its User once
-	// the source is collected (an ImageBrush keeps its subscription for its lifetime). A source that keeps the result while
-	// nothing subscribes to it is not one: it opens its source again if the result was released.
+	// the source is collected still subscribed (a brush collected with its source never ends its subscription: its lease
+	// ends only a subscription whose source outlives it). A source that keeps the result while nothing subscribes to it is
+	// not one: it opens its source again if the result was released.
 	private readonly LinkedList<SourceUse> _sources = new();
 
 	private PendingImageReleases.Entry? _pendingRelease;
