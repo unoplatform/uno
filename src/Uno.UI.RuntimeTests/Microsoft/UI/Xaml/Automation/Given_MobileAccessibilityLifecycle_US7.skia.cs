@@ -300,9 +300,11 @@ public class Given_MobileAccessibilityLifecycle_US7_Android
 		Assert.IsTrue(callTask.Result, "Off-UI-thread Activate must report that the action was accepted for UI-thread execution.");
 		Assert.AreEqual(0, clickedDuringCall, "Click must not fire on the background thread during the accessor call.");
 
+		// The action reaches the UI thread through a main-looper message, which can run after WaitForIdle returns.
+		await TestServices.WindowHelper.WaitFor(() => Volatile.Read(ref clicked[0]) > 0, timeoutMS: 5000, message: "Queued click must fire.");
 		await TestServices.WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(1, Volatile.Read(ref clicked[0]), "Queued click must fire exactly once after idle.");
+		Assert.AreEqual(1, Volatile.Read(ref clicked[0]), "Queued click must fire exactly once.");
 	}
 
 	[TestMethod]
@@ -655,9 +657,11 @@ public class Given_MobileAccessibilityLifecycle_US7_IOS
 		Assert.IsTrue(callTask.Result, "Off-UI-thread Activate must report that the action was accepted for UI-thread execution.");
 		Assert.AreEqual(0, clickedDuringCall, "Click must not fire on the background thread during the accessor call.");
 
+		// The action reaches the UI thread through a main-looper message, which can run after WaitForIdle returns.
+		await TestServices.WindowHelper.WaitFor(() => Volatile.Read(ref clicked[0]) > 0, timeoutMS: 5000, message: "Queued click must fire.");
 		await TestServices.WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(1, Volatile.Read(ref clicked[0]), "Queued click must fire exactly once after idle.");
+		Assert.AreEqual(1, Volatile.Read(ref clicked[0]), "Queued click must fire exactly once.");
 	}
 
 	[TestMethod]

@@ -213,7 +213,16 @@ public class X11NativeWebView : INativeWebView
 
 	~X11NativeWebView()
 	{
-		RunOnGtkThread(() => _window.Close());
+		// _window is null when the constructor threw (e.g. WebKitGTK missing), and then there may be no GTK thread at
+		// all. Never wait on the GTK thread here: a blocked finalizer stalls every finalizer in the process.
+		if (_window is { } window)
+		{
+			GLib.Idle.Add(() =>
+			{
+				window.Close();
+				return false;
+			});
+		}
 	}
 
 	public string DocumentTitle => RunOnGtkThread(() => _webview.Title);

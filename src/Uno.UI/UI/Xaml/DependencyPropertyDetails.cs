@@ -186,11 +186,7 @@ namespace Microsoft.UI.Xaml
 
 			if (storedInValue && HasWeakStorage)
 			{
-				value = Validate(value);
-			}
-			else
-			{
-				value = ValidateNoWrap(value);
+				value = Wrap(value);
 			}
 
 			switch (precedence)
@@ -219,6 +215,11 @@ namespace Microsoft.UI.Xaml
 
 		internal void ClearBinding()
 		{
+			if (_binding is { IsValidationSource: true } validationSource)
+			{
+				global::Microsoft.UI.Xaml.Controls.Control.OnValidationBindingCleared(validationSource);
+			}
+
 			_binding?.Dispose();
 			_binding = null;
 		}
@@ -283,30 +284,6 @@ namespace Microsoft.UI.Xaml
 					return _baseValueSource;
 				}
 			}
-		}
-
-		/// <summary>
-		/// Validate the value to prevent setting null to non-nullable dependency properties.
-		/// </summary>
-		/// <param name="value">value to validate</param>
-		/// <returns>The value if valid, otherwise the dependency property's default value.</returns>
-		private object? Validate(object? value)
-		{
-			return value == null && !Property.IsTypeNullable
-				? throw new InvalidOperationException("DP cannot be set to null when its type is not nullable.")
-				: Wrap(value);
-		}
-
-		/// <summary>
-		/// Validate the value to prevent setting null to non-nullable dependency properties.
-		/// </summary>
-		/// <param name="value">value to validate</param>
-		/// <returns>The value if valid, otherwise the dependency property's default value.</returns>
-		private object? ValidateNoWrap(object? value)
-		{
-			return value == null && !Property.IsTypeNullable
-				? throw new InvalidOperationException("DP cannot be set to null when its type is not nullable.")
-				: value;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -8,6 +8,7 @@ jobs:
   cancelTimeoutInMinutes: 0
   displayName: 'macOS Build'
   pool:
+    name: 'GitHub-hosted Agents'
     vmImage: ${{ parameters.macOSImageName }}
 
   variables:

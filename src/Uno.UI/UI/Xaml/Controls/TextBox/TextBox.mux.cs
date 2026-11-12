@@ -11,7 +11,11 @@ namespace Microsoft.UI.Xaml.Controls
 		bool ITextBoxHost.IsPointerOver => _isPointerOver;
 
 		internal override void UpdateVisualState(bool useTransitions = true)
-			=> _core.UpdateVisualStateCore(useTransitions);
+		{
+			_core.UpdateVisualStateCore(useTransitions);
+
+			UpdateValidationStates();
+		}
 
 		internal override string GetPlainText()
 		{

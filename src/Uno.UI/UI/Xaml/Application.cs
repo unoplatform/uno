@@ -457,7 +457,8 @@ namespace Microsoft.UI.Xaml
 
 
 			// Initialize all windows that have been created before the application was initialized.
-			foreach (var window in ApplicationHelper.Windows)
+			// Snapshot: initializing a hosted ALC window removes it from ApplicationHelper.Windows.
+			foreach (var window in ApplicationHelper.WindowsInternal.ToArray())
 			{
 				window.Initialize();
 			}
@@ -871,7 +872,21 @@ namespace Microsoft.UI.Xaml
 				}
 
 				// Force a schedule to let the dotnet exports be initialized properly
-				DispatcherQueue.Main.TryEnqueue(currentApp.PrepareOnLaunched);
+				var launch = new TaskCompletionSource();
+				currentApp.DeferredLaunch = launch.Task;
+				DispatcherQueue.Main.TryEnqueue(() =>
+				{
+					try
+					{
+						currentApp.PrepareOnLaunched();
+						launch.SetResult();
+					}
+					catch (Exception e)
+					{
+						typeof(Application).LogError()?.Error("OnLaunched failed", e);
+						launch.SetException(e);
+					}
+				});
 			}
 			else
 			{
@@ -884,6 +899,12 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal Task FontPreloadTask { get; private set; }
+
+		/// <summary>
+		/// On the browser, where <see cref="OnLaunched"/> runs after <see cref="Start(Func{ApplicationInitializationCallbackParams, Application})"/>
+		/// returns: completes once it has run, or faults with what it threw, so the host can surface the failure.
+		/// </summary>
+		internal Task? DeferredLaunch { get; private set; }
 
 		private void PrepareOnLaunched()
 		{

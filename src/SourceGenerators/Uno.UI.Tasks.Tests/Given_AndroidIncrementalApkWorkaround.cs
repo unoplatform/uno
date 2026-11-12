@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using AwesomeAssertions;
+﻿using AwesomeAssertions;
 
 namespace Uno.UI.Tasks.Tests;
 
@@ -104,25 +103,8 @@ public class Given_AndroidIncrementalApkWorkaround
 
 	private static (int ExitCode, string Output) MSBuild(string workingDirectory, string[] arguments)
 	{
-		var startInfo = new ProcessStartInfo("dotnet")
-		{
-			RedirectStandardOutput = true,
-			RedirectStandardError = true,
-			UseShellExecute = false,
-			WorkingDirectory = workingDirectory,
-		};
-		string[] allArguments = ["msbuild", "-nologo", "-nodeReuse:false", .. arguments];
-		foreach (var argument in allArguments)
-		{
-			startInfo.ArgumentList.Add(argument);
-		}
-		startInfo.Environment["MSBUILDDISABLENODEREUSE"] = "1";
+		var result = DotnetMSBuild.Run(workingDirectory, arguments);
 
-		using var process = Process.Start(startInfo)!;
-		var stdout = process.StandardOutput.ReadToEndAsync();
-		var stderr = process.StandardError.ReadToEndAsync();
-		process.WaitForExit();
-
-		return (process.ExitCode, stdout.Result + stderr.Result);
+		return (result.ExitCode, result.Output);
 	}
 }

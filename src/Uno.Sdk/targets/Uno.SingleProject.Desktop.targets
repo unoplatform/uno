@@ -63,7 +63,52 @@
 	</Target>
 
 	<!--
-		The `webview` feature's `Microsoft.Web.WebView2` package pulls in the WPF-specific
+		The Win32 host references WebView2Aot (and through it DirectNAot) for its WebView2 support. A WebView needs
+		WebView2Loader.dll from Microsoft.Web.WebView2, which the `webview` feature, a direct reference or a transitive
+		one deploys. Without it nothing can create a WebView, and trimming spends minutes, or hangs, analyzing their
+		deep COM interface chains, so their assets are left out. DirectN is general-purpose interop, so it is only left
+		out when nothing but WebView2Aot depends on it. Set `UnoIncludeWebView2Aot` to keep them.
+	-->
+	<Target Name="_UnoRemoveUnusedWebView2Aot"
+			AfterTargets="ResolvePackageAssets"
+			Condition=" '$(IsUnoHead)' == 'true' AND '$(UnoIncludeWebView2Aot)' != 'true' ">
+		<ItemGroup>
+			<_UnoWebView2LoaderAsset Include="@(NativeCopyLocalItems);@(RuntimeTargetsCopyLocalItems)" Condition="'%(NuGetPackageId)' == 'Microsoft.Web.WebView2'" />
+		</ItemGroup>
+
+		<!-- The dependency edges (package/version, with ParentPackage empty for the head's own references). -->
+		<ResolvePackageDependencies
+			Condition=" '@(_UnoWebView2LoaderAsset)' == '' "
+			ProjectPath="$(MSBuildProjectFullPath)"
+			ProjectAssetsFile="$(ProjectAssetsFile)"
+			ProjectLanguage="$(Language)"
+			TargetFramework="$(TargetFramework)"
+			ContinueOnError="true">
+			<Output TaskParameter="PackageDependencies" ItemName="_UnoPackageDependency" />
+		</ResolvePackageDependencies>
+
+		<ItemGroup Condition=" '@(_UnoWebView2LoaderAsset)' == '' ">
+			<_UnoDirectNDependency Include="@(_UnoPackageDependency)"
+				Condition="$([System.String]::Copy('%(Identity)').StartsWith('DirectNAot/')) OR $([System.String]::Copy('%(Identity)').StartsWith('DirectNAot.Extensions/'))" />
+			<_UnoDirectNOtherParent Include="@(_UnoDirectNDependency)"
+				Condition="!$([System.String]::Copy('%(ParentPackage)').StartsWith('WebView2Aot/')) AND !$([System.String]::Copy('%(ParentPackage)').StartsWith('DirectNAot.Extensions/'))" />
+		</ItemGroup>
+
+		<PropertyGroup Condition=" '@(_UnoWebView2LoaderAsset)' == '' ">
+			<_UnoUnusedWebView2Packages>;WebView2Aot;</_UnoUnusedWebView2Packages>
+			<!-- Only when the edges show WebView2Aot as its sole owner: no edges (the query failed) keeps it. -->
+			<_UnoUnusedWebView2Packages Condition=" '@(_UnoDirectNDependency)' != '' AND '@(_UnoDirectNOtherParent)' == '' ">;WebView2Aot;DirectNAot;DirectNAot.Extensions;</_UnoUnusedWebView2Packages>
+		</PropertyGroup>
+
+		<ItemGroup Condition=" '$(_UnoUnusedWebView2Packages)' != '' ">
+			<RuntimeCopyLocalItems Remove="@(RuntimeCopyLocalItems)" Condition="$(_UnoUnusedWebView2Packages.Contains(';%(NuGetPackageId);'))" />
+			<NativeCopyLocalItems Remove="@(NativeCopyLocalItems)" Condition="$(_UnoUnusedWebView2Packages.Contains(';%(NuGetPackageId);'))" />
+			<RuntimeTargetsCopyLocalItems Remove="@(RuntimeTargetsCopyLocalItems)" Condition="$(_UnoUnusedWebView2Packages.Contains(';%(NuGetPackageId);'))" />
+		</ItemGroup>
+	</Target>
+
+	<!--
+		An explicit `Microsoft.Web.WebView2` reference pulls in the WPF-specific
 		Microsoft.Web.WebView2.Wpf reference even on a plain (non-WPF) desktop head; strip it
 		by default. Set `UnoDisableWebView2Workarounds` to keep it.
 	-->
@@ -80,8 +125,8 @@
 	</Target>
 
 	<!--
-		Workarounds for manual inclusion of WebView2's files which prevent 
-		`PackageReference.Aliases` from being used.
+		The package adds its managed references by hand, so `PackageReference.Aliases` never reaches
+		Microsoft.Web.WebView2.Core; apply it here so it doesn't clash with Uno's own Microsoft.Web.WebView2.Core types.
 	-->
 	<Target Name="_UnoWebView2Workaround"
 			AfterTargets="ResolveAssemblyReferences"

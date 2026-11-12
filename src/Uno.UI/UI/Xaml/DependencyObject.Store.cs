@@ -243,6 +243,14 @@ namespace Microsoft.UI.Xaml
 			_originalObjectType = effectiveOwner.GetType();
 			_dataContextProperty = effectiveOwner is FrameworkElement ? FrameworkElement.DataContextProperty : null;
 
+			// FrameworkTemplate and Style have no DataContext in WinUI and are usually shared (resources), so they
+			// must never cache an inherited DataContext, whichever path (bindable child, collection item, parent
+			// propagation) delivers it: the shared instance would keep that DataContext alive.
+			if (IsDataContextIsolatedValue(effectiveOwner))
+			{
+				_inheritanceContextEnabled = false;
+			}
+
 			__InitializeBinder();
 
 			if (_trace.IsEnabled)
@@ -1034,7 +1042,7 @@ namespace Microsoft.UI.Xaml
 				WeakReferenceReturnDisposable releaseWeakDelegate,
 				IDisposable callbackManagerCookie,
 				ManagedWeakReference doStoreRef)
-				: base(callback.Target, doStoreRef.CloneWeakReference())
+				: base(callback.Target, doStoreRef.Target)
 			{
 				_callback = callback;
 				_releaseWeakDelegate = releaseWeakDelegate;
@@ -1101,7 +1109,7 @@ namespace Microsoft.UI.Xaml
 				WeakReferenceReturnDisposable weakCallbackRelease,
 				ManagedWeakReference instanceRef,
 				ExplicitPropertyChangedCallback callback)
-				: base(callback.Target, instanceRef.CloneWeakReference())
+				: base(callback.Target, instanceRef.Target)
 			{
 				_weakCallback = weakCallback;
 				_weakCallbackRelease = weakCallbackRelease;
@@ -1212,7 +1220,7 @@ namespace Microsoft.UI.Xaml
 				var instanceRef = SelfWeakReference;
 
 				return new RegisterParentChangedCallbackConditionalDisposable(
-					instanceRef.CloneWeakReference(),
+					this,
 					instanceRef,
 					weakCallbackRef,
 					weakCallback,
@@ -1235,7 +1243,7 @@ namespace Microsoft.UI.Xaml
 			private ParentChangedCallback _callback;
 
 			public RegisterParentChangedCallbackConditionalDisposable(
-				WeakReference conditionSource,
+				object conditionSource,
 				ManagedWeakReference doStoreRef,
 				ManagedWeakReference weakCallbackRef,
 				ParentChangedCallback weakCallback,
@@ -1372,7 +1380,9 @@ namespace Microsoft.UI.Xaml
 			// FrameworkElement's value and it cascades to its bindable children — without storing a DataContext on it.
 			if (_dataContextProperty is null && parentProperty.UniqueId == _parentDataContextProperty.UniqueId)
 			{
-				ApplyDataContext(newValue == DependencyProperty.UnsetValue ? null : newValue);
+				// Same inheritance-context gate as SetInheritedDataContext: a store that opted out (FrameworkTemplate,
+				// Style, a value shared by several owners) must not cache the parent's DataContext either.
+				ApplyDataContext(!_inheritanceContextEnabled || newValue == DependencyProperty.UnsetValue ? null : newValue);
 				return;
 			}
 
@@ -1575,34 +1585,116 @@ namespace Microsoft.UI.Xaml
 			FrameworkElement? resourceContextProvider = null,
 			ResourceDictionary? containingDictionary = null)
 		{
-			if (containingDictionary is not null)
+			foreach (var dictionary in EnumerateResourceDictionaries(includeAppResources, resourceContextProvider, containingDictionary))
 			{
-				yield return containingDictionary;
+				yield return dictionary;
+			}
+		}
+
+		/// <summary>
+		/// Allocation-free counterpart of <see cref="GetResourceDictionaries"/>, for the lookups that run
+		/// per theme reference and per implicit-style resolution.
+		/// </summary>
+		internal ResourceDictionaryWalker EnumerateResourceDictionaries(
+			bool includeAppResources,
+			FrameworkElement? resourceContextProvider = null,
+			ResourceDictionary? containingDictionary = null)
+			=> new(
+				// for non-FE, favor context provider over actual-instance
+				ActualInstance as FrameworkElement ?? resourceContextProvider ?? ActualInstance,
+				includeAppResources,
+				containingDictionary);
+
+		/// <summary>
+		/// Walks the ResourceDictionaries in scope, nearest first: the containing dictionary, then each
+		/// ancestor's non-empty Resources, then the application resources.
+		/// </summary>
+		internal struct ResourceDictionaryWalker : IDisposable
+		{
+			private readonly bool _includeAppResources;
+			private ResourceDictionary? _containingDictionary;
+			private DependencyObject? _candidate;
+			private FrameworkElement? _advanceFrom;
+			private bool _appResourcesVisited;
+			private ResourceDictionary? _current;
+
+			internal ResourceDictionaryWalker(DependencyObject? candidate, bool includeAppResources, ResourceDictionary? containingDictionary)
+			{
+				_candidate = candidate;
+				_includeAppResources = includeAppResources;
+				_containingDictionary = containingDictionary;
+				_advanceFrom = null;
+				_appResourcesVisited = false;
+				_current = null;
 			}
 
-			// for non-FE, favor context provider over actual-instance
-			var candidate = ActualInstance as FrameworkElement ?? resourceContextProvider ?? ActualInstance;
-			while (candidate is not null)
+			public bool MoveNext()
 			{
-				if (candidate is FrameworkElement fe)
+				if (_containingDictionary is { } containingDictionary)
 				{
-					if (fe.TryGetResources() is { IsEmpty: false }) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
+					_containingDictionary = null;
+					_current = containingDictionary;
+					return true;
+				}
+
+				// Read the parent only once the consumer has used the dictionary, as the iterator does: a
+				// lazily materialised resource can run arbitrary XAML initialization from the loop body.
+				if (_advanceFrom is { } previous)
+				{
+					_candidate = previous.Parent;
+					_advanceFrom = null;
+				}
+
+				while (_candidate is not null)
+				{
+					if (_candidate is FrameworkElement fe)
 					{
-						yield return fe.Resources;
-					}
+						if (fe.TryGetResources() is { IsEmpty: false }) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
+						{
+							_advanceFrom = fe;
+							_current = fe.Resources;
+							return true;
+						}
 
-					candidate = fe.Parent;
+						_candidate = fe.Parent;
+					}
+					else
+					{
+						_candidate = VisualTreeHelper.GetParent(_candidate);
+					}
 				}
-				else
+
+				if (_includeAppResources && !_appResourcesVisited)
 				{
-					candidate = VisualTreeHelper.GetParent(candidate);
+					_appResourcesVisited = true;
+
+					if (Application.Current is { } application)
+					{
+						// In the case of StaticResource resolution we skip Application.Resources because we assume these were already checked at initialize-time.
+						_current = application.Resources;
+						return true;
+					}
 				}
+
+				_current = null;
+				return false;
 			}
 
-			if (includeAppResources && Application.Current != null)
+			public readonly ResourceDictionary Current => _current!;
+
+			public readonly ResourceDictionaryWalker GetEnumerator() => this;
+
+			/// <summary>
+			/// Clears the references the walk accumulated. Every call site stops at the first match, and an
+			/// early exit otherwise leaves the ancestor and dictionary it stopped on rooted in the
+			/// enumerator's stack slot. foreach calls this from a finally, so they don't outlive the loop.
+			/// </summary>
+			public void Dispose()
 			{
-				// In the case of StaticResource resolution we skip Application.Resources because we assume these were already checked at initialize-time.
-				yield return Application.Current.Resources;
+				_containingDictionary = null;
+				_candidate = null;
+				_advanceFrom = null;
+				_current = null;
 			}
 		}
 
@@ -1611,7 +1703,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal Style? GetImplicitStyle(in SpecializedResourceDictionary.ResourceKey styleKey)
 		{
-			foreach (var dict in GetResourceDictionaries(includeAppResources: true))
+			foreach (var dict in EnumerateResourceDictionaries(includeAppResources: true))
 			{
 				if (dict.TryGetValue(styleKey, out var style, shouldCheckSystem: false))
 				{
@@ -1661,6 +1753,13 @@ namespace Microsoft.UI.Xaml
 			if (childStore != null)
 			{
 				Propagate(childStore);
+
+				// A non-FE store keeps its DataContext outside the property table: a child joining after it arrived
+				// (e.g. the second Setter of a lazily-built VisualState) gets the cached one.
+				if (_dataContextProperty is null && _properties?.InheritedDataContext is { } inheritedDataContext)
+				{
+					CallChildCallback(childStore, instanceRef, FrameworkElement.DataContextProperty, inheritedDataContext);
+				}
 			}
 			else
 			{

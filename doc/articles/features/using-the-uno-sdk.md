@@ -60,7 +60,7 @@ You can use the `UnoFeatures` property in the `csproj` or `Directory.Build.props
     Hosting;
     Toolkit;
     Logging;
-    Serilog;
+    LoggingSerilog;
     MVUX;
     Configuration;
     Http;
@@ -81,6 +81,9 @@ Here are the supported features:
 
 | Feature              | Description                                                                                                                                                                                                                                |
 |----------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `AndroidAuto`        | Configures the Android target for [Android Auto and Android Automotive OS](xref:Uno.Features.AndroidAuto) by adding the [Xamarin.AndroidX.Car.App.App](https://www.nuget.org/packages/Xamarin.AndroidX.Car.App.App) package.               |
+| `AndroidTV`          | Configures the Android target for [Android TV](xref:Uno.Features.AndroidTv) by adding the [Xamarin.AndroidX.Leanback](https://www.nuget.org/packages/Xamarin.AndroidX.Leanback) package.                                                   |
+| `AndroidWear`        | Adds [Wear OS](xref:Uno.Features.AndroidWear) support to the Android target with the Xamarin.AndroidX.Wear and Xamarin.AndroidX.Wear.Tiles packages, and raises the default Android `SupportedOSPlatformVersion` to 26.                    |
 | `Authentication`     | Adds the [Uno.Extensions](xref:Uno.Extensions.Overview) packages for Custom [Authentication](xref:Uno.Extensions.Authentication.Overview).                                                                                                 |
 | `AuthenticationMsal` | Adds the [Uno.Extensions](xref:Uno.Extensions.Overview) packages for [Authentication](xref:Uno.Extensions.Authentication.Overview) using [Microsoft.Identity.Client](xref:Uno.Extensions.Authentication.HowToMsalAuthentication).          |
 | `AuthenticationOidc` | Adds the [Uno.Extensions](xref:Uno.Extensions.Overview) packages for [Authentication](xref:Uno.Extensions.Authentication.Overview) using a custom [Oidc](xref:Uno.Extensions.Authentication.HowToOidcAuthentication) client.               |
@@ -89,9 +92,9 @@ Here are the supported features:
 | `Cupertino`          | Adds support for the [Cupertino Design Theme](xref:Uno.Themes.Cupertino.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the [Cupertino Design Toolkit](xref:Toolkit.GettingStarted.Cupertino) library. |
 | `Dsp`                | Adds support for the [Uno.Dsp.Tasks packages](https://www.nuget.org/packages?q=uno.dsp.tasks).                                                                                                                                             |
 | `Extensions`         | Adds the most commonly used Extensions Packages for Hosting, Configuration, and Logging.                                                                                                                                                   |
+| `ExtensionsCore`     | Adds the [Uno.Extensions.Core.WinUI package](https://www.nuget.org/packages/Uno.Extensions.Core.WinUI), without the other Extensions packages. Same as `ThemeService`.                                                                     |
 | `Foldable`           | Adds a reference to [Uno.WinUI.Foldable](https://www.nuget.org/packages/Uno.WinUI.Foldable).                                                                                                                                               |
 | `GLCanvas`           | Adds support for the [OpenGL Canvas](xref:Uno.Controls.GLCanvasElement).                                                                                                                                                                   |
-| `SpellChecking`           | Adds support for [spell checking](xref:Uno.Features.SpellChecking).                                                                                                                                                                   |
 | `GooglePlay`         | Adds support for [In App Reviews](xref:Uno.Features.StoreContext). For more information, see the [Store Context documentation](xref:Uno.Features.StoreContext).                                                                            |
 | `Hosting`            | Adds support for [Dependency Injection](xref:Uno.Extensions.DependencyInjection.Overview) using [Uno.Extensions.Hosting packages](https://www.nuget.org/packages?q=Uno.Extensions.Hosting).                                                |
 | `Http`               | Adds support for custom [Http Clients](xref:Uno.Extensions.Http.Overview) with [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                |
@@ -101,21 +104,25 @@ Here are the supported features:
 | `Logging`            | Adds support for [Logging](xref:Uno.Extensions.Logging.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
 | `LoggingSerilog`     | Adds support for [Serilog](https://github.com/serilog/serilog) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                       |
 | `Material`           | Adds support for the [Material Design Theme](xref:Uno.Themes.Material.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the [Material Design Toolkit](xref:Toolkit.GettingStarted.Material) library.     |
-| `MauiEmbedding`      | Adds support for [embedding Maui controls in Uno Platform applications](xref:Uno.Extensions.Maui.Overview).                                                                                                                                |
+| `MauiNativeEmbedding` | Adds support for [embedding Maui controls in Uno Platform applications](xref:Uno.Extensions.Maui.Overview) with the native embedding of Uno.Extensions (formerly `MauiEmbedding`, which now selects `Uno.Maui.Embedding`).                                                                                                                                |
+| `MauiEmbedding`      | Adds [Uno.Maui.Embedding](https://www.nuget.org/packages/Uno.Maui.Embedding) and [Uno.Maui.Handlers](https://www.nuget.org/packages/Uno.Maui.Handlers) so third-party .NET MAUI control libraries (including Windows-only builds) can run in Uno Platform applications. Implies `Retarget`. |
+| `MediaElement`       | Deprecated alias of `MediaPlayerElement`, kept for compatibility. Use `MediaPlayerElement` instead.                                                                                                                                        |
 | `MediaPlayerElement`       | Adds native references where needed to use [MediaPlayerElement](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.mediaplayerelement).                                                                                                |
 | `Mvvm`               | Adds support for the [CommunityToolkit.Mvvm](https://www.nuget.org/packages/CommunityToolkit.Mvvm) package.                                                                                                                                |
 | `MVUX`               | Adds support for [MVUX](xref:Uno.Extensions.Mvux.Overview). Non-optimized builds also reference `Uno.HotTesting.Reactive`; see [MVUX feed mocks](#mvux-feed-mocks-in-non-optimized-builds).                              |
 | `Navigation`         | Adds support for [Navigation](xref:Uno.Extensions.Navigation.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                               |
-| `Prism`              | Adds [Prism](https://github.com/PrismLibrary/Prism) support for Uno Platform applications WinUI.                                                                                                                                           |
+| `Reactor`            | Adds [Microsoft.UI.Reactor](https://github.com/unoplatform/uno.microsoft-ui-reactor), the declarative, component-based C# UI framework, through the [Uno.Microsoft.UI.Reactor](https://www.nuget.org/packages/Uno.Microsoft.UI.Reactor) package. It runs on the Uno Platform targets only: a project listing it can't target WinAppSDK (see [UNOB0031](xref:Build.Solution.error-codes#unob0031-the-reactor-uno-feature-is-not-supported-on-winappsdk)). See [Using Reactor](xref:Uno.Features.Reactor). |
+| `Retarget`           | Adds [Uno.WinUI.Retarget](https://www.nuget.org/packages/Uno.WinUI.Retarget), which runs Windows App SDK / WinUI 3 NuGet packages on Uno Platform by rewriting their Windows builds when the app is built. It also appends the Windows target frameworks to `AssetTargetFallback`, and keeps the Windows App SDK packages out of the restore of the non-Windows target frameworks (`PrunePackageReference`). `MauiEmbedding` implies it. |
 | `Serialization`      | Adds support for [Serialization](xref:Uno.Extensions.Serialization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                         |
 | `SimpleTheme`        | Adds support for the [Simple Design Theme](xref:Uno.Themes.Simple.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the Simple Design Toolkit library.                                                    |
-| `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp) — the default rendering backend on Uno Platform targets. It is implied on Uno Platform targets even when not listed, and the legacy `SkiaRenderer` feature is mapped to it for backwards compatibility. The WinAppSDK target is not provided by Uno Platform and always renders natively with WinUI, so `Skia` is not implied there: list it to use [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement) or the Uno Toolkit's Skia controls on Windows. For more details, see [Skia Rendering documentation](xref:uno.features.renderer.skia). |
+| `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp) — the default rendering backend on Uno Platform targets. It is implied on an app's Uno Platform targets when no renderer feature is listed, and the legacy `SkiaRenderer` feature is mapped to it there for backwards compatibility. A library gets neither, because the renderer is the app's choice: a library that draws with SkiaSharp, for example with `SKCanvasElement` or the Uno Toolkit's Skia controls, lists `Skia`. `WebGpu` counts as a renderer feature: listing it without `Skia` leaves SkiaSharp and its native libraries out, so an app that also uses SkiaSharp itself, for example to draw with `SKCanvasElement`, lists both: `Skia;WebGpu`. The WinAppSDK target is not provided by Uno Platform and always renders natively with WinUI, so `Skia` is off there, even when listed, and brings no SkiaSharp packages or native libraries. To use `SKXamlCanvas`, the Uno Toolkit's Skia controls or SkiaSharp itself on Windows, list `Skia` and set `<UnoEnableSkiaOnWinAppSdk>true</UnoEnableSkiaOnWinAppSdk>`. The native libraries' PDBs are left out either way. For more details, see [Skia Rendering documentation](xref:uno.features.renderer.skia). |
 | `SpellChecking`      | Adds support for [spell-checking](xref:Uno.Features.SpellChecking) in TextBox controls on all Skia-based targets via [Uno.WinUI.SpellChecking](https://www.nuget.org/packages/Uno.WinUI.SpellChecking).                                    |
 | `Storage`            | Adds support for [Storage](xref:Uno.Extensions.Storage.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
 | `Svg`                | Renders [SVG](xref:Uno.Features.SVG) with Svg.Skia, through [Uno.WinUI.Svg](https://www.nuget.org/packages/Uno.WinUI.Svg), instead of the managed SVG engine built into Uno Platform. Applies to apps using the Skia renderer, and has no effect on Windows (WinAppSDK), where the OS renders SVG. |
 | `ThemeService`       | Adds the [Uno.Extensions.Core.WinUI package](https://www.nuget.org/packages/Uno.Extensions.Core.WinUI).                                                                                                                                    |
 | `Toolkit`            | Adds support for the [Uno.Toolkit](xref:Toolkit.GettingStarted).                                                                                                                                                                           |
-| `WebView`            | Adds support for the [WebView2 control](xref:Uno.Controls.WebView2).
+| `WebGpu`             | Adds the WebGPU rendering backend (`Uno.WinUI.Composition.WebGpu`) and the [WebGPU Canvas](xref:Uno.Controls.WebGpuCanvasElement) on Uno Platform targets. When both `Skia` and `WebGpu` are listed, both backends are referenced, Skia still renders by default, and the app opts into WebGPU on its host builder. Listing `WebGpu` without `Skia` makes the app SkiaSharp-free (see `Skia` above). |
+| `WebView`            | Adds support for the [WebView2 control](xref:Uno.Controls.WebView2). |
 
 ## Implicit Packages
 
@@ -137,6 +144,7 @@ Here are the supported properties:
 | `UnoFontsVersion`                | [Uno.Fonts.OpenSans](https://www.nuget.org/packages/Uno.Fonts.OpenSans) and similar packages                     | Overrides the version of the bundled Uno.Fonts packages (OpenSans, Fluent, Roboto).                                                  |
 | `UnoHotDesignVersion`            | [Uno.UI.HotDesign](https://www.nuget.org/packages/Uno.UI.HotDesign)                                              | Overrides the version of the Hot Design add-in used by the DevServer.                                                                |
 | `UnoLoggingVersion`              | [Uno.Extensions.Logging.OSLog](https://www.nuget.org/packages/Uno.Extensions.Logging.OSLog) and similar packages | Implements logging mechanisms to help with monitoring and debugging Uno Platform applications.                                      |
+| `UnoReactorVersion`              | [Uno.Microsoft.UI.Reactor](https://www.nuget.org/packages/Uno.Microsoft.UI.Reactor)                              | Overrides the version of Reactor used by the `Reactor` UnoFeature.                                                                  |
 | `UnoResizetizerVersion`          | [Uno.Resizetizer](https://www.nuget.org/packages/Uno.Resizetizer)                                                | Provides tools for automatically resizing and managing image assets in Uno Platform projects.                                       |
 | `UnoSdkExtrasVersion`            | [Uno.Sdk.Extras](https://www.nuget.org/packages/Uno.Sdk.Extras)                                                  | Overrides the version of additional Uno.Sdk build-time helper targets.                                                               |
 | `UnoSettingsVersion`             | [Uno.Settings.DevServer](https://www.nuget.org/packages/Uno.Settings.DevServer)                                  | Overrides the version of the Settings add-in used by the DevServer.                                                                  |
@@ -156,6 +164,8 @@ Here are the supported properties:
 | `AndroidXAppCompatVersion`          | [Xamarin.AndroidX.AppCompat](https://www.nuget.org/packages/Xamarin.AndroidX.AppCompat)                              | Offers backward-compatible versions of Android components with AndroidX.                                       |
 | `AndroidXBrowserVersion`            | [Xamarin.AndroidX.Browser](https://www.nuget.org/packages/Xamarin.AndroidX.Browser)                                  | Contains components to implement browser features with AndroidX.                                               |
 | `AndroidXCollectionVersion`         | [Xamarin.AndroidX.Collection](https://www.nuget.org/packages/Xamarin.AndroidX.Collection) and similar packages       | Provides AndroidX extensions for collections like sparse arrays and bundles.                                   |
+| `AndroidXFragmentVersion`           | [Xamarin.AndroidX.Fragment](https://www.nuget.org/packages/Xamarin.AndroidX.Fragment) and similar packages           | Provides AndroidX fragments; referenced with MAUI embedding to keep it aligned with Uno's AndroidX packages.    |
+| `AndroidXLifecycleVersion`          | [Xamarin.AndroidX.Lifecycle.LiveData](https://www.nuget.org/packages/Xamarin.AndroidX.Lifecycle.LiveData)            | Provides AndroidX lifecycle-aware data holders; referenced with MAUI embedding to keep it aligned with Uno's AndroidX packages. |
 | `AndroidXSplashScreenVersion`    | [Xamarin.AndroidX.Core.SplashScreen](https://www.nuget.org/packages/Xamarin.AndroidX.Core.SplashScreen)              | Support for Android splash screen customization.                                         |
 | `AndroidXNavigationVersion`         | [Xamarin.AndroidX.Navigation.UI](https://www.nuget.org/packages/Xamarin.AndroidX.Navigation.UI) and similar packages | Facilitates navigation within an Android app using AndroidX.                                                   |
 | `AndroidXRecyclerViewVersion`       | [Xamarin.AndroidX.RecyclerView](https://www.nuget.org/packages/Xamarin.AndroidX.RecyclerView)                        | Implements a flexible view for providing a limited window into large datasets with AndroidX.                   |
@@ -165,11 +175,12 @@ Here are the supported properties:
 | `AndroidXWearVersion`               | [Xamarin.AndroidX.Wear](https://www.nuget.org/packages/Xamarin.AndroidX.Wear) and similar packages                   | Provides support for Wear OS watch applications.                                                               |
 | `AndroidXWearTilesVersion`          | [Xamarin.AndroidX.Wear.Tiles](https://www.nuget.org/packages/Xamarin.AndroidX.Wear.Tiles) and similar packages       | Provides Tiles API for Wear OS watch faces and complications.                                                  |
 | `CommunityToolkitMvvmVersion`       | [CommunityToolkit.Mvvm](https://www.nuget.org/packages/CommunityToolkit.Mvvm)                                        | Delivers a set of MVVM (Model-View-ViewModel) components for .NET applications.                                |
-| `MauiVersion`                       | [Microsoft.Maui.Controls](https://www.nuget.org/packages/Microsoft.Maui.Controls) and similar packages               | Overrides the version of .NET MAUI used by the `mauiembedding` UnoFeature.                                     |
+| `MauiVersion`                       | [Microsoft.Maui.Controls](https://www.nuget.org/packages/Microsoft.Maui.Controls) and similar packages               | Overrides the version of .NET MAUI used by the `mauinativeembedding` UnoFeature, and the default of the `mauiembedding` UnoFeature (`10.0.101`).                                     |
+| `UnoMauiVersion`                    | [Uno.Maui.Handlers](https://www.nuget.org/packages/Uno.Maui.Handlers) and [Uno.Maui.Embedding](https://www.nuget.org/packages/Uno.Maui.Embedding) | Overrides the version of the Uno.Maui packages used by the `mauiembedding` UnoFeature. |
 | `MicrosoftIdentityClientVersion`    | [Microsoft.Identity.Client](https://www.nuget.org/packages/Microsoft.Identity.Client)                                | Provides an authentication library for Microsoft Identity Platform.                                            |
 | `MicrosoftLoggingVersion`           | [Microsoft.Extensions.Logging.Console](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Console)          | Enables logging to the console with Microsoft's extensions.                                                    |
 | `MicrosoftWebView2Version`          | [Microsoft.Web.WebView2](https://www.nuget.org/packages/Microsoft.Web.WebView2)                                      | Overrides the version of the native WebView2Loader used by the `webview` UnoFeature on desktop.                |
-| `PrismVersion`                      | [Prism.Uno.WinUI](https://www.nuget.org/packages/Prism.Uno.WinUI) and similar packages                               | Integrates the Prism library, which aids in building loosely coupled, maintainable, and testable applications. |
+| `UnoRetargetVersion`                  | [Uno.WinUI.Retarget](https://www.nuget.org/packages/Uno.WinUI.Retarget)                                                              | Overrides the version of Uno.WinUI.Retarget used by the `retarget` UnoFeature.                                           |
 | `SkiaSharpVersion`                  | [SkiaSharp.Skottie](https://www.nuget.org/packages/SkiaSharp.Skottie) and similar packages                           | Provides a cross-platform 2D graphics API for .NET platforms based on Google's Skia Graphics Library.          |
 | `HarfBuzzSharpVersion`              | [HarfBuzzSharp.NativeAssets.*](https://www.nuget.org/packages?q=HarfBuzzSharp.NativeAssets)                           | The HarfBuzz text-shaping native libraries, referenced for each target.                                        |
 | `SvgSkiaVersion`                    | [Svg.Skia](https://www.nuget.org/packages/Svg.Skia)                                                                  | Renders SVG files using the SkiaSharp graphics engine.                                                         |
@@ -311,7 +322,7 @@ When set, `Uno.Sdk` stops adding the following implicit package references on th
 The property is intentionally scoped:
 
 - It only takes effect on the Windows App SDK target framework. Other targets (Android, iOS, Skia Desktop, WebAssembly, …) are unaffected, so the cross-platform side of your library still uses `Uno.WinUI` and the rest of the Uno stack.
-- Packages added through `UnoFeatures` (Toolkit, Material, Cupertino, Simple, csharpmarkup, prism, maps, foldable, skia/Graphics2DSK, glcanvas, mvvm, dsp, Uno.Extensions.*, …) are *not* stripped. Opting into a `UnoFeatures` value is treated as an explicit request for that package, even when this property is set.
+- Packages added through `UnoFeatures` (Toolkit, Material, Cupertino, Simple, csharpmarkup, maps, foldable, skia/Graphics2DSK, glcanvas, mvvm, dsp, Uno.Extensions.*, …) are *not* stripped. Opting into a `UnoFeatures` value is treated as an explicit request for that package, even when this property is set.
 - Non-Uno implicit packages (`Microsoft.WindowsAppSDK`, `Microsoft.Windows.SDK.BuildTools`, `CommunityToolkit.Mvvm`, `SkiaSharp.Views.WinUI`, …) keep flowing as usual.
 
 If you still need one of the stripped packages on Windows for a specific reason, add it back explicitly:
@@ -381,11 +392,10 @@ By default, the Uno.Sdk specifies a set of OS Platform versions, as follows:
 
 | Target | `SupportedOSPlatformVersion` |
 |--------|----------------------------|
-| Android | 24 |
-| iOS | 14.2 |
-| macOS | 10.14 |
-| tvOS  | 14.2 |
-| WinUI | 10.0.18362.0 |
+| Android | 24 (26 when the `AndroidWear` feature is used) |
+| iOS | 15.0 |
+| tvOS  | 15.0 |
+| WinUI | 10.0.19041.0 |
 
 You can set this property in a `Choose` MSBuild block in order to alter its value based on the active `TargetFramework`.
 
@@ -398,23 +408,18 @@ You can set this property in a `Choose` MSBuild block in order to alter its valu
     </When>
     <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
       <PropertyGroup>
-        <SupportedOSPlatformVersion>14.2</SupportedOSPlatformVersion>
-      </PropertyGroup>
-    </When>
-    <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'macos'">
-      <PropertyGroup>
-        <SupportedOSPlatformVersion>10.14</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
       </PropertyGroup>
     </When>
     <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvOS'">
       <PropertyGroup>
-        <SupportedOSPlatformVersion>14.2</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
       </PropertyGroup>
     </When>
     <When Condition="$(TargetFramework.Contains('windows10'))">
       <PropertyGroup>
-        <SupportedOSPlatformVersion>10.0.18362.0</SupportedOSPlatformVersion>
-        <TargetPlatformMinVersion>10.0.18362.0</TargetPlatformMinVersion>
+        <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+        <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
       </PropertyGroup>
     </When>
   </Choose>

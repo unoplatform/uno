@@ -146,9 +146,9 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		catch (Exception ex)
 		{
 			// Backend negotiation runs here, on the render thread, so the activity's try/catch around the view
-			// constructor cannot cover it — hand the window to the canvas view rather than leave it black.
-			this.Log().Error("UnoWebGpuView: WebGPU initialization failed, falling back to the canvas view", ex);
-			_activity.FallbackToCanvasView();
+			// constructor cannot cover it — hand the window to the next render view rather than leave it black.
+			this.Log().Error("UnoWebGpuView: WebGPU initialization failed, falling back to the next render view", ex);
+			_activity.ReplaceFailedRenderView(this);
 			return;
 		}
 

@@ -41,6 +41,19 @@ Make sure to [configure your Apple account](https://learn.microsoft.com/en-us/do
 
 In case your debugging experience is slow when connecting from a Windows VS environment to a Mac machine, make sure that you're not connected through Wifi on either end. Try pinging your Mac from your Windows machine and ensure it's lower than 5ms.
 
+## Build fails with `The "AOTCompile" task failed unexpectedly`
+
+After a .NET workload update (for example `dotnet workload update` or `uno-check --fix`), an iOS build can fail with an error similar to:
+
+```error
+error MSB4018: The "AOTCompile" task failed unexpectedly.
+An error occurred trying to start process '/usr/local/share/dotnet/packs/Microsoft.NETCore.App.Runtime.AOT.osx-arm64.Cross.iossimulator-arm64/10.0.8/Sdk/../tools/mono-aot-cross'. No such file or directory
+```
+
+The build reuses the AOT compiler path saved by an earlier build in the `obj` folder, and doesn't refresh it when only the workloads change ([dotnet/macios#25481](https://github.com/dotnet/macios/issues/25481)). The version in the path is the old compiler, which the update removed.
+
+To fix it, delete the project's `bin` and `obj` folders and build again. Deleting only the `aot-compiler-path-*.txt` file is enough, for example `obj/Debug/net10.0-ios/iossimulator-arm64/aot-compiler-path-10.0.401.txt`. Don't install the older AOT compiler to match the path: the app then fails to link, because that compiler doesn't match the runtime.
+
 ## Additional troubleshooting
 
 You can get additional build [troubleshooting information here](uno-builds-troubleshooting.md).

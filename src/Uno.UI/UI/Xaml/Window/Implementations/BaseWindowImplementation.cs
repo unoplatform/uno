@@ -74,8 +74,20 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 	public string Title
 	{
-		get => NativeWindowWrapper!.Title;
-		set => NativeWindowWrapper!.Title = value;
+		get => NativeWindowWrapper is { } wrapper ? wrapper.Title : Window.AppWindow.Title;
+		set
+		{
+			if (NativeWindowWrapper is { } wrapper)
+			{
+				wrapper.Title = value;
+			}
+			else
+			{
+				// No native window yet (or none at all for a hosted ALC window): AppWindow caches the
+				// title and applies it if a native window is attached later.
+				Window.AppWindow.Title = value;
+			}
+		}
 	}
 
 	public Rect Bounds => NativeWindowWrapper?.Bounds ?? default;

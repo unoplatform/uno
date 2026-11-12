@@ -98,6 +98,7 @@ internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHos
 	protected async override Task RunLoop()
 	{
 		var wasRunning = _isRunning;
+		Application? app = null;
 
 		_isRunning = true;
 
@@ -110,7 +111,7 @@ internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHos
 				BrowserHtmlElement.Initialize();
 			}
 
-			var app = _appBuilder();
+			app = _appBuilder();
 			app.Host = this;
 
 			if (!wasRunning)
@@ -145,6 +146,12 @@ internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHos
 
 			if (!wasRunning)
 			{
+				// OnLaunched runs after Start returns here; a throw must fault RunAsync as it does on the other hosts.
+				if (app?.DeferredLaunch is { } launch)
+				{
+					await launch;
+				}
+
 				// Secondary ALCs should not block the main loop
 				await Task.Delay(-1);
 			}

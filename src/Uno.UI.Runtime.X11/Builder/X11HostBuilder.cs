@@ -14,7 +14,7 @@ public partial class X11HostBuilder : IPlatformHostBuilder
 
 	// Every GPU API the X11 host can serve; forcing one excludes all the others.
 	private static readonly GraphicsContextKind[] _allKinds =
-		{ GraphicsContextKind.Vulkan, GraphicsContextKind.OpenGL, GraphicsContextKind.OpenGLES, GraphicsContextKind.Software };
+		{ GraphicsContextKind.Vulkan, GraphicsContextKind.OpenGL, GraphicsContextKind.OpenGLES, GraphicsContextKind.Software, GraphicsContextKind.WebGpu };
 
 	private int _renderFrameRate = 60;
 	private bool _preloadMediaPlayer;
@@ -62,6 +62,7 @@ public partial class X11HostBuilder : IPlatformHostBuilder
 		X11RenderingBackend.OpenGL => GraphicsContextKind.OpenGL,
 		X11RenderingBackend.OpenGLES => GraphicsContextKind.OpenGLES,
 		X11RenderingBackend.Software => GraphicsContextKind.Software,
+		X11RenderingBackend.WebGpu => GraphicsContextKind.WebGpu,
 		_ => throw new ArgumentOutOfRangeException(nameof(backend), backend, null),
 	};
 

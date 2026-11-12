@@ -1,0 +1,46 @@
+﻿<Page
+    x:Class="Uno.UI.Samples.Content.UITests.Animations.VisualState_Setter_Bindings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <StackPanel
+        x:Name="Root"
+        Padding="16"
+        Spacing="8">
+        <TextBlock Text="One visual state with three {Binding} setters. Every row should read PASS." TextWrapping="Wrap" />
+
+        <Grid Height="40">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="PanelColumn" Width="0" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border x:Name="Panel" Background="{ThemeResource SystemAccentColor}">
+                <Border.RenderTransform>
+                    <TranslateTransform x:Name="PanelTransform" />
+                </Border.RenderTransform>
+            </Border>
+        </Grid>
+
+        <TextBlock x:Name="OpacityResult" />
+        <TextBlock x:Name="OffsetResult" />
+        <TextBlock x:Name="WidthResult" />
+
+        <Button Click="OnReapply" Content="Hide and show again" />
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="PanelStates">
+                <VisualState x:Name="PanelHidden" />
+                <VisualState x:Name="PanelVisible">
+                    <VisualState.Setters>
+                        <Setter Target="Panel.Opacity" Value="{Binding PanelOpacity}" />
+                        <Setter Target="PanelTransform.X" Value="{Binding PanelOffset}" />
+                        <Setter Target="PanelColumn.Width" Value="{Binding PanelWidth}" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </StackPanel>
+</Page>

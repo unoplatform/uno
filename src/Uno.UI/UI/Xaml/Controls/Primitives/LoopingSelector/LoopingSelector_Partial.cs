@@ -648,6 +648,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					// Tapping any other time scrolls to that item.
 					var pixelsToMove = (itemVisualIndex - _realizedMidpointIdx) * _scaledItemHeight;
 					SetScrollPosition(_unpaddedExtentTop + pixelsToMove, true /* use animation */);
+
+					// Uno: select the item now rather than once the animated scroll settles, or a flyout
+					// confirmed before then commits the previous item (#20693).
+					CommitSelectedIndex(itemIndex);
 				}
 			}
 		}
@@ -1085,13 +1089,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		void UpdateSelectedItem(bool ignoreScrollingState = false)
 		{
 			IList<object> spItemsCollection;
-			DependencyObject spSelectedItem;
-			DependencyObject spPreviouslySelectedItem;
 
 			uint itemCount = 0;
 			var midpoint = 0.0;
 			uint newIdx = 0;
-			var oldIdx = 0;
 
 			// This will be in the middle of the currently selected item.
 			midpoint = (_unpaddedExtentTop + _unpaddedExtentBottom) / 2 - _realizedTop;
@@ -1116,22 +1117,25 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			if (ignoreScrollingState || !_skipSelectionChangeUntilFinalViewChanged)
 			{
-				newIdx = PositiveMod((int)newIdx, (int)itemCount);
-
-				spSelectedItem = spItemsCollection[(int)newIdx] as DependencyObject;
-				_disablePropertyChange = true;
-				oldIdx = SelectedIndex;
-				SelectedIndex = (int)newIdx;
-				spPreviouslySelectedItem = SelectedItem as DependencyObject;
-				SelectedItem = spSelectedItem;
-				if ((uint)oldIdx != newIdx)
-				{
-					RaiseOnSelectionChanged(spPreviouslySelectedItem, spSelectedItem);
-					AutomationRaiseSelectionChanged();
-				}
-
-				_disablePropertyChange = false;
+				CommitSelectedIndex(PositiveMod((int)newIdx, (int)itemCount));
 			}
+		}
+
+		void CommitSelectedIndex(uint newIdx)
+		{
+			var spSelectedItem = Items[(int)newIdx] as DependencyObject;
+			_disablePropertyChange = true;
+			var oldIdx = SelectedIndex;
+			SelectedIndex = (int)newIdx;
+			var spPreviouslySelectedItem = SelectedItem as DependencyObject;
+			SelectedItem = spSelectedItem;
+			if ((uint)oldIdx != newIdx)
+			{
+				RaiseOnSelectionChanged(spPreviouslySelectedItem, spSelectedItem);
+				AutomationRaiseSelectionChanged();
+			}
+
+			_disablePropertyChange = false;
 		}
 
 

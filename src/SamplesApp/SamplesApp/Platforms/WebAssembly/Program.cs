@@ -14,8 +14,8 @@ var builder = UnoPlatformHostBuilder.Create()
 	.UseWebAssembly();
 
 // Register the drawing backend + content seams (Skia by default; WebGPU + managed seams for a SkiaSharp-free build).
-// Shared with every SamplesApp head. The WebGPU render path additionally requires publishing with
-// -p:UnoWebGpuWasm=true so that Dawn/emdawnwebgpu is linked.
+// Shared with every SamplesApp head. Dawn/emdawnwebgpu is linked whenever UnoDrawingBackendWebGpu is on (the
+// default, see SamplesApp.csproj), so ?env=UNO_WEBGPU=1 works on a regular publish.
 SamplesApp.DrawingBackendConfiguration.Configure(builder);
 
 await builder.Build().RunAsync();

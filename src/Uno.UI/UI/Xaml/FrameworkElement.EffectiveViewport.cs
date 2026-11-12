@@ -278,6 +278,12 @@ namespace Microsoft.UI.Xaml
 					viewport.Intersect(scrollport);
 				}
 
+				// Like WinUI's ComputeUnidimensionalEffectiveViewport, a zero length on either axis means there is no visible rect.
+				if (viewport.Width <= 0 || viewport.Height <= 0)
+				{
+					return new ViewportInfo(this, Rect.Empty);
+				}
+
 				return new ViewportInfo(this, viewport);
 			}
 

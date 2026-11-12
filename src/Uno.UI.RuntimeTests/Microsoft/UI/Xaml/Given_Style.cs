@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
@@ -84,6 +86,194 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(HorizontalAlignment.Left, cc.HorizontalContentAlignment);
 		}
+
+		/// <remarks>
+		/// The implicit-style lookup walks the dictionaries in scope nearest-first and ends at the
+		/// application resources. A walk that visited them in the wrong order, or dropped the application
+		/// tail, still satisfies the single-level tests above.
+		/// </remarks>
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24522")]
+		public async Task When_ImplicitStyle_Nearest_Scope_Wins()
+		{
+			var appStyle = new Style()
+			{
+				Setters = { new Setter(ContentControl.HorizontalContentAlignmentProperty, HorizontalAlignment.Right) },
+				TargetType = typeof(ContentControl),
+			};
+
+			var ancestorStyle = new Style()
+			{
+				Setters = { new Setter(ContentControl.HorizontalContentAlignmentProperty, HorizontalAlignment.Stretch) },
+				TargetType = typeof(ContentControl),
+			};
+
+			Application.Current.Resources.Add(typeof(ContentControl), appStyle);
+
+			try
+			{
+				var fromAppResources = new ContentControl() { Width = 100, Height = 100, Content = new Border() { Width = 100, Height = 100 } };
+				var nearestScope = new Border() { Child = fromAppResources };
+				var root = new Border() { Child = nearestScope };
+
+				await UITestHelper.Load(root);
+
+				Assert.AreEqual(HorizontalAlignment.Right, fromAppResources.HorizontalContentAlignment, "the application-level implicit style should apply");
+
+				TestServices.WindowHelper.WindowContent = null;
+
+				var fromNearestScope = new ContentControl() { Width = 100, Height = 100, Content = new Border() { Width = 100, Height = 100 } };
+				nearestScope.Resources.Add(typeof(ContentControl), ancestorStyle);
+				nearestScope.Child = fromNearestScope;
+
+				await UITestHelper.Load(root);
+
+				Assert.AreEqual(HorizontalAlignment.Stretch, fromNearestScope.HorizontalContentAlignment, "the nearest scope should win over the application resources");
+			}
+			finally
+			{
+				Application.Current.Resources.Remove(typeof(ContentControl));
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24159")]
+		public async Task When_Explicit_Style_Uses_Fluent_Default_Value()
+		{
+			// The built-in style's {ThemeResource} setters resolve against Application.Resources first.
+			var expected = Application.Current.Resources["ToggleButtonBackground"] as SolidColorBrush;
+			Assert.IsNotNull(expected);
+
+			var button = new ToggleButton
+			{
+				Content = "Explicit style",
+				Style = new Style(typeof(ToggleButton)),
+				RequestedTheme = Application.Current.RequestedTheme == ApplicationTheme.Dark ? ElementTheme.Dark : ElementTheme.Light,
+			};
+
+			try
+			{
+				// The app-level lookup and the control must use the same theme even when the test host does not.
+				await UITestHelper.Load(new Border
+				{
+					RequestedTheme = button.RequestedTheme == ElementTheme.Dark ? ElementTheme.Light : ElementTheme.Dark,
+					Child = button,
+				});
+
+				var actual = button.Background as SolidColorBrush;
+				Assert.IsNotNull(actual);
+				Assert.AreEqual(expected.Color, actual.Color);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24159")]
+		public async Task When_Explicit_Style_Uses_Uwp_Default_Value()
+		{
+			using var uwpStyles = StyleHelper.UseUwpStyles();
+
+			var expected = Application.Current.Resources["SystemControlBackgroundBaseLowBrush"] as SolidColorBrush;
+			Assert.IsNotNull(expected);
+
+			var button = new ToggleButton
+			{
+				Content = "Explicit style",
+				Style = new Style(typeof(ToggleButton)),
+				RequestedTheme = Application.Current.RequestedTheme == ApplicationTheme.Dark ? ElementTheme.Dark : ElementTheme.Light,
+			};
+
+			try
+			{
+				await UITestHelper.Load(new Border
+				{
+					RequestedTheme = button.RequestedTheme == ElementTheme.Dark ? ElementTheme.Light : ElementTheme.Dark,
+					Child = button,
+				});
+
+				var actual = button.Background as SolidColorBrush;
+				Assert.IsNotNull(actual);
+				Assert.AreEqual(expected.Color, actual.Color);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24159")]
+		public async Task When_Uwp_ToggleButton_Uses_State_Resources()
+		{
+			using var uwpStyles = StyleHelper.UseUwpStyles();
+			var resources = Application.Current.Resources;
+			var stateResources = new Dictionary<string, SolidColorBrush>
+			{
+				["ToggleButtonBackgroundCheckedPressed"] = new(Colors.Red),
+				["ToggleButtonForegroundCheckedPressed"] = new(Colors.Green),
+				["ToggleButtonBorderBrushCheckedPressed"] = new(Colors.Blue),
+				["ToggleButtonBackgroundIndeterminate"] = new(Colors.Yellow),
+				["ToggleButtonForegroundIndeterminate"] = new(Colors.Magenta),
+				["ToggleButtonBorderBrushIndeterminate"] = new(Colors.Cyan),
+			};
+			var originalResources = new Dictionary<string, object>();
+
+			foreach (var (key, brush) in stateResources)
+			{
+				originalResources[key] = resources[key];
+				resources[key] = brush;
+			}
+
+			var button = new ToggleButton
+			{
+				Content = "State resources",
+				IsThreeState = true,
+			};
+
+			try
+			{
+				await UITestHelper.Load(button);
+
+				var contentPresenter = button.GetTemplateChild("ContentPresenter") as ContentPresenter;
+				Assert.IsNotNull(contentPresenter);
+
+				Assert.IsTrue(VisualStateManager.GoToState(button, "CheckedPressed", useTransitions: false));
+				await TestServices.WindowHelper.WaitForIdle();
+				AssertBrush(stateResources["ToggleButtonBackgroundCheckedPressed"], contentPresenter.Background);
+				AssertBrush(stateResources["ToggleButtonForegroundCheckedPressed"], contentPresenter.Foreground);
+				AssertBrush(stateResources["ToggleButtonBorderBrushCheckedPressed"], contentPresenter.BorderBrush);
+
+				Assert.IsTrue(VisualStateManager.GoToState(button, "Indeterminate", useTransitions: false));
+				await TestServices.WindowHelper.WaitForIdle();
+				AssertBrush(stateResources["ToggleButtonBackgroundIndeterminate"], contentPresenter.Background);
+				AssertBrush(stateResources["ToggleButtonForegroundIndeterminate"], contentPresenter.Foreground);
+				AssertBrush(stateResources["ToggleButtonBorderBrushIndeterminate"], contentPresenter.BorderBrush);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+				foreach (var (key, value) in originalResources)
+				{
+					resources[key] = value;
+				}
+			}
+
+			static void AssertBrush(SolidColorBrush expected, Brush actual)
+			{
+				Assert.IsInstanceOfType<SolidColorBrush>(actual);
+				Assert.AreEqual(expected.Color, ((SolidColorBrush)actual).Color);
+			}
+		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]

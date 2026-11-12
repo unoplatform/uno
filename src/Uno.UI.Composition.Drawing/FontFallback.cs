@@ -11,13 +11,14 @@ using Windows.UI.Text;
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// The default providers' codepoint fallback: what to render when neither the requested family nor the backend's own
+/// The default providers' fallback: what to render when neither the requested family nor the backend's own
 /// installed-font lookup covers a codepoint. Backend-agnostic — it drives the given <see cref="IFontProvider"/>'s own
 /// <see cref="IFontProvider.CreateFont"/>/<see cref="IFont.ContainsGlyph"/>, so both the Skia and managed providers get
 /// the same fallback. Platform-selected at runtime: the browser fetches Noto fonts on demand (no broadly-covering
 /// installed fonts there); Android scans its bundled system fonts; other platforms rely on the backend lookup and add
 /// nothing here. Public so a backend provider (which stands only on this assembly's public seam) can reuse it from its
-/// <see cref="IFontProvider.MatchCharacterAsync"/>; a third-party provider may call it or supply its own fallback.
+/// <see cref="IFontProvider.MatchFamilyAsync"/>/<see cref="IFontProvider.MatchCharacterAsync"/>; a third-party provider
+/// may call it or supply its own fallback.
 /// </summary>
 public static class FontFallback
 {
