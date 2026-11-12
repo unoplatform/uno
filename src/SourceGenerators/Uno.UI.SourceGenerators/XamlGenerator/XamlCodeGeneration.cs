@@ -440,7 +440,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var isInsideMainAssembly = _isUnoHead || PlatformHelper.IsAndroid(_generatorContext);
 
 				var resourceDetailsCollection = BuildResourceDetails(ct);
-				TryGenerateUnoResourcesKeyAttribute(resourceDetailsCollection);
+				TryGenerateUnoResourcesKeyAttribute();
 
 				var excludeXamlNamespaces = _excludeXamlNamespaces.Split(_commaArray, StringSplitOptions.RemoveEmptyEntries);
 				var includeXamlNamespaces = _includeXamlNamespaces.Split(_commaArray, StringSplitOptions.RemoveEmptyEntries);
@@ -721,9 +721,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return _metadataHelper.FindTypeByFullName(nsName + "." + xamlType.Name) as INamedTypeSymbol;
 		}
 
-		private void TryGenerateUnoResourcesKeyAttribute(ResourceDetailsCollection resourceDetailsCollection)
+		private void TryGenerateUnoResourcesKeyAttribute()
 		{
-			var hasResources = resourceDetailsCollection.HasLocalResources;
+			// Based on the presence of resource files rather than on their parsed keys: a .resw that
+			// fails to parse mid-edit must not flip this assembly attribute, which Hot Reload rejects as
+			// a rude edit (ENC0003) until the next rebuild.
+			var hasResources = _resourceFiles.Length > 0;
 
 			_generatorContext.AddSource(
 				"LocalizationResources",
