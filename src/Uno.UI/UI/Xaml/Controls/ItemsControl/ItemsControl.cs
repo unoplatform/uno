@@ -125,9 +125,15 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// True if ItemsControl should manage the children of ItemsPanel, false if this is handled by an inheriting class.
+		/// True if ItemsControl should manage the children of ItemsPanel, false if this is handled by an inheriting class or by the panel itself.
 		/// </summary>
-		private protected virtual bool ShouldItemsControlManageChildren { get { return ItemsPanelRoot == InternalItemsPanelRoot; } }
+		private protected virtual bool ShouldItemsControlManageChildren => ItemsPanelRoot == InternalItemsPanelRoot && !IsItemsHostGeneratingContainers;
+
+		/// <summary>
+		/// True if the items panel generates its own containers whatever its owner, like WinUI's modern panels.
+		/// </summary>
+		/// <remarks>A <see cref="VirtualizingStackPanel"/> is excluded: under a plain ItemsControl, WinUI realizes all of its items.</remarks>
+		private protected bool IsItemsHostGeneratingContainers => ItemsPanelRoot is ItemsStackPanel or CarouselPanel;
 
 		internal bool ManagesItemsPanelChildren => ShouldItemsControlManageChildren;
 
@@ -1024,12 +1030,239 @@ namespace Microsoft.UI.Xaml.Controls
 			return itemsPanel;
 		}
 
+		// Realized containers whose index changes with the collection change being processed, with their new index.
+		private protected readonly Dictionary<DependencyObject, object> _containersForIndexRepair = new Dictionary<DependencyObject, object>();
+
+		/// <summary>
+		/// Called when the items change while the items panel generates its own containers. The change is forwarded to the
+		/// panel's layout incrementally, as ListViewBase does, so that the realized containers (and the focus) are kept.
+		/// </summary>
+		private protected virtual void OnGeneratingItemsHostItemsChanged(NotifyCollectionChangedEventArgs args)
+		{
+			if ((ItemsPanelRoot as IVirtualizingPanel)?.GetLayouter() is not { } layouter)
+			{
+				return;
+			}
+
+			if (args is null || IsGrouping)
+			{
+				layouter.Refresh();
+				return;
+			}
+
+			switch (args.Action)
+			{
+				case NotifyCollectionChangedAction.Add when args.NewItems is { Count: > 0 } newItems:
+					SaveContainersBeforeAddForIndexRepair(newItems, args.NewStartingIndex, newItems.Count);
+					layouter.AddItems(args.NewStartingIndex, newItems.Count, section: 0);
+					RepairIndices();
+					break;
+
+				case NotifyCollectionChangedAction.Remove when args.OldItems is { Count: > 0 } oldItems:
+					SaveContainersBeforeRemoveForIndexRepair(args.OldStartingIndex, oldItems.Count);
+					var removedContainers = CaptureContainers(args.OldStartingIndex, oldItems.Count);
+					layouter.RemoveItems(args.OldStartingIndex, oldItems.Count, section: 0);
+					RepairIndices();
+					CleanUpContainers(removedContainers);
+					break;
+
+				case NotifyCollectionChangedAction.Move when (args.OldItems?.Count ?? 0) > 0:
+					if (args.OldStartingIndex != args.NewStartingIndex)
+					{
+						SaveContainersBeforeMoveForIndexRepair(args.OldStartingIndex, args.NewStartingIndex, args.OldItems.Count);
+						layouter.MoveItems(args.OldStartingIndex, args.NewStartingIndex, args.OldItems.Count, section: 0);
+						RepairIndices();
+					}
+					break;
+
+				case NotifyCollectionChangedAction.Replace when args.NewItems is { Count: > 0 } newItems:
+					// Rebind the realized containers to their new items.
+					for (var i = 0; i < newItems.Count; i++)
+					{
+						var index = args.NewStartingIndex + i;
+						if (ContainerFromIndex(index) is { } container)
+						{
+							PrepareContainerForIndex(container, index);
+						}
+					}
+					break;
+
+				default:
+					layouter.Refresh();
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Stores materialized containers starting a given index, so that their
+		/// ItemsControl.IndexForContainerProperty can be updated after the collection changes.		
+		/// </summary>
+		/// <param name="startingIndex">The minimum index of containers we care about.</param>
+		/// <param name="indexChange">How does the index change.</param>
+		private protected void SaveContainersBeforeAddForIndexRepair(IList addedItems, int startingIndex, int indexChange)
+		{
+			_containersForIndexRepair.Clear();
+			foreach (var container in MaterializedContainers)
+			{
+				var currentIndex = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
+				if (currentIndex is -1 && container is ContentControl ctrl)
+				{
+					var offset = addedItems.IndexOf(ctrl.Content);
+					if (offset >= 0)
+					{
+						_containersForIndexRepair.Add(container, startingIndex + offset);
+					}
+				}
+				else if (currentIndex >= startingIndex)
+				{
+					// we store the index, that should be set after the collection change
+					_containersForIndexRepair.Add(container, currentIndex + indexChange);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Stores materialized containers starting a given index, so that their
+		/// ItemsControl.IndexForContainerProperty can be updated after the collection changes.		
+		/// </summary>
+		/// <param name="startingIndex">The minimum index of containers we care about.</param>
+		/// <param name="indexChange">How does the index change.</param>
+		private protected void SaveContainersBeforeRemoveForIndexRepair(int startingIndex, int indexChange)
+		{
+			_containersForIndexRepair.Clear();
+
+			var firstRemainingIndex = startingIndex + indexChange;
+			foreach (var container in MaterializedContainers)
+			{
+				var currentIndex = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
+				if (currentIndex < startingIndex)
+				{
+					continue;
+				}
+
+				if (currentIndex < firstRemainingIndex)
+				{
+					_containersForIndexRepair.Add(container, IntBoxes.NegativeOne);
+				}
+				else
+				{
+					// we store the index, that should be set after the collection change
+					_containersForIndexRepair.Add(container, currentIndex - indexChange);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Stores materialized containers in the affected range so that their
+		/// <see cref="ItemsControl.IndexForItemContainerProperty"/> can be updated after a Move.
+		/// </summary>
+		private protected void SaveContainersBeforeMoveForIndexRepair(int oldStartingIndex, int newStartingIndex, int count)
+		{
+			_containersForIndexRepair.Clear();
+
+			if (oldStartingIndex == newStartingIndex)
+			{
+				return;
+			}
+
+			foreach (var container in MaterializedContainers)
+			{
+				var currentIndex = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
+
+				if (currentIndex >= oldStartingIndex && currentIndex < oldStartingIndex + count)
+				{
+					// Moved item — preserve relative offset within the range
+					_containersForIndexRepair.Add(container, newStartingIndex + (currentIndex - oldStartingIndex));
+				}
+				else if (oldStartingIndex < newStartingIndex)
+				{
+					// Forward move: items in gap (oldEnd, newEnd] shift down by count
+					if (currentIndex > oldStartingIndex + count - 1 && currentIndex <= newStartingIndex + count - 1)
+					{
+						_containersForIndexRepair.Add(container, currentIndex - count);
+					}
+				}
+				else
+				{
+					// Backward move: items in gap [newStartingIndex, oldStartingIndex) shift up by count
+					if (currentIndex >= newStartingIndex && currentIndex < oldStartingIndex)
+					{
+						_containersForIndexRepair.Add(container, currentIndex + count);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the indices of stored materialized containers to the appropriate index after
+		/// collection change.
+		/// </summary>
+		private protected void RepairIndices()
+		{
+			foreach (var containerPair in _containersForIndexRepair)
+			{
+				containerPair.Key.SetValue(ItemsControl.IndexForItemContainerProperty, containerPair.Value);
+			}
+			_containersForIndexRepair.Clear();
+		}
+
+		private protected void CleanUpAllContainers()
+		{
+			if (ShouldItemsControlManageChildren)
+			{
+				return;
+			}
+
+			foreach (var container in MaterializedContainers)
+			{
+				CleanUpContainer(container);
+			}
+			ItemsPanelRoot?.Children?.Clear();
+		}
+
+		private protected ICollection<DependencyObject> CaptureContainers(int startingIndex, int length)
+		{
+			if (ShouldItemsControlManageChildren)
+			{
+				return Array.Empty<DependencyObject>();
+			}
+
+			var containers = new List<DependencyObject>(length);
+			foreach (var container in MaterializedContainers)
+			{
+				var index = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
+				if (startingIndex <= index && index < startingIndex + length)
+				{
+					containers.Add(container);
+				}
+			}
+			return containers;
+		}
+
+		private protected void CleanUpContainers(ICollection<DependencyObject> containersToCleanup)
+		{
+			foreach (var container in containersToCleanup)
+			{
+				CleanUpContainer(container);
+			}
+		}
+
+
 		private protected virtual void UpdateItems(NotifyCollectionChangedEventArgs args)
 		{
-			if (ItemsPanelRoot == null
-				|| !ShouldItemsControlManageChildren
-				)
+			if (ItemsPanelRoot == null)
 			{
+				return;
+			}
+
+			if (!ShouldItemsControlManageChildren)
+			{
+				// Also covers a VirtualizingStackPanel under a Selector, whose layout generates the containers there.
+				if (ItemsPanelRoot is IVirtualizingPanel)
+				{
+					OnGeneratingItemsHostItemsChanged(args);
+				}
+
 				return;
 			}
 
@@ -1360,6 +1593,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void PrepareContainerForIndex(DependencyObject container, int index)
 		{
+			// Its index is set below: it no longer needs a repair.
+			_containersForIndexRepair.Remove(container);
 			_containerBeingPrepared = container;
 			try
 			{

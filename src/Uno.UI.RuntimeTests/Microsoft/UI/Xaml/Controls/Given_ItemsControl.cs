@@ -12,6 +12,7 @@ using Microsoft.UI;
 using Windows.UI;
 using AwesomeAssertions.Execution;
 using Microsoft.UI.Xaml.Markup;
+using Uno.UI.RuntimeTests.Helpers;
 #if WINAPPSDK
 using Uno.UI.Extensions;
 #else
@@ -603,6 +604,165 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, item.ActualHeight, "reset state: expecting the item's height to be remeasured to 0");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(Orientation.Horizontal)]
+		[DataRow(Orientation.Vertical)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25458")]
+		public async Task When_ItemsStackPanel_Then_Items_Stacked(Orientation orientation)
+		{
+			var SUT = new ItemsControl
+			{
+				Width = 300,
+				Height = 300,
+				ItemTemplate = (DataTemplate)XamlReader.Load(
+					"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><Border Width='20' Height='20'><TextBlock Text='{Binding}' /></Border></DataTemplate>"),
+				ItemsPanel = (ItemsPanelTemplate)XamlReader.Load(
+					$"<ItemsPanelTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><ItemsStackPanel Orientation='{orientation}' /></ItemsPanelTemplate>"),
+				ItemsSource = new[] { "A", "B", "C", "D", "E", "F" },
+			};
+
+			try
+			{
+				await UITestHelper.Load(SUT, x => x.IsLoaded);
+				await WindowHelper.WaitFor(() => SUT.ContainerFromIndex(5) is UIElement { ActualSize.X: > 0 }, timeoutMS: 5000, message: "Expected the last container to be arranged.");
+
+				Assert.AreEqual(6, SUT.ItemsPanelRoot.Children.Count);
+				for (var i = 0; i < 6; i++)
+				{
+					var offset = ((UIElement)SUT.ContainerFromIndex(i)).ActualOffset;
+					var (along, across) = orientation is Orientation.Horizontal ? (offset.X, offset.Y) : (offset.Y, offset.X);
+					Assert.AreEqual(20 * i, along, 1, $"Offset of item {i} along the panel orientation.");
+					Assert.AreEqual(0, across, 1, $"Offset of item {i} across the panel orientation.");
+				}
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25458")]
+		public Task When_ItemsStackPanel_ItemsSource_Changes() => When_ItemsHost_ItemsSource_Changes("ItemsStackPanel");
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI rejects a CarouselPanel outside of a ComboBox
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25458")]
+		public Task When_CarouselPanel_ItemsSource_Changes() => When_ItemsHost_ItemsSource_Changes("CarouselPanel");
+
+		private async Task When_ItemsHost_ItemsSource_Changes(string panel)
+		{
+			var source = new System.Collections.ObjectModel.ObservableCollection<string>(Enumerable.Range(0, 200).Select(i => $"Item {i}"));
+			var SUT = new ItemsControl
+			{
+				Width = 200,
+				Height = 200,
+				ItemTemplate = FixedHeightItemTemplate(20),
+				ItemsPanel = ItemsPanelOf(panel),
+				ItemsSource = source,
+			};
+
+			try
+			{
+				await UITestHelper.Load(SUT, x => x.IsLoaded);
+
+				await WaitForContainer(SUT, 0, "Item 0", 20, "initial");
+				AssertSingleContainerPerItem(SUT, source, "initial");
+
+				source.Insert(0, "Inserted");
+				await WaitForContainer(SUT, 0, "Inserted", 20, "after insert");
+				AssertSingleContainerPerItem(SUT, source, "after insert");
+
+				source.RemoveAt(0);
+				await WaitForContainer(SUT, 0, "Item 0", 20, "after remove");
+				AssertSingleContainerPerItem(SUT, source, "after remove");
+
+				var newSource = Enumerable.Range(0, 5).Select(i => $"New {i}").ToArray();
+				SUT.ItemsSource = newSource;
+				await WaitForContainer(SUT, 0, "New 0", 20, "after ItemsSource replaced");
+				AssertSingleContainerPerItem(SUT, newSource, "after ItemsSource replaced");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25458")]
+		public async Task When_ItemsStackPanel_Items_Changes()
+		{
+			var SUT = new ItemsControl
+			{
+				Width = 200,
+				Height = 200,
+				ItemTemplate = FixedHeightItemTemplate(20),
+				ItemsPanel = ItemsPanelOf("ItemsStackPanel"),
+			};
+			for (var i = 0; i < 5; i++)
+			{
+				SUT.Items.Add($"Item {i}");
+			}
+
+			try
+			{
+				await UITestHelper.Load(SUT, x => x.IsLoaded);
+
+				await WaitForContainer(SUT, 0, "Item 0", 20, "initial");
+				AssertSingleContainerPerItem(SUT, SUT.Items.Cast<string>().ToArray(), "initial");
+
+				SUT.Items.Insert(0, "Inserted");
+				await WaitForContainer(SUT, 0, "Inserted", 20, "after insert");
+				AssertSingleContainerPerItem(SUT, SUT.Items.Cast<string>().ToArray(), "after insert");
+
+				SUT.ItemTemplate = FixedHeightItemTemplate(30);
+				await WaitForContainer(SUT, 0, "Inserted", 30, "after ItemTemplate changed");
+				AssertSingleContainerPerItem(SUT, SUT.Items.Cast<string>().ToArray(), "after ItemTemplate changed");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		private static DataTemplate FixedHeightItemTemplate(double height) => (DataTemplate)XamlReader.Load(
+			$"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><Border Height='{height}'><TextBlock Text='{{Binding}}' /></Border></DataTemplate>");
+
+		private static ItemsPanelTemplate ItemsPanelOf(string panel) => (ItemsPanelTemplate)XamlReader.Load(
+			$"<ItemsPanelTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><{panel} /></ItemsPanelTemplate>");
+
+		private static async Task WaitForContainer(ItemsControl sut, int index, string content, double height, string step)
+		{
+			await WindowHelper.WaitFor(
+				() => sut.ContainerFromIndex(index) is ContentPresenter { ActualHeight: var actualHeight } container
+					&& Equals(container.Content, content)
+					&& actualHeight == height,
+				timeoutMS: 5000,
+				message: $"{step}: expected the container at {index} to show '{content}' at height {height}, got " +
+					(sut.ContainerFromIndex(index) is ContentPresenter c ? $"'{c.Content}' at height {c.ActualHeight}" : "none"));
+
+			// The containers are kept across item changes, so the one at the index can show its item before the layout
+			// pass that recycles the removed ones.
+			await WindowHelper.WaitForIdle();
+		}
+
+		// Recycled containers can linger in the panel, so only the arranged ones are expected to show an item.
+		private static void AssertSingleContainerPerItem(ItemsControl sut, IReadOnlyCollection<string> items, string step)
+		{
+			var children = sut.ItemsPanelRoot.Children.OfType<FrameworkElement>().ToArray();
+			var shown = children
+				.Where(c => c.ActualHeight > 0)
+				.Select(c => (c as ContentPresenter)?.Content as string)
+				.ToArray();
+
+			Assert.IsTrue(children.Length <= items.Count, $"{step}: {children.Length} containers for {items.Count} items");
+			Assert.AreEqual(shown.Length, shown.Distinct().Count(), $"{step}: an item is shown by more than one container");
+			Assert.IsTrue(shown.All(items.Contains), $"{step}: a container shows a stale item ({string.Join(", ", shown.Except(items))})");
+		}
 	}
 
 	internal partial class ContentControlItemsControl : ItemsControl

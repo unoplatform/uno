@@ -52,8 +52,6 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private bool _isIncrementalLoadingInFlight;
 
-		private readonly Dictionary<DependencyObject, object> _containersForIndexRepair = new Dictionary<DependencyObject, object>();
-
 		protected override AutomationPeer OnCreateAutomationPeer()
 			=> new ListViewBaseAutomationPeer(this);
 
@@ -784,6 +782,11 @@ namespace Microsoft.UI.Xaml.Controls
 			return ResolveHeaderOrFooterContext(FooterProperty, FooterTemplateProperty);
 		}
 
+		// Collection changes are forwarded incrementally to the layouter by OnItemsSourceSingleCollectionChanged.
+		private protected override void OnGeneratingItemsHostItemsChanged(NotifyCollectionChangedEventArgs args)
+		{
+		}
+
 		internal override void OnItemsSourceSingleCollectionChanged(object sender, NotifyCollectionChangedEventArgs args, int section)
 		{
 			if (RefreshOnCollectionChanged)
@@ -877,160 +880,6 @@ namespace Microsoft.UI.Xaml.Controls
 				Refresh();
 				ObserveCollectionChanged();
 				base.OnItemsSourceSingleCollectionChanged(sender, args, section);
-			}
-		}
-
-		/// <summary>
-		/// Stores materialized containers starting a given index, so that their
-		/// ItemsControl.IndexForContainerProperty can be updated after the collection changes.		
-		/// </summary>
-		/// <param name="startingIndex">The minimum index of containers we care about.</param>
-		/// <param name="indexChange">How does the index change.</param>
-		private void SaveContainersBeforeAddForIndexRepair(IList addedItems, int startingIndex, int indexChange)
-		{
-			_containersForIndexRepair.Clear();
-			foreach (var container in MaterializedContainers)
-			{
-				var currentIndex = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
-				if (currentIndex is -1 && container is ContentControl ctrl)
-				{
-					var offset = addedItems.IndexOf(ctrl.Content);
-					if (offset >= 0)
-					{
-						_containersForIndexRepair.Add(container, startingIndex + offset);
-					}
-				}
-				else if (currentIndex >= startingIndex)
-				{
-					// we store the index, that should be set after the collection change
-					_containersForIndexRepair.Add(container, currentIndex + indexChange);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Stores materialized containers starting a given index, so that their
-		/// ItemsControl.IndexForContainerProperty can be updated after the collection changes.		
-		/// </summary>
-		/// <param name="startingIndex">The minimum index of containers we care about.</param>
-		/// <param name="indexChange">How does the index change.</param>
-		private void SaveContainersBeforeRemoveForIndexRepair(int startingIndex, int indexChange)
-		{
-			_containersForIndexRepair.Clear();
-
-			var firstRemainingIndex = startingIndex + indexChange;
-			foreach (var container in MaterializedContainers)
-			{
-				var currentIndex = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
-				if (currentIndex < startingIndex)
-				{
-					continue;
-				}
-
-				if (currentIndex < firstRemainingIndex)
-				{
-					_containersForIndexRepair.Add(container, IntBoxes.NegativeOne);
-				}
-				else
-				{
-					// we store the index, that should be set after the collection change
-					_containersForIndexRepair.Add(container, currentIndex - indexChange);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Stores materialized containers in the affected range so that their
-		/// <see cref="ItemsControl.IndexForItemContainerProperty"/> can be updated after a Move.
-		/// </summary>
-		private void SaveContainersBeforeMoveForIndexRepair(int oldStartingIndex, int newStartingIndex, int count)
-		{
-			_containersForIndexRepair.Clear();
-
-			if (oldStartingIndex == newStartingIndex)
-			{
-				return;
-			}
-
-			foreach (var container in MaterializedContainers)
-			{
-				var currentIndex = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
-
-				if (currentIndex >= oldStartingIndex && currentIndex < oldStartingIndex + count)
-				{
-					// Moved item — preserve relative offset within the range
-					_containersForIndexRepair.Add(container, newStartingIndex + (currentIndex - oldStartingIndex));
-				}
-				else if (oldStartingIndex < newStartingIndex)
-				{
-					// Forward move: items in gap (oldEnd, newEnd] shift down by count
-					if (currentIndex > oldStartingIndex + count - 1 && currentIndex <= newStartingIndex + count - 1)
-					{
-						_containersForIndexRepair.Add(container, currentIndex - count);
-					}
-				}
-				else
-				{
-					// Backward move: items in gap [newStartingIndex, oldStartingIndex) shift up by count
-					if (currentIndex >= newStartingIndex && currentIndex < oldStartingIndex)
-					{
-						_containersForIndexRepair.Add(container, currentIndex + count);
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		/// Sets the indices of stored materialized containers to the appropriate index after
-		/// collection change.
-		/// </summary>
-		private void RepairIndices()
-		{
-			foreach (var containerPair in _containersForIndexRepair)
-			{
-				containerPair.Key.SetValue(ItemsControl.IndexForItemContainerProperty, containerPair.Value);
-			}
-			_containersForIndexRepair.Clear();
-		}
-
-		private void CleanUpAllContainers()
-		{
-			if (ShouldItemsControlManageChildren)
-			{
-				return;
-			}
-
-			foreach (var container in MaterializedContainers)
-			{
-				CleanUpContainer(container);
-			}
-			ItemsPanelRoot?.Children?.Clear();
-		}
-
-		private ICollection<DependencyObject> CaptureContainers(int startingIndex, int length)
-		{
-			if (ShouldItemsControlManageChildren)
-			{
-				return Array.Empty<DependencyObject>();
-			}
-
-			var containers = new List<DependencyObject>(length);
-			foreach (var container in MaterializedContainers)
-			{
-				var index = (int)container.GetValue(ItemsControl.IndexForItemContainerProperty);
-				if (startingIndex <= index && index < startingIndex + length)
-				{
-					containers.Add(container);
-				}
-			}
-			return containers;
-		}
-
-		private void CleanUpContainers(ICollection<DependencyObject> containersToCleanup)
-		{
-			foreach (var container in containersToCleanup)
-			{
-				CleanUpContainer(container);
 			}
 		}
 
@@ -1132,9 +981,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
 		{
-			// Index will be repaired by virtue of ItemsControl
-			_containersForIndexRepair.Remove(element);
-
 			base.PrepareContainerForItemOverride(element, item);
 
 			if (element is SelectorItem selectorItem)

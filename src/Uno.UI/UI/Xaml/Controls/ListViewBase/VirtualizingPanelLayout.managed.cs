@@ -1063,17 +1063,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected abstract Rect GetElementArrangeBounds(/*TODO ElementType, */int elementIndex, Rect containerBounds, Size windowConstraint, Size finalSize);
 
-		private void SetBounds(FrameworkElement view, Rect bounds)
-		{
-			if (view is ContentControl container)
-			{
-				container.GetVirtualizationInformation().Bounds = bounds;
-			}
-			else if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().LogWarning($"Non-ContentControl containers aren't supported for virtualizing panel types.");
-			}
-		}
+		private static void SetBounds(FrameworkElement view, Rect bounds)
+			=> view.GetVirtualizationInformation().Bounds = bounds;
 
 		// POSITIONAL, and deliberately so: these two are paired with _materializedLines.RemoveFromFront()/
 		// RemoveFromBack() in UnfillLayout(), so the line they return must be the one that removal will drop.
@@ -1236,21 +1227,8 @@ namespace Microsoft.UI.Xaml.Controls
 				child.ActualWidth;
 		}
 
-		private Rect GetBoundsForElement(FrameworkElement child)
-		{
-			if (!(child is ContentControl container))
-			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					this.Log().LogWarning($"Non-ContentControl containers aren't supported for virtualizing panel types.");
-				}
-
-				return default;
-			}
-
-			return container.GetVirtualizationInformation().Bounds;
-
-		}
+		private static Rect GetBoundsForElement(FrameworkElement child)
+			=> child.GetVirtualizationInformation().Bounds;
 
 		private double GetExtent(Size size) => ScrollOrientation == Orientation.Vertical ?
 			size.Height :
