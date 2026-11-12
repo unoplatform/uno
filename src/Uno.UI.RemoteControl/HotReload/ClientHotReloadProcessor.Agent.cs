@@ -118,6 +118,20 @@ namespace Uno.UI.RemoteControl.HotReload
 				|| (buildingInsideVisualStudio && Debugger.IsAttached && OperatingSystem.IsAndroid())
 				|| (buildingInsideVisualStudio && Debugger.IsAttached && OperatingSystem.IsIOS());
 
+			var runtimeSupportsMetadataUpdates = System.Reflection.Metadata.MetadataUpdater.IsSupported;
+			if (IsMetadataUpdateRejectedByRuntime(devServerEnabled, isDesktop, _runningInsideVSCodeExtension, Debugger.IsAttached, runtimeSupportsMetadataUpdates))
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error(MetadataUpdatesNotSupportedByRuntimeMessage);
+				}
+
+				_status.ReportLocallyDisabledState(MetadataUpdatesNotSupportedByRuntimeMessage);
+
+				// Every delta would be rejected, so don't make the dev-server load a workspace for nothing.
+				devServerEnabled = false;
+			}
+
 			_supportsMetadataUpdates = devServerEnabled || vsEnabled;
 			_serverMetadataUpdatesEnabled = devServerEnabled;
 
@@ -127,9 +141,34 @@ namespace Uno.UI.RemoteControl.HotReload
 					$"Metadata updates supported: {_supportsMetadataUpdates} (dev server: {devServerEnabled}, VS: {vsEnabled}). " +
 					$"Forced: {isForcedMetadata}, DebuggerAttached: {Debugger.IsAttached}, BuildingInsideVS: {buildingInsideVisualStudio}, " +
 					$"RunningInsideVSCodeExtension: {_runningInsideVSCodeExtension}, Desktop: {isDesktop}, Browser: {isBrowser}, " +
-					$"Android: {OperatingSystem.IsAndroid()}, iOS: {OperatingSystem.IsIOS()}, tvOS: {OperatingSystem.IsTvOS()}");
+					$"Android: {OperatingSystem.IsAndroid()}, iOS: {OperatingSystem.IsIOS()}, tvOS: {OperatingSystem.IsTvOS()}, " +
+					$"MetadataUpdater.IsSupported: {runtimeSupportsMetadataUpdates}");
 			}
 		}
+
+		internal const string MetadataUpdatesNotSupportedByRuntimeMessage =
+			"Hot Reload is disabled: the .NET runtime does not allow this app's assemblies to be modified " +
+			"(MetadataUpdater.IsSupported is false). Set the DOTNET_MODIFIABLE_ASSEMBLIES environment variable to 'debug' " +
+			"before starting the app, e.g. 'dotnet run -e DOTNET_MODIFIABLE_ASSEMBLIES=debug', or in the environmentVariables of the launch profile.";
+
+		/// <summary>
+		/// Determines whether metadata updates applied by the app itself (dev-server mode, no debugger) would all be
+		/// rejected by the runtime. CoreCLR only allows them when started with DOTNET_MODIFIABLE_ASSEMBLIES=debug.
+		/// </summary>
+		/// <remarks>
+		/// Restricted to desktop: on Mono targets (WebAssembly, Android, iOS) Uno.WinUI.DevServer.targets sets the variable.
+		/// </remarks>
+		internal static bool IsMetadataUpdateRejectedByRuntime(
+			bool devServerEnabled,
+			bool isDesktop,
+			bool runningInsideVSCodeExtension,
+			bool debuggerAttached,
+			bool runtimeSupportsMetadataUpdates)
+			=> devServerEnabled
+				&& isDesktop
+				&& !runningInsideVSCodeExtension // The debugger applies the deltas
+				&& !debuggerAttached
+				&& !runtimeSupportsMetadataUpdates;
 
 		private string[] GetMetadataUpdateCapabilities()
 		{
