@@ -45,6 +45,7 @@ internal static class EmbeddedRoslyn
 	/// <summary>
 	/// The newest C# major version the embedded compiler accepts as a <c>LangVersion</c>.
 	/// </summary>
+	// LanguageVersion encodes major * 100 + minor (CSharp14 = 1400), so integer division yields the major.
 	internal static int MaxCSharpVersion { get; } = (int)LanguageVersion.LatestMajor.MapSpecifiedToEffectiveVersion() / 100;
 
 	/// <summary>
@@ -67,7 +68,7 @@ internal static class EmbeddedRoslyn
 					reporter.Warn(
 						$"Project '{project.Name}' ({targetFramework}) defaults to C# {sdkDefaultVersion}.0, but the hot-reload compiler "
 						+ $"(Roslyn {Version.ToString(2)}) supports up to C# {MaxCSharpVersion}.0: C# {sdkDefaultVersion} syntax will block hot "
-						+ $"reload with errors the build does not have, XAML-only edits included. Update the Uno Platform packages, or set "
+						+ $"reload with errors the build does not have, XAML-only edits included. Update Uno.Sdk, or set "
 						+ $"<LangVersion>{MaxCSharpVersion}.0</LangVersion> in the project.");
 				}
 			}
@@ -76,6 +77,7 @@ internal static class EmbeddedRoslyn
 		{
 			// Diagnostics-only sweep: it must never take down the workspace load it observes.
 			reporter.Warn($"Language version check failed (hot reload continues): {e.GetType().Name}: {e.Message}");
+			reporter.Verbose(e.ToString());
 		}
 	}
 
@@ -86,7 +88,8 @@ internal static class EmbeddedRoslyn
 	internal static string? GetUnsupportedLanguageVersionHint(Project project)
 		=> IsCompiledWithOlderCSharpThanItsSdkDefault(project, out _, out var sdkDefaultVersion)
 			? $"'{project.Name}' defaults to C# {sdkDefaultVersion}.0, but the hot-reload compiler (Roslyn {Version.ToString(2)}) "
-				+ $"supports up to C# {MaxCSharpVersion}.0: errors on C# {sdkDefaultVersion} syntax above are not build errors."
+				+ $"supports up to C# {MaxCSharpVersion}.0, so errors on C# {sdkDefaultVersion} syntax above are not build errors. "
+				+ $"Update Uno.Sdk, or set <LangVersion>{MaxCSharpVersion}.0</LangVersion> in the project."
 			: null;
 
 	private static bool IsCompiledWithOlderCSharpThanItsSdkDefault(Project project, [NotNullWhen(true)] out string? targetFramework, out int sdkDefaultVersion)
@@ -124,9 +127,10 @@ internal static class EmbeddedRoslyn
 			return false;
 		}
 
+		const string NetPrefix = "net";
 		var versionEnd = frameworkVersion.IndexOf('.');
-		if (versionEnd < 4
-			|| !int.TryParse(frameworkVersion.AsSpan(3, versionEnd - 3), NumberStyles.None, CultureInfo.InvariantCulture, out var major)
+		if (versionEnd <= NetPrefix.Length
+			|| !int.TryParse(frameworkVersion.AsSpan(NetPrefix.Length, versionEnd - NetPrefix.Length), NumberStyles.None, CultureInfo.InvariantCulture, out var major)
 			|| major < 5)
 		{
 			return false;
