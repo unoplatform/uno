@@ -747,6 +747,19 @@ namespace Microsoft.UI.Xaml
 			// A collected previous parent counts as no parent: it can no longer share this instance.
 			if (AssociatedParent == null)
 			{
+				if (_associatedParentRef is not null)
+				{
+					// The previous parent was collected without unassociating. In WinUI a destroyed parent removes itself
+					// (CDependencyObject::ReleaseImpl -> ResetReferencesFromChildren), taking the inheritance context with it,
+					// so drop the DataContext it pushed here: the owner's on-attach push (UpdateChildBindable) skips a null one.
+					// Like that push, leave a value with its own parent alone: it inherits from there.
+					ReleaseCollectedParent();
+					if (this.GetParent() is not { } ownParent || ReferenceEquals(ownParent, parent))
+					{
+						ClearInheritedDataContext();
+					}
+				}
+
 				AssociatedParent = parent;
 				RegisterCollectibleParentAssociation(parent);
 			}
@@ -761,6 +774,21 @@ namespace Microsoft.UI.Xaml
 				AssociatedParent = null;
 			}
 		}
+
+		/// <summary>
+		/// Frees the association of a parent that was collected without unassociating. It never released its bindable
+		/// slot either, so give that one back.
+		/// </summary>
+		private void ReleaseCollectedParent()
+		{
+			_associatedParentRef = null;
+
+			if (_bindableHolderCount > 0)
+			{
+				_bindableHolderCount--;
+			}
+		}
+
 		private void UnassociateParent(DependencyObject? parent)
 		{
 			if (parent == null) return;
