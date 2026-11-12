@@ -1124,10 +1124,12 @@ public class Given_Image_Release
 	[DataRow("Cache-Control: no-store", "200 OK", 2)]
 	[DataRow("Cache-Control: no-cache", "200 OK", 2)]
 	[DataRow("Cache-Control: max-age=0", "200 OK", 2)]
+	[DataRow("Cache-Control: max-age=60\r\nAge: 60", "200 OK", 2)]
 	[DataRow("Pragma: no-cache", "200 OK", 2)]
 	[DataRow("Expires: 0", "200 OK", 2)]
 	[DataRow("Expires: Thu, 01 Jan 1970 00:00:00 GMT", "200 OK", 2)]
 	[DataRow("Expires: Fri, 01 Jan 2100 00:00:00 GMT", "200 OK", 1)]
+	[DataRow("Date: Fri, 01 Jan 2100 00:00:00 GMT\r\nExpires: Fri, 01 Jan 2100 00:01:00 GMT\r\nAge: 60", "200 OK", 2)]
 	// Uno opens an image body whatever the status (WinUI's download likely fails the bind): the row checks only that it is not kept.
 	[DataRow("", "404 Not Found", 2)]
 	[DataRow("", "200 OK", 1)]
@@ -1359,26 +1361,24 @@ public class Given_Image_Release
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
 	public async Task When_Encoded_Bytes_Unused_Past_Expiry_Then_Dropped_Without_Cache_Use()
 	{
-		// Expired bytes are dropped also while nothing uses the cache, so an idle app doesn't keep them, whether collections
-		// run (whose callback trims too) or not.
+		// Expired bytes are dropped also while nothing uses the cache, so an idle app, which may not collect at all, doesn't
+		// keep them.
 		using var _ = EnableBitmapImageCache();
 		using var delay = ReleaseAfterLayoutPass();
 		using var bytes = SetMaxBitmapImageCacheBytes(long.MaxValue);
-		using var expiry = SetEncodedIdleExpiry(TimeSpan.FromSeconds(1));
+		using var expiry = SetEncodedIdleExpiry(TimeSpan.FromSeconds(3));
 		Uno.Helpers.EncodedImageCache.Clear();
 		using var served = await ServedImage.StartAsync();
-		Uno.Helpers.EncodedImageCache.TrimsOnGen2 = false;
 
 		try
 		{
 			await LoadAndWaitForOpened(new Image { Width = 100, Height = 40, Source = new BitmapImage(served.Uri) });
 			Assert.AreEqual(served.Length, Uno.Helpers.EncodedImageCache.ByteCountForTesting, "Pre-condition: the cache keeps the bytes");
 
-			await WindowHelper.WaitFor(() => Uno.Helpers.EncodedImageCache.ByteCountForTesting == 0, 5000, "Bytes unused past the expiry must be dropped");
+			await WindowHelper.WaitFor(() => Uno.Helpers.EncodedImageCache.ByteCountForTesting == 0, 15000, "Bytes unused past the expiry must be dropped");
 		}
 		finally
 		{
-			Uno.Helpers.EncodedImageCache.TrimsOnGen2 = true;
 			WindowHelper.WindowContent = null;
 		}
 	}
@@ -1386,26 +1386,130 @@ public class Given_Image_Release
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaWasm)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
-	public async Task When_Memory_Pressure_High_Then_Encoded_Bytes_Dropped_Sooner()
+	public async Task When_Memory_Pressure_Rises_Then_Encoded_Bytes_Dropped_Sooner()
 	{
-		// At each gen 2 collection the cache drops bytes sooner the higher the memory pressure, as the bitmap cache it
-		// replaces did: 1 minute of 5 at high pressure.
+		// Trimming for the memory pressure, as the gen 2 callback does above low pressure, drops bytes sooner the higher the
+		// pressure, in the proportions of the bitmap cache it replaces: 3 minutes of 5 at medium pressure, 0.5 over the limit.
+		// The expiry leaves room for a real collection at high pressure (a fifth of it) meanwhile.
 		using var _ = EnableBitmapImageCache();
 		using var bytes = SetMaxBitmapImageCacheBytes(long.MaxValue);
-		using var expiry = SetEncodedIdleExpiry(TimeSpan.FromSeconds(5));
+		using var expiry = SetEncodedIdleExpiry(TimeSpan.FromSeconds(20));
 		Uno.Helpers.EncodedImageCache.Clear();
 		using var served = await ServedImage.StartAsync();
 
 		try
 		{
 			await LoadAndWaitForOpened(new Image { Width = 100, Height = 40, Source = new BitmapImage(served.Uri) });
-			await Task.Delay(1500);
+			await Task.Delay(3000);
 
 			Uno.Helpers.EncodedImageCache.TrimForMemoryPressure(Windows.System.AppMemoryUsageLevel.Medium);
-			Assert.AreEqual(served.Length, Uno.Helpers.EncodedImageCache.ByteCountForTesting, "Bytes used within the expiry at medium pressure must be kept");
+			Assert.AreEqual(served.Length, Uno.Helpers.EncodedImageCache.ByteCountForTesting, "Bytes used within 3/5 of the expiry must be kept at medium pressure");
 
-			Uno.Helpers.EncodedImageCache.TrimForMemoryPressure(Windows.System.AppMemoryUsageLevel.High);
-			Assert.AreEqual(0, Uno.Helpers.EncodedImageCache.ByteCountForTesting, "Bytes unused for a fifth of the expiry must be dropped at high pressure");
+			Uno.Helpers.EncodedImageCache.TrimForMemoryPressure(Windows.System.AppMemoryUsageLevel.OverLimit);
+			Assert.AreEqual(0, Uno.Helpers.EncodedImageCache.ByteCountForTesting, "Bytes unused for a tenth of the expiry must be dropped over the limit");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	[DataRow("Cache-Control: max-age=1", 2)]
+	[DataRow("Cache-Control: max-age=60", 1)]
+	public async Task When_Response_No_Longer_Fresh_Then_Downloaded_Again(string header, int expectedRequests)
+	{
+		// The cache uses kept bytes only until the response's lifetime passes, used meanwhile or not.
+		using var _ = EnableBitmapImageCache();
+		using var delay = ReleaseAfterLayoutPass();
+		using var bytes = SetMaxBitmapImageCacheBytes(long.MaxValue);
+		using var served = await ServedImage.StartAsync(header);
+
+		try
+		{
+			var image = new Image { Width = 100, Height = 40, Source = new BitmapImage(served.Uri) };
+			await LoadAndWaitForOpened(image);
+
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+			await Task.Delay(2500);
+
+			await ShowNewBitmap(image, served.Uri);
+			Assert.AreEqual(expectedRequests, served.RequestCount, $"Requests for a response with '{header}' shown again after 2.5 s");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_Equal_UriSource_Assigned_Then_Downloaded_Again()
+	{
+		// Assigning a new Uri equal to the current one reloads the source (an app refreshing a camera snapshot): the bytes it
+		// kept are not used, so a source that ignores the cache downloads again.
+		using var _ = EnableBitmapImageCache();
+		using var served = await ServedImage.StartAsync();
+
+		try
+		{
+			var bitmap = new BitmapImage { CreateOptions = BitmapCreateOptions.IgnoreImageCache, UriSource = served.Uri };
+			await LoadAndWaitForOpened(new Image { Width = 100, Height = 40, Source = bitmap });
+			Assert.AreEqual(1, served.RequestCount, "Pre-condition: the bitmap downloads its image");
+
+			bitmap.UriSource = new Uri(served.Uri.OriginalString);
+			await WindowHelper.WaitFor(() => served.RequestCount == 2, 10000, "The reassigned source must download again");
+			await WindowHelper.WaitFor(() => bitmap.IsOpened, 10000, "The reassigned source must open");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)] // The download must fail while in flight
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25128")]
+	public async Task When_Shared_Load_Joined_Fails_Then_Source_Decodes_Its_Own_Bytes()
+	{
+		// A source shown again joins a shared load another source started; once that download fails (e.g. offline), the
+		// source still has the bytes it downloaded itself: it decodes them and doesn't fail after it opened.
+		using var _ = EnableBitmapImageCache();
+		using var delay = ReleaseAfterLayoutPass();
+		using var server = await GatedImageServer.StartAsync();
+		server.ExtraHeader = "Cache-Control: no-store";
+		server.ReleaseResponses();
+
+		try
+		{
+			var first = new BitmapImage(server.Uri);
+			var failed = 0;
+			first.ImageFailed += (_, _) => failed++;
+			var firstImage = new Image { Width = 100, Height = 40, Source = first };
+			await LoadAndWaitForOpened(firstImage);
+
+			WindowHelper.WindowContent = null;
+			await WindowHelper.WaitForIdle();
+			Assert.IsFalse(first.IsOpened, "Pre-condition: the shared decode is released once nothing displays it");
+
+			server.HoldResponses();
+			server.FailResponses = true;
+			var panel = new StackPanel { Children = { new Image { Width = 100, Height = 40, Source = new BitmapImage(server.Uri) } } };
+			await UITestHelper.Load(panel, x => x.IsLoaded);
+			await WindowHelper.WaitFor(() => server.RequestCount == 2, 10000, "Pre-condition: the other source downloads");
+
+			panel.Children.Add(firstImage);
+			await UITestHelper.WaitForLoaded(firstImage, x => x.IsLoaded);
+			await WindowHelper.WaitForIdle();
+			server.ReleaseResponses();
+
+			await WindowHelper.WaitFor(() => first.IsOpened, 10000, "The source must decode its own bytes once the shared load failed");
+			Assert.AreEqual(0, failed, "The source must not fail");
+			Assert.AreEqual(2, server.RequestCount, "The source must not download for itself");
 		}
 		finally
 		{
@@ -3601,7 +3705,9 @@ public class Given_Image_Release
 
 			if (OperatingSystem.IsBrowser())
 			{
-				var (name, value) = header is { Length: > 0 } ? (header[..header.IndexOf(':')], header[(header.IndexOf(':') + 1)..].Trim()) : ("", "");
+				// One header per line, as the desktop server sends them.
+				var extraHeaders = string.Concat((header ?? "").Split("\r\n", StringSplitOptions.RemoveEmptyEntries).Select(
+					line => $"headers['{line[..line.IndexOf(':')]}'] = '{line[(line.IndexOf(':') + 1)..].Trim()}';"));
 				var url = InvokeJs($$"""
 					const served = globalThis.__unoServedImages ??= new Map();
 					if (!globalThis.__unoServedImagesFetch) {
@@ -3617,9 +3723,7 @@ public class Given_Image_Release
 					}
 					const url = new URL('/__served-images/{{Guid.NewGuid():N}}/square100.png', document.baseURI).href;
 					const headers = { 'Content-Type': 'image/png' };
-					if ('{{name}}') {
-						headers['{{name}}'] = '{{value}}';
-					}
+					{{extraHeaders}}
 					served.set(url, { body: Uint8Array.from(atob('{{Convert.ToBase64String(body)}}'), c => c.charCodeAt(0)), headers, status: {{status[..3]}}, requests: 0 });
 					return url;
 					""");
