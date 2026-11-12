@@ -149,8 +149,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				var itemPeer = peer.CreateItemAutomationPeer(comboBox.Items[2]);
 				Assert.IsInstanceOfType(itemPeer, typeof(ComboBoxItemDataAutomationPeer));
 
-				var selectionItemProvider = itemPeer.GetPattern(PatternInterface.SelectionItem) as ISelectionItemProvider;
-				Assert.IsNotNull(selectionItemProvider, "A ComboBox item should support ISelectionItemProvider");
+				if (itemPeer.GetPattern(PatternInterface.SelectionItem) is not ISelectionItemProvider selectionItemProvider)
+				{
+					Assert.Fail("A ComboBox item should support ISelectionItemProvider");
+					return;
+				}
 
 				selectionItemProvider.Select();
 				await TestServices.WindowHelper.WaitForIdle();
@@ -370,6 +373,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Active_Option_Changes_Before_Deferred_Update_Then_Latest_Wins()
+		{
+			var comboBox = await LoadAccessibleComboBox();
+			comboBox.SelectedIndex = 0;
+
+			try
+			{
+				await FocusHead(comboBox);
+				PressKeyOnFocusedSemanticElement("Enter");
+				await UITestHelper.WaitFor(() => GetListBoxOptionCount(comboBox) == 3, timeoutMS: 5000, message: "Timed out waiting for the dropdown options.");
+
+				var first = (ComboBoxItem)comboBox.ContainerFromIndex(0);
+				var second = (ComboBoxItem)comboBox.ContainerFromIndex(1);
+				var third = (ComboBoxItem)comboBox.ContainerFromIndex(2);
+				await UITestHelper.WaitFor(
+					() => GetSemanticAttribute(comboBox, "aria-activedescendant") == GetSemanticElementId(first),
+					timeoutMS: 5000,
+					message: "Timed out waiting for the head to reference the selected option when the dropdown opens.");
+
+				// The second option is requested while it is not in the DOM yet, so that request is deferred;
+				// the third one is requested right after and is applied at once.
+				RequestActiveDescendantWhileMissingThenAnother(comboBox, second, third);
+				await Task.Delay(250);
+				await UITestHelper.WaitForIdle();
+
+				Assert.AreEqual(GetSemanticElementId(third), GetSemanticAttribute(comboBox, "aria-activedescendant"), "A deferred request must not overwrite a newer one.");
+			}
+			finally
+			{
+				comboBox.IsDropDownOpen = false;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Option_Clicked_Then_Selected_And_DropDown_Closed()
 		{
 			var comboBox = await LoadAccessibleComboBox();
@@ -452,6 +492,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				timeoutMS: 5000,
 				message: "Timed out waiting for the combobox head to receive DOM focus.");
 			await UITestHelper.WaitForIdle();
+		}
+
+		private static void RequestActiveDescendantWhileMissingThenAnother(ComboBox comboBox, ComboBoxItem missing, ComboBoxItem latest)
+		{
+			var prefix = "uno-semantics-";
+			var containerHandle = GetSemanticElementId(comboBox).Substring(prefix.Length);
+			var missingId = GetSemanticElementId(missing);
+			var latestHandle = GetSemanticElementId(latest).Substring(prefix.Length);
+			InvokeBrowserJs(
+				"(function(){" +
+				"const semantics = globalThis.Uno.UI.Runtime.SemanticElements;" +
+				$"const option = document.getElementById('{missingId}');" +
+				"option.id = '';" +
+				$"semantics.updateActiveDescendant({containerHandle}, {missingId.Substring(prefix.Length)});" +
+				$"option.id = '{missingId}';" +
+				$"semantics.updateActiveDescendant({containerHandle}, {latestHandle});" +
+				"return 'ok';" +
+				"})()");
 		}
 
 		private static string GetDialogCount()
