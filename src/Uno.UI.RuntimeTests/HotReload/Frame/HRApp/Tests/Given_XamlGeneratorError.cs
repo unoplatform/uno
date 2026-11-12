@@ -58,43 +58,7 @@ public class Given_XamlGeneratorError : BaseTestClass
 		}
 		finally
 		{
-			await Restore(hr, (xaml, originalXaml), (codeBehind, originalCodeBehind));
-		}
-	}
-
-	[TestMethod]
-	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26364")]
-	public async Task When_OnlyReswBroken_Then_XamlEditApplies()
-	{
-		using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(300));
-		var ct = cts.Token;
-		var hr = RemoteControlClient.Instance?.Processors.OfType<ClientHotReloadProcessor>().SingleOrDefault()
-			?? throw new InvalidOperationException("Hot-reload not initialized properly");
-
-		var xaml = FrameworkElementExtensions.GetDebugParseContext(new HR_XamlGeneratorError_Page()).FileName;
-		var resw = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(xaml)!, "..", "..", "Strings", "en", "Resources.resw"));
-		var originalXaml = File.ReadAllText(xaml);
-		var originalResw = File.ReadAllText(resw);
-
-		var frame = new Microsoft.UI.Xaml.Controls.Frame();
-		UnitTestsUIContentHelper.Content = frame;
-		frame.Navigate(typeof(HR_XamlGeneratorError_Page));
-		await AssertTexts(frame, "First", "Second", "Third");
-
-		try
-		{
-			// The generator reports UXAML0003 and finds no resource key, which must not change the
-			// UnoHasLocalizationResources assembly attribute: Hot Reload rejects that as a rude edit (ENC0003).
-			var reswResult = await Update(hr, new FileEdit(resw, "</root>", "</roo>"), ct);
-			Assert.IsNull(reswResult.Error, $"Breaking the .resw should not fail hot reload: {reswResult.Error}");
-
-			var xamlResult = await Update(hr, new FileEdit(xaml, ValidSecond, "<TextBlock Text=\"Second (edited)\""), ct);
-			Assert.IsNull(xamlResult.Error, $"The XAML edit should apply while the .resw is broken: {xamlResult.Error}");
-			await AssertTexts(frame, "First", "Second (edited)", "Third");
-		}
-		finally
-		{
-			await Restore(hr, (xaml, originalXaml), (resw, originalResw));
+			await Restore(hr, xaml, originalXaml, codeBehind, originalCodeBehind);
 		}
 	}
 
@@ -115,10 +79,10 @@ public class Given_XamlGeneratorError : BaseTestClass
 		CollectionAssert.AreEqual(expected, texts, $"Page shows [{string.Join(", ", texts)}]");
 	}
 
-	private static async Task Restore(ClientHotReloadProcessor hr, params (string Path, string Original)[] files)
+	private static async Task Restore(ClientHotReloadProcessor hr, string xaml, string originalXaml, string codeBehind, string originalCodeBehind)
 	{
 		// Leaving the XAML broken would fail every later hot reload test of this app.
-		var edits = files
+		var edits = new[] { (Path: xaml, Original: originalXaml), (Path: codeBehind, Original: originalCodeBehind) }
 			.Select(file => new FileEdit(file.Path, File.ReadAllText(file.Path), file.Original))
 			.Where(edit => edit.OldText != edit.NewText)
 			.ToImmutableArray();

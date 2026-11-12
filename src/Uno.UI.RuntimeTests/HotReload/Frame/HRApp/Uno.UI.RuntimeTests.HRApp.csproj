@@ -62,7 +62,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<!-- The only .resw of the app: Given_XamlGeneratorError breaks it to check that XAML edits still apply (#26364) -->
+		<!-- The only .resw of the app: Given_ReswError breaks it while editing a page that uses it (#26364) -->
 		<PRIResource Include="Strings\**\*.resw" />
 	</ItemGroup>
 
