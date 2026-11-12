@@ -4,7 +4,7 @@ namespace UnoApp50;
 // dev-server compiler is older (spec 061 G2).
 internal static class CSharpLatestSyntax
 {
-	// Labeled break and continue: C# 15.
+	// Labeled continue: C# 15.
 	public static int CountUntilFirstSkip()
 	{
 		var count = 0;
