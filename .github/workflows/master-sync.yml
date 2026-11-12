@@ -35,8 +35,8 @@ name: Sync master into feature and release branches
 #    as soon as such a PR merges, or a merged PR gets the label. The label
 #    may be added before or after the PR merges. A PR is already received when its
 #    merge commit is in the release branch, a release commit was cherry-picked
-#    from it, or a release commit's message says `backport #N` (manual and Mergify
-#    backports). A PR that does not cherry-pick cleanly is left out and listed in
+#    from it, or a release commit's message says `(backport #N)` (manual and
+#    Mergify backports). A PR that does not cherry-pick cleanly is left out and listed in
 #    the backport PR, and its author is pinged once to backport it by hand. Remove
 #    the label to stop retrying. A rebase-merged PR only brings its last commit.
 #
@@ -764,7 +764,7 @@ jobs:
           is_received() {
             git merge-base --is-ancestor "$2" "origin/${RELEASE}" \
               || has_pick "$received" "$2" \
-              || grep -qiE "backport (of )?#$1([^0-9]|\$)" <<<"$received"
+              || grep -qiE "\((partial )?backport (of )?#$1\)" <<<"$received"
           }
 
           PENDING=()
