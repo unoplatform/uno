@@ -141,6 +141,54 @@ public class Given_ShapeVisual
 		await ImageAssert.AreEqualAsync(await UITestHelper.ScreenShot(actual), expectedScreenshot);
 	}
 
+	// A ShapeVisual of thousands of moving shapes repaints every frame; bounding what it paints must not union their
+	// geometries (each union costs more with every shape), or every frame takes minutes.
+	[TestMethod]
+	public async Task When_ShapeVisual_Has_Many_Moving_Shapes_Then_Frames_Stay_Fast()
+	{
+		using var _ = UITestHelper.ResetWindowContent();
+		var host = new Border { Width = 400, Height = 400 };
+		var compositor = ElementCompositionPreview.GetElementVisual(host).Compositor;
+		var shapeVisual = compositor.CreateShapeVisual();
+		shapeVisual.Size = new Vector2(400, 400);
+		// A point cloud like the ScrollableShapesWinUI sample: small dots spread over a projected sphere.
+		var dot = compositor.CreateEllipseGeometry();
+		dot.Radius = new Vector2(0.7f, 0.7f);
+		var brush = compositor.CreateColorBrush(Microsoft.UI.Colors.Blue);
+		var shapes = new CompositionSpriteShape[3000];
+		for (var i = 0; i < shapes.Length; i++)
+		{
+			var theta = 2f * MathF.PI * i / 1.618034f;
+			var phi = MathF.Acos(1f - 2f * i / shapes.Length);
+			shapes[i] = compositor.CreateSpriteShape(dot);
+			shapes[i].FillBrush = brush;
+			shapes[i].Offset = new Vector2(200 + 150 * MathF.Sin(phi) * MathF.Cos(theta), 200 + 150 * MathF.Cos(phi));
+			shapeVisual.Shapes.Add(shapes[i]);
+		}
+		ElementCompositionPreview.SetElementChildVisual(host, shapeVisual);
+
+		// Every frame moves every shape, as the sample's animation does.
+		var step = 1f;
+		EventHandler<object> move = (_, _) =>
+		{
+			step = -step;
+			foreach (var shape in shapes)
+			{
+				shape.Offset += new Vector2(step, 0);
+			}
+		};
+		CompositionTarget.Rendering += move;
+		try
+		{
+			await UITestHelper.Load(host);
+			await UITestHelper.WaitForRender(frameCount: 6, timeoutMS: 10_000, message: "six frames of 3000 moving shapes");
+		}
+		finally
+		{
+			CompositionTarget.Rendering -= move;
+		}
+	}
+
 	// A red square the ViewBox scales 2x, then a green square drawn after it: as the ShapeVisual's child, or as its sibling,
 	// which nothing the ShapeVisual paints can reach.
 	private static Border CreateViewBoxShapes(bool repaintsEveryFrame, bool greenAsChild)

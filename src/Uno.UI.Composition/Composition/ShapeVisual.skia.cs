@@ -143,6 +143,70 @@ public partial class ShapeVisual
 		return base.TryGetLocalContentBounds(out localBounds);
 	}
 
+	// The union of each shape's bounds: unioning the geometries themselves costs more with every shape, which a
+	// visual of thousands of shapes repaints every frame can't afford just for its damage bounds.
+	private protected override bool TryBuildPaintedBounds(out Rect bounds)
+	{
+		bounds = default;
+		if (_shapes is not { Count: > 0 } shapes)
+		{
+			return true;
+		}
+
+		float left = float.PositiveInfinity, top = float.PositiveInfinity, right = float.NegativeInfinity, bottom = float.NegativeInfinity;
+		foreach (var shape in shapes)
+		{
+			if (!shape.CanPaint())
+			{
+				continue;
+			}
+
+			// Only sprite shapes describe what they paint; anything else leaves the visual unbounded.
+			if (shape is not CompositionSpriteShape sprite)
+			{
+				return false;
+			}
+
+			using var shapeGeometry = sprite.BuildRenderGeometry();
+			if (shapeGeometry is null || shapeGeometry.IsEmpty)
+			{
+				continue;
+			}
+
+			var shapeBounds = shapeGeometry.Bounds;
+			if (sprite.GetRenderTransform() is { IsIdentity: false } shapeTransform
+				&& !shapeBounds.TryTransformBounds(new Matrix4x4(shapeTransform), out shapeBounds))
+			{
+				return false;
+			}
+
+			left = MathF.Min(left, (float)shapeBounds.Left);
+			top = MathF.Min(top, (float)shapeBounds.Top);
+			right = MathF.Max(right, (float)shapeBounds.Right);
+			bottom = MathF.Max(bottom, (float)shapeBounds.Bottom);
+		}
+
+		if (left > right || top > bottom)
+		{
+			return true;
+		}
+
+		var painted = new Rect(left, top, right - left, bottom - top);
+		// Paint applies the ViewBox as a translate-then-scale before the shapes.
+		if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
+		{
+			var m = Matrix3x2.CreateTranslation(-viewBox.Offset.X, -viewBox.Offset.Y)
+				* Matrix3x2.CreateScale(Size.X / viewBox.Size.X, Size.Y / viewBox.Size.Y);
+			if (!painted.TryTransformBounds(new Matrix4x4(m), out painted))
+			{
+				return false;
+			}
+		}
+
+		bounds = painted;
+		return true;
+	}
+
 	private protected override bool TryBuildPaintedGeometry(out IGeometry? geometry)
 	{
 		geometry = null;
