@@ -137,51 +137,66 @@ namespace Uno.Helpers
 		}
 
 		/// <summary>
-		/// Downloads an http or https uri, and tells whether its content may be reused for it without asking the server
-		/// again: only a successful response that was not redirected, without Cache-Control no-store, no-cache or
-		/// max-age=0, Pragma: no-cache without Cache-Control, or an Expires date that is invalid or past without a
-		/// max-age. Other freshness rules are not checked.
+		/// Downloads an http or https uri, and tells for how long its content may be reused for it without asking the server
+		/// again (<see cref="Timeout.InfiniteTimeSpan"/> when its headers give no limit), or null when not at all: only a
+		/// successful response that was not redirected, without Cache-Control no-store or no-cache, or Pragma: no-cache
+		/// without Cache-Control, is reused, for its max-age, or else its Expires date less its Date, less its Age. Other
+		/// freshness rules are not checked.
 		/// </summary>
 		/// <remarks>
 		/// A redirect is seen through RequestMessage.RequestUri, which the browser HttpClient on WebAssembly does not update.
 		/// </remarks>
-		public static async Task<(Stream Content, bool IsReusable)> DownloadAsync(Uri uri, CancellationToken ct)
+		public static async Task<(Stream Content, TimeSpan? ReusableFor)> DownloadAsync(Uri uri, CancellationToken ct)
 		{
 			_httpClient ??= new HttpClient();
 			var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseContentRead, ct);
 
-			var isReusable = response.IsSuccessStatusCode
-				&& response.RequestMessage?.RequestUri == uri
-				&& IsFresh(response);
+			var reusableFor = response.IsSuccessStatusCode && response.RequestMessage?.RequestUri == uri
+				? GetFreshness(response)
+				: null;
 
-			return (await response.Content.ReadAsStreamAsync(), isReusable);
+			return (await response.Content.ReadAsStreamAsync(), reusableFor);
 		}
 
-		private static bool IsFresh(HttpResponseMessage response)
+		private static TimeSpan? GetFreshness(HttpResponseMessage response)
 		{
 			var headers = response.Headers;
+
+			// The time the response already spent in caches counts against its lifetime.
+			var age = headers.Age ?? TimeSpan.Zero;
 			if (headers.CacheControl is { } cacheControl)
 			{
-				if (cacheControl.NoStore || cacheControl.NoCache || cacheControl.MaxAge == TimeSpan.Zero)
+				if (cacheControl.NoStore || cacheControl.NoCache)
 				{
-					return false;
+					return null;
 				}
 
 				// A max-age overrides Expires.
-				if (cacheControl.MaxAge is not null)
+				if (cacheControl.MaxAge is { } maxAge)
 				{
-					return true;
+					return Positive(maxAge - age);
 				}
+			}
+			else if (headers.NonValidated.Contains("Cache-Control"))
+			{
+				// One that doesn't parse may say no-store.
+				return null;
 			}
 			else if (headers.Pragma.Any(static pragma => string.Equals(pragma.Name, "no-cache", StringComparison.OrdinalIgnoreCase)))
 			{
-				return false;
+				return null;
+			}
+
+			var contentHeaders = response.Content.Headers;
+			if (!contentHeaders.NonValidated.Contains("Expires"))
+			{
+				return Timeout.InfiniteTimeSpan;
 			}
 
 			// An Expires that doesn't parse, such as the common "0", means already expired (RFC 9111, section 5.3).
-			var contentHeaders = response.Content.Headers;
-			return !contentHeaders.NonValidated.Contains("Expires")
-				|| contentHeaders.Expires > (headers.Date ?? DateTimeOffset.UtcNow);
+			return contentHeaders.Expires is { } expires ? Positive(expires - (headers.Date ?? DateTimeOffset.UtcNow) - age) : null;
+
+			static TimeSpan? Positive(TimeSpan lifetime) => lifetime > TimeSpan.Zero ? lifetime : null;
 		}
 	}
 }

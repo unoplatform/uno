@@ -17,7 +17,8 @@ namespace Uno.Helpers;
 /// Uno's keeps its own, see BitmapImage), and a later request downloads again through the system HTTP stack, whose cache
 /// follows the caching headers (MUX Reference: ImageCache::Download — ImageCache.cpp); Uno's HttpClient has no such cache
 /// on desktop. Bounded by <see cref="FeatureConfiguration.Image.MaxBitmapImageCacheBytes"/>, the least recently used going
-/// first, and bytes unused for <see cref="IdleExpiry"/> are dropped, sooner under memory pressure. Thread-safe.
+/// first; bytes unused for <see cref="IdleExpiry"/> are dropped, sooner under memory pressure (not on iOS or tvOS, where
+/// MemoryManager isn't available), and the bytes of a response are not used once it is stale. Thread-safe.
 /// </summary>
 internal static class EncodedImageCache
 {
@@ -33,11 +34,14 @@ internal static class EncodedImageCache
 	// automatic memory management off. Null until bytes are kept.
 	private static DefaultArrayPoolPlatformProvider? _memory;
 
-	private sealed class Entry(Uri uri, byte[] bytes)
+	private sealed class Entry(Uri uri, byte[] bytes, long? freshUntil)
 	{
 		public Uri Uri { get; } = uri;
 
 		public byte[] Bytes { get; } = bytes;
+
+		// When the response stops being fresh (a Stopwatch timestamp), if its headers give a lifetime.
+		public long? FreshUntil { get; } = freshUntil;
 
 		public long LastUse { get; set; } = Stopwatch.GetTimestamp();
 	}
@@ -47,11 +51,6 @@ internal static class EncodedImageCache
 	/// override it.
 	/// </summary>
 	internal static TimeSpan IdleExpiry { get; set; } = TimeSpan.FromMinutes(5);
-
-	/// <summary>
-	/// Whether the gen 2 callback trims for the memory pressure. Tests turn it off to see the expiry alone.
-	/// </summary>
-	internal static bool TrimsOnGen2 { get; set; } = true;
 
 	internal static long ByteCountForTesting
 	{
@@ -77,7 +76,18 @@ internal static class EncodedImageCache
 
 			if (_entries.TryGetValue(uri, out var node))
 			{
-				node.Value.LastUse = Stopwatch.GetTimestamp();
+				var now = Stopwatch.GetTimestamp();
+
+				// Bytes no longer fresh are not used.
+				if (node.Value.FreshUntil <= now)
+				{
+					_entries.Remove(uri);
+					RemoveNode(node);
+					bytes = null;
+					return false;
+				}
+
+				node.Value.LastUse = now;
 				_recentFirst.Remove(node);
 				_recentFirst.AddFirst(node);
 				bytes = node.Value.Bytes;
@@ -89,7 +99,8 @@ internal static class EncodedImageCache
 		return false;
 	}
 
-	internal static void Add(Uri uri, byte[] bytes)
+	/// <param name="reusableFor">How long the response may be reused, or <see cref="Timeout.InfiniteTimeSpan"/>.</param>
+	internal static void Add(Uri uri, byte[] bytes, TimeSpan reusableFor)
 	{
 		lock (_gate)
 		{
@@ -108,7 +119,11 @@ internal static class EncodedImageCache
 			// An image larger than the cache would only evict the others.
 			if (bytes.Length <= FeatureConfiguration.Image.MaxBitmapImageCacheBytes)
 			{
-				_entries[uri] = _recentFirst.AddFirst(new Entry(uri, bytes));
+				// A lifetime past a year is as good as none, and would overflow the timestamp.
+				var freshUntil = reusableFor == Timeout.InfiniteTimeSpan || reusableFor > TimeSpan.FromDays(365)
+					? (long?)null
+					: Stopwatch.GetTimestamp() + (long)(reusableFor.TotalSeconds * Stopwatch.Frequency);
+				_entries[uri] = _recentFirst.AddFirst(new Entry(uri, bytes, freshUntil));
 				_byteCount += bytes.Length;
 				WatchMemory();
 			}
@@ -118,7 +133,8 @@ internal static class EncodedImageCache
 	}
 
 	/// <summary>
-	/// Drops the least recently used bytes past the bound, and those nothing used for <see cref="IdleExpiry"/>.
+	/// Drops the least recently used bytes past the bound, and those nothing used for <see cref="IdleExpiry"/>. Bytes no
+	/// longer fresh are not used (see <see cref="TryGet"/>), so they leave that way.
 	/// </summary>
 	internal static void Trim() => Trim(IdleExpiry);
 
@@ -151,15 +167,33 @@ internal static class EncodedImageCache
 			if (_recentFirst.Last is { } oldest)
 			{
 				var due = IdleExpiry - Stopwatch.GetElapsedTime(oldest.Value.LastUse, now);
-				(_expiryTimer ??= new Timer(static _ => Trim())).Change(
-					(due > TimeSpan.Zero ? due : TimeSpan.Zero) + TimeSpan.FromMilliseconds(1),
-					Timeout.InfiniteTimeSpan);
+				ScheduleTrim(due > TimeSpan.Zero ? due : TimeSpan.Zero);
 			}
 			else
 			{
 				_expiryTimer?.Change(Timeout.Infinite, Timeout.Infinite);
 			}
 		}
+	}
+
+	private static void ScheduleTrim(TimeSpan dueIn)
+	{
+		if (_expiryTimer is null)
+		{
+			// Not capturing the AsyncLocals of whichever caller came first.
+			var flow = ExecutionContext.IsFlowSuppressed() ? default(AsyncFlowControl?) : ExecutionContext.SuppressFlow();
+			try
+			{
+				_expiryTimer = new Timer(static _ => Trim());
+			}
+			finally
+			{
+				flow?.Undo();
+			}
+		}
+
+		// Just past it, as what is due at that time is dropped once its time is passed.
+		_expiryTimer.Change(dueIn + TimeSpan.FromMilliseconds(1), Timeout.InfiniteTimeSpan);
 	}
 
 	private static void WatchMemory()
@@ -176,9 +210,10 @@ internal static class EncodedImageCache
 			memory.RegisterTrimCallback(
 				static target =>
 				{
-					if (TrimsOnGen2)
+					// The timer drops what expires at low pressure.
+					if (((DefaultArrayPoolPlatformProvider)target).AppMemoryUsageLevel is > AppMemoryUsageLevel.Low and var level)
 					{
-						TrimForMemoryPressure(((DefaultArrayPoolPlatformProvider)target).AppMemoryUsageLevel);
+						TrimForMemoryPressure(level);
 					}
 
 					return true;

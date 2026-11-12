@@ -156,17 +156,18 @@ internal static partial class ImageSourceHelpers
 			}
 
 			byte[] buffer;
+			TimeSpan? reusableFor = null;
 			if (useEncodedCache)
 			{
-				// Only http and https get here. Bytes the server asks not to reuse without revalidation are not kept; their
-				// freshness (max-age, ETag) is not checked otherwise.
+				// Only http and https get here. Bytes the server asks not to reuse without revalidation are not kept, and
+				// those kept are used only while fresh.
 				var download = await AppDataUriEvaluator.DownloadAsync(uri, ct);
 				using (download.Content)
 				{
 					buffer = await ReadAllAsync(download.Content, ct);
 				}
 
-				useEncodedCache = download.IsReusable;
+				reusableFor = download.ReusableFor;
 			}
 			else
 			{
@@ -177,9 +178,9 @@ internal static partial class ImageSourceHelpers
 			var data = await DecodeAsCompositionSurface(buffer, attemptLoadingWithBrowserCanvasApi, targetWidth, targetHeight);
 
 			// Only bytes that decode: a truncated or corrupt download is downloaded again.
-			if (useEncodedCache && data.HasData)
+			if (reusableFor is { } freshFor && data.HasData)
 			{
-				EncodedImageCache.Add(uri, buffer);
+				EncodedImageCache.Add(uri, buffer, freshFor);
 			}
 
 			return Keep(data, buffer);
