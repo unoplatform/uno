@@ -113,8 +113,9 @@
 
 						const [start, length] = BrowserInvisibleTextBoxViewExtension.selectionOf(input);
 						if (WebAssemblyThreading.isThreadingEnabled()) {
-							// Applied later on the UI thread, which reads the selection the input has by then.
-							BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChangedAsync(start, length));
+							// Runs later on the UI thread; carries the write count so a notification older than a TextBox write is dropped.
+							const generation = BrowserInvisibleTextBoxViewExtension.pushGeneration;
+							BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChangedAsync(start, length, generation));
 						} else {
 							BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(start, length);
 						}

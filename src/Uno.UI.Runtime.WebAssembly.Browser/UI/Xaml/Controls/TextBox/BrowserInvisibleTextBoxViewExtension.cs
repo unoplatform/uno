@@ -195,14 +195,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	});
 
 	[JSExport]
-	private static Task OnSelectionChangedAsync(int selectionStart, int selectionLength)
+	private static Task OnSelectionChangedAsync(int selectionStart, int selectionLength, int generation)
 	{
-		// Queued by the browser thread: the TextBox may have moved the caret since, so the input's selection is read now.
+		// Queued by the browser thread. If the TextBox wrote to the input since (text or selection), this
+		// notification is stale: drop it, the write raises its own selectionchange with the final caret.
 		var state = NativeMethods.GetSelectionState();
-		if (state.Length > 0)
+		if (state.Length > 0 && state[0] != generation)
 		{
-			selectionStart = state[1];
-			selectionLength = state[2];
+			return Task.CompletedTask;
 		}
 
 		OnSelectionChanged(selectionStart, selectionLength);
