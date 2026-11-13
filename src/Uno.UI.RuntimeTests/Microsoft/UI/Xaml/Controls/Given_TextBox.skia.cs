@@ -1084,6 +1084,121 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// A BeforeTextChanging handler rejects a character the keyboard composes. The rejection reaches the hidden input at
+		// once, so the keyboard's next keystrokes build on the TextBox's text instead of on the rejected character.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Composition_Rejected_By_BeforeTextChanging()
+		{
+			var SUT = await LoadFocusedForBrowserIme("");
+			var ended = 0;
+			SUT.TextCompositionEnded += (_, _) => ended++;
+			SUT.BeforeTextChanging += (_, e) => e.Cancel = e.NewText.Contains('x');
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "a", "a", 1));
+				await ReplayOnHiddenInput(ImeCompose(0, 1, "ax", "ax", 2));
+
+				Assert.AreEqual("a", SUT.Text);
+				Assert.AreEqual(1, SUT.SelectionStart);
+				Assert.AreEqual("a|1", GetHiddenInputState());
+				Assert.IsFalse(SUT.IsComposing);
+				Assert.AreEqual(1, ended);
+
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(1, 1, "b", "ab", 2));
+				await ReplayOnHiddenInput(ImeEnd("b"));
+
+				Assert.AreEqual("ab", SUT.Text);
+				Assert.AreEqual(2, SUT.SelectionStart);
+				Assert.AreEqual(2, ended);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// A TextChanging handler limits the length and so puts the text back when the kana composition goes past it. That
+		// isn't a rejection of the edit: the composition goes on, and its conversion brings it back within the limit.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Converts_Past_TextChanging_Limit()
+		{
+			var SUT = await LoadFocusedForBrowserIme("");
+			SUT.TextChanging += (sender, _) =>
+			{
+				if (sender.Text.Length > 2)
+				{
+					sender.Text = sender.Text[..2];
+				}
+			};
+			var ended = 0;
+			SUT.TextCompositionEnded += (_, _) => ended++;
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "に", "に", 1));
+				await ReplayOnHiddenInput(ImeCompose(0, 1, "にほ", "にほ", 2));
+				await ReplayOnHiddenInput(ImeCompose(0, 2, "にほん", "にほん", 3));
+
+				Assert.AreEqual("にほ", SUT.Text, "the handler puts the text back");
+				Assert.IsTrue(SUT.IsComposing, "the composition goes on");
+
+				await ReplayOnHiddenInput(ImeCompose(0, 3, "日本", "日本", 2));
+				await ReplayOnHiddenInput(ImeEnd("日本"));
+
+				Assert.AreEqual("日本", SUT.Text);
+				Assert.AreEqual("日本|2", GetHiddenInputState());
+				Assert.IsFalse(SUT.IsComposing);
+				Assert.AreEqual(1, ended);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// A kana composition goes past MaxLength, then its conversion brings it back within it. MaxLength is reconciled when
+		// the composition ends, so the conversion can still happen.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Converts_Past_MaxLength()
+		{
+			var SUT = await LoadFocusedForBrowserIme("", maxLength: 2);
+			var ended = 0;
+			SUT.TextCompositionEnded += (_, _) => ended++;
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "に", "に", 1));
+				await ReplayOnHiddenInput(ImeCompose(0, 1, "にほ", "にほ", 2));
+				await ReplayOnHiddenInput(ImeCompose(0, 2, "にほん", "にほん", 3));
+
+				Assert.AreEqual("にほ", SUT.Text, "MaxLength refuses the longer text");
+				Assert.IsTrue(SUT.IsComposing, "the composition goes on");
+
+				await ReplayOnHiddenInput(ImeCompose(0, 3, "日本", "日本", 2));
+				await ReplayOnHiddenInput(ImeEnd("日本"));
+
+				Assert.AreEqual("日本", SUT.Text);
+				Assert.AreEqual("日本|2", GetHiddenInputState());
+				Assert.IsFalse(SUT.IsComposing);
+				Assert.AreEqual(1, ended);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
 		// Keeps the browser's own selectionchange events away from the input's handler, so a test can run it itself.
 		private static void DetachSelectionChangeHandler()
 			=> InvokeBrowserJs("(function(){window.__unoSelectionChange=document.onselectionchange;document.onselectionchange=null;return 'ok';})()");

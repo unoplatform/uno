@@ -77,7 +77,16 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			case ITextBoxHost { Core: { } core }:
 				// A multi-line TextBox's textarea breaks lines with \n where the TextBox uses \r: a text differing only
 				// by them is not an edit of the TextBox's own, which it would echo back and revert the caret for.
-				core.ApplyNativeInput(text.Replace('\n', '\r'), selectionStart, selectionLength);
+				var nativeText = text.Replace('\n', '\r');
+				// A refusal past MaxLength keeps being reconciled when the composition ends: a conversion can bring the
+				// composition back within it (にほん to 日本).
+				if (!core.ApplyNativeInput(nativeText, selectionStart, selectionLength)
+					&& !(core.MaxLength > 0 && nativeText.Length > core.MaxLength)
+					&& WasmImeTextBoxExtension.EndRefusedComposition())
+				{
+					// The input got the TextBox's text back, without its caret.
+					core.TextBoxView.Select(core.SelectionStart, core.SelectionLength);
+				}
 				break;
 			case RichEditBox richEditBox:
 				richEditBox.UpdateTextFromNative(text, selectionStart, selectionLength);
