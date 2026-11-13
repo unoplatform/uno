@@ -706,9 +706,10 @@ namespace Microsoft.UI.Xaml
 						oldStore._bindableHolderCount--;
 					}
 
+					// Read through the details: an attached store's DataContext property fails the owner validation.
 					if (oldStore._bindableHolderCount == 0
 						&& oldStore.Parent is null
-						&& ReferenceEquals(oldStore.GetValue(oldStore._dataContextProperty), GetValue(_dataContextProperty)))
+						&& ReferenceEquals(oldStore.GetValue(oldStore._properties.DataContextPropertyDetails), GetValue(_properties.DataContextPropertyDetails)))
 					{
 						oldStore.ClearInheritedDataContext();
 					}
@@ -776,6 +777,24 @@ namespace Microsoft.UI.Xaml
 			// A collected previous parent counts as no parent: it can no longer share this instance.
 			if (AssociatedParent == null)
 			{
+				if (_associatedParentRef is not null)
+				{
+					// The previous parent was collected without unassociating. In WinUI a destroyed parent removes itself
+					// (CDependencyObject::ReleaseImpl -> ResetReferencesFromChildren), taking the inheritance context with it,
+					// so drop the DataContext it pushed here. Keep the new owner's if the assignment already pushed it (a
+					// precedence change does), and leave a value with its own parent alone, like ApplyChildrenBindable.
+					ReleaseCollectedParent();
+					// Read through the details: an attached store's DataContext property fails the owner validation.
+					var parentDataContext = parent is IDependencyObjectStoreProvider { Store: var parentStore }
+						? parentStore.GetValue(parentStore._properties.DataContextPropertyDetails)
+						: null;
+					if ((Parent is not { } ownParent || ReferenceEquals(ownParent, parent))
+						&& !ReferenceEquals(GetValue(_properties.DataContextPropertyDetails), parentDataContext))
+					{
+						ClearInheritedDataContext();
+					}
+				}
+
 				AssociatedParent = parent;
 				RegisterCollectibleParentAssociation(parent);
 			}
@@ -790,6 +809,21 @@ namespace Microsoft.UI.Xaml
 				AssociatedParent = null;
 			}
 		}
+
+		/// <summary>
+		/// Frees the association of a parent that was collected without unassociating. It never released its bindable
+		/// slot either, so give that one back.
+		/// </summary>
+		private void ReleaseCollectedParent()
+		{
+			_associatedParentRef = null;
+
+			if (_bindableHolderCount > 0)
+			{
+				_bindableHolderCount--;
+			}
+		}
+
 		private void UnassociateParent(object? parent)
 		{
 			if (parent == null) return;
