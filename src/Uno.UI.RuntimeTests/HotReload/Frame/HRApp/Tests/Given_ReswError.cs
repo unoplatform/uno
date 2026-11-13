@@ -84,8 +84,17 @@ public class Given_ReswError : BaseTestClass
 			return null;
 		}
 
-		var result = await hr.TryUpdateFilesAsync(new UpdateRequest(edits).WithExtendedTimeouts(), CancellationToken.None);
-		if (result.Error is not null)
+		Exception? error;
+		try
+		{
+			error = (await hr.TryUpdateFilesAsync(new UpdateRequest(edits).WithExtendedTimeouts(), CancellationToken.None)).Error;
+		}
+		catch (Exception e)
+		{
+			error = e;
+		}
+
+		if (error is not null)
 		{
 			// Every later hot reload test of this app would otherwise run against the broken .resw.
 			foreach (var (path, original) in files)
@@ -94,6 +103,6 @@ public class Given_ReswError : BaseTestClass
 			}
 		}
 
-		return result.Error;
+		return error;
 	}
 }
