@@ -176,4 +176,239 @@ function Resolve-AreaBaseline {
 
 #endregion
 
+#region detection
+
+function New-TempDirectory {
+	$dir = Join-Path ([System.IO.Path]::GetTempPath()) "winui-sync-$([guid]::NewGuid().ToString('N'))"
+	New-Item -ItemType Directory -Path $dir | Out-Null
+	$dir
+}
+
+# Extracts <Path> of <Repo> at <Ref> and returns the extracted folder. Throws if the path does not exist there.
+function Export-GitTree {
+	param([Parameter(Mandatory)][string]$Repo, [Parameter(Mandatory)][string]$Ref, [Parameter(Mandatory)][string]$Path, [Parameter(Mandatory)][string]$Destination)
+	$Path = $Path.TrimEnd('/')
+	$found = @(Invoke-Git $Repo @('ls-tree', '-d', $Ref, '--', $Path))
+	if ($found.Count -eq 0) { throw "path '$Path' not found at $Ref" }
+	$zip = Join-Path $Destination 'tree.zip'
+	Invoke-Git $Repo @('-c', 'core.autocrlf=false', 'archive', '--format=zip', '-o', $zip, $Ref, '--', $Path) | Out-Null
+	Expand-Archive -LiteralPath $zip -DestinationPath $Destination
+	Remove-Item -LiteralPath $zip
+	Join-Path $Destination $Path
+}
+
+function Get-TreeFingerprint {
+	param([string]$Dir)
+	$map = @{}
+	if (-not $Dir -or -not (Test-Path -LiteralPath $Dir)) { return $map }
+	$root = (Resolve-Path -LiteralPath $Dir).Path
+	$sha = [System.Security.Cryptography.SHA256]::Create()
+	foreach ($file in Get-ChildItem -LiteralPath $root -Recurse -File) {
+		$rel = [System.IO.Path]::GetRelativePath($root, $file.FullName).Replace('\', '/')
+		# Line endings are whatever each repo's attributes make them; they are not a content change.
+		$bytes = [System.IO.File]::ReadAllBytes($file.FullName) | Where-Object { $_ -ne 13 }
+		$map[$rel.ToLowerInvariant()] = [pscustomobject]@{ Path = $rel; Hash = [System.Convert]::ToHexString($sha.ComputeHash([byte[]]@($bytes))) }
+	}
+	$map
+}
+
+# Differences that replacing <UnoDir> with <UpstreamDir> would make. Paths compare case-insensitively.
+function Compare-StringsTree {
+	param([Parameter(Mandatory)][string]$UpstreamDir, [string]$UnoDir)
+	$up = Get-TreeFingerprint $UpstreamDir
+	$uno = Get-TreeFingerprint $UnoDir
+	[pscustomobject]@{
+		Added   = @($up.Keys | Where-Object { -not $uno.ContainsKey($_) } | ForEach-Object { $up[$_].Path } | Sort-Object)
+		Removed = @($uno.Keys | Where-Object { -not $up.ContainsKey($_) } | ForEach-Object { $uno[$_].Path } | Sort-Object)
+		Changed = @($up.Keys | Where-Object { $uno.ContainsKey($_) -and $uno[$_].Hash -ne $up[$_].Hash } | ForEach-Object { $up[$_].Path } | Sort-Object)
+	}
+}
+
+function Test-StringsDiffer {
+	param(
+		[Parameter(Mandatory)][string]$UpstreamRepo,
+		[Parameter(Mandatory)][string]$Ref,
+		[Parameter(Mandatory)][string]$UpstreamStrings,
+		[Parameter(Mandatory)][string]$UnoStrings)
+	$tmp = New-TempDirectory
+	try {
+		$resolved = Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo -Ref $Ref -Path $UpstreamStrings
+		if (-not $resolved) { throw "upstream strings path '$UpstreamStrings' not found at $Ref" }
+		$upstreamDir = Export-GitTree -Repo $UpstreamRepo -Ref $Ref -Path $resolved -Destination $tmp
+		$diff = Compare-StringsTree -UpstreamDir $upstreamDir -UnoDir $UnoStrings
+		($diff.Added.Count + $diff.Removed.Count + $diff.Changed.Count) -gt 0
+	}
+	finally {
+		Remove-Item -Recurse -Force -LiteralPath $tmp -ErrorAction SilentlyContinue
+	}
+}
+
+# Upstream moved everything under src/ at some point, and release tags are not descendants of
+# older baselines. Manifest paths are layout-neutral; this finds where one lives at a given commit.
+function Resolve-UpstreamPath {
+	param([Parameter(Mandatory)][string]$UpstreamRepo, [Parameter(Mandatory)][string]$Ref, [Parameter(Mandatory)][string]$Path)
+	$Path = $Path.Trim('/')
+	foreach ($candidate in $Path, "src/$Path") {
+		if (@(Invoke-Git $UpstreamRepo @('ls-tree', '-d', $Ref, '--', $candidate)).Count -gt 0) { return $candidate }
+	}
+	$null
+}
+
+# One tree-to-tree comparison per top-level area path: @{ Path; Base; Target; Exclude }.
+# Base/Target are '<sha>:<path>' tree-ish specs (the empty tree when the path is absent on that side).
+function Get-AreaTreeDiffs {
+	param([Parameter(Mandatory)]$Area, [Parameter(Mandatory)][string]$UpstreamRepo, [Parameter(Mandatory)][string]$TargetSha)
+	$emptyTree = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'
+	$all = @(@($Area.upstream.sources) + @($Area.upstream.tests) | ForEach-Object { $_.Trim('/') } | Sort-Object -Unique)
+	$roots = @($all | Where-Object { $p = $_; -not ($all | Where-Object { $p.StartsWith("$_/") }) })
+	foreach ($path in $roots) {
+		$atBase = Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo -Ref $Area.baseline -Path $path
+		$atTarget = Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo -Ref $TargetSha -Path $path
+		$exclude = @()
+		$strings = if ($Area.upstream.strings) { $Area.upstream.strings.Trim('/') } else { $null }
+		if ($strings -and $strings.StartsWith("$path/")) { $exclude = @(":(exclude)$($strings.Substring($path.Length + 1))") }
+		[pscustomobject]@{
+			Path    = $path
+			Base    = if ($atBase) { "$($Area.baseline):$atBase" } else { $emptyTree }
+			Target  = if ($atTarget) { "${TargetSha}:$atTarget" } else { $emptyTree }
+			Exclude = $exclude
+		}
+	}
+}
+
+function Get-AreaSyncState {
+	param(
+		[Parameter(Mandatory)]$Area,
+		[Parameter(Mandatory)][string]$UpstreamRepo,
+		[Parameter(Mandatory)][string]$TargetSha,
+		[Parameter(Mandatory)][string]$UnoRoot,
+		# Compare strings against this folder instead of <UnoRoot>/<uno.strings> (used when a sync branch is open).
+		[string]$UnoStringsDir)
+	Invoke-Git $UpstreamRepo @('cat-file', '-e', "$($Area.baseline)^{commit}") -AllowExitCodes 1, 128 | Out-Null
+	if ((Get-LastGitExitCode) -ne 0) { throw "area '$($Area.id)': baseline $($Area.baseline) is not a commit in $UpstreamRepo" }
+
+	$codeChanged = $false
+	$stats = @()
+	foreach ($d in Get-AreaTreeDiffs -Area $Area -UpstreamRepo $UpstreamRepo -TargetSha $TargetSha) {
+		$tail = if ($d.Exclude) { @('--', '.') + $d.Exclude } else { @() }
+		Invoke-Git $UpstreamRepo (@('diff', '--quiet', $d.Base, $d.Target) + $tail) -AllowExitCodes 1 | Out-Null
+		if ((Get-LastGitExitCode) -eq 1) {
+			$codeChanged = $true
+			$stats += "$(Invoke-Git $UpstreamRepo (@('diff', '--shortstat', $d.Base, $d.Target) + $tail))".Trim()
+		}
+	}
+	$diffStat = $stats -join '; '
+
+	$stringsChanged = $false
+	if ($Area.upstream.strings -and $Area.uno.strings) {
+		$unoDir = if ($UnoStringsDir) { $UnoStringsDir } else { Join-Path $UnoRoot $Area.uno.strings }
+		$stringsChanged = Test-StringsDiffer -UpstreamRepo $UpstreamRepo -Ref $TargetSha -UpstreamStrings $Area.upstream.strings -UnoStrings $unoDir
+	}
+
+	[pscustomobject]@{ id = $Area.id; codeChanged = $codeChanged; stringsChanged = $stringsChanged; diffStat = $diffStat }
+}
+
+function Select-SyncMatrix {
+	param([Parameter(Mandatory)][object[]]$States, [Parameter(Mandatory)][object[]]$Areas, [Parameter(Mandatory)][string]$UpstreamRepo, [int]$MaxAreas = 10)
+	$changed = @($States | Where-Object { $_.codeChanged -or $_.stringsChanged } | ForEach-Object {
+			$id = $_.id
+			$area = $Areas | Where-Object id -EQ $id | Select-Object -First 1
+			[pscustomobject]@{ id = $id; date = [long](Invoke-Git $UpstreamRepo @('log', '-1', '--format=%ct', $area.baseline)) }
+		} | Sort-Object date, id)
+	[pscustomobject]@{
+		Selected = @($changed | Select-Object -First $MaxAreas | ForEach-Object id)
+		Deferred = @($changed | Select-Object -Skip $MaxAreas | ForEach-Object id)
+	}
+}
+
+function Get-SyncBranchName {
+	param([Parameter(Mandatory)][string]$Id)
+	"sync/winui/$Id"
+}
+
+function Get-OpenSyncPr {
+	param([Parameter(Mandatory)][string]$Id)
+	$number = & gh pr list --head (Get-SyncBranchName $Id) --state open --json number --jq '.[0].number // empty'
+	if ($LASTEXITCODE -ne 0) { throw "gh pr list failed for area '$Id'" }
+	if ("$number".Trim()) { [int]"$number".Trim() } else { $null }
+}
+
+function Get-SyncPlan {
+	param(
+		[Parameter(Mandatory)][string]$UpstreamRepo,
+		[Parameter(Mandatory)][string]$UnoRoot,
+		[Parameter(Mandatory)][string]$ManifestPath,
+		[string]$AreaFilter,
+		[string]$TargetTag,
+		[int]$MaxAreas = 10,
+		[string]$DefaultModel = 'claude-opus-5-5')
+	$target = if ($TargetTag) {
+		[pscustomobject]@{ Tag = $TargetTag; Sha = (Invoke-Git $UpstreamRepo @('rev-list', '-n1', "refs/tags/$TargetTag")) }
+	}
+	else { Get-LatestStableTag -UpstreamRepo $UpstreamRepo }
+	$masterSha = Invoke-Git $UnoRoot @('rev-parse', 'HEAD')
+	$manifestRel = [System.IO.Path]::GetRelativePath((Resolve-Path -LiteralPath $UnoRoot).Path, (Resolve-Path -LiteralPath $ManifestPath).Path).Replace('\', '/')
+
+	$areas = @(Get-SyncAreas -ManifestPath $ManifestPath | Where-Object { -not $AreaFilter -or $_.id -eq $AreaFilter })
+	$states = @()
+	$prs = @{}
+	foreach ($area in $areas) {
+		$tmp = $null
+		try {
+			$stringsDir = $null
+			$pr = Get-OpenSyncPr -Id $area.id
+			if ($pr) {
+				# An open sync PR already carries part of the work: continue from its baseline and strings.
+				$prs[$area.id] = $pr
+				$branchRef = "origin/$(Get-SyncBranchName $area.id)"
+				$branchJson = (Invoke-Git $UnoRoot @('show', "${branchRef}:$manifestRel")) -join "`n"
+				$onBranch = @(Get-SyncAreasFromJson -Json $branchJson | Where-Object id -EQ $area.id)
+				if ($onBranch.Count -eq 1) { $area.baseline = $onBranch[0].baseline }
+				if ($area.uno.strings) {
+					$tmp = New-TempDirectory
+					$stringsDir = try { Export-GitTree -Repo $UnoRoot -Ref $branchRef -Path $area.uno.strings -Destination $tmp } catch { Join-Path $tmp 'missing' }
+				}
+			}
+			$states += Get-AreaSyncState -Area $area -UpstreamRepo $UpstreamRepo -TargetSha $target.Sha -UnoRoot $UnoRoot -UnoStringsDir $stringsDir
+		}
+		finally {
+			if ($tmp) { Remove-Item -Recurse -Force -LiteralPath $tmp -ErrorAction SilentlyContinue }
+		}
+	}
+
+	$selection = if ($states.Count -gt 0) { Select-SyncMatrix -States $states -Areas $areas -UpstreamRepo $UpstreamRepo -MaxAreas $MaxAreas } else { [pscustomobject]@{ Selected = @(); Deferred = @() } }
+	$matrix = @(foreach ($id in $selection.Selected) {
+			$area = $areas | Where-Object id -EQ $id
+			$state = $states | Where-Object id -EQ $id
+			[pscustomobject][ordered]@{
+				id             = $id
+				title          = $area.title
+				model          = if ($area.model) { $area.model } else { $DefaultModel }
+				baseline       = $area.baseline
+				codeChanged    = [bool]$state.codeChanged
+				stringsChanged = [bool]$state.stringsChanged
+				branch         = Get-SyncBranchName $id
+				prNumber       = if ($prs.ContainsKey($id)) { [int]$prs[$id] } else { 0 }
+			}
+		})
+	$rows = @(foreach ($state in $states) {
+			$area = $areas | Where-Object id -EQ $state.id
+			[pscustomobject]@{
+				id       = $state.id
+				baseline = $area.baseline
+				status   = if ($selection.Deferred -contains $state.id) { 'deferred' }
+				elseif ($state.codeChanged -and $state.stringsChanged) { 'code + strings changed' }
+				elseif ($state.codeChanged) { 'code changed' }
+				elseif ($state.stringsChanged) { 'strings changed' }
+				else { 'up to date' }
+				diffStat = $state.diffStat
+				prNumber = if ($prs.ContainsKey($state.id)) { [int]$prs[$state.id] } else { 0 }
+			}
+		})
+
+	[pscustomobject]@{ TargetTag = $target.Tag; TargetSha = $target.Sha; MasterSha = $masterSha; Matrix = $matrix; Rows = $rows }
+}
+
+#endregion
+
 Export-ModuleMember -Function *-*

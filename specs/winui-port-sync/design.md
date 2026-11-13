@@ -47,6 +47,11 @@ show up without anyone asking. A maintainer reviews and merges; nothing merges o
   (`-experimental`, …) is not stable.
 - Upstream layout: MUX controls in `controls/dev/<Control>/` (sources, `Strings/`, tests,
   theme XAML); framework code under `dxaml/`.
+- Upstream layout is not stable: newer release tags keep everything under `src/`
+  (`src/controls/dev/...`), older commits at the repository root, and a release tag is not a
+  descendant of an older baseline. Manifest paths are therefore layout-neutral, resolved per
+  commit, and changes are found by comparing folder trees (`git diff <base>:<path>
+  <target>:<path>`), not by walking history.
 - Uno `.cs` files need UTF-8 BOM + CRLF, tabs, MUX/MIT headers (see `.claude/rules/code-style.md`).
 - Repo-tracked docs and the manifest must not reference private artifacts.
 - The existing agent workflow (`claude-code-review.yml`) sets the security bar: no
