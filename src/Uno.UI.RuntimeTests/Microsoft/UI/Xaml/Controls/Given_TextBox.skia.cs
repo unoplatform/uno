@@ -1006,6 +1006,84 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// A tap re-enters a TextBox that got keyboard focus (Tab, a focus-next helper) with pointer focus, which replaces
+		// the hidden input while the keyboard is composing. The browser's compositionend for the replaced input is ignored,
+		// so the composition ends with the replacement.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Same_TextBox_Refocused_During_Composition()
+		{
+			DisableAccessibility();
+			var SUT = new TextBox { Width = 300 };
+			var ended = 0;
+			SUT.TextCompositionEnded += (_, _) => ended++;
+			await UITestHelper.Load(SUT);
+			SUT.Focus(FocusState.Keyboard);
+			await UITestHelper.WaitFor(() => GetHiddenInputState() == "|0", timeoutMS: 3000, message: "the hidden input should be attached");
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "hello", "hello", 5));
+				Assert.IsTrue(SUT.IsComposing);
+
+				SUT.Focus(FocusState.Pointer);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(FocusState.Pointer, SUT.FocusState);
+				Assert.IsFalse(SUT.IsComposing);
+				Assert.AreEqual(1, ended);
+				Assert.AreEqual("hello", SUT.Text);
+				Assert.AreEqual("hello|5", GetHiddenInputState());
+
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(5, 5, "!", "hello!", 6));
+				await ReplayOnHiddenInput(ImeEnd("!"));
+
+				Assert.AreEqual("hello!", SUT.Text);
+				Assert.AreEqual(6, SUT.SelectionStart);
+				Assert.IsFalse(SUT.IsComposing);
+				Assert.AreEqual(2, ended);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Accessibility hands a focused TextBox over to its semantic element by removing the hidden input while the
+		// TextBox keeps focus. The browser's compositionend for the removed input is ignored, so the composition ends
+		// with the removal.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Input_Detached_During_Composition()
+		{
+			var SUT = await LoadFocusedForBrowserIme("");
+			var ended = 0;
+			SUT.TextCompositionEnded += (_, _) => ended++;
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "hello", "hello", 5));
+				Assert.IsTrue(SUT.IsComposing);
+
+				InvokeBrowserJs("(function(){globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.detach();return 'ok';})()");
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("missing", GetHiddenInputState());
+				Assert.IsFalse(SUT.IsComposing);
+				Assert.AreEqual(1, ended);
+				Assert.AreEqual("hello", SUT.Text);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
 		// Keeps the browser's own selectionchange events away from the input's handler, so a test can run it itself.
 		private static void DetachSelectionChangeHandler()
 			=> InvokeBrowserJs("(function(){window.__unoSelectionChange=document.onselectionchange;document.onselectionchange=null;return 'ok';})()");

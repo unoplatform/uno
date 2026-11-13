@@ -553,6 +553,7 @@
 			}
 
 			const existingInput = BrowserInvisibleTextBoxViewExtension.inputElement;
+			const wasComposing = BrowserInvisibleTextBoxViewExtension.isCompositionReported;
 			if (existingInput != null && BrowserInvisibleTextBoxViewExtension.canRetarget(existingInput, isPassword, acceptsReturn)) {
 				// Reuse the shared input in place: mobile browsers keep the soft keyboard up across
 				// a TextBox-to-TextBox move only while an editable element stays focused throughout.
@@ -583,6 +584,12 @@
 			}
 
 			BrowserInvisibleTextBoxViewExtension.currentHandle = Number(handle);
+
+			// The replaced input's compositionend is ignored (see isActiveComposition), so a composition still open on it
+			// ends here: the same TextBox re-entered (a tap changing its focus state mid-word) would otherwise stay composing.
+			if (wasComposing) {
+				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
+			}
 
 			// Set for whichever element ends up live: the shared input is reused across TextBoxes, so tagging
 			// it only on creation leaves the policy unreported for every retargeted entry session. Inspectable
@@ -631,12 +638,19 @@
 		private static detachCore() {
 			BrowserInvisibleTextBoxViewExtension.detachGeneration++;
 			BrowserInvisibleTextBoxViewExtension.currentHandle = 0;
+			const wasComposing = BrowserInvisibleTextBoxViewExtension.isCompositionReported;
 			// Blur explicitly before removing: the .blur() method dispatches synchronously, so it
 			// lands inside the suppression window. WebKit can otherwise defer the implicit blur that
 			// fires on element removal past that window, which would clear the wrong TextBox's focus.
 			BrowserInvisibleTextBoxViewExtension.inputElement?.blur();
 			BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
 			BrowserInvisibleTextBoxViewExtension.inputElement = null;
+			// The removed input's compositionend is ignored, so a composition still open on it ends here: when the TextBox
+			// keeps focus (accessibility handing it over to its semantic element), nothing else would end it.
+			if (wasComposing) {
+				BrowserInvisibleTextBoxViewExtension.resetComposition();
+				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
+			}
 		}
 
 		public static blur(handle: number) {
