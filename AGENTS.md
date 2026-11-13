@@ -162,17 +162,11 @@ This covers the UI rendering layer, *not* platform APIs. **Platform-specific non
 
 ### Platform Base Classes
 
-`UIElement` derives from `DependencyObject` on every target; there is no native view base class. Each element's composition `Visual` is drawn onto a Skia surface supplied by the platform's host.
+`UIElement` derives from `DependencyObject` (a **class**, as in WinUI — inherit from it directly) on every target; there is no native view base class. Each element's composition `Visual` is drawn onto a Skia surface supplied by the platform's host.
 
 ### XAML Compilation
 
 XAML files are parsed to C# via source generators (`XamlFileGenerator` in `Uno.UI.SourceGenerators`), not .xbf like WinUI. Generates `InitializeComponent()`, named fields, and x:Bind expressions.
-
-### DependencyObject
-
-`DependencyObject` is a **class** on every target, as in WinUI — inherit from it directly.
-
-Before 7.0 it was an *interface*, because the native Android/iOS renderers forced `UIElement` to inherit a native view class, and a `DependencyObjectGenerator` supplied the implementation. Rendering is Skia everywhere now, so the interface and that generator are both gone.
 
 ### Project Organization
 
@@ -227,26 +221,10 @@ Run these after making changes:
 5. **Sample app** (visual changes): `dotnet run --project src/SamplesApp/SamplesApp -f net11.0-desktop`. To jump straight to one sample instead of the picker, append `-- sample=<Category>/<SampleName>` (category optional — a bare sample name or its fully-qualified type name also resolves), e.g. `-- sample=Buttons/Button_Events`. Console output confirms a match or reports why none was found.
 6. **XAML formatting** (SamplesApp changes): `dotnet xstyler -d src/SamplesApp -r`
 
-### SamplesApp: Add XAML files
+### Samples and Runtime Tests
 
-When adding XAML samples to the `SamplesApp`, drop the files anywhere under `src/SamplesApp/SamplesApp.Samples/` — they are auto-discovered by glob (no manual registration required).
-
-Sample creation checklist:
-1. Create your sample XAML and code-behind under an appropriate folder in `src/SamplesApp/SamplesApp.Samples/`.
-2. Add the `[Uno.UI.Samples.Controls.Sample]` attribute to the code-behind class.
-3. Format XAML: `dotnet xstyler -f src/SamplesApp/SamplesApp.Samples/YourFolder/YourSample.xaml`
-4. Build and run `SamplesApp` to verify the sample appears.
-
-Theming guideline (brief): prefer `{ThemeResource}` for backgrounds/foregrounds so samples work in light and dark themes.
-
-### Runtime Tests (Preferred for UI)
-
-Add tests to `Uno.UI.RuntimeTests`. Key helpers:
-- `WindowHelper.WindowContent` - Add elements to visual tree
-- `await WindowHelper.WaitForLoaded(element)` - Wait for load
-- `await WindowHelper.WaitForIdle()` - Wait for UI to settle
-
-**To build and run tests, use the `/runtime-tests` skill.** It handles build, filter encoding, execution, and result parsing for both Skia Desktop and WASM. Test-authoring conventions auto-load from `.claude/rules/runtime-tests.md`.
+- **Samples**: scaffold with `/add-sample`. Files anywhere under `src/SamplesApp/SamplesApp.Samples/` are auto-discovered; conventions (attribute, theming, XamlStyler) auto-load from `.claude/rules/samples.md`.
+- **Runtime tests** (preferred for UI) live in `src/Uno.UI.RuntimeTests`. Build and run them with `/runtime-tests`; authoring conventions auto-load from `.claude/rules/runtime-tests.md`.
 
 ### Common Build Issues
 
@@ -303,27 +281,6 @@ public event EventHandler<MyEventArgs>? SomethingHappened;
 public event Action<MyData>? SomethingHappened; // NEVER
 ```
 
-### XAML Formatting (SamplesApp)
-
-XAML files under `src/SamplesApp/` are formatted using [XamlStyler](https://github.com/Xavalon/XamlStyler).
-Configuration is in `src/SamplesApp/Settings.XamlStyler`.
-
-```bash
-# One-time setup (restore tools after cloning)
-dotnet tool restore
-
-# Format all SamplesApp XAML files
-dotnet xstyler -d src/SamplesApp -r
-
-# Format a single file
-dotnet xstyler -f src/SamplesApp/SamplesApp.Samples/MyFile.xaml
-
-# Check without modifying (CI mode)
-dotnet xstyler -d src/SamplesApp -r -p
-```
-
-A GitHub Actions workflow enforces formatting on PRs that touch SamplesApp XAML files.
-
 ### Implementing New WinUI Features
 
 1. Find generated stub: `src/Uno.UI/Generated/3.0.0.0/Microsoft.UI.*/ClassName.cs` (UI) or `src/Uno.WinRT/Generated/3.0.0.0/Windows.*/ClassName.cs` (non-UI WinRT)
@@ -335,12 +292,10 @@ A GitHub Actions workflow enforces formatting on PRs that touch SamplesApp XAML 
 
 ## Common Pitfalls
 
-1. **DependencyObject is a class** - inherit from it directly, as in WinUI
-2. **Generated files are regenerated** - never edit `Generated/` folders
-3. **The visual tree is the Skia rendering tree** on every target
-4. **Partial methods** used for extensibility: `OnLoaded()`, `OnUnloaded()`
-5. **NuGet cache corruption** - delete the `uno.winui` folder under your NuGet global packages folder (`NUGET_PACKAGES` if set, else `%USERPROFILE%\.nuget\packages`) if debugging fails
-6. **Long paths on Windows** - enable via registry if needed
+1. **Generated files are regenerated** - never edit `Generated/` folders
+2. **Partial methods** used for extensibility: `OnLoaded()`, `OnUnloaded()`
+3. **NuGet cache corruption** - delete the `uno.winui` folder under your NuGet global packages folder (`NUGET_PACKAGES` if set, else `%USERPROFILE%\.nuget\packages`) if debugging fails
+4. **Long paths on Windows** - enable via registry if needed
 
 ---
 
