@@ -252,6 +252,7 @@ OleInitialize
 OpenClipboard
 PeekMessage
 PostMessage
+RegCloseKey
 RegGetValue
 RegisterClassEx
 RegisterClipboardFormat

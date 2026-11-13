@@ -644,6 +644,10 @@ namespace Uno.UI.Runtime.Android
 			//ViewHelper.RefreshFontScale();
 			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
 			SystemThemeHelper.RefreshSystemTheme();
+
+			// Android has no accent change notification; a Material You palette change recreates or
+			// resumes the activity, so re-read the accent here.
+			AccentColorHelper.RefreshAccentColor();
 		}
 
 #pragma warning disable CS0618 // deprecated members
