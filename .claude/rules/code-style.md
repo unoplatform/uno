@@ -6,7 +6,7 @@ paths:
 
 # C# code style (Uno)
 
-Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_open_brace = all` (Allman). These are enforced by analyzers on CI — `UnoFastDevBuild=true` skips them locally but they still gate the PR.
+Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_open_brace = all` (Allman). These are enforced by analyzers on CI — `UnoFastDevBuild=true` skips them locally but they still gate the PR. A clean local build therefore doesn't prove IDE0055 (formatting) is clean: Debug also lists it in `WarningsNotAsErrors`, so only `-c Release` without `UnoFastDevBuild` fails on it.
 
 ## File headers
 - **Ported WinUI/MUX code** carries, in this order:

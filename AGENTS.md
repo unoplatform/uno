@@ -215,7 +215,7 @@ The full protocol (root-cause steps, diagnosis-bias checks, evidence rules) auto
 Run these after making changes:
 
 1. **Build**: `dotnet build Uno.UI-UnitTests-only.slnf --no-restore`
-2. **Unit tests**: `dotnet test Uno.UI.UnitTests/Uno.UI.UnitTests.csproj --no-build`
+2. **Unit tests**: `dotnet test Uno.UI.UnitTests/Uno.UI.UnitTests.csproj --no-build`. Touched `src/SourceGenerators/**`? Also run `SourceGenerators/Uno.UI.SourceGenerators.Tests` — the csproj above skips the generator golden tests.
 3. **Runtime tests** (UI changes): Use `/runtime-tests` skill (Skia Desktop default, pass test class/method name as argument)
 4. **WinUI parity** (validate against native WinUI): Use `/winui-runtime-tests` skill
 5. **Sample app** (visual changes): `dotnet run --project src/SamplesApp/SamplesApp -f net11.0-desktop`. To jump straight to one sample instead of the picker, append `-- sample=<Category>/<SampleName>` (category optional — a bare sample name or its fully-qualified type name also resolves), e.g. `-- sample=Buttons/Button_Events`. Console output confirms a match or reports why none was found.
@@ -234,6 +234,8 @@ Run these after making changes:
 | "Windows XAML targets not found" | The WinAppSDK target needs Windows; use `Uno.UI-Uno-only.slnf` on Linux/macOS |
 | Solution filter fails | Ensure `crosstargeting_override.props` matches filter |
 | Persistent issues | Close VS, delete `src/.vs`, rebuild |
+| `NETSDK1147` (missing android/ios workload) on a desktop/WASM build | Restore walks every TFM; set `UnoTargetFrameworkOverride`, or pass `-p:TargetFramework=<tfm>` (`dotnet restore -f` doesn't exist) |
+| `NETSDK1005` on System.Xaml (`no target netstandard2.0`) | `Uno.Xaml.csproj` and `System.Xaml-net_4_x.csproj` share one `obj/`; `dotnet restore src/SourceGenerators/System.Xaml/Uno.Xaml.csproj` and rebuild |
 | Last resort | `git clean -fdx` (close VS first) |
 
 ### Key Build Properties
@@ -339,6 +341,7 @@ When asked to open a PR or file an issue, **base it on the repo's existing templ
 - **PRs** → fill out every section of `.github/pull_request_template.md` and submit it as the body (e.g. `gh pr create --body-file <filled>.md`).
 - **Issues** → pick the matching GitHub issue **form** under `.github/ISSUE_TEMPLATE/` (`bug-report`, `enhancement`, `documentation-issue`/`-request`, `samples-issue`/`-request`, `feedback`, `support-request`, `success-story`) and fill its required fields (`gh issue create --template <name>.yml`).
 - **Every PR must reference an associated issue** (unless it's a pure-documentation change). Before opening the PR, settle the issue: use the one identified in the conversation; else search for an existing match (`gh issue list --search "<keywords>"`); else create one from the forms above. Put its number on the template's first line — `**GitHub Issue:** closes #XYZ` — so merging the PR auto-closes the issue.
+- **Don't comment `/azp run`** — the "Uno.UI - CI" Azure Pipelines build starts on every push. Each platform stage publishes a `samplesapp-*-logs` artifact with the `.binlog`.
 - **The associated issue may live in a private repository.** Link it rather than creating a public duplicate, using the `owner/repo#N` form (e.g. `closes unoplatform/<private-repo>#123`) so GitHub resolves it across repositories. PR descriptions and comments may also link related private pull requests.
 
 ---

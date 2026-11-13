@@ -41,6 +41,7 @@ Current symbols: `__ANDROID__`, `__APPLE_UIKIT__` (iOS/tvOS), `__WASM__`, `__SKI
 5. **`Uno.WinRT`/`Uno.Foundation` generic target needs a platform-specific implementation loaded at runtime** → **`ApiExtensibility.CreateInstance<IXxxExtension>()`** with the concrete impl in a `Uno.UI.Runtime.*` project. Keeps generic code free of native (JNI/UIKit) references.
 
 ## Traps
+- **`[assembly: ApiExtension(iface, impl, owner)]` types must all be `public`** — the XAML generator emits `ApiExtensibility.Register<owner>(typeof(iface), o => new impl(o))` into the *consuming app*, so `InternalsVisibleTo` doesn't help (CS0122). Keep Uno-only types public but in an Uno namespace.
 - `#if __ANDROID__` is **false** in files the `Uno.UI` project compiles and in any `.skia.cs` file: that code compiles for plain `netX.0` and runs on Android unchanged. Use `OperatingSystem.IsAndroid()` for Android-only behavior there, or `#if __SKIA__` to separate it from other variants.
 - In the WinRT layer, the Skia variant (`.skia.cs`) and the Android variant (`.Android.cs`) are different compilations of the same API. A Skia app on Android loads the Android variant (`RuntimeAssetsSelectorTask`), not the `.skia.cs` one — don't conflate them.
 - Reference (`.reference.cs`) is the stub API surface (throws NotImplemented), distinct from `.crossruntime.cs`.
