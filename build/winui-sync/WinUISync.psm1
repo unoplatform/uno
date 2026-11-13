@@ -120,4 +120,60 @@ function Set-AreaBaseline {
 
 #endregion
 
+#region seeding
+
+function Get-MuxReferences {
+	param([Parameter(Mandatory)][string[]]$Paths)
+	$pattern = [regex]::new('MUX Reference\b.*?\b(commit|tag)\s*:?\s*(winui3/release/[\w.\-]+|[0-9a-f]{7,40}\b)', 'IgnoreCase')
+	foreach ($file in Get-ChildItem -LiteralPath $Paths -Recurse -File -Filter *.cs | Sort-Object FullName) {
+		$seen = [ordered]@{}
+		foreach ($m in $pattern.Matches((Get-Content -Raw -LiteralPath $file.FullName))) {
+			$kind = $m.Groups[1].Value.ToLowerInvariant()
+			$ref = $m.Groups[2].Value.TrimEnd('.')
+			if ($kind -eq 'commit') { $ref = $ref.ToLowerInvariant() }
+			$seen["$kind $ref"] = [pscustomobject]@{ File = $file.FullName; Kind = $kind; Ref = $ref }
+		}
+		if ($seen.Count -eq 0) {
+			[pscustomobject]@{ File = $file.FullName; Kind = 'none'; Ref = $null }
+		}
+		else {
+			$seen.Values
+		}
+	}
+}
+
+function Resolve-AreaBaseline {
+	param([Parameter(Mandatory)][string]$UpstreamRepo, [Parameter(Mandatory)][object[]]$References)
+	$resolved = [ordered]@{}
+	$unresolved = [System.Collections.Generic.List[string]]::new()
+	foreach ($r in $References | Where-Object Kind -NE 'none' | Sort-Object Ref -Unique) {
+		$spec = if ($r.Kind -eq 'tag') { "refs/tags/$($r.Ref)^{commit}" } else { "$($r.Ref)^{commit}" }
+		$sha = @(Invoke-Git $UpstreamRepo @('rev-parse', '--verify', '--quiet', $spec) -AllowExitCodes 1, 128)
+		if ((Get-LastGitExitCode) -eq 0 -and $sha.Count -eq 1) { $resolved[$r.Ref] = $sha[0] } else { $unresolved.Add($r.Ref) }
+	}
+
+	$candidates = @($resolved.Values | Sort-Object -Unique)
+	$baseline = $null
+	foreach ($c in $candidates) {
+		$isAncestorOfAll = $true
+		foreach ($o in $candidates) {
+			Invoke-Git $UpstreamRepo @('merge-base', '--is-ancestor', $c, $o) -AllowExitCodes 1 | Out-Null
+			if ((Get-LastGitExitCode) -ne 0) { $isAncestorOfAll = $false; break }
+		}
+		if ($isAncestorOfAll) { $baseline = $c; break }
+	}
+	if (-not $baseline -and $candidates.Count -gt 0) {
+		$baseline = $candidates | Sort-Object { [long](Invoke-Git $UpstreamRepo @('log', '-1', '--format=%ct', $_)) } | Select-Object -First 1
+	}
+
+	[pscustomobject]@{
+		Baseline   = $baseline
+		Resolved   = $resolved
+		Unresolved = @($unresolved)
+		NoRef      = @($References | Where-Object Kind -EQ 'none' | ForEach-Object File)
+	}
+}
+
+#endregion
+
 Export-ModuleMember -Function *-*
