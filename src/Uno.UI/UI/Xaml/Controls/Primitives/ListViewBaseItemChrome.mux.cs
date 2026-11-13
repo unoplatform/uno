@@ -2358,8 +2358,7 @@ partial class ListViewBaseItemPresenter
 
 					focusOptions.drawFirst = true;
 					focusOptions.firstThickness = new Thickness(s_gridViewItemFocusBorderThickness);
-					// TODO Uno: FocusRectangleOptions only holds a SolidColorBrush; WinUI's static_cast still strokes with any brush.
-					focusOptions.firstBrush = (borderBrush as SolidColorBrush)!;
+					focusOptions.firstBrush = borderBrush;
 					// TODO Uno: focusOptions.isContinuous = true; (FocusRectangleOptions has no isContinuous, the chrome only renders continuous rectangles).
 
 					RenderFocusRectangle(
@@ -2425,27 +2424,27 @@ partial class ListViewBaseItemPresenter
 				if (m_visualStates.HasState(CommonStates2.PointerOver))
 				{
 					options.secondThickness = new Thickness(s_gridViewItemFocusBorderThickness);
-					options.secondBrush = (m_pPointerOverBackground as SolidColorBrush)!;
+					options.secondBrush = m_pPointerOverBackground!;
 				}
 				else if (m_visualStates.HasState(CommonStates2.Pressed))
 				{
 					options.secondThickness = new Thickness(s_gridViewItemFocusBorderThickness);
-					options.secondBrush = (m_pPressedBackground as SolidColorBrush)!;
+					options.secondBrush = m_pPressedBackground!;
 				}
 				else if (m_visualStates.HasState(CommonStates2.Selected))
 				{
 					options.secondThickness = new Thickness(s_gridViewItemFocusBorderThickness);
-					options.secondBrush = (m_pSelectedBackground as SolidColorBrush)!;
+					options.secondBrush = m_pSelectedBackground!;
 				}
 				else if (m_visualStates.HasState(CommonStates2.PointerOverSelected))
 				{
 					options.secondThickness = new Thickness(s_gridViewItemFocusBorderThickness);
-					options.secondBrush = (m_pSelectedPointerOverBackground as SolidColorBrush)!;
+					options.secondBrush = m_pSelectedPointerOverBackground!;
 				}
 				else if (m_visualStates.HasState(CommonStates2.PressedSelected))
 				{
 					options.secondThickness = new Thickness(s_gridViewItemFocusBorderThickness);
-					options.secondBrush = (m_pSelectedPressedBackground as SolidColorBrush)!;
+					options.secondBrush = m_pSelectedPressedBackground!;
 				}
 			}
 
@@ -3543,9 +3542,11 @@ partial class ListViewBaseItemPresenter
 	{
 		var nullCompositionBrush = false;
 		// Uno-specific: WinUI matches the core XamlCompositionBrushBase type, which every app-defined subclass shares.
-		// RadialGradientBrush renders without setting CompositionBrush, unlike WinUI's which sets it in OnConnected.
-		if (brush is XamlCompositionBrushBase xamlCompositionBrush && brush is not RadialGradientBrush)
+		// AcrylicBrush is its own core type there. RadialGradientBrush renders without setting CompositionBrush, unlike WinUI's which sets it in OnConnected.
+		if (brush is XamlCompositionBrushBase xamlCompositionBrush && brush is not (RadialGradientBrush or AcrylicBrush))
 		{
+			// Uno-specific: WinUI connects the brush once it is used in the live tree; Uno connects it lazily on first use.
+			xamlCompositionBrush.GetOrCreateCompositionBrush(Microsoft.UI.Composition.Compositor.GetSharedCompositor());
 			nullCompositionBrush = xamlCompositionBrush.GetValue(XamlCompositionBrushBase.CompositionBrushProperty) is null;
 		}
 		return nullCompositionBrush;

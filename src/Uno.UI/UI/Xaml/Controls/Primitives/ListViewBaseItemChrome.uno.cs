@@ -181,12 +181,9 @@ partial class ListViewBaseItemPresenter : IBorderInfoProvider
 		return hasRoundedCorner && hasChildren;
 	}
 
-	// TODO Uno: WinUI handshakes m_isFocusVisualDrawnByFocusManager with CustomizeFocusRectangle per render walk;
-	// Uno configures the layers eagerly, so it derives the same answer from the focus state.
-	private bool IsFocusVisualDrawnByFocusManager()
-		=> m_visualStates.HasState(FocusStates.Focused)
-			&& GetParentListViewBaseItemNoRef().UseSystemFocusVisuals
-			&& !ShouldDrawDottedLinesFocusVisual();
+	// TODO Uno: WinUI sets m_isFocusVisualDrawnByFocusManager from CustomizeFocusRectangle, which feeds the state ring
+	// to the focus visual. Uno's focus visual does not call it yet (#25923), so the chrome keeps drawing the ring.
+	private bool IsFocusVisualDrawnByFocusManager() => false;
 
 	// MUX Reference BaseContentRenderer.cpp, lines 1518-1600 (continuous rectangles only)
 	private void RenderFocusRectangle(ChromeContentRenderer pContentRenderer, FocusRectangleOptions focusOptions)
