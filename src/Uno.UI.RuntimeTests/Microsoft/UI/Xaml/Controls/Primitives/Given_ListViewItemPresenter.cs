@@ -870,7 +870,7 @@ public partial class Given_ListViewItemPresenter
 		CollectionAssert.AreEqual(expected.Select(e => e.Visual).ToArray(), presenter.Visual.Children.ToArray());
 	}
 
-	// Unconnected app-defined XamlCompositionBrushBase: no CompositionBrush yet.
+	// App-defined XamlCompositionBrushBase that sets no CompositionBrush when connected.
 	private sealed class TestCompositionBrush : XamlCompositionBrushBase
 	{
 	}

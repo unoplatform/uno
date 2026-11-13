@@ -124,7 +124,7 @@ public partial class Given_ListViewItemPresenter
 	}
 
 	[TestMethod]
-	public async Task When_GridView_Overlay_State_Ring_Not_Drawn_While_Keyboard_Focused()
+	public async Task When_GridView_Overlay_State_Ring_Drawn_While_Keyboard_Focused()
 	{
 		using var chromeScope = ListViewChromeHelper.UseNonRoundedChrome();
 
@@ -159,14 +159,89 @@ public partial class Given_ListViewItemPresenter
 		await WindowHelper.WaitForIdle();
 		Assert.AreEqual(ListViewBaseItemPresenter.FocusStates.Focused, presenter.m_visualStates.focusState);
 
-		var focused = await UITestHelper.ScreenShot(root);
-		ImageAssert.DoesNotHaveColorAt(focused, ring, Colors.Blue, tolerance: PixelTolerance);
-		Assert.AreEqual(0, GetOverContentShapeCount(presenter), "the focus visual draws the ring while keyboard-focused");
+		// TODO Uno: once CustomizeFocusRectangle is wired (#25923), the focus visual draws this ring instead of the chrome.
+		await AssertColor(root, ring, Colors.Blue, "a keyboard-focused selected item keeps its state ring");
 
 		button.Focus(FocusState.Keyboard);
 		await WindowHelper.WaitForIdle();
 
-		await AssertColor(root, ring, Colors.Blue, "the chrome draws the ring again once focus leaves");
+		await AssertColor(root, ring, Colors.Blue, "the ring stays once focus leaves");
+	}
+
+	[TestMethod]
+	public async Task When_NonRounded_State_Brush_Changes_In_Same_State_Then_Fill_Updates()
+	{
+		using var chromeScope = ListViewChromeHelper.UseNonRoundedChrome();
+		var (root, item, presenter) = await CreateRenderingItem();
+		presenter.PointerOverBackground = new SolidColorBrush(Colors.Lime);
+		await WindowHelper.WaitForIdle();
+
+		var center = GetPoint(item, root, 0.5, 0.5);
+		VisualStateManager.GoToState(item, "PointerOver", false);
+		await AssertColor(root, center, Colors.Lime, "PointerOver fill");
+
+		presenter.PointerOverBackground = new SolidColorBrush(Colors.Orange);
+		await AssertColor(root, center, Colors.Orange, "a new PointerOver brush repaints without a state change");
+	}
+
+	[TestMethod]
+	public async Task When_GridView_Overlay_Gradient_SelectedBackground_Then_Ring_Drawn()
+	{
+		using var chromeScope = ListViewChromeHelper.UseNonRoundedChrome();
+		var (root, item, presenter) = await CreateRenderingItem(contentBackground: "Yellow");
+		presenter.CheckMode = ListViewItemPresenterCheckMode.Overlay;
+		presenter.SelectedBackground = new LinearGradientBrush
+		{
+			GradientStops = { new GradientStop { Color = Colors.Blue, Offset = 0 }, new GradientStop { Color = Colors.Blue, Offset = 1 } },
+		};
+		await WindowHelper.WaitForIdle();
+
+		VisualStateManager.GoToState(item, "Selected", false);
+		await AssertColor(root, GetPoint(item, root, 0, 0.5, dx: 1), Colors.Blue, "a gradient SelectedBackground strokes the state ring");
+	}
+
+	[TestMethod]
+	public async Task When_Composition_Brush_State_Brush_Then_Connected_And_Drawn()
+	{
+		using var chromeScope = ListViewChromeHelper.UseNonRoundedChrome();
+		var (root, item, presenter) = await CreateRenderingItem();
+		var brush = new ColorCompositionBrush(Colors.Blue);
+		presenter.SelectedBackground = brush;
+		await WindowHelper.WaitForIdle();
+
+		VisualStateManager.GoToState(item, "Selected", false);
+		await AssertColor(root, GetPoint(item, root, 0.5, 0.5), Colors.Blue, "a composition brush only used by the chrome gets connected");
+		Assert.IsTrue(brush.IsConnected);
+	}
+
+	[TestMethod]
+	public void When_AcrylicBrush_Then_Not_A_Null_Composition_Brush()
+	{
+		Assert.IsFalse(ListViewBaseItemPresenter.IsNullCompositionBrush(new AcrylicBrush()), "AcrylicBrush is not matched as an XCBB, as in WinUI");
+		Assert.IsTrue(ListViewBaseItemPresenter.IsNullCompositionBrush(new ColorCompositionBrush(null)), "an XCBB that sets no CompositionBrush is skipped");
+	}
+
+	private sealed partial class ColorCompositionBrush : XamlCompositionBrushBase
+	{
+		private readonly Color? _color;
+
+		public ColorCompositionBrush(Color? color)
+		{
+			_color = color;
+			// Uno syncs a wrapped color brush to FallbackColor, so keep them equal.
+			FallbackColor = color ?? Colors.Transparent;
+		}
+
+		public bool IsConnected { get; private set; }
+
+		protected override void OnConnected()
+		{
+			IsConnected = true;
+			if (_color is { } c)
+			{
+				CompositionBrush = Compositor.GetSharedCompositor().CreateColorBrush(c);
+			}
+		}
 	}
 
 	[TestMethod]
