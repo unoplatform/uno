@@ -36,6 +36,8 @@ Nothing merges on its own.
 
 ## Onboarding an area
 
+The `/winui-sync-onboard` skill walks through this, including how to judge the baseline. By hand:
+
 An area is a control or a feature area: one or more upstream folders and the Uno folders they were
 ported to. Paths are written without a leading `src/`; the tooling finds them at each commit.
 
@@ -55,7 +57,7 @@ and proposes the oldest one as the baseline. **Check the proposal before adding 
 
 - a baseline that is too new silently drops upstream changes;
 - a baseline that is much older than most files (one stale header) makes the first run re-check
-  years of changes — pick the commit most files agree on and set it by hand in `areas.json`;
+  years of changes — pick the commit most files agree on and pass it with `-Baseline <commit>`;
 - files listed as having no recorded commit are yours to judge.
 
 ## Running it by hand
