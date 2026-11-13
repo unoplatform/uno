@@ -27,7 +27,8 @@ Nothing merges on its own.
   skipped item by hand on the branch, set `skipped=` in that section's marker line to the number
   still outstanding.
 - Nothing is published for an area when the agent fails, times out or writes no well-formed
-  report, or when its patch touches anything other than code under `src/`. The run summary says
+  report, or when its patch touches anything other than code under `src/` (project and MSBuild
+  files count as "other"). The run summary says
   why, and the next run redoes the port.
 - Tests are not run by the workflow. PR CI does that.
 - Review fixes can be pushed straight to the sync branch. Later runs merge the default branch
@@ -90,4 +91,5 @@ Locally, with a WinUI clone:
 - At most 10 areas are processed per run, oldest baseline first, three at a time. The rest are
   listed as deferred and picked up the following week.
 - The agent job is read-only. It produces a patch; a separate job without an agent pushes it.
-  Changes to CI files, tooling, agent rules or `.resw` files are never taken from the agent.
+  Changes to CI files, tooling, agent rules, project and MSBuild files or `.resw` files are never
+  taken from the agent.

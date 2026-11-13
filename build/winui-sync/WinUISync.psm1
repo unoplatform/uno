@@ -773,7 +773,13 @@ function Get-PortStatus {
 # this check runs where the write token is.
 function Test-SyncPatchPaths {
 	param([string[]]$Files = @())
-	@($Files | Where-Object { $_ } | Where-Object { -not $_.StartsWith('src/') -or $_ -match '(^|/)Strings/.+\.resw$' })
+	@($Files | Where-Object { $_ } | Where-Object {
+			-not $_.StartsWith('src/') -or
+			$_ -match '(^|/)Strings/.+\.resw$' -or
+			# Build inputs: they run or configure code on every later build.
+			$_ -match '(^|/)(Directory\.[^/]+|global\.json|nuget\.config|\.editorconfig|\.globalconfig)$' -or
+			$_ -match '\.(csproj|vbproj|fsproj|proj|shproj|projitems|props|targets|tasks|sln|slnf|slnx|rsp)$'
+		})
 }
 
 function Invoke-ApplyPatch {
