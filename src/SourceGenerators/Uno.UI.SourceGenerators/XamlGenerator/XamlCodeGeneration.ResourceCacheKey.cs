@@ -15,16 +15,18 @@ internal partial class XamlCodeGeneration
 {
 	private static readonly ConcurrentDictionary<ResourceCacheKey, CachedResource> _cachedResources = new();
 
-	// The cache entry of the last version of each resource file that parsed, by assembly and file.
+	// The cache entry of the last version of each resource file that parsed, by assembly and file path. The cache
+	// never evicts those entries: a parse failure falls back to them, however long since the file was last used.
 	private static readonly ConcurrentDictionary<(string Assembly, string File), ResourceCacheKey> _lastGoodResources = new();
 
-	private static readonly TimeSpan _cacheEntryLifetime = new TimeSpan(hours: 1, minutes: 0, seconds: 0);
+	// Settable for tests.
+	internal static TimeSpan CacheEntryLifetime { get; set; } = new TimeSpan(hours: 1, minutes: 0, seconds: 0);
 
 	private static void ScavengeCache()
-	{
-		_cachedResources.Remove(kvp => DateTimeOffset.Now - kvp.Value.LastTimeUsed > _cacheEntryLifetime);
-		_lastGoodResources.Remove(kvp => !_cachedResources.ContainsKey(kvp.Value));
-	}
+		=> _cachedResources.Remove(kvp => DateTimeOffset.Now - kvp.Value.LastTimeUsed > CacheEntryLifetime && !IsLastGood(kvp.Key));
+
+	private static bool IsLastGood(ResourceCacheKey key)
+		=> _lastGoodResources.TryGetValue(key.FileId, out var lastGood) && lastGood == key;
 
 	private struct ResourceCacheKey : IEquatable<ResourceCacheKey>
 	{
@@ -39,6 +41,8 @@ internal partial class XamlCodeGeneration
 		public string Assembly { get; }
 		public string File { get; }
 		public ImmutableArray<byte> Checksum { get; }
+
+		public (string Assembly, string File) FileId => (Assembly, File);
 
 		public override bool Equals(object? obj)
 			=> obj is ResourceCacheKey key && Equals(key);

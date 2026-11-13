@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
+using Uno.UI.SourceGenerators.XamlGenerator;
 
 namespace Uno.UI.SourceGenerators.Tests.XamlCodeGeneratorTests;
 
@@ -16,7 +17,9 @@ public class Given_LocalizationResources
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26364")]
 	public async Task When_Only_Resw_Is_Malformed()
 	{
-		var resourceFile = new ResourceFile("en", "Resources.resw",
+		// The generator caches resource files per process: a locale folder no other test uses keeps this file
+		// from falling back to the keys another test parsed for the same path.
+		var resourceFile = new ResourceFile("qps-plocm", "Resources.resw",
 			"""
 			<?xml version="1.0" encoding="utf-8"?>
 			<root>
@@ -29,7 +32,7 @@ public class Given_LocalizationResources
 
 		test.ExpectedDiagnostics.Add(
 			DiagnosticResult.CompilerError("UXAML0003")
-				.WithArguments("Unable to parse resource file [//Project/0/Strings/en/Resources.resw], make sure it is a valid resw file. (The 'data' start tag on line 3 position 4 does not match the end tag of 'root'. Line 5, position 3.)"));
+				.WithArguments("Unable to parse resource file [//Project/0/Strings/qps-plocm/Resources.resw], make sure it is a valid resw file. (The 'data' start tag on line 3 position 4 does not match the end tag of 'root'. Line 5, position 3.)"));
 
 		await test.RunAsync();
 	}
@@ -74,7 +77,64 @@ public class Given_LocalizationResources
 		var test = CreatePageTest(broken);
 		test.ExpectedDiagnostics.Add(
 			DiagnosticResult.CompilerError("UXAML0003")
-				.WithArguments("Unable to parse resource file [//Project/0/Strings/qps-ploc/Resources.resw], make sure it is a valid resw file. (Unexpected end of file has occurred. The following elements are not closed: root. Line 6, position 1.)"));
+				.WithArguments("Unable to parse resource file [//Project/0/Strings/qps-ploc/Resources.resw], make sure it is a valid resw file. (Unexpected end of file has occurred. The following elements are not closed: root. Line 6, position 1.) Until it parses, the keys of its last valid version are used."));
+
+		await test.RunAsync();
+	}
+
+	// The file may stay broken for longer than the generator keeps unused cache entries.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26364")]
+	public async Task When_Resw_Breaks_After_Cache_Expired()
+	{
+		var valid = new ResourceFile("qps-ploca", "Resources.resw",
+			"""
+			<?xml version="1.0" encoding="utf-8"?>
+			<root>
+			  <data name="Greeting.Text" xml:space="preserve">
+			    <value>Hello</value>
+			  </data>
+			</root>
+			""");
+		var broken = valid with { Contents = valid.Contents.Replace("</root>", "") };
+
+		await CreatePageTest(valid).RunAsync();
+
+		var test = CreatePageTest(broken);
+		test.ExpectedDiagnostics.Add(
+			DiagnosticResult.CompilerError("UXAML0003")
+				.WithArguments("Unable to parse resource file [//Project/0/Strings/qps-ploca/Resources.resw], make sure it is a valid resw file. (Unexpected end of file has occurred. The following elements are not closed: root. Line 6, position 1.) Until it parses, the keys of its last valid version are used."));
+
+		var lifetime = XamlCodeGeneration.CacheEntryLifetime;
+		XamlCodeGeneration.CacheEntryLifetime = TimeSpan.Zero;
+		try
+		{
+			await test.RunAsync();
+		}
+		finally
+		{
+			XamlCodeGeneration.CacheEntryLifetime = lifetime;
+		}
+	}
+
+	// With no earlier parse to fall back to (e.g. the IDE started on the broken file), the page has no lookup.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26364")]
+	public async Task When_Resw_Broken_From_Start()
+	{
+		var broken = new ResourceFile("qps-plocb", "Resources.resw",
+			"""
+			<?xml version="1.0" encoding="utf-8"?>
+			<root>
+			  <data name="Greeting.Text" xml:space="preserve">
+			    <value>Hello</value>
+			  </data>
+			""");
+
+		var test = CreatePageTest(broken);
+		test.ExpectedDiagnostics.Add(
+			DiagnosticResult.CompilerError("UXAML0003")
+				.WithArguments("Unable to parse resource file [//Project/0/Strings/qps-plocb/Resources.resw], make sure it is a valid resw file. (Unexpected end of file has occurred. The following elements are not closed: root. Line 5, position 10.)"));
 
 		await test.RunAsync();
 	}
