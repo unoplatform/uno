@@ -706,9 +706,10 @@ namespace Microsoft.UI.Xaml
 						oldStore._bindableHolderCount--;
 					}
 
+					// Read through the details: an attached store's DataContext property fails the owner validation.
 					if (oldStore._bindableHolderCount == 0
 						&& oldStore.Parent is null
-						&& ReferenceEquals(oldStore.GetValue(oldStore._dataContextProperty), GetValue(_dataContextProperty)))
+						&& ReferenceEquals(oldStore.GetValue(oldStore._properties.DataContextPropertyDetails), GetValue(_properties.DataContextPropertyDetails)))
 					{
 						oldStore.ClearInheritedDataContext();
 					}
@@ -783,11 +784,12 @@ namespace Microsoft.UI.Xaml
 					// so drop the DataContext it pushed here. Keep the new owner's if the assignment already pushed it (a
 					// precedence change does), and leave a value with its own parent alone, like ApplyChildrenBindable.
 					ReleaseCollectedParent();
+					// Read through the details: an attached store's DataContext property fails the owner validation.
 					var parentDataContext = parent is IDependencyObjectStoreProvider { Store: var parentStore }
-						? parentStore.GetValue(parentStore._dataContextProperty)
+						? parentStore.GetValue(parentStore._properties.DataContextPropertyDetails)
 						: null;
 					if ((Parent is not { } ownParent || ReferenceEquals(ownParent, parent))
-						&& !ReferenceEquals(GetValue(_dataContextProperty), parentDataContext))
+						&& !ReferenceEquals(GetValue(_properties.DataContextPropertyDetails), parentDataContext))
 					{
 						ClearInheritedDataContext();
 					}

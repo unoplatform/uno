@@ -317,6 +317,60 @@ partial class Given_UIElement
 		}
 	}
 
+	// TextHighlighter keeps its values in an attached store, whose DataContext property is owned by
+	// AttachedDependencyObject while the store's type is TextHighlighter. Associating or releasing a value reads the
+	// owner's DataContext, which must not trip the property owner validation (on in Debug builds and under a debugger).
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+	public async Task SingleParentNonFE_Parent_Collected_Then_Next_Parent_Has_Attached_Store()
+	{
+		// TextBlock does this on every draw with a selection: it creates a TextHighlighter for its selection brush,
+		// whose previous highlighter has been collected.
+		var brush = new SolidColorBrush(Colors.SkyBlue);
+		var firstDataContext = new object();
+		var firstOwnerRef = AttachToOwner(brush, firstDataContext);
+		Assert.AreSame(firstDataContext, brush.DataContext, "Pre-condition: a single parent propagates its DataContext");
+
+		Assert.IsTrue(await TestHelper.TryWaitUntilCollected(firstOwnerRef), "Pre-condition: the first owner must be collectible while the brush is alive");
+
+		using (ValidatePropertyOwner())
+		{
+			var highlighter = new TextHighlighter { Background = brush };
+			Assert.AreSame(brush, highlighter.Background);
+		}
+
+		Assert.IsNull(brush.DataContext, "a dead parent's DataContext must not survive re-association");
+
+		GC.KeepAlive(firstDataContext);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+	public void SingleParentNonFE_Released_By_Owner_With_Attached_Store()
+	{
+		var brush = new SolidColorBrush(Colors.SkyBlue);
+		var otherBrush = new SolidColorBrush(Colors.Yellow);
+
+		using (ValidatePropertyOwner())
+		{
+			var highlighter = new TextHighlighter { Background = brush };
+			highlighter.Background = otherBrush;
+			Assert.AreSame(otherBrush, highlighter.Background);
+		}
+	}
+
+	private static IDisposable ValidatePropertyOwner()
+	{
+		var validate = global::Uno.UI.FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite;
+		global::Uno.UI.FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite = true;
+		return global::Uno.Disposables.Disposable.Create(() => global::Uno.UI.FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite = validate);
+	}
+
 	[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
 	private static WeakReference AttachToOwner(Brush brush, object dataContext)
 	{
