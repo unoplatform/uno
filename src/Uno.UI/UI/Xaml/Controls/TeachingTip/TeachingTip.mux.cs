@@ -2344,11 +2344,9 @@ public partial class TeachingTip : ContentControl
 
 		if (pivotPosition > 0)
 		{
-			//TODO:MZ: Verify this logic
-			priorityList = priorityList
-				.Skip(pivotPosition)
-				.Concat(priorityList.Take(pivotPosition))
-				.ToArray();
+			var preferred = priorityList[pivotPosition];
+			Array.Copy(priorityList, 0, priorityList, 1, pivotPosition);
+			priorityList[0] = preferred;
 		}
 
 		return priorityList;
