@@ -913,7 +913,12 @@ function Publish-SyncArea {
 		if (-not (Invoke-ApplyPatch -RepoRoot $RepoRoot -PatchPath $PatchPath)) {
 			return & $skip 'the ported patch no longer applies to the branch. The next run redoes the port.'
 		}
-		$refused = @(Test-SyncPatchPaths -Files @(Invoke-Git $RepoRoot @('diff', '--cached', '--name-only', '--no-renames', 'HEAD')))
+		$ported = @(Invoke-Git $RepoRoot @('diff', '--cached', '--name-only', '--no-renames', 'HEAD') | Where-Object { $_ })
+		# Publishing would move the baseline past changes nobody ported.
+		if ($ported.Count -eq 0 -and -not $report.BuildPassed) {
+			return & $skip 'the port changed no files and its build did not pass, so nothing was ported. The next run redoes the port.'
+		}
+		$refused = @(Test-SyncPatchPaths -Files $ported)
 		if ($refused.Count -gt 0) {
 			Invoke-Git $RepoRoot @('reset', '-q', '--hard', 'HEAD') | Out-Null
 			return & $skip "the ported patch touches files a port may not change: $(($refused | Select-Object -First 10) -join ', ')."

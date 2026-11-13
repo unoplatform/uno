@@ -27,7 +27,7 @@ Nothing merges on its own.
   skipped item by hand on the branch, set `skipped=` in that section's marker line to the number
   still outstanding.
 - Nothing is published for an area when the agent fails, times out or writes no well-formed
-  report, or when its patch touches anything other than code under `src/` (project and MSBuild
+  report, when it changed no files and its build did not pass, or when its patch touches anything other than code under `src/` (project and MSBuild
   files count as "other"). The run summary says
   why, and the next run redoes the port.
 - Tests are not run by the workflow. PR CI does that.

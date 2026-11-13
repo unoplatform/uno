@@ -14,9 +14,12 @@
 #      `port` job as able to run arbitrary code if the agent is ever hijacked. What
 #      limits the damage: the job's token is read-only; the agent may only run two
 #      fixed build commands (no extra MSBuild arguments) and may not edit project or
-#      MSBuild files; and CLAUDE_CODE_SUBPROCESS_ENV_SCRUB keeps the API key out of
-#      the build's environment (best effort). Never add a secret or a write
-#      permission to this job.
+#      MSBuild files. The API key IS in the environment of those builds, so a hijacked
+#      agent could read it. Keep that key spend-limited and used for nothing else.
+#      CLAUDE_CODE_SUBPROCESS_ENV_SCRUB would hide it, but it makes Claude Code
+#      require its sandbox (bubblewrap + socat, absent on the runner), which broke
+#      every Bash call; do not turn it on without a run that proves builds work
+#      inside that sandbox. Never add another secret or a write permission to this job.
 #   3. `publish` holds the write token and runs no agent and no build. It refuses a
 #      patch that touches anything outside product and test code, including project
 #      and MSBuild files (Test-SyncPatchPaths), and does not publish a port whose
@@ -189,8 +192,6 @@ jobs:
           # Builds outlast the default 2-minute tool timeout.
           BASH_DEFAULT_TIMEOUT_MS: '2400000'
           BASH_MAX_TIMEOUT_MS: '3600000'
-          # Keep the API key out of the environment of the builds the agent starts.
-          CLAUDE_CODE_SUBPROCESS_ENV_SCRUB: '1'
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_CODEREVIEW_KEY }}
           # The job's read-only token; without it the action would mint an app token via OIDC.
