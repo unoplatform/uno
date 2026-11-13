@@ -1,0 +1,97 @@
+{
+  "areas": [
+    {
+      "id": "navigationview",
+      "title": "NavigationView",
+      "baseline": "bac7a9c33ffe3696ec19121b16f166227eae4f1f",
+      "upstream": {
+        "sources": [
+          "controls/dev/NavigationView"
+        ],
+        "tests": [
+          "controls/dev/NavigationView/NavigationView_ApiTests",
+          "controls/dev/NavigationView/NavigationView_InteractionTests"
+        ],
+        "strings": "controls/dev/NavigationView/Strings"
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/NavigationView"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/NavigationView"
+        ],
+        "strings": "src/Uno.UI/UI/Xaml/Controls/NavigationView/Strings"
+      }
+    },
+    {
+      "id": "breadcrumbbar",
+      "title": "BreadcrumbBar",
+      "baseline": "2a60e27c591846556fa9ec4d8f305afdf0f96dc1",
+      "upstream": {
+        "sources": [
+          "controls/dev/Breadcrumb"
+        ],
+        "tests": [
+          "controls/dev/Breadcrumb/APITests",
+          "controls/dev/Breadcrumb/InteractionTests"
+        ],
+        "strings": "controls/dev/Breadcrumb/Strings"
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/BreadcrumbBar"
+        ],
+        "strings": "src/Uno.UI/UI/Xaml/Controls/BreadcrumbBar/Strings"
+      }
+    },
+    {
+      "id": "selectorbar",
+      "title": "SelectorBar",
+      "baseline": "b91b3ce6f25c587a9e18c4e122f348f51331f18b",
+      "upstream": {
+        "sources": [
+          "controls/dev/SelectorBar"
+        ],
+        "tests": [
+          "controls/dev/SelectorBar/APITests",
+          "controls/dev/SelectorBar/InteractionTests"
+        ],
+        "strings": "controls/dev/SelectorBar/Strings"
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/SelectorBar"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/SelectorBar"
+        ],
+        "strings": "src/Uno.UI/UI/Xaml/Controls/SelectorBar/Strings"
+      }
+    },
+    {
+      "id": "tabview",
+      "title": "TabView",
+      "baseline": "65718e2813a90fc900e8775d2ddc580b268fcc2f",
+      "upstream": {
+        "sources": [
+          "controls/dev/TabView"
+        ],
+        "tests": [
+          "controls/dev/TabView/APITests",
+          "controls/dev/TabView/InteractionTests"
+        ],
+        "strings": "controls/dev/TabView/Strings"
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/TabView"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/TabView"
+        ],
+        "strings": "src/Uno.UI/UI/Xaml/Controls/TabView/Strings"
+      }
+    }
+  ]
+}
