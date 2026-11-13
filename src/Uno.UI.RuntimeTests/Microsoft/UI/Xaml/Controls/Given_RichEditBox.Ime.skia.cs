@@ -705,6 +705,32 @@ public partial class Given_RichEditBox
 		}
 	}
 
+	// A read-only RichEditBox makes the hidden input read-only, so the soft keyboard doesn't open for it.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Wasm_Read_Only_Hidden_Input_Follows_IsReadOnly()
+	{
+		var sut = new RichEditBox { IsReadOnly = true };
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			sut.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			const string readOnly = "(function(){const t=document.getElementById('uno-input');return t ? String(t.readOnly) : 'missing';})()";
+			Assert.AreEqual("true", global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(readOnly));
+
+			sut.IsReadOnly = false;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("false", global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(readOnly));
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
 	// Firefox dispatches the commit's input event after compositionend. The commit still belongs to the composition.
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]

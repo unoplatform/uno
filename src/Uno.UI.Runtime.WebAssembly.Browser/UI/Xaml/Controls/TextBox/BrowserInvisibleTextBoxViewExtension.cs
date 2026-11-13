@@ -16,6 +16,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 {
 	private readonly TextBoxView _view;
 	private bool _isNativeInputActive;
+	private bool _isNativeInputReadOnly;
 	private bool _suppressSoftwareKeyboard;
 
 	public BrowserInvisibleTextBoxViewExtension(TextBoxView view)
@@ -200,6 +201,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	public void StartEntry(bool suppressSoftwareKeyboard = false)
 	{
 		_suppressSoftwareKeyboard = suppressSoftwareKeyboard;
+		_isNativeInputReadOnly = GetIsReadOnly();
 		var host = _view.Host;
 		_isNativeInputActive = NativeMethods.Focus(
 			host?.Owner.Visual.Handle ?? 0,
@@ -212,7 +214,8 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 				_ => false,
 			},
 			suppressSoftwareKeyboard ? "none" : GetInputModeValue(),
-			GetEnterKeyHintValue());
+			GetEnterKeyHintValue(),
+			_isNativeInputReadOnly);
 
 		if (_isNativeInputActive)
 		{
@@ -362,6 +365,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			// when this TextBox is the one in focus
 			return;
 		}
+		var isReadOnly = GetIsReadOnly();
+		if (_isNativeInputActive && isReadOnly != _isNativeInputReadOnly && !WasmImeTextBoxExtension.Instance.IsComposing)
+		{
+			// A browser shows or hides the soft keyboard when its input takes focus, not when readOnly flips on the focused
+			// one: the TextBox enters a new input, as on focus. During a composition, the input it is in stays.
+			StartEntry(_suppressSoftwareKeyboard);
+			return;
+		}
 		if (GetEnterKeyHintValue() is { } enterKeyHintValue)
 		{
 			NativeMethods.SetEnterKeyHint(enterKeyHintValue);
@@ -370,6 +381,8 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		NativeMethods.SetTextPredictionEnabled(GetTextPredictionEnabled());
 		NativeMethods.SetSpellCheckEnabled(GetSpellCheckEnabled());
 		NativeMethods.SetAcceptsReturn(GetAcceptsReturn());
+		NativeMethods.SetReadOnly(isReadOnly);
+		_isNativeInputReadOnly = isReadOnly;
 	}
 
 	public int GetSelectionStart() => 0;
@@ -403,6 +416,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	private bool GetAcceptsReturn() => _view.Host is IImeSessionHost { AcceptsReturn: true };
 
+	// WinUI doesn't show the touch keyboard for a read-only TextBox.
+	private bool GetIsReadOnly() => _view.Host switch
+	{
+		TextBoxCore core => core.IsReadOnly,
+		RichEditBox richEditBox => richEditBox.IsReadOnly,
+		_ => false,
+	};
+
 	private static partial class NativeMethods
 	{
 		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.initialize")]
@@ -421,7 +442,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		public static partial void RestartComposition();
 
 		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.focus")]
-		public static partial bool Focus(IntPtr handle, bool isPassword, string? text, bool acceptsReturn, string inputMode, string enterKeyHint);
+		public static partial bool Focus(IntPtr handle, bool isPassword, string? text, bool acceptsReturn, string inputMode, string enterKeyHint, bool isReadOnly);
 
 		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.blur")]
 		public static partial void Blur(IntPtr handle);
@@ -443,6 +464,9 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.setEnterKeyHint")]
 		public static partial void SetEnterKeyHint(string setEnterKeyHint);
+
+		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.setReadOnly")]
+		public static partial void SetReadOnly(bool isReadOnly);
 
 		[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.setInputMode")]
 		public static partial void SetInputMode(string inputMode);

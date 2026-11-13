@@ -548,8 +548,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		// The hidden input stays editable under a read-only TextBox (it carries the caret and the keyboard): the
-		// TextBox refuses what the keyboard types there.
+		// The hidden input is read-only under a read-only TextBox, so the soft keyboard doesn't open for it. An edit that
+		// reaches it anyway is refused.
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
@@ -559,6 +559,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.IsReadOnly = true;
 			try
 			{
+				await WindowHelper.WaitForIdle();
+				Assert.IsTrue(IsHiddenInputReadOnly());
+
 				await ReplayOnHiddenInput(NativeInput("onex", 4, "insertText"));
 				await WindowHelper.WaitForIdle();
 
@@ -1199,6 +1202,151 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// A read-only TextBox makes the hidden input read-only, and follows IsReadOnly as it changes. The input still
+		// carries the caret, the selection and the keys: they move the caret, extend the selection and copy, as they do in a
+		// read-only TextBox on WinUI.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Read_Only_TextBox_Keeps_Keyboard_And_Selection()
+		{
+			var SUT = await LoadFocusedForBrowserIme("one two");
+			try
+			{
+				SUT.IsReadOnly = true;
+				await WindowHelper.WaitForIdle();
+				Assert.IsTrue(IsHiddenInputReadOnly());
+
+				var arrow = InvokeBrowserJs("(function(){const t=document.getElementById('uno-input');const e=new KeyboardEvent('keydown',{key:'ArrowLeft',code:'ArrowLeft',keyCode:37,bubbles:true,cancelable:true});t.dispatchEvent(e);t.dispatchEvent(new KeyboardEvent('keyup',{key:'ArrowLeft',code:'ArrowLeft',keyCode:37,bubbles:true,cancelable:true}));return e.defaultPrevented ? 'prevented' : 'allowed';})()");
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual("prevented", arrow, "the TextBox handles the key");
+				Assert.AreEqual(6, SUT.SelectionStart);
+				Assert.AreEqual("one two|6", GetHiddenInputState());
+
+				InvokeBrowserJs("(function(){const t=document.getElementById('uno-input');t.dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft',code:'ArrowLeft',keyCode:37,shiftKey:true,bubbles:true,cancelable:true}));t.dispatchEvent(new KeyboardEvent('keyup',{key:'ArrowLeft',code:'ArrowLeft',keyCode:37,shiftKey:true,bubbles:true,cancelable:true}));return 'ok';})()");
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(5, SUT.SelectionStart);
+				Assert.AreEqual(1, SUT.SelectionLength);
+				Assert.AreEqual("w", InvokeBrowserJs("(function(){const t=document.getElementById('uno-input');return t.value.substring(t.selectionStart,t.selectionEnd);})()"), "the input selects what the TextBox does, for the browser to copy");
+
+				var copy = InvokeBrowserJs("(function(){const t=document.getElementById('uno-input');const e=new KeyboardEvent('keydown',{key:'c',code:'KeyC',keyCode:67,ctrlKey:true,bubbles:true,cancelable:true});t.dispatchEvent(e);return e.defaultPrevented ? 'prevented' : 'allowed';})()");
+				Assert.AreEqual("allowed", copy, "the browser copies the input's selection");
+
+				SUT.IsReadOnly = false;
+				await WindowHelper.WaitForIdle();
+				Assert.IsFalse(IsHiddenInputReadOnly());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Focus moves from a read-only TextBox to an editable one: a new input takes focus rather than the read-only one
+		// turning editable, since mobile browsers open the soft keyboard when an element takes focus.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Focus_Moves_From_Read_Only_TextBox()
+		{
+			DisableAccessibility();
+			var readOnly = new TextBox { Width = 300, Text = "one", IsReadOnly = true };
+			var editable = new TextBox { Width = 300 };
+			await UITestHelper.Load(new StackPanel { Children = { readOnly, editable } });
+			readOnly.Focus(FocusState.Programmatic);
+			await UITestHelper.WaitFor(() => IsHiddenInputReadOnly(), timeoutMS: 3000, message: "the read-only TextBox's input should be read-only");
+			try
+			{
+				InvokeBrowserJs("(function(){window.__unoReadOnlyInput=document.getElementById('uno-input');return 'ok';})()");
+
+				editable.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsFalse(IsHiddenInputReadOnly());
+				Assert.AreEqual("new", InvokeBrowserJs("(function(){const t=document.getElementById('uno-input');const s=window.__unoReadOnlyInput;delete window.__unoReadOnlyInput;return t===s ? 'reused' : (document.activeElement===t ? 'new' : 'unfocused');})()"));
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// IsReadOnly changes on the focused TextBox: it enters a new input, which takes focus, rather than readOnly flipping on
+		// the focused one, since mobile browsers show or hide the soft keyboard when an element takes focus.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Read_Only_Toggled_On_Focused_TextBox()
+		{
+			var SUT = await LoadFocusedForBrowserIme("one");
+			const string stash = "(function(){window.__unoPreviousInput=document.getElementById('uno-input');return 'ok';})()";
+			const string state = "(function(){const t=document.getElementById('uno-input');const s=window.__unoPreviousInput;delete window.__unoPreviousInput;return (t===s ? 'reused' : (document.activeElement===t ? 'new' : 'unfocused')) + '|' + t.readOnly;})()";
+			try
+			{
+				InvokeBrowserJs(stash);
+				SUT.IsReadOnly = true;
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual("new|true", InvokeBrowserJs(state));
+
+				InvokeBrowserJs(stash);
+				SUT.IsReadOnly = false;
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual("new|false", InvokeBrowserJs(state));
+				Assert.AreEqual("one|3", GetHiddenInputState());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// A TextBox made read-only during a composition keeps its text, and the composition ends with the browser's
+		// compositionend. Typing resumes once it is editable again.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_TextBox_Made_Read_Only_During_Composition()
+		{
+			var SUT = await LoadFocusedForBrowserIme("");
+			var ended = 0;
+			SUT.TextCompositionEnded += (_, _) => ended++;
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "hello", "hello", 5));
+				Assert.IsTrue(SUT.IsComposing);
+
+				SUT.IsReadOnly = true;
+				await WindowHelper.WaitForIdle();
+				Assert.IsTrue(IsHiddenInputReadOnly());
+				await ReplayOnHiddenInput(ImeEnd("hello"));
+
+				Assert.IsFalse(SUT.IsComposing);
+				Assert.AreEqual(1, ended);
+				Assert.AreEqual("hello", SUT.Text);
+
+				SUT.IsReadOnly = false;
+				await WindowHelper.WaitForIdle();
+				Assert.IsFalse(IsHiddenInputReadOnly());
+
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(5, 5, "!", "hello!", 6));
+				await ReplayOnHiddenInput(ImeEnd("!"));
+
+				Assert.AreEqual("hello!", SUT.Text);
+				Assert.IsFalse(SUT.IsComposing);
+				Assert.AreEqual(2, ended);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
 		// Keeps the browser's own selectionchange events away from the input's handler, so a test can run it itself.
 		private static void DetachSelectionChangeHandler()
 			=> InvokeBrowserJs("(function(){window.__unoSelectionChange=document.onselectionchange;document.onselectionchange=null;return 'ok';})()");
@@ -1227,6 +1375,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.TextCompositionChanged += (_, e) => ranges.Add($"{e.StartIndex}+{e.Length} {textBox.Text}");
 			return ranges;
 		}
+
+		private static bool IsHiddenInputReadOnly()
+			=> InvokeBrowserJs("(function(){const t=document.getElementById('uno-input');return t && t.readOnly ? 'true' : 'false';})()") == "true";
 
 		private static async Task<TextBox> LoadFocusedForBrowserIme(string text, int maxLength = 0, bool acceptsReturn = false)
 		{

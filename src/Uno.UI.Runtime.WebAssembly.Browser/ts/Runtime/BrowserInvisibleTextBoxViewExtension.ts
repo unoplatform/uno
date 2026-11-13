@@ -174,7 +174,7 @@
 			document.addEventListener("click", swallow, { capture: true });
 		}
 
-		private static createInput(isPasswordBox: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string) {
+		private static createInput(isPasswordBox: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string, isReadOnly: boolean) {
 			BrowserInvisibleTextBoxViewExtension.acceptsReturn = acceptsReturn;
 			// A previous input may have been removed mid-composition without a compositionend;
 			// never carry that state over to a fresh element.
@@ -211,6 +211,7 @@
 			input.style.top = BrowserInvisibleTextBoxViewExtension.keepsInputOffscreen ? BrowserInvisibleTextBoxViewExtension.offscreenTop : "0px";
 			input.style.left = "0px";
 			input.value = text;
+			input.readOnly = isReadOnly;
 
 			input.setAttribute("inputmode", inputMode);
 			input.setAttribute("enterkeyhint", enterKeyHint);
@@ -508,6 +509,15 @@
 			}
 		}
 
+		// A read-only input still takes focus, a caret, a selection, key events and copy, which the TextBox needs; it
+		// only refuses edits, so mobile browsers don't open the soft keyboard for it.
+		public static setReadOnly(isReadOnly: boolean) {
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (input) {
+				input.readOnly = isReadOnly;
+			}
+		}
+
 		public static setInputMode(inputMode: string) {
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			if (input) {
@@ -541,7 +551,7 @@
 			}
 		}
 
-		public static focus(handle: number, isPassword: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string): boolean {
+		public static focus(handle: number, isPassword: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string, isReadOnly: boolean): boolean {
 			// Supersede any detach a preceding managed blur scheduled: focus is moving between
 			// TextBoxes, and detaching in between would dismiss the soft keyboard (see blur).
 			BrowserInvisibleTextBoxViewExtension.detachGeneration++;
@@ -554,7 +564,7 @@
 
 			const existingInput = BrowserInvisibleTextBoxViewExtension.inputElement;
 			const wasComposing = BrowserInvisibleTextBoxViewExtension.isCompositionReported;
-			if (existingInput != null && BrowserInvisibleTextBoxViewExtension.canRetarget(existingInput, isPassword, acceptsReturn)) {
+			if (existingInput != null && BrowserInvisibleTextBoxViewExtension.canRetarget(existingInput, isPassword, acceptsReturn, isReadOnly)) {
 				// Reuse the shared input in place: mobile browsers keep the soft keyboard up across
 				// a TextBox-to-TextBox move only while an editable element stays focused throughout.
 				BrowserInvisibleTextBoxViewExtension.acceptsReturn = acceptsReturn;
@@ -576,7 +586,7 @@
 				// would dismiss the soft keyboard. The implicit blur of the old element is
 				// managed-initiated, so suppress its notification.
 				existingInput?.removeAttribute("id");
-				this.createInput(isPassword, text, acceptsReturn, inputMode, enterKeyHint);
+				this.createInput(isPassword, text, acceptsReturn, inputMode, enterKeyHint, isReadOnly);
 				BrowserInvisibleTextBoxViewExtension.runSuppressingBlur(() => {
 					BrowserInvisibleTextBoxViewExtension.inputElement.focus(BrowserInvisibleTextBoxViewExtension.focusOptions);
 					existingInput?.remove();
@@ -608,8 +618,10 @@
 
 		// The shared input can be handed to another TextBox without being recreated only when the
 		// element kind it was created with still matches the target TextBox.
-		private static canRetarget(input: HTMLInputElement | HTMLTextAreaElement, isPassword: boolean, acceptsReturn: boolean): boolean {
-			if (BrowserInvisibleTextBoxViewExtension.isComposing) {
+		private static canRetarget(input: HTMLInputElement | HTMLTextAreaElement, isPassword: boolean, acceptsReturn: boolean, isReadOnly: boolean): boolean {
+			// Mobile browsers show or hide the soft keyboard when an element takes focus, not when readOnly flips on the
+			// focused one: moving between a read-only and an editable TextBox focuses a new input.
+			if (BrowserInvisibleTextBoxViewExtension.isComposing || input.readOnly !== isReadOnly) {
 				return false;
 			}
 			const needsTextArea = acceptsReturn && !isPassword;
