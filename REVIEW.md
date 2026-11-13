@@ -24,9 +24,11 @@ Review this pull request against the rules in `AGENTS.md`. Focus on:
 - SOLID principles, separation of concerns, and code clarity.
 - Async/cancellation discipline: no `.Result` / `.GetAwaiter().GetResult()`,
   no `async void` without a wrapping try/catch, honor `CancellationToken`.
-- Cross-platform correctness: `Uno.UI` is one Skia-rendered build for every
-  platform (native renderers were removed in 7.0), so platform behavior there
-  uses runtime checks (`OperatingSystem.IsAndroid()`) or `ApiExtensibility`.
+- Cross-platform correctness: `Uno.UI` is one managed UI layer shared by every
+  Uno target (native renderers were removed in 7.0; Skia or WebGPU draws it,
+  chosen at run time, so it must not reference SkiaSharp directly). Platform
+  behavior there uses runtime checks (`OperatingSystem.IsAndroid()`) or
+  `ApiExtensibility`.
   `#if __ANDROID__` / `__WASM__` and `.Android.cs` / `.UIKit.cs` / `.wasm.cs`
   partials are dead code in `Uno.UI`; platform file suffixes apply only in
   per-platform projects (the WinRT layer and runtime hosts). Flag anything

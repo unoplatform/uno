@@ -119,10 +119,10 @@ Add `-Strict` for `strict` mode. The script pins the SDK, swaps and restores `gl
 
 | Error | Cause | Fix |
 |-------|-------|-----|
-| `CS0535: does not implement 'DependencyObject.XXX'` | `crosstargeting_override.props` missing/wrong TFM — Skia is being built | Set the windows TFM (Phase 1) |
+| `CS0535: does not implement 'DependencyObject.XXX'` | `crosstargeting_override.props` missing/wrong TFM — the Uno targets are being built | Set the windows TFM (Phase 1) |
 | `NETSDK1045: does not support targeting .NET 11` | Repo-root `global.json` selected a .NET 10 SDK | Use `build-app.ps1` (pitfall 2) |
 | `MSB4062: ResourcesGenerationTask_v0 could not be loaded` | Wrong TFM pulling unexpected dependencies | Set the windows TFM |
-| `CS0012: type 'Grid' defined in unreferenced assembly 'Uno.UI'` | Graphics3DGL built Skia-only | `-p:BuildGraphics3DGLForWindows=true` (already in `build-app.ps1`) |
+| `CS0012: type 'Grid' defined in unreferenced assembly 'Uno.UI'` | Graphics3DGL built for Uno targets only | `-p:BuildGraphics3DGLForWindows=true` (already in `build-app.ps1`) |
 | `PRI175` / `PRI252: .xbf not found` | Path ≥ 260 chars | Shorten the repo path or `subst` |
 | `MSB1008: Only one project` | Bash ate `/r` | Use dash syntax |
 

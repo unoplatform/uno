@@ -4,9 +4,10 @@
   Version change: 1.0.0 -> 2.0.0 (MAJOR - principle redefinition)
 
   Modified principles:
-    - II. Cross-Platform Parity: native rendering removed in 7.0; Skia is
-      the only renderer. Platform divergence in Uno.UI uses runtime checks
-      or ApiExtensibility; file suffixes only in per-platform projects.
+    - II. Cross-Platform Parity: native rendering removed in 7.0; one
+      managed UI layer drawn by a pluggable renderer (Skia or WebGPU).
+      Platform divergence in Uno.UI uses runtime checks or ApiExtensibility;
+      file suffixes only in per-platform projects.
     - V. Generated Code Boundaries: implementation step no longer mandates
       platform file suffixes.
 
@@ -52,10 +53,11 @@ ported to Uno.
 
 Every feature MUST work consistently across all supported target
 platforms: WebAssembly, iOS, tvOS, Android, Windows (Win32), Linux, macOS,
-and native Windows (WinAppSDK). Since 7.0, Skia is the only Uno renderer:
-the native Android View, UIKit and WASM DOM renderers were removed, and
-`Uno.UI` is a single build that runs on every Uno target. Platform-specific
-behavior MUST be:
+and native Windows (WinAppSDK). Since 7.0 the native Android View, UIKit
+and WASM DOM renderers are removed: `Uno.UI` is a single managed UI layer
+shared by every Uno target, drawn by a renderer chosen at run time (Skia or
+WebGPU). The managed layer MUST stay renderer-neutral (no SkiaSharp in `Uno.UI` /
+`Uno.UI.Composition`). Platform-specific behavior MUST be:
 
 - In `Uno.UI` and above: expressed through runtime checks
   (`OperatingSystem.IsX()`) or `ApiExtensibility`, never through `#if`
@@ -65,7 +67,7 @@ behavior MUST be:
   `Uno.UI.Dispatching`, runtime hosts): isolated in files using the
   platform suffix convention (`.skia.cs`, `.wasm.cs`, `.Android.cs`,
   `.iOS.cs`, `.tvOS.cs`, `.UIKit.cs`, `.reference.cs`).
-- Covered by runtime tests that execute on at least the Skia target.
+- Covered by runtime tests that execute on at least the desktop target.
 - Documented when parity is intentionally incomplete.
 
 **Rationale**: Cross-platform consistency is the core promise. Gaps that
@@ -160,11 +162,14 @@ that surface as bugs in production applications.
 The Uno Platform uses a layered platform abstraction that MUST be
 respected in all contributions:
 
-**Rendering Engine**:
-- **Skia** renders the UI on every Uno target: Desktop (Win32, macOS,
-  Linux X11/framebuffer), Android, iOS/tvOS and WebAssembly. There are no
-  native renderers; native views can only be embedded alongside the Skia
-  tree through the host embedding APIs.
+**Rendering**:
+- Uno draws the UI itself on every Uno target: Desktop (Win32, macOS,
+  Linux X11/framebuffer), Android, iOS/tvOS and WebAssembly. The managed
+  UI layer builds a composition visual tree; a pluggable renderer (Skia by
+  default, or WebGPU) draws it through the `Uno.UI.Composition.Drawing`
+  abstractions, negotiated at run time by `GraphicsRegistry`.
+- There are no native renderers; native views can only be embedded
+  alongside the Uno-drawn tree through the host embedding APIs.
 
 **Platform Base Class Rules**:
 - `UIElement` derives from `DependencyObject` on every target; there is
@@ -195,7 +200,7 @@ respected in all contributions:
 1. `dotnet build` with the matching solution filter and
    `crosstargeting_override.props`.
 2. `dotnet test` for affected unit test projects.
-3. Runtime tests via Skia Desktop for UI changes.
+3. Runtime tests on the desktop target for UI changes.
 4. SamplesApp verification for visual changes.
 
 **SamplesApp Samples**:

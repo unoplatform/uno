@@ -32,7 +32,7 @@ The single table to scan. Use it to pick the full panel **or** one lens.
 | XAML/binding of untrusted content, DevServer/RemoteControl, source-gen inputs, platform file/clipboard APIs | **security** | injection, path traversal, unsafe deserialization, secret/token leakage |
 | Logging, async APIs, source-gen cancellation, DevServer host | **operability** | unguarded/​missing logs, dropped `CancellationToken`, `async void` crashes, silent failures |
 | Layout/render hot paths, source generators, concurrency, WASM | **performance** | blocking waits, `async void`, LOH allocs, measure/arrange allocations, idle CPU toll, `memory.grow` |
-| Layering, platform-specialization choice, abstractions, system fit | **architect** | tech debt, wrong suffix/`#if`/`OperatingSystem.IsX()`/`ApiExtensibility`, Skia-only UI scope |
+| Layering, platform-specialization choice, abstractions, system fit | **architect** | tech debt, wrong suffix/`#if`/`OperatingSystem.IsX()`/`ApiExtensibility`, shared-UI-layer scope |
 | Anything you want stress-tested | **skeptic** | edge cases, cross-platform `#if`/`OperatingSystem.IsX()` divergence, WinUI "simplifications," guard-only "fixes", weak tests |
 | Solution vs. requirement | **quality** | scope creep, duplicated platform partials, comment noise, missing sample/test, commit hygiene |
 | Intent & assumptions you never stated | **jerome** | the questions you didn't ask — *asks, never fixes* |

@@ -10,7 +10,7 @@
 #   * the .NET SDK pinned in build/ci/net11/_global.json (the repo-root global.json sets
 #     allowPrerelease:false and would select a .NET 10 SDK, failing with NETSDK1045);
 #   * BuildGraphics3DGLForWindows, passed globally so the add-in restores its Windows TFM
-#     (otherwise CS0012 / NETSDK1005 from the Skia-only build).
+#     (otherwise CS0012 / NETSDK1005 from the Uno-targets-only build).
 
 param(
 	[ValidateSet('Build', 'Package')][string]$Mode = 'Build',

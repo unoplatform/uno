@@ -42,7 +42,7 @@ Every `async void` is a latent crash waiting for an unhandled exception; on WASM
 
 ### 3. WASM lock-free / mono-thread discipline
 
-Flag new `lock`, `Monitor.Enter`, `Mutex`, synchronous `SemaphoreSlim.Wait()`, or other blocking synchronization primitives **unless** the path is kept off the browser with a comment explaining the WASM-safe alternative. `Uno.UI` is a single Skia build that also runs in the browser, so `__WASM__` is never defined there and `#if !__WASM__` guards nothing — use `OperatingSystem.IsBrowser()`; `#if !__WASM__` works only in WinRT-layer files compiled by the Wasm variant. On WASM a managed thread waiting on another managed thread deadlocks immediately. Correct alternatives: `Interlocked.*` / `Volatile.*` for scalar state, `ConcurrentDictionary`/`ImmutableInterlocked`, `SemaphoreSlim.WaitAsync()` for bounded async throttling. Severity: **blocker** when added without a guard.
+Flag new `lock`, `Monitor.Enter`, `Mutex`, synchronous `SemaphoreSlim.Wait()`, or other blocking synchronization primitives **unless** the path is kept off the browser with a comment explaining the WASM-safe alternative. `Uno.UI` is a single build that also runs in the browser, so `__WASM__` is never defined there and `#if !__WASM__` guards nothing — use `OperatingSystem.IsBrowser()`; `#if !__WASM__` works only in WinRT-layer files compiled by the Wasm variant. On WASM a managed thread waiting on another managed thread deadlocks immediately. Correct alternatives: `Interlocked.*` / `Volatile.*` for scalar state, `ConcurrentDictionary`/`ImmutableInterlocked`, `SemaphoreSlim.WaitAsync()` for bounded async throttling. Severity: **blocker** when added without a guard.
 
 ### 4. Source-generator performance (`.claude/rules/source-generators.md`)
 
@@ -54,7 +54,7 @@ Generators run inside the compiler, on every build/keystroke. Flag:
 
 ### 5. Layout / render hot-path allocations
 
-`MeasureOverride`, `ArrangeOverride`, property-changed callbacks, and the Skia per-frame render path run constantly. Flag:
+`MeasureOverride`, `ArrangeOverride`, property-changed callbacks, and the per-frame render path (Skia or WebGPU renderer) run constantly. Flag:
 - LINQ (`.Select`/`.Where`/`.ToList`/`.ToArray`) or closures allocated per measure/arrange/render pass — prefer explicit loops or cached enumerables.
 - Boxing of value types into `object` (common in `DependencyProperty` get/set and interpolated strings) on hot paths — box defaults once (`default(T)`), reuse boxed constants.
 - `new` of throwaway objects (rects, lists, `StringBuilder`) per pass where reuse is possible.

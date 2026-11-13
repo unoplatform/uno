@@ -4,7 +4,7 @@ This file provides guidance to AI Agents when working with code in this reposito
 
 ## Project Overview
 
-Uno Platform is an open-source .NET UI cross-platform framework for building .NET applications from a single codebase using the WinUI 3 API. It targets Web (WebAssembly), Desktop (Windows, macOS, Linux via Skia), and Mobile (iOS, tvOS, Android).
+Uno Platform is an open-source .NET UI cross-platform framework for building .NET applications from a single codebase using the WinUI 3 API. It targets Web (WebAssembly), Desktop (Windows, macOS, Linux), and Mobile (iOS, tvOS, Android). On Windows it can also run on WinAppSDK, where WinUI itself draws the UI.
 
 **Reference these instructions first**, then lean on skills (workflows) and the path-scoped rules below.
 
@@ -52,7 +52,7 @@ These load **automatically** when you touch matching files — you don't invoke 
 | .NET 11.0/10.0 | Multi-target framework (`NetCurrent`/`NetPrevious` in `Directory.Build.props`) |
 | C# & XAML | Primary languages |
 | TypeScript | Browser host interop only (`Uno.UI.Runtime.WebAssembly.Browser`, WebGPU init) |
-| Skia | Cross-platform rendering |
+| Skia / WebGPU | Pluggable renderers for the Uno-drawn UI |
 | MSBuild | Build orchestration |
 | Roslyn | Source generators |
 
@@ -69,7 +69,7 @@ These load **automatically** when you touch matching files — you don't invoke 
 | `.reference.cs` | Reference variant (WinRT layer only) |
 | `.crossruntime.cs` | Generic + Wasm + Reference variants (shared) |
 
-Only projects that build per-platform variants compile the platform suffixes: the WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) and platform-specific runtime or add-in projects. The `Uno.UI` project builds once, for Skia, and excludes `.Android.cs`, `.UIKit.cs` and `.wasm.cs` files by default. A platform runtime project can still link such a file from under `src/Uno.UI`: `Uno.UI.Runtime.WebAssembly.Browser` compiles the `NativeWebView` and TextBox input-scope `.wasm.cs` partials. Judge a file by the MSBuild project that compiles it, not by its path.
+Only projects that build per-platform variants compile the platform suffixes: the WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) and platform-specific runtime or add-in projects. The `Uno.UI` project builds once, for every platform, and excludes `.Android.cs`, `.UIKit.cs` and `.wasm.cs` files by default. A platform runtime project can still link such a file from under `src/Uno.UI`: `Uno.UI.Runtime.WebAssembly.Browser` compiles the `NativeWebView` and TextBox input-scope `.wasm.cs` partials. Judge a file by the MSBuild project that compiles it, not by its path.
 
 ### Key Source Directories
 
@@ -115,7 +115,7 @@ dotnet build … -p:UnoTargetFrameworkOverride=net11.0 -p:UnoFastDevBuild=true
 ```
 
 **Why these flags:**
-- `UnoTargetFrameworkOverride` — restricts cross-targeted projects to a single TFM, skipping the redundant `NetPrevious` (net10.0) outputs while you iterate on net11.0 (or vice versa). Every non-Windows value builds the same Skia-rendered `Uno.UI`; the platform part only picks the host and the WinRT-layer variant.
+- `UnoTargetFrameworkOverride` — restricts cross-targeted projects to a single TFM, skipping the redundant `NetPrevious` (net10.0) outputs while you iterate on net11.0 (or vice versa). Every non-Windows value builds the same `Uno.UI`; the platform part only picks the host and the WinRT-layer variant.
 - `UnoFastDevBuild` — disables `RunAnalyzersDuringBuild`, `EnforceCodeStyleInBuild`, and the `Microsoft.CodeAnalysis.NetAnalyzers` package for local builds. **Guarded by `ContinuousIntegrationBuild`, so CI is never affected** — analyzer-strict checks still run on every PR. Set persistently via the `UNO_FAST_DEV_BUILD=true` environment variable if you'd rather not edit the file.
 
 Combined impact on the `SamplesApp` desktop head (Windows, 32-core, warm NuGet cache): clean build ~3:23 → ~1:59, incremental rebuild after a Uno.UI edit ~2:23 → ~0:58. The `/runtime-tests` skill passes both flags by default (use `strict` to opt out for CI-equivalent coverage).
@@ -147,22 +147,25 @@ dotnet test Uno.UI.UnitTests/Uno.UI.UnitTests.csproj    # Unit tests (40-60s)
 
 ### Platform Abstraction
 
-Single C#/XAML codebase → WinUI 3 API → Skia-rendered UI, hosted by a Skia runtime per platform (Desktop Win32/macOS/X11/framebuffer, Android, iOS/tvOS, WebAssembly)
+Single C#/XAML codebase → WinUI 3 API → one shared managed UI layer (`Uno.UI` + `Uno.UI.Composition`) → a pluggable renderer, inside a platform host (`Uno.UI.Runtime.*`: Win32, macOS, X11, framebuffer, Android, iOS/tvOS, WebAssembly).
 
-### Rendering Engine
+### Rendering
 
-- **Skia** renders the UI on every target: Desktop Win32, macOS and Linux, plus Android, iOS/tvOS and WebAssembly.
-- The native renderers (Android Views, UIKit, WASM DOM) were removed in 7.0. A native view can still be embedded alongside the Skia tree through the host embedding APIs (`doc/articles/native-views.md`).
+- **Uno draws the UI itself on every Uno target.** The managed UI layer builds a composition visual tree; a **renderer** draws it. Renderers are pluggable and picked at run time: **Skia** (`Uno.UI.Composition.Skia`, the default) or **WebGPU** (`Uno.UI.Composition.WebGpu`).
+- The renderer sits behind the neutral `Uno.UI.Composition.Drawing` abstractions (`IDrawingFactory`, `IRenderer`, `IGraphicsProvider`). `GraphicsRegistry` negotiates the renderer with the host's graphics context (Vulkan, OpenGL/ES, Software, WebGPU, …). Design: `doc/uno-drawing-backend-design.md`.
+- **Keep the managed layer renderer-neutral**: `Uno.UI` and `Uno.UI.Composition` don't reference SkiaSharp. Drawing goes through the `Drawing` abstractions; Skia- or WebGPU-specific code belongs in its renderer project.
+- The native renderers (Android Views, UIKit, WASM DOM) were removed in 7.0. A native view can still be embedded alongside the Uno-drawn tree through the host embedding APIs (`doc/articles/native-views.md`).
+- **"Skia" in names usually means "Uno-drawn", not the Skia renderer**: `__SKIA__`, `*.skia.cs`, `NetSkia*` properties, `RuntimeTestPlatforms.Skia*` and "Skia Desktop" predate WebGPU and mean "not WinAppSDK" (see `specs/056-platform-targeting-vocabulary/spec.md`). The meaningful platform split is **Uno targets vs. the WinAppSDK target**.
 
-### Development scope: Skia-only UI (IMPORTANT)
+### Development scope: one managed UI layer (IMPORTANT)
 
-**The UI layer (`Uno.UI` and everything built on it) is Skia-only.** There are no native UI renderers to maintain or extend. Don't reintroduce native-view inheritance, DOM rendering or per-platform UI partials. Put platform-specific UI behavior behind `OperatingSystem.IsX()` checks or `ApiExtensibility`, as described in `.claude/rules/platform-targeting.md`.
+**The UI layer (`Uno.UI` and everything built on it) is a single managed build shared by every Uno target.** There are no native UI renderers to maintain or extend. Don't reintroduce native-view inheritance, DOM rendering or per-platform UI partials. Put platform-specific UI behavior behind `OperatingSystem.IsX()` checks or `ApiExtensibility`, as described in `.claude/rules/platform-targeting.md`.
 
-This covers the UI rendering layer, *not* platform APIs. **Platform-specific non-UI WinRT APIs (in `Uno.WinRT`/`Uno.Foundation`) keep per-platform implementations and are still actively enhanced**, because the Skia targets consume them (e.g. Skia-on-Android uses the Android implementation of a file picker, sensor, contacts, etc.).
+This covers the UI layer, *not* platform APIs. **Platform-specific non-UI WinRT APIs (in `Uno.WinRT`/`Uno.Foundation`) keep per-platform implementations and are still actively enhanced**, because Uno apps consume them (e.g. an Android app uses the Android implementation of a file picker, sensor, contacts, etc.).
 
 ### Platform Base Classes
 
-`UIElement` derives from `DependencyObject` (a **class**, as in WinUI — inherit from it directly) on every target; there is no native view base class. Each element's composition `Visual` is drawn onto a Skia surface supplied by the platform's host.
+`UIElement` derives from `DependencyObject` (a **class**, as in WinUI — inherit from it directly) on every target; there is no native view base class. Each element's composition `Visual` is drawn by the active renderer onto a surface supplied by the platform's host.
 
 ### XAML Compilation
 
@@ -170,11 +173,11 @@ XAML files are parsed to C# via source generators (`XamlFileGenerator` in `Uno.U
 
 ### Project Organization
 
-The WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) keeps per-platform variants: Reference, Generic (the `*.Generic.csproj` projects), WebAssembly, NetCoreMobile. From `Uno.UI` upwards the UI layer ships a single Skia build, which also serves as the compile reference — there is no `.Reference` variant of those projects.
+The WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) keeps per-platform variants: Reference, Generic (the `*.Generic.csproj` projects), WebAssembly, NetCoreMobile. From `Uno.UI` upwards the UI layer ships a single build, which also serves as the compile reference — there is no `.Reference` variant of those projects.
 
 ### Runtime Target Selection
 
-`Uno.UI` and everything above it ship one build in `lib/netX.0`, used as-is on every platform. Only the WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) has per-platform implementations, and `RuntimeAssetsSelectorTask` swaps in the one matching the head's platform. Use runtime checks like `OperatingSystem.IsAndroid()` for platform-specific behavior on Skia for libraries above and including `Uno.UI`, or use `ApiExtensibility` with platform-specific implementations in `Uno.UI.Runtime.*` projects.
+`Uno.UI` and everything above it ship one build in `lib/netX.0`, used as-is on every platform. Only the WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) has per-platform implementations, and `RuntimeAssetsSelectorTask` swaps in the one matching the head's platform. Use runtime checks like `OperatingSystem.IsAndroid()` for platform-specific behavior in `Uno.UI` and the libraries above it, or use `ApiExtensibility` with platform-specific implementations in `Uno.UI.Runtime.*` projects.
 
 ### NotImplemented Stubs
 
