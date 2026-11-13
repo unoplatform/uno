@@ -250,6 +250,9 @@ public class Given_ListViewBaseItem
 	}
 
 	[TestMethod]
+	// WinUI flyouts size and place themselves for the last input device, and on WinAppSDK the injected touch can't be
+	// followed by an injected mouse move to restore it, so later flyout tests (Verify_MenuBarItem_Bounds) would open for touch.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Disabled_Clears_Touch_Flags()
 	{
 		var (_, item, recorder) = await Setup(ListViewSelectionMode.None, isItemClickEnabled: true);
