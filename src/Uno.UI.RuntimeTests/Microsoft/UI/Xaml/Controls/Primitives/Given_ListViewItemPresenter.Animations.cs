@@ -271,11 +271,33 @@ public partial class Given_ListViewItemPresenter
 		Assert.AreEqual(0, checkBoxTT.CompositeTransform!.TranslateX, AnimationTolerance);
 		Assert.AreEqual(28, content.TransitionTarget!.CompositeTransform!.TranslateX, AnimationTolerance, "Content starts at its multi-select offset");
 
-		await WindowHelper.WaitFor(() => checkBoxTT.CompositeTransform.TranslateX < -10, message: "Check box did not slide out");
-		Assert.IsTrue(checkBoxTT.ClipTransform!.TranslateX > 10, "Clip slides the other way so the check box stays revealed in place");
-		Assert.AreSame(checkBox, presenter.m_multiSelectCheckBoxRectangle, "Still present while animating");
+		// Every animated value is recorded: on a slow agent the slide can finish between two polls.
+		var minTranslateX = 0.0;
+		var maxClipTranslateX = 0.0;
+		var presentWhileSliding = true;
+		var translateToken = checkBoxTT.CompositeTransform.RegisterPropertyChangedCallback(CompositeTransform.TranslateXProperty, (_, _) =>
+		{
+			if (checkBoxTT.CompositeTransform.TranslateX < minTranslateX)
+			{
+				minTranslateX = checkBoxTT.CompositeTransform.TranslateX;
+				presentWhileSliding &= presenter.m_multiSelectCheckBoxRectangle == checkBox;
+			}
+		});
+		var clipToken = checkBoxTT.ClipTransform!.RegisterPropertyChangedCallback(CompositeTransform.TranslateXProperty, (_, _) =>
+			maxClipTranslateX = Math.Max(maxClipTranslateX, checkBoxTT.ClipTransform.TranslateX));
+		try
+		{
+			await WaitForAnimationCleared(presenter.m_multiSelectAnimation);
+		}
+		finally
+		{
+			checkBoxTT.CompositeTransform.UnregisterPropertyChangedCallback(CompositeTransform.TranslateXProperty, translateToken);
+			checkBoxTT.ClipTransform.UnregisterPropertyChangedCallback(CompositeTransform.TranslateXProperty, clipToken);
+		}
 
-		await WaitForAnimationCleared(presenter.m_multiSelectAnimation);
+		Assert.IsTrue(minTranslateX < -10, $"Check box slides out ({minTranslateX})");
+		Assert.IsTrue(maxClipTranslateX > 10, $"Clip slides the other way so the check box stays revealed in place ({maxClipTranslateX})");
+		Assert.IsTrue(presentWhileSliding, "Still present while animating");
 
 		Assert.IsNull(presenter.m_multiSelectCheckBoxRectangle);
 		Assert.IsNull(checkBox.GetParent());
