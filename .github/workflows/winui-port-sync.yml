@@ -1,0 +1,281 @@
+# Keeps code ported from WinUI C++ in step with the latest stable WinUI release.
+# See build/winui-sync/README.md for how it works and how to onboard an area.
+#
+# SECURITY - this workflow runs an AI agent that edits code and runs `dotnet build`.
+# The posture, in order of importance (do not weaken without understanding it):
+#   1. Triggers are `schedule` and `workflow_dispatch` only. No PR, issue or comment
+#      text ever reaches the agent; the only outside input is the upstream WinUI diff,
+#      which the prompt treats as data.
+#   2. The agent runs in the `port` job, which has `contents: read` and no persisted
+#      git credentials. It cannot push, open PRs or write issues. It hands a patch and
+#      a report to the `publish` job as an artifact.
+#   3. `publish` holds the write token and runs no agent and no build. It ignores
+#      anything the patch could not legitimately contain (see the pathspec excludes).
+#   4. No `id-token: write` anywhere, and the action is pinned to a full commit SHA
+#      (same pin as claude-code-review.yml; Dependabot bumps both).
+#   5. Tooling and prompt are taken from the default branch commit that `detect` saw,
+#      never from a sync branch.
+
+name: WinUI Port Sync
+
+on:
+  schedule:
+    - cron: '0 5 * * 1'
+  workflow_dispatch:
+    inputs:
+      area:
+        description: 'Only this area id (empty = all areas in build/winui-sync/areas.json)'
+        required: false
+        type: string
+      target_tag:
+        description: 'WinUI tag to sync to (empty = latest stable winui3/release/X.Y.Z)'
+        required: false
+        type: string
+      dry_run:
+        description: 'Only detect and report; do not port or publish'
+        required: false
+        type: boolean
+        default: false
+
+permissions: {}
+
+concurrency:
+  group: winui-port-sync
+  cancel-in-progress: false
+
+env:
+  UPSTREAM_URL: https://github.com/microsoft/microsoft-ui-xaml
+
+jobs:
+  detect:
+    name: Detect upstream changes
+    if: github.repository == 'unoplatform/uno'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      matrix: ${{ steps.detect.outputs.matrix }}
+      has_work: ${{ steps.detect.outputs.has_work }}
+      target_tag: ${{ steps.detect.outputs.target_tag }}
+      target_sha: ${{ steps.detect.outputs.target_sha }}
+      master_sha: ${{ steps.detect.outputs.master_sha }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Clone WinUI (no blobs)
+        run: git clone --quiet --filter=blob:none --no-checkout "$UPSTREAM_URL" "$RUNNER_TEMP/winui"
+
+      - name: Test the sync tooling
+        shell: pwsh
+        run: ./build/winui-sync/tests/run.ps1
+
+      - name: Detect
+        id: detect
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          AREA_FILTER: ${{ inputs.area }}
+          TARGET_TAG: ${{ inputs.target_tag }}
+        run: >
+          ./build/winui-sync/detect.ps1
+          -UpstreamRepo "$env:RUNNER_TEMP/winui"
+          -AreaFilter "$env:AREA_FILTER"
+          -TargetTag "$env:TARGET_TAG"
+
+  port:
+    name: Port ${{ matrix.area.id }}
+    needs: detect
+    if: needs.detect.outputs.has_work == 'true' && !inputs.dry_run
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    # Read-only on purpose: this is the job the agent runs in.
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        area: ${{ fromJSON(needs.detect.outputs.matrix) }}
+    env:
+      AREA_ID: ${{ matrix.area.id }}
+      AREA_BASELINE: ${{ matrix.area.baseline }}
+      PR_NUMBER: ${{ matrix.area.prNumber }}
+      TARGET_TAG: ${{ needs.detect.outputs.target_tag }}
+      TARGET_SHA: ${{ needs.detect.outputs.target_sha }}
+      MASTER_SHA: ${{ needs.detect.outputs.master_sha }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.detect.outputs.master_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set aside tooling and clone WinUI
+        run: |
+          # Tooling from the default branch, kept outside the tree the agent edits.
+          cp -r build/winui-sync "$RUNNER_TEMP/tools"
+          mkdir -p "$RUNNER_TEMP/out"
+          git clone --quiet --filter=blob:none --no-checkout "$UPSTREAM_URL" .winui-upstream
+          printf '%s\n' '.winui-upstream/' 'sync-report.md' >> .git/info/exclude
+
+      - name: Prepare sync branch
+        id: branch
+        shell: pwsh
+        run: >
+          & "$env:RUNNER_TEMP/tools/prepare-branch.ps1"
+          -RepoRoot $env:GITHUB_WORKSPACE
+          -Id $env:AREA_ID
+          -MasterSha $env:MASTER_SHA
+          -PrNumber $env:PR_NUMBER
+
+      - name: Build prompt
+        id: prompt
+        if: matrix.area.codeChanged && steps.branch.outputs.conflict != 'true'
+        shell: pwsh
+        run: |
+          Import-Module "$env:RUNNER_TEMP/tools/WinUISync.psm1"
+          $area = Get-SyncAreas "$env:RUNNER_TEMP/tools/areas.json" | Where-Object id -EQ $env:AREA_ID
+          # Continue from the sync branch's baseline when a PR is already open.
+          $area.baseline = $env:AREA_BASELINE
+          $prompt = Expand-SyncPrompt -TemplatePath "$env:RUNNER_TEMP/tools/prompt.md" -Area $area `
+            -TargetTag $env:TARGET_TAG -TargetSha $env:TARGET_SHA `
+            -UpstreamRepo "$env:GITHUB_WORKSPACE/.winui-upstream" -UpstreamDir '.winui-upstream'
+          $delimiter = "PROMPT_$([guid]::NewGuid().ToString('N'))"
+          Add-Content -LiteralPath $env:GITHUB_OUTPUT -Value @("prompt<<$delimiter", $prompt, $delimiter)
+
+      - name: Pin .NET version
+        if: steps.prompt.outcome == 'success'
+        run: cp build/ci/net11/_global.json global.json
+
+      - name: Setup .NET SDK
+        if: steps.prompt.outcome == 'success'
+        uses: actions/setup-dotnet@v6.1.0
+        with:
+          global-json-file: global.json
+
+      # A warm build keeps the agent's own builds incremental, and shows whether
+      # the branch built before the agent touched it.
+      - name: Build before porting
+        id: prebuild
+        if: steps.prompt.outcome == 'success'
+        continue-on-error: true
+        run: dotnet build src/Uno.UI/Uno.UI.csproj -p:UnoTargetFrameworkOverride=net10.0 -v:q -nologo
+
+      - name: Port upstream changes
+        id: agent
+        if: steps.prompt.outcome == 'success'
+        continue-on-error: true
+        uses: anthropics/claude-code-action@cfc3eb22bfed5c26ef66e3223c982af27e4524de # v1.0.231
+        env:
+          # Builds outlast the default 2-minute tool timeout.
+          BASH_DEFAULT_TIMEOUT_MS: '2400000'
+          BASH_MAX_TIMEOUT_MS: '3600000'
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_WINUISYNC_KEY }}
+          # The job's read-only token; without it the action would mint an app token via OIDC.
+          github_token: ${{ github.token }}
+          prompt: ${{ steps.prompt.outputs.prompt }}
+          claude_args: |
+            --model "${{ matrix.area.model }}"
+            --allowedTools "Read,Edit,Write,Glob,Grep,Bash(git -C .winui-upstream diff:*),Bash(git -C .winui-upstream show:*),Bash(git -C .winui-upstream log:*),Bash(dotnet build:*)"
+
+      - name: Collect result
+        if: always()
+        env:
+          CONFLICT: ${{ steps.branch.outputs.conflict }}
+          AGENT_OUTCOME: ${{ steps.agent.outcome }}
+          PREBUILD_OUTCOME: ${{ steps.prebuild.outcome }}
+        run: |
+          git checkout -- global.json 2>/dev/null || true
+          git add -A
+          # The agent may only change product and test code. Tooling, CI, agent rules,
+          # translations and the baseline are never taken from it.
+          git diff --cached --binary HEAD --output="$RUNNER_TEMP/out/sync.patch" -- . \
+            ':(exclude).github' ':(exclude).claude' ':(exclude)build/winui-sync' \
+            ':(exclude)AGENTS.md' ':(exclude)CLAUDE.md' ':(exclude)global.json' \
+            ':(exclude,glob)**/Strings/**/*.resw'
+          if [ -f sync-report.md ]; then cp sync-report.md "$RUNNER_TEMP/out/"; fi
+          printf '{"conflict":"%s","agentOutcome":"%s","prebuildOutcome":"%s"}\n' \
+            "${CONFLICT:-false}" "${AGENT_OUTCOME:-skipped}" "${PREBUILD_OUTCOME:-skipped}" > "$RUNNER_TEMP/out/status.json"
+          echo "Patch: $(wc -c < "$RUNNER_TEMP/out/sync.patch") bytes"
+          git diff --cached --stat HEAD | tail -n 40
+
+      - name: Upload result
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: sync-${{ matrix.area.id }}
+          path: ${{ runner.temp }}/out
+          if-no-files-found: error
+          retention-days: 14
+
+  publish:
+    name: Publish ${{ matrix.area.id }}
+    needs: [detect, port]
+    # Runs even when a port leg failed, so that area is reported instead of silently dropped.
+    if: always() && needs.detect.result == 'success' && needs.detect.outputs.has_work == 'true' && !inputs.dry_run
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # The only job with write access. No agent and no build run here.
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      actions: read
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        area: ${{ fromJSON(needs.detect.outputs.matrix) }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      AREA_ID: ${{ matrix.area.id }}
+      PR_NUMBER: ${{ matrix.area.prNumber }}
+      CODE_CHANGED: ${{ matrix.area.codeChanged }}
+      STRINGS_CHANGED: ${{ matrix.area.stringsChanged }}
+      TARGET_TAG: ${{ needs.detect.outputs.target_tag }}
+      TARGET_SHA: ${{ needs.detect.outputs.target_sha }}
+      MASTER_SHA: ${{ needs.detect.outputs.master_sha }}
+      BASE_BRANCH: ${{ github.event.repository.default_branch }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.detect.outputs.master_sha }}
+          fetch-depth: 0
+
+      - name: Set aside tooling and clone WinUI
+        run: |
+          cp -r build/winui-sync "$RUNNER_TEMP/tools"
+          git clone --quiet --filter=blob:none --no-checkout "$UPSTREAM_URL" "$RUNNER_TEMP/winui"
+
+      - name: Download port result
+        continue-on-error: true
+        run: gh run download "$GITHUB_RUN_ID" --name "sync-$AREA_ID" --dir "$RUNNER_TEMP/artifact"
+
+      - name: Ensure label exists
+        continue-on-error: true
+        run: gh label create winui-sync --description "Automated sync of code ported from WinUI" --color 0E8A16 2>/dev/null || true
+
+      - name: Publish
+        shell: pwsh
+        run: >
+          & "$env:RUNNER_TEMP/tools/publish.ps1"
+          -RepoRoot $env:GITHUB_WORKSPACE
+          -Id $env:AREA_ID
+          -TargetTag $env:TARGET_TAG
+          -TargetSha $env:TARGET_SHA
+          -MasterSha $env:MASTER_SHA
+          -UpstreamRepo "$env:RUNNER_TEMP/winui"
+          -ArtifactDir "$env:RUNNER_TEMP/artifact"
+          -PrNumber $env:PR_NUMBER
+          -CodeChanged $env:CODE_CHANGED
+          -StringsChanged $env:STRINGS_CHANGED
+          -BaseBranch $env:BASE_BRANCH
