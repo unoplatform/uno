@@ -7,5 +7,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 public partial class ListViewItemPresenter : ListViewBaseItemPresenter
 {
-	private void OnChromePropertyChanged(DependencyPropertyChangedEventArgs args) => OnPropertyChangedNewStyle(args);
+	private void OnChromePropertyChanged(DependencyPropertyChangedEventArgs args)
+	{
+		OnPropertyChangedNewStyle(args);
+
+		// Uno-specific: stands in for the NWSetContentDirty render dirty flag every presenter DP carries in WinUI.
+		InvalidateRender();
+	}
 }
