@@ -661,12 +661,379 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// The browser applies a composition to the hidden input and reports it before the input event that syncs it. A
+		// TextCompositionChanged handler reads the composed text out of Text, after TextChanging, as it can on WinUI.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Changed_Handler_Reads_Composition()
+		{
+			var SUT = await LoadFocusedForBrowserIme("hi ");
+			var events = new List<string>();
+			SUT.TextChanging += (_, _) => events.Add($"changing {SUT.Text}");
+			SUT.TextCompositionChanged += (_, e) => events.Add(e.StartIndex + e.Length <= SUT.Text.Length
+				? $"changed {SUT.Text.Substring(e.StartIndex, e.Length)}"
+				: $"changed {e.StartIndex}+{e.Length} outside '{SUT.Text}'");
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(3, 3, "w", "hi w", 4));
+				await ReplayOnHiddenInput(ImeCompose(3, 4, "wo", "hi wo", 5));
+				await ReplayOnHiddenInput(ImeEnd("wo"));
+
+				Assert.AreEqual("hi wo", SUT.Text);
+				CollectionAssert.AreEqual(new[] { "changing hi w", "changed w", "changing hi wo", "changed wo" }, events);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// A TextCompositionStarted handler moves focus to another TextBox, before the browser's text reaches the TextBox:
+		// that text doesn't land in the newly focused TextBox.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Browser_Ime_Started_Handler_Moves_Focus(bool secondAcceptsReturn)
+		{
+			DisableAccessibility();
+			var first = new TextBox { Width = 300 };
+			var second = new TextBox { Width = 300, AcceptsReturn = secondAcceptsReturn };
+			await UITestHelper.Load(new StackPanel { Children = { first, second } });
+			first.Focus(FocusState.Programmatic);
+			await UITestHelper.WaitFor(() => GetHiddenInputState() == "|0", timeoutMS: 3000, message: "the hidden input should be attached to the first TextBox");
+			first.TextCompositionStarted += (_, _) => second.Focus(FocusState.Programmatic);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "a", "a", 1));
+
+				Assert.AreEqual("", second.Text);
+				Assert.IsFalse(first.IsComposing);
+				Assert.IsFalse(second.IsComposing);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// A TextCompositionEnded handler moves focus to another TextBox while the TextBox's text differs from the commit (a
+		// TextChanging filter): the commit isn't reconciled into the newly focused TextBox.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Browser_Ime_Ended_Handler_Moves_Focus(bool secondAcceptsReturn)
+		{
+			DisableAccessibility();
+			var first = new TextBox { Width = 300 };
+			var second = new TextBox { Width = 300, AcceptsReturn = secondAcceptsReturn };
+			first.TextChanging += (sender, _) => sender.Text = sender.Text.ToUpperInvariant();
+			await UITestHelper.Load(new StackPanel { Children = { first, second } });
+			first.Focus(FocusState.Programmatic);
+			await UITestHelper.WaitFor(() => GetHiddenInputState() == "|0", timeoutMS: 3000, message: "the hidden input should be attached to the first TextBox");
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "ab", "ab", 2));
+				Assert.AreEqual("AB", first.Text);
+
+				first.TextCompositionEnded += (_, _) => second.Focus(FocusState.Programmatic);
+				await ReplayOnHiddenInput(ImeEnd("ab"));
+
+				Assert.AreEqual("AB", first.Text);
+				Assert.AreEqual("", second.Text);
+				Assert.IsFalse(second.IsComposing);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// The preedit matches the text already at its start, which must not pass for the composition being in Text.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Composition_Repeats_Existing_Character()
+		{
+			var SUT = await LoadFocusedForBrowserIme("a");
+			var ranges = TrackCompositionRanges(SUT);
+			try
+			{
+				SUT.Select(0, 0);
+				await UITestHelper.WaitFor(() => GetHiddenInputState() == "a|0", timeoutMS: 3000, message: "the caret should reach the hidden input");
+
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "a", "aa", 1));
+
+				Assert.AreEqual("aa", SUT.Text);
+				CollectionAssert.AreEqual(new[] { "0+1 aa" }, ranges);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Gboard re-opens the composition on the whole token when a letter follows it: the composition starts before the
+		// caret, and TextCompositionChanged sees all of it in Text.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Composition_Extends_Existing_Text()
+		{
+			var SUT = await LoadFocusedForBrowserIme("abc@");
+			var ranges = TrackCompositionRanges(SUT);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 4, "abc@d", "abc@d", 5));
+
+				Assert.AreEqual("abc@d", SUT.Text);
+				Assert.IsTrue(SUT.IsComposing);
+				CollectionAssert.AreEqual(new[] { "0+5 abc@d" }, ranges);
+
+				await ReplayOnHiddenInput(ImeEnd("abc@d"));
+
+				Assert.AreEqual("abc@d", SUT.Text);
+				Assert.AreEqual(5, SUT.SelectionStart);
+				Assert.IsFalse(SUT.IsComposing);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// The IME moves its caret to the start of a preedit that repeats the text before it. The text alone can't tell
+		// which "b" is the preedit, so the composition keeps the start it was inserted at.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Caret_Moved_Inside_Preedit_Repeating_Text()
+		{
+			var SUT = await LoadFocusedForBrowserIme("ab");
+			var ranges = TrackCompositionRanges(SUT);
+			try
+			{
+				SUT.Select(1, 0);
+				await UITestHelper.WaitFor(() => GetHiddenInputState() == "ab|1", timeoutMS: 3000, message: "the caret should reach the hidden input");
+
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(1, 1, "b", "abb", 2));
+				await ReplayOnHiddenInput("t.dispatchEvent(new CompositionEvent('compositionupdate',{data:'b'}));t.setSelectionRange(1,1);t.dispatchEvent(new InputEvent('input',{isComposing:true,inputType:'insertCompositionText',data:'b'}));");
+
+				CollectionAssert.AreEqual(new[] { "1+1 abb", "1+1 abb" }, ranges);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// The IME deletes the whole preedit and moves its caret away: the composition is left empty where the preedit was.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Composition_Preedit_Emptied()
+		{
+			var SUT = await LoadFocusedForBrowserIme("ab ");
+			var ranges = TrackCompositionRanges(SUT);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(3, 3, "x", "ab x", 4));
+				await ReplayOnHiddenInput(ImeCompose(3, 4, "", "ab ", 0));
+
+				Assert.AreEqual("ab ", SUT.Text);
+				CollectionAssert.AreEqual(new[] { "3+1 ab x", "3+0 ab " }, ranges);
+
+				await ReplayOnHiddenInput(ImeEnd(""));
+
+				Assert.IsFalse(SUT.IsComposing);
+				Assert.AreEqual(0, SUT.SelectionStart);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// WebKit order: compositionend with the preedit still selected in the input, then the input event that puts the
+		// committed text in its place. A commit equal to the preedit needs nothing more, so the composition ends at once.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_WebKit_Commit_Equal_To_Preedit_Ends_At_Once()
+		{
+			var SUT = await LoadFocusedForBrowserIme("");
+			var events = TrackCompositionEvents(SUT);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "ab", "ab", 2));
+				await ReplayOnHiddenInput("t.setSelectionRange(0,2);" + ImeEnd("ab"));
+				Assert.IsFalse(SUT.IsComposing);
+
+				await ReplayOnHiddenInput(WebKitInput("ab", 2, "insertFromComposition", "ab", isComposing: false));
+				await ReplayOnHiddenInput(NativeInput("ab ", 3, "insertText"));
+
+				Assert.AreEqual("ab ", SUT.Text);
+				Assert.AreEqual(3, SUT.SelectionStart);
+				Assert.IsFalse(SUT.IsComposing);
+				CollectionAssert.AreEqual(new[] { "changed 0+2 ab", "ended 0+2 ab" }, events);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// The preedit removed with an input event of its own before a compositionend that commits nothing: the text is
+		// already restored, so nothing is left to wait for.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_WebKit_Preedit_Removed_Before_Cancel()
+		{
+			var SUT = await LoadFocusedForBrowserIme("ab ");
+			var events = TrackCompositionEvents(SUT);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(3, 3, "nihon", "ab nihon", 8));
+				await ReplayOnHiddenInput(WebKitInput("ab ", 3, "deleteCompositionText", "", isComposing: true) + ImeEnd(""));
+
+				Assert.AreEqual("ab ", SUT.Text);
+				Assert.AreEqual(3, SUT.SelectionStart);
+				Assert.IsFalse(SUT.IsComposing);
+				CollectionAssert.AreEqual(new[] { "changed 3+5 ab nihon", "changed 3+0 ab ", "ended 3+0 ab " }, events);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// A TextChanging handler leaves the text shorter than where the composition starts. The ranges the composition
+		// events report stay within the text.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Composition_Coerced_Shorter_Than_Its_Start()
+		{
+			var SUT = await LoadFocusedForBrowserIme("ab");
+			var ranges = TrackCompositionRanges(SUT);
+			var ended = new List<string>();
+			SUT.TextCompositionEnded += (_, e) => ended.Add($"{e.StartIndex}+{e.Length} {SUT.Text}");
+			SUT.TextChanging += (sender, _) =>
+			{
+				if (sender.Text.Length > 2)
+				{
+					sender.Text = "";
+				}
+			};
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(2, 2, "c", "abc", 3));
+
+				Assert.AreEqual("", SUT.Text);
+				CollectionAssert.AreEqual(new[] { "0+0 " }, ranges);
+
+				await ReplayOnHiddenInput(ImeEnd("c"));
+
+				Assert.AreEqual("", SUT.Text);
+				Assert.IsFalse(SUT.IsComposing);
+				CollectionAssert.AreEqual(new[] { "0+0 " }, ended);
+				Assert.AreEqual("|0", GetHiddenInputState());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// A TextCompositionChanged handler moves focus to another TextBox (an OTP-style form): the text of that update
+		// stays in the TextBox it was typed in. A multi-line TextBox gets a new textarea, a single-line one the same input.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Browser_Ime_Changed_Handler_Moves_Focus(bool secondAcceptsReturn)
+		{
+			DisableAccessibility();
+			var first = new TextBox { Width = 300 };
+			var second = new TextBox { Width = 300, AcceptsReturn = secondAcceptsReturn };
+			await UITestHelper.Load(new StackPanel { Children = { first, second } });
+			first.Focus(FocusState.Programmatic);
+			await UITestHelper.WaitFor(() => GetHiddenInputState() == "|0", timeoutMS: 3000, message: "the hidden input should be attached to the first TextBox");
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "hell", "hell", 4));
+				Assert.AreEqual("hell", first.Text);
+
+				first.TextCompositionChanged += (_, _) => second.Focus(FocusState.Programmatic);
+				await ReplayOnHiddenInput(ImeCompose(0, 4, "hello", "hello", 5));
+
+				Assert.AreEqual("hello", first.Text);
+				Assert.AreEqual("", second.Text);
+				Assert.IsFalse(first.IsComposing);
+				Assert.IsFalse(second.IsComposing);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
 		// Keeps the browser's own selectionchange events away from the input's handler, so a test can run it itself.
 		private static void DetachSelectionChangeHandler()
 			=> InvokeBrowserJs("(function(){window.__unoSelectionChange=document.onselectionchange;document.onselectionchange=null;return 'ok';})()");
 
 		private static void ReattachSelectionChangeHandler()
 			=> InvokeBrowserJs("(function(){if(window.__unoSelectionChange){document.onselectionchange=window.__unoSelectionChange;delete window.__unoSelectionChange;}return 'ok';})()");
+
+		// Records the composition events in order, with the text a handler sees at that point.
+		private static List<string> TrackCompositionEvents(TextBox textBox)
+		{
+			var events = new List<string>();
+			textBox.TextCompositionChanged += (_, e) => events.Add($"changed {e.StartIndex}+{e.Length} {textBox.Text}");
+			textBox.TextCompositionEnded += (_, e) => events.Add($"ended {e.StartIndex}+{e.Length} {textBox.Text}");
+			return events;
+		}
+
+		// WebKit's own input types, which Chromium's InputEvent constructor drops: set on the instance instead.
+		private static string WebKitInput(string value, int caret, string inputType, string data, bool isComposing)
+			=> $"{{t.value='{value}';t.setSelectionRange({caret},{caret});const e=new InputEvent('input',{{isComposing:{(isComposing ? "true" : "false")},data:'{data}'}});"
+				+ $"Object.defineProperty(e,'inputType',{{value:'{inputType}'}});t.dispatchEvent(e);}}";
+
+		// Records each TextCompositionChanged range with the text a handler sees at that point.
+		private static List<string> TrackCompositionRanges(TextBox textBox)
+		{
+			var ranges = new List<string>();
+			textBox.TextCompositionChanged += (_, e) => ranges.Add($"{e.StartIndex}+{e.Length} {textBox.Text}");
+			return ranges;
+		}
 
 		private static async Task<TextBox> LoadFocusedForBrowserIme(string text, int maxLength = 0, bool acceptsReturn = false)
 		{
@@ -11180,6 +11547,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("NIH", SUT.Text);
 			Assert.IsTrue(SUT.IsComposing, "the app's edit is part of the composition step");
 			Assert.IsFalse(fake.EndImeSessionCalled, "the IME session must not restart");
+		}
+
+		// Skia-Android and the browser apply the composition themselves and report it before syncing it to the TextBox.
+		// TextCompositionChanged comes once the text is in Text, after TextChanging, as for text the TextBox applies.
+		[TestMethod]
+		public async Task When_IME_Platform_Applied_Composition_Changed_After_Its_Text()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox();
+			var events = new List<string>();
+			SUT.TextChanging += (_, _) => events.Add($"changing {SUT.Text}");
+			SUT.TextCompositionChanged += (_, e) => events.Add($"changed {e.StartIndex}+{e.Length} {SUT.Text}");
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var host = (IImeSessionHost)SUT.Core;
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni", textAlreadyApplied: true);
+			host.UpdateTextFromNative("ni", 2, 0);
+			fake.SimulateCompositionUpdate("nih", textAlreadyApplied: true);
+			host.UpdateTextFromNative("nih", 3, 0);
+			await WindowHelper.WaitForIdle();
+
+			CollectionAssert.AreEqual(new[] { "changing ni", "changed 0+2 ni", "changing nih", "changed 0+3 nih" }, events);
 		}
 
 		// The Android IME echoes every selection back as a normalized range, which used to flip a backward

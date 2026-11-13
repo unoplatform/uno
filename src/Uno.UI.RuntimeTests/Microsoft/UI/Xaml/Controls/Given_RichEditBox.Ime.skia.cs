@@ -625,6 +625,86 @@ public partial class Given_RichEditBox
 		}
 	}
 
+	// Skia-Android and the browser apply the composition themselves and report it before syncing it to the document.
+	// TextCompositionChanged comes once the text is in the document, after TextChanging.
+	[TestMethod]
+	public async Task When_Platform_Applied_Composition_Changed_After_Its_Text()
+	{
+		var fake = new FakeImeTextBoxExtension();
+		using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
+		var sut = new RichEditBox();
+		var events = new List<string>();
+		sut.TextChanging += (_, _) => events.Add("changing");
+		sut.TextCompositionChanged += (_, e) =>
+		{
+			GetTextWithoutFinalEop(sut.Document, out var text);
+			events.Add($"changed {e.StartIndex}+{e.Length} {text}");
+		};
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			sut.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("ni", cursorPosition: 2, textAlreadyApplied: true);
+			sut.UpdateTextFromNative("ni", selectionStart: 2, selectionLength: 0);
+			await WindowHelper.WaitForIdle();
+
+			CollectionAssert.AreEqual(new[] { "changing", "changed 0+2 ni" }, events);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	// Gboard re-opens the composition on the whole token when a letter follows it: the preedit starts before the caret,
+	// and the input event after compositionupdate puts it in the hidden input's value.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Wasm_Composition_Reopened_On_Existing_Text_Changed_Sees_The_Preedit()
+	{
+		var sut = new RichEditBox();
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			sut.Document.SetText(TextSetOptions.None, "abc@");
+			sut.Document.Selection.SetRange(4, 4);
+			sut.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var changes = new List<string>();
+			sut.TextChanging += (_, _) => changes.Add("changing");
+			sut.TextCompositionChanged += (_, e) =>
+			{
+				GetTextWithoutFinalEop(sut.Document, out var current);
+				changes.Add($"{e.StartIndex}+{e.Length} {current}");
+			};
+
+			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'abc@d'}));input.value='abc@d';input.setSelectionRange(5,5);input.dispatchEvent(new InputEvent('input',{isComposing:true,inputType:'insertCompositionText',data:'abc@d'}));return 'ok';})()");
+			await WindowHelper.WaitForIdle();
+
+			CollectionAssert.AreEqual(new[] { "changing", "0+5 abc@d" }, changes);
+			Assert.IsTrue(sut.IsComposing);
+
+			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionend',{data:'abc@d'}));return 'ok';})()");
+			await WindowHelper.WaitForIdle();
+
+			GetTextWithoutFinalEop(sut.Document, out var text);
+			Assert.AreEqual("abc@d", text);
+			Assert.IsFalse(sut.IsComposing);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
 	// Firefox dispatches the commit's input event after compositionend. The commit still belongs to the composition.
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]

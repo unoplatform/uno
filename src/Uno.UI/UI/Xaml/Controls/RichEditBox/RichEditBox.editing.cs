@@ -900,6 +900,7 @@ namespace Microsoft.UI.Xaml.Controls
 					out nativeTextNeedsCorrection)))
 			{
 				RestoreNativeTextAndSelection(oldText);
+				OnPlatformTextSynced(refused: true);
 				return false;
 			}
 
@@ -931,6 +932,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Document.FinalizeHistorySelection();
 			}
 
+			OnPlatformTextSynced(refused: nativeTextNeedsCorrection && GetPlainTextContent() == oldText);
 			return true;
 		}
 

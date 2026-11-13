@@ -299,6 +299,7 @@
 					return;
 				}
 				BrowserInvisibleTextBoxViewExtension.runSyncingFromNative(() => {
+					const generation = BrowserInvisibleTextBoxViewExtension.compositionGeneration;
 					// Firefox dispatches the commit's input event after compositionend. The committed value still belongs
 					// to the composition: the TextBox ends it with its final text, and RichEditBox keeps one undo step.
 					if (input.value !== BrowserInvisibleTextBoxViewExtension.syncedValue) {
@@ -309,13 +310,16 @@
 					const textDiffers = BrowserInvisibleTextBoxViewExtension.pendingText !== null;
 					BrowserInvisibleTextBoxViewExtension.resetComposition();
 					if (wasReported) {
-						if (ev.data.length > 0) {
+						if (textDiffers) {
+							// The TextBox holds other text than the commit: the composition ends with its range in that text.
+							BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
+						} else if (ev.data.length > 0) {
 							BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(ev.data);
 						} else {
 							BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCanceled();
 						}
 					}
-					if (textDiffers) {
+					if (textDiffers && BrowserInvisibleTextBoxViewExtension.isSyncTarget(input, generation)) {
 						// The TextBox re-applies its edits (a TextChanging filter, MaxLength) to the committed value and
 						// pushes the result to the input.
 						BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
@@ -368,9 +372,18 @@
 		}
 
 		private static syncCompositionFromInput(input: HTMLInputElement | HTMLTextAreaElement) {
+			const generation = BrowserInvisibleTextBoxViewExtension.compositionGeneration;
 			// Before the text sync, so the TextBox knows the change belongs to the composition.
 			BrowserInvisibleTextBoxViewExtension.reportComposition(input);
-			BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
+			if (BrowserInvisibleTextBoxViewExtension.isSyncTarget(input, generation)) {
+				BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
+			}
+		}
+
+		// A handler of a composition event (TextCompositionStarted, TextCompositionEnded) may have moved focus, replacing the
+		// input or handing it to another TextBox, which ends the composition: the input's value isn't that TextBox's.
+		private static isSyncTarget(input: HTMLInputElement | HTMLTextAreaElement, generation: number) {
+			return input === BrowserInvisibleTextBoxViewExtension.inputElement && generation === BrowserInvisibleTextBoxViewExtension.compositionGeneration;
 		}
 
 		private static syncTextFromInput(input: HTMLInputElement | HTMLTextAreaElement) {
