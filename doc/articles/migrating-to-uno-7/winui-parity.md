@@ -411,7 +411,14 @@ is removed, and `FrameworkTemplateBuilder` moved from `Microsoft.UI.Xaml` to `Un
 `(object owner, TemplateMaterializationSettings settings)` signature, as an `[EditorBrowsable(Never)]`
 delegate for XAML-generated code. `MarkupHelper.CreateDataTemplate` and its `ControlTemplate` and
 `ItemsPanelTemplate` siblings are `[EditorBrowsable(Never)]` helpers for that code too, not a replacement
-to call by hand. Instead, as in WinUI, either declare the template in XAML with an `x:Key` and look it up
+to call by hand. For example, this no longer compiles, and the same goes for `ControlTemplate` and
+`ItemsPanelTemplate`:
+
+```csharp
+var template = new DataTemplate(() => new TextBlock { Text = "Hello" });
+```
+
+Instead, as in WinUI, either declare the template in XAML with an `x:Key` and look it up
 by that key:
 
 ```xml
