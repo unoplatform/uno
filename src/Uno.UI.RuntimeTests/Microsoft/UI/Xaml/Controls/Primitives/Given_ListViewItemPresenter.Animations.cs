@@ -522,6 +522,8 @@ public partial class Given_ListViewItemPresenter
 	{
 		using var _ = ListViewBaseItemChromeRuntimeFeatures.Override(forceRounded: true, forceSelectionIndicatorVisual: true, forceSelectionIndicatorModeInline: true);
 		var (presenter, _, indicator) = await CreateIndicatorItem();
+		// Deselected without the chrome's own transition, so only this command hides the indicator.
+		presenter.m_visualStates.commonState2 = ListViewBaseItemPresenter.CommonStates2.Normal;
 
 		Process(presenter, SelectionIndicatorVisibility(indicator, selected: false));
 
@@ -550,6 +552,7 @@ public partial class Given_ListViewItemPresenter
 		await WaitForAnimationCleared(presenter.m_selectionIndicatorAnimation);
 		Assert.AreSame(indicator, presenter.m_selectionIndicatorRectangle, "Showing keeps the indicator");
 
+		presenter.m_visualStates.commonState2 = ListViewBaseItemPresenter.CommonStates2.Normal;
 		Process(presenter, SelectionIndicatorVisibility(indicator, selected: false, steadyStateOnly: true));
 
 		Assert.AreEqual(0, tt.Opacity, AnimationTolerance);

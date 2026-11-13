@@ -12,6 +12,10 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.Extensions;
+using Uno.UI.DevTools.Input;
+using Uno.UI.RuntimeTests.Extensions;
+using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
 using static Uno.UI.Extensions.ViewExtensions;
 
@@ -74,6 +78,131 @@ public partial class Given_ListViewItemPresenter
 
 		Assert.IsNull(presenter.m_selectionIndicatorRectangle);
 		Assert.IsNull(indicator.GetParent());
+	}
+
+	[TestMethod]
+	public async Task When_Indicator_Lost_While_Selected_Then_Measure_Restores_It()
+	{
+		using var chromeScope = ListViewChromeHelper.UseRoundedChromeResource(true);
+		var (list, items) = await CreateWinUIListView(ListViewSelectionMode.Single);
+		var (_, presenter) = items[0];
+		list.SelectedIndex = 0;
+		await ChromeTestHelper.WaitForNoRunningAnimation(presenter);
+
+		// As in WinUI when a popup disconnect completes the indicator animation early.
+		presenter.RemoveSelectionIndicator();
+		presenter.InvalidateMeasure();
+		await WindowHelper.WaitForIdle();
+
+		var indicator = presenter.m_selectionIndicatorRectangle;
+		Assert.IsNotNull(indicator);
+		Assert.AreSame(presenter.SelectionIndicatorBrush, indicator.Background);
+		Assert.IsTrue(indicator.ActualHeight > 6, $"Indicator height {indicator.ActualHeight}");
+	}
+
+	[TestMethod]
+	public async Task When_Indicator_Lost_While_Selected_Then_Pointer_State_Restores_It()
+	{
+		using var chromeScope = ListViewChromeHelper.UseRoundedChromeResource(true);
+		var (list, items) = await CreateWinUIListView(ListViewSelectionMode.Single);
+		var (item, presenter) = items[0];
+		list.SelectedIndex = 0;
+		await ChromeTestHelper.WaitForNoRunningAnimation(presenter);
+
+		presenter.RemoveSelectionIndicator();
+		VisualStateManager.GoToState(item, "PointerOverSelected", false);
+
+		var indicator = presenter.m_selectionIndicatorRectangle;
+		Assert.IsNotNull(indicator);
+		Assert.AreSame(presenter.SelectionIndicatorPointerOverBrush, indicator.Background);
+	}
+
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_Selected_In_Popup_Indicator_Survives_Reopen()
+	{
+		// WinUI VerifySelectionIndicatorAfterPopupReopen: only the ItemsPresenter is disconnected when the popup closes.
+		using var chromeScope = ListViewChromeHelper.UseRoundedChromeResource(true);
+		var list = (ListView)XamlReader.Load("""
+			<ListView xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					  Width="200" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top"
+					  SelectionMode="Single">
+				<ListView.ItemsPanel>
+					<ItemsPanelTemplate>
+						<StackPanel />
+					</ItemsPanelTemplate>
+				</ListView.ItemsPanel>
+				<ListView.Template>
+					<ControlTemplate TargetType="ListView">
+						<Grid>
+							<Popup x:Name="Popup" VerticalOffset="40">
+								<ScrollViewer Width="200" Height="120">
+									<ItemsPresenter />
+								</ScrollViewer>
+							</Popup>
+						</Grid>
+					</ControlTemplate>
+				</ListView.Template>
+			</ListView>
+			""");
+		list.Resources.MergedDictionaries.Add(WinUIItemStyles.Resources);
+		list.ItemContainerStyle = WinUIItemStyles.ListViewItemStyle;
+		list.ItemsSource = new[] { "First item", "Second item" };
+
+		WindowHelper.WindowContent = list;
+		// The items are only realized while the popup is open.
+		await WindowHelper.WaitForLoaded(list, l => l.IsLoaded);
+		var popup = (Popup)((FrameworkElement)VisualTreeHelper.GetChild(list, 0)).FindName("Popup");
+		list.SelectionChanged += (_, _) => popup.IsOpen = false;
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		try
+		{
+			for (var index = 0; index < 2; index++)
+			{
+				popup.IsOpen = true;
+				await WindowHelper.WaitForIdle();
+
+				var item = (ListViewItem)list.ContainerFromIndex(index);
+				var presenter = (ListViewItemPresenter)VisualTreeHelper.GetChild(item, 0);
+
+				var center = item.GetAbsoluteBounds().GetCenter();
+				mouse.Press(center);
+				mouse.Release();
+				await WindowHelper.WaitForIdle();
+				Assert.IsFalse(popup.IsOpen);
+
+				popup.IsOpen = true;
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(index, list.SelectedIndex);
+				Assert.AreSame(item, list.ContainerFromIndex(index));
+
+				// Checked before hover, so a late background update cannot mask a missing layout.
+				var indicator = presenter.m_selectionIndicatorRectangle;
+				Assert.IsNotNull(indicator, $"Indicator of item {index} after reopen");
+				Assert.IsTrue(indicator.ActualWidth > 0, $"Indicator width {indicator.ActualWidth}");
+				Assert.IsTrue(indicator.ActualHeight > 6, $"Indicator height {indicator.ActualHeight}");
+
+				mouse.MoveTo(center);
+				mouse.Press(center);
+				mouse.Release();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(index, list.SelectedIndex);
+				Assert.IsTrue(popup.IsOpen);
+				Assert.IsNotNull(presenter.m_selectionIndicatorRectangle, $"Indicator of item {index} after hover and press");
+
+				popup.IsOpen = false;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+		finally
+		{
+			popup.IsOpen = false;
+		}
 	}
 
 	[TestMethod]
