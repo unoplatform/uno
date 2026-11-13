@@ -1,5 +1,7 @@
 # WinUI Port Sync Implementation Plan
 
+> **Status: implemented.** Kept as the record of how the work was sequenced. Several details changed during implementation (tree-based detection across upstream layouts, the reused review API key, Sonnet as the default model, per-branch report files, publish-side gates). `design.md` and `build/winui-sync/README.md` describe the result.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** A weekly GitHub Actions workflow that detects upstream WinUI changes per tracked area since its recorded baseline, ports them with an agent, builds, and opens/updates one issue + one draft PR per area.
