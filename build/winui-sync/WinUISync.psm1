@@ -646,6 +646,45 @@ function Get-CommitGroups {
 
 #endregion
 
+#region prompt
+
+function Expand-SyncPrompt {
+	param(
+		[Parameter(Mandatory)][string]$TemplatePath,
+		[Parameter(Mandatory)]$Area,
+		[Parameter(Mandatory)][string]$TargetTag,
+		[Parameter(Mandatory)][string]$TargetSha,
+		# Clone used to resolve paths; -UpstreamDir is how the agent should refer to it.
+		[Parameter(Mandatory)][string]$UpstreamRepo,
+		[Parameter(Mandatory)][string]$UpstreamDir)
+	$commands = foreach ($d in Get-AreaTreeDiffs -Area $Area -UpstreamRepo $UpstreamRepo -TargetSha $TargetSha) {
+		$tail = if ($d.Exclude) { " -- . " + (($d.Exclude | ForEach-Object { "'$_'" }) -join ' ') } else { '' }
+		"      git -C $UpstreamDir diff $($d.Base) $($d.Target)$tail"
+	}
+	$list = { param($items) if (@($items).Count -gt 0) { (@($items) | ForEach-Object { "``$_``" }) -join ', ' } else { '_none_' } }
+	$values = @{
+		id            = $Area.id
+		title         = $Area.title
+		baseline      = $Area.baseline
+		target_tag    = $TargetTag
+		target_sha    = $TargetSha
+		upstream_dir  = $UpstreamDir
+		diff_commands = $commands -join "`n"
+		uno_sources   = & $list $Area.uno.sources
+		uno_tests     = & $list $Area.uno.tests
+	}
+	$text = (Get-Content -Raw -LiteralPath $TemplatePath) -replace "`r`n", "`n"
+	$text = [regex]::Replace($text, '\{\{(\w+)\}\}', {
+			param($m)
+			$name = $m.Groups[1].Value
+			if (-not $values.ContainsKey($name)) { throw "unknown placeholder {{$name}} in $TemplatePath" }
+			[string]$values[$name]
+		})
+	$text
+}
+
+#endregion
+
 #region branch and publish
 
 function Invoke-ApplyPatch {

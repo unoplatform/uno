@@ -96,3 +96,42 @@ Describe 'Set-AreaBaseline' {
 		{ Set-AreaBaseline -ManifestPath $m -Id 'nope' -Sha ('c' * 40) } | Should -Throw '*nope*'
 	}
 }
+
+Describe 'Expand-SyncPrompt' {
+	BeforeAll {
+		$script:up = New-TestUpstream -Path (Join-Path $TestDrive 'prompt-up')
+		$script:base = Add-TestCommit $up @{ 'controls/dev/Foo/Foo.cpp' = 'v1'; 'controls/dev/Foo/Strings/en-us/Resources.resw' = 'en' }
+		$script:target = Add-TestCommit $up @{
+			'controls/dev/Foo/Foo.cpp'                          = $null
+			'controls/dev/Foo/Strings/en-us/Resources.resw'     = $null
+			'src/controls/dev/Foo/Foo.cpp'                      = 'v2'
+			'src/controls/dev/Foo/Strings/en-us/Resources.resw' = 'en'
+		} -Tag 'winui3/release/1.1.0'
+		$m = Write-TestManifest (Join-Path $TestDrive 'prompt.json') @(
+			(New-TestArea -Id 'foo' -Baseline $base -Extra @{
+				title    = 'Foo'
+				upstream = [ordered]@{ sources = @('controls/dev/Foo'); strings = 'controls/dev/Foo/Strings' }
+				uno      = [ordered]@{ sources = @('src/Uno.UI/Foo'); tests = @('src/Tests/Foo'); strings = 'src/Uno.UI/Foo/Strings' }
+			}))
+		$script:area = @(Get-SyncAreas -ManifestPath $m)[0]
+	}
+
+	It 'fills the real template completely' {
+		$text = Expand-SyncPrompt -TemplatePath "$PSScriptRoot/../prompt.md" -Area $area -TargetTag 'winui3/release/1.1.0' -TargetSha $target -UpstreamRepo $up -UpstreamDir '.winui-upstream'
+
+		$text | Should -Not -Match '\{\{'
+		$text | Should -Match 'Foo'
+		$text | Should -Match ([regex]::Escape('winui3/release/1.1.0'))
+		$text | Should -Match ([regex]::Escape("git -C .winui-upstream diff ${base}:controls/dev/Foo ${target}:src/controls/dev/Foo -- . ':(exclude)Strings'"))
+		$text | Should -Match ([regex]::Escape('src/Uno.UI/Foo'))
+		$text | Should -Match ([regex]::Escape('src/Tests/Foo'))
+		$text | Should -Match 'sync-report\.md'
+		$text | Should -Match 'build: passed\|failed'
+	}
+
+	It 'throws on an unknown placeholder' {
+		$template = Join-Path $TestDrive 'bad-prompt.md'
+		Set-Content $template 'Port {{title}} using {{foo}}.'
+		{ Expand-SyncPrompt -TemplatePath $template -Area $area -TargetTag 'winui3/release/1.1.0' -TargetSha $target -UpstreamRepo $up -UpstreamDir 'u' } | Should -Throw '*{{foo}}*'
+	}
+}
