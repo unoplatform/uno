@@ -17,6 +17,8 @@ param(
 	[string]$UnoStrings,
 	[string]$UnoRoot = (Resolve-Path "$PSScriptRoot/../..").Path,
 	[string]$ManifestPath = "$PSScriptRoot/areas.json",
+	# Use this commit or tag instead of the baseline derived from the headers.
+	[string]$Baseline,
 	[switch]$Write)
 
 $ErrorActionPreference = 'Stop'
@@ -44,17 +46,23 @@ if ($result.NoRef) {
 	"Files with no recorded commit or tag ($($result.NoRef.Count)):"
 	$result.NoRef | ForEach-Object { "  $([System.IO.Path]::GetRelativePath($UnoRoot, $_))" }
 }
-if (-not $result.Baseline) { throw "no baseline could be derived for '$Id'; settle one by hand" }
+$chosen = $result.Baseline
+if ($Baseline) {
+	$chosen = git -C $UpstreamRepo rev-parse --verify --quiet "$Baseline^{commit}" 2>$null
+	if ($LASTEXITCODE -ne 0 -or -not $chosen) { throw "baseline '$Baseline' is not a commit in $UpstreamRepo" }
+	"Header-derived baseline would be: $($result.Baseline)"
+}
+if (-not $chosen) { throw "no baseline could be derived for '$Id'; pass one with -Baseline" }
 
 $area = [pscustomobject]@{
 	id       = $Id
 	title    = $Title
-	baseline = $result.Baseline
+	baseline = $chosen
 	model    = $null
 	upstream = [pscustomobject]@{ sources = @($UpstreamSources); tests = @($UpstreamTests); strings = $UpstreamStrings }
 	uno      = [pscustomobject]@{ sources = @($UnoSources); tests = @($UnoTests); strings = $UnoStrings }
 }
-"Proposed baseline: $($result.Baseline) ($(git -C $UpstreamRepo log -1 --format='%cs %s' $result.Baseline))"
+"Proposed baseline: $chosen ($(git -C $UpstreamRepo log -1 --format='%cs %s' $chosen))"
 
 # A mistyped path would read as "never changes"; make sure upstream really has each one.
 $latest = Get-LatestStableTag -UpstreamRepo $UpstreamRepo

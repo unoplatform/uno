@@ -120,4 +120,20 @@ Describe 'seed-area.ps1' {
 
 		{ & "$PSScriptRoot/../seed-area.ps1" @common -UpstreamTests 'controls/dev/Foo/Nope' } | Should -Throw '*controls/dev/Foo/Nope*'
 	}
+
+	It 'takes an explicit baseline over the one derived from headers' {
+		$up = New-TestUpstream -Path (Join-Path $TestDrive 'up5')
+		$old = Add-TestCommit $up @{ 'controls/dev/Foo/Foo.cpp' = '1' }
+		$new = Add-TestCommit $up @{ 'controls/dev/Foo/Foo.cpp' = '2' } -Tag 'winui3/release/1.0.0'
+		$uno = Join-Path $TestDrive 'uno5'
+		New-CsFile "$uno/src/Foo/Foo.cs" "// MUX Reference Foo.cpp, commit $($new.Substring(0, 10))"
+		New-CsFile "$uno/src/Foo/Stale.cs" "// MUX Reference Foo.cpp, commit $($old.Substring(0, 10))"
+		$manifest = Write-TestManifest (Join-Path $uno 'areas.json') @()
+		$common = @{ Id = 'foo'; Title = 'Foo'; UpstreamRepo = $up; UnoRoot = $uno; ManifestPath = $manifest; UpstreamSources = 'controls/dev/Foo'; UnoSources = 'src/Foo'; Write = $true }
+
+		& "$PSScriptRoot/../seed-area.ps1" @common -Baseline $new.Substring(0, 10) | Out-Null
+		@(Get-SyncAreas -ManifestPath $manifest)[0].baseline | Should -Be $new
+
+		{ & "$PSScriptRoot/../seed-area.ps1" @common -Baseline 'deadbeef1' } | Should -Throw '*deadbeef1*'
+	}
 }
