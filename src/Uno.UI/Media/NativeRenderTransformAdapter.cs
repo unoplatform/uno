@@ -44,11 +44,12 @@ namespace Uno.UI.Media
 			// Partial constructor
 			Initialized();
 
-			if (Transform is not null)
-			{
-				Transform.Changed += UpdateOnTransformPropertyChanged;
-			}
+			// Weak registration: a transform shared through a Style setter outlives the elements it is applied to
+			// and must not root them through this adapter.
+			_changedRegistration = Transform?.RegisterChanged(UpdateOnTransformPropertyChanged);
 		}
+
+		private IDisposable _changedRegistration;
 
 		internal NativeRenderTransformAdapter(_View owner, Transform transform, Point origin, Matrix3x2 flowDirectionTransform)
 			: this(owner, transform, origin)
@@ -118,7 +119,8 @@ namespace Uno.UI.Media
 		/// <inheritdoc />
 		public void Dispose()
 		{
-			Transform.Changed -= UpdateOnTransformPropertyChanged;
+			_changedRegistration?.Dispose();
+			_changedRegistration = null;
 			Cleanup();
 		}
 	}

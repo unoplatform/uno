@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Uno.Extensions;
 
 #if __ANDROID__
@@ -42,6 +43,19 @@ namespace Microsoft.UI.Xaml.Media
 		/// </summary>
 		internal event EventHandler? Changed;
 
+		private WeakEventHelper.WeakEventCollection? _weakChangedHandlers;
+
+		/// <summary>
+		/// Registers a <see cref="Changed"/> handler without keeping its target alive, for subscribers that are
+		/// shorter-lived than the transform (e.g. elements styled with a transform shared through a Style setter).
+		/// </summary>
+		/// <returns>A disposable that keeps the registration alive; dispose it to unregister.</returns>
+		internal IDisposable RegisterChanged(EventHandler handler)
+			=> WeakEventHelper.RegisterEvent(
+				_weakChangedHandlers ??= new(),
+				handler,
+				(h, s, e) => (h as EventHandler)?.Invoke(s, (EventArgs)e!));
+
 		protected void NotifyChanged()
 		{
 #if __ANDROID__ || __APPLE_UIKIT__ // On WASM currently we supports only CPU bound animations, so we have to let the transform be updated on each frame
@@ -56,6 +70,7 @@ namespace Microsoft.UI.Xaml.Media
 
 			MatrixCore = ToMatrix(new Point(0, 0));
 			Changed?.Invoke(this, EventArgs.Empty);
+			_weakChangedHandlers?.Invoke(this, EventArgs.Empty);
 		}
 
 		/// <summary>
