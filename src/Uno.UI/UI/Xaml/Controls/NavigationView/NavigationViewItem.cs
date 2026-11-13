@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItem.cpp, commit bac7a9c33
+// MUX reference NavigationViewItem.cpp, tag winui3/release/2.6.5
 
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
@@ -902,7 +902,11 @@ public partial class NavigationViewItem : NavigationViewItemBase
 #else
 					SharedHelpers.QueueCallbackForCompositionRendering(() =>
 					{
-						FlyoutBase.ShowAttachedFlyout(m_rootGrid);
+						// Item may have collapsed, left flyout mode, or been recycled since this was queued.
+						if (IsExpanded && ShouldRepeaterShowInFlyout() && m_rootGrid != null && FlyoutBase.GetAttachedFlyout(m_rootGrid) != null)
+						{
+							FlyoutBase.ShowAttachedFlyout(m_rootGrid);
+						}
 					});
 #endif
 				}

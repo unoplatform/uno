@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationView.cpp, commit bac7a9c33
+// MUX Reference NavigationView.cpp, tag winui3/release/2.6.5
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -1708,7 +1708,7 @@ public partial class NavigationView : ContentControl
 									VisualStateManager.GoToState(this, c_separatorCollapsedStateName, false);
 									return totalAvailableHeight - footerGroupDesiredHeight;
 								}
-								else if (menuItemsDesiredHeight <= totalAvailableHeightHalf)
+								else if (menuItemsActualHeight <= totalAvailableHeightHalf)
 								{
 									// Footer items exceed over the half, so let's limit them.
 									footerItemsScrollViewer.MaxHeight = totalAvailableHeight - menuItemsActualHeight;
@@ -1730,7 +1730,7 @@ public partial class NavigationView : ContentControl
 									return totalAvailableHeightHalf;
 								}
 							}
-							else
+							else if (totalAvailableHeight >= footerItemsRepeater.ActualHeight)
 							{
 								// Couldn't determine the menuItems.
 								// Let's just take all the height and let the other repeater deal with it.

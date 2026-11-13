@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewHelper.h, commit bac7a9c33
+// MUX reference NavigationViewHelper.h, tag winui3/release/2.6.5
 
 using Microsoft.UI.Xaml;
 
