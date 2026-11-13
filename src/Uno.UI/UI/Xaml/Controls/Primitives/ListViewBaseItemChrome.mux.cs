@@ -1293,6 +1293,17 @@ partial class ListViewBaseItemPresenter
 			m_multiSelectCheckBoxRectangle.Measure(totalSize);
 		}
 
+		var selected =
+			m_visualStates.HasState(CommonStates2.Selected) ||
+			m_visualStates.HasState(CommonStates2.PressedSelected) ||
+			m_visualStates.HasState(CommonStates2.PointerOverSelected);
+
+		// Selection can survive a popup disconnect even when its indicator does not.
+		if (m_selectionIndicatorRectangle is null && selected && IsInSelectionIndicatorMode())
+		{
+			EnsureSelectionIndicator();
+		}
+
 		if (IsSelectionIndicatorVisualEnabled() && m_selectionIndicatorRectangle is not null)
 		{
 			m_selectionIndicatorRectangle.Measure(totalSize);
@@ -1708,7 +1719,14 @@ partial class ListViewBaseItemPresenter
 
 					if (updateSelectionIndicatorBackground)
 					{
-						SetSelectionIndicatorBackground();
+						if (m_selectionIndicatorRectangle is null)
+						{
+							EnsureSelectionIndicator();
+						}
+						else
+						{
+							SetSelectionIndicatorBackground();
+						}
 					}
 				}
 
