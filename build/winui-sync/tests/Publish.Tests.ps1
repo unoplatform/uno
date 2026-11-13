@@ -26,12 +26,12 @@ BeforeAll {
 		$area = New-TestArea -Id 'foo' -Baseline $base -Extra @{
 			title    = 'Foo'
 			upstream = [ordered]@{ sources = @('controls/dev/Foo'); strings = 'controls/dev/Foo/Strings' }
-			uno      = [ordered]@{ sources = @('src/Foo'); tests = @('tests/Foo'); strings = 'src/Foo/Strings' }
+			uno      = [ordered]@{ sources = @('src/Foo'); tests = @('src/Tests/Foo'); strings = 'src/Foo/Strings' }
 		}
 		$master = Add-TestCommit $seed @{
 			'build/winui-sync/areas.json'          = (@{ areas = @($area) } | ConvertTo-Json -Depth 6)
 			'src/Foo/Foo.cs'                       = "// MUX Reference Foo.cpp, commit $($base.Substring(0, 9))`nclass Foo { /* v1 */ }`n"
-			'tests/Foo/FooTests.cs'                = "class FooTests { }`n"
+			'src/Tests/Foo/FooTests.cs'            = "class FooTests { }`n"
 			'src/Foo/Strings/en-US/Resources.resw' = 'en v1'
 		}
 		git init -q --bare -b main "$root/origin.git" | Out-Null
@@ -44,7 +44,7 @@ BeforeAll {
 
 		# The patch an agent would have produced on top of master.
 		[System.IO.File]::WriteAllText("$work/src/Foo/Foo.cs", "// MUX Reference Foo.cpp, tag winui3/release/1.1.0`nclass Foo { /* v2 */ }`n")
-		[System.IO.File]::WriteAllText("$work/tests/Foo/FooTests.cs", "class FooTests { /* v2 */ }`n")
+		[System.IO.File]::WriteAllText("$work/src/Tests/Foo/FooTests.cs", "class FooTests { /* v2 */ }`n")
 		$patch = "$root/sync.patch"
 		Invoke-TestGit $work add -A | Out-Null
 		Invoke-TestGit $work diff --cached --binary "--output=$patch" HEAD | Out-Null
@@ -104,6 +104,7 @@ Describe 'Read-SyncReport' {
 		$p = Join-Path $TestDrive 'ok.md'
 		Set-Content $p "build: passed`nskipped: 2`n---`n## Ported`nby @bob"
 		$r = Read-SyncReport -Path $p
+		$r.Valid | Should -BeTrue
 		$r.BuildPassed | Should -BeTrue
 		$r.SkippedCount | Should -Be 2
 		$r.Body | Should -Match '## Ported'
@@ -119,6 +120,7 @@ Describe 'Read-SyncReport' {
 
 	It 'fails closed on a missing file' {
 		$r = Read-SyncReport -Path (Join-Path $TestDrive 'nope.md')
+		$r.Valid | Should -BeFalse
 		$r.BuildPassed | Should -BeFalse
 		$r.SkippedCount | Should -Be 1
 		$r.Body | Should -Match 'report'
@@ -212,7 +214,7 @@ Describe 'Invoke-ApplyPatch' {
 	It 'applies a good patch into the index' {
 		$fx = New-PublishFixture
 		Invoke-ApplyPatch -RepoRoot $fx.Work -PatchPath $fx.Patch | Should -BeTrue
-		@(Invoke-TestGit $fx.Work diff --cached --name-only) | Should -Be @('src/Foo/Foo.cs', 'tests/Foo/FooTests.cs')
+		@(Invoke-TestGit $fx.Work diff --cached --name-only) | Should -Be @('src/Foo/Foo.cs', 'src/Tests/Foo/FooTests.cs')
 	}
 
 	It 'treats an empty patch as success' {
@@ -403,5 +405,128 @@ Describe 'Publish-SyncArea' {
 
 		$r.Outcome | Should -Be 'published'
 		Should -Invoke -ModuleName WinUISync New-GitHubPr -Times 1 -Exactly -ParameterFilter { $Body.StartsWith('**GitHub Issue:** closes #7') }
+	}
+
+	It 'keeps the skipped items of an earlier run when a later run on the same PR skips nothing' {
+		$fx = New-PublishFixture
+		Mock-GitHub
+		[System.IO.File]::WriteAllText($fx.Report, "build: passed`nskipped: 1`n---`n## Skipped`n- big dependency from the first run`n")
+		(Invoke-Publish $fx @{ StringsChanged = $false }).Outcome | Should -Be 'published'
+
+		# Second run a week later: a newer upstream tag, same open PR, nothing skipped this time.
+		$target2 = Add-TestCommit $fx.Upstream @{ 'controls/dev/Foo/Foo.cpp' = 'v3' } -Tag 'winui3/release/1.2.0'
+		Invoke-TestGit $fx.Work fetch -q origin | Out-Null
+		Invoke-TestGit $fx.Work checkout -q --detach $fx.Master | Out-Null
+		[System.IO.File]::WriteAllText($fx.Report, "build: passed`nskipped: 0`n---`n## Ported`n- second run change`n")
+		$empty = Join-Path $fx.Root 'empty.patch'; Set-Content $empty '' -NoNewline
+		Mock-GitHub -ExistingIssue 7
+
+		$r = Invoke-Publish $fx @{ StringsChanged = $false; PrNumber = 99; TargetTag = 'winui3/release/1.2.0'; TargetSha = $target2; PatchPath = $empty }
+
+		$r.Outcome | Should -Be 'published'
+		Should -Invoke -ModuleName WinUISync Update-GitHubPr -Times 1 -Exactly -ParameterFilter {
+			$Body.StartsWith('**GitHub Issue:** related to #7') -and $Body -match 'big dependency from the first run' -and $Body -match 'second run change'
+		}
+		Should -Invoke -ModuleName WinUISync Update-GitHubIssue -Times 1 -Exactly -ParameterFilter {
+			$Title -eq '[WinUI Sync] Foo → WinUI 1.2.0' -and $Body -match 'big dependency from the first run'
+		}
+	}
+
+	It 'starts the report afresh on a new branch even if an old report file is on the default branch' {
+		$fx = New-PublishFixture
+		Mock-GitHub
+		$master2 = Add-TestCommit $fx.Work @{ 'build/winui-sync/reports/foo.md' = "<!-- winui-sync-run target=winui3/release/0.9.0 build=passed skipped=3 -->`nold merged report`n" }
+
+		$r = Invoke-Publish $fx @{ MasterSha = $master2 }
+
+		$r.Outcome | Should -Be 'published'
+		Should -Invoke -ModuleName WinUISync New-GitHubPr -Times 1 -Exactly -ParameterFilter {
+			$Body.StartsWith('**GitHub Issue:** closes #7') -and $Body -notmatch 'old merged report'
+		}
+	}
+
+	It 'does not publish when the agent did not finish' {
+		$fx = New-PublishFixture
+		Mock-GitHub
+
+		$r = Invoke-Publish $fx @{ PortStatus = 'agent failure' }
+
+		$r.Outcome | Should -Match '^skipped'
+		Get-OriginBranchSha $fx | Should -BeNullOrEmpty
+	}
+
+	It 'does not publish a code change whose report is missing or malformed' {
+		$fx = New-PublishFixture
+		Mock-GitHub
+		Set-Content $fx.Report 'I ported everything.'
+
+		$r = Invoke-Publish $fx
+
+		$r.Outcome | Should -Match '^skipped'
+		Get-OriginBranchSha $fx | Should -BeNullOrEmpty
+		Should -Invoke -ModuleName WinUISync New-GitHubPr -Times 0 -Exactly
+	}
+
+	It 'refuses a patch that touches files a port may not change' {
+		$fx = New-PublishFixture
+		Mock-GitHub
+		[System.IO.File]::WriteAllText("$($fx.Work)/build/winui-sync/areas.json", '{ "areas": [] }')
+		New-Item -ItemType Directory -Force "$($fx.Work)/.github/workflows" | Out-Null
+		Set-Content "$($fx.Work)/.github/workflows/evil.yml" 'on: push'
+		Invoke-TestGit $fx.Work add -A | Out-Null
+		Invoke-TestGit $fx.Work diff --cached --binary "--output=$($fx.Patch)" HEAD | Out-Null
+		Invoke-TestGit $fx.Work reset -q --hard HEAD | Out-Null
+
+		$r = Invoke-Publish $fx
+
+		$r.Outcome | Should -Match '^skipped'
+		$r.Outcome | Should -Match ([regex]::Escape('.github/workflows/evil.yml'))
+		Get-OriginBranchSha $fx | Should -BeNullOrEmpty
+		Invoke-TestGit $fx.Work status --porcelain | Should -BeNullOrEmpty
+	}
+}
+
+Describe 'Test-SyncPatchPaths' {
+	It 'allows product and test code under src and nothing else' {
+		$bad = Test-SyncPatchPaths -Files @(
+			'src/Uno.UI/UI/Xaml/Controls/Foo/Foo.cs',
+			'src/Uno.UI.RuntimeTests/Tests/FooTests.cs',
+			'src/Uno.UI/UI/Xaml/Controls/Foo/Strings/en-US/Resources.resw',
+			'build/winui-sync/areas.json',
+			'.github/workflows/x.yml',
+			'.claude/rules/code-style.md',
+			'AGENTS.md',
+			'global.json')
+		$bad | Should -Be @(
+			'src/Uno.UI/UI/Xaml/Controls/Foo/Strings/en-US/Resources.resw',
+			'build/winui-sync/areas.json',
+			'.github/workflows/x.yml',
+			'.claude/rules/code-style.md',
+			'AGENTS.md',
+			'global.json')
+	}
+}
+
+Describe 'Get-PortStatus' {
+	It 'is ok only when the agent succeeded without a conflict' {
+		$dir = Join-Path $TestDrive "art-$([guid]::NewGuid())"; New-Item -ItemType Directory $dir | Out-Null
+		Set-Content "$dir/status.json" '{"conflict":"false","agentOutcome":"success"}'
+		Get-PortStatus -ArtifactDir $dir -CodeChanged $true | Should -Be 'ok'
+		Set-Content "$dir/status.json" '{"conflict":"false","agentOutcome":"failure"}'
+		Get-PortStatus -ArtifactDir $dir -CodeChanged $true | Should -Be 'agent failure'
+		Set-Content "$dir/status.json" '{"conflict":"false","agentOutcome":"cancelled"}'
+		Get-PortStatus -ArtifactDir $dir -CodeChanged $true | Should -Be 'agent cancelled'
+		Set-Content "$dir/status.json" '{"conflict":"true","agentOutcome":"skipped"}'
+		Get-PortStatus -ArtifactDir $dir -CodeChanged $true | Should -Be 'conflict'
+	}
+
+	It 'does not need an agent run for a strings-only area' {
+		$dir = Join-Path $TestDrive "art-$([guid]::NewGuid())"; New-Item -ItemType Directory $dir | Out-Null
+		Set-Content "$dir/status.json" '{"conflict":"false","agentOutcome":"skipped"}'
+		Get-PortStatus -ArtifactDir $dir -CodeChanged $false | Should -Be 'ok'
+	}
+
+	It 'is missing without an artifact' {
+		Get-PortStatus -ArtifactDir (Join-Path $TestDrive 'no-such-dir') -CodeChanged $true | Should -Be 'missing'
 	}
 }

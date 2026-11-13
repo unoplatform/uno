@@ -127,6 +127,9 @@ Describe 'Expand-SyncPrompt' {
 		$text | Should -Match ([regex]::Escape('src/Tests/Foo'))
 		$text | Should -Match 'sync-report\.md'
 		$text | Should -Match 'build: passed\|failed'
+		foreach ($project in [regex]::Matches($text, 'dotnet build (\S+\.csproj)') | ForEach-Object { $_.Groups[1].Value }) {
+			Test-Path (Join-Path "$PSScriptRoot/../../.." $project) | Should -BeTrue -Because "$project is named in the prompt"
+		}
 	}
 
 	It 'throws on an unknown placeholder' {

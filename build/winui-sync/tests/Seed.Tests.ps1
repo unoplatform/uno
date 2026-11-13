@@ -93,7 +93,7 @@ Describe 'Resolve-AreaBaseline' {
 Describe 'seed-area.ps1' {
 	It 'appends a valid entry with -Write' {
 		$up = New-TestUpstream -Path (Join-Path $TestDrive 'up2')
-		$c1 = Add-TestCommit $up @{ 'controls/dev/Foo/Foo.cpp' = '1' }
+		$c1 = Add-TestCommit $up @{ 'controls/dev/Foo/Foo.cpp' = '1'; 'controls/dev/Foo/Strings/en-us/Resources.resw' = 'en' } -Tag 'winui3/release/1.0.0'
 		$uno = Join-Path $TestDrive 'uno3'
 		New-CsFile "$uno/src/Foo/Foo.cs" "// MUX Reference Foo.cpp, commit $($c1.Substring(0, 10))"
 		$manifest = Write-TestManifest (Join-Path $uno 'areas.json') @()
@@ -105,5 +105,19 @@ Describe 'seed-area.ps1' {
 		$areas[0].id | Should -Be 'foo'
 		$areas[0].baseline | Should -Be $c1
 		$areas[0].uno.strings | Should -Be 'src/Foo/Strings'
+	}
+
+	It 'splits comma-joined path arguments and rejects a path upstream does not have' {
+		$up = New-TestUpstream -Path (Join-Path $TestDrive 'up4')
+		$c1 = Add-TestCommit $up @{ 'controls/dev/Foo/Foo.cpp' = '1'; 'controls/dev/Foo/APITests/T.cpp' = '1'; 'controls/dev/Foo/InteractionTests/T.cpp' = '1' } -Tag 'winui3/release/1.0.0'
+		$uno = Join-Path $TestDrive 'uno4'
+		New-CsFile "$uno/src/Foo/Foo.cs" "// MUX Reference Foo.cpp, commit $($c1.Substring(0, 10))"
+		$manifest = Write-TestManifest (Join-Path $uno 'areas.json') @()
+		$common = @{ Id = 'foo'; Title = 'Foo'; UpstreamRepo = $up; UnoRoot = $uno; ManifestPath = $manifest; UpstreamSources = 'controls/dev/Foo'; UnoSources = 'src/Foo'; Write = $true }
+
+		& "$PSScriptRoot/../seed-area.ps1" @common -UpstreamTests 'controls/dev/Foo/APITests,controls/dev/Foo/InteractionTests' | Out-Null
+		@(Get-SyncAreas -ManifestPath $manifest)[0].upstream.tests | Should -Be @('controls/dev/Foo/APITests', 'controls/dev/Foo/InteractionTests')
+
+		{ & "$PSScriptRoot/../seed-area.ps1" @common -UpstreamTests 'controls/dev/Foo/Nope' } | Should -Throw '*controls/dev/Foo/Nope*'
 	}
 }

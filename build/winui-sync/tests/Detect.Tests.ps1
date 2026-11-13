@@ -118,6 +118,13 @@ Describe 'Get-AreaSyncState' {
 		(Get-AreaSyncState -Area $twoPaths -UpstreamRepo $fx.Repo -TargetSha $target -UnoRoot $uno).codeChanged | Should -BeTrue
 	}
 
+	It 'throws when a manifest path exists at neither commit' {
+		$m = Write-TestManifest (Join-Path $TestDrive "$([guid]::NewGuid()).json") @(
+			(New-TestArea -Id 'foo' -Baseline $fx.Base -Extra @{ upstream = [ordered]@{ sources = @('controls/dev/Foo', 'controls/dev/Typo') } }))
+		$typo = @(Get-SyncAreas -ManifestPath $m)[0]
+		{ Get-AreaSyncState -Area $typo -UpstreamRepo $fx.Repo -TargetSha $fx.Base -UnoRoot $uno } | Should -Throw '*controls/dev/Typo*'
+	}
+
 	It 'throws on a baseline that is not in the clone' {
 		$bad = New-FooArea -Baseline ('d' * 40)
 		{ Get-AreaSyncState -Area $bad -UpstreamRepo $fx.Repo -TargetSha $fx.Base -UnoRoot $uno } | Should -Throw '*baseline*'
@@ -210,6 +217,18 @@ Describe 'Get-SyncPlan' {
 		$plan.Matrix.Count | Should -Be 0
 	}
 
+	It 'reports a broken area and still plans the others' {
+		Mock -ModuleName WinUISync Get-OpenSyncPr { $null }
+		$bad = New-TestArea -Id 'bad' -Baseline ('d' * 40) -Extra @{ upstream = [ordered]@{ sources = @('controls/dev/Foo') } }
+		Add-TestCommit $uno @{ $manifestRel = (@{ areas = @($bad, $areaDef) } | ConvertTo-Json -Depth 6) } | Out-Null
+
+		$plan = Get-SyncPlan -UpstreamRepo $fx.Repo -UnoRoot $uno -ManifestPath (Join-Path $uno $manifestRel)
+
+		$plan.Matrix.id | Should -Be @('foo')
+		($plan.Rows | Where-Object id -EQ 'bad').status | Should -Match '^error: '
+		@($plan.Errors).Count | Should -Be 1
+	}
+
 	It 'honours the area filter' {
 		Mock -ModuleName WinUISync Get-OpenSyncPr { $null }
 
@@ -241,8 +260,21 @@ Describe 'detect.ps1' {
 
 		$lines = Get-Content $out
 		$lines | Should -Contain 'has_work=false'
+		$lines | Should -Contain 'has_errors=false'
 		$lines | Should -Contain 'matrix=[]'
 		$lines | Should -Contain 'target_tag=winui3/release/1.0.0'
 		(Get-Content $summary -Raw) | Should -Match 'foo'
+	}
+}
+
+Describe 'Select-OpenSyncPr' {
+	It 'ignores pull requests opened from forks' {
+		$json = '[{"number":5,"isCrossRepository":true},{"number":9,"isCrossRepository":false}]'
+		Select-OpenSyncPr -Json $json | Should -Be 9
+	}
+
+	It 'returns nothing when only a fork PR uses the branch name' {
+		Select-OpenSyncPr -Json '[{"number":5,"isCrossRepository":true}]' | Should -BeNullOrEmpty
+		Select-OpenSyncPr -Json '[]' | Should -BeNullOrEmpty
 	}
 }
