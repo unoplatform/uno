@@ -75,7 +75,7 @@ Locally, with a WinUI clone:
 
 ## Setup and limits
 
-- Secret `ANTHROPIC_WINUISYNC_KEY`: the API key the port agent uses.
+- Secret `ANTHROPIC_CODEREVIEW_KEY`: the API key the port agent uses. It is the same key as the Claude review workflow, so sync and review spend share one budget.
 - Label `winui-sync`: created by the workflow if missing; issues and PRs are found by it plus a
   hidden `<!-- winui-sync:<id> -->` marker, so do not remove either.
 - The repository must allow GitHub Actions to create pull requests.

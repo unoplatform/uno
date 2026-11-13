@@ -180,7 +180,7 @@ jobs:
           BASH_DEFAULT_TIMEOUT_MS: '2400000'
           BASH_MAX_TIMEOUT_MS: '3600000'
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_WINUISYNC_KEY }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_CODEREVIEW_KEY }}
           # The job's read-only token; without it the action would mint an app token via OIDC.
           github_token: ${{ github.token }}
           prompt: ${{ steps.prompt.outputs.prompt }}

@@ -180,8 +180,8 @@ upstream reference.
   hands over a patch plus `sync-report.md` as an artifact. A separate publish job, with no
   agent in it, applies the patch and holds `contents: write`, `pull-requests: write`,
   `issues: write`. This works whatever token the action itself needs.
-- Model key: a dedicated repository secret for this workflow (API key auth, as the review
-  workflow uses), so sync spend is separable from review spend.
+- Model key: the existing review workflow secret (`ANTHROPIC_CODEREVIEW_KEY`), chosen by the
+  maintainer; sync and review spend share one budget.
 - No `id-token: write`; action pinned to the same patched version as the review workflow.
 - Upstream diff content is treated as data. The prompt is loaded from the default branch.
 - Agent tool allowlist: file read/edit, `git` read-only against the upstream clone,
@@ -206,7 +206,6 @@ upstream reference.
 - Splitting agent and publish into separate jobs so the agent never holds a write token.
 - Sync branch rules (merge, never force-push; skip on conflict; fresh branch after a
   closed PR).
-- A dedicated model-key secret rather than reusing the review one.
 
 ## Left to the builder
 
