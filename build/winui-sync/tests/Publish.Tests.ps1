@@ -505,6 +505,28 @@ Describe 'Test-SyncPatchPaths' {
 			'AGENTS.md',
 			'global.json')
 	}
+
+	It 'refuses files that can run code during a build, wherever they are' {
+		$buildFiles = @(
+			'src/Uno.UI/Uno.UI.csproj',
+			'src/Directory.Build.props',
+			'src/Directory.Packages.props',
+			'src/Uno.UI/Directory.Build.targets',
+			'src/Uno.UI/Directory.Build.rsp',
+			'src/Uno.UI/build/Evil.TARGETS',
+			'src/Uno.UI/Shared.projitems',
+			'src/Uno.UI/Shared.shproj',
+			'src/Uno.UI/Extra.proj',
+			'src/Uno.UI/Extra.tasks',
+			'src/Uno.UI-Skia-only.slnf',
+			'src/Uno.UI.sln',
+			'src/Uno.UI.slnx',
+			'src/global.json',
+			'src/NuGet.Config',
+			'src/Uno.UI/.editorconfig',
+			'src/.globalconfig')
+		Test-SyncPatchPaths -Files (@('src/Uno.UI/UI/Xaml/Controls/Foo/Foo.props.cs', 'src/Uno.UI/UI/Xaml/Controls/Foo/Foo.xaml') + $buildFiles) | Should -Be $buildFiles
+	}
 }
 
 Describe 'Get-PortStatus' {
