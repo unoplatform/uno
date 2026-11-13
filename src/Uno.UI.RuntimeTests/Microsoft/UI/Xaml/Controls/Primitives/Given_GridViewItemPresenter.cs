@@ -62,6 +62,54 @@ public class Given_GridViewItemPresenter
 	}
 
 	[TestMethod]
+	public async Task When_Implicit_GridViewItem_Selected_In_Multiple_Mode_Then_Chrome_Drawn()
+	{
+		var grid = new GridView
+		{
+			SelectionMode = ListViewSelectionMode.Multiple,
+			ItemTemplate = (DataTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"""
+				<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+					<Border Width="100" Height="100"><TextBlock Text="{Binding}" /></Border>
+				</DataTemplate>
+				"""),
+			ItemsSource = new[] { "Item 0", "Item 1" },
+		};
+		var root = new Border { Background = new SolidColorBrush(Microsoft.UI.Colors.White), Padding = new Thickness(10), Child = grid };
+		WindowHelper.WindowContent = root;
+		await WindowHelper.WaitForLoaded(grid);
+
+		var item = (GridViewItem)grid.ContainerFromIndex(0);
+		var presenter = (ListViewItemPresenter)VisualTreeHelper.GetChild(item, 0);
+		grid.SelectedIndex = 0;
+		await ChromeTestHelper.WaitForNoRunningAnimation(presenter);
+		await WindowHelper.WaitForIdle();
+
+		// The pointer may rest over the item on CI, so check the brushes of whichever selected state it is in.
+		var selectedState = presenter.m_visualStates.commonState2;
+		Assert.IsTrue(
+			selectedState is ListViewBaseItemPresenter.CommonStates2.Selected or ListViewBaseItemPresenter.CommonStates2.PointerOverSelected,
+			$"Selected state: {selectedState}");
+		var outerBorder = presenter.m_outerBorder!;
+		var checkBox = presenter.m_multiSelectCheckBoxRectangle!;
+		Assert.IsTrue(checkBox.Background == presenter.CheckBoxSelectedBrush || checkBox.Background == presenter.CheckBoxSelectedPointerOverBrush, "Selected check box fill");
+
+		var itemBounds = item.TransformToVisual(root).TransformBounds(new Rect(0, 0, item.ActualWidth, item.ActualHeight));
+		var checkBoxBounds = checkBox.TransformToVisual(root).TransformBounds(new Rect(0, 0, checkBox.ActualWidth, checkBox.ActualHeight));
+		var screenshot = await UITestHelper.ScreenShot(root);
+
+		ImageAssert.HasColorAt(screenshot, (float)itemBounds.X + 1, (float)(itemBounds.Y + itemBounds.Height / 2), ((SolidColorBrush)outerBorder.BorderBrush).Color, tolerance: 10);
+		// The check glyph sits close by, and its anti-aliasing tints this pixel on some agents (macOS).
+		ImageAssert.HasColorAt(screenshot, (float)checkBoxBounds.X + 3, (float)(checkBoxBounds.Y + checkBoxBounds.Height / 2), ((SolidColorBrush)checkBox.Background!).Color, tolerance: 32);
+
+		// The unselected item draws the empty check box border, not a filled one.
+		var other = (GridViewItem)grid.ContainerFromIndex(1);
+		var otherCheckBox = ((ListViewItemPresenter)VisualTreeHelper.GetChild(other, 0)).m_multiSelectCheckBoxRectangle!;
+		var otherBounds = otherCheckBox.TransformToVisual(root).TransformBounds(new Rect(0, 0, otherCheckBox.ActualWidth, otherCheckBox.ActualHeight));
+		ImageAssert.DoesNotHaveColorAt(screenshot, (float)(otherBounds.X + otherBounds.Width / 2), (float)(otherBounds.Y + otherBounds.Height / 2), ((SolidColorBrush)presenter.CheckBoxSelectedBrush!).Color, tolerance: 10);
+	}
+
+	[TestMethod]
 	public async Task When_Default_GridViewItem_PointerOver_Shows_Outer_Border()
 	{
 		var (_, item, presenter) = await CreateGridView();
