@@ -16,6 +16,7 @@
 #      fixed build commands (no extra MSBuild arguments) and may not edit project or
 #      MSBuild files. The API key IS in the environment of those builds, so a hijacked
 #      agent could read it. Keep that key spend-limited and used for nothing else.
+#      Reading /proc is denied so the key is not one file read away (best effort).
 #      CLAUDE_CODE_SUBPROCESS_ENV_SCRUB would hide it, but it makes Claude Code
 #      require its sandbox (bubblewrap + socat, absent on the runner), which broke
 #      every Bash call; do not turn it on without a run that proves builds work
@@ -200,7 +201,7 @@ jobs:
           claude_args: |
             --model "${{ matrix.area.model }}"
             --allowedTools "Read,Edit,Write,Glob,Grep,Bash(git -C .winui-upstream diff:*),Bash(git -C .winui-upstream show:*),Bash(git -C .winui-upstream log:*),Bash(dotnet build src/Uno.UI/Uno.UI.csproj -p:UnoTargetFrameworkOverride=net10.0 -v:q -nologo),Bash(dotnet build src/Uno.UI.RuntimeTests/Uno.UI.RuntimeTests.Generic.csproj -p:UnoTargetFrameworkOverride=net10.0 -v:q -nologo)"
-            --disallowedTools "Edit(**/*.csproj),Edit(**/*.proj),Edit(**/*.shproj),Edit(**/*.projitems),Edit(**/*.props),Edit(**/*.targets),Edit(**/*.tasks),Edit(**/*.sln),Edit(**/*.slnf),Edit(**/*.slnx),Edit(**/*.rsp),Edit(**/Directory.*),Edit(**/global.json),Edit(**/NuGet.config),Edit(**/nuget.config),Edit(**/.editorconfig),Edit(**/.globalconfig),Edit(.github/**),Edit(.claude/**),Edit(build/**)"
+            --disallowedTools "Edit(**/*.csproj),Edit(**/*.proj),Edit(**/*.shproj),Edit(**/*.projitems),Edit(**/*.props),Edit(**/*.targets),Edit(**/*.tasks),Edit(**/*.sln),Edit(**/*.slnf),Edit(**/*.slnx),Edit(**/*.rsp),Edit(**/Directory.*),Edit(**/global.json),Edit(**/NuGet.config),Edit(**/nuget.config),Edit(**/.editorconfig),Edit(**/.globalconfig),Edit(.github/**),Edit(.claude/**),Edit(build/**),Read(//proc/**)"
 
       - name: Collect result
         if: always()
