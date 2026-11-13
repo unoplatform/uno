@@ -9,7 +9,8 @@
           "controls/dev/NavigationView"
         ],
         "tests": [
-          "controls/dev/NavigationView/NavigationView_ApiTests,controls/dev/NavigationView/NavigationView_InteractionTests"
+          "controls/dev/NavigationView/NavigationView_ApiTests",
+          "controls/dev/NavigationView/NavigationView_InteractionTests"
         ],
         "strings": "controls/dev/NavigationView/Strings"
       },
@@ -32,7 +33,8 @@
           "controls/dev/Breadcrumb"
         ],
         "tests": [
-          "controls/dev/Breadcrumb/APITests,controls/dev/Breadcrumb/InteractionTests"
+          "controls/dev/Breadcrumb/APITests",
+          "controls/dev/Breadcrumb/InteractionTests"
         ],
         "strings": "controls/dev/Breadcrumb/Strings"
       },
@@ -52,7 +54,8 @@
           "controls/dev/SelectorBar"
         ],
         "tests": [
-          "controls/dev/SelectorBar/APITests,controls/dev/SelectorBar/InteractionTests"
+          "controls/dev/SelectorBar/APITests",
+          "controls/dev/SelectorBar/InteractionTests"
         ],
         "strings": "controls/dev/SelectorBar/Strings"
       },
@@ -75,7 +78,8 @@
           "controls/dev/TabView"
         ],
         "tests": [
-          "controls/dev/TabView/APITests,controls/dev/TabView/InteractionTests"
+          "controls/dev/TabView/APITests",
+          "controls/dev/TabView/InteractionTests"
         ],
         "strings": "controls/dev/TabView/Strings"
       },

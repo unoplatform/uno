@@ -21,7 +21,8 @@ $outputs = @(
 	"has_work=$(($plan.Matrix.Count -gt 0).ToString().ToLowerInvariant())"
 	"target_tag=$($plan.TargetTag)"
 	"target_sha=$($plan.TargetSha)"
-	"master_sha=$($plan.MasterSha)")
+	"master_sha=$($plan.MasterSha)"
+	"has_errors=$((@($plan.Errors).Count -gt 0).ToString().ToLowerInvariant())")
 
 $summary = @(
 	"## WinUI port sync: $($plan.TargetTag)"
@@ -38,3 +39,4 @@ if ($env:GITHUB_OUTPUT) { Add-Content -LiteralPath $env:GITHUB_OUTPUT -Value $ou
 if ($env:GITHUB_STEP_SUMMARY) { Add-Content -LiteralPath $env:GITHUB_STEP_SUMMARY -Value $summary }
 $outputs
 $summary
+foreach ($row in $plan.Rows | Where-Object { $_.status -like 'error:*' }) { "::error title=WinUI sync area '$($row.id)'::$($row.status)" }

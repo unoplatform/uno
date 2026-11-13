@@ -22,12 +22,7 @@ param(
 $ErrorActionPreference = 'Stop'
 if (-not (Get-Module WinUISync)) { Import-Module "$PSScriptRoot/WinUISync.psm1" }
 
-$portStatus = 'missing'
-$statusFile = if ($ArtifactDir) { Join-Path $ArtifactDir 'status.json' } else { $null }
-if ($statusFile -and (Test-Path -LiteralPath $statusFile)) {
-	$status = Get-Content -Raw -LiteralPath $statusFile | ConvertFrom-Json
-	$portStatus = if ("$($status.conflict)" -eq 'true') { 'conflict' } else { 'ok' }
-}
+$portStatus = Get-PortStatus -ArtifactDir $ArtifactDir -CodeChanged ($CodeChanged -eq 'true')
 
 $result = Publish-SyncArea -RepoRoot $RepoRoot -ManifestPath (Join-Path $RepoRoot 'build/winui-sync/areas.json') `
 	-Id $Id -TargetTag $TargetTag -TargetSha $TargetSha -MasterSha $MasterSha -UpstreamRepo $UpstreamRepo `

@@ -55,7 +55,7 @@ line of history, so do not rely on it to find changes.
 
 Run `dotnet build src/Uno.UI/Uno.UI.csproj -p:UnoTargetFrameworkOverride=net10.0`. If you changed
 test files, also run
-`dotnet build src/Uno.UI.RuntimeTests/Uno.UI.RuntimeTests.Skia.csproj -p:UnoTargetFrameworkOverride=net10.0`.
+`dotnet build src/Uno.UI.RuntimeTests/Uno.UI.RuntimeTests.Generic.csproj -p:UnoTargetFrameworkOverride=net10.0`.
 Fix errors your changes introduced and rebuild, at most three rounds. If it still fails, stop and
 report the remaining errors; do not delete or stub out ported code to get a green build.
 

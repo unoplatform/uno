@@ -22,6 +22,13 @@ param(
 $ErrorActionPreference = 'Stop'
 Import-Module "$PSScriptRoot/WinUISync.psm1" -Force
 
+# `pwsh -File` passes "a,b" as one string, so split lists here.
+$split = { param($values) @(@($values) | ForEach-Object { "$_" -split ',' } | ForEach-Object { $_.Trim() } | Where-Object { $_ }) }
+$UpstreamSources = @(& $split $UpstreamSources)
+$UpstreamTests = @(& $split $UpstreamTests)
+$UnoSources = @(& $split $UnoSources)
+$UnoTests = @(& $split $UnoTests)
+
 $scan = @(@($UnoSources) + @($UnoTests) | ForEach-Object { Join-Path $UnoRoot $_ } | Where-Object { Test-Path $_ })
 $references = @(Get-MuxReferences -Paths $scan)
 $result = Resolve-AreaBaseline -UpstreamRepo $UpstreamRepo -References $references
@@ -48,6 +55,13 @@ $area = [pscustomobject]@{
 	uno      = [pscustomobject]@{ sources = @($UnoSources); tests = @($UnoTests); strings = $UnoStrings }
 }
 "Proposed baseline: $($result.Baseline) ($(git -C $UpstreamRepo log -1 --format='%cs %s' $result.Baseline))"
+
+# A mistyped path would read as "never changes"; make sure upstream really has each one.
+$latest = Get-LatestStableTag -UpstreamRepo $UpstreamRepo
+Get-AreaTreeDiffs -Area $area -UpstreamRepo $UpstreamRepo -TargetSha $latest.Sha | Out-Null
+if ($UpstreamStrings -and -not (Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo -Ref $latest.Sha -Path $UpstreamStrings)) {
+	throw "upstream strings path '$UpstreamStrings' not found at $($latest.Tag)"
+}
 
 if ($Write) {
 	$areas = @(Get-SyncAreas -ManifestPath $ManifestPath | Where-Object id -NE $Id) + $area

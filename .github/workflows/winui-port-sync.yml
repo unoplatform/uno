@@ -9,8 +9,9 @@
 #   2. The agent runs in the `port` job, which has `contents: read` and no persisted
 #      git credentials. It cannot push, open PRs or write issues. It hands a patch and
 #      a report to the `publish` job as an artifact.
-#   3. `publish` holds the write token and runs no agent and no build. It ignores
-#      anything the patch could not legitimately contain (see the pathspec excludes).
+#   3. `publish` holds the write token and runs no agent and no build. It refuses a
+#      patch that touches anything outside product and test code (Test-SyncPatchPaths),
+#      and does not publish a port whose agent did not finish.
 #   4. No `id-token: write` anywhere, and the action is pinned to a full commit SHA
 #      (same pin as claude-code-review.yml; Dependabot bumps both).
 #   5. Tooling and prompt are taken from the default branch commit that `detect` saw,
@@ -61,6 +62,7 @@ jobs:
       target_tag: ${{ steps.detect.outputs.target_tag }}
       target_sha: ${{ steps.detect.outputs.target_sha }}
       master_sha: ${{ steps.detect.outputs.master_sha }}
+      has_errors: ${{ steps.detect.outputs.has_errors }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -220,7 +222,7 @@ jobs:
     name: Publish ${{ matrix.area.id }}
     needs: [detect, port]
     # Runs even when a port leg failed, so that area is reported instead of silently dropped.
-    if: always() && needs.detect.result == 'success' && needs.detect.outputs.has_work == 'true' && !inputs.dry_run
+    if: ${{ !cancelled() && needs.detect.result == 'success' && needs.detect.outputs.has_work == 'true' && !inputs.dry_run }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     # The only job with write access. No agent and no build run here.
@@ -243,7 +245,7 @@ jobs:
       TARGET_TAG: ${{ needs.detect.outputs.target_tag }}
       TARGET_SHA: ${{ needs.detect.outputs.target_sha }}
       MASTER_SHA: ${{ needs.detect.outputs.master_sha }}
-      BASE_BRANCH: ${{ github.event.repository.default_branch }}
+      BASE_BRANCH: ${{ github.event.repository.default_branch || 'master' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -279,3 +281,16 @@ jobs:
           -CodeChanged $env:CODE_CHANGED
           -StringsChanged $env:STRINGS_CHANGED
           -BaseBranch $env:BASE_BRANCH
+
+  # Areas that could not be checked do not stop the others, but must not go unnoticed.
+  report-errors:
+    name: Report broken areas
+    needs: detect
+    if: needs.detect.outputs.has_errors == 'true'
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Fail the run
+        run: |
+          echo "::error::One or more areas could not be checked. See the summary of the 'Detect upstream changes' job."
+          exit 1

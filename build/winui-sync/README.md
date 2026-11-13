@@ -21,6 +21,14 @@ Nothing merges on its own.
   issue is the only remaining record of a skipped change: it stays open until someone ports it.
 - The PR says `closes #issue` only when nothing was skipped **and** the port build passed.
   Otherwise it says `related to #issue`, and a failing build is flagged in the PR title.
+- The report lives on the sync branch in `build/winui-sync/reports/<id>.md`, one section per run.
+  When a newer WinUI release arrives while the PR is still open, the new run adds a section and the
+  skipped counts add up, so an earlier run's skipped items keep the issue open. After porting a
+  skipped item by hand on the branch, set `skipped=` in that section's marker line to the number
+  still outstanding.
+- Nothing is published for an area when the agent fails, times out or writes no well-formed
+  report, or when its patch touches anything other than code under `src/`. The run summary says
+  why, and the next run redoes the port.
 - Tests are not run by the workflow. PR CI does that.
 - Review fixes can be pushed straight to the sync branch. Later runs merge the default branch
   into it and never force-push while the PR is open.

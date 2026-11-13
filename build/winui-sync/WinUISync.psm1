@@ -259,11 +259,22 @@ function Resolve-UpstreamPath {
 function Get-AreaTreeDiffs {
 	param([Parameter(Mandatory)]$Area, [Parameter(Mandatory)][string]$UpstreamRepo, [Parameter(Mandatory)][string]$TargetSha)
 	$emptyTree = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'
-	$all = @(@($Area.upstream.sources) + @($Area.upstream.tests) | ForEach-Object { $_.Trim('/') } | Sort-Object -Unique)
+	$all = @(@($Area.upstream.sources) + @($Area.upstream.tests) | Where-Object { $_ } | ForEach-Object { $_.Trim('/') } | Sort-Object -Unique)
+	$resolved = @{}
+	foreach ($path in $all) {
+		$resolved[$path] = @{
+			Base   = Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo -Ref $Area.baseline -Path $path
+			Target = Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo -Ref $TargetSha -Path $path
+		}
+		# A mistyped path would otherwise read as "nothing ever changes here".
+		if (-not $resolved[$path].Base -and -not $resolved[$path].Target) {
+			throw "area '$($Area.id)': upstream path '$path' exists at neither $($Area.baseline) nor $TargetSha"
+		}
+	}
 	$roots = @($all | Where-Object { $p = $_; -not ($all | Where-Object { $p.StartsWith("$_/") }) })
 	foreach ($path in $roots) {
-		$atBase = Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo -Ref $Area.baseline -Path $path
-		$atTarget = Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo -Ref $TargetSha -Path $path
+		$atBase = $resolved[$path].Base
+		$atTarget = $resolved[$path].Target
 		$exclude = @()
 		$strings = if ($Area.upstream.strings) { $Area.upstream.strings.Trim('/') } else { $null }
 		if ($strings -and $strings.StartsWith("$path/")) { $exclude = @(":(exclude)$($strings.Substring($path.Length + 1))") }
@@ -326,11 +337,18 @@ function Get-SyncBranchName {
 	"sync/winui/$Id"
 }
 
+# Anyone can open a PR from a fork whose head branch has the same name; those are not ours.
+function Select-OpenSyncPr {
+	param([Parameter(Mandatory)][string]$Json)
+	$own = @($Json | ConvertFrom-Json | Where-Object { $_ -and -not $_.isCrossRepository } | Sort-Object number)
+	if ($own.Count -gt 0) { [int]$own[0].number } else { $null }
+}
+
 function Get-OpenSyncPr {
 	param([Parameter(Mandatory)][string]$Id)
-	$number = & gh pr list --head (Get-SyncBranchName $Id) --state open --json number --jq '.[0].number // empty'
+	$json = & gh pr list --head (Get-SyncBranchName $Id) --state open --json 'number,isCrossRepository'
 	if ($LASTEXITCODE -ne 0) { throw "gh pr list failed for area '$Id'" }
-	if ("$number".Trim()) { [int]"$number".Trim() } else { $null }
+	Select-OpenSyncPr -Json ($json -join "`n")
 }
 
 function Get-SyncPlan {
@@ -352,6 +370,7 @@ function Get-SyncPlan {
 	$areas = @(Get-SyncAreas -ManifestPath $ManifestPath | Where-Object { -not $AreaFilter -or $_.id -eq $AreaFilter })
 	$states = @()
 	$prs = @{}
+	$errors = [ordered]@{}
 	foreach ($area in $areas) {
 		$tmp = $null
 		try {
@@ -370,6 +389,9 @@ function Get-SyncPlan {
 				}
 			}
 			$states += Get-AreaSyncState -Area $area -UpstreamRepo $UpstreamRepo -TargetSha $target.Sha -UnoRoot $UnoRoot -UnoStringsDir $stringsDir
+		}
+		catch {
+			$errors[$area.id] = ($_.Exception.Message -split "`n")[0]
 		}
 		finally {
 			if ($tmp) { Remove-Item -Recurse -Force -LiteralPath $tmp -ErrorAction SilentlyContinue }
@@ -405,8 +427,12 @@ function Get-SyncPlan {
 				prNumber = if ($prs.ContainsKey($state.id)) { [int]$prs[$state.id] } else { 0 }
 			}
 		})
+	$rows += @(foreach ($id in $errors.Keys) {
+			$area = $areas | Where-Object id -EQ $id
+			[pscustomobject]@{ id = $id; baseline = $area.baseline; status = "error: $($errors[$id])"; diffStat = ''; prNumber = if ($prs.ContainsKey($id)) { [int]$prs[$id] } else { 0 } }
+		})
 
-	[pscustomobject]@{ TargetTag = $target.Tag; TargetSha = $target.Sha; MasterSha = $masterSha; Matrix = $matrix; Rows = $rows }
+	[pscustomobject]@{ TargetTag = $target.Tag; TargetSha = $target.Sha; MasterSha = $masterSha; Matrix = $matrix; Rows = $rows; Errors = @($errors.Keys) }
 }
 
 #endregion
@@ -501,22 +527,62 @@ function ConvertTo-SafeReport {
 function Read-SyncReport {
 	param([Parameter(Mandatory)][string]$Path)
 	if (-not (Test-Path -LiteralPath $Path)) {
-		return [pscustomobject]@{ BuildPassed = $false; SkippedCount = 1; Body = '_The port step did not produce a report. Treat this sync as unverified._' }
+		return [pscustomobject]@{ Valid = $false; BuildPassed = $false; SkippedCount = 1; Body = '_The port step did not produce a report. Treat this sync as unverified._' }
 	}
 	$text = (Get-Content -Raw -LiteralPath $Path) -replace "`r`n", "`n"
 	$m = [regex]::Match($text, '\A\s*build:\s*(passed|failed)\s*\n\s*skipped:\s*(\d+)\s*\n\s*---[ \t]*\n?')
 	if (-not $m.Success) {
 		return [pscustomobject]@{
+			Valid        = $false
 			BuildPassed  = $false
 			SkippedCount = 1
 			Body         = "_The report did not follow the expected format. Treat this sync as unverified._`n`n" + (ConvertTo-SafeReport $text)
 		}
 	}
 	[pscustomobject]@{
+		Valid        = $true
 		BuildPassed  = $m.Groups[1].Value -eq 'passed'
 		SkippedCount = [int]$m.Groups[2].Value
 		Body         = (ConvertTo-SafeReport $text.Substring($m.Length)).Trim()
 	}
+}
+
+# Reads the per-branch report file: every run on the branch is one section, newest first.
+function Get-SyncRunSummary {
+	param([AllowEmptyString()][string]$Text)
+	$runs = [regex]::Matches("$Text", '<!-- winui-sync-run target=(\S+) build=(passed|failed) skipped=(\d+) -->')
+	$skipped = 0
+	foreach ($run in $runs) { $skipped += [int]$run.Groups[3].Value }
+	[pscustomobject]@{
+		Valid        = $true
+		# The newest build covers everything on the branch; skipped items add up until someone ports them.
+		BuildPassed  = $runs.Count -gt 0 -and $runs[0].Groups[2].Value -eq 'passed'
+		SkippedCount = $skipped
+		Body         = "$Text".Trim()
+	}
+}
+
+# Adds this run to the area's report file and returns the summary of all runs on the branch.
+function Add-SyncRunReport {
+	param(
+		[Parameter(Mandatory)][string]$Path,
+		[Parameter(Mandatory)]$Area,
+		[Parameter(Mandatory)][string]$TargetTag,
+		[Parameter(Mandatory)][string]$TargetSha,
+		[Parameter(Mandatory)]$Report,
+		# A new branch starts a new report; a file inherited from the default branch belongs to a merged sync.
+		[bool]$Reset)
+	$earlier = if (-not $Reset -and (Test-Path -LiteralPath $Path)) { ((Get-Content -Raw -LiteralPath $Path) -replace "`r`n", "`n").Trim() } else { '' }
+	$section = @(
+		"<!-- winui-sync-run target=$TargetTag build=$(if ($Report.BuildPassed) { 'passed' } else { 'failed' }) skipped=$($Report.SkippedCount) -->"
+		"**Sync to WinUI $(Get-TagVersion $TargetTag)** (``$($Area.baseline.Substring(0, 10))`` → ``$($TargetSha.Substring(0, 10))``)"
+		''
+		$Report.Body.Trim()
+	) -join "`n"
+	$text = if ($earlier) { "$section`n`n---`n`n$earlier" } else { $section }
+	New-Item -ItemType Directory -Force -Path (Split-Path $Path) | Out-Null
+	[System.IO.File]::WriteAllText($Path, $text + "`n")
+	Get-SyncRunSummary -Text $text
 }
 
 function Limit-BodyText {
@@ -629,7 +695,8 @@ function Get-CommitGroups {
 	$under = { param($file, $roots) [bool](@($roots) | Where-Object { $_ -and ($file -eq $_.Trim('/') -or $file.StartsWith("$($_.Trim('/'))/")) }) }
 	$buckets = [ordered]@{ logic = @(); tests = @(); strings = @(); manifest = @() }
 	foreach ($file in @($ChangedFiles) | Where-Object { $_ } | Sort-Object) {
-		$kind = if ($file -eq $ManifestRelativePath) { 'manifest' }
+		$reports = "$(Split-Path $ManifestRelativePath)/reports/".Replace('\', '/')
+		$kind = if ($file -eq $ManifestRelativePath -or $file.StartsWith($reports)) { 'manifest' }
 		elseif (& $under $file @($Area.uno.strings)) { 'strings' }
 		elseif (& $under $file @($Area.uno.tests)) { 'tests' }
 		else { 'logic' }
@@ -688,6 +755,26 @@ function Expand-SyncPrompt {
 #endregion
 
 #region branch and publish
+
+# 'ok' only when the port job's result can be trusted for this area.
+function Get-PortStatus {
+	param([string]$ArtifactDir, [bool]$CodeChanged)
+	$statusFile = if ($ArtifactDir) { Join-Path $ArtifactDir 'status.json' } else { $null }
+	if (-not $statusFile -or -not (Test-Path -LiteralPath $statusFile)) { return 'missing' }
+	$status = Get-Content -Raw -LiteralPath $statusFile | ConvertFrom-Json
+	if ("$(Get-OptionalProperty $status 'conflict')" -eq 'true') { return 'conflict' }
+	$agent = "$(Get-OptionalProperty $status 'agentOutcome')"
+	# A failed, timed-out or cancelled agent leaves a partial port; publishing it would move the baseline past work not done.
+	if ($CodeChanged -and $agent -ne 'success') { return "agent $agent".Trim() }
+	'ok'
+}
+
+# Returns the files a port patch may not contain. The port job filters too, but that job runs the agent;
+# this check runs where the write token is.
+function Test-SyncPatchPaths {
+	param([string[]]$Files = @())
+	@($Files | Where-Object { $_ } | Where-Object { -not $_.StartsWith('src/') -or $_ -match '(^|/)Strings/.+\.resw$' })
+}
 
 function Invoke-ApplyPatch {
 	param([Parameter(Mandatory)][string]$RepoRoot, [Parameter(Mandatory)][string]$PatchPath)
@@ -813,18 +900,26 @@ function Publish-SyncArea {
 	$area = @(Get-SyncAreas -ManifestPath $ManifestPath | Where-Object id -EQ $Id)[0]
 	if (-not $area) { return & $skip "area is not in the manifest on ``$branch``." }
 
-	$report = [pscustomobject]@{ BuildPassed = $true; SkippedCount = 0; Body = 'No upstream code changes in this range; translations only.' }
+	$report = [pscustomobject]@{ Valid = $true; BuildPassed = $true; SkippedCount = 0; Body = 'No upstream code changes in this range; translations only.' }
 	if ($CodeChanged) {
+		$report = Read-SyncReport -Path $ReportPath
+		if (-not $report.Valid) { return & $skip 'the port did not produce a well-formed report, so what it covered is unknown. The next run redoes the port.' }
 		if (-not (Invoke-ApplyPatch -RepoRoot $RepoRoot -PatchPath $PatchPath)) {
 			return & $skip 'the ported patch no longer applies to the branch. The next run redoes the port.'
 		}
-		$report = Read-SyncReport -Path $ReportPath
+		$refused = @(Test-SyncPatchPaths -Files @(Invoke-Git $RepoRoot @('diff', '--cached', '--name-only', '--no-renames', 'HEAD')))
+		if ($refused.Count -gt 0) {
+			Invoke-Git $RepoRoot @('reset', '-q', '--hard', 'HEAD') | Out-Null
+			return & $skip "the ported patch touches files a port may not change: $(($refused | Select-Object -First 10) -join ', ')."
+		}
 	}
 
 	$strings = $null
 	if ($area.upstream.strings -and $area.uno.strings) {
 		$strings = Sync-AreaStrings -UpstreamRepo $UpstreamRepo -Ref $TargetSha -UpstreamStrings $area.upstream.strings -UnoStrings (Join-Path $RepoRoot $area.uno.strings)
 	}
+	# From here on $report covers every run on this branch, not just this one.
+	$report = Add-SyncRunReport -Path (Join-Path (Split-Path $ManifestPath) "reports/$Id.md") -Area $area -TargetTag $TargetTag -TargetSha $TargetSha -Report $report -Reset (-not $PrNumber)
 	$issue = New-SyncIssue -Area $area -TargetTag $TargetTag -TargetSha $TargetSha -Report $report -StringsChanges $strings
 	Set-AreaBaseline -ManifestPath $ManifestPath -Id $Id -Sha $TargetSha
 

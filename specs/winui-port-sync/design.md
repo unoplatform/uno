@@ -157,6 +157,13 @@ upstream reference.
 - Strings-only change: same PR flow without the agent; issue body is the file list.
 - Build still failing after the attempts: PR is still opened as draft, flagged in title
   and body.
+- The report is kept on the sync branch (`build/winui-sync/reports/<id>.md`), one section per
+  run. Skipped counts add up across runs on the same PR, so a later run that skips nothing
+  cannot turn the PR into one that closes the issue.
+- Nothing is published, and the baseline does not move, when the agent did not finish, its
+  report is missing or malformed, or its patch touches anything outside code under `src/`.
+- An area that cannot be checked (bad baseline, missing upstream path) is reported and fails
+  the run, without stopping the other areas.
 
 ### Sync branch rules
 
