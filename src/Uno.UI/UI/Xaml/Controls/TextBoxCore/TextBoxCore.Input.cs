@@ -69,6 +69,9 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	private bool _currentlyTyping;
 	private bool _suppressCurrentlyTyping;
 	private bool _isApplyingNativeInput;
+
+	internal bool IsApplyingNativeInput => _isApplyingNativeInput;
+
 	private SelectionDetails _selectionWhenTypingStarted;
 	private string _textWhenTypingStarted;
 
@@ -129,20 +132,32 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	{
 		var textChangesBefore = _textChangeCount;
 		var textBefore = Text;
+		var (selectionStartBefore, selectionLengthBefore) = (SelectionStart, SelectionLength);
+		bool refused;
 		_isApplyingNativeInput = true;
 		try
 		{
 			// Pending so the text change itself lands the caret here instead of passing through 0.
 			SetPendingSelection(selectionStart, selectionLength);
 			TextBoxView.UpdateTextFromNative(text);
-			SelectInternal(selectionStart, selectionLength);
+			refused = Text == textBefore && text != textBefore;
+			if (refused)
+			{
+				// Back where the edit started right away: the next key the browser applies lands at the input's caret. The
+				// input got the TextBox's text back, which moved its caret, so it gets the selection even when unchanged.
+				SelectInternal(selectionStartBefore, selectionLengthBefore);
+				TextBoxView.Select(SelectionStart, SelectionLength);
+			}
+			else
+			{
+				SelectInternal(selectionStart, selectionLength);
+			}
 		}
 		finally
 		{
 			_isApplyingNativeInput = false;
 		}
 
-		var refused = Text == textBefore && text != textBefore;
 		OnPlatformTextSynced(refused);
 		// A TextChanging handler that changed the text and put it back (a filter, a length limit) is no rejection.
 		return !refused || _textChangeCount != textChangesBefore;

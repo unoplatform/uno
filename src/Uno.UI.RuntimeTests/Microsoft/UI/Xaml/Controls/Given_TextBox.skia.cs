@@ -1347,6 +1347,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// The TextBox refuses a character typed in the middle of its text, and the keyboard types the next one before the
+		// dispatcher runs: the caret is already back where the refused edit started, so the next one lands there.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Input_Refused_Then_Next_Key_Follows_At_Once()
+		{
+			var SUT = await LoadFocusedForBrowserIme("abc");
+			SUT.BeforeTextChanging += (_, e) => e.Cancel = e.NewText.Contains('x');
+			try
+			{
+				SUT.Select(1, 0);
+				await UITestHelper.WaitFor(() => GetHiddenInputState() == "abc|1", timeoutMS: 3000, message: "the caret should reach the hidden input");
+
+				InvokeBrowserJs("(function(){const t=document.getElementById('uno-input');" + NativeInput("axbc", 2, "insertText") + "return 'ok';})()");
+
+				Assert.AreEqual("abc", SUT.Text);
+				Assert.AreEqual(1, SUT.SelectionStart);
+				Assert.AreEqual("abc|1", GetHiddenInputState());
+
+				// The keyboard inserts its next character at the input's caret.
+				InvokeBrowserJs("(function(){const t=document.getElementById('uno-input');const c=t.selectionStart;t.value=t.value.substring(0,c)+'y'+t.value.substring(c);t.setSelectionRange(c+1,c+1);t.dispatchEvent(new InputEvent('input',{inputType:'insertText',data:'y'}));return 'ok';})()");
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("aybc", SUT.Text);
+				Assert.AreEqual(2, SUT.SelectionStart);
+				Assert.AreEqual("aybc|2", GetHiddenInputState());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
 		// Keeps the browser's own selectionchange events away from the input's handler, so a test can run it itself.
 		private static void DetachSelectionChangeHandler()
 			=> InvokeBrowserJs("(function(){window.__unoSelectionChange=document.onselectionchange;document.onselectionchange=null;return 'ok';})()");
