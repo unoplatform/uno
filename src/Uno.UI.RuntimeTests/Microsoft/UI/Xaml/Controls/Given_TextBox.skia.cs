@@ -1750,6 +1750,313 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// WebKit order for a candidate other than the preedit: compositionend comes with the preedit still selected in the
+		// input, and the candidate lands with the input event that follows. TextCompositionEnded sees the candidate.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_WebKit_Candidate_Committed_Before_Input_Event()
+		{
+			var SUT = await LoadFocusedForBrowserIme("ab ");
+			var events = TrackCompositionEvents(SUT);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(3, 3, "nihon", "ab nihon", 8));
+				await ReplayOnHiddenInput("t.setSelectionRange(3,8);" + ImeEnd("日本") + WebKitInput("ab 日本", 5, "insertFromComposition", "日本", isComposing: false));
+
+				Assert.AreEqual("ab 日本", SUT.Text);
+				Assert.AreEqual(5, SUT.SelectionStart);
+				Assert.IsFalse(SUT.IsComposing);
+				CollectionAssert.AreEqual(new[] { "changed 3+5 ab nihon", "changed 3+2 ab 日本", "ended 3+2 ab 日本" }, events);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// WebKit order for a cancel: compositionend comes with the preedit still selected, and the input event that follows
+		// removes it. TextCompositionEnded sees the text without it.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_WebKit_Composition_Cancelled_Before_Input_Event()
+		{
+			var SUT = await LoadFocusedForBrowserIme("ab ");
+			var events = TrackCompositionEvents(SUT);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(3, 3, "nihon", "ab nihon", 8));
+				await ReplayOnHiddenInput("t.setSelectionRange(3,8);" + ImeEnd("") + WebKitInput("ab ", 3, "deleteCompositionText", "", isComposing: false));
+
+				Assert.AreEqual("ab ", SUT.Text);
+				Assert.AreEqual(3, SUT.SelectionStart);
+				Assert.IsFalse(SUT.IsComposing);
+				CollectionAssert.AreEqual(new[] { "changed 3+5 ab nihon", "changed 3+0 ab ", "ended 3+0 ab " }, events);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// WebKit can remove the preedit with an input event of its own, deliver compositionend, and only then put the
+		// candidate in place: the removal is reported with the insertion, not as an emptied composition.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_WebKit_Preedit_Removed_Before_Candidate_Committed()
+		{
+			var SUT = await LoadFocusedForBrowserIme("ab ");
+			var events = TrackCompositionEvents(SUT);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(3, 3, "nihon", "ab nihon", 8));
+				await ReplayOnHiddenInput(WebKitInput("ab ", 3, "deleteCompositionText", "", isComposing: true) + ImeEnd("日本")
+					+ WebKitInput("ab 日本", 5, "insertFromComposition", "日本", isComposing: false));
+
+				Assert.AreEqual("ab 日本", SUT.Text);
+				Assert.AreEqual(5, SUT.SelectionStart);
+				Assert.IsFalse(SUT.IsComposing);
+				CollectionAssert.AreEqual(new[] { "changed 3+5 ab nihon", "changed 3+2 ab 日本", "ended 3+2 ab 日本" }, events);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Or compositionend first, then the preedit removed, then the candidate put in place: the removal is part of the
+		// commit, not a keystroke that ends the wait.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_WebKit_Preedit_Removed_After_Candidate_Committed()
+		{
+			var SUT = await LoadFocusedForBrowserIme("ab ");
+			var events = TrackCompositionEvents(SUT);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(3, 3, "nihon", "ab nihon", 8));
+				await ReplayOnHiddenInput("t.setSelectionRange(3,8);" + ImeEnd("日本")
+					+ WebKitInput("ab ", 3, "deleteCompositionText", "", isComposing: true)
+					+ WebKitInput("ab 日本", 5, "insertFromComposition", "日本", isComposing: false));
+
+				Assert.AreEqual("ab 日本", SUT.Text);
+				Assert.AreEqual(5, SUT.SelectionStart);
+				Assert.IsFalse(SUT.IsComposing);
+				CollectionAssert.AreEqual(new[] { "changed 3+5 ab nihon", "changed 3+2 ab 日本", "ended 3+2 ab 日本" }, events);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// iOS order (seen on a device): the preedit is removed and the candidate put in place, each with an input event of
+		// its own and no compositionupdate, then compositionend. The insertion's data is what the composition holds.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_WebKit_Candidate_Committed_Before_Compositionend()
+		{
+			var SUT = await LoadFocusedForBrowserIme("ab ");
+			var events = TrackCompositionEvents(SUT);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(3, 3, "nihon", "ab nihon", 8));
+				await ReplayOnHiddenInput(WebKitInput("ab ", 3, "deleteCompositionText", "", isComposing: true));
+				await ReplayOnHiddenInput(WebKitInput("ab 日本", 5, "insertFromComposition", "日本", isComposing: true));
+				Assert.IsTrue(SUT.IsComposing);
+				Assert.AreEqual("ab 日本", SUT.Text);
+
+				await ReplayOnHiddenInput(ImeEnd("日本"));
+
+				Assert.AreEqual("ab 日本", SUT.Text);
+				Assert.AreEqual(5, SUT.SelectionStart);
+				Assert.IsFalse(SUT.IsComposing);
+				CollectionAssert.AreEqual(new[] { "changed 3+5 ab nihon", "changed 3+2 ab 日本", "ended 3+2 ab 日本" }, events);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// iOS (seen on a device): a tapped candidate first replaces the preedit, then is committed by removing it and
+		// putting it back before compositionend. Handlers don't see the composition emptied and refilled.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_WebKit_Candidate_Applied_Then_Committed()
+		{
+			var SUT = await LoadFocusedForBrowserIme("");
+			var events = TrackCompositionEvents(SUT);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(0, 0, "あ", "あ", 1));
+				await ReplayOnHiddenInput(ImeCompose(0, 1, "亜", "亜", 1));
+				await ReplayOnHiddenInput(WebKitInput("", 0, "deleteCompositionText", "", isComposing: true));
+				await ReplayOnHiddenInput(WebKitInput("亜", 1, "insertFromComposition", "亜", isComposing: true));
+				await ReplayOnHiddenInput(ImeEnd("亜"));
+
+				Assert.AreEqual("亜", SUT.Text);
+				Assert.AreEqual(1, SUT.SelectionStart);
+				Assert.IsFalse(SUT.IsComposing);
+				CollectionAssert.AreEqual(new[] { "changed 0+1 あ", "changed 0+1 亜", "ended 0+1 亜" }, events);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// The preedit repeats the text before it, so the text left by its removal could pass for it: the removal itself
+		// says it is gone. Put back by the commit, the text reads as unchanged.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_WebKit_Repeated_Preedit_Removed_Before_Commit()
+		{
+			var SUT = await LoadFocusedForBrowserIme("aa");
+			var events = TrackCompositionEvents(SUT);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(2, 2, "a", "aaa", 3));
+				await ReplayOnHiddenInput(WebKitInput("aa", 2, "deleteCompositionText", "", isComposing: true) + ImeEnd("a")
+					+ WebKitInput("aaa", 3, "insertFromComposition", "a", isComposing: false));
+
+				Assert.AreEqual("aaa", SUT.Text);
+				Assert.AreEqual(3, SUT.SelectionStart);
+				Assert.IsFalse(SUT.IsComposing);
+				CollectionAssert.AreEqual(new[] { "changed 2+1 aaa", "ended 2+1 aaa" }, events);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// Blink cancels a composition whose text is selected with a compositionend alone, keeping the text and sending no
+		// input event: the composition still ends.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Selected_Composition_Cancelled_Without_Input_Event()
+		{
+			var SUT = await LoadFocusedForBrowserIme("ab ");
+			var events = TrackCompositionEvents(SUT);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(3, 3, "nihon", "ab nihon", 8));
+				await ReplayOnHiddenInput("t.setSelectionRange(3,8);" + ImeEnd(""));
+				await UITestHelper.WaitFor(() => !SUT.IsComposing, timeoutMS: 3000, message: "the composition should end");
+
+				Assert.AreEqual("ab nihon", SUT.Text);
+				CollectionAssert.AreEqual(new[] { "changed 3+5 ab nihon", "ended 3+0 ab nihon" }, events);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// compositionend announces a commit with the preedit still selected, then the preedit is removed and nothing is put in
+		// its place: the composition ends as cancelled, once the text without the preedit is synced.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Announced_Commit_Then_Preedit_Removed_Only()
+		{
+			var SUT = await LoadFocusedForBrowserIme("ab ");
+			var events = TrackCompositionEvents(SUT);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(3, 3, "nihon", "ab nihon", 8));
+				await ReplayOnHiddenInput("t.setSelectionRange(3,8);" + ImeEnd("日本") + WebKitInput("ab ", 3, "deleteCompositionText", "", isComposing: true));
+				await UITestHelper.WaitFor(() => !SUT.IsComposing, timeoutMS: 3000, message: "the composition should end");
+
+				Assert.AreEqual("ab ", SUT.Text);
+				Assert.AreEqual(3, SUT.SelectionStart);
+				CollectionAssert.AreEqual(new[] { "changed 3+5 ab nihon", "changed 3+0 ab ", "ended 3+0 ab " }, events);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// A commit compositionend announced with the preedit still selected never comes, and the next keystroke follows in
+		// the same task: the composition ends as it would have at compositionend, then the keystroke is a plain edit.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Announced_Commit_Never_Applied_Then_Key()
+		{
+			var SUT = await LoadFocusedForBrowserIme("ab ");
+			var events = TrackCompositionEvents(SUT);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(3, 3, "nihon", "ab nihon", 8));
+				await ReplayOnHiddenInput("t.setSelectionRange(3,8);" + ImeEnd("日本") + NativeInput("ab nihonx", 9, "insertText"));
+
+				Assert.AreEqual("ab nihonx", SUT.Text);
+				Assert.AreEqual(9, SUT.SelectionStart);
+				Assert.IsFalse(SUT.IsComposing);
+				CollectionAssert.AreEqual(new[] { "changed 3+5 ab nihon", "ended 3+2 ab nihon" }, events);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// The same, with the next keystroke starting a new composition: the first one ends before the second starts.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Announced_Commit_Never_Applied_Then_Composition()
+		{
+			var SUT = await LoadFocusedForBrowserIme("ab ");
+			var events = TrackCompositionEvents(SUT);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(3, 3, "nihon", "ab nihon", 8));
+				await ReplayOnHiddenInput("t.setSelectionRange(3,8);" + ImeEnd("日本") + ImeStart() + ImeCompose(8, 8, "x", "ab nihonx", 9));
+				await ReplayOnHiddenInput(ImeEnd("x"));
+
+				Assert.AreEqual("ab nihonx", SUT.Text);
+				Assert.IsFalse(SUT.IsComposing);
+				CollectionAssert.AreEqual(new[] { "changed 3+5 ab nihon", "ended 3+2 ab nihon", "changed 8+1 ab nihonx", "ended 8+1 ab nihonx" }, events);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
 		// Keeps the browser's own selectionchange events away from the input's handler, so a test can run it itself.
 		private static void DetachSelectionChangeHandler()
 			=> InvokeBrowserJs("(function(){window.__unoSelectionChange=document.onselectionchange;document.onselectionchange=null;return 'ok';})()");

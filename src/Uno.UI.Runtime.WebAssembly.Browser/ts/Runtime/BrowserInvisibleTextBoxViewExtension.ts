@@ -46,6 +46,12 @@
 		private static compositionText: string = "";
 		private static compositionStart: number = 0;
 		private static pendingCompositionStart: number = -1;
+		// The composition text last reported, so a preedit WebKit removes and puts back unchanged isn't reported again.
+		private static reportedText: string | null = null;
+		// The commit a compositionend announced before the input event that applies it (see awaitsCommitInput).
+		private static pendingCommit: string | null = null;
+		// WebKit removed the preedit with an input event of its own; it is reported with what follows (see syncCompositionInput).
+		private static preeditRemoved: boolean = false;
 		// The TextBox's text, set while the browser owns the value during a composition (see setText).
 		private static pendingText: string | null = null;
 		// The input's value as last synced with the TextBox, either way. A commit the browser applied without an input
@@ -232,7 +238,7 @@
 				}
 				BrowserInvisibleTextBoxViewExtension.runSyncingFromNative(() => {
 					if (BrowserInvisibleTextBoxViewExtension.isComposing && isActiveComposition()) {
-						BrowserInvisibleTextBoxViewExtension.syncCompositionFromInput(input);
+						BrowserInvisibleTextBoxViewExtension.syncCompositionInput(input, ev as InputEvent, isActiveComposition);
 					} else {
 						BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
 					}
@@ -274,6 +280,14 @@
 				if (input !== BrowserInvisibleTextBoxViewExtension.inputElement) {
 					return;
 				}
+				const announcedCommit = BrowserInvisibleTextBoxViewExtension.pendingCommit;
+				if (announcedCommit !== null && isActiveComposition()) {
+					// The commit a compositionend announced never came: that composition ends as it would have there.
+					BrowserInvisibleTextBoxViewExtension.runSyncingFromNative(() => BrowserInvisibleTextBoxViewExtension.completeComposition(input, announcedCommit));
+					if (input !== BrowserInvisibleTextBoxViewExtension.inputElement) {
+						return;
+					}
+				}
 				activeCompositionGeneration = ++BrowserInvisibleTextBoxViewExtension.compositionGeneration;
 				BrowserInvisibleTextBoxViewExtension.resetComposition();
 				// The IME now drives the selection; a restore pending from an earlier value assignment is stale.
@@ -300,36 +314,138 @@
 					return;
 				}
 				BrowserInvisibleTextBoxViewExtension.runSyncingFromNative(() => {
-					const generation = BrowserInvisibleTextBoxViewExtension.compositionGeneration;
+					const committed = ev.data ?? "";
+					const removed = BrowserInvisibleTextBoxViewExtension.preeditRemoved;
 					// Firefox dispatches the commit's input event after compositionend. The committed value still belongs
 					// to the composition: the TextBox ends it with its final text, and RichEditBox keeps one undo step.
-					if (input.value !== BrowserInvisibleTextBoxViewExtension.syncedValue) {
+					// A preedit WebKit removed on its way to putting a commit in place waits for that commit instead.
+					if (input.value !== BrowserInvisibleTextBoxViewExtension.syncedValue && !(removed && committed.length > 0)) {
+						if (removed) {
+							BrowserInvisibleTextBoxViewExtension.preeditRemoved = false;
+							BrowserInvisibleTextBoxViewExtension.compositionText = "";
+						}
 						BrowserInvisibleTextBoxViewExtension.syncCompositionFromInput(input);
-					}
-
-					const wasReported = BrowserInvisibleTextBoxViewExtension.isCompositionReported;
-					const textDiffers = BrowserInvisibleTextBoxViewExtension.pendingText !== null;
-					BrowserInvisibleTextBoxViewExtension.resetComposition();
-					if (wasReported) {
-						if (textDiffers) {
-							// The TextBox holds other text than the commit: the composition ends with its range in that text.
-							BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
-						} else if (ev.data.length > 0) {
-							BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(ev.data);
-						} else {
-							BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCanceled();
+						if (!isActiveComposition()) {
+							return;
 						}
 					}
-					if (textDiffers && BrowserInvisibleTextBoxViewExtension.isSyncTarget(input, generation)) {
-						// The TextBox re-applies its same-length edits (a casing filter) to the committed value and pushes
-						// the result to the input.
-						BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
+
+					if (BrowserInvisibleTextBoxViewExtension.isCompositionReported && BrowserInvisibleTextBoxViewExtension.awaitsCommitInput(input, committed, removed)) {
+						BrowserInvisibleTextBoxViewExtension.compositionText = committed;
+						BrowserInvisibleTextBoxViewExtension.pendingCommit = committed;
+						// The input event that applies the commit comes in the same task as compositionend, if at all. Blink
+						// cancels a composition whose text is selected with a compositionend alone, keeping the text: the
+						// composition then ends once this task is over, as it would have at compositionend, with a preedit
+						// removed in between synced first.
+						const generation = BrowserInvisibleTextBoxViewExtension.compositionGeneration;
+						setTimeout(() => {
+							if (BrowserInvisibleTextBoxViewExtension.pendingCommit !== committed
+								|| !BrowserInvisibleTextBoxViewExtension.isSyncTarget(input, generation)) {
+								return;
+							}
+							BrowserInvisibleTextBoxViewExtension.runSyncingFromNative(() => {
+								let commit = committed;
+								if (input.value !== BrowserInvisibleTextBoxViewExtension.syncedValue) {
+									// The preedit was removed and nothing put in its place: the composition was cancelled.
+									commit = "";
+									BrowserInvisibleTextBoxViewExtension.preeditRemoved = false;
+									BrowserInvisibleTextBoxViewExtension.compositionText = "";
+									BrowserInvisibleTextBoxViewExtension.syncCompositionFromInput(input);
+									if (!BrowserInvisibleTextBoxViewExtension.isSyncTarget(input, generation)) {
+										return;
+									}
+								}
+								BrowserInvisibleTextBoxViewExtension.completeComposition(input, commit);
+							});
+						}, 0);
+						return;
 					}
+					BrowserInvisibleTextBoxViewExtension.completeComposition(input, committed);
 				});
 			});
 
 			document.body.appendChild(input);
 			BrowserInvisibleTextBoxViewExtension.inputElement = input;
+		}
+
+		// Some WebKit orders (not current WebKit's) deliver compositionend before the input event that applies the commit:
+		// with the preedit still in the input, selected for the commit (or a cancel) to replace, or with the preedit just
+		// removed. The composition then ends with that input event, so TextCompositionEnded comes after the text change, as
+		// on WinUI. A commit no input event will apply still ends at compositionend.
+		private static awaitsCommitInput(input: HTMLInputElement | HTMLTextAreaElement, committed: string, removed: boolean): boolean {
+			if (removed) {
+				return committed.length > 0;
+			}
+			const preedit = BrowserInvisibleTextBoxViewExtension.compositionText;
+			const start = BrowserInvisibleTextBoxViewExtension.compositionStart;
+			return preedit.length > 0
+				&& committed !== preedit
+				&& input.selectionStart === start
+				&& input.selectionEnd === start + preedit.length;
+		}
+
+		// WebKit commits through input events of its own, with no compositionupdate for the committed text: the preedit
+		// is removed (deleteCompositionText), then the committed text put in place (insertFromComposition), then
+		// compositionend. The removal is reported with the insertion, so handlers don't see the composition emptied and
+		// refilled; when compositionend comes next instead, the composition was emptied, and once compositionend
+		// announced a cancel, the removal is all that comes.
+		private static syncCompositionInput(input: HTMLInputElement | HTMLTextAreaElement, ev: InputEvent, isActiveComposition: () => boolean) {
+			const inputType = ev.inputType;
+			const pendingCommit = BrowserInvisibleTextBoxViewExtension.pendingCommit;
+			if (inputType === "deleteCompositionText" && BrowserInvisibleTextBoxViewExtension.isCompositionReported && pendingCommit !== "") {
+				BrowserInvisibleTextBoxViewExtension.preeditRemoved = true;
+				return;
+			}
+
+			if (pendingCommit !== null && !ev.isComposing
+				&& inputType !== "insertCompositionText" && inputType !== "insertFromComposition" && inputType !== "deleteCompositionText") {
+				// The commit compositionend announced never came, and this is the next keystroke: the composition ends as it
+				// would have there, and the keystroke is a plain edit.
+				const generation = BrowserInvisibleTextBoxViewExtension.compositionGeneration;
+				BrowserInvisibleTextBoxViewExtension.completeComposition(input, pendingCommit);
+				if (BrowserInvisibleTextBoxViewExtension.isSyncTarget(input, generation)) {
+					BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
+				}
+				return;
+			}
+
+			const removed = BrowserInvisibleTextBoxViewExtension.preeditRemoved;
+			BrowserInvisibleTextBoxViewExtension.preeditRemoved = false;
+			if (inputType === "insertFromComposition" && ev.data) {
+				BrowserInvisibleTextBoxViewExtension.compositionText = ev.data;
+			}
+			if (!removed
+				|| input.value !== BrowserInvisibleTextBoxViewExtension.syncedValue
+				|| BrowserInvisibleTextBoxViewExtension.compositionText !== BrowserInvisibleTextBoxViewExtension.reportedText) {
+				BrowserInvisibleTextBoxViewExtension.syncCompositionFromInput(input);
+			}
+
+			if (pendingCommit !== null && isActiveComposition()) {
+				BrowserInvisibleTextBoxViewExtension.completeComposition(input, BrowserInvisibleTextBoxViewExtension.compositionText);
+			}
+		}
+
+		// Ends the composition with its commit; an empty one cancels it.
+		private static completeComposition(input: HTMLInputElement | HTMLTextAreaElement, committed: string) {
+			const generation = BrowserInvisibleTextBoxViewExtension.compositionGeneration;
+			const wasReported = BrowserInvisibleTextBoxViewExtension.isCompositionReported;
+			const textDiffers = BrowserInvisibleTextBoxViewExtension.pendingText !== null;
+			BrowserInvisibleTextBoxViewExtension.resetComposition();
+			if (wasReported) {
+				if (textDiffers) {
+					// The TextBox holds other text than the commit: the composition ends with its range in that text.
+					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
+				} else if (committed.length > 0) {
+					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(committed);
+				} else {
+					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCanceled();
+				}
+			}
+			if (textDiffers && BrowserInvisibleTextBoxViewExtension.isSyncTarget(input, generation)) {
+				// The TextBox re-applies its same-length edits (a casing filter) to the committed value and pushes
+				// the result to the input.
+				BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
+			}
 		}
 
 		// Tells the TextBox which part of the input's value is being composed. The composition is applied to the
@@ -358,6 +474,7 @@
 				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionStarted();
 			}
 			const cursorPosition = Math.max(0, Math.min(caret - start, text.length));
+			BrowserInvisibleTextBoxViewExtension.reportedText = text;
 			BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdated(text, cursorPosition, start);
 		}
 
@@ -406,6 +523,9 @@
 			BrowserInvisibleTextBoxViewExtension.compositionText = "";
 			BrowserInvisibleTextBoxViewExtension.pendingCompositionStart = -1;
 			BrowserInvisibleTextBoxViewExtension.pendingText = null;
+			BrowserInvisibleTextBoxViewExtension.reportedText = null;
+			BrowserInvisibleTextBoxViewExtension.pendingCommit = null;
+			BrowserInvisibleTextBoxViewExtension.preeditRemoved = false;
 		}
 
 		// A textarea normalizes line breaks to \n, and an input strips them.
