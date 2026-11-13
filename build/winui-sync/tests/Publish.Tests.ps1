@@ -467,6 +467,20 @@ Describe 'Publish-SyncArea' {
 		Should -Invoke -ModuleName WinUISync New-GitHubPr -Times 0 -Exactly
 	}
 
+	It 'does not publish a port that changed nothing and did not build' {
+		$fx = New-PublishFixture
+		Mock-GitHub
+		$empty = Join-Path $fx.Root 'empty.patch'; [System.IO.File]::WriteAllText($empty, '')
+		[System.IO.File]::WriteAllText($fx.Report, "build: failed`nskipped: 0`n---`n## Ported`nNone. The upstream diff could not be read.`n")
+
+		$r = Invoke-Publish $fx @{ PatchPath = $empty }
+
+		$r.Outcome | Should -Match '^skipped'
+		Get-OriginBranchSha $fx | Should -BeNullOrEmpty
+		Should -Invoke -ModuleName WinUISync New-GitHubPr -Times 0 -Exactly
+		Should -Invoke -ModuleName WinUISync New-GitHubIssue -Times 0 -Exactly
+	}
+
 	It 'refuses a patch that touches files a port may not change' {
 		$fx = New-PublishFixture
 		Mock-GitHub
