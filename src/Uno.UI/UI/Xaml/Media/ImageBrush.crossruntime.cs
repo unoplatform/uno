@@ -23,8 +23,11 @@ namespace Microsoft.UI.Xaml.Media
 				surfaceBrush.Surface = null;
 			}
 
+			// Released first, as on WinUI: subscribing runs app code that may open the old source again.
+			_sourceSubscription.Disposable = null;
+
 			var version = ++_subscriptionVersion;
-			var subscription = newValue?.SubscribeWeakly(OnSourceOpened);
+			var subscription = newValue?.SubscribeWeakly(image => OnSourceOpened(version, image));
 
 			// Subscribing ran app code (an ImageOpened handler) that may have set another ImageSource, subscribed to by now.
 			if (version == _subscriptionVersion)
@@ -37,8 +40,14 @@ namespace Microsoft.UI.Xaml.Media
 			}
 		}
 
-		private void OnSourceOpened(ImageData image)
+		private void OnSourceOpened(int version, ImageData image)
 		{
+			// A source the app replaced while the brush subscribed to it may open again before its subscription ends.
+			if (version != _subscriptionVersion)
+			{
+				return;
+			}
+
 			ImageDataCache = image;
 
 			if (image.Kind == ImageDataKind.Error)
