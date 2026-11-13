@@ -87,9 +87,6 @@
             "articles/external/uno.xamlmerge.task/**.md": {
               "branch": "main"
             },
-            "articles/external/figma-docs/**.md": {
-              "branch": "main"
-            },
             "articles/external/uno.resizetizer/**.md": {
               "branch": "main"
             },
@@ -99,15 +96,14 @@
             "articles/external/uno.extensions/**.md": {
               "branch": "main"
             },
-            "articles/external/studio-docs/**.md": {
-              "branch": "main"
-            },
             "articles/external/uno.chefs/**.md": {
               "branch": "main"
-            },
-            "articles/studio/Hot Design/**.md": {
-              "branch": "main"
             }
+          },
+          "_disableEditLink": {
+            "articles/external/studio-docs/**.md": true,
+            "articles/external/figma-docs/**.md": true,
+            "articles/studio/Hot Design/**.md": true
           }
         },
         "sitemap": {

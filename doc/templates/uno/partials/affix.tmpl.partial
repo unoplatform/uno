@@ -5,11 +5,15 @@
     {{^_disableContribution}}
     <div class="contribution">
       <ul class="nav">
+        {{! _disableEditLink (docfx.json fileMetadata) hides only "Edit this page", for pages copied from
+            read-only sync repos. The box itself stays: affix.js adds "Send feedback" to it. }}
+        {{^_disableEditLink}}
         {{#docurl}}
         <li>
           <a href="{{docurl}}" class="contribution-link">{{__global.improveThisDoc}}</a>
         </li>
         {{/docurl}}
+        {{/_disableEditLink}}
         {{#sourceurl}}
         <li>
           <a href="{{sourceurl}}" class="contribution-link">{{__global.viewSource}}</a>
