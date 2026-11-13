@@ -13,14 +13,14 @@ $external_docs = @{
     "uno.wasm.bootstrap" = @{ ref="0452dfce12ed05ed4e5a4fb920b52f59973225fd" }  #latest release/stable/10.1 branch commit
     "uno.themes"         = @{ ref="b43eec86d060a991fb24fe5f0c5f24eba2533631" }  #latest release/stable/9.0 branch commit
     "uno.toolkit.ui"     = @{ ref="7fd0519da9e25d05a3e902f023ed268158fa1a48" }  #latest release/stable/11.0 branch commit
-    "uno.check"          = @{ ref="5fee2e8c1575bf1a1c7ee0cad9b62e286fd039c0" }  #latest main commit
+    "uno.check"          = @{ ref="6e273120eca79e749bf2eda913db4ece7da3b906" }  #latest release/stable/1.35 branch commit
     "uno.xamlmerge.task" = @{ ref="377ce2d9fdeab0d4f0b94a61e008731a40b10220" }  #latest release/stable/1.33 branch commit
     "figma-docs"         = @{ ref="842a2792282b88586a337381b2b3786e779973b4" }  #latest main commit
-    "uno.resizetizer"    = @{ ref="51e2c613b4acc02fda6d75946ebeec5813b94230" }  #latest release/stable/2.0 branch commit
+    "uno.resizetizer"    = @{ ref="1cfa3b3a4b879933f5116c392bc93d4d3659217b" }  #latest release/stable/2.0 branch commit
     "uno.uitest"         = @{ ref="94d027295b779e28064aebf99aeaee2b393ad558" }  #latest master commit
-    "uno.extensions"     = @{ ref="7560267815a2bb03997c15d07c68c7b7a47593a9" }  #latest release/stable/8.0 branch commit
+    "uno.extensions"     = @{ ref="a357666b3b3b72909808e76f201815cf4baed8a2" }  #latest release/stable/8.0 branch commit
     "workshops"          = @{ ref="3515c29e03dea36cf2206d797d1bf9f8620370e3" }  #latest master commit
-    "uno.samples"        = @{ ref="0c991075967811662e65439deb82cac922b007e5" }  #latest master commit
+    "uno.samples"        = @{ ref="da93d84026032f3ad07dc41ab5e044c88d232027" }  #latest master commit
     "uno.chefs"          = @{ ref="d3591606dae2e5f4892ab4872a8dd94c2fc9e211" }  #latest main commit
     "hd-docs"            = @{ ref="2b17758ce3665f347e2df1bc835dab48986bae06"; dest="studio/Hot Design" } #main commit matching the uno.hotdesign release/stable/2.0 docs
     "studio-docs"        = @{ ref="63d500cb865d71b39c375370d9d4db69b0b29815" }  #latest main commit
