@@ -3,7 +3,7 @@
     {
       "id": "navigationview",
       "title": "NavigationView",
-      "baseline": "bac7a9c33ffe3696ec19121b16f166227eae4f1f",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
       "upstream": {
         "sources": [
           "controls/dev/NavigationView"
