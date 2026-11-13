@@ -559,6 +559,7 @@ function New-SyncIssue {
 		"Upstream range: ``$($Area.baseline.Substring(0, 10))`` → ``$($TargetSha.Substring(0, 10))`` (``$TargetTag``) · [compare](https://github.com/$script:UpstreamSlug/compare/$($Area.baseline)...$TargetSha)"
 		"Port build: **$(if ($Report.BuildPassed) { 'passed' } else { 'failed or not verified' })** · Skipped items: **$($Report.SkippedCount)**"
 		''
+		''
 	) -join "`n"
 	$tail = @(
 		''
@@ -603,6 +604,7 @@ function New-SyncPr {
 		''
 		"- Port build: **$(if ($Report.BuildPassed) { 'passed' } else { 'failed or not verified' })** (no tests were run)"
 		"- Skipped items: **$($Report.SkippedCount)**$(if (-not $complete) { " — #$IssueNumber stays open to track what is left" })"
+		''
 		''
 	) -join "`n"
 	$tail = @(
