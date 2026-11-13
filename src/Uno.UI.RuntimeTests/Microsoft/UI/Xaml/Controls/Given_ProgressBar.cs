@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
@@ -83,6 +84,7 @@ public class Given_ProgressBar
 			BorderThickness = new Thickness(4, 0, 4, 0),
 		};
 
+		using var _ = UITestHelper.ResetWindowContent();
 		await UITestHelper.Load(sut);
 
 		var indicator = sut.FindFirstDescendant<Rectangle>("DeterminateProgressBarIndicator");
@@ -100,6 +102,7 @@ public class Given_ProgressBar
 			BorderThickness = new Thickness(4, 0, 4, 0),
 		};
 
+		using var _ = UITestHelper.ResetWindowContent();
 		await UITestHelper.Load(sut);
 
 		var indicator = sut.FindFirstDescendant<Rectangle>("IndeterminateProgressBarIndicator");
@@ -121,6 +124,7 @@ public class Given_ProgressBar
 			IsIndeterminate = true,
 		};
 
+		using var _ = UITestHelper.ResetWindowContent();
 		await UITestHelper.Load(sut);
 
 		var indicator2 = sut.FindFirstDescendant<Rectangle>("IndeterminateProgressBarIndicator2");
@@ -150,16 +154,21 @@ public class Given_ProgressBar
 			IsIndeterminate = true,
 		};
 
+		using var _ = UITestHelper.ResetWindowContent();
 		await UITestHelper.Load(sut);
 
 		var layoutRoot = sut.FindFirstDescendant<Grid>("LayoutRoot");
 		Assert.IsNotNull(layoutRoot);
 		var commonStates = VisualStateManager.GetVisualStateGroups(layoutRoot).Single(g => g.Name == "CommonStates");
 		Assert.AreEqual("Indeterminate", commonStates.CurrentState?.Name);
+		var indeterminateStoryboard = commonStates.States.Single(s => s.Name == "Indeterminate").Storyboard;
+		Assert.AreEqual(ClockState.Active, indeterminateStoryboard.GetCurrentState());
 
 		sut.Visibility = Visibility.Collapsed;
 
 		Assert.AreEqual("Determinate", commonStates.CurrentState?.Name);
+		// The forever storyboard must not keep requesting frames for a bar nobody can see.
+		Assert.AreEqual(ClockState.Stopped, indeterminateStoryboard.GetCurrentState());
 	}
 
 	[TestMethod]
@@ -171,6 +180,7 @@ public class Given_ProgressBar
 			Maximum = 100,
 		};
 
+		using var _ = UITestHelper.ResetWindowContent();
 		await UITestHelper.Load(sut);
 
 		var peer = FrameworkElementAutomationPeer.CreatePeerForElement(sut);
