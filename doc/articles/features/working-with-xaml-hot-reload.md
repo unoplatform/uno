@@ -458,6 +458,8 @@ Here's a summary of the Hot Reload connection statuses and their corresponding i
   
   Also [make sure](https://github.com/dotnet/sdk/issues/36666#issuecomment-2162173453) that you're not referencing `Microsoft.SourceLink.*` packages.
 
+- If a `.resw` file cannot be parsed, Hot Reload reports [UXAML0003](xref:Build.Solution.error-codes#uxaml0003) and keeps applying your other edits, with the localized text of the file's last valid version. Fix the file for its new keys to apply.
+
 - If you're getting the `Unable to access Dispatcher/DispatcherQueue` error, you'll need to update your app to Uno.Sdk 5.6 or later, and update your `App.cs` file:
 
     ```csharp

@@ -903,7 +903,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						_generatorContext.ReportDiagnostic(diagnostic);
 
 						// Keep serving the last keys this file parsed to, so that a .resw being edited does not strip the
-						// x:Uid lookups from the pages regenerated meanwhile (Hot Reload). The error still fails a build.
+						// x:Uid lookups from the pages regenerated meanwhile (Hot Reload). Unless UXAML0003 is suppressed, the
+						// error still fails a build, so these keys never ship.
 						if (_lastGoodResources.TryGetValue(lastGoodKey, out var lastGoodFileKey)
 							&& _cachedResources.TryGetValue(lastGoodFileKey, out var lastGood))
 						{

@@ -304,6 +304,7 @@ public sealed class HotReloadManager : IDisposable
 			// the XAML generator report UXAML0003), and Roslyn 5.x refuses any EnC update while one is present.
 			// These never reach compilation.GetDiagnostics(), so read them from the change-set's projects and
 			// suppress them for the emit: the generated code degrades to stale instead of freezing hot reload.
+			// For a .resw, the generator keeps the file's last parsed keys so that pages keep their x:Uid lookups.
 			// The suppression applies to the emit itself, not to a retry, since an emit that produces deltas
 			// commits the EnC baseline.
 			//
