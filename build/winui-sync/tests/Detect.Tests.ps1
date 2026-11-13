@@ -190,7 +190,7 @@ Describe 'Get-SyncPlan' {
 		$item.codeChanged | Should -BeTrue
 		$item.stringsChanged | Should -BeFalse
 		$item.branch | Should -Be 'sync/winui/foo'
-		$item.model | Should -Be 'claude-opus-5-5'
+		$item.model | Should -Be 'claude-sonnet-5-5'
 		$item.prNumber | Should -Be 0
 	}
 

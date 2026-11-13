@@ -193,8 +193,8 @@ upstream reference.
 
 - Agent runs only for areas whose tracked paths changed; with stable releases a few times
   a quarter, most weekly runs end in job 1.
-- Default model for porting is the Opus tier (faithful C++→C# needs it), overridable per
-  area; dry-run input prints the matrix and diff stats without running agents.
+- Default model for porting is Sonnet (`claude-sonnet-5-5`), the maintainer's choice: porting a
+  diff does not need the Opus tier. Overridable per area with `model` in the manifest; dry-run input prints the matrix and diff stats without running agents.
 
 ## Calls made by the author (not explicitly decided by the maintainer)
 

@@ -76,6 +76,8 @@ Locally, with a WinUI clone:
 ## Setup and limits
 
 - Secret `ANTHROPIC_CODEREVIEW_KEY`: the API key the port agent uses. It is the same key as the Claude review workflow, so sync and review spend share one budget.
+- The port agent runs on Sonnet (`claude-sonnet-5-5`). An area can name another model with a
+  `model` field in its `areas.json` entry.
 - Label `winui-sync`: created by the workflow if missing; issues and PRs are found by it plus a
   hidden `<!-- winui-sync:<id> -->` marker, so do not remove either.
 - The repository must allow GitHub Actions to create pull requests.

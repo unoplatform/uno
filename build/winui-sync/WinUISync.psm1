@@ -359,7 +359,7 @@ function Get-SyncPlan {
 		[string]$AreaFilter,
 		[string]$TargetTag,
 		[int]$MaxAreas = 10,
-		[string]$DefaultModel = 'claude-opus-5-5')
+		[string]$DefaultModel = 'claude-sonnet-5-5')
 	$target = if ($TargetTag) {
 		[pscustomobject]@{ Tag = $TargetTag; Sha = (Invoke-Git $UpstreamRepo @('rev-list', '-n1', "refs/tags/$TargetTag")) }
 	}
