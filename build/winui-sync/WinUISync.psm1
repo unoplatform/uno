@@ -411,4 +411,66 @@ function Get-SyncPlan {
 
 #endregion
 
+#region strings
+
+# Makes <UnoStrings> match upstream's Strings folder at <Ref>: content replaced, new files added,
+# files upstream no longer has removed. Nothing is touched unless the upstream folder was read successfully.
+function Sync-AreaStrings {
+	param(
+		[Parameter(Mandatory)][string]$UpstreamRepo,
+		[Parameter(Mandatory)][string]$Ref,
+		[Parameter(Mandatory)][string]$UpstreamStrings,
+		[Parameter(Mandatory)][string]$UnoStrings)
+	$tmp = New-TempDirectory
+	try {
+		$resolved = Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo -Ref $Ref -Path $UpstreamStrings
+		if (-not $resolved) { throw "upstream strings path '$UpstreamStrings' not found at $Ref" }
+		$upstreamDir = Export-GitTree -Repo $UpstreamRepo -Ref $Ref -Path $resolved -Destination $tmp
+		$up = Get-TreeFingerprint $upstreamDir
+		if ($up.Count -eq 0) { throw "upstream strings path '$UpstreamStrings' is empty at $Ref" }
+		$uno = Get-TreeFingerprint $UnoStrings
+
+		New-Item -ItemType Directory -Force -Path $UnoStrings | Out-Null
+		$unoRoot = (Resolve-Path -LiteralPath $UnoStrings).Path
+		# Existing folders keep their casing (en-US vs upstream's en-us), so a sync never renames every locale.
+		$dirCasing = @{}
+		foreach ($dir in Get-ChildItem -LiteralPath $unoRoot -Recurse -Directory) {
+			$rel = [System.IO.Path]::GetRelativePath($unoRoot, $dir.FullName).Replace('\', '/')
+			$dirCasing[$rel.ToLowerInvariant()] = $rel
+		}
+
+		$added = @(); $changed = @(); $removed = @()
+		foreach ($key in $up.Keys | Sort-Object) {
+			$source = Join-Path $upstreamDir $up[$key].Path
+			if ($uno.ContainsKey($key)) {
+				if ($uno[$key].Hash -eq $up[$key].Hash) { continue }
+				Copy-Item -LiteralPath $source -Destination (Join-Path $unoRoot $uno[$key].Path) -Force
+				$changed += $uno[$key].Path
+			}
+			else {
+				$relDir = [System.IO.Path]::GetDirectoryName($up[$key].Path).Replace('\', '/')
+				if ($relDir -and $dirCasing.ContainsKey($relDir.ToLowerInvariant())) { $relDir = $dirCasing[$relDir.ToLowerInvariant()] }
+				$rel = if ($relDir) { "$relDir/$([System.IO.Path]::GetFileName($up[$key].Path))" } else { $up[$key].Path }
+				$dest = Join-Path $unoRoot $rel
+				New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null
+				Copy-Item -LiteralPath $source -Destination $dest -Force
+				$added += $rel
+			}
+		}
+		foreach ($key in $uno.Keys | Where-Object { -not $up.ContainsKey($_) } | Sort-Object) {
+			Remove-Item -LiteralPath (Join-Path $unoRoot $uno[$key].Path) -Force
+			$removed += $uno[$key].Path
+		}
+		Get-ChildItem -LiteralPath $unoRoot -Recurse -Directory | Sort-Object { $_.FullName.Length } -Descending |
+			Where-Object { -not (Get-ChildItem -LiteralPath $_.FullName -Force) } | Remove-Item -Force
+
+		[pscustomobject]@{ Added = @($added); Removed = @($removed); Changed = @($changed) }
+	}
+	finally {
+		Remove-Item -Recurse -Force -LiteralPath $tmp -ErrorAction SilentlyContinue
+	}
+}
+
+#endregion
+
 Export-ModuleMember -Function *-*
