@@ -8,7 +8,7 @@ paths:
 
 Scaffold new samples with the **`/add-sample`** skill — it gets attributes, namespace, and theming right. Key rules it follows:
 
-- **Auto-discovered by glob** (`SamplesApp.Samples.props` includes `**/*.xaml` + `**/*.xaml.cs`) — no manual project registration. `SamplesApp.Samples.csproj` is `NoBuild=true`; samples compile into each head (Skia/Wasm/Windows…), so they must compile on every head.
+- **Auto-discovered by glob** (`SamplesApp.Samples.props` includes `**/*.xaml` + `**/*.xaml.cs`) — no manual project registration. `SamplesApp.Samples.csproj` is `NoBuild=true`; samples compile into the single `SamplesApp` head on every target framework (desktop, browserwasm, android, ios, tvos, WinAppSDK), so they must compile on all of them.
 - **Mark the code-behind** with `[Sample("Category")]` (category required; optional `Name`, `Description`, `IsManualTest`, `IgnoreInSnapshotTests`, `ViewModelType`, `UsesFrame`). Multiple categories: `[Sample("A", "B")]`.
 - **Class is `sealed partial`** deriving from `Page` (full-page sample) or `UserControl` (component), constructor calls `this.InitializeComponent()` first. Wire a ViewModel via the `Loading` event; clean up in `Unloaded`.
 - **Folders are a nested namespace hierarchy** (like `src/Uno.UI`): `Microsoft/UI/Xaml/Controls/Button/`, `Microsoft/UI/Xaml/Controls/NavigationViewTests/`. The `Windows.UI.Xaml` and `Windows.UI.Composition` trees live under `Microsoft/` (their WinUI 3 namespaces); pure WinRT APIs keep `Windows/` (e.g. `Windows/Storage/`, `Windows/UI/Input/`). The C# namespaces still use the legacy underscore form (`UITests.Shared.Windows_UI_Xaml_Controls.Button`) — copy the namespace from neighbouring files in the folder, don't derive it from the path.

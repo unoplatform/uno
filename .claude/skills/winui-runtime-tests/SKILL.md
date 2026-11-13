@@ -41,7 +41,7 @@ An **MSIX fallback** remains for the rare cases that need a real package (see *M
 
 Every item below was hit in practice, not theorized:
 
-1. **`crosstargeting_override.props` MUST be set to the windows TFM.** `src/crosstargeting_override.props` must contain `<UnoTargetFrameworkOverride>net11.0-windows10.0.19041.0</UnoTargetFrameworkOverride>`. Without it MSBuild resolves every TFM and drags in Skia/Wasm, producing hundreds of `CS0535: does not implement interface member 'DependencyObject.XXX'`. `build-app.ps1` refuses to build if it is missing or non-windows. **Restore the user's previous value when you are done.**
+1. **`crosstargeting_override.props` MUST be set to the windows TFM.** `src/crosstargeting_override.props` must contain `<UnoTargetFrameworkOverride>net11.0-windows10.0.19041.0</UnoTargetFrameworkOverride>`. Without it MSBuild resolves every TFM and drags in the Uno-rendered targets, which fail the WinAppSDK build. `build-app.ps1` refuses to build if it is missing or non-windows. **Restore the user's previous value when you are done.**
 
 2. **The build needs the pinned preview SDK.** `master` targets net11, while the repo-root `global.json` sets `allowPrerelease: false` and would select a .NET 10 SDK (`NETSDK1045`, then a wall of `NETSDK1004`). CI copies `build/ci/net11/_global.json` over `global.json`; `build-app.ps1` does the same and **always restores it**. The SDK lives side-by-side at `%LOCALAPPDATA%\Microsoft\dotnet` and does *not* show up in `dotnet --list-sdks`.
 

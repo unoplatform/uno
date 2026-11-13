@@ -24,15 +24,17 @@ Review this pull request against the rules in `AGENTS.md`. Focus on:
 - SOLID principles, separation of concerns, and code clarity.
 - Async/cancellation discipline: no `.Result` / `.GetAwaiter().GetResult()`,
   no `async void` without a wrapping try/catch, honor `CancellationToken`.
-- Cross-platform correctness: respect platform file suffixes
-  (`.Android.cs`, `.iOS.cs`, `.UIKit.cs`, `.wasm.cs`, `.skia.cs`,
-  `.reference.cs`); use runtime checks (`OperatingSystem.IsAndroid()`) or
-  `ApiExtensibility` rather than leaking platform code into shared files.
-  Remember `DependencyObject` is an interface on Android/iOS — implement,
-  don't inherit. Never edit files under `Generated/` folders.
+- Cross-platform correctness: `Uno.UI` is one Skia-rendered build for every
+  platform (native renderers were removed in 7.0), so platform behavior there
+  uses runtime checks (`OperatingSystem.IsAndroid()`) or `ApiExtensibility`.
+  `#if __ANDROID__` / `__WASM__` and `.Android.cs` / `.UIKit.cs` / `.wasm.cs`
+  partials are dead code in `Uno.UI`; platform file suffixes apply only in
+  per-platform projects (the WinRT layer and runtime hosts). Flag anything
+  that reintroduces a native UI path. `DependencyObject` is a class, as in
+  WinUI. Never edit files under `Generated/` folders.
 - `DependencyProperty` correctness: registered with `nameof`, the right
   owner/property types, and metadata/change-handler wiring per
-  `.github/agents/dependency-property-agent.md`.
+  `.claude/rules/dependency-properties.md`.
 - Root-cause-first fixes: prefer correcting broken state/lifecycle/index
   invariants over symptom-level null/bounds guards. Flag guard-only changes
   presented as complete fixes.

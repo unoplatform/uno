@@ -49,9 +49,9 @@ These load **automatically** when you touch matching files — you don't invoke 
 
 | Technology | Purpose |
 |------------|---------|
-| .NET 10.0/9.0 | Multi-target framework |
+| .NET 11.0/10.0 | Multi-target framework (`NetCurrent`/`NetPrevious` in `Directory.Build.props`) |
 | C# & XAML | Primary languages |
-| TypeScript | WebAssembly/Web APIs only |
+| TypeScript | Browser host interop only (`Uno.UI.Runtime.WebAssembly.Browser`, WebGPU init) |
 | Skia | Cross-platform rendering |
 | MSBuild | Build orchestration |
 | Roslyn | Source generators |
@@ -64,9 +64,10 @@ These load **automatically** when you touch matching files — you don't invoke 
 | `.iOS.cs` | iOS |
 | `.UIKit.cs` | iOS & tvOS |
 | `.wasm.cs` | WebAssembly |
-| `.skia.cs` | Skia |
-| `.reference.cs` | Reference implementation |
-| `.crossruntime.cs` | Skia + WebAssembly + Reference (shared) |
+| `.tvOS.cs` | tvOS |
+| `.skia.cs` | `Generic` variant (the only variant `Uno.UI` builds) |
+| `.reference.cs` | Reference variant (WinRT layer only) |
+| `.crossruntime.cs` | Generic + Wasm + Reference variants (shared) |
 
 Only projects that build per-platform variants compile the platform suffixes: the WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) and platform-specific runtime or add-in projects. The `Uno.UI` project builds once, for Skia, and excludes `.Android.cs`, `.UIKit.cs` and `.wasm.cs` files by default. A platform runtime project can still link such a file from under `src/Uno.UI`: `Uno.UI.Runtime.WebAssembly.Browser` compiles the `NativeWebView` and TextBox input-scope `.wasm.cs` partials. Judge a file by the MSBuild project that compiles it, not by its path.
 
@@ -95,10 +96,11 @@ cp crosstargeting_override.props.sample crosstargeting_override.props
 <Project>
   <PropertyGroup>
     <!-- Choose ONE target: -->
-    <UnoTargetFrameworkOverride>net10.0</UnoTargetFrameworkOverride>              <!-- WebAssembly/Skia -->
-    <!-- <UnoTargetFrameworkOverride>net10.0-android</UnoTargetFrameworkOverride>  Android -->
-    <!-- <UnoTargetFrameworkOverride>net10.0-ios</UnoTargetFrameworkOverride>      iOS -->
-    <!-- <UnoTargetFrameworkOverride>net10.0-windows10.0.19041.0</UnoTargetFrameworkOverride> Windows -->
+    <UnoTargetFrameworkOverride>net11.0</UnoTargetFrameworkOverride>                  <!-- Desktop -->
+    <!-- <UnoTargetFrameworkOverride>net11.0-browserwasm</UnoTargetFrameworkOverride>  WebAssembly -->
+    <!-- <UnoTargetFrameworkOverride>net11.0-android</UnoTargetFrameworkOverride>      Android -->
+    <!-- <UnoTargetFrameworkOverride>net11.0-ios</UnoTargetFrameworkOverride>          iOS -->
+    <!-- <UnoTargetFrameworkOverride>net11.0-windows10.0.19041.0</UnoTargetFrameworkOverride> Windows (WinAppSDK) -->
 
     <!-- Disables analyzers + code-style enforcement for local builds. No effect on CI. -->
     <UnoFastDevBuild>true</UnoFastDevBuild>
@@ -109,11 +111,11 @@ cp crosstargeting_override.props.sample crosstargeting_override.props
 Or pass the same flags per-build instead of committing them:
 
 ```bash
-dotnet build … -p:UnoTargetFrameworkOverride=net10.0 -p:UnoFastDevBuild=true
+dotnet build … -p:UnoTargetFrameworkOverride=net11.0 -p:UnoFastDevBuild=true
 ```
 
 **Why these flags:**
-- `UnoTargetFrameworkOverride` — restricts cross-targeted projects to a single TFM, skipping the redundant net9.0 outputs while you iterate on net10.0 (or vice versa).
+- `UnoTargetFrameworkOverride` — restricts cross-targeted projects to a single TFM, skipping the redundant `NetPrevious` (net10.0) outputs while you iterate on net11.0 (or vice versa). Every non-Windows value builds the same Skia-rendered `Uno.UI`; the platform part only picks the host and the WinRT-layer variant.
 - `UnoFastDevBuild` — disables `RunAnalyzersDuringBuild`, `EnforceCodeStyleInBuild`, and the `Microsoft.CodeAnalysis.NetAnalyzers` package for local builds. **Guarded by `ContinuousIntegrationBuild`, so CI is never affected** — analyzer-strict checks still run on every PR. Set persistently via the `UNO_FAST_DEV_BUILD=true` environment variable if you'd rather not edit the file.
 
 Combined impact on the `SamplesApp` desktop head (Windows, 32-core, warm NuGet cache): clean build ~3:23 → ~1:59, incremental rebuild after a Uno.UI edit ~2:23 → ~0:58. The `/runtime-tests` skill passes both flags by default (use `strict` to opt out for CI-equivalent coverage).
@@ -137,7 +139,7 @@ dotnet build Uno.UI-Uno-only.slnf --no-restore          # Build (3-5min)
 dotnet test Uno.UI.UnitTests/Uno.UI.UnitTests.csproj    # Unit tests (40-60s)
 ```
 
-**CRITICAL**: **NEVER CANCEL** builds. Set timeouts to 15+ minutes. Favor Skia desktop for faster builds.
+**CRITICAL**: **NEVER CANCEL** builds. Set timeouts to 15+ minutes. Favor the desktop target for faster builds.
 
 ---
 
@@ -178,7 +180,7 @@ The WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) keeps per-
 
 ### Runtime Target Selection
 
-For Skia, `RuntimeAssetsSelectorTask` ensures `Uno.UI` uses `netX` (generic) target for all Skia platforms. `Uno.WinRT` and `Uno.Foundation` use platform-specific assemblies. Use runtime checks like `OperatingSystem.IsAndroid()` for platform-specific behavior on Skia for libraries above and including `Uno.UI`, or use `ApiExtensibility` with platform-specific implementations in `Uno.UI.Runtime.*` projects.
+`Uno.UI` and everything above it ship one build in `lib/netX.0`, used as-is on every platform. Only the WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) has per-platform implementations, and `RuntimeAssetsSelectorTask` swaps in the one matching the head's platform. Use runtime checks like `OperatingSystem.IsAndroid()` for platform-specific behavior on Skia for libraries above and including `Uno.UI`, or use `ApiExtensibility` with platform-specific implementations in `Uno.UI.Runtime.*` projects.
 
 ### NotImplemented Stubs
 
@@ -251,7 +253,7 @@ Add tests to `Uno.UI.RuntimeTests`. Key helpers:
 | Issue | Solution |
 |-------|----------|
 | "Assets file doesn't have a target" | Delete `obj/`, `bin/`, restore |
-| "Windows XAML targets not found" | Use Skia/Wasm on Linux/macOS |
+| "Windows XAML targets not found" | The WinAppSDK target needs Windows; use `Uno.UI-Uno-only.slnf` on Linux/macOS |
 | Solution filter fails | Ensure `crosstargeting_override.props` matches filter |
 | Persistent issues | Close VS, delete `src/.vs`, rebuild |
 | Last resort | `git clean -fdx` (close VS first) |
@@ -324,10 +326,10 @@ A GitHub Actions workflow enforces formatting on PRs that touch SamplesApp XAML 
 
 ### Implementing New WinUI Features
 
-1. Find generated stub: `src/Uno.WinRT/Generated/3.0.0.0/Windows.*/ClassName.cs`
+1. Find generated stub: `src/Uno.UI/Generated/3.0.0.0/Microsoft.UI.*/ClassName.cs` (UI) or `src/Uno.WinRT/Generated/3.0.0.0/Windows.*/ClassName.cs` (non-UI WinRT)
 2. Copy to non-generated location
 3. Remove implemented platforms from `[NotImplemented]` attribute
-4. Use platform suffix for platform-specific files
+4. In `Uno.UI`, branch per platform with `OperatingSystem.IsX()` or `ApiExtensibility`; platform suffixes apply only in per-platform projects (WinRT layer, runtime hosts)
 
 ---
 
@@ -337,7 +339,7 @@ A GitHub Actions workflow enforces formatting on PRs that touch SamplesApp XAML 
 2. **Generated files are regenerated** - never edit `Generated/` folders
 3. **The visual tree is the Skia rendering tree** on every target
 4. **Partial methods** used for extensibility: `OnLoaded()`, `OnUnloaded()`
-5. **NuGet cache corruption** - delete `%USERPROFILE%\.nuget\packages\uno.ui` if debugging fails
+5. **NuGet cache corruption** - delete the `uno.winui` folder under your NuGet global packages folder (`NUGET_PACKAGES` if set, else `%USERPROFILE%\.nuget\packages`) if debugging fails
 6. **Long paths on Windows** - enable via registry if needed
 
 ---
@@ -379,7 +381,7 @@ Guidelines:
 ### Pull Requests & Issues
 
 When asked to open a PR or file an issue, **base it on the repo's existing templates** (filled out accordingly) — don't free-form:
-- **PRs** → fill out every section of `.github/PULL_REQUEST_TEMPLATE.md` and submit it as the body (e.g. `gh pr create --body-file <filled>.md`).
+- **PRs** → fill out every section of `.github/pull_request_template.md` and submit it as the body (e.g. `gh pr create --body-file <filled>.md`).
 - **Issues** → pick the matching GitHub issue **form** under `.github/ISSUE_TEMPLATE/` (`bug-report`, `enhancement`, `documentation-issue`/`-request`, `samples-issue`/`-request`, `feedback`, `support-request`, `success-story`) and fill its required fields (`gh issue create --template <name>.yml`).
 - **Every PR must reference an associated issue** (unless it's a pure-documentation change). Before opening the PR, settle the issue: use the one identified in the conversation; else search for an existing match (`gh issue list --search "<keywords>"`); else create one from the forms above. Put its number on the template's first line — `**GitHub Issue:** closes #XYZ` — so merging the PR auto-closes the issue.
 - **The associated issue may live in a private repository.** Link it rather than creating a public duplicate, using the `owner/repo#N` form (e.g. `closes unoplatform/<private-repo>#123`) so GitHub resolves it across repositories. PR descriptions and comments may also link related private pull requests.
@@ -402,7 +404,7 @@ When asked to open a PR or file an issue, **base it on the repo's existing templ
 - `/devserver` skill - DevServer CLI/Host maintenance
 - `/runtime-tests` skill + `.claude/rules/runtime-tests.md` - runtime test execution & authoring
 - `.claude/rules/dependency-properties.md` - DependencyProperty patterns
-- `.claude/rules/source-generators.md` - XAML/DependencyObject generators
+- `.claude/rules/source-generators.md` - XAML and DependencyProperty generators
 
 ### Community
 - [Discord](https://platform.uno/discord)

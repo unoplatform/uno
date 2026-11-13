@@ -1,17 +1,22 @@
 <!--
   Sync Impact Report
   ==================================================
-  Version change: (none) -> 1.0.0 (MAJOR - initial ratification)
+  Version change: 1.0.0 -> 2.0.0 (MAJOR - principle redefinition)
 
-  Modified principles: N/A (initial version)
+  Modified principles:
+    - II. Cross-Platform Parity: native rendering removed in 7.0; Skia is
+      the only renderer. Platform divergence in Uno.UI uses runtime checks
+      or ApiExtensibility; file suffixes only in per-platform projects.
+    - V. Generated Code Boundaries: implementation step no longer mandates
+      platform file suffixes.
 
-  Added sections:
-    - 7 Core Principles (I through VII)
-    - Architecture Boundaries
-    - Development Workflow
-    - Governance
+  Modified sections:
+    - Architecture Boundaries: dropped native renderers, native base
+      classes and the DependencyObject-as-interface rule; updated project
+      variants.
+    - Development Workflow: runtime tests run on Skia Desktop.
 
-  Removed sections: N/A (initial version)
+  Removed sections: None
 
   Templates requiring updates:
     - .specify/templates/plan-template.md ✅ (Constitution Check section
@@ -46,11 +51,20 @@ ported to Uno.
 ### II. Cross-Platform Parity
 
 Every feature MUST work consistently across all supported target
-platforms: WebAssembly, iOS, Android, Windows (Win32), Linux, macOS,
-and native Windows (WinUI). Uno Platform supports Skia and native rendering, where Skia is the primary, and native is legacy - new features may not work 100% on native, but they should not break existing Uno Platform apps using native rendering. Platform-specific behavior MUST be:
+platforms: WebAssembly, iOS, tvOS, Android, Windows (Win32), Linux, macOS,
+and native Windows (WinAppSDK). Since 7.0, Skia is the only Uno renderer:
+the native Android View, UIKit and WASM DOM renderers were removed, and
+`Uno.UI` is a single build that runs on every Uno target. Platform-specific
+behavior MUST be:
 
-- Isolated in files using the platform suffix convention (`.skia.cs`,
-  `.wasm.cs`, `.Android.cs`, `.iOS.cs`, `.UIKit.cs`).
+- In `Uno.UI` and above: expressed through runtime checks
+  (`OperatingSystem.IsX()`) or `ApiExtensibility`, never through `#if`
+  platform symbols or platform-suffixed partials (those are not compiled
+  there).
+- In per-platform projects (`Uno.WinRT`, `Uno.Foundation`,
+  `Uno.UI.Dispatching`, runtime hosts): isolated in files using the
+  platform suffix convention (`.skia.cs`, `.wasm.cs`, `.Android.cs`,
+  `.iOS.cs`, `.tvOS.cs`, `.UIKit.cs`, `.reference.cs`).
 - Covered by runtime tests that execute on at least the Skia target.
 - Documented when parity is intentionally incomplete.
 
@@ -103,7 +117,8 @@ and MUST NOT contain functionality. They may only be edited to change the `#if` 
 1. Copy the stub to a non-generated location.
 2. Remove the implemented platforms from the `[Uno.NotImplemented]`
    attribute and adjust `#if` accordingly.
-3. Provide the platform-specific implementation using file suffixes.
+3. Provide the implementation in shared code; use file suffixes only
+   in per-platform projects (see Principle II).
 
 **Rationale**: Manual edits to generated files are silently overwritten,
 causing confusion and lost work. Enforcing this boundary eliminates an
@@ -145,32 +160,31 @@ that surface as bugs in production applications.
 The Uno Platform uses a layered platform abstraction that MUST be
 respected in all contributions:
 
-**Rendering Engines**:
-- **Skia**: Cross-platform rendering (Desktop Win32, macOS, Linux,
-  Skia-based Android/iOS).
-- **Native**: Platform-native controls (UIKit, Android Views, DOM
-  elements for WebAssembly).
+**Rendering Engine**:
+- **Skia** renders the UI on every Uno target: Desktop (Win32, macOS,
+  Linux X11/framebuffer), Android, iOS/tvOS and WebAssembly. There are no
+  native renderers; native views can only be embedded alongside the Skia
+  tree through the host embedding APIs.
 
 **Platform Base Class Rules**:
-- Android native: inherits `ViewGroup` -> `UnoViewGroup` (Java) ->
-  `BindableView` -> `UIElement`.
-- iOS native: inherits `UIView` -> `BindableUIView` -> `UIElement`.
-- WebAssembly native: UIElements map to DOM elements.
-- Skia: uses rendering tree.
-- `DependencyObject` is an **interface** on Android/iOS (not a base
-  class). Source generators provide the implementation.
+- `UIElement` derives from `DependencyObject` on every target; there is
+  no native view base class.
+- `DependencyObject` is a **class**, as in WinUI.
 
 **Platform-Specific Code Isolation**:
-- MUST use file suffix convention (`.Android.cs`, `.iOS.cs`,
-  `.skia.cs`, `.wasm.cs`, `.reference.cs`).
-- Partial classes are the primary mechanism for platform divergence.
-- `ApiExtensibility` pattern for runtime Skia platform specialization.
-- `#if` conditional compilation directives in shared code SHOULD be
-  avoided in favor of platform-suffixed files.
+- `Uno.UI` and above: `OperatingSystem.IsX()` runtime checks, or
+  `ApiExtensibility` with the implementation in a `Uno.UI.Runtime.*`
+  host project.
+- Per-platform projects (WinRT layer, runtime hosts): file suffix
+  convention (`.Android.cs`, `.iOS.cs`, `.tvOS.cs`, `.UIKit.cs`,
+  `.skia.cs`, `.wasm.cs`, `.reference.cs`), with `#if` only for small
+  branches inside shared files.
+- Details: `.claude/rules/platform-targeting.md`.
 
 **Project Organization**:
-- Most libraries have 5 variants: Reference, Skia, WebAssembly,
-  NetCoreMobile, Tests.
+- The WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`)
+  builds per-platform variants: Generic, Wasm, Reference, NetCoreMobile.
+- `Uno.UI` and everything above it ship a single build.
 - XAML compilation is handled by source generators
   (`XamlFileGenerator`), not `.xbf` binary format.
 
@@ -181,7 +195,7 @@ respected in all contributions:
 1. `dotnet build` with the matching solution filter and
    `crosstargeting_override.props`.
 2. `dotnet test` for affected unit test projects.
-3. Runtime tests via headless Skia for UI changes.
+3. Runtime tests via Skia Desktop for UI changes.
 4. SamplesApp verification for visual changes.
 
 **SamplesApp Samples**:
@@ -198,7 +212,7 @@ respected in all contributions:
 
 **Build Safety**:
 - Set timeouts to 15+ minutes.
-- Favor Skia Desktop solution filter for fastest iteration.
+- Favor the desktop target (`Uno.UI-Uno-only.slnf`) for fastest iteration.
 - Delete `obj/`, `bin/`, and restore when encountering stale asset
   errors.
 
@@ -228,4 +242,4 @@ conflicting guidance in other documents.
   for AI agents and developers. It operationalizes these principles
   with concrete commands, paths, and patterns.
 
-**Version**: 1.0.0 | **Ratified**: 2026-02-09 | **Last Amended**: 2026-02-09
+**Version**: 2.0.0 | **Ratified**: 2026-02-09 | **Last Amended**: 2026-11-13
