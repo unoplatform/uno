@@ -63,6 +63,12 @@ These two commands are the only ones allowed, exactly as written: no other argum
 no redirection, no `cd`. Fix errors your changes introduced and rebuild, at most three rounds. If it still fails, stop and
 report the remaining errors; do not delete or stub out ported code to get a green build.
 
+## If you are blocked
+
+If a tool you need does not work (you cannot read the upstream diffs, or cannot run the build
+commands at all), stop. Do **not** write `sync-report.md`; say what failed in your final message.
+A run without a report is discarded and retried, which is the right outcome.
+
 ## Report
 
 Finish by writing `sync-report.md` in the repository root, in exactly this shape:

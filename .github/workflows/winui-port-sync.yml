@@ -14,9 +14,13 @@
 #      `port` job as able to run arbitrary code if the agent is ever hijacked. What
 #      limits the damage: the job's token is read-only; the agent may only run two
 #      fixed build commands (no extra MSBuild arguments) and may not edit project or
-#      MSBuild files; and CLAUDE_CODE_SUBPROCESS_ENV_SCRUB keeps the API key out of
-#      the build's environment (best effort). Never add a secret or a write
-#      permission to this job.
+#      MSBuild files. The API key IS in the environment of those builds, so a hijacked
+#      agent could read it. Keep that key spend-limited and used for nothing else.
+#      Reading /proc is denied so the key is not one file read away (best effort).
+#      CLAUDE_CODE_SUBPROCESS_ENV_SCRUB would hide it, but it makes Claude Code
+#      require its sandbox (bubblewrap + socat, absent on the runner), which broke
+#      every Bash call; do not turn it on without a run that proves builds work
+#      inside that sandbox. Never add another secret or a write permission to this job.
 #   3. `publish` holds the write token and runs no agent and no build. It refuses a
 #      patch that touches anything outside product and test code, including project
 #      and MSBuild files (Test-SyncPatchPaths), and does not publish a port whose
@@ -184,13 +188,11 @@ jobs:
         id: agent
         if: steps.prompt.outcome == 'success'
         continue-on-error: true
-        uses: anthropics/claude-code-action@cfc3eb22bfed5c26ef66e3223c982af27e4524de # v1.0.231
+        uses: anthropics/claude-code-action@d535f5172dec02b204866b393d6b20b9b2aaf98d # v1.0.266
         env:
           # Builds outlast the default 2-minute tool timeout.
           BASH_DEFAULT_TIMEOUT_MS: '2400000'
           BASH_MAX_TIMEOUT_MS: '3600000'
-          # Keep the API key out of the environment of the builds the agent starts.
-          CLAUDE_CODE_SUBPROCESS_ENV_SCRUB: '1'
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_CODEREVIEW_KEY }}
           # The job's read-only token; without it the action would mint an app token via OIDC.
@@ -199,7 +201,7 @@ jobs:
           claude_args: |
             --model "${{ matrix.area.model }}"
             --allowedTools "Read,Edit,Write,Glob,Grep,Bash(git -C .winui-upstream diff:*),Bash(git -C .winui-upstream show:*),Bash(git -C .winui-upstream log:*),Bash(dotnet build src/Uno.UI/Uno.UI.csproj -p:UnoTargetFrameworkOverride=net10.0 -v:q -nologo),Bash(dotnet build src/Uno.UI.RuntimeTests/Uno.UI.RuntimeTests.Generic.csproj -p:UnoTargetFrameworkOverride=net10.0 -v:q -nologo)"
-            --disallowedTools "Edit(**/*.csproj),Edit(**/*.proj),Edit(**/*.shproj),Edit(**/*.projitems),Edit(**/*.props),Edit(**/*.targets),Edit(**/*.tasks),Edit(**/*.sln),Edit(**/*.slnf),Edit(**/*.slnx),Edit(**/*.rsp),Edit(**/Directory.*),Edit(**/global.json),Edit(**/NuGet.config),Edit(**/nuget.config),Edit(**/.editorconfig),Edit(**/.globalconfig),Edit(.github/**),Edit(.claude/**),Edit(build/**)"
+            --disallowedTools "Edit(**/*.csproj),Edit(**/*.proj),Edit(**/*.shproj),Edit(**/*.projitems),Edit(**/*.props),Edit(**/*.targets),Edit(**/*.tasks),Edit(**/*.sln),Edit(**/*.slnf),Edit(**/*.slnx),Edit(**/*.rsp),Edit(**/Directory.*),Edit(**/global.json),Edit(**/NuGet.config),Edit(**/nuget.config),Edit(**/.editorconfig),Edit(**/.globalconfig),Edit(.github/**),Edit(.claude/**),Edit(build/**),Read(//proc/**)"
 
       - name: Collect result
         if: always()
