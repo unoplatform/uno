@@ -30,10 +30,4 @@ public partial class BlockCollection : global::System.Collections.Generic.IList<
 	// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Documents.Block>
 	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Documents.Block>
 	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Documents.Block>
-	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Documents.Block>
-	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Documents.Block>
-	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.IEnumerable
 }
