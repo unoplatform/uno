@@ -2,38 +2,33 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.UI.Dispatching;
 
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-[global::Uno.NotImplemented]
-#endif
 public partial class DispatcherQueueSynchronizationContext : global::System.Threading.SynchronizationContext
 {
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	private readonly global::Microsoft.UI.Dispatching.DispatcherQueue _dispatcherQueue;
+
 	public DispatcherQueueSynchronizationContext(global::Microsoft.UI.Dispatching.DispatcherQueue dispatcherQueue) : base()
 	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Dispatching.DispatcherQueueSynchronizationContext", "DispatcherQueueSynchronizationContext(DispatcherQueue dispatcherQueue)");
+		_dispatcherQueue = dispatcherQueue;
 	}
 #endif
 	// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueSynchronizationContext.DispatcherQueueSynchronizationContext(Microsoft.UI.Dispatching.DispatcherQueue)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public override void Post(global::System.Threading.SendOrPostCallback d, object state)
 	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Dispatching.DispatcherQueueSynchronizationContext", "Post(SendOrPostCallback d, object state)");
+		_dispatcherQueue.TryEnqueue(() => d(state));
 	}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public override void Send(global::System.Threading.SendOrPostCallback d, object state)
 	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Dispatching.DispatcherQueueSynchronizationContext", "Send(SendOrPostCallback d, object state)");
+		throw new global::System.NotSupportedException("DispatcherQueueSynchronizationContext.Send is not supported by WinUI.");
 	}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public override global::System.Threading.SynchronizationContext CreateCopy()
 	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Dispatching.DispatcherQueueSynchronizationContext", "CreateCopy()");
+		return new DispatcherQueueSynchronizationContext(_dispatcherQueue);
 	}
 #endif
 }
