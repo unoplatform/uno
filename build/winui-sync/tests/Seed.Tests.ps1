@@ -42,6 +42,63 @@ Describe 'Get-MuxReferences' {
 
 		($refs.Ref | Sort-Object) | Should -Be @('1111111', '2222222')
 	}
+
+	It 'reads XAML headers in folders and skips XAML without one' {
+		$root = Join-Path $TestDrive 'uno-xaml'
+		New-CsFile "$root/Foo.xaml" "<!-- MUX Reference src\controls\dev\Foo\Foo.xaml, tag winui3/release/2.5.1 -->`n<ResourceDictionary />"
+		New-CsFile "$root/TestPage.xaml" '<Page />'
+
+		$refs = @(Get-MuxReferences -Paths $root)
+
+		$refs.Count | Should -Be 1
+		$refs[0].Ref | Should -Be 'winui3/release/2.5.1'
+	}
+}
+
+Describe 'Find-AreaThemeXaml' {
+	BeforeAll {
+		$script:up = New-TestUpstream -Path (Join-Path $TestDrive 'theme-up')
+		$script:tip = Add-TestCommit $up @{
+			'controls/dev/Foo/Foo.cpp'                                       = '1'
+			'controls/dev/Foo/Foo.xaml'                                      = '<Style />'
+			'controls/dev/Foo/Foo_themeresources.xaml'                       = '<Res />'
+			'controls/dev/Foo/TestUI/FooPage.xaml'                           = '<Page />'
+			'controls/dev/CommonStyles/HyperlinkButton_themeresources.xaml'  = '<Res />'
+			'controls/dev/CommonStyles/HyperlinkButton_themeresources_perf2026.xaml' = '<Res />'
+			'controls/dev/CommonStyles/Bar_themeresources.xaml'              = '<Res />'
+			'dxaml/lib/HyperLinkButton_Partial.cpp'                          = '1'
+			'dxaml/lib/HyperlinkButtonAutomationPeer_Partial.cpp'            = '1'
+		} -Tag 'winui3/release/1.0.0'
+		$script:uno = Join-Path $TestDrive 'theme-uno'
+		$theme = "$uno/src/Uno.UI.FluentTheme/Resources/PriorityDefault"
+		New-CsFile "$theme/Foo.xaml" "<!-- MUX Reference src\controls\dev\Foo\Foo.xaml, tag winui3/release/1.0.0 -->`n<ResourceDictionary />"
+		New-CsFile "$theme/Foo_themeresources.xaml" '<ResourceDictionary />'
+		New-CsFile "$theme/FooPage.xaml" '<ResourceDictionary />'
+		New-CsFile "$theme/HyperlinkButton_themeresources.xaml" "<!-- MUX Reference src\controls\dev\CommonStyles\HyperlinkButton_themeresources.xaml, tag winui3/release/1.0.0 -->`n<ResourceDictionary />"
+		New-CsFile "$theme/Bar_themeresources.xaml" '<ResourceDictionary />'
+		New-CsFile "$theme/Other.xaml" "<!-- MUX Reference src\controls\dev\Other\Other.xaml, tag winui3/release/1.0.0 -->`n<ResourceDictionary />"
+	}
+
+	It 'finds a folder area''s styles by header and by name, but not its test pages' {
+		$found = @(Find-AreaThemeXaml -UpstreamRepo $up -Ref $tip -UnoRoot $uno -UpstreamSources 'controls/dev/Foo')
+
+		($found.Uno | Sort-Object) | Should -Be (@(
+				'src/Uno.UI.FluentTheme/Resources/PriorityDefault/Foo.xaml',
+				'src/Uno.UI.FluentTheme/Resources/PriorityDefault/Foo_themeresources.xaml') | Sort-Object)
+		$found.Upstream | Where-Object { $_ } | Should -BeNullOrEmpty
+	}
+
+	It 'finds a core control''s CommonStyles file, ignoring case and perf variants' {
+		$found = @(Find-AreaThemeXaml -UpstreamRepo $up -Ref $tip -UnoRoot $uno -UpstreamSources 'dxaml/lib/HyperLinkButton_Partial.cpp', 'dxaml/lib/HyperlinkButtonAutomationPeer_Partial.cpp')
+
+		$found.Count | Should -Be 1
+		$found[0].Uno | Should -Be 'src/Uno.UI.FluentTheme/Resources/PriorityDefault/HyperlinkButton_themeresources.xaml'
+		$found[0].Upstream | Should -Be 'controls/dev/CommonStyles/HyperlinkButton_themeresources.xaml'
+	}
+
+	It 'returns nothing when the Uno tree has no FluentTheme' {
+		@(Find-AreaThemeXaml -UpstreamRepo $up -Ref $tip -UnoRoot (Join-Path $TestDrive 'no-theme') -UpstreamSources 'controls/dev/Foo').Count | Should -Be 0
+	}
 }
 
 Describe 'Resolve-AreaBaseline' {
@@ -137,6 +194,29 @@ Describe 'seed-area.ps1' {
 		($out -join "`n") | Should -Not -Match '1234567'
 
 		{ & "$PSScriptRoot/../seed-area.ps1" @common -UpstreamSources 'dxaml/lib/Nope.cpp' } | Should -Throw '*dxaml/lib/Nope.cpp*'
+	}
+
+	It 'adds the control''s theme XAML to the entry unless told not to' {
+		$up = New-TestUpstream -Path (Join-Path $TestDrive 'up7')
+		$c1 = Add-TestCommit $up @{
+			'dxaml/lib/Bar_Partial.cpp'                        = '1'
+			'controls/dev/CommonStyles/Bar_themeresources.xaml' = '<Res />'
+		} -Tag 'winui3/release/1.0.0'
+		$uno = Join-Path $TestDrive 'uno7'
+		New-CsFile "$uno/src/Controls/Bar.cs" "// MUX Reference Bar_Partial.cpp, commit $($c1.Substring(0, 10))"
+		New-CsFile "$uno/src/Uno.UI.FluentTheme/Resources/PriorityDefault/Bar_themeresources.xaml" "<!-- MUX Reference src\controls\dev\CommonStyles\Bar_themeresources.xaml, tag winui3/release/1.0.0 -->`n<ResourceDictionary />"
+		$manifest = Write-TestManifest (Join-Path $uno 'areas.json') @()
+		$common = @{ Id = 'bar'; Title = 'Bar'; UpstreamRepo = $up; UnoRoot = $uno; ManifestPath = $manifest; UpstreamSources = 'dxaml/lib/Bar_Partial.cpp'; UnoSources = 'src/Controls/Bar.cs'; Write = $true }
+
+		& "$PSScriptRoot/../seed-area.ps1" @common | Out-Null
+		$area = @(Get-SyncAreas -ManifestPath $manifest)[0]
+		$area.upstream.sources | Should -Be @('dxaml/lib/Bar_Partial.cpp', 'controls/dev/CommonStyles/Bar_themeresources.xaml')
+		$area.uno.sources | Should -Be @('src/Controls/Bar.cs', 'src/Uno.UI.FluentTheme/Resources/PriorityDefault/Bar_themeresources.xaml')
+
+		& "$PSScriptRoot/../seed-area.ps1" @common -NoThemeXaml | Out-Null
+		$area = @(Get-SyncAreas -ManifestPath $manifest)[0]
+		$area.upstream.sources | Should -Be @('dxaml/lib/Bar_Partial.cpp')
+		$area.uno.sources | Should -Be @('src/Controls/Bar.cs')
 	}
 
 	It 'takes an explicit baseline over the one derived from headers' {
