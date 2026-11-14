@@ -81,6 +81,12 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		{
 			if (Owner is PasswordBox passwordBox)
 			{
+				// Like WinUI's UI Automation Value pattern, refuse a value longer than MaxLength instead of cutting it.
+				if (passwordBox.MaxLength > 0 && (value?.Length ?? 0) > passwordBox.MaxLength)
+				{
+					throw new InvalidOperationException("Cannot set a value longer than the PasswordBox's MaxLength.");
+				}
+
 				passwordBox.Password = value ?? string.Empty;
 			}
 		}

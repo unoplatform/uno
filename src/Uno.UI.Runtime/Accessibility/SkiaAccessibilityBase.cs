@@ -676,6 +676,18 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		}
 	}
 
+	/// <summary>
+	/// Shows the native element of a text control the control's text again, as a text change does, after the control
+	/// refused an edit made in that element.
+	/// </summary>
+	protected void ResyncTextValue(UIElement element)
+	{
+		if (!_isDisposed && IsAccessibilityEnabled && element.GetOrCreateAutomationPeer() is { } peer)
+		{
+			UpdateTextValueFromProvider(peer, element);
+		}
+	}
+
 	private void UpdateTextValueFromProvider(AutomationPeer peer, UIElement element)
 	{
 		if (peer.IsPassword() || !PushesTextValue)
