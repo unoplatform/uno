@@ -107,10 +107,7 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	public async Task<string?> ExecuteScriptAsync(string script, CancellationToken token)
 	{
 		await Task.Yield();
-		var result = NativeMethods.ExecuteScript(_elementId, script);
-
-		// String needs to be wrapped in quotes to match Windows behavior
-		return $"\"{result?.Replace("\"", "\\\"")}\"";
+		return NativeMethods.ExecuteScript(_elementId, script);
 	}
 
 	public Task<string?> InvokeScriptAsync(string script, string[]? arguments, CancellationToken token) =>

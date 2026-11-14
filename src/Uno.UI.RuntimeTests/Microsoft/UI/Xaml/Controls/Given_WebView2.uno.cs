@@ -68,6 +68,34 @@ public class Given_WebView2
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26299")]
+	[DataRow(@"'hello ""world""'", @"""hello \""world\""""")]
+	[DataRow(@"'line 1\nline 2'", @"""line 1\nline 2""")]
+	[DataRow(@"'C:\\temp'", @"""C:\\temp""")]
+	[DataRow("1 + 1", "2")]
+	[DataRow("true", "true")]
+	[DataRow("({ color: 'blue' })", @"{""color"":""blue""}")]
+	[DataRow("null", "null")]
+	[DataRow("undefined", "null")]
+	public async Task When_ExecuteScriptAsync_Then_Result_Is_Json(string script, string expectedJson)
+	{
+		var webView = new WebView2 { Width = 200, Height = 200 };
+
+		try
+		{
+			await UITestHelper.Load(webView);
+			await NavigateToMarker(webView, "script");
+
+			Assert.AreEqual(expectedJson, await webView.ExecuteScriptAsync(script));
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Collected_Then_Native_Iframe_Is_Removed()
 	{
 		var (webViewReference, elementId) = await LoadNavigateAndUnloadWebView2();
