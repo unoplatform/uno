@@ -1,0 +1,38 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.MonochromaticOverlayPresenterTests.MonochromaticOverlayPresenter_Showcase"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:not_win="http://uno.ui/not_win"
+    xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d not_win">
+
+    <!--  Port of WinUI's MonochromaticOverlayPresenterPage test page.  -->
+    <ScrollViewer>
+        <StackPanel Padding="16" Spacing="10">
+            <TextBlock
+                MaxWidth="520"
+                HorizontalAlignment="Left"
+                Text="Open a flyout and scroll a column: the value under the highlight band is redrawn in the highlight foreground color. See MonochromaticOverlayPresenter_Playground for an interactive version."
+                TextWrapping="Wrap" />
+            <DatePicker not_win:UseNativeStyle="False" />
+            <DatePicker not_win:UseNativeStyle="False" />
+            <DatePicker not_win:UseNativeStyle="False" YearVisible="False" />
+            <DatePicker not_win:UseNativeStyle="False" MonthVisible="False" />
+            <TimePicker not_win:UseNativeStyle="False" />
+
+            <Grid Margin="2,10,0,0" HorizontalAlignment="Left">
+                <TextBlock x:Name="Target" Text="This string will be partially highlighted" />
+                <primitives:MonochromaticOverlayPresenter
+                    Width="50"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Stretch"
+                    Background="LightBlue"
+                    ReplacementColor="Black"
+                    SourceElement="{Binding ElementName=Target}" />
+            </Grid>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

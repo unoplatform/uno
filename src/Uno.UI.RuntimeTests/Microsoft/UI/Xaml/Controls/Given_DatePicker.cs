@@ -223,31 +223,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if HAS_UNO
-		// Validates the workaround for missing support of MonochromaticOverlayPresenter in Uno
 		[TestMethod]
-		public async Task When_MonochromaticOverlayPresenter_Workaround()
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/14353")]
+		public async Task When_Flyout_Opened_Highlight_Shows_Selected_Value()
 		{
-			var timePicker = new DatePicker();
-			timePicker.UseNativeStyle = false;
+			var datePicker = new DatePicker();
+			datePicker.UseNativeStyle = false;
 
-			TestServices.WindowHelper.WindowContent = timePicker;
-			await TestServices.WindowHelper.WaitForLoaded(timePicker);
+			TestServices.WindowHelper.WindowContent = datePicker;
+			await TestServices.WindowHelper.WaitForLoaded(datePicker);
 
-			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
+			await DateTimePickerHelper.OpenDateTimePicker(datePicker);
 
-			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).FirstOrDefault();
-			var datePickerFlyoutPresenter = popup?.Child as DatePickerFlyoutPresenter;
-			Assert.IsNotNull(datePickerFlyoutPresenter);
-
-			var presenters = VisualTreeUtils.FindVisualChildrenByType<MonochromaticOverlayPresenter>(datePickerFlyoutPresenter);
-			foreach (var presenter in presenters)
+			try
 			{
-				Assert.AreEqual(0, presenter.Opacity);
-			}
+				var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).FirstOrDefault();
+				var datePickerFlyoutPresenter = popup?.Child as DatePickerFlyoutPresenter;
+				Assert.IsNotNull(datePickerFlyoutPresenter);
 
-			var highlightRect = VisualTreeUtils.FindVisualChildByName(datePickerFlyoutPresenter, "HighlightRect") as Grid;
-			Assert.IsNotNull(highlightRect);
-			Assert.AreEqual(0.5, highlightRect.Opacity);
+				var daySelector = (LoopingSelector)VisualTreeUtils.FindVisualChildByName(datePickerFlyoutPresenter, "DayLoopingSelector");
+				Assert.IsNotNull(daySelector);
+
+				AssertOverlaySources(datePickerFlyoutPresenter);
+
+				await Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives.Given_MonochromaticOverlayPresenter.AssertHighlightTracksSelection(datePickerFlyoutPresenter, daySelector);
+
+				// The flyout presenter is reused: its ElementName bindings must still resolve after reopening.
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+				await TestServices.WindowHelper.WaitForIdle();
+				await DateTimePickerHelper.OpenDateTimePicker(datePicker);
+
+				popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).FirstOrDefault();
+				datePickerFlyoutPresenter = popup?.Child as DatePickerFlyoutPresenter;
+				Assert.IsNotNull(datePickerFlyoutPresenter);
+				AssertOverlaySources(datePickerFlyoutPresenter);
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+			}
+		}
+
+		// The selectors are created in code, so the template's ElementName bindings depend on their names being
+		// registered in the template namescope.
+		private static void AssertOverlaySources(DatePickerFlyoutPresenter presenter)
+		{
+			var sources = VisualTreeUtils.FindVisualChildrenByType<MonochromaticOverlayPresenter>(presenter)
+				.Select(overlay => (overlay.SourceElement as Microsoft.UI.Xaml.FrameworkElement)?.Name)
+				.OrderBy(name => name)
+				.ToArray();
+
+			CollectionAssert.AreEqual(new[] { "DayLoopingSelector", "MonthLoopingSelector", "YearLoopingSelector" }, sources);
 		}
 #endif
 
