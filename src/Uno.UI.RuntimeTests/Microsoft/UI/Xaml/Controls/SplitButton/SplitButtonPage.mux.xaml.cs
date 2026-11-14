@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference TestUI/SplitButtonPage.xaml.cs, tag winui3/release/2.6.5
+
+using System;
 using System.Collections.Generic;
 using System.Windows.Input;
 using Microsoft.UI.Xaml;
@@ -7,7 +12,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 
 using SplitButton = Microsoft.UI.Xaml.Controls.SplitButton;
 #if HAS_UNO
-using SplitButtonTestHelper = Microsoft.UI.Private.Controls.SplitButtonTestHelper;
+using SplitButtonTestApi = Microsoft.UI.Private.Controls.SplitButtonTestApi;
 #endif
 using ToggleSplitButton = Microsoft.UI.Xaml.Controls.ToggleSplitButton;
 using ToggleSplitButtonIsCheckedChangedEventArgs = Microsoft.UI.Xaml.Controls.ToggleSplitButtonIsCheckedChangedEventArgs;
@@ -32,7 +37,7 @@ namespace MUXControlsTestApp
 		{
 			this.InitializeComponent();
 #if HAS_UNO
-			SplitButtonTestHelper.SimulateTouch = false;
+			SplitButtonTestApi.SimulateTouch = false;
 #endif
 
 			TestExecuteCommand = new MyCommand(this);
@@ -86,14 +91,14 @@ namespace MUXControlsTestApp
 		private void SimulateTouchCheckBox_Checked(object sender, RoutedEventArgs e)
 		{
 #if HAS_UNO
-			SplitButtonTestHelper.SimulateTouch = true;
+			SplitButtonTestApi.SimulateTouch = true;
 #endif
 		}
 
 		private void SimulateTouchCheckBox_Unchecked(object sender, RoutedEventArgs e)
 		{
 #if HAS_UNO
-			SplitButtonTestHelper.SimulateTouch = false;
+			SplitButtonTestApi.SimulateTouch = false;
 #endif
 		}
 
