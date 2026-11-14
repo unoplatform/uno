@@ -49,6 +49,7 @@ public class MacOSHost : UnoPlatformHost, IApplicationHost
 		MacOSClipboardExtension.Register();
 		MacOSDragDropExtension.Register();
 		MacOSCoreApplicationExtension.Register();
+		MacOSDeviceClockExtension.Register();
 		MacOSFileOpenPickerExtension.Register();
 		MacOSFileSavePickerExtension.Register();
 		MacOSFolderPickerExtension.Register();

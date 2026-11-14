@@ -15,6 +15,12 @@ namespace Windows.System.UserProfile;
 
 public static partial class GlobalizationPreferences
 {
+#if !__NETSTD_REFERENCE__
+	/// <summary>
+	/// Gets the user's preferred clock: the device's 12/24-hour setting or, without one, the clock of its regional format.
+	/// </summary>
+	public static IReadOnlyList<string> Clocks => [global::Windows.Globalization.DeviceClock.GetUserClock()];
+#endif
 
 #if __ANDROID__ || __IOS__ || __SKIA__
 	public static IReadOnlyList<string> Languages =>

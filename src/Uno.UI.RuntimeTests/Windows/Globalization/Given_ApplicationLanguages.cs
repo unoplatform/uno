@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Globalization;
 using Windows.Storage;
 
@@ -65,4 +67,282 @@ public class Given_ApplicationLanguages
 			CultureInfo.DefaultThreadCurrentUICulture = threadUICulture;
 		}
 	}
+
+#if HAS_UNO // ApplyCulture is what the Uno Application constructor calls.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	[DataRow(false)]
+	[DataRow(true)]
+	public void When_ApplyCulture_Then_Only_UICulture_Follows_Languages(bool usePrimaryLanguageOverride)
+	{
+		var culture = CultureInfo.CurrentCulture;
+		var uiCulture = CultureInfo.CurrentUICulture;
+		var threadCulture = CultureInfo.DefaultThreadCurrentCulture;
+		var threadUICulture = CultureInfo.DefaultThreadCurrentUICulture;
+
+		try
+		{
+			var language = ApplicationLanguages.Languages[0];
+			if (usePrimaryLanguageOverride)
+			{
+				language = language.StartsWith("fr", StringComparison.OrdinalIgnoreCase) ? "de-DE" : "fr-CA";
+				ApplicationLanguages.PrimaryLanguageOverride = language;
+			}
+
+			// Stands for the culture the runtime read from the regional settings, which differs from the language.
+			var formatCulture = new[] { "es-MX", "it-IT", "pt-BR" }
+				.Select(name => new CultureInfo(name))
+				.First(c => !language.StartsWith(c.TwoLetterISOLanguageName, StringComparison.OrdinalIgnoreCase) && c.Name != CultureInfo.InstalledUICulture.Name);
+			CultureInfo.CurrentCulture = formatCulture;
+			CultureInfo.DefaultThreadCurrentCulture = formatCulture;
+
+			ApplicationLanguages.ApplyCulture();
+
+			var expectedUICulture = new CultureInfo(language).Name;
+			CultureInfo.CurrentUICulture.Name.Should().Be(expectedUICulture);
+			(CultureInfo.DefaultThreadCurrentUICulture?.Name).Should().Be(expectedUICulture);
+			CultureInfo.CurrentCulture.Should().BeSameAs(formatCulture);
+			CultureInfo.DefaultThreadCurrentCulture.Should().BeSameAs(formatCulture);
+		}
+		finally
+		{
+			ApplicationLanguages.PrimaryLanguageOverride = string.Empty;
+			CultureInfo.CurrentCulture = culture;
+			CultureInfo.CurrentUICulture = uiCulture;
+			CultureInfo.DefaultThreadCurrentCulture = threadCulture;
+			CultureInfo.DefaultThreadCurrentUICulture = threadUICulture;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	public void When_ApplyCulture_With_Runtime_Culture_Then_Culture_Follows_System_Locale_On_Android_Only()
+	{
+		using var device = DefaultClockHelper.UseDeviceWithoutClockSetting();
+
+		var culture = CultureInfo.CurrentCulture;
+		var uiCulture = CultureInfo.CurrentUICulture;
+		var threadCulture = CultureInfo.DefaultThreadCurrentCulture;
+		var threadUICulture = CultureInfo.DefaultThreadCurrentUICulture;
+
+		try
+		{
+			if (!OperatingSystem.IsAndroid() && CultureInfo.InstalledUICulture.Name.Length == 0)
+			{
+				Assert.Inconclusive("The runtime found no user locale; When_ApplyCulture_Without_User_Locale_Then_Culture_Follows_Language covers it.");
+			}
+
+			// The culture the runtime picked at startup, before the app set one of its own.
+			var runtimeCulture = CultureInfo.InstalledUICulture;
+			CultureInfo.CurrentCulture = runtimeCulture;
+			CultureInfo.DefaultThreadCurrentCulture = null;
+
+			ApplicationLanguages.ApplyCulture();
+
+			if (OperatingSystem.IsAndroid())
+			{
+				// The system locale keeps the -u- extensions (regional preferences) that the runtime's culture drops.
+				var systemCulture = new CultureInfo(ApplicationLanguages.ManifestLanguages[0]).Name;
+				CultureInfo.CurrentCulture.Name.Should().Be(systemCulture);
+				(CultureInfo.DefaultThreadCurrentCulture?.Name).Should().Be(systemCulture);
+			}
+			else
+			{
+				CultureInfo.CurrentCulture.Should().BeSameAs(runtimeCulture);
+				CultureInfo.DefaultThreadCurrentCulture.Should().BeNull();
+			}
+		}
+		finally
+		{
+			CultureInfo.CurrentCulture = culture;
+			CultureInfo.CurrentUICulture = uiCulture;
+			CultureInfo.DefaultThreadCurrentCulture = threadCulture;
+			CultureInfo.DefaultThreadCurrentUICulture = threadUICulture;
+		}
+	}
+
+	// The device's 12/24-hour setting reaches CurrentCulture as a customized time format does on Windows; .NET leaves it
+	// out on Android, iOS and macOS. At least one row differs from the culture's own clock.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25573")]
+	[DataRow(true)]
+	[DataRow(false)]
+	public void When_ApplyCulture_With_Device_Clock_Then_Culture_Time_Follows(bool device24Hour)
+	{
+		var culture = CultureInfo.CurrentCulture;
+		var uiCulture = CultureInfo.CurrentUICulture;
+		var threadCulture = CultureInfo.DefaultThreadCurrentCulture;
+		var threadUICulture = CultureInfo.DefaultThreadCurrentUICulture;
+
+		try
+		{
+			if (CultureInfo.InstalledUICulture.Name.Length == 0)
+			{
+				Assert.Inconclusive("The runtime found no user locale.");
+			}
+
+			// The culture the runtime picked at startup, and the device's locale it formats in.
+			var runtimeCulture = CultureInfo.InstalledUICulture;
+			var locale = OperatingSystem.IsAndroid() ? new CultureInfo(ApplicationLanguages.ManifestLanguages[0]).Name : runtimeCulture.Name;
+			DeviceClock.TestDevice = (locale, null, device24Hour);
+			DeviceClock.TestTimePatterns = (_, is24Hour) => is24Hour ? ("HH:mm", "HH:mm:ss") : ("h:mm a", "h:mm:ss a");
+			CultureInfo.CurrentCulture = runtimeCulture;
+			CultureInfo.DefaultThreadCurrentCulture = null;
+
+			ApplicationLanguages.ApplyCulture();
+
+			var time = new DateTime(2024, 1, 15, 13, 5, 9);
+			CultureInfo.CurrentCulture.Name.Should().Be(locale);
+			time.ToString("t", CultureInfo.CurrentCulture).Contains("13").Should().Be(device24Hour);
+			time.ToString("T", CultureInfo.CurrentCulture).Contains("13").Should().Be(device24Hour);
+
+			// DefaultThreadCurrentCulture, which new threads take, formats the same: the runtime's culture when it stays null.
+			var threadFormat = (CultureInfo.DefaultThreadCurrentCulture ?? runtimeCulture).DateTimeFormat;
+			threadFormat.ShortTimePattern.Should().Be(CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern);
+			threadFormat.LongTimePattern.Should().Be(CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern);
+		}
+		finally
+		{
+			DeviceClock.TestDevice = null;
+			DeviceClock.TestTimePatterns = null;
+			CultureInfo.CurrentCulture = culture;
+			CultureInfo.CurrentUICulture = uiCulture;
+			CultureInfo.DefaultThreadCurrentCulture = threadCulture;
+			CultureInfo.DefaultThreadCurrentUICulture = threadUICulture;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25573")]
+	[DataRow(true)]
+	[DataRow(false)]
+	public void When_App_Set_Culture_Then_Device_Clock_Not_Applied(bool device24Hour)
+	{
+		var culture = CultureInfo.CurrentCulture;
+		var uiCulture = CultureInfo.CurrentUICulture;
+		var threadCulture = CultureInfo.DefaultThreadCurrentCulture;
+		var threadUICulture = CultureInfo.DefaultThreadCurrentUICulture;
+
+		try
+		{
+			// The app's own culture, named as the device's locale.
+			var appCulture = (CultureInfo)CultureInfo.InstalledUICulture.Clone();
+			DeviceClock.TestDevice = (appCulture.Name, null, device24Hour);
+			DeviceClock.TestTimePatterns = (_, is24Hour) => is24Hour ? ("HH:mm", "HH:mm:ss") : ("h:mm a", "h:mm:ss a");
+			CultureInfo.CurrentCulture = appCulture;
+			CultureInfo.DefaultThreadCurrentCulture = null;
+
+			ApplicationLanguages.ApplyCulture();
+
+			CultureInfo.CurrentCulture.Should().BeSameAs(appCulture);
+			CultureInfo.DefaultThreadCurrentCulture.Should().BeNull();
+		}
+		finally
+		{
+			DeviceClock.TestDevice = null;
+			DeviceClock.TestTimePatterns = null;
+			CultureInfo.CurrentCulture = culture;
+			CultureInfo.CurrentUICulture = uiCulture;
+			CultureInfo.DefaultThreadCurrentCulture = threadCulture;
+			CultureInfo.DefaultThreadCurrentUICulture = threadUICulture;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaAndroid)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	public void When_ApplyCulture_Without_User_Locale_Then_Culture_Follows_Language()
+	{
+		using var device = DefaultClockHelper.UseDeviceWithoutClockSetting();
+
+		if (ApplicationLanguages.InvariantCulture)
+		{
+			Assert.Inconclusive("Invariant globalization mode has no culture to fall back to.");
+		}
+
+		// What the runtime holds when it found no user locale: with LANG unset or C on Linux, a read-only
+		// invariant culture of its own.
+		var runtimeCulture = CultureInfo.ReadOnly(new CultureInfo(""));
+		var uiCulture = new CultureInfo("fr-CA");
+
+		ApplicationLanguages.GetFormatCulture(uiCulture, runtimeCulture, runtimeCulture).Should().BeSameAs(uiCulture);
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	[DataRow(false)]
+	[DataRow(true)]
+	public void When_App_Customized_The_Runtime_Culture_Then_Culture_Kept(bool runtimeFoundNoLocale)
+	{
+		var culture = CultureInfo.CurrentCulture;
+		var uiCulture = CultureInfo.CurrentUICulture;
+		var threadCulture = CultureInfo.DefaultThreadCurrentCulture;
+		var threadUICulture = CultureInfo.DefaultThreadCurrentUICulture;
+
+		try
+		{
+			var runtimeCulture = runtimeFoundNoLocale ? CultureInfo.ReadOnly(new CultureInfo("")) : CultureInfo.InstalledUICulture;
+
+			// Same name as the runtime's culture, customized by the app before the Application constructor.
+			var appCulture = (CultureInfo)runtimeCulture.Clone();
+			appCulture.DateTimeFormat.ShortDatePattern = "yyyy'|'MM'|'dd";
+
+			ApplicationLanguages.GetFormatCulture(new CultureInfo("fr-CA"), appCulture, runtimeCulture).Should().BeNull();
+
+			if (!runtimeFoundNoLocale)
+			{
+				CultureInfo.CurrentCulture = appCulture;
+
+				ApplicationLanguages.ApplyCulture();
+
+				CultureInfo.CurrentCulture.Should().BeSameAs(appCulture);
+			}
+		}
+		finally
+		{
+			CultureInfo.CurrentCulture = culture;
+			CultureInfo.CurrentUICulture = uiCulture;
+			CultureInfo.DefaultThreadCurrentCulture = threadCulture;
+			CultureInfo.DefaultThreadCurrentUICulture = threadUICulture;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	public void When_App_Set_Invariant_Culture_Then_Culture_Kept()
+	{
+		if (ReferenceEquals(CultureInfo.InstalledUICulture, CultureInfo.InvariantCulture))
+		{
+			// Invariant mode, or a locale the runtime couldn't read or create.
+			Assert.Inconclusive("The runtime's own culture is the invariant singleton, so an app setting it can't be told apart.");
+		}
+
+		var culture = CultureInfo.CurrentCulture;
+		var uiCulture = CultureInfo.CurrentUICulture;
+		var threadCulture = CultureInfo.DefaultThreadCurrentCulture;
+		var threadUICulture = CultureInfo.DefaultThreadCurrentUICulture;
+
+		try
+		{
+			CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+
+			ApplicationLanguages.ApplyCulture();
+
+			CultureInfo.CurrentCulture.Should().BeSameAs(CultureInfo.InvariantCulture);
+		}
+		finally
+		{
+			CultureInfo.CurrentCulture = culture;
+			CultureInfo.CurrentUICulture = uiCulture;
+			CultureInfo.DefaultThreadCurrentCulture = threadCulture;
+			CultureInfo.DefaultThreadCurrentUICulture = threadUICulture;
+		}
+	}
+#endif
 }

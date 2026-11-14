@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -293,6 +294,70 @@ public class Given_CalendarView
 		TestServices.WindowHelper.WindowContent = calendarView;
 		await TestServices.WindowHelper.WaitForLoaded(calendarView);
 		await UITestHelper.WaitFor(() => calendarView.TemplateSettings.HeaderText == "enero de 2024", message: "HeaderText was not set to expected Spanish value");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public async Task When_Calendar_Is_Thai_Then_Headers_Show_Its_Years()
+	{
+		var calendarView = new CalendarView()
+		{
+			Language = "en-US",
+			CalendarIdentifier = Windows.Globalization.CalendarIdentifiers.Thai,
+		};
+		calendarView.SetDisplayDate(new DateTimeOffset(new DateTime(2024, 1, 15)));
+		TestServices.WindowHelper.WindowContent = calendarView;
+		await TestServices.WindowHelper.WaitForLoaded(calendarView);
+
+		// The month and year headers come from DateTimeFormatter, the decade view's from Calendar: all in 2567.
+		await TestServices.WindowHelper.WaitFor(() => calendarView.TemplateSettings.HeaderText, "January 2567", timeoutMS: 3000);
+
+		calendarView.DisplayMode = CalendarViewDisplayMode.Year;
+		await TestServices.WindowHelper.WaitFor(() => calendarView.TemplateSettings.HeaderText, "2567", timeoutMS: 3000);
+
+		calendarView.DisplayMode = CalendarViewDisplayMode.Decade;
+		await TestServices.WindowHelper.WaitFor(() => calendarView.TemplateSettings.HeaderText, "2560 - 2569", timeoutMS: 3000);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public async Task When_Arabic_Language_Then_Header_Has_Gregorian_Month()
+	{
+		var arabicGregorian = (System.Globalization.CultureInfo)new System.Globalization.CultureInfo("ar-SA").Clone();
+		arabicGregorian.DateTimeFormat.Calendar = new System.Globalization.GregorianCalendar();
+		if (arabicGregorian.DateTimeFormat.GetMonthName(1) == System.Globalization.CultureInfo.InvariantCulture.DateTimeFormat.GetMonthName(1))
+		{
+			Assert.Inconclusive("The ICU data loaded here has no Arabic names (the WebAssembly shard for the browser language).");
+		}
+
+		// ar-SA defaults to the Um al-Qura calendar, in which January 15, 2024 falls in Rajab (رجب).
+		var calendarView = new CalendarView() { Language = "ar-SA" };
+		calendarView.SetDisplayDate(new DateTimeOffset(new DateTime(2024, 1, 15)));
+		TestServices.WindowHelper.WindowContent = calendarView;
+		await TestServices.WindowHelper.WaitForLoaded(calendarView);
+
+		await TestServices.WindowHelper.WaitFor(
+			() => calendarView.TemplateSettings.HeaderText,
+			"يناير",
+			messageBuilder: actual => $"The header should name January, was '{actual}'",
+			comparer: (actual, month) => actual is not null && actual.Contains(month, StringComparison.Ordinal),
+			timeoutMS: 3000);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public async Task When_Date_Selected_Then_Value_Is_The_Long_Date()
+	{
+		var calendarView = new CalendarView() { Language = "en-US" };
+		calendarView.SetDisplayDate(new DateTimeOffset(new DateTime(2024, 1, 15)));
+		calendarView.SelectedDates.Add(new DateTimeOffset(new DateTime(2024, 1, 15)));
+		TestServices.WindowHelper.WindowContent = calendarView;
+		await TestServices.WindowHelper.WaitForLoaded(calendarView);
+
+		// The selected date from "day month.full year", as in WinRT.
+		var peer = FrameworkElementAutomationPeer.CreatePeerForElement(calendarView);
+		var value = (Microsoft.UI.Xaml.Automation.Provider.IValueProvider)peer.GetPattern(PatternInterface.Value);
+		Assert.AreEqual("January 15, 2024", value.Value);
 	}
 
 	[TestMethod]

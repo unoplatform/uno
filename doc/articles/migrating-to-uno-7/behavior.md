@@ -247,6 +247,39 @@ drawable directly (`Resource.Drawable.foo`).
 
 See also: [Relative URIs in XAML](xref:Uno.Development.MigratingToUno7.Xaml#relative-uris).
 
+## Formatting follows the regional format
+
+Formatting now follows the user's regional settings rather than the language list:
+
+- **`CultureInfo.CurrentCulture` is no longer set from `ApplicationLanguages.Languages`.** At
+  startup Uno used to set `CurrentCulture` and `DefaultThreadCurrentCulture` to the first app
+  language (`PrimaryLanguageOverride`, or the display language list on Windows), so dates and
+  numbers ignored the Windows Regional format and its customizations. As in WinUI, the language
+  list no longer sets `CurrentCulture`; Uno sets only `CurrentUICulture` from it (WinUI leaves that
+  to .NET, which reads the Windows display languages). `CurrentCulture` keeps what .NET read from
+  the OS: the Regional format on Windows, the Region setting on iOS and macOS, the `LC_ALL`,
+  `LC_MESSAGES` or `LANG` locale on Linux, the browser language on WebAssembly. Android keeps the
+  first system locale, which carries its regional preferences, unless the app set its own culture
+  first. Apps that want .NET formatting to follow the app language, for example after setting
+  `PrimaryLanguageOverride`, should set `CultureInfo.CurrentCulture` (and
+  `DefaultThreadCurrentCulture`) themselves after the `Application` constructor runs.
+  On Android, iOS and macOS, when the device's 12/24-hour setting isn't its locale's own clock,
+  `CurrentCulture` also takes that locale's time formats for the device's clock, which .NET leaves
+  out (on Windows, .NET reads a customized time format itself). Uno reads the setting at startup; a
+  culture the app sets doesn't get them. `CultureInfo.CurrentCulture.Clone()` keeps them, but
+  `new CultureInfo(CultureInfo.CurrentCulture.Name)` doesn't, while on Windows `new CultureInfo`
+  with the user's own locale keeps the customization.
+- **`Windows.Globalization` no longer reads `CurrentCulture` either.** `Calendar` (its names,
+  default clock and calendar system, which `DateTimeFormatter` and `TimePicker` use for their
+  defaults) and `CurrencyFormatter` follow the app languages, as in WinRT. An app that set
+  `CurrentCulture` to get, for example, 24-hour `TimePicker`s now gets the clock of its language:
+  set `PrimaryLanguageOverride`, pass languages to the constructors, or set
+  `TimePicker.ClockIdentifier` instead. As in WinUI, when that language is the device's own locale
+  (the Windows regional format), the default clock also follows the user's time setting: a
+  customized time format on Windows, the 24-hour time switch on Android, iOS and macOS.
+
+See also: [`ApplicationLanguages.UseLegacyPrimaryLanguageOverride`](xref:Uno.Development.MigratingToUno7.FeatureFlags#applicationlanguagesuselegacyprimarylanguageoverride).
+
 ## Related pages
 
 - [Removed feature flags](xref:Uno.Development.MigratingToUno7.FeatureFlags) if your app set a flag that kept the old behavior.
