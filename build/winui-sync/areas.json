@@ -16,7 +16,11 @@
       },
       "uno": {
         "sources": [
-          "src/Uno.UI/UI/Xaml/Controls/NavigationView"
+          "src/Uno.UI/UI/Xaml/Controls/NavigationView",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationBackButton_themeresources.xaml",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationBackButton.xaml",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationView_themeresources.xaml",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationView.xaml"
         ],
         "tests": [
           "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/NavigationView"
