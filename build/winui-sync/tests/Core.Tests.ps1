@@ -159,6 +159,22 @@ Describe 'Expand-SyncPrompt' {
 		}
 	}
 
+	It 'keeps mirrored files out of the diff commands' {
+		$mirrorUp = New-TestUpstream -Path (Join-Path $TestDrive 'prompt-mirror')
+		$b = Add-TestCommit $mirrorUp @{ 'controls/dev/Foo/Foo.cpp' = 'v1'; 'controls/dev/Foo/Foo.xaml' = 'x1'; 'controls/dev/Foo/Strings/en-us/Resources.resw' = 'en' }
+		$t = Add-TestCommit $mirrorUp @{ 'controls/dev/Foo/Foo.cpp' = 'v2'; 'controls/dev/Foo/Foo.xaml' = 'x2' }
+		$m = Write-TestManifest (Join-Path $TestDrive 'prompt-mirror.json') @(
+			(New-TestArea -Id 'foo' -Baseline $b -Extra @{
+				upstream = [ordered]@{ sources = @('controls/dev/Foo'); strings = 'controls/dev/Foo/Strings' }
+				mirror   = @([ordered]@{ upstream = 'controls/dev/Foo/Foo.xaml'; uno = 'src/Foo.xaml' })
+			}))
+		$mirrorArea = @(Get-SyncAreas -ManifestPath $m)[0]
+
+		$text = Expand-SyncPrompt -TemplatePath "$PSScriptRoot/../prompt.md" -Area $mirrorArea -TargetTag 'winui3/release/1.1.0' -TargetSha $t -UpstreamRepo $mirrorUp -UpstreamDir '.winui-upstream'
+
+		$text | Should -Match ([regex]::Escape("git -C .winui-upstream diff ${b}:controls/dev/Foo ${t}:controls/dev/Foo -- . ':(exclude)Strings' ':(exclude)Foo.xaml'"))
+	}
+
 	It 'writes one command per listed upstream file' {
 		$fileUp = New-TestUpstream -Path (Join-Path $TestDrive 'prompt-files')
 		$b = Add-TestCommit $fileUp @{ 'dxaml/lib/Button.cpp' = 'v1'; 'dxaml/lib/Gone.cpp' = 'v1' }
