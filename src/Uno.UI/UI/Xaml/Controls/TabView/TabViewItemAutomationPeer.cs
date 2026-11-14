@@ -30,7 +30,7 @@ public partial class TabViewItemAutomationPeer : ListViewItemAutomationPeer, ISe
 		return (patternInterface == PatternInterface.SelectionItem || patternInterface == PatternInterface.Drag) ? this : base.GetPatternCore(patternInterface);
 	}
 
-	protected override string GetClassNameCore() => nameof(TabViewItem);
+	protected override string GetClassNameCore() => typeof(TabViewItem).FullName!;
 
 	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.TabItem;
 

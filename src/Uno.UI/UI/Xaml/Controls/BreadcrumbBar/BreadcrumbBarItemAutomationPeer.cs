@@ -40,7 +40,7 @@ public partial class BreadcrumbBarItemAutomationPeer : FrameworkElementAutomatio
 		return base.GetPatternCore(patternInterface);
 	}
 
-	protected override string GetClassNameCore() => nameof(BreadcrumbBarItem);
+	protected override string GetClassNameCore() => typeof(BreadcrumbBarItem).FullName!;
 
 	protected override AutomationControlType GetAutomationControlTypeCore() =>
 		AutomationControlType.Button;

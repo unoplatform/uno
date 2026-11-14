@@ -34,7 +34,7 @@ public partial class PagerControlAutomationPeer : FrameworkElementAutomationPeer
 
 	protected override string GetClassNameCore()
 	{
-		return nameof(PagerControl);
+		return typeof(PagerControl).FullName!;
 	}
 
 	protected override string GetNameCore()

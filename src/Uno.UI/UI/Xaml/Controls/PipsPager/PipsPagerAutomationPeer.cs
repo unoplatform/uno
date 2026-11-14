@@ -42,7 +42,7 @@ public partial class PipsPagerAutomationPeer : FrameworkElementAutomationPeer, I
 		return base.GetPatternCore(patternInterface);
 	}
 
-	protected override string GetClassNameCore() => nameof(PipsPager);
+	protected override string GetClassNameCore() => typeof(PipsPager).FullName!;
 
 	protected override string GetNameCore()
 	{
