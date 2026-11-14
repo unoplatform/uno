@@ -148,6 +148,59 @@
           "src/Uno.UI/UI/Xaml/Automation/Peers/RepeatButtonAutomationPeer.cs"
         ]
       }
+    },
+    {
+      "id": "listviewitempresenter",
+      "title": "ListViewItemPresenter",
+      "baseline": "ba3a8d59e6de4e2b86ca4f61c78bc26ccf129afd",
+      "upstream": {
+        "sources": [
+          "dxaml/xcp/core/core/elements/ListViewBaseItemChrome.cpp",
+          "dxaml/xcp/core/inc/ListViewBaseItemChrome.h",
+          "dxaml/xcp/core/core/elements/ListViewBaseItemSecondaryChrome.cpp",
+          "dxaml/xcp/core/inc/ListViewBaseItemSecondaryChrome.h",
+          "dxaml/xcp/dxaml/lib/ListViewBaseItemPresenter_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/ListViewBaseItemPresenter_Partial.h",
+          "dxaml/xcp/dxaml/lib/ListViewBaseItemSecondaryChrome_Partial.h",
+          "dxaml/xcp/dxaml/lib/ListViewItemPresenter_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/ListViewItemPresenter_Partial.h"
+        ]
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemChrome.h.mux.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemChrome.mux.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemChrome.uno.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemChromeVisual.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemPresenter.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemPresenter.h.mux.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemPresenter.mux.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemSecondaryChrome.h.mux.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemSecondaryChrome.mux.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemTemplateSettings.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewItemPresenter.Properties.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewItemPresenter.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewItemPresenter.mux.cs"
+        ]
+      }
+    },
+    {
+      "id": "gridviewitempresenter",
+      "title": "GridViewItemPresenter",
+      "baseline": "ba3a8d59e6de4e2b86ca4f61c78bc26ccf129afd",
+      "upstream": {
+        "sources": [
+          "dxaml/xcp/dxaml/lib/GridViewItemPresenter_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/GridViewItemPresenter_Partial.h"
+        ]
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/GridViewItemPresenter.Properties.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/GridViewItemPresenter.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/GridViewItemPresenter.mux.cs"
+        ]
+      }
     }
   ]
 }
