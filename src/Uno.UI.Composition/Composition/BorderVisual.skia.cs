@@ -388,6 +388,43 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		(BorderBrush?.CanPaint() ?? false) ||
 		base.CanPaint();
 
+	private protected override bool TryBuildPaintedGeometry(out IGeometry? geometry)
+	{
+		geometry = null;
+		UpdatePathsAndCornerClip();
+
+		// The shapes' paths are the ones Paint fills: the (rounded) background and the border ring.
+		if (PaintsBackground() && GetPath(_backgroundShape) is { } background)
+		{
+			geometry = background.Transform(Matrix3x2.CreateTranslation(_backgroundShape!.Offset));
+		}
+
+		if ((_borderBrush?.CanPaint() ?? false) && GetPath(_borderShape) is { } ring)
+		{
+			if (geometry is null)
+			{
+				ring.AddRef();
+				geometry = ring;
+			}
+			else
+			{
+				var union = geometry.Combine(ring, GeometryCombineMode.Union);
+				geometry.Release();
+				geometry = union;
+			}
+		}
+
+		return true;
+
+		static IGeometry? GetPath(CompositionSpriteShape? shape)
+			=> (shape?.Geometry as CompositionPathGeometry)?.Path?.GeometrySource as IGeometry;
+	}
+
+	// A brush transition still fills with colors the target brush doesn't have, e.g. while fading towards Transparent.
+	private bool PaintsBackground()
+		=> _backgroundBrush is not null
+			&& (_backgroundBrush.CanPaint() || (_backgroundShape is { } shape && Compositor.TryGetEffectiveBackgroundColor(shape, out _)));
+
 	// The background fill and border ring both live inside (0, 0, Size.X, Size.Y) by construction.
 	internal override bool PaintsWithinOwnSize => true;
 

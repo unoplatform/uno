@@ -201,18 +201,8 @@ public partial class Visual
 	{
 		localBounds = default;
 
-		// What this visual paints itself, in local coordinates: nothing for non-painting visuals (containers),
-		// its Size when it paints within Size, otherwise it can't be bounded here and we fall back to the clip.
-		Rect ownContent;
-		if (!CanPaint())
-		{
-			ownContent = default;
-		}
-		else if (PaintsWithinOwnSize)
-		{
-			ownContent = new Rect(0, 0, Math.Max(0f, Size.X), Math.Max(0f, Size.Y));
-		}
-		else
+		// What this visual paints itself, in local coordinates; when it can't be bounded we fall back to the clip.
+		if (!TryGetPaintedBounds(out var ownContent))
 		{
 			return false;
 		}

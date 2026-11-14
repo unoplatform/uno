@@ -361,6 +361,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		_content?.Dispose();
 		_content = null;
+		InvalidatePaintedArea();
 		_flags |= VisualFlags.PaintDirty;
 		InvalidateParentChildrenPicture(false);
 		// Own content feeds ancestor silhouettes; own caches are gated on PaintDirty directly.
@@ -837,9 +838,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			localClip = clipFromParent;
 		}
 
-		if (IsNativeHostVisual || CanPaint())
+		if (IsNativeHostVisual)
 		{
-			clipPath = clipPath.Combine(localClip, IsNativeHostVisual ? GeometryCombineMode.Union : GeometryCombineMode.Difference);
+			clipPath = clipPath.Combine(localClip, GeometryCombineMode.Union);
+		}
+		else if (CanPaint())
+		{
+			clipPath = SubtractPaintedArea(clipPath, localClip, planar ? localMatrix : null);
 		}
 
 		if (IsNativeHostVisual && !localClip.IsEmpty)
@@ -868,6 +873,46 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		localClip.Release();
 		return clipPath;
+	}
+
+	/// <summary>
+	/// Cuts what this visual paints out of the native area: the exact painted area when known, otherwise its whole clip.
+	/// </summary>
+	private IGeometry SubtractPaintedArea(IGeometry clipPath, IGeometry localClip, Matrix3x2? localMatrix)
+	{
+		// No native area under this visual: nothing to cut, so no geometry worth building.
+		if (clipPath.IsEmpty || IsRectEmpty(Intersect(clipPath.Bounds, localClip.Bounds)))
+		{
+			return clipPath;
+		}
+
+		// A shadow paints around the visual's own content, anywhere inside its clip.
+		if (ShadowState is not null
+			|| localMatrix is not { } matrix
+			|| !TryGetNativeClipCut(GeometryFlatteningScale.From(matrix), out var cut))
+		{
+			return clipPath.Combine(localClip, GeometryCombineMode.Difference);
+		}
+
+		if (cut is null)
+		{
+			return clipPath;
+		}
+
+		var cutInParent = cut.Transform(matrix);
+		var covered = cutInParent.Combine(localClip, GeometryCombineMode.Intersect);
+		cutInParent.Release();
+
+		// A failed boolean also comes back empty, and cutting nothing would let the native element cover this visual.
+		if (covered.IsEmpty && IsRectEmpty(Intersect(cut.Bounds.Transform(matrix), localClip.Bounds)) is false)
+		{
+			covered.Release();
+			return clipPath.Combine(localClip, GeometryCombineMode.Difference);
+		}
+
+		var result = clipPath.Combine(covered, GeometryCombineMode.Difference);
+		covered.Release();
+		return result;
 	}
 
 	internal IGeometry GetTotalClipPath(bool skipPostPaintingClipping)

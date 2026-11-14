@@ -8,11 +8,9 @@ namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
 /// Boolean combination for <see cref="ManagedGeometry"/> (union / intersect / difference / xor). Both
-/// operands are flattened to closed polygons; every edge is split at its intersections with the other
-/// operand, each resulting sub-edge is kept or dropped by testing its midpoint against the other region,
-/// and the kept directed sub-edges are walked back into closed contours. Coordinates are snapped to a fine
-/// grid so shared endpoints match exactly during reassembly. Curves become polylines, so the result matches
-/// the rendered combination within flattening tolerance.
+/// operands are flattened to closed polygons on a fine snap grid; the general case finds the result's boundary
+/// edges (see ManagedGeometry.Overlay.cs), which are walked back into closed contours. Curves become polylines,
+/// so the result matches the rendered combination within flattening tolerance.
 /// </summary>
 internal sealed partial class ManagedGeometry
 {
@@ -28,7 +26,7 @@ internal sealed partial class ManagedGeometry
 		}
 
 		// Fast paths for axis-aligned rectangles — the overwhelmingly common clip case (layout/border clips
-		// intersected down the visual tree). Avoids flattening + the O(edgesA*edgesB) SplitAll, which otherwise
+		// intersected down the visual tree). Avoids flattening + the general overlay, which otherwise
 		// dominates rendering when the managed geometry engine is used.
 		var aIsRect = TryGetAxisAlignedRectangle(out var al, out var at, out var ar, out var ab);
 		var bIsRect = b.TryGetAxisAlignedRectangle(out var bl, out var bt, out var br, out var bb);
@@ -89,48 +87,7 @@ internal sealed partial class ManagedGeometry
 				: a.AsSameRuleCopy(polysA);
 		}
 
-		var edges = new List<(Vector2 A, Vector2 B)>();
-
-		// A's edges, split at intersections with B, kept by A-vs-B classification.
-		foreach (var (p0, p1) in SplitAll(polysA, polysB))
-		{
-			var mid = (p0 + p1) * 0.5f;
-			var insideB = b.FillContains(mid, scale);
-			switch (mode)
-			{
-				case GeometryCombineMode.Union when !insideB:
-				case GeometryCombineMode.Intersect when insideB:
-				case GeometryCombineMode.Difference when !insideB:
-					edges.Add((p0, p1));
-					break;
-				case GeometryCombineMode.Xor:
-					// Union outer boundary forward; intersection boundary reversed → a hole under NonZero.
-					edges.Add(insideB ? (p1, p0) : (p0, p1));
-					break;
-			}
-		}
-
-		// B's edges, split at intersections with A, kept by B-vs-A classification.
-		foreach (var (p0, p1) in SplitAll(polysB, polysA))
-		{
-			var mid = (p0 + p1) * 0.5f;
-			var insideA = a.FillContains(mid, scale);
-			switch (mode)
-			{
-				case GeometryCombineMode.Union when !insideA:
-				case GeometryCombineMode.Intersect when insideA:
-					edges.Add((p0, p1));
-					break;
-				case GeometryCombineMode.Difference when insideA:
-					edges.Add((p1, p0)); // reversed: the hole cut out of A
-					break;
-				case GeometryCombineMode.Xor:
-					edges.Add(insideA ? (p1, p0) : (p0, p1));
-					break;
-			}
-		}
-
-		return new ManagedGeometry(Reassemble(edges), GeometryFillRule.NonZero);
+		return new ManagedGeometry(Reassemble(Overlay(polysA, a.FillRule, polysB, b.FillRule, mode)), GeometryFillRule.NonZero);
 	}
 
 	/// <summary>
@@ -387,121 +344,6 @@ internal sealed partial class ManagedGeometry
 
 	private static Vector2 Snap(Vector2 p)
 		=> new(MathF.Round(p.X * SnapScale) / SnapScale, MathF.Round(p.Y * SnapScale) / SnapScale);
-
-	/// <summary>Enumerates every edge of <paramref name="polys"/>, split at all crossings with <paramref name="others"/>.</summary>
-	private static IEnumerable<(Vector2, Vector2)> SplitAll(List<Vector2[]> polys, List<Vector2[]> others)
-	{
-		// Per-polygon AABBs let disjoint contours skip the O(edges²) pairing entirely, and the per-edge
-		// min/max quick-reject prunes most SegmentIntersection calls for the rest.
-		var otherBounds = new (Vector2 Min, Vector2 Max)[others.Count];
-		for (var k = 0; k < others.Count; k++)
-		{
-			var min = new Vector2(float.PositiveInfinity);
-			var max = new Vector2(float.NegativeInfinity);
-			foreach (var p in others[k])
-			{
-				min = Vector2.Min(min, p);
-				max = Vector2.Max(max, p);
-			}
-
-			otherBounds[k] = (min, max);
-		}
-
-		var cuts = new List<float>();
-		foreach (var poly in polys)
-		{
-			for (var i = 1; i < poly.Length; i++)
-			{
-				var a = poly[i - 1];
-				var b = poly[i];
-				if (a == b)
-				{
-					continue;
-				}
-
-				var edgeMin = Vector2.Min(a, b);
-				var edgeMax = Vector2.Max(a, b);
-
-				cuts.Clear();
-				for (var k = 0; k < others.Count; k++)
-				{
-					var (polyMin, polyMax) = otherBounds[k];
-					if (edgeMax.X < polyMin.X || edgeMin.X > polyMax.X || edgeMax.Y < polyMin.Y || edgeMin.Y > polyMax.Y)
-					{
-						continue;
-					}
-
-					var other = others[k];
-					for (var j = 1; j < other.Length; j++)
-					{
-						var c = other[j - 1];
-						var d = other[j];
-						if ((c.X < edgeMin.X && d.X < edgeMin.X) || (c.X > edgeMax.X && d.X > edgeMax.X) ||
-							(c.Y < edgeMin.Y && d.Y < edgeMin.Y) || (c.Y > edgeMax.Y && d.Y > edgeMax.Y))
-						{
-							continue;
-						}
-
-						if (SegmentIntersection(a, b, c, d, out var t))
-						{
-							if (t > 1e-4f && t < 1 - 1e-4f)
-							{
-								cuts.Add(t);
-							}
-						}
-					}
-				}
-
-				if (cuts.Count == 0)
-				{
-					yield return (a, b);
-					continue;
-				}
-
-				cuts.Sort();
-				var prev = a;
-				var prevT = 0f;
-				foreach (var t in cuts)
-				{
-					if (t - prevT < 1e-5f)
-					{
-						continue;
-					}
-
-					var p = Snap(Vector2.Lerp(a, b, t));
-					if (p != prev)
-					{
-						yield return (prev, p);
-					}
-
-					prev = p;
-					prevT = t;
-				}
-
-				if (prev != b)
-				{
-					yield return (prev, b);
-				}
-			}
-		}
-	}
-
-	private static bool SegmentIntersection(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4, out float t)
-	{
-		t = 0f;
-		var d1 = p2 - p1;
-		var d2 = p4 - p3;
-		var denom = d1.X * d2.Y - d1.Y * d2.X;
-		if (MathF.Abs(denom) < 1e-9f)
-		{
-			return false;
-		}
-
-		var dp = p3 - p1;
-		t = (dp.X * d2.Y - dp.Y * d2.X) / denom;
-		var u = (dp.X * d1.Y - dp.Y * d1.X) / denom;
-		return t >= -1e-4f && t <= 1 + 1e-4f && u >= -1e-4f && u <= 1 + 1e-4f;
-	}
 
 	/// <summary>Walks kept directed edges back into closed contours, matching endpoints by snapped key.</summary>
 	private static List<ManagedContour> Reassemble(List<(Vector2 A, Vector2 B)> edges)
