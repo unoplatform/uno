@@ -72,10 +72,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			KeyDown += OnSplitButtonKeyDown;
 			KeyUp += OnSplitButtonKeyUp;
-
-			// Uno Specific: prevent leaks
-			Loaded += (_, _) => OnApplyTemplate();
-			Unloaded += (_, _) => UnregisterEvents();
 		}
 
 		public
