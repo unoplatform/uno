@@ -154,6 +154,33 @@
           "src/Uno.UI/UI/Xaml/Automation/Peers/RepeatButtonAutomationPeer.cs"
         ]
       }
+    },
+    {
+      "id": "splitbutton",
+      "title": "SplitButton",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
+      "upstream": {
+        "sources": [
+          "controls/dev/SplitButton"
+        ],
+        "tests": [
+          "controls/dev/SplitButton/APITests",
+          "controls/dev/SplitButton/InteractionTests",
+          "controls/dev/SplitButton/TestUI"
+        ],
+        "strings": "controls/dev/SplitButton/Strings"
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/SplitButton",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/SplitButton_themeresources.xaml",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/SplitButton.xaml"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/SplitButton"
+        ],
+        "strings": "src/Uno.UI/UI/Xaml/Controls/SplitButton/Strings"
+      }
     }
   ]
 }
