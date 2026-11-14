@@ -198,8 +198,10 @@ jobs:
           # The job's read-only token; without it the action would mint an app token via OIDC.
           github_token: ${{ github.token }}
           prompt: ${{ steps.prompt.outputs.prompt }}
+          # Spend cap per area. Going over it fails the step, so nothing is published.
           claude_args: |
             --model "${{ matrix.area.model }}"
+            --max-budget-usd 3
             --allowedTools "Read,Edit,Write,Glob,Grep,Bash(git -C .winui-upstream diff:*),Bash(git -C .winui-upstream show:*),Bash(git -C .winui-upstream log:*),Bash(dotnet build src/Uno.UI/Uno.UI.csproj -p:UnoTargetFrameworkOverride=net10.0 -v:q -nologo),Bash(dotnet build src/Uno.UI.RuntimeTests/Uno.UI.RuntimeTests.Generic.csproj -p:UnoTargetFrameworkOverride=net10.0 -v:q -nologo)"
             --disallowedTools "Edit(**/*.csproj),Edit(**/*.proj),Edit(**/*.shproj),Edit(**/*.projitems),Edit(**/*.props),Edit(**/*.targets),Edit(**/*.tasks),Edit(**/*.sln),Edit(**/*.slnf),Edit(**/*.slnx),Edit(**/*.rsp),Edit(**/Directory.*),Edit(**/global.json),Edit(**/NuGet.config),Edit(**/nuget.config),Edit(**/.editorconfig),Edit(**/.globalconfig),Edit(.github/**),Edit(.claude/**),Edit(build/**),Read(//proc/**)"
 
