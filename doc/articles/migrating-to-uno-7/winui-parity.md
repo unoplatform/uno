@@ -156,8 +156,9 @@ subscribing to its `DataContextChanged`, is now a compile error, as is referenci
 **`{Binding}` on these objects keeps working.** A non-`FrameworkElement` has no
 `DataContext` of its own, but — as in WinUI — its bindings resolve against the
 `DataContext` of the `FrameworkElement` it is attached to, through its inheritance
-context. `ColumnDefinition.Width`, `RowDefinition.Height`, `Run.Text` and
-`StateTrigger.IsActive` all still bind to the surrounding view model. The change is to the
+context. `ColumnDefinition.Width`, `RowDefinition.Height`, `Run.Text`,
+`StateTrigger.IsActive` and the `Value` of a `Setter` in a `VisualState` all still bind to
+the surrounding view model. The change is to the
 API surface only: an object like this can no longer be given a `DataContext` of its own, so
 bind on the owning element or set the value from code instead.
 
@@ -168,8 +169,12 @@ two exceptions that Uno does not implement: an object whose first parent is a
 one whose first parent is a `ContentControl` keeps its context for up to two parents. A brush
 declared as a resource and used by more than one element is the common case: its
 `{Binding}`s still resolve on WinUI but stop resolving on Uno, so don't rely on bindings
-inside shared resources. Don't rely on `{Binding}` in `Setter.Value` either; WinUI does not resolve
-it.
+inside shared resources.
+
+`{Binding}` in `Setter.Value` depends on where the `Setter` is. In a `VisualState` it resolves
+however the state is entered, using the value at that moment: as in WinUI, the setter doesn't
+follow later changes until the state is entered again. In a `Style` it doesn't resolve, on WinUI
+or on Uno Platform.
 
 Flyouts are the most commonly hit case, and they keep working: `FlyoutBase` no longer
 carries a `DataContext`, but the placement target's `DataContext` is forwarded onto the
