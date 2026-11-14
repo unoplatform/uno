@@ -1,4 +1,4 @@
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -74,5 +74,19 @@ public class Given_RadioButtons_UITest
 		using var _ = UITestHelper.ResetWindowContent();
 		await UITestHelper.Load(sut);
 		Assert.IsTrue(lightThemeRadio.IsChecked == true, "First item should be checked after load");
+	}
+
+	[TestMethod]
+	public async Task When_SelectedItem_Set_Before_Load()
+	{
+		var sut = new RadioButtons { ItemsSource = new[] { "Zero", "One", "Two" } };
+		sut.SelectedItem = "Two";
+
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(sut);
+
+		Assert.AreEqual(2, sut.SelectedIndex);
+		Assert.IsTrue(sut.ContainerFromIndex(2) is RadioButton { IsChecked: true }, "Third item should be checked after load");
+		Assert.IsTrue(sut.ContainerFromIndex(0) is RadioButton { IsChecked: false }, "First item should not be checked");
 	}
 }
