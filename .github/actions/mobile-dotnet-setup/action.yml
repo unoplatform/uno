@@ -1,0 +1,62 @@
+name: "Mobile .NET setup"
+description: "Install the pinned .NET SDK and, optionally, the mobile workloads through uno-check, mirroring the Azure DevOps templates"
+
+inputs:
+  uno-check-tfm:
+    description: "TFM suffix passed to uno-check (android, tvos, ...). Empty skips uno-check."
+    required: false
+    default: ''
+
+runs:
+  using: "composite"
+  steps:
+    # .vsts-ci.yml stays the single source of truth for these versions.
+    - name: Read pinned versions
+      shell: bash
+      run: |
+        read_var() { sed -n "s/^  $1: '\(.*\)'.*/\1/p" .vsts-ci.yml | head -n 1; }
+        NET_TFM=$(read_var netCurrentTargetFramework)
+        UNO_CHECK_VERSION=$(read_var GlobalUnoCheckVersion)
+        if [ -z "$NET_TFM" ] || [ -z "$UNO_CHECK_VERSION" ]; then
+          echo "::error::Could not read netCurrentTargetFramework / GlobalUnoCheckVersion from .vsts-ci.yml"
+          exit 1
+        fi
+        echo "NET_TFM=$NET_TFM" >> "$GITHUB_ENV"
+        echo "UNO_CHECK_VERSION=$UNO_CHECK_VERSION" >> "$GITHUB_ENV"
+        # A workspace-local SDK keeps workload installs writable without sudo.
+        echo "DOTNET_INSTALL_DIR=$GITHUB_WORKSPACE/.dotnet" >> "$GITHUB_ENV"
+        echo "DOTNET_ROOT=$GITHUB_WORKSPACE/.dotnet" >> "$GITHUB_ENV"
+        echo "$GITHUB_WORKSPACE/.dotnet" >> "$GITHUB_PATH"
+        echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
+        cp build/ci/net11/_global.json global.json
+        echo "TFM: $NET_TFM, uno-check: $UNO_CHECK_VERSION"
+
+    - name: Setup .NET SDK
+      uses: actions/setup-dotnet@v5.3.0
+      with:
+        global-json-file: global.json
+
+    - name: Install .NET workloads
+      if: inputs.uno-check-tfm != ''
+      shell: bash
+      run: |
+        dotnet tool update --global uno.check --version "$UNO_CHECK_VERSION" --add-source https://api.nuget.org/v3/index.json
+
+        SKIPS=(--skip androidemulator --skip gtk3 --skip maui --skip unosdk --skip dotnetnewunotemplates)
+        if [ "$RUNNER_OS" = "macOS" ]; then
+          SKIPS+=(--skip xcode --skip vswin --skip vsmac)
+        fi
+
+        for attempt in 1 2 3; do
+          if uno-check -v --ci --non-interactive --fix "${SKIPS[@]}" --pre-major --tfm "$NET_TFM-${{ inputs.uno-check-tfm }}"; then
+            exit 0
+          fi
+          echo "uno-check failed (attempt $attempt)"
+        done
+
+        # The macOS ADO template ignores the exit code too: some checkups report errors the build never hits.
+        if [ "$RUNNER_OS" = "macOS" ]; then
+          echo "::warning::uno-check did not report success; continuing like the ADO template does."
+          exit 0
+        fi
+        exit 1
