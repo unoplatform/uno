@@ -243,6 +243,46 @@ Describe 'Get-AreaSyncState with mirrored files' {
 	}
 }
 
+Describe 'Get-AreaSyncState with a mirrored file inside a source folder' {
+	BeforeEach {
+		$script:up = New-TestUpstream -Path (Join-Path $TestDrive "nested-$([guid]::NewGuid())")
+		$script:base = Add-TestCommit $up @{
+			'controls/dev/Foo/Foo.cpp'  = 'v1'
+			'controls/dev/Foo/Foo.xaml' = "<Root>v1</Root>`n"
+		} -Tag 'winui3/release/1.0.0'
+		$script:uno = Join-Path $TestDrive "nested-uno-$([guid]::NewGuid())"
+		New-Item -ItemType Directory -Force -Path "$uno/src" | Out-Null
+		[System.IO.File]::WriteAllText("$uno/src/Foo.xaml", "<Root>v1</Root>`n")
+		$newArea = {
+			param([string[]]$Sources)
+			$m = Write-TestManifest (Join-Path $TestDrive "$([guid]::NewGuid()).json") @(
+				(New-TestArea -Id 'foo' -Baseline $base -Extra @{
+					upstream = [ordered]@{ sources = $Sources }
+					mirror   = @([ordered]@{ upstream = 'controls/dev/Foo/Foo.xaml'; uno = 'src/Foo.xaml' })
+				}))
+			@(Get-SyncAreas -ManifestPath $m)[0]
+		}
+		$script:area = & $newArea @('controls/dev/Foo')
+		$script:fileArea = & $newArea @('controls/dev/Foo/Foo.cpp', 'controls/dev/Foo/Foo.xaml')
+	}
+
+	It 'reports a change to the mirrored file as a mirror change only' {
+		$target = Add-TestCommit $up @{ 'controls/dev/Foo/Foo.xaml' = "<Root>v2</Root>`n" }
+		foreach ($a in $area, $fileArea) {
+			$s = Get-AreaSyncState -Area $a -UpstreamRepo $up -TargetSha $target -UnoRoot $uno
+			$s.mirrorChanged | Should -BeTrue
+			$s.codeChanged | Should -BeFalse
+		}
+	}
+
+	It 'still reports a change to the rest of the folder as a code change' {
+		$target = Add-TestCommit $up @{ 'controls/dev/Foo/Foo.cpp' = 'v2' }
+		$s = Get-AreaSyncState -Area $area -UpstreamRepo $up -TargetSha $target -UnoRoot $uno
+		$s.codeChanged | Should -BeTrue
+		$s.mirrorChanged | Should -BeFalse
+	}
+}
+
 Describe 'Select-SyncMatrix' {
 	It 'orders by oldest baseline and caps at MaxAreas, reporting the deferred ids' {
 		$up = New-TestUpstream -Path (Join-Path $TestDrive 'order')
