@@ -55,6 +55,37 @@ Describe 'Get-MuxReferences' {
 	}
 }
 
+Describe 'Remove-MuxReferenceVersion' {
+	It 'drops tags and commits from header lines, keeping files, encoding and line endings' {
+		$root = Join-Path $TestDrive 'strip'
+		New-Item -ItemType Directory -Force -Path "$root/sub" | Out-Null
+		$bom = [System.Text.UTF8Encoding]::new($true)
+		[System.IO.File]::WriteAllText("$root/A.cs", "// Copyright`r`n// MUX Reference A.cpp, tag winui3/release/1.4.2, commit ba3a8d59e`r`n// A_Partial.h, A_Partial.cpp, tag winui3/release/1.4.2.`r`nclass A { } // commit to this, tag along`r`n", $bom)
+		[System.IO.File]::WriteAllText("$root/sub/B.xaml", "<!-- MUX Reference src\controls\dev\B\B.xaml, tag winui3/release/2.5.1, commit ba3a8d59e -->`n<ResourceDictionary />`n")
+		[System.IO.File]::WriteAllText("$root/C.cs", "// MUX Reference: C.cpp, commit 65718e2813`nclass C { }`n")
+		[System.IO.File]::WriteAllText("$root/D.cs", "// MUX Reference D.cpp`nclass D { }`n")
+
+		$changed = @(Remove-MuxReferenceVersion -Paths $root)
+
+		($changed | ForEach-Object { Split-Path $_ -Leaf } | Sort-Object) | Should -Be @('A.cs', 'B.xaml', 'C.cs')
+		[System.IO.File]::ReadAllText("$root/A.cs") | Should -Be "// Copyright`r`n// MUX Reference A.cpp`r`n// A_Partial.h, A_Partial.cpp`r`nclass A { } // commit to this, tag along`r`n"
+		[System.IO.File]::ReadAllBytes("$root/A.cs")[0] | Should -Be 0xEF
+		[System.IO.File]::ReadAllText("$root/sub/B.xaml") | Should -Be "<!-- MUX Reference src\controls\dev\B\B.xaml -->`n<ResourceDictionary />`n"
+		[System.IO.File]::ReadAllBytes("$root/sub/B.xaml")[0] | Should -Be ([byte][char]'<')
+		[System.IO.File]::ReadAllText("$root/C.cs") | Should -Be "// MUX Reference: C.cpp`nclass C { }`n"
+	}
+
+	It 'leaves a header without a version, and code after the header, alone' {
+		$root = Join-Path $TestDrive 'strip-none'
+		New-Item -ItemType Directory -Force -Path $root | Out-Null
+		$text = "// MUX Reference E.cpp`nclass E { }`n" + ("`n" * 20) + "// tag winui3/release/1.0.0`n"
+		[System.IO.File]::WriteAllText("$root/E.cs", $text)
+
+		@(Remove-MuxReferenceVersion -Paths $root).Count | Should -Be 0
+		[System.IO.File]::ReadAllText("$root/E.cs") | Should -Be $text
+	}
+}
+
 Describe 'Find-AreaThemeXaml' {
 	BeforeAll {
 		$script:up = New-TestUpstream -Path (Join-Path $TestDrive 'theme-up')
