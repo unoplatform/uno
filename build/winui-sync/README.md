@@ -65,7 +65,9 @@ is not picked up until it is added to the list. Strings paths are always folders
 A file Uno keeps as a **verbatim copy** of an upstream file (Uno.UI's `Generic.xaml` is WinUI's
 `generic.xaml`) is listed under `mirror` as `{ "upstream": …, "uno": … }` (`seed-area.ps1 -Mirror
 'upstream path=uno path'`). The sync replaces it with upstream's version: no agent, no port. The Uno
-file keeps its `MUX Reference` line, BOM and line endings; everything else is upstream's. An area made
+file keeps its `MUX Reference` line, BOM and line endings; everything else is upstream's. A mirrored
+file may sit inside an upstream source folder (a MUX control's verbatim theme XAML in
+`controls/dev/<Name>`): detection and the agent's diff leave it out, so it is never ported twice. An area made
 only of mirrors needs no `upstream.sources`. Its other Uno files (for `Generic.xaml`, the overlay that
 holds Uno's deltas) stay in `uno.sources`; the sync PR names them so a person checks they still fit.
 
