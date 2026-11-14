@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class GridViewItem : SelectorItem
+	public partial class GridViewItem : ListViewBaseItem
 	{
 		public GridViewItem()
 		{

@@ -12,14 +12,13 @@ namespace Microsoft.UI.Xaml.Controls
 	/// An basic implementation for an item container
 	/// </summary>
 	/// <remarks>This container supports vertical scrolling and stretching for the whole item.</remarks>
-	public partial class ListViewItem : SelectorItem
+	public partial class ListViewItem : ListViewBaseItem
 	{
 		public ListViewItem()
 		{
 			DefaultStyleKey = typeof(ListViewItem);
 		}
 
-		[global::Uno.NotImplemented]
 		public ListViewItemTemplateSettings TemplateSettings { get; } = new();
 
 		protected override AutomationPeer OnCreateAutomationPeer()

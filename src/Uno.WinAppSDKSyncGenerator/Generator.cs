@@ -65,6 +65,14 @@ namespace Uno.WinAppSDKSyncGenerator
 		{
 			// Uno inserts CalendarViewBaseItem, which WinUI does not project, between the item and Control.
 			BaseXamlNamespace + ".Controls.CalendarViewDayItem",
+			// Uno inserts hidden public abstract ListViewBaseItem / ListViewBaseItemPresenter / ListViewBaseItemTemplateSettings
+			// bases, which WinUI hides from its IDL (same shape as CalendarViewBaseItem).
+			BaseXamlNamespace + ".Controls.ListViewItem",
+			BaseXamlNamespace + ".Controls.GridViewItem",
+			BaseXamlNamespace + ".Controls.Primitives.ListViewItemPresenter",
+			BaseXamlNamespace + ".Controls.Primitives.GridViewItemPresenter",
+			BaseXamlNamespace + ".Controls.Primitives.ListViewItemTemplateSettings",
+			BaseXamlNamespace + ".Controls.Primitives.GridViewItemTemplateSettings",
 			// Uno's RelativeSource is not a DependencyObject and carries Mode as a plain property.
 			BaseXamlNamespace + ".Data.RelativeSource",
 			// Uno's WebView2 derives from Control to reuse templating; WinUI derives from FrameworkElement.
