@@ -148,6 +148,22 @@
           "src/Uno.UI/UI/Xaml/Automation/Peers/RepeatButtonAutomationPeer.cs"
         ]
       }
+    },
+    {
+      "id": "genericxaml",
+      "title": "Generic.xaml",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
+      "upstream": {
+        "sources": [
+          "dxaml/xcp/dxaml/themes/generic.xaml"
+        ]
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml",
+          "src/Uno.UI/UI/Xaml/Style/Generic/UnoGenericOverlay.xaml"
+        ]
+      }
     }
   ]
 }
