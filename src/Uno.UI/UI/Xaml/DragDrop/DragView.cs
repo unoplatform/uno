@@ -103,12 +103,9 @@ namespace Microsoft.UI.Xaml
 		}
 		#endregion
 
-		private const int ExternalImageMaxSize = 100;
-
 		private readonly DragUI? _ui;
 		private readonly TranslateTransform _transform;
 		private FrameworkElement? _toolTipPanel = null;
-		private Image? _imageElement = null;
 		private Border? _contentContainer;
 		private Point _location;
 		private static readonly char[] _newLineChars = new[] { '\r', '\n' };
@@ -132,7 +129,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			_toolTipPanel = GetTemplateChild("ToolTipPanel") as FrameworkElement;
-			_imageElement = GetTemplateChild("ImageElement") as Image;
 			_contentContainer = GetTemplateChild("ContentContainer") as Border;
 
 			if (_toolTipPanel is not null)
@@ -219,13 +215,6 @@ namespace Microsoft.UI.Xaml
 			{
 				Content = _ui?.Content;
 				ContentAnchor = _ui?.Anchor ?? default;
-			}
-
-			if (_ui?.IsExternalContent == true && _imageElement is not null)
-			{
-				_imageElement.MaxWidth = ExternalImageMaxSize;
-				_imageElement.MaxHeight = ExternalImageMaxSize;
-				_imageElement.Stretch = Stretch.Uniform;
 			}
 
 			ContentVisibility = ToVisibility(viewOverride.IsContentVisible);

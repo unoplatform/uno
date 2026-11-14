@@ -24,8 +24,6 @@ namespace Microsoft.UI.Xaml
 
 		internal Point? Anchor { get; set; }
 
-		internal bool IsExternalContent { get; set; }
-
 		public void SetContentFromBitmapImage(BitmapImage bitmapImage)
 			=> SetContentFromBitmapImage(bitmapImage, default);
 
@@ -33,12 +31,6 @@ namespace Microsoft.UI.Xaml
 		{
 			Content = bitmapImage;
 			Anchor = anchorPoint;
-		}
-
-		internal void SetContentFromExternalBitmapImage(BitmapImage bitmapImage)
-		{
-			Content = bitmapImage;
-			IsExternalContent = true;
 		}
 	}
 }
