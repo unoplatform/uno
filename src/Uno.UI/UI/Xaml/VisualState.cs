@@ -28,9 +28,13 @@ namespace Microsoft.UI.Xaml
 			IsAutoPropertyInheritanceEnabled = false;
 		}
 
-		public string Name { get; internal set; }
+		public string Name
+		{
+			get => (string)GetValue(NameProperty);
+			internal set => SetValue(NameProperty, value);
+		}
 
-		void IXNameProvider.SetXName(string name) => Name = name;
+		void IXNameProvider.SetXName(string name) => SetValue(NameProperty, name);
 
 		#region StoryBoard DependencyProperty
 
@@ -193,6 +197,6 @@ namespace Microsoft.UI.Xaml
 			Owner?.RefreshStateTriggers();
 		}
 
-		public override string ToString() => Name ?? $"<unnamed state {GetHashCode()}>";
+		public override string ToString() => string.IsNullOrEmpty(Name) ? $"<unnamed state {GetHashCode()}>" : Name;
 	}
 }

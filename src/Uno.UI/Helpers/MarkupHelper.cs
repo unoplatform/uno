@@ -40,7 +40,8 @@ namespace Uno.UI.Helpers
 		}
 
 		/// <summary>
-		/// Sets the x:Name of an element implementing <see cref="IXNameProvider"/>, whose Name property is get-only.
+		/// Sets the x:Name of an object without a settable Name property, storing it in WinUI's
+		/// DependencyObject_Name (<see cref="FrameworkElement.NameProperty"/>).
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void SetXName(object target, string name)
@@ -48,6 +49,10 @@ namespace Uno.UI.Helpers
 			if (target is IXNameProvider provider)
 			{
 				provider.SetXName(name);
+			}
+			else if (target is DependencyObject dependencyObject)
+			{
+				dependencyObject.SetValue(DependencyObject.NameProperty, name);
 			}
 		}
 

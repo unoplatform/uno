@@ -904,6 +904,46 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		public void When_CoerceValueCallback_Returns_Base_Then_No_ModifiedValue()
+		{
+			var SUT = new MockDependencyObject();
+			var testProperty = DependencyProperty.Register(
+				nameof(When_CoerceValueCallback_Returns_Base_Then_No_ModifiedValue),
+				typeof(int),
+				typeof(MockDependencyObject),
+				new PropertyMetadata(5, null, AbsoluteInteger)
+			);
+
+			SUT.SetValue(testProperty, 10);
+			SUT.SetValue(testProperty, 12);
+
+			Assert.AreEqual(12, SUT.GetValue(testProperty));
+			Assert.IsNull(SUT.GetPropertyDetails(testProperty).GetModifiedValue());
+		}
+
+		[TestMethod]
+		public void When_CoerceValueCallback_Coerces_Then_Returns_Base_Then_Coercion_Cleared()
+		{
+			var SUT = new MockDependencyObject();
+			var testProperty = DependencyProperty.Register(
+				nameof(When_CoerceValueCallback_Coerces_Then_Returns_Base_Then_Coercion_Cleared),
+				typeof(int),
+				typeof(MockDependencyObject),
+				new PropertyMetadata(5, null, AbsoluteInteger)
+			);
+
+			SUT.SetValue(testProperty, -10);
+			Assert.AreEqual(10, SUT.GetValue(testProperty));
+			Assert.IsTrue(SUT.GetPropertyDetails(testProperty).GetModifiedValue()?.IsCoerced == true);
+
+			SUT.SetValue(testProperty, 7);
+
+			Assert.AreEqual(7, SUT.GetValue(testProperty));
+			Assert.AreEqual(7, SUT.ReadLocalValue(testProperty));
+			Assert.IsFalse(SUT.GetPropertyDetails(testProperty).GetModifiedValue()?.IsCoerced ?? false);
+		}
+
+		[TestMethod]
 		public void When_CoerceValueCallback_IgnoreNegative()
 		{
 			var defaultValue = 5;
