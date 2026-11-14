@@ -1,5 +1,5 @@
-﻿// MUX Reference Button_Partial.cpp, tag winui3/release/1.4.2
-// MUX Reference Button.cpp, tag winui3/release/1.5.4
+﻿// MUX Reference Button_Partial.cpp
+// MUX Reference Button.cpp
 
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
