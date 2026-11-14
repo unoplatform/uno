@@ -438,6 +438,127 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		}
 
 		/// <summary>
+		/// Typing through the semantic textbox is user input, so MaxLength refuses what doesn't fit, and the semantic element
+		/// shows the TextBox's text again.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		[DataRow(false, DisplayName = "Single-line")]
+		[DataRow(true, DisplayName = "Multi-line, the browser reports \\n")]
+		public async Task When_SemanticTextBox_Input_Exceeds_MaxLength_Then_It_Is_Refused(bool multiline)
+		{
+			var textBox = new TextBox { AcceptsReturn = multiline, Text = multiline ? "a\rb" : "abc", MaxLength = 3 };
+
+			try
+			{
+				await LoadWithSemanticElement(textBox);
+
+				SetSemanticTextControlValueAndSelection(textBox, multiline ? "a\nxb" : "axbc", 2, 2);
+				await UITestHelper.WaitForIdle();
+
+				Assert.AreEqual(multiline ? "a\rb" : "abc", textBox.Text, "the typed character doesn't fit");
+				Assert.AreEqual(multiline ? "a\nb" : "abc", GetSemanticTextBoxValue(textBox), "the semantic element shows the TextBox's text again");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		/// <summary>
+		/// Semantic input that only deletes goes in, even while the text set from code is longer than MaxLength.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		[DataRow(false, DisplayName = "Single-line")]
+		[DataRow(true, DisplayName = "Multi-line, the browser reports \\n")]
+		public async Task When_SemanticTextBox_Deletes_From_Text_Longer_Than_MaxLength(bool multiline)
+		{
+			var textBox = new TextBox { AcceptsReturn = multiline, Text = multiline ? "ab\rcdefghij" : "0123456789", MaxLength = 5 };
+
+			try
+			{
+				await LoadWithSemanticElement(textBox);
+
+				SetSemanticTextControlValueAndSelection(textBox, multiline ? "ab\ncdefghi" : "012345678", multiline ? 10 : 9, multiline ? 10 : 9);
+				await UITestHelper.WaitForIdle();
+
+				Assert.AreEqual(multiline ? "ab\rcdefghi" : "012345678", textBox.Text);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		/// <summary>
+		/// A read-only or disabled TextBox refuses semantic input, and the semantic element shows its text again.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		[DataRow(true, DisplayName = "Read-only")]
+		[DataRow(false, DisplayName = "Disabled")]
+		public async Task When_SemanticTextBox_Input_Reaches_A_ReadOnly_Or_Disabled_TextBox(bool readOnly)
+		{
+			var textBox = new TextBox { Text = "abc" };
+
+			try
+			{
+				await LoadWithSemanticElement(textBox);
+				if (readOnly)
+				{
+					textBox.IsReadOnly = true;
+				}
+				else
+				{
+					textBox.IsEnabled = false;
+				}
+
+				await UITestHelper.WaitForIdle();
+
+				SetSemanticTextControlValueAndSelection(textBox, "abcd", 4, 4);
+				await UITestHelper.WaitForIdle();
+
+				Assert.AreEqual("abc", textBox.Text);
+				Assert.AreEqual("abc", GetSemanticTextBoxValue(textBox));
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25997")]
+		public async Task When_SemanticPasswordBox_Input_Exceeds_MaxLength_Then_It_Is_Refused()
+		{
+			var passwordBox = new PasswordBox { Password = "abc", MaxLength = 3 };
+
+			try
+			{
+				await LoadWithSemanticElement(passwordBox);
+
+				SetSemanticTextControlValueAndSelection(passwordBox, "abcd", 4, 4);
+				await UITestHelper.WaitForIdle();
+
+				Assert.AreEqual("abc", passwordBox.Password);
+				Assert.AreEqual("abc", GetSemanticTextControlValue(passwordBox), "the semantic element shows the password again");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		/// <summary>
 		/// T046/FR-016 (WASM DOM): a single-line TextBox emits a native &lt;input type="text"&gt; semantic element
 		/// whose value mirrors TextBox.Text.
 		/// </summary>
@@ -796,8 +917,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			bool isBackward = false)
 			=> InvokeBrowserJs($"(function(){{const semanticElement = document.getElementById('{GetSemanticElementId(element)}'); if (!semanticElement) {{ return 'missing'; }} semanticElement.focus(); semanticElement.setSelectionRange({selectionStart}, {selectionEnd}, '{(isBackward ? "backward" : "forward")}'); semanticElement.dispatchEvent(new Event('select', {{ bubbles: true }})); return 'ok'; }})()");
 
-		private static bool HiddenNativeTextBoxExists()
-			=> InvokeBrowserJs("(function(){return document.getElementById('uno-input') ? '1' : '0';})()") == "1";
+		private static async Task LoadWithSemanticElement(Control control)
+		{
+			await UITestHelper.Load(control);
+			control.Focus(FocusState.Programmatic);
+			control.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(
+				() => SemanticElementExists(control), timeoutMS: 5000, message: "Timed out waiting for the semantic element to be created.");
+			await UITestHelper.WaitForIdle();
+		}
 
 		private static void TypeCharacterIntoSemanticTextBox(TextBox textBox, string character)
 		{

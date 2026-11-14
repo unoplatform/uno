@@ -70,9 +70,24 @@
 			return BrowserInvisibleTextBoxViewExtension._exports.GetNativePasteSourceLimit();
 		}
 
-		public static onNativePaste(source: string): void {
+		public static onNativePaste(source: string | null): void {
 			BrowserInvisibleTextBoxViewExtension.initialize();
 			BrowserInvisibleTextBoxViewExtension._exports.OnNativePaste(source);
+		}
+
+		/**
+		 * Stops the browser's own paste and returns the pasted text, cut to the source limit, or null when the clipboard has
+		 * no text (an image, for instance).
+		 */
+		public static getPastedText(ev: ClipboardEvent): string | null {
+			ev.preventDefault();
+			if (!ev.clipboardData?.types.includes("text/plain")) {
+				return null;
+			}
+
+			const source = ev.clipboardData.getData("text/plain");
+			const sourceLimit = BrowserInvisibleTextBoxViewExtension.getNativePasteSourceLimit();
+			return source.length > sourceLimit ? source.substring(0, sourceLimit) : source;
 		}
 
 		public static initialize() {
@@ -238,13 +253,7 @@
 				});
 			};
 
-			input.onpaste = ev => {
-				const source = ev.clipboardData.getData("text");
-				const sourceLimit = BrowserInvisibleTextBoxViewExtension._exports.GetNativePasteSourceLimit();
-				BrowserInvisibleTextBoxViewExtension._exports.OnNativePaste(
-					source.length > sourceLimit ? source.substring(0, sourceLimit) : source);
-				ev.preventDefault();
-			};
+			input.onpaste = ev => BrowserInvisibleTextBoxViewExtension.onNativePaste(BrowserInvisibleTextBoxViewExtension.getPastedText(ev));
 
 			// C# drives focus one-way (StartEntry/EndEntry call focus()/blur()), so a blur the
 			// browser initiates on its own — e.g. tapping outside, or the touch-synthesized
