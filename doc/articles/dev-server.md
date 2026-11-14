@@ -90,6 +90,7 @@ The Dev Server enables Hot Reload for a faster inner loop:
 
 - The TCP port number used by the app to connect back to the IDE is located in the <UnoRemoteControlPort> property of the [ProjectName].csproj.user file. If the port number does not match with the one found in the Uno Platform - Hot Reload output window, restart your IDE.
 - If the Dev Server does not start, ensure NuGet restore has completed successfully and Uno Platform packages are referenced by your project(s).
+- On Windows, if the Dev Server log says *You must install .NET to run this application* (or *You must install or update .NET*) although .NET is installed, .NET is probably in a custom folder that is only on your `PATH`. Set the `DOTNET_ROOT` environment variable to that folder (the one that contains `dotnet.exe`), then restart your IDE.
 
 ### [**Visual Studio**](#tab/vswints)
 

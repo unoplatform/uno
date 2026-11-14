@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using AwesomeAssertions;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Uno.UI.DevServer.Cli.Helpers;
 
@@ -371,22 +372,73 @@ public class Given_StartCommandHandler
 			.Should().Be(expected);
 	}
 
+	[TestMethod]
+	[DataRow(unchecked((int)0x80008083), false, DisplayName = "no .NET found → no retry")]
+	[DataRow(unchecked((int)0x80008096), false, DisplayName = "framework missing → no retry")]
+	[DataRow(unchecked((int)0xE0434352), true, DisplayName = "unhandled managed exception → retry")]
+	[Description("When .NET cannot start the host, no add-in was loaded, so safe mode cannot help.")]
+	public void ShouldRetryInSafeMode_WhenHostDied_DependsOnItsExitCode(int hostExitCode, bool expected)
+	{
+		var result = new DirectSpawnResult(1, DirectSpawnFailure.DiedBeforeReady, hostExitCode);
+
+		StartCommandHandler.ShouldRetryInSafeMode(result, addins: "/a.dll", solution: null)
+			.Should().Be(expected);
+	}
+
+	[TestMethod]
+	[DataRow(unchecked((int)0x80008083), "0x80008083", DisplayName = "no .NET found")]
+	[DataRow(unchecked((int)0x80008096), "0x80008096", DisplayName = "framework missing")]
+	[Description("A host that .NET cannot start fails once (no safe-mode retry) with an error naming the .NET exit code.")]
+	public async Task RunAsync_WhenDotnetCannotStartTheHost_ShouldFailOnceAndSayWhy(int hostExitCode, string hexCode)
+	{
+		var messages = new List<string>();
+		var spawnCount = 0;
+		var handler = CreateHandler(
+			onSpawnProcess: _ =>
+			{
+				spawnCount++;
+				return Task.FromResult(new DirectSpawnResult(1, DirectSpawnFailure.DiedBeforeReady, hostExitCode));
+			},
+			logger: new CollectingLogger(messages));
+
+		var exitCode = await handler.RunAsync(
+			hostPath: "/path/to/host.dll",
+			originalArgs: ["start", "--httpPort", "50000", "--solution", "/app/app.sln"],
+			workingDirectory: "/app",
+			addins: "/path/to/addin.dll");
+
+		exitCode.Should().Be(1);
+		spawnCount.Should().Be(1);
+		messages.Should().ContainSingle(message => message.Contains(hexCode) && message.Contains("DOTNET_ROOT"));
+	}
+
 	// --- Helpers ---
 
 	private static StartCommandHandler CreateHandler(
 		FakeServerInfo? existingServerBySolution = null,
 		FakeServerInfo? existingServerByPort = null,
 		Func<int, string, Task<bool>>? onRebindIdeChannel = null,
-		Func<ProcessStartInfo, Task<DirectSpawnResult>>? onSpawnProcess = null)
+		Func<ProcessStartInfo, Task<DirectSpawnResult>>? onSpawnProcess = null,
+		ILogger? logger = null)
 	{
 		return new StartCommandHandler(
-			NullLogger.Instance,
+			logger ?? NullLogger.Instance,
 			new FakeAmbientLookup(existingServerBySolution, existingServerByPort),
 			onRebindIdeChannel ?? ((_, _) => Task.FromResult(true)),
 			onSpawnProcess ?? (_ => Task.FromResult(DirectSpawnResult.Ready)));
 	}
 
 	internal record FakeServerInfo(int ProcessId, int Port, string? SolutionPath, int ParentProcessId = 0);
+
+	private sealed class CollectingLogger(List<string> messages) : ILogger
+	{
+		public IDisposable? BeginScope<TState>(TState state) where TState : notnull => null;
+
+		public bool IsEnabled(LogLevel logLevel) => true;
+
+		public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
+			=> messages.Add(formatter(state, exception));
+	}
 
 	private sealed class FakeAmbientLookup(
 		FakeServerInfo? bySolution,

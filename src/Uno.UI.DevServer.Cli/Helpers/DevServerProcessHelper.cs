@@ -98,6 +98,16 @@ internal static class DevServerProcessHelper
 		PropagateDotnetRootVariables(psi);
 		PropagateXdgVariables(psi);
 
+		if (!useDotnet)
+		{
+			SetAppHostDotnetRoot(
+				psi.Environment,
+				hostPath,
+				Environment.ProcessPath,
+				Environment.GetEnvironmentVariable("PATH"),
+				DotnetRootLocator.TryGetMachineWideRoot);
+		}
+
 		if (enableMajorRollForward)
 		{
 			// Override the host's runtimeconfig.json rollForward policy so a host compiled for
@@ -124,6 +134,87 @@ internal static class DevServerProcessHelper
 			{
 				startInfo.Environment[variableName] = value;
 			}
+		}
+	}
+
+	/// <summary>
+	/// An apphost looks for .NET in DOTNET_ROOT_&lt;its architecture&gt; or DOTNET_ROOT, then in the machine-wide install,
+	/// never on PATH. When it would miss the install that picked the host TFM (e.g. .NET installed in a custom folder),
+	/// point it there. The host's child processes inherit the variable and run `dotnet` from PATH, so this is only done
+	/// when that install is also the first one on PATH, and never for a setup that already works.
+	/// </summary>
+	internal static void SetAppHostDotnetRoot(
+		IDictionary<string, string?> environment,
+		string appHostPath,
+		string? processPath,
+		string? pathVariable,
+		Func<Architecture, string?> getMachineWideRoot)
+	{
+		if (DotnetRootLocator.TryGetArchitecture(appHostPath) is not { } hostArchitecture)
+		{
+			return;
+		}
+
+		var variableName = GetDotnetRootVariableName(hostArchitecture);
+		if (HasValue(environment, variableName)
+			|| HasValue(environment, "DOTNET_ROOT")
+			|| (hostArchitecture == Architecture.X86 && HasValue(environment, "DOTNET_ROOT(x86)")))
+		{
+			return;
+		}
+
+		if (DotnetRootLocator.TryLocate(processPath, pathVariable) is not { } install
+			|| install.Architecture != hostArchitecture
+			|| !IsSameFolder(install.Root, DotnetRootLocator.TryLocate(processPath: null, pathVariable)?.Root)
+			|| IsSameFolder(install.Root, getMachineWideRoot(hostArchitecture)))
+		{
+			return;
+		}
+
+		environment[variableName] = install.Root;
+	}
+
+	/// <summary>
+	/// The DOTNET_ROOT variable <see cref="CreateDotnetProcessStartInfo"/> added for the child, if any.
+	/// </summary>
+	internal static (string Name, string Value)? GetAddedDotnetRoot(ProcessStartInfo startInfo)
+	{
+		foreach (var variableName in DotnetRootEnvironmentVariables)
+		{
+			if (startInfo.Environment.TryGetValue(variableName, out var value)
+				&& !string.IsNullOrWhiteSpace(value)
+				&& string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(variableName)))
+			{
+				return (variableName, value);
+			}
+		}
+
+		return null;
+	}
+
+	internal static string GetDotnetRootVariableName(Architecture architecture)
+		=> "DOTNET_ROOT_" + architecture.ToString().ToUpperInvariant();
+
+	private static bool HasValue(IDictionary<string, string?> environment, string variableName)
+		=> environment.TryGetValue(variableName, out var value) && !string.IsNullOrWhiteSpace(value);
+
+	private static bool IsSameFolder(string folder, string? other)
+	{
+		if (string.IsNullOrEmpty(other))
+		{
+			return false;
+		}
+
+		try
+		{
+			return string.Equals(
+				Path.TrimEndingDirectorySeparator(Path.GetFullPath(folder)),
+				Path.TrimEndingDirectorySeparator(Path.GetFullPath(other)),
+				StringComparison.OrdinalIgnoreCase);
+		}
+		catch (Exception ex) when (ex is ArgumentException or NotSupportedException or IOException)
+		{
+			return false;
 		}
 	}
 
@@ -446,12 +537,23 @@ internal static class DevServerProcessHelper
 			return DirectSpawnResult.Ready;
 		}
 
-		var ready = await WaitForTcpReadyAsync(port, readinessTimeoutMs);
+		var ready = await WaitForTcpReadyAsync(port, readinessTimeoutMs, () => process.HasExited);
 		if (!ready)
 		{
 			var died = process.HasExited;
 			if (died)
 			{
+				// Let the host's last output lines reach the log before reporting the failure.
+				using var drain = new CancellationTokenSource(TimeSpan.FromSeconds(2));
+				try
+				{
+					await process.WaitForExitAsync(drain.Token);
+				}
+				catch (OperationCanceledException)
+				{
+					logger.LogDebug("The host's output was still open 2 s after it exited; reporting the failure without it.");
+				}
+
 				logger.LogError("Host process died (exit code {ExitCode}) before becoming ready.", process.ExitCode);
 			}
 			else
@@ -544,13 +646,18 @@ internal static class DevServerProcessHelper
 		return null;
 	}
 
-	private static async Task<bool> WaitForTcpReadyAsync(int port, int timeoutMs)
+	private static async Task<bool> WaitForTcpReadyAsync(int port, int timeoutMs, Func<bool> hasExited)
 	{
 		var sw = System.Diagnostics.Stopwatch.StartNew();
 		var endpoint = new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, port);
 
 		while (sw.ElapsedMilliseconds < timeoutMs)
 		{
+			if (hasExited())
+			{
+				return false;
+			}
+
 			try
 			{
 				using var tcp = new System.Net.Sockets.TcpClient();
