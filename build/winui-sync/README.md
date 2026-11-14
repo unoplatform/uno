@@ -26,6 +26,9 @@ Nothing merges on its own.
   skipped counts add up, so an earlier run's skipped items keep the issue open. After porting a
   skipped item by hand on the branch, set `skipped=` in that section's marker line to the number
   still outstanding.
+- When the port agent fails part-way (a crash, or the spend cap), the files it had changed are still
+  published, as a draft PR titled `[port incomplete] …` that says not to merge. The baseline does
+  not move, so the next run continues the port on that branch and clears the flag once it finishes.
 - Nothing is published for an area when the agent fails, times out or writes no well-formed
   report, when it changed no files and its build did not pass, or when its patch touches anything other than code under `src/` (project and MSBuild
   files count as "other"). The run summary says
@@ -86,8 +89,7 @@ Locally, with a WinUI clone:
 - Secret `ANTHROPIC_CODEREVIEW_KEY`: the API key the port agent uses. It is the same key as the Claude review workflow, so sync and review spend share one budget.
 - The port agent runs on Sonnet (`claude-sonnet-5-5`). An area can name another model with a
   `model` field in its `areas.json` entry.
-- Each port may spend at most 3 USD (`--max-budget-usd` in the workflow). A port that hits the cap
-  fails, nothing is published for that area, and the next run tries again.
+- Each port may spend at most 3 USD (`--max-budget-usd` in the workflow).
 - Label `winui-sync`: created by the workflow if missing; issues and PRs are found by it plus a
   hidden `<!-- winui-sync:<id> -->` marker, so do not remove either.
 - The repository must allow GitHub Actions to create pull requests.

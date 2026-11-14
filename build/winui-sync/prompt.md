@@ -51,6 +51,9 @@ line of history, so do not rely on it to find changes.
   files, telemetry, `*_perf2026*` variants Uno does not use, test infrastructure Uno does not have).
   List each under *Not applicable* with a one-line reason. When unsure whether something applies,
   treat it as *Skipped*, not as *Not applicable*.
+- **Already there:** an earlier run may have stopped part-way on this branch, so some of these
+  changes can already be in the Uno code. Check before porting each one; do not port it twice.
+  List it under *Ported* and say it was already present.
 - Never drop a change silently. Every upstream change ends up under *Ported*, *Not applicable* or
   *Skipped*.
 

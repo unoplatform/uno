@@ -198,7 +198,8 @@ jobs:
           # The job's read-only token; without it the action would mint an app token via OIDC.
           github_token: ${{ github.token }}
           prompt: ${{ steps.prompt.outputs.prompt }}
-          # Spend cap per area. Going over it fails the step, so nothing is published.
+          # Spend cap per area. Going over it fails the step; publish then opens the partial
+          # work as an incomplete draft.
           claude_args: |
             --model "${{ matrix.area.model }}"
             --max-budget-usd 3
