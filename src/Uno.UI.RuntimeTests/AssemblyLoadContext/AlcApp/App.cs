@@ -6,6 +6,8 @@ namespace AlcTestApp;
 public partial class App : Application
 {
 	internal static Window? TestWindow;
+	// The instance this ALC created (a secondary app is not Application.Current).
+	internal static App? Instance { get; private set; }
 	internal static string[] LaunchArguments { get; set; } = Array.Empty<string>();
 	private const string UseFrameArgument = "--use-frame";
 	private const string DeferContentArgument = "--defer-content";
@@ -14,6 +16,7 @@ public partial class App : Application
 
 	public App()
 	{
+		Instance = this;
 		this.InitializeComponent();
 	}
 
