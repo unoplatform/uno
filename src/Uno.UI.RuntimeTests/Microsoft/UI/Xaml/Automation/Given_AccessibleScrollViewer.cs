@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI;
 using Uno.UI.RuntimeTests.Helpers;
@@ -560,6 +561,183 @@ public class Given_AccessibleScrollViewer
 		SetNativeScrollTop(presenter, 100);
 		await UITestHelper.WaitFor(() => Math.Abs(scrollView.VerticalOffset - 100) < 1, timeoutMS: 5000,
 			message: $"ScrollView did not follow the browser (offset={scrollView.VerticalOffset}).");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[DataRow(true)]
+	[DataRow(false)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Ancestor_Scaled_Then_ScrollViewer_Semantic_Children_Match_Drawn_Bounds(bool enableAccessibilityFirst)
+	{
+		var first = new Button { Content = "First", Margin = new Thickness(40, 30, 0, 0) };
+		AutomationProperties.SetName(first, "First");
+		var second = new Button { Content = "Second", Margin = new Thickness(120, 80, 0, 0) };
+		AutomationProperties.SetName(second, "Second");
+		var scrollViewer = new ScrollViewer
+		{
+			Width = 400,
+			Height = 300,
+			HorizontalAlignment = HorizontalAlignment.Left,
+			VerticalAlignment = VerticalAlignment.Top,
+			Content = new StackPanel
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				Children = { first, second, new Border { Height = 600 } },
+			},
+		};
+		var root = new Grid
+		{
+			Width = 400,
+			Height = 300,
+			HorizontalAlignment = HorizontalAlignment.Left,
+			VerticalAlignment = VerticalAlignment.Top,
+			RenderTransform = new ScaleTransform { ScaleX = 0.5, ScaleY = 0.5 },
+			Children = { scrollViewer },
+		};
+
+		if (enableAccessibilityFirst)
+		{
+			await EnsureAccessibilityEnabledAsync();
+		}
+		await UITestHelper.Load(root);
+		if (!enableAccessibilityFirst)
+		{
+			EnableAccessibilityThroughDom();
+		}
+		var presenter = (ScrollContentPresenter)scrollViewer.Presenter!;
+		await UITestHelper.WaitFor(() => SemanticElementExists(second), timeoutMS: 5000,
+			message: "Timed out waiting for the semantic nodes.");
+		await UITestHelper.WaitForIdle();
+
+		AssertSemanticRectMatchesDrawnBounds(scrollViewer);
+		AssertSemanticRectMatchesDrawnBounds(presenter);
+		AssertSemanticRectMatchesDrawnBounds(first);
+		AssertSemanticRectMatchesDrawnBounds(second);
+		Assert.AreEqual(scrollViewer.ScrollableHeight * 0.5, GetNativeScrollRange(presenter), 1, "The native range must be scaled like the drawn scroller.");
+
+		SetNativeScrollTop(presenter, 25);
+		await UITestHelper.WaitFor(() => Math.Abs(scrollViewer.VerticalOffset - 50) < 1, timeoutMS: 5000,
+			message: $"ScrollViewer did not follow the scaled browser scroll (offset={scrollViewer.VerticalOffset}).");
+		await UITestHelper.WaitForIdle();
+		AssertSemanticRectMatchesDrawnBounds(second);
+
+		scrollViewer.ChangeView(null, 100, null, disableAnimation: true);
+		await UITestHelper.WaitForIdle();
+
+		await AssertHoldsForFramesAsync(() => Math.Abs(scrollViewer.VerticalOffset - 100) < 1, "The browser must not move the managed offset.");
+		Assert.AreEqual(50, GetNativeScrollTop(presenter), 1, "The native offset must be scaled like the drawn content.");
+		AssertSemanticRectMatchesDrawnBounds(second);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[DataRow(true, 0.5)]
+	[DataRow(false, 0.5)]
+	[DataRow(true, 1.0)]
+	[DataRow(false, 1.0)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Ancestor_Scaled_Then_Nested_Semantic_Element_Matches_Drawn_Bounds(bool enableAccessibilityFirst, double scale)
+	{
+		var inner = new Button { Content = "Inner", Margin = new Thickness(40, 30, 0, 0) };
+		AutomationProperties.SetName(inner, "Inner");
+		var container = new Border
+		{
+			Width = 300,
+			Height = 200,
+			HorizontalAlignment = HorizontalAlignment.Left,
+			VerticalAlignment = VerticalAlignment.Top,
+			Child = new StackPanel { HorizontalAlignment = HorizontalAlignment.Left, Children = { inner } },
+		};
+		AutomationProperties.SetName(container, "Container");
+		var root = new Grid
+		{
+			Width = 400,
+			Height = 300,
+			HorizontalAlignment = HorizontalAlignment.Left,
+			VerticalAlignment = VerticalAlignment.Top,
+			RenderTransform = new ScaleTransform { ScaleX = scale, ScaleY = scale },
+			Children = { container },
+		};
+
+		if (enableAccessibilityFirst)
+		{
+			await EnsureAccessibilityEnabledAsync();
+		}
+		await UITestHelper.Load(root);
+		if (!enableAccessibilityFirst)
+		{
+			EnableAccessibilityThroughDom();
+		}
+		await UITestHelper.WaitFor(() => SemanticElementExists(inner), timeoutMS: 5000,
+			message: "Timed out waiting for the semantic nodes.");
+		await UITestHelper.WaitForIdle();
+
+		Assert.AreEqual(GetSemanticElementId(container), GetSemanticParentId(inner), "The test needs the inner element nested in the container's node.");
+		AssertSemanticRectMatchesDrawnBounds(container);
+		AssertSemanticRectMatchesDrawnBounds(inner);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_ScrollViewer_Zoomed_Then_Nested_Semantic_Element_Matches_Drawn_Bounds()
+	{
+		var inner = new Button { Content = "Inner", Margin = new Thickness(40, 30, 0, 0) };
+		AutomationProperties.SetName(inner, "Inner");
+		var container = new Border
+		{
+			Width = 150,
+			Height = 100,
+			Margin = new Thickness(0, 50, 0, 0),
+			HorizontalAlignment = HorizontalAlignment.Left,
+			Child = new StackPanel { HorizontalAlignment = HorizontalAlignment.Left, Children = { inner } },
+		};
+		AutomationProperties.SetName(container, "Container");
+		var scrollViewer = new ScrollViewer
+		{
+			Width = 200,
+			Height = 200,
+			ZoomMode = ZoomMode.Enabled,
+			HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+			Content = new StackPanel { Children = { container, new Border { Height = 400 } } },
+		};
+
+		await EnsureAccessibilityEnabledAsync();
+		await UITestHelper.Load(scrollViewer);
+		await UITestHelper.WaitFor(() => SemanticElementExists(inner), timeoutMS: 5000,
+			message: "Timed out waiting for the semantic nodes.");
+		await UITestHelper.WaitForIdle();
+
+		scrollViewer.ChangeView(null, null, 2f, disableAnimation: true);
+		await UITestHelper.WaitFor(() => Math.Abs(scrollViewer.ZoomFactor - 2) < 0.01, timeoutMS: 5000,
+			message: $"ScrollViewer did not zoom (zoom={scrollViewer.ZoomFactor}).");
+		await UITestHelper.WaitForIdle();
+
+		Assert.AreEqual(GetSemanticElementId(container), GetSemanticParentId(inner), "The test needs the inner element nested in the container's node.");
+		AssertSemanticRectMatchesDrawnBounds(container);
+		AssertSemanticRectMatchesDrawnBounds(inner);
+
+		scrollViewer.ChangeView(null, 60, null, disableAnimation: true);
+		await UITestHelper.WaitForIdle();
+		await UITestHelper.WaitForRender();
+
+		AssertSemanticRectMatchesDrawnBounds(container);
+		AssertSemanticRectMatchesDrawnBounds(inner);
+	}
+
+	private static void AssertSemanticRectMatchesDrawnBounds(FrameworkElement element)
+	{
+		var id = GetSemanticElementId(element);
+		var rect = GetSemanticElementRect(element);
+		Assert.IsNotNull(rect, $"The semantic node {id} for {element.GetType().Name} is missing.");
+
+		var drawn = element.TransformToVisual(null).TransformBounds(new Windows.Foundation.Rect(0, 0, element.ActualWidth, element.ActualHeight));
+
+		Assert.AreEqual(drawn.X, rect!.Value.X, 1, $"{id} ({element.GetType().Name}): x mismatch (semantic {rect}, drawn {drawn}).");
+		Assert.AreEqual(drawn.Y, rect.Value.Y, 1, $"{id} ({element.GetType().Name}): y mismatch (semantic {rect}, drawn {drawn}).");
+		Assert.AreEqual(drawn.Width, rect.Value.Width, 1, $"{id} ({element.GetType().Name}): width mismatch (semantic {rect}, drawn {drawn}).");
+		Assert.AreEqual(drawn.Height, rect.Value.Height, 1, $"{id} ({element.GetType().Name}): height mismatch (semantic {rect}, drawn {drawn}).");
 	}
 
 	private static double GetNativeScrollRange(UIElement element)
