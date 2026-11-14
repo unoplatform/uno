@@ -359,6 +359,9 @@ public partial class DependencyObject
 		{
 			//m_checkForResourceOverrides = !!params.fCheckForResourceOverrides;
 			DeactivateImpl();
+
+			// The Enter theme block can return without a pass (same theme), so the next Loading must not rely on it.
+			MarkThemeReferencesPendingLiveUpdate();
 		}
 
 		// Enumerate all the properties in its class
