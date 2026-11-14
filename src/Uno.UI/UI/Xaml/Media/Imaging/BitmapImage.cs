@@ -39,6 +39,8 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		private void OnUriSourceChanged(DependencyPropertyChangedEventArgs e)
 		{
+			// Also for an equal Uri, which reloads the source (an app refreshing a snapshot), as Uri isn't compared by value.
+			_downloaded = null;
 			if (!object.Equals(e.OldValue, e.NewValue))
 			{
 				UnloadImageData();
@@ -201,20 +203,23 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		private readonly record struct BitmapImageCacheKey(Uri Uri, int? DecodeWidth, int? DecodeHeight);
 
-		private static readonly LRUCache<BitmapImageCacheKey, Task<ImageData>> _bitmapImageCache = new(FeatureConfiguration.Image.MaxBitmapImageCacheCount);
-
 		// Test hook: resolves the uri like the loader does so tests can observe cache membership for a key.
 		internal static async Task<Task<ImageData>> GetCachedImageDataTaskForTesting(Uri uri, int? decodeWidth, int? decodeHeight)
 		{
 			uri = await TryResolveLocalResource(uri);
-			return _bitmapImageCache.TryGetValue(new BitmapImageCacheKey(uri, decodeWidth, decodeHeight), out var imageDataTask) ? imageDataTask : null;
+			return SharedImageDecode.GetLoadForTesting(new BitmapImageCacheKey(uri, decodeWidth, decodeHeight));
 		}
 
 		// TODO: Introduce LRU caching if needed
 		private static readonly Dictionary<string, string> _scaledBitmapPathCache = new();
 
-		private static bool IsFailedLoad(Task<ImageData> load)
-			=> load.IsFaulted || (load.IsCompletedSuccessfully && load.Result.Kind == ImageDataKind.Error);
+		// The encoded bytes of the image this source downloaded, kept while its source stays, as a WinUI BitmapImage keeps its
+		// ImageCache and so its encoded data (MUX Reference: CImageSource::SetImageCache — imagesource.cpp,
+		// ImageCache::m_encodedImageData — ImageCache.h): decoding it again after its pixels were released downloads
+		// nothing, whatever the caching headers said, and works offline.
+		private (Uri Uri, byte[] Bytes)? _downloaded;
+
+		private protected override void UnloadImageSourceData() => _downloaded = null;
 
 		private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage)
 		{
@@ -311,87 +316,97 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 					var useCache = FeatureConfiguration.Image.EnableBitmapImageCache
 						&& !CreateOptions.HasFlag(BitmapCreateOptions.IgnoreImageCache);
-					var cacheKey = new BitmapImageCacheKey(uri, decodeWidth, decodeHeight);
 
-					Task<ImageData> imageDataTask = null;
+					// Kept also with IgnoreImageCache, as the source's own: only turning the cache off stops keeping them.
+					var keepEncoded = FeatureConfiguration.Image.EnableBitmapImageCache;
+					var kept = keepEncoded && _downloaded is { } downloaded && downloaded.Uri == uri ? downloaded.Bytes : null;
 
-					if (useCache && _bitmapImageCache.TryGetValue(cacheKey, out imageDataTask) && IsFailedLoad(imageDataTask))
+					// A cached load is shared by every BitmapImage opening the same key, so it never runs on a single
+					// requester's token (cancelling one must not fail the others). Only an uncached load is cancelled with its
+					// sole requester.
+					SharedImageDecode share = null;
+					Task<ImageData> imageDataTask;
+
+					if (useCache)
 					{
-						// A lookup can see a load that just failed before its eviction continuation below has run
-						// (e.g. an immediate retry from ImageFailed); treat it as a miss so the retry downloads again.
-						_bitmapImageCache.Remove(cacheKey, imageDataTask);
-						imageDataTask = null;
+						share = SharedImageDecode.GetOrStart(
+							new BitmapImageCacheKey(uri, decodeWidth, decodeHeight),
+							() => ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, CancellationToken.None, decodeWidth, decodeHeight, useEncodedCache: true, kept, keepEncoded: true));
+
+						share.BeginOpen();
+						imageDataTask = share.Load;
 					}
-
-					if (imageDataTask is null)
+					else
 					{
-						// A cached load is shared by every BitmapImage opening the same key, so it never runs on a single
-						// requester's token (cancelling one must not fail the others); releasing a request leaves the shared
-						// download running (MUX Reference: ImageCache::OnRequestReleasing — ImageCache.cpp). Only an
-						// uncached load is cancelled with its sole requester.
-						var loadCt = useCache ? CancellationToken.None : ct;
-
 						imageDataTask = Task.Run(async () =>
 						{
 							try
 							{
-								var imageData = await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, loadCt, decodeWidth, decodeHeight);
-
-								// A cached result is shared by every source that loads the same key, so it is the cache's to
-								// release: marked once here, on the task every sharer awaits.
-								return useCache ? imageData.AsShared() : imageData;
+								return await ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct, decodeWidth, decodeHeight, encoded: kept, keepEncoded: keepEncoded);
 							}
 							catch (Exception e)
 							{
 								return ImageData.FromError(e);
 							}
-						}, loadCt);
-
-						if (useCache)
-						{
-							_bitmapImageCache.Add(cacheKey, imageDataTask);
-
-							// A failed load must not keep failing later requesters. WinUI's provider store does not own its
-							// ImageCache, so a failed one is dropped once released and the next request downloads again
-							// (MUX Reference: ImageProvider::OnImageCacheInvalidated — ImageProvider.cpp); the LRU owns its
-							// entries, so drop a failed load as soon as it completes, and only while it is still the stored
-							// one (MUX Reference: ImageProvider::RemoveImageCache — ImageProvider.cpp).
-							_ = imageDataTask.ContinueWith(
-								t =>
-								{
-									if (IsFailedLoad(t))
-									{
-										_bitmapImageCache.Remove(cacheKey, t);
-									}
-								},
-								CancellationToken.None,
-								TaskContinuationOptions.ExecuteSynchronously,
-								TaskScheduler.Default);
-						}
+						}, ct);
 					}
 
-					ImageData imageData;
-
+					// This open stays a user of a shared result until its source counts its own use (ImageSource.Open), so
+					// that nothing releases the result in between. Any other way out, cancelled, failed or a handler that
+					// throws, ends that use here; the shared load keeps running for its other users.
+					var handedOver = false;
 					try
 					{
-						imageData = await imageDataTask.WaitAsync(ct);
+						ImageData imageData;
 
-						// The shared load may have completed between the cancellation and the await.
-						ct.ThrowIfCancellationRequested();
+						try
+						{
+							imageData = await imageDataTask.WaitAsync(ct);
+
+							// The shared load may have completed between the cancellation and the await.
+							ct.ThrowIfCancellationRequested();
+
+							// A shared load another source started failed (e.g. offline), while this one has bytes of its own.
+							if (share is not null && kept is not null && imageData.Kind == ImageDataKind.Error)
+							{
+								share.EndOpen();
+								share = null;
+								imageDataTask = Task.Run(
+									() => ImageSourceHelpers.GetImageDataFromUriAsCompositionSurface(uri, ct, decodeWidth, decodeHeight, encoded: kept, keepEncoded: true),
+									ct);
+								imageData = await imageDataTask.WaitAsync(ct);
+								ct.ThrowIfCancellationRequested();
+							}
+						}
+						catch (OperationCanceledException) when (ct.IsCancellationRequested && share is null)
+						{
+							// The decode cannot be stopped and this requester will never show its result, so release the
+							// surface it produces instead of leaving it to finalization.
+							_ = imageDataTask.ContinueWith(
+								static t => ReleaseSurface(t.Result),
+								CancellationToken.None,
+								TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.ExecuteSynchronously,
+								TaskScheduler.Default);
+							throw;
+						}
+
+						// Before Publish, whose handlers may change the source, which drops them. A failure keeps them.
+						if (imageData.HasData)
+						{
+							_downloaded = imageData.Encoded is { } encoded ? (uri, encoded) : null;
+						}
+
+						var published = Publish(imageData, version, ct);
+						handedOver = published.IsShared;
+						return published;
 					}
-					catch (OperationCanceledException) when (ct.IsCancellationRequested)
+					finally
 					{
-						// The decode cannot be stopped and this requester will never show its result, so release the surface
-						// it produces instead of leaving it to finalization (a cached result is shared and stays the cache's).
-						_ = imageDataTask.ContinueWith(
-							static t => ReleaseSurface(t.Result),
-							CancellationToken.None,
-							TaskContinuationOptions.OnlyOnRanToCompletion | TaskContinuationOptions.ExecuteSynchronously,
-							TaskScheduler.Default);
-						throw;
+						if (share is not null && !handedOver)
+						{
+							share.EndOpen();
+						}
 					}
-
-					return Publish(imageData, version, ct);
 				}
 			}
 			catch (OperationCanceledException) when (ct.IsCancellationRequested)

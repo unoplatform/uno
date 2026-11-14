@@ -39,10 +39,17 @@ internal static partial class ImageSourceHelpers
 
 #if __SKIA__
 	public static async Task<ImageData> ReadFromStreamAsCompositionSurface(Stream imageStream, CancellationToken ct, bool attemptLoadingWithBrowserCanvasApi = true, int? targetWidth = null, int? targetHeight = null)
+		=> await DecodeAsCompositionSurface(await ReadAllAsync(imageStream, ct), attemptLoadingWithBrowserCanvasApi, targetWidth, targetHeight);
+
+	private static async Task<byte[]> ReadAllAsync(Stream imageStream, CancellationToken ct)
 	{
 		var buffer = new byte[imageStream.Length - imageStream.Position];
 		await imageStream.ReadExactlyAsync(buffer, 0, buffer.Length, ct);
+		return buffer;
+	}
 
+	private static async Task<ImageData> DecodeAsCompositionSurface(byte[] buffer, bool attemptLoadingWithBrowserCanvasApi, int? targetWidth, int? targetHeight)
+	{
 		bool hasTargetSize = targetWidth is not null || targetHeight is not null;
 
 		if (OperatingSystem.IsBrowser() && attemptLoadingWithBrowserCanvasApi && !hasTargetSize)
@@ -92,7 +99,7 @@ internal static partial class ImageSourceHelpers
 		}
 
 		var surface = new CompositionImageSurface();
-		var result = surface.LoadFromStream(targetWidth, targetHeight, new MemoryStream(buffer));
+		var result = surface.LoadFromStream(targetWidth, targetHeight, new MemoryStream(buffer, writable: false));
 
 		if (result.success)
 		{
@@ -124,17 +131,66 @@ internal static partial class ImageSourceHelpers
 	}
 
 #if __SKIA__
-	public static async Task<ImageData> GetImageDataFromUriAsCompositionSurface(Uri uri, CancellationToken ct, int? targetWidth = null, int? targetHeight = null)
+	/// <param name="useEncodedCache">Whether the encoded bytes of a downloaded image are kept and reused (see <see cref="EncodedImageCache"/>).</param>
+	/// <param name="encoded">The encoded bytes of <paramref name="uri"/> that its source kept, decoded instead of downloading it again.</param>
+	/// <param name="keepEncoded">Whether the result of a download carries its encoded bytes (<see cref="ImageData.Encoded"/>), for its source to keep.</param>
+	public static async Task<ImageData> GetImageDataFromUriAsCompositionSurface(
+		Uri uri,
+		CancellationToken ct,
+		int? targetWidth = null,
+		int? targetHeight = null,
+		bool useEncodedCache = false,
+		byte[]? encoded = null,
+		bool keepEncoded = false)
 	{
 		try
 		{
-			using var stream = await AppDataUriEvaluator.ToStream(uri, ct);
-			return await ReadFromStreamAsCompositionSurface(stream, ct, !IsAnimatableImageFormat(uri), targetWidth, targetHeight);
+			var attemptLoadingWithBrowserCanvasApi = !IsAnimatableImageFormat(uri);
+			var canCache = EncodedImageCache.CanCache(uri);
+			useEncodedCache &= canCache;
+			keepEncoded &= canCache;
+
+			if (encoded is not null || (useEncodedCache && EncodedImageCache.TryGet(uri, out encoded)))
+			{
+				return Keep(await DecodeAsCompositionSurface(encoded, attemptLoadingWithBrowserCanvasApi, targetWidth, targetHeight), encoded);
+			}
+
+			byte[] buffer;
+			TimeSpan? reusableFor = null;
+			if (useEncodedCache)
+			{
+				// Only http and https get here. Bytes the server asks not to reuse without revalidation are not kept, and
+				// those kept are used only while fresh.
+				var download = await AppDataUriEvaluator.DownloadAsync(uri, ct);
+				using (download.Content)
+				{
+					buffer = await ReadAllAsync(download.Content, ct);
+				}
+
+				reusableFor = download.ReusableFor;
+			}
+			else
+			{
+				using var stream = await AppDataUriEvaluator.ToStream(uri, ct);
+				buffer = await ReadAllAsync(stream, ct);
+			}
+
+			var data = await DecodeAsCompositionSurface(buffer, attemptLoadingWithBrowserCanvasApi, targetWidth, targetHeight);
+
+			// Only bytes that decode: a truncated or corrupt download is downloaded again.
+			if (reusableFor is { } freshFor && data.HasData)
+			{
+				EncodedImageCache.Add(uri, buffer, freshFor);
+			}
+
+			return Keep(data, buffer);
 		}
 		catch (Exception e)
 		{
 			return ImageData.FromError(e);
 		}
+
+		ImageData Keep(ImageData data, byte[] bytes) => keepEncoded && data.HasData ? data.WithEncoded(bytes) : data;
 	}
 
 	/// <summary>

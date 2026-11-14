@@ -220,22 +220,63 @@ namespace Uno.UI
 		public static class Image
 		{
 			/// <summary>
-			/// On platforms that support caching BitmapImage assets, this sets
-			/// the maximum number of entries in the cache. The value must be a
-			/// positive integer.
+			/// No longer used: the bitmap cache is bounded by <see cref="MaxBitmapImageCacheBytes"/>, and decoded images nothing
+			/// displays by <see cref="MaxUndisplayedImageBytes"/>.
 			/// </summary>
+			[Obsolete("No longer used: the bitmap cache is bounded by MaxBitmapImageCacheBytes, and undisplayed decoded images by MaxUndisplayedImageBytes.")]
 			public static int MaxBitmapImageCacheCount { get; set; } = 100;
 
 			/// <summary>
-			/// On platforms that support caching BitmapImage assets, this enables caching.
+			/// The memory, in bytes, that the bitmap cache may use for the encoded bytes of images downloaded over http or https,
+			/// so that other decode sizes and other BitmapImages decode them without downloading them again. Past it, the least
+			/// recently used are dropped first. A BitmapImage keeps the bytes it downloaded itself (the whole file, whatever its
+			/// decode size), outside this bound, for as long as its UriSource stays, as on WinUI.
 			/// </summary>
-			public static bool EnableBitmapImageCache { get; set; } = true;
+			/// <remarks>
+			/// Defaults: 64 MB on desktop, 32 MB on Android, iOS, tvOS and WebAssembly. Lowering it drops what no longer fits.
+			/// </remarks>
+			public static long MaxBitmapImageCacheBytes
+			{
+				get => _maxBitmapImageCacheBytes;
+				set
+				{
+					_maxBitmapImageCacheBytes = value;
+					Uno.Helpers.EncodedImageCache.Trim();
+				}
+			}
+
+			private static long _maxBitmapImageCacheBytes =
+				OperatingSystem.IsAndroid() || OperatingSystem.IsIOS() || OperatingSystem.IsTvOS() || OperatingSystem.IsBrowser()
+					? 32L * 1024 * 1024
+					: 64L * 1024 * 1024;
+
+			/// <summary>
+			/// Enables the bitmap cache: BitmapImages that load the same UriSource with the same decode size share one download
+			/// and one decode, and the encoded bytes of downloaded images are kept (see <see cref="MaxBitmapImageCacheBytes"/>).
+			/// A shared decode is released like any other once nothing displays it (see <see cref="MaxUndisplayedImageBytes"/>).
+			/// Turning it off drops the encoded bytes the cache kept; a BitmapImage that opens while it is off keeps none, and one
+			/// that kept some keeps them until it opens again or its source changes.
+			/// </summary>
+			public static bool EnableBitmapImageCache
+			{
+				get => _enableBitmapImageCache;
+				set
+				{
+					_enableBitmapImageCache = value;
+					if (!value)
+					{
+						Uno.Helpers.EncodedImageCache.Clear();
+					}
+				}
+			}
+
+			private static bool _enableBitmapImageCache = true;
 
 			/// <summary>
 			/// The memory, in bytes, that decoded images nothing displays may keep (0 or more). Such an image keeps its pixels
 			/// for 1 second, as on WinUI, in case it is displayed again; past this limit the oldest are released first, at the
 			/// end of the next layout pass, and with 0 every one of them is. An image counts 4 bytes per pixel of its decoded
-			/// frames and of the texture drawn from it; images shared through the bitmap cache are not counted.
+			/// frames and of the texture drawn from it, and an image shared through the bitmap cache counts once.
 			/// </summary>
 			/// <remarks>
 			/// Defaults: 128 MB on desktop, 64 MB on Android, iOS and tvOS, 32 MB on WebAssembly (its memory is capped at 2 GB
