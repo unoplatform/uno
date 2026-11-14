@@ -180,6 +180,136 @@ partial class Given_Clipboard
 		}
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25733")]
+	public async Task When_Read_Refused_By_Browser_Then_Not_Logged_As_Error()
+	{
+#if HAS_UNO
+		// Browsers refuse a read without permission, focus or user activation: an expected outcome.
+		var levels = await ReadWithFailingBrowserClipboard("NotAllowedError");
+
+		Assert.AreEqual("debug,debug,debug", levels);
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25733")]
+	public async Task When_Read_Fails_Then_Logged_As_Error()
+	{
+#if HAS_UNO
+		var levels = await ReadWithFailingBrowserClipboard("DataError");
+
+		Assert.AreEqual("error,error,error", levels);
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25733")]
+	public async Task When_Item_Read_Not_Allowed_Then_Logged_As_Error()
+	{
+#if HAS_UNO
+		// Once the browser granted the read, NotAllowedError means the data couldn't be read, not a refusal.
+		var levels = await ReadWithFailingBrowserClipboard("NotAllowedError", failItemReads: true);
+
+		Assert.AreEqual("error,error", levels);
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+#if HAS_UNO
+	// Reads text, HTML and a bitmap while the browser rejects every clipboard read (or, with failItemReads, every
+	// read of the data of a clipboard item) with a DOMException named exceptionName, and returns the console levels
+	// the read failures were logged at, comma-separated.
+	private static async Task<string> ReadWithFailingBrowserClipboard(string exceptionName, bool failItemReads = false)
+	{
+		const string Reason = "uno-runtime-test-read-failure";
+
+		// The mock rejects either the read itself, or the reads of the data of the item it returns.
+		var mockReads = failItemReads
+			? """
+				const item = { types: ['text/html', 'image/png'], getType: fail };
+				navigator.clipboard.read = () => Promise.resolve([item]);
+				navigator.clipboard.readText = () => Promise.resolve('');
+				"""
+			: """
+				navigator.clipboard.read = fail;
+				navigator.clipboard.readText = fail;
+				""";
+
+		try
+		{
+			var setup = InvokeJs(
+				$$"""
+				if (!navigator.clipboard) {
+					return 'unavailable';
+				}
+				const state = window.__unoClipboardReadTest = { levels: [], console: {} };
+				for (const level of ['error', 'warn', 'info', 'log', 'debug']) {
+					const original = state.console[level] = console[level];
+					console[level] = function (...args) {
+						if (args.some(a => String(a).includes('{{Reason}}'))) {
+							state.levels.push(level);
+						}
+						return original.apply(console, args);
+					};
+				}
+				const fail = () => Promise.reject(new DOMException('{{Reason}}', '{{exceptionName}}'));
+				{{mockReads}}
+				return 'ok';
+				""");
+			Assert.AreEqual("ok", setup, "navigator.clipboard is missing: the page must be a secure context (https or localhost).");
+
+			var view = Clipboard.GetContent();
+
+			// A failed read reads as an empty clipboard.
+			Assert.AreEqual("", await view.GetTextAsync());
+			Assert.AreEqual("", await view.GetHtmlFormatAsync());
+
+			// The view reports a missing bitmap as null or as a failure; either way there is none.
+			try
+			{
+				Assert.IsNull(await view.GetBitmapAsync(), "bitmap");
+			}
+			catch (InvalidOperationException)
+			{
+			}
+
+			return InvokeJs("return window.__unoClipboardReadTest.levels.join(',');");
+		}
+		finally
+		{
+			InvokeJs(
+				"""
+				const state = window.__unoClipboardReadTest;
+				if (!state) {
+					return 'ok';
+				}
+				for (const level in state.console) {
+					console[level] = state.console[level];
+				}
+				delete window.__unoClipboardReadTest;
+				delete navigator.clipboard.read;
+				delete navigator.clipboard.readText;
+				return 'ok';
+				""");
+		}
+	}
+
+	private static string InvokeJs(string body)
+		=> Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs($"(function() {{ {body} }})()");
+#endif
+
 	private static async Task DelayForClipboard()
 	{
 		// On some platforms, clipboard operations are not immediately available.

@@ -67,6 +67,7 @@ declare namespace Uno.Utils {
         static getText(): Promise<string>;
         static getHtml(): Promise<string>;
         static getImage(): Promise<string>;
+        private static logReadFailure;
         static setImage(base64: string, mimeType: string): Promise<void>;
         static setHtml(html: string, text: string): Promise<void>;
         private static onClipboardChanged;
