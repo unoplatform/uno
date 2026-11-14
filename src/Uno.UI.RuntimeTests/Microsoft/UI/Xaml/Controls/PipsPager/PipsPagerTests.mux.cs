@@ -21,14 +21,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Automation.Peers;
-#endif
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
-	[RequiresFullWindow]
 	public class PipsPagerTests : MUXApiTestBase
 	{
 		[TestMethod]
