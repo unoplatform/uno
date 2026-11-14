@@ -72,6 +72,60 @@ public class Given_BreadcrumbBar
 		Assert.IsTrue(items.All(i => AutomationProperties.GetSizeOfSet(i) == 3));
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26181")]
+	public async Task When_Last_Item_Button_Disabled_Then_CurrentDisabled_State()
+	{
+		var SUT = new BreadcrumbBar { ItemsSource = new List<string> { "A", "B" } };
+
+		await UITestHelper.Load(SUT);
+
+		var button = GetLastItem(SUT).FindFirstDescendant<Button>("PART_ItemButton")!;
+		// The default template collapses the last item's button, so its template is never applied on its own.
+		button.ApplyTemplate();
+
+		var commonStates = VisualStateManager
+			.GetVisualStateGroups((FrameworkElement)VisualTreeHelper.GetChild(button, 0))
+			.Single(g => g.Name == "CommonStates");
+
+		button.IsEnabled = false;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("CurrentDisabled", commonStates.CurrentState?.Name);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26181")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Item_Reloaded_Then_Single_PreviewKeyDown_Handler()
+	{
+#if HAS_UNO
+		var SUT = new BreadcrumbBar { ItemsSource = new List<string> { "A", "B" } };
+
+		await UITestHelper.Load(SUT);
+
+		var item = GetLastItem(SUT);
+		Assert.AreEqual(1, item.CountHandler(UIElement.PreviewKeyDownEvent));
+
+		TestServices.WindowHelper.WindowContent = null;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(0, item.CountHandler(UIElement.PreviewKeyDownEvent));
+
+		await UITestHelper.Load(SUT);
+
+		Assert.AreEqual(1, GetLastItem(SUT).CountHandler(UIElement.PreviewKeyDownEvent));
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	private static BreadcrumbBarItem GetLastItem(BreadcrumbBar bar)
+	{
+		var repeater = bar.FindFirstDescendant<ItemsRepeater>("PART_ItemsRepeater")!;
+		return (BreadcrumbBarItem)repeater.TryGetElement(repeater.ItemsSourceView.Count - 1);
+	}
+
 	private static IEnumerable<DependencyObject> Descendants(DependencyObject parent)
 	{
 		for (var i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
