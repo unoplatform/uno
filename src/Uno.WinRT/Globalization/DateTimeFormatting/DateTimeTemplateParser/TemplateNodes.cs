@@ -77,7 +77,7 @@ internal abstract class TemplateDateNode : TemplateNode
 {
 }
 
-// <relative-date> ::= <dayofweek> | <month-day> | <relative-longdate>
+// <relative-date> ::= <dayofweek> | <month-day> | <day-dayofweek> | <relative-longdate>
 internal abstract class TemplateRelativeDateNode : TemplateDateNode
 {
 }
@@ -86,6 +86,27 @@ internal abstract class TemplateRelativeDateNode : TemplateDateNode
 internal abstract class TemplateSpecificDateNode : TemplateDateNode
 {
 
+}
+
+// <day-dayofweek> ::= <day> <whitespace> <dayofweek> |
+//                     <dayofweek> <whitespace> <day>
+// WinRT accepts it, though its documented grammar doesn't list it.
+internal sealed class TemplateDayDayOfWeekNode : TemplateRelativeDateNode
+{
+	public TemplateDayDayOfWeekNode(TemplateDateNode left, TemplateDateNode right)
+	{
+		Left = left;
+		Right = right;
+	}
+
+	public TemplateDateNode Left { get; }
+	public TemplateDateNode Right { get; }
+
+	internal override void Traverse(DateTimeTemplateInfo state)
+	{
+		Left.Traverse(state);
+		Right.Traverse(state);
+	}
 }
 
 // <month-day> ::= <month> <whitespace> <day> |
@@ -251,6 +272,7 @@ internal sealed class TemplateLongDateNode : TemplateSpecificDateNode
 }
 
 // <time> ::= <hour> | 
+//            <timezone> (on its own, as WinRT accepts) |
 //            <hour> <whitespace> <timezone> |
 //            <timezone> <whitespace> <hour> |
 //            <shorttime> |

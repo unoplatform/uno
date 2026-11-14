@@ -812,15 +812,6 @@ partial class TimePicker
 				spDateFormatter = CreateNewFormatterWithClock(s_strHourFormat, strClockIdentifier);
 				strFormattedDate = spDateFormatter.Format(date);
 
-#if HAS_UNO
-				// Because DateTimeFormatter does not match WinAppSDK it is returning 0 for 12-hour clock hour 12. #22207
-				// In 12-hour clock, hour 0 should display as 12.
-				if (m_is12HourClock && strFormattedDate == $"{TIMEPICKER_COERCION_INDEX}")
-				{
-					strFormattedDate = $"{TIMEPICKER_COERCION_OFFSET}";
-				}
-#endif
-
 				m_tpHourTextBlock.Text = strFormattedDate;
 			}
 			else
@@ -1083,10 +1074,6 @@ partial class TimePicker
 			var hourOccurence = szPattern.IndexOf("{hour", StringComparison.OrdinalIgnoreCase);
 			var minuteOccurence = szPattern.IndexOf("{minute", StringComparison.OrdinalIgnoreCase);
 			var periodOccurence = szPattern.IndexOf("{period", StringComparison.OrdinalIgnoreCase);
-
-#if HAS_UNO // Because DateTimeFormatter does not match WinAppSDK, period may be ommitted even if clock identifier is set. #19349
-			periodOccurence = periodOccurence == -1 ? int.MaxValue : periodOccurence;
-#endif
 
 			if (hourOccurence < minuteOccurence)
 			{
