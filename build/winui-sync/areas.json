@@ -96,7 +96,7 @@
     {
       "id": "buttons",
       "title": "Button controls",
-      "baseline": "7198c4e69019516fb08ecb3937492ffff5fe9702",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
       "upstream": {
         "sources": [
           "dxaml/xcp/core/core/elements/Button.cpp",
