@@ -93,6 +93,17 @@ namespace Windows.UI.Input
 		/// </remarks>
 		internal bool SuppressesTapOnHold { get; init; }
 
+		/// <summary>
+		/// Measures the tap, double-tap, hold and drag-start ranges on the <see cref="PointerPoint.RawPosition"/>
+		/// instead of the <see cref="PointerPoint.Position"/>.
+		/// </summary>
+		/// <remarks>
+		/// Set for UIElement recognizers: they get positions relative to the element, which can move along with the pointer
+		/// (e.g. content scrolled through manipulation events), while the raw position is relative to the window.
+		/// On WinUI, the recognizer of an element gets positions relative to the root.
+		/// </remarks>
+		internal bool MeasuresTapRangeInWindow { get; init; }
+
 		// The press (pointer and down timestamp) for which a UIElement recognizer last raised Holding.
 		// A single slot: when two fingers hold at once, the first one's release falls back to its timestamps.
 		private static (PointerIdentifier Pointer, ulong Timestamp) _lastHeldPress;
@@ -288,7 +299,19 @@ namespace Windows.UI.Input
 		public event TypedEventHandler<GestureRecognizer, HoldingEventArgs> Holding;
 
 		public bool CanBeDoubleTap(global::Microsoft.UI.Input.PointerPoint value)
-			=> _gestureSettings.HasFlag(GestureSettings.DoubleTap) && Gesture.IsMultiTapGesture(_lastSingleTap, value);
+			=> _gestureSettings.HasFlag(GestureSettings.DoubleTap) && IsMultiTapGesture(value);
+
+		private bool IsMultiTapGesture(global::Microsoft.UI.Input.PointerPoint down)
+		{
+			if (_lastSingleTap.ts == 0) // i.e. no previous tap to compare with
+			{
+				return false;
+			}
+
+			return _lastSingleTap.id == GetPointerIdentifier(down)
+				&& down.Timestamp - _lastSingleTap.ts <= MultiTapMaxDelayMicroseconds
+				&& !IsOutOfTapRange(_lastSingleTap.position, GetTapRangePosition(down));
+		}
 		#endregion
 
 		#region Dragging
@@ -304,6 +327,9 @@ namespace Windows.UI.Input
 		private static readonly CheckButton LeftButton = (global::Microsoft.UI.Input.PointerPoint point) => point.Properties.IsLeftButtonPressed;
 		private static readonly CheckButton RightButton = (global::Microsoft.UI.Input.PointerPoint point) => point.Properties.IsRightButtonPressed;
 		private static readonly CheckButton BarrelButton = (global::Microsoft.UI.Input.PointerPoint point) => point.Properties.IsBarrelButtonPressed;
+
+		private Point GetTapRangePosition(global::Microsoft.UI.Input.PointerPoint point)
+			=> MeasuresTapRangeInWindow ? point.RawPosition : point.Position;
 
 		private static ulong GetPointerIdentifier(global::Microsoft.UI.Input.PointerPoint point)
 		{
