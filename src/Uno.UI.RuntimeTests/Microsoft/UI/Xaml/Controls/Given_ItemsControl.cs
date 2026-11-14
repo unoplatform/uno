@@ -603,6 +603,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, item.ActualHeight, "reset state: expecting the item's height to be remeasured to 0");
 		}
 
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Items_Indexer_Set_Then_Container_Updated(bool useListView)
+		{
+			var SUT = useListView ? new ListView() : new ItemsControl();
+			SUT.Items.Add("a");
+			SUT.Items.Add("b");
+			SUT.Items.Add("c");
+
+			var changes = new List<string>();
+			SUT.Items.VectorChanged += (_, e) => changes.Add($"{e.CollectionChange}@{e.Index}");
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitFor(() => SUT.ContainerFromIndex(2) is not null, message: "Expected the containers to be realized.");
+
+			SUT.Items[1] = "x";
+			await WindowHelper.WaitForIdle();
+
+			CollectionAssert.AreEqual(new[] { "ItemChanged@1" }, changes);
+			CollectionAssert.AreEqual(new object[] { "a", "x", "c" }, SUT.Items.ToArray());
+			await WindowHelper.WaitFor(
+				() => SUT.ContainerFromIndex(1) is ContentControl { Content: "x" } or ContentPresenter { Content: "x" },
+				message: $"Expected the container at 1 to show the new item, got {SUT.ContainerFromIndex(1)}.");
+			Assert.AreEqual(1, SUT.IndexFromContainer(SUT.ContainerFromItem("x")));
+			Assert.IsNull(SUT.ContainerFromItem("b"));
+		}
 	}
 
 	internal partial class ContentControlItemsControl : ItemsControl
