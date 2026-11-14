@@ -69,6 +69,21 @@ public class Given_GraphicsRegistry
 		Assert.IsEmpty(requested);
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26153")]
+	public async Task When_Context_Factory_Throws_Then_Error_Includes_Innermost_Message()
+	{
+		GraphicsRegistry.Register(new IGraphicsProvider[] { new FakeProvider(GraphicsContextKind.WebGpu) });
+		GraphicsRegistry.DisabledContextKinds = Array.Empty<GraphicsContextKind>();
+		GraphicsRegistry.ContextFactory = _ => throw new TypeInitializationException(
+			"FakeWebGpuNative",
+			new DllNotFoundException("Unable to load DLL 'webgpu'"));
+
+		var exception = await Assert.ThrowsExactlyAsync<InvalidOperationException>(GraphicsRegistry.InitializeAsync);
+
+		StringAssert.Contains(exception.Message, "FakeProvider/WebGpu: context factory threw (TypeInitializationException: Unable to load DLL 'webgpu')");
+	}
+
 	// Declines every kind, so negotiation walks all candidates and then reports that none initialized.
 	private static async Task<List<GraphicsContextKind>> NegotiateAndRecordRequestedKinds()
 	{
