@@ -105,9 +105,26 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 		}
 	}
 
+	/// <summary>
+	/// Creates the completion source backing an async HDROP drop. Its task is awaited only when the app asks the
+	/// <see cref="DataPackageView"/> for <see cref="StandardDataFormats.StorageItems"/>, so in the common case where the drag
+	/// simply leaves the window (or the drop is not handled) nobody observes it. Any fault is therefore marked as observed
+	/// here, so it doesn't surface later through <see cref="TaskScheduler.UnobservedTaskException"/>; awaiters still get it.
+	/// </summary>
+	private static TaskCompletionSource<List<IStorageItem>> CreateFileDropCompletion()
+	{
+		var completion = new TaskCompletionSource<List<IStorageItem>>(TaskCreationOptions.RunContinuationsAsynchronously);
+		_ = completion.Task.ContinueWith(
+			static t => _ = t.Exception,
+			CancellationToken.None,
+			TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously,
+			TaskScheduler.Default);
+		return completion;
+	}
+
 	private class AsyncHDropHandler(FORMATETC hdropFormat)
 	{
-		private readonly TaskCompletionSource<List<IStorageItem>> _tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
+		private readonly TaskCompletionSource<List<IStorageItem>> _tcs = CreateFileDropCompletion();
 
 		public Task<List<IStorageItem>> Task => _tcs.Task;
 

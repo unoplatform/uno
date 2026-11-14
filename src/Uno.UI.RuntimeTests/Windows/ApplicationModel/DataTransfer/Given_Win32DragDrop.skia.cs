@@ -63,6 +63,61 @@ public class Given_Win32DragDrop
 	}
 
 	[TestMethod]
+	public async Task When_File_Drop_Fails_Unobserved_Then_No_UnobservedTaskException()
+	{
+		// Dragging files over the window and out again faults the pending file-drop task, which nobody awaits
+		// unless the app asked for the StorageItems.
+		var reported = false;
+		EventHandler<UnobservedTaskExceptionEventArgs> handler = (_, e) =>
+		{
+			if (e.Exception.InnerExceptions.Any(i => i.Message == UnobservedFileDropMessage))
+			{
+				reported = true;
+			}
+		};
+
+		TaskScheduler.UnobservedTaskException += handler;
+		try
+		{
+			FaultAndAbandonFileDropCompletion();
+
+			for (var i = 0; i < 3; i++)
+			{
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+				await Task.Yield();
+			}
+		}
+		finally
+		{
+			TaskScheduler.UnobservedTaskException -= handler;
+		}
+
+		Assert.IsFalse(reported, "The faulted file-drop task was reported through TaskScheduler.UnobservedTaskException.");
+	}
+
+	[TestMethod]
+	public async Task When_File_Drop_Fails_Awaiter_Still_Gets_Exception()
+	{
+		var completion = CreateFileDropCompletion();
+		var error = new InvalidOperationException("Drag left the window.");
+
+		completion.SetException(error);
+
+		var actual = await Assert.ThrowsExactlyAsync<InvalidOperationException>(async () =>
+		{
+			await completion.Task.WaitAsync(TimeSpan.FromSeconds(5));
+		});
+		Assert.AreSame(error, actual);
+	}
+
+	private const string UnobservedFileDropMessage = "Given_Win32DragDrop unobserved file drop";
+
+	[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+	private static void FaultAndAbandonFileDropCompletion()
+		=> CreateFileDropCompletion().SetException(new InvalidOperationException(UnobservedFileDropMessage));
+
+	[TestMethod]
 	public void When_Large_File_Drop_All_Paths_Are_Returned()
 	{
 		// Selecting a whole large folder in Explorer easily exceeds a few thousand items.
@@ -133,5 +188,13 @@ public class Given_Win32DragDrop
 		var method = type.GetMethod("CompleteFileDrop", BindingFlags.Static | BindingFlags.NonPublic);
 		Assert.IsNotNull(method);
 		method.Invoke(null, new object[] { completion, getFiles, cleanup });
+	}
+
+	private static TaskCompletionSource<List<IStorageItem>> CreateFileDropCompletion()
+	{
+		var type = Type.GetType("Uno.UI.Runtime.Win32.Win32DragDropExtension, Uno.UI.Runtime.Win32", throwOnError: true)!;
+		var method = type.GetMethod("CreateFileDropCompletion", BindingFlags.Static | BindingFlags.NonPublic);
+		Assert.IsNotNull(method);
+		return (TaskCompletionSource<List<IStorageItem>>)method.Invoke(null, null)!;
 	}
 }
