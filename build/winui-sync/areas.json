@@ -48,7 +48,7 @@
     {
       "id": "selectorbar",
       "title": "SelectorBar",
-      "baseline": "b91b3ce6f25c587a9e18c4e122f348f51331f18b",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
       "upstream": {
         "sources": [
           "controls/dev/SelectorBar"
