@@ -44,6 +44,11 @@ fi
 #
 
 echo "boot_completed after $SECONDS"
+
+# A crash or ANR dialog (System UI often ANRs during a slow headless boot) takes window focus from the app under test.
+# Nobody can see or dismiss it, and the IME only serves the focused window, so the keyboard could never show.
+"$ANDROID_HOME/platform-tools/adb" shell settings put global hide_error_dialogs 1
+
 echo "[Waiting for launcher to start]"
 LAUNCHER_READY=
 MAX_START_TIME=300
@@ -66,19 +71,19 @@ while [[ -z ${LAUNCHER_READY} ]]; do
 
     echo "(DEBUG $SECONDS) Current focus: ${UI_FOCUS}"
 
+    # Before the launcher: an ANR dialog takes window focus while the launcher stays the focused app.
     case $UI_FOCUS in
+    *"Not Responding"*)
+        echo "Detected an ANR! Dismissing..."
+        $ANDROID_HOME/platform-tools/adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS > /dev/null
+        sleep 1
+    ;;
     *"Launcher"*)
         LAUNCHER_READY=true
     ;;
     "")
         echo "Waiting for window service..."
         sleep 3
-    ;;
-    *"Not Responding"*)
-        echo "Detected an ANR! Dismissing..."
-        $ANDROID_HOME/platform-tools/adb shell input keyevent KEYCODE_DPAD_DOWN
-        $ANDROID_HOME/platform-tools/adb shell input keyevent KEYCODE_DPAD_DOWN
-        $ANDROID_HOME/platform-tools/adb shell input keyevent KEYCODE_ENTER
     ;;
     *)
         echo "Waiting for launcher..."
