@@ -14,6 +14,7 @@ namespace Windows.Storage.Streams
 	{
 		private readonly Stream _stream;
 		private readonly bool _disallowDispose;
+		private readonly object _cloneGate = new();
 
 		internal RandomAccessStreamOverStream(Stream stream, bool disallowDispose = false)
 		{
@@ -69,24 +70,27 @@ namespace Windows.Storage.Streams
 		/// <inheritdoc />
 		public IRandomAccessStream CloneStream()
 		{
-			if (_stream is MemoryStream memStream)
+			lock (_cloneGate)
 			{
-				var bytes = memStream.ToArray();
-				return new MemoryStream(bytes).AsRandomAccessStream();
-			}
+				if (_stream is MemoryStream memStream)
+				{
+					var bytes = memStream.ToArray();
+					return new MemoryStream(bytes).AsRandomAccessStream();
+				}
 
-			var previousPosition = _stream.Position;
-			try
-			{
-				var memoryStream = new MemoryStream((int)Size);
-				_stream.Position = 0;
-				_stream.CopyTo(memoryStream);
-				memoryStream.Position = 0;
-				return memoryStream.AsRandomAccessStream();
-			}
-			finally
-			{
-				_stream.Position = previousPosition;
+				var previousPosition = _stream.Position;
+				try
+				{
+					var memoryStream = new MemoryStream((int)Size);
+					_stream.Position = 0;
+					_stream.CopyTo(memoryStream);
+					memoryStream.Position = 0;
+					return memoryStream.AsRandomAccessStream();
+				}
+				finally
+				{
+					_stream.Position = previousPosition;
+				}
 			}
 		}
 

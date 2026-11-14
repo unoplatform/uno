@@ -87,6 +87,16 @@ public class Given_CPUBoundAnimator
 		Assert.AreEqual(1, sut.EndCount, "The end was raised again after a frame had already ended the animation.");
 	}
 
+	[TestMethod]
+	public async Task When_No_Frames_And_Not_Ending_Without_Frames_Then_Never_Ends()
+	{
+		using var sut = new FramelessAnimator(from: 0, to: 100) { Duration = 100, EndsWithoutFrames = false };
+
+		sut.Start();
+
+		Assert.IsFalse(await sut.WaitForEnd(TimeSpan.FromMilliseconds(400)), "An animation that waits for frames ended without one.");
+	}
+
 	/// <summary>An animator whose host delivers no frames, as when a window is hidden or minimized.</summary>
 	private sealed class FramelessAnimator : CPUBoundAnimator<double>
 	{

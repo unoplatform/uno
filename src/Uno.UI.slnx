@@ -180,6 +180,9 @@
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Build Solution="*|ARM64" Project="false" />
     </Project>
+    <Project Path="Uno.UI.Runtime.Wayland.Scanner/Uno.UI.Runtime.Wayland.Scanner.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
     <Project Path="Uno.WinAppSDKSyncGenerator.References/Uno.WinAppSDKSyncGenerator.References.csproj" Id="44b48aa5-e344-43a7-9919-d12cc2bdc686">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Platform Solution="*|Any CPU" Project="x86" />
@@ -332,6 +335,12 @@
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
     </Project>
     <Project Path="Uno.UI.Runtime.Win32/Uno.UI.Runtime.Win32.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
+    <Project Path="Uno.UI.Runtime.Linux/Uno.UI.Runtime.Linux.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
+    <Project Path="Uno.UI.Runtime.Wayland/Uno.UI.Runtime.Wayland.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
     <Project Path="Uno.UI.Runtime.X11/Uno.UI.Runtime.X11.csproj">

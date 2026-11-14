@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -92,7 +93,7 @@ public class Given_GenericResources
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12839")]
 	// Same hosts as Given_WebView2: these have no native web view to attach.
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands | RuntimeTestPlatforms.SkiaFrameBuffer)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands | RuntimeTestPlatforms.SkiaFrameBuffer | RuntimeTestPlatforms.SkiaWayland)]
 	public async Task When_WebView2_Default_Template_Hosts_Native_View()
 	{
 		// CoreWebView2.GetNativeWebViewFromTemplate only attaches a native view when the first
@@ -100,11 +101,46 @@ public class Given_GenericResources
 		// WebView2 style, so Uno has to supply this one.
 		var sut = new WebView2 { Width = 100, Height = 100 };
 
-		await UITestHelper.Load(sut, x => x.IsLoaded);
+		try
+		{
+			await UITestHelper.Load(sut, x => x.IsLoaded);
 
-		Assert.IsNotNull(sut.Template);
-		Assert.AreEqual(1, VisualTreeHelper.GetChildrenCount(sut));
-		Assert.AreEqual("WebViewTemplateRoot", (VisualTreeHelper.GetChild(sut, 0) as ContentPresenter)?.Name);
+			Assert.IsNotNull(sut.Template);
+			Assert.AreEqual(1, VisualTreeHelper.GetChildrenCount(sut));
+			var presenter = VisualTreeHelper.GetChild(sut, 0) as ContentPresenter;
+			Assert.IsNotNull(presenter);
+			Assert.AreEqual("WebViewTemplateRoot", presenter.Name);
+			Assert.IsNotNull(presenter.Content);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWayland)]
+	public async Task When_WebView2_On_Wayland_Has_No_Native_View()
+	{
+		var sut = new WebView2 { Width = 100, Height = 100 };
+
+		try
+		{
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+			await sut.EnsureCoreWebView2Async();
+
+			Assert.IsNull(sut.CoreWebView2.GetNativeWebViewFromTemplate());
+			Assert.IsNull(await sut.ExecuteScriptAsync("1 + 1"));
+			Assert.AreEqual(1, VisualTreeHelper.GetChildrenCount(sut));
+			var presenter = VisualTreeHelper.GetChild(sut, 0) as ContentPresenter;
+			Assert.IsNotNull(presenter);
+			Assert.AreEqual("WebViewTemplateRoot", presenter.Name);
+			Assert.IsNull(presenter.Content);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
 	}
 }
 #endif
