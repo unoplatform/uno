@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class PipsPager : Control
 {
-	//private const string s_pipButtonHandlersPropertyName = "PipButtonHandlers"; Not used in Uno
+	private const string s_pipButtonHandlersPropertyName = "PipButtonHandlers";
 
 	private const string c_previousPageButtonVisibleVisualState = "PreviousPageButtonVisible";
 	private const string c_previousPageButtonHiddenVisualState = "PreviousPageButtonHidden";
@@ -48,11 +48,14 @@ public partial class PipsPager : Control
 	private const string c_pipsPagerRepeaterName = "PipsPagerItemsRepeater";
 	private const string c_pipsPagerScrollViewerName = "PipsPagerScrollViewer";
 
-	//private const string c_pipsPagerVerticalOrientationButtonWidthPropertyName = "PipsPagerVerticalOrientationButtonWidth";
-	//private const string c_pipsPagerVerticalOrientationButtonHeightPropertyName = "PipsPagerVerticalOrientationButtonHeight";
+#if !HAS_UNO
+	// TODO Uno: Unused upstream as well; excluded so IDE0051 does not fail the build.
+	private const string c_pipsPagerVerticalOrientationButtonWidthPropertyName = "PipsPagerVerticalOrientationButtonWidth";
+	private const string c_pipsPagerVerticalOrientationButtonHeightPropertyName = "PipsPagerVerticalOrientationButtonHeight";
 
-	//private const string c_pipsPagerHorizontalOrientationButtonWidthPropertyName = "PipsPagerHorizontalOrientationButtonWidth";
-	//private const string c_pipsPagerHorizontalOrientationButtonHeightPropertyName = "PipsPagerHorizontalOrientationButtonHeight";
+	private const string c_pipsPagerHorizontalOrientationButtonWidthPropertyName = "PipsPagerHorizontalOrientationButtonWidth";
+	private const string c_pipsPagerHorizontalOrientationButtonHeightPropertyName = "PipsPagerHorizontalOrientationButtonHeight";
+#endif
 
 	private const string c_pipsPagerHorizontalOrientationVisualState = "HorizontalOrientationView";
 	private const string c_pipsPagerVerticalOrientationVisualState = "VerticalOrientationView";
@@ -72,14 +75,7 @@ public partial class PipsPager : Control
 		templateSettings.SetValue(PipsPagerTemplateSettings.PipsPagerItemsProperty, m_pipsPagerItems);
 		SetValue(TemplateSettingsProperty, templateSettings);
 
-		//s_pipButtonHandlersProperty =
-		//	InitializeDependencyProperty(
-		//		s_pipButtonHandlersPropertyName,
-		//		name_of<PipsPagerViewItemRevokers>(),
-		//		name_of<PipsPager>(),
-		//		true,
-		//		null,
-		//		null);
+		// s_pipButtonHandlersProperty is registered statically in PipsPager.Header.cs.
 
 		this.SetDefaultStyleKey();
 	}
@@ -118,10 +114,10 @@ public partial class PipsPager : Control
 		m_pipsPagerElementPreparedRevoker.Disposable = null;
 		m_pipsAreaGettingFocusRevoker.Disposable = null;
 		m_pipsAreaBringIntoViewRequestedRevoker.Disposable = null;
+		m_itemsRepeaterStackLayoutChangedRevoker.Disposable = null;
 		RestoreLayoutVirtualization();
 		void AssignPipsPagerRepeater(ItemsRepeater repeater)
 		{
-
 			m_pipsPagerRepeater = repeater;
 			if (repeater != null)
 			{
@@ -232,18 +228,18 @@ public partial class PipsPager : Control
 		 string disabledStateName)
 	{
 
-		var ifGenerallyVisible = (!hiddenOnEdgeCondition || (IsWrapEnabled && NumberOfPages > 1)) &&
+		var isGenerallyVisible = (!hiddenOnEdgeCondition || (IsWrapEnabled && NumberOfPages > 1)) &&
 								 NumberOfPages != 0 && MaxVisiblePips > 0;
 		if (visibility != ButtonVisibility.Collapsed)
 		{
-			if ((visibility == ButtonVisibility.Visible || m_isPointerOver || m_isFocused) && ifGenerallyVisible)
+			if ((visibility == ButtonVisibility.Visible || m_isPointerOver || m_isFocused) && isGenerallyVisible)
 			{
 				VisualStateManager.GoToState(this, visibleStateName, false);
 				VisualStateManager.GoToState(this, enabledStateName, false);
 			}
 			else
 			{
-				if (!ifGenerallyVisible)
+				if (!isGenerallyVisible)
 				{
 					VisualStateManager.GoToState(this, disabledStateName, false);
 				}
@@ -261,13 +257,13 @@ public partial class PipsPager : Control
 		int selectedPageIndex = SelectedPageIndex;
 		int numberOfPages = NumberOfPages;
 
-		var ifPreviousButtonHiddenOnEdge = selectedPageIndex == 0;
-		UpdateIndividualNavigationButtonVisualState(ifPreviousButtonHiddenOnEdge, PreviousButtonVisibility,
+		var isPreviousButtonHiddenOnEdge = selectedPageIndex == 0;
+		UpdateIndividualNavigationButtonVisualState(isPreviousButtonHiddenOnEdge, PreviousButtonVisibility,
 			c_previousPageButtonVisibleVisualState, c_previousPageButtonHiddenVisualState,
 			c_previousPageButtonEnabledVisualState, c_previousPageButtonDisabledVisualState);
 
-		var ifNextButtonHiddenOnEdge = selectedPageIndex == numberOfPages - 1;
-		UpdateIndividualNavigationButtonVisualState(ifNextButtonHiddenOnEdge, NextButtonVisibility,
+		var isNextButtonHiddenOnEdge = selectedPageIndex == numberOfPages - 1;
+		UpdateIndividualNavigationButtonVisualState(isNextButtonHiddenOnEdge, NextButtonVisibility,
 			c_nextPageButtonVisibleVisualState, c_nextPageButtonHiddenVisualState,
 			c_nextPageButtonEnabledVisualState, c_nextPageButtonDisabledVisualState);
 	}
@@ -324,7 +320,7 @@ public partial class PipsPager : Control
 		{
 			numberOfPagesToDisplay = maxVisualIndicators;
 		}
-		return defaultPipSize * (numberOfPagesToDisplay - 1) + selectedPipSize;
+		return defaultPipSize * ((double)numberOfPagesToDisplay - 1) + selectedPipSize;
 	}
 
 	private void SetScrollViewerMaxSize()
@@ -383,7 +379,7 @@ public partial class PipsPager : Control
 		{
 			for (int i = numberOfPages; i < pipsListSize; i++)
 			{
-				m_pipsPagerItems.Remove(m_pipsPagerItems.Count - 1);
+				m_pipsPagerItems.RemoveAt(m_pipsPagerItems.Count - 1);
 			}
 		}
 	}
@@ -402,7 +398,13 @@ public partial class PipsPager : Control
 
 			if (element is ButtonBase pip)
 			{
-				void PipClickHandler(object sender, EventArgs e)
+#if HAS_UNO
+				// Uno specific: C++ revokers detach when the replaced value is released, so dispose the previous ones
+				// explicitly. This must happen before subscribing, as the new handler compares equal to the old one.
+				(pip.GetValue(s_pipButtonHandlersProperty) as PipsPagerViewItemRevokers)?.clickRevoker.Dispose();
+#endif
+				var pciRevokers = new PipsPagerViewItemRevokers();
+				void PipClickHandler(object sender, RoutedEventArgs args)
 				{
 					if (m_pipsPagerRepeater is { } repeater)
 					{
@@ -413,24 +415,26 @@ public partial class PipsPager : Control
 					}
 				}
 				pip.Click += PipClickHandler;
+				pciRevokers.clickRevoker.Disposable = Disposable.Create(() => pip.Click -= PipClickHandler);
+				pip.SetValue(s_pipButtonHandlersProperty, pciRevokers);
 			}
 		}
 	}
 
-#if false
+#if !HAS_UNO
+	// TODO Uno: Never subscribed upstream either; excluded so IDE0051 does not fail the build.
 	private void OnElementIndexChanged(ItemsRepeater itemsRepeater, ItemsRepeaterElementIndexChangedEventArgs args)
 	{
-		var pip = args.Element;
-		if (pip != null)
+		if (args.Element is { } pip)
 		{
 			var newIndex = args.NewIndex;
-			AutomationProperties.SetName(pip, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PipsPagerPageText) + " " + (newIndex + 1));
+			AutomationProperties.SetName(pip, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PipsPagerPageText) + " " + (newIndex + 1).ToString(CultureInfo.InvariantCulture));
 			AutomationProperties.SetPositionInSet(pip, newIndex + 1);
 		}
 	}
 #endif
 
-	private void OnMaxVisualIndicatorsChanged()
+	private void OnMaxVisiblePipsChanged()
 	{
 		var numberOfPages = NumberOfPages;
 		if (numberOfPages < 0)
@@ -739,7 +743,7 @@ public partial class PipsPager : Control
 	private void RestoreLayoutVirtualization()
 	{
 		// Make sure to reset the layout virtualization settings on old layout
-		if (m_itemsRepeaterStackLayout is StackLayout stackLayout)
+		if (m_itemsRepeaterStackLayout?.TryGetTarget(out var stackLayout) == true)
 		{
 			stackLayout.IsVirtualizationEnabled = m_cachedIsVirtualizationEnabledFlag;
 		}
@@ -756,10 +760,10 @@ public partial class PipsPager : Control
 				// Turn off virtualization when wrap around is enabled
 				// in order to avoid a bug where the pips disappear
 				// when navigating to the last page from the first page
-				if (m_itemsRepeaterStackLayout is not { })
+				if (m_itemsRepeaterStackLayout?.TryGetTarget(out _) != true)
 				{
 					m_cachedIsVirtualizationEnabledFlag = stackLayout.IsVirtualizationEnabled;
-					m_itemsRepeaterStackLayout = stackLayout;
+					m_itemsRepeaterStackLayout = new WeakReference<StackLayout>(stackLayout);
 				}
 				stackLayout.IsVirtualizationEnabled = !IsWrapEnabled;
 			}
@@ -783,7 +787,7 @@ public partial class PipsPager : Control
 			}
 			else if (property == MaxVisiblePipsProperty)
 			{
-				OnMaxVisualIndicatorsChanged();
+				OnMaxVisiblePipsChanged();
 			}
 			else if (property == WrapModeProperty)
 			{
@@ -828,7 +832,10 @@ public partial class PipsPager : Control
 	protected override AutomationPeer OnCreateAutomationPeer() =>
 		new PipsPagerAutomationPeer(this);
 
-	void UpdateSizeOfSetForElements(int numberOfPages, int numberOfItems)
+	// Number of items is passed to ensure that in case we're
+	// in infinite mode (numberOfPages = - 1), we will correctly
+	// iterate over all the pips.
+	internal void UpdateSizeOfSetForElements(int numberOfPages, int numberOfItems)
 	{
 		var repeater = m_pipsPagerRepeater;
 		if (repeater != null)

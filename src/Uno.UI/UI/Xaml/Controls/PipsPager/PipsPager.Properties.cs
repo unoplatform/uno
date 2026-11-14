@@ -219,7 +219,7 @@ public partial class PipsPager
 	/// </summary>
 	public PipsPagerWrapMode WrapMode
 	{
-		get => (PipsPagerWrapMode)this.GetValue(WrapModeProperty);
+		get => (PipsPagerWrapMode)GetValue(WrapModeProperty);
 		set => SetValue(WrapModeProperty, value);
 	}
 
@@ -228,9 +228,10 @@ public partial class PipsPager
 	/// </summary>
 	public static DependencyProperty WrapModeProperty { get; } =
 		DependencyProperty.Register(
-			nameof(WrapMode), typeof(PipsPagerWrapMode),
+			nameof(WrapMode),
+			typeof(PipsPagerWrapMode),
 			typeof(PipsPager),
-			new FrameworkPropertyMetadata(default(PipsPagerWrapMode)));
+			new FrameworkPropertyMetadata(PipsPagerWrapMode.None, OnPropertyChanged));
 
 	private static void OnPropertyChanged(
 		DependencyObject sender,

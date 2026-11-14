@@ -16,15 +16,12 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 /// </summary>
 public partial class PipsPagerAutomationPeer : FrameworkElementAutomationPeer, ISelectionProvider
 {
-	private readonly PipsPager _pager;
-
 	/// <summary>
 	/// Initializes a new instance of the PipsPagerAutomationPeer class.
 	/// </summary>
 	/// <param name="owner">The PipsPager control instance to create the peer for.</param>
 	public PipsPagerAutomationPeer(PipsPager owner) : base(owner)
 	{
-		_pager = owner;
 	}
 
 	bool ISelectionProvider.CanSelectMultiple => false;
@@ -50,8 +47,7 @@ public partial class PipsPagerAutomationPeer : FrameworkElementAutomationPeer, I
 
 		if (string.IsNullOrEmpty(name))
 		{
-			var pipsPager = (PipsPager)Owner;
-			if (pipsPager != null)
+			if (Owner is PipsPager pipsPager)
 			{
 				name = SharedHelpers.TryGetStringRepresentationFromObject(pipsPager.GetValue(AutomationProperties.NameProperty));
 			}
@@ -65,9 +61,11 @@ public partial class PipsPagerAutomationPeer : FrameworkElementAutomationPeer, I
 		return AutomationControlType.Menu;
 	}
 
+	private PipsPager GetImpl() => Owner as PipsPager;
+
 	IRawElementProviderSimple[] ISelectionProvider.GetSelection()
 	{
-		if (_pager is { } pager)
+		if (GetImpl() is { } pager)
 		{
 			if (pager.GetSelectedItem() is { } pip)
 			{
