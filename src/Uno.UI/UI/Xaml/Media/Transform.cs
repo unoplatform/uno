@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Uno.Extensions;
 
 namespace Microsoft.UI.Xaml.Media
@@ -31,15 +32,24 @@ namespace Microsoft.UI.Xaml.Media
 			}
 		};
 
+		private WeakEventHelper.WeakEventCollection? _changedHandlers;
+
 		/// <summary>
-		/// Notifies that a value of this transform changed (usually this means that the <see cref="MatrixCore"/> has been updated).
+		/// Registers a handler notified when a value of this transform changes (usually this means that the
+		/// <see cref="MatrixCore"/> has been updated), without keeping the handler's target alive: a transform can be
+		/// shared (Style setter, resource) and outlive the elements, brushes, geometries and groups that use it.
 		/// </summary>
-		internal event EventHandler? Changed;
+		/// <returns>A disposable that keeps the registration alive; dispose it to unregister.</returns>
+		internal IDisposable RegisterChanged(EventHandler handler)
+			=> WeakEventHelper.RegisterEvent(
+				_changedHandlers ??= new(),
+				handler,
+				(h, s, e) => (h as EventHandler)?.Invoke(s, (EventArgs)e!));
 
 		protected void NotifyChanged()
 		{
 			MatrixCore = ToMatrix(new Point(0, 0));
-			Changed?.Invoke(this, EventArgs.Empty);
+			_changedHandlers?.Invoke(this, EventArgs.Empty);
 		}
 
 		/// <summary>
