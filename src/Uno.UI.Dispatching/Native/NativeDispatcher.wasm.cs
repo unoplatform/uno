@@ -3,6 +3,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading;
+using System.Threading.Tasks;
+using Uno.Foundation;
 
 using Uno.Foundation.Logging;
 
@@ -10,10 +13,14 @@ namespace Uno.UI.Dispatching
 {
 	internal sealed partial class NativeDispatcher
 	{
-#pragma warning disable IDE0051 // Remove unused private members
+		// In MT mode, the runtime installs its JSSynchronizationContext on the deputy thread, captured
+		// here since Application.Start replaces it with Uno's. Other threads post dispatcher work into it.
+		private static SynchronizationContext _deputySynchronizationContext;
+
+		private static int _uiThreadId;
+
 		[JSExport]
 		private static void DispatcherCallback()
-#pragma warning restore IDE0051 // Remove unused private members
 		{
 			if (typeof(NativeDispatcher).Log().IsEnabled(LogLevel.Trace))
 			{
@@ -23,25 +30,36 @@ namespace Uno.UI.Dispatching
 			DispatchItems();
 		}
 
+		[JSExport]
+		private static Task DispatcherCallbackAsync()
+		{
+			DispatcherCallback();
+
+			return Task.CompletedTask;
+		}
+
 		partial void Initialize()
 		{
+			_uiThreadId = Environment.CurrentManagedThreadId;
+
+			IsThreadingSupported = WebAssemblyThreading.IsThreadingEnabled;
+
 			if (typeof(NativeDispatcher).Log().IsEnabled(LogLevel.Trace))
 			{
 				typeof(NativeDispatcher).Log().Trace($"[tid:{Environment.CurrentManagedThreadId}]: NativeDispatcher.Initialize() IsThreadingSupported:{IsThreadingSupported}");
 			}
 
-			if (IsThreadingSupported && Environment.CurrentManagedThreadId != 1)
+			if (IsThreadingSupported)
 			{
-				throw new InvalidOperationException($"NativeDispatcher must be initialized on the main thread.");
+				// Capture the runtime's JSSynchronizationContext before any app code runs.
+				_deputySynchronizationContext = System.Threading.SynchronizationContext.Current;
 			}
 		}
 
-		internal static bool IsThreadingSupported { get; }
-			= Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_MONO_RUNTIME_FEATURES")
-				?.Split(',').Contains("threads", StringComparer.OrdinalIgnoreCase) ?? false;
+		internal static bool IsThreadingSupported { get; private set; }
 
 		private bool GetHasThreadAccess()
-			=> !IsThreadingSupported || Environment.CurrentManagedThreadId == 1;
+			=> !IsThreadingSupported || Environment.CurrentManagedThreadId == _uiThreadId;
 
 		/// <summary>
 		/// Provide an action that will delegate the dispatch of CoreDispatcher work
@@ -58,19 +76,16 @@ namespace Uno.UI.Dispatching
 
 			if (DispatchOverride == null)
 			{
-				if (!IsThreadingSupported || Environment.CurrentManagedThreadId == 1)
+				if (IsThreadingSupported && Environment.CurrentManagedThreadId != _uiThreadId)
 				{
-					NativeMethods.WakeUp();
+					_deputySynchronizationContext.Post(static _ => DispatchItems(), null);
 				}
 				else
 				{
-					// This is a separate function to avoid enclosing early resolution
-					// by the interpreter/JIT, in case we're running the non-threaded
-					// runtime.
-					static void InvokeOnMainThread()
-						=> WebAssembly.JSInterop.InternalCalls.InvokeOnMainThread();
-
-					InvokeOnMainThread();
+					// Always through the event loop, even in MT: the runtime's pump drains its queue until empty before
+					// yielding, so an item posting the next one would chain forever and starve everything the event
+					// loop delivers (JS calls into managed, timers, animation frames).
+					NativeMethods.WakeUp();
 				}
 			}
 			else

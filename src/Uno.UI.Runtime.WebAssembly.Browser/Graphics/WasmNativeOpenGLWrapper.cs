@@ -1,7 +1,7 @@
 #nullable enable
 
 using System;
-using System.Runtime.InteropServices.JavaScript;
+using System.Runtime.InteropServices;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -9,30 +9,20 @@ using Uno.Graphics;
 
 namespace Uno.UI.Runtime.WebAssembly.Browser.Graphics;
 
-internal partial class WasmNativeOpenGLWrapper : INativeOpenGLWrapper
+internal class WasmNativeOpenGLWrapper : INativeOpenGLWrapper
 {
-	// Emscripten's GL.makeContextCurrent takes a numeric handle. We extract it from the JSObject
-	// returned by tryCreateInstance and pass plain ints to the per-call JSImports so we don't
-	// rely on JSObject-parameter trampolines being available in interpreter mode.
+	// Created by the native shim on the calling thread: emscripten keeps a GL table per thread, and
+	// the native GL calls only see the one on theirs.
 	private readonly int _glCtxHandle;
 	private bool _disposed;
 
 	public WasmNativeOpenGLWrapper(XamlRoot xamlRoot)
 	{
-		var jsObject = NativeMethods.TryCreateInstance();
-		if (!jsObject.GetPropertyAsBoolean("success"))
-		{
-			var error = jsObject.GetPropertyAsString("error");
-			jsObject.Dispose();
-			throw new InvalidOperationException($"Failed to create offscreen WebGL context: {error}");
-		}
-
-		_glCtxHandle = jsObject.GetPropertyAsInt32("glCtxHandle");
-		jsObject.Dispose();
+		_glCtxHandle = NativeMethods.uno_gl_create_context();
 
 		if (_glCtxHandle == 0)
 		{
-			throw new InvalidOperationException("WasmNativeOpenGLWrapper.tryCreateInstance returned success but no glCtxHandle.");
+			throw new InvalidOperationException("Failed to create an offscreen WebGL context.");
 		}
 
 		this.LogInfo()?.Info($"Created a WasmNativeOpenGLWrapper instance using WebGL (ctx={_glCtxHandle}).");
@@ -40,8 +30,14 @@ internal partial class WasmNativeOpenGLWrapper : INativeOpenGLWrapper
 
 	public IDisposable MakeCurrent()
 	{
-		var previousHandle = NativeMethods.MakeCurrent(_glCtxHandle);
-		return Disposable.Create(() => NativeMethods.RestoreContext(previousHandle));
+		var previousHandle = NativeMethods.uno_gl_make_current(_glCtxHandle);
+
+		if (previousHandle < 0)
+		{
+			throw new InvalidOperationException($"WebGL context {_glCtxHandle} is not available on this thread.");
+		}
+
+		return Disposable.Create(() => _ = NativeMethods.uno_gl_make_current(previousHandle));
 	}
 
 	public IntPtr GetProcAddress(string proc)
@@ -72,21 +68,18 @@ internal partial class WasmNativeOpenGLWrapper : INativeOpenGLWrapper
 		}
 		_disposed = true;
 
-		NativeMethods.Destroy(_glCtxHandle);
+		NativeMethods.uno_gl_destroy_context(_glCtxHandle);
 	}
 
-	private static partial class NativeMethods
+	private static class NativeMethods
 	{
-		[JSImport($"globalThis.Uno.UI.Runtime.{nameof(WasmNativeOpenGLWrapper)}.tryCreateInstance")]
-		internal static partial JSObject TryCreateInstance();
+		[DllImport("uno_gl_shim", CallingConvention = CallingConvention.Cdecl)]
+		internal static extern int uno_gl_create_context();
 
-		[JSImport($"globalThis.Uno.UI.Runtime.{nameof(WasmNativeOpenGLWrapper)}.makeCurrent")]
-		internal static partial int MakeCurrent(int glCtxHandle);
+		[DllImport("uno_gl_shim", CallingConvention = CallingConvention.Cdecl)]
+		internal static extern int uno_gl_make_current(int handle);
 
-		[JSImport($"globalThis.Uno.UI.Runtime.{nameof(WasmNativeOpenGLWrapper)}.restoreContext")]
-		internal static partial void RestoreContext(int previousHandle);
-
-		[JSImport($"globalThis.Uno.UI.Runtime.{nameof(WasmNativeOpenGLWrapper)}.destroy")]
-		internal static partial void Destroy(int glCtxHandle);
+		[DllImport("uno_gl_shim", CallingConvention = CallingConvention.Cdecl)]
+		internal static extern void uno_gl_destroy_context(int handle);
 	}
 }

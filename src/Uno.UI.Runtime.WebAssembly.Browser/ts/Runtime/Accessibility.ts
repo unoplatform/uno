@@ -34,7 +34,10 @@ namespace Uno.UI.Runtime {
 		private static managedOnBlur: any;
 		private static managedOnSentinelFocus: any;
 
-		private static managedIsAutoEnableAccessibility: () => boolean;
+		private static managedIsAutoEnableAccessibility: any;
+
+		// FeatureConfiguration.AutomationPeer.AutoEnableAccessibility, read once: in MT the managed read is asynchronous.
+		private static autoEnableAccessibility: boolean = false;
 
 		private static createLiveElement(kind: string) {
 			const element = document.createElement("div");
@@ -67,26 +70,46 @@ namespace Uno.UI.Runtime {
 			}
 		}
 
-		public static setup() {
+		public static async setup() {
 			Accessibility.debugLog('[A11y] Accessibility.setup() — initializing accessibility subsystem');
+
+			const isMultithreaded = WebAssemblyThreading.isThreadingEnabled();
+
 			const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
 
 			// Wire up managed callbacks from WebAssemblyAccessibility.cs
 			const accessibilityExports = browserExports.Uno.UI.Runtime.WebAssemblyAccessibility;
-			this.managedEnableAccessibility = accessibilityExports.EnableAccessibility;
-			this.managedDisableAccessibility = accessibilityExports.DisableAccessibility;
-			this.managedIsAutoEnableAccessibility = accessibilityExports.IsAutoEnableAccessibility;
-			this.managedOnScroll = accessibilityExports.OnScroll;
-			this.managedOnInvoke = accessibilityExports.OnInvoke;
-			this.managedOnToggle = accessibilityExports.OnToggle;
-			this.managedOnRangeValueChange = accessibilityExports.OnRangeValueChange;
-			this.managedOnTextInput = accessibilityExports.OnTextInput;
-			this.managedOnTextSelectionChanged = accessibilityExports.OnTextSelectionChanged;
-			this.managedOnExpandCollapse = accessibilityExports.OnExpandCollapse;
-			this.managedOnSelection = accessibilityExports.OnSelection;
-			this.managedOnFocus = accessibilityExports.OnFocus;
-			this.managedOnBlur = accessibilityExports.OnBlur;
-			this.managedOnSentinelFocus = accessibilityExports.OnFocusSentinel;
+			this.managedEnableAccessibility = accessibilityExports.EnableAccessibilityAsync;
+
+			if (isMultithreaded) {
+				this.managedDisableAccessibility = accessibilityExports.DisableAccessibilityAsync;
+				this.managedIsAutoEnableAccessibility = accessibilityExports.IsAutoEnableAccessibilityAsync;
+				this.managedOnScroll = accessibilityExports.OnScrollAsync;
+				this.managedOnInvoke = accessibilityExports.OnInvokeAsync;
+				this.managedOnToggle = accessibilityExports.OnToggleAsync;
+				this.managedOnRangeValueChange = accessibilityExports.OnRangeValueChangeAsync;
+				this.managedOnTextInput = accessibilityExports.OnTextInputAsync;
+				this.managedOnTextSelectionChanged = accessibilityExports.OnTextSelectionChangedAsync;
+				this.managedOnExpandCollapse = accessibilityExports.OnExpandCollapseAsync;
+				this.managedOnSelection = accessibilityExports.OnSelectionAsync;
+				this.managedOnFocus = accessibilityExports.OnFocusAsync;
+				this.managedOnBlur = accessibilityExports.OnBlurAsync;
+				this.managedOnSentinelFocus = accessibilityExports.OnFocusSentinelAsync;
+			} else {
+				this.managedDisableAccessibility = accessibilityExports.DisableAccessibility;
+				this.managedIsAutoEnableAccessibility = accessibilityExports.IsAutoEnableAccessibility;
+				this.managedOnScroll = accessibilityExports.OnScroll;
+				this.managedOnInvoke = accessibilityExports.OnInvoke;
+				this.managedOnToggle = accessibilityExports.OnToggle;
+				this.managedOnRangeValueChange = accessibilityExports.OnRangeValueChange;
+				this.managedOnTextInput = accessibilityExports.OnTextInput;
+				this.managedOnTextSelectionChanged = accessibilityExports.OnTextSelectionChanged;
+				this.managedOnExpandCollapse = accessibilityExports.OnExpandCollapse;
+				this.managedOnSelection = accessibilityExports.OnSelection;
+				this.managedOnFocus = accessibilityExports.OnFocus;
+				this.managedOnBlur = accessibilityExports.OnBlur;
+				this.managedOnSentinelFocus = accessibilityExports.OnFocusSentinel;
+			}
 
 			this.containerElement = document.getElementById("uno-body");
 
@@ -96,7 +119,8 @@ namespace Uno.UI.Runtime {
 			this.containerElement.appendChild(this.politeElement);
 			this.containerElement.appendChild(this.assertiveElement);
 
-			const autoEnable = this.managedIsAutoEnableAccessibility();
+			const autoEnable: boolean = await this.managedIsAutoEnableAccessibility();
+			this.autoEnableAccessibility = autoEnable;
 
 			if (!autoEnable) {
 				Accessibility.addEnableAccessibilityButton();
@@ -124,7 +148,8 @@ namespace Uno.UI.Runtime {
 				// The C# EnableAccessibility() has retry logic for when
 				// Window/RootElement aren't ready yet.
 				Accessibility.debugLog('[A11y] Auto-enabling accessibility (FeatureConfiguration.AutomationPeer.AutoEnableAccessibility = true)');
-				this.managedEnableAccessibility();
+				this.managedEnableAccessibility()
+					.catch(() => Accessibility.debugWarn("[A11y] Couldn't auto-enable accessibility"));
 				LiveRegion.initialize();
 			}
 		}
@@ -314,7 +339,7 @@ namespace Uno.UI.Runtime {
 			this.isDepartingFocus = false;
 			LiveRegion.teardown();
 
-			if (!this.managedIsAutoEnableAccessibility() && !Accessibility.isEnableAccessibilityButtonActive()) {
+			if (!this.autoEnableAccessibility && !Accessibility.isEnableAccessibilityButtonActive()) {
 				Accessibility.addEnableAccessibilityButton();
 			}
 		}
@@ -329,7 +354,9 @@ namespace Uno.UI.Runtime {
 
 		private static onEnableAccessibilityButtonClicked(evt: MouseEvent) {
 			this.containerElement.removeChild(this.enableAccessibilityButton);
-			this.managedEnableAccessibility();
+			// In MT the managed side enables later; the live regions are set up now so the announcement is not lost.
+			this.managedEnableAccessibility()
+				.catch(() => Accessibility.debugWarn("[A11y] Couldn't enable accessibility"));
 
 			// Initialize subsystem TypeScript modules
 			LiveRegion.initialize();

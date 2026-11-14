@@ -452,6 +452,17 @@ namespace Uno.UI
 			/// </remarks>
 			public static string AdditionalBrowserArguments { get; set; }
 
+			/// <summary>
+			/// Loads the content of the <see cref="Microsoft.UI.Xaml.Controls.WebView2"/> in a credentialless iframe, so
+			/// cross-origin pages can be embedded when the application is cross-origin isolated (for example when
+			/// WebAssembly threading is enabled), without requiring those pages to opt in through CORP/COEP headers.
+			/// </summary>
+			/// <remarks>
+			/// <para><b>WebAssembly only.</b> The embedded content runs in an ephemeral context without cookies, storage
+			/// or credentials, so it behaves as a logged-out session. The attribute is only applied when the application
+			/// is cross-origin isolated, and is ignored by browsers that do not support it.</para>
+			/// </remarks>
+			public static bool Credentialless { get; set; }
 		}
 
 		public static class Xaml

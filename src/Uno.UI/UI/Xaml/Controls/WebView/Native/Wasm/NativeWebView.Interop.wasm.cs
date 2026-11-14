@@ -23,6 +23,9 @@ internal static partial class NativeWebView
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.initializeStyling")]
 		internal static partial void InitializeStyling(ElementId htmlId);
 
+		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.enableCredentialless")]
+		internal static partial void EnableCredentialless(ElementId htmlId);
+
 		[JSImport("globalThis.Microsoft.UI.Xaml.Controls.WebView.reload")]
 		internal static partial void Reload(ElementId htmlId);
 

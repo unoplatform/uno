@@ -18,6 +18,7 @@ using Uno.UI.NativeElementHosting;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 [TestClass]
+[RunsOnUIThread]
 public class Given_BrowserHtmlElement
 {
 	[TestMethod]
