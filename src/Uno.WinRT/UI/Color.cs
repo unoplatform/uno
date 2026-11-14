@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
+using Windows.Foundation;
 
 namespace Windows.UI
 {
@@ -150,6 +151,23 @@ namespace Windows.UI
 
 		string IFormattable.ToString(string format, IFormatProvider formatProvider) => ToString(format, formatProvider);
 
-		private string ToString(string format, IFormatProvider formatProvider) => string.Format(formatProvider, "#{0:X2}{1:X2}{2:X2}{3:X2}", _a, _r, _g, _b);
+		private string ToString(string format, IFormatProvider formatProvider)
+		{
+			if (format is null)
+			{
+				return string.Format(formatProvider, "#{0:X2}{1:X2}{2:X2}{3:X2}", _a, _r, _g, _b);
+			}
+
+			var separator = TokenizerHelper.GetNumericListSeparator(formatProvider);
+
+			return string.Format(
+				formatProvider,
+				"sc#{1:" + format + "}{0} {2:" + format + "}{0} {3:" + format + "}{0} {4:" + format + "}",
+				separator,
+				_a,
+				_r,
+				_g,
+				_b);
+		}
 	}
 }
