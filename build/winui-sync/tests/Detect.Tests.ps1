@@ -198,6 +198,51 @@ Describe 'Get-AreaSyncState with file paths' {
 	}
 }
 
+Describe 'Get-AreaSyncState with mirrored files' {
+	BeforeEach {
+		$script:up = New-TestUpstream -Path (Join-Path $TestDrive "mirror-$([guid]::NewGuid())")
+		$script:base = Add-TestCommit $up @{ 'dxaml/themes/generic.xaml' = "<!-- Copyright -->`n<Root>v1</Root>`n" } -Tag 'winui3/release/1.0.0'
+		$script:uno = Join-Path $TestDrive "mirror-uno-$([guid]::NewGuid())"
+		New-Item -ItemType Directory -Force -Path "$uno/src" | Out-Null
+		# The Uno copy: same content, a MUX Reference line added, CRLF line endings.
+		[System.IO.File]::WriteAllText("$uno/src/Generic.xaml", "<!-- Copyright -->`r`n<!-- MUX Reference dxaml\themes\generic.xaml -->`r`n<Root>v1</Root>`r`n", [System.Text.UTF8Encoding]::new($true))
+		$m = Write-TestManifest (Join-Path $TestDrive "$([guid]::NewGuid()).json") @(
+			(New-TestArea -Id 'gen' -Baseline $base -Extra @{
+				upstream = [ordered]@{ sources = @() }
+				uno      = [ordered]@{ sources = @('src/Overlay.xaml') }
+				mirror   = @([ordered]@{ upstream = 'dxaml/themes/generic.xaml'; uno = 'src/Generic.xaml' })
+			}))
+		$script:area = @(Get-SyncAreas -ManifestPath $m)[0]
+	}
+
+	It 'sees a copy that differs only by its header and line endings as unchanged' {
+		$s = Get-AreaSyncState -Area $area -UpstreamRepo $up -TargetSha $base -UnoRoot $uno
+		$s.mirrorChanged | Should -BeFalse
+		$s.codeChanged | Should -BeFalse
+	}
+
+	It 'flags an upstream change to a mirrored file as a mirror change, not a code change' {
+		$target = Add-TestCommit $up @{ 'dxaml/themes/generic.xaml' = "<!-- Copyright -->`n<Root>v2</Root>`n" }
+		$s = Get-AreaSyncState -Area $area -UpstreamRepo $up -TargetSha $target -UnoRoot $uno
+		$s.mirrorChanged | Should -BeTrue
+		$s.codeChanged | Should -BeFalse
+	}
+
+	It 'compares against the open sync branch''s copy when one is given' {
+		$target = Add-TestCommit $up @{ 'dxaml/themes/generic.xaml' = "<!-- Copyright -->`n<Root>v2</Root>`n" }
+		$branchDir = Join-Path $TestDrive "branch-$([guid]::NewGuid())"
+		New-Item -ItemType Directory -Force -Path "$branchDir/src" | Out-Null
+		[System.IO.File]::WriteAllText("$branchDir/src/Generic.xaml", "<!-- Copyright -->`n<!-- MUX Reference dxaml\themes\generic.xaml -->`n<Root>v2</Root>`n")
+		(Get-AreaSyncState -Area $area -UpstreamRepo $up -TargetSha $target -UnoRoot $uno -UnoMirrorRoot $branchDir).mirrorChanged | Should -BeFalse
+	}
+
+	It 'puts a mirror-only change in the matrix' {
+		$target = Add-TestCommit $up @{ 'dxaml/themes/generic.xaml' = "<!-- Copyright -->`n<Root>v2</Root>`n" }
+		$s = Get-AreaSyncState -Area $area -UpstreamRepo $up -TargetSha $target -UnoRoot $uno
+		(Select-SyncMatrix -States @($s) -Areas @($area) -UpstreamRepo $up).Selected | Should -Be @('gen')
+	}
+}
+
 Describe 'Select-SyncMatrix' {
 	It 'orders by oldest baseline and caps at MaxAreas, reporting the deferred ids' {
 		$up = New-TestUpstream -Path (Join-Path $TestDrive 'order')

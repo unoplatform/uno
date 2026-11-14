@@ -68,6 +68,33 @@ Describe 'Get-SyncAreas' {
 		$m = Write-TestManifest (Join-Path $TestDrive 'none.json') @()
 		@(Get-SyncAreas -ManifestPath $m).Count | Should -Be 0
 	}
+
+	It 'reads and writes mirrored files, which stand in for upstream sources' {
+		$area = New-TestArea -Id 'gen' -Extra @{
+			upstream = [ordered]@{ sources = @() }
+			uno      = [ordered]@{ sources = @('src/Overlay.xaml') }
+			mirror   = @([ordered]@{ upstream = 'dxaml/themes/generic.xaml'; uno = 'src/Generic.xaml' })
+		}
+		$m = Write-TestManifest (Join-Path $TestDrive 'mirror.json') @($area)
+
+		$read = @(Get-SyncAreas -ManifestPath $m)[0]
+		$read.mirror.Count | Should -Be 1
+		$read.mirror[0].upstream | Should -Be 'dxaml/themes/generic.xaml'
+		$read.mirror[0].uno | Should -Be 'src/Generic.xaml'
+		@($read.upstream.sources).Count | Should -Be 0
+
+		Write-SyncAreas -ManifestPath $m -Areas @($read)
+		$again = @(Get-SyncAreas -ManifestPath $m)[0]
+		$again.mirror[0].uno | Should -Be 'src/Generic.xaml'
+		(Get-Content -Raw $m) | Should -Match '"mirror"'
+	}
+
+	It 'leaves mirror out of entries that have none' {
+		$m = Write-TestManifest (Join-Path $TestDrive 'nomirror.json') @((New-TestArea))
+		Write-SyncAreas -ManifestPath $m -Areas @(Get-SyncAreas -ManifestPath $m)
+		(Get-Content -Raw $m) | Should -Not -Match '"mirror"'
+		@(Get-SyncAreas -ManifestPath $m)[0].mirror | Should -BeNullOrEmpty
+	}
 }
 
 Describe 'Set-AreaBaseline' {

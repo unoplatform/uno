@@ -8,7 +8,8 @@ Every Monday the `WinUI Port Sync` workflow (`.github/workflows/winui-port-sync.
 2. for each area in `areas.json`, compares the area's upstream folders at its recorded `baseline`
    commit with the same folders at that tag — plain git, no agent, no cost when nothing changed;
 3. for each changed area, has an agent port the changes and build `Uno.UI`;
-4. replaces the area's `Strings` folder content with upstream's (no agent involved);
+4. replaces the area's `Strings` folder content with upstream's, and its mirrored files (verbatim
+   copies such as `Generic.xaml`) with upstream's versions (no agent involved for either);
 5. opens or updates **one issue and one draft PR per area** (`sync/winui/<id>` branch).
 
 Nothing merges on its own.
@@ -60,6 +61,13 @@ A source or test path can also be a single file. Use that for controls whose ups
 a folder shared with many others, such as `dxaml/xcp/dxaml/lib`: list the control's own files
 (`dxaml/xcp/dxaml/lib/Button_Partial.cpp`, ...) and only those are compared. A new upstream file
 is not picked up until it is added to the list. Strings paths are always folders.
+
+A file Uno keeps as a **verbatim copy** of an upstream file (Uno.UI's `Generic.xaml` is WinUI's
+`generic.xaml`) is listed under `mirror` as `{ "upstream": …, "uno": … }` (`seed-area.ps1 -Mirror
+'upstream path=uno path'`). The sync replaces it with upstream's version: no agent, no port. The Uno
+file keeps its `MUX Reference` line, BOM and line endings; everything else is upstream's. An area made
+only of mirrors needs no `upstream.sources`. Its other Uno files (for `Generic.xaml`, the overlay that
+holds Uno's deltas) stay in `uno.sources`; the sync PR names them so a person checks they still fit.
 
 ```pwsh
 ./build/winui-sync/seed-area.ps1 -Id teachingtip -Title TeachingTip `

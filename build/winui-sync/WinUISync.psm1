@@ -47,6 +47,12 @@ function Get-OptionalProperty {
 	if ($null -ne $Object -and $Object.PSObject.Properties[$Name]) { $Object.$Name } else { $null }
 }
 
+# An area's mirror pairs; empty (never a single $null) when it has none.
+function Get-AreaMirror {
+	param($Area)
+	@(@(Get-OptionalProperty $Area 'mirror') | Where-Object { $null -ne $_ })
+}
+
 function ConvertTo-SyncArea {
 	param($Raw)
 	$id = Get-OptionalProperty $Raw 'id'
@@ -55,10 +61,17 @@ function ConvertTo-SyncArea {
 	if ("$baseline" -notmatch '^[0-9a-f]{40}$') { throw "area '$id': baseline must be a full 40-character commit SHA" }
 	$upstream = Get-OptionalProperty $Raw 'upstream'
 	$uno = Get-OptionalProperty $Raw 'uno'
+	# Files Uno keeps as verbatim copies: the sync replaces them with upstream's, without an agent.
+	$mirror = @(@(Get-OptionalProperty $Raw 'mirror') | Where-Object { $null -ne $_ } | ForEach-Object {
+			$from = Get-OptionalProperty $_ 'upstream'
+			$to = Get-OptionalProperty $_ 'uno'
+			if (-not $from -or -not $to) { throw "area '$id': each mirror entry needs an upstream and a uno path" }
+			[pscustomobject][ordered]@{ upstream = [string]$from; uno = [string]$to }
+		})
 	$sides = [ordered]@{}
 	foreach ($side in @(@{ Name = 'upstream'; Value = $upstream }, @{ Name = 'uno'; Value = $uno })) {
 		$sources = @(Get-OptionalProperty $side.Value 'sources' | Where-Object { $_ })
-		if ($sources.Count -eq 0) { throw "area '$id': $($side.Name).sources must list at least one path" }
+		if ($sources.Count -eq 0 -and -not ($side.Name -eq 'upstream' -and $mirror.Count -gt 0)) { throw "area '$id': $($side.Name).sources must list at least one path" }
 		$sides[$side.Name] = [pscustomobject][ordered]@{
 			sources = $sources
 			tests   = @(Get-OptionalProperty $side.Value 'tests' | Where-Object { $_ })
@@ -73,6 +86,7 @@ function ConvertTo-SyncArea {
 		model    = (Get-OptionalProperty $Raw 'model')
 		upstream = $sides['upstream']
 		uno      = $sides['uno']
+		mirror   = $mirror
 	}
 }
 
@@ -102,6 +116,7 @@ function Write-SyncAreas {
 			if ($a.$side.strings) { $s.strings = $a.$side.strings }
 			$entry[$side] = $s
 		}
+		if (@(Get-AreaMirror $a).Count -gt 0) { $entry.mirror = @((Get-AreaMirror $a) | ForEach-Object { [ordered]@{ upstream = $_.upstream; uno = $_.uno } }) }
 		$entry
 	}
 	$json = ([ordered]@{ areas = @($out) } | ConvertTo-Json -Depth 6) -replace "`r`n", "`n"
@@ -236,7 +251,7 @@ function Find-AreaThemeXaml {
 }
 
 function Resolve-AreaBaseline {
-	param([Parameter(Mandatory)][string]$UpstreamRepo, [Parameter(Mandatory)][object[]]$References)
+	param([Parameter(Mandatory)][string]$UpstreamRepo, [Parameter(Mandatory)][AllowEmptyCollection()][object[]]$References)
 	$resolved = [ordered]@{}
 	$unresolved = [System.Collections.Generic.List[string]]::new()
 	foreach ($r in $References | Where-Object Kind -NE 'none' | Sort-Object Ref -Unique) {
@@ -405,7 +420,9 @@ function Get-AreaSyncState {
 		[Parameter(Mandatory)][string]$TargetSha,
 		[Parameter(Mandatory)][string]$UnoRoot,
 		# Compare strings against this folder instead of <UnoRoot>/<uno.strings> (used when a sync branch is open).
-		[string]$UnoStringsDir)
+		[string]$UnoStringsDir,
+		# Read mirrored Uno files under this root instead of <UnoRoot> (used when a sync branch is open).
+		[string]$UnoMirrorRoot)
 	Invoke-Git $UpstreamRepo @('cat-file', '-e', "$($Area.baseline)^{commit}") -AllowExitCodes 1, 128 | Out-Null
 	if ((Get-LastGitExitCode) -ne 0) { throw "area '$($Area.id)': baseline $($Area.baseline) is not a commit in $UpstreamRepo" }
 
@@ -432,12 +449,22 @@ function Get-AreaSyncState {
 		$stringsChanged = Test-StringsDiffer -UpstreamRepo $UpstreamRepo -Ref $TargetSha -UpstreamStrings $Area.upstream.strings -UnoStrings $unoDir
 	}
 
-	[pscustomobject]@{ id = $Area.id; codeChanged = $codeChanged; stringsChanged = $stringsChanged; diffStat = $diffStat }
+	$mirrorRoot = if ($UnoMirrorRoot) { $UnoMirrorRoot } else { $UnoRoot }
+	$differing = @(foreach ($m in (Get-AreaMirror $Area)) {
+			$upstream = ConvertFrom-FileBytes (Get-UpstreamFileBytes -UpstreamRepo $UpstreamRepo -Ref $TargetSha -Path $m.upstream)
+			$path = Join-Path $mirrorRoot $m.uno
+			if (-not (Test-Path -LiteralPath $path)) { $m.uno; continue }
+			$current = ConvertFrom-FileBytes ([System.IO.File]::ReadAllBytes($path))
+			if ((Get-MirrorComparable $current.Text -DropHeader) -ne (Get-MirrorComparable $upstream.Text)) { $m.uno }
+		})
+	if ($differing.Count -gt 0) { $diffStat = (@($diffStat, "$($differing.Count) copied file(s) differ from upstream") | Where-Object { $_ }) -join '; ' }
+
+	[pscustomobject]@{ id = $Area.id; codeChanged = $codeChanged; stringsChanged = $stringsChanged; mirrorChanged = ($differing.Count -gt 0); diffStat = $diffStat }
 }
 
 function Select-SyncMatrix {
 	param([Parameter(Mandatory)][object[]]$States, [Parameter(Mandatory)][object[]]$Areas, [Parameter(Mandatory)][string]$UpstreamRepo, [int]$MaxAreas = 10)
-	$changed = @($States | Where-Object { $_.codeChanged -or $_.stringsChanged } | ForEach-Object {
+	$changed = @($States | Where-Object { $_.codeChanged -or $_.stringsChanged -or (Get-OptionalProperty $_ 'mirrorChanged') } | ForEach-Object {
 			$id = $_.id
 			$area = $Areas | Where-Object id -EQ $id | Select-Object -First 1
 			[pscustomobject]@{ id = $id; date = [long](Invoke-Git $UpstreamRepo @('log', '-1', '--format=%ct', $area.baseline)) }
@@ -491,6 +518,7 @@ function Get-SyncPlan {
 		$tmp = $null
 		try {
 			$stringsDir = $null
+			$mirrorRoot = $null
 			$pr = Get-OpenSyncPr -Id $area.id
 			if ($pr) {
 				# An open sync PR already carries part of the work: continue from its baseline and strings.
@@ -503,8 +531,19 @@ function Get-SyncPlan {
 					$tmp = New-TempDirectory
 					$stringsDir = try { Export-GitTree -Repo $UnoRoot -Ref $branchRef -Path $area.uno.strings -Destination $tmp } catch { Join-Path $tmp 'missing' }
 				}
+				if (@(Get-AreaMirror $area).Count -gt 0) {
+					if (-not $tmp) { $tmp = New-TempDirectory }
+					$mirrorRoot = Join-Path $tmp 'mirror'
+					foreach ($m in (Get-AreaMirror $area)) {
+						$copy = @(Invoke-Git $UnoRoot @('show', "${branchRef}:$($m.uno)") -AllowExitCodes 128)
+						if ((Get-LastGitExitCode) -ne 0) { continue }
+						$dest = Join-Path $mirrorRoot $m.uno
+						New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null
+						[System.IO.File]::WriteAllText($dest, ($copy -join "`n") + "`n")
+					}
+				}
 			}
-			$states += Get-AreaSyncState -Area $area -UpstreamRepo $UpstreamRepo -TargetSha $target.Sha -UnoRoot $UnoRoot -UnoStringsDir $stringsDir
+			$states += Get-AreaSyncState -Area $area -UpstreamRepo $UpstreamRepo -TargetSha $target.Sha -UnoRoot $UnoRoot -UnoStringsDir $stringsDir -UnoMirrorRoot $mirrorRoot
 		}
 		catch {
 			$errors[$area.id] = ($_.Exception.Message -split "`n")[0]
@@ -525,6 +564,7 @@ function Get-SyncPlan {
 				baseline       = $area.baseline
 				codeChanged    = [bool]$state.codeChanged
 				stringsChanged = [bool]$state.stringsChanged
+				mirrorChanged  = [bool](Get-OptionalProperty $state 'mirrorChanged')
 				branch         = Get-SyncBranchName $id
 				prNumber       = if ($prs.ContainsKey($id)) { [int]$prs[$id] } else { 0 }
 			}
@@ -535,10 +575,10 @@ function Get-SyncPlan {
 				id       = $state.id
 				baseline = $area.baseline
 				status   = if ($selection.Deferred -contains $state.id) { 'deferred' }
-				elseif ($state.codeChanged -and $state.stringsChanged) { 'code + strings changed' }
-				elseif ($state.codeChanged) { 'code changed' }
-				elseif ($state.stringsChanged) { 'strings changed' }
-				else { 'up to date' }
+				else {
+					$parts = @(if ($state.codeChanged) { 'code' }; if ($state.stringsChanged) { 'strings' }; if ((Get-OptionalProperty $state 'mirrorChanged')) { 'copied files' })
+					if ($parts) { "$($parts -join ' + ') changed" } else { 'up to date' }
+				}
 				diffStat = $state.diffStat
 				prNumber = if ($prs.ContainsKey($state.id)) { [int]$prs[$state.id] } else { 0 }
 			}
@@ -611,6 +651,106 @@ function Sync-AreaStrings {
 	finally {
 		Remove-Item -Recurse -Force -LiteralPath $tmp -ErrorAction SilentlyContinue
 	}
+}
+
+#endregion
+
+#region mirrored files
+
+# The exact bytes of one upstream file at <Ref>. Throws if it does not exist there.
+function Get-UpstreamFileBytes {
+	param([Parameter(Mandatory)][string]$UpstreamRepo, [Parameter(Mandatory)][string]$Ref, [Parameter(Mandatory)][string]$Path)
+	$entry = Resolve-UpstreamEntry -UpstreamRepo $UpstreamRepo -Ref $Ref -Path $Path
+	if (-not $entry -or $entry.Kind -ne 'blob') { throw "upstream file '$Path' not found at $Ref" }
+	$tmp = New-TempDirectory
+	try {
+		$zip = Join-Path $tmp 'file.zip'
+		Invoke-Git $UpstreamRepo @('-c', 'core.autocrlf=false', 'archive', '--format=zip', '-o', $zip, $Ref, '--', $entry.Path) | Out-Null
+		Expand-Archive -LiteralPath $zip -DestinationPath $tmp
+		, [System.IO.File]::ReadAllBytes((Join-Path $tmp $entry.Path))
+	}
+	finally {
+		Remove-Item -Recurse -Force -LiteralPath $tmp -ErrorAction SilentlyContinue
+	}
+}
+
+function ConvertFrom-FileBytes {
+	param([Parameter(Mandatory)][AllowEmptyCollection()][byte[]]$Bytes)
+	$bom = $Bytes.Length -ge 3 -and $Bytes[0] -eq 0xEF -and $Bytes[1] -eq 0xBB -and $Bytes[2] -eq 0xBF
+	$offset = if ($bom) { 3 } else { 0 }
+	$text = [System.Text.UTF8Encoding]::new($false).GetString($Bytes, $offset, $Bytes.Length - $offset)
+	[pscustomobject]@{ Bom = $bom; Crlf = $text.Contains("`r`n"); Text = $text }
+}
+
+# Index of the MUX Reference line among a file's first lines (LF-split), or -1.
+function Find-MuxReferenceLine {
+	param([string[]]$Lines, [int]$HeaderLines = 15)
+	for ($i = 0; $i -lt [Math]::Min($HeaderLines, $Lines.Count); $i++) {
+		if ($Lines[$i] -match 'MUX Reference') { return $i }
+	}
+	-1
+}
+
+# Text as compared between upstream and a Uno copy: LF line endings, and Uno's own MUX Reference line dropped.
+function Get-MirrorComparable {
+	param([string]$Text, [switch]$DropHeader)
+	$lines = [System.Collections.Generic.List[string]]::new([string[]]($Text.Replace("`r`n", "`n") -split "`n"))
+	if ($DropHeader) {
+		$index = Find-MuxReferenceLine -Lines $lines
+		if ($index -ge 0) { $lines.RemoveAt($index) }
+	}
+	$lines -join "`n"
+}
+
+# Replaces each mirrored Uno file with upstream's version at <Ref>. The Uno file keeps its MUX Reference
+# line (at the same position), its BOM and its line endings. Every upstream file is read before anything is
+# written, so a missing one changes nothing. Returns the Uno paths it changed.
+function Sync-AreaMirror {
+	param(
+		[Parameter(Mandatory)][string]$UpstreamRepo,
+		[Parameter(Mandatory)][string]$Ref,
+		[Parameter(Mandatory)][string]$UnoRoot,
+		[object[]]$Mirror = @())
+	$plans = @(foreach ($m in @($Mirror)) {
+			[pscustomobject]@{ Uno = $m.uno; Upstream = ConvertFrom-FileBytes (Get-UpstreamFileBytes -UpstreamRepo $UpstreamRepo -Ref $Ref -Path $m.upstream) }
+		})
+	foreach ($plan in $plans) {
+		$path = Join-Path $UnoRoot $plan.Uno
+		$current = if (Test-Path -LiteralPath $path) { ConvertFrom-FileBytes ([System.IO.File]::ReadAllBytes($path)) } else { $null }
+		$lines = [System.Collections.Generic.List[string]]::new([string[]]($plan.Upstream.Text.Replace("`r`n", "`n") -split "`n"))
+		if ($current) {
+			$currentLines = [string[]]($current.Text.Replace("`r`n", "`n") -split "`n")
+			$index = Find-MuxReferenceLine -Lines $currentLines
+			if ($index -ge 0) { $lines.Insert([Math]::Min($index, $lines.Count), $currentLines[$index]) }
+		}
+		$text = $lines -join "`n"
+		$crlf = if ($current) { $current.Crlf } else { $plan.Upstream.Crlf }
+		if ($crlf) { $text = $text.Replace("`n", "`r`n") }
+		$bom = if ($current) { $current.Bom } else { $plan.Upstream.Bom }
+		if ($current -and $current.Text -eq $text -and $current.Bom -eq $bom) { continue }
+		New-Item -ItemType Directory -Force -Path (Split-Path $path) | Out-Null
+		[System.IO.File]::WriteAllText($path, $text, [System.Text.UTF8Encoding]::new($bom))
+		$plan.Uno
+	}
+}
+
+function Format-MirrorChanges {
+	param([string[]]$Copied = @(), [Parameter(Mandatory)]$Area)
+	if (@($Copied).Count -eq 0) { return '' }
+	$tick = { param($items) (@($items) | ForEach-Object { '`' + $_ + '`' }) -join ', ' }
+	$copiedList = & $tick $Copied
+	$others = @($Area.uno.sources | Where-Object { @((Get-AreaMirror $Area) | ForEach-Object { $_.uno }) -notcontains $_ })
+	$lines = @(
+		'### Copied from upstream'
+		''
+		"Replaced with the upstream version: $copiedList. These files are verbatim copies, so nothing in them was ported by hand."
+	)
+	if ($others.Count -gt 0) {
+		$otherList = & $tick $others
+		$lines += ''
+		$lines += "**Check by hand** that the area's other Uno files still fit the new version: $otherList."
+	}
+	$lines -join "`n"
 }
 
 #endregion
@@ -817,10 +957,11 @@ function Get-CommitGroups {
 	param([Parameter(Mandatory)]$Area, [Parameter(Mandatory)][string]$TargetTag, [string[]]$ChangedFiles = @(), [Parameter(Mandatory)][string]$ManifestRelativePath, [switch]$Incomplete)
 	$version = Get-TagVersion $TargetTag
 	$under = { param($file, $roots) [bool](@($roots) | Where-Object { $_ -and ($file -eq $_.Trim('/') -or $file.StartsWith("$($_.Trim('/'))/")) }) }
-	$buckets = [ordered]@{ logic = @(); tests = @(); strings = @(); manifest = @() }
+	$buckets = [ordered]@{ logic = @(); tests = @(); strings = @(); mirror = @(); manifest = @() }
 	foreach ($file in @($ChangedFiles) | Where-Object { $_ } | Sort-Object) {
 		$reports = "$(Split-Path $ManifestRelativePath)/reports/".Replace('\', '/')
 		$kind = if ($file -eq $ManifestRelativePath -or $file.StartsWith($reports)) { 'manifest' }
+		elseif (@((Get-AreaMirror $Area) | ForEach-Object { $_.uno }) -contains $file) { 'mirror' }
 		elseif (& $under $file @($Area.uno.strings)) { 'strings' }
 		elseif (& $under $file @($Area.uno.tests)) { 'tests' }
 		else { 'logic' }
@@ -830,6 +971,7 @@ function Get-CommitGroups {
 		logic    = "fix($($Area.id)): Sync $($Area.title) with WinUI $version"
 		tests    = "test($($Area.id)): Sync $($Area.title) tests with WinUI $version"
 		strings  = "chore($($Area.id)): Update $($Area.title) strings from WinUI $version"
+		mirror   = "chore($($Area.id)): Copy $($Area.title) from WinUI $version"
 		manifest = "chore($($Area.id)): Bump WinUI sync baseline to $version"
 	}
 	if ($Incomplete) {
@@ -872,6 +1014,7 @@ function Expand-SyncPrompt {
 		diff_commands = $commands -join "`n"
 		uno_sources   = & $list $Area.uno.sources
 		uno_tests     = & $list $Area.uno.tests
+		mirror_files  = & $list @((Get-AreaMirror $Area) | ForEach-Object { $_.uno })
 	}
 	$text = (Get-Content -Raw -LiteralPath $TemplatePath) -replace "`r`n", "`n"
 	$text = [regex]::Replace($text, '\{\{(\w+)\}\}', {
@@ -1068,6 +1211,11 @@ function Publish-SyncArea {
 	$strings = $null
 	if ($area.upstream.strings -and $area.uno.strings) {
 		$strings = Sync-AreaStrings -UpstreamRepo $UpstreamRepo -Ref $TargetSha -UpstreamStrings $area.upstream.strings -UnoStrings (Join-Path $RepoRoot $area.uno.strings)
+	}
+	$copied = @(if (@(Get-AreaMirror $area).Count -gt 0) { Sync-AreaMirror -UpstreamRepo $UpstreamRepo -Ref $TargetSha -UnoRoot $RepoRoot -Mirror (Get-AreaMirror $area) })
+	if ($copied.Count -gt 0) {
+		$intro = if ($CodeChanged) { $report.Body.TrimEnd() } else { 'No upstream code to port in this range.' }
+		$report.Body = "$intro`n`n$(Format-MirrorChanges -Copied $copied -Area $area)"
 	}
 	# From here on $report covers every run on this branch, not just this one.
 	$report = Add-SyncRunReport -Path (Join-Path (Split-Path $ManifestPath) "reports/$Id.md") -Area $area -TargetTag $TargetTag -TargetSha $TargetSha -Report $report -Reset (-not $PrNumber)
