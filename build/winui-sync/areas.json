@@ -92,6 +92,62 @@
         ],
         "strings": "src/Uno.UI/UI/Xaml/Controls/TabView/Strings"
       }
+    },
+    {
+      "id": "buttons",
+      "title": "Button controls",
+      "baseline": "7198c4e69019516fb08ecb3937492ffff5fe9702",
+      "upstream": {
+        "sources": [
+          "dxaml/xcp/core/core/elements/Button.cpp",
+          "dxaml/xcp/core/inc/Button.h",
+          "dxaml/xcp/components/controls/KeyDownUp/inc/ButtonBaseKeyProcess.h",
+          "dxaml/xcp/dxaml/lib/Button_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/Button_Partial.h",
+          "dxaml/xcp/dxaml/lib/ButtonBase_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/ButtonBase_Partial.h",
+          "dxaml/xcp/dxaml/lib/ToggleButton_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/ToggleButton_Partial.h",
+          "dxaml/xcp/dxaml/lib/CheckBox_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/CheckBox_Partial.h",
+          "dxaml/xcp/dxaml/lib/RadioButton_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/RadioButton_Partial.h",
+          "dxaml/xcp/dxaml/lib/HyperLinkButton_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/HyperLinkButton_Partial.h",
+          "dxaml/xcp/dxaml/lib/RepeatButton_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/RepeatButton_Partial.h",
+          "dxaml/xcp/dxaml/lib/ButtonAutomationPeer_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/ButtonAutomationPeer_Partial.h",
+          "dxaml/xcp/dxaml/lib/ButtonBaseAutomationPeer_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/ButtonBaseAutomationPeer_Partial.h",
+          "dxaml/xcp/dxaml/lib/ToggleButtonAutomationPeer_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/ToggleButtonAutomationPeer_Partial.h",
+          "dxaml/xcp/dxaml/lib/CheckBoxAutomationPeer_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/CheckBoxAutomationPeer_Partial.h",
+          "dxaml/xcp/dxaml/lib/RadioButtonAutomationPeer_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/RadioButtonAutomationPeer_Partial.h",
+          "dxaml/xcp/dxaml/lib/HyperlinkButtonAutomationPeer_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/HyperlinkButtonAutomationPeer_Partial.h",
+          "dxaml/xcp/dxaml/lib/RepeatButtonAutomationPeer_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/RepeatButtonAutomationPeer_Partial.h"
+        ]
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/Button",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ButtonBase",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/RepeatButton",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ToggleButton.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ToggleButton.mux.cs",
+          "src/Uno.UI/UI/Xaml/Automation/Peers/ButtonAutomationPeer.cs",
+          "src/Uno.UI/UI/Xaml/Automation/Peers/ButtonBaseAutomationPeer.cs",
+          "src/Uno.UI/UI/Xaml/Automation/Peers/ToggleButtonAutomationPeer.cs",
+          "src/Uno.UI/UI/Xaml/Automation/Peers/CheckBoxAutomationPeer.cs",
+          "src/Uno.UI/UI/Xaml/Automation/Peers/RadioButtonAutomationPeer.cs",
+          "src/Uno.UI/UI/Xaml/Automation/Peers/HyperlinkButtonAutomationPeer.cs",
+          "src/Uno.UI/UI/Xaml/Automation/Peers/RepeatButtonAutomationPeer.cs"
+        ]
+      }
     }
   ]
 }
