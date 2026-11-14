@@ -53,6 +53,7 @@ Manifest paths are written **without** a leading `src/`. Upstream keeps the same
 4. **Uno sources.** Usually `src/Uno.UI/UI/Xaml/Controls/<Name>`. Search for the control's files rather than assuming; some ports are split over several folders, and all of them go in the list. Include the control's automation peers.
 5. **Uno tests.** Ported MUX tests live under `src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/<Name>` (files named `*.mux.cs`). Uno-written tests such as `Given_<Name>.cs` are not part of the mapping.
 6. **Uno strings.** The `Strings` folder inside the Uno sources, if there is one. Map strings only when both sides have the folder.
+7. **Theme XAML.** Uno keeps control styles in `src/Uno.UI.FluentTheme/Resources/PriorityDefault/<Name>.xaml` and `<Name>_themeresources.xaml` (merged at build time; nothing generated to commit). List those files in the Uno sources, so the port agent is told where they are. Upstream, MUX controls keep their styles inside `controls/dev/<Name>`, which the sources already cover. Core controls keep them in the shared `controls/dev/CommonStyles/<Name>_themeresources.xaml`: list that file in the upstream sources.
 
 Choose the `id`: lower case, no separators, matching the Uno folder name (`teachingtip`). It becomes part of the branch name `sync/winui/<id>` and must never change afterwards.
 
@@ -85,14 +86,20 @@ If strings are mapped, the catch-up and every later sync make the Uno folder an 
 
 ### Phase 4: Catch up to the latest stable release
 
-1. Record the area at its starting point, so the tooling can work from the manifest entry:
-   rerun the seed command with `-Write`, adding `-Baseline <commit>` if you chose something other than the proposal.
-2. Size the catch-up: `./build/winui-sync/detect.ps1 -UpstreamRepo <clone> -AreaFilter <id>` (needs the `gh` CLI signed in). The summary row shows the upstream diff to port. Thousands of lines for a recently ported control mean the starting point is too old or a path is wrong; go back to Phase 2. Also count the upstream files in the area: the Phase 5 review covers all of them, not just the changed ones. If the diff is genuinely large (roughly 3,000 changed lines or more, or a rewrite of the control), or the area has dozens of file pairs to review, stop and ask the user: do the catch-up anyway, split it into its own PR first, or switch to track-only mode.
+1. Record the area at its starting point in a **scratch copy** of the manifest, so the tooling can work from it. The repository's `areas.json` is written only once, in Phase 7, with the latest tag as baseline: a starting-point entry must never be left behind in it.
+
+   ```pwsh
+   Copy-Item ./build/winui-sync/areas.json <scratch>/areas.json
+   ./build/winui-sync/seed-area.ps1 <same arguments as Phase 2> -ManifestPath <scratch>/areas.json -Write [-Baseline <commit>]
+   ```
+
+   Add `-Baseline <commit>` if you chose something other than the proposal.
+2. Size the catch-up: `./build/winui-sync/detect.ps1 -UpstreamRepo <clone> -ManifestPath <scratch>/areas.json -AreaFilter <id>` (needs the `gh` CLI signed in). The summary row shows the upstream diff to port. Thousands of lines for a recently ported control mean the starting point is too old or a path is wrong; go back to Phase 2. Also count the upstream files in the area: the Phase 5 review covers all of them, not just the changed ones. If the diff is genuinely large (roughly 3,000 changed lines or more, or a rewrite of the control), or the area has dozens of file pairs to review, stop and ask the user: do the catch-up anyway, split it into its own PR first, or switch to track-only mode.
 3. Render the workflow's port instructions for this area, so the catch-up follows exactly the rules and report format CI uses:
 
    ```pwsh
    Import-Module ./build/winui-sync/WinUISync.psm1 -Force
-   $area = Get-SyncAreas -ManifestPath ./build/winui-sync/areas.json | Where-Object id -EQ <id>
+   $area = Get-SyncAreas -ManifestPath <scratch>/areas.json | Where-Object id -EQ <id>
    $latest = Get-LatestStableTag -UpstreamRepo <clone>
    Expand-SyncPrompt -TemplatePath ./build/winui-sync/prompt.md -Area $area -TargetTag $latest.Tag `
        -TargetSha $latest.Sha -UpstreamRepo <clone> -UpstreamDir <clone> | Set-Content <scratch>/port-<id>.md
@@ -108,7 +115,7 @@ If strings are mapped, the catch-up and every later sync make the Uno folder an 
 
 **Skipped items.** The baseline moves past them, so the PR is not their only record. File one issue for the area listing every *Skipped* item (upstream path, why it was not ported, what depends on it) and link it from the PR.
 
-In track-only mode, do steps 1 and 2 here, then go straight to Phase 7, steps 4 and 5. Do not move the baseline: the area stays at its starting point, and detection shows what the workflow's first run will port.
+In track-only mode, do steps 1 and 2 here, then write the entry to the repository's `areas.json` at the **starting point** (the seed command with `-Write [-Baseline <commit>]`, without `-ManifestPath`), and go to Phase 7, steps 4 and 5. Detection then shows what the workflow's first run will port.
 
 ### Phase 5: Review the port line by line
 
@@ -150,8 +157,8 @@ Keep a workaround table for the PR: location, what it does, verdict (removed / k
 
 1. Build `src/Uno.UI/Uno.UI.csproj` (`-p:UnoTargetFrameworkOverride=net10.0`) and the runtime tests project when tests changed. Before committing, build once without `UnoFastDevBuild`, so analyzer errors that CI enforces show up.
 2. Run the control's runtime tests with the `/runtime-tests` skill (Skia desktop). New failures caused by the port or by a removed workaround are fixed, not disabled. A failure that already happens on `master` is reported, not fixed here. Where a ported or restored behaviour is unclear, check it against WinUI with `/winui-runtime-tests`.
-3. Move the area to the latest stable tag: `Set-AreaBaseline -ManifestPath ./build/winui-sync/areas.json -Id <id> -Sha $latest.Sha`.
-4. Run detection again. The area must now show no code or strings change. If it still shows a diff, a path is mapped wrongly or the baseline did not move; fix that before going on.
+3. Write the entry to the repository's `areas.json`, at the latest stable tag: the seed command from Phase 2 with `-Write -Baseline $latest.Sha` (no `-ManifestPath`). The seed's header report should now show the latest tag on every reviewed file.
+4. Run detection against the repository's manifest (no `-ManifestPath`). The area must show no code or strings change. If it still shows a diff, a path is mapped wrongly or a change was not carried over; fix that before going on.
 5. Run the tooling tests: `./build/winui-sync/tests/run.ps1` (Pester 5.5+).
 
 ### Phase 8: Commit
