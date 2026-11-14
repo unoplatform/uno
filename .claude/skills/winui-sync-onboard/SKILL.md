@@ -113,7 +113,7 @@ If strings are mapped, the catch-up and every later sync make the Uno folder an 
 5. Mirror the strings, if mapped and Phase 3 found nothing Uno-only:
    `Sync-AreaStrings -UpstreamRepo <clone> -Ref $latest.Sha -UpstreamStrings <upstream strings> -UnoStrings <uno strings>`
 
-**Skipped items.** The baseline moves past them, so the PR is not their only record. File one issue for the area listing every *Skipped* item (upstream path, why it was not ported, what depends on it) and link it from the PR.
+**Skipped items.** The baseline moves past them, so the PR is not their only record. When you open the PR, also file one issue for the area listing every *Skipped* item (upstream path, why it was not ported, what depends on it) and link it from the PR. If the user did not ask for a PR, list the items in the report and offer to file the issue.
 
 In track-only mode, do steps 1 and 2 here, then write the entry to the repository's `areas.json` at the **starting point** (the seed command with `-Write [-Baseline <commit>]`, without `-ManifestPath`), and go to Phase 7, steps 4 and 5. Detection then shows what the workflow's first run will port.
 
@@ -131,7 +131,7 @@ The catch-up only carried the diff since the starting point. This phase checks t
    - **Uno-only member:** it must be marked or live in a `.uno.cs` file; otherwise mark it. It goes to Phase 6.
 4. **Tests:** every upstream test method in the mapped test folders exists in the Uno test files, or is listed as not ported with a reason. A ported test that is disabled (`[Ignore]`, a `[PlatformCondition]` that excludes it) goes to Phase 6.
 5. **Headers:** once a Uno file has been reviewed against the latest tag, its `MUX Reference` header ends with `, tag <latest tag>`, even if its code did not change. Headers then tell the truth for the next onboarding or seed.
-6. **Large areas:** split the review by file pair. If you use subagents, give each one file pair, the classification above and the `/winui-port` conventions, and have it return its findings as a table without editing files. Apply the fixes yourself, so one session owns every change. Tell the user how many subagents you are about to start before starting them.
+6. **Large areas:** split the review by file pair. If you use subagents, give each one file pair, the classification above and the `/winui-port` conventions, and have it return its findings as a table without editing files. Apply the fixes yourself, so one session owns every change. Tell the user how many subagents you are about to start before starting them; in an unattended run, state it in the report instead.
 
 Keep a review table for the PR: upstream file, Uno file(s), members compared, gaps fixed, members still differing (with the marker that justifies them).
 
@@ -154,6 +154,8 @@ Every deviation from upstream is re-justified or removed. Skia is the only rende
 Keep a workaround table for the PR: location, what it does, verdict (removed / kept / unclear), and evidence.
 
 ### Phase 7: Verify and record
+
+The repository's `areas.json` is written only when steps 1 and 2 pass. If they fail and the failure is not fixed, do not write the entry: stop and report what failed. The catch-up commits can stay on the branch for a later run, and the scratch manifest leaves the repository untouched. Switching to track-only mode instead is the user's call.
 
 1. Build `src/Uno.UI/Uno.UI.csproj` (`-p:UnoTargetFrameworkOverride=net10.0`) and the runtime tests project when tests changed. Before committing, build once without `UnoFastDevBuild`, so analyzer errors that CI enforces show up.
 2. Run the control's runtime tests with the `/runtime-tests` skill (Skia desktop). New failures caused by the port or by a removed workaround are fixed, not disabled. A failure that already happens on `master` is reported, not fixed here. Where a ported or restored behaviour is unclear, check it against WinUI with `/winui-runtime-tests`.

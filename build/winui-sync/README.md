@@ -76,7 +76,8 @@ It also adds the control's theme XAML to the mapping: Uno's copies under
 `src/Uno.UI.FluentTheme/Resources` and, for core controls, the upstream
 `controls/dev/CommonStyles/<Name>_themeresources.xaml` they come from (`-NoThemeXaml` leaves them
 out). It reads the `MUX Reference` headers under the Uno paths (`.cs` and `.xaml`), resolves the
-commits and tags they name, and proposes the oldest one as the baseline. **Check the proposal before adding `-Write`:**
+commits and tags they name, and proposes the oldest one as the baseline. Because theme XAML headers
+count too, an old tag on a style file lowers the proposal like any other stale header. **Check the proposal before adding `-Write`:**
 
 - a baseline that is too new silently drops upstream changes;
 - a baseline that is much older than most files (one stale header) makes the first run re-check
