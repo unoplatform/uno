@@ -405,6 +405,44 @@ Describe 'Publish-SyncArea' {
 		Should -Invoke -ModuleName WinUISync New-GitHubIssue -Times 0 -Exactly
 	}
 
+	It 'mirror-only change copies the file, without an agent, and names the Uno files to check' {
+		$root = Join-Path $TestDrive "pub-mirror-$([guid]::NewGuid().ToString('N'))"
+		$up = New-TestUpstream -Path "$root/up"
+		$base = Add-TestCommit $up @{ 'dxaml/themes/generic.xaml' = "<!-- Copyright -->`n<Root>v1</Root>`n" } -Tag 'winui3/release/1.0.0'
+		$target = Add-TestCommit $up @{ 'dxaml/themes/generic.xaml' = "<!-- Copyright -->`n<Root>v2</Root>`n" } -Tag 'winui3/release/1.1.0'
+		$seed = New-TestRepo -Path "$root/seed"
+		$area = New-TestArea -Id 'foo' -Baseline $base -Extra @{
+			title    = 'Foo'
+			upstream = [ordered]@{ sources = @() }
+			uno      = [ordered]@{ sources = @('src/Overlay.xaml') }
+			mirror   = @([ordered]@{ upstream = 'dxaml/themes/generic.xaml'; uno = 'src/Generic.xaml' })
+		}
+		$master = Add-TestCommit $seed @{
+			'build/winui-sync/areas.json' = (@{ areas = @($area) } | ConvertTo-Json -Depth 6)
+			'src/Generic.xaml'            = "<!-- Copyright -->`n<!-- MUX Reference dxaml\themes\generic.xaml -->`n<Root>v1</Root>`n"
+			'src/Overlay.xaml'            = "<Overlay />`n"
+		}
+		git init -q --bare -b main "$root/origin.git" | Out-Null
+		Invoke-TestGit $seed push -q "$root/origin.git" main | Out-Null
+		# Cloning without autocrlf keeps the checkout LF, so files publish does not touch stay unchanged.
+		git clone -q -c core.autocrlf=false "$root/origin.git" "$root/work" 2>&1 | Out-Null
+		$work = (Resolve-Path "$root/work").Path
+		foreach ($kv in @('user.email', 'test@example.invalid'), @('user.name', 'Test'), @('commit.gpgsign', 'false')) {
+			Invoke-TestGit $work config $kv[0] $kv[1] | Out-Null
+		}
+		Mock-GitHub
+
+		$r = Publish-SyncArea -RepoRoot $work -ManifestPath "$work/build/winui-sync/areas.json" -Id 'foo' -TargetTag 'winui3/release/1.1.0' -TargetSha $target `
+			-MasterSha $master -UpstreamRepo $up -CodeChanged $false -StringsChanged $false -PortStatus 'missing' -BaseBranch 'main' -DryRun $true
+
+		$r.Outcome | Should -Be 'dry-run'
+		@(Invoke-TestGit $work log --format=%s "$master..HEAD") | Should -Be @('chore(foo): Bump WinUI sync baseline to 1.1.0', 'chore(foo): Copy Foo from WinUI 1.1.0')
+		[System.IO.File]::ReadAllText("$work/src/Generic.xaml") | Should -Be "<!-- Copyright -->`n<!-- MUX Reference dxaml\themes\generic.xaml -->`n<Root>v2</Root>`n"
+		@(Get-SyncAreas -ManifestPath "$work/build/winui-sync/areas.json")[0].baseline | Should -Be $target
+		$r.PrBody | Should -Match ([regex]::Escape('src/Generic.xaml'))
+		$r.PrBody | Should -Match ([regex]::Escape('src/Overlay.xaml'))
+	}
+
 	It 'strings-only change publishes without a patch or report' {
 		$fx = New-PublishFixture
 		Mock-GitHub

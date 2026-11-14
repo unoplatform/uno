@@ -261,6 +261,38 @@ Describe 'seed-area.ps1' {
 		$area.uno.sources | Should -Be @('src/Controls/Bar.cs')
 	}
 
+	It 'writes a mirror-only entry and rejects a mirrored file upstream does not have' {
+		$up = New-TestUpstream -Path (Join-Path $TestDrive 'up8')
+		$c1 = Add-TestCommit $up @{ 'dxaml/themes/generic.xaml' = '<Root />' } -Tag 'winui3/release/1.0.0'
+		$uno = Join-Path $TestDrive 'uno8'
+		New-CsFile "$uno/src/Generic.xaml" "<!-- MUX Reference dxaml\themes\generic.xaml, commit $($c1.Substring(0, 10)) -->`n<Root />"
+		New-CsFile "$uno/src/Overlay.xaml" '<Overlay />'
+		$manifest = Write-TestManifest (Join-Path $uno 'areas.json') @()
+		$common = @{ Id = 'gen'; Title = 'Generic.xaml'; UpstreamRepo = $up; UnoRoot = $uno; ManifestPath = $manifest; UnoSources = 'src/Overlay.xaml'; Write = $true }
+
+		& "$PSScriptRoot/../seed-area.ps1" @common -Mirror 'dxaml/themes/generic.xaml=src/Generic.xaml' | Out-Null
+		$area = @(Get-SyncAreas -ManifestPath $manifest)[0]
+		$area.baseline | Should -Be $c1
+		@($area.upstream.sources).Count | Should -Be 0
+		$area.mirror[0].upstream | Should -Be 'dxaml/themes/generic.xaml'
+		$area.mirror[0].uno | Should -Be 'src/Generic.xaml'
+
+		{ & "$PSScriptRoot/../seed-area.ps1" @common -Mirror 'dxaml/themes/nope.xaml=src/Generic.xaml' } | Should -Throw '*dxaml/themes/nope.xaml*'
+	}
+
+	It 'accepts an explicit baseline when no header names a version' {
+		$up = New-TestUpstream -Path (Join-Path $TestDrive 'up9')
+		$c1 = Add-TestCommit $up @{ 'controls/dev/Foo/Foo.cpp' = '1' } -Tag 'winui3/release/1.0.0'
+		$uno = Join-Path $TestDrive 'uno9'
+		# A tracked area's XAML: its header names no version, so the scan finds no reference at all.
+		New-CsFile "$uno/src/Foo/Foo.xaml" '<!-- MUX Reference controls\dev\Foo\Foo.xaml -->'
+		$manifest = Write-TestManifest (Join-Path $uno 'areas.json') @()
+		$common = @{ Id = 'foo'; Title = 'Foo'; UpstreamRepo = $up; UnoRoot = $uno; ManifestPath = $manifest; UpstreamSources = 'controls/dev/Foo'; UnoSources = 'src/Foo/Foo.xaml'; Write = $true }
+
+		& "$PSScriptRoot/../seed-area.ps1" @common -Baseline $c1 | Out-Null
+		@(Get-SyncAreas -ManifestPath $manifest)[0].baseline | Should -Be $c1
+	}
+
 	It 'takes an explicit baseline over the one derived from headers' {
 		$up = New-TestUpstream -Path (Join-Path $TestDrive 'up5')
 		$old = Add-TestCommit $up @{ 'controls/dev/Foo/Foo.cpp' = '1' }
