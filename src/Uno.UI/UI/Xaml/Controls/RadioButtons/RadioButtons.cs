@@ -1,21 +1,23 @@
-﻿#pragma warning disable 105 // remove when moving to WinUI tree
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference RadioButtons.cpp
 
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Microsoft.UI.Input;
 using Microsoft.UI.Private.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Uno.UI.Helpers.Boxes;
-using Uno.UI.Helpers.WinUI;
-using Windows.System;
-using Windows.UI.Core;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
-using System.Collections.ObjectModel;
-using Uno.UI.Core;
+using Uno.Disposables;
+using Uno.UI.Helpers.Boxes;
+using Uno.UI.Helpers.WinUI;
+using Windows.System;
+using Windows.UI.Core;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -24,7 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		public RadioButtons()
 		{
-			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_RadioButtons);
+			//__RP_Marker_ClassById(RuntimeProfiler::ProfId_RadioButtons);
 
 			var items = new ObservableCollection<object>();
 			SetValue(ItemsProperty, items);
@@ -34,11 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Override normal up/down/left/right behavior -- down should always go to the next item and up to the previous.
 			// left and right should be spacial but contained to the RadioButtons control. We have to attach to PreviewKeyDown
 			// because RadioButton has a key down handler for up and down that gets called before we can intercept. Issue #1634.
-			var thisAsUIElement7 = this;
-			if (thisAsUIElement7 != null)
-			{
-				thisAsUIElement7.PreviewKeyDown += OnChildPreviewKeyDown;
-			}
+			PreviewKeyDown += OnChildPreviewKeyDown;
 
 			AccessKeyInvoked += OnAccessKeyInvoked;
 			GettingFocus += OnGettingFocus;
@@ -49,40 +47,48 @@ namespace Microsoft.UI.Xaml.Controls
 			// To ensure proper lifetime management we create revokers for these elements and attach
 			// the revokers to the child radio button via this attached property.  This way, if/when the child
 			// is cleaned up we will automatically revoke the handler.
-			// In Uno this is not needed, as we can just unsubscribe the events directly (see OnRepeaterElementClearing)
-			//s_childHandlersProperty =
-			//	InitializeDependencyProperty(
-			//		s_childHandlersPropertyName,
-			//		nameof(ChildHandlers),
-			//		nameof(RadioButtons),
-			//		true /* isAttached */,
-			//		null,
-			//		null);
+#if !HAS_UNO // Uno specific: the handlers are removed directly in OnRepeaterElementClearing.
+			s_childHandlersProperty =
+				InitializeDependencyProperty(
+					s_childHandlersPropertyName,
+					nameof(ChildHandlers),
+					nameof(RadioButtons),
+					true /* isAttached */,
+					null,
+					null);
+#endif
 		}
+
+		protected override AutomationPeer OnCreateAutomationPeer() => new RadioButtonsAutomationPeer(this);
 
 		protected override void OnApplyTemplate()
 		{
-			//IControlProtected controlProtected{ this };
-
 			IsEnabledChanged += OnIsEnabledChanged;
+			m_isEnabledChangedRevoker.Disposable = Disposable.Create(() => IsEnabledChanged -= OnIsEnabledChanged);
+
+			m_repeater = GetRepeater();
 
 			ItemsRepeater GetRepeater()
 			{
-				var repeater = GetTemplateChild<ItemsRepeater>(s_repeaterName);
-				if (repeater != null)
+				if (GetTemplateChild(s_repeaterName) is ItemsRepeater repeater)
 				{
 					repeater.ItemTemplate = m_radioButtonsElementFactory;
 
 					repeater.ElementPrepared += OnRepeaterElementPrepared;
+					m_repeaterElementPreparedRevoker.Disposable = Disposable.Create(() => repeater.ElementPrepared -= OnRepeaterElementPrepared);
 					repeater.ElementClearing += OnRepeaterElementClearing;
+					m_repeaterElementClearingRevoker.Disposable = Disposable.Create(() => repeater.ElementClearing -= OnRepeaterElementClearing);
 					repeater.ElementIndexChanged += OnRepeaterElementIndexChanged;
+					m_repeaterElementIndexChangedRevoker.Disposable = Disposable.Create(() => repeater.ElementIndexChanged -= OnRepeaterElementIndexChanged);
 					repeater.Loaded += OnRepeaterLoaded;
+					m_repeaterLoadedRevoker.Disposable = Disposable.Create(() => repeater.Loaded -= OnRepeaterLoaded);
+#if HAS_UNO
 					repeater.Unloaded += OnRepeaterUnloaded;
+#endif
 					return repeater;
 				}
 				return null;
 			}
-			m_repeater = GetRepeater();
 
 			UpdateItemsSource();
 			UpdateVisualStateForIsEnabledChange();
@@ -91,37 +97,28 @@ namespace Microsoft.UI.Xaml.Controls
 		// When focus comes from outside the RadioButtons control we will put focus on the selected radio button.
 		private void OnGettingFocus(object sender, GettingFocusEventArgs args)
 		{
-			var repeater = m_repeater;
-			if (repeater != null)
+			if (m_repeater is { } repeater)
 			{
 				var inputDevice = args.InputDevice;
 				if (inputDevice == FocusInputDeviceKind.Keyboard)
 				{
 					// If focus is coming from outside the repeater, put focus on the selected item.
 					var oldFocusedElement = args.OldFocusedElement;
-					if (oldFocusedElement == null || repeater != VisualTreeHelper.GetParent(oldFocusedElement))
+					if (oldFocusedElement is null || repeater != VisualTreeHelper.GetParent(oldFocusedElement))
 					{
-						var selectedItem = repeater.TryGetElement(m_selectedIndex);
-						if (selectedItem != null)
+						if (repeater.TryGetElement(m_selectedIndex) is { } selectedItem)
 						{
-							var argsAsIGettingFocusEventArgs2 = args as GettingFocusEventArgs;
-							if (argsAsIGettingFocusEventArgs2 != null)
+							if (args.TrySetNewFocusedElement(selectedItem))
 							{
-								if (args.TrySetNewFocusedElement(selectedItem))
-								{
-									args.Handled = true;
-								}
+								args.Handled = true;
 							}
 						}
 					}
 
-					// Focus was already in the repeater: in On RS3+ Selection follows focus unless control is held down.
-					else if (SharedHelpers.IsRS3OrHigher() &&
-						(KeyboardStateTracker.GetKeyState(VirtualKey.Control) &
-							CoreVirtualKeyStates.Down) != CoreVirtualKeyStates.Down)
+					// Selection follows focus unless control is held down.
+					else if ((InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Control) & CoreVirtualKeyStates.Down) != CoreVirtualKeyStates.Down)
 					{
-						var newFocusedElementAsUIE = args.NewFocusedElement as UIElement;
-						if (newFocusedElementAsUIE != null)
+						if (args.NewFocusedElement is UIElement newFocusedElementAsUIE)
 						{
 							Select(repeater.GetElementIndex(newFocusedElementAsUIE));
 							args.Handled = true;
@@ -133,8 +130,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnRepeaterLoaded(object sender, RoutedEventArgs args)
 		{
-			var repeater = m_repeater;
-			if (repeater != null)
+			if (m_repeater is not null)
 			{
 				if (m_testHooksEnabled)
 				{
@@ -142,7 +138,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				m_blockSelecting = false;
-				if (SelectedIndex == -1 && SelectedItem != null)
+				if (SelectedIndex == -1 && SelectedItem is not null)
 				{
 					UpdateSelectedItem();
 				}
@@ -193,7 +189,7 @@ namespace Microsoft.UI.Xaml.Controls
 					break;
 				case VirtualKey.Right:
 					if (FocusManager.TryMoveFocus(FocusNavigationDirection.Right,
-						GetFindNextElementOptions(args.OriginalKey != VirtualKey.GamepadDPadRight)))
+							GetFindNextElementOptions(args.OriginalKey != VirtualKey.GamepadDPadRight /*useThisAsSearchRoot*/)))
 					{
 						args.Handled = true;
 						return;
@@ -202,13 +198,13 @@ namespace Microsoft.UI.Xaml.Controls
 					break;
 
 				case VirtualKey.Left:
-					if (FocusManager.TryMoveFocus(FocusNavigationDirection.Right,
-						GetFindNextElementOptions(args.OriginalKey != VirtualKey.GamepadDPadLeft)))
+					if (FocusManager.TryMoveFocus(FocusNavigationDirection.Left,
+						GetFindNextElementOptions(args.OriginalKey != VirtualKey.GamepadDPadLeft /*useThisAsSearchRoot*/)))
 					{
 						args.Handled = true;
 						return;
 					}
-					args.Handled = HandleEdgeCaseFocus(false, args.OriginalSource);
+					args.Handled = HandleEdgeCaseFocus(true, args.OriginalSource);
 					break;
 			}
 		}
@@ -222,14 +218,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (m_selectedIndex != 0)
 				{
-					var repeater = m_repeater;
-					if (repeater != null)
+					if (m_repeater is { } repeater)
 					{
-						var selectedItem = repeater.TryGetElement(m_selectedIndex);
-						if (selectedItem != null)
+						if (repeater.TryGetElement(m_selectedIndex) is { } selectedItem)
 						{
-							var selectedItemAsControl = selectedItem as Control;
-							if (selectedItemAsControl != null)
+							if (selectedItem is Control selectedItemAsControl)
 							{
 								args.Handled = selectedItemAsControl.Focus(FocusState.Programmatic);
 								return;
@@ -248,11 +241,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// RadioButton doesn't, which would result in the behavior.
 		private bool HandleEdgeCaseFocus(bool first, object source)
 		{
-			var repeater = m_repeater;
-			if (repeater != null)
+			if (m_repeater is { } repeater)
 			{
-				var sourceAsUIElement = source as UIElement;
-				if (sourceAsUIElement != null)
+				if (source is UIElement sourceAsUIElement)
 				{
 					int GetIndex()
 					{
@@ -260,8 +251,7 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							return 0;
 						}
-						var itemsSourceView = repeater.ItemsSourceView;
-						if (itemsSourceView != null)
+						if (repeater.ItemsSourceView is { } itemsSourceView)
 						{
 							return itemsSourceView.Count - 1;
 						}
@@ -287,14 +277,21 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnRepeaterElementPrepared(ItemsRepeater sender, ItemsRepeaterElementPreparedEventArgs args)
 		{
-			var element = args.Element;
-			if (element != null)
+			if (args.Element is { } element)
 			{
-				var toggleButton = element as ToggleButton;
-				if (toggleButton != null)
+				if (element is ToggleButton toggleButton)
 				{
+#if HAS_UNO
+					// Uno specific: the handlers are removed in OnRepeaterElementClearing instead of by ChildHandlers revokers.
 					toggleButton.Checked += OnChildChecked;
 					toggleButton.Unchecked += OnChildUnchecked;
+#else
+					var childHandlers = new ChildHandlers();
+					childHandlers.checkedRevoker = toggleButton.Checked(auto_revoke, OnChildChecked);
+					childHandlers.uncheckedRevoker = toggleButton.Unchecked(auto_revoke, OnChildUnchecked);
+
+					toggleButton.SetValue(s_childHandlersProperty, childHandlers);
+#endif
 
 					// If the developer adds a checked toggle button to the collection, update selection to this item.
 					if (SharedHelpers.IsTrue(toggleButton.IsChecked))
@@ -302,18 +299,18 @@ namespace Microsoft.UI.Xaml.Controls
 						Select(args.Index);
 					}
 
-					// TODO: Uno specific - remove when #4689 is fixed 
-					//If SelectedItem/SelectedIndex has already been set by the time the elements are loaded, ensure we sync the selection
+#if HAS_UNO
+					// TODO Uno: Elements are prepared after the repeater's Loaded (#4689), so OnRepeaterLoaded
+					// cannot check the container of a SelectedIndex/SelectedItem set before load.
 					if (args.Index == SelectedIndex)
 					{
 						toggleButton.IsChecked = true;
 					}
+#endif
 				}
-				var repeater = m_repeater;
-				if (repeater != null)
+				if (m_repeater is { } repeater)
 				{
-					var itemSourceView = repeater.ItemsSourceView;
-					if (itemSourceView != null)
+					if (repeater.ItemsSourceView is { } itemSourceView)
 					{
 						element.SetValue(AutomationProperties.PositionInSetProperty, Boxer.Box(args.Index + 1));
 						element.SetValue(AutomationProperties.SizeOfSetProperty, Boxer.Box(itemSourceView.Count));
@@ -322,25 +319,28 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnRepeaterElementClearing(ItemsRepeater itemsRepeater, ItemsRepeaterElementClearingEventArgs args)
+		private void OnRepeaterElementClearing(ItemsRepeater sender, ItemsRepeaterElementClearingEventArgs args)
 		{
-			var element = args.Element;
-			if (element != null)
+			if (args.Element is { } element)
 			{
-				// If the removed element was the selected one, update selection to -1
-				var elementAsToggle = element as ToggleButton;
-				if (elementAsToggle != null)
+#if HAS_UNO
+				if (element is ToggleButton toggle)
 				{
-					// Revoke
-					elementAsToggle.Checked -= OnChildChecked;
-					elementAsToggle.Unchecked -= OnChildUnchecked;
+					toggle.Checked -= OnChildChecked;
+					toggle.Unchecked -= OnChildUnchecked;
+				}
+#else
+				element.SetValue(s_childHandlersProperty, null);
+#endif
 
+				// If the removed element was the selected one, update selection to -1
+				if (element is ToggleButton elementAsToggle)
+				{
 					if (SharedHelpers.IsTrue(elementAsToggle.IsChecked))
 					{
 #if HAS_UNO
-						// Only reset selection if the item was actually removed from the source.
-						// When the repeater unloads, Uno sends a fake Reset to mark containers as recyclable,
-						// but the source is unchanged and selection should be preserved.
+						// Uno specific: ItemsRepeater raises a fake Reset when it unloads (ItemsRepeater.OnUnloadedUno),
+						// which clears the containers although the source is unchanged. Keep the selection then.
 						if (IsLoaded && IsInLiveTree)
 #endif
 						{
@@ -353,14 +353,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnRepeaterElementIndexChanged(ItemsRepeater sender, ItemsRepeaterElementIndexChangedEventArgs args)
 		{
-			var element = args.Element;
-			if (element != null)
+			if (args.Element is { } element)
 			{
 				element.SetValue(AutomationProperties.PositionInSetProperty, Boxer.Box(args.NewIndex + 1));
 
 				// When the selected item's index changes, update selection to match
-				var elementAsToggle = element as ToggleButton;
-				if (elementAsToggle != null)
+				if (element is ToggleButton elementAsToggle)
 				{
 					if (SharedHelpers.IsTrue(elementAsToggle.IsChecked))
 					{
@@ -372,17 +370,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnRepeaterCollectionChanged(object sender, object args)
 		{
-			var repeater = m_repeater;
-			if (repeater != null)
+			if (m_repeater is { } repeater)
 			{
-				var itemSourceView = repeater.ItemsSourceView;
-				if (itemSourceView != null)
+				if (repeater.ItemsSourceView is { } itemSourceView)
 				{
 					var count = itemSourceView.Count;
 					for (var index = 0; index < count; index++)
 					{
-						var element = repeater.TryGetElement(index);
-						if (element != null)
+						if (repeater.TryGetElement(index) is { } element)
 						{
 							element.SetValue(AutomationProperties.SizeOfSetProperty, Boxer.Box(count));
 						}
@@ -411,8 +406,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 					SelectedIndex = m_selectedIndex;
 					SelectedItem = newSelectedItem;
-					SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(new List<object>() { previousSelectedItem }, new List<object>() { newSelectedItem }));
-					//TODO: MZ: What does this do when nothing was/is selected?
+					SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(new List<object> { previousSelectedItem }, new List<object> { newSelectedItem }));
 				}
 				finally
 				{
@@ -423,22 +417,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private object GetDataAtIndex(int index, bool containerIsChecked)
 		{
-			var repeater = m_repeater;
-			if (repeater != null)
+			if (m_repeater is { } repeater)
 			{
-				var item = repeater.TryGetElement(index);
-				if (item != null)
+				if (repeater.TryGetElement(index) is { } item)
 				{
-					var itemAsToggleButton = item as ToggleButton;
-					if (itemAsToggleButton != null)
+					if (item is ToggleButton itemAsToggleButton)
 					{
 						itemAsToggleButton.IsChecked = containerIsChecked;
 					}
 				}
 				if (index >= 0)
 				{
-					var itemsSourceView = repeater.ItemsSourceView;
-					if (itemsSourceView != null)
+					if (repeater.ItemsSourceView is { } itemsSourceView)
 					{
 						if (index < itemsSourceView.Count)
 						{
@@ -447,18 +437,16 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 			}
-			return (object)(null);
+			return null;
 		}
 
 		private void OnChildChecked(object sender, RoutedEventArgs args)
 		{
 			if (!m_currentlySelecting)
 			{
-				var repeater = m_repeater;
-				if (repeater != null)
+				if (m_repeater is { } repeater)
 				{
-					var senderAsUIE = sender as UIElement;
-					if (senderAsUIE != null)
+					if (sender is UIElement senderAsUIE)
 					{
 						Select(repeater.GetElementIndex(senderAsUIE));
 					}
@@ -470,11 +458,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (!m_currentlySelecting)
 			{
-				var repeater = m_repeater;
-				if (repeater != null)
+				if (m_repeater is { } repeater)
 				{
-					var senderAsUIE = sender as UIElement;
-					if (senderAsUIE != null)
+					if (sender is UIElement senderAsUIE)
 					{
 						if (m_selectedIndex == repeater.GetElementIndex(senderAsUIE))
 						{
@@ -485,23 +471,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private bool MoveFocusNext()
-		{
-			return MoveFocus(1);
-		}
+		private bool MoveFocusNext() => MoveFocus(1);
 
-		private bool MoveFocusPrevious()
-		{
-			return MoveFocus(-1);
-		}
+		private bool MoveFocusPrevious() => MoveFocus(-1);
 
 		private bool MoveFocus(int indexIncrement)
 		{
-			var repeater = m_repeater;
-			if (repeater != null)
+			if (m_repeater is { } repeater)
 			{
-				var focusedElement = FocusManager.GetFocusedElement(XamlRoot) as UIElement;
-				if (focusedElement != null)
+				if (FocusManager.GetFocusedElement(XamlRoot) is UIElement focusedElement)
 				{
 					var focusedIndex = repeater.GetElementIndex(focusedElement);
 
@@ -511,16 +489,11 @@ namespace Microsoft.UI.Xaml.Controls
 						var itemCount = repeater.ItemsSourceView.Count;
 						while (focusedIndex >= 0 && focusedIndex < itemCount)
 						{
-							var item = repeater.TryGetElement(focusedIndex);
-							if (item != null)
+							if (repeater.TryGetElement(focusedIndex) is { } item)
 							{
-								var itemAsControl = item as Control;
-								if (itemAsControl != null)
+								if (item.Focus(FocusState.Programmatic))
 								{
-									if (itemAsControl.Focus(FocusState.Programmatic))
-									{
-										return true;
-									}
+									return true;
 								}
 							}
 							focusedIndex += indexIncrement;
@@ -553,15 +526,11 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs args)
-		{
-			UpdateVisualStateForIsEnabledChange();
-		}
+		private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs args) => UpdateVisualStateForIsEnabledChange();
 
 		public UIElement ContainerFromIndex(int index)
 		{
-			var repeater = m_repeater;
-			if (repeater != null)
+			if (m_repeater is { } repeater)
 			{
 				return repeater.TryGetElement(index);
 			}
@@ -571,30 +540,22 @@ namespace Microsoft.UI.Xaml.Controls
 		private void UpdateItemsSource()
 		{
 			Select(-1);
-
-			var repeater = m_repeater;
-			if (repeater != null)
+			m_itemsSourceChanged.Disposable = null;
+			if (m_repeater is { } repeater)
 			{
-				// Revoke previous
-				if (repeater.ItemsSourceView != null)
-				{
-					repeater.ItemsSourceView.CollectionChanged -= OnRepeaterCollectionChanged;
-				}
-
 				repeater.ItemsSource = GetItemsSource();
 
-				var itemsSourceView = repeater.ItemsSourceView;
-				if (itemsSourceView != null)
+				if (repeater.ItemsSourceView is { } itemsSourceView)
 				{
 					itemsSourceView.CollectionChanged += OnRepeaterCollectionChanged;
+					m_itemsSourceChanged.Disposable = Disposable.Create(() => itemsSourceView.CollectionChanged -= OnRepeaterCollectionChanged);
 				}
 			}
 		}
 
 		private object GetItemsSource()
 		{
-			var itemsSource = ItemsSource;
-			if (itemsSource != null)
+			if (ItemsSource is { } itemsSource)
 			{
 				return itemsSource;
 			}
@@ -616,11 +577,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (!m_currentlySelecting)
 			{
-				var repeater = m_repeater;
-				if (repeater != null)
+				if (m_repeater is { } repeater)
 				{
-					var itemsSourceView = repeater.ItemsSourceView;
-					if (itemsSourceView != null)
+					if (repeater.ItemsSourceView is { } itemsSourceView)
 					{
 						Select(itemsSourceView.IndexOf(SelectedItem));
 					}
@@ -628,15 +587,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void UpdateItemTemplate()
-		{
-			m_radioButtonsElementFactory.UserElementFactory(ItemTemplate);
-		}
+		private void UpdateItemTemplate() => m_radioButtonsElementFactory.UserElementFactory(ItemTemplate);
 
-		private void UpdateVisualStateForIsEnabledChange()
-		{
-			VisualStateManager.GoToState(this, IsEnabled ? "Normal" : "Disabled", false);
-		}
+		private void UpdateVisualStateForIsEnabledChange() => VisualStateManager.GoToState(this, IsEnabled ? "Normal" : "Disabled", false);
 
 		// Test Hooks helpers, only function when m_testHooksEnabled == true
 		internal void SetTestHooksEnabled(bool enabled)
@@ -655,24 +608,36 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+#if !HAS_UNO // Uno specific: the layout belongs to this control's template, so its handler cannot keep the control alive.
+		~RadioButtons()
+		{
+			if (m_layoutChangedToken)
+			{
+				if (GetLayout() is { } layout)
+				{
+					layout.LayoutChanged -= m_layoutChangedToken;
+					m_layoutChangedToken = default;
+				}
+			}
+		}
+#endif
+
+#if HAS_UNO
+		// Uno specific: stands in for the destructor, detaching the test hooks' layout handler.
 		private void OnRepeaterUnloaded(object sender, RoutedEventArgs args)
 		{
-			var layout = GetLayout();
-			if (layout != null)
+			if (GetLayout() is { } layout)
 			{
 				layout.LayoutChanged -= OnLayoutChanged;
 			}
 		}
+#endif
 
-		private void OnLayoutChanged(ColumnMajorUniformToLargestGridLayout sender, object args)
-		{
-			RadioButtonsTestHooks.NotifyLayoutChanged(this);
-		}
+		private void OnLayoutChanged(ColumnMajorUniformToLargestGridLayout sender, object args) => RadioButtonsTestHooks.NotifyLayoutChanged(this);
 
 		internal int GetRows()
 		{
-			var layout = GetLayout();
-			if (layout != null)
+			if (GetLayout() is { } layout)
 			{
 				return layout.GetRows();
 			}
@@ -681,8 +646,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal int GetColumns()
 		{
-			var layout = GetLayout();
-			if (layout != null)
+			if (GetLayout() is { } layout)
 			{
 				return layout.GetColumns();
 			}
@@ -691,19 +655,16 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal int GetLargerColumns()
 		{
-			var layout = GetLayout();
-			if (layout != null)
+			if (GetLayout() is { } layout)
 			{
 				return layout.GetLargerColumns();
 			}
 			return -1;
 		}
 
-
 		private void AttachToLayoutChanged()
 		{
-			var layout = GetLayout();
-			if (layout != null)
+			if (GetLayout() is { } layout)
 			{
 				layout.SetTestHooksEnabled(true);
 				layout.LayoutChanged += OnLayoutChanged;
@@ -712,8 +673,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void DetatchFromLayoutChanged()
 		{
-			var layout = GetLayout();
-			if (layout != null)
+			if (GetLayout() is { } layout)
 			{
 				layout.SetTestHooksEnabled(false);
 				layout.LayoutChanged -= OnLayoutChanged;
@@ -722,14 +682,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private ColumnMajorUniformToLargestGridLayout GetLayout()
 		{
-			var repeater = m_repeater;
-			if (repeater != null)
+			if (m_repeater is { } repeater)
 			{
-				var layout = repeater.Layout;
-				if (layout != null)
+				if (repeater.Layout is { } layout)
 				{
-					var customLayout = layout as ColumnMajorUniformToLargestGridLayout;
-					if (customLayout != null)
+					if (layout is ColumnMajorUniformToLargestGridLayout customLayout)
 					{
 						return customLayout;
 					}
@@ -737,8 +694,5 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			return null;
 		}
-
-		protected override Automation.Peers.AutomationPeer OnCreateAutomationPeer()
-			=> new Automation.Peers.RadioButtonsAutomationPeer(this);
 	}
 }
