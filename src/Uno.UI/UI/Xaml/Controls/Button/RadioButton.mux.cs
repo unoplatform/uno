@@ -1,4 +1,8 @@
-﻿#nullable enable
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference RadioButton_Partial.cpp, tag winui3/release/2.6.5
+
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -95,6 +99,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 			Unregister(strOldValue ?? "", this);
 			Register(strNewValue ?? "", this);
+
+			UpdateRadioButtonGroup();
+		}
+
+		// Called when the element enters the tree. Ensures multiple radio buttons in a group are not checked
+		private protected override void EnterImpl(bool live)
+		{
+			base.EnterImpl(live);
+			if (live)
+			{
+				UpdateRadioButtonGroup();
+			}
 		}
 
 		private protected override void OnChecked()
@@ -246,12 +262,32 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateRadioButtonGroup()
 		{
-			RadioButton? pRadioButtonNoRef = null;
 			bool bIsChecked = false;
 
+			// If we are not checked then we don't have any effect on other buttons
+			var spIsCheckedReference = IsChecked;
+			if (spIsCheckedReference != null)
+			{
+				bIsChecked = spIsCheckedReference.Value;
+				if (!bIsChecked)
+				{
+					return;
+				}
+			}
+
+			RadioButton? pRadioButtonNoRef = null;
 			bool groupNameExists = false;
 			string? groupName;
 			GetGroupName(out groupNameExists, out groupName);
+			DependencyObject? spParent = GetParentForGroup(groupNameExists, this);
+
+			// If we don't get a parent then don't do anything and let it be handled on enter impl.  Without
+			// a parent we don't know what the scope of a named group item is and for unnamed items, they
+			// will all share the same group preventing different groups from having buttons selected.
+			if (spParent == null)
+			{
+				return;
+			}
 
 			var groupsByName = DXamlCore.Current.GetRadioButtonGroupsByName(false);
 
@@ -260,8 +296,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (groupsByName.TryGetValue(groupName, out var groupElements))
 				{
-					DependencyObject? spParent = GetParentForGroup(groupNameExists, this);
-
 					foreach (var radioButtonRef in groupElements)
 					{
 						// Resolve the weak reference to get an actual RadioButton
@@ -275,7 +309,7 @@ namespace Microsoft.UI.Xaml.Controls
 						// Cast to a class so we can call all the members
 						pRadioButtonNoRef = radioButton;
 
-						var spIsCheckedReference = pRadioButtonNoRef.IsChecked;
+						spIsCheckedReference = pRadioButtonNoRef.IsChecked;
 						if (spIsCheckedReference != null)
 						{
 							bIsChecked = spIsCheckedReference.Value;
