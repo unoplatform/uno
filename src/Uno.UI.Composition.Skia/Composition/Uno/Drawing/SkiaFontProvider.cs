@@ -126,15 +126,33 @@ internal sealed class SkiaFontProvider : IFontProvider
 		{
 			if (!_familyFaces.TryGetValue(key, out var face))
 			{
-				// FromFamilyName may return null (https://github.com/mono/SkiaSharp/issues/1058) or an empty typeface
-				// on some platforms when the family isn't found; treat both as "not found".
-				var typeface = SKTypeface.FromFamilyName(familyName, weight.ToSkiaWeight(), stretch.ToSkiaWidth(), style.ToSkiaSlant());
+				// FromFamilyName substitutes the font manager's default typeface for an unknown family rather than
+				// failing (on WASM that is Skia's embedded monospace font), so ask the font manager first. It may also
+				// return null (https://github.com/mono/SkiaSharp/issues/1058) or an empty typeface on some platforms when
+				// the family isn't found; treat both as "not found".
+				var typeface = FamilyExists(familyName)
+					? SKTypeface.FromFamilyName(familyName, weight.ToSkiaWeight(), stretch.ToSkiaWidth(), style.ToSkiaSlant())
+					: null;
 				face = typeface is null || typeface.IsEmpty ? null : new SkiaFontFace(ApplyVariableFontAxes(typeface, weight, stretch, style));
 				_familyFaces[key] = face;
 			}
 
 			return face;
 		}
+	}
+
+	private static bool FamilyExists(string familyName)
+	{
+		// CoreText's FromFamilyName maps these CSS generic names to Helvetica, Times and Courier, but its family
+		// lookup doesn't (map_css_names in SkFontMgr_mac_ct.cpp), so they count as present there.
+		if ((OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsTvOS() || OperatingSystem.IsMacCatalyst())
+			&& familyName is "sans-serif" or "serif" or "monospace")
+		{
+			return true;
+		}
+
+		using var styles = SKFontManager.Default.GetFontStyles(familyName);
+		return styles is { Count: > 0 };
 	}
 
 	public async ValueTask<IFont?> MatchFamilyAsync(string familyName, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)

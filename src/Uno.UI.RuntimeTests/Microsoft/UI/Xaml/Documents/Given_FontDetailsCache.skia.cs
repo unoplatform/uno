@@ -4,13 +4,17 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.UI.Text;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Composition.Managed;
 using Uno.UI.Composition.Skia;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.Storage;
 using Windows.UI.Text;
+using static Private.Infrastructure.TestServices;
 
 #nullable enable
 
@@ -21,6 +25,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 	public class Given_FontDetailsCache
 	{
 		private const string FontAsset = "ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/uno-fluentui-assets-runtimetest01.ttf";
+		private const string UnknownFamily = "Uno Test Font That Does Not Exist";
 		private const string LatinFontAsset = "ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf";
 
 		[TestMethod]
@@ -73,6 +78,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 
 			Assert.IsNull(fontFile.CreateFont(null, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal, 14f));
 		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20828")]
+		public async Task When_Family_Unknown_Then_Default_Text_Font_Is_Used()
+		{
+			var (_, defaultTask) = FontDetailsCache.GetFont(null, 36, FontWeights.Bold, FontStretch.Normal, FontStyle.Normal);
+			var (_, unknownTask) = FontDetailsCache.GetFont(UnknownFamily, 36, FontWeights.Bold, FontStretch.Normal, FontStyle.Normal);
+
+			var defaultFont = (await defaultTask).FontHandle;
+			var unknownFont = (await unknownTask).FontHandle;
+
+			Assert.AreEqual(defaultFont.FamilyName, unknownFont.FamilyName);
+			// The advance tells the bold face from the regular one, which the family name doesn't.
+			Assert.AreEqual(GetAdvance(defaultFont, 'W'), GetAdvance(unknownFont, 'W'));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20828")]
+		public async Task When_Family_Unknown_Then_TextBlock_Measures_Like_Default()
+		{
+			var defaultText = new TextBlock { Text = "5.0", FontSize = 36, FontWeight = FontWeights.Bold };
+			var unknownText = new TextBlock { Text = "5.0", FontSize = 36, FontWeight = FontWeights.Bold, FontFamily = new FontFamily(UnknownFamily) };
+			var panel = new StackPanel { Children = { defaultText, unknownText } };
+
+			try
+			{
+				await UITestHelper.Load(panel);
+				await WindowHelper.WaitFor(() => unknownText.ActualWidth > 0 && Math.Abs(unknownText.ActualWidth - defaultText.ActualWidth) < 0.5, 3000, "unknown family measured like the default font");
+
+				Assert.AreEqual(defaultText.ActualWidth, unknownText.ActualWidth, 0.5);
+				Assert.AreEqual(defaultText.ActualHeight, unknownText.ActualHeight, 0.5);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		private static float GetAdvance(IFont font, char character) => font.GetGlyphAdvance(font.GetGlyphIndex(character));
 
 		[TestMethod]
 		public async Task When_Family_Not_Installed_Then_Resolved_Through_Provider()
