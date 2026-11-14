@@ -625,6 +625,112 @@ public partial class Given_RichEditBox
 		}
 	}
 
+	// Gboard composes every word, here past MaxLength. The document keeps what fits, and the input takes it back at once
+	// and ends the composition, so the keyboard builds its next keystrokes and suggestions on the document's text.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Wasm_Composition_Past_MaxLength_Is_Written_Back()
+	{
+		var sut = new RichEditBox { MaxLength = 3 };
+		var ended = 0;
+		sut.TextCompositionEnded += (_, _) => ended++;
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			sut.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));"
+				+ "for(const w of ['a','ab','abc','abcd']){input.setSelectionRange(0,w.length-1);input.dispatchEvent(new CompositionEvent('compositionupdate',{data:w}));input.value=w;input.setSelectionRange(w.length,w.length);input.dispatchEvent(new InputEvent('input',{isComposing:true,inputType:'insertCompositionText',data:w}));}"
+				+ "return 'ok';})()");
+			await WindowHelper.WaitForIdle();
+
+			GetTextWithoutFinalEop(sut.Document, out var text);
+			Assert.AreEqual("abc", text);
+			Assert.AreEqual(1, ended, "the composition ends");
+			Assert.AreEqual(
+				"abc|3",
+				global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+					"(function(){const input=document.getElementById('uno-input');return `${input.value}|${input.selectionStart}`;})()"),
+				"the input takes the document's text at once");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	// A key composed in the middle of a full document: the input takes the document's text back with the caret where the
+	// composition started.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Wasm_Composition_Past_MaxLength_In_The_Middle_Keeps_The_Caret()
+	{
+		var sut = new RichEditBox { MaxLength = 3 };
+		var ended = 0;
+		sut.TextCompositionEnded += (_, _) => ended++;
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			sut.Document.SetText(TextSetOptions.None, "abc");
+			sut.Document.Selection.SetRange(1, 1);
+			sut.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+				"(function(){const input=document.getElementById('uno-input');input.setSelectionRange(1,1);input.dispatchEvent(new CompositionEvent('compositionstart'));input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'x'}));input.value='axbc';input.setSelectionRange(2,2);input.dispatchEvent(new InputEvent('input',{isComposing:true,inputType:'insertCompositionText',data:'x'}));return 'ok';})()");
+			await WindowHelper.WaitForIdle();
+
+			GetTextWithoutFinalEop(sut.Document, out var text);
+			Assert.AreEqual("abc", text);
+			Assert.AreEqual(1, ended, "the composition ends");
+			Assert.AreEqual(
+				"abc|1",
+				global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+					"(function(){const input=document.getElementById('uno-input');return `${input.value}|${input.selectionStart}`;})()"),
+				"the input takes the document's text and caret back");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	// Upper case keeps the length: the document's casing is reconciled when the composition ends, which goes on meanwhile.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Wasm_Composition_With_Upper_Casing_Stays_Open()
+	{
+		var sut = new RichEditBox { CharacterCasing = CharacterCasing.Upper };
+		var ended = 0;
+		sut.TextCompositionEnded += (_, _) => ended++;
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			sut.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+				"(function(){const input=document.getElementById('uno-input');input.dispatchEvent(new CompositionEvent('compositionstart'));"
+				+ "for(const w of ['a','ab']){input.setSelectionRange(0,w.length-1);input.dispatchEvent(new CompositionEvent('compositionupdate',{data:w}));input.value=w;input.setSelectionRange(w.length,w.length);input.dispatchEvent(new InputEvent('input',{isComposing:true,inputType:'insertCompositionText',data:w}));}"
+				+ "return 'ok';})()");
+			await WindowHelper.WaitForIdle();
+
+			GetTextWithoutFinalEop(sut.Document, out var text);
+			Assert.AreEqual("AB", text);
+			Assert.AreEqual(0, ended, "the casing doesn't end the composition");
+			Assert.IsTrue(sut.IsComposing);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
 	// Skia-Android and the browser apply the composition themselves and report it before syncing it to the document.
 	// TextCompositionChanged comes once the text is in the document, after TextChanging.
 	[TestMethod]

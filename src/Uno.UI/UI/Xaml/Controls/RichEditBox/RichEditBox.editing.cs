@@ -936,6 +936,9 @@ namespace Microsoft.UI.Xaml.Controls
 			return true;
 		}
 
+		// After the native input took the document's text back, which moved its caret.
+		internal void SelectNative() => _textBoxView?.Extension?.Select(_selection.start, _selection.length);
+
 		private static bool NativeTextMatchesDocument(string nativeText, string documentText)
 		{
 			if (string.Equals(nativeText, documentText, StringComparison.Ordinal))

@@ -321,8 +321,8 @@
 						}
 					}
 					if (textDiffers && BrowserInvisibleTextBoxViewExtension.isSyncTarget(input, generation)) {
-						// The TextBox re-applies its edits (a TextChanging filter, MaxLength) to the committed value and
-						// pushes the result to the input.
+						// The TextBox re-applies its same-length edits (a casing filter) to the committed value and pushes
+						// the result to the input.
 						BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
 					}
 				});
@@ -388,11 +388,13 @@
 		}
 
 		private static syncTextFromInput(input: HTMLInputElement | HTMLTextAreaElement) {
+			// The value the input had at the previous sync or write tells an edit from the same text reported again.
+			const previousValue = BrowserInvisibleTextBoxViewExtension.syncedValue;
 			BrowserInvisibleTextBoxViewExtension.syncedValue = input.value;
 			if (input.selectionDirection == "backward") {
-				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd);
+				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd, previousValue);
 			} else {
-				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart);
+				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart, previousValue);
 			}
 		}
 
@@ -700,7 +702,8 @@
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			if (input != null) {
 				// While a composition edits the text, the browser owns the value: overwriting it would destroy the
-				// composition. A TextBox text that differs from it (an app edit, MaxLength) is reconciled once it ends.
+				// composition. A TextBox text that differs from it only as a same-length filter changes it (upper case) is
+				// reconciled once it ends; for any other difference the TextBox ends the composition first.
 				if (BrowserInvisibleTextBoxViewExtension.isCompositionReported) {
 					BrowserInvisibleTextBoxViewExtension.pendingText = BrowserInvisibleTextBoxViewExtension.asInputValue(input, text) === input.value ? null : text;
 					return;

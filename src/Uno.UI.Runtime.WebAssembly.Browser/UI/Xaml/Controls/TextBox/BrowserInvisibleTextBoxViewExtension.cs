@@ -68,8 +68,9 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		}
 	}
 
+	/// <param name="previousText">The input's text at the previous sync or write, or null when unknown.</param>
 	[JSExport]
-	private static void OnInputTextChanged(string text, int selectionStart, int selectionLength) => RunFromNative(() =>
+	private static void OnInputTextChanged(string text, int selectionStart, int selectionLength, string? previousText) => RunFromNative(() =>
 	{
 		var xamlRoot = WebAssemblyWindowWrapper.Instance.XamlRoot;
 		// We are expecting this to be called only when the TextBox is focused, as it's the result of an interaction with the native HTML input.
@@ -79,10 +80,13 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 				// A multi-line TextBox's textarea breaks lines with \n where the TextBox uses \r: a text differing only
 				// by them is not an edit of the TextBox's own, which it would echo back and revert the caret for.
 				var nativeText = text.Replace('\n', '\r');
-				// A refusal past MaxLength keeps being reconciled when the composition ends: a conversion can bring the
-				// composition back within it (にほん to 日本).
-				if (!core.ApplyNativeInput(nativeText, selectionStart, selectionLength)
-					&& !(core.MaxLength > 0 && nativeText.Length > core.MaxLength)
+				var textBefore = core.Text;
+				core.ApplyNativeInput(nativeText, selectionStart, selectionLength);
+
+				// The TextBox refused the edit, or kept text of another length (MaxLength, a length limit): its text goes back to
+				// the input at once, which ends the composition, so the keyboard builds its next keystrokes and suggestions on
+				// the text the TextBox kept.
+				if (ImeSessionCoordinator.MustReturnTextToNative(core.Text, textBefore, nativeText, previousText)
 					&& WasmImeTextBoxExtension.EndRefusedComposition())
 				{
 					// The input got the TextBox's text back, without its caret.
@@ -90,7 +94,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 				}
 				break;
 			case RichEditBox richEditBox:
+				// The same for a document that refused the edit or kept less of it (its text limit).
+				var documentBefore = richEditBox.GetPlainTextContent();
 				richEditBox.UpdateTextFromNative(text, selectionStart, selectionLength);
+				if (ImeSessionCoordinator.MustReturnTextToNative(richEditBox.GetPlainTextContent(), documentBefore, text, previousText)
+					&& WasmImeTextBoxExtension.EndRefusedComposition())
+				{
+					richEditBox.SelectNative();
+				}
 				break;
 		}
 	});
