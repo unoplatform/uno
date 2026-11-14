@@ -254,6 +254,14 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly bool _layoutUsesAvailableWidth;
 	private readonly bool _layoutUsesAvailableHeight;
 
+	// CTextBlock::UpdateIsTextTrimmedFastPath: DWrite's isTrimmed on the last line, which covers the lines hidden by
+	// MaxLines or the height. Without TextTrimming, DWrite only trims for the MaxLines hack in CTextBlock::MeasureOverride.
+	internal bool IsLastLineTrimmed { get; }
+
+	// CTextBlock::UpdateIsTextTrimmedSlowPath: ParagraphNode::TrimLineIfNecessary collapsed a line for its width or for
+	// the lines it dropped. Clip doesn't cut the line here, so its width overflow is left for the owner to compare.
+	internal bool HasTrimmedLine { get; }
+
 	internal unsafe UnicodeText(
 		Size availableSize,
 		IEnumerable<Inline> inlines, // only leaf nodes; custom layouts may stream a bounded reusable inline
@@ -923,6 +931,8 @@ internal readonly partial struct UnicodeText : IParsedText
 		float totalHeight = 0;
 		int nextTrimPointLookupStart = 0;
 		var endedEarly = false;
+		var lastTrimmedLineIndex = -1;
+		var actualLineCount = lines.Count + (textEndsInLineBreak ? 1 : 0);
 		for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
 		{
 			var line = lines[lineIndex];
@@ -932,7 +942,6 @@ internal readonly partial struct UnicodeText : IParsedText
 				: textEndsInLineBreak
 					? terminalBlockHeight
 					: 0;
-			var actualLineCount = lines.Count + (textEndsInLineBreak ? 1 : 0);
 			var isEarlyLastLine = (maxLines > 0 && maxLines < actualLineCount && lineIndex == maxLines - 1) || (lineIndex < actualLineCount - 1 && nextLineHeight + totalHeight > availableSize.Height);
 
 			var lineWidth = line.width;
@@ -944,6 +953,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				: (float)availableSize.Width;
 			if (textTrimming is TextTrimming.CharacterEllipsis or TextTrimming.WordEllipsis && (line.widthWithoutTrailingSpaces > trimAvailableWidth || isEarlyLastLine))
 			{
+				lastTrimmedLineIndex = lineIndex;
 				IEnumerable<LinkedListNode<Cluster>> possibleTrimPoints;
 				if (textTrimming is TextTrimming.WordEllipsis)
 				{
@@ -1032,6 +1042,11 @@ internal readonly partial struct UnicodeText : IParsedText
 				break;
 			}
 		}
+
+		IsLastLineTrimmed = textTrimming is TextTrimming.None
+			? maxLines > 0 && maxLines < actualLineCount
+			: lastTrimmedLineIndex == lines.Count - 1;
+		HasTrimmedLine = textTrimming is not TextTrimming.None && (endedEarly || lastTrimmedLineIndex >= 0);
 
 		var hasEndingParagraphLine = !suppressEndingNewLineLine
 			&& !endedEarly
