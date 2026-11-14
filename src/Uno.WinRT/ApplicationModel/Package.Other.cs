@@ -12,6 +12,11 @@ public partial class Package
 {
 	private const string PackageManifestName = "Package.appxmanifest";
 
+	// Turned off at build time by heads that embed no manifest (e.g. WebAssembly), so trimming drops the XML stack.
+	[FeatureSwitchDefinition("Uno.ApplicationModel.Package.IsManifestEmbedded")]
+	private static bool IsManifestEmbedded
+		=> !AppContext.TryGetSwitch("Uno.ApplicationModel.Package.IsManifestEmbedded", out var isEmbedded) || isEmbedded;
+
 	private static Assembly? _entryAssembly;
 	private string _displayName = "";
 
@@ -95,7 +100,7 @@ public partial class Package
 
 	private void ParsePackageManifest()
 	{
-		if (_entryAssembly is null)
+		if (_entryAssembly is null || !IsManifestEmbedded)
 		{
 			return;
 		}
