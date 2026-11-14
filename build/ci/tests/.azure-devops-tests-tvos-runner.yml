@@ -54,6 +54,8 @@ jobs:
     parameters:
       timeoutInMinutes: ${{ parameters.JobTimeoutInMinutes }}
 
+  - template: ../templates/mac-rerun-limit.yml
+
   - checkout: self
     clean: true
 
@@ -64,7 +66,7 @@ jobs:
       path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   - task: DownloadPipelineArtifact@2
-    condition: gt(variables['System.JobAttempt'], 1)
+    condition: and(succeeded(), gt(variables['System.JobAttempt'], 1))
     continueOnError: true
     displayName: Download previous test runs failed tests
     inputs:
@@ -105,7 +107,7 @@ jobs:
       SAMPLESAPP_BUNDLE_ID: "${{ parameters.SAMPLESAPP_BUNDLE_ID }}"
 
   - task: PublishTestResults@2
-    condition: always()
+    condition: and(always(), ne(variables['UNO_MAC_RERUN_BLOCKED'], 'true'))
     inputs:
       testRunTitle: ${{ parameters.TestRunName }}
       testResultsFormat: 'NUnit'
@@ -147,7 +149,7 @@ jobs:
       failTaskOnMissingResultsFile: true
 
   - task: PublishBuildArtifacts@1
-    condition: always()
+    condition: and(always(), ne(variables['UNO_MAC_RERUN_BLOCKED'], 'true'))
     retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
@@ -157,7 +159,7 @@ jobs:
   # logs files are large, so we create them outside of `artifactstagingdirectory` and publish
   # them in a separate artifacts container.
   - task: PublishBuildArtifacts@1
-    condition: always()
+    condition: and(always(), ne(variables['UNO_MAC_RERUN_BLOCKED'], 'true'))
     retryCountOnTaskFailure: 10
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/tvos-ui-tests-logs
@@ -166,7 +168,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     displayName: Publish Failed Tests Results List
-    condition: always()
+    condition: and(always(), ne(variables['UNO_MAC_RERUN_BLOCKED'], 'true'))
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results

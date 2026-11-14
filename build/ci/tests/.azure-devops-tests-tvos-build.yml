@@ -27,6 +27,8 @@ jobs:
     XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
 
   steps:
+  - template: ../templates/mac-rerun-limit.yml
+
   - checkout: self
     clean: true
 
@@ -81,7 +83,7 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     retryCountOnTaskFailure: 3
-    condition: always()
+    condition: and(always(), ne(variables['UNO_MAC_RERUN_BLOCKED'], 'true'))
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: samplesapp-tvos-skia-logs

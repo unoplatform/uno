@@ -1,0 +1,18 @@
+parameters:
+  # The first run plus one rerun. On pull requests, third and later attempts of these jobs have almost never passed.
+  maxAttempts: 2
+
+steps:
+  # Jobs on the "GitHub-hosted Agents" pool are billed per minute. Pull requests only: master and release builds keep their reruns.
+  # UNO_MAC_RERUN_BLOCKED keeps the job's always() publish steps from retrying on logs a blocked attempt never wrote.
+  - bash: |
+      attempt=$(System.JobAttempt)
+      if [ "$attempt" -gt ${{ parameters.maxAttempts }} ]; then
+        echo "##vso[task.setvariable variable=UNO_MAC_RERUN_BLOCKED]true"
+        echo "##vso[task.logissue type=error]Attempt $attempt: this job already had its rerun. Jobs on per-minute Mac agents get ${{ parameters.maxAttempts }} attempts per pull request build (build/ci/templates/mac-rerun-limit.yml). Push a fix, or flag the failure on the PR if it's unrelated to the change."
+        exit 1
+      elif [ "$attempt" -eq ${{ parameters.maxAttempts }} ]; then
+        echo "##vso[task.logissue type=warning]Last rerun allowed for this job on per-minute Mac agents (build/ci/templates/mac-rerun-limit.yml)."
+      fi
+    displayName: Limit reruns on per-minute Mac agents
+    condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'), ne(variables['System.JobAttempt'], '1'))
