@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference PipsPager.cpp, tag winui3/release/1.8-stable
+// MUX reference PipsPager.cpp
 
 using System;
 using System.Collections.ObjectModel;

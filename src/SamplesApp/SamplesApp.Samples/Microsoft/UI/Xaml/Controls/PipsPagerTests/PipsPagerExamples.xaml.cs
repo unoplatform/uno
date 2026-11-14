@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference PipsPagerExamples.xaml.cs, commit 3a84856
+// MUX reference PipsPagerExamples.xaml.cs
 
 using System;
 using System.Collections.Generic;
