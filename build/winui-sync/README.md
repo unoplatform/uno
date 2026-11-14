@@ -42,6 +42,11 @@ The `/winui-sync-onboard` skill walks through this, including how to judge the b
 An area is a control or a feature area: one or more upstream folders and the Uno folders they were
 ported to. Paths are written without a leading `src/`; the tooling finds them at each commit.
 
+A source or test path can also be a single file. Use that for controls whose upstream code sits in
+a folder shared with many others, such as `dxaml/xcp/dxaml/lib`: list the control's own files
+(`dxaml/xcp/dxaml/lib/Button_Partial.cpp`, ...) and only those are compared. A new upstream file
+is not picked up until it is added to the list. Strings paths are always folders.
+
 ```pwsh
 ./build/winui-sync/seed-area.ps1 -Id teachingtip -Title TeachingTip `
     -UpstreamRepo <path to a full microsoft-ui-xaml clone> `

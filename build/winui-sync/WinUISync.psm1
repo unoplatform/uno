@@ -254,8 +254,20 @@ function Resolve-UpstreamPath {
 	$null
 }
 
-# One tree-to-tree comparison per top-level area path: @{ Path; Base; Target; Exclude }.
-# Base/Target are '<sha>:<path>' tree-ish specs (the empty tree when the path is absent on that side).
+# Like Resolve-UpstreamPath, for a folder or a single file: @{ Path; Kind = 'tree' | 'blob' }, or $null.
+function Resolve-UpstreamEntry {
+	param([Parameter(Mandatory)][string]$UpstreamRepo, [Parameter(Mandatory)][string]$Ref, [Parameter(Mandatory)][string]$Path)
+	$Path = $Path.Trim('/')
+	foreach ($candidate in $Path, "src/$Path") {
+		$entry = @(Invoke-Git $UpstreamRepo @('ls-tree', $Ref, '--', $candidate))
+		if ($entry.Count -eq 1 -and $entry[0] -match '^\d+ (tree|blob) ') { return @{ Path = $candidate; Kind = $Matches[1] } }
+	}
+	$null
+}
+
+# One comparison per top-level area path: @{ Path; Kind; Base; Target; Exclude }.
+# Kind 'tree' (a folder): Base/Target are '<sha>:<path>' tree-ish specs, the empty tree when absent on that side.
+# Kind 'blob' (a single file): Base/Target are '<sha>:<path>' blob specs, $null when absent on that side.
 function Get-AreaTreeDiffs {
 	param([Parameter(Mandatory)]$Area, [Parameter(Mandatory)][string]$UpstreamRepo, [Parameter(Mandatory)][string]$TargetSha)
 	$emptyTree = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'
@@ -263,8 +275,8 @@ function Get-AreaTreeDiffs {
 	$resolved = @{}
 	foreach ($path in $all) {
 		$resolved[$path] = @{
-			Base   = Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo -Ref $Area.baseline -Path $path
-			Target = Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo -Ref $TargetSha -Path $path
+			Base   = Resolve-UpstreamEntry -UpstreamRepo $UpstreamRepo -Ref $Area.baseline -Path $path
+			Target = Resolve-UpstreamEntry -UpstreamRepo $UpstreamRepo -Ref $TargetSha -Path $path
 		}
 		# A mistyped path would otherwise read as "nothing ever changes here".
 		if (-not $resolved[$path].Base -and -not $resolved[$path].Target) {
@@ -275,13 +287,19 @@ function Get-AreaTreeDiffs {
 	foreach ($path in $roots) {
 		$atBase = $resolved[$path].Base
 		$atTarget = $resolved[$path].Target
+		$kind = if ($atTarget) { $atTarget.Kind } else { $atBase.Kind }
+		if ($atBase -and $atTarget -and $atBase.Kind -ne $atTarget.Kind) {
+			throw "area '$($Area.id)': upstream path '$path' is a file at one commit and a folder at the other"
+		}
+		$absent = if ($kind -eq 'tree') { $emptyTree } else { $null }
 		$exclude = @()
 		$strings = if ($Area.upstream.strings) { $Area.upstream.strings.Trim('/') } else { $null }
-		if ($strings -and $strings.StartsWith("$path/")) { $exclude = @(":(exclude)$($strings.Substring($path.Length + 1))") }
+		if ($kind -eq 'tree' -and $strings -and $strings.StartsWith("$path/")) { $exclude = @(":(exclude)$($strings.Substring($path.Length + 1))") }
 		[pscustomobject]@{
 			Path    = $path
-			Base    = if ($atBase) { "$($Area.baseline):$atBase" } else { $emptyTree }
-			Target  = if ($atTarget) { "${TargetSha}:$atTarget" } else { $emptyTree }
+			Kind    = $kind
+			Base    = if ($atBase) { "$($Area.baseline):$($atBase.Path)" } else { $absent }
+			Target  = if ($atTarget) { "${TargetSha}:$($atTarget.Path)" } else { $absent }
 			Exclude = $exclude
 		}
 	}
@@ -301,6 +319,11 @@ function Get-AreaSyncState {
 	$codeChanged = $false
 	$stats = @()
 	foreach ($d in Get-AreaTreeDiffs -Area $Area -UpstreamRepo $UpstreamRepo -TargetSha $TargetSha) {
+		if (-not $d.Base -or -not $d.Target) {
+			$codeChanged = $true
+			$stats += "$($d.Path) $(if ($d.Target) { 'added' } else { 'removed' }) upstream"
+			continue
+		}
 		$tail = if ($d.Exclude) { @('--', '.') + $d.Exclude } else { @() }
 		Invoke-Git $UpstreamRepo (@('diff', '--quiet', $d.Base, $d.Target) + $tail) -AllowExitCodes 1 | Out-Null
 		if ((Get-LastGitExitCode) -eq 1) {
@@ -728,7 +751,9 @@ function Expand-SyncPrompt {
 		[Parameter(Mandatory)][string]$UpstreamDir)
 	$commands = foreach ($d in Get-AreaTreeDiffs -Area $Area -UpstreamRepo $UpstreamRepo -TargetSha $TargetSha) {
 		$tail = if ($d.Exclude) { " -- . " + (($d.Exclude | ForEach-Object { "'$_'" }) -join ' ') } else { '' }
-		"      git -C $UpstreamDir diff $($d.Base) $($d.Target)$tail"
+		if (-not $d.Base) { "      git -C $UpstreamDir show $($d.Target)   # new upstream file" }
+		elseif (-not $d.Target) { "      git -C $UpstreamDir show $($d.Base)   # removed upstream" }
+		else { "      git -C $UpstreamDir diff $($d.Base) $($d.Target)$tail" }
 	}
 	$list = { param($items) if (@($items).Count -gt 0) { (@($items) | ForEach-Object { "``$_``" }) -join ', ' } else { '_none_' } }
 	$values = @{

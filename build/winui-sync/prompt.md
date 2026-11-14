@@ -7,8 +7,8 @@ change between that commit and `{{target_sha}}` into the Uno code.
 ## Where things are
 
 - Upstream WinUI clone (read-only): `{{upstream_dir}}`
-- Upstream changes to port. Each command compares the area's folder at the old and the new commit
-  (the folder may sit under `src/` at one of them; the commands already account for that):
+- Upstream changes to port. Each command compares one of the area's folders or files at the old and
+  the new commit (it may sit under `src/` at one of them; the commands already account for that):
 
 {{diff_commands}}
 
@@ -43,7 +43,7 @@ line of history, so do not rely on it to find changes.
 ## What to port, what to leave
 
 - **Port** logic, API, theme XAML and test changes that belong to this area.
-- **Dependencies:** if a change needs upstream code outside the folders above that also changed in
+- **Dependencies:** if a change needs upstream code outside the paths above that also changed in
   this range, port it too when it is small and self-contained. If it is large, or it lives in another
   control's folder, do not port it. Record it under *Skipped* with the upstream path and what
   depends on it.
