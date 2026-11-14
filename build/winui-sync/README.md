@@ -87,6 +87,10 @@ count too, an old tag on a style file lowers the proposal like any other stale h
 Record an area at the latest stable tag only together with the port that brings it there; otherwise
 the changes in between are never synced.
 
+Once an area is tracked, its `MUX Reference` headers name only the upstream file(s), with no tag or
+commit: the area's `baseline` is the one record of the version, and syncs keep it current.
+`Remove-MuxReferenceVersion` drops the versions; the port agent is told not to add them back.
+
 ## Running it by hand
 
 *Actions → WinUI Port Sync → Run workflow*:

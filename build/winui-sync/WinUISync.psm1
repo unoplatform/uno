@@ -143,6 +143,31 @@ function Get-MuxReferences {
 	}
 }
 
+# In a tracked area, MUX Reference headers name only upstream files: the area's baseline records the
+# version. Drops ", tag <ref>" and ", commit <sha>" from header comments (the first lines of .cs and
+# .xaml files), keeping each file's BOM and line endings. Returns the files it changed.
+function Remove-MuxReferenceVersion {
+	param([Parameter(Mandatory)][string[]]$Paths, [int]$HeaderLines = 15)
+	$version = [regex]::new('\s*,?\s*\b(?:tag|commit)\b\s*:?\s*(?:winui3/release/[\w.\-]+?|[0-9a-f]{7,40})\.?(?=\s*(?:,|-->|$))', 'IgnoreCase')
+	foreach ($file in Get-ChildItem -LiteralPath $Paths -Recurse -File -Include *.cs, *.xaml | Sort-Object FullName) {
+		$bytes = [System.IO.File]::ReadAllBytes($file.FullName)
+		$bom = $bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and $bytes[2] -eq 0xBF
+		$offset = if ($bom) { 3 } else { 0 }
+		$text = [System.Text.UTF8Encoding]::new($false).GetString($bytes, $offset, $bytes.Length - $offset)
+		$lines = [regex]::Split($text, '(?<=\n)')
+		$changed = $false
+		for ($i = 0; $i -lt [Math]::Min($HeaderLines, $lines.Count); $i++) {
+			if ($lines[$i] -notmatch '^\s*(//|<!--)') { continue }
+			$updated = $version.Replace($lines[$i], '')
+			if ($updated -ne $lines[$i]) { $lines[$i] = $updated; $changed = $true }
+		}
+		if ($changed) {
+			[System.IO.File]::WriteAllText($file.FullName, ($lines -join ''), [System.Text.UTF8Encoding]::new($bom))
+			$file.FullName
+		}
+	}
+}
+
 # Theme XAML that belongs to an area: Uno's FluentTheme copies of the control's styles (Uno) and,
 # for core controls, the shared upstream CommonStyles file they are ported from (Upstream, else $null).
 # A file belongs when its MUX Reference header names an upstream file of the area, or by name.

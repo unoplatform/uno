@@ -130,7 +130,7 @@ The catch-up only carried the diff since the starting point. This phase checks t
    - **Missing:** port it. If it cannot be ported, keep the upstream code commented out with `TODO Uno: NOT PORTED - ...` per `/winui-port`.
    - **Uno-only member:** it must be marked or live in a `.uno.cs` file; otherwise mark it. It goes to Phase 6.
 4. **Tests:** every upstream test method in the mapped test folders exists in the Uno test files, or is listed as not ported with a reason. A ported test that is disabled (`[Ignore]`, a `[PlatformCondition]` that excludes it) goes to Phase 6.
-5. **Headers:** once a Uno file has been reviewed against the latest tag, its `MUX Reference` header ends with `, tag <latest tag>`, even if its code did not change. Headers then tell the truth for the next onboarding or seed.
+5. **Headers:** every reviewed Uno file has a `MUX Reference` header naming its upstream file(s); add one where it is missing. Leave versions in place for now: Phase 7 drops them once the area is recorded, because from then on `areas.json` holds the version.
 6. **Large areas:** split the review by file pair. If you use subagents, give each one file pair, the classification above and the `/winui-port` conventions, and have it return its findings as a table without editing files. Apply the fixes yourself, so one session owns every change. Tell the user how many subagents you are about to start before starting them; in an unattended run, state it in the report instead.
 
 Keep a review table for the PR: upstream file, Uno file(s), members compared, gaps fixed, members still differing (with the marker that justifies them).
@@ -159,7 +159,7 @@ The repository's `areas.json` is written only when steps 1 and 2 pass. If they f
 
 1. Build `src/Uno.UI/Uno.UI.csproj` (`-p:UnoTargetFrameworkOverride=net10.0`) and the runtime tests project when tests changed. Before committing, build once without `UnoFastDevBuild`, so analyzer errors that CI enforces show up.
 2. Run the control's runtime tests with the `/runtime-tests` skill (Skia desktop). New failures caused by the port or by a removed workaround are fixed, not disabled. A failure that already happens on `master` is reported, not fixed here. Where a ported or restored behaviour is unclear, check it against WinUI with `/winui-runtime-tests`.
-3. Write the entry to the repository's `areas.json`, at the latest stable tag: the seed command from Phase 2 with `-Write -Baseline $latest.Sha` (no `-ManifestPath`). The seed's header report should now show the latest tag on every reviewed file.
+3. Write the entry to the repository's `areas.json`, at the latest stable tag: the seed command from Phase 2 with `-Write -Baseline $latest.Sha` (no `-ManifestPath`). Then drop the versions from the area's headers, since the entry now records the version: `Remove-MuxReferenceVersion -Paths <absolute Uno sources and tests>` (it prints the files it changed). Headers keep naming their upstream files.
 4. Run detection against the repository's manifest (no `-ManifestPath`). The area must show no code or strings change. If it still shows a diff, a path is mapped wrongly or a change was not carried over; fix that before going on.
 5. Run the tooling tests: `./build/winui-sync/tests/run.ps1` (Pester 5.5+).
 
