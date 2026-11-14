@@ -12,7 +12,11 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace UITests.Windows_Storage.Pickers
 {
-	[Sample("Windows.Storage", IsManualTest = true, Description = "This sample is specifically suited for WASM, should trigger a download of a given file")]
+	[Sample(
+		"Windows.Storage",
+		IsManualTest = true,
+		Description = "Saves a file with FileSavePicker and CachedFileManager. With the WebAssembly download picker, this triggers a download; " +
+			"on iOS, it shows the export sheet.")]
 	public sealed partial class DownloadFileSavePickerTests : Page
 	{
 		public DownloadFileSavePickerTests()

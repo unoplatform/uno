@@ -13,7 +13,8 @@ namespace Uno.Extensions.Storage.Pickers
 	/// the FileSavePicker handling. The implementations must have
 	/// a public constructor with a single object parameter.
 	/// This parameter will contain the FileSavePicker instance that
-	/// triggered the request.
+	/// triggered the request. On iOS, a registered extension is used
+	/// instead of the built-in export sheet.
 	/// </summary>
 	public interface IFileSavePickerExtension
 	{
