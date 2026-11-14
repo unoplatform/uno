@@ -193,7 +193,9 @@ namespace Microsoft.UI.Xaml.Controls
 				if (modifiedText != newText)
 				{
 					SetTextNative(modifiedText);
-					if (modifiedText == oldText)
+					// The browser host puts the caret back itself, right away (see TextBoxCore.ApplyNativeInput): restoring it
+					// a tick later would move the caret of a key typed in between.
+					if (modifiedText == oldText && Core is not { IsApplyingNativeInput: true })
 					{
 						// The native textbox received new input -> sent it to uno -> uno changed it back to the original value
 						// In that case, SetTextNative will reset the selection and we need to reapply it.
