@@ -1284,7 +1284,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("ab", "ab", "cd", null, true, DisplayName = "Refused, input text before unknown")]
 		[DataRow("ab", "ab", "ab", "ab", false, DisplayName = "Echo")]
 		public void When_Native_Text_Is_Compared_To_The_Kept_Text(string kept, string hostBefore, string native, string nativeBefore, bool mustReturn)
-			=> Assert.AreEqual(mustReturn, ImeSessionCoordinator.MustReturnTextToNative(kept, hostBefore, native, nativeBefore));
+		{
+			Assert.AreEqual(mustReturn, ImeSessionCoordinator.MustReturnTextToNative(kept, hostBefore, native, nativeBefore));
+			// The browser passes whether its input's value changed instead.
+			Assert.AreEqual(mustReturn, ImeSessionCoordinator.MustReturnTextToNative(kept, hostBefore, native, nativeTextChanged: native != nativeBefore));
+		}
 #endif
 
 		// Gboard composes every word, here past MaxLength ("abcde" in a TextBox limited to 3). The input keeps the TextBox's

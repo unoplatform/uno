@@ -388,13 +388,14 @@
 		}
 
 		private static syncTextFromInput(input: HTMLInputElement | HTMLTextAreaElement) {
-			// The value the input had at the previous sync or write tells an edit from the same text reported again.
-			const previousValue = BrowserInvisibleTextBoxViewExtension.syncedValue;
+			// Whether the value changed since the previous sync or write tells an edit from the same text reported again. Both
+			// are the input's own value, so their line breaks are written the same way.
+			const textChanged = input.value !== BrowserInvisibleTextBoxViewExtension.syncedValue;
 			BrowserInvisibleTextBoxViewExtension.syncedValue = input.value;
 			if (input.selectionDirection == "backward") {
-				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd, previousValue);
+				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd, textChanged);
 			} else {
-				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart, previousValue);
+				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart, textChanged);
 			}
 		}
 

@@ -49,11 +49,19 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <param name="keptText">The host's text after it processed the edit.</param>
 		/// <param name="hostTextBefore">The host's text before the edit.</param>
 		/// <param name="nativeText">The input's text with the edit.</param>
-		/// <param name="nativeTextBefore">The input's text before the edit, or null when unknown.</param>
+		/// <param name="nativeTextBefore">The input's text before the edit, or null when unknown, which counts as changed.</param>
 		internal static bool MustReturnTextToNative(string keptText, string hostTextBefore, string nativeText, string? nativeTextBefore)
 			=> !IsSameText(keptText, nativeText)
 				&& (keptText.Length != nativeText.Length
 					|| (IsSameText(keptText, hostTextBefore) && (nativeTextBefore is null || !IsSameText(nativeText, nativeTextBefore))));
+
+		/// <summary>
+		/// <see cref="MustReturnTextToNative(string, string, string, string)"/> for a platform that only tells whether the
+		/// input's text changed with the edit, so the text crosses once per edit: a changed text compares as an unknown one,
+		/// and an unchanged one as the input's text itself.
+		/// </summary>
+		internal static bool MustReturnTextToNative(string keptText, string hostTextBefore, string nativeText, bool nativeTextChanged)
+			=> MustReturnTextToNative(keptText, hostTextBefore, nativeText, nativeTextChanged ? null : nativeText);
 
 		// Compares without allocating a normalized copy, as this runs for every edit the platform applies.
 		private static bool IsSameText(string first, string second)
