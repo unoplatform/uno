@@ -66,6 +66,8 @@ Describe 'Find-AreaThemeXaml' {
 			'controls/dev/CommonStyles/HyperlinkButton_themeresources.xaml'  = '<Res />'
 			'controls/dev/CommonStyles/HyperlinkButton_themeresources_perf2026.xaml' = '<Res />'
 			'controls/dev/CommonStyles/Bar_themeresources.xaml'              = '<Res />'
+			'controls/dev/CommonStyles/Foo2_Bar_themeresources.xaml'         = '<Res />'
+			'dxaml/lib/Foo2_Bar_Partial.cpp'                                 = '1'
 			'dxaml/lib/HyperLinkButton_Partial.cpp'                          = '1'
 			'dxaml/lib/HyperlinkButtonAutomationPeer_Partial.cpp'            = '1'
 		} -Tag 'winui3/release/1.0.0'
@@ -94,6 +96,15 @@ Describe 'Find-AreaThemeXaml' {
 		$found.Count | Should -Be 1
 		$found[0].Uno | Should -Be 'src/Uno.UI.FluentTheme/Resources/PriorityDefault/HyperlinkButton_themeresources.xaml'
 		$found[0].Upstream | Should -Be 'controls/dev/CommonStyles/HyperlinkButton_themeresources.xaml'
+	}
+
+	It 'maps control names with digits and underscores' {
+		New-CsFile "$uno/src/Uno.UI.FluentTheme/Resources/PriorityDefault/Foo2_Bar_themeresources.xaml" '<ResourceDictionary />'
+
+		$found = @(Find-AreaThemeXaml -UpstreamRepo $up -Ref $tip -UnoRoot $uno -UpstreamSources 'dxaml/lib/Foo2_Bar_Partial.cpp')
+
+		$found.Count | Should -Be 1
+		$found[0].Upstream | Should -Be 'controls/dev/CommonStyles/Foo2_Bar_themeresources.xaml'
 	}
 
 	It 'returns nothing when the Uno tree has no FluentTheme' {
