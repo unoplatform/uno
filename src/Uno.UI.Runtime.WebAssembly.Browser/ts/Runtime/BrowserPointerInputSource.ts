@@ -95,7 +95,9 @@ namespace Uno.UI.Runtime {
 		}
 
 		private subscribePointerEvents() {
-			const element = document.body;
+			// Not the body: while a button is held outside the page, the browser targets the moves and the release at
+			// the <html> element, which the body never sees. Dropping that release would leave a drag running.
+			const element = document.documentElement;
 
 			element.addEventListener("pointerover", this.onPointerEventReceived.bind(this), { capture: true });
 			element.addEventListener("pointerout", this.onPointerEventReceived.bind(this), { capture: true });
