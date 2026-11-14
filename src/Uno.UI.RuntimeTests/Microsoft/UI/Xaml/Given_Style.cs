@@ -109,7 +109,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				TargetType = typeof(ContentControl),
 			};
 
-			Application.Current.Resources.Add(typeof(ContentControl), appStyle);
+			var appResources = Application.Current.Resources;
+			var hadPreviousAppStyle = appResources.TryGetValue(typeof(ContentControl), out var previousAppStyle);
+			appResources[typeof(ContentControl)] = appStyle;
 
 			try
 			{
@@ -133,7 +135,116 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 			finally
 			{
-				Application.Current.Resources.Remove(typeof(ContentControl));
+				if (hadPreviousAppStyle)
+				{
+					appResources[typeof(ContentControl)] = previousAppStyle;
+				}
+				else
+				{
+					appResources.Remove(typeof(ContentControl));
+				}
+
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		/// <remarks>
+		/// A live Enter applies the implicit style and lets the Loading pass reuse it. When the element
+		/// leaves before that pass runs, the pass must resolve the style again from the new scope.
+		/// </remarks>
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ImplicitStyle_Leave_Before_Loading()
+		{
+			var scopedStyle = new Style(typeof(Border))
+			{
+				Setters = { new Setter(FrameworkElement.TagProperty, "scoped") },
+			};
+
+			var host = new StackPanel() { Width = 100, Height = 100 };
+			host.Resources.Add(typeof(Border), scopedStyle);
+
+			try
+			{
+				await UITestHelper.Load(host);
+
+				var border = new Border();
+				host.Children.Add(border);
+
+				Assert.AreEqual("scoped", border.Tag, "the live Enter should apply the scoped implicit style");
+
+				host.Children.Remove(border);
+				border.Measure(new Windows.Foundation.Size(100, 100));
+
+				Assert.IsNull(border.Tag, "the detached Loading pass should drop the style of the scope it left");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		/// <remarks>
+		/// The ancestor's Loading handler runs after the descendant's Enter but before its Loading pass,
+		/// so an implicit style it adds must still reach the descendant.
+		/// </remarks>
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ImplicitStyle_Added_In_Ancestor_Loading()
+		{
+			var lateStyle = new Style(typeof(Border))
+			{
+				Setters = { new Setter(FrameworkElement.TagProperty, "late") },
+			};
+
+			var border = new Border();
+			var host = new StackPanel() { Width = 100, Height = 100, Children = { border } };
+			host.Loading += (_, _) => host.Resources[typeof(Border)] = lateStyle;
+
+			try
+			{
+				await UITestHelper.Load(host);
+
+				Assert.AreEqual("late", border.Tag);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		/// <remarks>
+		/// Compares against a host that is Dark from the start, so the outcome doesn't depend on the app theme.
+		/// </remarks>
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ImplicitStyle_Theme_Changed_In_Ancestor_Loading()
+		{
+			Style CreateStyle(string tag) => new(typeof(Border))
+			{
+				Setters = { new Setter(FrameworkElement.TagProperty, tag) },
+			};
+
+			var border = new Border();
+			var host = new StackPanel() { Width = 100, Height = 100, RequestedTheme = ElementTheme.Light, Children = { border } };
+			host.Resources.ThemeDictionaries["Light"] = new ResourceDictionary() { [typeof(Border)] = CreateStyle("light") };
+			host.Resources.ThemeDictionaries["Dark"] = new ResourceDictionary() { [typeof(Border)] = CreateStyle("dark") };
+			host.Loading += (_, _) => host.RequestedTheme = ElementTheme.Dark;
+
+			var control = new Border();
+			var controlHost = new StackPanel() { Width = 100, Height = 100, RequestedTheme = ElementTheme.Dark, Children = { control } };
+			controlHost.Resources.ThemeDictionaries["Light"] = new ResourceDictionary() { [typeof(Border)] = CreateStyle("light") };
+			controlHost.Resources.ThemeDictionaries["Dark"] = new ResourceDictionary() { [typeof(Border)] = CreateStyle("dark") };
+
+			try
+			{
+				await UITestHelper.Load(new StackPanel() { Children = { host, controlHost } });
+
+				Assert.IsNotNull(control.Tag);
+				Assert.AreEqual(control.Tag, border.Tag, "a theme flipped by the ancestor's Loading handler should resolve like a host that started Dark");
+			}
+			finally
+			{
 				TestServices.WindowHelper.WindowContent = null;
 			}
 		}
