@@ -40,7 +40,7 @@ $scopeVariables = [ordered]@{
 #                           matches PascalCase names (iOSResourceConverter) and the files that gate
 #                           the tvOS stage, so a change to the gate runs the lane it gates.
 $patterns = @{
-    TemplateTestsRequired = [regex]'(?i)(?:^build/|\.csproj$|\.props$|\.targets$|^src/uno\.sdk/|^src/sourcegenerators/uno\.ui\.tasks/|^src/.*devserver.*|^src/.*remotecontrol.*)'
+    TemplateTestsRequired = [regex]'(?i)(?:^build/(?!winui-sync/)|\.csproj$|\.props$|\.targets$|^src/uno\.sdk/|^src/sourcegenerators/uno\.ui\.tasks/|^src/.*devserver.*|^src/.*remotecontrol.*)'
     ScreenshotsRequired   = [regex]'(?i)^src/(uno\.ui|addins).*\.cs$'
     WebGpuTestsRequired   = [regex]'(?i)(?:webgpu|wgpu|^build/ci/tests/|^build/test-scripts/)'
     TvOSTestsRequired     = [regex]'(?i)(?:^|[/._-])(?:tvos|ios|uikit|appleuikit|apple)(?:[/._-]|$)|(?:^|[/._-])(?-i:iOS|tvOS|UIKit|Apple)(?-i:[A-Z])|^build/ci/\.azure-devops-stages\.yml$|^build/ci/tests/\.azure-devops-tests-runtime-stages\.yml$|^build/ci/scripts/determine-test-scope\.ps1$'

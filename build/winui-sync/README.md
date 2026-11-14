@@ -34,6 +34,8 @@ Nothing merges on its own.
   files count as "other"). The run summary says
   why, and the next run redoes the port.
 - Tests are not run by the workflow. PR CI does that.
+- A PR that only changes files under `build/winui-sync/` (baseline and report, nothing ported)
+  does not start the Azure pipelines; their triggers exclude this folder.
 - Review fixes can be pushed straight to the sync branch. Later runs merge the default branch
   into it and never force-push while the PR is open.
 - Closing a PR without merging rejects that attempt; the next run starts a fresh branch and PR.
