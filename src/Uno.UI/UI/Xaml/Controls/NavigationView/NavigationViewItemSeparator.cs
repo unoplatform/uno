@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationViewItemSeparator.cpp, commit bac7a9c33
+// MUX Reference NavigationViewItemSeparator.cpp
 
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
