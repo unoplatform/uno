@@ -64,6 +64,11 @@ namespace Uno.UI
 		private long _lastActivation;
 
 		/// <summary>
+		/// When this activity last started or resumed, as a process-wide order; 0 if it never has.
+		/// </summary>
+		internal long LastActivation => _lastActivation;
+
+		/// <summary>
 		/// Unique identifier for this instance of an activity.
 		/// </summary>
 		public int Id { get; } = Interlocked.Increment(ref _instanceCount);

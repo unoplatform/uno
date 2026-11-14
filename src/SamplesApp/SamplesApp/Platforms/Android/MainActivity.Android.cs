@@ -16,7 +16,7 @@ namespace SamplesApp.Droid
 			Exported = true,
 			MainLauncher = true,
 			// Without it, a protocol activation stacks a second instance of this activity rather than
-			// reaching the running one through OnNewIntent; the window moves to it and closes with it.
+			// reaching the running one through OnNewIntent, which is where the app handles the intent.
 			LaunchMode = global::Android.Content.PM.LaunchMode.SingleTask,
 			WindowSoftInputMode = SoftInput.AdjustNothing | SoftInput.StateHidden,
 			ConfigurationChanges = global::Uno.UI.ActivityHelper.AllConfigChanges
