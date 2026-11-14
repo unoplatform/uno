@@ -121,6 +121,24 @@ Describe 'seed-area.ps1' {
 		{ & "$PSScriptRoot/../seed-area.ps1" @common -UpstreamTests 'controls/dev/Foo/Nope' } | Should -Throw '*controls/dev/Foo/Nope*'
 	}
 
+	It 'accepts individual files on both sides' {
+		$up = New-TestUpstream -Path (Join-Path $TestDrive 'up6')
+		$c1 = Add-TestCommit $up @{ 'dxaml/lib/Button.cpp' = '1'; 'dxaml/lib/Slider.cpp' = '1' } -Tag 'winui3/release/1.0.0'
+		$uno = Join-Path $TestDrive 'uno6'
+		New-CsFile "$uno/src/Controls/Button.cs" "// MUX Reference Button.cpp, commit $($c1.Substring(0, 10))"
+		New-CsFile "$uno/src/Controls/Slider.cs" "// MUX Reference Slider.cpp, commit 1234567"
+		$manifest = Write-TestManifest (Join-Path $uno 'areas.json') @()
+		$common = @{ Id = 'button'; Title = 'Button'; UpstreamRepo = $up; UnoRoot = $uno; ManifestPath = $manifest; UnoSources = 'src/Controls/Button.cs'; Write = $true }
+
+		$out = & "$PSScriptRoot/../seed-area.ps1" @common -UpstreamSources 'dxaml/lib/Button.cpp'
+		$area = @(Get-SyncAreas -ManifestPath $manifest)[0]
+		$area.baseline | Should -Be $c1
+		$area.upstream.sources | Should -Be @('dxaml/lib/Button.cpp')
+		($out -join "`n") | Should -Not -Match '1234567'
+
+		{ & "$PSScriptRoot/../seed-area.ps1" @common -UpstreamSources 'dxaml/lib/Nope.cpp' } | Should -Throw '*dxaml/lib/Nope.cpp*'
+	}
+
 	It 'takes an explicit baseline over the one derived from headers' {
 		$up = New-TestUpstream -Path (Join-Path $TestDrive 'up5')
 		$old = Add-TestCommit $up @{ 'controls/dev/Foo/Foo.cpp' = '1' }

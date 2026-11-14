@@ -254,8 +254,20 @@ function Resolve-UpstreamPath {
 	$null
 }
 
-# One tree-to-tree comparison per top-level area path: @{ Path; Base; Target; Exclude }.
-# Base/Target are '<sha>:<path>' tree-ish specs (the empty tree when the path is absent on that side).
+# Like Resolve-UpstreamPath, for a folder or a single file: @{ Path; Kind = 'tree' | 'blob' }, or $null.
+function Resolve-UpstreamEntry {
+	param([Parameter(Mandatory)][string]$UpstreamRepo, [Parameter(Mandatory)][string]$Ref, [Parameter(Mandatory)][string]$Path)
+	$Path = $Path.Trim('/')
+	foreach ($candidate in $Path, "src/$Path") {
+		$entry = @(Invoke-Git $UpstreamRepo @('ls-tree', $Ref, '--', $candidate))
+		if ($entry.Count -eq 1 -and $entry[0] -match '^\d+ (tree|blob) ') { return @{ Path = $candidate; Kind = $Matches[1] } }
+	}
+	$null
+}
+
+# One comparison per top-level area path: @{ Path; Kind; Base; Target; Exclude }.
+# Kind 'tree' (a folder): Base/Target are '<sha>:<path>' tree-ish specs, the empty tree when absent on that side.
+# Kind 'blob' (a single file): Base/Target are '<sha>:<path>' blob specs, $null when absent on that side.
 function Get-AreaTreeDiffs {
 	param([Parameter(Mandatory)]$Area, [Parameter(Mandatory)][string]$UpstreamRepo, [Parameter(Mandatory)][string]$TargetSha)
 	$emptyTree = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'
@@ -263,8 +275,8 @@ function Get-AreaTreeDiffs {
 	$resolved = @{}
 	foreach ($path in $all) {
 		$resolved[$path] = @{
-			Base   = Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo -Ref $Area.baseline -Path $path
-			Target = Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo -Ref $TargetSha -Path $path
+			Base   = Resolve-UpstreamEntry -UpstreamRepo $UpstreamRepo -Ref $Area.baseline -Path $path
+			Target = Resolve-UpstreamEntry -UpstreamRepo $UpstreamRepo -Ref $TargetSha -Path $path
 		}
 		# A mistyped path would otherwise read as "nothing ever changes here".
 		if (-not $resolved[$path].Base -and -not $resolved[$path].Target) {
@@ -275,13 +287,19 @@ function Get-AreaTreeDiffs {
 	foreach ($path in $roots) {
 		$atBase = $resolved[$path].Base
 		$atTarget = $resolved[$path].Target
+		$kind = if ($atTarget) { $atTarget.Kind } else { $atBase.Kind }
+		if ($atBase -and $atTarget -and $atBase.Kind -ne $atTarget.Kind) {
+			throw "area '$($Area.id)': upstream path '$path' is a file at one commit and a folder at the other"
+		}
+		$absent = if ($kind -eq 'tree') { $emptyTree } else { $null }
 		$exclude = @()
 		$strings = if ($Area.upstream.strings) { $Area.upstream.strings.Trim('/') } else { $null }
-		if ($strings -and $strings.StartsWith("$path/")) { $exclude = @(":(exclude)$($strings.Substring($path.Length + 1))") }
+		if ($kind -eq 'tree' -and $strings -and $strings.StartsWith("$path/")) { $exclude = @(":(exclude)$($strings.Substring($path.Length + 1))") }
 		[pscustomobject]@{
 			Path    = $path
-			Base    = if ($atBase) { "$($Area.baseline):$atBase" } else { $emptyTree }
-			Target  = if ($atTarget) { "${TargetSha}:$atTarget" } else { $emptyTree }
+			Kind    = $kind
+			Base    = if ($atBase) { "$($Area.baseline):$($atBase.Path)" } else { $absent }
+			Target  = if ($atTarget) { "${TargetSha}:$($atTarget.Path)" } else { $absent }
 			Exclude = $exclude
 		}
 	}
@@ -301,6 +319,11 @@ function Get-AreaSyncState {
 	$codeChanged = $false
 	$stats = @()
 	foreach ($d in Get-AreaTreeDiffs -Area $Area -UpstreamRepo $UpstreamRepo -TargetSha $TargetSha) {
+		if (-not $d.Base -or -not $d.Target) {
+			$codeChanged = $true
+			$stats += "$($d.Path) $(if ($d.Target) { 'added' } else { 'removed' }) upstream"
+			continue
+		}
 		$tail = if ($d.Exclude) { @('--', '.') + $d.Exclude } else { @() }
 		Invoke-Git $UpstreamRepo (@('diff', '--quiet', $d.Base, $d.Target) + $tail) -AllowExitCodes 1 | Out-Null
 		if ((Get-LastGitExitCode) -eq 1) {
@@ -650,11 +673,19 @@ function New-SyncIssue {
 }
 
 function New-SyncPr {
-	param([Parameter(Mandatory)]$Area, [Parameter(Mandatory)][string]$TargetTag, [Parameter(Mandatory)]$Report, [Parameter(Mandatory)][int]$IssueNumber)
+	param(
+		[Parameter(Mandatory)]$Area, [Parameter(Mandatory)][string]$TargetTag, [Parameter(Mandatory)]$Report, [Parameter(Mandatory)][int]$IssueNumber,
+		# The agent stopped part-way: the branch holds partial work and the baseline has not moved.
+		[switch]$Incomplete)
 	$version = Get-TagVersion $TargetTag
-	$complete = $Report.BuildPassed -and $Report.SkippedCount -eq 0
+	$complete = -not $Incomplete -and $Report.BuildPassed -and $Report.SkippedCount -eq 0
 	$title = "fix($($Area.id)): Sync $($Area.title) with WinUI $version"
-	if (-not $Report.BuildPassed) { $title = "[build failing] $title" }
+	if ($Incomplete) { $title = "[port incomplete] $title" }
+	elseif (-not $Report.BuildPassed) { $title = "[build failing] $title" }
+	$what = if ($Incomplete) {
+		"**Incomplete port. Do not merge.** The port of **$($Area.title)** to WinUI ``$version`` did not finish; this branch holds the partial work. The sync baseline has not moved, so the next run continues the port here."
+	}
+	else { "Ports the upstream changes to **$($Area.title)** up to WinUI ``$version`` and moves its sync baseline." }
 	$head = @(
 		"**GitHub Issue:** $(if ($complete) { 'closes' } else { 'related to' }) #$IssueNumber"
 		''
@@ -666,7 +697,7 @@ function New-SyncPr {
 		''
 		'## What changed? 🚀'
 		''
-		"Ports the upstream changes to **$($Area.title)** up to WinUI ``$version`` and moves its sync baseline."
+		$what
 		''
 		"- Port build: **$(if ($Report.BuildPassed) { 'passed' } else { 'failed or not verified' })** (no tests were run)"
 		"- Skipped items: **$($Report.SkippedCount)**$(if (-not $complete) { " — #$IssueNumber stays open to track what is left" })"
@@ -690,7 +721,7 @@ function New-SyncPr {
 }
 
 function Get-CommitGroups {
-	param([Parameter(Mandatory)]$Area, [Parameter(Mandatory)][string]$TargetTag, [string[]]$ChangedFiles = @(), [Parameter(Mandatory)][string]$ManifestRelativePath)
+	param([Parameter(Mandatory)]$Area, [Parameter(Mandatory)][string]$TargetTag, [string[]]$ChangedFiles = @(), [Parameter(Mandatory)][string]$ManifestRelativePath, [switch]$Incomplete)
 	$version = Get-TagVersion $TargetTag
 	$under = { param($file, $roots) [bool](@($roots) | Where-Object { $_ -and ($file -eq $_.Trim('/') -or $file.StartsWith("$($_.Trim('/'))/")) }) }
 	$buckets = [ordered]@{ logic = @(); tests = @(); strings = @(); manifest = @() }
@@ -707,6 +738,11 @@ function Get-CommitGroups {
 		tests    = "test($($Area.id)): Sync $($Area.title) tests with WinUI $version"
 		strings  = "chore($($Area.id)): Update $($Area.title) strings from WinUI $version"
 		manifest = "chore($($Area.id)): Bump WinUI sync baseline to $version"
+	}
+	if ($Incomplete) {
+		$messages.logic = "fix($($Area.id)): Partial sync of $($Area.title) with WinUI $version"
+		$messages.tests = "test($($Area.id)): Partial sync of $($Area.title) tests with WinUI $version"
+		$messages.manifest = "chore($($Area.id)): Record unfinished WinUI $version sync"
 	}
 	foreach ($kind in $buckets.Keys) {
 		if ($buckets[$kind].Count -gt 0) { [pscustomobject]@{ Message = $messages[$kind]; Files = @($buckets[$kind]) } }
@@ -728,7 +764,9 @@ function Expand-SyncPrompt {
 		[Parameter(Mandatory)][string]$UpstreamDir)
 	$commands = foreach ($d in Get-AreaTreeDiffs -Area $Area -UpstreamRepo $UpstreamRepo -TargetSha $TargetSha) {
 		$tail = if ($d.Exclude) { " -- . " + (($d.Exclude | ForEach-Object { "'$_'" }) -join ' ') } else { '' }
-		"      git -C $UpstreamDir diff $($d.Base) $($d.Target)$tail"
+		if (-not $d.Base) { "      git -C $UpstreamDir show $($d.Target)   # new upstream file" }
+		elseif (-not $d.Target) { "      git -C $UpstreamDir show $($d.Base)   # removed upstream" }
+		else { "      git -C $UpstreamDir diff $($d.Base) $($d.Target)$tail" }
 	}
 	$list = { param($items) if (@($items).Count -gt 0) { (@($items) | ForEach-Object { "``$_``" }) -join ', ' } else { '_none_' } }
 	$values = @{
@@ -764,7 +802,7 @@ function Get-PortStatus {
 	$status = Get-Content -Raw -LiteralPath $statusFile | ConvertFrom-Json
 	if ("$(Get-OptionalProperty $status 'conflict')" -eq 'true') { return 'conflict' }
 	$agent = "$(Get-OptionalProperty $status 'agentOutcome')"
-	# A failed, timed-out or cancelled agent leaves a partial port; publishing it would move the baseline past work not done.
+	# Not 'ok' means the port is partial. Publish-SyncArea shows a failed agent's work as an incomplete draft and drops the rest.
 	if ($CodeChanged -and $agent -ne 'success') { return "agent $agent".Trim() }
 	'ok'
 }
@@ -899,7 +937,9 @@ function Publish-SyncArea {
 		[pscustomobject]@{ Outcome = "skipped: $reason"; IssueNumber = 0; PrNumber = $PrNumber }
 	}
 
-	if ($CodeChanged -and $PortStatus -ne 'ok') { return & $skip "the port job did not deliver a result ($PortStatus)." }
+	# A failed agent (crash, spend cap) may leave real work behind; that is published as an incomplete draft.
+	$incomplete = $CodeChanged -and $PortStatus -eq 'agent failure' -and $PatchPath -and (Test-Path -LiteralPath $PatchPath) -and (Get-Item -LiteralPath $PatchPath).Length -gt 0
+	if ($CodeChanged -and $PortStatus -ne 'ok' -and -not $incomplete) { return & $skip "the port job did not deliver a result ($PortStatus)." }
 	if ((Initialize-SyncBranch -RepoRoot $RepoRoot -Id $Id -MasterSha $MasterSha -HasOpenPr:([bool]$PrNumber)) -eq 'conflict') {
 		return & $skip "merging the default branch into ``$branch`` conflicts. Resolve the conflict on the branch; the next run continues from there."
 	}
@@ -908,7 +948,14 @@ function Publish-SyncArea {
 
 	$report = [pscustomobject]@{ Valid = $true; BuildPassed = $true; SkippedCount = 0; Body = 'No upstream code changes in this range; translations only.' }
 	if ($CodeChanged) {
-		$report = Read-SyncReport -Path $ReportPath
+		if ($incomplete) {
+			# Nothing is counted as skipped here: the baseline stays, so the next run still sees every change.
+			$report = [pscustomobject]@{
+				Valid = $true; BuildPassed = $false; SkippedCount = 0
+				Body  = "**This port did not finish.** The port agent failed or reached its spend cap before it was done, and it left no report. The branch holds whatever it had changed by then; that code is unreviewed and was not built. The sync baseline has not moved, so the next run continues from this branch."
+			}
+		}
+		else { $report = Read-SyncReport -Path $ReportPath }
 		if (-not $report.Valid) { return & $skip 'the port did not produce a well-formed report, so what it covered is unknown. The next run redoes the port.' }
 		if (-not (Invoke-ApplyPatch -RepoRoot $RepoRoot -PatchPath $PatchPath)) {
 			return & $skip 'the ported patch no longer applies to the branch. The next run redoes the port.'
@@ -932,20 +979,20 @@ function Publish-SyncArea {
 	# From here on $report covers every run on this branch, not just this one.
 	$report = Add-SyncRunReport -Path (Join-Path (Split-Path $ManifestPath) "reports/$Id.md") -Area $area -TargetTag $TargetTag -TargetSha $TargetSha -Report $report -Reset (-not $PrNumber)
 	$issue = New-SyncIssue -Area $area -TargetTag $TargetTag -TargetSha $TargetSha -Report $report -StringsChanges $strings
-	Set-AreaBaseline -ManifestPath $ManifestPath -Id $Id -Sha $TargetSha
+	if (-not $incomplete) { Set-AreaBaseline -ManifestPath $ManifestPath -Id $Id -Sha $TargetSha }
 
 	Invoke-Git $RepoRoot @('add', '-A') | Out-Null
 	$changed = @(Invoke-Git $RepoRoot @('diff', '--cached', '--name-only', 'HEAD'))
 	Invoke-Git $RepoRoot @('reset', '-q') | Out-Null
 	$manifestRel = [System.IO.Path]::GetRelativePath((Resolve-Path -LiteralPath $RepoRoot).Path, (Resolve-Path -LiteralPath $ManifestPath).Path).Replace('\', '/')
 	$identity = @('-c', 'user.name=github-actions[bot]', '-c', 'user.email=41898282+github-actions[bot]@users.noreply.github.com', '-c', 'commit.gpgsign=false')
-	foreach ($group in Get-CommitGroups -Area $area -TargetTag $TargetTag -ChangedFiles $changed -ManifestRelativePath $manifestRel) {
+	foreach ($group in Get-CommitGroups -Area $area -TargetTag $TargetTag -ChangedFiles $changed -ManifestRelativePath $manifestRel -Incomplete:$incomplete) {
 		Invoke-Git $RepoRoot (@('add', '-A', '--') + $group.Files) | Out-Null
 		Invoke-Git $RepoRoot ($identity + @('commit', '-q', '-m', $group.Message)) | Out-Null
 	}
 
 	if ($DryRun) {
-		$pr = New-SyncPr -Area $area -TargetTag $TargetTag -Report $report -IssueNumber 0
+		$pr = New-SyncPr -Area $area -TargetTag $TargetTag -Report $report -IssueNumber 0 -Incomplete:$incomplete
 		return [pscustomobject]@{ Outcome = 'dry-run'; IssueNumber = 0; PrNumber = $PrNumber; IssueTitle = $issue.Title; IssueBody = $issue.Body; PrTitle = $pr.Title; PrBody = $pr.Body }
 	}
 
@@ -955,12 +1002,12 @@ function Publish-SyncArea {
 	if ($issueNumber) { Update-GitHubIssue -Number $issueNumber -Title $issue.Title -Body $issue.Body }
 	else { $issueNumber = New-GitHubIssue -Title $issue.Title -Body $issue.Body }
 
-	$pr = New-SyncPr -Area $area -TargetTag $TargetTag -Report $report -IssueNumber $issueNumber
+	$pr = New-SyncPr -Area $area -TargetTag $TargetTag -Report $report -IssueNumber $issueNumber -Incomplete:$incomplete
 	if ($PrNumber) { Update-GitHubPr -Number $PrNumber -Title $pr.Title -Body $pr.Body }
 	else { $PrNumber = New-GitHubPr -Title $pr.Title -Body $pr.Body -Head $branch -Base $BaseBranch }
 
-	Write-SyncSummary "- **$Id**: published — issue #$issueNumber, PR #$PrNumber ($($pr.Title))"
-	[pscustomobject]@{ Outcome = 'published'; IssueNumber = $issueNumber; PrNumber = $PrNumber }
+	Write-SyncSummary "- **$Id**: $(if ($incomplete) { 'published as INCOMPLETE (the port agent failed)' } else { 'published' }) — issue #$issueNumber, PR #$PrNumber ($($pr.Title))"
+	[pscustomobject]@{ Outcome = $(if ($incomplete) { 'published incomplete' } else { 'published' }); IssueNumber = $issueNumber; PrNumber = $PrNumber }
 }
 
 #endregion

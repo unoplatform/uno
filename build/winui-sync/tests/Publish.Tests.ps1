@@ -162,6 +162,14 @@ Describe 'New-SyncPr' {
 		($pr.Body -split "`n")[0] | Should -Be '**GitHub Issue:** closes #7'
 	}
 
+	It 'flags an incomplete port in the title and the first lines' {
+		$pr = New-SyncPr -Area $Area -TargetTag 'winui3/release/2.6.5' -Report (New-Report) -IssueNumber 7 -Incomplete
+		$pr.Title | Should -Be '[port incomplete] fix(foo): Sync Foo with WinUI 2.6.5'
+		($pr.Body -split "`n")[0] | Should -Be '**GitHub Issue:** related to #7'
+		$pr.Body | Should -Match 'Do not merge'
+		$pr.Body | Should -Not -Match 'moves its sync baseline'
+	}
+
 	It 'uses related-to when something was skipped' {
 		$pr = New-SyncPr -Area $Area -TargetTag 'winui3/release/2.6.5' -Report (New-Report -Skipped 1) -IssueNumber 7
 		($pr.Body -split "`n")[0] | Should -Be '**GitHub Issue:** related to #7'
@@ -445,14 +453,57 @@ Describe 'Publish-SyncArea' {
 		}
 	}
 
-	It 'does not publish when the agent did not finish' {
+	It 'does not publish when the agent failed without changing anything' {
 		$fx = New-PublishFixture
 		Mock-GitHub
+		$empty = Join-Path $fx.Root 'empty.patch'; [System.IO.File]::WriteAllText($empty, '')
 
-		$r = Invoke-Publish $fx @{ PortStatus = 'agent failure' }
+		$r = Invoke-Publish $fx @{ PortStatus = 'agent failure'; PatchPath = $empty }
 
 		$r.Outcome | Should -Match '^skipped'
 		Get-OriginBranchSha $fx | Should -BeNullOrEmpty
+	}
+
+	It 'does not publish the leftovers of a cancelled agent' {
+		$fx = New-PublishFixture
+		Mock-GitHub
+
+		$r = Invoke-Publish $fx @{ PortStatus = 'agent cancelled' }
+
+		$r.Outcome | Should -Match '^skipped'
+		Get-OriginBranchSha $fx | Should -BeNullOrEmpty
+	}
+
+	It 'publishes the partial work of a failed agent as an incomplete draft and keeps the baseline' {
+		$fx = New-PublishFixture
+		Mock-GitHub
+
+		$r = Invoke-Publish $fx @{ PortStatus = 'agent failure'; ReportPath = (Join-Path $fx.Root 'none.md') }
+
+		$r.Outcome | Should -Be 'published incomplete'
+		(git -C $fx.Origin show 'refs/heads/sync/winui/foo:src/Foo/Foo.cs') -join "`n" | Should -Match 'v2'
+		$manifest = (git -C $fx.Origin show 'refs/heads/sync/winui/foo:build/winui-sync/areas.json') -join "`n"
+		@(Get-SyncAreasFromJson -Json $manifest)[0].baseline | Should -Be $fx.Base
+		Should -Invoke -ModuleName WinUISync New-GitHubPr -Times 1 -Exactly -ParameterFilter {
+			$Title.StartsWith('[port incomplete] ') -and $Body.StartsWith('**GitHub Issue:** related to #7') -and $Body -match 'did not finish' -and $Body -match 'Do not merge'
+		}
+		Should -Invoke -ModuleName WinUISync New-GitHubIssue -Times 1 -Exactly -ParameterFilter { $Body -match 'did not finish' }
+	}
+
+	It 'finishes an incomplete port on a later run' {
+		$fx = New-PublishFixture
+		Mock-GitHub
+		Invoke-Publish $fx @{ PortStatus = 'agent failure'; ReportPath = (Join-Path $fx.Root 'none.md') } | Out-Null
+		$empty = Join-Path $fx.Root 'empty.patch'; [System.IO.File]::WriteAllText($empty, '')
+
+		$r = Invoke-Publish $fx @{ PrNumber = 99; PatchPath = $empty }
+
+		$r.Outcome | Should -Be 'published'
+		$manifest = (git -C $fx.Origin show 'refs/heads/sync/winui/foo:build/winui-sync/areas.json') -join "`n"
+		@(Get-SyncAreasFromJson -Json $manifest)[0].baseline | Should -Be $fx.Target
+		Should -Invoke -ModuleName WinUISync Update-GitHubPr -Times 1 -Exactly -ParameterFilter {
+			$Title -eq 'fix(foo): Sync Foo with WinUI 1.1.0' -and $Body.StartsWith('**GitHub Issue:** closes #7')
+		}
 	}
 
 	It 'does not publish a code change whose report is missing or malformed' {

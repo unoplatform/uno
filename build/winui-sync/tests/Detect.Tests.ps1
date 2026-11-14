@@ -131,6 +131,73 @@ Describe 'Get-AreaSyncState' {
 	}
 }
 
+Describe 'Get-AreaSyncState with file paths' {
+	BeforeEach {
+		$script:up = New-TestUpstream -Path (Join-Path $TestDrive "files-$([guid]::NewGuid())")
+		$script:base = Add-TestCommit $up @{
+			'dxaml/lib/Button_Partial.cpp' = 'v1'
+			'dxaml/lib/Button_Partial.h'   = 'h1'
+			'dxaml/lib/Slider_Partial.cpp' = 'v1'
+		} -Tag 'winui3/release/1.0.0'
+		$script:uno = Join-Path $TestDrive "uno-$([guid]::NewGuid())"
+		$script:newArea = {
+			param([string[]]$Sources)
+			$m = Write-TestManifest (Join-Path $TestDrive "$([guid]::NewGuid()).json") @(
+				(New-TestArea -Id 'button' -Baseline $base -Extra @{ upstream = [ordered]@{ sources = $Sources } }))
+			@(Get-SyncAreas -ManifestPath $m)[0]
+		}
+		$script:area = & $newArea 'dxaml/lib/Button_Partial.cpp', 'dxaml/lib/Button_Partial.h'
+	}
+
+	It 'ignores a change to a sibling file in the same folder' {
+		$target = Add-TestCommit $up @{ 'dxaml/lib/Slider_Partial.cpp' = 'v2' }
+		(Get-AreaSyncState -Area $area -UpstreamRepo $up -TargetSha $target -UnoRoot $uno).codeChanged | Should -BeFalse
+	}
+
+	It 'sees a change to a listed file' {
+		$target = Add-TestCommit $up @{ 'dxaml/lib/Button_Partial.h' = 'h2' }
+		$s = Get-AreaSyncState -Area $area -UpstreamRepo $up -TargetSha $target -UnoRoot $uno
+		$s.codeChanged | Should -BeTrue
+		$s.diffStat | Should -Match '1 file changed'
+	}
+
+	It 'sees no change when a listed file only moved under src/' {
+		$target = Add-TestCommit $up @{
+			'dxaml/lib/Button_Partial.cpp'     = $null
+			'dxaml/lib/Button_Partial.h'       = $null
+			'src/dxaml/lib/Button_Partial.cpp' = 'v1'
+			'src/dxaml/lib/Button_Partial.h'   = 'h1'
+		}
+		(Get-AreaSyncState -Area $area -UpstreamRepo $up -TargetSha $target -UnoRoot $uno).codeChanged | Should -BeFalse
+	}
+
+	It 'treats a listed file removed upstream as changed' {
+		$target = Add-TestCommit $up @{ 'dxaml/lib/Button_Partial.h' = $null }
+		$s = Get-AreaSyncState -Area $area -UpstreamRepo $up -TargetSha $target -UnoRoot $uno
+		$s.codeChanged | Should -BeTrue
+		$s.diffStat | Should -Match 'removed upstream'
+	}
+
+	It 'treats a listed file that only exists at the target as changed' {
+		$withNew = & $newArea 'dxaml/lib/Button_Partial.cpp', 'dxaml/lib/ButtonNew.cpp'
+		$target = Add-TestCommit $up @{ 'dxaml/lib/ButtonNew.cpp' = 'n' }
+		$s = Get-AreaSyncState -Area $withNew -UpstreamRepo $up -TargetSha $target -UnoRoot $uno
+		$s.codeChanged | Should -BeTrue
+		$s.diffStat | Should -Match 'added upstream'
+	}
+
+	It 'throws when a listed file exists at neither commit' {
+		$typo = & $newArea 'dxaml/lib/Button_Partial.cpp', 'dxaml/lib/Typo.cpp'
+		{ Get-AreaSyncState -Area $typo -UpstreamRepo $up -TargetSha $base -UnoRoot $uno } | Should -Throw '*dxaml/lib/Typo.cpp*'
+	}
+
+	It 'mixes a folder and a file outside it' {
+		$mixed = & $newArea 'dxaml/lib', 'dxaml/inc/Button.h'
+		$target = Add-TestCommit $up @{ 'dxaml/inc/Button.h' = 'new' }
+		(Get-AreaSyncState -Area $mixed -UpstreamRepo $up -TargetSha $target -UnoRoot $uno).codeChanged | Should -BeTrue
+	}
+}
+
 Describe 'Select-SyncMatrix' {
 	It 'orders by oldest baseline and caps at MaxAreas, reporting the deferred ids' {
 		$up = New-TestUpstream -Path (Join-Path $TestDrive 'order')

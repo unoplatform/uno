@@ -132,6 +132,29 @@ Describe 'Expand-SyncPrompt' {
 		}
 	}
 
+	It 'writes one command per listed upstream file' {
+		$fileUp = New-TestUpstream -Path (Join-Path $TestDrive 'prompt-files')
+		$b = Add-TestCommit $fileUp @{ 'dxaml/lib/Button.cpp' = 'v1'; 'dxaml/lib/Gone.cpp' = 'v1' }
+		$t = Add-TestCommit $fileUp @{
+			'dxaml/lib/Button.cpp'     = $null
+			'dxaml/lib/Gone.cpp'       = $null
+			'src/dxaml/lib/Button.cpp' = 'v2'
+			'src/dxaml/lib/New.cpp'    = 'n'
+		}
+		$m = Write-TestManifest (Join-Path $TestDrive 'prompt-files.json') @(
+			(New-TestArea -Id 'button' -Baseline $b -Extra @{
+				upstream = [ordered]@{ sources = @('dxaml/lib/Button.cpp', 'dxaml/lib/Gone.cpp', 'dxaml/lib/New.cpp') }
+			}))
+		$fileArea = @(Get-SyncAreas -ManifestPath $m)[0]
+
+		$text = Expand-SyncPrompt -TemplatePath "$PSScriptRoot/../prompt.md" -Area $fileArea -TargetTag 'winui3/release/1.1.0' -TargetSha $t -UpstreamRepo $fileUp -UpstreamDir 'u'
+
+		$text | Should -Match ([regex]::Escape("git -C u diff ${b}:dxaml/lib/Button.cpp ${t}:src/dxaml/lib/Button.cpp"))
+		$text | Should -Match ([regex]::Escape("git -C u show ${t}:src/dxaml/lib/New.cpp"))
+		$text | Should -Match ([regex]::Escape("git -C u show ${b}:dxaml/lib/Gone.cpp"))
+		$text | Should -Match 'removed upstream'
+	}
+
 	It 'throws on an unknown placeholder' {
 		$template = Join-Path $TestDrive 'bad-prompt.md'
 		Set-Content $template 'Port {{title}} using {{foo}}.'
