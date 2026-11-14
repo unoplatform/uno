@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -39,6 +40,21 @@ internal sealed class ManagedImageDecoderBackend : IImageEncoderDecoder
 	public IImage CreateImage(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
 		=> new ManagedImage(pixelWidth, pixelHeight, bgraPremul);
 
+	public IImage CreateImage<TState>(int pixelWidth, int pixelHeight, TState state, SpanAction<byte, TState> writePixels)
+	{
+		var image = new ManagedImage(pixelWidth, pixelHeight);
+		try
+		{
+			writePixels(image.Pixels, state);
+			return image;
+		}
+		catch
+		{
+			image.Dispose();
+			throw;
+		}
+	}
+
 	public ImageFrames CreateFrames(IImage image)
 		=> new(new[] { image }, DecodedImage.SingleFrameDurations);
 
@@ -68,13 +84,24 @@ internal sealed unsafe class ManagedImage : DrawingResource, IImage
 	// array can be collected straight away instead of being pinned on the large-object heap for the image's whole
 	// lifetime. Retained big arrays are the ones that fragment.
 	public ManagedImage(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
+		: this(pixelWidth, pixelHeight, bgraPremul.Length)
+		=> bgraPremul.CopyTo(Pixels);
+
+	/// <summary>An image whose pixels are uninitialized until written through <see cref="Pixels"/>.</summary>
+	public ManagedImage(int pixelWidth, int pixelHeight)
+		: this(pixelWidth, pixelHeight, checked(pixelWidth * pixelHeight * 4))
+	{
+	}
+
+	private ManagedImage(int pixelWidth, int pixelHeight, int length)
 	{
 		PixelWidth = pixelWidth;
 		PixelHeight = pixelHeight;
-		_length = bgraPremul.Length;
+		_length = length;
 		_bgraPremul = (IntPtr)NativeMemory.Alloc((nuint)Math.Max(1, _length));
-		bgraPremul.CopyTo(new Span<byte>((void*)_bgraPremul, _length));
 	}
+
+	internal Span<byte> Pixels => new((void*)_bgraPremul, _length);
 
 	public int PixelWidth { get; }
 
