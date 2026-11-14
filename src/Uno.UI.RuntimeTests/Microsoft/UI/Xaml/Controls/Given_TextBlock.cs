@@ -1236,6 +1236,47 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26187")]
+		public async Task When_IsTextTrimmedChanged_NotRaisedDuringLayout()
+		{
+			// Clip is used because IsTextTrimmed stays false for ellipsis modes (#26137).
+			var sut = new TextBlock
+			{
+				Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+				TextTrimming = TextTrimming.Clip,
+			};
+			var container = new Border
+			{
+				Width = 100,
+				Child = sut,
+			};
+
+			var states = new List<bool>();
+			sut.IsTextTrimmedChanged += (s, e) => states.Add(sut.IsTextTrimmed);
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(sut.IsTextTrimmed, "Setup: IsTextTrimmed should be trimmed at 100px.");
+			Assert.HasCount(1, states, "Setup: event should have been raised once.");
+
+			container.Width = 1000;
+			container.UpdateLayout();
+
+			// WinUI queues IsTextTrimmedChanged and delivers it after the layout pass,
+			// so the handler must not have run yet when UpdateLayout() returns.
+			Assert.HasCount(1, states, "IsTextTrimmedChanged was raised synchronously during layout.");
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(sut.IsTextTrimmed, "IsTextTrimmed should be false at 1000px.");
+			Assert.HasCount(2, states, "Event should be raised once the layout pass completes.");
+			Assert.IsFalse(states[1]);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_TextTrimmingNone()
 		{
 			var sut = new TextBlock

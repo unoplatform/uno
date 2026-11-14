@@ -960,7 +960,12 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnIsTextTrimmedChanged()
 		{
 			OnIsTextTrimmedChangedPartial();
-			_isTextTrimmedChanged?.Invoke(this, new());
+
+			// WinUI queues this event, so handlers run after the layout pass that changed the value (#26187).
+			if (_isTextTrimmedChanged is not null)
+			{
+				NativeDispatcher.Main.Enqueue(() => _isTextTrimmedChanged?.Invoke(this, new()));
+			}
 		}
 
 		partial void OnIsTextTrimmedChangedPartial();
