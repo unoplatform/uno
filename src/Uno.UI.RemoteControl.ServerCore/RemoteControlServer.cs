@@ -228,18 +228,9 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 		{
 			this.Log().LogDebug("Received message from IDE: {MessageType}", message.GetType().Name);
 		}
-		if (message is AppLaunchRegisterIdeMessage appLaunchRegisterIdeMessage)
+		if (message is AppLaunchRegisterIdeMessage)
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
-			{
-				this.Log().LogDebug("Received app launch register message from IDE: {Msg}", appLaunchRegisterIdeMessage);
-			}
-			_launchMonitor.RegisterLaunch(
-				appLaunchRegisterIdeMessage.Mvid,
-				appLaunchRegisterIdeMessage.Platform,
-				appLaunchRegisterIdeMessage.IsDebug,
-				appLaunchRegisterIdeMessage.Ide,
-				appLaunchRegisterIdeMessage.Plugin);
+			// Registered host-wide by AppLaunchIdeMessageHandler.
 		}
 		else if (_processors.TryGetValue(message.Scope, out var processor))
 		{
@@ -467,6 +458,8 @@ public sealed class RemoteControlServer : IRemoteControlServer, IRemoteControlSe
 
 	public void Dispose()
 	{
+		// The IDE channel outlives this connection.
+		_ideChannel.MessageFromIde -= ProcessIdeMessage;
 		_ct.Cancel(false);
 
 		// Nothing to flush explicitly: pending is handled internally by ApplicationLaunchMonitor
