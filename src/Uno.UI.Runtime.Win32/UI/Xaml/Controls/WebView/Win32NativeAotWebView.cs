@@ -24,11 +24,13 @@ using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Win32;
 
-internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsVirtualHostMapping, ISupportsWebResourceRequested
+internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsVirtualHostMapping, ISupportsWebResourceRequested, IAsyncInitializedNativeWebView
 {
 	private readonly CoreWebView2 _coreWebView;
-	private readonly WebView2.ICoreWebView2_22 _nativeWebView;
-	private readonly WebView2.ICoreWebView2Controller _controller;
+
+	// Both are set by InitializeAsync, and CoreWebView2 doesn't use this instance before it completes.
+	private WebView2.ICoreWebView2_22 _nativeWebView = null!;
+	private WebView2.ICoreWebView2Controller? _controller;
 
 	private Dictionary<ulong, string> _navigationIdToUriMap = new();
 	private string _documentTitle = string.Empty;
@@ -41,9 +43,12 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 		_coreWebView = owner;
 
 		ForwardBackgroundToPresenter();
+	}
 
+	public async Task InitializeAsync()
+	{
 		var tcs = new TaskCompletionSource<(WebView2.ICoreWebView2Controller controller, WebView2.ICoreWebView2_22 webView)>();
-		NativeDispatcher.Main.EnqueueAsync(async () =>
+		_ = NativeDispatcher.Main.EnqueueAsync(async () =>
 		{
 			try
 			{
@@ -76,17 +81,34 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 						return;
 					}
 
-					environment.CreateCoreWebView2Controller(new DirectN.HWND((IntPtr)Hwnd.Value), new WebView2.Utilities.CoreWebView2CreateCoreWebView2ControllerCompletedHandler((controllerError, controller) =>
+					try
 					{
-						if (controllerError.IsError)
+						environment.CreateCoreWebView2Controller(new DirectN.HWND((IntPtr)Hwnd.Value), new WebView2.Utilities.CoreWebView2CreateCoreWebView2ControllerCompletedHandler((controllerError, controller) =>
 						{
-							tcs.TrySetException(controllerError.GetException() ?? new InvalidOperationException("Failed to create CoreWebView2 controller."));
-							return;
-						}
+							if (controllerError.IsError)
+							{
+								tcs.TrySetException(controllerError.GetException() ?? new InvalidOperationException("Failed to create CoreWebView2 controller."));
+								return;
+							}
 
-						controller.get_CoreWebView2(out var coreWebView).ThrowOnError();
-						tcs.TrySetResult((controller, (WebView2.ICoreWebView2_22)coreWebView));
-					})).ThrowOnError();
+							try
+							{
+								controller.get_CoreWebView2(out var coreWebView).ThrowOnError();
+								var result = (controller, (WebView2.ICoreWebView2_22)coreWebView);
+
+								// Leaves the COM callback before the awaiting code, which ends up in app code, continues.
+								NativeDispatcher.Main.Enqueue(() => tcs.TrySetResult(result));
+							}
+							catch (Exception e)
+							{
+								tcs.TrySetException(e);
+							}
+						})).ThrowOnError();
+					}
+					catch (Exception e)
+					{
+						tcs.TrySetException(e);
+					}
 				}));
 			}
 			catch (Exception e)
@@ -95,15 +117,15 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 			}
 		});
 
-		while (!tcs.Task.IsCompleted)
-		{
-			Win32EventLoop.RunOnce();
-		}
-
-		(_controller, _nativeWebView) = tcs.Task.Result;
+		(_controller, _nativeWebView) = await tcs.Task;
 
 		_controller.put_IsVisible(BOOL.FALSE).ThrowOnError();
-		_controller.put_Bounds(new DirectN.RECT { left = 0, top = 0, right = 500, bottom = 500 }).ThrowOnError();
+
+		// The window may already have been arranged, in which case its WM_SIZE came before there was a controller.
+		PInvoke.GetClientRect(Hwnd, out var bounds);
+		_controller.put_Bounds(bounds.IsEmpty
+			? new DirectN.RECT { left = 0, top = 0, right = 500, bottom = 500 }
+			: new DirectN.RECT { left = bounds.left, top = bounds.top, right = bounds.right, bottom = bounds.bottom }).ThrowOnError();
 
 		_nativeWebView.get_Settings(out var settings).ThrowOnError();
 		settings.put_IsScriptEnabled(BOOL.TRUE).ThrowOnError();
@@ -286,7 +308,7 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 
 	private void NativeWebView_NavigationCompleted(WebView2.ICoreWebView2NavigationCompletedEventArgs e)
 	{
-		_controller.put_IsVisible(BOOL.TRUE).ThrowOnError();
+		_controller!.put_IsVisible(BOOL.TRUE).ThrowOnError();
 
 		ulong navigationId = default;
 		e.get_NavigationId(ref navigationId).ThrowOnError();
