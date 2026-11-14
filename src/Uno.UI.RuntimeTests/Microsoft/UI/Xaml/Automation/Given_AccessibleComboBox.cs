@@ -125,6 +125,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual(AutomationControlType.ComboBox, controlType);
 		}
 
+		/// <summary>
+		/// WinUI gives the items of a ComboBox a ComboBoxItemDataAutomationPeer, whose Select selects
+		/// the item and collapses the ComboBox (ComboBoxItemDataAutomationPeer::SelectImpl).
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Item_Selected_Through_Peer_Then_ComboBox_Collapses()
+		{
+			var comboBox = new ComboBox();
+			comboBox.Items.Add("Option A");
+			comboBox.Items.Add("Option B");
+			comboBox.Items.Add("Option C");
+
+			try
+			{
+				await UITestHelper.Load(comboBox);
+
+				comboBox.IsDropDownOpen = true;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var peer = (ComboBoxAutomationPeer)FrameworkElementAutomationPeer.CreatePeerForElement(comboBox);
+				var itemPeer = peer.CreateItemAutomationPeer(comboBox.Items[2]);
+				Assert.IsInstanceOfType(itemPeer, typeof(ComboBoxItemDataAutomationPeer));
+
+				if (itemPeer.GetPattern(PatternInterface.SelectionItem) is not ISelectionItemProvider selectionItemProvider)
+				{
+					Assert.Fail("A ComboBox item should support ISelectionItemProvider");
+					return;
+				}
+
+				selectionItemProvider.Select();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(2, comboBox.SelectedIndex, "Select should select the item");
+				Assert.IsFalse(comboBox.IsDropDownOpen, "Select should collapse the ComboBox");
+			}
+			finally
+			{
+				comboBox.IsDropDownOpen = false;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
 #if __SKIA__
 		/// <summary>
 		/// Verifies that an open ComboBox dropdown exposes its options as a proper WAI-ARIA
@@ -223,6 +266,277 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			}
 		}
 
+		/// <summary>
+		/// The XAML ComboBox owns the keyboard, as in WinUI: a key pressed on the semantic head must be
+		/// handled once. Handling it in the semantic layer as well reopened or closed the dropdown within
+		/// the same key press, so Enter stopped opening the dropdown once its items had been created.
+		/// ComboBoxItem items are used because they take the focus as soon as the dropdown opens.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Keys_Pressed_On_Head_Then_Handled_Once()
+		{
+			var comboBox = await LoadAccessibleComboBox(itemsAsContainers: true);
+
+			try
+			{
+				foreach (var (openKey, expectedIndex) in new[] { ("Enter", 1), (" ", 2), ("F4", 2) })
+				{
+					await FocusHead(comboBox);
+
+					PressKeyOnFocusedSemanticElement(openKey);
+					await UITestHelper.WaitFor(() => GetListBoxOptionCount(comboBox) == 3, timeoutMS: 5000, message: $"Timed out waiting for '{openKey}' to open the dropdown.");
+					await UITestHelper.WaitForIdle();
+					Assert.IsTrue(comboBox.IsDropDownOpen, $"'{openKey}' on the head must leave the dropdown open.");
+
+					if (expectedIndex != comboBox.SelectedIndex)
+					{
+						PressKeyOnFocusedSemanticElement("ArrowDown");
+						await UITestHelper.WaitForIdle();
+					}
+
+					PressKeyOnFocusedSemanticElement("Enter");
+					await UITestHelper.WaitFor(() => !comboBox.IsDropDownOpen, timeoutMS: 5000, message: "Timed out waiting for Enter to close the dropdown.");
+					Assert.AreEqual(expectedIndex, comboBox.SelectedIndex, "Enter must commit the focused option.");
+				}
+			}
+			finally
+			{
+				comboBox.IsDropDownOpen = false;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		/// <summary>
+		/// WAI-ARIA combobox pattern: the head keeps DOM focus while the dropdown is open and follows the
+		/// XAML-focused item through aria-activedescendant. As in WinUI, moving through the items does not
+		/// select them: aria-selected only changes once the focused item is committed.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_DropDown_Navigated_Then_Head_Tracks_Focused_Option()
+		{
+			var comboBox = await LoadAccessibleComboBox();
+			comboBox.SelectedIndex = 0;
+
+			try
+			{
+				await FocusHead(comboBox);
+				Assert.AreEqual("Option A", GetSemanticText(comboBox), "A closed combobox must expose its selected item as its value.");
+				var dialogCount = GetDialogCount();
+
+				PressKeyOnFocusedSemanticElement("Enter");
+				await UITestHelper.WaitFor(() => GetListBoxOptionCount(comboBox) == 3, timeoutMS: 5000, message: "Timed out waiting for the dropdown options.");
+				Assert.AreEqual(dialogCount, GetDialogCount(), "An open dropdown must not add a dialog: its options live in the listbox.");
+
+				var first = (ComboBoxItem)comboBox.ContainerFromIndex(0);
+				var second = (ComboBoxItem)comboBox.ContainerFromIndex(1);
+				await UITestHelper.WaitFor(
+					() => GetSemanticAttribute(comboBox, "aria-activedescendant") == GetSemanticElementId(first),
+					timeoutMS: 5000,
+					message: "Timed out waiting for the head to reference the selected option when the dropdown opens.");
+				Assert.AreEqual(GetSemanticElementId(comboBox), GetActiveElementId(), "DOM focus must stay on the combobox head while its dropdown is open.");
+				Assert.AreEqual("true", GetSemanticAttribute(first, "aria-selected"), "The selected option must report aria-selected=true.");
+				Assert.AreEqual("false", GetSemanticAttribute(second, "aria-selected"), "The other options must report aria-selected=false.");
+
+				PressKeyOnFocusedSemanticElement("ArrowDown");
+				await UITestHelper.WaitFor(
+					() => GetSemanticAttribute(comboBox, "aria-activedescendant") == GetSemanticElementId(second),
+					timeoutMS: 5000,
+					message: "Timed out waiting for the head to reference the option focused with ArrowDown.");
+				Assert.AreEqual(GetSemanticElementId(comboBox), GetActiveElementId(), "DOM focus must stay on the combobox head while moving through the options.");
+				Assert.AreEqual(0, comboBox.SelectedIndex, "Moving through the options must not select them before they are committed.");
+				Assert.AreEqual("false", GetSemanticAttribute(second, "aria-selected"), "A focused option is not selected until it is committed.");
+
+				PressKeyOnFocusedSemanticElement("Enter");
+				await UITestHelper.WaitFor(() => !comboBox.IsDropDownOpen, timeoutMS: 5000, message: "Timed out waiting for Enter to close the dropdown.");
+				await UITestHelper.WaitForIdle();
+
+				Assert.AreEqual(1, comboBox.SelectedIndex, "Enter must commit the focused option.");
+				Assert.AreEqual("Option B", GetSemanticText(comboBox), "The head must expose the committed item as its value.");
+				Assert.IsFalse(SemanticElementHasAttribute(comboBox, "aria-activedescendant"), "A closed combobox must not reference an option.");
+				Assert.AreEqual(GetSemanticElementId(comboBox), GetActiveElementId(), "DOM focus must still be on the combobox head once the dropdown has closed.");
+			}
+			finally
+			{
+				comboBox.IsDropDownOpen = false;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		/// <summary>
+		/// A screen reader activates an option by clicking its semantic node. As in WinUI
+		/// (ComboBoxItemDataAutomationPeer::SelectImpl), that selects the item and collapses the ComboBox.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Active_Option_Changes_Before_Deferred_Update_Then_Latest_Wins()
+		{
+			var comboBox = await LoadAccessibleComboBox();
+			comboBox.SelectedIndex = 0;
+
+			try
+			{
+				await FocusHead(comboBox);
+				PressKeyOnFocusedSemanticElement("Enter");
+				await UITestHelper.WaitFor(() => GetListBoxOptionCount(comboBox) == 3, timeoutMS: 5000, message: "Timed out waiting for the dropdown options.");
+
+				var first = (ComboBoxItem)comboBox.ContainerFromIndex(0);
+				var second = (ComboBoxItem)comboBox.ContainerFromIndex(1);
+				var third = (ComboBoxItem)comboBox.ContainerFromIndex(2);
+				await UITestHelper.WaitFor(
+					() => GetSemanticAttribute(comboBox, "aria-activedescendant") == GetSemanticElementId(first),
+					timeoutMS: 5000,
+					message: "Timed out waiting for the head to reference the selected option when the dropdown opens.");
+
+				// The second option is requested while it is not in the DOM yet, so that request is deferred;
+				// the third one is requested right after and is applied at once.
+				RequestActiveDescendantWhileMissingThenAnother(comboBox, second, third);
+				await Task.Delay(250);
+				await UITestHelper.WaitForIdle();
+
+				Assert.AreEqual(GetSemanticElementId(third), GetSemanticAttribute(comboBox, "aria-activedescendant"), "A deferred request must not overwrite a newer one.");
+			}
+			finally
+			{
+				comboBox.IsDropDownOpen = false;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Option_Clicked_Then_Selected_And_DropDown_Closed()
+		{
+			var comboBox = await LoadAccessibleComboBox();
+
+			try
+			{
+				comboBox.IsDropDownOpen = true;
+				await UITestHelper.WaitFor(() => GetListBoxOptionCount(comboBox) == 3, timeoutMS: 5000, message: "Timed out waiting for the dropdown options.");
+
+				var third = (ComboBoxItem)comboBox.ContainerFromIndex(2);
+				await UITestHelper.WaitFor(() => SemanticElementExists(third), timeoutMS: 5000, message: "Timed out waiting for the third option.");
+				InvokeBrowserJs($"(function(){{document.getElementById('{GetSemanticElementId(third)}').click(); return 'ok';}})()");
+
+				await UITestHelper.WaitFor(() => !comboBox.IsDropDownOpen, timeoutMS: 5000, message: "Timed out waiting for the clicked option to close the dropdown.");
+				Assert.AreEqual(2, comboBox.SelectedIndex, "Clicking an option must select it.");
+			}
+			finally
+			{
+				comboBox.IsDropDownOpen = false;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		/// <summary>
+		/// Up/Down change the selection of a closed ComboBox (WinUI ComboBox::MainKeyDown). No option exists
+		/// in the DOM at that point, so the change has to be exposed as the value of the head.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Selection_Changes_While_Closed_Then_Head_Value_Updated()
+		{
+			var comboBox = await LoadAccessibleComboBox();
+
+			try
+			{
+				Assert.AreEqual(string.Empty, GetSemanticText(comboBox), "A combobox without selection has no value.");
+
+				await FocusHead(comboBox);
+
+				PressKeyOnFocusedSemanticElement("ArrowDown");
+				await UITestHelper.WaitFor(() => GetSemanticText(comboBox) == "Option A", timeoutMS: 5000, message: "Timed out waiting for the head to expose the item selected with ArrowDown.");
+
+				PressKeyOnFocusedSemanticElement("ArrowDown");
+				await UITestHelper.WaitFor(() => GetSemanticText(comboBox) == "Option B", timeoutMS: 5000, message: "Timed out waiting for the head to expose the next item selected with ArrowDown.");
+
+				Assert.IsFalse(comboBox.IsDropDownOpen, "Up/Down must not open the dropdown.");
+				Assert.IsFalse(SemanticElementHasAttribute(comboBox, "aria-activedescendant"), "A closed combobox must not reference an option.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		private static async Task<ComboBox> LoadAccessibleComboBox(bool itemsAsContainers = false)
+		{
+			var comboBox = new ComboBox();
+			foreach (var option in new[] { "Option A", "Option B", "Option C" })
+			{
+				comboBox.Items.Add(itemsAsContainers ? new ComboBoxItem { Content = option } : option);
+			}
+
+			await UITestHelper.Load(comboBox);
+			comboBox.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => ComboBoxHeadExists(comboBox), timeoutMS: 5000, message: "Timed out waiting for the semantic combobox head element to be created.");
+			await UITestHelper.WaitForIdle();
+
+			return comboBox;
+		}
+
+		// Keys are delivered to the DOM-focused element, which has to be the combobox head.
+		private static async Task FocusHead(ComboBox comboBox)
+		{
+			comboBox.Focus(FocusState.Keyboard);
+			await UITestHelper.WaitFor(
+				() => GetActiveElementId() == GetSemanticElementId(comboBox),
+				timeoutMS: 5000,
+				message: "Timed out waiting for the combobox head to receive DOM focus.");
+			await UITestHelper.WaitForIdle();
+		}
+
+		private static void RequestActiveDescendantWhileMissingThenAnother(ComboBox comboBox, ComboBoxItem missing, ComboBoxItem latest)
+		{
+			var prefix = "uno-semantics-";
+			var containerHandle = GetSemanticElementId(comboBox).Substring(prefix.Length);
+			var missingId = GetSemanticElementId(missing);
+			var latestHandle = GetSemanticElementId(latest).Substring(prefix.Length);
+			InvokeBrowserJs(
+				"(function(){" +
+				"const semantics = globalThis.Uno.UI.Runtime.SemanticElements;" +
+				$"const option = document.getElementById('{missingId}');" +
+				"option.id = '';" +
+				$"semantics.updateActiveDescendant({containerHandle}, {missingId.Substring(prefix.Length)});" +
+				$"option.id = '{missingId}';" +
+				$"semantics.updateActiveDescendant({containerHandle}, {latestHandle});" +
+				"return 'ok';" +
+				"})()");
+		}
+
+		private static string GetDialogCount()
+			=> InvokeBrowserJs("(function(){return String(document.querySelectorAll('[role=dialog]').length);})()");
+
+		private static string GetActiveElementId()
+			=> InvokeBrowserJs("(function(){return document.activeElement ? document.activeElement.id : '';})()");
+
+		// The text nodes of the element itself, without the text of its child elements.
+		private static string GetSemanticText(UIElement element)
+			=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementId(element)}'); if (!e) {{ return ''; }} return Array.from(e.childNodes).filter(function(n){{return n.nodeType === 3;}}).map(function(n){{return n.data;}}).join(''); }})()");
+
+		// A key press as the browser delivers it: on the focused element, bubbling to the document
+		// listener that feeds the XAML keyboard input.
+		private static void PressKeyOnFocusedSemanticElement(string key)
+		{
+			var code = key == " " ? "Space" : key;
+			InvokeBrowserJs(
+				"(function(){" +
+				"const target = document.activeElement || document.body;" +
+				"['keydown','keyup'].forEach(function(type){" +
+				$"target.dispatchEvent(new KeyboardEvent(type, {{ key: '{key}', code: '{code}', bubbles: true, cancelable: true }}));" +
+				"});" +
+				"return 'ok';" +
+				"})()");
+		}
+
 		// Returns "dupP|dialogs": count of standalone <p> whose text matches an option label (duplicate
 		// emission), and count of role=dialog nodes containing any role=option (un-suppressed popup).
 		// "0|0" once both residuals are fixed.
@@ -237,9 +551,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				"})()";
 			return InvokeBrowserJs(js);
 		}
-
-		private static string GetSemanticElementId(ComboBox comboBox)
-			=> "uno-semantics-" + ((long)comboBox.Visual.Handle).ToString(System.Globalization.CultureInfo.InvariantCulture);
 
 		private static bool ComboBoxHeadExists(ComboBox comboBox)
 		{

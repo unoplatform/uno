@@ -1333,7 +1333,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 		{
-			var peer = owner.GetOrCreateAutomationPeer();
+			var peer = GetDropDownItemPeer(owner) ?? owner.GetOrCreateAutomationPeer();
 			if (peer?.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
 			{
 				selectionItemProvider.Select();
@@ -1708,7 +1708,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// readers don't announce a contentless dialog.
 		// Matched via the ComboBox's GetPopup() — a Popup template part does not reliably carry
 		// TemplatedParent, so suppress by identity against tracked ComboBoxes (IsComboBoxDropdownPopup).
-		if (element is Popup comboBoxPopup && IsComboBoxDropdownPopup(comboBoxPopup))
+		// While open, the popup is hosted by its PopupPanel, which is the node carrying that role.
+		var dropDownPopup = element as Popup ?? (element as PopupPanel)?.Popup;
+		if (dropDownPopup is not null && IsComboBoxDropdownPopup(dropDownPopup))
 		{
 			return false;
 		}
@@ -2599,24 +2601,18 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				NativeMethods.UpdateSelectionState(element.Visual.Handle, selected);
 			}
 
-			// Update roving tabindex: the newly selected item gets tabindex=0,
-			// other group members get tabindex=-1 (for listbox options, radio groups, tabs)
-			if (selected)
+			// The options of a dropdown are never tab stops, and its head follows the focused option
+			// (TryActivateDropDownItem), which WinUI keeps apart from the selected one.
+			if (selected && element is not ComboBoxItem)
 			{
+				// Update roving tabindex: the newly selected item gets tabindex=0,
+				// other group members get tabindex=-1 (for listbox options, radio groups, tabs)
 				// Use groupHandle=0 to let TS infer the group from the element's context
 				NativeMethods.UpdateRovingTabindex(IntPtr.Zero, element.Visual.Handle);
 
-				// Update aria-activedescendant on the parent container (combobox/listbox)
+				// Update aria-activedescendant on the parent container (listbox)
 				// so screen readers announce the active option without moving DOM focus.
-				// A ComboBox option lives in a separate listbox subtree, so the relationship
-				// must be expressed on the combobox head (which carries the matching
-				// aria-controls), not on the option's automation parent.
-				if (element is ComboBoxItem comboBoxItem &&
-					ItemsControl.ItemsControlFromItemContainer(comboBoxItem) is ComboBox ownerComboBox)
-				{
-					NativeMethods.UpdateActiveDescendant(ownerComboBox.Visual.Handle, element.Visual.Handle);
-				}
-				else if (peer.GetParent() is FrameworkElementAutomationPeer { Owner: { } parentOwner })
+				if (peer.GetParent() is FrameworkElementAutomationPeer { Owner: { } parentOwner })
 				{
 					NativeMethods.UpdateActiveDescendant(parentOwner.Visual.Handle, element.Visual.Handle);
 				}
@@ -2625,18 +2621,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		else if (automationProperty == ValuePatternIdentifiers.ValueProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
-			if (element is ComboBox)
+			if (element is ComboBox valueComboBox)
 			{
-				// Don't overwrite aria-label with the selected value -- that destroys the
-				// control's accessible name (FR-020). The selection itself is already announced
-				// via aria-activedescendant -> the ComboBoxItem option, whose own text the
-				// screen reader reads alongside the head's name. If we ever need to reflect
-				// the selected text on the head itself (editable-combobox UX), aria-valuetext
-				// is the right attribute; aria-label is not.
+				// The selected text is the value of the head, not its accessible name (FR-020):
+				// it goes to the head's text content and leaves aria-label alone.
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"[A11y] PROP CHANGE: ComboBox Value handle={element.Visual.Handle} (no aria-label update; activedescendant carries selection)");
+					this.Log().Trace($"[A11y] PROP CHANGE: ComboBox Value handle={element.Visual.Handle}");
 				}
+				UpdateComboBoxValue(valueComboBox);
 			}
 			else if (peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
 			{
@@ -3119,6 +3112,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.updateActiveDescendant")]
 		internal static partial void UpdateActiveDescendant(IntPtr containerHandle, IntPtr activeItemHandle);
+
+		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.updateComboBoxValue")]
+		internal static partial void UpdateComboBoxValue(IntPtr handle, string? value);
 
 		// ===== VoiceOver Enhancement Methods =====
 

@@ -470,20 +470,9 @@ internal static partial class SemanticElementFactory
 		bool isFocusable)
 	{
 		var expanded = attributes.Expanded ?? false;
-		string? selectedValue = null;
-
-		if (peer is FrameworkElementAutomationPeer frameworkPeer &&
-			frameworkPeer.Owner is ComboBox comboBox &&
-			comboBox.SelectedItem is { } selected)
-		{
-			// Mirror WinUI selection-text resolution: prefer the value pattern (which honors
-			// DisplayMemberPath / item-template-bound value providers), fall back to ToString
-			// only when no value provider is exposed. This avoids announcing a type name for
-			// non-string item view models.
-			selectedValue = (peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
-				? valueProvider.Value
-				: selected.ToString();
-		}
+		var selectedValue = peer is FrameworkElementAutomationPeer { Owner: ComboBox comboBox }
+			? WebAssemblyAccessibility.GetComboBoxValue(comboBox)
+			: null;
 
 		NativeMethods.CreateComboBoxElement(
 			parentHandle,

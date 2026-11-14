@@ -6,7 +6,9 @@ using Microsoft.UI.Xaml.Automation.Provider;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
-public partial class ComboBoxItemDataAutomationPeer : SelectorItemAutomationPeer, IScrollItemProvider
+// ISelectionItemProvider is implemented again so that calls made through the pattern reach the methods
+// below, as WinUI's virtual SelectImpl/AddToSelectionImpl/RemoveFromSelectionImpl do.
+public partial class ComboBoxItemDataAutomationPeer : SelectorItemAutomationPeer, IScrollItemProvider, ISelectionItemProvider
 {
 	public ComboBoxItemDataAutomationPeer(object item, ComboBoxAutomationPeer parent) : base(item, parent)
 	{
@@ -35,6 +37,12 @@ public partial class ComboBoxItemDataAutomationPeer : SelectorItemAutomationPeer
 	{
 		// ComboBox does not allow deselecting the current item through automation.
 	}
+
+	void ISelectionItemProvider.Select() => Select();
+
+	void ISelectionItemProvider.AddToSelection() => AddToSelection();
+
+	void ISelectionItemProvider.RemoveFromSelection() => RemoveFromSelection();
 
 	private void CollapseParentComboBox()
 	{
