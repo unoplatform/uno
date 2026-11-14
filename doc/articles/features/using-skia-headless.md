@@ -9,6 +9,14 @@ lifecycle stays intact and the two-phase render cycle keeps running, but there i
 input device, and no OS chrome. It is cross-platform (Windows, Linux, macOS) and runs anywhere the
 managed Skia stack does.
 
+> [!IMPORTANT]
+> The headless host requires a registered **Skia graphics backend** because it only provides
+> a software rendering context. Applications configured with WebGPU alone cannot use
+> `UseHeadless()`.
+>
+> If your application uses WebGPU and also needs headless rendering, register Skia as an
+> additional graphics backend.
+
 Typical uses:
 
 - CI / automated UI testing
