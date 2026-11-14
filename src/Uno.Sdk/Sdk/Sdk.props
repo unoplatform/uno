@@ -62,6 +62,8 @@ Copyright (C) Uno Platform Inc. All rights reserved.
 
 	<Import Sdk="$(_DefaultMicrosoftNETSdk)" Project="Sdk.props" />
 
+	<Import Project="$(_UnoSdkTargetsDirectory)Uno.Implicit.Namespaces.props" />
+
 	<PropertyGroup>
 		<EnableDefaultItems Condition=" '$(EnableDefaultItems)' == '' ">true</EnableDefaultItems>
 		<EnableDefaultUnoItems Condition=" '$(EnableDefaultUnoItems)' == '' ">$(EnableDefaultItems)</EnableDefaultUnoItems>
