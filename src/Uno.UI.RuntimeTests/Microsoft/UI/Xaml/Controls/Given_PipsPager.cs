@@ -181,4 +181,59 @@ public partial class Given_PipsPager
 		var scrolledScreenshot = await UITestHelper.ScreenShot(SUT);
 		ImageAssert.HasColorAt(scrolledScreenshot, scrolledScreenshot.Width / 2, scrolledScreenshot.Height - 5, color);
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_WrapMode_Changes_Virtualization_Follows()
+	{
+		var SUT = new PipsPager { NumberOfPages = 10 };
+
+		await UITestHelper.Load(SUT);
+
+		var repeater = SUT.FindFirstDescendant<ItemsRepeater>("PipsPagerItemsRepeater");
+		var stackLayout = repeater?.Layout as StackLayout;
+		Assert.IsNotNull(stackLayout, "Inner StackLayout not found");
+		Assert.IsFalse(stackLayout.DisableVirtualization);
+
+		SUT.WrapMode = PipsPagerWrapMode.Wrap;
+		Assert.IsTrue(stackLayout.DisableVirtualization);
+
+		SUT.WrapMode = PipsPagerWrapMode.None;
+		Assert.IsFalse(stackLayout.DisableVirtualization);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_WrapMode_Changes_On_First_Page_Previous_Button_Shows()
+	{
+		var SUT = new PipsPager
+		{
+			NumberOfPages = 5,
+			PreviousButtonVisibility = PipsPagerButtonVisibility.Visible,
+		};
+
+		await UITestHelper.Load(SUT);
+
+		var previousButton = SUT.FindFirstDescendant<Button>("PreviousPageButton");
+		Assert.IsNotNull(previousButton, "PreviousPageButton not found");
+		Assert.AreEqual(0, previousButton.Opacity, "Previous button is hidden on the first page");
+
+		SUT.WrapMode = PipsPagerWrapMode.Wrap;
+		await UITestHelper.WaitForIdle();
+
+		Assert.AreEqual(1, previousButton.Opacity, "Wrapping makes the first page's previous button usable");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_NumberOfPages_Decreases_Items_Are_Removed_From_End()
+	{
+		var SUT = new PipsPager { NumberOfPages = 5 };
+
+		await UITestHelper.Load(SUT);
+
+		SUT.NumberOfPages = 3;
+
+		CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SUT.TemplateSettings.PipsPagerItems.ToArray());
+	}
 }

@@ -51,6 +51,7 @@ namespace MUXControlsTestApp
 			ButtonListPager.NumberOfPages = (int)Math.Ceiling(ButtonListScrollViewer.ExtentHeight / ButtonListScrollViewer.ViewportHeight);
 			SetButtonListRepeaterSize();
 			PersonInfoListScrollViewer = FindInnerScrollViewer(PersonInfoList);
+			// Uno specific: guard against a ListView template without an inner ScrollViewer.
 			if (PersonInfoListScrollViewer != null)
 			{
 				PersonInfoListScrollViewer.ViewChanged += PersonInfoList_ViewChanged;
