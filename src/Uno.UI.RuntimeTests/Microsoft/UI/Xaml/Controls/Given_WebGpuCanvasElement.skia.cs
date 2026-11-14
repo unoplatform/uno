@@ -1,8 +1,14 @@
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Helpers;
 using Silk.NET.WebGPU;
 using Uno.WinUI.Graphics3DWebGpu;
+using static Private.Infrastructure.TestServices;
 using Colors = Microsoft.UI.Colors;
 using WebGpuColor = Silk.NET.WebGPU.Color;
 
@@ -66,6 +72,100 @@ public class Given_WebGpuCanvasElement
 
 		Assert.AreEqual(1, SUT.DestroyCount);
 		Assert.IsNull(SUT.IsWebGpuInitialized);
+	}
+
+	private const string DeviceLossChildVariable = "UNO_TEST_WEBGPU_DEVICE_LOSS_CHILD";
+
+	// The device is process-wide and wgpu answers a bad call with an abort, so the loss runs in a child process: this
+	// one keeps its device, and a crash shows up as a child that died without reporting.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26086")]
+	public async Task When_Device_Is_Lost_Then_Process_Survives()
+	{
+		if (RuntimeTestsBackendHelper.CurrentBackend != RuntimeTestBackends.WebGpu)
+		{
+			Assert.Inconclusive("Requires the WebGPU backend.");
+		}
+
+		if (Environment.GetEnvironmentVariable(DeviceLossChildVariable) == "1")
+		{
+			await RunDeviceLossScenario();
+			return;
+		}
+
+		var resultsPath = Path.Combine(Path.GetTempPath(), $"webgpu-device-loss-{Guid.NewGuid():N}.xml");
+		ProcessStartInfo start = new(Environment.ProcessPath!) { UseShellExecute = false };
+		if (Path.GetFileNameWithoutExtension(Environment.ProcessPath) == "dotnet")
+		{
+			start.ArgumentList.Add(Environment.GetCommandLineArgs()[0]);
+		}
+
+		start.ArgumentList.Add($"--runtime-tests={resultsPath}");
+		start.Environment[DeviceLossChildVariable] = "1";
+		start.Environment["UITEST_RUNTIME_TESTS_FILTER"] = Convert.ToBase64String(Encoding.UTF8.GetBytes(
+			$"{typeof(Given_WebGpuCanvasElement).FullName}.{nameof(When_Device_Is_Lost_Then_Process_Survives)}"));
+
+		using var child = Process.Start(start)!;
+		using CancellationTokenSource timeout = new(TimeSpan.FromMinutes(3));
+		try
+		{
+			await child.WaitForExitAsync(timeout.Token);
+		}
+		catch (OperationCanceledException)
+		{
+			child.Kill();
+			Assert.Fail("The child process did not finish within 3 minutes.");
+		}
+
+		Assert.IsTrue(File.Exists(resultsPath), $"The child process died without reporting (exit code {child.ExitCode}).");
+		var results = await File.ReadAllTextAsync(resultsPath);
+		File.Delete(resultsPath);
+		StringAssert.Contains(results, "passed=\"1\"", results);
+		Assert.AreEqual(0, child.ExitCode);
+	}
+
+	private static async Task RunDeviceLossScenario()
+	{
+		var SUT = new DeviceDestroyingWebGpuCanvasElement { Width = 100, Height = 100 };
+		var sibling = new Border { Width = 50, Height = 50, Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Colors.Red) };
+		var host = new StackPanel { Width = 200, Height = 200, Children = { SUT, sibling } };
+
+		await UITestHelper.Load(host);
+		await UITestHelper.WaitFor(() => SUT.DeviceDestroyed, timeoutMS: 5000);
+
+		// A frame: submit, acquire and present.
+		sibling.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Colors.Green);
+		await UITestHelper.WaitForRender(5);
+
+		// An offscreen render and a readback, which map a buffer.
+		await UITestHelper.ScreenShot(host);
+
+		// A new window size, which configures the surface.
+		var window = WindowHelper.CurrentTestWindow!.AppWindow;
+		var size = window.Size;
+		window.Resize(new(size.Width + 40, size.Height + 40));
+		await UITestHelper.WaitForRender(5);
+		window.Resize(size);
+		await UITestHelper.WaitForRender(5);
+	}
+
+	private sealed unsafe class DeviceDestroyingWebGpuCanvasElement : WebGpuCanvasElement
+	{
+		public bool DeviceDestroyed { get; private set; }
+
+		protected override void Init(WebGpuCanvasContext context) { }
+
+		protected override void OnDestroy(WebGpuCanvasContext context) { }
+
+		protected override void RenderOverride(WebGpuCanvasContext context)
+		{
+			if (!DeviceDestroyed)
+			{
+				context.Api.DeviceDestroy(context.Device);
+				DeviceDestroyed = true;
+			}
+		}
 	}
 
 	private sealed unsafe class ClearingWebGpuCanvasElement : WebGpuCanvasElement
