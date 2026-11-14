@@ -27,6 +27,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// delivered again when the Image re-enters the tree, or decoded again after its release, raises nothing.
 		private int? _imageOpenedVersion;
 
+		// The SVG source ImageOpened was raised for: an SVG source raises it on an image once, however often it loads.
+		private SvgImageSource _svgImageOpenedFor;
+
 		public Image()
 		{
 			_imageSprite = Visual.Compositor.CreateSpriteVisual();
@@ -46,6 +49,11 @@ namespace Microsoft.UI.Xaml.Controls
 			ReleaseSubscription();
 			_lastMeasuredSize = default;
 			InvalidateMeasure();
+
+			if (!ReferenceEquals(newValue, _svgImageOpenedFor))
+			{
+				_svgImageOpenedFor = null;
+			}
 
 			// SVG flows through the same neutral path as any source: its ISvgRenderer produces a live composition
 			// surface (drawn as vector each frame, crisp at any size) that the sprite renders like any bitmap.
@@ -167,9 +175,10 @@ namespace Microsoft.UI.Xaml.Controls
 				_surfaceBrush.MonochromeColor = MonochromeColor;
 				_imageSprite.Brush = _surfaceBrush;
 
-				if (_imageOpenedVersion != version)
+				if (Source is SvgImageSource svgImageSource ? !ReferenceEquals(_svgImageOpenedFor, svgImageSource) : _imageOpenedVersion != version)
 				{
 					_imageOpenedVersion = version;
+					_svgImageOpenedFor = Source as SvgImageSource;
 					ImageOpened?.Invoke(this, new RoutedEventArgs(this));
 				}
 			}

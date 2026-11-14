@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Composition;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.Disposables;
 using Uno.UI.Xaml.Media;
 
@@ -11,6 +12,9 @@ namespace Microsoft.UI.Xaml.Media
 		// Changes on every ImageSource change, so a Subscribe that the app superseded meanwhile is noticed.
 		private int _subscriptionVersion;
 
+		// The SVG source ImageOpened was raised for: an SVG source raises it on a brush once, however often it loads.
+		private SvgImageSource _svgImageOpenedFor;
+
 		internal ImageData? ImageDataCache;
 
 		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue)
@@ -21,6 +25,11 @@ namespace Microsoft.UI.Xaml.Media
 			if (_compositionBrush is CompositionSurfaceBrush surfaceBrush)
 			{
 				surfaceBrush.Surface = null;
+			}
+
+			if (!ReferenceEquals(newValue, _svgImageOpenedFor))
+			{
+				_svgImageOpenedFor = null;
 			}
 
 			var version = ++_subscriptionVersion;
@@ -47,8 +56,13 @@ namespace Microsoft.UI.Xaml.Media
 				//		 so the ImageFailed won't be raised if the url is invalid ...
 				OnImageFailed();
 			}
-			else
+			else if (ImageSource is not SvgImageSource svgImageSource)
 			{
+				OnImageOpened();
+			}
+			else if (image.HasData && !ReferenceEquals(_svgImageOpenedFor, svgImageSource))
+			{
+				_svgImageOpenedFor = svgImageSource;
 				OnImageOpened();
 			}
 
