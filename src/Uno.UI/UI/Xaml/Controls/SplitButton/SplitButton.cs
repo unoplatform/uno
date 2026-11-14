@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference SplitButton.cpp, tag winui3/release/1.4.2
+// MUX Reference SplitButton.cpp, tag winui3/release/2.6.5
 
 using Microsoft.UI.Private.Controls;
 using Uno.UI.Helpers.WinUI;
@@ -230,7 +230,7 @@ namespace Microsoft.UI.Xaml.Controls
 						VisualStateManager.GoToState(this, "FlyoutOpen", useTransitions);
 					}
 				}
-				// SplitButton and ToggleSplitButton share a template -- this section is driving the checked states for Toggle
+				// SplitButton and ToggleSplitButton share a template -- this section is driving the checked states for ToggleSplitButton.
 				else if (InternalIsChecked())
 				{
 					if (m_lastPointerDeviceType == PointerDeviceType.Touch || m_isKeyDown)
