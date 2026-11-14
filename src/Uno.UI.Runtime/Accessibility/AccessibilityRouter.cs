@@ -245,6 +245,14 @@ internal static class AccessibilityRouter
 			}
 		}
 
+		public void NotifyOwnerPropertyChanged(UIElement element, AutomationProperty property, object oldValue, object newValue)
+		{
+			if (_anyBridgeEnabled)
+			{
+				Resolve(element)?.NotifyOwnerPropertyChanged(element, property, oldValue, newValue);
+			}
+		}
+
 		public void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer? child)
 		{
 			if (_anyBridgeEnabled)

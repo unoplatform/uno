@@ -345,6 +345,187 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				"A runtime Text change must update the semantic element's aria-label when the accessible name is derived from Text.");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_LiveSetting_Changes_Then_AriaLive_Updates()
+		{
+			var region = new Grid { Width = 100, Height = 30 };
+			AutomationProperties.SetName(region, "Status");
+			AutomationProperties.SetLiveSetting(region, AutomationLiveSetting.Assertive);
+
+			await UITestHelper.Load(region);
+			region.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(region), timeoutMS: 5000, message: "Timed out waiting for the semantic element to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("assertive", GetSemanticAttribute(region, "aria-live"));
+
+			AutomationProperties.SetLiveSetting(region, AutomationLiveSetting.Polite);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(region, "aria-live") == "polite", timeoutMS: 5000,
+				message: "aria-live must follow a runtime LiveSetting change to Polite.");
+
+			AutomationProperties.SetLiveSetting(region, AutomationLiveSetting.Off);
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(region, "aria-live"), timeoutMS: 5000,
+				message: "aria-live must be removed when LiveSetting changes to Off.");
+			Assert.IsTrue(SemanticElementExists(region), "The named container must stay in the semantic tree.");
+
+			AutomationProperties.SetLiveSetting(region, AutomationLiveSetting.Assertive);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(region, "aria-live") == "assertive", timeoutMS: 5000,
+				message: "aria-live must be restored when LiveSetting changes back from Off.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_TextBlock_Becomes_Live_Then_AriaLive_Is_Emitted()
+		{
+			var textBlock = new TextBlock { Text = "Ready" };
+			var root = new StackPanel { Children = { textBlock } };
+
+			await UITestHelper.Load(root);
+			textBlock.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitForIdle();
+
+			AutomationProperties.SetLiveSetting(textBlock, AutomationLiveSetting.Polite);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(textBlock, "aria-live") == "polite", timeoutMS: 5000,
+				message: "A TextBlock that becomes a live region at runtime must emit aria-live.");
+
+			AutomationProperties.SetLiveSetting(textBlock, AutomationLiveSetting.Off);
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(textBlock, "aria-live"), timeoutMS: 5000,
+				message: "aria-live must be removed when the TextBlock stops being a live region.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_ItemStatus_Changes_Then_AriaBusy_Updates()
+		{
+			var region = new Grid { Width = 100, Height = 30 };
+			AutomationProperties.SetName(region, "Results");
+			AutomationProperties.SetItemStatus(region, "Ready");
+
+			await UITestHelper.Load(region);
+			region.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(region), timeoutMS: 5000, message: "Timed out waiting for the semantic element to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.IsFalse(SemanticElementHasAttribute(region, "aria-busy"));
+
+			AutomationProperties.SetItemStatus(region, "Loading");
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(region, "aria-busy") == "true", timeoutMS: 5000,
+				message: "A busy ItemStatus set at runtime must emit aria-busy=true.");
+
+			AutomationProperties.SetItemStatus(region, "Ready");
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(region, "aria-busy"), timeoutMS: 5000,
+				message: "aria-busy must be removed when ItemStatus is no longer busy.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Unnamed_Live_Container_Changes_Then_Aria_Follows()
+		{
+			// No Name/LabeledBy: the Grid has no automation peer, yet it is emitted as a live region.
+			var region = new Grid { Width = 100, Height = 30 };
+			AutomationProperties.SetLiveSetting(region, AutomationLiveSetting.Polite);
+
+			await UITestHelper.Load(region);
+			Assert.IsNull(region.GetOrCreateAutomationPeer());
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(region), timeoutMS: 5000, message: "Timed out waiting for the live region node.");
+
+			AutomationProperties.SetItemStatus(region, "Loading");
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(region, "aria-busy") == "true", timeoutMS: 5000,
+				message: "aria-busy must follow ItemStatus on a container without a peer.");
+
+			AutomationProperties.SetLiveSetting(region, AutomationLiveSetting.Assertive);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(region, "aria-live") == "assertive", timeoutMS: 5000,
+				message: "aria-live must follow LiveSetting on a container without a peer.");
+
+			AutomationProperties.SetLiveSetting(region, AutomationLiveSetting.Off);
+			await UITestHelper.WaitFor(() => !SemanticElementExists(region), timeoutMS: 5000,
+				message: "A container that is semantic only as a live region must leave the tree when LiveSetting is Off.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Named_Container_Toggles_LiveSetting_Then_Node_And_Focus_Are_Kept()
+		{
+			var button = new Button { Content = "Inside" };
+			var region = new Grid { Children = { button } };
+			AutomationProperties.SetName(region, "Status");
+
+			await UITestHelper.Load(region);
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(button), timeoutMS: 5000, message: "Timed out waiting for the semantic tree.");
+
+			button.Focus(FocusState.Keyboard);
+			var buttonId = GetSemanticElementId(button);
+			await UITestHelper.WaitFor(() => ActiveElementId() == buttonId, timeoutMS: 5000, message: "DOM focus did not reach the button.");
+			InvokeBrowserJs($"(function(){{document.getElementById('{GetSemanticElementId(region)}').dataset.marker='kept';return '';}})()");
+
+			AutomationProperties.SetLiveSetting(region, AutomationLiveSetting.Polite);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(region, "aria-live") == "polite", timeoutMS: 5000,
+				message: "aria-live must be applied when the named container becomes live.");
+
+			Assert.AreEqual("kept", GetSemanticAttribute(region, "data-marker"), "The container node must be updated in place, not re-created.");
+			Assert.AreEqual(buttonId, ActiveElementId(), "Browser focus must stay on the focused descendant.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Container_Becomes_Live_Then_Reading_Order_And_Focus_Are_Kept()
+		{
+			var first = new Button { Content = "First" };
+			var second = new Button { Content = "Second" };
+			var inner = new Button { Content = "Inner" };
+			var region = new Grid { Children = { inner } };
+			var last = new Button { Content = "Last" };
+			var host = new StackPanel
+			{
+				Children =
+				{
+					first,
+					second,
+					new StackPanel { Children = { region, last } },
+				}
+			};
+			AutomationProperties.SetName(host, "Host");
+
+			await UITestHelper.Load(host);
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(last), timeoutMS: 5000, message: "Timed out waiting for the semantic tree.");
+
+			inner.Focus(FocusState.Keyboard);
+			var innerId = GetSemanticElementId(inner);
+			await UITestHelper.WaitFor(() => ActiveElementId() == innerId, timeoutMS: 5000, message: "DOM focus did not reach the inner button.");
+
+			// The unnamed Grid becomes semantic, so it is re-created; its pruned parent and siblings must not move it.
+			AutomationProperties.SetLiveSetting(region, AutomationLiveSetting.Polite);
+			await UITestHelper.WaitFor(() => SemanticElementExists(region), timeoutMS: 5000, message: "The container must join the semantic tree.");
+
+			var order = InvokeBrowserJs($"(function(){{return Array.from(document.getElementById('{GetSemanticElementId(host)}').children).map(c => c.id).join(',');}})()");
+			Assert.AreEqual(
+				string.Join(",", GetSemanticElementId(first), GetSemanticElementId(second), GetSemanticElementId(region), GetSemanticElementId(last)),
+				order,
+				"The re-created container must keep its reading-order position.");
+			Assert.AreEqual(GetSemanticElementId(region), InvokeBrowserJs($"(function(){{return document.getElementById('{innerId}').parentElement.id;}})()"));
+			Assert.AreEqual(innerId, ActiveElementId(), "Browser focus must be restored to the focused descendant.");
+		}
+
+		private static string ActiveElementId()
+			=> InvokeBrowserJs("(function(){return document.activeElement ? document.activeElement.id : '';})()");
+
 		/// <summary>
 		/// WASM DOM seam: same Name-from-Text propagation as above, but for a NON-live TextBlock
 		/// (kept as a semantic node via an explicit LandmarkType, which takes the generic path and
