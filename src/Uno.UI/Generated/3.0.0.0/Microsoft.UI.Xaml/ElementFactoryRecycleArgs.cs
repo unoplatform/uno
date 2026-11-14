@@ -2,46 +2,14 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.UI.Xaml;
 
-#if __SKIA__
+#if false
 [global::Uno.NotImplemented]
 #endif
 public partial class ElementFactoryRecycleArgs
 {
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.UIElement Element
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ElementFactoryRecycleArgs", "Element");
-		}
-		set
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ElementFactoryRecycleArgs", "Element");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.UIElement Parent
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ElementFactoryRecycleArgs", "Parent");
-		}
-		set
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ElementFactoryRecycleArgs", "Parent");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public ElementFactoryRecycleArgs()
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ElementFactoryRecycleArgs", "ElementFactoryRecycleArgs()");
-	}
-#endif
+	// Skipping already declared property Element
+	// Skipping already declared property Parent
+	// Skipping already declared method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.ElementFactoryRecycleArgs()
 	// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.ElementFactoryRecycleArgs()
 	// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.Element.get
 	// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryRecycleArgs.Element.set

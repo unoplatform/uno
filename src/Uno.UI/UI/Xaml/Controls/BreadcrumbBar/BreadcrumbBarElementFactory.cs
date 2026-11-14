@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 internal partial class BreadcrumbElementFactory : ElementFactory
 {
-	private IElementFactoryShim? m_itemTemplateWrapper = null;
+	private IElementFactory? m_itemTemplateWrapper = null;
 
 	public BreadcrumbElementFactory()
 	{
@@ -29,13 +29,20 @@ internal partial class BreadcrumbElementFactory : ElementFactory
 		}
 		else if (newValue is IElementFactory customElementFactory)
 		{
-			m_itemTemplateWrapper = (IElementFactoryShim?)customElementFactory;
+			m_itemTemplateWrapper = customElementFactory;
 		}
+#if HAS_UNO
+		// TODO Uno: remove with IElementFactoryShim.
+		else if (newValue is IElementFactoryShim shim)
+		{
+			m_itemTemplateWrapper = new ElementFactoryShimAdapter(shim);
+		}
+#endif
 	}
 
-	protected override UIElement GetElementCore(ElementFactoryGetArgs args)
+	private protected override UIElement GetElementCore(global::Microsoft.UI.Xaml.ElementFactoryGetArgs args)
 	{
-		object GetNewContent(IElementFactoryShim? itemTemplateWrapper)
+		object? GetNewContent(IElementFactory? itemTemplateWrapper)
 		{
 			if (args.Data is BreadcrumbBarItem)
 			{
@@ -73,7 +80,7 @@ internal partial class BreadcrumbElementFactory : ElementFactory
 		return newBreadcrumbBarItem;
 	}
 
-	protected override void RecycleElementCore(ElementFactoryRecycleArgs args)
+	private protected override void RecycleElementCore(global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs args)
 	{
 		if (args.Element is { } element)
 		{

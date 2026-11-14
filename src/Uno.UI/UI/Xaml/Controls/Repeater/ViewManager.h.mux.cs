@@ -52,8 +52,8 @@ partial class ViewManager
 	Phaser m_phaser;
 
 	// Cached generate/clear contexts to avoid cost of creation every time.
-	ElementFactoryGetArgs m_ElementFactoryGetArgs;
-	ElementFactoryRecycleArgs m_ElementFactoryRecycleArgs;
+	global::Microsoft.UI.Xaml.ElementFactoryGetArgs m_ElementFactoryGetArgs;
+	global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs m_ElementFactoryRecycleArgs;
 
 	// These are first/last indices requested by layout and not cleared yet.
 	// These are also not truly first / last because they are a lower / upper bound on the known realized range.
