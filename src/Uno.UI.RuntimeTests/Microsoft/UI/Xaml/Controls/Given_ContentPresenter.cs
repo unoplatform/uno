@@ -11,6 +11,8 @@ using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
@@ -471,6 +473,23 @@ public partial class Given_ContentPresenter
 		}
 	}
 
+	[TestMethod]
+	public async Task When_ContentTemplate_Bound_To_Content_And_Content_Changed()
+	{
+		var SUT = new ContentPresenter();
+		SUT.SetBinding(ContentPresenter.ContentTemplateProperty, new Binding { Path = new PropertyPath(nameof(TemplatedItem.Template)) });
+		SUT.Content = new TemplatedItem(CreateTextTemplate("A"));
+
+		await UITestHelper.Load(SUT);
+		Assert.AreEqual("A", ((TextBlock)VisualTreeHelper.GetChild(SUT, 0)).Text);
+
+		// The new content changes ContentTemplate through the binding once it becomes the DataContext.
+		SUT.Content = new TemplatedItem(CreateTextTemplate("B"));
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("B", ((TextBlock)VisualTreeHelper.GetChild(SUT, 0)).Text);
+	}
+
 #if __SKIA__
 	[TestMethod]
 	public async Task When_Native_Host_Infinite_Measure_Bounds()
@@ -501,6 +520,15 @@ public partial class Given_ContentPresenter
 {
 	private static string GetTextBlockText(FrameworkElement sut, string v)
 		=> (sut.FindName(v) as TextBlock)?.Text ?? "";
+
+	private static DataTemplate CreateTextTemplate(string text)
+		=> (DataTemplate)XamlReader.Load($"""<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"><TextBlock Text="{text}" /></DataTemplate>""");
+
+	[Bindable]
+	public class TemplatedItem(DataTemplate template)
+	{
+		public DataTemplate Template { get; } = template;
+	}
 
 	private async Task AssertCollectedReference(WeakReference reference)
 	{
