@@ -59,10 +59,32 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 	/// <summary>True if the given item handle currently has a realized DOM node in this region.</summary>
 	internal bool ContainsRealizedHandle(IntPtr handle) => _realizedHandleSet.Contains(handle);
 
+	/// <summary>Gets the data index of a realized item handle.</summary>
+	internal bool TryGetRealizedIndex(IntPtr handle, out int index)
+	{
+		if (_realizedHandleSet.Contains(handle))
+		{
+			foreach (var (realizedIndex, realizedHandle) in _realizedHandles)
+			{
+				if (realizedHandle == handle)
+				{
+					index = realizedIndex;
+					return true;
+				}
+			}
+		}
+
+		index = -1;
+		return false;
+	}
+
 	/// <summary>
 	/// Called when an item is realized (ElementPrepared).
 	/// </summary>
-	internal void OnItemRealized(IntPtr itemHandle, int index, int totalCount, float x, float y, float width, float height, string role, string label)
+	/// <param name="selectable">Whether the item can be selected (emits aria-selected).</param>
+	/// <param name="selected">Whether the item is selected.</param>
+	/// <param name="active">Whether the item is the container's aria-activedescendant.</param>
+	internal void OnItemRealized(IntPtr itemHandle, int index, int totalCount, float x, float y, float width, float height, string role, string label, bool selectable, bool selected, bool active)
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
@@ -75,7 +97,7 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 		}
 		_realizedHandles[index] = itemHandle;
 		_realizedHandleSet.Add(itemHandle);
-		NativeMethods.AddVirtualizedItem(_containerHandle, itemHandle, index, totalCount, x, y, width, height, role, label);
+		NativeMethods.AddVirtualizedItem(_containerHandle, itemHandle, index, totalCount, x, y, width, height, role, label, selectable, selected, active);
 		WebAssemblyAccessibility.Instance.QueueRelationshipRefresh();
 	}
 
@@ -176,7 +198,7 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 		internal static partial void RegisterVirtualizedContainer(IntPtr containerHandle, string role, string label, bool multiselectable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.addVirtualizedItem")]
-		internal static partial void AddVirtualizedItem(IntPtr containerHandle, IntPtr itemHandle, int index, int totalCount, float x, float y, float width, float height, string role, string label);
+		internal static partial void AddVirtualizedItem(IntPtr containerHandle, IntPtr itemHandle, int index, int totalCount, float x, float y, float width, float height, string role, string label, bool selectable, bool selected, bool active);
 
 		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.removeVirtualizedItem")]
 		internal static partial void RemoveVirtualizedItem(IntPtr itemHandle);

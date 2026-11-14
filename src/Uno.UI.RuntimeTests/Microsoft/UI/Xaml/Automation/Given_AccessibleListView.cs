@@ -180,6 +180,132 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreNotEqual("0", GetSemanticAttribute(listView, "tabindex"), "A composite listbox container must not be a tab stop (tabindex must not be \"0\"); the roving stop lives on the active item.");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Item_Selected_Before_Realization_Then_It_Is_The_Active_Descendant()
+		{
+			var listView = CreateLongListView();
+			await UITestHelper.Load(listView);
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(listView), timeoutMS: 5000, message: "Timed out waiting for the listbox semantic element.");
+
+			listView.SelectedIndex = 501;
+			listView.ScrollIntoView(listView.Items[501]);
+			await UITestHelper.WaitForIdle();
+
+			var container = (UIElement)listView.ContainerFromIndex(501);
+			Assert.IsNotNull(container, "The selected item must be realized after ScrollIntoView.");
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(listView, "aria-activedescendant") == GetSemanticElementId(container),
+				timeoutMS: 5000,
+				message: "The list must point aria-activedescendant at an item selected before it was realized.");
+			Assert.AreEqual("true", GetSemanticAttribute(container, "aria-selected"));
+			Assert.AreEqual("1", CountSelectedOptions(listView), "Only the selected item may be aria-selected.");
+
+			listView.ScrollIntoView(listView.Items[listView.Items.Count - 1]);
+			await UITestHelper.WaitForIdle();
+
+			await UITestHelper.WaitFor(
+				() => listView.ContainerFromIndex(501) is UIElement stillRealized
+					? GetSemanticAttribute(listView, "aria-activedescendant") == GetSemanticElementId(stillRealized)
+					: !SemanticElementHasAttribute(listView, "aria-activedescendant"),
+				timeoutMS: 5000,
+				message: "aria-activedescendant must not reference a node that is gone or now shows another item.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Container_Is_Tagged_Raw_While_Prepared_Then_It_Is_Not_In_The_Tree(bool isGridView)
+		{
+			await EnsureAccessibilityEnabledAsync();
+
+			var listView = CreateLongListView(isGridView);
+			listView.ContainerContentChanging += (s, e) =>
+			{
+				if (!e.InRecycleQueue)
+				{
+					AutomationProperties.SetAccessibilityView(e.ItemContainer, e.ItemIndex % 5 == 0 ? AccessibilityView.Raw : AccessibilityView.Content);
+				}
+			};
+
+			await UITestHelper.Load(listView);
+			await UITestHelper.WaitFor(
+				() => listView.ContainerFromIndex(1) is UIElement first && SemanticElementExists(first),
+				timeoutMS: 5000,
+				message: "Timed out waiting for the realized items.");
+
+			for (var index = 0; index < 10; index++)
+			{
+				if (listView.ContainerFromIndex(index) is UIElement container)
+				{
+					Assert.AreEqual(index % 5 != 0, SemanticElementExists(container), $"Item {index}: only items not tagged Raw may be in the semantic tree.");
+				}
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Repeater_Element_Is_Tagged_Raw_While_Prepared_Then_It_Is_Not_In_The_Tree()
+		{
+			await EnsureAccessibilityEnabledAsync();
+
+			var items = new List<string>();
+			for (var i = 0; i < 100; i++)
+			{
+				items.Add($"Item {i}");
+			}
+
+			var repeater = new ItemsRepeater
+			{
+				ItemsSource = items,
+				ItemTemplate = (DataTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+					"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><Button Content='{Binding}' /></DataTemplate>"),
+			};
+			AutomationProperties.SetName(repeater, "Items");
+			repeater.ElementPrepared += (s, e) =>
+				AutomationProperties.SetAccessibilityView(e.Element, e.Index % 5 == 0 ? AccessibilityView.Raw : AccessibilityView.Content);
+			var scrollViewer = new ScrollViewer { Content = repeater, Height = 300, Width = 300 };
+
+			await UITestHelper.Load(scrollViewer);
+			await UITestHelper.WaitFor(
+				() => repeater.TryGetElement(1) is UIElement first && SemanticElementExists(first),
+				timeoutMS: 5000,
+				message: "Timed out waiting for the realized elements.");
+
+			for (var index = 0; index < 10; index++)
+			{
+				if (repeater.TryGetElement(index) is UIElement element)
+				{
+					Assert.AreEqual(index % 5 != 0, SemanticElementExists(element), $"Element {index}: only elements not tagged Raw may be in the semantic tree.");
+				}
+			}
+		}
+
+		private static ListViewBase CreateLongListView(bool isGridView)
+		{
+			var items = new List<string>();
+			for (var i = 0; i < 1000; i++)
+			{
+				items.Add($"Item {i}");
+			}
+
+			ListViewBase listView = isGridView
+				? new GridView { ItemsSource = items, Height = 300, Width = 300 }
+				: new ListView { ItemsSource = items, Height = 300, Width = 300 };
+			AutomationProperties.SetName(listView, "Items");
+			return listView;
+		}
+
+		private static ListView CreateLongListView() => (ListView)CreateLongListView(isGridView: false);
+
+		private static string CountSelectedOptions(UIElement list)
+			=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementId(list)}'); return e ? String(e.querySelectorAll('[aria-selected=\"true\"]').length) : '0'; }})()");
+
 #endif
 
 		[TestMethod]
