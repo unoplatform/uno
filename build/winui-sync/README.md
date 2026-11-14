@@ -72,8 +72,11 @@ is not picked up until it is added to the list. Strings paths are always folders
     -UnoStrings src/Uno.UI/UI/Xaml/Controls/TeachingTip/Strings
 ```
 
-It reads the `MUX Reference` headers under the Uno paths, resolves the commits and tags they name,
-and proposes the oldest one as the baseline. **Check the proposal before adding `-Write`:**
+It also adds the control's theme XAML to the mapping: Uno's copies under
+`src/Uno.UI.FluentTheme/Resources` and, for core controls, the upstream
+`controls/dev/CommonStyles/<Name>_themeresources.xaml` they come from (`-NoThemeXaml` leaves them
+out). It reads the `MUX Reference` headers under the Uno paths (`.cs` and `.xaml`), resolves the
+commits and tags they name, and proposes the oldest one as the baseline. **Check the proposal before adding `-Write`:**
 
 - a baseline that is too new silently drops upstream changes;
 - a baseline that is much older than most files (one stale header) makes the first run re-check

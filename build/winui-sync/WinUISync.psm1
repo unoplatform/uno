@@ -125,7 +125,7 @@ function Set-AreaBaseline {
 function Get-MuxReferences {
 	param([Parameter(Mandatory)][string[]]$Paths)
 	$pattern = [regex]::new('MUX Reference\b.*?\b(commit|tag)\s*:?\s*(winui3/release/[\w.\-]+|[0-9a-f]{7,40}\b)', 'IgnoreCase')
-	foreach ($file in Get-ChildItem -LiteralPath $Paths -Recurse -File -Filter *.cs | Sort-Object FullName) {
+	foreach ($file in Get-ChildItem -LiteralPath $Paths -Recurse -File -Include *.cs, *.xaml | Sort-Object FullName) {
 		$seen = [ordered]@{}
 		foreach ($m in $pattern.Matches((Get-Content -Raw -LiteralPath $file.FullName))) {
 			$kind = $m.Groups[1].Value.ToLowerInvariant()
@@ -133,11 +133,79 @@ function Get-MuxReferences {
 			if ($kind -eq 'commit') { $ref = $ref.ToLowerInvariant() }
 			$seen["$kind $ref"] = [pscustomobject]@{ File = $file.FullName; Kind = $kind; Ref = $ref }
 		}
-		if ($seen.Count -eq 0) {
+		# A XAML file without a header is usually a test page or an Uno-only dictionary, not a port.
+		if ($seen.Count -eq 0 -and $file.Extension -ne '.xaml') {
 			[pscustomobject]@{ File = $file.FullName; Kind = 'none'; Ref = $null }
 		}
 		else {
 			$seen.Values
+		}
+	}
+}
+
+# Theme XAML that belongs to an area: Uno's FluentTheme copies of the control's styles (Uno) and,
+# for core controls, the shared upstream CommonStyles file they are ported from (Upstream, else $null).
+# A file belongs when its MUX Reference header names an upstream file of the area, or by name.
+function Find-AreaThemeXaml {
+	param(
+		[Parameter(Mandatory)][string]$UpstreamRepo,
+		[Parameter(Mandatory)][string]$Ref,
+		[Parameter(Mandatory)][string]$UnoRoot,
+		[Parameter(Mandatory)][string[]]$UpstreamSources,
+		[string]$ThemeRoot = 'src/Uno.UI.FluentTheme/Resources')
+	$themeDir = Join-Path $UnoRoot $ThemeRoot
+	if (-not (Test-Path -LiteralPath $themeDir)) { return }
+
+	$sources = @($UpstreamSources | Where-Object { $_ } | ForEach-Object { $_.Trim('/') })
+	$folders = [System.Collections.Generic.List[string]]::new()
+	$files = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+	# XAML file name (lower case) -> the upstream path it comes from.
+	$byName = @{}
+	$commonStyles = $null
+	foreach ($source in $sources) {
+		$entry = Resolve-UpstreamEntry -UpstreamRepo $UpstreamRepo -Ref $Ref -Path $source
+		if (-not $entry) { continue }
+		if ($entry.Kind -eq 'tree') {
+			$folders.Add($source)
+			# Only the folder's own XAML: test pages live in subfolders.
+			foreach ($name in Invoke-Git $UpstreamRepo @('ls-tree', '--name-only', "${Ref}:$($entry.Path)")) {
+				if ($name -like '*.xaml') { $byName[$name.ToLowerInvariant()] = "$source/$name" }
+			}
+			continue
+		}
+		[void]$files.Add($source)
+		if ($source -match '(^|/)([A-Za-z]+)_Partial\.(cpp|h)$') {
+			if ($null -eq $commonStyles) {
+				$dir = Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo -Ref $Ref -Path 'controls/dev/CommonStyles'
+				$commonStyles = if ($dir) { @(Invoke-Git $UpstreamRepo @('ls-tree', '--name-only', "${Ref}:$dir")) } else { @() }
+			}
+			$wanted = "$($Matches[2])_themeresources.xaml"
+			$match = $commonStyles | Where-Object { $_ -ieq $wanted } | Select-Object -First 1
+			if ($match) { $byName[$match.ToLowerInvariant()] = "controls/dev/CommonStyles/$match" }
+		}
+	}
+	$isAreaPath = {
+		param($path)
+		$files.Contains($path) -or [bool]($folders | Where-Object { $path.StartsWith("$_/", [StringComparison]::OrdinalIgnoreCase) })
+	}
+
+	$header = [regex]::new('MUX Reference\s+(?:src[\\/])?([^\s,]+\.xaml)', 'IgnoreCase')
+	foreach ($file in Get-ChildItem -LiteralPath $themeDir -Recurse -File -Filter *.xaml | Sort-Object FullName) {
+		$upstream = $null
+		$m = $header.Match((Get-Content -Raw -LiteralPath $file.FullName))
+		if ($m.Success) {
+			$named = $m.Groups[1].Value.Replace('\', '/')
+			if (& $isAreaPath $named) { $upstream = $named }
+			elseif ($byName.Values -contains $named) { $upstream = $named }
+			else { continue }
+		}
+		elseif ($byName.ContainsKey($file.Name.ToLowerInvariant())) {
+			$upstream = $byName[$file.Name.ToLowerInvariant()]
+		}
+		else { continue }
+		[pscustomobject]@{
+			Uno      = [System.IO.Path]::GetRelativePath($UnoRoot, $file.FullName).Replace('\', '/')
+			Upstream = if (& $isAreaPath $upstream) { $null } else { $upstream }
 		}
 	}
 }
