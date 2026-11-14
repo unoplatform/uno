@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO.Pipes;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Threading;
 using StreamJsonRpc;
 using Uno.UI.RemoteControl.Host.IdeChannel;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
-using Uno.UI.RemoteControl.VS.Helpers;
+using ILogger = Uno.UI.RemoteControl.VS.Helpers.ILogger;
 
 namespace Uno.UI.RemoteControl.VS.IdeChannel;
 
@@ -20,17 +20,53 @@ internal class IdeChannelClient
 	private Task? _connectTask;
 	private IIdeChannelServer? _devServer;
 	private readonly ILogger _logger;
+	private readonly TimeSpan _connectTimeout;
+
+	// Safety net for a host that stays alive but never creates the pipe: a host that exits (or is replaced or stopped) ends the wait earlier, EntryPoint disposes the client.
+	private static readonly TimeSpan PipeWaitTimeout = TimeSpan.FromMinutes(10);
+	private const int ConnectAttemptTimeoutMs = 2000;
+	private const int ProbeInitialDelayMs = 100;
+	private const int ProbeMaxDelayMs = 500;
+	private const int ErrorFileNotFound = 2;
+
+	[DllImport("kernel32.dll", EntryPoint = "WaitNamedPipeW", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+	[return: MarshalAs(UnmanagedType.Bool)]
+	private static extern bool WaitNamedPipe(string name, int timeout);
 
 	public event AsyncEventHandler<IdeMessage>? OnMessageReceived;
 	public event EventHandler? Connected;
 
 	public long MessagesReceivedCount { get; private set; }
 
-	public IdeChannelClient(Guid pipeGuid, ILogger logger)
+	internal Task? ConnectTask => _connectTask;
+
+	public IdeChannelClient(Guid pipeGuid, ILogger logger, TimeSpan? connectTimeout = null)
 	{
 		_logger = logger;
 		_pipeGuid = pipeGuid;
+		_connectTimeout = connectTimeout ?? PipeWaitTimeout;
 	}
+
+	/// <summary>
+	/// Tells whether the pipe may already have been created by the server, without ever opening it
+	/// (unlike File.Exists, see dotnet/runtime#69604): the host serves a single pipe instance and
+	/// listens only once, so a probe that connects would leave the real client stuck on ERROR_PIPE_BUSY.
+	/// </summary>
+	internal static bool PipeMayExist(string pipeName)
+	{
+		try
+		{
+			// Returns immediately with ERROR_FILE_NOT_FOUND while the pipe does not exist.
+			return WaitNamedPipe(@"\\.\pipe\" + pipeName, 1) || Marshal.GetLastWin32Error() != ErrorFileNotFound;
+		}
+		catch (Exception e) when (e is DllNotFoundException or EntryPointNotFoundException)
+		{
+			return true;
+		}
+	}
+
+	// Synchronous on purpose: Stream.DisposeAsync does not exist on .NET Framework (the Visual Studio extension), and the VSTHRD103 analyzer asks for it where it does exist (the net11 test project).
+	private static void DisposeSynchronously(IDisposable? disposable) => disposable?.Dispose();
 
 	public void ConnectToHost()
 	{
@@ -42,28 +78,79 @@ internal class IdeChannelClient
 
 		_connectTask = Task.Run(async () =>
 		{
+			NamedPipeClientStream? pipe = null;
 			try
 			{
-				_pipeServer = new NamedPipeClientStream(
-						serverName: ".",
-						pipeName: _pipeGuid.ToString(),
-						direction: PipeDirection.InOut,
-						options: PipeOptions.Asynchronous | PipeOptions.WriteThrough);
-
 				_logger.Debug($"Creating IDE Channel to Dev Server ({_pipeGuid})");
 
-				await _pipeServer.ConnectAsync(ct);
+				// On .NET Framework ConnectAsync busy-spins a pool thread (WaitNamedPipe returns at once + SpinOnce)
+				// while the pipe does not exist, so we wait with Task.Delay and only connect once the pipe exists.
+				var pipeName = _pipeGuid.ToString();
+				var elapsed = Stopwatch.StartNew();
+				var delay = ProbeInitialDelayMs;
+				while (true)
+				{
+					ct.ThrowIfCancellationRequested();
 
-				_devServer = JsonRpc.Attach<IIdeChannelServer>(_pipeServer);
+					if (PipeMayExist(pipeName))
+					{
+						pipe = new NamedPipeClientStream(
+							serverName: ".",
+							pipeName: pipeName,
+							direction: PipeDirection.InOut,
+							options: PipeOptions.Asynchronous | PipeOptions.WriteThrough);
+
+						try
+						{
+							await pipe.ConnectAsync(ConnectAttemptTimeoutMs, ct);
+							break;
+						}
+						catch (TimeoutException)
+						{
+							DisposeSynchronously(pipe);
+							pipe = null;
+						}
+					}
+
+					if (elapsed.Elapsed >= _connectTimeout)
+					{
+						_logger.Warn($"IDE Channel pipe ({_pipeGuid}) could not be connected within {(int)_connectTimeout.TotalSeconds}s (the pipe was not created or is not accepting connections), giving up (the dev-server host probably failed to start)");
+						return;
+					}
+
+					await Task.Delay(delay, ct);
+					delay = Math.Min(delay * 2, ProbeMaxDelayMs);
+				}
+
+				// Publish the pipe, then check for cancellation: either Dispose sees the pipe and closes it, or we see the cancellation and the finally block closes it.
+				Interlocked.Exchange(ref _pipeServer, pipe);
+				if (ct.IsCancellationRequested)
+				{
+					return;
+				}
+
+				var connected = pipe;
+				pipe = null; // ownership moved to _pipeServer
+
+				_devServer = JsonRpc.Attach<IIdeChannelServer>(connected);
 				_devServer.MessageFromDevServer += ProcessDevServerMessage;
 
 				// Signal connection established once
 				Connected?.Invoke(this, EventArgs.Empty);
 				ScheduleKeepAlive(ct);
 			}
+			catch (Exception e) when (ct.IsCancellationRequested)
+			{
+				// Disposed (replaced, host exited or stopped) while connecting, whatever it made fail: nothing to report
+				_logger.Debug($"IDE Channel connection ({_pipeGuid}) cancelled ({e.GetType().Name})");
+			}
 			catch (Exception e)
 			{
 				_logger.Error($"Error creating IDE channel: {e}");
+			}
+			finally
+			{
+				DisposeSynchronously(pipe);
 			}
 		}, ct);
 	}
@@ -123,7 +210,7 @@ internal class IdeChannelClient
 		}
 	}
 
-	private void ProcessDevServerMessage(object sender, IdeMessageEnvelope devServerMessageEnvelope)
+	private void ProcessDevServerMessage(object? sender, IdeMessageEnvelope devServerMessageEnvelope)
 	{
 		try
 		{
