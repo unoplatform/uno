@@ -182,6 +182,18 @@ public class Given_AppCommandHandler
 		AppCommandHandler.AssertFailure(two, [], true, null).Should().Contain("2 matched");
 		AppCommandHandler.AssertFailure(none, [], true, null).Should().BeNull();
 		AppCommandHandler.AssertFailure(none, [], false, null).Should().Contain("0 matched");
+		AppCommandHandler.AssertFailure(none, [], false, 0).Should().BeNull();
+		AppCommandHandler.AssertFailure(two, [], false, 0).Should().Contain("expected 0");
+	}
+
+	[TestMethod]
+	[Description("a --state check fails when find listed fewer matches than matched (capped by maxResults), and --count alone does not")]
+	public void WhenAssertStateOnCappedResult_ItFails()
+	{
+		const string capped = "3 matched automationId 'Row' (showing 2; +1 more — raise maxResults or add scopeRef)\nListViewItem ^3a #Row1 [s] {selected}  \"A\"\nListViewItem ^3b #Row2 [s] {selected}  \"B\"";
+
+		AppCommandHandler.AssertFailure(capped, ["selected"], false, null).Should().Contain("checked 2 of 3");
+		AppCommandHandler.AssertFailure(capped, [], false, 3).Should().BeNull();
 	}
 
 	[TestMethod]
