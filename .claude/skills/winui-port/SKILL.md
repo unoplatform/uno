@@ -48,7 +48,7 @@ Parse the intent and determine whether this is a **full control port** or a **sn
    - Associated types: `ControlNameTemplateSettings.h/.cpp`, `ControlNameAutomationPeer.h/.cpp`, `ControlNameEventArgs.h/.cpp` (auto-detect from the same directory)
    - Test files: Look for `*ControlName*Test*` files in nearby test directories
 
-3. **Determine the MUX reference tag/commit**:
+3. **Determine the MUX reference tag/commit** (skip this for files in an area tracked by the WinUI port sync, `build/winui-sync/areas.json`: their headers name only the upstream file, because the area's baseline records the version):
    - Run `git -C <winui-source-dir> rev-parse --short HEAD` where `<winui-source-dir>` is the root of the WinUI git repository (the directory containing the `.git` folder). Use this single commit hash for all `// MUX Reference` headers in the ported files.
    - Run this command **before writing any files** so the correct hash is known up front.
    - If the directory is not a git repository or the command fails, fall back to any tag embedded in the path (e.g., `release/1.6-stable`), or leave the value as `unknown` with a `TODO Uno:` note.
