@@ -9,7 +9,7 @@ param(
 	[Parameter(Mandatory)][string]$Id,
 	[Parameter(Mandatory)][string]$Title,
 	[Parameter(Mandatory)][string]$UpstreamRepo,
-	[Parameter(Mandatory)][string[]]$UpstreamSources,
+	[string[]]$UpstreamSources = @(),
 	[string[]]$UpstreamTests = @(),
 	[string]$UpstreamStrings,
 	[Parameter(Mandatory)][string[]]$UnoSources,
@@ -21,6 +21,8 @@ param(
 	[string]$Baseline,
 	# Do not add the control's theme XAML (FluentTheme copies, upstream CommonStyles) to the mapping.
 	[switch]$NoThemeXaml,
+	# Files Uno keeps as verbatim copies, as 'upstream path=uno path': the sync replaces them without an agent.
+	[string[]]$Mirror = @(),
 	[switch]$Write)
 
 $ErrorActionPreference = 'Stop'
@@ -32,9 +34,15 @@ $UpstreamSources = @(& $split $UpstreamSources)
 $UpstreamTests = @(& $split $UpstreamTests)
 $UnoSources = @(& $split $UnoSources)
 $UnoTests = @(& $split $UnoTests)
+$mirrorPairs = @(& $split $Mirror | ForEach-Object {
+		$from, $to = $_ -split '=', 2
+		if (-not $from -or -not $to) { throw "-Mirror expects 'upstream path=uno path', got '$_'" }
+		[pscustomobject]@{ upstream = $from.Trim(); uno = $to.Trim() }
+	})
+if ($UpstreamSources.Count -eq 0 -and $mirrorPairs.Count -eq 0) { throw 'pass -UpstreamSources, -Mirror, or both' }
 
 $latest = Get-LatestStableTag -UpstreamRepo $UpstreamRepo
-if (-not $NoThemeXaml) {
+if (-not $NoThemeXaml -and $UpstreamSources.Count -gt 0) {
 	$covered = { param($path, $roots) [bool](@($roots) | Where-Object { $path -eq $_.Trim('/') -or $path.StartsWith("$($_.Trim('/'))/") }) }
 	$added = @()
 	foreach ($theme in Find-AreaThemeXaml -UpstreamRepo $UpstreamRepo -Ref $latest.Sha -UnoRoot $UnoRoot -UpstreamSources $UpstreamSources) {
@@ -47,7 +55,7 @@ if (-not $NoThemeXaml) {
 	}
 }
 
-$scan = @(@($UnoSources) + @($UnoTests) | ForEach-Object { Join-Path $UnoRoot $_ } | Where-Object { Test-Path $_ })
+$scan = @(@($UnoSources) + @($UnoTests) + @($mirrorPairs | ForEach-Object { $_.uno }) | ForEach-Object { Join-Path $UnoRoot $_ } | Where-Object { Test-Path $_ })
 $references = @(Get-MuxReferences -Paths $scan)
 $result = Resolve-AreaBaseline -UpstreamRepo $UpstreamRepo -References $references
 
@@ -77,11 +85,17 @@ $area = [pscustomobject]@{
 	model    = $null
 	upstream = [pscustomobject]@{ sources = @($UpstreamSources); tests = @($UpstreamTests); strings = $UpstreamStrings }
 	uno      = [pscustomobject]@{ sources = @($UnoSources); tests = @($UnoTests); strings = $UnoStrings }
+	mirror   = $mirrorPairs
 }
 "Proposed baseline: $chosen ($(git -C $UpstreamRepo log -1 --format='%cs %s' $chosen))"
 
 # A mistyped path would read as "never changes"; make sure upstream really has each one.
 Get-AreaTreeDiffs -Area $area -UpstreamRepo $UpstreamRepo -TargetSha $latest.Sha | Out-Null
+foreach ($m in $mirrorPairs) {
+	$entry = Resolve-UpstreamEntry -UpstreamRepo $UpstreamRepo -Ref $latest.Sha -Path $m.upstream
+	if (-not $entry -or $entry.Kind -ne 'blob') { throw "mirrored upstream file '$($m.upstream)' not found at $($latest.Tag)" }
+	if (-not (Test-Path -LiteralPath (Join-Path $UnoRoot $m.uno))) { throw "mirrored Uno file '$($m.uno)' does not exist" }
+}
 if ($UpstreamStrings -and -not (Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo -Ref $latest.Sha -Path $UpstreamStrings)) {
 	throw "upstream strings path '$UpstreamStrings' not found at $($latest.Tag)"
 }
