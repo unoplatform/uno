@@ -22,9 +22,11 @@ internal sealed class WasmGLGraphicsContext : ISwapChain, IGLDeviceContext
 
 	public Func<string, nint> GetProcAddress => global::Uno.UI.Runtime.WebAssembly.Browser.Graphics.WasmGLFunctions.GetProcAddress;
 
-	// The renderer draws into the canvas default framebuffer, which is undefined after present — no host retention
-	// yet, so the compositor repaints the whole frame.
-	public bool PreservesContents => false;
+	// The canvas is created with a preserved drawing buffer, so the previous frame survives the browser's present —
+	// except on a frame after the canvas was resized, which clears it.
+	public bool PreservesContents => _contentsPreserved;
+
+	private bool _contentsPreserved;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
@@ -32,14 +34,17 @@ internal sealed class WasmGLGraphicsContext : ISwapChain, IGLDeviceContext
 		height = Math.Max(1, height);
 
 		_renderer.MakeCurrent();
-		if (_target is null || width != _width || height != _height)
+		var preserved = _renderer.IsContentPreserved();
+		var invalidated = _target is null || width != _width || height != _height;
+		if (invalidated)
 		{
 			_target = _renderer.Resize(width, height);
 			_width = width;
 			_height = height;
 		}
 
-		return _target;
+		_contentsPreserved = preserved && !invalidated;
+		return _target!;
 	}
 
 	public void Present() => _renderer.Flush();

@@ -30,8 +30,9 @@ namespace Uno.UI.Runtime {
 			var rect = document.documentElement.getBoundingClientRect();
 			var width = rect.width;
 			var height = rect.height;
-			var w = width * scale
-			var h = height * scale;
+			// Whole pixels, as the canvas stores them: re-assigning an unchanged size still clears the preserved buffer.
+			var w = Math.floor(width * scale);
+			var h = Math.floor(height * scale);
 
 			if (this.canvas.width !== w)
 				this.canvas.width = w;
