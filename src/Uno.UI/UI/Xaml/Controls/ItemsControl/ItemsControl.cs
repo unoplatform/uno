@@ -129,6 +129,8 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private protected virtual bool ShouldItemsControlManageChildren { get { return ItemsPanelRoot == InternalItemsPanelRoot; } }
 
+		internal bool ManagesItemsPanelChildren => ShouldItemsControlManageChildren;
+
 		#region ItemsPanel DependencyProperty
 
 		public ItemsPanelTemplate ItemsPanel

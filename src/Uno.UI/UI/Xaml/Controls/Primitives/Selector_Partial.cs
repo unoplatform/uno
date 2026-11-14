@@ -367,32 +367,18 @@ partial class Selector
 	}
 
 	internal void ScrollIntoViewInternal(object item, bool isHeader, bool isFooter, bool isFromPublicAPI, ScrollIntoViewAlignment alignment, double offset, bool animateIfBringIntoView)
+		=> ScrollItemIntoView(item, alignment, animateIfBringIntoView);
+
+	// Uno specific: how a selector scrolls an item into view. ListViewBase, ComboBox and ListBox scroll their virtualizing panel.
+	private protected virtual void ScrollItemIntoView(object item, ScrollIntoViewAlignment alignment, bool animateIfBringIntoView)
 	{
-		switch (this)
+		if (ContainerFromItem(item) is FrameworkElement element)
 		{
-			case ListViewBase listViewBase:
-				if (alignment != ScrollIntoViewAlignment.Default)
-				{
-					listViewBase.ScrollIntoView(item, alignment);
-				}
-				else
-				{
-					listViewBase.ScrollIntoView(item);
-				}
-				break;
-			case ComboBox comboBox:
-				comboBox.ScrollIntoView(item, alignment);
-				break;
-			default:
-				if (ContainerFromItem(item) is FrameworkElement element)
-				{
-					var options = new BringIntoViewOptions
-					{
-						AnimationDesired = animateIfBringIntoView
-					};
-					element.StartBringIntoView(options);
-				}
-				break;
+			var options = new BringIntoViewOptions
+			{
+				AnimationDesired = animateIfBringIntoView
+			};
+			element.StartBringIntoView(options);
 		}
 	}
 
@@ -406,11 +392,11 @@ partial class Selector
 			return;
 		}
 
-		if (this is ListViewBase listViewBase && listViewBase.IsSelectionMultiple)
+		if (MultiSelectionItems is { } selectedItems)
 		{
-			if (item is { } && !listViewBase.SelectedItems.Contains(item))
+			if (item is { } && !selectedItems.Contains(item))
 			{
-				listViewBase.SelectedItems.Add(item);
+				selectedItems.Add(item);
 			}
 			return;
 		}
@@ -428,11 +414,11 @@ partial class Selector
 			return;
 		}
 
-		if (this is ListViewBase listViewBase && listViewBase.IsSelectionMultiple)
+		if (MultiSelectionItems is { } selectedItems)
 		{
-			if (item is { } && listViewBase.SelectedItems.Contains(item))
+			if (item is { } && selectedItems.Contains(item))
 			{
-				listViewBase.SelectedItems.Remove(item);
+				selectedItems.Remove(item);
 			}
 			return;
 		}
@@ -453,15 +439,19 @@ partial class Selector
 			return m_tpDataSourceAsSelectionInfo.IsSelected(index);
 		}
 
-		if (this is ListViewBase listViewBase && listViewBase.IsSelectionMultiple)
+		if (MultiSelectionItems is { } selectedItems)
 		{
-			return listViewBase.SelectedItems.Contains(item);
+			return selectedItems.Contains(item);
 		}
 
 		return index >= 0 ? SelectedIndex == index : Equals(SelectedItem, item);
 	}
 
 	internal bool IsSelectionPatternApplicable() => true;
+
+	// Uno specific: the selected items of a selector in a multiple selection mode, which WinUI keeps in Selector itself.
+	// Null when the selector has a single selection (SelectedIndex/SelectedItem).
+	internal virtual IList<object> MultiSelectionItems => null;
 
 	private object TryGetItemAt(int index)
 	{
