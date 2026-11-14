@@ -204,6 +204,76 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24653")]
+		public async Task When_Header_Is_TextBlock_Then_Name_Is_Header_Text()
+		{
+			var textBox = new TextBox
+			{
+				Header = new TextBlock { Text = "Email" },
+				PlaceholderText = "name@example.com",
+			};
+
+			try
+			{
+				await UITestHelper.Load(textBox);
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBox);
+
+				Assert.AreEqual("Email", peer.GetName());
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24653")]
+		public async Task When_Header_Is_RichTextBlock_Then_Name_Is_Header_Text()
+		{
+			var paragraph = new Microsoft.UI.Xaml.Documents.Paragraph();
+			paragraph.Inlines.Add(new Microsoft.UI.Xaml.Documents.Run { Text = "Email" });
+			var header = new RichTextBlock();
+			header.Blocks.Add(paragraph);
+			var textBox = new TextBox { Header = header };
+
+			try
+			{
+				await UITestHelper.Load(textBox);
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBox);
+
+				Assert.AreEqual("Email\r\n", peer.GetName());
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24653")]
+		public async Task When_ListViewItem_Content_Is_TextBlock_Then_Name_Is_Text()
+		{
+			var listView = new ListView();
+			listView.Items.Add(new ListViewItem { Content = new TextBlock { Text = "First" } });
+
+			try
+			{
+				await UITestHelper.Load(listView);
+				var container = (ListViewItem)listView.ContainerFromIndex(0);
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(container);
+
+				Assert.AreEqual("First", peer.GetName());
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		public async Task When_RichEditBox_Is_Empty_Then_Name_Is_Not_Exposed_As_Value()
 		{
