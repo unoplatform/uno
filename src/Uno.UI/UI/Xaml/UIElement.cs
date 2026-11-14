@@ -1664,7 +1664,7 @@ namespace Microsoft.UI.Xaml
 				var currentVisual = _children[actualIndex];
 				_children.Insert(actualIndex, child);
 				TrackStubChild(child, 1);
-				Visual.Children.InsertAbove(child.Visual, currentVisual.Visual);
+				Visual.Children.InsertBelow(child.Visual, currentVisual.Visual);
 			}
 			else
 			{
