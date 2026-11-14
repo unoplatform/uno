@@ -83,11 +83,25 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 		}
 
 		var textBefore = Text;
+		var (selectionStartBefore, selectionLengthBefore) = (SelectionStart, SelectionLength);
 		// Pending so the text change itself lands the caret here instead of passing through 0.
 		SetPendingSelection(selectionStart, selectionLength);
 		ProcessTextInput(text);
-		Select(selectionStart, selectionLength);
-		OnPlatformTextSynced(refused: !isTextEcho && Text == textBefore);
+		var refused = !isTextEcho && Text == textBefore;
+
+		// The native caret belongs to the native text: a refused edit leaves the caret where the edit started, which the
+		// platform takes back with the text.
+		if (refused)
+		{
+			_pendingSelection = null;
+			Select(selectionStartBefore, selectionLengthBefore);
+		}
+		else
+		{
+			Select(selectionStart, selectionLength);
+		}
+
+		OnPlatformTextSynced(refused);
 	}
 
 	// The platform's text sync has landed: raises the TextCompositionChanged it was holding, unless the TextBox refused
@@ -433,7 +447,8 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 		if (_platformTextApplyInProgress)
 		{
 			// The platform already applied the text (e.g., Android EndBatchEdit), so don't cancel the composition.
-			// While its text is processed, edits by TextChanging handlers belong to it too: ProcessTextInput clears the flag.
+			// While its text is processed, edits by TextChanging handlers belong to it too: ProcessTextInput clears the flag. The
+			// platform ends the composition afterwards if such an edit changed the text's length (MustReturnTextToNative).
 			if (!_isInputModifyingText)
 			{
 				_platformTextApplyInProgress = false;

@@ -12262,6 +12262,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				=> InvokeBrowserJs("(function(){const c=window.__unoHiddenInputFocusCalls;HTMLElement.prototype.focus=c.focus;delete window.__unoHiddenInputFocusCalls;return 'ok';})()");
 		}
 
+		// Skia Android applies a key in the middle of the text and syncs it; MaxLength refuses it. The caret stays where the
+		// edit started, as the native editable then takes the TextBox's text and caret back: the next key lands there.
+		[TestMethod]
+		public async Task When_IME_Platform_Sync_Refused_Then_Caret_Stays()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "abc", MaxLength = 3 };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Focus(FocusState.Programmatic);
+			SUT.Select(1, 0);
+			await WindowHelper.WaitForIdle();
+
+			((IImeSessionHost)SUT.Core).UpdateTextFromNative("axbc", 2, 0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("abc", SUT.Text);
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
 		// Skia-Android and the browser apply the composition themselves, then sync the text. A TextChanging handler that
 		// edits that text without changing its length (upper case) runs within the sync, so its edit belongs to the
 		// composition and doesn't restart the IME.

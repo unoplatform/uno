@@ -145,7 +145,8 @@ class TextInputConnection : BaseInputConnection
 
 	private void UpdateEditableStateFromHost()
 	{
-		if (_activeHost is null)
+		// A local: the editable's listeners, notified by Clear, may change the active host.
+		if (_activeHost is not { } host)
 		{
 			return;
 		}
@@ -157,7 +158,7 @@ class TextInputConnection : BaseInputConnection
 		// managed, the second was just typed
 		// before conversion) which looks like a single newline.
 		// cf. https://github.com/unoplatform/uno-private/issues/965
-		var text = _activeHost.Text.Replace('\r', '\n');
+		var text = host.Text.Replace('\r', '\n');
 
 		_duringHostStateUpdate = true;
 		try
@@ -171,8 +172,8 @@ class TextInputConnection : BaseInputConnection
 			var length = _editable.Length() + 1;
 
 			SetSelection(
-				Math.Min(length, _activeHost.SelectionStart),
-				Math.Min(length, _activeHost.SelectionStart + _activeHost.SelectionLength));
+				Math.Min(length, host.SelectionStart),
+				Math.Min(length, host.SelectionStart + host.SelectionLength));
 		}
 		finally
 		{
@@ -192,14 +193,40 @@ class TextInputConnection : BaseInputConnection
 			var selectionStart = Selection.GetSelectionStart(_editable);
 			var selectionEnd = Selection.GetSelectionEnd(_editable);
 
-			this.LogDebug()?.Debug($"EndBatchEdit: {_editable?.ToString()} ({selectionStart}->{selectionEnd})");
+			this.LogDebug()?.Debug($"EndBatchEdit: {_editable} ({selectionStart}->{selectionEnd})");
 
-			if (ActiveHost is not null && !_duringHostStateUpdate)
+			if (ActiveHost is { } host && !_duringHostStateUpdate)
 			{
-				ActiveHost.UpdateTextFromNative(
-					_editable?.ToString() ?? string.Empty,
-					selectionStart,
-					selectionEnd - selectionStart);
+				var nativeText = _editable.ToString();
+				var nativeTextBefore = _editable.TextWhenBeginBatchEdit;
+
+				// Only after the IME changed the text, as reading a RichEditBox's text costs the document.
+				var hostTextBefore = nativeTextBefore is not null && !string.Equals(nativeTextBefore, nativeText, StringComparison.Ordinal)
+					? host.Text
+					: null;
+				host.UpdateTextFromNative(nativeText, selectionStart, selectionEnd - selectionStart);
+				_endingBatch = false;
+
+				// The host refused the IME's edit, or kept text of another length (MaxLength, a length limit): the editable takes
+				// the host's text at once and the composition ends, so the keyboard builds its next keystrokes and suggestions on
+				// the text the host kept. The handlers that ran may have moved focus to another host, or cleared it.
+				if (hostTextBefore is not null
+					&& ReferenceEquals(ActiveHost, host)
+					&& ImeSessionCoordinator.MustReturnTextToNative(host.Text, hostTextBefore, nativeText, nativeTextBefore))
+				{
+					// One change for the listeners, with the final text: a TextCompositionEnded handler setting the text
+					// again is written afterwards (OnTextInputHostChanged).
+					_editable.BeginBatchEdit();
+					try
+					{
+						_editable.SetComposingRange(-1, -1);
+						UpdateEditableStateFromHost();
+					}
+					finally
+					{
+						_editable.EndBatchEdit();
+					}
+				}
 			}
 
 			_endingBatch = false;
