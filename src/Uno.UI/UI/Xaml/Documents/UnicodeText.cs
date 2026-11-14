@@ -3021,12 +3021,14 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private static unsafe void AppendBoundaries(int boundaryType, string text, int outputBaseOffset, List<int> list)
 	{
-		var localeName = CultureInfo.CurrentUICulture.Name;
-		fixed (char* locale = &localeName.GetPinnableReference())
+		// WinUI applies the same line-break rules in every language, and ICU's root rules match them, so ICU gets the
+		// root locale: an empty string (NULL would mean the OS default). The UTF-16 UI culture name passed here before
+		// reached ICU as a one-letter name, which resolved to root as well.
+		fixed (byte* locale = "\0"u8)
 		{
 			fixed (char* textPtr = &text.GetPinnableReference())
 			{
-				var breakIterator = ICU.GetBreakIterator(boundaryType, localeName, (IntPtr)locale, (IntPtr)textPtr, text.Length, out var isCached);
+				var breakIterator = ICU.GetBreakIterator(boundaryType, (IntPtr)locale, (IntPtr)textPtr, text.Length, out var isCached);
 				var next = ICU.GetMethod<ICU.ubrk_next>();
 				ICU.GetMethod<ICU.ubrk_first>()(breakIterator);
 				while (next(breakIterator) is var boundary && boundary != /* UBRK_DONE */ -1)
