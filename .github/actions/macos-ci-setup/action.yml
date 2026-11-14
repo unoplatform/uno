@@ -1,0 +1,58 @@
+name: macOS CI setup
+description: Installs .NET, and optionally the pinned Xcode and the workloads for a TFM.
+
+inputs:
+  uno-check-tfm:
+    description: TFM to install workloads for. Empty skips the workloads.
+    default: ''
+  select-xcode:
+    description: Switch to the pinned Xcode.
+    default: 'true'
+
+runs:
+  using: composite
+  steps:
+    - name: Use the CI global.json
+      shell: bash
+      run: |
+        cp build/ci/net11/_global.json global.json
+        {
+          echo "DOTNET_INSTALL_DIR=$GITHUB_WORKSPACE/.dotnet"
+          echo "DOTNET_ROOT=$GITHUB_WORKSPACE/.dotnet"
+          echo "JAVA_HOME=$JAVA_HOME_17_arm64"
+          echo "JavaSdkDirectory=$JAVA_HOME_17_arm64"
+        } >> "$GITHUB_ENV"
+        echo "$HOME/.dotnet/tools" >> "$GITHUB_PATH"
+
+    - name: Restore the .NET and workloads cache
+      uses: actions/cache@v4
+      with:
+        path: .dotnet
+        key: dotnet-${{ runner.os }}-${{ runner.arch }}-${{ env.DotNetSdkVersion }}-${{ env.GlobalUnoCheckVersion }}-${{ inputs.uno-check-tfm }}
+
+    - name: Install .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        global-json-file: global.json
+
+    - name: Select Xcode
+      if: inputs.select-xcode == 'true'
+      shell: bash
+      run: |
+        set -e
+        echo "MD_APPLE_SDK_ROOT=$XCODE_ROOT" >> "$GITHUB_ENV"
+        sudo xcode-select --switch "$XCODE_ROOT/Contents/Developer"
+        sudo xcodebuild -runFirstLaunch
+        SDK_VERSION=$(xcrun --sdk iphonesimulator --show-sdk-version)
+        echo "iOS simulator SDK: $SDK_VERSION"
+        if ! xcrun simctl list runtimes | grep -Fq "iOS $SDK_VERSION"; then
+          sudo xcodebuild -downloadPlatform iOS
+        fi
+
+    - name: Install .NET workloads
+      if: inputs.uno-check-tfm != ''
+      shell: bash
+      run: |
+        dotnet tool update --global uno.check --version "$GlobalUnoCheckVersion" --add-source https://api.nuget.org/v3/index.json
+        # The skipped checks can report failure; a missing workload fails the build that follows.
+        uno-check -v --ci --non-interactive --fix --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip maui --skip vsmac --skip unosdk --skip dotnetnewunotemplates --pre-major --preview-major --tfm "${{ inputs.uno-check-tfm }}" || true
