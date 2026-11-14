@@ -8,20 +8,7 @@ namespace Windows.Storage
 	partial class ApplicationData
 	{
 		private static string GetLocalCacheFolder()
-		{
-			if (UIKit.UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
-			{
-				var url = NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomain.User)[0];
-				return url.Path;
-			}
-			else
-			{
-				var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-				var folder = Path.GetFullPath(Path.Combine(documents, "..", "Library", "Caches"));
-				Directory.CreateDirectory(folder);
-				return folder;
-			}
-		}
+			=> NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.CachesDirectory, NSSearchPathDomain.User)[0].Path;
 
 		/// <summary>
 		/// On this platform, persistence is always enabled or not applicable, so this method is a no-op.
@@ -35,9 +22,7 @@ namespace Windows.Storage
 		private static string GetLocalFolder()
 		{
 			var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			var folder = Path.GetFullPath(Path.Combine(documents, "..", "Library", "Data"));
-			Directory.CreateDirectory(folder);
-			return folder;
+			return Path.GetFullPath(Path.Combine(documents, "..", "Library", "Data"));
 		}
 
 		private static string GetRoamingFolder()

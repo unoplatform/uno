@@ -22,11 +22,7 @@ namespace Windows.Storage
 			=> GetAndroidAppContext().FilesDir.AbsolutePath;
 
 		private static string GetRoamingFolder()
-		{
-			var p = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-			Directory.CreateDirectory(p);
-			return p;
-		}
+			=> Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
 		private static string GetSharedLocalFolder()
 			=> Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
