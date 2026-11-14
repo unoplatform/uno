@@ -36,6 +36,8 @@ Look up the code or message you got, then follow the link for the fix.
 | `UXAML0001` | Binding an attached property whose owner type can't be found | [Attached property owners](xref:Uno.Development.MigratingToUno7.Xaml#binding-an-attached-property-whose-owner-type-cannot-be-found-is-a-build-error) |
 | `UXAML0006` | A `clr-namespace:` declaration | [`clr-namespace:` xmlns form](xref:Uno.Development.MigratingToUno7.Xaml#the-wpf-style-clr-namespace-xmlns-form-is-no-longer-accepted) |
 | `UXAML0007` | A removed conditional XAML prefix such as `skia:` | [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7.Libraries#removed-xaml-prefixes) |
+| `UXAML0009` | A `using:Uno.UI.Toolkit` declaration | [`Uno.UI.Toolkit` types](xref:Uno.Development.MigratingToUno7.Renames#unouitoolkit-types-move-to-the-unoui-namespaces) |
+| `XA1036` | `AndroidManifest.xml` sets a `minSdkVersion` below 24 | [Minimum OS versions raised](xref:Uno.Development.MigratingToUno7.ProjectSetup#minimum-os-versions-raised) |
 | `Uno0001` | A not-implemented API, which can fail builds that set `TreatWarningsAsErrors` | [`Uno0001`](xref:Uno.Development.MigratingToUno7.Libraries#the-not-implemented-warning-uno0001-follows-the-target-framework) |
 | `Property 'AreDimensionsConstrained' does not exist` | Layout-constraint members are removed | [Layout-constraint optimization](xref:Uno.Development.MigratingToUno7.RemovedApis#layout-constraint-optimization) |
 | XAML build failure on `IsNativeStyle` | The attribute is no longer recognized | [Native-style declaration](xref:Uno.Development.MigratingToUno7.RemovedApis#native-style-declaration) |

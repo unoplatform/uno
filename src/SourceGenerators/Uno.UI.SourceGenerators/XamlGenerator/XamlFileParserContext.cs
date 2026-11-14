@@ -18,8 +18,8 @@ internal class XamlFileParserContext(string file)
 		=> _errors.Add(new XamlParsingException(message, null, lineNumber, linePosition, file, descriptor));
 
 	/// <summary>
-	/// Records a WPF-style <c>clr-namespace:</c> xmlns declaration, or one using a conditional prefix removed
-	/// in 7.0. Validation is deferred to <see cref="ReportNamespaceDeclarations"/> because the
+	/// Records a WPF-style <c>clr-namespace:</c> xmlns declaration, or one using a conditional prefix or the
+	/// <c>Uno.UI.Toolkit</c> namespace removed in 7.0. Validation is deferred to <see cref="ReportNamespaceDeclarations"/> because the
 	/// <c>mc:Ignorable</c> prefixes are not known yet when the namespace node is visited.
 	/// </summary>
 	public void TrackNamespaceDeclaration(string prefix, string @namespace, int lineNumber, int linePosition)
@@ -38,7 +38,18 @@ internal class XamlFileParserContext(string file)
 		{
 			var isIgnorable = prefix.Length > 0 && ignorablePrefixes.Contains(prefix);
 
-			if (XamlNamespaceValidation.IsClrNamespace(@namespace))
+			if (XamlNamespaceValidation.IsRemovedToolkitNamespace(@namespace))
+			{
+				if (!isIgnorable)
+				{
+					ReportError(
+						XamlCodeGenerationDiagnostics.RemovedToolkitNamespaceRule,
+						XamlNamespaceValidation.FormatRemovedToolkitNamespaceMessage(prefix),
+						lineNumber,
+						linePosition);
+				}
+			}
+			else if (XamlNamespaceValidation.IsClrNamespace(@namespace))
 			{
 				if (!isIgnorable)
 				{
