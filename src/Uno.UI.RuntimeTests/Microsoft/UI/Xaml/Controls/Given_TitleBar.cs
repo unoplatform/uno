@@ -1,4 +1,5 @@
 ﻿#if HAS_UNO_WINUI || WINDOWS
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AwesomeAssertions;
@@ -7,6 +8,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
@@ -72,6 +74,31 @@ public class Given_TitleBar
 
 			backRequested.Should().Be(1);
 			paneToggleRequested.Should().Be(1);
+		}
+		finally
+		{
+			ClearPassthroughRegions(sut);
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25465")]
+	public async Task When_ImageIconSource_Set_ImageIcon_Is_Created()
+	{
+		var bitmap = new BitmapImage(new Uri("ms-appx:///Assets/StoreLogo.png"));
+		var sut = new TitleBar
+		{
+			Title = "My Title",
+			IconSource = new ImageIconSource { ImageSource = bitmap },
+		};
+
+		try
+		{
+			await UITestHelper.Load(sut);
+
+			var imageIcon = sut.FindFirstDescendant<ImageIcon>();
+			imageIcon.Should().NotBeNull();
+			imageIcon!.Source.Should().BeSameAs(bitmap);
 		}
 		finally
 		{
