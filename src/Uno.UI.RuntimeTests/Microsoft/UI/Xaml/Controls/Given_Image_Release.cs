@@ -1831,6 +1831,84 @@ public class Given_Image_Release
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26368")]
+	public async Task When_Brush_Open_Handler_Reopens_Previous_Source_Then_Brush_Draws_New_One()
+	{
+		// The brush's ImageOpened, raised while it subscribes to its new source, has the source it left open again (a
+		// WriteableBitmap opens at once): the brush must keep drawing the new source, not the one it left.
+		try
+		{
+			var previous = new WriteableBitmap(4, 4);
+			var next = new WriteableBitmap(4, 4);
+			var brush = new ImageBrush { ImageSource = previous };
+			var border = new Border { Width = 100, Height = 40, Background = brush };
+			await UITestHelper.Load(border);
+
+			var compositionBrush = (CompositionSurfaceBrush)brush.GetOrCreateCompositionBrush(border.Visual.Compositor);
+			Assert.AreSame(GetSurface(previous), compositionBrush.Surface, "Pre-condition: the brush draws the first bitmap");
+
+			var reopened = false;
+			brush.ImageOpened += (_, _) =>
+			{
+				if (brush.ImageSource == next && !reopened)
+				{
+					reopened = true;
+					previous.Invalidate();
+				}
+			};
+
+			brush.ImageSource = next;
+			Assert.IsTrue(reopened, "Pre-condition: the new bitmap raises ImageOpened while the brush subscribes");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreSame(GetSurface(next), compositionBrush.Surface, "The brush draws its new source, not the one it left");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26368")]
+	public async Task When_Brush_Open_Handler_Switches_Source_Then_Reopened_Replaced_Source_Not_Drawn()
+	{
+		// The brush's ImageOpened, raised while it subscribes, switches it to another source, then has the one it replaced
+		// open again before that subscription ends: the brush must draw the source it was switched to.
+		try
+		{
+			var replaced = new WriteableBitmap(4, 4);
+			var current = new WriteableBitmap(4, 4);
+			var brush = new ImageBrush { ImageSource = new WriteableBitmap(4, 4) };
+			var border = new Border { Width = 100, Height = 40, Background = brush };
+			await UITestHelper.Load(border);
+
+			var switched = false;
+			brush.ImageOpened += (_, _) =>
+			{
+				if (brush.ImageSource == replaced && !switched)
+				{
+					switched = true;
+					brush.ImageSource = current;
+					replaced.Invalidate();
+				}
+			};
+
+			brush.ImageSource = replaced;
+			Assert.IsTrue(switched, "Pre-condition: the bitmap raises ImageOpened while the brush subscribes");
+			await WindowHelper.WaitForIdle();
+
+			var compositionBrush = (CompositionSurfaceBrush)brush.GetOrCreateCompositionBrush(border.Visual.Compositor);
+			Assert.AreSame(current, brush.ImageSource, "Pre-condition: the brush was switched");
+			Assert.AreSame(GetSurface(current), compositionBrush.Surface, "The brush draws the source it was switched to");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25114")]
 	public async Task When_Image_Showing_Replaced_Pixels_Leaves_Then_They_Wait_Like_Undisplayed_Ones()
