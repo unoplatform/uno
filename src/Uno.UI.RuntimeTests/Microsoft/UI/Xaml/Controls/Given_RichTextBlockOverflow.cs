@@ -298,6 +298,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresScaling(1f)]
+		[DataRow("ClearAndAdd")]
+		[DataRow("SetIndex")]
+		[DataRow("AddAndRemove")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25468")]
+		public async Task When_Master_Blocks_Replaced_Overflow_Repaints(string change)
+		{
+			// CRichTextBlock::InvalidateContent invalidates the content of the whole chain, so blocks swapped in
+			// without a layout pass in between still reach the overflow.
+			var (master, _, host) = CreatePaintedChain();
+
+			try
+			{
+				WindowHelper.WindowContent = CreateSideBySide(master, host);
+				await WindowHelper.WaitForLoaded(host);
+				await WindowHelper.WaitForIdle();
+
+				ImageAssert.HasColorInRectangle(await UITestHelper.ScreenShot(host), new Rectangle(0, 0, 180, 300), Colors.Red, tolerance: 10);
+
+				var paragraph = new Paragraph();
+				paragraph.Inlines.Add(new Run { Text = LongText, Foreground = new SolidColorBrush(Colors.Blue) });
+
+				switch (change)
+				{
+					case "ClearAndAdd":
+						master.Blocks.Clear();
+						master.Blocks.Add(paragraph);
+						break;
+					case "SetIndex":
+						master.Blocks[0] = paragraph;
+						break;
+					case "AddAndRemove":
+						master.Blocks.Add(paragraph);
+						master.Blocks.RemoveAt(0);
+						break;
+				}
+
+				await WindowHelper.WaitForIdle();
+
+				var screenshot = await UITestHelper.ScreenShot(host);
+				ImageAssert.HasColorInRectangle(screenshot, new Rectangle(0, 0, 180, 300), Colors.Blue, tolerance: 10);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot, new Rectangle(0, 0, 180, 300), Colors.Red, tolerance: 10);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		[DataRow(2, 120)]
 		[DataRow(4, 400)]
 		public async Task When_Overflow_Hit_Tests_Near_And_Far(int maxLines, int overflowWidth)
