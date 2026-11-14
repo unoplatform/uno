@@ -6,7 +6,7 @@ paths:
 
 # C# code style (Uno)
 
-Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_open_brace = all` (Allman). These are enforced by analyzers on CI — `UnoFastDevBuild=true` skips them locally but they still gate the PR.
+Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_open_brace = all` (Allman). These are enforced by analyzers on CI — `UnoFastDevBuild=true` skips them locally but they still gate the PR. A clean local build therefore doesn't prove IDE0055 (formatting) is clean: Debug also lists it in `WarningsNotAsErrors`, so only `-c Release` without `UnoFastDevBuild` fails on it.
 
 ## File headers
 - **Ported WinUI/MUX code** carries, in this order:
@@ -36,7 +36,7 @@ Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_o
 - A `// MUX Reference …` attribution line (above) is not a history comment — keep it.
 
 ## Conditional symbols
-`#if IS_UNIT_TESTS` is defined by three projects only — `Uno.UI.UnitTests`, `Uno.UI.Tests.ViewLibrary` and `Uno.UI.Tests.ViewLibraryProps` — and is **absent from `Uno.UI`'s define set**: those projects consume `Uno.UI` through a `ProjectReference`, so the symbol only reaches files they *Compile-link* (chiefly from `Uno.UI.RuntimeTests`). Never use it in `Uno.UI` source. Platform symbols are covered in `platform-targeting.md`. Global usings (`GlobalUsings.cs`) only define **Android** aliases (e.g. `AView`) and only under `__ANDROID__` — don't assume other platforms have global aliases. In the repository `UNO_REFERENCE_API` equals `__CROSSRUNTIME__` (Skia, WebAssembly and Reference flavors); only consumers get it as a legacy synonym of **`__UNO__`**. Outside the WinRT layer, prefer `__UNO__` in new code (`HAS_UNO` is identical) — see `doc/articles/uno-development/preprocessor-symbols.md`.
+`#if IS_UNIT_TESTS` is defined by three projects only — `Uno.UI.UnitTests`, `Uno.UI.Tests.ViewLibrary` and `Uno.UI.Tests.ViewLibraryProps` — and is **absent from `Uno.UI`'s define set**: those projects consume `Uno.UI` through a `ProjectReference`, so the symbol only reaches files they *Compile-link* (chiefly from `Uno.UI.RuntimeTests`). Never use it in `Uno.UI` source. Platform symbols are covered in `platform-targeting.md`. `src/Uno.UI/GlobalUsings.cs` only holds **Android** aliases (e.g. `AView`) under `#if __ANDROID__`, which `Uno.UI` never defines — no global aliases are in effect there. In the repository `UNO_REFERENCE_API` equals `__CROSSRUNTIME__` (Skia, WebAssembly and Reference flavors); only consumers get it as a legacy synonym of **`__UNO__`**. Outside the WinRT layer, prefer `__UNO__` in new code (`HAS_UNO` is identical) — see `doc/articles/uno-development/preprocessor-symbols.md`.
 
 **A symbol being undefined does not make it deletable.** Before removing any `#if`, place it in one of these categories — the first four are deliberate and must be left alone:
 
