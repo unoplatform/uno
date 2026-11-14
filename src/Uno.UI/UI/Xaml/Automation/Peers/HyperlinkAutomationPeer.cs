@@ -233,7 +233,6 @@ internal partial class HyperlinkAutomationPeer : AutomationPeer, IInvokeProvider
 	public void Invoke()
 	{
 		var owner = GetOwner();
-		// Simulate a click on the hyperlink for automation
-		owner.OnClick();
+		owner.AutomationHyperlinkClick();
 	}
 }

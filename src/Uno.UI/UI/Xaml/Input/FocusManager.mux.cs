@@ -2006,7 +2006,14 @@ namespace Microsoft.UI.Xaml.Input
 				// Use GetOrCreateAutomationPeer() (cached) instead of OnCreateAutomationPeerInternal() (uncached)
 				// so that the peer identity is stable. HasKeyboardFocusImpl() compares the peer with
 				// GetFocusedAutomationPeer() by reference, which only works when the same object is used.
-				pAP = (_focusedElement as UIElement)?.GetOrCreateAutomationPeer();
+				// WinUI calls the CDependencyObject::OnCreateAutomationPeer virtual, which CHyperlink overrides.
+				// In Uno that virtual is split between UIElement and TextElement.
+				pAP = _focusedElement switch
+				{
+					UIElement focusedUIElement => focusedUIElement.GetOrCreateAutomationPeer(),
+					TextElement focusedTextElement => focusedTextElement.GetOrCreateAutomationPeer(),
+					_ => null,
+				};
 
 				// There's one specific circumstance that we want to handle: attempting to focus a ContentControl inside a popup.
 				// The ContentControl is able to be keyboard focused, but because ContentControlAutomationPeer doesn't exist,

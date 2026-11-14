@@ -179,7 +179,7 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			if (_pressedPointer?.Equals(pointer) ?? false)
 			{
-				OnClick();
+				Navigate();
 
 				_pressedPointer = null;
 				SetCurrentForeground();
@@ -211,7 +211,7 @@ namespace Microsoft.UI.Xaml.Documents
 			{
 				_isLinkNavigationKeyDown = false;
 				SetCurrentForeground();
-				OnClick();
+				Navigate();
 			}
 		}
 
@@ -236,14 +236,13 @@ namespace Microsoft.UI.Xaml.Documents
 			SetCurrentForeground();
 		}
 
-		internal void OnClick()
+		// CHyperlink::Navigate
+		internal void Navigate()
 		{
+			// Raise Click event.
 			Click?.Invoke(this, new HyperlinkClickEventArgs { OriginalSource = this });
 
-			if (NavigateUri != null)
-			{
-				_ = Launcher.LaunchUriAsync(NavigateUri);
-			}
+			OnClick();
 		}
 		#endregion
 
