@@ -200,6 +200,53 @@ public class Given_ProgressRing
 		Assert.AreEqual(10d + 5d + 5d, root.DesiredSize.Height);
 	}
 
+	[TestMethod]
+	[DataRow(32d)]
+	[DataRow(60d)]
+	public async Task When_Sized_TemplateSettings_Follow_Width(double size)
+	{
+		var SUT = new ProgressRing { Width = size, Height = size };
+
+		await UITestHelper.Load(SUT);
+
+		var diameterAdditive = size <= 40.0f ? 1.0f : 0.0f;
+		var diameter = ((float)size * 0.1f) + diameterAdditive;
+		var anchorPoint = ((float)size * 0.5f) - diameter;
+
+		Assert.AreEqual((double)diameter, SUT.TemplateSettings.EllipseDiameter);
+		Assert.AreEqual(new Thickness(0, anchorPoint, 0, 0), SUT.TemplateSettings.EllipseOffset);
+		Assert.AreEqual(size, SUT.TemplateSettings.MaxSideLength);
+	}
+
+	[TestMethod]
+	public void When_Peer_ClassName_Is_Fully_Qualified()
+	{
+		var peer = new Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer(new ProgressRing());
+
+		Assert.AreEqual("Microsoft.UI.Xaml.Controls.ProgressRing", peer.GetClassName());
+	}
+
+	[TestMethod]
+	public async Task When_Custom_Source_Keeps_Its_Colours()
+	{
+		var source = new global::Microsoft.UI.Xaml.Controls.AnimatedVisuals.ProgressRingIndeterminate
+		{
+			Foreground = Microsoft.UI.Colors.Red,
+			Background = Microsoft.UI.Colors.Blue,
+		};
+		var SUT = new ProgressRing
+		{
+			IndeterminateSource = source,
+			Foreground = new SolidColorBrush(Microsoft.UI.Colors.Lime),
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Yellow),
+		};
+
+		await UITestHelper.Load(SUT);
+
+		Assert.AreEqual(Microsoft.UI.Colors.Red, source.Foreground);
+		Assert.AreEqual(Microsoft.UI.Colors.Blue, source.Background);
+	}
+
 	private static ProgressRing CreateDeterminateRing(Brush foreground, Brush background) => new ProgressRing
 	{
 		// Large enough that the stroked ring survives anti-aliasing as a solid band of its own colour.
