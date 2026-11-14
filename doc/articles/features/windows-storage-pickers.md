@@ -308,26 +308,34 @@ await FileIO.WriteTextAsync(file, "Hello, world!");
 await CachedFileManager.CompleteUpdatesAsync(file);
 ```
 
-### Checking whether File System Access API is supported
+<a name="checking-whether-file-system-access-api-is-supported"></a>
 
-In some cases, you might want to check whether File System Access API is supported in the current runtime environment. A typical reason might be to ensure only **Save As** functionality is available to the user when the browser only supports download pickers. You can utilize the WASM specific `Uno.Storage.Pickers.FileSystemAccessApiInformation` API:
+### Checking whether the pickers are supported
+
+The WASM specific `Uno.Storage.Pickers.FileSystemAccessApiInformation` API reports which pickers can be used in the current browser under the current `WasmConfiguration` (see [Choosing supported type of pickers](#choosing-supported-type-of-pickers)):
+
+* `IsOpenPickerSupported` - `FileOpenPicker` can pick files, with the File System Access API or the upload picker.
+* `IsSavePickerSupported` - `FileSavePicker` can pick a file, with the File System Access API or the download picker.
+* `AreFilePickersSupported` - both `FileOpenPicker` and `FileSavePicker` can pick files.
+* `IsFolderPickerSupported` - the File System Access API folder picker is available. `FolderPicker` has no other implementation.
+
+The download and upload pickers don't need the File System Access API, so with a configuration that includes them, `IsOpenPickerSupported` and `IsSavePickerSupported` are `true` in browsers without it. A picker that is not supported throws `NotSupportedException`.
 
 ```csharp
 #if __WASM__
 if (FileSystemAccessApiInformation.IsOpenPickerSupported)
 {
-    // File System Access API open picker is available.
+    // FileOpenPicker can pick files.
 }
 
 if (FileSystemAccessApiInformation.IsSavePickerSupported)
 {
-    // File System Access API open picker is available.
+    // FileSavePicker can pick a file.
 }
 
 if (FileSystemAccessApiInformation.AreFilePickersSupported)
 {
-    // Both file open and file save pickers from the
-    // File System Access API are available.
+    // Both FileOpenPicker and FileSavePicker can pick files.
 }
 
 if (FileSystemAccessApiInformation.IsFolderPickerSupported)
@@ -336,6 +344,8 @@ if (FileSystemAccessApiInformation.IsFolderPickerSupported)
 }
 #endif
 ```
+
+Whether a picked file comes from the File System Access API or from the download/upload pickers is given by its provider, see [Checking the source of opened file](#checking-the-source-of-opened-file).
 
 ### Checking the source of opened file
 
@@ -351,9 +361,14 @@ if (file.Provider.Id == "computer")
 {
     // File is a temporary file created using Upload picker.
 }
+
+if (file.Provider.Id == "wasmdownloadpicker")
+{
+    // File was created by the Download picker.
+}
 ```
 
-The local files have a provider ID of `computer`, which matches the WinUI behavior. `jsfileaccessapi` is used for files coming from the File System Access API.
+The local files have a provider ID of `computer`, which matches the WinUI behavior. `jsfileaccessapi` is used for files coming from the File System Access API, and `wasmdownloadpicker` for files from the download picker.
 
 ### Choosing supported type of pickers
 
@@ -368,9 +383,9 @@ Uno.WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration =
 
 The allowed values for the configuration are:
 
--`FileSystemAccessApiWithFallback` - defaults to File System Access API, but falls back to download/upload pickers if not available
--`FileSystemAccessApi` - uses File System Access API only. If not available, pickers will throw `NotSupportedException`
--`DownloadUpload` - uses download/upload pickers only.
+* `FileSystemAccessApiWithFallback` - defaults to File System Access API, but falls back to download/upload pickers if not available
+* `FileSystemAccessApi` - uses File System Access API only. If not available, pickers will throw `NotSupportedException`
+* `DownloadUpload` - uses download/upload pickers only.
 
 ### Security considerations
 
