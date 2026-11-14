@@ -217,7 +217,7 @@ namespace Microsoft.UI
 			if (len == 4)
 			{
 				a = ToByte(colorCode[offset++]);
-				a = (byte)(a << 4 + a);
+				a = (byte)((a << 4) + a);
 				len = 3;
 			}
 			else if (len == 8)
@@ -234,11 +234,11 @@ namespace Microsoft.UI
 			if (len == 3)
 			{
 				r = ToByte(colorCode[offset++]);
-				r = (byte)(r << 4 + r);
+				r = (byte)((r << 4) + r);
 				g = ToByte(colorCode[offset++]);
-				g = (byte)(g << 4 + g);
+				g = (byte)((g << 4) + g);
 				b = ToByte(colorCode[offset++]);
-				b = (byte)(b << 4 + b);
+				b = (byte)((b << 4) + b);
 			}
 			else if (len == 6)
 			{
