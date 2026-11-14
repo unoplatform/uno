@@ -960,12 +960,8 @@ partial class Win32ClipboardExtension // to clipboard
 			return;
 		}
 
-		var stream = task2.Result;
+		using var stream = task2.Result;
 		Debug.Assert(stream.CanRead);
-		using var positionRestorer = new DisposableStruct<IRandomAccessStream, ulong>(
-			static (randomAccessStream, position) => randomAccessStream.Seek(position),
-			stream,
-			stream.Position);
 		stream.Seek(0);
 
 #if false
