@@ -260,6 +260,7 @@ internal static class Win32UIAutomationInterop
 	internal const int UIA_SelectionItemIsSelectedPropertyId = 30079;
 	internal const int UIA_ToggleToggleStatePropertyId = 30086;
 	internal const int UIA_ValueValuePropertyId = 30045;
+	internal const int UIA_ValueIsReadOnlyPropertyId = 30046;
 
 	// UIA Heading Level IDs
 	internal const int HeadingLevel_None = 80050;
