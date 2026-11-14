@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference: TabViewItem.Properties.cpp, commit 65718e2813
+// MUX Reference: TabViewItem.Properties.cpp
 
 using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;

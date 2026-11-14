@@ -42,7 +42,16 @@ Nothing merges on its own.
 
 ## Onboarding an area
 
-The `/winui-sync-onboard` skill walks through this, including how to judge the baseline. By hand:
+Use the `/winui-sync-onboard` skill. It maps the paths, works out where the port stands from its
+`MUX Reference` headers, then **ports everything up to the latest stable release locally**. It also
+reviews the whole port line by line against that release (so code that was never ported is caught
+too, not just the diff since the baseline) and re-justifies or removes every Uno workaround. It runs
+the control's tests and records the area at that release in the same PR. The workflow then only ports
+what later releases change, which suits its cost cap and its lack of a test run. For an area too
+large to catch up in one session, the skill has a track-only mode that records the area at its
+current baseline and leaves the catch-up to the workflow.
+
+To write an entry by hand:
 
 An area is a control or a feature area: one or more upstream folders and the Uno folders they were
 ported to. Paths are written without a leading `src/`; the tooling finds them at each commit.
@@ -63,13 +72,24 @@ is not picked up until it is added to the list. Strings paths are always folders
     -UnoStrings src/Uno.UI/UI/Xaml/Controls/TeachingTip/Strings
 ```
 
-It reads the `MUX Reference` headers under the Uno paths, resolves the commits and tags they name,
-and proposes the oldest one as the baseline. **Check the proposal before adding `-Write`:**
+It also adds the control's theme XAML to the mapping: Uno's copies under
+`src/Uno.UI.FluentTheme/Resources` and, for core controls, the upstream
+`controls/dev/CommonStyles/<Name>_themeresources.xaml` they come from (`-NoThemeXaml` leaves them
+out). It reads the `MUX Reference` headers under the Uno paths (`.cs` and `.xaml`), resolves the
+commits and tags they name, and proposes the oldest one as the baseline. Because theme XAML headers
+count too, an old tag on a style file lowers the proposal like any other stale header. **Check the proposal before adding `-Write`:**
 
 - a baseline that is too new silently drops upstream changes;
 - a baseline that is much older than most files (one stale header) makes the first run re-check
   years of changes — pick the commit most files agree on and pass it with `-Baseline <commit>`;
 - files listed as having no recorded commit are yours to judge.
+
+Record an area at the latest stable tag only together with the port that brings it there; otherwise
+the changes in between are never synced.
+
+Once an area is tracked, its `MUX Reference` headers name only the upstream file(s), with no tag or
+commit: the area's `baseline` is the one record of the version, and syncs keep it current.
+`Remove-MuxReferenceVersion` drops the versions; the port agent is told not to add them back.
 
 ## Running it by hand
 

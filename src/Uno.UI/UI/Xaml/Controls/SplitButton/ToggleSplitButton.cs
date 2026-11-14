@@ -1,18 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference ToggleSplitButton.cpp, tag winui3/release/1.4.2
+// MUX Reference ToggleSplitButton.cpp
 
 using Microsoft.UI.Xaml.Automation.Peers;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
-
-#pragma warning disable 105 // Required for the WinUI replace pass
-using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.UI.Helpers.WinUI;
-
-#pragma warning restore 105
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -23,7 +18,6 @@ namespace Microsoft.UI.Xaml.Controls
 			this.SetDefaultStyleKey();
 		}
 
-		// Uno Specific: not present in the C++ source, but is part of the public API
 		public event TypedEventHandler<ToggleSplitButton, ToggleSplitButtonIsCheckedChangedEventArgs> IsCheckedChanged;
 
 		private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
@@ -46,7 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_hasLoaded)
 			{
 				var eventArgs = new ToggleSplitButtonIsCheckedChangedEventArgs();
-				IsCheckedChanged?.Invoke(this, eventArgs); // Uno Specific: not present in the C++ source, but is part of the public API
+				IsCheckedChanged?.Invoke(this, eventArgs);
 				if (FrameworkElementAutomationPeer.FromElement(this) is { } peer)
 				{
 					var newValue = IsChecked ? ToggleState.On : ToggleState.Off;

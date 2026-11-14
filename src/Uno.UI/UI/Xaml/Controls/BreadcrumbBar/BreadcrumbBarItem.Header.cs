@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference BreadcrumbBarItem.h, tag winui3/release/1.5.3, commit 2a60e27
+// MUX Reference BreadcrumbBarItem.h
 
 #nullable enable
 
