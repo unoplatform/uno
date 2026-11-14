@@ -544,7 +544,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Select an item, scroll to recycle selected item, scroll back to ensure selection persisted across recycling")]
-	[Ignore("Uno-specific: ItemsView.StartBringItemIntoView never raises ScrollView.BringingIntoView, so BringItemIntoView times out.")]
+	[Ignore("Uno-specific: needs an up-to-date ScrollPresenter effective viewport after scrolling (uno#24712).")]
 	public async Task VerifySelectionPersistsAfterRecycling()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ScrollView"))
@@ -1005,7 +1005,7 @@ public class ItemsViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Invokes the ItemsView.StartBringItemIntoView methods.")]
-	[Ignore("Uno-specific: ItemsView.StartBringItemIntoView never raises ScrollView.BringingIntoView, so BringItemIntoView times out.")]
+	[Ignore("Uno-specific: needs LinedFlowLayout (uno#23691) and an up-to-date ScrollPresenter effective viewport (uno#24712).")]
 	public async Task CanBringItemIntoView()
 	{
 		await CanBringItemIntoView(useLinedFlowLayout: false, useUniformGridLayout: false);
@@ -1138,7 +1138,7 @@ public class ItemsViewTests : MUXApiTestBase
 	}
 
 	[TestMethod]
-	[Ignore("Uno-specific: ItemsView.StartBringItemIntoView never raises ScrollView.BringingIntoView, so BringItemIntoView times out.")]
+	[Ignore("Uno-specific: needs an up-to-date ScrollPresenter effective viewport after scrolling (uno#24712).")]
 	public async Task VerifyItemsViewUIASelectionProviderBehavior()
 	{
 		//using (PrivateLoggingHelper privateIVLoggingHelper = new PrivateLoggingHelper("ItemsView", "ScrollView"))

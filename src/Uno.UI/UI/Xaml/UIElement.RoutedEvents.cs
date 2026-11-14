@@ -89,7 +89,7 @@ namespace Microsoft.UI.Xaml
 	4. Add the exact event type handling to UIElement.InvokeHandler method.
 	5. If the event does not have an OnXYZ method on UIElement, FrameworkElement, or Control, you are done. Otherwise:
 	6. Update the code in ImplementedRoutedEventsGenerator to generate the flag correctly when one of the aforementioned classes has an override.
-	7. Add the handler attachment code in SubscribeToOverridenRoutedEvents in UIElement, FrameworkElement, or Control (depending on which level the method is declared).
+	7. Add the handler attachment code in Control.SubscribeToOverridenRoutedEvents, or dispatch it from InvokeClassHandlerCore for UIElement-level overrides.
 	 
 	 */
 
@@ -1052,7 +1052,32 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		private void InvokeClassHandler(RoutedEvent routedEvent, RoutedEventArgs args)
 		{
-			if (routedEvent == ContextRequestedEvent)
+			// WinUI dispatches every class handler (the OnXxx overrides, ContextRequested included) through
+			// CEventManager::RaiseUIElementEvents / RaiseControlEvents, both of which drop the callback's
+			// HRESULT: a failing class handler neither aborts the raise nor stops the bubbling. Mirror that
+			// for all class handlers -- e.g. ItemsRepeater rejecting a BringIntoViewRequested that targets
+			// the repeater itself, which WinUI throws on too and swallows here (uno#21421).
+			// This covers overrides only; event subscriptions run through InvokeHandlers and still propagate.
+			try
+			{
+				InvokeClassHandlerCore(routedEvent, args);
+			}
+			catch (Exception error)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError($"Class handler for {routedEvent.Name} on {GetType()} failed; continuing the event route.", error);
+				}
+			}
+		}
+
+		private void InvokeClassHandlerCore(RoutedEvent routedEvent, RoutedEventArgs args)
+		{
+			if (routedEvent == BringIntoViewRequestedEvent)
+			{
+				OnBringIntoViewRequested((BringIntoViewRequestedEventArgs)args);
+			}
+			else if (routedEvent == ContextRequestedEvent)
 			{
 				// WinUI: Class handler shows ContextFlyout if present
 				if (this is Control control)
