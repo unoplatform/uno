@@ -47,10 +47,16 @@ public sealed partial class AutomationProperties
 		}
 
 		if (GetAutomationProperty(args.Property) is { } automationProperty &&
-			dependencyObject is UIElement element &&
-			element.GetOrCreateAutomationPeer() is { } peer)
+			dependencyObject is UIElement element)
 		{
-			listener.NotifyPropertyChangedEvent(peer, automationProperty, args.OldValue, args.NewValue);
+			if (element.GetOrCreateAutomationPeer() is { } peer)
+			{
+				listener.NotifyPropertyChangedEvent(peer, automationProperty, args.OldValue, args.NewValue);
+			}
+			else
+			{
+				listener.NotifyOwnerPropertyChanged(element, automationProperty, args.OldValue, args.NewValue);
+			}
 		}
 #endif
 	}

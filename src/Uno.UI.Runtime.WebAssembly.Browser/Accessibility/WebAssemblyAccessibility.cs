@@ -2761,6 +2761,54 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			}
 			NativeMethods.UpdateAriaInvalid(element.Visual.Handle, invalid);
 		}
+		else if ((automationProperty == AutomationElementIdentifiers.LiveSettingProperty ||
+			automationProperty == AutomationElementIdentifiers.ItemStatusProperty) &&
+			TryGetPeerOwner(peer, out element))
+		{
+			OnOwnerPropertyChanged(element, automationProperty, oldValue, newValue);
+		}
+	}
+
+	protected override void OnOwnerPropertyChanged(UIElement element, AutomationProperty automationProperty, object oldValue, object newValue)
+	{
+		if (automationProperty == AutomationElementIdentifiers.LiveSettingProperty)
+		{
+			OnLiveSettingChanged(element, oldValue as AutomationLiveSetting? ?? AutomationLiveSetting.Off, newValue as AutomationLiveSetting? ?? AutomationLiveSetting.Off);
+		}
+		else if (automationProperty == AutomationElementIdentifiers.ItemStatusProperty)
+		{
+			NativeMethods.UpdateAriaBusy(element.Visual.Handle, SemanticElementFactory.IsBusyStatus(newValue as string));
+		}
+	}
+
+	private void OnLiveSettingChanged(UIElement element, AutomationLiveSetting oldValue, AutomationLiveSetting newValue)
+	{
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().Trace($"[A11y] PROP CHANGE: LiveSetting handle={element.Visual.Handle} element={element.GetType().Name} old={oldValue} new={newValue}");
+		}
+
+		var ariaLive = newValue switch
+		{
+			AutomationLiveSetting.Assertive => "assertive",
+			AutomationLiveSetting.Polite => "polite",
+			_ => "",
+		};
+
+		// Turning a live region on or off re-creates the node only when that changes whether the element is
+		// semantic, or for text elements whose creation path depends on it (they leave the bare-text path).
+		var changesNode = (oldValue == AutomationLiveSetting.Off) != (newValue == AutomationLiveSetting.Off)
+			&& (element is TextBlock or RichTextBlock or RichTextBlockOverflow
+				|| HasSemanticElement(element.Visual.Handle) != IsSemanticElement(element));
+
+		if (changesNode)
+		{
+			ReAddSemanticElement(element);
+		}
+		else
+		{
+			NativeMethods.UpdateAriaLive(element.Visual.Handle, ariaLive);
+		}
 	}
 
 	public override void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
@@ -2919,6 +2967,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		UIElement element,
 		AccessibilityView oldValue,
 		AccessibilityView newValue)
+		=> ReAddSemanticElement(element);
+
+	private void ReAddSemanticElement(UIElement element)
 	{
 		var parent = element.GetParent() as UIElement
 			?? element.GetParentInternal(publicParentOnly: false) as UIElement;
@@ -2931,10 +2982,120 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		var children = parent.GetChildren();
-		var index = children.IndexOf(element);
+		var semanticParentHandle = FindSemanticParent(parent);
+		var semanticParent = FindAncestorByHandle(parent, semanticParentHandle);
+		var anchorHandle = semanticParent is not null
+			? FindNextSemanticSibling(semanticParent, semanticParentHandle, element)
+			: IntPtr.Zero;
+		var focused = element.XamlRoot is { } xamlRoot ? FocusManager.GetFocusedElement(xamlRoot) as UIElement : null;
+		var focusInSubtree = focused is not null && IsSelfOrDescendant(focused, element);
+
 		OnChildRemoved(parent, element);
-		OnChildAdded(parent, element, index >= 0 ? index : null);
+		OnChildAdded(parent, element, null);
+
+		// The subtree was appended under its semantic parent: move its top-level nodes back to their
+		// reading-order position, i.e. before the next semantic sibling in the flattened tree.
+		if (anchorHandle != IntPtr.Zero)
+		{
+			foreach (var handle in GetTopLevelSemanticHandles(element, semanticParentHandle))
+			{
+				NativeMethods.MoveSemanticElementBefore(handle, anchorHandle);
+			}
+		}
+
+		// Re-creating (or moving) the nodes drops browser focus while XAML focus is unchanged, so no GotFocus restores it.
+		if (focusInSubtree && ResolveToSemanticHandle(focused!) is var focusHandle && focusHandle != IntPtr.Zero)
+		{
+			NativeMethods.FocusSemanticElement(focusHandle);
+		}
+	}
+
+	private static UIElement? FindAncestorByHandle(UIElement start, IntPtr handle)
+	{
+		for (var current = start; current is not null; current = current.GetParent() as UIElement)
+		{
+			if (current.Visual.Handle == handle)
+			{
+				return current;
+			}
+		}
+
+		return null;
+	}
+
+	private static bool IsSelfOrDescendant(UIElement element, UIElement ancestor)
+	{
+		for (var current = element; current is not null; current = current.GetParent() as UIElement)
+		{
+			if (current == ancestor)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	// The first node after `element` (in visual order) that is a direct DOM child of the semantic parent.
+	private IntPtr FindNextSemanticSibling(UIElement semanticParent, IntPtr semanticParentHandle, UIElement element)
+	{
+		var passed = false;
+		var result = IntPtr.Zero;
+
+		bool Visit(UIElement node)
+		{
+			foreach (var child in node.GetChildren())
+			{
+				if (child == element)
+				{
+					passed = true;
+					continue;
+				}
+
+				if (_semanticParentMap.TryGetValue(child.Visual.Handle, out var p) && p == semanticParentHandle)
+				{
+					if (passed)
+					{
+						result = child.Visual.Handle;
+						return true;
+					}
+
+					continue;
+				}
+
+				if (Visit(child))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		Visit(semanticParent);
+		return result;
+	}
+
+	private List<IntPtr> GetTopLevelSemanticHandles(UIElement element, IntPtr semanticParentHandle)
+	{
+		var handles = new List<IntPtr>();
+
+		void Visit(UIElement node)
+		{
+			if (_semanticParentMap.TryGetValue(node.Visual.Handle, out var p) && p == semanticParentHandle)
+			{
+				handles.Add(node.Visual.Handle);
+				return;
+			}
+
+			foreach (var child in node.GetChildren())
+			{
+				Visit(child);
+			}
+		}
+
+		Visit(element);
+		return handles;
 	}
 
 	private void RebuildSemanticTree(UIElement rootElement)
@@ -3156,6 +3317,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.updateAriaLive")]
 		internal static partial void UpdateAriaLive(IntPtr handle, string ariaLive);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.updateAriaBusy")]
+		internal static partial void UpdateAriaBusy(IntPtr handle, bool busy);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.moveSemanticElementBefore")]
+		internal static partial void MoveSemanticElementBefore(IntPtr handle, IntPtr anchorHandle);
 
 		// ===== Relationship Attributes =====
 
