@@ -13,6 +13,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Globalization;
 public class Given_DateTimeFormatter
 {
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24761")]
+	[DataRow("de-DE", "en-US", "24HourClock", "13:05")]
+	[DataRow("en-US", "en-GB", "12HourClock", "1:05 PM")]
+	public void When_Language_Differs_From_CurrentCulture_Then_Time_Follows_Language(string language, string currentCulture, string expectedClock, string expectedTime)
+	{
+		var culture = CultureInfo.CurrentCulture;
+		var primaryLanguageOverride = ApplicationLanguages.PrimaryLanguageOverride;
+		try
+		{
+			ApplicationLanguages.PrimaryLanguageOverride = language;
+			CultureInfo.CurrentCulture = new CultureInfo(currentCulture);
+
+			var formatter = new DateTimeFormatter("shorttime");
+			var time = NormalizeText(formatter.Format(new DateTimeOffset(new DateTime(2024, 1, 15, 13, 5, 0))));
+
+			// The pattern and the clock both come from the language, so the hour and the period agree.
+			// EndsWith: Uno's "shorttime" also renders the long date.
+			Assert.AreEqual(expectedClock, formatter.Clock);
+			Assert.AreEqual(expectedClock, new global::Windows.Globalization.Calendar().GetClock());
+			Assert.IsTrue(time.EndsWith(expectedTime, StringComparison.Ordinal), time);
+		}
+		finally
+		{
+			ApplicationLanguages.PrimaryLanguageOverride = primaryLanguageOverride;
+			CultureInfo.CurrentCulture = culture;
+		}
+	}
+
+	// WinRT marks the text direction (U+200E), and ICU may separate the period with a no-break space.
+	private static string NormalizeText(string text)
+		=> text.Replace("\u200E", "").Replace("\u200F", "").Replace('\u202F', ' ').Replace('\u00A0', ' ');
+
+	[TestMethod]
 	public void When_CreatingWithFormatTemplate_ShouldInitializeCorrectly()
 	{
 		var formatter = new DateTimeFormatter("longdate");
