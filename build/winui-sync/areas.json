@@ -96,7 +96,7 @@
     {
       "id": "buttons",
       "title": "Button controls",
-      "baseline": "7198c4e69019516fb08ecb3937492ffff5fe9702",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
       "upstream": {
         "sources": [
           "dxaml/xcp/core/core/elements/Button.cpp",
@@ -129,7 +129,13 @@
           "dxaml/xcp/dxaml/lib/HyperlinkButtonAutomationPeer_Partial.cpp",
           "dxaml/xcp/dxaml/lib/HyperlinkButtonAutomationPeer_Partial.h",
           "dxaml/xcp/dxaml/lib/RepeatButtonAutomationPeer_Partial.cpp",
-          "dxaml/xcp/dxaml/lib/RepeatButtonAutomationPeer_Partial.h"
+          "dxaml/xcp/dxaml/lib/RepeatButtonAutomationPeer_Partial.h",
+          "controls/dev/CommonStyles/Button_themeresources.xaml",
+          "controls/dev/CommonStyles/CheckBox_themeresources.xaml",
+          "controls/dev/CommonStyles/HyperlinkButton_themeresources.xaml",
+          "controls/dev/CommonStyles/RadioButton_themeresources.xaml",
+          "controls/dev/CommonStyles/RepeatButton_themeresources.xaml",
+          "controls/dev/CommonStyles/ToggleButton_themeresources.xaml"
         ]
       },
       "uno": {
@@ -145,7 +151,13 @@
           "src/Uno.UI/UI/Xaml/Automation/Peers/CheckBoxAutomationPeer.cs",
           "src/Uno.UI/UI/Xaml/Automation/Peers/RadioButtonAutomationPeer.cs",
           "src/Uno.UI/UI/Xaml/Automation/Peers/HyperlinkButtonAutomationPeer.cs",
-          "src/Uno.UI/UI/Xaml/Automation/Peers/RepeatButtonAutomationPeer.cs"
+          "src/Uno.UI/UI/Xaml/Automation/Peers/RepeatButtonAutomationPeer.cs",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/Button_themeresources.xaml",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/CheckBox_themeresources.xaml",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/HyperlinkButton_themeresources.xaml",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/RadioButton_themeresources.xaml",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/RepeatButton_themeresources.xaml",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/ToggleButton_themeresources.xaml"
         ]
       }
     }

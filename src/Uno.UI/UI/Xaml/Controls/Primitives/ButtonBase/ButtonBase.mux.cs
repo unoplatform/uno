@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// ButtonBase_Partial.h, ButtonBase_Partial.cpp, tag winui3/release/1.4.2
+// ButtonBase_Partial.h, ButtonBase_Partial.cpp
 
 #nullable enable
 
