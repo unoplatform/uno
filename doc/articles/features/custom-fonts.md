@@ -291,6 +291,22 @@ With the WebGPU backend, use `ManagedBackend.CreateFontProvider(enableFallback: 
 
 A glyph that the requested font doesn't have then stays missing: it isn't taken from an installed font, and on WebAssembly no Noto font is downloaded, either for a missing glyph or for a `FontFamily` naming a Noto family. Families your app bundles and installed families named in `FontFamily` still resolve.
 
+### Serving the Noto fonts from your own origin
+
+On WebAssembly, the Noto fonts are downloaded from `https://raw.githubusercontent.com/` (the [notofonts](https://github.com/notofonts) repositories). If a Content-Security-Policy doesn't allow that origin, or the app runs without internet access, the downloads fail and the characters render as boxes. Point the downloads at a copy you host, or at fonts bundled in the app package, before the app first renders text:
+
+```csharp
+using Uno.UI.Composition.Drawing;
+
+// Your own origin, allowed by the CSP's connect-src:
+FontFallback.NotoFontsBaseUri = new Uri("https://cdn.example.com/noto/");
+
+// Or fonts shipped in the app package as content:
+FontFallback.NotoFontsBaseUri = new Uri("ms-appx:///Assets/Noto/");
+```
+
+Each font is read from the same path under the base as under `https://raw.githubusercontent.com/`, so a copy keeps that layout. For example, the Arabic font is read from `{base}notofonts/notofonts.github.io/main/fonts/NotoSansArabic/hinted/ttf/NotoSansArabic-Regular.ttf` and the Japanese one from `{base}notofonts/noto-cjk/main/Sans/OTF/Japanese/NotoSansCJKjp-Regular.otf`. Only the fonts for the scripts your content uses need to be present. The full list of fonts and paths is in [`FontFallback.Maps.cs`](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.Composition.Drawing/FontFallback.Maps.cs) (`FontWeightsToRawUrls`, `Regular` entries).
+
 ### Customizing fallback
 
 Fallback is not a separate extension point — it is part of the font provider. To customize it, supply your own `IFontProvider` through the host builder and implement `MatchCharacterAsync` (per codepoint) and `MatchFamilyAsync` (families named by `FontFamily`). The built-in provider is available from `SkiaBackend.CreateFontProvider()` (or `ManagedBackend.CreateFontProvider()` with the WebGPU backend), so a custom provider can wrap it:
