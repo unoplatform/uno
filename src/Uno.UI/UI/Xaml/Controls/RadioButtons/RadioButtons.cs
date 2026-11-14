@@ -82,9 +82,6 @@ namespace Microsoft.UI.Xaml.Controls
 					m_repeaterElementIndexChangedRevoker.Disposable = Disposable.Create(() => repeater.ElementIndexChanged -= OnRepeaterElementIndexChanged);
 					repeater.Loaded += OnRepeaterLoaded;
 					m_repeaterLoadedRevoker.Disposable = Disposable.Create(() => repeater.Loaded -= OnRepeaterLoaded);
-#if HAS_UNO
-					repeater.Unloaded += OnRepeaterUnloaded;
-#endif
 					return repeater;
 				}
 				return null;
@@ -298,15 +295,6 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						Select(args.Index);
 					}
-
-#if HAS_UNO
-					// TODO Uno: Elements are prepared after the repeater's Loaded (#4689), so OnRepeaterLoaded
-					// cannot check the container of a SelectedIndex/SelectedItem set before load.
-					if (args.Index == SelectedIndex)
-					{
-						toggleButton.IsChecked = true;
-					}
-#endif
 				}
 				if (m_repeater is { } repeater)
 				{
@@ -618,17 +606,6 @@ namespace Microsoft.UI.Xaml.Controls
 					layout.LayoutChanged -= m_layoutChangedToken;
 					m_layoutChangedToken = default;
 				}
-			}
-		}
-#endif
-
-#if HAS_UNO
-		// Uno specific: stands in for the destructor, detaching the test hooks' layout handler.
-		private void OnRepeaterUnloaded(object sender, RoutedEventArgs args)
-		{
-			if (GetLayout() is { } layout)
-			{
-				layout.LayoutChanged -= OnLayoutChanged;
 			}
 		}
 #endif
