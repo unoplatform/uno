@@ -61,6 +61,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	private bool _isAccessibilityEnabled;
 	private bool _isCreatingAOM;
 	private IntPtr _rootElementHandle;
+	private HashSet<UIElement>? _movedPrunedElements;
+	private bool _isPrunedRepositioningScheduled;
 	public override bool IsAccessibilityEnabled => _isAccessibilityEnabled;
 
 	// Subsystem managers (initialized during accessibility activation)
@@ -829,21 +831,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				if (_semanticParentMap.TryGetValue(handle, out var semanticParentHandle)
 					&& containerVisual.Owner?.Target is UIElement element)
 				{
-					// Use the full element-to-semantic-parent transform so that
-					// RenderTransform, Scale, etc. are reflected in the position.
-					var semanticParentElement = FindUIElementByHandle(element, semanticParentHandle);
-					if (semanticParentElement is not null)
-					{
-						var transformedRect = GetRectInSemanticParent(element, semanticParentElement);
-						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
-					}
-					else
-					{
-						var localRect = new Windows.Foundation.Rect(0, 0, visual.Size.X, visual.Size.Y);
-						var transform = UIElement.GetTransform(from: element, to: null);
-						var transformedRect = transform.Transform(localRect);
-						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
-					}
+					UpdateSemanticElementPositioning(element, semanticParentHandle);
 				}
 				else
 				{
@@ -854,6 +842,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 						var localRect = new Windows.Foundation.Rect(0, 0, visual.Size.X, visual.Size.Y);
 						var transformedRect = transform.Transform(localRect);
 						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
+
+						// A semantic node is positioned relative to its nearest semantic ancestor, across the pruned
+						// elements in between. Moving a pruned element (e.g. arranging a re-created page) moves its
+						// semantic descendants without changing their own offsets, so nothing else re-positions them.
+						if (handle != _rootElementHandle)
+						{
+							QueueSemanticDescendantsPositioning(rootElement);
+						}
 					}
 					else
 					{
@@ -861,6 +857,108 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 						NativeMethods.UpdateSemanticElementPositioning(handle, visual.Size.X, visual.Size.Y, totalOffset.X, totalOffset.Y);
 					}
 				}
+			}
+		}
+	}
+
+	private void UpdateSemanticElementPositioning(UIElement element, IntPtr semanticParentHandle)
+	{
+		var handle = element.Visual.Handle;
+
+		// Use the full element-to-semantic-parent transform so that
+		// RenderTransform, Scale, etc. are reflected in the position.
+		var semanticParentElement = FindUIElementByHandle(element, semanticParentHandle);
+		if (semanticParentElement is not null)
+		{
+			var transformedRect = GetRectInSemanticParent(element, semanticParentElement);
+			NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
+		}
+		else
+		{
+			var localRect = new Windows.Foundation.Rect(0, 0, element.Visual.Size.X, element.Visual.Size.Y);
+			var transform = UIElement.GetTransform(from: element, to: null);
+			var transformedRect = transform.Transform(localRect);
+			NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
+		}
+	}
+
+	// A layout pass moves nested pruned elements one after the other, and reports a child before the parent that
+	// moves it. They're collected and walked once, after layout, from the outermost one only.
+	private void QueueSemanticDescendantsPositioning(UIElement prunedElement)
+	{
+		(_movedPrunedElements ??= new HashSet<UIElement>(ReferenceEqualityComparer.Instance)).Add(prunedElement);
+		if (!_isPrunedRepositioningScheduled)
+		{
+			_isPrunedRepositioningScheduled = prunedElement.DispatcherQueue.TryEnqueue(FlushSemanticDescendantsPositioning);
+			if (!_isPrunedRepositioningScheduled)
+			{
+				_movedPrunedElements.Clear();
+			}
+		}
+	}
+
+	private void FlushSemanticDescendantsPositioning()
+	{
+		_isPrunedRepositioningScheduled = false;
+		if (_movedPrunedElements is not { Count: > 0 } moved)
+		{
+			return;
+		}
+
+		_movedPrunedElements = null;
+		if (!IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		foreach (var element in moved)
+		{
+			if (!HasMovedPrunedAncestor(element, moved))
+			{
+				UpdateSemanticDescendantsPositioning(element);
+			}
+		}
+	}
+
+	// The walk from a moved pruned ancestor stops at the first semantic node, so only pruned ancestors below
+	// that node already cover this element.
+	private bool HasMovedPrunedAncestor(UIElement element, HashSet<UIElement> moved)
+	{
+		for (var parent = element.GetParent() as UIElement; parent is not null; parent = parent.GetParent() as UIElement)
+		{
+			if (_semanticParentMap.ContainsKey(parent.Visual.Handle))
+			{
+				return false;
+			}
+
+			if (moved.Contains(parent))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/// <summary>
+	/// Re-positions the nearest semantic descendants of an element that has no semantic node itself.
+	/// </summary>
+	private void UpdateSemanticDescendantsPositioning(UIElement prunedElement)
+	{
+		foreach (var child in prunedElement.GetChildren())
+		{
+			if (IsPrunedAsHidden(child))
+			{
+				continue;
+			}
+
+			if (_semanticParentMap.TryGetValue(child.Visual.Handle, out var semanticParentHandle))
+			{
+				UpdateSemanticElementPositioning(child, semanticParentHandle);
+			}
+			else
+			{
+				UpdateSemanticDescendantsPositioning(child);
 			}
 		}
 	}
