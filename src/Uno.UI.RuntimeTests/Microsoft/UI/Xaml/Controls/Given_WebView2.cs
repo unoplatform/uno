@@ -203,7 +203,16 @@ public class Given_WebView2
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
-	public async Task When_ExecuteScriptAsync_String_Double_Quote()
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26294")]
+	[DataRow(@"'hello ""world""'", @"""hello \""world\""""")]
+	[DataRow(@"'line 1\nline 2'", @"""line 1\nline 2""")]
+	[DataRow(@"'C:\\temp'", @"""C:\\temp""")]
+	[DataRow(@"'tab\t, carriage return\r, backspace\b, form feed\f'", @"""tab\t, carriage return\r, backspace\b, form feed\f""")]
+	[DataRow(@"'null\u0000, start of heading\u0001'", @"""null\u0000, start of heading\u0001""")]
+	[DataRow(@"'a/b'", @"""a/b""")]
+	[DataRow(@"JSON.stringify({ text: 'a\nb' })", @"""{\""text\"":\""a\\nb\""}""")]
+	[DataRow(@"eval({ path: 'a/b' })", @"{""path"":""a/b""}")]
+	public async Task When_ExecuteScriptAsync_String_With_Escapes(string script, string expectedJson)
 	{
 		async Task Do()
 		{
@@ -213,16 +222,22 @@ public class Given_WebView2
 			webView.Height = 200;
 			border.Child = webView;
 			TestServices.WindowHelper.WindowContent = border;
-			bool navigated = false;
-			await TestServices.WindowHelper.WaitForLoaded(border);
-			await webView.EnsureCoreWebView2Async();
-			webView.NavigationCompleted += (sender, e) => navigated = true;
-			webView.NavigateToString("<html></html>");
-			await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
+			try
+			{
+				bool navigated = false;
+				await TestServices.WindowHelper.WaitForLoaded(border);
+				await webView.EnsureCoreWebView2Async();
+				webView.NavigationCompleted += (sender, e) => navigated = true;
+				webView.NavigateToString("<html></html>");
+				await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
 
-			var script = $"'hello \"world\"'.toString()";
-			var result = await webView.ExecuteScriptAsync(script);
-			Assert.AreEqual("\"hello \\\"world\\\"\"", result);
+				var result = await webView.ExecuteScriptAsync(script);
+				Assert.AreEqual(expectedJson, result);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
 		}
 
 		await TestHelper.RetryAssert(Do, 3);

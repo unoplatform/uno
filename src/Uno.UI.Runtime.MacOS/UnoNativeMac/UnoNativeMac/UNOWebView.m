@@ -254,31 +254,32 @@ void uno_webview_execute_script(WKWebView *webview, NSInteger handle, const char
 #endif
             e = error.description;
         } else if (result != nil) {
-            if ([NSJSONSerialization isValidJSONObject:result]) {
+            // Like WebView2, a string result is returned as a JSON string literal
+            if ([result isKindOfClass:NSString.class] || [NSJSONSerialization isValidJSONObject:result]) {
 #if DEBUG
                 NSLog(@"uno_webview_execute_script %p completionHandler json: %@ string %@", webview, result, ((NSObject*)result).description);
 #endif
-                NSError *jsonError;
-                NSData *data = [NSJSONSerialization dataWithJSONObject:result options:0 error:&jsonError];
-                if (jsonError) {
+                NSError *jsonError = nil;
+                NSData *data = nil;
+                NSString *failure = nil;
+                // dataWithJSONObject: can raise instead of returning an error, and nothing may throw out of WebKit's completion handler
+                @try {
+                    data = [NSJSONSerialization dataWithJSONObject:result options:NSJSONWritingFragmentsAllowed | NSJSONWritingWithoutEscapingSlashes error:&jsonError];
+                    failure = jsonError.description;
+                } @catch (NSException *exception) {
+                    failure = exception.reason;
+                }
+                if (data == nil) {
 #if DEBUG
-                    NSLog(@"uno_webview_execute_script %p completionHandler jsonError: %@", webview, jsonError);
+                    NSLog(@"uno_webview_execute_script %p completionHandler serialization failed: %@", webview, failure);
 #endif
-                    e = jsonError.description;
+                    e = [NSString stringWithFormat:@"Failed to serialize the script result: %@", failure ?: @"unknown error"];
                 } else {
 #if DEBUG
                     NSLog(@"uno_webview_execute_script %p completionHandler data: %@", webview, data);
 #endif
                     r = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                 }
-            } else if ([result isKindOfClass:NSString.class]) {
-                // double quote existing quotes so we can quote the whole thing
-                NSString *s = [((NSString*) result) stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
-                NSString *quoted = [NSString stringWithFormat:@"\"%@\"", s];
-#if DEBUG
-                NSLog(@"uno_webview_execute_script %p completionHandler string: %@", webview, quoted);
-#endif
-                r = quoted;
             } else {
                 NSString *s = result.description;
 #if DEBUG
