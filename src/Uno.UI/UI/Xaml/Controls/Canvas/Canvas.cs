@@ -15,8 +15,10 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		#region Left
 
-		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsArrange)]
-		public static DependencyProperty LeftProperty { get; } = CreateLeftProperty();
+		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsArrange)]
+		public static partial double GetLeft(global::Microsoft.UI.Xaml.UIElement element);
+
+		public static partial void SetLeft(global::Microsoft.UI.Xaml.UIElement element, double length);
 
 		private static void OnLeftChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -30,8 +32,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region Top
 
-		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsArrange)]
-		public static DependencyProperty TopProperty { get; } = CreateTopProperty();
+		[GeneratedDependencyProperty(DefaultValue = 0.0d, AttachedBackingFieldOwner = typeof(UIElement), Options = FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsArrange)]
+		public static partial double GetTop(global::Microsoft.UI.Xaml.UIElement element);
+
+		public static partial void SetTop(global::Microsoft.UI.Xaml.UIElement element, double length);
 
 		private static void OnTopChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -45,8 +49,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region ZIndex
 
-		[GeneratedDependencyProperty(DefaultValue = 0, AttachedBackingFieldOwner = typeof(UIElement), Attached = true, Options = FrameworkPropertyMetadataOptions.AutoConvert)]
-		public static DependencyProperty ZIndexProperty { get; } = CreateZIndexProperty();
+		[GeneratedDependencyProperty(DefaultValue = 0, AttachedBackingFieldOwner = typeof(UIElement), Options = FrameworkPropertyMetadataOptions.AutoConvert)]
+		public static partial int GetZIndex(global::Microsoft.UI.Xaml.UIElement element);
+
+		public static partial void SetZIndex(global::Microsoft.UI.Xaml.UIElement element, int value);
 
 		private static void OnZIndexChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -71,18 +77,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void InitializePartial();
-
-		public static double GetLeft(global::Microsoft.UI.Xaml.UIElement element) => GetLeftValue(element);
-
-		public static void SetLeft(global::Microsoft.UI.Xaml.UIElement element, double length) => SetLeftValue(element, length);
-
-		public static double GetTop(global::Microsoft.UI.Xaml.UIElement element) => GetTopValue(element);
-
-		public static void SetTop(global::Microsoft.UI.Xaml.UIElement element, double length) => SetTopValue(element, length);
-
-		public static int GetZIndex(global::Microsoft.UI.Xaml.UIElement element) => GetZIndexValue(element);
-
-		public static void SetZIndex(global::Microsoft.UI.Xaml.UIElement element, int value) => SetZIndexValue(element, value);
 
 		static partial void OnZIndexChangedPartial(UIElement element, int? zindex)
 		{
