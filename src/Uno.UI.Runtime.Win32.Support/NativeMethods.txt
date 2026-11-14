@@ -8,6 +8,7 @@ DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
 E_NOINTERFACE
 E_POINTER
 E_UNEXPECTED
+EVENT_OBJECT_FOCUS
 GDI_REGION_TYPE
 HKEY_CURRENT_USER
 HTBOTTOM
@@ -61,6 +62,7 @@ TOUCH_MASK_CONTACTAREA
 TOUCH_MASK_ORIENTATION
 TOUCH_MASK_PRESSURE
 USER_DEFAULT_SCREEN_DPI
+WINEVENT_OUTOFCONTEXT
 WA_ACTIVE
 WA_CLICKACTIVE
 WA_INACTIVE
@@ -211,6 +213,7 @@ GetDeviceCaps
 GetDpiForWindow
 GetDpiForMonitor
 GetIconInfo
+GetGUIThreadInfo
 GetKeyState
 GetObject
 GetMessage
@@ -282,12 +285,14 @@ SetWindowLong
 SetWindowPos
 SetWindowRgn
 SetWindowText
+SetWinEventHook
 SHCreateItemFromParsingName
 SHCreateItemInKnownFolder
 ShowWindow
 StgCreateStorageEx
 SwapBuffers
 TranslateMessage
+UnhookWinEvent
 wglCreateContext
 wglDeleteContext
 wglGetCurrentContext
