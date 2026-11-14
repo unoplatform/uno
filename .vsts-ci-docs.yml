@@ -11,6 +11,9 @@ trigger:
     include:
       - doc/**
       - '**/*.md'
+    exclude:
+      # WinUI port sync reports are not part of the docs
+      - build/winui-sync/
 
 pr: 
   branches:
@@ -25,6 +28,9 @@ pr:
     include:
       - doc/**
       - '**/*.md'
+    exclude:
+      # WinUI port sync reports are not part of the docs
+      - build/winui-sync/
 
 variables:
   windowsScaledPool: 'Windows2025-20260622-1'

@@ -20,6 +20,8 @@ trigger:
     - '*.md'
     - 'build/cSpell.json'
     - 'build/.markdownlint.json'
+    # WinUI port sync tooling, baselines and reports; nothing in this pipeline uses them
+    - build/winui-sync/
     
 pr: 
   branches:
@@ -43,6 +45,8 @@ pr:
     - '*.md'
     - 'build/cSpell.json'
     - 'build/.markdownlint.json'
+    # WinUI port sync tooling, baselines and reports; nothing in this pipeline uses them
+    - build/winui-sync/
 
 resources:
   containers:
