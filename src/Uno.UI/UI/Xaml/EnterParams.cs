@@ -41,6 +41,13 @@ internal struct EnterParams
 	/// </summary>
 	internal DependencyObject? ThemeInheritanceCaller;
 
+	/// <summary>
+	/// Uno-specific: the depth the entering element sits at. WinUI's EnterParams has no such field —
+	/// <see cref="UIElement.Depth"/> is Uno bookkeeping. int.MinValue matches that property's own
+	/// "not entered" sentinel, so a dead enter leaves it untouched.
+	/// </summary>
+	public int Depth;
+
 	public EnterParams()
 	{
 		IsLive = true;
@@ -51,6 +58,7 @@ internal struct EnterParams
 		CheckForResourceOverrides = false;
 		ParentResourceDictionary = null;
 		VisualTree = null;
+		Depth = int.MinValue;
 	}
 
 	public EnterParams(
@@ -68,6 +76,7 @@ internal struct EnterParams
 		CheckForResourceOverrides = false;
 		ParentResourceDictionary = null;
 		VisualTree = enteringVisualTree;
+		Depth = int.MinValue;
 	}
 
 	// Uno-specific convenience constructor (pre-existing call sites).

@@ -873,9 +873,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 	}
 
-	internal override void EnterImpl(EnterParams @params, int depth)
+	internal override void EnterImpl(DependencyObject namescopeOwner, EnterParams @params)
 	{
-		base.EnterImpl(@params, depth);
+		base.EnterImpl(namescopeOwner, @params);
 
 		if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
 		{
@@ -890,9 +890,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 	}
 
-	internal override void LeaveImpl(LeaveParams @params)
+	internal override void LeaveImpl(DependencyObject namescopeOwner, LeaveParams @params)
 	{
-		base.LeaveImpl(@params);
+		base.LeaveImpl(namescopeOwner, @params);
 
 		if (IsNativeHost)
 		{
