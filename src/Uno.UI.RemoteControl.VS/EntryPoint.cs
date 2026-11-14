@@ -223,7 +223,7 @@ public partial class EntryPoint : IDisposable
 		var ideVersion = GetIdeVersion();
 
 		_appLaunchIdeBridge = await VsAppLaunchIdeBridge.CreateAsync(asyncPackage, _dte2, stateService);
-		_appLaunchStateConsumer = await VsAppLaunchStateConsumer.CreateAsync(asyncPackage, stateService, () => _ideChannelClient, packageVersion, ideVersion);
+		_appLaunchStateConsumer = await VsAppLaunchStateConsumer.CreateAsync(asyncPackage, stateService, () => _ideChannelClient, packageVersion, ideVersion, _debugAction);
 	}
 
 	private Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()

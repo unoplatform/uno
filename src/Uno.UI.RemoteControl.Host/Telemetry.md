@@ -53,7 +53,7 @@ Once the `Uno.Settings.DevServer` add-in has loaded and a user is signed in, eve
 - **DiscoveryFailedProcessors**
 - **ConnectionId**: `"conn-abc123"`, `"conn-xyz789"`
 - **TargetPlatform**: `"Desktop1.0"`, `"Android35.0"`, `"BrowerWasm1.0"`, `"iOS18.5"`...
-- **IsDebug**: `"True"`, `"False"`
+- **IsDebug**: `"True"`, `"False"`. Whether the IDE launched the app with the debugger. On a `connected` event with `WasIdeInitiated` False, there is no launch, so it is whether a debugger was attached when the app connected.
 - **IDE**: `"vswin"`, `"rider-2025.2.0.1"`, `"vscode-1.105.0"`, `"Unknown"`, `"None"`
 - **PluginVersion**: `"1.0.0"`, `"2.1.5"`, `"Unknown"`, `"None"`
 - **WasTimedOut**: `"True"`, `"False"`
