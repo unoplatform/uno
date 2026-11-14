@@ -174,7 +174,7 @@ function Find-AreaThemeXaml {
 			continue
 		}
 		[void]$files.Add($source)
-		if ($source -match '(^|/)([A-Za-z]+)_Partial\.(cpp|h)$') {
+		if ($source -match '(^|/)(\w+?)_Partial\.(cpp|h)$') {
 			if ($null -eq $commonStyles) {
 				$dir = Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo -Ref $Ref -Path 'controls/dev/CommonStyles'
 				$commonStyles = if ($dir) { @(Invoke-Git $UpstreamRepo @('ls-tree', '--name-only', "${Ref}:$dir")) } else { @() }

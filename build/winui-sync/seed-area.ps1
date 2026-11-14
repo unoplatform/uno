@@ -47,7 +47,7 @@ if (-not $NoThemeXaml) {
 	}
 }
 
-$scan =@(@($UnoSources) + @($UnoTests) | ForEach-Object { Join-Path $UnoRoot $_ } | Where-Object { Test-Path $_ })
+$scan = @(@($UnoSources) + @($UnoTests) | ForEach-Object { Join-Path $UnoRoot $_ } | Where-Object { Test-Path $_ })
 $references = @(Get-MuxReferences -Paths $scan)
 $result = Resolve-AreaBaseline -UpstreamRepo $UpstreamRepo -References $references
 
