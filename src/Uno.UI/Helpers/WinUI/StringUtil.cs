@@ -14,11 +14,11 @@ namespace Uno.UI.Helpers.WinUI
 		/// </summary>
 		/// <param name="format"></param>
 		/// <param name="parms"></param>
-		/// <returns>A .NET formatted string</returns>
-		/// <remarks>Do not use this method in another context.</remarks>
+		/// <returns>A .NET formatted string, or an empty string when the format cannot be applied, like Win32 <c>FormatMessage</c>.</returns>
+		/// <remarks>Do not use this method in another context. Braces are literal text, as in <c>FormatMessage</c>.</remarks>
 		internal static string FormatString(string format, params object[] parms)
 		{
-			var dotnetFormat = CppFormat().Replace(format, "{$1}");
+			var dotnetFormat = CppFormat().Replace(format.Replace("{", "{{").Replace("}", "}}"), "{$1}");
 
 			var list = parms.ToList();
 
@@ -26,7 +26,14 @@ namespace Uno.UI.Helpers.WinUI
 			// the output string, as the C++ index is staring at 1.
 			list.Insert(0, null);
 
-			return string.Format(CultureInfo.CurrentCulture, dotnetFormat.Replace("%%", "%"), list.ToArray());
+			try
+			{
+				return string.Format(CultureInfo.CurrentCulture, dotnetFormat.Replace("%%", "%"), list.ToArray());
+			}
+			catch (FormatException)
+			{
+				return string.Empty;
+			}
 		}
 
 		[GeneratedRegex(@"\%(\d+)!.*?!", RegexOptions.Singleline)]
