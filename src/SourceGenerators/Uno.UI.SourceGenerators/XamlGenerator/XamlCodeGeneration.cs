@@ -440,7 +440,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var isInsideMainAssembly = _isUnoHead || PlatformHelper.IsAndroid(_generatorContext);
 
 				var resourceDetailsCollection = BuildResourceDetails(ct);
-				TryGenerateUnoResourcesKeyAttribute(resourceDetailsCollection);
+				TryGenerateUnoResourcesKeyAttribute();
 
 				var excludeXamlNamespaces = _excludeXamlNamespaces.Split(_commaArray, StringSplitOptions.RemoveEmptyEntries);
 				var includeXamlNamespaces = _includeXamlNamespaces.Split(_commaArray, StringSplitOptions.RemoveEmptyEntries);
@@ -721,9 +721,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return _metadataHelper.FindTypeByFullName(nsName + "." + xamlType.Name) as INamedTypeSymbol;
 		}
 
-		private void TryGenerateUnoResourcesKeyAttribute(ResourceDetailsCollection resourceDetailsCollection)
+		private void TryGenerateUnoResourcesKeyAttribute()
 		{
-			var hasResources = resourceDetailsCollection.HasLocalResources;
+			// Based on the presence of resource files rather than on their parsed keys: a .resw that
+			// fails to parse mid-edit must not flip this assembly attribute, which Hot Reload rejects as
+			// a rude edit (ENC0003) until the next rebuild.
+			var hasResources = _resourceFiles.Length > 0;
 
 			_generatorContext.AddSource(
 				"LocalizationResources",
@@ -858,12 +861,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					try
 					{
 						var sourceText = file.File.GetText(ct)!;
-						var cachedFileKey = new ResourceCacheKey(file.Identity, sourceText.GetChecksum());
+						var cachedFileKey = new ResourceCacheKey(_metadataHelper.AssemblyName, file.File.Path, sourceText.GetChecksum());
 						var resourceFileName = Path.GetFileNameWithoutExtension(file.Identity);
 
 						if (_cachedResources.TryGetValue(cachedFileKey, out var cachedResource))
 						{
 							_cachedResources[cachedFileKey] = cachedResource.WithUpdatedLastTimeUsed();
+							_lastGoodResources[cachedFileKey.FileId] = cachedFileKey;
 							ScavengeCache();
 							return cachedResource.ResourceKeys;
 						}
@@ -882,11 +886,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							.Select(node => new ResourceDetails(_metadataHelper.AssemblyName, resourceFileName, node.GetAttribute("name")))
 							.ToArray() ?? Array.Empty<ResourceDetails>();
 						_cachedResources[cachedFileKey] = new CachedResource(DateTimeOffset.Now, keys);
+						_lastGoodResources[cachedFileKey.FileId] = cachedFileKey;
 						return keys;
+					}
+					catch (OperationCanceledException) when (ct.IsCancellationRequested)
+					{
+						throw;
 					}
 					catch (Exception e)
 					{
-						var message = $"Unable to parse resource file [{file.Identity}], make sure it is a valid resw file. ({e.Message})";
+						// Keep serving the last keys this file parsed to, so that a .resw being edited does not strip the
+						// x:Uid lookups from the pages regenerated meanwhile (Hot Reload). Unless UXAML0003 is suppressed, the
+						// error still fails a build, so these keys never ship.
+						var keys = _lastGoodResources.TryGetValue((_metadataHelper.AssemblyName, file.File.Path), out var lastGoodFileKey)
+							&& _cachedResources.TryGetValue(lastGoodFileKey, out var lastGood)
+							? lastGood.ResourceKeys
+							: null;
+
+						var message = $"Unable to parse resource file [{file.Identity}], make sure it is a valid resw file. ({e.Message})"
+							+ (keys is null ? "" : " Until it parses, the keys of its last valid version are used.");
 
 						var diagnostic = Diagnostic.Create(
 							XamlCodeGenerationDiagnostics.ResourceParsingFailureRule,
@@ -895,7 +913,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						_generatorContext.ReportDiagnostic(diagnostic);
 
-						return Array.Empty<ResourceDetails>();
+						return keys ?? Array.Empty<ResourceDetails>();
 					}
 				})
 				.Distinct()
