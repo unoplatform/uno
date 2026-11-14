@@ -160,7 +160,8 @@ public partial class DependencyObject
 			//m_checkForResourceOverrides = !!params.fCheckForResourceOverrides;
 		}
 
-		// TODO Uno: NOT PORTED — name registration (depends.cpp:986-1001):
+		// TODO Uno: NOT PORTED — name registration (depends.cpp:986-1001). The generated XAML code registers
+		// declared names; names set in code are registered by FrameworkElement.RegisterCodeName on a live enter.
 		//if (!params.fSkipNameRegistration)
 		//{
 		//	if (!IsTemplateNamescopeMember())
@@ -363,7 +364,8 @@ public partial class DependencyObject
 
 		// Enumerate all the properties in its class
 
-		// TODO Uno: NOT PORTED — name unregistration (depends.cpp:1275-1280):
+		// TODO Uno: NOT PORTED — name unregistration (depends.cpp:1275-1280). Names set in code are
+		// unregistered by FrameworkElement.UnregisterCodeName on a live leave.
 		//if (!params.fSkipNameRegistration && !IsTemplateNamescopeMember())
 		//{
 		//	UnregisterName(pNamescopeOwner);

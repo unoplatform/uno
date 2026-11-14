@@ -15,8 +15,21 @@ namespace Microsoft.UI.Xaml.Markup
 			var r = new XamlStringParser();
 
 			var builder = new XamlObjectBuilder(r.Parse(xaml));
+			var result = builder.Build();
 
-			return builder.Build();
+			// Like WinUI, the loaded content is a namescope of its own, so its names don't reach the tree it joins.
+			if (result is FrameworkElement root && NameScope.GetNameScope(root) is null)
+			{
+				var nameScope = new NameScope { Owner = root };
+				if (!string.IsNullOrEmpty(root.Name))
+				{
+					nameScope.RegisterName(root.Name, root);
+				}
+
+				NameScope.SetNameScope(root, nameScope);
+			}
+
+			return result;
 		}
 
 		public static object LoadWithInitialTemplateValidation(string xaml)
