@@ -374,12 +374,14 @@ function Resolve-UpstreamEntry {
 }
 
 # One comparison per top-level area path: @{ Path; Kind; Base; Target; Exclude }.
+# Strings and mirrored files are left out: the sync copies them from upstream, so they are not code to port.
 # Kind 'tree' (a folder): Base/Target are '<sha>:<path>' tree-ish specs, the empty tree when absent on that side.
 # Kind 'blob' (a single file): Base/Target are '<sha>:<path>' blob specs, $null when absent on that side.
 function Get-AreaTreeDiffs {
 	param([Parameter(Mandatory)]$Area, [Parameter(Mandatory)][string]$UpstreamRepo, [Parameter(Mandatory)][string]$TargetSha)
 	$emptyTree = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'
-	$all = @(@($Area.upstream.sources) + @($Area.upstream.tests) | Where-Object { $_ } | ForEach-Object { $_.Trim('/') } | Sort-Object -Unique)
+	$mirrored = @((Get-AreaMirror $Area) | ForEach-Object { $_.upstream.Trim('/') })
+	$all = @(@($Area.upstream.sources) + @($Area.upstream.tests) | Where-Object { $_ } | ForEach-Object { $_.Trim('/') } | Where-Object { $mirrored -notcontains $_ } | Sort-Object -Unique)
 	$resolved = @{}
 	foreach ($path in $all) {
 		$resolved[$path] = @{
@@ -400,9 +402,9 @@ function Get-AreaTreeDiffs {
 			throw "area '$($Area.id)': upstream path '$path' is a file at one commit and a folder at the other"
 		}
 		$absent = if ($kind -eq 'tree') { $emptyTree } else { $null }
-		$exclude = @()
 		$strings = if ($Area.upstream.strings) { $Area.upstream.strings.Trim('/') } else { $null }
-		if ($kind -eq 'tree' -and $strings -and $strings.StartsWith("$path/")) { $exclude = @(":(exclude)$($strings.Substring($path.Length + 1))") }
+		$nested = if ($kind -eq 'tree') { @(@($strings) + $mirrored | Where-Object { $_ -and $_.StartsWith("$path/") }) } else { @() }
+		$exclude = @($nested | ForEach-Object { ":(exclude)$($_.Substring($path.Length + 1))" })
 		[pscustomobject]@{
 			Path    = $path
 			Kind    = $kind
