@@ -125,6 +125,11 @@
 		                  SkipGetTargetFrameworkProperties="true"
 		                  UndefineProperties="TargetFramework"
 		                  Private="false" />
+		<ProjectReference Include="Fixtures\AddInWithHangingHostedService\AddInWithHangingHostedService.csproj"
+		                  ReferenceOutputAssembly="false"
+		                  SkipGetTargetFrameworkProperties="true"
+		                  UndefineProperties="TargetFramework"
+		                  Private="false" />
 		<ProjectReference Include="Fixtures\Uno.Licensing.TestContracts\Uno.Licensing.TestContracts.csproj"
 		                  ReferenceOutputAssembly="false"
 		                  SkipGetTargetFrameworkProperties="true"
@@ -205,6 +210,20 @@
 		</ItemGroup>
 		<Copy SourceFiles="@(_FailingHostedFixtureBinFiles)"
 		      DestinationFolder="$(OutDir)Fixtures\AddInWithFailingHostedService\%(RecursiveDir)"
+		      SkipUnchangedFiles="true" />
+
+		<!-- AddInWithHangingHostedService: net9.0 fixture whose hosted-service StopAsync never completes (forced-exit coverage) -->
+		<MSBuild Projects="Fixtures\AddInWithHangingHostedService\AddInWithHangingHostedService.csproj"
+		         Properties="Configuration=$(Configuration)"
+		         Targets="Build"
+		         RemoveProperties="TargetFramework">
+			<Output TaskParameter="TargetOutputs" ItemName="_HangingHostedFixtureOutput" />
+		</MSBuild>
+		<ItemGroup>
+			<_HangingHostedFixtureBinFiles Include="%(_HangingHostedFixtureOutput.RootDir)%(_HangingHostedFixtureOutput.Directory)**\*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_HangingHostedFixtureBinFiles)"
+		      DestinationFolder="$(OutDir)Fixtures\AddInWithHangingHostedService\%(RecursiveDir)"
 		      SkipUnchangedFiles="true" />
 
 		<!--
