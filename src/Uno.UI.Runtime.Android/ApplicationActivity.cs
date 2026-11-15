@@ -186,6 +186,7 @@ namespace Uno.UI.Runtime.Android
 
 
 		private readonly int[] _locationInWindow = new int[2];
+		private bool _isHoveringNativeLayer;
 
 		public override bool DispatchGenericMotionEvent(MotionEvent? ev)
 		{
@@ -203,15 +204,31 @@ namespace Uno.UI.Runtime.Android
 				return true;
 			}
 
+			// Joysticks, rotary encoders, etc. are not pointers.
+			if (!ev.IsFromSource(InputSourceType.ClassPointer))
+			{
+				return base.DispatchGenericMotionEvent(ev);
+			}
+
 			var nativelyHandled = false;
 			if (_nativeLayerHost?.Path?.FillContains(new global::System.Numerics.Vector2(ev.GetX(), ev.GetY())) ?? false)
 			{
-				// We don't call the base method if NativeLayerHost.Path doesn't contain (X, Y).
-				// This is due to the way Android handles hit-testing with Canvas.ClipPath, where even if the ClipPath
-				// doesn't contain the coordinates of a touch event, it will still hit-test positively as if its clip
-				// path contains the coordinates. So, we have to do our own hit-testing step where we prevent dispatching
-				// the event altogether if it's not within the clip path of the native layer.
-				nativelyHandled = base.DispatchTouchEvent(ev);
+				// Same custom hit-testing as in DispatchTouchEvent.
+				nativelyHandled = base.DispatchGenericMotionEvent(ev);
+				_isHoveringNativeLayer = ev.ActionMasked switch
+				{
+					MotionEventActions.HoverEnter or MotionEventActions.HoverMove => true,
+					MotionEventActions.HoverExit => false,
+					_ => _isHoveringNativeLayer,
+				};
+			}
+			else if (_isHoveringNativeLayer)
+			{
+				// The native views only get hover events within the clip path, so let them know the pointer left it.
+				_isHoveringNativeLayer = false;
+				using var exit = MotionEvent.Obtain(ev)!;
+				exit.Action = MotionEventActions.HoverExit;
+				base.DispatchGenericMotionEvent(exit);
 			}
 
 			_renderViewAsView?.GetLocationInWindow(_locationInWindow);
