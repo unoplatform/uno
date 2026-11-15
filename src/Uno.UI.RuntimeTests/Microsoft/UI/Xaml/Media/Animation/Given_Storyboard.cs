@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Private.Infrastructure;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
@@ -111,4 +112,66 @@ public class Given_Storyboard
 		Assert.AreEqual(ClockState.Active, storyboard.GetCurrentState());
 		await TestServices.WindowHelper.WaitFor(() => completed);
 	}
+
+#if HAS_UNO
+	[TestMethod]
+	public async Task When_Finite_Storyboard_Runs_It_Is_Counted_As_Active()
+	{
+		var target = new Border { Width = 10, Height = 10 };
+		await UITestHelper.Load(target);
+		var storyboard = CreateOpacityStoryboard(target, TimeSpan.FromMilliseconds(200));
+		var baseline = Storyboard.ActiveFiniteCount;
+		var completed = false;
+		storyboard.Completed += (_, _) => completed = true;
+
+		storyboard.Begin();
+		Assert.AreEqual(baseline + 1, Storyboard.ActiveFiniteCount);
+
+		await TestServices.WindowHelper.WaitFor(() => completed, timeoutMS: 2000);
+		Assert.AreEqual(baseline, Storyboard.ActiveFiniteCount);
+	}
+
+	[TestMethod]
+	public async Task When_Finite_Storyboard_Stopped_It_Is_No_Longer_Counted()
+	{
+		var target = new Border { Width = 10, Height = 10 };
+		await UITestHelper.Load(target);
+		var storyboard = CreateOpacityStoryboard(target, TimeSpan.FromSeconds(10));
+		var baseline = Storyboard.ActiveFiniteCount;
+
+		storyboard.Begin();
+		Assert.AreEqual(baseline + 1, Storyboard.ActiveFiniteCount);
+
+		storyboard.Stop();
+		Assert.AreEqual(baseline, Storyboard.ActiveFiniteCount);
+	}
+
+	[TestMethod]
+	public async Task When_Storyboard_Repeats_Forever_It_Is_Not_Counted()
+	{
+		var target = new Border { Width = 10, Height = 10 };
+		await UITestHelper.Load(target);
+		var storyboard = CreateOpacityStoryboard(target, TimeSpan.FromMilliseconds(200));
+		storyboard.RepeatBehavior = RepeatBehavior.Forever;
+		var baseline = Storyboard.ActiveFiniteCount;
+
+		try
+		{
+			storyboard.Begin();
+			Assert.AreEqual(baseline, Storyboard.ActiveFiniteCount);
+		}
+		finally
+		{
+			storyboard.Stop();
+		}
+	}
+
+	private static Storyboard CreateOpacityStoryboard(UIElement target, TimeSpan duration)
+	{
+		var animation = new DoubleAnimation { From = 0, To = 1, Duration = new Duration(duration) };
+		Storyboard.SetTarget(animation, target);
+		Storyboard.SetTargetProperty(animation, "Opacity");
+		return new Storyboard { Children = { animation } };
+	}
+#endif
 }
