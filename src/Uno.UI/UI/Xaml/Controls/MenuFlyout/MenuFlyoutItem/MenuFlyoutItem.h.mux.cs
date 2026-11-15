@@ -45,7 +45,7 @@ partial class MenuFlyoutItem
 	private bool m_shouldPerformActions;
 
 	// Event pointer for the ICommand.CanExecuteChanged event.
-	private readonly SerialDisposable m_epCanExecuteChangedHandler = new(); // TODO:MZ: Should be WeakReference
+	private readonly SerialDisposable m_epCanExecuteChangedHandler = new(); // Uno specific: holds a WeakCanExecuteChangedSubscription, like WinUI's WeakEventPtr
 
 	// Event pointer for the Loaded event.
 	private readonly SerialDisposable m_epLoadedHandler = new();

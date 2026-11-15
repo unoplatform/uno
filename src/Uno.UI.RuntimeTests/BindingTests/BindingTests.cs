@@ -37,6 +37,19 @@ public partial class BindingTests
 	}
 
 	[TestMethod]
+	public async Task When_Binding_Setter_Values_In_VisualState()
+	{
+		var SUT = new VisualStateSetterBindingsPage();
+		await UITestHelper.Load(SUT);
+
+		VisualStateManager.GoToState(SUT, "SideVisible", useTransitions: false);
+		await UITestHelper.WaitForIdle();
+
+		Assert.AreEqual(0.5, SUT.Side.Opacity, "First setter binding");
+		Assert.AreEqual(new GridLength(120), SUT.SideColumn.Width, "Second setter binding");
+	}
+
+	[TestMethod]
 	public async Task When_BindingShouldBeAppliedOnPropertyChangedEvent()
 	{
 		var SUT = new BindingShouldBeAppliedOnPropertyChangedEvent();

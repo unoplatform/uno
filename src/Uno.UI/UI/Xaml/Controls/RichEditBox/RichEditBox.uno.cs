@@ -466,6 +466,8 @@ namespace Microsoft.UI.Xaml.Controls
 		void ITextSelectionGripperHost.OnGripperPressed()
 			=> DismissSelectionFlyoutForPointerPress();
 
+		void ITextSelectionGripperHost.OnGripperPointerLost() { }
+
 		void ITextSelectionGripperHost.RequestGripperContextMenu(PointerRoutedEventArgs args)
 		{
 			var contextArgs = new ContextRequestedEventArgs();
@@ -476,8 +478,11 @@ namespace Microsoft.UI.Xaml.Controls
 		void ITextSelectionGripperHost.QueueGripperSelectionFlyout(PointerRoutedEventArgs args, bool allowEmptySelection)
 			=> QueueUpdateSelectionFlyoutVisibility(args.Pointer.PointerDeviceType, args.GetCurrentPoint(this).Position);
 
-		void ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, int anchorIndex)
-			=> TouchTapAtIndex(anchorIndex);
+		bool ITextSelectionGripperHost.OnGripperTapped(PointerPoint press, int anchorIndex)
+		{
+			TouchTapAtIndex(anchorIndex);
+			return true;
+		}
 
 		private int GetActiveSelectionIndex()
 			=> _selection.selectionEndsAtTheStart

@@ -46,7 +46,7 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Runtime.Android" PrivateAssets="all" IncludeAssets="build" ProjectSystem="true" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$(_IsExecutable) == 'true' AND $(UnoFeatures.Contains(';mauiembedding;'))">
+	<ItemGroup Condition="$(_IsExecutable) == 'true' AND $(UnoFeatures.Contains(';mauinativeembedding;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Maui.WinUI.Runtime.Skia" ProjectSystem="true" />
 	</ItemGroup>
 

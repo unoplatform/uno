@@ -37,6 +37,20 @@ public partial class Visual
 			_hasLastRenderBounds = false;
 		}
 
+		// A subtree replayed from its cached picture under a moved ancestor (a scrolled page) is not walked, so its
+		// descendants' last-rendered bounds are where they were before the move. These rects follow every replay.
+		if (_hasChildrenContentDamageRect)
+		{
+			target.AddDamage(_childrenContentDamageRect);
+			_hasChildrenContentDamageRect = false;
+		}
+
+		if (_hasShadowFallbackDamageRect)
+		{
+			target.AddDamage(_shadowFallbackDamageRect);
+			_hasShadowFallbackDamageRect = false;
+		}
+
 		foreach (var child in GetChildrenInRenderOrder())
 		{
 			child.ContributeRemovalDamage(target);

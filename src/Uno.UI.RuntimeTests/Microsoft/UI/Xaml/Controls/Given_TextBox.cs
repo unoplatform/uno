@@ -836,6 +836,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Focus_Moves_Away_Before_GotFocus_Then_Not_Brought_Into_View()
+		{
+			var tb = new TextBox();
+			var other = new Button { Content = "other" };
+			var SUT = new ScrollViewer
+			{
+				Width = 300,
+				Height = 150,
+				Content = new StackPanel { Children = { new Border { Height = 1000 }, tb } }
+			};
+
+			await UITestHelper.Load(new StackPanel { Children = { other, SUT } });
+			Assert.AreEqual(0, SUT.VerticalOffset);
+
+			tb.Focus(FocusState.Programmatic);
+			other.Focus(FocusState.Programmatic); // Same tick: the GotFocus of the TextBox, raised asynchronously, comes after this
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.VerticalOffset, "A TextBox that lost the focus before its GotFocus was raised must not be brought into view.");
+		}
+
+		[TestMethod]
 		public async Task When_VerticalContentAlignment_Is_Changed()
 		{
 			// This test ensures that setting VerticalContentAlignment on the TextBox doesn't flow to:
@@ -1266,6 +1288,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			return (lowestTextRow, highestSquiggleRow);
+		}
+
+		[TestMethod]
+		public async Task When_XBind_TwoWay_PropertyChanged_ViewModel_Nulled()
+		{
+			var page = new TextBox_XBind_TwoWay_Null_ViewModel();
+
+			WindowHelper.WindowContent = page;
+			await WindowHelper.WaitForLoaded(page);
+
+			var viewModel = page.ViewModel;
+			Assert.IsNotNull(viewModel);
+
+			page.TextBox.Text = "Something";
+			Assert.AreEqual("Something", viewModel.Text);
+
+			page.ViewModel = null;
+			page.UpdateBindings();
+
+			page.TextBox.Text = "Something else";
+
+			Assert.AreEqual("Something else", page.TextBox.Text);
+			Assert.AreEqual("Something", viewModel.Text, "The detached ViewModel must not receive updates.");
 		}
 	}
 }

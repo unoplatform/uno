@@ -821,6 +821,39 @@ public class Given_AlcContentHost
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_AlcWindow_ActivatedBeforeContent_Then_ActivatedEventRaised()
+	{
+		var (_, alcWindow) = await StartSecondaryAlcAppWithWindowAsync(new[] { "--defer-content" });
+
+		bool activatedFired = false;
+		alcWindow.Activated += (sender, args) => activatedFired = true;
+
+		alcWindow.Activate();
+
+		Assert.IsTrue(activatedFired, "Activate() before content is set should raise Activated, not fail on a missing native window");
+
+		ApplyDeferredContentFromSecondaryApp();
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
+	public async Task When_AlcWindow_TitleSet_Then_TitleReadBack()
+	{
+		var (_, alcWindow) = await StartSecondaryAlcAppWithWindowAsync(new[] { "--defer-content" });
+
+		alcWindow.Title = "Hosted title";
+
+		Assert.AreEqual("Hosted title", alcWindow.Title);
+
+		ApplyDeferredContentFromSecondaryApp();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual("Hosted title", alcWindow.Title);
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_AlcWindow_ActivatedRegisteredBeforeContent_WithFrameNavigation_Then_ActivatedEventRaised()
 	{

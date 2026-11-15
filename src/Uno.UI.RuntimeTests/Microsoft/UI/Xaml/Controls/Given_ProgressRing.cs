@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -169,6 +170,34 @@ public class Given_ProgressRing
 		{
 			SUT.IsActive = false;
 		}
+	}
+
+	[TestMethod]
+	public void When_ProgressRing_Collapsed()
+	{
+		var SUT = new ProgressRing
+		{
+			Visibility = Visibility.Collapsed
+		};
+
+		var spacerBorder = new Border
+		{
+			Width = 10,
+			Height = 10,
+			Margin = new Thickness(5)
+		};
+
+		var root = new Grid
+		{
+			Children =
+			{
+				spacerBorder,
+				SUT
+			}
+		};
+
+		root.Measure(new Size(1000, 1000));
+		Assert.AreEqual(10d + 5d + 5d, root.DesiredSize.Height);
 	}
 
 	private static ProgressRing CreateDeterminateRing(Brush foreground, Brush background) => new ProgressRing

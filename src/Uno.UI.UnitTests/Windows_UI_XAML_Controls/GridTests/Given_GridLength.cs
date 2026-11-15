@@ -50,5 +50,31 @@ namespace Uno.UI.Tests.GridTests
 			}
 
 		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25242")]
+		public void When_FromPixels_Then_DoublePrecisionIsKept()
+		{
+			const double pixels = 0.1234567891234;
+
+			var gridLength = GridLengthHelper.FromPixels(pixels);
+
+			Assert.IsTrue(gridLength.IsAbsolute);
+			Assert.AreEqual(pixels, gridLength.Value);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25242")]
+		[DataRow(GridUnitType.Pixel)]
+		[DataRow(GridUnitType.Star)]
+		public void When_FromValueAndType_Then_DoublePrecisionIsKept(GridUnitType type)
+		{
+			const double value = 0.1234567891234;
+
+			var gridLength = GridLengthHelper.FromValueAndType(value, type);
+
+			Assert.AreEqual(type, gridLength.GridUnitType);
+			Assert.AreEqual(value, gridLength.Value);
+		}
 	}
 }
