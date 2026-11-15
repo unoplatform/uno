@@ -12,6 +12,7 @@ using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Helpers.Boxes;
 using _DragEventArgs = global::Microsoft.UI.Xaml.DragEventArgs;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -30,16 +31,14 @@ namespace Microsoft.UI.Xaml.Controls
 		public event DragItemsStartingEventHandler DragItemsStarting;
 		public event TypedEventHandler<ListViewBase, DragItemsCompletedEventArgs> DragItemsCompleted;
 
-#pragma warning disable CS0414 // Field currently used only on Android.
 		private bool _isProcessingReorder;
-#pragma warning restore CS0414
 
 		#region CanReorderItems (DP)
 		public static DependencyProperty CanReorderItemsProperty { get; } = DependencyProperty.Register(
 			nameof(CanReorderItems),
 			typeof(bool),
 			typeof(ListViewBase),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		public bool CanReorderItems
 		{
@@ -53,7 +52,7 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(CanDragItems),
 			typeof(bool),
 			typeof(ListViewBase),
-			new FrameworkPropertyMetadata(default(bool), OnCanDragItemsChanged));
+			new FrameworkPropertyMetadata(BoolBoxes.False, OnCanDragItemsChanged));
 
 		public bool CanDragItems
 		{

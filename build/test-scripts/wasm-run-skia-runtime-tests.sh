@@ -28,10 +28,12 @@ python -m http.server 8000 -d "$SAMPLESAPPARTIFACTPATH" &
 python $BUILD_SOURCESDIRECTORY/build/test-scripts/skia-browserwasm-file-creation-server.py 8001 &
 sleep 10
 
-export RESULTS_FILE="$BUILD_SOURCESDIRECTORY/build/skia-browserwasm-runtime-tests-results.xml"
+# A label (e.g. -webgpu) keeps a variant lane's results and retry list apart from the default lane's.
+export UNO_TEST_RESULT_LABEL=${UNO_TEST_RESULT_LABEL:-}
+export RESULTS_FILE="$BUILD_SOURCESDIRECTORY/build/skia-browserwasm${UNO_TEST_RESULT_LABEL}-runtime-tests-results.xml"
 export RESULTS_CANARY_FILE="$RESULTS_FILE.canary"
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}
-export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-wasm-runtimetests-$UITEST_RUNTIME_TEST_GROUP-chromium.txt
+export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-wasm${UNO_TEST_RESULT_LABEL}-runtimetests-$UITEST_RUNTIME_TEST_GROUP-chromium.txt
 
 ## The pipeline arms this as "false" before the dependency install; flipping it here tells the
 ## publish tasks the test step actually started, so they only report a missing results file
@@ -65,6 +67,18 @@ UITEST_RUNTIME_TESTS_FILTER_ENCODED=$ENCODED_RESULT
 
 RUNTIME_TESTS_URL="http://localhost:8000/?--runtime-tests=${RESULTS_FILE_ENCODED}&--runtime-tests-group=${UITEST_RUNTIME_TEST_GROUP}&--runtime-tests-group-count=${UITEST_RUNTIME_TEST_GROUP_COUNT}&--runtime-test-filter=${UITEST_RUNTIME_TESTS_FILTER_ENCODED}"
 
+# UNO_* variables for the app (e.g. UNO_WEBGPU=1 selects the WebGPU backend), read from the URL at startup.
+export UNO_TEST_APP_ENVIRONMENT=${UNO_TEST_APP_ENVIRONMENT:-}
+if [ -n "$UNO_TEST_APP_ENVIRONMENT" ]; then
+    RUNTIME_TESTS_URL="${RUNTIME_TESTS_URL}&env=${UNO_TEST_APP_ENVIRONMENT}"
+fi
+export UNO_TEST_CHROME_FLAGS=${UNO_TEST_CHROME_FLAGS:-}
+# Browser window and virtual screen size, WIDTHxHEIGHT.
+export UNO_TEST_BROWSER_SIZE=${UNO_TEST_BROWSER_SIZE:-1920x1080}
+
+# The software-rendered lanes scale with cores, and Chrome needs a writable profile; record both.
+echo "Agent: $(nproc) cores, user=$(id -un), HOME=${HOME:-unset}, shm: $(df -h /dev/shm 2>/dev/null | tail -1)"
+
 TRY_COUNT=0
 
 while [ $TRY_COUNT -lt 5 ]; do
@@ -91,7 +105,7 @@ while [ $TRY_COUNT -lt 5 ]; do
     # --no-first-run/--no-default-browser-check/--disable-search-engine-choice-screen stop the first-run
     # experience from swallowing the command-line URL on the agent's brand-new profile: without them
     # chrome starts but never navigates, so the canary never appears.
-    xvfb-run --auto-servernum --server-args='-screen 0 1920x1080x24' sh -c '{ fluxbox >/dev/null 2>&1 & } ; google-chrome --enable-logging=stderr --no-sandbox --no-first-run --no-default-browser-check --disable-search-engine-choice-screen --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required --window-size=1920,1080 "$1"' _ "${RUNTIME_TESTS_URL}" &
+    xvfb-run --auto-servernum --server-args="-screen 0 ${UNO_TEST_BROWSER_SIZE}x24" sh -c '{ fluxbox >/dev/null 2>&1 & } ; google-chrome --enable-logging=stderr --no-sandbox --no-first-run --no-default-browser-check --disable-search-engine-choice-screen --disable-background-timer-throttling --disable-renderer-backgrounding --disable-backgrounding-occluded-windows --autoplay-policy=no-user-gesture-required --window-size=$3 $2 "$1"' _ "${RUNTIME_TESTS_URL}" "${UNO_TEST_CHROME_FLAGS}" "${UNO_TEST_BROWSER_SIZE/x/,}" &
 
     # wait one minute for the canary file to be created, otherwise fail the script.
     # This may happen if xvfb-run of chrome fails to start
@@ -118,9 +132,9 @@ if ! test -f "$RESULTS_CANARY_FILE"; then
 fi
 
 # Bound the wait: if the browser started (the canary exists) but the run never produces a
-# results file, this loop otherwise spins until the 60-minute job timeout kills the job, which
+# results file, this loop otherwise spins until the job timeout kills the job, which
 # reports as an opaque agent timeout rather than as a stalled test run.
-RESULTS_WAIT_SECONDS=2100
+RESULTS_WAIT_SECONDS=$(( ${UNO_TEST_RESULTS_TIMEOUT_MINUTES:-35} * 60 ))
 WAITED=0
 while ! test -f "$RESULTS_FILE"; do
     if [ $WAITED -ge $RESULTS_WAIT_SECONDS ]; then

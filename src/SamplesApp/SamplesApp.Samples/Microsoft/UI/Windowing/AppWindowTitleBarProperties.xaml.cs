@@ -3,6 +3,7 @@ using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
+using Microsoft.UI;
 using Windows.UI;
 
 namespace UITests.Microsoft_UI_Windowing;

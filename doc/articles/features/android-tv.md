@@ -37,7 +37,7 @@ First, open the `MainActivity` class in the `YourApp` project (or the `YourApp.D
     Android.Content.Intent.CategoryLauncher,
     Android.Content.Intent.CategoryLeanbackLauncher 
   })]
-public class MainActivity : Windows.UI.Xaml.ApplicationActivity
+public class MainActivity : Uno.UI.Runtime.Android.ApplicationActivity
 {
   ...
 }
@@ -87,6 +87,8 @@ To disable the native Android highlighting of focused elements, the `styles.xml`
 ```
 
 Please note, that this will disable all the highlights, even in embedded native controls you may host within the Uno Platform app.
+
+The same XAML also drives the Siri Remote on Apple TV, see [Support for Apple TV](xref:Uno.Features.AppleTv).
 
 ## Shipping a TV-only app alongside a phone app
 

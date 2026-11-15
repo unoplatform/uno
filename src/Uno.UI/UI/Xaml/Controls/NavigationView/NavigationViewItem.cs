@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -265,7 +266,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 		var splitView = GetSplitView();
 		if (splitView != null)
 		{
-			SetValue(CompactPaneLengthProperty, splitView.CompactPaneLength); //PropertyValue.CreateDouble(splitView.CompactPaneLength));
+			SetValue(CompactPaneLengthProperty, Boxer.Box(splitView.CompactPaneLength)); //PropertyValue.CreateDouble(splitView.CompactPaneLength));
 
 			// Only update when on left
 			var presenter = GetPresenter();
@@ -1420,18 +1421,13 @@ public partial class NavigationViewItem : NavigationViewItemBase
 
 	private void PrepNavigationViewItem(SplitView splitView)
 	{
-		var splitViewIsPaneOpenChangedSubscription = splitView.RegisterPropertyChangedCallback(
-				SplitView.IsPaneOpenProperty, OnSplitViewPropertyChanged);
-		m_splitViewIsPaneOpenChangedRevoker.Disposable = Disposable.Create(
-			() => splitView.UnregisterPropertyChangedCallback(SplitView.IsPaneOpenProperty, splitViewIsPaneOpenChangedSubscription));
-		var splitViewDisplayModeChangedSubscription = splitView.RegisterPropertyChangedCallback(
-			SplitView.DisplayModeProperty, OnSplitViewPropertyChanged);
-		m_splitViewDisplayModeChangedRevoker.Disposable = Disposable.Create(
-			() => splitView.UnregisterPropertyChangedCallback(SplitView.DisplayModeProperty, splitViewDisplayModeChangedSubscription));
-		var splitViewCompactPaneLengthSubsctiption = splitView.RegisterPropertyChangedCallback(
-			SplitView.CompactPaneLengthProperty, OnSplitViewPropertyChanged);
-		m_splitViewCompactPaneLengthChangedRevoker.Disposable = Disposable.Create(
-			() => splitView.UnregisterPropertyChangedCallback(SplitView.CompactPaneLengthProperty, splitViewCompactPaneLengthSubsctiption));
+		// Uno specific: registered weakly, as WinUI's handler doesn't own the item, so the SplitView doesn't root it once removed.
+		m_splitViewIsPaneOpenChangedRevoker.Disposable = splitView.RegisterDisposablePropertyChangedCallback(
+			SplitView.IsPaneOpenProperty, (s, e) => OnSplitViewPropertyChanged(s, e.Property));
+		m_splitViewDisplayModeChangedRevoker.Disposable = splitView.RegisterDisposablePropertyChangedCallback(
+			SplitView.DisplayModeProperty, (s, e) => OnSplitViewPropertyChanged(s, e.Property));
+		m_splitViewCompactPaneLengthChangedRevoker.Disposable = splitView.RegisterDisposablePropertyChangedCallback(
+			SplitView.CompactPaneLengthProperty, (s, e) => OnSplitViewPropertyChanged(s, e.Property));
 
 		UpdateCompactPaneLength();
 		UpdateIsClosedCompact();

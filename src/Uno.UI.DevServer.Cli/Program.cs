@@ -16,6 +16,12 @@ internal class Program
 	{
 		if (args.Length == 0 || args.Contains("--help") || args.Contains("-h"))
 		{
+			if (IsAppCommand(args))
+			{
+				Console.WriteLine(AppCommandHandler.HelpText);
+				return 0;
+			}
+
 			Console.WriteLine("Usage: dnx -y uno.devserver [options] [command]");
 			Console.WriteLine();
 			Console.WriteLine("Global options:");
@@ -30,6 +36,7 @@ internal class Program
 			Console.WriteLine();
 			Console.WriteLine("MCP options:");
 			WriteOption("--mcp-app", "Start in App MCP STDIO mode");
+			WriteOption("--solution <path>", "Serve this .sln/.slnx, wherever it is (MCP mode only; uno_app_select_solution can change it)");
 			WriteOption("--mcp-wait-tools-list", "Wait for upstream server tools before responding to list_tools (MCP mode only)");
 			WriteOption("--force-roots-fallback", "This mode can be used when the MCP client does not support the roots feature");
 			WriteOption("--force-generate-tool-cache", "Deprecated (no-op). Kept for backward compatibility.");
@@ -40,6 +47,11 @@ internal class Program
 			WriteCommand("list", "List active DevServer instances");
 			WriteCommand("disco", "Discover environment and SDK details");
 			WriteCommand("health", "Report Uno DevServer health for the current workspace");
+			Console.WriteLine();
+			Console.WriteLine("App commands (call one App MCP tool from a shell, with an exit code; starts the DevServer when needed):");
+			WriteCommand("app --help", "Full reference: verbs, parameters, exit codes, examples");
+			WriteCommand("app tools", "List the tools the DevServer offers and their verbs (--json for the parameter schemas)");
+			WriteCommand("app <verb|tool> [--param value]... [--json] [--out <file>] [--no-start]", "Verbs: start, close, restart, info, wait, hot-reload-status, screenshot, tree, find, assert, invoke, action, click, key, type, datacontext, memory, diag");
 			Console.WriteLine();
 			Console.WriteLine("MCP setup commands:");
 			WriteCommand("mcp serve", "Start the MCP STDIO proxy (alias: --mcp-app)");
@@ -81,7 +93,8 @@ internal class Program
 		// structured output (e.g. `disco --json`, `health --json`). The default
 		// LogToStandardErrorThreshold is LogLevel.None, which would send everything
 		// (including errors) to stdout and corrupt JSON output.
-		var isMcpMode = IsMcpMode(args);
+		// `app` prints the tool result on stdout, so its logs go to stderr too.
+		var isMcpMode = IsMcpMode(args) || IsAppCommand(args);
 
 		var services = new ServiceCollection();
 		services.AddLogging(builder =>
@@ -176,6 +189,9 @@ internal class Program
 		}
 		return null;
 	}
+
+	internal static bool IsAppCommand(string[] args)
+		=> AppCommandHandler.AppVerbIndex(args) >= 0;
 
 	internal static bool IsMcpMode(string[] args)
 	{

@@ -7,12 +7,8 @@ public enum RuntimeTestPlatforms
 {
 	None = 0,
 
-	// Native platforms
+	// Native WinUI (WinAppSDK), i.e. rendered by WinUI rather than by Uno
 	NativeWinUI = 1 << 0,
-	NativeWasm = 1 << 1,
-	NativeAndroid = 1 << 2,
-	NativeIOS = 1 << 3,
-	NativeTvOS = 1 << 5,
 
 	// Skia platforms
 	SkiaWin32 = 1 << 7,
@@ -26,15 +22,8 @@ public enum RuntimeTestPlatforms
 	SkiaFrameBuffer = 1 << 16,
 
 	// Combined platforms
-	NativeUIKit = NativeIOS | NativeTvOS,
 	SkiaUIKit = SkiaIOS | SkiaTvOS,
-	NativeMobile = NativeAndroid | NativeUIKit,
 	SkiaMobile = SkiaAndroid | SkiaUIKit,
 	SkiaDesktop = SkiaWin32 | SkiaX11 | SkiaMacOS | SkiaIslands | SkiaFrameBuffer,
 	Skia = SkiaDesktop | SkiaWasm | SkiaMobile,
-	Native = NativeWasm | NativeAndroid | NativeIOS | NativeTvOS | NativeWinUI,
-
-	Wasm = NativeWasm | SkiaWasm,
-	Android = NativeAndroid | SkiaAndroid,
-	IOS = NativeIOS | SkiaIOS,
 }

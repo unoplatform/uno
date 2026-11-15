@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference ItemsViewTestHooks.cpp, tag winui3/release/1.5.0
+// MUX Reference ItemsViewTestHooks.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
 
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
@@ -38,10 +38,24 @@ partial class ItemsViewTestHooks
 	internal static void NotifyKeyboardNavigationReferenceOffsetChanged(ItemsView itemsView)
 	{
 		var hooks = EnsureGlobalTestHooks();
-		KeyboardNavigationReferenceOffsetChanged?.Invoke(itemsView, null);
+		hooks.m_keyboardNavigationReferenceOffsetChangedEventSource?.Invoke(itemsView, null);
 	}
 
-	internal static event TypedEventHandler<ItemsView, object> KeyboardNavigationReferenceOffsetChanged;
+	private TypedEventHandler<ItemsView, object> m_keyboardNavigationReferenceOffsetChangedEventSource;
+
+	internal static event TypedEventHandler<ItemsView, object> KeyboardNavigationReferenceOffsetChanged
+	{
+		add
+		{
+			var hooks = EnsureGlobalTestHooks();
+			hooks.m_keyboardNavigationReferenceOffsetChangedEventSource += value;
+		}
+		remove
+		{
+			var hooks = EnsureGlobalTestHooks();
+			hooks.m_keyboardNavigationReferenceOffsetChangedEventSource -= value;
+		}
+	}
 
 	internal static ScrollView GetScrollViewPart(ItemsView itemsView)
 	{

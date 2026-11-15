@@ -66,21 +66,11 @@ dotnet new unoapp -wasm-multi-threading
 
 #### Renderer
 
-##### Skia
-
-Skia is the [default rendering engine](xref:uno.features.renderer.skia) for Uno Platform as of `Uno.Sdk` 6.0 or later, across all targets except **WinAppSDK**, including **Desktop (Windows, macOS, Linux)**, **WebAssembly (WASM)**, **Android**, and **iOS**.
-It provides a **consistent, pixel-perfect rendering pipeline** by drawing the entire UI using the Skia graphics library (via SkiaSharp). This is the default renderer in the **Blank** and **Recommended** presets.
+Skia is the [rendering engine](xref:uno.features.renderer.skia) for Uno Platform across all targets except **WinAppSDK**, including **Desktop (Windows, macOS, Linux)**, **WebAssembly (WASM)**, **Android**, and **iOS**.
+It provides a **consistent, pixel-perfect rendering pipeline** by drawing the entire UI using the Skia graphics library (via SkiaSharp). Starting with Uno Platform 7.0, it is the only renderer: the native renderer has been removed.
 
 Learn more about [Uno's Skia rendering](xref:uno.features.renderer.skia).
 
 ```dotnetcli
 dotnet new unoapp -renderer skia
-```
-
-##### Native
-
-The Native renderer uses the **platform's native UI components** and rendering systems (e.g., **WinUI** for Windows App SDK, **UIKit** on iOS, **Android Views** on Android). This approach offers better integration with platform-specific behaviors, accessibility tools, and a more native look and feel.
-
-```dotnetcli
-dotnet new unoapp -renderer native
 ```

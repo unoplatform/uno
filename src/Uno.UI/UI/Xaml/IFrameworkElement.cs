@@ -314,44 +314,6 @@ namespace Microsoft.UI.Xaml
 				nullAction.Invoke();
 			}
 		}
-
-		/// <summary>
-		/// Base constraint reasoning for simple containers that always respect the stretch of their children.
-		/// </summary>
-		public static bool? IsWidthConstrainedSimple(this IFrameworkElement element)
-		{
-			if (!double.IsNaN(element.Width) && !double.IsPositiveInfinity(element.Width))
-			{
-				//Yes, fixed width
-				return true;
-			}
-			if (element.HorizontalAlignment != HorizontalAlignment.Stretch)
-			{
-				//No, not taking all available space
-				return false;
-			}
-			//Don't know, ask parent
-			return null;
-		}
-
-		/// <summary>
-		/// Base constraint reasoning for simple containers that always respect the stretch of their children.
-		/// </summary>
-		public static bool? IsHeightConstrainedSimple(this IFrameworkElement element)
-		{
-			if (!double.IsNaN(element.Height) && !double.IsPositiveInfinity(element.Height))
-			{
-				//Yes, fixed Height
-				return true;
-			}
-			if (element.VerticalAlignment != VerticalAlignment.Stretch)
-			{
-				//No, not taking all available space
-				return false;
-			}
-			//Don't know, ask parent
-			return null;
-		}
 	}
 }
 

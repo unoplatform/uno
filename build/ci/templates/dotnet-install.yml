@@ -20,12 +20,15 @@ steps:
       Write-Host "Pinned .NET SDK version: $sdkVersion"
     displayName: "Using .NET global.json from build/ci/${{ parameters.globalJsonSubdir }}"
     condition: ${{ eq(parameters.haveCheckout, true) }}
+    # pwsh on macOS can die at startup before running anything ("Call to 'procargs' failed")
+    retryCountOnTaskFailure: 2
 
   - pwsh: |
       echo "##vso[task.setvariable variable=DOTNET_INSTALL_DIR;]$(Build.SourcesDirectory)/.dotnet"
       echo "##vso[task.setvariable variable=DOTNET_ROOT;]$(Build.SourcesDirectory)/.dotnet"
     displayName: "Set DOTNET_INSTALL_DIR for macOS/Linux"
     condition: or(eq(variables['Agent.OS'], 'Linux'), eq(variables['Agent.OS'], 'Darwin'))
+    retryCountOnTaskFailure: 2
 
   - pwsh: |
       echo "##vso[task.setvariable variable=DOTNET_INSTALL_DIR;]$(Build.SourcesDirectory)\.dotnet"

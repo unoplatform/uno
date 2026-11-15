@@ -1,7 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference: TabViewItem.Properties.cpp, commit 65718e2813
+// MUX Reference: TabViewItem.Properties.cpp
 
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 
@@ -67,7 +68,7 @@ public partial class TabViewItem
 	/// Identifies the IsClosable dependency property.
 	/// </summary>
 	public static DependencyProperty IsClosableProperty { get; } =
-		DependencyProperty.Register(nameof(IsClosable), typeof(bool), typeof(TabViewItem), new FrameworkPropertyMetadata(true, OnIsClosablePropertyChanged));
+		DependencyProperty.Register(nameof(IsClosable), typeof(bool), typeof(TabViewItem), new FrameworkPropertyMetadata(BoolBoxes.True, OnIsClosablePropertyChanged));
 
 	/// <summary>
 	/// Gets an object that provides calculated values that can be referenced as {TemplateBinding} markup extension

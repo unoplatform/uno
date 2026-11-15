@@ -1,4 +1,6 @@
-﻿using System;
+// [UITest -> runtime-test migration] NOT migrated to a runtime test:
+// Tests the legacy NUnit AutoRetryAttribute (IRepeatTest) itself — the Selenium UITest runner's retry-on-timeout/exception/SetUp/TearDown wrapping — not any control or sample; MSTest-based Uno.UI.RuntimeTests has no equivalent retry-attribute concept to validate.
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

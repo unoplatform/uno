@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -37,6 +36,18 @@ namespace Microsoft.UI.Xaml
 
 		public void SetValue(DependencyProperty dp, object value) => SetValueInternal(dp, value);
 
+		/// <summary>
+		/// Avoids a boxing allocation on every set of a <see cref="bool"/> property by reusing the two cached boxes.
+		/// </summary>
+		/// <remarks>
+		/// Only <see cref="bool"/> gets an overload: C# defines no implicit conversion *to* bool, so nothing can
+		/// silently bind here. An <c>int</c> or <c>double</c> overload would capture <c>byte</c>/<c>short</c>/<c>char</c>
+		/// and <c>float</c>/<c>long</c> arguments through implicit numeric conversion and store the wrong boxed type,
+		/// which only surfaces as an <see cref="InvalidCastException"/> in the unbox on the way out. Those types use
+		/// <c>Boxer.Box(...)</c> at the call site instead. UnoInternal0003 guards this overload.
+		/// </remarks>
+		internal void SetValue(DependencyProperty dp, bool value) => SetValueInternal(dp, Uno.UI.Helpers.Boxes.Boxer.Box(value));
+
 		public void ClearValue(DependencyProperty dp) => ClearValueInternal(dp);
 
 		public object ReadLocalValue(DependencyProperty dp) => ReadLocalValueInternal(dp);
@@ -46,20 +57,6 @@ namespace Microsoft.UI.Xaml
 		public long RegisterPropertyChangedCallback(DependencyProperty dp, DependencyPropertyChangedCallback callback) => RegisterPropertyChangedCallbackInternal(dp, callback);
 
 		public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) => UnregisterPropertyChangedCallbackInternal(dp, token);
-
-		// Uno-only, but public because the XAML source generator emits calls to these into the
-		// consuming assembly (XamlFileGenerator emits the DependencyProperty overload for DPs and
-		// the string overload for the x:Bind/POCO path).
-		/// <summary>
-		/// Set a binding using a regular or attached DependencyProperty
-		/// </summary>
-		/// <param name="dependencyProperty">The dependency property to bind</param>
-		/// <param name="binding">The binding expression</param>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public void SetBinding(DependencyProperty dependencyProperty, BindingBase binding) => SetBindingInternal(dependencyProperty, binding);
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public void SetBinding(string dependencyProperty, BindingBase binding) => SetBindingInternal(dependencyProperty, binding);
 
 		internal ManagedWeakReference SelfWeakReference
 		{

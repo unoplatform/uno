@@ -20,6 +20,13 @@ public partial class App : Application
     protected override void OnLaunched(LaunchActivatedEventArgs args)
     {
         MainWindow = new Window();
+
+        var platformAssetResult = $"PLATFORM-ASSET-E2E: {PlatformAssetValidation.Run()}";
+        Console.WriteLine(platformAssetResult);
+        if (Environment.GetEnvironmentVariable("PLATFORM_ASSET_E2E_OUTPUT") is { Length: > 0 } outputPath)
+        {
+            File.WriteAllText(outputPath, platformAssetResult);
+        }
 #if DEBUG
         MainWindow.UseStudio();
 #endif

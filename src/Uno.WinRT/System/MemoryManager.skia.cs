@@ -8,7 +8,7 @@ using Uno.Foundation.Logging;
 
 namespace Windows.System
 {
-	public partial class MemoryManager
+	public static partial class MemoryManager
 	{
 		public static ulong AppMemoryUsage
 		{

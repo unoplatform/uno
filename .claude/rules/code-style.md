@@ -17,6 +17,7 @@ Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_o
   // MUX Reference AnimatedIcon.properties.cpp, tag winui3/release/1.7.1, commit f4d781d
   ```
   Keep the `// MUX Reference <file>, tag <tag>, commit <hash>` line accurate — it pins the upstream source. **Uno-native** code omits both the MS copyright and the MUX line.
+  **Exception:** in an area tracked by the WinUI port sync (`build/winui-sync/areas.json`), the header names only the upstream file (`// MUX Reference AnimatedIcon.properties.cpp`), with no tag or commit: the area's `baseline` records the version.
 - Don't add a `_Mux` suffix to ported members — use the natural WinUI name. (See the `/winui-port` skill for the full porting rules.)
 
 ## Idioms
@@ -36,7 +37,7 @@ Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_o
 - A `// MUX Reference …` attribution line (above) is not a history comment — keep it.
 
 ## Conditional symbols
-`#if IS_UNIT_TESTS` is defined by three projects only — `Uno.UI.UnitTests`, `Uno.UI.Tests.ViewLibrary` and `Uno.UI.Tests.ViewLibraryProps` — and is **absent from `Uno.UI`'s define set**: those projects consume `Uno.UI` through a `ProjectReference`, so the symbol only reaches files they *Compile-link* (chiefly from `Uno.UI.RuntimeTests`). Never use it in `Uno.UI` source. Platform symbols are covered in `platform-targeting.md`. Global usings (`GlobalUsings.cs`) only define **Android** aliases (e.g. `AView`) and only under `__ANDROID__` — don't assume other platforms have global aliases. `UNO_REFERENCE_API` is a legacy synonym of **`HAS_UNO`** ("drawn by Uno, not WinUI") — prefer `HAS_UNO` in new code.
+`#if IS_UNIT_TESTS` is defined by three projects only — `Uno.UI.UnitTests`, `Uno.UI.Tests.ViewLibrary` and `Uno.UI.Tests.ViewLibraryProps` — and is **absent from `Uno.UI`'s define set**: those projects consume `Uno.UI` through a `ProjectReference`, so the symbol only reaches files they *Compile-link* (chiefly from `Uno.UI.RuntimeTests`). Never use it in `Uno.UI` source. Platform symbols are covered in `platform-targeting.md`. Global usings (`GlobalUsings.cs`) only define **Android** aliases (e.g. `AView`) and only under `__ANDROID__` — don't assume other platforms have global aliases. In the repository `UNO_REFERENCE_API` equals `__CROSSRUNTIME__` (Skia, WebAssembly and Reference flavors); only consumers get it as a legacy synonym of **`__UNO__`**. Outside the WinRT layer, prefer `__UNO__` in new code (`HAS_UNO` is identical) — see `doc/articles/uno-development/preprocessor-symbols.md`.
 
 **A symbol being undefined does not make it deletable.** Before removing any `#if`, place it in one of these categories — the first four are deliberate and must be left alone:
 

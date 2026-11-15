@@ -203,7 +203,7 @@ namespace Microsoft.UI.Composition
 		public ContainerVisual? Parent
 		{
 			get => _parent;
-			set
+			internal set
 			{
 				if (!ReferenceEquals(_parent, value))
 				{
@@ -233,7 +233,7 @@ namespace Microsoft.UI.Composition
 
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
-			Compositor.InvalidateRender(this);
+			Compositor.InvalidateRender(this, translationOnly: propertyName is nameof(Offset) or nameof(ArrangeOffset) or nameof(AnchorPoint));
 #if __SKIA__
 			if (propertyName == nameof(Opacity))
 			{
@@ -243,7 +243,7 @@ namespace Microsoft.UI.Composition
 				// region. Mirror OnIsVisibleChanged and damage the last-rendered region (recursively).
 				if (Opacity == 0 && CompositionTarget is { } target)
 				{
-					DamageLastRenderedRegion(target);
+					ContributeRemovalDamage(target);
 				}
 			}
 			else if (propertyName is nameof(Clip) or LayoutClipPropertyName)
@@ -373,7 +373,7 @@ namespace Microsoft.UI.Composition
 			{
 				_ = Properties.TryGetVector3("Translation", out var translation);
 				Properties.InsertVector3("Translation", UpdateVector3(subPropertyName, translation, propertyValue));
-				Compositor.InvalidateRender(this);
+				Compositor.InvalidateRender(this, translationOnly: true);
 			}
 			else
 			{

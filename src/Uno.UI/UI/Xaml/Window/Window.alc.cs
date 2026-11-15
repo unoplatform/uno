@@ -356,6 +356,7 @@ partial class Window
 		DestroyForWindowIdSafe(nameof(global::Windows.UI.ViewManagement.ApplicationView), () => global::Windows.UI.ViewManagement.ApplicationView.DestroyForWindowId(closedWindowId));
 		DestroyForWindowIdSafe(nameof(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager), () => global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.DestroyForWindowId(closedWindowId));
 		DestroyForWindowIdSafe(nameof(global::Microsoft.UI.Windowing.AppWindow), () => global::Microsoft.UI.Windowing.AppWindow.DestroyForWindowId(closedWindowId));
+		DestroyForWindowIdSafe(nameof(global::Microsoft.UI.Input.InputActivationListener), () => global::Microsoft.UI.Input.InputActivationListener.DestroyForWindowId(closedWindowId));
 
 		// Remove this window's ContentRoot from the process-wide ContentRootCoordinator.
 		// This is the only path that removes a window-owned content root — the teardown sweep
@@ -495,14 +496,19 @@ partial class Window
 	internal bool IsAlcWindow => _isWindowFromSecondaryAlc || _alcState is not null;
 
 	/// <summary>
-	/// True for a hosted secondary-ALC window on macOS. <see cref="Uno.UI.Xaml.Controls.DesktopWindow.Initialize"/>
-	/// skips native window creation in this case (it would collide with MacOSWindowHost's native-window
-	/// registration), so the window has no native backing — callers that depend on one must skip their work
-	/// too (the native window itself, and the DisplayInformation registration whose macOS extension subscribes
-	/// to <c>MacOSWindowNative.NativeWindowReady</c> and would never unsubscribe).
+	/// True for a hosted secondary-ALC window on a platform where it must not get a native window of its own.
+	/// <see cref="Uno.UI.Xaml.Controls.DesktopWindow.Initialize"/> skips native window creation in this case, so the
+	/// window has no native backing — callers that depend on one must skip their work too (the native window itself,
+	/// and the DisplayInformation registration).
+	/// <list type="bullet">
+	/// <item>macOS: a native window would collide with MacOSWindowHost's native-window registration, and the macOS
+	/// DisplayInformation extension subscribes to <c>MacOSWindowNative.NativeWindowReady</c> and would never unsubscribe.</item>
+	/// <item>Android: the activity has a single native window, and binding it to the hosted window detaches the host
+	/// application's window from the screen.</item>
+	/// </list>
 	/// </summary>
-	internal bool IsMacOSHostedAlcWindow
-		=> OperatingSystem.IsMacOS() && ContentHostOverride is not null && IsAlcWindow;
+	internal bool IsHostedAlcWindow
+		=> (OperatingSystem.IsMacOS() || OperatingSystem.IsAndroid()) && ContentHostOverride is not null && IsAlcWindow;
 
 	/// <summary>
 	/// Checks if the given content element is from a secondary AssemblyLoadContext.

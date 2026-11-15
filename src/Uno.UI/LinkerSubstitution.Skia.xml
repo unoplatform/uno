@@ -3,7 +3,15 @@
 	<assembly fullname="Uno.UI">
 		<type fullname="Microsoft.UI.Xaml.Application">
 			<method signature="System.Boolean get_HasSecondaryApps()"
-					feature="UnoEnableAlcAppSupport"
+					feature="Uno.UI.EnableAlcAppSupport"
+					body="stub"
+					value="false"
+					featurevalue="false" />
+		</type>
+
+		<type fullname="Uno.UI.TemplateManager">
+			<method signature="System.Boolean get_IsDataTemplateDynamicUpdateEnabled()"
+					feature="Uno.UI.EnableDynamicDataTemplateUpdate"
 					body="stub"
 					value="false"
 					featurevalue="false" />

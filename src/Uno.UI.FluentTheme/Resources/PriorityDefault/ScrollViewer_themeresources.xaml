@@ -1,0 +1,223 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+  <ResourceDictionary.ThemeDictionaries>
+    <ResourceDictionary x:Key="Default">
+      <StaticResource x:Key="ScrollViewerScrollBarSeparatorBackground" ResourceKey="ControlFillColorTransparentBrush" />
+    </ResourceDictionary>
+    <ResourceDictionary x:Key="HighContrast">
+      <StaticResource x:Key="ScrollViewerScrollBarSeparatorBackground" ResourceKey="SystemControlTransparentBrush" />
+    </ResourceDictionary>
+    <ResourceDictionary x:Key="Light">
+      <StaticResource x:Key="ScrollViewerScrollBarSeparatorBackground" ResourceKey="ControlFillColorTransparentBrush" />
+    </ResourceDictionary>
+  </ResourceDictionary.ThemeDictionaries>
+  <Thickness x:Key="ScrollViewerScrollBarMargin">1</Thickness>
+  <x:String x:Key="ScrollViewerSeparatorExpandBeginTime">00:00:00.40</x:String>
+  <x:String x:Key="ScrollViewerSeparatorExpandDuration">00:00:00.1</x:String>
+  <x:String x:Key="ScrollViewerSeparatorContractBeginTime">00:00:02.00</x:String>
+  <x:String x:Key="ScrollViewerSeparatorContractDelay">00:00:02</x:String>
+  <x:String x:Key="ScrollViewerSeparatorContractDuration">00:00:00.1</x:String>
+  <x:String x:Key="ScrollViewerSeparatorContractFinalKeyframe">00:00:02.1</x:String>
+  <Style TargetType="ScrollViewer" BasedOn="{StaticResource DefaultScrollViewerStyle}" />
+  <Style x:Key="DefaultScrollViewerStyle" TargetType="ScrollViewer">
+    <Setter Property="HorizontalScrollMode" Value="Auto" />
+    <Setter Property="VerticalScrollMode" Value="Auto" />
+    <Setter Property="IsHorizontalRailEnabled" Value="True" />
+    <Setter Property="IsVerticalRailEnabled" Value="True" />
+    <Setter Property="IsTabStop" Value="False" />
+    <Setter Property="ZoomMode" Value="Disabled" />
+    <Setter Property="HorizontalContentAlignment" Value="Left" />
+    <Setter Property="VerticalContentAlignment" Value="Top" />
+    <Setter Property="VerticalScrollBarVisibility" Value="Visible" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="BorderBrush" Value="Transparent" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ScrollViewer">
+          <Border x:Name="Root" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="ScrollingIndicatorStates">
+                <VisualStateGroup.Transitions>
+                  <VisualTransition From="MouseIndicator" To="NoIndicator">
+                    <Storyboard>
+                      <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar" Storyboard.TargetProperty="IndicatorMode">
+                        <DiscreteObjectKeyFrame KeyTime="{ThemeResource ScrollViewerSeparatorContractDelay}">
+                          <DiscreteObjectKeyFrame.Value>
+                            <ScrollingIndicatorMode>None</ScrollingIndicatorMode>
+                          </DiscreteObjectKeyFrame.Value>
+                        </DiscreteObjectKeyFrame>
+                      </ObjectAnimationUsingKeyFrames>
+                      <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalScrollBar" Storyboard.TargetProperty="IndicatorMode">
+                        <DiscreteObjectKeyFrame KeyTime="{ThemeResource ScrollViewerSeparatorContractDelay}">
+                          <DiscreteObjectKeyFrame.Value>
+                            <ScrollingIndicatorMode>None</ScrollingIndicatorMode>
+                          </DiscreteObjectKeyFrame.Value>
+                        </DiscreteObjectKeyFrame>
+                      </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                  </VisualTransition>
+                  <VisualTransition From="MouseIndicatorFull" To="NoIndicator">
+                    <Storyboard>
+                      <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar" Storyboard.TargetProperty="IndicatorMode">
+                        <DiscreteObjectKeyFrame KeyTime="{ThemeResource ScrollViewerSeparatorContractDelay}">
+                          <DiscreteObjectKeyFrame.Value>
+                            <ScrollingIndicatorMode>None</ScrollingIndicatorMode>
+                          </DiscreteObjectKeyFrame.Value>
+                        </DiscreteObjectKeyFrame>
+                      </ObjectAnimationUsingKeyFrames>
+                      <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalScrollBar" Storyboard.TargetProperty="IndicatorMode">
+                        <DiscreteObjectKeyFrame KeyTime="{ThemeResource ScrollViewerSeparatorContractDelay}">
+                          <DiscreteObjectKeyFrame.Value>
+                            <ScrollingIndicatorMode>None</ScrollingIndicatorMode>
+                          </DiscreteObjectKeyFrame.Value>
+                        </DiscreteObjectKeyFrame>
+                      </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                  </VisualTransition>
+                  <VisualTransition From="MouseIndicatorFull" To="MouseIndicator">
+                    <Storyboard>
+                      <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar" Storyboard.TargetProperty="IndicatorMode">
+                        <DiscreteObjectKeyFrame KeyTime="{ThemeResource ScrollViewerSeparatorContractDelay}">
+                          <DiscreteObjectKeyFrame.Value>
+                            <ScrollingIndicatorMode>MouseIndicator</ScrollingIndicatorMode>
+                          </DiscreteObjectKeyFrame.Value>
+                        </DiscreteObjectKeyFrame>
+                      </ObjectAnimationUsingKeyFrames>
+                      <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalScrollBar" Storyboard.TargetProperty="IndicatorMode">
+                        <DiscreteObjectKeyFrame KeyTime="{ThemeResource ScrollViewerSeparatorContractDelay}">
+                          <DiscreteObjectKeyFrame.Value>
+                            <ScrollingIndicatorMode>MouseIndicator</ScrollingIndicatorMode>
+                          </DiscreteObjectKeyFrame.Value>
+                        </DiscreteObjectKeyFrame>
+                      </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                  </VisualTransition>
+                  <VisualTransition From="TouchIndicator" To="NoIndicator">
+                    <Storyboard>
+                      <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar" Storyboard.TargetProperty="IndicatorMode">
+                        <DiscreteObjectKeyFrame KeyTime="0:0:0.5">
+                          <DiscreteObjectKeyFrame.Value>
+                            <ScrollingIndicatorMode>None</ScrollingIndicatorMode>
+                          </DiscreteObjectKeyFrame.Value>
+                        </DiscreteObjectKeyFrame>
+                      </ObjectAnimationUsingKeyFrames>
+                      <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalScrollBar" Storyboard.TargetProperty="IndicatorMode">
+                        <DiscreteObjectKeyFrame KeyTime="0:0:0.5">
+                          <DiscreteObjectKeyFrame.Value>
+                            <ScrollingIndicatorMode>None</ScrollingIndicatorMode>
+                          </DiscreteObjectKeyFrame.Value>
+                        </DiscreteObjectKeyFrame>
+                      </ObjectAnimationUsingKeyFrames>
+                    </Storyboard>
+                  </VisualTransition>
+                </VisualStateGroup.Transitions>
+                <VisualState x:Name="NoIndicator" />
+                <VisualState x:Name="TouchIndicator">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar" Storyboard.TargetProperty="IndicatorMode">
+                      <DiscreteObjectKeyFrame KeyTime="0">
+                        <DiscreteObjectKeyFrame.Value>
+                          <ScrollingIndicatorMode>TouchIndicator</ScrollingIndicatorMode>
+                        </DiscreteObjectKeyFrame.Value>
+                      </DiscreteObjectKeyFrame>
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalScrollBar" Storyboard.TargetProperty="IndicatorMode">
+                      <DiscreteObjectKeyFrame KeyTime="0">
+                        <DiscreteObjectKeyFrame.Value>
+                          <ScrollingIndicatorMode>TouchIndicator</ScrollingIndicatorMode>
+                        </DiscreteObjectKeyFrame.Value>
+                      </DiscreteObjectKeyFrame>
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+                <VisualState x:Name="MouseIndicator">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar" Storyboard.TargetProperty="IndicatorMode">
+                      <DiscreteObjectKeyFrame KeyTime="0">
+                        <DiscreteObjectKeyFrame.Value>
+                          <ScrollingIndicatorMode>MouseIndicator</ScrollingIndicatorMode>
+                        </DiscreteObjectKeyFrame.Value>
+                      </DiscreteObjectKeyFrame>
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalScrollBar" Storyboard.TargetProperty="IndicatorMode">
+                      <DiscreteObjectKeyFrame KeyTime="0">
+                        <DiscreteObjectKeyFrame.Value>
+                          <ScrollingIndicatorMode>MouseIndicator</ScrollingIndicatorMode>
+                        </DiscreteObjectKeyFrame.Value>
+                      </DiscreteObjectKeyFrame>
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+                <VisualState x:Name="MouseIndicatorFull">
+                  <Storyboard>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="VerticalScrollBar" Storyboard.TargetProperty="IndicatorMode">
+                      <DiscreteObjectKeyFrame KeyTime="0">
+                        <DiscreteObjectKeyFrame.Value>
+                          <ScrollingIndicatorMode>MouseIndicator</ScrollingIndicatorMode>
+                        </DiscreteObjectKeyFrame.Value>
+                      </DiscreteObjectKeyFrame>
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="HorizontalScrollBar" Storyboard.TargetProperty="IndicatorMode">
+                      <DiscreteObjectKeyFrame KeyTime="0">
+                        <DiscreteObjectKeyFrame.Value>
+                          <ScrollingIndicatorMode>MouseIndicator</ScrollingIndicatorMode>
+                        </DiscreteObjectKeyFrame.Value>
+                      </DiscreteObjectKeyFrame>
+                    </ObjectAnimationUsingKeyFrames>
+                  </Storyboard>
+                </VisualState>
+              </VisualStateGroup>
+              <VisualStateGroup x:Name="ScrollBarSeparatorStates">
+                <VisualStateGroup.Transitions>
+                  <VisualTransition From="ScrollBarSeparatorExpanded" To="ScrollBarSeparatorCollapsed">
+                    <Storyboard>
+                      <DoubleAnimation Duration="{ThemeResource ScrollViewerSeparatorContractDuration}" BeginTime="{ThemeResource ScrollViewerSeparatorContractBeginTime}" Storyboard.TargetName="ScrollBarSeparator" Storyboard.TargetProperty="Opacity" To="0" />
+                    </Storyboard>
+                  </VisualTransition>
+                </VisualStateGroup.Transitions>
+                <VisualState x:Name="ScrollBarSeparatorCollapsed" />
+                <VisualState x:Name="ScrollBarSeparatorExpanded">
+                  <Storyboard>
+                    <DoubleAnimation Duration="{ThemeResource ScrollViewerSeparatorExpandDuration}" BeginTime="{ThemeResource ScrollViewerSeparatorExpandBeginTime}" Storyboard.TargetName="ScrollBarSeparator" Storyboard.TargetProperty="Opacity" To="1" />
+                  </Storyboard>
+                </VisualState>
+                <VisualState x:Name="ScrollBarSeparatorExpandedWithoutAnimation">
+                  <Storyboard>
+                    <DoubleAnimation Duration="0" BeginTime="{ThemeResource ScrollViewerSeparatorExpandBeginTime}" Storyboard.TargetName="ScrollBarSeparator" Storyboard.TargetProperty="Opacity" To="1" />
+                  </Storyboard>
+                </VisualState>
+                <VisualState x:Name="ScrollBarSeparatorCollapsedWithoutAnimation">
+                  <Storyboard>
+                    <DoubleAnimation Duration="0" BeginTime="{ThemeResource ScrollViewerSeparatorContractBeginTime}" Storyboard.TargetName="ScrollBarSeparator" Storyboard.TargetProperty="Opacity" To="0" />
+                  </Storyboard>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <Grid Background="{TemplateBinding Background}">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+              </Grid.RowDefinitions>
+              <ScrollContentPresenter x:Name="ScrollContentPresenter" Grid.RowSpan="2" Grid.ColumnSpan="2" ContentTemplate="{TemplateBinding ContentTemplate}" Margin="{TemplateBinding Padding}" />
+              <Grid Grid.RowSpan="2" Grid.ColumnSpan="2" />
+              <Grid Grid.Column="1" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Padding="{ThemeResource ScrollViewerScrollBarMargin}">
+                <ScrollBar x:Name="VerticalScrollBar" IsTabStop="False" Maximum="{TemplateBinding ScrollableHeight}" Orientation="Vertical" Value="{TemplateBinding VerticalOffset}" ViewportSize="{TemplateBinding ViewportHeight}" HorizontalAlignment="Right" />
+              </Grid>
+              <Grid Grid.Row="1" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Padding="{ThemeResource ScrollViewerScrollBarMargin}">
+                <ScrollBar x:Name="HorizontalScrollBar" IsTabStop="False" Maximum="{TemplateBinding ScrollableWidth}" Orientation="Horizontal" Value="{TemplateBinding HorizontalOffset}" ViewportSize="{TemplateBinding ViewportWidth}" />
+              </Grid>
+              <Border x:Name="ScrollBarSeparator" Grid.Row="1" Grid.Column="1" Opacity="0" Background="{ThemeResource ScrollViewerScrollBarSeparatorBackground}" />
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

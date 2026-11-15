@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Client.Extensibility;
 
@@ -12,8 +13,11 @@ namespace Uno.UI.MSAL
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static AcquireTokenInteractiveParameterBuilder WithUnoHelpers(this AcquireTokenInteractiveParameterBuilder builder)
 		{
-#if __WASM__
-			builder.WithCustomWebUi(WasmWebUi.Instance);
+#if __SKIA__
+			if (OperatingSystem.IsBrowser())
+			{
+				builder.WithCustomWebUi(WasmWebUi.Instance);
+			}
 #endif
 			return builder;
 		}

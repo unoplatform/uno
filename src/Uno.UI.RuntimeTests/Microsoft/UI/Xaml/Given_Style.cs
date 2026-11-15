@@ -1,0 +1,297 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
+using Private.Infrastructure;
+using SamplesApp.UITests;
+using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
+
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
+{
+	// The attribute is required when running WinUI. See:
+	// https://github.com/microsoft/microsoft-ui-xaml/issues/4723#issuecomment-812753123
+	[Bindable]
+	public sealed partial class ThrowingElement : FrameworkElement
+	{
+		public ThrowingElement() => throw new Exception("Inner exception");
+	}
+
+	[TestClass]
+	public class Given_Style
+	{
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_StyleFailsToApply()
+		{
+			var controlTemplate = (ControlTemplate)XamlReader.Load("""
+				<ControlTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+								 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+								 xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml">
+					<local:ThrowingElement />
+				</ControlTemplate>
+				""");
+
+			var style = new Style()
+			{
+				Setters =
+				{
+					new Setter(ContentControl.TemplateProperty, controlTemplate)
+				}
+			};
+
+			// This shouldn't throw.
+			_ = new ContentControl() { Style = style };
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15460")]
+		public async Task When_ImplicitStyle()
+		{
+			var implicitStyle = new Style()
+			{
+				Setters =
+				{
+					new Setter(ContentControl.HorizontalContentAlignmentProperty, HorizontalAlignment.Stretch)
+				},
+				TargetType = typeof(ContentControl),
+			};
+
+			var explicitStyle = new Style()
+			{
+				TargetType = typeof(ContentControl),
+			};
+
+			var cc = new ContentControl() { Width = 100, Height = 100 };
+
+			// On Android and iOS, ContentControl fails to load if it doesn't have content.
+			cc.Content = new Border() { Width = 100, Height = 100 };
+
+			Assert.AreEqual(HorizontalAlignment.Center, cc.HorizontalContentAlignment);
+
+			cc.Resources.Add(typeof(ContentControl), implicitStyle);
+			await UITestHelper.Load(cc);
+
+			Assert.AreEqual(HorizontalAlignment.Stretch, cc.HorizontalContentAlignment);
+
+			cc.Style = explicitStyle;
+
+			Assert.AreEqual(HorizontalAlignment.Left, cc.HorizontalContentAlignment);
+		}
+
+		/// <remarks>
+		/// The implicit-style lookup walks the dictionaries in scope nearest-first and ends at the
+		/// application resources. A walk that visited them in the wrong order, or dropped the application
+		/// tail, still satisfies the single-level tests above.
+		/// </remarks>
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24522")]
+		public async Task When_ImplicitStyle_Nearest_Scope_Wins()
+		{
+			var appStyle = new Style()
+			{
+				Setters = { new Setter(ContentControl.HorizontalContentAlignmentProperty, HorizontalAlignment.Right) },
+				TargetType = typeof(ContentControl),
+			};
+
+			var ancestorStyle = new Style()
+			{
+				Setters = { new Setter(ContentControl.HorizontalContentAlignmentProperty, HorizontalAlignment.Stretch) },
+				TargetType = typeof(ContentControl),
+			};
+
+			Application.Current.Resources.Add(typeof(ContentControl), appStyle);
+
+			try
+			{
+				var fromAppResources = new ContentControl() { Width = 100, Height = 100, Content = new Border() { Width = 100, Height = 100 } };
+				var nearestScope = new Border() { Child = fromAppResources };
+				var root = new Border() { Child = nearestScope };
+
+				await UITestHelper.Load(root);
+
+				Assert.AreEqual(HorizontalAlignment.Right, fromAppResources.HorizontalContentAlignment, "the application-level implicit style should apply");
+
+				TestServices.WindowHelper.WindowContent = null;
+
+				var fromNearestScope = new ContentControl() { Width = 100, Height = 100, Content = new Border() { Width = 100, Height = 100 } };
+				nearestScope.Resources.Add(typeof(ContentControl), ancestorStyle);
+				nearestScope.Child = fromNearestScope;
+
+				await UITestHelper.Load(root);
+
+				Assert.AreEqual(HorizontalAlignment.Stretch, fromNearestScope.HorizontalContentAlignment, "the nearest scope should win over the application resources");
+			}
+			finally
+			{
+				Application.Current.Resources.Remove(typeof(ContentControl));
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24159")]
+		public async Task When_Explicit_Style_Uses_Fluent_Default_Value()
+		{
+			// The built-in style's {ThemeResource} setters resolve against Application.Resources first.
+			var expected = Application.Current.Resources["ToggleButtonBackground"] as SolidColorBrush;
+			Assert.IsNotNull(expected);
+
+			var button = new ToggleButton
+			{
+				Content = "Explicit style",
+				Style = new Style(typeof(ToggleButton)),
+				RequestedTheme = Application.Current.RequestedTheme == ApplicationTheme.Dark ? ElementTheme.Dark : ElementTheme.Light,
+			};
+
+			try
+			{
+				// The app-level lookup and the control must use the same theme even when the test host does not.
+				await UITestHelper.Load(new Border
+				{
+					RequestedTheme = button.RequestedTheme == ElementTheme.Dark ? ElementTheme.Light : ElementTheme.Dark,
+					Child = button,
+				});
+
+				var actual = button.Background as SolidColorBrush;
+				Assert.IsNotNull(actual);
+				Assert.AreEqual(expected.Color, actual.Color);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24159")]
+		public async Task When_Explicit_Style_Uses_Uwp_Default_Value()
+		{
+			using var uwpStyles = StyleHelper.UseUwpStyles();
+
+			var expected = Application.Current.Resources["SystemControlBackgroundBaseLowBrush"] as SolidColorBrush;
+			Assert.IsNotNull(expected);
+
+			var button = new ToggleButton
+			{
+				Content = "Explicit style",
+				Style = new Style(typeof(ToggleButton)),
+				RequestedTheme = Application.Current.RequestedTheme == ApplicationTheme.Dark ? ElementTheme.Dark : ElementTheme.Light,
+			};
+
+			try
+			{
+				await UITestHelper.Load(new Border
+				{
+					RequestedTheme = button.RequestedTheme == ElementTheme.Dark ? ElementTheme.Light : ElementTheme.Dark,
+					Child = button,
+				});
+
+				var actual = button.Background as SolidColorBrush;
+				Assert.IsNotNull(actual);
+				Assert.AreEqual(expected.Color, actual.Color);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24159")]
+		public async Task When_Uwp_ToggleButton_Uses_State_Resources()
+		{
+			using var uwpStyles = StyleHelper.UseUwpStyles();
+			var resources = Application.Current.Resources;
+			var stateResources = new Dictionary<string, SolidColorBrush>
+			{
+				["ToggleButtonBackgroundCheckedPressed"] = new(Colors.Red),
+				["ToggleButtonForegroundCheckedPressed"] = new(Colors.Green),
+				["ToggleButtonBorderBrushCheckedPressed"] = new(Colors.Blue),
+				["ToggleButtonBackgroundIndeterminate"] = new(Colors.Yellow),
+				["ToggleButtonForegroundIndeterminate"] = new(Colors.Magenta),
+				["ToggleButtonBorderBrushIndeterminate"] = new(Colors.Cyan),
+			};
+			var originalResources = new Dictionary<string, object>();
+
+			foreach (var (key, brush) in stateResources)
+			{
+				originalResources[key] = resources[key];
+				resources[key] = brush;
+			}
+
+			var button = new ToggleButton
+			{
+				Content = "State resources",
+				IsThreeState = true,
+			};
+
+			try
+			{
+				await UITestHelper.Load(button);
+
+				var contentPresenter = button.GetTemplateChild("ContentPresenter") as ContentPresenter;
+				Assert.IsNotNull(contentPresenter);
+
+				Assert.IsTrue(VisualStateManager.GoToState(button, "CheckedPressed", useTransitions: false));
+				await TestServices.WindowHelper.WaitForIdle();
+				AssertBrush(stateResources["ToggleButtonBackgroundCheckedPressed"], contentPresenter.Background);
+				AssertBrush(stateResources["ToggleButtonForegroundCheckedPressed"], contentPresenter.Foreground);
+				AssertBrush(stateResources["ToggleButtonBorderBrushCheckedPressed"], contentPresenter.BorderBrush);
+
+				Assert.IsTrue(VisualStateManager.GoToState(button, "Indeterminate", useTransitions: false));
+				await TestServices.WindowHelper.WaitForIdle();
+				AssertBrush(stateResources["ToggleButtonBackgroundIndeterminate"], contentPresenter.Background);
+				AssertBrush(stateResources["ToggleButtonForegroundIndeterminate"], contentPresenter.Foreground);
+				AssertBrush(stateResources["ToggleButtonBorderBrushIndeterminate"], contentPresenter.BorderBrush);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+				foreach (var (key, value) in originalResources)
+				{
+					resources[key] = value;
+				}
+			}
+
+			static void AssertBrush(SolidColorBrush expected, Brush actual)
+			{
+				Assert.IsInstanceOfType<SolidColorBrush>(actual);
+				Assert.AreEqual(expected.Color, ((SolidColorBrush)actual).Color);
+			}
+		}
+#endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Style_Flows_To_Popup()
+		{
+			var page = new StyleFlowToPopup();
+			TestServices.WindowHelper.WindowContent = page;
+			await UITestHelper.Load(page);
+
+			var foreground = (SolidColorBrush)page.GridTextBlock.Foreground;
+			Assert.AreEqual(Microsoft.UI.Colors.Red, foreground.Color);
+
+			page.ShowPopup();
+
+			await TestServices.WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot).Count > 0);
+
+			var popupForeground = (SolidColorBrush)page.PopupTextBlock.Foreground;
+			Assert.AreEqual(Microsoft.UI.Colors.Red, popupForeground.Color);
+		}
+	}
+}

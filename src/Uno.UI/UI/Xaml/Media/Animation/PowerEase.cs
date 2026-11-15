@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -7,7 +8,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public double Power
 		{
 			get => (double)this.GetValue(PowerProperty);
-			set => this.SetValue(PowerProperty, value);
+			set => this.SetValue(PowerProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty PowerProperty { get; } =

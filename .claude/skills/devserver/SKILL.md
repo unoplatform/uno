@@ -44,7 +44,7 @@ The test project **links source files** from CLI/Host (rather than referencing o
 
 ## 4. CLI commands & flags
 Commands: `start`, `stop`, `list`, `disco` (discover env/SDK/active server), `login` (open Uno settings app), `--mcp-app` (MCP STDIO proxy mode).
-Flags: `-l trace`, `-fl <path>` (file logging, `{Date}` token), `--json` (disco output), `--addins-only`, `--mcp-wait-tools-list`, `--force-roots-fallback` (legacy override; auto-detected now), `--solution-dir <path>`.
+Flags: `-l trace`, `-fl <path>` (file logging, `{Date}` token), `--json` (disco output), `--addins-only`, `--mcp-wait-tools-list`, `--force-roots-fallback` (legacy override; auto-detected now), `--solution-dir <path>`, `--solution <path>` (MCP mode: explicit solution, kept like `uno_app_select_solution`).
 
 ## 5. Add-in discovery — three paths
 1. **Manifest-first** (`devserver-addin.json`): `ManifestAddInResolver` resolves entry points directly, with `minHostVersion` gating.
@@ -58,6 +58,7 @@ Flags: `-l trace`, `-fl <path>` (file logging, `{Date}` token), `--json` (disco 
 - **Default**: DevServer starts immediately using `--solution-dir`/cwd; requests roots if supported; auto-enables roots fallback (agent calls `uno_app_initialize`) when unresolved + no roots support.
 - **`--force-roots-fallback`**: defers startup until `uno_app_initialize`. Rarely needed.
 `StartOnceGuard` (`MonitorDecisions.cs`) prevents duplicate starts when roots arrive after an immediate start.
+**Explicit selection wins** (`WorkspaceResolution.IsExplicitSolutionSelection`, set by `uno_app_select_solution` / `--solution`): file changes re-resolve that solution instead of re-running discovery, roots are ignored (`WorkspaceTransitionAction.Ignore`), and the monitor launches it even beyond its depth-3 rescan.
 
 **Solution discovery** (`SolutionFileFinder`): recursive `.sln`/`.slnx` search up to **3 levels deep**, respects `.gitignore` (via `git check-ignore`), falls back to a skip list (`node_modules`, `bin`, `obj`, `.vs`, `.idea`, `packages`) when git is unavailable.
 

@@ -9,6 +9,10 @@ namespace Windows.ApplicationModel.Core
 #endif
 	public partial class CoreApplicationViewTitleBar
 	{
+		internal CoreApplicationViewTitleBar()
+		{
+		}
+
 #pragma warning disable 67
 		internal event Action ExtendViewIntoTitleBarChanged;
 #pragma warning restore 67

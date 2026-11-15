@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Windows.UI.Text
 {
-	public partial struct FontWeight
+	public partial struct FontWeight : IEquatable<FontWeight>
 	{
 		// Parameter name mirrors the WinAppSDK/CsWinRT metadata (enforced by the sync generator); keep as-is.
 		public FontWeight(ushort _Weight)
@@ -13,6 +13,8 @@ namespace Windows.UI.Text
 		}
 
 		public ushort Weight;
+
+		public bool Equals(FontWeight other) => Weight == other.Weight;
 
 		public override int GetHashCode() => Weight.GetHashCode();
 

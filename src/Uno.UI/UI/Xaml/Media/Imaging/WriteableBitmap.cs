@@ -3,10 +3,9 @@ using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using UwpBuffer = Windows.Storage.Streams.Buffer;
 using System.IO;
-using System.Runtime.InteropServices;
 using Microsoft.UI.Composition;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Xaml.Media;
-using SkiaSharp;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
 {
@@ -56,11 +55,11 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 #endif
 		}
 
-		private SkiaCompositionSurface _surface;
+		private CompositionImageSurface _surface;
 
 		private protected override bool TryOpenSourceSync(int? targetWidth, int? targetHeight, out ImageData image)
 		{
-			_surface ??= new SkiaCompositionSurface();
+			_surface ??= new CompositionImageSurface();
 
 			_surface.CopyPixels(PixelWidth, PixelHeight, _buffer.AsReadOnlyMemory());
 
@@ -69,14 +68,15 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			return true;
 		}
 
-		private unsafe void DecodeStreamIntoBuffer()
+		private void DecodeStreamIntoBuffer()
 		{
-			using var img = SKImage.FromEncodedData(_stream.AsStream());
-			var info = img.Info;
-
-			fixed (byte* data = &MemoryMarshal.GetReference(_buffer.Span))
+			// Decode the encoded stream to BGRA (premultiplied) pixels through the neutral backend decoder.
+			if (ImageEncoderDecoder.Current.TryDecode(_stream.AsStream(), null, null, out var frames))
 			{
-				img.ReadPixels(info.WithColorType(SKColorType.Bgra8888), (nint)data, PixelWidth * 4);
+				using (frames)
+				{
+					frames.Frames[0].CopyPixels(_buffer.Span);
+				}
 			}
 		}
 	}

@@ -16,7 +16,6 @@ using Microsoft.UI.Xaml.Tests.Common;
 using AwesomeAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Uno.Disposables;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 
@@ -201,69 +200,70 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		public async Task CanOpenFlyoutByKeyboard()
 		{
 			// The test using fluent styles is broken due to lifecycle issues. https://github.com/unoplatform/uno/issues/16433
-			IDisposable styleDisposable = null;
-			await RunOnUIThread(() =>
+			IDisposable undoUseUwpStyles = null;
+			await RunOnUIThread(() => undoUseUwpStyles = StyleHelper.UseUwpStyles());
+
+			// A failed attempt must still restore Fluent styles, or every later test in the run inherits UWP styles.
+			try
 			{
-				var undoUseUwpStyles = StyleHelper.UseUwpStyles();
-				styleDisposable = Disposable.Create(() => RunOnUIThread(() => undoUseUwpStyles.Dispose()));
-			});
+				TestCleanupWrapper cleanup;
 
+				Grid rootPanel = null;
 
-			TestCleanupWrapper cleanup;
+				CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
+				await helper.PrepareLoadedEvent();
+				Microsoft.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
 
-			Grid rootPanel = null;
+				rootPanel = await CreateTestResources();
 
-			CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
-			await helper.PrepareLoadedEvent();
-			Microsoft.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
+				// load into visual tree
+				await RunOnUIThread(() =>
+				{
+					rootPanel.Children.Append(cp);
+				});
 
-			rootPanel = await CreateTestResources();
+				await helper.WaitForLoaded();
 
-			// load into visual tree
-			await RunOnUIThread(() =>
+				await TestServices.WindowHelper.WaitForIdle();
+
+				await RunOnUIThread(() =>
+				{
+					cp.Focus(Microsoft.UI.Xaml.FocusState.Programmatic);
+				});
+
+				await helper.PrepareOpenedEvent();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				// press enter to open flyout
+				await TestServices.KeyboardHelper.Enter();
+
+				await helper.WaitForOpened();
+
+				// escape to close the flyout
+				await TestServices.KeyboardHelper.Escape();
+
+				await TestServices.WindowHelper.WaitForIdle();
+				await helper.PrepareOpenedEvent();
+
+				await RunOnUIThread(() =>
+				{
+					cp.Focus(Microsoft.UI.Xaml.FocusState.Programmatic);
+				});
+				await TestServices.WindowHelper.WaitForIdle();
+
+				// press space to open flyout
+				await TestServices.KeyboardHelper.PressKeySequence("$d$_ #$u$_ ");
+
+				await helper.WaitForOpened();
+
+				// escape to close the flyout
+				await TestServices.KeyboardHelper.Escape();
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+			finally
 			{
-				rootPanel.Children.Append(cp);
-			});
-
-			await helper.WaitForLoaded();
-
-			await TestServices.WindowHelper.WaitForIdle();
-
-			await RunOnUIThread(() =>
-			{
-				cp.Focus(Microsoft.UI.Xaml.FocusState.Programmatic);
-			});
-
-			await helper.PrepareOpenedEvent();
-			await TestServices.WindowHelper.WaitForIdle();
-
-			// press enter to open flyout
-			await TestServices.KeyboardHelper.Enter();
-
-			await helper.WaitForOpened();
-
-			// escape to close the flyout
-			await TestServices.KeyboardHelper.Escape();
-
-			await TestServices.WindowHelper.WaitForIdle();
-			await helper.PrepareOpenedEvent();
-
-			await RunOnUIThread(() =>
-			{
-				cp.Focus(Microsoft.UI.Xaml.FocusState.Programmatic);
-			});
-			await TestServices.WindowHelper.WaitForIdle();
-
-			// press space to open flyout
-			await TestServices.KeyboardHelper.PressKeySequence("$d$_ #$u$_ ");
-
-			await helper.WaitForOpened();
-
-			// escape to close the flyout
-			await TestServices.KeyboardHelper.Escape();
-			await TestServices.WindowHelper.WaitForIdle();
-
-			styleDisposable?.Dispose();
+				await RunOnUIThread(() => undoUseUwpStyles?.Dispose());
+			}
 		}
 
 

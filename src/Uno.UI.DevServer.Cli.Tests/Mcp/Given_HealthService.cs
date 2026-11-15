@@ -57,6 +57,26 @@ public class Given_HealthService
 		report.Discovery.SelectionSource.Should().Be(WorkspaceSelectionSource.UserSelected);
 	}
 
+	[TestMethod]
+	[Description("uno_health says why an explicit selection is not served, instead of telling the agent to wait for the host")]
+	public void WhenExplicitSelectionDoesNotResolve_HealthReportsWhy()
+	{
+		var (_, healthService, _) = CreateSubject();
+		var missingSolution = Path.Join(Path.GetTempPath(), $"uno-health-tests-{Guid.NewGuid():N}", "App.slnx");
+		healthService.DevServerStarted = true;
+		healthService.CurrentSelection = new WorkspaceSelectionSnapshot
+		{
+			SelectedSolutionPath = missingSolution,
+			SelectionSource = WorkspaceSelectionSource.UserSelected,
+			IsExplicitSolutionSelection = true,
+		};
+
+		var report = healthService.BuildHealthReport();
+
+		report.Issues.Should().Contain(issue => issue.Code == IssueCode.WorkspaceNotResolved && issue.Message.Contains(missingSolution));
+		report.Issues.Should().NotContain(issue => issue.Code == IssueCode.HostUnreachable);
+	}
+
 	private static (ProxyLifecycleManager Subject, HealthService HealthService, DevServerMonitor Monitor) CreateSubject()
 	{
 		var services = new ServiceCollection()

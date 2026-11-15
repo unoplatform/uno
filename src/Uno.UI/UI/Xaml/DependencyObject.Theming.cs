@@ -430,8 +430,7 @@ public partial class DependencyObject
 			// don't resolve here and fall through to the parse-time pinned dictionary in Phase B.
 			if (owner is UIElement { IsActiveInVisualTree: true })
 			{
-				var dicts = GetResourceDictionaries(includeAppResources: false);
-				foreach (var dict in dicts)
+				foreach (var dict in EnumerateResourceDictionaries(includeAppResources: false))
 				{
 					if (dict.TryGetValue(themeRef.ResourceKey, out var ancestorValue, shouldCheckSystem: false))
 					{
@@ -441,6 +440,21 @@ public partial class DependencyObject
 						break;
 					}
 				}
+			}
+
+			// Uno: a provisional reference (unattributable parse context) is pinned to whatever the top-level lookup found
+			// at parse time — the host's dictionary. Under an AlcContentHost, resolve it for the owning app instead.
+			if (!resolved
+				&& owner is not null
+				&& ResourceResolver.TryOwningApplicationRetrieval(themeRef.ResourceKey, themeRef.ParseContext, owner, out var owningAppValue, out var owningAppDictionary))
+			{
+				if (owningAppDictionary is not null)
+				{
+					themeRef.SetTargetDictionary(owningAppDictionary);
+				}
+
+				themeRef.SetLastResolvedValue(owningAppValue);
+				resolved = true;
 			}
 
 			// Phase B: Pinned dict fallback (WinUI: themeResource->RefreshValue())
@@ -699,10 +713,10 @@ public partial class DependencyObject
 	{
 		_isUpdatingChildResourceBindings = true;
 
-		foreach (var propertyDetail in _properties.GetAllDetails())
+		foreach (var propertyDetail in AllPropertyDetails)
 		{
 			if (propertyDetail == null
-				|| propertyDetail == _properties.DataContextPropertyDetails)
+				|| propertyDetail == DataContextPropertyDetails)
 			{
 				continue;
 			}
@@ -784,6 +798,26 @@ public partial class DependencyObject
 		}
 	}
 
+	/// <summary>
+	/// Propagates a resource update to a child that is not stored as a property value (e.g. TextBlock inlines).
+	/// </summary>
+	/// <remarks>
+	/// During a theme walk the child joins the walk, as WinUI's property walk notifies it (Theming.cpp:218-221).
+	/// Resolving it against <paramref name="resourceContextProvider"/> instead would use that element's
+	/// per-object theme, which is only persisted once its walk completes.
+	/// </remarks>
+	internal void UpdateChildThemeBindings(DependencyObject child, ResourceUpdateReason updateReason, FrameworkElement resourceContextProvider)
+	{
+		if (IsProcessingThemeWalk)
+		{
+			child.NotifyThemeChanged(_walkTheme, _walkForceRefresh);
+		}
+		else
+		{
+			child.UpdateResourceBindings(updateReason, resourceContextProvider);
+		}
+	}
+
 	#endregion
 
 	#region Resource binding orchestration — WinUI: NotifyThemeChangedCoreImpl + FxCallbacks (Theming.cpp lines 166-255)
@@ -831,8 +865,7 @@ public partial class DependencyObject
 		// the now-removed legacy OnThemeChanged binding refresh handled); UpdateBindingExpressions both
 		// re-resolves the value and re-applies it (only when changed), so no second refresh pass is needed.
 		if ((updateReason & (ResourceUpdateReason.ThemeResource | ResourceUpdateReason.HotReload)) != 0 &&
-			_properties.HasBindings &&
-			_properties.HasThemeResourceBindingExpressions)
+			_properties is { HasBindings: true, HasThemeResourceBindingExpressions: true })
 		{
 			dictionariesInScope = GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
 			for (var i = dictionariesInScope.Length - 1; i >= 0; i--)
@@ -914,6 +947,23 @@ public partial class DependencyObject
 		}
 	}
 
+	/// <summary>
+	/// Whether <paramref name="binding"/> is a {StaticResource} whose parse-time value is provisional (see
+	/// <see cref="ResourceResolver.ShouldDeferStaticResourceToLoading"/>).
+	/// </summary>
+	private static bool IsProvisionalBinding(ResourceBinding binding)
+		=> Application.HasSecondaryApps
+			&& (binding.UpdateReason & ResourceUpdateReason.StaticResourceLoading) != 0
+			&& ResourceResolver.ShouldDeferStaticResourceToLoading(binding.ParseContext);
+
+	/// <summary>
+	/// Whether <paramref name="binding"/> is provisional on an object that has not entered the live tree yet, such as
+	/// a template part completed before it is parented, or a brush it owns. Only the top-level lookup can answer there,
+	/// and settling on its value would consume the binding before the load-time walk runs.
+	/// </summary>
+	private bool IsProvisionalBindingOutsideLiveTree(ResourceBinding binding)
+		=> IsProvisionalBinding(binding) && !IsActive;
+
 	/// <remarks>
 	/// This method contains or is called by a try/catch containing method and
 	/// can be significantly slower than other methods as a result on WebAssembly.
@@ -981,6 +1031,16 @@ public partial class DependencyObject
 
 			if (!wasSet)
 			{
+				if (IsProvisionalBindingOutsideLiveTree(binding))
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"Keeping provisional {{StaticResource {binding.ResourceKey.Key}}} on {ActualInstance?.GetType().Name}.{property.Name} until it enters the live tree.");
+					}
+
+					return;
+				}
+
 				// The resource wasn't found in the in-scope (non-app) dictionaries, but an application-level
 				// dictionary may provide it — e.g. an app-merged ThemeDictionaries override of a stock Fluent
 				// control brush (CheckBoxCheckBackgroundFillChecked, ...). Resolve it AND re-pin the providing
@@ -991,8 +1051,15 @@ public partial class DependencyObject
 				// ObjectAnimationUsingKeyFrames.EnsureKeyFrameThemeResources on every storyboard begin)
 				// otherwise keeps resolving the stock value and shadows the app-level override, leaving a checked
 				// CheckBox blank until a pointer-over repaints it. Restores the #23388 re-pin dropped by #23416.
-				if (ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out var value, out var providingDict))
+				var resolvedForOwningApp = ResourceResolver.TryOwningApplicationRetrieval(binding.ResourceKey, binding.ParseContext, ActualInstance, out var value, out var providingDict);
+				if (resolvedForOwningApp
+					|| ResourceResolver.TryTopLevelRetrieval(binding.ResourceKey, binding.ParseContext, out value, out providingDict))
 				{
+					if (this.Log().IsEnabled(LogLevel.Debug) && IsProvisionalBinding(binding))
+					{
+						this.Log().Debug($"Provisional {{StaticResource {binding.ResourceKey.Key}}} on {ActualInstance?.GetType().Name}.{property.Name} found nothing in scope; settling on the {(resolvedForOwningApp ? "owning application's" : "top-level")} value.");
+					}
+
 					SetResourceBindingValue(property, binding, value);
 
 					if (providingDict is not null && _themeResources is not null)

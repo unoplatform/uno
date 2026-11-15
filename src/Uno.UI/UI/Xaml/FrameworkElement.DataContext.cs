@@ -10,11 +10,14 @@ namespace Microsoft.UI.Xaml
 	{
 		#region DataContext DependencyProperty
 
-		public object? DataContext
+		// Oblivious to match WinUI, which ships no nullable annotations.
+#nullable disable
+		public object DataContext
 		{
 			get => GetValue(DataContextProperty);
 			set => SetValue(DataContextProperty, value);
 		}
+#nullable enable
 
 		[UnconditionalSuppressMessage("Trimming", "IL2111")]
 		public static DependencyProperty DataContextProperty { get; } =

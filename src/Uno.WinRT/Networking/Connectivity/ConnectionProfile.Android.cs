@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 		private ConnectionProfile()
 		{
 			NetworkInformation.VerifyNetworkStateAccess();
-			_connectivityManager = (AndroidConnectivityManager)ContextHelper.Current.GetSystemService(Context.ConnectivityService);
+			_connectivityManager = (AndroidConnectivityManager)ContextHelper.ApplicationContext.GetSystemService(Context.ConnectivityService);
 
 			if (Android.OS.Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.LollipopMr1)
 			{

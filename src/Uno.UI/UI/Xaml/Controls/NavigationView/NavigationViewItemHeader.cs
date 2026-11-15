@@ -31,14 +31,13 @@ public partial class NavigationViewItemHeader : NavigationViewItemBase
 		var splitView = GetSplitView();
 		if (splitView != null)
 		{
-			var isPaneOpenToken = splitView.RegisterPropertyChangedCallback(
+			// Uno specific: registered weakly, as WinUI's handler doesn't own the header, so the SplitView doesn't root it once removed.
+			m_splitViewIsPaneOpenChangedRevoker.Disposable = splitView.RegisterDisposablePropertyChangedCallback(
 				SplitView.IsPaneOpenProperty,
-				OnSplitViewPropertyChanged);
-			m_splitViewIsPaneOpenChangedRevoker.Disposable = Disposable.Create(() => splitView.UnregisterPropertyChangedCallback(SplitView.IsPaneOpenProperty, isPaneOpenToken));
-			var displayModeToken = splitView.RegisterPropertyChangedCallback(
+				(s, e) => OnSplitViewPropertyChanged(s, e.Property));
+			m_splitViewDisplayModeChangedRevoker.Disposable = splitView.RegisterDisposablePropertyChangedCallback(
 				SplitView.DisplayModeProperty,
-				OnSplitViewPropertyChanged);
-			m_splitViewDisplayModeChangedRevoker.Disposable = Disposable.Create(() => splitView.UnregisterPropertyChangedCallback(SplitView.DisplayModeProperty, displayModeToken));
+				(s, e) => OnSplitViewPropertyChanged(s, e.Property));
 
 			UpdateIsClosedCompact();
 		}

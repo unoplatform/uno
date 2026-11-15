@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.BinderTests
 {
-	[TestClass]
+	[UITestClass]
 	public class PhaseBindingTests
 	{
 

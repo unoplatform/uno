@@ -25,6 +25,9 @@ internal enum TextControlButtons
 	Undo = 0x0040,
 	Redo = 0x0080,
 	SelectAll = 0x0100,
+
+	// Uno specific: selects the word at the caret. Only offered on the iOS touch selection flyout, as UIKit does.
+	Select = 0x0200,
 }
 
 partial class TextCommandBarFlyout

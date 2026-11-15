@@ -67,7 +67,13 @@ public enum UnoFeature
 	Logging,
 
 	[UnoArea(UnoArea.Extensions)]
+	MauiNativeEmbedding,
+
+	[UnoArea(UnoArea.Core)]
 	MauiEmbedding,
+
+	[UnoArea(UnoArea.Core)]
+	Retarget,
 
 	[UnoArea(UnoArea.Extensions)]
 	MVUX,
@@ -100,17 +106,13 @@ public enum UnoFeature
 
 	Mvvm,
 
-	Prism,
+	Reactor,
 
 	[UnoArea(UnoArea.Core)]
 	Skia,
 
-	// Skia is always the renderer in 7.0; this feature is implied and kept only for back-compat.
 	[UnoArea(UnoArea.Core)]
-	SkiaRenderer,
-
-	[UnoArea(UnoArea.Core)]
-	Lottie,
+	WebGpu,
 
 	[UnoArea(UnoArea.Core)]
 	Svg,

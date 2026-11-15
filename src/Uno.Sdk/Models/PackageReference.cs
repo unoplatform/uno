@@ -8,6 +8,8 @@ namespace Uno.Sdk.Models;
 
 internal record PackageReference(string PackageId, string Version, IDictionary<string, string> MetaData)
 {
+	public const string AvailableSinceMetadata = "AvailableSince";
+
 	public ITaskItem ToTaskItem()
 	{
 		var taskItem = new TaskItem
@@ -17,7 +19,7 @@ internal record PackageReference(string PackageId, string Version, IDictionary<s
 
 		foreach (var data in MetaData)
 		{
-			if (data.Key == "ProjectSystem")
+			if (data.Key is "ProjectSystem" or AvailableSinceMetadata)
 				continue;
 
 			taskItem.SetMetadata(data.Key, data.Value);

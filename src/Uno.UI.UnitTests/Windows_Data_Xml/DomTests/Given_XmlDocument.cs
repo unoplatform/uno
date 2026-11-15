@@ -9,7 +9,7 @@ using Windows.Data.Xml.Dom;
 
 namespace Uno.UI.Tests.Windows_Data_Xml.DomTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_XmlDocument
 	{
 		[TestMethod]

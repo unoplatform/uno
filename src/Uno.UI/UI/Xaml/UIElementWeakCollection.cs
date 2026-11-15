@@ -85,14 +85,12 @@ namespace Microsoft.UI.Xaml
 		public int Count
 		{
 			get => _innerList.Count;
-			set => throw new InvalidOperationException("Cannot set count");
 		}
 
 		/// <inheritdoc />
 		public bool IsReadOnly
 		{
 			get => false;
-			set => throw new InvalidOperationException("Cannot make read only");
 		}
 
 		/// <inheritdoc />

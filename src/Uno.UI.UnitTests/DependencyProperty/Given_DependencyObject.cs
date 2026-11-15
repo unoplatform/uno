@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Tests
 {
-	[Microsoft.VisualStudio.TestTools.UnitTesting.TestClass]
+	[UITestClass]
 	public partial class Given_DependencyObject
 	{
 		[TestMethod]

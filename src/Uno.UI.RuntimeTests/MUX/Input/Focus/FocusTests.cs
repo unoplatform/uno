@@ -3,8 +3,7 @@
 // FocusTests.cs
 
 // Do not run on UWP because the event tester does not work there
-// Do not run on WASM because the tests are very slow for some reason
-#if !WINAPPSDK && !__WASM__
+#if !WINAPPSDK
 
 using System;
 using System.Collections.Generic;

@@ -27,12 +27,24 @@ namespace Microsoft.UI.Xaml
 	public partial class DependencyObject
 	{
 
-		private object? _associatedParent; // see note in AssociateParent(object)
+		// See note in AssociateParent(DependencyObject). Weak, like the mentor link: a shared value (Brush, Transition, ...)
+		// held by a single owner must not keep that owner alive after it is removed.
+		// Borrows the owner's own SelfWeakReference (never returned to the pool), so associating allocates nothing.
+		private ManagedWeakReference? _associatedParentRef;
+
+		private DependencyObject? AssociatedParent
+		{
+			get => _associatedParentRef?.Target as DependencyObject;
+			set => _associatedParentRef = value?.SelfWeakReference;
+		}
 
 		private HashtableEx? _childrenBindableMap; // maps DependencyProperty to _childrenBindable[index]
 		private List<object?>? _childrenBindable;
 		private HashtableEx ChildrenBindableMap => _childrenBindableMap ??= new HashtableEx(DependencyPropertyComparer.Default);
 		private List<object?> ChildrenBindable => _childrenBindable ??= new List<object?>();
+
+		// On the CHILD side: how many _childrenBindable slots (on any owner) hold this instance.
+		private int _bindableHolderCount;
 
 		// Mentor mechanism (models WinUI's SetParentForInheritanceContextOnly / GetMentor):
 		// On the CHILD side: weak ref to owning FrameworkElement (the mentor).
@@ -148,7 +160,7 @@ namespace Microsoft.UI.Xaml
 
 			if (_inheritanceContextEnabled)
 			{
-				SetValue(dataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance, _properties.DataContextPropertyDetails!);
+				SetValue(dataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance, DataContextPropertyDetails!);
 			}
 			else
 			{
@@ -160,17 +172,17 @@ namespace Microsoft.UI.Xaml
 		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
 		/// </summary>
 		internal void ApplyCompiledBindings()
-			=> _properties.ApplyCompiledBindings();
+			=> _properties?.ApplyCompiledBindings();
 
 		internal void SuspendCompiledBindings()
 			// ignoring local _bindingsSuspended flag, since this operation is applied on the BindingExpression level.
-			=> _properties.SuspendCompiledBindings();
+			=> _properties?.SuspendCompiledBindings();
 
 		/// <summary>
 		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
 		/// </summary>
 		internal void ApplyElementNameBindings()
-			=> _properties.ApplyElementNameBindings();
+			=> _properties?.ApplyElementNameBindings();
 
 		static void InitializeStaticBinder()
 		{
@@ -186,7 +198,7 @@ namespace Microsoft.UI.Xaml
 		internal void SuspendBindings()
 		{
 			_bindingsSuspended = true;
-			_properties.SuspendBindings();
+			_properties?.SuspendBindings();
 		}
 
 		/// <summary>
@@ -195,12 +207,12 @@ namespace Microsoft.UI.Xaml
 		internal void ResumeBindings()
 		{
 			_bindingsSuspended = false;
-			_properties.ResumeBindings();
+			_properties?.ResumeBindings();
 		}
 
 		private void OnDataContextChanged(object? providedDataContext, object? actualDataContext, DependencyPropertyValuePrecedences precedence)
 		{
-			if (precedence == DependencyPropertyValuePrecedences.Inheritance && _properties.FindDataContextBinding() is { } dataContextBinding)
+			if (precedence == DependencyPropertyValuePrecedences.Inheritance && DataContextPropertyDetails?.GetBinding() is { } dataContextBinding)
 			{
 				// Set the DataContext for the bindings using the current DataContext, except for the
 				// binding to the DataContext itself, which must use the inherited DataContext.
@@ -262,7 +274,10 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			_properties.ApplyDataContext(actualDataContext);
+			if (_properties is not null || actualDataContext is not null)
+			{
+				Properties.ApplyDataContext(actualDataContext);
+			}
 			ApplyChildrenBindable(actualDataContext);
 			ApplyMentoredChildrenDataContext(actualDataContext);
 
@@ -304,7 +319,7 @@ namespace Microsoft.UI.Xaml
 
 			if (target is DependencyObject provider)
 			{
-				provider.SetBinding(dependencyProperty, binding);
+				provider.SetBindingInternal(dependencyProperty, binding);
 			}
 			else
 			{
@@ -333,7 +348,7 @@ namespace Microsoft.UI.Xaml
 
 			if (binding is Binding fullBinding)
 			{
-				_properties.SetBinding(dependencyProperty, fullBinding, SelfWeakReference);
+				Properties.SetBinding(dependencyProperty, fullBinding, SelfWeakReference);
 			}
 			else if (binding is ResourceBinding resourceBinding)
 			{
@@ -354,7 +369,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var binding = new ResourceBinding(resourceKey, updateReason, context, precedence ?? DependencyPropertyValuePrecedences.Local, setterBindingPath);
-			SetBinding(dependencyProperty, binding);
+			SetBindingInternal(dependencyProperty, binding);
 		}
 
 		internal void SetBindingInternal(string dependencyProperty, BindingBase binding)
@@ -380,7 +395,7 @@ namespace Microsoft.UI.Xaml
 
 				if (boundProperty != null)
 				{
-					_properties.SetBinding(boundProperty, fullBinding, SelfWeakReference);
+					Properties.SetBinding(boundProperty, fullBinding, SelfWeakReference);
 				}
 			}
 			else
@@ -391,7 +406,7 @@ namespace Microsoft.UI.Xaml
 
 		internal void SetTemplateBinding(DependencyProperty targetProperty, DependencyProperty sourceProperty)
 		{
-			SetBinding(
+			SetBindingInternal(
 				targetProperty,
 				new Binding
 				{
@@ -404,8 +419,8 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Finds a DependencyProperty for the specified C# property
 		/// </summary>
-		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
-		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Types manipulated here have been marked earlier")]
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Owner and property types are kept by the generated BindableMetadata")]
+		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Owner and property types are kept by the generated BindableMetadata")]
 		private DependencyProperty? FindStandardProperty(Type originalObjectType, string dependencyProperty, bool allowPrivateMembers)
 		{
 			var propertyType = BindingPropertyHelper.GetPropertyType(originalObjectType, dependencyProperty, allowPrivateMembers);
@@ -463,7 +478,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal void SetBindingValue(object value, DependencyProperty property)
 		{
-			_properties.SetSourceValue(property, value);
+			Properties.SetSourceValue(property, value);
 		}
 
 		/// <summary>
@@ -482,7 +497,7 @@ namespace Microsoft.UI.Xaml
 				}
 				return;
 			}
-			_properties.SetSourceValue(propertyDetails, value);
+			Properties.SetSourceValue(propertyDetails, value);
 		}
 
 		/// <summary>
@@ -530,7 +545,13 @@ namespace Microsoft.UI.Xaml
 			{
 				var newValueAsProvider = newValue as DependencyObject;
 
-				if (propertyDetails.HasValueInherits)
+				if (newValueAsProvider is not null && IsDataContextIsolatedValue(newValueAsProvider))
+				{
+					// Nothing to propagate (their stores refuse a DataContext, see the constructor): don't track
+					// them, so a shared Style isn't associated with this owner either. Mirrors the mentor path below.
+					SetChildrenBindableValue(propertyDetails, null);
+				}
+				else if (propertyDetails.HasValueInherits)
 				{
 					if (newValueAsProvider is not null)
 					{
@@ -552,12 +573,18 @@ namespace Microsoft.UI.Xaml
 					{
 						SetChildrenBindableValue(propertyDetails, newValueAsProvider);
 					}
+					else
+					{
+						// null, a UIElement or a non-DependencyObject value: release the previous child for this
+						// property, so it stops receiving (and holding) this owner's DataContext.
+						SetChildrenBindableValue(propertyDetails, null);
+					}
 				}
 			}
 			else
 			{
 				// For ValueDoesNotInheritDataContext properties, establish a weak mentor link
-				// instead of using _childrenBindable (which calls AssociateParent with a strong ref).
+				// instead of using _childrenBindable (which pushes this owner's DataContext into the value).
 				// This matches WinUI's SetParentForInheritanceContextOnly behavior where
 				// non-FrameworkElement property values get a weak ref to the owning element.
 				// Exclude FrameworkTemplate (DataTemplate, ControlTemplate) and IMultiParentShareableDependencyObject
@@ -568,7 +595,7 @@ namespace Microsoft.UI.Xaml
 				// the mentor before show.
 				if (newValue is DependencyObject newProvider
 					&& newProvider is not UIElement
-					&& newProvider is not FrameworkTemplate
+					&& !IsDataContextIsolatedValue(newProvider)
 					&& newProvider is not Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase
 					&& newProvider is not IMultiParentShareableDependencyObject)
 				{
@@ -581,6 +608,12 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 		}
+
+		/// <summary>
+		/// Values that must never receive an inherited DataContext from the object that holds them.
+		/// </summary>
+		private static bool IsDataContextIsolatedValue(object? value)
+			=> value is FrameworkTemplate or Style;
 
 		private void SetChildrenBindableValue(DependencyPropertyDetails propertyDetails, object? value)
 		{
@@ -598,14 +631,42 @@ namespace Microsoft.UI.Xaml
 			void UpdateChildBindable(int index, object? newValue)
 			{
 				var oldValue = ChildrenBindable[index];
-				if (ReferenceEquals(oldValue, newValue)) return;
-
-				if (oldValue is IMultiParentShareableDependencyObject &&
-					oldValue is DependencyObject { _inheritanceContextEnabled: true } oldStore)
+				if (ReferenceEquals(oldValue, newValue))
 				{
-					oldStore.UnassociateParent(ActualInstance);
+					return;
 				}
+
+				if (oldValue is DependencyObject oldStore)
+				{
+					if (oldValue is IMultiParentShareableDependencyObject && oldStore._inheritanceContextEnabled)
+					{
+						oldStore.UnassociateParent(ActualInstance);
+					}
+
+					// Drop the DataContext this owner pushed into the released child, so the child does not keep
+					// it alive. Skip a child that has its own parent (it inherits from there) or that already
+					// holds a different DataContext (e.g. it was handed to another owner first).
+					// Skip it too while another slot, on this owner or another one, still holds the child.
+					if (oldStore._bindableHolderCount > 0)
+					{
+						oldStore._bindableHolderCount--;
+					}
+
+					if (oldStore._bindableHolderCount == 0
+						&& oldStore.GetParent() is null
+						&& oldStore.GetInheritedDataContextValue() is { } oldChildDataContext
+						&& ReferenceEquals(oldChildDataContext, GetInheritedDataContextValue()))
+					{
+						oldStore.ClearInheritedDataContext();
+					}
+				}
+
 				ChildrenBindable[index] = newValue;
+				if (newValue is DependencyObject newChild)
+				{
+					newChild._bindableHolderCount++;
+				}
+
 				if (newValue is IMultiParentShareableDependencyObject &&
 					newValue is DependencyObject { _inheritanceContextEnabled: true } newStore)
 				{
@@ -626,7 +687,7 @@ namespace Microsoft.UI.Xaml
 				if (newValue is DependencyObject addedProvider
 					&& addedProvider.DataContextPropertyInternal is null
 					&& (addedProvider.GetParent() is not { } addedParent || ReferenceEquals(addedParent, ActualInstance))
-					&& _properties.DataContextPropertyDetails is { } dataContextDetails)
+					&& DataContextPropertyDetails is { } dataContextDetails)
 				{
 					var currentDataContext = GetValue(dataContextDetails);
 					if (currentDataContext is not null && currentDataContext != DependencyProperty.UnsetValue)
@@ -670,7 +731,7 @@ namespace Microsoft.UI.Xaml
 			return false;
 		}
 
-		private void AssociateParent(object? parent)
+		private void AssociateParent(DependencyObject? parent)
 		{
 			if (parent == null) return;
 			if (!_inheritanceContextEnabled) return;
@@ -681,32 +742,33 @@ namespace Microsoft.UI.Xaml
 			//		of ResourceDictionary and ContentControl.  It is ok to have multiple parents as long as
 			//		the first parent is a ResourceDictionary, or if the first parent is a ContentControl and there are at most
 			//		two parents.
-			// todo: if we are to implement that in the future, we should promote `object? _associatedParent` into a `List/HashSet<object?>? _associatedParents`
+			// todo: if we are to implement that in the future, we should promote `AssociatedParent` into a `List/HashSet<object?>? _associatedParents`
 
-			if (_associatedParent == null)
+			// A collected previous parent counts as no parent: it can no longer share this instance.
+			if (AssociatedParent == null)
 			{
-				_associatedParent = parent;
+				AssociatedParent = parent;
 				RegisterCollectibleParentAssociation(parent);
 			}
 			else
 			{
-				// if there are multiple parents (would be if we count the previous one `_associatedParent` and the current one `parent`),
+				// if there are multiple parents (would be if we count the previous one `AssociatedParent` and the current one `parent`),
 				// it means that the current instance is shared across multiple owners/parents,
 				// which means that it should no longer participate in any dc propagation.
 				_inheritanceContextEnabled = false;
 
 				ClearInheritedDataContext();
-				_associatedParent = null;
+				AssociatedParent = null;
 			}
 		}
-		private void UnassociateParent(object? parent)
+		private void UnassociateParent(DependencyObject? parent)
 		{
 			if (parent == null) return;
 			if (!_inheritanceContextEnabled) return;
 
-			if (ReferenceEquals(_associatedParent, parent))
+			if (ReferenceEquals(AssociatedParent, parent))
 			{
-				_associatedParent = null;
+				AssociatedParent = null;
 			}
 		}
 
@@ -791,7 +853,7 @@ namespace Microsoft.UI.Xaml
 				newValue.SetMentor(ActualInstance);
 
 				// Immediately propagate current DataContext (null when this mentor is not a FrameworkElement).
-				var currentDC = _properties.DataContextPropertyDetails is { } dataContextDetails ? GetValue(dataContextDetails) : null;
+				var currentDC = DataContextPropertyDetails is { } dataContextDetails ? GetValue(dataContextDetails) : null;
 				newValue.SetInheritedDataContext(currentDC);
 			}
 			else
@@ -863,20 +925,20 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			var currentDC = _properties.DataContextPropertyDetails is { } dataContextDetails ? GetValue(dataContextDetails) : null;
+			var currentDC = DataContextPropertyDetails is { } dataContextDetails ? GetValue(dataContextDetails) : null;
 			ApplyMentoredChildrenDataContext(currentDC);
 		}
 
 		#endregion
 
 		internal BindingExpression? GetBindingExpressionInternal(DependencyProperty dependencyProperty)
-			=> _properties.GetBindingExpression(dependencyProperty);
+			=> Properties.GetBindingExpression(dependencyProperty);
 
 		internal Microsoft.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty)
 			=> GetBindingExpressionInternal(dependencyProperty)?.ParentBinding;
 
 		internal bool IsPropertyTemplateBound(DependencyProperty dependencyProperty)
-			=> _properties.IsPropertyTemplateBound(dependencyProperty);
+			=> _properties?.IsPropertyTemplateBound(dependencyProperty) ?? false;
 
 		/// <summary>
 		/// BindingPath Registration handler for DependencyProperty instances

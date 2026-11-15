@@ -8,6 +8,10 @@ namespace Microsoft.UI.Input
 {
 	public sealed partial class InputPointerSource : InputObject
 	{
+		internal InputPointerSource()
+		{
+		}
+
 		public InputCursor Cursor { get; set; }
 
 		public InputPointerSourceDeviceKinds DeviceKinds

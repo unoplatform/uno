@@ -1,8 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference Layout.h, commit 5f9e851133b3
+// MUX Reference Layout.h, commit 4b206bce3
 
-using System;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -20,10 +19,7 @@ partial class Layout
 	/// An <see cref="ItemCollectionTransitionProvider"/> for the default item
 	/// transitions, or <c>null</c>.
 	/// </returns>
-	protected internal virtual ItemCollectionTransitionProvider CreateDefaultItemTransitionProvider()
-	{
-		return null;
-	}
+	protected internal virtual ItemCollectionTransitionProvider CreateDefaultItemTransitionProvider() => null;
 
 	// TODO: This is for debugging purposes only. It should be removed when
 	// the Layout.LayoutId API is removed.
@@ -33,7 +29,7 @@ partial class Layout
 
 	// Used by LayoutsTestHooks only for testing purposes.
 	private int m_logItemIndexDbg = -1;
-	private (int Index, double Offset) m_layoutAnchorInfoDbg = (-1, -1.0);
+	private FlowLayoutAnchorInfo m_layoutAnchorInfoDbg = new(-1, -1.0);
 	private IndexBasedLayoutOrientation m_forcedIndexBasedLayoutOrientationDbg = IndexBasedLayoutOrientation.None;
 	private bool m_isForcedIndexBasedLayoutOrientationSetDbg;
 }

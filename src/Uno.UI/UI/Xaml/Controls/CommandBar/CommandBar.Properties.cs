@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -23,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public CommandBarTemplateSettings CommandBarTemplateSettings
 		{
 			get { return (CommandBarTemplateSettings)this.GetValue(CommandBarTemplateSettingsProperty); }
-			set { this.SetValue(CommandBarTemplateSettingsProperty, value); }
+			internal set { this.SetValue(CommandBarTemplateSettingsProperty, value); }
 		}
 		public static DependencyProperty CommandBarTemplateSettingsProperty { get; } =
 			DependencyProperty.Register(nameof(CommandBarTemplateSettings), typeof(CommandBarTemplateSettings), typeof(CommandBar), new FrameworkPropertyMetadata(null));
@@ -42,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set { this.SetValue(IsDynamicOverflowEnabledProperty, value); }
 		}
 		public static DependencyProperty IsDynamicOverflowEnabledProperty { get; } =
-			DependencyProperty.Register(nameof(IsDynamicOverflowEnabled), typeof(bool), typeof(CommandBar), new FrameworkPropertyMetadata(true));
+			DependencyProperty.Register(nameof(IsDynamicOverflowEnabled), typeof(bool), typeof(CommandBar), new FrameworkPropertyMetadata(BoolBoxes.True));
 
 		public CommandBarOverflowButtonVisibility OverflowButtonVisibility
 		{

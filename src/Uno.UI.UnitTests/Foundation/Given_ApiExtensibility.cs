@@ -4,7 +4,7 @@ using Uno.Foundation.Extensibility;
 
 namespace Uno.UI.Tests.Foundation
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_ApiExtensibility
 	{
 		// ApiExtensibility._registrations is a process-wide static with no unregister, so each test

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Content;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 
@@ -24,6 +25,30 @@ public sealed partial class XamlRoot
 	/// Gets a value that indicates whether the XamlRoot is visible.
 	/// </summary>
 	public bool IsHostVisible => VisualTree.IsVisible;
+
+	/// <summary>
+	/// Gets the environment of the island hosting this XAML content, or null if there is none.
+	/// </summary>
+	public ContentIslandEnvironment? ContentIslandEnvironment
+	{
+		get
+		{
+			// Uno specific: there is no ContentIsland per content root, so the environment is derived from the host window.
+			if (HostWindow?.AppWindow.Id is not { } appWindowId)
+			{
+				return null;
+			}
+
+			if (_contentIslandEnvironment?.AppWindowId != appWindowId)
+			{
+				_contentIslandEnvironment = new ContentIslandEnvironment(appWindowId);
+			}
+
+			return _contentIslandEnvironment;
+		}
+	}
+
+	private ContentIslandEnvironment? _contentIslandEnvironment;
 
 	internal void RaiseChangedEvent() => Changed?.Invoke(this, new());
 

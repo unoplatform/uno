@@ -171,6 +171,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			private void GenerateProviderTable(IndentedStringBuilder writer)
 			{
 				writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CompilerGeneratedAttribute]");
+				writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
 				using (writer.BlockInvariant("public class BindableMetadataProvider : global::Uno.UI.DataBinding.IBindableMetadataProvider"))
 				{
 					GenerateTypeTable(writer);
@@ -433,7 +434,15 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 							if (getMethod != null)
 							{
-								writer.AppendLineIndented($@"bindableType.AddProperty({ownerType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.{dependencyProperty});");
+								// The type is named for trimming, since a binding path may continue into the value;
+								// a type the generated code cannot spell leaves the property untyped.
+								var returnType = getMethod.ReturnType;
+								var canNameType = !getMethod.IsGenericMethod
+									&& returnType.TypeKind is not (TypeKind.Dynamic or TypeKind.TypeParameter or TypeKind.Error or TypeKind.Pointer or TypeKind.FunctionPointer);
+
+								writer.AppendLineIndented(canNameType
+									? $@"bindableType.AddProperty({ownerTypeName}.{dependencyProperty}, typeof({returnType.GetFullyQualifiedTypeIncludingGlobal()}));"
+									: $@"bindableType.AddProperty({ownerTypeName}.{dependencyProperty});");
 							}
 						}
 
@@ -596,7 +605,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				{
 					writer.AppendLineIndented(@"var bindableType = GetBindableTypeByFullName(type.FullName);");
 
-					writer.AppendLineIndented(@"#if DEBUG");
+					writer.AppendLineIndented(@"#if DEBUG && !UNO_DISABLE_KNOWN_MISSING_TYPES");
 					using (writer.BlockInvariant(@"if(bindableType == null)"))
 					{
 						using (writer.BlockInvariant(@"lock(_knownMissingTypes)"))
@@ -604,7 +613,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 							using (writer.BlockInvariant(@"if(!_knownMissingTypes.Contains(type) && !type.IsGenericType && !type.IsAbstract)"))
 							{
 								writer.AppendLineIndented(@"_knownMissingTypes.Add(type);");
-								writer.AppendLineIndented(@"global::System.Diagnostics.Debug.WriteLine($""The Bindable attribute is missing and the type [{{type.FullName}}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
+								writer.AppendLineIndented(@"global::System.Diagnostics.Debug.WriteLine($""The Bindable attribute is missing and the type [{type.FullName}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
 							}
 						}
 					}

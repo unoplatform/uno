@@ -1,9 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference: TabViewItem.cpp, commit 65718e2813
+// MUX Reference: TabViewItem.cpp
 
 using System.Numerics;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI.Core;
@@ -183,7 +184,7 @@ public partial class TabViewItem : ListViewItem
 		}
 		else
 		{
-			SetValue(Canvas.ZIndexProperty, 0);
+			SetValue(Canvas.ZIndexProperty, IntBoxes.Zero);
 		}
 
 		UpdateWidthModeVisualState();

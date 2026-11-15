@@ -53,7 +53,7 @@ public partial class DependencyObject
 		newParams.VisualTree = null;
 		@params = newParams;
 
-		foreach (var propertyDetail in _properties.GetAllDetails())
+		foreach (var propertyDetail in AllPropertyDetails)
 		{
 			if (!ShouldEnterLeaveProperty(propertyDetail))
 			{
@@ -124,7 +124,7 @@ public partial class DependencyObject
 	/// </summary>
 	private void LeaveProperties(DependencyObject? namescopeOwner, LeaveParams @params)
 	{
-		foreach (var propertyDetail in _properties.GetAllDetails())
+		foreach (var propertyDetail in AllPropertyDetails)
 		{
 			if (!ShouldEnterLeaveProperty(propertyDetail))
 			{
@@ -196,7 +196,7 @@ public partial class DependencyObject
 	private bool ShouldEnterLeaveProperty(DependencyPropertyDetails? propertyDetail)
 	{
 		if (propertyDetail == null
-			|| propertyDetail == _properties.DataContextPropertyDetails)
+			|| propertyDetail == DataContextPropertyDetails)
 		{
 			return false;
 		}

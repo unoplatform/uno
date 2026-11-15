@@ -1,75 +1,58 @@
 ﻿#nullable enable
 
+using System;
 using System.Numerics;
-using SkiaSharp;
 using Uno.UI.Composition;
+using Uno.UI.Composition.Drawing;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Composition
 {
 	public partial class CompositionNineGridBrush : CompositionBrush
 	{
-		private static readonly SKPaint _tempPaint = new();
-		private SKBitmap? _bitmap;
-		private SKCanvas? _bitmapCanvas;
-		private SKRectI _insetRect;
-
 		internal override bool RequiresRepaintOnEveryFrame => Source?.RequiresRepaintOnEveryFrame ?? false;
 		internal override float DamageRegionSamplingMargin => Source?.DamageRegionSamplingMargin ?? 0;
 
-		internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
+		internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 		{
 			if (Source is null)
 			{
-				return;
+				return true;
 			}
 
-			SKRect sourceBounds;
-			if (Source is ISizedBrush sizedBrush && sizedBrush.Size is Vector2 sourceSize)
+			var sourceBounds = Source is ISizedBrush { Size: Vector2 sourceSize }
+				? new Rect(0, 0, sourceSize.X, sourceSize.Y)
+				: bounds;
+
+			// Device resolution, not logical: the nine-slice is stretched into the destination under the session's
+			// transform, so a logical-sized texture is magnified (and softened) by exactly that scale.
+			var scale = GetRasterizationScale(session);
+			var pixelWidth = (int)Math.Ceiling(sourceBounds.Width * scale.X);
+			var pixelHeight = (int)Math.Ceiling(sourceBounds.Height * scale.Y);
+			if (pixelWidth <= 0 || pixelHeight <= 0)
 			{
-				sourceBounds = new(0, 0, sourceSize.X, sourceSize.Y);
-			}
-			else
-			{
-				sourceBounds = bounds;
+				return true;
 			}
 
-			var newSize = new SKSizeI((int)sourceBounds.Width, (int)sourceBounds.Height);
-			var info = new SKImageInfo(newSize.Width, newSize.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
-			if (_bitmap is null || _bitmapCanvas is null || _bitmap.Info.Size != newSize)
+			// Rasterize the source brush into an offscreen backend texture and draw it nine-sliced onto the target
+			// (no CPU round-trip — the offscreen result is already the texture the draw verb consumes).
+			// The source's own graph has to be built before the offscreen pass opens: parsing it inside would nest
+			// another offscreen inside this one, which a backend that cannot re-enter a pass refuses, and it must
+			// prepare at the same scale it is about to paint at or it rebuilds inside the pass anyway.
+			Source.PrepareForOffscreenRasterization(session.Factory, sourceBounds, scale);
+			using var texture = session.Factory.RenderOffscreen(pixelWidth, pixelHeight, s =>
 			{
-				_bitmap?.Dispose();
-				_bitmapCanvas?.Dispose();
-				_bitmap = new SKBitmap(info);
-				_bitmapCanvas = new SKCanvas(_bitmap);
-			}
-			else
-			{
-				_bitmapCanvas.Clear(SKColors.Transparent);
-			}
+				s.Scale(scale.X, scale.Y);
+				Source.TryPaint(s, opacity, sourceBounds);
+			});
 
-			Source.Paint(_bitmapCanvas, opacity, sourceBounds);
-			_bitmapCanvas.Flush();
-			var image = SKImage.FromPixels(info, _bitmap.GetPixels());
+			// The slice rectangle is in image pixels, so it follows the texture to device resolution.
+			var centerSlice = new Rect(
+				new Point(LeftInset * LeftInsetScale * scale.X, TopInset * TopInsetScale * scale.Y),
+				new Point((sourceBounds.Width - (RightInset * RightInsetScale)) * scale.X, (sourceBounds.Height - (BottomInset * BottomInsetScale)) * scale.Y));
 
-			_insetRect.Top = (int)(TopInset * TopInsetScale);
-			_insetRect.Bottom = (int)(sourceBounds.Height - (BottomInset * BottomInsetScale));
-			_insetRect.Right = (int)(sourceBounds.Width - (RightInset * RightInsetScale));
-			_insetRect.Left = (int)(LeftInset * LeftInsetScale);
-
-			_tempPaint.Reset();
-			_tempPaint.IsAntialias = true;
-			_tempPaint.IsDither = true;
-			if (IsCenterHollow)
-			{
-				canvas.Save();
-				canvas.ClipRect(_insetRect, SKClipOperation.Difference, antialias: true);
-				canvas.DrawImageNinePatch(image, _insetRect, bounds, _tempPaint);
-				canvas.Restore();
-			}
-			else
-			{
-				canvas.DrawBitmapNinePatch(_bitmap, _insetRect, bounds, _tempPaint);
-			}
+			session.DrawImageNineSlice(texture, centerSlice, bounds, IsCenterHollow);
+			return true;
 		}
 
 		internal override bool CanPaint() => Source?.CanPaint() ?? false;

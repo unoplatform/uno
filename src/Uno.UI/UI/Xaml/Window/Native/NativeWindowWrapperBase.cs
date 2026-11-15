@@ -233,6 +233,12 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	public virtual void ExtendContentIntoTitleBar(bool extend) { }
 
+	/// <summary>
+	/// True when the platform draws its own caption buttons over extended content (e.g. the macOS traffic lights),
+	/// so WindowChrome must not draw the XAML ones and the host reports the AppWindowTitleBar insets itself.
+	/// </summary>
+	internal virtual bool HasNativeCaptionButtons => false;
+
 	public virtual void Show(bool activateWindow)
 	{
 		if (!WasShown)
@@ -297,6 +303,34 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	{
 	}
 
+	public virtual PointInt32 ConvertLocalToScreen(Point localPoint)
+	{
+		var scale = RasterizationScale == 0 ? 1 : RasterizationScale;
+		return new PointInt32(
+			Position.X + (int)Math.Round(localPoint.X * scale),
+			Position.Y + (int)Math.Round(localPoint.Y * scale));
+	}
+
+	public virtual Point ConvertScreenToLocal(PointInt32 screenPoint)
+	{
+		var scale = RasterizationScale == 0 ? 1 : RasterizationScale;
+		return new Point(
+			(screenPoint.X - Position.X) / scale,
+			(screenPoint.Y - Position.Y) / scale);
+	}
+
+	public virtual bool TryConvertLocalToScreen(Point localPoint, out PointInt32 screenPoint)
+	{
+		screenPoint = ConvertLocalToScreen(localPoint);
+		return true;
+	}
+
+	public virtual bool TryConvertScreenToLocal(PointInt32 screenPoint, out Point localPoint)
+	{
+		localPoint = ConvertScreenToLocal(screenPoint);
+		return true;
+	}
+
 	public void Destroy() { }
 
 	public void Hide() => IsVisible = false;
@@ -308,4 +342,8 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	public virtual void SetSystemBackdrop(Microsoft.UI.Xaml.Media.SystemBackdrop? backdrop)
 	{
 	}
+
+	// Heads that don't override SetSystemBackdrop render no material, so they must not report support:
+	// the window would go transparent over nothing.
+	public virtual bool IsSystemBackdropSupported(Microsoft.UI.Xaml.Media.SystemBackdrop backdrop) => false;
 }

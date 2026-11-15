@@ -34,10 +34,6 @@ namespace Microsoft.UI.Xaml.Media
 			InitializeBinder();
 		}
 
-		public static implicit operator Brush(Color uiColor) => new SolidColorBrush(uiColor);
-
-		public static implicit operator Brush(string colorCode) => SolidColorBrushHelper.Parse(colorCode);
-
 		internal static IDisposable? SetupBrushChanged(Brush? newValue, ref Action? onInvalidateRender, Action newOnInvalidateRender, bool initialInvoke = true)
 		{
 			if (initialInvoke)
@@ -109,11 +105,11 @@ namespace Microsoft.UI.Xaml.Media
 
 		#endregion
 
-		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("__SKIA__")]
 		[GeneratedDependencyProperty(DefaultValue = null)]
 		public static DependencyProperty TransformProperty { get; } = CreateTransformProperty();
 
-		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("__SKIA__")]
 		public Microsoft.UI.Xaml.Media.Transform Transform
 		{
 			get => GetTransformValue();

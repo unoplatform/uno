@@ -107,11 +107,7 @@ Our [Uno Platform Template Wizard](https://platform.uno/blog/the-new-uno-platfor
 
 Uno Platform allows you to control each pixel of your UI elements to match the experience you envision. This concept of lookless-controls is very similar to what is named "[headless controls](https://martinfowler.com/articles/headless-component.html)" in the React world. Each built-in and third-party control defines its fundamental logic (e.g. how it responds to interactions, handles data, or behaves once a property value is set) independently of a visual style and template. This approach means you can tailor the appearance of any control to fit a special use case, or to match your brand identity. Changes to control styling can even be performed at runtime. Uno Platform leverages this to offer multiple built-in design systems influenced by guidance from popular platforms.
 
-Under the hood, your app can use either a Native or Skia-based approach for rendering.
-
-The Native rendering approach uses the built-in native UI primitives on each target, for iOS, Android, and WebAssembly. These build up a native view hierarchy and draw the visuals using native OS capabilities. That way, you still get all the benefits of the native world, such as localization and accessibility, but without giving up the rich control of pixel-level details in your app experience.
-
-The [Skia-based](xref:uno.features.renderer.skia) rendering approach uses a Skia-based canvas for fast and rich rendering across platforms and gets the exact same behavior across all platforms. You can also use the Composition API to get advanced rendering and animations across platforms.
+Under the hood, your app is rendered with [Skia](xref:uno.features.renderer.skia), which draws the UI on a canvas for fast and rich rendering and gets the exact same behavior across all platforms. You can also use the Composition API to get advanced rendering and animations across platforms, and [embed native platform controls](xref:Uno.Skia.Embedding.Native) where you need them.
 
 All of the above remains possible without needing to replicate the same design for each target platform.
 

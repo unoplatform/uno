@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference BreadcrumbBarItem.cpp, tag winui3/release/1.5.3, commit 2a60e27
+// MUX Reference BreadcrumbBarItem.cpp
 
 #nullable enable
 
 using System.Collections.ObjectModel;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers.Boxes;
 using Windows.System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -345,8 +346,8 @@ public partial class BreadcrumbBarItem : ContentControl
 					ellipsisDropDownItemImpl.SetIndex(itemCount - index);
 				}
 
-				element.SetValue(AutomationProperties.PositionInSetProperty, index + 1);
-				element.SetValue(AutomationProperties.SizeOfSetProperty, itemCount);
+				element.SetValue(AutomationProperties.PositionInSetProperty, Boxer.Box(index + 1));
+				element.SetValue(AutomationProperties.SizeOfSetProperty, Boxer.Box(itemCount));
 			}
 		}
 	}

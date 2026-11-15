@@ -1,6 +1,5 @@
-﻿using Microsoft.UI.Xaml.Controls;
-
-using View = Microsoft.UI.Xaml.UIElement;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Controls.Legacy
 {
@@ -12,7 +11,7 @@ namespace Uno.UI.Controls.Legacy
 		/// <param name="row">The row to be set for the control</param>
 		/// <returns>The view to be used in a fluent expression.</returns>
 		public static T GridRow<T>(this T view, int row)
-			where T : View
+			where T : FrameworkElement
 		{
 			Grid.SetRow(view, row);
 
@@ -25,7 +24,7 @@ namespace Uno.UI.Controls.Legacy
 		/// <param name="rowSpan">The row to be set for the control</param>
 		/// <returns>The view to be used in a fluent expression.</returns>
 		public static T GridRowSpan<T>(this T view, int rowSpan)
-			where T : View
+			where T : FrameworkElement
 		{
 			Grid.SetRowSpan(view, rowSpan);
 
@@ -38,7 +37,7 @@ namespace Uno.UI.Controls.Legacy
 		/// <param name="column">The column to be set for the control</param>
 		/// <returns>The view to be used in a fluent expression.</returns>
 		public static T GridColumn<T>(this T view, int column)
-			where T : View
+			where T : FrameworkElement
 		{
 			Grid.SetColumn(view, column);
 
@@ -52,7 +51,7 @@ namespace Uno.UI.Controls.Legacy
 		/// <param name="columnSpan">The column to be set for the control</param>
 		/// <returns>The view to be used in a fluent expression.</returns>
 		public static T GridColumnSpan<T>(this T view, int columnSpan)
-			where T : View
+			where T : FrameworkElement
 		{
 			Grid.SetColumnSpan(view, columnSpan);
 
@@ -65,7 +64,7 @@ namespace Uno.UI.Controls.Legacy
 		/// <param name="column">The column to be set for the control</param>
 		/// <returns>The view to be used in a fluent expression.</returns>
 		public static T GridPosition<T>(this T view, int row, int column)
-			where T : View
+			where T : FrameworkElement
 		{
 			Grid.SetColumn(view, column);
 			Grid.SetRow(view, row);

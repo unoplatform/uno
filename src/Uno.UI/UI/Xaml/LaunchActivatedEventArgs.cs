@@ -6,10 +6,6 @@ namespace Microsoft.UI.Xaml
 {
 	public sealed partial class LaunchActivatedEventArgs
 	{
-		internal LaunchActivatedEventArgs() : this(ActivationKind.Launch, null)
-		{
-		}
-
 		internal LaunchActivatedEventArgs(ActivationKind kind, string? arguments)
 		{
 			Arguments = arguments;

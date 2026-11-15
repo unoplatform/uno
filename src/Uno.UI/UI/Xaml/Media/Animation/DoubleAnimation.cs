@@ -8,6 +8,7 @@ using Uno.Diagnostics.Eventing;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using System.Globalization;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -56,11 +57,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		bool IAnimation<float>.EnableDependentAnimation => EnableDependentAnimation;
 
 		public static DependencyProperty EnableDependentAnimationProperty { get; } =
-			DependencyProperty.Register("EnableDependentAnimation", typeof(bool), typeof(DoubleAnimation), new FrameworkPropertyMetadata(false));
+			DependencyProperty.Register("EnableDependentAnimation", typeof(bool), typeof(DoubleAnimation), new FrameworkPropertyMetadata(BoolBoxes.False));
 
-		public IEasingFunction EasingFunction
+		public EasingFunctionBase EasingFunction
 		{
-			get => (IEasingFunction)GetValue(EasingFunctionProperty);
+			get => (EasingFunctionBase)GetValue(EasingFunctionProperty);
 			set => SetValue(EasingFunctionProperty, value);
 		}
 
@@ -73,7 +74,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		float? IAnimation<float>.By => (float?)By;
 
 		public static DependencyProperty EasingFunctionProperty { get; } =
-			DependencyProperty.Register("EasingFunction", typeof(IEasingFunction), typeof(DoubleAnimation), new FrameworkPropertyMetadata(null));
+			DependencyProperty.Register("EasingFunction", typeof(EasingFunctionBase), typeof(DoubleAnimation), new FrameworkPropertyMetadata(null));
 
 		void ITimeline.Begin() => _animationImplementation.Begin();
 

@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net10.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<OutputType>Exe</OutputType>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<!-- CI installs only the SDK pinned in build/ci/net11; roll forward like Uno.NUnitTransformTool. -->
+		<RollForward>Major</RollForward>
+	</PropertyGroup>
+</Project>

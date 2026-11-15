@@ -12,10 +12,28 @@ using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_TextBlock
 	{
 		private const double DefaultFontSize = 14.0;
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+		public void When_Nested_Inline_Change_Publishes_Final_Tree()
+		{
+			var textBlock = new TextBlock();
+			var span = new Span();
+			textBlock.Inlines.Add(span);
+			Assert.AreEqual(0, textBlock.Inlines.TraversedTree.leafTree.Length);
+			var observedLeafCount = -1;
+			textBlock.RegisterPropertyChangedCallback(TextBlock.TextProperty, (_, _) =>
+				observedLeafCount = textBlock.Inlines.TraversedTree.leafTree.Length);
+
+			span.Inlines.Add(new Run { Text = "final tree" });
+
+			Assert.AreEqual("final tree", textBlock.Text);
+			Assert.AreEqual(1, observedLeafCount);
+		}
 
 		[TestMethod]
 		public void When_Default_FontSize()

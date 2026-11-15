@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Input;
@@ -8,7 +8,7 @@ using Uno.UI.Composition;
 
 namespace Uno.UI.Tests.CompositionTests;
 
-[TestClass]
+[UITestClass]
 public class CompositionPropertySetTests
 {
 	[TestMethod]
@@ -108,23 +108,34 @@ public class CompositionPropertySetTests
 	{
 		public double RasterizationScale => 1;
 
+		// No recording happens through this double; the process default is the right fallback.
+		public Uno.UI.Composition.Drawing.IDrawingFactory Renderer => null;
+
 		public event EventHandler RasterizationScaleChanged
 		{
 			add { }
 			remove { }
 		}
 
-		public void AddDamage(SKRect bounds)
+		public void AddDamage(Windows.Foundation.Rect bounds)
 		{
 		}
 
-		public void AddDamage(SKPath region)
+		public void AddDamage(Uno.UI.Composition.Drawing.IGeometry region)
 		{
 		}
 
 		public void RequestNewFrame()
 		{
 		}
+
+		public event EventHandler<long> FrameStarting
+		{
+			add { }
+			remove { }
+		}
+
+		public long FrameIntervalInTicks => TimeSpan.TicksPerSecond / 60;
 
 		public void TryRedirectForManipulation(PointerPoint pointerPoint, InteractionTracker tracker)
 		{
