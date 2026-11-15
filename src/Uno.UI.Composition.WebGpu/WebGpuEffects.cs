@@ -243,11 +243,11 @@ internal sealed unsafe partial class WebGpuEffects
 		_f.LayerDepth = saved;
 	}
 
-	// Blur pyramid over a REGION of `src`: extract the device-px rect (rx,ry,rw,rh) out of the fullW×fullH source
-	// into a sigma-scaled downsample pyramid (depth set by the requested blur radius), then a fixed 9-tap separable
-	// gaussian on the small top level. Returns the region-sized blurred view; the caller maps screen px -> region uv
-	// in the composite (bilinear upscales it). Only the region behind the acrylic element is ever processed, and the
-	// per-pass kernel is constant, so a large blur is a few tiny passes instead of a full-frame O(sigma) kernel.
+	// Blur over a REGION of `src`: extract the device-px rect (rx,ry,rw,rh) out of the fullW×fullH source, box-average
+	// it down by 2^levels (depth set by the requested blur radius), then run a fixed 9-tap gaussian on that small top
+	// level. Returns the region-sized blurred view; the caller maps screen px -> region uv in the composite (bilinear
+	// upscales it). Only the region behind the acrylic element is ever processed, and the kernel is constant, so a
+	// large blur is a couple of tiny passes instead of a full-frame O(sigma) kernel.
 	internal TextureView* BlurPyramidRegion(TextureView* src, int fullW, int fullH, float rx, float ry, float rw, float rh, float sigmaX, float sigmaY, TextureView* dst = null)
 	{
 		int iw = Math.Max(1, (int)MathF.Round(rw)), ih = Math.Max(1, (int)MathF.Round(rh));
@@ -256,26 +256,27 @@ internal sealed unsafe partial class WebGpuEffects
 
 		var origin = new Vector2(rx / fullW, ry / fullH);
 		var scale = new Vector2(rw / fullW, rh / fullH);
-		int cw = Math.Max(1, iw >> 1), ch = Math.Max(1, ih >> 1);
+		// The whole downsample in one pass: 2^(levels-1) linear taps per axis, spread over each output pixel's actual
+		// footprint so sizes that don't divide evenly are still covered.
+		int cw = Math.Max(1, iw >> levels), ch = Math.Max(1, ih >> levels);
 		var cur = _d.Pool.Rent(cw, ch, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
-		BlurPass(src, cur, default, default, downsample: true, origin, scale);   // extract sub-rect + downsample ×2
-		for (int l = 2; l <= levels; l++)
-		{
-			int nw = Math.Max(1, cw >> 1), nh = Math.Max(1, ch >> 1);
-			var nx = _d.Pool.Rent(nw, nh, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
-			BlurPass(cur, nx, default, default, downsample: true, Vector2.Zero, Vector2.One);
-			// The consumed level is safe to re-rent within the frame: passes encode sequentially into the one
-			// frame encoder, so a later renter's write is ordered after this read.
-			_d.Pool.Return(cur);
-			cur = nx; cw = nw; ch = nh;
-		}
-		var hh = _d.Pool.Rent(cw, ch, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
-		BlurPass(cur, hh, new Vector2(1f, 0f), new Vector2(1f / cw, 0f), downsample: false, Vector2.Zero, Vector2.One);
-		_d.Pool.Return(cur);
+		var taps = 1 << (levels - 1);
+		BlurPass(src, cur, default, new Vector2(scale.X / cw / taps, scale.Y / ch / taps), 3f, origin, scale, taps);
 		// The final pass lands in the caller's texture when it brought one (a blur deferred behind the frame's bakes).
 		var vv = dst != null ? dst : _d.Pool.Rent(cw, ch, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
-		BlurPass(hh, vv, new Vector2(0f, 1f), new Vector2(0f, 1f / ch), downsample: false, Vector2.Zero, Vector2.One);
-		_d.Pool.Return(hh);
+		if (cw * ch <= 128 * 128)
+		{
+			// A small top level: the gaussian in both axes at once (its 81-tap product kernel) costs less than a pass.
+			BlurPass(cur, vv, default, new Vector2(1f / cw, 1f / ch), 2f, Vector2.Zero, Vector2.One);
+		}
+		else
+		{
+			var hh = _d.Pool.Rent(cw, ch, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+			BlurPass(cur, hh, new Vector2(1f, 0f), new Vector2(1f / cw, 0f), downsample: false, Vector2.Zero, Vector2.One);
+			BlurPass(hh, vv, new Vector2(0f, 1f), new Vector2(0f, 1f / ch), downsample: false, Vector2.Zero, Vector2.One);
+			_d.Pool.Return(hh);
+		}
+		_d.Pool.Return(cur);
 		return vv;
 	}
 
@@ -444,10 +445,13 @@ internal sealed unsafe partial class WebGpuEffects
 	}
 
 	private void BlurPass(TextureView* src, TextureView* dst, Vector2 dir, Vector2 texel, bool downsample, Vector2 srcOrigin, Vector2 srcScale)
+		=> BlurPass(src, dst, dir, texel, downsample ? 1f : 0f, srcOrigin, srcScale);
+
+	private void BlurPass(TextureView* src, TextureView* dst, Vector2 dir, Vector2 texel, float mode, Vector2 srcOrigin, Vector2 srcScale, float taps = 0f)
 	{
 		var bu = new float[12];
 		bu[0] = dir.X; bu[1] = dir.Y; bu[2] = texel.X; bu[3] = texel.Y;
-		bu[4] = downsample ? 1f : 0f; bu[5] = 0f;
+		bu[4] = mode; bu[5] = taps;
 		bu[6] = srcOrigin.X; bu[7] = srcOrigin.Y; bu[8] = srcScale.X; bu[9] = srcScale.Y;
 		var ubuf = _f.MakeUniform(48);
 		fixed (float* p = bu) { Api.QueueWriteBuffer(_d.Q, ubuf, 0, p, 48); }
