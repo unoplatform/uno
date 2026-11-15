@@ -42,6 +42,9 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 	private static readonly ConditionalWeakTable<Windows.Media.Playback.MediaPlayer, SharedMediaPlayerExtension> _mediaPlayerToExtension = new();
 
 	private readonly IDisposable _timerDisposable;
+	private readonly object _pendingStopGate = new();
+	private Task _pendingStop = Task.CompletedTask;
+	private bool _isDisposed;
 	private int _playlistIndex = -1; // -1 if no playlist or empty playlist, otherwise the 0-based index of the current track in the playlist
 	private MediaPlaybackList? _playlist; // only set and used if the current _player.Source is a playlist
 
@@ -110,7 +113,7 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 			}
 
 			// This doesn't start the playback. It just force-loads the media. This is the behaviour only when --start-paused
-			VlcPlayer.Play();
+			RunAfterPendingStop(() => VlcPlayer.Play());
 		}
 	}
 
@@ -315,9 +318,52 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 
 	public void SetSurfaceSize(Size size) => throw new NotImplementedException();
 
-	public void Play() => VlcPlayer.Play();
+	public void Play() => RunAfterPendingStop(() => VlcPlayer.Play());
 
-	public void Pause() => VlcPlayer.Pause();
+	public void Pause() => RunAfterPendingStop(() => VlcPlayer.Pause());
+
+	// A Stop that is still waiting for a thread would otherwise run after, and undo, whatever was asked for later.
+	private void RunAfterPendingStop(Action vlcCall)
+	{
+		lock (_pendingStopGate)
+		{
+			if (_isDisposed)
+			{
+				return;
+			}
+
+			if (!_pendingStop.IsCompleted)
+			{
+				QueueOnPendingStop(() =>
+				{
+					if (!Volatile.Read(ref _isDisposed))
+					{
+						vlcCall();
+					}
+				});
+				return;
+			}
+		}
+
+		vlcCall();
+	}
+
+	// Callers hold _pendingStopGate, so that no link of the chain is lost.
+	private void QueueOnPendingStop(Action vlcCall)
+		=> _pendingStop = _pendingStop.ContinueWith(_ =>
+		{
+			try
+			{
+				vlcCall();
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				{
+					this.Log().Error("A queued media player command failed.", e);
+				}
+			}
+		}, TaskScheduler.Default);
 
 	public void Stop()
 	{
@@ -327,10 +373,19 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 			// and needs the window message queue to continue pumping before returning, so calling it on the UI
 			// thread (which also pumps the queue) deadlocks. This is not a problem on X11 because we run the X11
 			// message queue on a separate thread.
-			Task.Run(() =>
+			lock (_pendingStopGate)
 			{
-				VlcPlayer.Stop();
-			});
+				if (!_isDisposed)
+				{
+					QueueOnPendingStop(() =>
+					{
+						if (!Volatile.Read(ref _isDisposed))
+						{
+							VlcPlayer.Stop();
+						}
+					});
+				}
+			}
 		}
 		else
 		{
@@ -376,6 +431,25 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 		{
 			_timerDisposable?.Dispose();
 			_mediaPlayerToExtension.Remove(Player);
+
+			lock (_pendingStopGate)
+			{
+				if (_isDisposed)
+				{
+					return;
+				}
+
+				_isDisposed = true;
+
+				// A queued call that is already running holds the native player, so releasing it waits its turn. Commands still
+				// queued see _isDisposed and do nothing. Inline calls aren't tracked: Uno makes them on the UI thread.
+				if (!_pendingStop.IsCompleted)
+				{
+					QueueOnPendingStop(() => VlcPlayer.Dispose());
+					return;
+				}
+			}
+
 			VlcPlayer.Dispose();
 		}
 		catch (Exception)
@@ -441,7 +515,7 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 				url = url.TrimStart("file:///").Replace('/', '\\');
 				VlcPlayer.Media = new LibVLCSharp.Shared.Media(_vlc, url);
 				// This doesn't start the playback. It just force-loads the media. This is the behaviour only when --start-paused
-				VlcPlayer.Play();
+				RunAfterPendingStop(() => VlcPlayer.Play());
 			}
 			Events?.RaiseMediaEnded();
 			Player.PlaybackSession.PlaybackState = MediaPlaybackState.None;

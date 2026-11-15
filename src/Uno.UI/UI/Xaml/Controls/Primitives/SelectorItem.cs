@@ -535,12 +535,35 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				var index = lvb.IndexFromContainer(this);
 				lvb.FocusedIndexContainerItem = (index, this, lvb.ItemFromIndex(index));
 			}
+
+			NotifySelectorOfFocusChange(e);
 		}
 
 		protected override void OnLostFocus(RoutedEventArgs e)
 		{
 			base.OnLostFocus(e);
 			ChangeVisualState(true);
+
+			NotifySelectorOfFocusChange(e);
+		}
+
+		// Like the FocusChanged of WinUI's SelectorItem subclasses; only ListViewBaseItem also reports focus changes inside its content.
+		private void NotifySelectorOfFocusChange(RoutedEventArgs e)
+		{
+			if (Selector is not { } selector
+				|| (!IsListViewBaseItem && e.OriginalSource != this))
+			{
+				return;
+			}
+
+			if (HasFocus())
+			{
+				selector.ItemFocused(this);
+			}
+			else
+			{
+				selector.ItemUnfocused(this);
+			}
 		}
 
 		private IDisposable InterceptSetNeedsLayout()

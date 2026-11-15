@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Automation.Text;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI;
 using Uno.UI.RuntimeTests.Helpers;
@@ -498,24 +499,41 @@ public partial class Given_SkiaAndroidAccessibilityNode
 		Assert.IsNotNull(firstId);
 		Assert.IsNotNull(secondId);
 		Assert.AreNotEqual(firstId, secondId);
+		// Inside each peer's area of the host, wherever the host is laid out.
 		var scale = host.XamlRoot!.RasterizationScale;
-		Assert.AreEqual(
-			firstId,
-			AccessibilityPeerHelper.AndroidAccessibilityHitTestAccessor?.Invoke(
-				host.XamlRoot!,
-				20 * scale,
-				15 * scale));
-		Assert.AreEqual(
-			secondId,
-			AccessibilityPeerHelper.AndroidAccessibilityHitTestAccessor?.Invoke(
-				host.XamlRoot!,
-				60 * scale,
-				15 * scale));
+		var firstPoint = host.TransformToVisual(null).TransformPoint(new Windows.Foundation.Point(20, 15));
+		var secondPoint = host.TransformToVisual(null).TransformPoint(new Windows.Foundation.Point(60, 15));
+		var firstHit = AccessibilityPeerHelper.AndroidAccessibilityHitTestAccessor?.Invoke(
+			host.XamlRoot!,
+			firstPoint.X * scale,
+			firstPoint.Y * scale);
+		Assert.AreEqual(firstId, firstHit, DescribeHit(host.XamlRoot!, firstPoint, firstHit));
+		var secondHit = AccessibilityPeerHelper.AndroidAccessibilityHitTestAccessor?.Invoke(
+			host.XamlRoot!,
+			secondPoint.X * scale,
+			secondPoint.Y * scale);
+		Assert.AreEqual(secondId, secondHit, DescribeHit(host.XamlRoot!, secondPoint, secondHit));
 
 		Assert.IsTrue(AccessibilityPeerHelper.AndroidAccessibilityRawActionAccessor?.Invoke(firstId.Value, 0x10));
 		Assert.IsTrue(AccessibilityPeerHelper.AndroidAccessibilityRawActionAccessor?.Invoke(secondId.Value, 0x10));
 		Assert.IsTrue(host.FirstPeer.WasInvoked);
 		Assert.IsTrue(host.SecondPeer.WasInvoked);
+	}
+
+	// What a hit test found instead: a miss has only been seen on CI.
+	private static string DescribeHit(XamlRoot root, Windows.Foundation.Point point, int? hitId)
+	{
+		var scale = root.RasterizationScale;
+		var physical = new Windows.Foundation.Point(point.X * scale, point.Y * scale);
+		var elements = VisualTreeHelper.FindElementsInHostCoordinates(point, root.Content)
+			.Take(6)
+			.Select(e => e is FrameworkElement { Name: { Length: > 0 } name } ? $"{e.GetType().Name}#{name}" : e.GetType().Name);
+		var nodes = GetAllNodes(root)
+			.Where(n => n.Bounds.Contains(physical))
+			.Select(n => $"{n.ClassName}:{n.Name}@{n.Bounds}");
+		var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(root).Select(p => p.Child?.GetType().Name ?? "<empty>");
+		return $"hit={hitId} at {point}; elements=[{string.Join(", ", elements)}]; nodes=[{string.Join(", ", nodes)}]; " +
+			$"popups=[{string.Join(", ", popups)}]; {AccessibilityPeerHelper.AndroidAccessibilityDiagnosticsAccessor?.Invoke(root)}";
 	}
 
 	[TestMethod]
@@ -712,6 +730,10 @@ public partial class Given_SkiaAndroidAccessibilityNode
 		{
 			Width = 100;
 			Height = 100;
+
+			// The native hit test starts at the XAML element under the point and walks up: without a background the host isn't
+			// hit, and an accessible element above it (the runner's content presenter on CI) wins over its peers.
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
 			FirstPeer = new SharedOwnerInvokePeer(this, "Shared Owner A", 10);
 			SecondPeer = new SharedOwnerInvokePeer(this, "Shared Owner B", 50);
 		}
@@ -745,12 +767,14 @@ public partial class Given_SkiaAndroidAccessibilityNode
 
 	private sealed class SharedOwnerInvokePeer : FrameworkElementAutomationPeer, IInvokeProvider
 	{
+		private readonly FrameworkElement _owner;
 		private readonly string _name;
 		private readonly double _x;
 
 		internal SharedOwnerInvokePeer(FrameworkElement owner, string name, double x)
 			: base(owner)
 		{
+			_owner = owner;
 			_name = name;
 			_x = x;
 		}
@@ -763,7 +787,9 @@ public partial class Given_SkiaAndroidAccessibilityNode
 
 		protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Button;
 
-		protected override Windows.Foundation.Rect GetBoundingRectangleCore() => new(_x, 10, 30, 20);
+		// In window coordinates, as WinUI reports them, so the area follows the owner wherever it is laid out.
+		protected override Windows.Foundation.Rect GetBoundingRectangleCore()
+			=> _owner.TransformToVisual(null).TransformBounds(new Windows.Foundation.Rect(_x, 10, 30, 20));
 
 		protected override object? GetPatternCore(PatternInterface patternInterface)
 			=> patternInterface == PatternInterface.Invoke ? this : base.GetPatternCore(patternInterface);

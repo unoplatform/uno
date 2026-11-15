@@ -218,7 +218,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	/// </summary>
 	internal Win32RawElementProvider? GetOrCreateProvider(UIElement element)
 	{
-		if (!IsAccessibilityEnabled || Volatile.Read(ref _providerCleanupDepth) > 0)
+		if (!IsAccessibilityEnabled)
 		{
 			return null;
 		}
@@ -226,6 +226,11 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		if (TryGetLiveProvider(element, out var existing))
 		{
 			return existing;
+		}
+
+		if (IsCleaningUpProviders)
+		{
+			return FindLiveProviderForCachedPeer(element);
 		}
 
 		var peer = element.GetOrCreateAutomationPeer();
@@ -275,7 +280,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	internal Win32RawElementProvider? GetProvider(UIElement element)
 	{
-		if (!IsAccessibilityEnabled || Volatile.Read(ref _providerCleanupDepth) > 0)
+		if (!IsAccessibilityEnabled)
 		{
 			return null;
 		}
@@ -283,6 +288,11 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		if (TryGetLiveProvider(element, out var provider))
 		{
 			return provider;
+		}
+
+		if (IsCleaningUpProviders)
+		{
+			return FindLiveProviderForCachedPeer(element);
 		}
 
 		var peer = element.GetOrCreateAutomationPeer();
@@ -302,9 +312,14 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 	private Win32RawElementProvider? GetOrCreateProviderForResolvedPeer(AutomationPeer resolvedPeer)
 	{
-		if (!IsAccessibilityEnabled || Volatile.Read(ref _providerCleanupDepth) > 0)
+		if (!IsAccessibilityEnabled)
 		{
 			return null;
+		}
+
+		if (IsCleaningUpProviders)
+		{
+			return FindLiveProviderForResolvedPeer(resolvedPeer);
 		}
 
 		// Fast path: already have a provider keyed by this exact peer.
@@ -383,6 +398,31 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 			return provider;
 		}
+	}
+
+	// UiaDisconnectProvider calls back into the provider it disconnects (e.g. Navigate(Parent)), so lookups
+	// made during CleanupProviders must find connected providers without creating or registering any.
+	private bool IsCleaningUpProviders => Volatile.Read(ref _providerCleanupDepth) > 0;
+
+	private Win32RawElementProvider? FindLiveProviderForCachedPeer(UIElement element)
+		=> element.CachedAutomationPeer is { } peer
+			? FindLiveProviderForResolvedPeer(peer.ResolveProviderPeer(resolveEventsSource: true))
+			: null;
+
+	private Win32RawElementProvider? FindLiveProviderForResolvedPeer(AutomationPeer resolvedPeer)
+	{
+		if (TryGetLiveProvider(resolvedPeer, out var byPeer))
+		{
+			return byPeer;
+		}
+
+		// Same match as the element-keyed reuse in GetOrCreateProviderForResolvedPeer, so a virtual
+		// peer never resolves to the provider of the element that hosts it.
+		return resolvedPeer.TryGetProviderOwner(out var owner)
+			&& TryGetLiveProvider(owner, out var byOwner)
+			&& byOwner.RepresentsPeer(resolvedPeer)
+				? byOwner
+				: null;
 	}
 
 	private void RegisterProviderOwner(UIElement owner, Win32RawElementProvider provider)
@@ -951,7 +991,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	{
 		try
 		{
-			_ = Win32UIAutomationInterop.UiaRaiseStructureChangedEvent(provider, type, runtimeId);
+			_ = Win32UIAutomationInterop.UiaRaiseStructureChangedEvent(provider, type, runtimeId, runtimeId?.Length ?? 0);
 		}
 		catch (Exception ex)
 		{

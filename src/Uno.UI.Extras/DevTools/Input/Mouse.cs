@@ -393,8 +393,8 @@ internal partial class Mouse : IInjectedPointer, IDisposable
 		GetWindowRect(WinRT.Interop.WindowNative.GetWindowHandle(TestServices_WindowHelper_CurrentTestWindow), ref rect);
 		var scale = TestServices_WindowHelper_CurrentTestWindow?.Content.XamlRoot.RasterizationScale ?? 1;
 
-		var screenX = (rect.Left + x) * scale;
-		var screenY = (rect.Top + y) * scale;
+		var screenX = rect.Left + x * scale;
+		var screenY = rect.Top + y * scale;
 
 		var screenWidth = GetSystemMetrics(SM_CXSCREEN);
 		var screenHeight = GetSystemMetrics(SM_CYSCREEN);

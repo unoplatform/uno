@@ -190,6 +190,10 @@ internal static partial class X11Helper
 	public static void SetMotifWMDecorations(X11Window x11Window, bool on, IntPtr decorations)
 		=> SetMotifWMHints(x11Window, on, decorations, null);
 
+	/// <summary>Replaces the whole decorations word, keeping the functions word as it is.</summary>
+	public static void SetMotifWMDecorationsWord(X11Window x11Window, IntPtr decorations)
+		=> SetMotifWMHints(x11Window, true, decorations, null, replaceDecorations: true);
+
 	public static void SetMotifWMFunctions(X11Window x11Window, bool on, IntPtr functions)
 		=> SetMotifWMHints(x11Window, on, null, functions);
 
@@ -231,7 +235,7 @@ internal static partial class X11Helper
 	// #define MWM_DECOR_MENU		(1L << 4)
 	// #define MWM_DECOR_MINIMIZE	(1L << 5)
 	// #define MWM_DECOR_MAXIMIZE	(1L << 6)
-	private unsafe static void SetMotifWMHints(X11Window x11Window, bool on, IntPtr? decorations, IntPtr? functions)
+	private unsafe static void SetMotifWMHints(X11Window x11Window, bool on, IntPtr? decorations, IntPtr? functions, bool replaceDecorations = false)
 	{
 		using var lockDiposable = XLock(x11Window.Display);
 
@@ -299,7 +303,11 @@ internal static partial class X11Helper
 		{
 			arr[0] |= (IntPtr)MotifFlags.Decorations;
 
-			if ((arr[2] & (IntPtr)MotifDecorations.All) != 0)
+			if (replaceDecorations)
+			{
+				arr[2] = d;
+			}
+			else if ((arr[2] & (IntPtr)MotifDecorations.All) != 0)
 			{
 				// Remove the All decoration to be able to turn each decoration or or off individually.
 				var allDecorations = (int[])Enum.GetValuesAsUnderlyingType<MotifDecorations>();

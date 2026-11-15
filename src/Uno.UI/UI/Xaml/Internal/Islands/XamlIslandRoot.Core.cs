@@ -28,8 +28,9 @@ internal enum BackdropBackgroundMode
 	Transparent,
 
 	/// <summary>
-	/// A backdrop was requested but this platform renders no material. The root paints the window
-	/// background instead - Uno's equivalent of the solid colour MUX's MicaController falls back to.
+	/// A backdrop was requested but the material can't reach the screen: this platform renders none, or
+	/// the window can't show it right now. The root paints the window background instead - Uno's
+	/// equivalent of the solid colour MUX's MicaController falls back to.
 	/// </summary>
 	Fallback,
 }

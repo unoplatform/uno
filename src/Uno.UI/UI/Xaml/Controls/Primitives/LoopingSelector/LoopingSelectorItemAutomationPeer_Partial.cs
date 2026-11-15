@@ -14,7 +14,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	partial class LoopingSelectorItemAutomationPeer
 	{
 
-		internal LoopingSelectorItemAutomationPeer(LoopingSelectorItem pOwner)
+		// Uno: passing the owner to the base constructor replaces CreateInstanceWithOwner in InitializeImpl.
+		internal LoopingSelectorItemAutomationPeer(LoopingSelectorItem pOwner) : base(pOwner)
 		{
 			InitializeImpl(pOwner);
 		}

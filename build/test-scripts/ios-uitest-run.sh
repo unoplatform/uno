@@ -18,6 +18,7 @@
 #      maintains the failed-tests re-run list for retry stages.
 # ===========================================================================
 set -euo pipefail
+set -x
 IFS=$'\n\t'
 
 # Ensure this script has no BOM even if it ever gets committed with one again
@@ -186,9 +187,10 @@ if [ -z "${UNO_UITEST_SIMULATOR_VERSION-}" ]; then
 
 	# simctl can list an incomplete set right after a runtime install or an Xcode switch.
 	for attempt in 1 2 3 4 5 6; do
-		UNO_UITEST_SIMULATOR_VERSION=$(xcrun simctl list runtimes --json | jq -r --arg ver "$IOS_SDK_VERSION" '
+		UNO_UITEST_SIMULATOR_VERSION=$(xcrun simctl list runtimes --json | jq -r --arg ver "$IOS_SDK_VERSION" --arg name "$UNO_UITEST_SIMULATOR_NAME" '
 			.runtimes
-			| map(select(.isAvailable == true and (.identifier | test("SimRuntime\\.iOS")) and (.version | startswith($ver))))
+			| map(select(.isAvailable == true and (.identifier | test("SimRuntime\\.iOS")) and (.version | startswith($ver))
+				and any(.supportedDeviceTypes[]?; .name == $name)))
 			| sort_by(.version | split(".") | map(tonumber? // 0))
 			| .[-1].identifier // empty')
 

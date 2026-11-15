@@ -534,6 +534,21 @@ public class Given_CompositionSpriteShape
 	}
 #endif
 
+	// Runs on both Uno and native WinUI targets: the default is a WinUI contract
+	// (native default is 1), so this also confirms the value on WinUI itself.
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25351")]
+	public async Task When_Default_StrokeMiterLimit()
+	{
+		var anchor = new Border { Width = 1, Height = 1 };
+		await UITestHelper.Load(anchor);
+		var compositor = ElementCompositionPreview.GetElementVisual(anchor).Compositor;
+		var shape = compositor.CreateSpriteShape();
+
+		Assert.AreEqual(1f, shape.StrokeMiterLimit);
+	}
+
 	// Composition dash intervals are absolute (geometry units), unlike XAML Shape.StrokeDashArray which is in
 	// multiples of StrokeThickness. A {10, 10} dash at thickness 6 must alternate every 10px, not every 60px.
 	[TestMethod]
