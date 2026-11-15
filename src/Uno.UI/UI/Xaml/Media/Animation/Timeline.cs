@@ -58,7 +58,31 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// An internally-used property which is essentially equivalent to <see cref="Storyboard.GetCurrentState"/>, except that it 
 		/// distinguishes <see cref="TimelineState.Active"/> from <see cref="TimelineState.Paused"/>.
 		/// </summary>
-		internal TimelineState State { get; private protected set; }
+		private TimelineState _state = TimelineState.Stopped;
+
+		internal TimelineState State
+		{
+			get => _state;
+			private protected set
+			{
+				var oldState = _state;
+				if (oldState != value)
+				{
+					_state = value;
+					OnStateChanged(oldState, value);
+				}
+			}
+		}
+
+		private protected virtual void OnStateChanged(TimelineState oldState, TimelineState newState)
+		{
+		}
+
+		/// <summary>
+		/// Whether this timeline ends on its own, like WinUI's CTimeline::IsFinite.
+		/// </summary>
+		internal virtual bool IsFinite
+			=> RepeatBehavior.Type != RepeatBehaviorType.Forever && Duration.Type != DurationType.Forever;
 
 		public TimeSpan? BeginTime
 		{

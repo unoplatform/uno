@@ -32,7 +32,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			public const int StoryBoard_Resume = 4;
 		}
 
+		private static int _activeFiniteCount;
+
 		private readonly Stopwatch _activeDuration = new Stopwatch();
+		private bool _isCountedAsActiveFinite;
 		private int _replayCount = 1;
 		private int _runningChildren;
 		private bool _hasFillingChildren;
@@ -41,6 +44,53 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public Storyboard()
 		{
 			Children = new TimelineCollection(owner: this, isAutoPropertyInheritanceEnabled: false);
+		}
+
+		/// <summary>
+		/// Number of running storyboards that end on their own. Test automation waits for it to drop to zero
+		/// before considering the UI idle, like WinUI's HasAnimations/AnimationsComplete events.
+		/// </summary>
+		internal static int ActiveFiniteCount => Volatile.Read(ref _activeFiniteCount);
+
+		internal override bool IsFinite
+		{
+			get
+			{
+				if (!base.IsFinite)
+				{
+					return false;
+				}
+
+				if (Children is { } children)
+				{
+					for (var i = 0; i < children.Count; i++)
+					{
+						if (!children[i].IsFinite)
+						{
+							return false;
+						}
+					}
+				}
+
+				return true;
+			}
+		}
+
+		private protected override void OnStateChanged(TimelineState oldState, TimelineState newState)
+		{
+			var isActiveFinite = newState == TimelineState.Active && IsFinite;
+			if (isActiveFinite != _isCountedAsActiveFinite)
+			{
+				_isCountedAsActiveFinite = isActiveFinite;
+				if (isActiveFinite)
+				{
+					Interlocked.Increment(ref _activeFiniteCount);
+				}
+				else
+				{
+					Interlocked.Decrement(ref _activeFiniteCount);
+				}
+			}
 		}
 
 		public TimelineCollection Children { get; }
