@@ -4,7 +4,7 @@
 //     LottieGen version: 7.0.2+gebbbdfc697
 // </auto-generated>
 //------------------------------------------------------------------------------
-// MUX Reference AnimatedAcceptVisualSource.cpp, commit 5f9e85113
+// MUX Reference AnimatedAcceptVisualSource.cpp
 
 using System;
 using System.Collections.Generic;

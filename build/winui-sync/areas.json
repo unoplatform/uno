@@ -173,6 +173,60 @@
           "uno": "src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml"
         }
       ]
+    },
+    {
+      "id": "icons",
+      "title": "Icons",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
+      "upstream": {
+        "sources": [
+          "controls/dev/AnimatedIcon",
+          "controls/dev/IconSource",
+          "controls/dev/ImageIcon",
+          "controls/dev/Generated/AnimatedIcon.properties.cpp",
+          "controls/dev/Generated/AnimatedIcon.properties.h",
+          "controls/dev/Generated/AnimatedIconSource.properties.cpp",
+          "controls/dev/Generated/AnimatedIconSource.properties.h",
+          "controls/dev/Generated/AnimatedIconTestHooks.properties.cpp",
+          "controls/dev/Generated/ImageIcon.properties.cpp",
+          "controls/dev/Generated/ImageIcon.properties.h",
+          "controls/dev/Generated/ImageIconSource.properties.cpp",
+          "controls/dev/Generated/ImageIconSource.properties.h",
+          "dxaml/xcp/core/core/elements/icon.cpp",
+          "dxaml/xcp/core/inc/icon.h",
+          "dxaml/xcp/dxaml/lib/IconSource_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/IconSource_Partial.h",
+          "dxaml/xcp/dxaml/lib/BitmapIconSource_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/BitmapIconSource_Partial.h",
+          "dxaml/xcp/dxaml/lib/FontIconSource_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/FontIconSource_Partial.h",
+          "dxaml/xcp/dxaml/lib/PathIconSource_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/PathIconSource_Partial.h",
+          "dxaml/xcp/dxaml/lib/SymbolIconSource_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/SymbolIconSource_Partial.h",
+          "dxaml/xcp/dxaml/lib/SymbolIcon_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/SymbolIcon_Partial.h"
+        ],
+        "tests": [
+          "controls/dev/AnimatedIcon/APITests",
+          "controls/dev/IconSource/APITests",
+          "controls/dev/ImageIcon/APITests",
+          "controls/dev/ImageIcon/InteractionTests"
+        ]
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/AnimatedIcon",
+          "src/Uno.UI/UI/Xaml/Controls/IconSource",
+          "src/Uno.UI/UI/Xaml/Controls/Icons",
+          "src/Uno.UI/UI/Xaml/Controls/ImageIcon"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/IconSource",
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/AnimatedIcon",
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/ImageIcon"
+        ]
+      }
     }
   ]
 }
