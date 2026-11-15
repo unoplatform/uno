@@ -7,6 +7,8 @@ using System.Text;
 using Uno.Extensions;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.System;
@@ -19,7 +21,6 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
-using Uno.UI.Helpers;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
@@ -101,7 +102,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_core.OnUnloadedCore();
 		}
 
-		protected override void OnGotFocus(RoutedEventArgs e) => _core.OnGotFocusCore();
+		protected override void OnGotFocus(RoutedEventArgs e) => _core.OnGotFocusCore(e);
 
 		protected override void OnApplyTemplate()
 		{
@@ -318,7 +319,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public int MaxLength
 		{
 			get => (int)this.GetValue(MaxLengthProperty);
-			set => this.SetValue(MaxLengthProperty, value);
+			set => this.SetValue(MaxLengthProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty MaxLengthProperty { get; } =
@@ -327,7 +328,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0,
+					defaultValue: IntBoxes.Zero,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?._core.OnMaxLengthChanged((int)e.NewValue)
 				)
 			);
@@ -350,7 +351,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: false,
+					defaultValue: BoolBoxes.False,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?._core.OnAcceptsReturnChanged((bool)e.NewValue)
 				)
 			);
@@ -393,7 +394,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 
 #if __SKIA__
-		[Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[Uno.NotImplemented("__SKIA__")]
 #endif
 		public CharacterCasing CharacterCasing
 		{
@@ -402,7 +403,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 #if __SKIA__
-		[Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[Uno.NotImplemented("__SKIA__")]
 #endif
 		public static DependencyProperty CharacterCasingProperty { get; } =
 			DependencyProperty.Register(
@@ -430,7 +431,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					false,
+					BoolBoxes.False,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?._core.OnIsReadonlyChanged()
 				)
 			);
@@ -480,6 +481,23 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
+		#region PreventKeyboardDisplayOnProgrammaticFocus DependencyProperty
+
+		public bool PreventKeyboardDisplayOnProgrammaticFocus
+		{
+			get => (bool)GetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty);
+			set => SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, value);
+		}
+
+		public static DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } =
+			DependencyProperty.Register(
+				nameof(PreventKeyboardDisplayOnProgrammaticFocus),
+				typeof(bool),
+				typeof(TextBox),
+				new FrameworkPropertyMetadata(defaultValue: BoolBoxes.False));
+
+		#endregion
+
 		#region IsSpellCheckEnabled DependencyProperty
 
 		public bool IsSpellCheckEnabled
@@ -494,7 +512,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: true,
+					defaultValue: BoolBoxes.True,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?._core.OnIsSpellCheckEnabledChanged((bool)e.NewValue)
 				)
 			);
@@ -519,7 +537,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: true,
+					defaultValue: BoolBoxes.True,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?._core.OnIsTextPredictionEnabledChanged((bool)e.NewValue)
 				)
 			);
@@ -616,6 +634,7 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnPointerExited(e);
 			_isPointerOver = false;
 			UpdateVisualState();
+			_core.OnPointerExited(e);
 		}
 
 		protected override void OnPointerCaptureLost(PointerRoutedEventArgs e)
@@ -648,6 +667,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnTapped(e);
 
+			_core.OnTapped(e);
 			OnTappedPartial();
 		}
 

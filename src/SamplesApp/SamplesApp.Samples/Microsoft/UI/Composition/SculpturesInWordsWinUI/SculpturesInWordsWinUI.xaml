@@ -1,0 +1,41 @@
+﻿<Page
+    x:Class="UITests.Shared.Windows_UI_Composition.SculpturesInWordsWinUI.SculpturesInWordsWinUI"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="#F5F2EB"
+    RequestedTheme="Light"
+    mc:Ignorable="d">
+
+    <Grid>
+        <Border x:Name="host" IsHitTestVisible="False" />
+
+        <!--  Bottom-right, clear of the diagnostics overlay that sits in the top-left corner.  -->
+        <StackPanel
+            Margin="0,0,24,20"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            Orientation="Horizontal"
+            Spacing="12">
+            <TextBlock
+                x:Name="statsText"
+                VerticalAlignment="Center"
+                FontFamily="Consolas"
+                Text="—" />
+            <TextBlock VerticalAlignment="Center" Text="Letters" />
+            <Slider
+                x:Name="countSlider"
+                Width="160"
+                VerticalAlignment="Center"
+                Maximum="8000"
+                Minimum="500"
+                StepFrequency="500"
+                Value="3000" />
+            <ComboBox
+                x:Name="figureCombo"
+                Width="190"
+                VerticalAlignment="Center" />
+        </StackPanel>
+    </Grid>
+</Page>

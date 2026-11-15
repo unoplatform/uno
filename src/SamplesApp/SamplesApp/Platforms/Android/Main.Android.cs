@@ -11,7 +11,7 @@ using Uno.UI.Foldable;
 using Windows.UI.ViewManagement;
 using Uno.UI;
 using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia.Android;
+using Uno.UI.Runtime.Android;
 
 [assembly: UsesFeature("android.software.leanback", Required = false)]
 [assembly: UsesFeature("android.hardware.touchscreen", Required = false)]
@@ -86,11 +86,48 @@ namespace SamplesApp.Droid
 			}
 		}
 
-		protected override UnoPlatformHost CreateHost() =>
-			UnoPlatformHostBuilder.Create()
+		protected override UnoPlatformHost CreateHost()
+		{
+			// `adb shell setprop debug.uno.samples.renderer vulkan|gl|software` picks the render view for the next launch.
+			switch (GetSystemProperty("debug.uno.samples.renderer"))
+			{
+				case "vulkan":
+					FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid = true;
+					break;
+				case "gl":
+					FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid = false;
+					FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid = true;
+					break;
+				case "software":
+					FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid = false;
+					FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid = false;
+					break;
+			}
+
+			var builder = UnoPlatformHostBuilder.Create()
 				.App(() => new App())
-				.UseAndroid()
-				.Build();
+				.UseAndroid();
+
+			// Register the drawing backend + content seams, as every other head does. Without this the
+			// builder has no renderer, font provider, image decoder or geometry engine and Build() throws.
+			global::SamplesApp.DrawingBackendConfiguration.Configure(builder);
+
+			return builder.Build();
+		}
+
+		private static string GetSystemProperty(string name)
+		{
+			try
+			{
+				using var systemProperties = Java.Lang.Class.ForName("android.os.SystemProperties");
+				using var get = systemProperties.GetMethod("get", Java.Lang.Class.FromType(typeof(Java.Lang.String)));
+				return get?.Invoke(null, new Java.Lang.String(name))?.ToString() is { Length: > 0 } value ? value : null;
+			}
+			catch (Java.Lang.Throwable)
+			{
+				return null;
+			}
+		}
 
 		public override void OnCreate()
 		{

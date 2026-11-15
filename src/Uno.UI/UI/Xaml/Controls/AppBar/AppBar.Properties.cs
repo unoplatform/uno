@@ -8,6 +8,7 @@ using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -26,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsSticky),
 				typeof(bool),
 				typeof(AppBar),
-				new FrameworkPropertyMetadata(default(bool))
+				new FrameworkPropertyMetadata(BoolBoxes.False)
 			);
 
 		#endregion
@@ -44,7 +45,7 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(IsOpen),
 			typeof(bool),
 			typeof(AppBar),
-			new FrameworkPropertyMetadata(default(bool))
+			new FrameworkPropertyMetadata(BoolBoxes.False)
 		);
 
 		#endregion
@@ -89,7 +90,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public AppBarTemplateSettings TemplateSettings
 		{
 			get => (AppBarTemplateSettings)GetValue(TemplateSettingsProperty);
-			set => SetValue(TemplateSettingsProperty, value);
+			internal set => SetValue(TemplateSettingsProperty, value);
 		}
 		public static DependencyProperty TemplateSettingsProperty { get; } =
 			DependencyProperty.Register(nameof(TemplateSettings), typeof(AppBarTemplateSettings), typeof(AppBar), new FrameworkPropertyMetadata(null));

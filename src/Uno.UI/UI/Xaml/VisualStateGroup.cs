@@ -16,7 +16,7 @@ using static Microsoft.UI.Xaml.Media.Animation.Timeline.TimelineState;
 namespace Microsoft.UI.Xaml
 {
 	[ContentProperty(Name = "States")]
-	public sealed partial class VisualStateGroup : DependencyObject
+	public sealed partial class VisualStateGroup : DependencyObject, IXNameProvider
 	{
 		/// <summary>
 		/// The xaml scope in force at the time the VisualStateGroup was created.
@@ -42,7 +42,9 @@ namespace Microsoft.UI.Xaml
 
 		public VisualState CurrentState => _current.state;
 
-		public string Name { get; set; }
+		public string Name { get; internal set; }
+
+		void IXNameProvider.SetXName(string name) => Name = name;
 
 		#region States Dependency Property
 
@@ -181,9 +183,14 @@ namespace Microsoft.UI.Xaml
 			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
 			{
 				var state = States[stateIndex];
-				for (var triggerIndex = 0; triggerIndex < state.StateTriggers.Count; triggerIndex++)
+				if (state.StateTriggersOrDefault is not { } triggers)
 				{
-					var trigger = state.StateTriggers[triggerIndex];
+					continue;
+				}
+
+				for (var triggerIndex = 0; triggerIndex < triggers.Count; triggerIndex++)
+				{
+					var trigger = triggers[triggerIndex];
 
 					action(trigger);
 				}
@@ -522,7 +529,7 @@ namespace Microsoft.UI.Xaml
 			var newState = GetActiveTrigger();
 			var oldState = CurrentState;
 
-			var currentStateHasTriggers = oldState is { StateTriggers: { Count: > 0 } };
+			var currentStateHasTriggers = oldState?.StateTriggersOrDefault is { Count: > 0 };
 			if (newState is null && !currentStateHasTriggers)
 			{
 				// We didn't activate any trigger state, we should keep the current non-trigger state.
@@ -564,7 +571,7 @@ namespace Microsoft.UI.Xaml
 			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
 			{
 				var state = States[stateIndex];
-				if (state.StateTriggers.Count > 0)
+				if (state.StateTriggersOrDefault is { Count: > 0 })
 				{
 					return true;
 				}
@@ -596,9 +603,14 @@ namespace Microsoft.UI.Xaml
 			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
 			{
 				var state = States[stateIndex];
-				for (var triggerIndex = 0; triggerIndex < state.StateTriggers.Count; triggerIndex++)
+				if (state.StateTriggersOrDefault is not { } triggers)
 				{
-					var trigger = state.StateTriggers[triggerIndex];
+					continue;
+				}
+
+				for (var triggerIndex = 0; triggerIndex < triggers.Count; triggerIndex++)
+				{
+					var trigger = triggers[triggerIndex];
 
 					// the first active CustomTrigger is an automatic winner.
 					if (trigger.CurrentPrecedence == StateTriggerPrecedence.CustomTrigger)

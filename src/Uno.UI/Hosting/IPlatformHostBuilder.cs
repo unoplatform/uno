@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using System;
-using Uno.UI.Runtime.Skia;
+using Uno.UI.Runtime;
 
 namespace Uno.UI.Hosting;
 

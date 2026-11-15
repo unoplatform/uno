@@ -182,7 +182,7 @@ namespace Microsoft.UI.Xaml
 			get => GetMarginValue();
 			set => SetMarginValue(value);
 		}
-		private static Thickness GetMarginDefaultValue() => Thickness.Empty;
+		private static Thickness GetMarginDefaultValue() => default(Thickness);
 		#endregion
 
 		public new bool IsLoaded => base.IsLoaded; // The IsLoaded state is managed by the UIElement, FrameworkElement only makes it publicly visible

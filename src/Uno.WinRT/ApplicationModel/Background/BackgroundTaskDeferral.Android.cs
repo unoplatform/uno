@@ -6,6 +6,10 @@ namespace Windows.ApplicationModel.Background
 {
 	public partial class BackgroundTaskDeferral
 	{
+		internal BackgroundTaskDeferral()
+		{
+		}
+
 		/// <summary>
 		/// On Android, BackgroundTaskDeferral has no meaning (background tasks will not be cancelled by OS, unless it takes really much time)
 		/// </summary>

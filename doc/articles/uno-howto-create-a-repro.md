@@ -271,7 +271,6 @@ Filter for these tags to focus on Uno Platform logs:
 - `Uno.*` - All Uno-related logs
 - `Windows.UI.Xaml` - XAML framework logs
 - `Microsoft.UI.Xaml` - WinUI framework logs
-- `UnoViewGroup` - Android view hierarchy logs
 - `Uno.UI.Controls` - Control-specific logs
 
 **Best Practices When Reporting Issues:**

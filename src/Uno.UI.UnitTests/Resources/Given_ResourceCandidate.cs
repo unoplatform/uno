@@ -3,7 +3,7 @@ using Windows.ApplicationModel.Resources.Core;
 
 namespace Uno.UI.Tests.Resources
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_ResourceCandidate
 	{
 		[DataRow(@"logo.png", @"logo.png", null, null, null)]

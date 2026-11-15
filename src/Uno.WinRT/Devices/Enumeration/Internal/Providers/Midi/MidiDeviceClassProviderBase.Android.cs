@@ -72,12 +72,12 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		}
 
 		private MidiManager MidiManager
-			=> _watchMidiManager ??= ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>();
+			=> _watchMidiManager ??= ContextHelper.ApplicationContext.GetSystemService(Context.MidiService).JavaCast<MidiManager>();
 
 		internal (MidiDeviceInfo device, MidiDeviceInfo.PortInfo port) GetNativeDeviceInfo(string midiDeviceId)
 		{
 			var parsed = ParseMidiDeviceId(midiDeviceId);
-			using (var midiManager = ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>())
+			using (var midiManager = ContextHelper.ApplicationContext.GetSystemService(Context.MidiService).JavaCast<MidiManager>())
 			{
 #pragma warning disable CA1422 // Validate platform compatibility
 				return midiManager

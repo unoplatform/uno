@@ -16,12 +16,18 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class ToolTipService
 {
+	internal ToolTipService()
+	{
+	}
+
 	private static ToolTip m_CurrentToolTip;
 	private static uint m_LastEnteredFrameId;
 	private static DispatcherTimer m_OpenTimer;
 	private static DispatcherTimer m_CloseTimer;
 
 	private static AutomaticToolTipInputMode s_lastEnterInputMode = AutomaticToolTipInputMode.Mouse;
+
+	internal static bool s_bOpeningAutomaticToolTip;
 
 	private static void RegisterToolTip(
 		DependencyObject owner,
@@ -45,6 +51,7 @@ public partial class ToolTipService
 
 		toolTip.Placement = GetPlacement(toolTip);
 		toolTip.SetAnchor(GetPlacementTarget(container) ?? container);
+		toolTip.SetContainer(container);
 
 		if (isKeyboardAcceleratorToolTip)
 		{
@@ -126,22 +133,39 @@ public partial class ToolTipService
 			m_OpenTimer?.Stop();
 			m_CloseTimer?.Stop();
 
-			m_CurrentToolTip.IsOpen = false;
+			// WinUI (ToolTip_Partial.cpp, ToolTip::OnIsOpenChanged) clears ToolTipServiceMetadata::m_tpCurrentToolTip
+			// when the automatic ToolTip closes; keeping it here would root the closed tooltip and its owner.
+			m_CurrentToolTip = null;
 		}
-		else
-		{
-			toolTip.IsOpen = false;
-		}
+
+		toolTip.IsOpen = false;
 	}
 
 	private static void OnOpenTimerTick(object sender, object e)
 	{
 		m_OpenTimer.Stop();
 
-		if (m_CurrentToolTip is { })
+		if (m_CurrentToolTip is { } toolTip)
 		{
-			m_CurrentToolTip.m_inputMode = s_lastEnterInputMode;
-			m_CurrentToolTip.IsOpen = true;
+			if (toolTip.IsOpen)
+			{
+				// The app opened it during the show delay. As in WinUI (OpenAutomaticToolTip), the service does not take over a
+				// ToolTip it did not open.
+				m_CurrentToolTip = null;
+				return;
+			}
+
+			toolTip.m_inputMode = s_lastEnterInputMode;
+
+			s_bOpeningAutomaticToolTip = true;
+			try
+			{
+				toolTip.IsOpen = true;
+			}
+			finally
+			{
+				s_bOpeningAutomaticToolTip = false;
+			}
 		}
 
 		if (m_CloseTimer is null)
@@ -157,9 +181,10 @@ public partial class ToolTipService
 	{
 		m_CloseTimer.Stop();
 
-		if (m_CurrentToolTip is { })
+		if (m_CurrentToolTip is { } toolTip)
 		{
-			m_CurrentToolTip.IsOpen = false;
+			m_CurrentToolTip = null;
+			toolTip.IsOpen = false;
 		}
 	}
 
@@ -318,4 +343,23 @@ public partial class ToolTipService
 			}
 		}
 	}
+
+	/// <summary>
+	/// Called by a <see cref="ToolTip"/> the service opened when it closes, whichever path closed it: the service, the app, or its popup closing.
+	/// </summary>
+	internal static void OnToolTipClosed(ToolTip toolTip)
+	{
+		// WinUI clears ToolTipServiceMetadata::m_tpCurrentToolTip in the ToolTip's own IsOpen change rather than in the
+		// service's close paths (ToolTip_Partial.cpp, ToolTip::OnIsOpenChanged), so a tooltip closed by a path the service
+		// does not drive is not kept as the current one, and with it its owner.
+		if (ReferenceEquals(m_CurrentToolTip, toolTip))
+		{
+			m_CurrentToolTip = null;
+		}
+	}
+
+	/// <summary>
+	/// The tooltip the service is opening or showing, if any; for tests.
+	/// </summary>
+	internal static ToolTip CurrentToolTipForTesting => m_CurrentToolTip;
 }

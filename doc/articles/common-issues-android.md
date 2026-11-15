@@ -16,7 +16,7 @@ A workaround for this issue is to navigate to the `MainActivity.Android.cs` file
 Your code should be structured as follows:
 
 ```csharp
-public class MainActivity : Microsoft.UI.Xaml.ApplicationActivity
+public class MainActivity : Uno.UI.Runtime.Android.ApplicationActivity
 {
   protected override void OnCreate(Bundle bundle)
   {

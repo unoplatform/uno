@@ -18,7 +18,18 @@
 
 		<!-- Opt out of legacy VCLibs/UniversalCRT.Debug SDK framework package references added by Microsoft.WinUI.AppX.targets. -->
 		<WinUISDKReferences Condition=" '$(WinUISDKReferences)' == '' ">false</WinUISDKReferences>
+
+		<!-- WindowsSdkPackageMinimumRevision is set in Uno.Sdk.After.targets, after the .NET SDK (#26174). -->
 	</PropertyGroup>
+
+	<!--
+		The .NET SDK validates the Windows platform version of the target framework against a list that it ships (NETSDK1140),
+		and that list can be older than the Windows SDK projection that WindowsSdkPackageVersion selects (see dotnet/sdk#55834).
+		Accept the platform version of the target framework, like it's done for the desktop and browserwasm targets.
+	-->
+	<ItemGroup Condition=" '$(TargetPlatformVersion)' != '' ">
+		<SdkSupportedTargetPlatformVersion Include="$(TargetPlatformVersion)" />
+	</ItemGroup>
 
 	<PropertyGroup Condition=" $(_IsExecutable) == 'true' ">
 		<!-- Set EnableMsixTooling to true only for executables - setting this on class libraries prevents assets from being correctly copied to windows target -->
@@ -38,7 +49,7 @@
 		<EnableCoreMrtTooling Condition=" $(EnableCoreMrtTooling) == '' AND '$(MSBuildRuntimeType)' == 'Core' ">false</EnableCoreMrtTooling>
 	</PropertyGroup>
 
-	<PropertyGroup Condition=" $(_IsUnoSingleProjectAndLegacy) != 'true' AND $(_IsExecutable) == 'true'">
+	<PropertyGroup Condition=" $(_IsUnoSingleProject) != 'true' AND $(_IsExecutable) == 'true'">
 		<ApplicationManifest Condition=" $(ApplicationManifest) == '' ">app.manifest</ApplicationManifest>
 		<Platforms Condition=" $(Platforms) == '' ">x86;x64;arm64</Platforms>
 		<Platform Condition="$(Platform) == 'AnyCPU'">$([System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture)</Platform>
@@ -54,7 +65,7 @@
 	</PropertyGroup>
 
 	<!-- Legacy Project Support -->
-	<ItemGroup Condition=" $(_IsUnoSingleProjectAndLegacy) != 'true' AND $(_IsExecutable) == 'true' ">
+	<ItemGroup Condition=" $(_IsUnoSingleProject) != 'true' AND $(_IsExecutable) == 'true' ">
 		<!-- Exclude Manifest items that have already been added to avoid duplicates -->
 		<Manifest Include="$(ApplicationManifest)" Exclude="@(Manifest)" />
 	</ItemGroup>
@@ -92,10 +103,18 @@
 
 	<!-- Workaround to avoid including Project XBFs in the PRI file: https://github.com/microsoft/microsoft-ui-xaml/issues/8857 -->
 	<Import Project="winappsdk-workaround.targets"
-			Condition=" $(_IsUnoSingleProjectAndLegacy) != 'true' and '$(DisableWinUI8857_Workaround)' != 'true' "/>
+			Condition=" $(_IsUnoSingleProject) != 'true' and '$(DisableWinUI8857_Workaround)' != 'true' "/>
 
 	<Import Project="Uno.SingleProject.WinAppSdk.targets"
-			Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' " />
+			Condition=" $(_IsUnoSingleProject) == 'true' " />
+
+	<!-- The SkiaSharp and ANGLE native packages carry their PDBs as native assets: 226 MB against 17 MB of DLLs. -->
+	<Target Name="_UnoRemoveSkiaNativePdbs" AfterTargets="ResolvePackageAssets">
+		<ItemGroup>
+			<NativeCopyLocalItems Remove="@(NativeCopyLocalItems)"
+				Condition="'%(Extension)' == '.pdb' And $([System.String]::Copy('%(NuGetPackageId)').StartsWith('SkiaSharp.NativeAssets.'))" />
+		</ItemGroup>
+	</Target>
 
 	<Target Name="_UnoValidateWinAppSDK3548"
 			BeforeTargets="BeforeBuild" 
@@ -109,6 +128,26 @@
 		<Error Code="UNOB0008"
 				HelpLink="https://aka.platform.uno/UNOB0008"
 				Text="Building a WinUI class library with dotnet build is not supported when XAML files are present. Use `msbuild` instead." />
+	</Target>
+
+	<!-- Lottie is built into Uno.WinUI, but WinAppSDK takes LottieVisualSource from CommunityToolkit.WinUI.Lottie, which
+	     nothing references for the app. Name the package instead of leaving only the XAML compiler's WMC0001. -->
+	<Target Name="_UnoValidateLottieWinAppSdk"
+			BeforeTargets="MarkupCompilePass1"
+			DependsOnTargets="ResolveAssemblyReferences"
+			Condition="'$(DesignTimeBuild)' != 'true' AND ('@(Page)' != '' OR '@(ApplicationDefinition)' != '')">
+		<ItemGroup>
+			<_UnoLottieReference Include="@(ReferencePath)" Condition="'%(Filename)' == 'CommunityToolkit.WinUI.Lottie'" />
+			<_UnoLottieXamlCandidate Include="@(Page);@(ApplicationDefinition)" Condition="'@(_UnoLottieReference)' == ''" />
+			<_UnoLottieXaml Include="@(_UnoLottieXamlCandidate)"
+							Condition="Exists('%(FullPath)') AND $([System.IO.File]::ReadAllText('%(FullPath)').Contains('using:CommunityToolkit.WinUI.Lottie'))" />
+		</ItemGroup>
+
+		<Warning Code="UNOB0034"
+				 HelpLink="https://aka.platform.uno/UNOB0034"
+				 File="%(_UnoLottieXaml.Identity)"
+				 Condition="'@(_UnoLottieXaml)' != ''"
+				 Text="This XAML uses the CommunityToolkit.WinUI.Lottie namespace, which on WinAppSDK ($(TargetFramework)) comes from the CommunityToolkit.WinUI.Lottie NuGet package. Lottie is built into Uno Platform on the other targets, but not on Windows: add a PackageReference to CommunityToolkit.WinUI.Lottie for the Windows target framework. (See https://aka.platform.uno/UNOB0034)" />
 	</Target>
 
 	<Import Project="Uno.UI.SourceGenerators.WinAppSdk.props" />

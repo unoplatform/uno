@@ -46,6 +46,16 @@ In case of WebAssembly, the control is supported via a native `<iframe>` element
 - The [`frame-ancestors` Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/frame-ancestors) can be used to allow embedding a site you have control over, while at the same time blocking third-party sites from embedding
 - External site you are embedding must not block embedding via [`X-FRAME-OPTIONS` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options)
 
+### Limitations
+
+The browser hides a page from another origin (another site, a `data:` URL, or a page in a sandboxed frame) from the app that shows it, which limits what `WebView2` can report and do on WebAssembly:
+
+- After going back or forward to a page from another origin, or after a page moves to a page from another origin by itself (through a link, a script or a server redirect), `Source` can be an earlier URL: the page before it or, after a redirect, the URL before the redirect.
+- `NavigationCompleted` reports success for pages that refuse to be shown in a frame (`X-Frame-Options`, CSP `frame-ancestors`) and for network errors, where the browser shows its own error page.
+- For pages from another origin, `DocumentTitle` is empty, `GoBack`, `GoForward`, `Reload` and `Stop` throw an exception, and `ExecuteScriptAsync` fails.
+- Pages from another origin never raise `NewWindowRequested`, so the new windows their links and scripts open can't be handled by the app.
+- Pages shown through `SetVirtualHostNameToFolderMapping` report the URL of the file in the app's package (`.../package_<hash>/<folder>/...`) rather than the virtual host URL (such as `http://UnoNativeAssets/index.html`).
+
 ## Executing JavaScript
 
 When a page is loaded inside the `WebView2` control, you can execute custom JavaScript code. To do this, call the `ExecuteScriptAsync` method:
@@ -159,7 +169,7 @@ public App()
 }
 ```
 
-The flag defaults to `true` in `DEBUG` builds and `false` in `RELEASE` builds.
+The flag defaults to `false`.
 
 | Platform | What it enables | How to open |
 | ---------- | ----------------- | ------------- |
@@ -248,8 +258,6 @@ var profile = webView.CoreWebView2.Profile;
 `FailureReportFolderPath` is created lazily by the browser, so the directory may not exist yet.
 
 > [!NOTE]
-> Unlike the static members above, these three are provided by the default WebView2 backend only. An app that opts into the other backend with `UNO_WEBVIEW2_BACKEND=microsoft.web.webview2` gets `NotImplementedException` from them.
->
 > `ProfileName` is currently always empty on Windows. Uno creates the WebView without controller options, so no profile name is requested — the profile still resolves to the default one, and `ProfilePath` (a directory under `UserDataFolder`) is the reliable way to identify it.
 
 ### Clearing browsing data
@@ -460,29 +468,6 @@ When using the WebView2 and running on WinAppSDK, make sure to create an `x64` o
 
 ## Windows Specifics
 
-Uno 6.7 has two separate backends on Windows for WebView2:
+`WebView2Aot` is the only backend on Windows, and is required in order to use WebView2 with [Native AOT](xref:Uno.Features.NativeAOT). Uno 6.7 also shipped a `Microsoft.Web.WebView2` backend, selectable through the `UNO_WEBVIEW2_BACKEND` environment variable; that backend was removed in Uno 7.0 — `WebView2Aot` is used regardless of the variable's value, and setting it to anything other than `webview2aot` logs a warning instead of switching backends.
 
-- Microsoft.Web.WebView2
-- WebView2Aot
-
-The WebView2Aot backend is required in order to use WebView2 with [Native AOT](xref:Uno.Features.NativeAOT) on Windows.
-
-The WebView2Aot backend is the default when `net10.0-desktop` or later is the target framework.
-
-If you encounter issues with the WebView2 control on Windows when targeting .NET 10 or later, please file an issue. The previous Microsoft.Web.WebView2 backend can be used by setting the `UNO_WEBVIEW2_BACKEND` environment variable to `microsoft.web.webview2`, for example within `Main()`:
-
-```csharp
-public partial class Program
-{
-    [STAThread]
-    public static void Main(string[] args)
-    {
-        Environment.SetEnvironmentVariable("UNO_WEBVIEW2_BACKEND", "microsoft.web.webview2");
-        var host = UnoPlatformHostBuilder.Create()
-            // …
-            ;
-    }
-}
-```
-
-Uno 7 removes support for the Microsoft.Web.WebView2 backend, along with support for the `microsoft.web.webview2` value within the `UNO_WEBVIEW2_BACKEND` environment variable.
+If you encounter issues with the WebView2 control on Windows, please file an issue.

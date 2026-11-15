@@ -35,13 +35,6 @@ namespace Uno.UI.Xaml.Core;
 
 internal partial class InputManager
 {
-	partial void ConstructPointerManager_Managed()
-	{
-		// Injector supports only pointers for now, so configure only in by managed pointer
-		// (should be moved to the InputManager ctor once the injector supports other input types)
-		InputInjector.SetTargetForCurrentThread(this);
-	}
-
 	partial void InitializePointers_Managed(object host)
 		=> Pointers.Init(host);
 
@@ -346,7 +339,8 @@ internal partial class InputManager
 				{
 					foreach (var tracker in vis.Trackers)
 					{
-						tracker.ReceivePointerWheel(args.CurrentPoint.Properties.MouseWheelDelta / global::Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta, args.CurrentPoint.Properties.IsHorizontalMouseWheel);
+						// Not an integer division: touchpads report deltas finer than one detent.
+						tracker.ReceivePointerWheel((double)args.CurrentPoint.Properties.MouseWheelDelta / global::Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta, args.CurrentPoint.Properties.IsHorizontalMouseWheel);
 					}
 
 					return;
@@ -484,6 +478,31 @@ internal partial class InputManager
 
 		private void OnPointerReleased(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)
 		{
+			_releaseDepth++;
+			try
+			{
+				OnPointerReleasedCore(args, isInjected);
+			}
+			finally
+			{
+				if (--_releaseDepth == 0 && _afterRelease is { } afterRelease)
+				{
+					_afterRelease = null;
+					if (_trace)
+					{
+						Trace($"Running {afterRelease.Count} action(s) deferred until the {Released.Name} has completed");
+					}
+
+					foreach (var action in afterRelease)
+					{
+						RunDeferred(action, isGesture: false);
+					}
+				}
+			}
+		}
+
+		private void OnPointerReleasedCore(Windows.UI.Core.PointerEventArgs args, bool isInjected)
+		{
 			// When multiple mouse buttons are pressed and then released, we only respond to the last OnPointerReleased
 			// (i.e when no more buttons are still pressed).
 			if (args.CurrentPoint.PointerDeviceType == PointerDeviceType.Mouse && args.CurrentPoint.IsInContact)
@@ -514,7 +533,7 @@ internal partial class InputManager
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource) { IsInjected = isInjected };
 			var hadCapture = PointerCapture.TryGet(args.CurrentPoint.Pointer, out var capture) && capture.IsImplicitOnly is false;
 
-			var result = RaiseUsingCaptures(Released, originalSource, routedArgs, setCursor: false);
+			var result = RaiseReleasedThenGestures(originalSource, routedArgs);
 
 			if (isOutOfWindow || (PointerDeviceType)args.CurrentPoint.Pointer.Type != PointerDeviceType.Touch)
 			{
@@ -558,6 +577,111 @@ internal partial class InputManager
 			AfterReleaseForManipulations(args);
 
 			args.DispatchResult = result;
+		}
+
+		private PendingRelease? _pendingRelease;
+
+		// What is held back while PointerReleased is bubbling, until it has reached the root (cf. RaiseReleasedThenGestures).
+		private sealed class PendingRelease
+		{
+			public List<Action>? Gestures;
+			public PointerRoutedEventArgs? UnhandledUp;
+		}
+
+		/// <summary>
+		/// Defers a gesture recognized while PointerReleased is bubbling, to raise it once the release has reached the root.
+		/// </summary>
+		/// <returns>False if no PointerReleased is being raised, in which case the gesture must be raised right away.</returns>
+		internal bool TryDeferUntilReleaseBubbled(Action raiseGesture)
+		{
+			if (_pendingRelease is null)
+			{
+				return false;
+			}
+
+			(_pendingRelease.Gestures ??= new()).Add(raiseGesture);
+			return true;
+		}
+
+		private int _releaseDepth;
+		private List<Action>? _afterRelease;
+
+		/// <summary>
+		/// Defers an action until the pointer release being processed (the outermost one if they are nested) has completed: PointerReleased bubbled,
+		/// the gestures it ended were raised, the root cleaned up the focus and the captures, and the exit events were raised.
+		/// </summary>
+		/// <remarks>The action must not alter the visual tree: it runs once the dispatch result of the release has been computed.</remarks>
+		/// <returns>False if no release is being processed, in which case the action must be run right away.</returns>
+		internal bool TryDeferUntilReleaseCompleted(Action action)
+		{
+			if (_releaseDepth == 0)
+			{
+				return false;
+			}
+
+			(_afterRelease ??= new()).Add(action);
+			return true;
+		}
+
+		// Like WinUI (cf. CInputServices::RaiseDelayedPointerUpEvent and CleanPointerProcessingState), Tapped and RightTapped are raised only once
+		// PointerReleased has bubbled to the root, so ancestors (e.g. a ScrollViewer taking focus) handle the release before a gesture handler runs,
+		// and the root cleans up the focus and the captures only after those gestures.
+		private PointerEventDispatchResult RaiseReleasedThenGestures(UIElement originalSource, PointerRoutedEventArgs routedArgs)
+		{
+			var outer = _pendingRelease;
+			var pending = _pendingRelease = new PendingRelease();
+			PointerEventDispatchResult result;
+			try
+			{
+				result = RaiseUsingCaptures(Released, originalSource, routedArgs, setCursor: false);
+			}
+			finally
+			{
+				_pendingRelease = outer;
+			}
+
+			if (pending.Gestures is { } gestures)
+			{
+				if (_trace)
+				{
+					Trace($"Raising {gestures.Count} gesture(s) deferred until {Released.Name} has bubbled (args: {routedArgs.GetHashCode():X8})");
+				}
+
+				// Gesture handlers can alter the visual tree just like the PointerReleased ones.
+				UIElement.BeginPointerEventDispatch();
+				foreach (var raiseGesture in gestures)
+				{
+					RunDeferred(raiseGesture, isGesture: true);
+				}
+				result += UIElement.EndPointerEventDispatch();
+			}
+
+			if (pending.UnhandledUp is { } unhandledUp)
+			{
+				result += CompletePointerUp(unhandledUp, isHandled: false, isAfterHandledUp: false);
+			}
+
+			return result;
+		}
+
+		// Like an error in a PointerReleased handler (cf. UIElement.RaisePointerEvent), an error in a deferred gesture handler or action is only logged.
+		private static void RunDeferred(Action action, bool isGesture)
+		{
+			try
+			{
+				action();
+			}
+			catch (Exception error)
+			{
+				if (_log.IsEnabled(LogLevel.Error))
+				{
+					_log.Error(
+						isGesture
+							? $"Failed to raise a gesture deferred until the {Released.Name} has bubbled."
+							: $"Failed to run an action deferred until the {Released.Name} has completed.",
+						error);
+				}
+			}
 		}
 
 		private void OnPointerMoved(Windows.UI.Core.PointerEventArgs args, bool isInjected = false)

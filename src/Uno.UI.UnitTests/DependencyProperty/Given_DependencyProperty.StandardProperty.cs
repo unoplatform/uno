@@ -19,7 +19,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.BinderTests_StandardProperty
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_DependencyProperty_StandardProperty
 	{
 		[TestMethod]
@@ -27,7 +27,7 @@ namespace Uno.UI.Tests.BinderTests_StandardProperty
 		{
 			var SUT = new MyObject();
 
-			SUT.SetBinding("Name", new Binding());
+			SUT.SetBindingInternal("Name", new Binding());
 
 			SUT.DataContext = "Test";
 

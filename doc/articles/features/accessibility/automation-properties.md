@@ -22,9 +22,8 @@ The accessible name is resolved in this order:
 |----------|-----------|---------|
 | Windows (Win32) | Skia | UIAutomation `Name` property |
 | macOS | Skia | `NSAccessibility.accessibilityLabel` |
-| Web (WASM) | Skia / Native | `aria-label` attribute on the semantic DOM element |
-| Android | Native | `AccessibilityNodeInfo.contentDescription` |
-| iOS | Native | `UIAccessibility.accessibilityLabel` |
+| Web (WASM) | Skia | `aria-label` attribute on the semantic DOM element |
+| Android (WIP) | Skia | `AccessibilityNodeInfo.contentDescription` |
 
 ## AutomationId
 
@@ -35,9 +34,7 @@ The accessible name is resolved in this order:
 |----------|-----------|---------|
 | Windows (Win32) | Skia | UIAutomation `AutomationId` property |
 | macOS | Skia | `NSAccessibility.accessibilityIdentifier` |
-| Web (WASM) | Skia / Native | `xamlautomationid` attribute + `aria-label` on the HTML element |
-| Android | Native | `View.contentDescription` |
-| iOS | Native | `UIAccessibility.accessibilityIdentifier` |
+| Web (WASM) | Skia | `xamlautomationid` attribute + `aria-label` on the HTML element |
 
 ## HelpText
 
@@ -45,7 +42,7 @@ The accessible name is resolved in this order:
 |----------|-----------|---------|
 | Windows (Win32) | Skia | UIAutomation `HelpText` property |
 | macOS | Skia | `NSAccessibility.accessibilityHelp` |
-| Web (WASM) | Skia / Native | `aria-description` attribute |
+| Web (WASM) | Skia | `aria-description` attribute |
 
 ## HeadingLevel
 
@@ -63,7 +60,7 @@ Supported values: `None` (default), `Custom`, `Form`, `Main`, `Navigation`, `Sea
 |----------|-----------|---------|
 | Windows (Win32) | Skia | UIAutomation `LandmarkType` property |
 | macOS | Skia | `NSAccessibility` landmark |
-| Web (WASM) | Skia / Native | ARIA landmark roles (`role="navigation"`, `role="main"`, `role="search"`, `role="form"`, `role="region"`) |
+| Web (WASM) | Skia | ARIA landmark roles (`role="navigation"`, `role="main"`, `role="search"`, `role="form"`, `role="region"`) |
 
 When using `LandmarkType="Custom"`, provide a human-readable description with `LocalizedLandmarkType`.
 
@@ -73,7 +70,7 @@ When using `LandmarkType="Custom"`, provide a human-readable description with `L
 |----------|-----------|---------|
 | Windows (Win32) | Skia | UIAutomation `LiveSetting` property |
 | macOS | Skia | `NSAccessibility` notification |
-| Web (WASM) | Skia / Native | `aria-live="polite"` or `aria-live="assertive"` attribute |
+| Web (WASM) | Skia | `aria-live="polite"` or `aria-live="assertive"` attribute |
 
 ## AccessibilityView
 

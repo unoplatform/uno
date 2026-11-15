@@ -10,6 +10,10 @@ namespace Microsoft.UI.Xaml.Hosting;
 /// </summary>
 public partial class ElementCompositionPreview
 {
+	internal ElementCompositionPreview()
+	{
+	}
+
 #if __SKIA__
 	internal static void SetElementVisualCompositor(UIElement element, Compositor compositor)
 		=> element.SetElementVisualCompositor(compositor);

@@ -28,7 +28,7 @@ Determine what to run from the user's input:
 - **Specific test method**: e.g., `Given_Button.When_ContentSet` → resolve to fully qualified name
 - **Multiple tests**: Pipe-separated list of fully qualified names
 
-If the user provides partial names, search `src/Uno.UI.RuntimeTests/Tests/` to resolve fully qualified test names (namespace + class + method).
+If the user provides partial names, search `src/Uno.UI.RuntimeTests/` to resolve fully qualified test names (namespace + class + method).
 
 **Determine target platform** from user input. Supported platforms:
 
@@ -247,10 +247,26 @@ kill $HTTP_PID $COMPANION_PID 2>/dev/null || true
 - Entry point: `src/SamplesApp/SamplesApp.Shared/App.Tests.cs`
 - Filter decoding: `src/SamplesApp/SamplesApp.UnitTests.Shared/Controls/UITests/Presentation/SampleChooserViewModel.cs`
 - Config: `src/SamplesApp/SamplesApp.UnitTests.Shared/Controls/UnitTest/UnitTestEngineConfig.cs`
-- Test location: `src/Uno.UI.RuntimeTests/Tests/`
+- Test location: `src/Uno.UI.RuntimeTests/`
 - WASM CI script: `build/test-scripts/wasm-run-skia-runtime-tests.sh`
 - WASM companion server: `build/test-scripts/skia-browserwasm-file-creation-server.py`
 - Test-authoring conventions: `.claude/rules/runtime-tests.md`
+
+### Repeating tests (flaky-test hunting)
+
+By default every failing test is **retried up to 3 times** (`UnitTestEngineConfig.Attempts`), so a test reported as failed has failed 3 attempts in a row, and a flaky one usually reports as passed. To measure flakiness inside a single app launch instead of relaunching the app in a loop:
+
+| Option | Env var (desktop) | Effect |
+|--------|-------------------|--------|
+| `--runtime-tests-iterations=N` | `UITEST_RUNTIME_TESTS_ITERATIONS=N` | Runs each test N times in a row; stops at the first failing iteration |
+| `--runtime-tests-attempts=N` | `UITEST_RUNTIME_TESTS_ATTEMPTS=N` | Attempts per iteration before it is reported as failed; `1` reports the first failure |
+
+```bash
+export UITEST_RUNTIME_TESTS_ITERATIONS=30 UITEST_RUNTIME_TESTS_ATTEMPTS=1 UITEST_RUNTIME_TESTS_FILTER=$(echo -n "fully.qualified.TestName" | base64)
+dotnet SamplesApp.dll --runtime-tests=test-results.xml
+```
+
+On WASM pass them as URL query parameters, like `--runtime-test-filter`. Timing-dependent failures that only show on slow CI agents often reproduce locally with the process pinned to one core (PowerShell: `$p.ProcessorAffinity = [IntPtr]1` on the started process).
 
 ### CI-Only Options
 - `--runtime-tests-group` / `--runtime-tests-group-count`: For CI test sharding

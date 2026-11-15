@@ -10,13 +10,17 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 /// </summary>
 public partial class MenuFlyoutItemTemplateSettings : DependencyObject
 {
+	internal MenuFlyoutItemTemplateSettings()
+	{
+	}
+
 	/// <summary>
 	/// Gets the minimum width allocated for the accelerator key tip of an MenuFlyout.
 	/// </summary>
 	public double KeyboardAcceleratorTextMinWidth
 	{
 		get => (double)GetValue(KeyboardAcceleratorTextMinWidthProperty);
-		internal set => SetValue(KeyboardAcceleratorTextMinWidthProperty, value);
+		internal set => SetValue(KeyboardAcceleratorTextMinWidthProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 	}
 
 	internal static DependencyProperty KeyboardAcceleratorTextMinWidthProperty { get; } =
@@ -24,5 +28,5 @@ public partial class MenuFlyoutItemTemplateSettings : DependencyObject
 			nameof(KeyboardAcceleratorTextMinWidth),
 			typeof(double),
 			typeof(MenuFlyoutItemTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 }

@@ -1,0 +1,7 @@
+parameters:
+  timeoutInMinutes: ''
+
+steps:
+  # Consumed by build/test-scripts/ci-job-budget.sh. Keep this the job's first step.
+  - bash: echo "##vso[task.setvariable variable=UNO_JOB_DEADLINE_EPOCH]$(( $(date +%s) + ${{ parameters.timeoutInMinutes }} * 60 ))"
+    displayName: Record the job deadline

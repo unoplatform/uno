@@ -4,6 +4,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class ListViewItemTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
+		internal ListViewItemTemplateSettings()
+		{
+		}
+
 		[global::Uno.NotImplemented]
 		public int DragItemsCount => 0;
 	}

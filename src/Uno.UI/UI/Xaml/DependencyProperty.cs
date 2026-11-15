@@ -15,10 +15,12 @@ using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.UI.Xaml.Shapes;
 using Uno;
 using Uno.Extensions;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Media;
 
 using _View = Microsoft.UI.Xaml.UIElement;
@@ -65,9 +67,7 @@ namespace Microsoft.UI.Xaml
 
 		private readonly Flags _flags;
 		private string _name;
-		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		private Type _propertyType;
-		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		private Type _ownerType;
 		private readonly int _uniqueId;
 
@@ -75,9 +75,7 @@ namespace Microsoft.UI.Xaml
 
 		private DependencyProperty(
 			string name,
-			[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 			Type propertyType,
-			[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 			Type ownerType,
 			PropertyMetadata defaultMetadata,
 			bool attached)
@@ -161,11 +159,12 @@ namespace Microsoft.UI.Xaml
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
 		public static DependencyProperty Register(
 			string name,
-			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
-			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
+			Type propertyType,
+			Type ownerType,
 			PropertyMetadata typeMetadata)
 		{
 			typeMetadata = FixMetadataIfNeeded(propertyType, typeMetadata);
+			LogNullValueTypeDefault(name, propertyType, ownerType, typeMetadata);
 
 			var newProperty = new DependencyProperty(name, propertyType, ownerType, typeMetadata, attached: false);
 
@@ -184,23 +183,73 @@ namespace Microsoft.UI.Xaml
 			return newProperty;
 		}
 
-		private static PropertyMetadata FixMetadataIfNeeded(
-			[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.NonPublicConstructors)]
-			Type propertyType,
-			PropertyMetadata metadata)
+		private static PropertyMetadata FixMetadataIfNeeded(Type propertyType, PropertyMetadata metadata)
 		{
 			if (metadata is null)
 			{
-				var defaultValue = propertyType.IsNullable() ? null : RuntimeHelpers.GetUninitializedObject(propertyType);
-				return new PropertyMetadata(defaultValue);
+				return new PropertyMetadata(GetTypeDefaultValue(propertyType));
 			}
-			else if (!propertyType.IsNullable() && metadata.DefaultValue is null)
+
+			if (metadata.DefaultValue is null && GetTypeDefaultValue(propertyType) is { } typeDefault)
 			{
-				return metadata.CloneWithOverwrittenDefaultValue(RuntimeHelpers.GetUninitializedObject(propertyType));
+				return metadata.CloneWithOverwrittenDefaultValue(typeDefault);
 			}
 
 			return metadata;
 		}
+
+		// A value type outside the WinUI table defaults to null, and the typed GetValue cast then throws far
+		// from here; the log names the registration for a 7.0 migration.
+		private static void LogNullValueTypeDefault(string name, Type propertyType, Type ownerType, PropertyMetadata metadata)
+		{
+			if (metadata.DefaultValue is null
+				&& !propertyType.IsNullable()
+				&& typeof(DependencyProperty).Log().IsEnabled(LogLevel.Debug))
+			{
+				typeof(DependencyProperty).Log().Debug($"{ownerType}.{name} ({propertyType}) is registered without a default value and reads back null until one is set; see the Uno 7.0 migration notes.");
+			}
+		}
+
+		// WinUI infers the default from the property type only for the value types of its XAML metadata
+		// (CDependencyProperty::GetDefaultValue): zero for its enums, primitives and structs, 1* for GridLength,
+		// null for everything else, custom value types included. Matching by type identity and name keeps reflection out.
+		private static object GetTypeDefaultValue(Type propertyType)
+		{
+			if (propertyType.IsEnum)
+			{
+				return IsWinUIEnum(propertyType) ? Enum.ToObject(propertyType, 0) : null;
+			}
+
+			if (!_knownTypeDefaults.TryGetValue(propertyType, out var defaultValue))
+			{
+				return null;
+			}
+
+			// A box per property: a two-way binding through a path like Margin.Left writes into the box GetValue
+			// returns, which must not be the default of another property. The primitives keep their cached boxes.
+			return propertyType.IsPrimitive ? defaultValue : RuntimeHelpers.GetObjectValue(defaultValue);
+		}
+
+		private static bool IsWinUIEnum(Type enumType)
+			=> enumType.FullName is { } name && _winUIEnums.Contains(name);
+
+		private static readonly Dictionary<Type, object> _knownTypeDefaults = new()
+		{
+			[typeof(bool)] = BoolBoxes.False,
+			[typeof(int)] = IntBoxes.Zero,
+			[typeof(long)] = 0L,
+			[typeof(float)] = 0f,
+			[typeof(double)] = DoubleBoxes.Zero,
+			[typeof(TimeSpan)] = TimeSpan.Zero,
+			[typeof(DateTimeOffset)] = default(DateTimeOffset),
+			[typeof(global::Windows.Foundation.Point)] = default(global::Windows.Foundation.Point),
+			[typeof(global::Windows.Foundation.Size)] = default(global::Windows.Foundation.Size),
+			[typeof(global::Windows.Foundation.Rect)] = default(global::Windows.Foundation.Rect),
+			[typeof(global::Windows.UI.Color)] = default(global::Windows.UI.Color),
+			[typeof(Thickness)] = default(Thickness),
+			[typeof(CornerRadius)] = default(CornerRadius),
+			[typeof(GridLength)] = new GridLength(1, GridUnitType.Star),
+		};
 
 		/// <summary>
 		/// Registers a dependency property on the specified <paramref name="ownerType"/>.
@@ -217,8 +266,8 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		internal static DependencyProperty Register(
 			string name,
-			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
-			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
+			Type propertyType,
+			Type ownerType,
 			FrameworkPropertyMetadata typeMetadata)
 #pragma warning disable RS0030 // Do not used banned APIs
 			=> Register(name, propertyType, ownerType, (PropertyMetadata)typeMetadata);
@@ -235,11 +284,12 @@ namespace Microsoft.UI.Xaml
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
 		public static DependencyProperty RegisterAttached(
 			string name,
-			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type propertyType,
-			[DynamicallyAccessedMembers(BindableType.TypeRequirements)] Type ownerType,
+			Type propertyType,
+			Type ownerType,
 			PropertyMetadata defaultMetadata)
 		{
 			defaultMetadata = FixMetadataIfNeeded(propertyType, defaultMetadata);
+			LogNullValueTypeDefault(name, propertyType, ownerType, defaultMetadata);
 
 			var newProperty = new DependencyProperty(name, propertyType, ownerType, defaultMetadata, attached: true);
 
@@ -271,7 +321,6 @@ namespace Microsoft.UI.Xaml
 		/// This method is to ensure that all uno controls defined dependency properties are using <see cref="FrameworkPropertyMetadata"/>.
 		/// This is achieved by banning the other public overload in Uno.UI directory.
 		/// </remarks>
-		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Types manipulated here have been marked earlier")]
 		internal static DependencyProperty RegisterAttached(string name, Type propertyType, Type ownerType, FrameworkPropertyMetadata typeMetadata)
 #pragma warning disable RS0030 // Do not used banned APIs
 			=> RegisterAttached(name, propertyType, ownerType, (PropertyMetadata)typeMetadata);
@@ -318,13 +367,11 @@ namespace Microsoft.UI.Xaml
 			return _ownerTypeMetadata.CloneWithOverwrittenDefaultValue(defaultValueForType);
 		}
 
-		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		internal Type OwnerType
 		{
 			get { return _ownerType; }
 		}
 
-		[DynamicallyAccessedMembers(BindableType.TypeRequirements)]
 		internal Type Type
 		{
 			get { return _propertyType; }
@@ -340,6 +387,11 @@ namespace Microsoft.UI.Xaml
 		{
 			get { return _name; }
 		}
+
+		// Matching by owner and name keeps the trimmer from rooting RichTextBlock: reading one of its statics
+		// would keep its static constructor, and with it every registration and callback of the control.
+		internal bool IsRichTextBlockProperty(string name)
+			=> _ownerType == typeof(RichTextBlock) && _name == name;
 
 		/// <summary>
 		/// Determines if the property is an attached property
@@ -415,6 +467,10 @@ namespace Microsoft.UI.Xaml
 			{
 				type = propertyInfo.OwnerType;
 				name = propertyInfo.Name;
+
+				// Parse() redirects to the attached property's owner, which is a different type than the one
+				// forced above -- and its registration only happens in that type's static constructor.
+				ForceInitializeTypeConstructor(type);
 			}
 
 			do
@@ -509,7 +565,7 @@ namespace Microsoft.UI.Xaml
 			if (this == TextElement.ForegroundProperty ||
 				this == TextBlock.ForegroundProperty ||
 				this == Control.ForegroundProperty ||
-				this == RichTextBlock.ForegroundProperty ||
+				IsRichTextBlockProperty(nameof(RichTextBlock.Foreground)) ||
 				this == ContentPresenter.ForegroundProperty ||
 				this == IconElement.ForegroundProperty)
 			{
@@ -551,14 +607,14 @@ namespace Microsoft.UI.Xaml
 			{
 				if (forType.IsAssignableTo(typeof(UserControl)))
 				{
-					return Boxes.BooleanBoxes.BoxedFalse;
+					return BoolBoxes.False;
 				}
 				else if (forType.IsAssignableTo(typeof(Control)))
 				{
-					return Boxes.BooleanBoxes.BoxedTrue;
+					return BoolBoxes.True;
 				}
 
-				return Boxes.BooleanBoxes.BoxedFalse;
+				return BoolBoxes.False;
 			}
 
 #if __SKIA__
@@ -571,7 +627,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			if (this == TextBlock.SelectionFlyoutProperty ||
-				this == RichTextBlock.SelectionFlyoutProperty)
+				IsRichTextBlockProperty(nameof(RichTextBlock.SelectionFlyout)))
 			{
 				return GetDefaultTextControlSelectionFlyout();
 			}
@@ -581,7 +637,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (forType == typeof(Rectangle) || forType == typeof(Ellipse))
 				{
-					return Boxes.StretchBoxes.Fill;
+					return StretchBoxes.Fill;
 				}
 			}
 

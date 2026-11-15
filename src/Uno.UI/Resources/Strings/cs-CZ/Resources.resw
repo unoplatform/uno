@@ -135,4 +135,67 @@
   <data name="StorageProviderWasmNativeDisplayName" xml:space="preserve">
     <value>JS File Access API</value>
   </data>
+  <data name="AccessibilityActionExpand" xml:space="preserve">
+    <value>Rozbalit</value>
+  </data>
+  <data name="AccessibilityActionCollapse" xml:space="preserve">
+    <value>Sbalit</value>
+  </data>
+  <data name="AccessibilityActionSelect" xml:space="preserve">
+    <value>Vybrat</value>
+  </data>
+  <data name="AccessibilityActionDeselect" xml:space="preserve">
+    <value>Zrušit výběr</value>
+  </data>
+  <data name="AccessibilityActionScrollForward" xml:space="preserve">
+    <value>Posunout dopředu</value>
+  </data>
+  <data name="AccessibilityActionScrollBackward" xml:space="preserve">
+    <value>Posunout dozadu</value>
+  </data>
+  <data name="AccessibilityActionScrollIntoView" xml:space="preserve">
+    <value>Posunout do zobrazení</value>
+  </data>
+  <data name="AccessibilityActionRealize" xml:space="preserve">
+    <value>Zobrazit položku</value>
+  </data>
+  <data name="AccessibilityActionDismiss" xml:space="preserve">
+    <value>Zavřít</value>
+  </data>
+  <data name="AccessibilityActionMaximize" xml:space="preserve">
+    <value>Maximalizovat</value>
+  </data>
+  <data name="AccessibilityActionMinimize" xml:space="preserve">
+    <value>Minimalizovat</value>
+  </data>
+  <data name="AccessibilityActionRestore" xml:space="preserve">
+    <value>Obnovit</value>
+  </data>
+  <data name="AccessibilityActionViewFormat" xml:space="preserve">
+    <value>Zobrazení {0}</value>
+  </data>
+  <data name="AccessibilityActionZoomIn" xml:space="preserve">
+    <value>Přiblížit</value>
+  </data>
+  <data name="AccessibilityActionZoomOut" xml:space="preserve">
+    <value>Oddálit</value>
+  </data>
+  <data name="AccessibilityActionDockTop" xml:space="preserve">
+    <value>Ukotvit nahoru</value>
+  </data>
+  <data name="AccessibilityActionDockLeft" xml:space="preserve">
+    <value>Ukotvit vlevo</value>
+  </data>
+  <data name="AccessibilityActionDockBottom" xml:space="preserve">
+    <value>Ukotvit dolů</value>
+  </data>
+  <data name="AccessibilityActionDockRight" xml:space="preserve">
+    <value>Ukotvit vpravo</value>
+  </data>
+  <data name="AccessibilityActionDockFill" xml:space="preserve">
+    <value>Ukotvit do výplně</value>
+  </data>
+  <data name="AccessibilityActionUndock" xml:space="preserve">
+    <value>Zrušit ukotvení</value>
+  </data>
 </root>

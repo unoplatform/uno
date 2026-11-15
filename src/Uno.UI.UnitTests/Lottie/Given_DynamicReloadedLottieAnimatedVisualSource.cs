@@ -17,7 +17,7 @@ using Microsoft.Toolkit.Uwp.UI.Lottie;
 
 namespace Uno.UI.Tests.Lottie
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_ThemableLottieVisualSource
 	{
 		[TestMethod]

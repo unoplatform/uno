@@ -9,7 +9,7 @@ using Uno.UI.DataBinding;
 
 namespace Uno.UI.Tests.BinderTests
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_BindingPath
 	{
 		[TestMethod]

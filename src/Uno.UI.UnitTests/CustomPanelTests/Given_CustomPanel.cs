@@ -15,7 +15,7 @@ using Windows.Foundation;
 
 namespace Uno.UI.Tests.CustomPanelTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_CustomPanel
 	{
 		[TestMethod]

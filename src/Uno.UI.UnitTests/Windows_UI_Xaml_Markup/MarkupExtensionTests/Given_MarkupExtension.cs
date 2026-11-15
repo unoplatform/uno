@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Markup;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.MarkupExtensionTests;
 
-[TestClass]
+[UITestClass]
 public class Given_MarkupExtension
 {
 	[TestMethod]

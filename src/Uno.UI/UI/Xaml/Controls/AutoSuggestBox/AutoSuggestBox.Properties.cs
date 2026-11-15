@@ -1,6 +1,7 @@
 ﻿
 using System;
 using Windows.Foundation;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -15,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double MaxSuggestionListHeight
 		{
 			get => (double)this.GetValue(MaxSuggestionListHeightProperty);
-			set => this.SetValue(MaxSuggestionListHeightProperty, value);
+			set => this.SetValue(MaxSuggestionListHeightProperty, Boxer.Box(value));
 		}
 
 		public bool IsSuggestionListOpen
@@ -111,14 +112,14 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"UpdateTextOnSelect", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: true)
+			new FrameworkPropertyMetadata(defaultValue: BoolBoxes.True)
 		);
 
 		public static global::Microsoft.UI.Xaml.DependencyProperty AutoMaximizeSuggestionAreaProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"AutoMaximizeSuggestionArea", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: false)
+			new FrameworkPropertyMetadata(defaultValue: BoolBoxes.False)
 		);
 
 		public static global::Microsoft.UI.Xaml.DependencyProperty HeaderProperty { get; } =
@@ -132,7 +133,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"IsSuggestionListOpen", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => (s as AutoSuggestBox)?.OnIsSuggestionListOpenChanged(e))
+			new FrameworkPropertyMetadata(defaultValue: BoolBoxes.False, propertyChangedCallback: (s, e) => (s as AutoSuggestBox)?.OnIsSuggestionListOpenChanged(e))
 		);
 
 		public static global::Microsoft.UI.Xaml.DependencyProperty QueryIconProperty { get; } =

@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Uno.Disposables
@@ -31,7 +32,11 @@ namespace Uno.Disposables
 		private static ConditionalWeakTable<object, List<IDisposable>> _registrations = new ConditionalWeakTable<object, List<IDisposable>>();
 
 		private bool _disposed;
-		private readonly WeakReference? _conditionSource;
+
+		// A weak GCHandle rather than a WeakReference: when the target is collected, this instance and a WeakReference
+		// only it references become unreachable together, and their finalizers run in any order. A WeakReference
+		// finalized first reports its target as collected, which skipped TargetFinalized for good.
+		private GCHandle _conditionSource;
 		private readonly List<IDisposable> _list;
 
 #if DEBUG
@@ -42,11 +47,14 @@ namespace Uno.Disposables
 		/// Creates a <see cref="ConditionalDisposable"/> instance using 
 		/// <paramref name="target"/> as a reference for its lifetime.
 		/// </summary>
-		/// <param name="conditionSource">An optional secondary reference, used to avoid calling action if it has been collected</param>
+		/// <param name="conditionSource">An optional secondary instance, held weakly, used to avoid calling action if it has been collected</param>
 		/// <param name="target">The instance to use to keep the disposable alive</param>
-		public ConditionalDisposable(object target, WeakReference? conditionSource = null)
+		public ConditionalDisposable(object target, object? conditionSource = null)
 		{
-			_conditionSource = conditionSource;
+			if (conditionSource is not null)
+			{
+				_conditionSource = GCHandle.Alloc(conditionSource, GCHandleType.Weak);
+			}
 
 #if DEBUG
 			_target = new WeakReference(target);
@@ -85,16 +93,26 @@ namespace Uno.Disposables
 				_list.Remove(this);
 			}
 
-			if (_conditionSource?.IsAlive ?? true)
+			lock (this)
 			{
-				lock (this)
+				if (_disposed)
 				{
-					if (!_disposed)
-					{
-						_disposed = true;
+					return;
+				}
 
-						TargetFinalized();
-					}
+				_disposed = true;
+
+				var isConditionSourceAlive = true;
+
+				if (_conditionSource.IsAllocated)
+				{
+					isConditionSourceAlive = _conditionSource.Target is not null;
+					_conditionSource.Free();
+				}
+
+				if (isConditionSourceAlive)
+				{
+					TargetFinalized();
 				}
 			}
 		}

@@ -28,9 +28,11 @@ internal partial struct ImageData
 	}
 
 #if __SKIA__
-	public static ImageData FromCompositionSurface(SkiaCompositionSurface compositionSurface) => new(compositionSurface);
+	// Neutral surface (ICompositionSurface): a texture-backed CompositionImageSurface OR a live self-painting one
+	// (e.g. CompositionSvgSurface). Consumers that need texture specifics down-cast.
+	public static ImageData FromCompositionSurface(ICompositionSurface compositionSurface) => new(compositionSurface);
 
-	private ImageData(SkiaCompositionSurface compositionSurface)
+	private ImageData(ICompositionSurface compositionSurface)
 	{
 		Kind = ImageDataKind.CompositionSurface;
 		CompositionSurface = compositionSurface;
@@ -41,6 +43,17 @@ internal partial struct ImageData
 
 	public bool HasData => Kind != ImageDataKind.Empty && Kind != ImageDataKind.Error;
 
+	/// <summary>
+	/// Whether the data is shared by every source that loads the same cached key, in which case no single source may
+	/// release it. Travels with the result so a cancelled or superseded open releases exactly what it owned.
+	/// </summary>
+	public bool IsShared { get; private init; }
+
+	/// <summary>
+	/// Returns this data marked as shared (see <see cref="IsShared"/>).
+	/// </summary>
+	internal ImageData AsShared() => this with { IsShared = true };
+
 	public ImageDataKind Kind { get; }
 
 	public Exception? Error { get; } = null;
@@ -48,7 +61,7 @@ internal partial struct ImageData
 	public byte[]? ByteArray { get; } = null;
 
 #if __SKIA__
-	public SkiaCompositionSurface? CompositionSurface { get; } = null;
+	public ICompositionSurface? CompositionSurface { get; } = null;
 #endif
 
 	public override string ToString() =>

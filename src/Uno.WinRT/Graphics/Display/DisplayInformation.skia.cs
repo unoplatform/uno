@@ -21,6 +21,8 @@ public sealed partial class DisplayInformation
 
 	internal void NotifyDpiChanged() => OnDpiChanged();
 
+	internal void NotifyOrientationChanged() => _orientationChanged?.Invoke(this, null);
+
 	public DisplayOrientations CurrentOrientation => _displayInformationExtension?.CurrentOrientation ?? DisplayOrientations.Landscape;
 
 	public uint ScreenHeightInRawPixels => _displayInformationExtension?.ScreenHeightInRawPixels ?? 1080;

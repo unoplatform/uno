@@ -5,7 +5,7 @@ using Windows.System;
 
 namespace Windows.ApplicationModel.Email
 {
-	public partial class EmailManager
+	public static partial class EmailManager
 	{
 		public static IAsyncAction ShowComposeNewEmailAsync(EmailMessage message)
 		{

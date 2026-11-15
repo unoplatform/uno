@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<IsUnoHead Condition="'$(OutputType)'=='Exe' OR '$(OutputType)'=='WinExe'">true</IsUnoHead>
+	</PropertyGroup>
+
+	<!--
+		GLCanvasElement native shim support. These items MUST be static (evaluation-time), not
+		inside a target: Uno.Wasm.Bootstrap translates WasmShellNativeCompile to NativeFileReference
+		in _UnoAdjustCompatibility (BeforeTargets="ResolveStaticWebAssetsConfiguration"), whose
+		execution order relative to our targets is not guaranteed - on clean builds it can run
+		first and see an empty item list, silently dropping the shim from the native link.
+	-->
+	<ItemGroup Condition=" '$(IsUnoHead)' == 'true' AND '$(UnoDisableAdjustSkiaSharpDependency)' != 'true' ">
+		<!--
+			Native shim that wraps gl functions with more than 8 arguments (glTexImage2D & co).
+			The mono-wasm interpreter only supports up to 8 args for [UnmanagedCallersOnly]
+			trampolines (dotnet/runtime#109338), so the framework can't dispatch those signatures
+			directly from managed code. The shim packs args into a struct and calls a 1-arg
+			managed dispatcher. The managed side reaches the shims via [DllImport("uno_gl_shim")]
+			(see WasmGLFunctions.LargeArityShims.cs), which also primes the float-bearing
+			interp->native trampoline cookies that Silk.NET's calli dispatch needs.
+
+			WasmShellNativeCompile (not WasmShellNativeFileReference) is the item that runs emcc
+			on raw .c sources; NativeFileReference filters to .o/.a only.
+		-->
+		<WasmShellNativeCompile Include="$(MSBuildThisFileDirectory)native/uno_gl_shim.c" Visible="false" />
+	</ItemGroup>
+
+	<Target Name="_UnoValidateNoUnoWasmDOMRuntimeDependency"
+			AfterTargets="CopyFilesToOutputDirectory"
+			Condition=" '$(UnoDisableValidateNoUnoWasmDOMRuntimeDependency)' == '' ">
+
+		<ItemGroup>
+			<_UnoRuntimeWasmReferenceCopyLocalPaths
+				Include="@(ReferenceCopyLocalPaths)"
+				Condition="'%(Filename)' == 'Uno.UI.Runtime.WebAssembly'"/>
+		</ItemGroup>
+
+		<Error Condition=" '@(_UnoRuntimeWasmReferenceCopyLocalPaths)' != '' "
+			Text="A reference to either Uno.WinUI.Runtime.WebAssembly or Uno.WinUI.WebAssembly has been detected. See more information at https://aka.platform.uno/UNOB0017"
+			Code="UNOB0017"
+			HelpKeyword="UNOB0017" />
+
+	</Target>
+
+	<!-- Copy Content files to the output folder like APPX packaging does. -->
+	<Target Name="_UnoBeforeCopyLocal" BeforeTargets="CopyFilesToOutputDirectory;_CopyFilesMarkedCopyLocal">
+		<ItemGroup>
+			<ContentWithTargetPath
+				Update="@(ContentWithTargetPath)"
+				CopyToOutputDirectory="Always" />
+		</ItemGroup>
+	</Target>
+
+	<Target	Name="_UnoAdjustWasmNativeDependencies"
+			BeforeTargets="AssignTargetPaths;PrepareForBuild"
+			Condition=" '$(IsUnoHead)' == 'True' AND '$(UnoDisableAdjustSkiaSharpDependency)' != 'true' ">
+		<!--
+			The native libraries (libSkiaSharp.a, libHarfBuzzSharp.a) are linked by their own NativeAssets packages,
+			which the head references only when it uses them. GLCanvasElement calls emscripten's GL
+			(native/uno_gl_shim.c), so WebGL2 and the GL runtime object are requested here instead of being left to SkiaSharp.
+		-->
+		<ItemGroup>
+			<EmccExportedRuntimeMethod Include="GL" KeepDuplicates="false" />
+		</ItemGroup>
+
+		<PropertyGroup>
+			<EmccExtraLDFlags Condition="!$(EmccExtraLDFlags.Contains('USE_WEBGL2'))">$(EmccExtraLDFlags) -s USE_WEBGL2=1</EmccExtraLDFlags>
+			<!-- Enable GLCtx when threading is available -->
+			<EmccFlags Condition="'$(WasmShellEnableThreads)'=='True'">$(EmccFlags);-s OFFSCREEN_FRAMEBUFFER=1</EmccFlags>
+		</PropertyGroup>
+	</Target>
+
+</Project>

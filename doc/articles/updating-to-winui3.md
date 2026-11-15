@@ -13,7 +13,7 @@ Uno Platform supports authoring apps using [WinUI 3's API](uwp-vs-winui3.md). Th
 - **NuGet updates:**
   - `Uno.UI` becomes `Uno.WinUI`
   - `Uno.UI.DevServer` becomes `Uno.WinUI.DevServer`
-  - `Uno.UI.Lottie` becomes `Uno.WinUI.Lottie`
+  - `Uno.UI.Lottie` becomes `Uno.WinUI.Lottie` (removed in Uno Platform 7.0, where Lottie needs no package)
   - `Uno.UI.Foldable` becomes `Uno.WinUI.Foldable`
 - **String replacements:**
   - `Windows.UI.Xaml` becomes `Microsoft.UI.Xaml`

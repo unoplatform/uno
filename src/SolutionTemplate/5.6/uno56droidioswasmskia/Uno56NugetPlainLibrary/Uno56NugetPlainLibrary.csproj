@@ -1,0 +1,20 @@
+<Project Sdk="Uno.Sdk.Private">
+  <PropertyGroup>
+    <!-- Only the plain TFM: platform heads must consume lib/net11.0 as-is -->
+    <TargetFrameworks>net11.0</TargetFrameworks>
+    <UnoSingleProject>true</UnoSingleProject>
+    <OutputType>Library</OutputType>
+    <GenerateLibraryLayout>true</GenerateLibraryLayout>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+    <!-- We can ignore nuget warnings, since were making a test package-->
+    <NoWarn>$(NoWarn);NU5104</NoWarn>
+
+    <UnoFeatures>
+      SkiaRenderer;
+    </UnoFeatures>
+  </PropertyGroup>
+</Project>

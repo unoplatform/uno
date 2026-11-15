@@ -1,0 +1,203 @@
+#nullable enable
+
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Uno.UI.Xaml.Controls.Extensions;
+
+namespace Microsoft.UI.Xaml.Controls
+{
+	// Uno-specific functional implementation of the RichEditBox change-notification events for Skia.
+	//
+	// TextChanged and SelectionChanged (both RoutedEventHandler) are raised from the shared document
+	// text choke point (OnDocumentTextChanged) and the selection render choke point
+	// (UpdateDisplaySelection) respectively, mirroring WinUI's "fire after the content/selection has
+	// actually changed" semantics. Each is de-duplicated against the last-raised value so that pure
+	// re-renders and focus changes do not raise spurious notifications. Like WinUI, a text edit that
+	// replaces content with identical text still raises TextChanging and TextChanged.
+	//
+	// The paired "changing" events use TypedEventHandler with their own args. TextChanging fires
+	// immediately before TextChanged with IsContentChanging == true (our architecture applies the
+	// edit before the choke point, so the content is already changed by the time we notify — the
+	// Changing -> Changed ordering and the IsContentChanging flag are still faithful). SelectionChanging
+	// is cancellable for both interactive and programmatic TOM selection changes. Interactive changes
+	// raise before committing; TOM changes follow WinUI's callback model and restore the last accepted
+	// selection if cancelled. A selection changed reentrantly by the handler takes precedence over Cancel.
+	//
+	// The clipboard events (CopyingToClipboard, CuttingToClipboard, Paste) are raised from the
+	// RichEditBox clipboard methods (see RichEditBox.clipboard.cs) before the corresponding
+	// clipboard operation; a handler setting Handled = true suppresses the default behavior. Cut raises
+	// CuttingToClipboard (not CopyingToClipboard), matching WinUI.
+	partial class RichEditBox
+	{
+		private void AddTextChangingHandler(global::Windows.Foundation.TypedEventHandler<RichEditBox, RichEditBoxTextChangingEventArgs>? value)
+		{
+			if (_textChanging is null)
+			{
+				_lastObservedText = GetPlainTextContent();
+				_lastObservedTextVersion = Document.TextVersion;
+				_lastObservedContentEditVersion = Document.ContentEditVersion;
+			}
+			_textChanging += value;
+		}
+
+		private string _lastObservedText = string.Empty;
+		private long _lastObservedTextVersion;
+		private long _lastObservedContentEditVersion;
+		private global::Windows.Foundation.TypedEventHandler<RichEditBox, RichEditBoxTextChangingEventArgs>? _textChanging;
+		private bool _isInvokingTextChanging;
+
+		// Last (start, length) selection span for which SelectionChanged was raised.
+		private (int start, int length) _lastRaisedSelection;
+
+		private TextChangeNotification? PrepareTextChangedNotification(bool isContentChanging)
+		{
+			var version = Document.TextVersion;
+			var editVersion = Document.ContentEditVersion;
+			var textChanging = _textChanging;
+			if (textChanging is null)
+			{
+				if (isContentChanging && version == _lastObservedTextVersion && editVersion == _lastObservedContentEditVersion)
+				{
+					return null;
+				}
+
+				_lastObservedTextVersion = version;
+				_lastObservedContentEditVersion = editVersion;
+				return new TextChangeNotification(version);
+			}
+
+			var text = GetPlainTextContent();
+			if (isContentChanging && text == _lastObservedText && editVersion == _lastObservedContentEditVersion)
+			{
+				return null;
+			}
+
+			var oldText = _lastObservedText;
+			var oldEditVersion = _lastObservedContentEditVersion;
+			_lastObservedText = text;
+			_lastObservedTextVersion = version;
+			_lastObservedContentEditVersion = editVersion;
+
+			// A TextChanging handler may synchronously edit the document again. The nested render still
+			// runs, but its notification is folded into the outer one so observers never receive stale
+			// old/new values or an unbounded event recursion.
+			if (_isInvokingTextChanging)
+			{
+				return null;
+			}
+
+			string finalText;
+			try
+			{
+				_isInvokingTextChanging = true;
+				OnTextChangingHandler(isContentChanging);
+			}
+			finally
+			{
+				_isInvokingTextChanging = false;
+				finalText = GetPlainTextContent();
+				_lastObservedText = finalText;
+				_lastObservedTextVersion = Document.TextVersion;
+				_lastObservedContentEditVersion = Document.ContentEditVersion;
+			}
+
+			if (isContentChanging && oldText == finalText && oldEditVersion == _lastObservedContentEditVersion)
+			{
+				return null;
+			}
+
+			return new TextChangeNotification(_lastObservedTextVersion);
+		}
+
+		private void QueueTextChangedNotification(TextChangeNotification? change)
+		{
+			if (change is null)
+			{
+				return;
+			}
+
+			var peer = GetOrCreateAutomationPeer() as RichEditBoxAutomationPeer;
+			if (peer is not null)
+			{
+				if (AutomationPeer.ListenerExistsHelper(AutomationEvents.TextPatternOnTextChanged))
+				{
+					peer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextChanged);
+				}
+			}
+			Uno.Helpers.UIElementAccessibilityHelper.NotifyTextControlStateChanged(this);
+
+			_ = Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.Normal, OnTextChangedHandler);
+		}
+
+		internal void OnTextChangedHandler() => TextChanged?.Invoke(this, new RoutedEventArgs());
+
+		private void RaiseSelectionChangedIfNeeded()
+		{
+			ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
+			var current = (_selection.start, _selection.length);
+			if (current == _lastRaisedSelection)
+			{
+				return;
+			}
+
+			_lastRaisedSelection = current;
+
+			// Like WinUI's event manager, the routed SelectionChanged event is queued rather than raised synchronously,
+			// and it reaches the handlers registered when the selection changed.
+			if (SelectionChanged is { } selectionChanged)
+			{
+				_ = Dispatcher.RunAsync(
+					global::Windows.UI.Core.CoreDispatcherPriority.Normal,
+					() => selectionChanged(this, new RoutedEventArgs()));
+			}
+
+			if (GetOrCreateAutomationPeer() is RichEditBoxAutomationPeer peer
+				&& AutomationPeer.ListenerExistsHelper(AutomationEvents.TextPatternOnTextSelectionChanged))
+			{
+				peer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextSelectionChanged);
+			}
+			Uno.Helpers.UIElementAccessibilityHelper.NotifyTextControlStateChanged(this);
+		}
+
+		private readonly record struct TextChangeNotification(long Version);
+
+		/// <summary>Raises <see cref="CopyingToClipboard"/> and returns whether a handler suppressed it.</summary>
+		private bool RaiseCopyingToClipboardIsHandled()
+		{
+			if (CopyingToClipboard is not { } handler)
+			{
+				return false;
+			}
+
+			var args = new TextControlCopyingToClipboardEventArgs();
+			handler.Invoke(this, args);
+			return args.Handled;
+		}
+
+		/// <summary>Raises <see cref="CuttingToClipboard"/> and returns whether a handler suppressed it.</summary>
+		private bool RaiseCuttingToClipboardIsHandled()
+		{
+			if (CuttingToClipboard is not { } handler)
+			{
+				return false;
+			}
+
+			var args = new TextControlCuttingToClipboardEventArgs();
+			handler.Invoke(this, args);
+			return args.Handled;
+		}
+
+		/// <summary>Raises <see cref="Paste"/> and returns whether a handler suppressed it.</summary>
+		private bool RaisePasteIsHandled()
+		{
+			if (Paste is not { } handler)
+			{
+				return false;
+			}
+
+			var args = new TextControlPasteEventArgs();
+			handler.Invoke(this, args);
+			return args.Handled;
+		}
+	}
+}

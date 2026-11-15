@@ -8,7 +8,7 @@ export UITEST_RUNTIME_TEST_GROUP_COUNT=8
 export UITEST_RUNTIME_TEST_GROUP=5
 export UITEST_TEST_TIMEOUT=120s
 export UITEST_IGNORE_RERUN_FILE=true
-export UNO_UITEST_IOSBUNDLE_PATH="$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net7.0-ios/iossimulator-x64/SamplesApp.app"
+export UNO_UITEST_IOSBUNDLE_PATH="$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net11.0-ios/iossimulator-arm64/SamplesApp.app"
 
 mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY
 

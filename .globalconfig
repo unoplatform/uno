@@ -191,3 +191,10 @@ dotnet_diagnostic.MSTEST0032.severity = warning
 # MSTEST0037: Use proper 'Assert' methods
 # Temporarily disabled until https://github.com/microsoft/testfx/issues/6223 is released.
 dotnet_diagnostic.MSTEST0037.severity = suggestion
+
+# UnoInternal0002: Avoid boxing allocation, use 'Uno.UI.Helpers.Boxes' instead.
+dotnet_diagnostic.UnoInternal0002.severity = error
+
+# UnoInternal0003: Possibly incorrect conversion reaching a typed 'SetValue' overload.
+# This one guards against storing the wrong boxed type, so it stays an error.
+dotnet_diagnostic.UnoInternal0003.severity = error

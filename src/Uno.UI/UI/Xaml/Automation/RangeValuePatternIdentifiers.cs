@@ -5,6 +5,10 @@
 /// </summary>
 public partial class RangeValuePatternIdentifiers
 {
+	internal RangeValuePatternIdentifiers()
+	{
+	}
+
 	/// <summary>
 	/// Identifies the IsReadOnly automation property.
 	/// </summary>

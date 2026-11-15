@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Windows.ApplicationModel;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
 using static Microsoft.UI.Xaml.Controls._Tracing;
@@ -1168,9 +1169,10 @@ partial class AnimatedVisualPlayer
 		// refcounting problem where in some scenarios the outer object gets
 		// an extra Release() in this process.
 		var weakThis = new WeakReference<AnimatedVisualPlayer>(this);
-		if (Application.Current is { } application)
 		{
-			void OnSuspending(object sender, ISuspendingEventArgs e)
+			// MUX subscribes to Application.Suspending/Resuming, which WinUI only exposes to its own
+			// internals; CoreApplication carries the same events in the public surface.
+			void OnSuspending(object? sender, SuspendingEventArgs e)
 			{
 				if (weakThis.TryGetTarget(out var strongThis))
 				{
@@ -1178,8 +1180,8 @@ partial class AnimatedVisualPlayer
 				}
 			}
 
-			m_suspendingRevoker.Disposable = Disposable.Create(() => application.Suspending -= OnSuspending);
-			application.Suspending += OnSuspending;
+			m_suspendingRevoker.Disposable = Disposable.Create(() => CoreApplication.Suspending -= OnSuspending);
+			CoreApplication.Suspending += OnSuspending;
 
 			void OnResuming(object? sender, object? e)
 			{
@@ -1190,8 +1192,8 @@ partial class AnimatedVisualPlayer
 				}
 			}
 
-			m_resumingRevoker.Disposable = Disposable.Create(() => application.Resuming -= OnResuming);
-			application.Resuming += OnResuming;
+			m_resumingRevoker.Disposable = Disposable.Create(() => CoreApplication.Resuming -= OnResuming);
+			CoreApplication.Resuming += OnResuming;
 		}
 
 		if (XamlRoot is { } xamlRoot)

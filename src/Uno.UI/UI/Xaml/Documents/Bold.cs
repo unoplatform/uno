@@ -1,4 +1,5 @@
-﻿using Windows.UI.Text;
+﻿using Microsoft.UI.Text;
+using Windows.UI.Text;
 
 namespace Microsoft.UI.Xaml.Documents
 {

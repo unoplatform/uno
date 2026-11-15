@@ -1,6 +1,7 @@
 <Project Sdk="Uno.Sdk.Private">
   <PropertyGroup>
     <TargetFrameworks>net11.0-browserwasm;net11.0-ios;net11.0-android;net11.0-desktop</TargetFrameworks>
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net11.0-windows10.0.26100</TargetFrameworks>
 
     <OutputType>Exe</OutputType>
     <UnoSingleProject>true</UnoSingleProject>
@@ -43,6 +44,8 @@
   <ItemGroup>
     <!-- nuget package reference validation -->
     <PackageReference Include="Uno56NugetLibrary" />
+    <!-- A plain netX.0 Uno library is built against Uno.UI, so it cannot run on a WinAppSDK head -->
+    <PackageReference Include="Uno56NugetPlainLibrary" Condition="'$(TargetPlatformIdentifier)' != 'windows'" />
   </ItemGroup>
   
   <ItemGroup>
@@ -56,6 +59,32 @@
       Text="BundleResource.LogicalName must not contain a rooted path" />
   </Target>
   
+  <!--
+    On every platform head a multi-targeted package must use its platform-specific asset, and a plain netX.0 package
+    its netX.0 one, for both compile and runtime.
+  -->
+  <Target Name="ValidatePlatformSpecificPackageAsset"
+          AfterTargets="ResolveReferences"
+          Condition="'$(TargetPlatformIdentifier)' != ''">
+    <PropertyGroup>
+      <_PlatformAssetFolder>lib$([System.IO.Path]::DirectorySeparatorChar)$(TargetFramework.ToLowerInvariant())</_PlatformAssetFolder>
+      <_PlainAssetFolder>lib$([System.IO.Path]::DirectorySeparatorChar)$(TargetFramework.Split('-')[0])$([System.IO.Path]::DirectorySeparatorChar)</_PlainAssetFolder>
+    </PropertyGroup>
+    <ItemGroup>
+      <_ExpectedPackageAsset Include="Uno56NugetLibrary" Folder="$(_PlatformAssetFolder)" />
+      <_ExpectedPackageAsset Include="Uno56NugetPlainLibrary" Folder="$(_PlainAssetFolder)" Condition="'$(TargetPlatformIdentifier)' != 'windows'" />
+      <_ExpectedPackageAssetUse Include="@(_ExpectedPackageAsset->'%(Identity).compile');@(_ExpectedPackageAsset->'%(Identity).runtime')" />
+
+      <_PackageAssetUse Include="@(ReferencePath)" Use="compile" Condition="'%(Filename)' == 'Uno56NugetLibrary' OR '%(Filename)' == 'Uno56NugetPlainLibrary'" />
+      <_PackageAssetUse Include="@(RuntimeCopyLocalItems)" Use="runtime" Condition="'%(Filename)%(Extension)' == 'Uno56NugetLibrary.dll' OR '%(Filename)%(Extension)' == 'Uno56NugetPlainLibrary.dll'" />
+      <_PackageAssetUse Update="@(_PackageAssetUse)" Folder="%(_ExpectedPackageAsset.Folder)" Condition="'%(_PackageAssetUse.Filename)' == '%(_ExpectedPackageAsset.Identity)'" />
+    </ItemGroup>
+    <Error Condition="@(_PackageAssetUse->Count()) != @(_ExpectedPackageAssetUse->Count())"
+           Text="Expected a compile and a runtime asset for each test package, got '@(_PackageAssetUse)'" />
+    <Error Condition="!$([System.String]::Copy('%(_PackageAssetUse.FullPath)').Contains('%(_PackageAssetUse.Folder)'))"
+           Text="%(_PackageAssetUse.Filename) must use its %(_PackageAssetUse.Folder) asset for %(_PackageAssetUse.Use), got '%(_PackageAssetUse.FullPath)'" />
+  </Target>
+
   <ItemGroup>
     <ProjectReference Include="..\UnoLibrary1\UnoLibrary1.csproj" />
   </ItemGroup>

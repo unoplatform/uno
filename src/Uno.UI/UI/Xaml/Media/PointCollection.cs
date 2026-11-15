@@ -34,12 +34,12 @@ namespace Microsoft.UI.Xaml.Media
 
 		public bool IsReadOnly => false;
 
-		public Point this[int i]
+		public Point this[int index]
 		{
-			get => _points[i];
+			get => _points[index];
 			set
 			{
-				_points[i] = value;
+				_points[index] = value;
 				NotifyChanged();
 			}
 		}

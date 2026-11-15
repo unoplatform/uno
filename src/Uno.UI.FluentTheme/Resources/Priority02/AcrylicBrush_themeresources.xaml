@@ -40,16 +40,16 @@
       <AcrylicBrush x:Key="SystemControlAltHighAcrylicWindowBrush" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemAltHighColor}" />
       <AcrylicBrush x:Key="SystemControlAltHighAcrylicElementBrush" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemAltHighColor}" />
       <SolidColorBrush x:Key="SystemControlTransientBorderBrush" Color="#000000" Opacity="0.36" />
-      <AcrylicBrush x:Key="AcrylicBackgroundFillColorDefaultBrush" TintColor="#2C2C2C" TintOpacity="0.15" FallbackColor="#2C2C2C" />
-      <AcrylicBrush x:Key="AcrylicInAppFillColorDefaultBrush" TintColor="#2C2C2C" TintOpacity="0.15" FallbackColor="#2C2C2C" />
-      <AcrylicBrush x:Key="AcrylicBackgroundFillColorDefaultInverseBrush" TintColor="#FCFCFC" TintOpacity="0.0" FallbackColor="#F9F9F9" />
-      <AcrylicBrush x:Key="AcrylicInAppFillColorDefaultInverseBrush" TintColor="#FCFCFC" TintOpacity="0.0" FallbackColor="#F9F9F9" />
-      <AcrylicBrush x:Key="AcrylicBackgroundFillColorBaseBrush" TintColor="#202020" TintOpacity="0.5" FallbackColor="#1C1C1C" />
-      <AcrylicBrush x:Key="AcrylicInAppFillColorBaseBrush" TintColor="#202020" TintOpacity="0.5" FallbackColor="#1C1C1C" />
-      <AcrylicBrush x:Key="AccentAcrylicBackgroundFillColorDefaultBrush" TintColor="{ThemeResource SystemAccentColorDark1}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorDark1}" />
-      <AcrylicBrush x:Key="AccentAcrylicInAppFillColorDefaultBrush" TintColor="{ThemeResource SystemAccentColorDark1}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorDark1}" />
-      <AcrylicBrush x:Key="AccentAcrylicBackgroundFillColorBaseBrush" TintColor="{ThemeResource SystemAccentColorDark2}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorDark2}" />
-      <AcrylicBrush x:Key="AccentAcrylicInAppFillColorBaseBrush" TintColor="{ThemeResource SystemAccentColorDark2}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorDark2}" />
+      <AcrylicBrush x:Key="AcrylicBackgroundFillColorDefaultBrush" TintColor="#2C2C2C" TintOpacity="0.15" FallbackColor="#2C2C2C" TintLuminosityOpacity="0.96" />
+      <AcrylicBrush x:Key="AcrylicInAppFillColorDefaultBrush" TintColor="#2C2C2C" TintOpacity="0.15" FallbackColor="#2C2C2C" TintLuminosityOpacity="0.96" />
+      <AcrylicBrush x:Key="AcrylicBackgroundFillColorDefaultInverseBrush" TintColor="#FCFCFC" TintOpacity="0.0" FallbackColor="#F9F9F9" TintLuminosityOpacity="0.85" />
+      <AcrylicBrush x:Key="AcrylicInAppFillColorDefaultInverseBrush" TintColor="#FCFCFC" TintOpacity="0.0" FallbackColor="#F9F9F9" TintLuminosityOpacity="0.85" />
+      <AcrylicBrush x:Key="AcrylicBackgroundFillColorBaseBrush" TintColor="#202020" TintOpacity="0.5" FallbackColor="#1C1C1C" TintLuminosityOpacity="0.96" />
+      <AcrylicBrush x:Key="AcrylicInAppFillColorBaseBrush" TintColor="#202020" TintOpacity="0.5" FallbackColor="#1C1C1C" TintLuminosityOpacity="0.96" />
+      <AcrylicBrush x:Key="AccentAcrylicBackgroundFillColorDefaultBrush" TintColor="{ThemeResource SystemAccentColorDark1}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorDark1}" TintLuminosityOpacity="0.8" />
+      <AcrylicBrush x:Key="AccentAcrylicInAppFillColorDefaultBrush" TintColor="{ThemeResource SystemAccentColorDark1}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorDark1}" TintLuminosityOpacity="0.8" />
+      <AcrylicBrush x:Key="AccentAcrylicBackgroundFillColorBaseBrush" TintColor="{ThemeResource SystemAccentColorDark2}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorDark2}" TintLuminosityOpacity="0.8" />
+      <AcrylicBrush x:Key="AccentAcrylicInAppFillColorBaseBrush" TintColor="{ThemeResource SystemAccentColorDark2}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorDark2}" TintLuminosityOpacity="0.8" />
       <SolidColorBrush x:Key="DesktopAcrylicTransparentBrush" Color="#00000000" />
       <DesktopAcrylicBackdrop x:Key="AcrylicBackgroundFillColorDefaultBackdrop" />
     </ResourceDictionary>
@@ -92,16 +92,16 @@
       <AcrylicBrush x:Key="SystemControlAltHighAcrylicWindowBrush" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemAltHighColor}" />
       <AcrylicBrush x:Key="SystemControlAltHighAcrylicElementBrush" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.8" FallbackColor="{StaticResource SystemAltHighColor}" />
       <SolidColorBrush x:Key="SystemControlTransientBorderBrush" Color="#000000" Opacity="0.14" />
-      <AcrylicBrush x:Key="AcrylicBackgroundFillColorDefaultBrush" TintColor="#FCFCFC" TintOpacity="0.0" FallbackColor="#F9F9F9" />
-      <AcrylicBrush x:Key="AcrylicInAppFillColorDefaultBrush" TintColor="#FCFCFC" TintOpacity="0.0" FallbackColor="#F9F9F9" />
-      <AcrylicBrush x:Key="AcrylicBackgroundFillColorDefaultInverseBrush" TintColor="#2C2C2C" TintOpacity="0.15" FallbackColor="#2C2C2C" />
-      <AcrylicBrush x:Key="AcrylicInAppFillColorDefaultInverseBrush" TintColor="#2C2C2C" TintOpacity="0.15" FallbackColor="#2C2C2C" />
-      <AcrylicBrush x:Key="AcrylicBackgroundFillColorBaseBrush" TintColor="#F3F3F3" TintOpacity="0.0" FallbackColor="#EEEEEE" />
-      <AcrylicBrush x:Key="AcrylicInAppFillColorBaseBrush" TintColor="#F3F3F3" TintOpacity="0.0" FallbackColor="#EEEEEE" />
-      <AcrylicBrush x:Key="AccentAcrylicBackgroundFillColorDefaultBrush" TintColor="{ThemeResource SystemAccentColorLight3}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorLight3}" />
-      <AcrylicBrush x:Key="AccentAcrylicInAppFillColorDefaultBrush" TintColor="{ThemeResource SystemAccentColorLight3}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorLight3}" />
-      <AcrylicBrush x:Key="AccentAcrylicBackgroundFillColorBaseBrush" TintColor="{ThemeResource SystemAccentColorLight3}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorLight3}" />
-      <AcrylicBrush x:Key="AccentAcrylicInAppFillColorBaseBrush" TintColor="{ThemeResource SystemAccentColorLight3}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorLight3}" />
+      <AcrylicBrush x:Key="AcrylicBackgroundFillColorDefaultBrush" TintColor="#FCFCFC" TintOpacity="0.0" FallbackColor="#F9F9F9" TintLuminosityOpacity="0.85" />
+      <AcrylicBrush x:Key="AcrylicInAppFillColorDefaultBrush" TintColor="#FCFCFC" TintOpacity="0.0" FallbackColor="#F9F9F9" TintLuminosityOpacity="0.85" />
+      <AcrylicBrush x:Key="AcrylicBackgroundFillColorDefaultInverseBrush" TintColor="#2C2C2C" TintOpacity="0.15" FallbackColor="#2C2C2C" TintLuminosityOpacity="0.96" />
+      <AcrylicBrush x:Key="AcrylicInAppFillColorDefaultInverseBrush" TintColor="#2C2C2C" TintOpacity="0.15" FallbackColor="#2C2C2C" TintLuminosityOpacity="0.96" />
+      <AcrylicBrush x:Key="AcrylicBackgroundFillColorBaseBrush" TintColor="#F3F3F3" TintOpacity="0.0" FallbackColor="#EEEEEE" TintLuminosityOpacity="0.9" />
+      <AcrylicBrush x:Key="AcrylicInAppFillColorBaseBrush" TintColor="#F3F3F3" TintOpacity="0.0" FallbackColor="#EEEEEE" TintLuminosityOpacity="0.9" />
+      <AcrylicBrush x:Key="AccentAcrylicBackgroundFillColorDefaultBrush" TintColor="{ThemeResource SystemAccentColorLight3}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorLight3}" TintLuminosityOpacity="0.9" />
+      <AcrylicBrush x:Key="AccentAcrylicInAppFillColorDefaultBrush" TintColor="{ThemeResource SystemAccentColorLight3}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorLight3}" TintLuminosityOpacity="0.9" />
+      <AcrylicBrush x:Key="AccentAcrylicBackgroundFillColorBaseBrush" TintColor="{ThemeResource SystemAccentColorLight3}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorLight3}" TintLuminosityOpacity="0.9" />
+      <AcrylicBrush x:Key="AccentAcrylicInAppFillColorBaseBrush" TintColor="{ThemeResource SystemAccentColorLight3}" TintOpacity="0.8" FallbackColor="{ThemeResource SystemAccentColorLight3}" TintLuminosityOpacity="0.9" />
       <SolidColorBrush x:Key="DesktopAcrylicTransparentBrush" Color="#00000000" />
       <DesktopAcrylicBackdrop x:Key="AcrylicBackgroundFillColorDefaultBackdrop" />
     </ResourceDictionary>

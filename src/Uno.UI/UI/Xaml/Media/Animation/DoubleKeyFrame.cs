@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
 	public abstract partial class DoubleKeyFrame : DependencyObject
 	{
-		public DoubleKeyFrame()
+		protected DoubleKeyFrame()
 		{
 			IsAutoPropertyInheritanceEnabled = false;
 			InitializeBinder();
@@ -30,10 +31,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public double Value
 		{
 			get { return (double)this.GetValue(ValueProperty); }
-			set { this.SetValue(ValueProperty, value); }
+			set { this.SetValue(ValueProperty, Boxer.Box(value)); }
 		}
 		public static DependencyProperty ValueProperty { get; } =
-			DependencyProperty.Register("Value", typeof(double), typeof(DoubleKeyFrame), new FrameworkPropertyMetadata(0d));
+			DependencyProperty.Register("Value", typeof(double), typeof(DoubleKeyFrame), new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 		/// <summary>
 		/// The time at which the key frame's current value should be equal to its Value property.

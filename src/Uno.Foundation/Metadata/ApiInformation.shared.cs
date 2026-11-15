@@ -2,7 +2,7 @@
 
 namespace Windows.Foundation.Metadata;
 
-public partial class ApiInformation
+public static partial class ApiInformation
 {
 	public static bool IsApiContractPresent(string contractName, ushort majorVersion)
 		=> IsApiContractPresent(contractName, majorVersion, 0);

@@ -155,12 +155,65 @@ public class Given_WorkspaceTransitionDecisions
 	}
 
 	[TestMethod]
-	public void WhenMcpRootsPointToDifferentWorkspace_ActionIsDiagnose()
+	[Description("MCP roots are a hint: they never replace a workspace whose DevServer is running (#25524)")]
+	public void WhenMcpRootsPointToDifferentWorkspaceWhileRunning_ActionIsIgnore()
 	{
 		var previous = CreateResolved(CreatePath("repo", "a"), CreatePath("repo", "a", "AppA.slnx"));
 		var current = CreateResolved(CreatePath("repo", "b"), CreatePath("repo", "b", "AppB.slnx"));
 
 		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.McpRoots, devServerStarted: true);
+
+		action.Should().Be(WorkspaceTransitionAction.Ignore);
+	}
+
+	[TestMethod]
+	[Description("MCP roots that do not resolve leave a running workspace in place rather than degrading it (#25524)")]
+	public void WhenMcpRootsDoNotResolveWhileRunning_ActionIsIgnore()
+	{
+		var previous = CreateResolved(CreatePath("repo", "a"), CreatePath("repo", "a", "AppA.slnx"));
+		var current = CreateUnresolved(WorkspaceResolutionKind.Ambiguous, CreatePath("repo", "b", "B1.slnx"), CreatePath("repo", "b", "B2.slnx"));
+
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.McpRoots, devServerStarted: true);
+
+		action.Should().Be(WorkspaceTransitionAction.Ignore);
+	}
+
+	[TestMethod]
+	[Description("MCP roots never override an explicitly selected solution, even one that does not resolve right now (#25524)")]
+	public void WhenMcpRootsArriveAfterExplicitSelection_ActionIsIgnore()
+	{
+		var previous = CreateUnresolved(WorkspaceResolutionKind.NoCandidates) with
+		{
+			SelectedSolutionPath = CreatePath("repo", "a", "AppA.slnx"),
+			IsExplicitSolutionSelection = true,
+		};
+		var current = CreateResolved(CreatePath("repo", "b"), CreatePath("repo", "b", "AppB.slnx"));
+
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.McpRoots, devServerStarted: false);
+
+		action.Should().Be(WorkspaceTransitionAction.Ignore);
+	}
+
+	[TestMethod]
+	[Description("Before the DevServer starts (deferred roots startup), MCP roots naming another resolved workspace start it there")]
+	public void WhenMcpRootsPointToDifferentWorkspaceBeforeStartup_ActionIsStart()
+	{
+		var previous = CreateResolved(CreatePath("repo", "a"), CreatePath("repo", "a", "AppA.slnx"));
+		var current = CreateResolved(CreatePath("repo", "b"), CreatePath("repo", "b", "AppB.slnx"));
+
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.McpRoots, devServerStarted: false);
+
+		action.Should().Be(WorkspaceTransitionAction.Start);
+	}
+
+	[TestMethod]
+	[Description("Before the DevServer starts, MCP roots that do not resolve leave the session diagnosable instead of waiting")]
+	public void WhenMcpRootsDoNotResolveBeforeStartup_ActionIsDiagnose()
+	{
+		var previous = CreateResolved(CreatePath("repo", "a"), CreatePath("repo", "a", "AppA.slnx"));
+		var current = CreateUnresolved(WorkspaceResolutionKind.NoValidWorkspace, CreatePath("repo", "b", "B.slnx"));
+
+		var action = WorkspaceTransitionDecisions.DetermineAction(previous, current, WorkspaceTransitionTrigger.McpRoots, devServerStarted: false);
 
 		action.Should().Be(WorkspaceTransitionAction.Diagnose);
 	}

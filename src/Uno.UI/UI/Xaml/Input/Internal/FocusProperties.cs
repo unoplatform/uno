@@ -19,11 +19,9 @@ namespace Uno.UI.Xaml.Input
 	{
 		internal static IReadOnlyList<DependencyObject> GetFocusChildren(DependencyObject? dependencyObject)
 		{
-			if (dependencyObject is RichTextBlock)
+			if (dependencyObject is RichTextBlock richTextBlock)
 			{
-				//focusChildren = GetFocusChildren<CDOCollection>(static_cast<CRichTextBlock*>(object));
-				//Uno TODO: RichTextBlock not implemented yet
-				return Array.Empty<DependencyObject>();
+				return richTextBlock.GetFocusableChildren();
 			}
 			else if (dependencyObject is RichTextBlockOverflow)
 			{

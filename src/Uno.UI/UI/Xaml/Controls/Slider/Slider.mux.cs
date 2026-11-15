@@ -7,11 +7,13 @@ using System.Globalization;
 using DirectUI;
 using Uno.Disposables;
 using Uno.UI;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
+using Microsoft.UI.Text;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -79,7 +81,7 @@ public partial class Slider
 		}
 		else if (property == SmallChangeProperty)
 		{
-			value = SLIDER_DEFAULT_SMALL_CHANGE;
+			value = Boxer.Box(SLIDER_DEFAULT_SMALL_CHANGE);
 		}
 		else
 		{
@@ -1065,7 +1067,7 @@ public partial class Slider
 		double elementNewLength = 0;
 		double elementOldLength = 0;
 		bool isThumbToolTipEnabled = false;
-		Thickness padding = Thickness.Empty;
+		Thickness padding = default(Thickness);
 
 		// Extract padding from the actual size.
 		if (_tpSliderContainer == null)

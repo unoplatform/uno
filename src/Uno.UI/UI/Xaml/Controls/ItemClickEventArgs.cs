@@ -11,6 +11,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		public ItemClickEventArgs() { }
 
-		public object ClickedItem { get; set; }
+		public object ClickedItem { get; internal set; }
 	}
 }

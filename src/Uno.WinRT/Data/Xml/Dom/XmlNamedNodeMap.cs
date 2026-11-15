@@ -33,7 +33,6 @@ namespace Windows.Data.Xml.Dom
 		public IXmlNode this[int index]
 		{
 			get => (IXmlNode)_owner.Wrap(_backingNamedNodeMap.Item(index));
-			set => throw new InvalidOperationException("XML named node map is read-only.");
 		}
 		public IEnumerator<IXmlNode> GetEnumerator() => new SystemXmlNamedNodeMapEnumerator(_owner, _backingNamedNodeMap.GetEnumerator());
 
@@ -42,7 +41,6 @@ namespace Windows.Data.Xml.Dom
 		public int Count
 		{
 			get => _backingNamedNodeMap.Count;
-			set => throw new InvalidOperationException("XML named node map is read-only.");
 		}
 
 		private class SystemXmlNamedNodeMapEnumerator : IEnumerator<IXmlNode>
