@@ -41,12 +41,12 @@ internal sealed unsafe partial class WebGpuEffects
 		var bbMin = sh.BbMin - new Vector2(pad); var bbMax = sh.BbMax + new Vector2(pad);
 		int sigmaKey = ((int)(sh.SigmaX * 16f) << 16) ^ (int)(sh.SigmaY * 16f);
 		var shape = _d.Shapes.Get(sh.Geometry, sh.M, 1f, sh.EvenOdd);
-		WebGpuPathAtlas.Key key = default; int w = 0, h = 0; float ox = 0f, oy = 0f;
-		var keyed = shape.Edges is not null && WebGpuPathAtlas.TryKey(shape.Hash, Matrix4x4.Identity, bbMin, bbMax, Vector2.One, out key, out w, out h, out ox, out oy, allowBig: true, extra: sigmaKey) && WebGpuCoverage.AtlasEnabled;
+		WebGpuMaskAtlas.Key key = default; int w = 0, h = 0; float ox = 0f, oy = 0f;
+		var keyed = shape.Edges is not null && WebGpuMaskAtlas.TryKey(shape.Hash, Matrix4x4.Identity, bbMin, bbMax, Vector2.One, out key, out w, out h, out ox, out oy, allowBig: true, extra: sigmaKey) && WebGpuCoverage.AtlasEnabled;
 		uv = new Vector4(0f, 0f, 1f, 1f);
-		if (keyed && _d.PathAtlas.TryGet(key, out var hit))
+		if (keyed && _d.Atlas.TryGet(key, out var hit))
 		{
-			_d.PathAtlas.NoteUse(hit, _d.FrameSeq);
+			_d.Atlas.NoteUse(hit, _d.FrameSeq);
 			origin = new Vector2(hit.OriginX, hit.OriginY);
 			size = new Vector2(hit.W, hit.H);
 			uv = hit.Uv;
@@ -68,7 +68,7 @@ internal sealed unsafe partial class WebGpuEffects
 		{
 			_cov.AddBake(sheet.Bake, sx, sy, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - sh.Offset, Vector2.One, sh.EvenOdd);
 			ShadowSlotsBaked++;
-			if (!(keyed && _d.PathAtlas.Recurring(key, _d.FrameSeq)))
+			if (!(keyed && _d.Atlas.Recurring(key, _d.FrameSeq)))
 			{
 				uv = new Vector4(sx, sy, sx + w, sy + h) / WebGpuCoverage.SheetSize;
 				return sheet.Blurred;
@@ -77,16 +77,15 @@ internal sealed unsafe partial class WebGpuEffects
 			int step = 1 << BlurLevels(sigma);
 			int tw = (w + step - 1) / step + 1, th = (h + step - 1) / step + 1;
 			var slot = _cov.AddStandaloneSlot(key, w, h, ox, oy, WebGpuDevice.DefaultColorFormat, tw, th, TextureUsage.TextureBinding | TextureUsage.CopyDst);
-			slot.Uv = new Vector4(0f, 0f, (float)w / step / tw, (float)h / step / th);
-			_d.PathAtlas.HoldForCache(slot, _d.FrameSeq);
+			slot.Uv = new Vector4(0f, 0f, (float)w / step / slot.Owner.W, (float)h / step / slot.Owner.H);
+			_d.Atlas.HoldForCache(slot, _d.FrameSeq);
 			_pendingCopies.Add(((nint)sheet.Blurred, sx / step, sy / step, (nint)slot.Owner.Texture, tw, th));
 			uv = slot.Uv;
 			return slot.Owner.View;
 		}
-		// Too big for the sheet: its own bake and pyramid.
-		var view = _cov.NewMaskTexture(w, h, out var tex);
+		// Too big for the sheet: its own bake and pyramid, on a render target for the frame.
+		var view = _d.Pool.Rent(w, h, 1, WebGpuCoverage.MaskUsage, _d.ColorFormat);
 		_cov.AddBake(_cov.BatchFor(view, w, h, load: false), 0, 0, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - sh.Offset, Vector2.One, sh.EvenOdd);
-		_d.DeferTextureRelease(view, tex);
 		return DeferBlur(view, w, h, sh.SigmaX, sh.SigmaY);
 	}
 

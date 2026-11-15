@@ -245,7 +245,7 @@ internal sealed unsafe partial class WebGpuFrame
 		Api.QueueWriteBuffer(_d.Q, buf, 0, basis, 16);
 		var e = new BindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = 16 };
 		var bgd = new BindGroupDescriptor { Layout = _d.PassBgl, EntryCount = 1, Entries = &e };
-		return _d.TrackBg(Api.DeviceCreateBindGroup(_d.Dev, &bgd));
+		return _d.Groups.Get(&bgd);
 	}
 
 	private float BasisW => _basisW > 0f ? _basisW : Target.Width;
@@ -758,8 +758,7 @@ internal sealed unsafe partial class WebGpuFrame
 			var arena = arenas[c];
 			if (arena.Count == 0) { continue; }
 			var size = arena.Count * sizeof(float);
-			var bd = new BufferDescriptor { Size = (nuint)size, Usage = BufferUsage.Vertex | BufferUsage.CopyDst };
-			buffers[c] = Api.DeviceCreateBuffer(_d.Dev, &bd);
+			buffers[c] = _d.BufferPool.RentHeld(size, BufferUsage.Vertex | BufferUsage.CopyDst);
 			fixed (float* p = arena.A) { Api.QueueWriteBuffer(_d.Q, buffers[c], 0, p, (nuint)size); }
 			owned.Buffers.Add((nint)buffers[c]);
 		}
@@ -870,9 +869,10 @@ internal sealed unsafe partial class WebGpuFrame
 	/// <summary>The bind group for one site slot. Lives as long as the stamp, so a move rebinds nothing.</summary>
 	private BindGroup* MakeSiteBg(nint slot)
 	{
+		// Pinned until the stamp's site is released (DeferSiteRelease); a later stamp on the same slot reuses it.
 		var e = new BindGroupEntry { Binding = 0, Buffer = _d.SiteSlab.BufferOf(slot), Offset = _d.SiteSlab.OffsetOf(slot), Size = SiteUBytes };
 		var d = new BindGroupDescriptor { Layout = _d.SiteBgl, EntryCount = 1, Entries = &e };
-		return Api.DeviceCreateBindGroup(_d.Dev, &d);
+		return _d.Groups.GetPinned(&d).Bg;
 	}
 
 	internal BindGroup* Bg(ref BindGroupDescriptor bgd, OwnedResources owned)
@@ -1159,7 +1159,7 @@ internal sealed unsafe partial class WebGpuFrame
 	}
 
 	// Owned variant exposing the ClipU slab slot so a later restamp can RewriteClipU it in place.
-	private BindGroup* MakeClipBgOwned(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU, bool share = true)
+	private ClipBinding MakeClipBgOwned(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU, bool share = true)
 	{
 		if (!share) { return MakeClipBgOwnedCore(cd, owned, xform, finv, out buf, out aabbInClipU); }
 
@@ -1176,21 +1176,21 @@ internal sealed unsafe partial class WebGpuFrame
 				{
 					buf = m.Slot;
 					aabbInClipU = m.AabbInClipU;
-					return (BindGroup*)m.Bg;
+					return m.Bg;
 				}
 			}
 		}
 
 		var bg = MakeClipBgOwnedCore(cd, owned, xform, finv, out buf, out aabbInClipU);
 		if (bucket is null) { memo[key] = bucket = new(1); }
-		bucket.Add(new OwnedResources.ClipMemoEntry(cd, xform, finv, (nint)bg, buf, aabbInClipU));
+		bucket.Add(new OwnedResources.ClipMemoEntry(cd, xform, finv, bg, buf, aabbInClipU));
 		return bg;
 	}
 
 	private static int ClipMemoKey(in ClipData cd, in Matrix3x2 xform)
 		=> HashCode.Combine(cd.Aabb, (nint)cd.Coverage, cd.Entries?.Length ?? 0, cd.Paths?.Length ?? 0, xform.M31, xform.M32);
 
-	private BindGroup* MakeClipBgOwnedCore(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU)
+	private ClipBinding MakeClipBgOwnedCore(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU)
 	{
 		var masks = Coverage.ResolveClipMasks(cd, owned);
 		var more = FillClipU(cd, xform, finv, masks.Entries, out aabbInClipU);
@@ -1198,18 +1198,26 @@ internal sealed unsafe partial class WebGpuFrame
 		_d.ClipSlab.Write(slot, _clipU, LiveClipUFloats(cd, masks.Entries));
 		if (more > 0) { _d.ClipSlab.SetMore(slot, WriteClipMore(more, null)); }   // freed with the slot
 		(owned.ClipSlots ??= new()).Add(slot);
+		// The shared group at this slot's offset: the group is shared by every clip naming the same buffer, masks and
+		// overflow, so a restamped or rebuilt recording reuses it instead of creating one per op.
+		var moreEntry = ClipMoreEntry(more > 0 ? _d.ClipSlab.MoreOf(slot) : null, more);
+		var ub = _d.ClipSlab.BufferOf(slot);
+		var mask = masks.View != null ? masks.View : _d.DummyTex;
+		var cov = cd.Coverage != null ? cd.Coverage : _d.DummyTex;
 		var e = stackalloc BindGroupEntry[5];
-		e[0] = new BindGroupEntry { Binding = 0, Buffer = _d.ClipSlab.BufferOf(slot), Offset = _d.ClipSlab.OffsetOf(slot), Size = ClipUBytes };
-		e[1] = new BindGroupEntry { Binding = 1, TextureView = masks.View != null ? masks.View : _d.DummyTex };
-		e[2] = new BindGroupEntry { Binding = 2, TextureView = cd.Coverage != null ? cd.Coverage : _d.DummyTex };
+		e[0] = new BindGroupEntry { Binding = 0, Buffer = ub, Offset = 0, Size = ClipUBytes };
+		e[1] = new BindGroupEntry { Binding = 1, TextureView = mask };
+		e[2] = new BindGroupEntry { Binding = 2, TextureView = cov };
 		e[3] = new BindGroupEntry { Binding = 3, Sampler = _d.Smp };
-		e[4] = ClipMoreEntry(more > 0 ? _d.ClipSlab.MoreOf(slot) : null, more);
+		e[4] = moreEntry;
 		var bgd = new BindGroupDescriptor { Layout = _d.ClipBgl, EntryCount = 5, Entries = e };
+		var group = _d.Groups.GetPinned(&bgd);
+		(owned.ClipGroups ??= new()).Add(group);
 		buf = slot;
-		return Bg(ref bgd, owned);
+		return new ClipBinding(group.Bg, _d.ClipSlab.OffsetOf(slot));
 	}
 
-	internal BindGroup* MakeClipBg(ClipData cd, OwnedResources owned = null, Matrix3x2 xform = default, Matrix3x2 finv = default)
+	internal ClipBinding MakeClipBg(ClipData cd, OwnedResources owned = null, Matrix3x2 xform = default, Matrix3x2 finv = default)
 	{
 		if (owned is not null) { return MakeClipBgOwned(cd, owned, xform, finv, out _, out _); }
 		var masks = Coverage.ResolveClipMasks(cd, null);

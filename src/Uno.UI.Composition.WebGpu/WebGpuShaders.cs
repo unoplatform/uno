@@ -174,15 +174,15 @@ fn clipCovMapped(fc: vec2<f32>) -> f32 {
   return cov;
 }
 ";
-	// The two coverage passes over a sheet of slots. Accumulate: one quad per edge spanning the rows it crosses and
+	// The two coverage passes over a batch of slots. Accumulate: one quad per edge spanning the rows it crosses and
 	// everything to its right up to its slot's bound (ext), so an edge contributes the partial area of the pixel it
 	// passes through and a full +/-1 beyond, and additive blending sums the SIGNED covered area per pixel. Resolve:
 	// every slot in one draw, the fill rule and Difference flag riding the quad's vertices.
 	private const string CoverageSheetWgsl = @"
 struct CovU { size: vec4<f32> };
-@group(0) @binding(0) var<storage, read> edges: array<vec4<f32>>;   // x0,y0,x1,y1 in sheet pixels
+@group(0) @binding(0) var<storage, read> edges: array<vec4<f32>>;   // x0,y0,x1,y1 in accumulator pixels
 @group(0) @binding(1) var<storage, read> ext: array<f32>;           // per edge: its slot's right bound
-@group(0) @binding(2) var<uniform> cov: CovU;                       // size.xy = sheet size in px
+@group(0) @binding(2) var<uniform> cov: CovU;                       // size.xy = accumulator size in px
 struct CovOut { @builtin(position) p: vec4<f32>, @location(0) e: vec4<f32> };
 @vertex fn vs(@builtin(vertex_index) vi: u32) -> CovOut {
   let e = edges[vi / 6u];
