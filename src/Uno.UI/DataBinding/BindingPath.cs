@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.DataBinding
 {
@@ -451,35 +452,42 @@ namespace Uno.UI.DataBinding
 			tail ??= item;
 		}
 
-		private static IDisposable? SubscribeToNotifyCollectionChanged(BindingItem bindingItem)
+		/// <summary>
+		/// Subscribes an indexer item (the "[0]" of "Items[0]") to the changes of the collection it indexes into, its DataContext.
+		/// </summary>
+		/// <remarks>
+		/// Made by the indexer rather than by the item before it, so that the subscription follows the collection when
+		/// it's replaced: the indexer resubscribes on each DataContext change.
+		/// </remarks>
+		private static IDisposable? SubscribeToNotifyCollectionChanged(BindingItem indexer)
 		{
-			if (!bindingItem.PropertyType.Is(typeof(INotifyCollectionChanged)) ||
-				bindingItem.Next?.PropertyName.StartsWith('[') != true)
+			if (!indexer.PropertyName.StartsWith('[') ||
+				indexer.DataContext is not INotifyCollectionChanged notify)
 			{
 				return null;
 			}
 
-			if ((INotifyCollectionChanged?)bindingItem.Value is not { } notify)
-			{
-				return null;
-			}
-
+			// Uno-specific: a collection that outlives the binding must not keep it alive, so the handler holds the item weakly.
+			var indexerWeak = new WeakReference<BindingItem>(indexer);
 			NotifyCollectionChangedEventHandler handler = (s, args) =>
 			{
-				BindingItem tail = bindingItem;
-				while (tail.Next != null)
+				// The collection raises PropertyChanged for "Item[]", which doesn't match the "Item[0]" the indexer
+				// listens to: re-read the indexer's value, so that it reaches the target (and the rest of the path).
+				if (indexerWeak.TryGetTarget(out var item))
 				{
-					tail = tail.Next;
+					item.OnCollectionChanged();
 				}
-				tail.Path?.OnValueChanged(bindingItem.Value);
 			};
 
 			notify.CollectionChanged += handler;
 
-			return Disposable.Create(() =>
-			{
-				notify.CollectionChanged -= handler;
-			});
+			return new WeakSourceSubscription<INotifyCollectionChanged, NotifyCollectionChangedEventHandler>(
+				notify,
+				handler,
+				static (source, handler) => source.CollectionChanged -= handler,
+				onDisposed: null,
+				typeof(BindingPath),
+				"a binding's CollectionChanged handler");
 		}
 
 		/// <summary>
@@ -505,7 +513,8 @@ namespace Uno.UI.DataBinding
 					{
 						if (typeof(BindingPath).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 						{
-							typeof(BindingPath).Log().Debug($"Property changed for {propertyName} on [{dataContextReference.Target?.GetType()}]");
+							var target = dataContextReference.IsDisposed ? null : dataContextReference.Target;
+							typeof(BindingPath).Log().Debug($"Property changed for {propertyName} on [{target?.GetType()}]");
 						}
 
 						if (!newValueActionWeak.IsDisposed
@@ -518,20 +527,13 @@ namespace Uno.UI.DataBinding
 
 				notify.PropertyChanged += handler;
 
-				return Disposable.Create(() =>
-				{
-					// This weak reference ensure that the closure will not link
-					// the caller and the callee, in the same way "newValueActionWeak"
-					// does not link the callee to the caller.
-					var that = dataContextReference.Target as System.ComponentModel.INotifyPropertyChanged;
-
-					if (that != null)
-					{
-						that.PropertyChanged -= handler;
-					}
-
-					Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(null, newValueActionWeak);
-				});
+				return new WeakSourceSubscription<INotifyPropertyChanged, (PropertyChangedEventHandler Handler, ManagedWeakReference Target)>(
+					notify,
+					(handler, newValueActionWeak),
+					static (source, state) => source.PropertyChanged -= state.Handler,
+					static state => Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(null, state.Target),
+					typeof(BindingPath),
+					"a binding's PropertyChanged handler");
 			}
 
 			return null;

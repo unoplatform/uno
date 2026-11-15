@@ -29,6 +29,7 @@ FeatureConfiguration.AutomationPeer.AutoEnableAccessibility = true;
 > `AutoEnableAccessibility` materializes and continuously maintains the full semantic DOM for the lifetime of the app, which has a significant runtime cost (every visual-tree change updates the semantic overlay). It is intended for testing and debugging — leave it disabled in production so the cost is only paid when an assistive technology actually requests accessibility. Set it before the host is built (typically in `App.xaml.cs` before `MainWindow` is created); it is read once during accessibility subsystem initialization.
 > [!NOTE]
 > On Windows (Win32) and macOS, the accessibility tree is always active — no manual activation is required.
+> On Linux (X11), the tree is published while the desktop has accessibility enabled (AT-SPI `org.a11y.Status`), for example after turning on the screen reader in the desktop's accessibility settings.
 
 ## Browser and screen reader pairing (WASM)
 
@@ -43,10 +44,10 @@ When testing WASM apps with a screen reader, the browser choice affects results:
 
 ## Using the SamplesApp
 
-The `AccessibilityScreenReaderPage` sample in the Uno SamplesApp includes test sections for common control types:
+The `AccessibilityScreenReaderPage` sample in the Uno SamplesApp includes test sections for common control types, and `Accessibility_Showcase` covers one screen-reader capability per section (labels, toggles, ranges, lists, expanders, form validation, live regions, dialogs, landmarks, hidden content):
 
 1. Build and run the SamplesApp (`SamplesApp`, `net11.0-desktop`)
-2. Navigate to the `Accessibility_ScreenReader` sample
+2. Navigate to the `Accessibility_ScreenReader` or `Accessibility_Showcase` sample
 3. Enable your screen reader and Tab into the app
 4. On WASM, activate the "Enable accessibility" button first
 
@@ -62,11 +63,16 @@ Inspect using browser DevTools:
 - **Firefox:** DevTools → Accessibility tab
 - **Safari:** Develop → Show Web Inspector → Elements → Node → Accessibility
 
+### Linux — inspecting the AT-SPI tree
+
+On Linux (X11), each app window currently appears as its own application (named after the app) on the AT-SPI desktop. Browse its tree, roles, states and actions with [Accerciser](https://gitlab.gnome.org/GNOME/accerciser), or with any AT-SPI client such as the `Atspi` GObject bindings.
+
 ### Common issues
 
 | Problem | Possible cause | Fix |
 |---------|---------------|-----|
 | Nothing is announced (WASM) | Accessibility layer not activated | Press `Tab`, then activate the "Enable accessibility" button |
+| App missing from Orca or Accerciser (Linux) | Desktop accessibility is off | Turn on the screen reader in the desktop's accessibility settings (`org.a11y.Status` must report `IsEnabled` or `ScreenReaderEnabled`), and make sure at-spi2-core is installed. Debug logging for `Uno.UI.Runtime.X11` shows why the bridge did not start |
 | Wrong label announced | `AutomationProperties.Name` not set or wrong `LabeledBy` target | Check `aria-label` in the semantic DOM |
 | Headings not in Rotor | Missing `HeadingLevel` property | Verify `AutomationProperties.HeadingLevel` is set; on WASM check for `<h1>`–`<h6>` elements |
 | Landmarks not listed | Missing `LandmarkType` property | Verify `AutomationProperties.LandmarkType` is set; on WASM check for `role="navigation"` etc. |

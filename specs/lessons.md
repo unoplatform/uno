@@ -53,3 +53,13 @@ one diff. No specific file paths from the change that triggered it.
 - **Lens:** all
 - **Lesson:** A rollup item's issue text overstated a packaging-reference count by 6x, named a subsystem to prune that had zero matching entries, and listed per-platform project variants that had already been collapsed into one. All three claims came from a generated assessment captured against an older worktree, and all three were wrong in the same direction — describing a repo state that no longer existed.
 - **Apply:** Treat counts and file lists in a generated issue or spec as a starting query, not an inventory. Re-grep before sizing the work, and record the corrections in the PR so the next reader doesn't re-derive them.
+
+## 2026-10-29 — A closed generic type satisfies DynamicallyAccessedMembers; only a bare generic parameter warns
+- **Lens:** skeptic, quality, contract, jerome
+- **Lesson:** `typeof(Owner<T>)` flowing into a `[DynamicallyAccessedMembers]` parameter is a known type the trimmer can mark, so it does not warn IL2087 even though `T` is unannotated; only a bare generic parameter (`typeof(T)`, `typeof(TOwner)`) does. Four lenses reported the generic-owner shape as a residual warning and the fix as overclaiming its issue; a consumer library compiled with `IsAotCompatible` against the built assembly showed that shape clean and only the bare-parameter owner warning.
+- **Apply:** Before reporting an IL2087 residual, distinguish `typeof(T)` from `typeof(Owner<T>)`. When the claim is about a consumer's trim warnings, compile a small `IsAotCompatible` probe against the built assembly and count, rather than reasoning from the annotations alone.
+
+## 2026-11-05 — Assert.Inconclusive is not a flake guard
+- **Lens:** all
+- **Lesson:** For a GC-dependent runtime test that could flake under conservative GC (WASM, mobile), the panel proposed bailing out with `Assert.Inconclusive` when collection fails, citing existing tests that do it. Nothing in CI or triage watches inconclusive results: they are absent from the failure list and the console never prints them, so the test silently stops testing on that platform.
+- **Apply:** Never suggest `Assert.Inconclusive` (or an existing test that uses it) as the way to absorb a flaky precondition. Make the assert robust instead, e.g. derive the expected value from what was measured (count the surviving `WeakReference`s) with a floor that fails visibly, or gate the test explicitly with `[PlatformCondition]`.

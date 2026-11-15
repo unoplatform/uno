@@ -51,7 +51,6 @@ dotnet publish $project `
   -c Release `
   @properties `
   -p:PublishTrimmed=false `
-  -p:RunAOTCompilation=false `
   -p:DoNotSetAndroidLinkTool=true `
   "-p:AndroidLinkTool=" `
   -p:AndroidEnableProguard=false `

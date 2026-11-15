@@ -14,9 +14,12 @@ Uno Platform implements the WinUI [UI Automation](https://learn.microsoft.com/wi
 | Windows (Win32)        | Skia      | Narrator (via UIAutomation)    | ✔      |
 | macOS                  | Skia      | VoiceOver                      | ✔      |
 | Web (WASM)             | Skia      | Any screen reader (via ARIA)   | ✔      |
-| Linux                  | Skia      | —                              | Planned |
+| Linux (X11)            | Skia      | Orca (via AT-SPI2)             | ✔      |
 | Android                | Skia      | TalkBack                       | WIP    |
 | iOS                    | Skia      | VoiceOver                      | WIP    |
+
+> [!NOTE]
+> On Linux (X11), menus, trees and tooltips are currently exposed with a generic role, and each window appears to assistive technologies as its own application.
 
 ## How it works
 
@@ -24,6 +27,7 @@ On Skia-rendered targets, Uno maintains a **semantic accessibility tree** alongs
 
 - **Windows (Win32)** — Exposes a UIAutomation provider tree that Narrator and other UIAutomation clients can inspect.
 - **macOS** — Creates native `NSAccessibility` elements so VoiceOver can navigate the application.
+- **Linux (X11)** — Publishes the tree on the AT-SPI2 accessibility bus, so Orca and other AT-SPI clients can read and operate the application.
 - **Web (WASM)** — Generates a hidden semantic DOM overlay with the appropriate [ARIA](https://www.w3.org/WAI/standards-guidelines/aria/) roles and attributes, making the app accessible to any browser-based screen reader.
 
 > [!NOTE]
