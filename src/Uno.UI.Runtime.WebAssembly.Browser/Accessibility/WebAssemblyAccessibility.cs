@@ -2451,7 +2451,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				this.Log().Trace($"[A11y] PROP CHANGE: Name handle={element.Visual.Handle} element={element.GetType().Name} old='{oldValue}' new='{newValue}'");
 			}
-			OnAutomationNameChanged(element, peer, (string)newValue);
+			// Resolve the name as creation does: the peer name alone is empty for a control named by a
+			// LabeledBy element that has left the tree, and would drop the restored aria-label.
+			OnAutomationNameChanged(element, peer, AriaMapper.ResolveLabel(peer) ?? (string)newValue);
 
 			// When the accessible name changes on a live region element, trigger
 			// the announcement. In WinUI3, the OS UIA framework monitors content
