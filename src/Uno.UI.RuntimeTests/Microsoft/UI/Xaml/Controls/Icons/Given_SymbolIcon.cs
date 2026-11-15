@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.UI.Xaml;
+using Microsoft.UI.Text;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using MUXControlsTestApp.Utilities;
@@ -106,5 +108,38 @@ public class Given_SymbolIcon
 	{
 		using var _ = StyleHelper.UseUwpStyles();
 		await When_Themed_TextBlock();
+	}
+
+	[TestMethod]
+	public void When_Default_Constructor_Then_Symbol_Not_Set_Locally()
+	{
+		var symbolIcon = new SymbolIcon();
+
+		Assert.AreEqual(DependencyProperty.UnsetValue, symbolIcon.ReadLocalValue(SymbolIcon.SymbolProperty));
+		Assert.AreEqual(Symbol.Emoji, symbolIcon.Symbol);
+	}
+
+	[TestMethod]
+	public async Task When_Style_Sets_Symbol()
+	{
+		var style = new Style(typeof(SymbolIcon));
+		style.Setters.Add(new Setter(SymbolIcon.SymbolProperty, Symbol.Home));
+		var symbolIcon = new SymbolIcon() { Style = style };
+
+		await UITestHelper.Load(symbolIcon);
+
+		Assert.AreEqual(Symbol.Home, symbolIcon.Symbol);
+	}
+
+	[TestMethod]
+	public async Task When_Inside_Bold_Parent_Then_Glyph_Not_Bold()
+	{
+		var symbolIcon = new SymbolIcon(Symbol.Home);
+		var host = new ContentControl() { FontWeight = FontWeights.Bold, Content = symbolIcon };
+
+		await UITestHelper.Load(host);
+
+		var textBlock = (TextBlock)VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(symbolIcon, 0), 0);
+		Assert.AreEqual(FontWeights.Normal.Weight, textBlock.FontWeight.Weight);
 	}
 }

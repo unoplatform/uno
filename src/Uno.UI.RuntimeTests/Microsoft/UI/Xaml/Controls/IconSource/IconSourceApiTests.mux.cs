@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference IconSourceApiTests.cs, tag winui3/release/1.4.2
+// MUX Reference IconSourceApiTests.cs
 
 using System;
 
@@ -131,6 +131,147 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Verify.AreEqual(source, animatedIcon.Source);
 				Verify.IsTrue(iconSource.MirroredWhenRightToLeft);
 				Verify.IsTrue(animatedIcon.MirroredWhenRightToLeft);
+			});
+		}
+
+		[TestMethod]
+		public void CreateIconElementReturnsCorrectTypeTest()
+		{
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Verify BitmapIconSource creates BitmapIcon");
+				var bitmapIconSource = new BitmapIconSource();
+				var bitmapIcon = bitmapIconSource.CreateIconElement();
+				Verify.IsNotNull(bitmapIcon);
+				Verify.IsTrue(bitmapIcon is BitmapIcon);
+
+				Log.Comment("Verify FontIconSource creates FontIcon");
+				var fontIconSource = new FontIconSource();
+				var fontIcon = fontIconSource.CreateIconElement();
+				Verify.IsNotNull(fontIcon);
+				Verify.IsTrue(fontIcon is FontIcon);
+
+				Log.Comment("Verify SymbolIconSource creates SymbolIcon");
+				var symbolIconSource = new SymbolIconSource();
+				var symbolIcon = symbolIconSource.CreateIconElement();
+				Verify.IsNotNull(symbolIcon);
+				Verify.IsTrue(symbolIcon is SymbolIcon);
+
+				Log.Comment("Verify PathIconSource creates PathIcon");
+				var pathIconSource = new PathIconSource();
+				var pathIcon = pathIconSource.CreateIconElement();
+				Verify.IsNotNull(pathIcon);
+				Verify.IsTrue(pathIcon is PathIcon);
+			});
+		}
+
+		[TestMethod]
+		public async Task CreateIconElementForegroundTest()
+		{
+			FontIconSource iconSource1 = null;
+			FontIconSource iconSource2 = null;
+			FontIcon icon1 = null;
+			FontIcon icon2 = null;
+
+			RunOnUIThread.Execute(() =>
+			{
+				iconSource1 = new FontIconSource()
+				{
+					Foreground = new SolidColorBrush(Microsoft.UI.Colors.Blue)
+				};
+
+				iconSource2 = new FontIconSource();
+
+				Log.Comment("Create first icon element with foreground already set");
+				icon1 = iconSource1.CreateIconElement() as FontIcon;
+				Verify.IsNotNull(icon1);
+
+				Log.Comment("Create second icon element with foreground not set");
+				icon2 = iconSource2.CreateIconElement() as FontIcon;
+				Verify.IsNotNull(icon2);
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Verify foreground is applied to both icon elements");
+				Verify.IsTrue(icon1.Foreground is SolidColorBrush);
+				Verify.IsTrue(icon2.Foreground is SolidColorBrush);
+				Verify.AreEqual(Microsoft.UI.Colors.Blue, (icon1.Foreground as SolidColorBrush).Color);
+			});
+		}
+
+		[TestMethod]
+		public async Task PropertyChangePropagationToCreatedElements()
+		{
+			FontIconSource iconSource = null;
+			FontIcon icon = null;
+
+			RunOnUIThread.Execute(() =>
+			{
+				iconSource = new FontIconSource();
+
+				Log.Comment("Create icon element before setting properties");
+				icon = iconSource.CreateIconElement() as FontIcon;
+
+				Verify.IsNotNull(icon);
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Verify foreground is not null before setting");
+				Verify.IsNotNull(icon.Foreground);
+
+				Log.Comment("Change foreground on IconSource");
+				iconSource.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Verify foreground propagates to created element");
+				Verify.IsTrue(icon.Foreground is SolidColorBrush);
+				Verify.AreEqual(Microsoft.UI.Colors.Red, (icon.Foreground as SolidColorBrush).Color);
+			});
+		}
+
+		[TestMethod]
+		public async Task CreateIconElementPreservesIconSourceProperties()
+		{
+			FontIconSource fontIconSource = null;
+			FontIcon fontIcon = null;
+
+			RunOnUIThread.Execute(() =>
+			{
+				fontIconSource = new FontIconSource();
+				fontIconSource.Glyph = "";
+				fontIconSource.FontSize = 24;
+				fontIconSource.FontFamily = new Microsoft.UI.Xaml.Media.FontFamily("Segoe UI Symbol");
+				fontIconSource.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Purple);
+
+				Log.Comment("Create icon element from configured source");
+				fontIcon = fontIconSource.CreateIconElement() as FontIcon;
+				Verify.IsNotNull(fontIcon);
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Log.Comment("Verify all properties are transferred to the icon element");
+				Verify.AreEqual("", fontIcon.Glyph);
+				Verify.AreEqual(24.0, fontIcon.FontSize);
+#if !HAS_UNO
+				Verify.AreEqual("Segoe UI Symbol", fontIcon.FontFamily.Source);
+#else
+				// In case of Uno the Source is equal to FeatureConfiguration.Font.SymbolsFont
+				Verify.AreEqual(FeatureConfiguration.Font.SymbolsFont, fontIcon.FontFamily.Source);
+#endif
+				Verify.AreEqual(Microsoft.UI.Colors.Purple, (fontIcon.Foreground as SolidColorBrush).Color);
 			});
 		}
 

@@ -19,6 +19,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 public partial class Given_ExpressionAnimation
 {
 	[TestMethod]
+	public async Task When_Expression_Restarted_On_Same_Property_Then_Tracks_Source()
+	{
+		var border = new Border() { Width = 10, Height = 10 };
+		await UITestHelper.Load(border);
+
+		var compositor = ElementCompositionPreview.GetElementVisual(border).Compositor;
+		var source = compositor.CreatePropertySet();
+		source.InsertScalar("Progress", 0);
+		var target = compositor.CreatePropertySet();
+		target.InsertScalar("Progress", 0);
+
+		var expression = compositor.CreateExpressionAnimation("_.Progress");
+		expression.SetReferenceParameter("_", source);
+
+		target.StartAnimation("Progress", expression);
+		target.StartAnimation("Progress", expression);
+		try
+		{
+			source.InsertScalar("Progress", 0.5f);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(CompositionGetValueStatus.Succeeded, target.TryGetScalar("Progress", out var value));
+			Assert.AreEqual(0.5f, value);
+		}
+		finally
+		{
+			target.StopAnimation("Progress");
+		}
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Animating_Visual_Offset()
 	{

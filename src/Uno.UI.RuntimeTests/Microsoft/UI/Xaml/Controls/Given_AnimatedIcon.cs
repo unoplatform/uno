@@ -19,6 +19,84 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 [RunsOnUIThread]
 public partial class Given_AnimatedIcon
 {
+	[TestMethod]
+	[DataRow(nameof(AnimatedAcceptVisualSource))]
+	[DataRow(nameof(AnimatedBackVisualSource))]
+	[DataRow(nameof(AnimatedChevronDownSmallVisualSource))]
+	[DataRow(nameof(AnimatedChevronRightDownSmallVisualSource))]
+	[DataRow(nameof(AnimatedChevronUpDownSmallVisualSource))]
+	[DataRow(nameof(AnimatedFindVisualSource))]
+	[DataRow(nameof(AnimatedGlobalNavigationButtonVisualSource))]
+	[DataRow(nameof(AnimatedSettingsVisualSource))]
+	public async Task When_Builtin_Source_Then_Renders_Foreground(string sourceName)
+	{
+		IAnimatedVisualSource2 source = sourceName switch
+		{
+			nameof(AnimatedAcceptVisualSource) => new AnimatedAcceptVisualSource(),
+			nameof(AnimatedBackVisualSource) => new AnimatedBackVisualSource(),
+			nameof(AnimatedChevronDownSmallVisualSource) => new AnimatedChevronDownSmallVisualSource(),
+			nameof(AnimatedChevronRightDownSmallVisualSource) => new AnimatedChevronRightDownSmallVisualSource(),
+			nameof(AnimatedChevronUpDownSmallVisualSource) => new AnimatedChevronUpDownSmallVisualSource(),
+			nameof(AnimatedFindVisualSource) => new AnimatedFindVisualSource(),
+			nameof(AnimatedGlobalNavigationButtonVisualSource) => new AnimatedGlobalNavigationButtonVisualSource(),
+			nameof(AnimatedSettingsVisualSource) => new AnimatedSettingsVisualSource(),
+			_ => throw new ArgumentOutOfRangeException(nameof(sourceName)),
+		};
+
+		var icon = new AnimatedIcon
+		{
+			Width = 48,
+			Height = 48,
+			Foreground = new SolidColorBrush(Colors.Red),
+			Source = source,
+		};
+		var host = new Border
+		{
+			Background = new SolidColorBrush(Colors.White),
+			Child = icon,
+		};
+
+		await UITestHelper.Load(host);
+
+		// Each state shows different layers, so every container's transform gets rendered.
+		foreach (var state in new[] { "Normal", "PointerOver", "Pressed", "Normal" })
+		{
+			AnimatedIcon.SetState(icon, state);
+			await Task.Delay(1000);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var screenshot = await UITestHelper.ScreenShot(host);
+			ImageAssert.HasColorInRectangle(
+				screenshot,
+				new System.Drawing.Rectangle(0, 0, screenshot.Width, screenshot.Height),
+				Colors.Red,
+				tolerance: 10);
+		}
+	}
+
+	[TestMethod]
+	public async Task When_FallbackIconSource_Changes_Then_Single_Fallback_Shown()
+	{
+		var icon = new AnimatedIcon { FallbackIconSource = new SymbolIconSource { Symbol = Symbol.Home } };
+
+		await UITestHelper.Load(icon, x => x.IsLoaded);
+
+		// Index 0 is the collapsed Path WinUI's AnimatedIcon inherits from PathIcon, the fallback goes at index 1.
+		var panel = (Panel)VisualTreeHelper.GetChild(icon, 0);
+		Assert.AreEqual(2, panel.Children.Count);
+
+		icon.FallbackIconSource = new SymbolIconSource { Symbol = Symbol.Add };
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(2, panel.Children.Count);
+		Assert.AreEqual(Symbol.Add, ((SymbolIcon)panel.Children[1]).Symbol);
+
+		icon.Source = new AnimatedBackVisualSource();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(1, panel.Children.Count);
+	}
+
 	// Foreground is usually a ThemeResource on an app-lifetime brush: the brush must not root the icon (and its DataContext).
 	[TestMethod]
 	[DataRow(false)]
