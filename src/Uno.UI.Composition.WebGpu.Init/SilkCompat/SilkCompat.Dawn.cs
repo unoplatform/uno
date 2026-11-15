@@ -36,12 +36,77 @@ internal static unsafe partial class Xlate
 	private static long _dawnSubmissions;
 	private static readonly ConcurrentDictionary<ulong, ulong> _dawnPending = new();
 
+	// dawn::native::DawnInstanceDescriptor (DawnNative.h), the C++ struct chained onto instance creation.
+	[StructLayout(LayoutKind.Sequential)]
+	private struct DawnInstanceDescriptor
+	{
+		public WGPUChainedStruct Chain;
+		public uint AdditionalRuntimeSearchPathsCount;
+		public IntPtr AdditionalRuntimeSearchPaths;
+		public IntPtr Platform;
+		public int BackendValidationLevel;
+		public byte BeginCaptureOnStartup;
+		public IntPtr LoggingNext, LoggingCallback, LoggingUserdata1, LoggingUserdata2;
+	}
+
+	private const WGPUSType DawnInstanceDescriptorSType = (WGPUSType)0x00050006;
+	private const WGPUSType DawnTogglesDescriptorSType = (WGPUSType)0x0005000A;
+
+	// WGPUDawnTogglesDescriptor (dawn/webgpu.h), chainable onto an adapter request.
+	[StructLayout(LayoutKind.Sequential)]
+	private struct WGPUDawnTogglesDescriptor
+	{
+		public WGPUChainedStruct Chain;
+		public nuint EnabledToggleCount;
+		public IntPtr EnabledToggles;
+		public nuint DisabledToggleCount;
+		public IntPtr DisabledToggles;
+	}
+
+	// On D3D12 Dawn compiles shaders with DXC unless told otherwise, and DXC is not part of Windows. FXC is
+	// (d3dcompiler_47.dll, found through the search path above), and it is what wgpu-native uses there too.
+	private static readonly IntPtr _dawnDisabledToggles = DawnToggleList("use_dxc");
+
+	private static IntPtr DawnToggleList(params string[] names)
+	{
+		var list = Marshal.AllocHGlobal(IntPtr.Size * names.Length);
+		for (var i = 0; i < names.Length; i++)
+		{
+			Marshal.WriteIntPtr(list, i * IntPtr.Size, Marshal.StringToCoTaskMemUTF8(names[i]));
+		}
+		return list;
+	}
+	private const int DawnBackendValidationDisabled = 2;
+
+	// Dawn opens its shader compilers and the Vulkan loader from its own folder and these paths only, never through the
+	// system's search order. Windows ships d3dcompiler_47.dll and vulkan-1.dll in System32, so Dawn finds them there
+	// instead of the app shipping its own. Kept for the process: Dawn may hold on to the strings.
+	private static readonly IntPtr _dawnSearchPaths = DawnSearchPaths();
+
+	private static IntPtr DawnSearchPaths()
+	{
+		if (!OperatingSystem.IsWindows())
+		{
+			return IntPtr.Zero;
+		}
+		var paths = Marshal.AllocHGlobal(IntPtr.Size);
+		Marshal.WriteIntPtr(paths, Marshal.StringToCoTaskMemUTF8(Environment.SystemDirectory + System.IO.Path.DirectorySeparatorChar));
+		return paths;
+	}
+
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
 	private static nint DawnCreateInstance(nint descriptor)
 	{
+		var dawn = new DawnInstanceDescriptor
+		{
+			Chain = new WGPUChainedStruct { SType = DawnInstanceDescriptorSType },
+			AdditionalRuntimeSearchPathsCount = _dawnSearchPaths == IntPtr.Zero ? 0u : 1u,
+			AdditionalRuntimeSearchPaths = _dawnSearchPaths,
+			BackendValidationLevel = DawnBackendValidationDisabled,
+		};
 		// Waiting on a future with a timeout, which the blocking poll does, is an instance feature on Dawn.
 		var feature = WGPUInstanceFeatureName.TimedWaitAny;
-		var d = new WGPUInstanceDescriptor { RequiredFeatureCount = 1, RequiredFeatures = &feature };
+		var d = new WGPUInstanceDescriptor { NextInChain = (WGPUChainedStruct*)&dawn, RequiredFeatureCount = 1, RequiredFeatures = &feature };
 		return _dawnInstance = WGPU.wgpuCreateInstance(&d);
 	}
 

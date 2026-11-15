@@ -115,7 +115,7 @@ internal static unsafe partial class Xlate
 			o = (WGPURequestAdapterOptions*)a.Alloc(sizeof(WGPURequestAdapterOptions));
 			Fill((SW.RequestAdapterOptions*)options, o, ref a);
 		}
-		if (DawnBackend != WGPUBackendType.Undefined)
+		if (WebGpuLoader.IsDawn)
 		{
 			if (o == null)
 			{
@@ -123,6 +123,17 @@ internal static unsafe partial class Xlate
 				*o = default;
 			}
 			o->BackendType = DawnBackend;
+			if (OperatingSystem.IsWindows())
+			{
+				var toggles = (WGPUDawnTogglesDescriptor*)a.Alloc(sizeof(WGPUDawnTogglesDescriptor));
+				*toggles = new WGPUDawnTogglesDescriptor
+				{
+					Chain = new WGPUChainedStruct { Next = (IntPtr)o->NextInChain, SType = DawnTogglesDescriptorSType },
+					DisabledToggleCount = 1,
+					DisabledToggles = _dawnDisabledToggles,
+				};
+				o->NextInChain = (WGPUChainedStruct*)toggles;
+			}
 		}
 		var info = new WGPURequestAdapterCallbackInfo
 		{
