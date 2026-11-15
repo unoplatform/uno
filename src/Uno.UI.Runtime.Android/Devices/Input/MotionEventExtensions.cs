@@ -1,50 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Android.Views;
-using Windows.Devices.Input;
+﻿using Android.Views;
 using Windows.System;
-using Windows.UI.Input;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 
-namespace Uno.UI.Xaml.Extensions
+namespace Uno.UI.Runtime.Android;
+
+internal static class MotionEventExtensions
 {
-	internal static class MotionEventExtensions
+	public static PointerDeviceType ToPointerDeviceType(this MotionEventToolType nativeType)
+		=> nativeType switch
+		{
+			MotionEventToolType.Eraser or MotionEventToolType.Stylus => PointerDeviceType.Pen,
+			MotionEventToolType.Mouse => PointerDeviceType.Mouse,
+			_ => PointerDeviceType.Touch, // Unknown is used by Xamarin.UITest
+		};
+
+	public static VirtualKeyModifiers ToVirtualKeyModifiers(this MetaKeyStates nativeKeys)
 	{
-		public static PointerDeviceType ToPointerDeviceType(this MotionEventToolType nativeType)
+		var keys = VirtualKeyModifiers.None;
+
+		if ((nativeKeys & MetaKeyStates.ShiftMask) != 0)
 		{
-			switch (nativeType)
-			{
-				case MotionEventToolType.Eraser:
-				case MotionEventToolType.Stylus:
-					return PointerDeviceType.Pen;
-				case MotionEventToolType.Finger:
-					return PointerDeviceType.Touch;
-				case MotionEventToolType.Mouse:
-					return PointerDeviceType.Mouse;
-				case MotionEventToolType.Unknown: // used by Xamarin.UITest
-				default:
-					return default(PointerDeviceType);
-			}
+			keys |= VirtualKeyModifiers.Shift;
+		}
+		if ((nativeKeys & MetaKeyStates.CtrlMask) != 0)
+		{
+			keys |= VirtualKeyModifiers.Control;
+		}
+		if ((nativeKeys & MetaKeyStates.AltMask) != 0)
+		{
+			keys |= VirtualKeyModifiers.Menu;
+		}
+		if ((nativeKeys & MetaKeyStates.MetaMask) != 0)
+		{
+			keys |= VirtualKeyModifiers.Windows;
 		}
 
-		public static VirtualKeyModifiers ToVirtualKeyModifiers(this MetaKeyStates nativeKeys)
-		{
-			var keys = VirtualKeyModifiers.None;
-
-			if ((nativeKeys & MetaKeyStates.ShiftMask) != 0)
-			{
-				keys |= VirtualKeyModifiers.Shift;
-			}
-			if ((nativeKeys & MetaKeyStates.CtrlMask) != 0)
-			{
-				keys |= VirtualKeyModifiers.Control;
-			}
-			if ((nativeKeys & MetaKeyStates.MetaMask) != 0)
-			{
-				keys |= VirtualKeyModifiers.Windows;
-			}
-
-			return keys;
-		}
+		return keys;
 	}
 }

@@ -41,6 +41,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	{
 		_activity = activity;
 		_preDrawListener = new ActivationPreDrawListener(this);
+		PointerSource = new(() => _activity?.Window?.DecorView);
+		CurrentActivityChanged += (_, _) => PointerSource.RefreshCursor();
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += RaiseNativeSizeChanged;
 
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
@@ -96,7 +98,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	// Per-window input sources, resolved by each window's InputManager via its IXamlRootHost
 	// and fed by the driving activity's native event dispatch.
-	internal AndroidCorePointerInputSource PointerSource { get; } = new();
+	internal AndroidCorePointerInputSource PointerSource { get; }
 
 	internal AndroidKeyboardInputSource KeyboardSource { get; } = new();
 

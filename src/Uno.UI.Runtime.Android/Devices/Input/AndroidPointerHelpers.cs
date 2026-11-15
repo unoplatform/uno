@@ -1,56 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Reflection;
-using Android.OS;
 using Android.Views;
-using Windows.Devices.Input;
 using Microsoft.UI.Input;
-// PointerDeviceType now exists in both namespaces (Microsoft.UI.Input.PointerDeviceType relocated here);
-// this file's usage is the device-layer enum, so bind the bare name to it.
-using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
+using Microsoft.UI.Xaml.Controls;
+using Windows.UI.Core;
+using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 
-namespace Uno.UI.Xaml.Extensions;
+namespace Uno.UI.Runtime.Android;
 
-internal static class PointerHelpers
+internal static class AndroidPointerHelpers
 {
-	private static readonly Dictionary<MotionEventButtonState, PointerUpdateKind> _none = new(0);
-
-	private static readonly Dictionary<MotionEventButtonState, PointerUpdateKind> _fingerDownUpdates = new()
-	{
-		{ 0, PointerUpdateKind.LeftButtonPressed },
-		{ MotionEventButtonState.Primary, PointerUpdateKind.LeftButtonPressed }
-	};
-
-	private static readonly Dictionary<MotionEventButtonState, PointerUpdateKind> _fingerUpUpdates = new()
-	{
-		{ 0, PointerUpdateKind.LeftButtonReleased },
-		{ MotionEventButtonState.Primary, PointerUpdateKind.LeftButtonReleased }
-	};
-
-	private static readonly Dictionary<MotionEventButtonState, PointerUpdateKind> _mouseDownUpdates = new()
-	{
-		{ MotionEventButtonState.Primary, PointerUpdateKind.LeftButtonPressed },
-		{ MotionEventButtonState.Tertiary, PointerUpdateKind.MiddleButtonPressed },
-		{ MotionEventButtonState.Secondary, PointerUpdateKind.RightButtonPressed }
-	};
-
-	private static readonly Dictionary<MotionEventButtonState, PointerUpdateKind> _mouseUpUpdates = new()
-	{
-		{ MotionEventButtonState.Primary, PointerUpdateKind.LeftButtonReleased },
-		{ MotionEventButtonState.Tertiary, PointerUpdateKind.MiddleButtonReleased },
-		{ MotionEventButtonState.Secondary, PointerUpdateKind.RightButtonReleased }
-	};
+	private const MotionEventButtonState MouseButtons =
+		MotionEventButtonState.Primary
+		| MotionEventButtonState.Secondary
+		| MotionEventButtonState.Tertiary
+		| MotionEventButtonState.Back
+		| MotionEventButtonState.Forward;
 
 	/// <summary>
-	/// The stylus is pressed while holding the barrel button
+	/// The stylus is pressed while holding the barrel button (legacy Samsung S Pen action)
 	/// </summary>
 	internal const MotionEventActions StylusWithBarrelDown = (MotionEventActions)211;
 	/// <summary>
-	/// The stylus is moved after having been pressed while holding the barrel button
+	/// The stylus is moved after having been pressed while holding the barrel button (legacy Samsung S Pen action)
 	/// </summary>
 	internal const MotionEventActions StylusWithBarrelMove = (MotionEventActions)213;
 	/// <summary>
-	/// The stylus is released after having been pressed while holding the barrel button
+	/// The stylus is released after having been pressed while holding the barrel button (legacy Samsung S Pen action)
 	/// </summary>
 	internal const MotionEventActions StylusWithBarrelUp = (MotionEventActions)212;
 
@@ -69,121 +44,132 @@ internal static class PointerHelpers
 		return ((uint)nativeEvent.GetPointerId(pointerIndex) & _pointerIdsCount) << _pointerIdsShift | (uint)nativeEvent.DeviceId;
 	}
 
-	internal static bool IsInContact(MotionEvent nativeEvent, PointerDeviceType pointerType, MotionEventActions action, MotionEventButtonState buttons)
-	{
-		switch (pointerType)
-		{
-			case PointerDeviceType.Mouse:
-				// For mouse, we cannot only rely on action: We will get a "HoverExit" when we press the left button.
-				return buttons != 0;
+	internal static bool IsStylusWithBarrelAction(MotionEventActions action)
+		=> action is StylusWithBarrelDown or StylusWithBarrelMove or StylusWithBarrelUp;
 
-			case PointerDeviceType.Pen when nativeEvent.GetAxisValue(Axis.Distance, nativeEvent.ActionIndex) is not 0:
+	internal static bool HasMouseButtonPressed(MotionEventButtonState buttons)
+		=> (buttons & MouseButtons) != 0;
+
+	internal static bool IsPenInContact(MotionEvent nativeEvent, int pointerIndex, MotionEventActions action, bool wasInContact)
+	{
+		switch (action)
+		{
+			// The up still carries the pressure of the last contact, so the action prevails over the axes.
+			case StylusWithBarrelUp:
+			case MotionEventActions.Up:
+			case MotionEventActions.PointerUp:
+			case MotionEventActions.Cancel:
+			case MotionEventActions.HoverMove:
 				return false;
 
-			case PointerDeviceType.Pen when nativeEvent.GetAxisValue(Axis.Pressure, nativeEvent.ActionIndex) is not 0:
+			case StylusWithBarrelDown:
+			case StylusWithBarrelMove:
+			case MotionEventActions.Down:
+			case MotionEventActions.PointerDown:
+			case MotionEventActions.Move:
 				return true;
 
-			case PointerDeviceType.Pen:
-				// This is an invalid case, we should either have a distance or a pressure, not both at 0 ... but this can happen on some devices (e.g. Surface Duo).
-				// From what we observed, this indicates that the pen is **NOT** in contact with the screen.
-				switch (action)
-				{
-					case MotionEventActions.HoverMove:
-						return false;
-
-					case MotionEventActions.HoverEnter:
-					case MotionEventActions.HoverExit:
-						// Those are the problematic cases as an exit/enter are going to be raised by the system the pen is pressed/released.
-						// (Especially the HoverExit which would cause some invalid events to be raised.
-						// HoverEnter should not cause any trouble as pointer should already consider as IsOver after a pen's pointer release).
-						// We return true (safer), the AndroidPointerInput source will then handle that case by itself (defer the exit to confirm if we don't receive a pressed right after).
-						return true;
-
-					case MotionEventActions.Move:
-					case StylusWithBarrelDown:
-					case MotionEventActions.Down:
-					case MotionEventActions.PointerDown:
-						return true;
-
-					case StylusWithBarrelUp:
-					case MotionEventActions.Up:
-					case MotionEventActions.PointerUp:
-						return false;
-
-					default:
-						return true; // This is the safest as it will not prevent interaction
-				}
-
-			default:
-			case PointerDeviceType.Touch:
-				// WARNING: MotionEventActions.Down == 0, so action.HasFlag(MotionEventActions.Up) is always true!
-				return !action.HasFlag(MotionEventActions.Up)
-					&& !action.HasFlag(MotionEventActions.PointerUp)
-					&& !action.HasFlag(MotionEventActions.Cancel);
+			case MotionEventActions.ButtonPress:
+			case MotionEventActions.ButtonRelease:
+				return wasInContact;
 		}
+
+		if (nativeEvent.GetAxisValue(Axis.Distance, pointerIndex) is not 0)
+		{
+			return false;
+		}
+
+		if (nativeEvent.GetAxisValue(Axis.Pressure, pointerIndex) is not 0)
+		{
+			return true;
+		}
+
+		// We should either have a distance or a pressure, not both at 0 ... but this can happen on some devices (e.g. Surface Duo).
+		// The system raises an exit/enter when the pen is pressed/released, so we return true (safer):
+		// the input source defers the exit to confirm we don't receive a press right after.
+		return true;
 	}
 
-	internal static PointerPointProperties GetProperties(MotionEvent nativeEvent, int pointerIndex, MotionEventToolType type, MotionEventActions action, MotionEventButtonState buttons, bool isInRange, bool isInContact)
-	{
-		var props = new PointerPointProperties
+	internal static bool IsTouchInContact(MotionEventActions action)
+		=> action is not (MotionEventActions.Up or MotionEventActions.PointerUp or MotionEventActions.Cancel or MotionEventActions.HoverExit);
+
+	internal static PointerPointProperties GetMouseProperties(MotionEventButtonState buttons, bool isTouchPad)
+		=> new()
 		{
 			IsPrimary = true,
-			IsInRange = isInRange
+			IsInRange = true,
+			IsTouchPad = isTouchPad,
+			IsLeftButtonPressed = buttons.HasFlag(MotionEventButtonState.Primary),
+			IsRightButtonPressed = buttons.HasFlag(MotionEventButtonState.Secondary),
+			IsMiddleButtonPressed = buttons.HasFlag(MotionEventButtonState.Tertiary),
+			IsXButton1Pressed = buttons.HasFlag(MotionEventButtonState.Back),
+			IsXButton2Pressed = buttons.HasFlag(MotionEventButtonState.Forward),
+			// Pressure stays at its .5 default, as on WinUI, no matter if a button is pressed or not.
 		};
 
-		var isDown = action == /* 0 = */ MotionEventActions.Down || action.HasFlag(MotionEventActions.PointerDown);
-		var isUp = action.HasFlag(MotionEventActions.Up) || action.HasFlag(MotionEventActions.PointerUp);
-		var updates = _none;
-		switch (type)
+	/// <summary>
+	/// Gets the properties of a pen pointer.
+	/// </summary>
+	/// <param name="isRightContact">
+	/// Whether the current contact started while the barrel button was held: like on WinUI, such a contact is
+	/// reported as a right button until released, while pressing the barrel during a contact keeps it a left one.
+	/// </param>
+	internal static PointerPointProperties GetPenProperties(MotionEvent nativeEvent, int pointerIndex, MotionEventToolType toolType, MotionEventButtonState buttons, bool isInContact, bool isRightContact)
+	{
+		var isEraser = toolType is MotionEventToolType.Eraser;
+
+		return new()
 		{
-			case MotionEventToolType.Finger:
-			case MotionEventToolType.Unknown: // used by Xamarin.UITest
-				props.IsLeftButtonPressed = isInContact;
-				updates = isDown ? _fingerDownUpdates : isUp ? _fingerUpUpdates : _none;
-				// Pressure = .5f => Keeps default as UWP returns .5 for fingers.
-				break;
-
-			case MotionEventToolType.Mouse:
-				props.IsLeftButtonPressed = buttons.HasFlag(MotionEventButtonState.Primary);
-				props.IsMiddleButtonPressed = buttons.HasFlag(MotionEventButtonState.Tertiary);
-				props.IsRightButtonPressed = buttons.HasFlag(MotionEventButtonState.Secondary);
-				updates = isDown ? _mouseDownUpdates : isUp ? _mouseUpUpdates : _none;
-				// Pressure = .5f => Keeps default as UWP returns .5 for Mouse no matter is button is pressed or not (Android return 1.0 while pressing a button, but 0 otherwise).
-				break;
-
-			// Note: On UWP, if you touch screen while already holding the barrel button, you will get a right + barrel,
-			//		 ** BUT ** if you touch screen and THEN press the barrel button props will be left + barrel until released.
-			//		 On Android this distinction seems to be flagged by the "1101 ****" action flag (i.e. "StylusWithBarrel***" actions),
-			//		 so here we set the Is<Left|Right>ButtonPressed based on the action and we don't try to link it to the barrel button state.
-			case MotionEventToolType.Stylus when action == StylusWithBarrelDown:
-			case MotionEventToolType.Stylus when action == StylusWithBarrelMove:
-			case MotionEventToolType.Stylus when action == StylusWithBarrelUp:
-				// Note: We still validate the "IsButtonPressed(StylusPrimary)" as the user might release the button while pressed.
-				//		 In that case we will still receive moves and up with the "StylusWithBarrel***" actions.
-				props.IsBarrelButtonPressed = buttons.HasFlag(MotionEventButtonState.StylusPrimary);
-				props.IsRightButtonPressed = isInContact;
-				props.Pressure = Math.Min(1f, nativeEvent.GetPressure(pointerIndex)); // Might exceed 1.0 on Android
-				break;
-			case MotionEventToolType.Stylus:
-				props.IsBarrelButtonPressed = buttons.HasFlag(MotionEventButtonState.StylusPrimary);
-				props.IsLeftButtonPressed = isInContact;
-				props.Pressure = Math.Min(1f, nativeEvent.GetPressure(pointerIndex)); // Might exceed 1.0 on Android
-				break;
-			case MotionEventToolType.Eraser:
-				props.IsEraser = true;
-				props.Pressure = Math.Min(1f, nativeEvent.GetPressure(pointerIndex)); // Might exceed 1.0 on Android
-				break;
-
-			default:
-				break;
-		}
-
-		if (Android.OS.Build.VERSION.SdkInt >= BuildVersionCodes.M // ActionButton was introduced with API 23 (https://developer.android.com/reference/android/view/MotionEvent.html#getActionButton())
-			&& updates.TryGetValue(nativeEvent.ActionButton, out var update))
-		{
-			props.PointerUpdateKind = update;
-		}
-
-		return props;
+			IsPrimary = true,
+			IsInRange = true,
+			IsEraser = isEraser,
+			IsInverted = isEraser,
+			IsBarrelButtonPressed = buttons.HasFlag(MotionEventButtonState.StylusPrimary),
+			IsLeftButtonPressed = isInContact && !isRightContact,
+			IsRightButtonPressed = isInContact && isRightContact,
+			Pressure = Math.Min(1f, nativeEvent.GetPressure(pointerIndex)), // Might exceed 1.0 on Android
+		};
 	}
+
+	internal static PointerPointProperties GetTouchProperties(MotionEventActions action, bool isInContact)
+		=> new()
+		{
+			IsPrimary = true,
+			IsInRange = true,
+			IsLeftButtonPressed = isInContact,
+			PointerUpdateKind = action switch
+			{
+				MotionEventActions.Down or MotionEventActions.PointerDown => PointerUpdateKind.LeftButtonPressed,
+				MotionEventActions.Up or MotionEventActions.PointerUp => PointerUpdateKind.LeftButtonReleased,
+				_ => PointerUpdateKind.Other,
+			},
+			// Pressure stays at its .5 default, as on WinUI for fingers.
+		};
+
+	/// <summary>
+	/// Converts the scroll axis of an ACTION_SCROLL into a WinUI wheel delta.
+	/// </summary>
+	/// <remarks>
+	/// Android reports wheel detents as ±1 (fractional for high resolution wheels), positive being up / right,
+	/// which matches the sign of WinUI's <see cref="PointerPointProperties.MouseWheelDelta"/>.
+	/// </remarks>
+	internal static int ToMouseWheelDelta(float axisValue)
+		=> (int)Math.Round(axisValue * ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta);
+
+	internal static PointerIconType ToPointerIconType(CoreCursorType type)
+		=> type switch
+		{
+			CoreCursorType.Cross => PointerIconType.Crosshair,
+			CoreCursorType.Hand => PointerIconType.Hand,
+			CoreCursorType.Help => PointerIconType.Help,
+			CoreCursorType.IBeam => PointerIconType.Text,
+			CoreCursorType.SizeAll => PointerIconType.AllScroll,
+			CoreCursorType.SizeNortheastSouthwest => PointerIconType.TopRightDiagonalDoubleArrow,
+			CoreCursorType.SizeNorthSouth => PointerIconType.VerticalDoubleArrow,
+			CoreCursorType.SizeNorthwestSoutheast => PointerIconType.TopLeftDiagonalDoubleArrow,
+			CoreCursorType.SizeWestEast => PointerIconType.HorizontalDoubleArrow,
+			CoreCursorType.UniversalNo => PointerIconType.NoDrop,
+			CoreCursorType.Wait => PointerIconType.Wait,
+			_ => PointerIconType.Arrow,
+		};
 }
