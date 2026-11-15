@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace UnitTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_Deque
 	{
 		[TestMethod]

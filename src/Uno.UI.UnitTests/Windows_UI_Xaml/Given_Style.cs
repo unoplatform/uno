@@ -14,7 +14,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_Style
 	{
 		[TestInitialize]

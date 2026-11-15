@@ -8,7 +8,7 @@ using Uno.UI.Composition;
 
 namespace Uno.UI.Tests.CompositionTests;
 
-[TestClass]
+[UITestClass]
 public class CompositionPropertySetTests
 {
 	[TestMethod]

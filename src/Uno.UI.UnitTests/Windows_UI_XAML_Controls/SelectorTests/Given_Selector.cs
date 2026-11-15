@@ -10,7 +10,7 @@ using Uno.UI.Helpers;
 
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_Selector
 	{
 		[TestMethod]

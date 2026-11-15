@@ -4,7 +4,7 @@ using Windows.Foundation;
 
 namespace Uno.UI.Tests.Windows_UI_Input;
 
-[TestClass]
+[UITestClass]
 public class Given_ScrollVelocityTracker
 {
 	private const double Tolerance = 1e-6;

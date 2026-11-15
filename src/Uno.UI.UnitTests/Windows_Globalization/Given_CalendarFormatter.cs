@@ -6,7 +6,7 @@ using Windows.Globalization.DateTimeFormatting;
 
 namespace Uno.UI.Tests.Windows_Globalization
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_CalendarFormatter
 	{
 		[TestMethod]

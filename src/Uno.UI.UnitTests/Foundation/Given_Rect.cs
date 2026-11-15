@@ -9,7 +9,7 @@ using Windows.Foundation;
 
 namespace Uno.UI.Tests.Foundation
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_Rect
 	{
 		[TestInitialize]

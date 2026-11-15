@@ -25,4 +25,16 @@ internal interface IVulkanPlatformSurfaceFactory
 	/// Create a VkSurfaceKHR from the platform's native window handle.
 	/// </summary>
 	ulong CreateSurface(VulkanInstance instance, IntPtr nativeWindowHandle);
+
+	/// <summary>
+	/// Whether a queue family can present to this platform's windows, answered without a surface so the device
+	/// can be picked before any window exists. Defaults to true; the swapchain still checks the real surface.
+	/// </summary>
+	bool SupportsPresentation(VulkanInstance instance, VkPhysicalDevice physicalDevice, uint queueFamilyIndex) => true;
+
+	/// <summary>
+	/// Whether to pick a discrete GPU over the first device the loader reports. A platform whose loader already
+	/// follows the OS's choice of GPU answers false.
+	/// </summary>
+	bool PrefersDiscreteDevice => true;
 }

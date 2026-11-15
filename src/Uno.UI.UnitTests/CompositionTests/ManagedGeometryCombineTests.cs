@@ -7,7 +7,7 @@ using Uno.UI.Composition.Drawing;
 namespace Uno.UI.Tests.CompositionTests;
 
 // Boolean-combine edge cases on the SkiaSharp-free ManagedGeometry that used to misrender silently.
-[TestClass]
+[UITestClass]
 public class ManagedGeometryCombineTests
 {
 	private static readonly ManagedGeometryFactory _factory = new();

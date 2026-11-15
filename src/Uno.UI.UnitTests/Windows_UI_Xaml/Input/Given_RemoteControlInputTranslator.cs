@@ -8,7 +8,7 @@ using Windows.System;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.Input;
 
-[TestClass]
+[UITestClass]
 public class Given_RemoteControlInputTranslator
 {
 	[TestMethod]

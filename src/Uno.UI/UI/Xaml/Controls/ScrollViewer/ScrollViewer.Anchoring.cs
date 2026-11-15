@@ -431,6 +431,9 @@ public partial class ScrollViewer
 
 	// Applies a flicker-less shift of the ScrollViewer's offset.
 	// Clamps negative adjustments to avoid stepping into negative territory.
+	// Like WinUI, the shift is applied as a correction rather than through the public ChangeView: it must
+	// never arm an offset intent (a touch motion would snap back to it once it ends). An intent the caller
+	// already armed is carried along instead, since the content it points at moved by the same amount.
 	private void PerformPositionAdjustment(bool isHorizontalDimension, double unzoomedAdjustment, Rect zoomedViewport)
 	{
 		// zoomFactor is 1 in Uno's managed ScrollViewer pipeline.
@@ -444,7 +447,11 @@ public partial class ScrollViewer
 				zoomedAdjustment = -zoomedHorizontalOffset;
 			}
 			var newHorizontalOffset = zoomedAdjustment + zoomedHorizontalOffset;
-			ChangeView(newHorizontalOffset, null, null, disableAnimation: true);
+			if (_horizontalOffsetIntent is double horizontalIntent)
+			{
+				_horizontalOffsetIntent = horizontalIntent + zoomedAdjustment;
+			}
+			ChangeViewInternal(newHorizontalOffset, null);
 		}
 		else
 		{
@@ -454,7 +461,11 @@ public partial class ScrollViewer
 				zoomedAdjustment = -zoomedVerticalOffset;
 			}
 			var newVerticalOffset = zoomedAdjustment + zoomedVerticalOffset;
-			ChangeView(null, newVerticalOffset, null, disableAnimation: true);
+			if (_verticalOffsetIntent is double verticalIntent)
+			{
+				_verticalOffsetIntent = verticalIntent + zoomedAdjustment;
+			}
+			ChangeViewInternal(null, newVerticalOffset);
 		}
 	}
 

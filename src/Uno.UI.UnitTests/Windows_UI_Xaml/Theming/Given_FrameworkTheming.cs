@@ -9,7 +9,7 @@ using MColors = Microsoft.UI.Colors;
 // static class for every test in Uno.UI.Tests.Windows_UI_Xaml.
 namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkThemingTests;
 
-[TestClass]
+[UITestClass]
 public class Given_FrameworkTheming
 {
 	// Fake IThemingInterop driving FrameworkTheming without any OS dependency.

@@ -106,6 +106,11 @@ internal sealed class MathParsedText : IParsedText
 
 	public bool IsBaseDirectionRightToLeft => false;
 
+	// Math isn't spell-checked, so it has no squiggles to draw.
+	public void DrawSpellCheckSquiggles(IDrawingSession session, Color color)
+	{
+	}
+
 	public float FirstLineBaseline => (float)_baseline;
 
 	public void Draw(

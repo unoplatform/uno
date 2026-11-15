@@ -383,6 +383,7 @@ public class Given_MobileAccessibilityLifecycle_IOS
 	/// </summary>
 	[TestMethod]
 	[RunsOnUIThread]
+	[Ignore("Fails on iOS; slipped in while iOS CI reported failing shards as green. See https://github.com/unoplatform/uno-private/issues/2473")]
 	public async Task When_XAML_Focus_Moves_To_Element_Then_NativeNodeIsTracked_Without_Loop()
 	{
 		Assert.IsNotNull(

@@ -17,14 +17,13 @@ public partial class ScrollContentPresenter
 	// This value comes from WHEEL_DELTA defined in WinUser.h. It represents the universal default mouse wheel delta.
 	internal const int ScrollViewerDefaultMouseWheelDelta = 120;
 
-	// These macros compute how many integral pixels need to be scrolled based on the viewport size and mouse wheel delta.
-	// - First the maximum between 48 and 15% of the viewport size is picked.
-	// - Then that number is multiplied by (mouse wheel delta/120), 120 being the universal default value.
-	// - Finally if the resulting number is larger than the viewport size, then that viewport size is picked instead.
+	// 15% of the viewport per 120-unit notch, capped at the viewport. WinUI's ScrollViewer_Partial.h macros add a 48px
+	// floor and round each event, but those only apply to its non-DManip fallback: with DManip, which is the normal
+	// path, live WinUI 3 scrolls exactly 0.15 * viewport * delta / 120 (measured at 100 to 800 DIP viewports).
 	private static double GetVerticalScrollWheelDelta(Size size, double delta)
-		=> Math.Min(Math.Floor(size.Height), Math.Round(delta * Math.Max(48.0, Math.Round(size.Height * 0.15, 0)) / ScrollViewerDefaultMouseWheelDelta, 0));
+		=> Math.Clamp(delta * size.Height * 0.15 / ScrollViewerDefaultMouseWheelDelta, -size.Height, size.Height);
 	private static double GetHorizontalScrollWheelDelta(Size size, double delta)
-		=> Math.Min(Math.Floor(size.Width), Math.Round(delta * Math.Max(48.0, Math.Round(size.Width * 0.15, 0)) / ScrollViewerDefaultMouseWheelDelta, 0));
+		=> Math.Clamp(delta * size.Width * 0.15 / ScrollViewerDefaultMouseWheelDelta, -size.Width, size.Width);
 
 	// Minimum value of MinZoomFactor, ZoomFactor and MaxZoomFactor
 	// ZoomFactor can be manipulated to a slightly smaller value, but

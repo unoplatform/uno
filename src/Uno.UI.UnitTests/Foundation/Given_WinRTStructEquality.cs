@@ -15,7 +15,7 @@ namespace Uno.UI.Tests.Foundation;
 /// WinRT structs get memberwise equality from the CsWinRT projection (==, !=, Equals, GetHashCode, IEquatable&lt;T&gt;);
 /// the WinAppSDK sync generator emits the same members for Uno.
 /// </summary>
-[TestClass]
+[UITestClass]
 public class Given_WinRTStructEquality
 {
 	[TestMethod]

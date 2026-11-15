@@ -17,6 +17,7 @@ Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_o
   // MUX Reference AnimatedIcon.properties.cpp, tag winui3/release/1.7.1, commit f4d781d
   ```
   Keep the `// MUX Reference <file>, tag <tag>, commit <hash>` line accurate — it pins the upstream source. **Uno-native** code omits both the MS copyright and the MUX line.
+  **Exception:** in an area tracked by the WinUI port sync (`build/winui-sync/areas.json`), the header names only the upstream file (`// MUX Reference AnimatedIcon.properties.cpp`), with no tag or commit: the area's `baseline` records the version.
 - Don't add a `_Mux` suffix to ported members — use the natural WinUI name. (See the `/winui-port` skill for the full porting rules.)
 
 ## Idioms

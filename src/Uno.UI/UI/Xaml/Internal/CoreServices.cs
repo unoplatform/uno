@@ -70,7 +70,7 @@ namespace Uno.UI.Xaml.Core
 		}
 
 		// Any root, not only the first: a minimized main window must not stop the others' layout and frame ticks.
-		private static bool HasRootWithBounds()
+		internal static bool HasRootWithBounds()
 		{
 			var contentRoots = CoreServices.Instance.ContentRootCoordinator.ContentRoots;
 			if (contentRoots.Count == 0)
@@ -133,6 +133,8 @@ namespace Uno.UI.Xaml.Core
 			// -----------------------------
 			// However, as we don't yet have XamlIslandRootCollection, we will need to enumerate the windows through ApplicationHelper.Windows.
 
+			PendingImageReleases.OnLayoutPassStarting();
+
 			// Before layout and before the record: what the frame's motion writes is then an ordinary pre-frame
 			// invalidation, and the layout it dirties is cleaned by this same tick instead of the next one.
 			CompositionTarget.RaiseFrameTick();
@@ -145,6 +147,9 @@ namespace Uno.UI.Xaml.Core
 			{
 				UpdateLayoutAndRaiseLoaded();
 			}
+
+			// Loaded has been raised for what this pass brought back into the tree: release the undisplayed images now due.
+			PendingImageReleases.OnLayoutPassCompleted();
 
 #if __SKIA__
 			foreach (var window in ApplicationHelper.WindowsInternal)

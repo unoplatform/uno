@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_DependencyObjectCollection
 	{
 		//[TestCleanup]

@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.Runtime.CompilerServices;
 using Microsoft.Identity.Client;
 
 namespace Uno.UI.MSAL
@@ -18,6 +19,11 @@ namespace Uno.UI.MSAL
 #pragma warning disable CA1422 // Validate platform compatibility
 			(builder as PublicClientApplicationBuilder)?.WithParentActivityOrWindow(() => UIKit.UIApplication.SharedApplication?.KeyWindow?.RootViewController);
 #pragma warning restore CA1422 // Validate platform compatibility
+#elif __SKIA__
+			if (OperatingSystem.IsBrowser())
+			{
+				builder.WithHttpClientFactory(WasmHttpFactory.Instance);
+			}
 #endif
 			return builder;
 		}

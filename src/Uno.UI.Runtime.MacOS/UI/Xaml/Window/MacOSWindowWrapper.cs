@@ -1,37 +1,116 @@
 using System.ComponentModel;
+using Microsoft.UI.Input;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
+using Uno.UI.UI.Input.Internal;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Graphics;
+using Windows.UI.Core;
 
 namespace Uno.UI.Runtime.MacOS;
 
-internal class MacOSWindowWrapper : NativeWindowWrapperBase
+internal class MacOSWindowWrapper : NativeWindowWrapperBase, INativeInputNonClientPointerSource
 {
 	private readonly MacOSWindowNative _nativeWindow;
+	private readonly NonClientRegionSet _nonClientRegions = new();
+	private Size _hostSize;
+	private Point _hostPosition;
 
 	public MacOSWindowWrapper(MacOSWindowNative nativeWindow, Window window, XamlRoot xamlRoot, Size initialSize) : base(window, xamlRoot)
 	{
 		_nativeWindow = nativeWindow;
+		// The physical sizes and position below are derived from it.
+		RasterizationScale = (float)nativeWindow.Host.RasterizationScale;
 
 		nativeWindow.Host.Closing += OnWindowClosing;
 		nativeWindow.Host.RasterizationScaleChanged += Host_RasterizationScaleChanged;
-		nativeWindow.Host.SizeChanged += (_, s) => OnHostSizeChanged(s);
+		nativeWindow.Host.ActivationChanged += (_, e) => OnNativeActivationChanged(e.IsActive, e.ByPointer);
+		nativeWindow.Host.SizeChanged += (_, s) =>
+		{
+			OnHostSizeChanged(s);
+			// e.g. the traffic lights leave the content in full screen
+			UpdateTitleBarInsets();
+		};
+		nativeWindow.Host.NonClientHitTest = HitTestNonClient;
+		window.AppWindow.TitleBar.Changed += (_, _) => UpdateTitleBar();
 		OnHostSizeChanged(initialSize);
 		nativeWindow.Host.PositionChanged += (_, s) => OnHostPositionChanged(s.X, s.Y);
 		// the initial event occurred before the managed side was ready to handle it
 		NativeUno.uno_window_get_position(nativeWindow.Handle, out var x, out var y);
 		OnHostPositionChanged(x, y);
-
-		RasterizationScale = (float)_nativeWindow.Host.RasterizationScale;
 	}
 
 	private void Host_RasterizationScaleChanged(object? sender, EventArgs args)
 	{
 		RasterizationScale = (float)_nativeWindow.Host.RasterizationScale;
+		OnHostSizeChanged(_hostSize);
+		OnHostPositionChanged(_hostPosition.X, _hostPosition.Y);
+		UpdateTitleBarInsets();
 	}
+
+	internal override bool HasNativeCaptionButtons => true;
+
+	protected override void ShowCore() => UpdateTitleBar();
+
+	// The native caption buttons (traffic lights) stay; the content extends under a transparent title bar.
+	private void UpdateTitleBar()
+	{
+		if (_nativeWindow.Handle == nint.Zero || Window?.AppWindow is not { NativeAppWindow: not null } appWindow)
+		{
+			return;
+		}
+
+		var titleBar = appWindow.TitleBar;
+		var extend = titleBar.ExtendsContentIntoTitleBar;
+		NativeUno.uno_window_set_extends_content_into_title_bar(
+			_nativeWindow.Handle,
+			extend,
+			extend ? titleBar.Height / RasterizationScale : 0,
+			titleBar.PreferredHeightOption != TitleBarHeightOption.Collapsed);
+
+		UpdateTitleBarInsets();
+	}
+
+	private void UpdateTitleBarInsets()
+	{
+		if (_nativeWindow.Handle == nint.Zero || Window?.AppWindow.TitleBar is not { } titleBar)
+		{
+			return;
+		}
+
+		var (left, right) = NativeUno.uno_window_get_caption_buttons_bounds(_nativeWindow.Handle, out var minX, out var maxX, out var width)
+			? MacOSTitleBarMath.GetInsets(minX, maxX, width, RasterizationScale)
+			: (0, 0);
+		titleBar.SetInsets(left, right);
+	}
+
+	/// <summary>
+	/// Visibility and enabled state of the traffic lights: bit 2i is "shown" and bit 2i+1 "enabled" for close, minimize and zoom.
+	/// </summary>
+	internal int GetCaptionButtonsState()
+		=> _nativeWindow.Handle == nint.Zero ? 0 : NativeUno.uno_window_get_caption_buttons_state(_nativeWindow.Handle);
+
+	/// <summary>
+	/// What a left-button press at the given content point, in logical pixels, does while extended into the title bar.
+	/// </summary>
+	internal MacOSNonClientPointerAction HitTestNonClient(double x, double y)
+		=> MacOSTitleBarMath.GetPointerAction(
+			_nonClientRegions.HitTest(new PointInt32((int)(x * RasterizationScale), (int)(y * RasterizationScale))));
+
+	public void ClearAllRegionRects() => _nonClientRegions.ClearAll();
+
+	public void ClearRegionRects(NonClientRegionKind region) => _nonClientRegions.Clear(region);
+
+	public RectInt32[] GetRegionRects(NonClientRegionKind region) => _nonClientRegions.Get(region);
+
+	public void SetRegionRects(NonClientRegionKind region, RectInt32[] rects) => _nonClientRegions.Set(region, rects);
+
+	internal void OnNativeActivationChanged(bool isActive, bool byPointer)
+		=> ActivationState = !isActive
+			? CoreWindowActivationState.Deactivated
+			: byPointer ? CoreWindowActivationState.PointerActivated : CoreWindowActivationState.CodeActivated;
 
 	public override object NativeWindow => _nativeWindow;
 
@@ -112,6 +191,7 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 
 	private void OnHostPositionChanged(double x, double y)
 	{
+		_hostPosition = new Point(x, y);
 		// in physical pixels
 		var sx = (int)(x * RasterizationScale);
 		var sy = (int)(y * RasterizationScale);
@@ -120,6 +200,7 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 
 	private void OnHostSizeChanged(Size size)
 	{
+		_hostSize = size;
 		var bounds = new Rect(default, size);
 		// in logical pixels
 		SetBoundsAndVisibleBounds(bounds, bounds);
@@ -144,7 +225,7 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 
 	protected override IDisposable ApplyOverlappedPresenter(OverlappedPresenter presenter)
 	{
-		presenter.SetNative(new MacOSNativeOverlappedPresenter(_nativeWindow));
+		presenter.SetNative(new MacOSNativeOverlappedPresenter(_nativeWindow, UpdateTitleBar));
 		return Disposable.Create(() => presenter.SetNative(null));
 	}
 

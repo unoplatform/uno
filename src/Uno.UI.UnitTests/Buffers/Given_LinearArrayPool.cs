@@ -10,7 +10,7 @@ using Windows.System;
 
 namespace Uno.UI.Tests.Buffers
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_LinearArrayPool
 	{
 		private Action _cleanup;

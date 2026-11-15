@@ -45,15 +45,77 @@ public class Given_BindableTypeProvidersSourceGenerator
 		test.GeneratedCode.Should().Contain("""$"The Bindable attribute is missing and the type [{type.FullName}] is not known by the MetadataProvider.""");
 	}
 
-	private static Test CreateTest(int typeCount, params string[] preprocessorSymbols)
+	[TestMethod]
+	public async Task When_Provider_Generated_Then_Hidden_From_IntelliSense()
 	{
-		var test = new Test(preprocessorSymbols, isDictionaryMode: typeCount >= DictionaryModeTypeCount)
+		var test = CreateTest(1);
+
+		await test.RunAsync();
+
+		test.GeneratedCode.Should().MatchRegex(@"EditorBrowsable\(global::System\.ComponentModel\.EditorBrowsableState\.Never\)\]\s+public class BindableMetadataProvider\b");
+	}
+
+	[TestMethod]
+	public async Task When_DependencyProperty_Then_Property_Type_Is_Named_For_Trimming()
+	{
+		// The metadata names the type of each dependency property, the only place a trimmed app learns
+		// that a binding path may continue into its members.
+		var test = CreateTest("""
+			using Microsoft.UI.Xaml;
+
+			namespace MyProject;
+
+			public class Payload
+			{
+				public string Name { get; set; }
+			}
+
+			public enum Mode { Off, On }
+
+			[Microsoft.UI.Xaml.Data.Bindable]
+			public class Owner : DependencyObject
+			{
+				public static readonly DependencyProperty PayloadProperty = DependencyProperty.Register("Payload", typeof(Payload), typeof(Owner), null);
+
+				public Payload Payload
+				{
+					get => (Payload)GetValue(PayloadProperty);
+					set => SetValue(PayloadProperty, value);
+				}
+
+				public static readonly DependencyProperty ModeProperty = DependencyProperty.RegisterAttached("Mode", typeof(Mode), typeof(Owner), null);
+
+				public static Mode GetMode(DependencyObject target) => (Mode)target.GetValue(ModeProperty);
+
+				public static void SetMode(DependencyObject target, Mode value) => target.SetValue(ModeProperty, value);
+
+				public static readonly DependencyProperty DataProperty = DependencyProperty.RegisterAttached("Data", typeof(object), typeof(Owner), null);
+
+				public static dynamic GetData(DependencyObject target) => target.GetValue(DataProperty);
+
+				public static void SetData(DependencyObject target, dynamic value) => target.SetValue(DataProperty, (object)value);
+			}
+			""");
+
+		await test.RunAsync();
+
+		test.GeneratedCode.Should().Contain("bindableType.AddProperty(global::MyProject.Owner.PayloadProperty, typeof(global::MyProject.Payload));");
+		test.GeneratedCode.Should().Contain("bindableType.AddProperty(global::MyProject.Owner.ModeProperty, typeof(global::MyProject.Mode));");
+		test.GeneratedCode.Should().Contain("bindableType.AddProperty(global::MyProject.Owner.DataProperty);");
+	}
+
+	private static Test CreateTest(int typeCount, params string[] preprocessorSymbols)
+		=> CreateTest(GenerateBindableTypes(typeCount), typeCount >= DictionaryModeTypeCount, preprocessorSymbols);
+
+	private static Test CreateTest(string source, bool isDictionaryMode = false, params string[] preprocessorSymbols)
+	{
+		var test = new Test(preprocessorSymbols, isDictionaryMode)
 		{
 			ReferenceAssemblies = _Dotnet.Current.ReferenceAssemblies,
 			TestBehaviors = TestBehaviors.SkipGeneratedSourcesCheck,
 			TestState =
 			{
-				Sources = { GenerateBindableTypes(typeCount) },
+				Sources = { source },
 				AnalyzerConfigFiles = { ("/.globalconfig", GlobalConfig) },
 			},
 		};

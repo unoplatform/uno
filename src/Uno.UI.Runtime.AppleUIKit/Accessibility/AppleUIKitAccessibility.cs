@@ -240,6 +240,13 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			AccessibilityPeerHelper.IOSClearAccessibilityEventsAction =
 				root => FindClientAdapterForRoot(root)?.ClearEventsForRoot(root);
 
+			// Not a client: looking the adapter up must not enable the tree it is about to release.
+			AccessibilityPeerHelper.IOSDisableAccessibilityAction =
+				root => FindAdapterForRoot(root)?.DisableAccessibility();
+
+			AccessibilityPeerHelper.IOSIsAccessibilityEnabledAccessor =
+				root => FindAdapterForRoot(root)?.IsAccessibilityEnabled is true;
+
 			AccessibilityPeerHelper.IOSAccessibilityRebuildGenerationAccessor =
 				root => FindClientAdapterForRoot(root)?._rebuildGeneration ?? 0;
 
@@ -330,6 +337,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	protected override bool ShouldInvalidateOnScroll
 		=> IsAccessibilityEnabled && IsAssistiveTechnologyRunning;
 
+	protected override bool PushesTextValue => false;
+
 	private static bool IsAssistiveTechnologyRunning
 		=> UIAccessibility.IsVoiceOverRunning || UIAccessibility.IsSwitchControlRunning;
 
@@ -382,6 +391,22 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		}
 
 		_modalScopeDirty = true;
+	}
+
+	/// <summary>
+	/// Undoes what accessibility clients and test hooks latched on: stops recording events and, unless VoiceOver or
+	/// Switch Control is running, stops tracking the tree. The next client query enables it again.
+	/// </summary>
+	private void DisableAccessibility()
+	{
+		_recordEvents = false;
+		_recordedEvents.Clear();
+		Trace("Accessibility disabled by request.");
+
+		if (!IsAssistiveTechnologyRunning)
+		{
+			ReleaseTreeRequest();
+		}
 	}
 
 	/// <summary>

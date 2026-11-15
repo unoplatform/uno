@@ -14,7 +14,7 @@ using Uno.Collections;
 
 namespace Uno.UI.Tests.Collections
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_HashtableEx
 	{
 		[TestMethod]

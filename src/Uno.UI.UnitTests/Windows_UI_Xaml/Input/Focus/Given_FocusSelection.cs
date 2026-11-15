@@ -14,7 +14,7 @@ using static Uno.UI.Tests.Helpers.MuxVerify;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.Input.Internal
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_FocusSelection
 	{
 		private partial class View : FrameworkElement

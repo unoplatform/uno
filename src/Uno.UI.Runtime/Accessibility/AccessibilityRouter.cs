@@ -62,6 +62,8 @@ internal static class AccessibilityRouter
 
 			AccessibilityAnnouncer.AccessibilityImpl = new RouterAnnouncerShim();
 			AutomationPeer.AutomationPeerListener = new RouterAutomationPeerListener();
+			AccessibilityPeerHelper.IsAnyAccessibilityBridgeEnabledAccessor = static () => _anyBridgeEnabled;
+			AccessibilityPeerHelper.SetAnyAccessibilityBridgeEnabledAction = static value => _anyBridgeEnabled = value;
 
 			_initialized = true;
 		}

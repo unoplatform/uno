@@ -64,13 +64,9 @@ internal class X11NativeOverlappedPresenter(X11Window x11Window, X11WindowWrappe
 		_ = XLib.XFlush(x11Window.Display);
 	}
 
-	public void SetBorderAndTitleBar(bool hasBorder, bool hasTitleBar)
-	{
-		// Border doesn't seem to do anything except show the title bar even if !hasTitleBar, which is fine for now,
-		// since it doesn't do anything on WinUI either.
-		// X11Helper.SetMotifWMDecorations(x11Window, hasBorder, (IntPtr)MotifDecorations.Border);
-		X11Helper.SetMotifWMDecorations(x11Window, hasTitleBar, (IntPtr)MotifDecorations.Title);
-	}
+	// Title and Border go together: some window managers draw a title bar for Border alone, and wlroots-based ones
+	// (labwc) draw nothing for Title without Border. So unlike on WinUI, a border without a title bar can't be honoured.
+	public void SetBorderAndTitleBar(bool hasBorder, bool hasTitleBar) => wrapper.SetPresenterHasTitleBar(hasTitleBar);
 
 	public void Restore(bool activateWindow)
 	{

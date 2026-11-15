@@ -12,6 +12,9 @@ Creating such a library will make UI Controls compatible with all Uno Platform t
 
 You can find the [full ControlLibrary sample code](https://github.com/unoplatform/Uno.Samples/blob/master/UI/ControlLibrary) for this how-to in our samples repository.
 
+> [!NOTE]
+> This sample targets Uno Platform 5.3.96, which predates Uno Platform 7.0. See [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7) to update it.
+
 ## Create a Control Library
 
 1. In your solution, create a new **Uno Platform Library**, name it `XamlControlLibrary`

@@ -54,6 +54,7 @@ public class MacOSHost : UnoPlatformHost, IApplicationHost
 		MacOSFolderPickerExtension.Register();
 		MacOSLauncherExtension.Register();
 		MacOSNativeElementHostingExtension.Register();
+		MacOSNativeViewPeer.Register();
 		MacOSNativeWindowFactoryExtension.Register();
 		MacOSSystemThemeHelperExtension.Register();
 		MacOSTextScaleFactorExtension.Register();

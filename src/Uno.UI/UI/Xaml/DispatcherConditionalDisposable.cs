@@ -4,7 +4,9 @@ using System.Text;
 using Uno.Disposables;
 using Uno.UI.Common;
 using Windows.UI.Core;
+using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml
 {
@@ -19,9 +21,9 @@ namespace Microsoft.UI.Xaml
 	/// capturing lambda to be passed as a callback, and not have to unintended memory leaks
 	/// on either the sender or receiver of the callback.
 	/// </remarks>
-	internal abstract class DispatcherConditionalDisposable : ConditionalDisposable
+	internal abstract class DispatcherConditionalDisposable : ConditionalDisposable, IQueuedRemoval
 	{
-		public DispatcherConditionalDisposable(object target, WeakReference conditionSource) : base(target, conditionSource)
+		public DispatcherConditionalDisposable(object target, object conditionSource) : base(target, conditionSource)
 		{
 		}
 
@@ -33,12 +35,30 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
-				Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(
-					DispatchedTargetFinalized,
-					Uno.UI.Dispatching.NativeDispatcherPriority.Idle);
+				// From the finalizer: batched with the other removals of collected subscribers, rather than one dispatcher item each.
+				SubscriptionCleanup.EnqueueFromFinalizer(this, this);
 			}
 		}
 
 		protected abstract void DispatchedTargetFinalized();
+
+		Type IQueuedRemoval.LogOwner => GetType();
+
+		string IQueuedRemoval.Description => "the callback of a collected subscriber";
+
+		void IQueuedRemoval.Remove(object source)
+		{
+			try
+			{
+				DispatchedTargetFinalized();
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Failed to remove the callback of a collected subscriber", e);
+				}
+			}
+		}
 	}
 }

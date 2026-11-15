@@ -87,7 +87,6 @@ internal abstract class FrameBufferRenderer
 			return CurrentTarget is { } t && t.Width == width && t.Height == height ? t : CreateTarget(width, height);
 		});
 
-		ct.Renderer = _rendererFactory!;
 		ct.OnNativePlatformFrameRequested(context, rootTransform, overlay);
 	}
 

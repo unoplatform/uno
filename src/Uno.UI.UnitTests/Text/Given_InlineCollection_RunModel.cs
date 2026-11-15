@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.Text
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_InlineCollection_RunModel
 	{
 		// Builds a TextBlock host whose InlineCollection contains the given inlines, so the

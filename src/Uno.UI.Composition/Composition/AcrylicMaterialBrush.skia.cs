@@ -24,7 +24,11 @@ internal class AcrylicMaterialBrush : CompositionBrush
 	private Color _luminosityColor;
 	private Color _tintColor;
 	private float _noiseOpacity;
+	private IImage? _noiseImage;
+	// The texture is minted from the session that paints, and re-minted if a different one ever paints
+	// this brush: a texture belongs to one device, and one brush can be shared across windows.
 	private ITexture? _noiseTexture;
+	private IDrawingFactory? _noiseFactory;
 
 	private IEffectFilter? _filter;
 	private Rect _cachedBounds;
@@ -42,7 +46,7 @@ internal class AcrylicMaterialBrush : CompositionBrush
 	public Color LuminosityColor { get => _luminosityColor; set => SetObjectProperty(ref _luminosityColor, value); }
 	public Color TintColor { get => _tintColor; set => SetObjectProperty(ref _tintColor, value); }
 	public float NoiseOpacity { get => _noiseOpacity; set => SetProperty(ref _noiseOpacity, value); }
-	public ITexture? NoiseTexture { get => _noiseTexture; set => SetObjectProperty(ref _noiseTexture, value); }
+	public IImage? NoiseImage { get => _noiseImage; set => SetObjectProperty(ref _noiseImage, value); }
 
 	// A translucent acrylic filters the live backdrop, so it must repaint every frame; an opaque one is static.
 	internal override bool RequiresRepaintOnEveryFrame => !_isOpaque;
@@ -72,9 +76,26 @@ internal class AcrylicMaterialBrush : CompositionBrush
 		return true;
 	}
 
+	private ITexture? ResolveNoiseTexture(IDrawingFactory factory)
+	{
+		if (_noiseImage is null)
+		{
+			return null;
+		}
+
+		if (_noiseTexture is null || !ReferenceEquals(_noiseFactory, factory))
+		{
+			_noiseTexture?.Dispose();
+			_noiseTexture = factory.CreateTexture(_noiseImage);
+			_noiseFactory = factory;
+		}
+
+		return _noiseTexture;
+	}
+
 	private void DrawNoise(IDrawingSession session, float opacity, Rect bounds)
 	{
-		if (_noiseTexture is not { PixelWidth: > 0, PixelHeight: > 0 } texture)
+		if (ResolveNoiseTexture(session.Factory) is not { PixelWidth: > 0, PixelHeight: > 0 } texture)
 		{
 			return;
 		}

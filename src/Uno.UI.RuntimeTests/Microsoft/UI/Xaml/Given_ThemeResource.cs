@@ -623,6 +623,85 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 
+		private static readonly Color ThemeDictionaryLightAppColor = Color.FromArgb(0xFF, 0x00, 0x80, 0x00);
+		private static readonly Color ThemeDictionaryDarkAppColor = Color.FromArgb(0xFF, 0xFF, 0xFF, 0x00);
+		private static readonly Color ThemeDictionaryLightLocalColor = Color.FromArgb(0xFF, 0xFF, 0x00, 0x00);
+		private static readonly Color ThemeDictionaryDarkLocalColor = Color.FromArgb(0xFF, 0x00, 0x00, 0xFF);
+
+		private const string ThemeDictionaryBrushXaml = """
+			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+				<Grid.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="Light">
+								<Color x:Key="ThemeDictionaryLocalColor">#FFFF0000</Color>
+								<SolidColorBrush x:Key="ThemeDictionaryAppColorBrush" Color="{ThemeResource ThemeDictionaryTestAppColor}" />
+								<SolidColorBrush x:Key="ThemeDictionaryLocalColorBrush" Color="{ThemeResource ThemeDictionaryLocalColor}" />
+							</ResourceDictionary>
+							<ResourceDictionary x:Key="Dark">
+								<Color x:Key="ThemeDictionaryLocalColor">#FF0000FF</Color>
+								<SolidColorBrush x:Key="ThemeDictionaryAppColorBrush" Color="{ThemeResource ThemeDictionaryTestAppColor}" />
+								<SolidColorBrush x:Key="ThemeDictionaryLocalColorBrush" Color="{ThemeResource ThemeDictionaryLocalColor}" />
+							</ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+					</ResourceDictionary>
+				</Grid.Resources>
+				<StackPanel>
+					<TextBlock x:Name="AppColorText" Foreground="{ThemeResource ThemeDictionaryAppColorBrush}" Text="App" />
+					<TextBlock x:Name="LocalColorText" Foreground="{ThemeResource ThemeDictionaryLocalColorBrush}" Text="Local" />
+					<RichTextBlock x:Name="AppColorRichText" Foreground="{ThemeResource ThemeDictionaryAppColorBrush}">
+						<Paragraph>App</Paragraph>
+					</RichTextBlock>
+					<Border x:Name="LocalColorBorder" Height="10" Background="{ThemeResource ThemeDictionaryLocalColorBrush}" />
+				</StackPanel>
+			</Grid>
+			""";
+
+		[TestMethod]
+		[DataRow(false, DisplayName = "Compiled XAML")]
+		[DataRow(true, DisplayName = "XamlReader")]
+		public async Task When_ThemeDictionary_Brush_References_ThemeResource_And_Element_Theme_Toggled(bool useXamlReader)
+		{
+			var appResources = new ResourceDictionary();
+			appResources.ThemeDictionaries["Light"] = new ResourceDictionary { ["ThemeDictionaryTestAppColor"] = ThemeDictionaryLightAppColor };
+			appResources.ThemeDictionaries["Dark"] = new ResourceDictionary { ["ThemeDictionaryTestAppColor"] = ThemeDictionaryDarkAppColor };
+			Application.Current.Resources.MergedDictionaries.Add(appResources);
+
+			try
+			{
+				var content = useXamlReader
+					? (FrameworkElement)XamlReader.Load(ThemeDictionaryBrushXaml)
+					: new When_ThemeDictionary_Brush_References_ThemeResource();
+				var host = new Border { RequestedTheme = ElementTheme.Light, Child = content };
+
+				WindowHelper.WindowContent = host;
+				await WindowHelper.WaitForLoaded(content);
+				AssertColors("initial Light", ThemeDictionaryLightAppColor, ThemeDictionaryLightLocalColor);
+
+				host.RequestedTheme = ElementTheme.Dark;
+				await WindowHelper.WaitForIdle();
+				AssertColors("Dark", ThemeDictionaryDarkAppColor, ThemeDictionaryDarkLocalColor);
+
+				host.RequestedTheme = ElementTheme.Light;
+				await WindowHelper.WaitForIdle();
+				AssertColors("back to Light", ThemeDictionaryLightAppColor, ThemeDictionaryLightLocalColor);
+
+				void AssertColors(string step, Color appColor, Color localColor)
+				{
+					Assert.AreEqual(appColor, GetColor(((TextBlock)content.FindName("AppColorText")).Foreground), $"{step}: TextBlock with app-level color");
+					Assert.AreEqual(localColor, GetColor(((TextBlock)content.FindName("LocalColorText")).Foreground), $"{step}: TextBlock with same-dictionary color");
+					Assert.AreEqual(appColor, GetColor(((RichTextBlock)content.FindName("AppColorRichText")).Foreground), $"{step}: RichTextBlock with app-level color");
+					Assert.AreEqual(localColor, GetColor(((Border)content.FindName("LocalColorBorder")).Background), $"{step}: Border with same-dictionary color");
+				}
+
+				static Color GetColor(Brush brush) => ((SolidColorBrush)brush).Color;
+			}
+			finally
+			{
+				Application.Current.Resources.MergedDictionaries.Remove(appResources);
+			}
+		}
 	}
 
 #if HAS_UNO

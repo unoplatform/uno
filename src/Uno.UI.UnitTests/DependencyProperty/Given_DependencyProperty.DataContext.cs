@@ -20,7 +20,7 @@ using System.Collections;
 
 namespace Uno.UI.Tests.BinderTests_DataContext
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_DependencyProperty
 	{
 		[TestMethod]

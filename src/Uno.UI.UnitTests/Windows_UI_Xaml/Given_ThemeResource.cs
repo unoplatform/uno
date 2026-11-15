@@ -18,7 +18,7 @@ using Microsoft.UI.Xaml.Shapes;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_ThemeResource
 	{
 		[TestInitialize]
