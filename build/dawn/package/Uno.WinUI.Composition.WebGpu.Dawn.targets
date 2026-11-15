@@ -1,0 +1,54 @@
+<Project>
+
+	<!--
+	Dawn as the WebGPU library (the default; UnoWebGpuNative=WgpuNative selects wgpu-native instead).
+
+	Every platform but iOS loads Dawn from runtimes/<rid>/native, which needs nothing here. iOS apps cannot load a
+	library from outside the bundle, so Dawn is linked statically into the app image and the binding finds its
+	functions in the main program: the slice is handed to the Apple SDK as a NativeReference, and every webgpu.h
+	function is declared from the list beside this file so neither the link nor the symbol strip drops it.
+	-->
+	<PropertyGroup>
+		<UnoWebGpuDawnIosLibDir Condition="'$(UnoWebGpuDawnIosLibDir)' == ''">$(MSBuildThisFileDirectory)native\</UnoWebGpuDawnIosLibDir>
+	</PropertyGroup>
+
+	<Target Name="_UnoWebGpuLinkDawnIos"
+			BeforeTargets="_SanitizeNativeReferences;_ExpandNativeReferences;_ResolveAssemblies;BeforeBuild"
+			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' And '$(UnoWebGpuNative)' != 'WgpuNative'">
+		<PropertyGroup>
+			<!-- The RID is empty on the outer restore/build pass; default to the device slice so the item exists. -->
+			<_UnoDawnIosRid>$(RuntimeIdentifier)</_UnoDawnIosRid>
+			<_UnoDawnIosRid Condition="'$(_UnoDawnIosRid)' == ''">ios-arm64</_UnoDawnIosRid>
+			<_UnoDawnIosLib>$(UnoWebGpuDawnIosLibDir)$(_UnoDawnIosRid)\libwebgpu_dawn.a</_UnoDawnIosLib>
+		</PropertyGroup>
+		<ItemGroup Condition="Exists('$(_UnoDawnIosLib)')">
+			<NativeReference Include="$(_UnoDawnIosLib)">
+				<Kind>Static</Kind>
+				<ForceLoad>True</ForceLoad>
+				<SmartLink>False</SmartLink>
+				<IsCxx>True</IsCxx>
+				<Frameworks>Metal QuartzCore IOSurface IOKit Foundation CoreFoundation CoreGraphics</Frameworks>
+			</NativeReference>
+		</ItemGroup>
+		<ReadLinesFromFile File="$(MSBuildThisFileDirectory)dawn-ios.symbols" Condition="Exists('$(_UnoDawnIosLib)')">
+			<Output TaskParameter="Lines" ItemName="_UnoDawnIosSymbol" />
+		</ReadLinesFromFile>
+		<ItemGroup>
+			<ReferenceNativeSymbol Include="@(_UnoDawnIosSymbol)" SymbolType="Function" />
+		</ItemGroup>
+	</Target>
+
+	<!-- Only one engine reaches the app: with wgpu-native selected, Dawn's library is left out of the output. -->
+	<Target Name="_UnoWebGpuDropDawnFromOutput" BeforeTargets="CopyFilesToOutputDirectory" Condition="'$(UnoWebGpuNative)' == 'WgpuNative'">
+		<ItemGroup>
+			<ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" Condition="('%(Filename)' == 'webgpu' Or '%(Filename)' == 'libwebgpu') And '%(NuGetPackageId)' == 'Uno.WinUI.Composition.WebGpu.Dawn'" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_UnoWebGpuDropDawnFromPublish" AfterTargets="ComputeResolvedFilesToPublishList" Condition="'$(UnoWebGpuNative)' == 'WgpuNative'">
+		<ItemGroup>
+			<ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="('%(Filename)' == 'webgpu' Or '%(Filename)' == 'libwebgpu') And '%(NuGetPackageId)' == 'Uno.WinUI.Composition.WebGpu.Dawn'" />
+		</ItemGroup>
+	</Target>
+
+</Project>
