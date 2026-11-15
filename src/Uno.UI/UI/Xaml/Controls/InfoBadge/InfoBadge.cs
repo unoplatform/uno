@@ -52,7 +52,7 @@ public partial class InfoBadge : Control
 		{
 			if (Value < -1)
 			{
-				throw new ArgumentOutOfRangeException("Value must be equal to or greater than -1");
+				throw new ArgumentOutOfRangeException(nameof(Value), "Value must be equal to or greater than -1");
 			}
 		}
 
@@ -72,7 +72,8 @@ public partial class InfoBadge : Control
 		}
 		else if (IconSource is { } iconSource)
 		{
-			TemplateSettings.IconElement = iconSource.CreateIconElement();
+			TemplateSettings.IconElement = SharedHelpers.MakeIconElementFrom(iconSource);
+
 			if (iconSource is FontIconSource)
 			{
 				VisualStateManager.GoToState(thisAsControl, "FontIcon", true);
@@ -99,11 +100,9 @@ public partial class InfoBadge : Control
 			}
 			else
 			{
-				return new CornerRadius();
+				return CornerRadius;
 			}
-			// Uno Specific: WinUI2 source had an extra if condition wrapping the previous if,
-			// so this return was reachable. That condition was removed in WinUI3, but the
-			// return was left here even though it's unreachable
+			// TODO Uno specific: unreachable in upstream too; commented out to avoid CS0162.
 			//return new CornerRadius(cornerRadiusValue, cornerRadiusValue, cornerRadiusValue, cornerRadiusValue);
 		}
 
