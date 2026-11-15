@@ -50,8 +50,9 @@
 		// The input's value as last synced with the TextBox, either way. A commit the browser applied without an input
 		// event yet leaves the value ahead of it.
 		private static syncedValue: string | null = null;
-		// Counts the TextBox's writes to the input (text, selection). A notification queued for the UI thread carries
-		// the count it was taken at, so the TextBox can tell it is behind one of them (see getSelectionState).
+		// Counts the UI thread's writes to the focused input (text, selection), by the TextBox or by accessibility for
+		// the semantic input. A notification queued for the UI thread carries the count it was taken at, so the TextBox
+		// can tell it is behind one of them (see getSelectionState).
 		private static pushGeneration: number = 0;
 		private static enterHandledByKeyDown: boolean;
 		private static compositionGeneration: number = 0;
@@ -146,19 +147,32 @@
 			return [start, length];
 		}
 
-		// [pushGeneration, start, length] of the focused input, or empty. The UI thread applies the input's
-		// notifications later than the browser sends them, and may have written to the input in between.
+		// [pushGeneration, start, length] of the focused input (the hidden one, or the semantic one under
+		// accessibility), or empty. The UI thread applies the input's notifications later than the browser
+		// sends them, and may have written to the input in between.
 		public static getSelectionState(): number[] {
-			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
-			if (input == null || document.activeElement !== input) {
+			const input = BrowserInvisibleTextBoxViewExtension.focusedInput();
+			if (input == null) {
 				return [];
 			}
 			const [start, length] = BrowserInvisibleTextBoxViewExtension.selectionOf(input);
 			return [BrowserInvisibleTextBoxViewExtension.pushGeneration, start, length];
 		}
 
+		private static focusedInput(): HTMLInputElement | HTMLTextAreaElement | null {
+			const active = document.activeElement;
+			return active instanceof HTMLInputElement || active instanceof HTMLTextAreaElement ? active : null;
+		}
+
+		// Counts a write to the focused semantic input: like the hidden input's, it raises its own selectionchange.
+		public static countFocusedInputWrite(input: HTMLInputElement | HTMLTextAreaElement): void {
+			if (document.activeElement === input) {
+				BrowserInvisibleTextBoxViewExtension.pushGeneration++;
+			}
+		}
+
 		public static getValue(): string {
-			return BrowserInvisibleTextBoxViewExtension.inputElement?.value ?? "";
+			return (BrowserInvisibleTextBoxViewExtension.focusedInput() ?? BrowserInvisibleTextBoxViewExtension.inputElement)?.value ?? "";
 		}
 
 		// Assigning the value moves the caret to its end, which the pending restore undoes. Chrome fires no
