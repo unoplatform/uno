@@ -215,6 +215,10 @@ namespace Microsoft.UI.Xaml.Controls
 			=> new Rect(default, RenderSize);
 #endif
 
+		// Hosts whose wheel deltas can be pixel-precise trackpad deltas rather than 120-unit notches.
+		private static bool IsPixelPreciseWheel(global::Microsoft.UI.Input.PointerPointProperties properties)
+			=> OperatingSystem.IsIOS() || OperatingSystem.IsMacOS() || (OperatingSystem.IsAndroid() && properties.IsTouchPad);
+
 		private void PointerWheelScroll(object sender, Input.PointerRoutedEventArgs e)
 		{
 			// Wheel input invalidates any previously-armed offset intent so the recompute step
@@ -280,8 +284,8 @@ namespace Microsoft.UI.Xaml.Controls
 					// Immediate updates (DisableAnimation:true, IsIntermediate:false) ensure that:
 					// visual == logical == new position, one small per-event delta, no animation lag.
 					// On iOS/macOS, all wheel events currently take this immediate path because we do not have a reliable
-					// signal to distinguish touchpad/precise scrolling from discrete mouse-wheel input.
-					if (OperatingSystem.IsIOS() || OperatingSystem.IsMacOS())
+					// signal to distinguish touchpad/precise scrolling from discrete mouse-wheel input. Android flags its touchpads.
+					if (IsPixelPreciseWheel(properties))
 					{
 						// Continuous trackpad scroll sends small per-frame deltas (|delta| < 120)
 						// that the GetScrollWheelDelta formula (designed for discrete 120-unit notches)
@@ -303,7 +307,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else if (canScrollVertically && !properties.IsHorizontalMouseWheel)
 				{
-					if (OperatingSystem.IsIOS() || OperatingSystem.IsMacOS())
+					if (IsPixelPreciseWheel(properties))
 					{
 						var vScrollAmount = Math.Abs(delta) < ScrollViewerDefaultMouseWheelDelta
 							? (double)(-delta)
