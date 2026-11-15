@@ -120,11 +120,11 @@ public partial class Window
 		}
 
 		// We set up the DisplayInformation instance after Initialize so that we have an actual window to bind to.
-		// A macOS hosted-ALC window has no native window (Initialize skips it), so skip this too: the macOS
+		// A hosted-ALC window has no native window (Initialize skips it), so skip this too. On macOS the
 		// DisplayInformation extension subscribes to MacOSWindowNative.NativeWindowReady and only unsubscribes
 		// when a native window is created — which never happens here — leaking the extension (pinning the ALC)
 		// and letting it bind to the next unrelated native window.
-		if (!IsMacOSHostedAlcWindow)
+		if (!IsHostedAlcWindow)
 		{
 			global::Windows.Graphics.Display.DisplayInformation.GetOrCreateForWindowId(AppWindow.Id);
 		}
@@ -332,6 +332,13 @@ public partial class Window
 
 		_windowImplementation.Initialize();
 
+		if (IsHostedAlcWindow)
+		{
+			// No native window backs a hosted ALC window, so Activate/Close must take the ALC paths
+			// even before its content is set.
+			InitializeAlcWindowMode();
+		}
+
 #if __SKIA__
 		if (_systemBackdrop is not null)
 		{
@@ -535,6 +542,11 @@ public partial class Window
 						: Uno.UI.Xaml.Islands.BackdropBackgroundMode.Fallback);
 		}
 	}
+
+	/// <summary>
+	/// Re-evaluates what the root paints after the native window's ability to render the backdrop changed.
+	/// </summary>
+	internal void RefreshSystemBackdropSupport() => UpdateRootVisualBackgroundForBackdrop(_systemBackdrop);
 
 	private static bool IsBackdropImplemented(Media.SystemBackdrop? backdrop) => backdrop switch
 	{

@@ -1,0 +1,29 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Composition.CompositionBrushContextLeak"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="400"
+    d:DesignWidth="600"
+    mc:Ignorable="d">
+
+    <StackPanel Padding="20" Spacing="8">
+        <TextBlock TextWrapping="Wrap">
+            One shared SolidColorBrush. Each iteration adds a Border (Background) and a Rectangle (Fill) using it, lets them render, then removes them.
+            After forced GCs, the composition brush should only track its live consumers. Without the fix, every removed consumer leaves a dead context entry (3 per iteration).
+        </TextBlock>
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <Button
+                x:Name="RunButton"
+                Click="OnRun"
+                Content="Run 200 iterations" />
+            <Button Click="OnChangeColor" Content="Change brush color" />
+        </StackPanel>
+        <TextBlock x:Name="StatusText" FontFamily="Consolas" />
+        <Grid
+            x:Name="Host"
+            Height="40"
+            HorizontalAlignment="Left" />
+    </StackPanel>
+</UserControl>

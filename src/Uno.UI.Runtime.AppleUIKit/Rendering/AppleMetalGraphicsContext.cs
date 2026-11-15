@@ -22,17 +22,19 @@ internal sealed class AppleMetalGraphicsContext : ISwapChain, IMetalDeviceContex
 	private readonly IMTLDevice _device;
 	private readonly IMTLCommandQueue _queue;
 	private readonly Func<ICAMetalDrawable?> _acquireDrawable;
+	private readonly Action _requestFrame;
 
 	private IMTLTexture? _offscreen;
 	private AppleMetalRenderTarget? _target;
 	private int _width;
 	private int _height;
 
-	public AppleMetalGraphicsContext(IMTLDevice device, IMTLCommandQueue queue, Func<ICAMetalDrawable?> acquireDrawable)
+	public AppleMetalGraphicsContext(IMTLDevice device, IMTLCommandQueue queue, Func<ICAMetalDrawable?> acquireDrawable, Action requestFrame)
 	{
 		_device = device;
 		_queue = queue;
 		_acquireDrawable = acquireDrawable;
+		_requestFrame = requestFrame;
 	}
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Metal;
@@ -77,6 +79,8 @@ internal sealed class AppleMetalGraphicsContext : ISwapChain, IMetalDeviceContex
 		var drawable = _acquireDrawable();
 		if (drawable is null)
 		{
+			// The layer has no drawable to spare this tick; nothing else would ask for this frame again.
+			_requestFrame();
 			return;
 		}
 

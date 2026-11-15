@@ -157,13 +157,6 @@ namespace SamplesApp
 #endif
 			EnsureMainWindow();
 
-#if __WASM__
-			DispatcherQueue.Main.TryEnqueue(
-				DispatcherQueuePriority.High,
-				() => InitWasmSampleRunner()
-			);
-#endif
-
 			SetupAndroidEnvironment();
 
 #if __IOS__ && !TESTFLIGHT

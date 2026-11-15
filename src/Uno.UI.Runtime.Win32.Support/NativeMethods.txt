@@ -70,6 +70,7 @@ WM_CLIPBOARDUPDATE
 WM_CLOSE
 WM_DESTROY
 WM_DPICHANGED
+WM_DISPLAYCHANGE
 WM_ERASEBKGND
 WM_GETMINMAXINFO
 WM_KEYDOWN
@@ -122,6 +123,7 @@ IGlobalInterfaceTable
 ITaskbarList3
 MINMAXINFO
 MONITORINFOEXW
+DISPLAYCONFIG_SOURCE_DEVICE_NAME
 PIXELFORMATDESCRIPTOR
 RECT
 MARGINS
@@ -176,6 +178,9 @@ DwmIsCompositionEnabled
 DwmExtendFrameIntoClientArea
 DwmSetWindowAttribute
 DwmDefWindowProc
+DisplayConfigGetDeviceInfo
+GetDisplayConfigBufferSizes
+QueryDisplayConfig
 DWM_SYSTEMBACKDROP_TYPE
 DwmFlush
 EmptyClipboard
