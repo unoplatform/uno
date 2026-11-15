@@ -4,7 +4,7 @@
 //     LottieGen version: 7.0.2+gebbbdfc697
 // </auto-generated>
 //------------------------------------------------------------------------------
-// MUX Reference AnimatedAcceptVisualSource.cpp (nested AnimatedAcceptVisualSource_AnimatedVisual class), commit 5f9e85113
+// MUX Reference AnimatedAcceptVisualSource.cpp (nested AnimatedAcceptVisualSource_AnimatedVisual class)
 
 using System;
 using System.Numerics;
@@ -421,6 +421,9 @@ internal sealed class AnimatedAcceptVisualSource_AnimatedVisual : IAnimatedVisua
 		return result;
 	}
 
+	// TODO Uno specific: the generated SpriteShape_01..14, ShapeVisual_00..14 and per-layer TransformMatrix
+	// literals are folded into MakeStrokedSpriteShape, MakeShapeVisualWith and the static matrices below.
+	// Values are unchanged; a 1:1 re-port would restore the generated layout.
 	private CompositionSpriteShape MakeStrokedSpriteShape(CompositionPathGeometry geometry)
 	{
 		var result = CreateSpriteShape(geometry, new Matrix3x2(0.699999988F, 0.0F, 0.0F, 0.699999988F, 24.0F, 23.0F));
@@ -457,14 +460,11 @@ internal sealed class AnimatedAcceptVisualSource_AnimatedVisual : IAnimatedVisua
 		0.0F, 0.0F, 0.0F, 0.0F,
 		24.0F, 24.0F, 0.0F, 1.0F);
 
-	// Inner ContainerVisuals at -24,-24 (centering offset). Same observation as the outer:
-	// the third row is all zeros which is the M33-collapse pattern. To stay faithful with
-	// the WinUI behavior on Skia we substitute identity-with-translation. The translation
-	// part is preserved.
+	// Inner ContainerVisuals at Offset:<-24, -24>. Copied verbatim from WinUI, M33 is 0 here too.
 	private static readonly Matrix4x4 s_innerOffsetMatrix = new Matrix4x4(
 		1.0F, 0.0F, 0.0F, 0.0F,
 		0.0F, 1.0F, 0.0F, 0.0F,
-		0.0F, 0.0F, 1.0F, 0.0F,
+		0.0F, 0.0F, 0.0F, 0.0F,
 		-24.0F, -24.0F, 0.0F, 1.0F);
 
 	// PreComp layer: Indeterminate State
