@@ -8,7 +8,16 @@ Sign in with your Uno Platform account directly in your favorite IDE (Visual Stu
 
 ## Create your account
 
-1. Go to our website, [platform.uno](https://platform.uno/), and click on the **Sign in** button in the top right corner, or go directly to [platform.uno/my-account](https://platform.uno/my-account).
+Go to our website, [platform.uno](https://platform.uno/), and click on the **Sign in** button in the top right corner, or go directly to [platform.uno/my-account](https://platform.uno/my-account). Then choose one of the following options:
+
+### Option 1: Sign in with GitHub
+
+1. Click on **Sign in with GitHub**.
+1. Sign in to GitHub if prompted, then authorize Uno Platform to access your GitHub account.
+1. You will be redirected back to your account details, where you can update information or add more details.
+
+### Option 2: Register with your email
+
 1. Enter your email address and click on **Register**.
 1. On the registration page, fill in your information. Once done, click on **Sign up**.
 1. You will receive a confirmation email from `no-reply@platform.uno`. Follow the instructions in the email to activate your account.
