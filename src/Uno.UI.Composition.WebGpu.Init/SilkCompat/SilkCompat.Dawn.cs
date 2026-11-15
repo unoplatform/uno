@@ -19,8 +19,10 @@ internal static unsafe partial class Xlate
 
 	// UNO_WEBGPU_BACKENDS picks the backend on Dawn too, through the adapter request rather than wgpu-native's
 	// instance extras (Dawn rejects those).
-	private static readonly WGPUBackendType DawnBackend = !WebGpuLoader.IsDawn ? WGPUBackendType.Undefined
-		: (Environment.GetEnvironmentVariable("UNO_WEBGPU_BACKENDS") ?? "").Split(',')[0].Trim().ToLowerInvariant() switch
+	private static WGPUBackendType DawnBackend => WebGpuLoader.IsDawn ? _dawnBackend.Value : WGPUBackendType.Undefined;
+
+	private static readonly Lazy<WGPUBackendType> _dawnBackend = new(() =>
+		(Environment.GetEnvironmentVariable("UNO_WEBGPU_BACKENDS") ?? "").Split(',')[0].Trim().ToLowerInvariant() switch
 		{
 			"vulkan" => WGPUBackendType.Vulkan,
 			"dx12" => WGPUBackendType.D3D12,
@@ -28,7 +30,7 @@ internal static unsafe partial class Xlate
 			"metal" => WGPUBackendType.Metal,
 			"gl" => WGPUBackendType.OpenGLES,
 			_ => WGPUBackendType.Undefined,
-		};
+		});
 
 	private static IntPtr _dawnInstance;
 	private static long _dawnSubmissions;

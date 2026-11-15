@@ -563,9 +563,8 @@ internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 			case GraphicsContextKind.WebGpu:
 				try
 				{
-					// Dawn spike: Dawn's Vulkan swapchain needs opaque compositing, which Mesa doesn't offer on a window with an
-					// alpha visual, so a Dawn window is created without one.
-					var depth = Environment.GetEnvironmentVariable("UNO_WEBGPU_DAWN") is { Length: > 0 } ? FallbackColorDepth : DefaultColorDepth;
+					// No window transparency on Dawn: its Vulkan swapchain needs a visual without alpha.
+					var depth = global::Uno.UI.Composition.WebGpu.WebGpuContext.NeedsOpaqueX11Window ? FallbackColorDepth : DefaultColorDepth;
 					_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window, depth);
 					_ = XLib.XSync(display, false);
 					var scale = (float)(_wrapper.RasterizationScale <= 0 ? 1 : _wrapper.RasterizationScale);

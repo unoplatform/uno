@@ -30,6 +30,12 @@ internal static class WebGpuContext
 	public static unsafe ISwapChain CreateWin32(nint hwnd, nint hinstance, float rasterizationScale)
 		=> new WebGpuSwapChainContext(TextureFormat.Bgra8Unorm, inst => WebGpuSwapChainContext.CreateHwndSurface(inst, hinstance, hwnd));
 
+	/// <summary>
+	/// Whether an X11 window for WebGPU needs a visual without alpha: Dawn's Vulkan swapchain only composites opaquely,
+	/// which Mesa does not offer for a window with an alpha visual. Loads the native library to tell.
+	/// </summary>
+	public static bool NeedsOpaqueX11Window => WebGpuLoader.IsDawn;
+
 	/// <summary>X11 window swapchain context.</summary>
 	public static unsafe ISwapChain CreateX11(nint display, nint window, float rasterizationScale)
 		=> new WebGpuSwapChainContext(TextureFormat.Bgra8Unorm, inst => WebGpuSwapChainContext.CreateXlibSurface(inst, display, (ulong)window));
@@ -192,7 +198,7 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 
 		Q = Api.DeviceGetQueue(Dev);
 		CreatePresentSampler();
-		System.Console.WriteLine($"[webgpu] init device — {DescribeAdapter(Adapter, out var adapterType, out var backend)} colorFormat={ColorFormat}");
+		System.Console.WriteLine($"[webgpu] init device — engine={(WebGpuLoader.IsDawn ? "Dawn" : OperatingSystem.IsBrowser() ? "browser" : "wgpu-native")} {DescribeAdapter(Adapter, out var adapterType, out var backend)} colorFormat={ColorFormat}");
 		IsSoftwareVulkan = adapterType == AdapterType.Cpu && backend == BackendType.Vulkan;
 	}
 

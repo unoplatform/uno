@@ -32,16 +32,25 @@ internal static class WebGpuLoader
 	/// <summary>The library the "webgpu" [DllImport]s bound to, once one has been called.</summary>
 	internal static IntPtr Resolved { get; private set; }
 
+	// UNO_WEBGPU_LIBRARY: a path to the WebGPU library to load instead of the provisioned one, either engine. Read on
+	// first use, not at module initialization: Android sets UNO_* variables from the launch intent in OnCreate.
+	private static readonly Lazy<string?> _override = new(() => OperatingSystem.IsBrowser() ? null : Environment.GetEnvironmentVariable("UNO_WEBGPU_LIBRARY") is { Length: > 0 } path ? path : null);
+
 	/// <summary>
-	/// A Dawn build to use instead of wgpu-native (UNO_WEBGPU_DAWN, a path to its library). Dawn implements the same
-	/// webgpu.h, so only wgpu-native's own functions need standing in for.
+	/// Whether the native library is Dawn rather than wgpu-native. Both implement webgpu.h, but only wgpu-native has its
+	/// own extensions (wgpuDevicePoll among them), which the binding stands in for on Dawn. Loads the library to tell.
 	/// </summary>
-	internal static string? DawnPath => _dawnPath.Value;
+	internal static bool IsDawn => _isDawn.Value;
 
-	// Read on first use, not at module initialization: Android sets UNO_* variables from the launch intent in OnCreate.
-	private static readonly Lazy<string?> _dawnPath = new(() => OperatingSystem.IsBrowser() ? null : Environment.GetEnvironmentVariable("UNO_WEBGPU_DAWN") is { Length: > 0 } path ? path : null);
-
-	internal static bool IsDawn => DawnPath is not null;
+	private static readonly Lazy<bool> _isDawn = new(() =>
+	{
+		if (OperatingSystem.IsBrowser())
+		{
+			return false;
+		}
+		var library = Resolved != IntPtr.Zero ? Resolved : NativeLibrary.Load("webgpu", typeof(WGPU).Assembly, null);
+		return !NativeLibrary.TryGetExport(library, "wgpuDevicePoll", out _);
+	});
 
 	private static IntPtr Resolve(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
 	{
@@ -60,9 +69,9 @@ internal static class WebGpuLoader
 			return IntPtr.Zero;
 		}
 
-		if (DawnPath is { } dawn)
+		if (_override.Value is { } path)
 		{
-			return NativeLibrary.Load(dawn);
+			return NativeLibrary.Load(path);
 		}
 
 		// iOS/tvOS (and any statically-linked host): wgpu-native is a static lib linked into the app, not a
@@ -75,12 +84,11 @@ internal static class WebGpuLoader
 			catch { /* fall through */ }
 		}
 
-		// Android packs the native per-ABI as libwgpu_native.so (its own name, not the DllImport's); resolve it by
-		// bare name through the Android loader. On desktop this fails harmlessly and we fall through to Zero, letting
-		// default resolution find the DllImport-named artifact (libwebgpu.*).
+		// Android packs the native per-ABI: Dawn as libwebgpu.so, wgpu-native under its own name, libwgpu_native.so.
+		// Resolve either by bare name through the Android loader.
 		if (OperatingSystem.IsAndroid())
 		{
-			foreach (var candidate in new[] { "wgpu_native", "libwgpu_native" })
+			foreach (var candidate in new[] { "webgpu", "libwebgpu", "wgpu_native", "libwgpu_native" })
 			{
 				if (NativeLibrary.TryLoad(candidate, out var handle))
 				{
