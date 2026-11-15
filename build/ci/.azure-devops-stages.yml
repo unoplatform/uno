@@ -19,6 +19,7 @@ stages:
         README.md
         README/**
         build/**
+        src/Directory.Packages.props
         src/Uno.Sdk/packages.json
 
     - template: templates/gitversion-run.yml

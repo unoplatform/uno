@@ -108,6 +108,10 @@ internal partial class ResourceAccessor
 	public const string SR_TextCommandLabelCopy = "TextCommandLabelCopy";
 	public const string SR_TextCommandLabelPaste = "TextCommandLabelPaste";
 	public const string SR_TextCommandLabelSelectAll = "TextCommandLabelSelectAll";
+	public const string SR_TextCommandLabelSelect = "TextCommandLabelSelect";
+	public const string SR_TextCommandLabelLookUp = "TextCommandLabelLookUp";
+	public const string SR_TextCommandLabelSearchWeb = "TextCommandLabelSearchWeb";
+	public const string SR_TextCommandLabelScanText = "TextCommandLabelScanText";
 	public const string SR_TextCommandLabelBold = "TextCommandLabelBold";
 	public const string SR_TextCommandLabelItalic = "TextCommandLabelItalic";
 	public const string SR_TextCommandLabelUnderline = "TextCommandLabelUnderline";

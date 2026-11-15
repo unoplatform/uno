@@ -398,8 +398,8 @@ public class Given_Image_Release
 	public async Task When_Shared_Source_Outlives_Unloaded_Images_Then_Images_Collected(SharedSource kind)
 	{
 		// An icon kept in a static field or an app resource outlives the Images that show it: it must not keep them alive,
-		// with everything they reference, once they left the tree. Two share it, as icons are: a source with a single owner
-		// keeps that owner as its inheritance context parent (DependencyObject._associatedParent).
+		// with everything they reference, once they left the tree. Two share it, as icons are (a single owner is only held
+		// weakly, as its inheritance context parent: DependencyObject.AssociatedParent).
 		using var cache = kind == SharedSource.CachedUri ? EnableBitmapImageCache() : null;
 		var source = await CreateSharedSourceAsync(kind);
 
@@ -710,8 +710,13 @@ public class Given_Image_Release
 			bitmap.ImageFailed += (_, _) => failedCount++;
 
 			// SetSourceAsync reads the pixel size with a decode of its own, on the calling thread, then decodes the stream
-			// for the source off the UI thread.
-			var first = bitmap.SetSourceAsync(new MemoryStream(square));
+			// for the source off the UI thread. That decode is held until SetSourceAsync returns: finishing first, it would
+			// be applied inline and open the stream before the second one can supersede it.
+			Task first;
+			using (decoder.HoldOtherThreadDecodes())
+			{
+				first = bitmap.SetSourceAsync(new MemoryStream(square));
+			}
 
 			// Holding the UI thread keeps the dispatched continuation from applying the result while the decode completes.
 			var decoded = SpinWait.SpinUntil(() => decoder.Count(100, 100) >= 2, 5000);
@@ -2544,8 +2549,29 @@ public class Given_Image_Release
 
 		public TrackedImage[] All => _images.ToArray();
 
+		private (ManualResetEventSlim Gate, int OwnerThread)? _hold;
+
+		/// <summary>
+		/// Holds decodes that run off the calling thread until the returned scope is disposed.
+		/// </summary>
+		public IDisposable HoldOtherThreadDecodes()
+		{
+			var gate = new ManualResetEventSlim(false);
+			_hold = (gate, Environment.CurrentManagedThreadId);
+			return Disposable.Create(() =>
+			{
+				_hold = null;
+				gate.Set();
+			});
+		}
+
 		public bool TryDecode(Stream stream, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out ImageFrames frames)
 		{
+			if (_hold is { } hold && hold.OwnerThread != Environment.CurrentManagedThreadId)
+			{
+				hold.Gate.Wait(TimeSpan.FromSeconds(10));
+			}
+
 			if (!_inner.TryDecode(stream, targetWidth, targetHeight, out var decoded))
 			{
 				frames = null;

@@ -31,4 +31,10 @@ internal interface IVulkanPlatformSurfaceFactory
 	/// can be picked before any window exists. Defaults to true; the swapchain still checks the real surface.
 	/// </summary>
 	bool SupportsPresentation(VulkanInstance instance, VkPhysicalDevice physicalDevice, uint queueFamilyIndex) => true;
+
+	/// <summary>
+	/// Whether to pick a discrete GPU over the first device the loader reports. A platform whose loader already
+	/// follows the OS's choice of GPU answers false.
+	/// </summary>
+	bool PrefersDiscreteDevice => true;
 }

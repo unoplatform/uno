@@ -32,7 +32,6 @@ public class Given_UnoSdkRendererFeature
 	[TestMethod]
 	[DataRow("Skia", "net10.0", new[] { "Uno.WinUI.Composition.Skia", "Uno.WinUI.Graphics2DSK" })]
 	[DataRow("Skia;Toolkit", "net10.0", new[] { "Uno.WinUI.Composition.Skia", "Uno.WinUI.Graphics2DSK", "Uno.Toolkit.Skia.WinUI" })]
-	[DataRow("Skia", Windows, new[] { "Uno.WinUI.Graphics2DSK", "SkiaSharp.Views.WinUI" })]
 	public void When_Library_Lists_Skia_Then_Skia_Is_Referenced(string features, string targetFramework, string[] expected)
 	{
 		var (unoFeatures, packages) = Evaluate("Library", features, targetFramework);
@@ -57,7 +56,7 @@ public class Given_UnoSdkRendererFeature
 
 	[TestMethod]
 	[DataRow("SkiaRenderer", new[] { "Uno.WinUI.Composition.Skia" })]
-	[DataRow("SkiaRenderer;WebGpu", new[] { "Uno.WinUI.Composition.Skia", "Uno.WinUI.Composition.WebGpu" })]
+	[DataRow("SkiaRenderer;WebGpu", new[] { "Uno.WinUI.Composition.Skia", "Uno.WinUI.Composition.WebGpu", "Uno.WinUI.Graphics3DWebGpu" })]
 	public void When_Head_Lists_SkiaRenderer_Then_It_Maps_To_Skia(string features, string[] expected)
 	{
 		var (unoFeatures, packages) = Evaluate("Exe", features);
@@ -90,37 +89,125 @@ public class Given_UnoSdkRendererFeature
 
 		unoFeatures.Should().NotContain(";skia;");
 		packages.Should().NotContain(SkiaPackages);
-		packages.Should().Contain("Uno.WinUI.Composition.WebGpu");
+		packages.Should().Contain(["Uno.WinUI.Composition.WebGpu", "Uno.WinUI.Graphics3DWebGpu"]);
 	}
 
 	[TestMethod]
-	[DataRow("")]
-	[DataRow("WebGpuCanvas")]
-	public void When_Windows_Head_Sets_TargetFramework_In_Its_Body_Then_No_Renderer_Is_Implied(string features)
+	public void When_Library_Lists_WebGpu_Then_The_Canvas_Comes_With_It()
 	{
-		var (unoFeatures, packages) = Evaluate("WinExe", features, Windows);
+		var (unoFeatures, packages) = Evaluate("Library", "WebGpu");
+
+		unoFeatures.Should().NotContain(";skia;");
+		packages.Should().NotContain(SkiaPackages);
+		packages.Should().Contain(["Uno.WinUI.Composition.WebGpu", "Uno.WinUI.Graphics3DWebGpu"]);
+	}
+
+	[TestMethod]
+	public void When_Windows_Head_Sets_TargetFramework_In_Its_Body_Then_No_Renderer_Is_Implied()
+	{
+		var (unoFeatures, packages) = Evaluate("WinExe", "", Windows);
 
 		unoFeatures.Should().NotContain(";skia;").And.NotContain(";webgpu;");
 		packages.Should().NotContain(SkiaPackages);
 	}
 
+	// WinAppSDK has no WebGPU backend, so a listed WebGpu must add none of its packages there.
 	[TestMethod]
-	public void When_Head_Lists_WebGpuCanvas_Then_WebGpu_Is_Added_Next_To_Skia()
+	public void When_Windows_Head_Lists_WebGpu_Then_No_WebGpu_Package_Is_Referenced()
 	{
-		var (unoFeatures, packages) = Evaluate("Exe", "WebGpuCanvas");
+		var (_, packages) = Evaluate("WinExe", "WebGpu", Windows);
 
-		unoFeatures.Should().Contain(";skia;").And.Contain(";webgpu;");
-		packages.Should().Contain(["Uno.WinUI.Composition.Skia", "Uno.WinUI.Composition.WebGpu", "Uno.WinUI.Graphics3DWebGpu"]);
+		packages.Should().NotContain(["Uno.WinUI.Composition.WebGpu", "Uno.WinUI.Graphics3DWebGpu"]);
 	}
 
 	[TestMethod]
-	public void When_Library_Lists_WebGpuCanvas_Then_Only_WebGpu_Is_Added()
+	[DataRow("WinExe", "SkiaRenderer")]
+	[DataRow("WinExe", "SkiaRenderer;Toolkit")]
+	[DataRow("WinExe", "Skia")]
+	[DataRow("WinExe", "Skia;SkiaRenderer")]
+	[DataRow("WinExe", "Skia;Toolkit")]
+	[DataRow("Library", "Skia")]
+	[DataRow("Library", "Skia;Toolkit")]
+	public void When_Windows_Lists_Skia_Then_Skia_Is_Not_Referenced(string outputType, string features)
 	{
-		var (unoFeatures, packages) = Evaluate("Library", "WebGpuCanvas");
+		var (unoFeatures, packages) = Evaluate(outputType, features, Windows);
 
-		unoFeatures.Should().Contain(";webgpu;").And.NotContain(";skia;");
+		unoFeatures.Should().NotContain(";skia;").And.NotContain(";skiarenderer;");
 		packages.Should().NotContain(SkiaPackages);
-		packages.Should().Contain(["Uno.WinUI.Composition.WebGpu", "Uno.WinUI.Graphics3DWebGpu"]);
+	}
+
+	[TestMethod]
+	[DataRow("WinExe", "Skia", new[] { "Uno.WinUI.Graphics2DSK", "SkiaSharp.Views.WinUI" })]
+	[DataRow("WinExe", "SkiaRenderer", new[] { "Uno.WinUI.Graphics2DSK", "SkiaSharp.Views.WinUI" })]
+	[DataRow("WinExe", "Skia;Toolkit", new[] { "Uno.WinUI.Graphics2DSK", "SkiaSharp.Views.WinUI", "Uno.Toolkit.Skia.WinUI" })]
+	[DataRow("Library", "Skia", new[] { "Uno.WinUI.Graphics2DSK", "SkiaSharp.Views.WinUI" })]
+	public void When_Windows_Opts_In_Then_Skia_Is_Referenced(string outputType, string features, string[] expected)
+	{
+		var (unoFeatures, packages) = Evaluate(outputType, features, Windows, enableSkiaOnWinAppSdk: true);
+
+		unoFeatures.Should().Contain(";skia;");
+		packages.Should().Contain(expected);
+	}
+
+	[TestMethod]
+	[DataRow("WinExe", "")]
+	[DataRow("Library", "SkiaRenderer")]
+	public void When_Windows_Opts_In_Without_Listing_Skia_Then_Skia_Is_Not_Referenced(string outputType, string features)
+	{
+		var (unoFeatures, packages) = Evaluate(outputType, features, Windows, enableSkiaOnWinAppSdk: true);
+
+		unoFeatures.Should().NotContain(";skia;");
+		packages.Should().NotContain(SkiaPackages);
+	}
+
+	[TestMethod]
+	public void When_Assets_Are_Resolved_On_Windows_Then_Only_Skia_Native_Pdbs_Are_Removed()
+	{
+		var directory = Directory.CreateTempSubdirectory("uno-sdk-renderer-").FullName;
+		try
+		{
+			var projectPath = Path.Join(directory, "Project.proj");
+			File.WriteAllText(projectPath, $"""
+				<Project>
+					<PropertyGroup>
+						<TargetFramework>{Windows}</TargetFramework>
+						<OutputType>WinExe</OutputType>
+						<UnoSingleProject>true</UnoSingleProject>
+					</PropertyGroup>
+					<ItemGroup>
+						<NativeCopyLocalItems Include="libSkiaSharp.dll" NuGetPackageId="SkiaSharp.NativeAssets.Win32" />
+						<NativeCopyLocalItems Include="libSkiaSharp.pdb" NuGetPackageId="SkiaSharp.NativeAssets.Win32" />
+						<NativeCopyLocalItems Include="libGLESv2.pdb" NuGetPackageId="SkiaSharp.NativeAssets.WinUI" />
+						<NativeCopyLocalItems Include="contoso.pdb" NuGetPackageId="Contoso.Native" />
+					</ItemGroup>
+					<Import Project="{RepositoryPaths.Get("src", "Uno.Sdk", "targets", "Uno.Common.targets")}" />
+				</Project>
+				""");
+
+			var result = DotnetMSBuild.Run(RepositoryPaths.Root, [projectPath, "-t:_UnoRemoveSkiaNativePdbs", "-getItem:NativeCopyLocalItems"]);
+			result.ExitCode.Should().Be(0, result.Output);
+
+			using var json = JsonDocument.Parse(result.StandardOutput);
+			var remaining = json.RootElement.GetProperty("Items").GetProperty("NativeCopyLocalItems")
+				.EnumerateArray()
+				.Select(item => item.GetProperty("Identity").GetString()!)
+				.ToArray();
+
+			remaining.Should().BeEquivalentTo(["libSkiaSharp.dll", "contoso.pdb"]);
+		}
+		finally
+		{
+			DotnetMSBuild.TryDeleteDirectory(directory);
+		}
+	}
+
+	[TestMethod]
+	public void When_Uno_Target_Does_Not_Opt_In_Then_Listed_Skia_Is_Still_Referenced()
+	{
+		var (unoFeatures, packages) = Evaluate("Library", "Skia", "net10.0");
+
+		unoFeatures.Should().Contain(";skia;");
+		packages.Should().Contain("Uno.WinUI.Graphics2DSK");
 	}
 
 	[TestMethod]
@@ -142,9 +229,9 @@ public class Given_UnoSdkRendererFeature
 		}
 	}
 
-	private static (string UnoFeatures, string[] Packages) Evaluate(string outputType, string features, string targetFramework = "net10.0", bool singleProject = true, string outputTypeCondition = "")
+	private static (string UnoFeatures, string[] Packages) Evaluate(string outputType, string features, string targetFramework = "net10.0", bool singleProject = true, string outputTypeCondition = "", bool enableSkiaOnWinAppSdk = false)
 	{
-		var result = RunProject(outputType, features, targetFramework, singleProject, ["-getProperty:UnoFeatures", "-getItem:PackageReference"], outputTypeCondition);
+		var result = RunProject(outputType, features, targetFramework, singleProject, ["-getProperty:UnoFeatures", "-getItem:PackageReference"], outputTypeCondition, enableSkiaOnWinAppSdk);
 
 		JsonDocument json;
 		try
@@ -171,7 +258,7 @@ public class Given_UnoSdkRendererFeature
 	private static string Compile(string outputType, string features)
 		=> RunProject(outputType, features, "net10.0", singleProject: true, ["-t:CoreCompile"]).Output;
 
-	private static DotnetMSBuild.Result RunProject(string outputType, string features, string targetFramework, bool singleProject, string[] arguments, string outputTypeCondition = "")
+	private static DotnetMSBuild.Result RunProject(string outputType, string features, string targetFramework, bool singleProject, string[] arguments, string outputTypeCondition = "", bool enableSkiaOnWinAppSdk = false)
 	{
 		var directory = Directory.CreateTempSubdirectory("uno-sdk-renderer-").FullName;
 		try
@@ -184,6 +271,7 @@ public class Given_UnoSdkRendererFeature
 						<OutputType Condition="{outputTypeCondition}">{outputType}</OutputType>
 						<UnoSingleProject>{singleProject}</UnoSingleProject>
 						<UnoFeatures>{features}</UnoFeatures>
+						<UnoEnableSkiaOnWinAppSdk>{enableSkiaOnWinAppSdk}</UnoEnableSkiaOnWinAppSdk>
 					</PropertyGroup>
 					<Import Project="{RepositoryPaths.Get("src", "Uno.Sdk", "targets", "Uno.Common.targets")}" />
 					<Target Name="CoreCompile" />

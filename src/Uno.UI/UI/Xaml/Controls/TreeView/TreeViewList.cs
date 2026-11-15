@@ -334,9 +334,19 @@ public partial class TreeViewList : ListView
 	protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
 	{
 #if HAS_UNO
-		// Uno: we are moving PrepareContainerForItemOverride to the top, because otherwise
-		// the container will still be associated with the old item's state
-		base.PrepareContainerForItemOverride(element, item);
+		// Uno specific (#25796): while the base prepare runs, ignore a stale IsSelected=true from the item's binding;
+		// Selector then sets IsSelected from the real selection, which writes the unselection back.
+		m_staleSelectionItem = ListViewModel.TryTakeStaleUnselection(NodeFromContainer(element)) ? item : null;
+		try
+		{
+			// Uno: we are moving PrepareContainerForItemOverride to the top, because otherwise
+			// the container will still be associated with the old item's state
+			base.PrepareContainerForItemOverride(element, item);
+		}
+		finally
+		{
+			m_staleSelectionItem = null;
+		}
 #endif
 
 		var itemNode = NodeFromContainer(element);
@@ -400,6 +410,26 @@ public partial class TreeViewList : ListView
 		}
 #endif
 	}
+
+#if HAS_UNO
+	// Uno specific (#25796): the item whose container is being prepared while its selection is known to be stale.
+	private object m_staleSelectionItem;
+
+	internal bool IsPreparingStaleSelection(TreeViewNode node)
+		=> m_staleSelectionItem is not null && node is not null
+			&& (ReferenceEquals(node, m_staleSelectionItem) || ReferenceEquals(node.Content, m_staleSelectionItem));
+
+	internal override void ChangeSelectedItem(object item, bool oldIsSelected, bool newIsSelected)
+	{
+		// A stale IsSelected pushed by the item's binding while its container is prepared must not change the selection.
+		if (m_staleSelectionItem is not null && ReferenceEquals(item, m_staleSelectionItem))
+		{
+			return;
+		}
+
+		base.ChangeSelectedItem(item, oldIsSelected, newIsSelected);
+	}
+#endif
 
 	protected override DependencyObject GetContainerForItemOverride()
 	{

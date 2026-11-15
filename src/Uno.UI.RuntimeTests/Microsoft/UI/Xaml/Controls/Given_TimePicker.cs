@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
@@ -377,6 +378,60 @@ currentItemCount, $"Should have visible items during fast scrolling at position 
 
 			await ControlHelper.ClickFlyoutCloseButton(timePicker, false /* isAccept */);
 			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24183")]
+		public async Task When_Flyout_Opened_Then_LoopingSelectorItem_Peers_Have_Owner()
+		{
+			TimePicker timePicker = new()
+			{
+				Time = new TimeSpan(12, 30, 0),
+				// The helper below expects the hour, minute and period selectors regardless of the culture.
+				ClockIdentifier = Windows.Globalization.ClockIdentifiers.TwelveHour,
+			};
+#if HAS_UNO
+			timePicker.UseNativeStyle = false;
+#endif
+			TestServices.WindowHelper.WindowContent = timePicker;
+			await TestServices.WindowHelper.WaitForLoaded(timePicker);
+
+			await DateTimePickerHelper.OpenDateTimePicker(timePicker);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			try
+			{
+				(var hourLoopingSelector, _, _) = await DateTimePickerHelper.GetHourMinutePeriodLoopingSelectorsFromOpenFlyout();
+				Assert.IsNotNull(hourLoopingSelector, "HourLoopingSelector should be found");
+
+				await TestServices.RunOnUIThread(() =>
+				{
+					var scrollViewer = (ScrollViewer)VisualTreeUtils.FindVisualChildByName(hourLoopingSelector, "ScrollViewer");
+					var panel = (LoopingSelectorPanel)scrollViewer.Content;
+					Assert.IsGreaterThan(0, panel.Children.Count, "Should have realized items");
+
+					foreach (var item in panel.Children.Cast<LoopingSelectorItem>())
+					{
+						if (FrameworkElementAutomationPeer.CreatePeerForElement(item) is not LoopingSelectorItemAutomationPeer peer)
+						{
+							Assert.Fail("LoopingSelectorItem must create a LoopingSelectorItemAutomationPeer.");
+							return;
+						}
+
+						Assert.AreSame(item, peer.Owner, "The peer must be constructed with its owner.");
+						Assert.AreEqual(AutomationControlType.ListItem, peer.GetAutomationControlType());
+						Assert.AreEqual(nameof(LoopingSelectorItem), peer.GetClassName());
+						Assert.AreEqual(AutomationHeadingLevel.None, peer.GetHeadingLevel());
+						Assert.IsFalse(string.IsNullOrEmpty(peer.GetName()), "The item peer must expose the item text as its name.");
+						Assert.IsNotNull(peer.GetPattern(PatternInterface.SelectionItem), "The item peer must expose the SelectionItem pattern.");
+					}
+				});
+			}
+			finally
+			{
+				await ControlHelper.ClickFlyoutCloseButton(timePicker, false /* isAccept */);
+				await TestServices.WindowHelper.WaitForIdle();
+			}
 		}
 
 		class MyContext

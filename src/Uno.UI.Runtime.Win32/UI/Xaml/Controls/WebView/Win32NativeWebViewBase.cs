@@ -101,6 +101,12 @@ internal abstract class Win32NativeWebViewBase : INativeWebView
 
 	~Win32NativeWebViewBase()
 	{
+		// A derived constructor that failed (e.g. WebView2Aot missing) leaves the base unconstructed.
+		if (Presenter is null || Hwnd == HWND.Null)
+		{
+			return;
+		}
+
 		Presenter.DispatcherQueue.TryEnqueue(() =>
 		{
 			var success = PInvoke.DestroyWindow(Hwnd);

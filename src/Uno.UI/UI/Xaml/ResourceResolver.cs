@@ -325,7 +325,7 @@ namespace Uno.UI
 			ApplyResource(owner, property, new SpecializedResourceDictionary.ResourceKey(resourceKey), updateReason, context, null);
 		}
 
-		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
+		[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Owner and property types are kept by the generated BindableMetadata")]
 		internal static void ApplyResource(DependencyObject owner, DependencyProperty property, SpecializedResourceDictionary.ResourceKey specializedKey, ResourceUpdateReason updateReason, object context, DependencyPropertyValuePrecedences? precedence)
 		{
 			var isThemeResource = (updateReason & ResourceUpdateReason.ThemeResource) != 0;

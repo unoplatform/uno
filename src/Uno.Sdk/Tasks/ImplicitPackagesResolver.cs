@@ -38,6 +38,10 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? UnoExtensionsVersion { get; set; }
 
+	public string? UnoMauiVersion { get; set; }
+
+	public string? UnoRetargetVersion { get; set; }
+
 	public string? UnoToolkitVersion { get; set; }
 
 	public string? UnoThemesVersion { get; set; }
@@ -97,8 +101,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 	public string? UnoDspTasksVersion { get; set; }
 
 	public string? CommunityToolkitMvvmVersion { get; set; }
-
-	public string? PrismVersion { get; set; }
 
 	public string? UnoReactorVersion { get; set; }
 
@@ -243,7 +245,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.MicrosoftLoggingConsole, MicrosoftLoggingVersion)
 			.UpdateManifest(PackageManifest.Group.MsalClient, MicrosoftIdentityClientVersion)
 			.UpdateManifest(PackageManifest.Group.Mvvm, CommunityToolkitMvvmVersion)
-			.UpdateManifest(PackageManifest.Group.Prism, PrismVersion)
 			.UpdateManifest(PackageManifest.Group.Reactor, UnoReactorVersion)
 			.UpdateManifest(PackageManifest.Group.UnoFonts, UnoFontsVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidMaterial, AndroidMaterialVersion)
@@ -266,6 +267,8 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.Toolkit, UnoToolkitVersion)
 			.UpdateManifest(PackageManifest.Group.Themes, UnoThemesVersion)
 			.UpdateManifest(PackageManifest.Group.Maui, MauiVersion)
+			.UpdateManifest(PackageManifest.Group.UnoMaui, UnoMauiVersion)
+			.UpdateManifest(PackageManifest.Group.UnoRetarget, UnoRetargetVersion)
 			// MauiCompatibility is a separate group only so the net11 override does not apply
 			// to it - MauiVersion must still move all of the MAUI packages together.
 			.UpdateManifest(PackageManifest.Group.MauiCompatibility, MauiVersion);

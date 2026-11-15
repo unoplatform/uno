@@ -230,6 +230,9 @@ public class Given_ShellLayout
 			Assert.IsTrue(splitView.IsPaneOpen);
 			Assert.IsTrue(toggle.IsChecked);
 
+			// Closing WinUI's inline pane mid-way through its opening transition leaves the content beside a closed pane.
+			await WaitForSettledTestHostBounds();
+
 			vm.IsSplitVisible = false;
 			await TestServices.WindowHelper.WaitForIdle();
 			Assert.IsFalse(splitView.IsPaneOpen);

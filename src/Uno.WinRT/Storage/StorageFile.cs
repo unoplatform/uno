@@ -171,42 +171,6 @@ namespace Windows.Storage
 			=> AsyncAction.FromTask(ct => Implementation.DeleteAsync(ct, option));
 		#endregion
 
-#if false
-		public async Task<Stream> GetThumbnailAsync(CancellationToken ct, ThumbnailMode mode, int size)
-		{
-			return await GetThumbnailAsync(ct, mode);
-		}
-		public async Task<Stream> GetThumbnailAsync(CancellationToken ct, ThumbnailMode mode)
-		{
-			var stream = await UIThread.Current.Run(async ict =>
-			{
-				try
-				{
-					var fileUrl = NSUrl.FromFilename(this.Path);
-					var movie = new MPMoviePlayerController(fileUrl);
-
-					movie.ShouldAutoplay = false;
-					movie.Stop();
-
-					var image = movie.ThumbnailImageAt(1.0, MPMovieTimeOption.Exact);
-
-					movie.SafeDispose();
-
-					return image.AsPNG().AsStream();
-				}
-
-				catch (Exception e)
-				{
-					this.Log().Error("The thumbnail could not retrieved.", e);
-					return null;
-				}
-
-			}, ct);
-
-			return stream;
-		}
-#endif
-
 		#region Helpers
 		private static FileAccess ToFileAccess(FileAccessMode accessMode)
 			=> accessMode switch

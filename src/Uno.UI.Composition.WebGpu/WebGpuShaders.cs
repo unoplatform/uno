@@ -290,6 +290,19 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
   }
   return c * u.params.y;
 }";
+	// The luminosity helpers of the W3C non-separable blend modes, as Skia implements them; prepended to the modules
+	// that blend in Luminosity or Color mode.
+	private const string NonSeparableBlendWgsl = @"
+fn lum(c: vec3<f32>) -> f32 { return dot(c, vec3<f32>(0.3, 0.59, 0.11)); }
+fn clipColor(c: vec3<f32>) -> vec3<f32> {
+  let l = lum(c); let n = min(c.r, min(c.g, c.b)); let x = max(c.r, max(c.g, c.b));
+  var r = c;
+  if (n < 0.0) { r = l + (c - l) * l / max(l - n, 1e-6); }
+  if (x > 1.0) { r = l + (r - l) * (1.0 - l) / max(x - l, 1e-6); }
+  return r;
+}
+fn setLum(c: vec3<f32>, l: f32) -> vec3<f32> { return clipColor(c + (l - lum(c))); }";
+
 	private const string CompositeBlendWgsl = @"
 struct CU { params: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec4<f32>, m3: vec4<f32>, off: vec4<f32> };
 @group(0) @binding(0) var src: texture_2d<f32>;
@@ -302,15 +315,6 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
   let p = pts[vi];
   var o: VO; o.p = vec4<f32>(p, 0.0, 1.0); o.uv = vec2<f32>((p.x + 1.0) * 0.5, (1.0 - p.y) * 0.5); return o;
 }
-fn lum(c: vec3<f32>) -> f32 { return dot(c, vec3<f32>(0.3, 0.59, 0.11)); }
-fn clipColor(c: vec3<f32>) -> vec3<f32> {
-  let l = lum(c); let n = min(c.r, min(c.g, c.b)); let x = max(c.r, max(c.g, c.b));
-  var r = c;
-  if (n < 0.0) { r = l + (c - l) * l / max(l - n, 1e-6); }
-  if (x > 1.0) { r = l + (r - l) * (1.0 - l) / max(x - l, 1e-6); }
-  return r;
-}
-fn setLum(c: vec3<f32>, l: f32) -> vec3<f32> { return clipColor(c + (l - lum(c))); }
 fn sat(c: vec3<f32>) -> f32 { return max(c.r, max(c.g, c.b)) - min(c.r, min(c.g, c.b)); }
 fn setSat(c: vec3<f32>, s: f32) -> vec3<f32> {
   let mn = min(c.r, min(c.g, c.b)); let mx = max(c.r, max(c.g, c.b));
@@ -685,9 +689,11 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
     c = fp * c.a;
 
   } else if (u.op.w > 0.5) {
-    // Acrylic backdrop composite: blurred backdrop -> luminosity blend (tint = lum rgb/a) -> procedural grain
-    // (off.x = noise opacity), opaque within the region. One draw replaces the blurred-image + luminosity overlay.
-    var rgb = mix(c.rgb, u.tint.rgb, u.tint.a);
+    // Acrylic backdrop composite, opaque within the region: blurred backdrop -> Luminosity blend with the luminosity
+    // colour (tint) -> Color blend with the tint colour (m0) -> procedural grain (off.x = noise opacity). Each blend
+    // keeps the backdrop's hue where it should, so a near-opaque luminosity layer darkens the content, not greys it.
+    var rgb = mix(c.rgb, setLum(c.rgb, lum(u.tint.rgb)), u.tint.a);
+    rgb = mix(rgb, setLum(u.m0.rgb, lum(rgb)), u.m0.a);
     let nz = (fract(sin(dot(floor(i.p.xy), vec2<f32>(12.9898, 78.233))) * 43758.5453) - 0.5) * 2.0 * u.off.x;
     rgb = clamp(rgb + vec3<f32>(nz), vec3<f32>(0.0), vec3<f32>(1.0));
     c = vec4<f32>(rgb, 1.0);

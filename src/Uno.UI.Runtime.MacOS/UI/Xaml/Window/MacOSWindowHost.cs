@@ -255,6 +255,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			_initializationCompleted = SizeChanged is not null;
 			if (!_initializationCompleted)
 			{
+				RequestFrameAfterThisPass();
 				return; // not yet...
 			}
 		}
@@ -295,6 +296,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			_initializationCompleted = SizeChanged is not null;
 			if (!_initializationCompleted)
 			{
+				RequestFrameAfterThisPass();
 				return; // not yet...
 			}
 		}
@@ -433,6 +435,17 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		accessibility.Dispose();
 		AccessibilityRouter.NotifyDisposed(this);
 	}
+
+	// This display pass consumed the window's needsDisplay without a frame, so ask again from a later turn: invalidating
+	// from inside the pass would be cleared when it ends.
+	private void RequestFrameAfterThisPass()
+		=> NativeDispatcher.Main.Enqueue(() =>
+		{
+			if (_nativeWindow.Handle != 0)
+			{
+				NativeUno.uno_window_invalidate(_nativeWindow.Handle);
+			}
+		});
 
 	void IXamlRootHost.InvalidateRender()
 	{
@@ -886,10 +899,19 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			var window = GetWindowHost(handle);
 			var cancel = new CancelEventArgs();
 			window?.Closing?.Invoke(window, cancel);
+			if (cancel.Cancel && typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Debug))
+			{
+				// a cancelled quit leaves no other trace
+				typeof(MacOSWindowHost).Log().Debug($"AppWindow.Closing cancelled the close of window 0x{handle:X}, and the application's quit if one was in progress.");
+			}
 			return cancel.Cancel ? 0 : 1;
 		}
 		catch (Exception e)
 		{
+			if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(MacOSWindowHost).Log().Error($"An AppWindow.Closing handler of window 0x{handle:X} threw, so the window stays open, and the application's quit if one was in progress is cancelled.", e);
+			}
 			Application.Current.RaiseRecoverableUnhandledException(e);
 			return 0;
 		}

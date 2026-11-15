@@ -61,6 +61,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	/// <summary>This visual's own recorded content, so tests can tell a re-record from a replay.</summary>
 	internal IRenderRecord? RecordedContentForTesting => _content;
+
+	/// <summary>The cached picture this visual's subtree is replayed from instead of being walked, if collapsed.</summary>
+	internal IRenderRecord? ChildrenContentForTesting => _childrenContent;
+
+	/// <summary>The subtree recording the non-analytic drop-shadow fallback replays, if this visual took that path.</summary>
+	internal IRenderRecord? ShadowFallbackContentForTesting => _shadowFallbackContent;
 	private IRenderRecord? _childrenContent;
 	// Placement bookkeeping for _childrenContent: the recording is local-space and survives ancestor moves,
 	// but a replay under a changed matrix must still damage the screen area the subtree left and now covers
@@ -617,9 +623,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 						PostPaintingClipStep(this, in childSession);
 						// No culling inside the recording — it survives ancestor moves, so it must be complete.
 						RenderChildrenStep(this, childSession, applyChildOptimization, cullRect: default, clipChanged, clipBounds);
-						renderData = recording.Finish();
 					}
 
+					renderData = recording.Finish();
 					_shadowFallbackContent?.Dispose();
 					// A descendant can invalidate mid-render (see RenderChildrenStep) — don't cache a stale record.
 					if ((_flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
@@ -691,8 +697,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 					var recording = CreateRecording(session.Session.Factory);
 					_factory.CreateInstance(visual, recording, session.Opacity, session.Damage, out var recorderSession);
-					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
-					visual.Paint(in recorderSession);
+					using (recorderSession)
+					{
+						// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
+						visual.Paint(in recorderSession);
+					}
 
 					visual._content?.Dispose();
 					visual._content = recording.Finish();
