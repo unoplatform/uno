@@ -161,6 +161,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 			RunOnUIThread.Execute(() =>
 			{
+				// TODO Uno specific: Uno's Verify.Throws matches the exact type; WinUI's E_BOUNDS projects to ArgumentOutOfRangeException.
 				Verify.Throws<ArgumentOutOfRangeException>(() => { infoBadge.Value = -10; });
 			});
 		}
