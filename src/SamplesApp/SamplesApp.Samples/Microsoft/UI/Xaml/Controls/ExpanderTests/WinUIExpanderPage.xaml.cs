@@ -1,4 +1,5 @@
-﻿using Uno.UI.Samples.Controls;
+﻿using MUXControlsTestApp;
+using Uno.UI.Samples.Controls;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 
@@ -20,9 +21,16 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.ExpanderTests
 		{
 			return AutomationControlType.Custom;
 		}
+
+		protected override string GetLocalizedControlTypeCore()
+		{
+			return "TestControl";
+		}
 	}
 
 	[Sample("Expander", "MUX", Name = "WinUIExpanderPage")]
+	[TopLevelTestPage(Name = "Expander")]
+	[AxeScanTestPage(Name = "Expander-Axe")]
 	public sealed partial class WinUIExpanderPage : UserControl
 	{
 		public WinUIExpanderPage()

@@ -23,6 +23,8 @@
                 </TransitionCollection>
             </StackPanel.ChildrenTransitions>
 
+            <Button AutomationProperties.Name="DummyButton" Content="Dummy Button" />
+
             <controls:Expander
                 x:Name="ExpandedExpander"
                 Margin="12"
@@ -142,6 +144,33 @@
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <TextBlock TextWrapping="Wrap">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec id lacinia tellus. Integer eu mollis leo, ornare ultricies neque. Sed diam lectus, varius sed justo vel, malesuada condimentum lorem. Proin porttitor quis enim a facilisis. Suspendisse vehicula imperdiet egestas. Suspendisse imperdiet, ipsum in commodo cursus, mi nisl volutpat nulla, in interdum mi nulla a nulla. Cras feugiat odio ac eros ullamcorper suscipit. Praesent ultricies ligula eget efficitur tristique. Donec imperdiet ultrices dolor sollicitudin bibendum. In hac habitasse platea dictumst. Fusce vel lacinia purus. Sed tempor est sed suscipit luctus. Aenean laoreet tellus vitae efficitur scelerisque. Sed suscipit risus ac nisl rhoncus hendrerit.</TextBlock>
                 </ScrollViewer>
+            </controls:Expander>
+
+            <controls:Expander
+                x:Name="ExpanderWithToggleSwitch"
+                Margin="12"
+                HorizontalAlignment="Left"
+                AutomationProperties.Name="ExpanderWithToggleSwitch"
+                IsExpanded="True">
+                <controls:Expander.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="80" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Margin="0,14,24,16">
+                            <TextBlock Margin="0,0,0,4" Text="This expander with ToggleSwitch is expanded by default." />
+                            <TextBlock
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="This is the second line of text." />
+                        </StackPanel>
+                        <ToggleSwitch Grid.Column="1" AutomationProperties.Name="SettingsToggleSwitch" />
+                    </Grid>
+
+                </controls:Expander.Header>
+                <Button AutomationProperties.AutomationId="ExpandedExpanderContent">ExpanderWithToggleSwitch Content</Button>
             </controls:Expander>
 
         </StackPanel>
