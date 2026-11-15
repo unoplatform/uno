@@ -300,9 +300,10 @@ internal sealed partial class TextBoxCore
 		bool isPointerCaptureRequired =
 			true;
 
+		_wasFocusedOnPointerPressed = FocusState != FocusState.Unfocused;
+
 		if (ShouldFocusOnPointerPressed(args)) // UWP Captures if the pointer is not Touch
 		{
-			var wasFocused = FocusState != FocusState.Unfocused;
 			if (isPointerCaptureRequired)
 			{
 				if (CapturePointer(args.Pointer))
@@ -314,14 +315,6 @@ internal sealed partial class TextBoxCore
 			{
 				_host.Owner.Focus(FocusState.Pointer);
 			}
-
-#if __SKIA__
-			if (wasFocused)
-			{
-				// See comment in OnPointerReleased for why we do this
-				_textBoxNotificationsSingleton?.OnFocused(this);
-			}
-#endif
 		}
 
 		args.Handled = true;
@@ -342,26 +335,26 @@ internal sealed partial class TextBoxCore
 			{
 				_host.Owner.Focus(FocusState.Pointer);
 			}
-#if __SKIA__
-			if (wasFocused)
-			{
-				// We already call UpdateFocusState in TextBoxView when focus changes, but this is not enough.
-				// UpdateFocusState should be called here even if the TextBox was already focused.
-				// This is to support re-showing the keyboard when clicking on an already-focused TextBox.
-				// For example:
-				// 1. User taps on TextBox and it gained focus and soft keyboard was shown.
-				// 2. User hides the keyboard, but TextBox is still focused.
-				// 3. User taps on TextBox again. In this case, we want to call UpdateFocusState so that the soft keyboard is re-shown again.
-				//
-				// This approach feels hacky though and may not handle programmatic focus properly, i.e, when programmatic focus is requested on an already-focused TextBox. This is a niche case though.
-				_textBoxNotificationsSingleton?.OnFocused(this);
-			}
-#endif
 		}
 
 		args.Handled = true;
 
 		OnPointerReleasedPartial(args, wasFocused);
+	}
+
+	private bool _wasFocusedOnPointerPressed;
+
+	// Tapping a box that was already focused re-shows the keyboard the user may have hidden, as WinUI does from
+	// OnTappedCore; a drag (selecting, or panning) is no tap, so it doesn't. A tap that focuses the box already shows
+	// it through the focus change.
+	internal void OnTapped(TappedRoutedEventArgs args)
+	{
+#if __SKIA__
+		if (_wasFocusedOnPointerPressed && FocusState != FocusState.Unfocused)
+		{
+			NotifyFocusedAgain();
+		}
+#endif
 	}
 
 	// Entry points for hooks whose caller stayed on the control.
@@ -555,10 +548,32 @@ internal sealed partial class TextBoxCore
 #endif
 	}
 
-	internal void OnGotFocusCore()
+	internal void OnGotFocusCore(RoutedEventArgs args)
 	{
+		var owner = _host.Owner;
+
+		// From WinUI TextBoxBase::OnGotFocus:
+		// Verify that this textbox is still the focused element.
+		// This is to account for a scenario where a new element gains focus
+		// between focus manager queueing the GotFocus event and it being raised.
+		if (owner.XamlRoot is { } xamlRoot)
+		{
+			// Only return if this TextBox is the original source of the OnGotFocus event.
+			// Other controls may directly call this OnGotFocus function and we do not want
+			// to block those calls.
+			if (ReferenceEquals(args.OriginalSource, owner) && !ReferenceEquals(FocusManager.GetFocusedElement(xamlRoot), owner))
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug("GotFocus raised after the focus moved to another element, it is not brought into view.");
+				}
+
+				return;
+			}
+		}
+
 		_forceFocusedVisualState = false;
-		_host.Owner.StartBringIntoView(new BringIntoViewOptions
+		owner.StartBringIntoView(new BringIntoViewOptions
 		{
 			AnimationDesired = false
 		});
@@ -971,6 +986,7 @@ internal sealed partial class TextBoxCore
 				// The all to ProcessTextInput may be recursing, we only want to restore
 				// the state on the last one.
 				_isInputModifyingText = false;
+				_platformTextApplyInProgress = false;
 			}
 		}
 

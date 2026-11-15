@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using Microsoft.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -15,6 +16,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		protected IEasingFunction _easing = LinearEase.Instance;
 		private bool _isDisposed;
 		private bool _isDelaying;
+
+		// Frames stop while a host shows nothing (a hidden or minimized window), but the end of an animation is a
+		// point in time: this ends it there when no frame got there first.
+		private DispatcherQueueTimer _endTimer;
 
 		protected CPUBoundAnimator(T from, T to)
 		{
@@ -74,6 +79,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			IsRunning = true;
 			_elapsed.Restart();
 			EnableFrameReporting();
+			ArmEndTimer();
 		}
 
 		/// <inheritdoc />
@@ -87,6 +93,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			IsRunning = false;
 			_elapsed.Stop();
 			DisableFrameReporting();
+			_endTimer?.Stop();
 
 			AnimationPause?.Invoke(this, EventArgs.Empty);
 		}
@@ -101,6 +108,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			IsRunning = true;
 			_elapsed.Start();
 			EnableFrameReporting();
+			ArmEndTimer();
 		}
 
 		/// <inheritdoc />
@@ -114,8 +122,37 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			IsRunning = false;
 			_elapsed.Stop();
 			DisableFrameReporting();
+			_endTimer?.Stop();
 
 			AnimationCancel?.Invoke(this, EventArgs.Empty);
+		}
+
+		private void ArmEndTimer()
+		{
+			if (_endTimer is null)
+			{
+				_endTimer = new DispatcherQueueTimer { IsRepeating = false };
+				_endTimer.Tick += OnEndTimerTick;
+			}
+
+			_endTimer.Interval = TimeSpan.FromMilliseconds(Math.Max(0, StartDelay + Duration - _elapsed.ElapsedMilliseconds));
+			_endTimer.Start();
+		}
+
+		private void OnEndTimerTick(DispatcherQueueTimer sender, object args)
+		{
+			if (!IsRunning)
+			{
+				return;
+			}
+
+			OnFrame(this, null);
+
+			// The timer can fire a little before the end; it then only updated the value.
+			if (IsRunning)
+			{
+				ArmEndTimer();
+			}
 		}
 
 		/// <summary>
@@ -163,6 +200,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				IsRunning = false;
 				DisableFrameReporting();
 				_elapsed.Stop();
+				_endTimer?.Stop();
 
 				CurrentPlayTime = Duration;
 				_currentValue = _to;
@@ -229,6 +267,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			IsRunning = false;
 			DisableFrameReporting();
 			_elapsed.Stop();
+
+			if (_endTimer is not null)
+			{
+				_endTimer.Stop();
+				_endTimer.Tick -= OnEndTimerTick;
+				_endTimer = null;
+			}
 		}
 	}
 }

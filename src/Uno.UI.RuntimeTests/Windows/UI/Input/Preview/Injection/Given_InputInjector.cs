@@ -193,12 +193,13 @@ public class Given_InputInjector
 		var left = new Point(topLeft.X + 20, topLeft.Y + border.ActualHeight / 2);
 		var right = new Point(topLeft.X + border.ActualWidth - 20, topLeft.Y + border.ActualHeight / 2);
 
+		// WinUI delivers injected moves asynchronously and coalesces them, and the first update
+		// over an element raises only PointerEntered, so wait for it before moving again.
 		mouse.MoveTo(left, steps: 5);
+		await WaitFor(() => enteredCount > 0, timeoutMS: 3000, message: "PointerEntered should have been raised");
+
 		mouse.MoveTo(right, steps: 5);
-
-		await WaitForIdle();
-
-		Assert.AreNotEqual(0, movedCount, "PointerMoved should have been raised");
+		await WaitFor(() => movedCount > 0, timeoutMS: 3000, message: "PointerMoved should have been raised");
 	}
 
 #if HAS_UNO

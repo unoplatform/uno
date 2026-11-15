@@ -1100,6 +1100,11 @@ internal readonly struct ParsedText : IParsedText
 
 	public bool IsBaseDirectionRightToLeft => false;
 
+	// This text isn't spell-checked, so it has no squiggles to draw.
+	public void DrawSpellCheckSquiggles(IDrawingSession session, Color color)
+	{
+	}
+
 	internal int LineCount => _renderLines.Count;
 
 	// True when the paragraph carries no text at all; SkiaTextLine uses it to stand in for

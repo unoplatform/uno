@@ -126,7 +126,22 @@ namespace Microsoft.UI.Xaml.Controls
 		/// The root of the materialized <see cref="ContentTemplate"/>, reported by the
 		/// <see cref="ContentPresenter"/> of the applied <see cref="Control.Template"/>.
 		/// </summary>
-		public UIElement ContentTemplateRoot { get; internal set; }
+		public UIElement ContentTemplateRoot
+		{
+			get => _contentTemplateRoot;
+			internal set
+			{
+				if (!ReferenceEquals(_contentTemplateRoot, value))
+				{
+					_contentTemplateRoot = value;
+					OnContentTemplateRootChanged();
+				}
+			}
+		}
+
+		private UIElement _contentTemplateRoot;
+
+		private protected virtual void OnContentTemplateRootChanged() { }
 
 		#region Transitions Dependency Property
 

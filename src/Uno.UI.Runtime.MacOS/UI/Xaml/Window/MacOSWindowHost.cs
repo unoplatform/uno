@@ -73,15 +73,16 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		_context = init.Context;
 		_renderer = init.Renderer;
 
-		// A context that owns the layer's present (e.g. WebGPU) drives the drawable itself, so switch the native draw to
-		// tick-only to avoid contending for the layer's drawables; Skia-on-Metal is driven by our own render thread.
-		if (host.RenderSurfaceType != RenderSurfaceType.Software && _context is not MacOSMetalGraphicsContext)
-		{
-			NativeUno.uno_window_set_external_present(_nativeWindow.Handle, true);
-		}
-		else if (_context is MacOSMetalGraphicsContext)
+		// Skia-on-Metal and WebGPU present from our own render thread: acquiring a drawable can block for a second, which
+		// on the main thread starves the dispatcher for as long as frames keep coming. Any other context that owns the
+		// layer's present is ticked from the native draw instead, without contending for the layer's drawables.
+		if (_context is MacOSMetalGraphicsContext or global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext)
 		{
 			InitializeMetalRenderThread();
+		}
+		else if (host.RenderSurfaceType != RenderSurfaceType.Software)
+		{
+			NativeUno.uno_window_set_external_present(_nativeWindow.Handle, true);
 		}
 	}
 
@@ -167,7 +168,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			this.Log().Trace($"Window {_nativeWindow.Handle} render thread drawing {nativeWidth}x{nativeHeight}");
 		}
 
-		if (RootElement?.Visual.CompositionTarget is not CompositionTarget ct || _context is not MacOSMetalGraphicsContext metal)
+		if (RootElement?.Visual.CompositionTarget is not CompositionTarget ct)
 		{
 			return false;
 		}
@@ -221,7 +222,12 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			}, NativeDispatcherPriority.Normal);
 		}
 
-		return metal.LastPresentSucceeded;
+		return _context switch
+		{
+			MacOSMetalGraphicsContext metal => metal.LastPresentSucceeded,
+			global::Uno.UI.Composition.WebGpu.WebGpuSwapChainContext webGpu => webGpu.LastPresentSucceeded,
+			_ => false,
+		};
 	}
 
 	private void MetalDraw(double nativeWidth, double nativeHeight, nint texture)
@@ -249,6 +255,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			_initializationCompleted = SizeChanged is not null;
 			if (!_initializationCompleted)
 			{
+				RequestFrameAfterThisPass();
 				return; // not yet...
 			}
 		}
@@ -289,6 +296,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			_initializationCompleted = SizeChanged is not null;
 			if (!_initializationCompleted)
 			{
+				RequestFrameAfterThisPass();
 				return; // not yet...
 			}
 		}
@@ -427,6 +435,17 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 		accessibility.Dispose();
 		AccessibilityRouter.NotifyDisposed(this);
 	}
+
+	// This display pass consumed the window's needsDisplay without a frame, so ask again from a later turn: invalidating
+	// from inside the pass would be cleared when it ends.
+	private void RequestFrameAfterThisPass()
+		=> NativeDispatcher.Main.Enqueue(() =>
+		{
+			if (_nativeWindow.Handle != 0)
+			{
+				NativeUno.uno_window_invalidate(_nativeWindow.Handle);
+			}
+		});
 
 	void IXamlRootHost.InvalidateRender()
 	{
@@ -880,10 +899,19 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 			var window = GetWindowHost(handle);
 			var cancel = new CancelEventArgs();
 			window?.Closing?.Invoke(window, cancel);
+			if (cancel.Cancel && typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Debug))
+			{
+				// a cancelled quit leaves no other trace
+				typeof(MacOSWindowHost).Log().Debug($"AppWindow.Closing cancelled the close of window 0x{handle:X}, and the application's quit if one was in progress.");
+			}
 			return cancel.Cancel ? 0 : 1;
 		}
 		catch (Exception e)
 		{
+			if (typeof(MacOSWindowHost).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(MacOSWindowHost).Log().Error($"An AppWindow.Closing handler of window 0x{handle:X} threw, so the window stays open, and the application's quit if one was in progress is cancelled.", e);
+			}
 			Application.Current.RaiseRecoverableUnhandledException(e);
 			return 0;
 		}
@@ -1132,6 +1160,10 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				_framePacer.OnFrameStart();
 
 				var framePresented = false;
+				// The present path calls into AppKit and Core Animation (wgpu reads the layer's view and window), and this
+				// thread has no autorelease pool: without one, what they autorelease piles up until the thread exits during
+				// window close, and dropping a view's last reference there deallocates it off the main thread.
+				var pool = NativeMac.objc_autoreleasePoolPush();
 				try
 				{
 					if (NativeUno.uno_window_get_drawable_size(_windowHandle, out var width, out var height))
@@ -1158,6 +1190,10 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 					{
 						this.Log().Error($"macOS render thread error: {ex}");
 					}
+				}
+				finally
+				{
+					NativeMac.objc_autoreleasePoolPop(pool);
 				}
 
 				if (framePresented)

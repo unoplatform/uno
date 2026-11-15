@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -33,6 +34,15 @@ internal sealed class CoverageTableFontFallbackService : IFontFallbackService
 	private readonly Dictionary<string, byte[]?> _fetchedFonts = new();
 	private readonly Dictionary<int, Task<string?>> _familyForCodepoint = new();
 	private Task? _fetchTask;
+
+	// These carry some letters only as symbol bases (Noto Sans Math has the basic Arabic letters for its Arabic math
+	// alphabet, without joining forms), so for a letter or mark a script font that covers it comes first.
+	private static readonly HashSet<string> _symbolFamilies = new(StringComparer.Ordinal)
+	{
+		"Noto Sans Math",
+		"Noto Sans Symbols",
+		"Noto Music",
+	};
 
 	/// <summary>
 	/// Creates a new fallback service backed by the given coverage table and font-stream provider.
@@ -93,42 +103,87 @@ internal sealed class CoverageTableFontFallbackService : IFontFallbackService
 	{
 		NativeDispatcher.CheckThreadAccess();
 
-		var family = FindFetchedFamilyForCodepoint(codepoint);
-		if (family is not null)
+		// Each fetch records an outcome for at least one untried candidate of this codepoint, so this ends.
+		while (true)
 		{
-			return family;
-		}
-
-		_missingCodepoints.Add(codepoint);
-		if (_fetchTask is null)
-		{
-			var fetchTask = FetchFontsForMissingCodepoints();
-			if (!fetchTask.IsCompleted)
+			var family = FindFetchedFamilyForCodepoint(codepoint);
+			if (family is not null || !GetUntriedFamilies(codepoint).Any())
 			{
-				_fetchTask = fetchTask;
-				await fetchTask;
+				return family;
+			}
+
+			_missingCodepoints.Add(codepoint);
+			if (_fetchTask is null)
+			{
+				var fetchTask = FetchFontsForMissingCodepoints();
+				if (!fetchTask.IsCompleted)
+				{
+					_fetchTask = fetchTask;
+					await fetchTask;
+				}
+			}
+			else
+			{
+				await _fetchTask;
 			}
 		}
-		else
-		{
-			await _fetchTask;
-		}
-
-		return FindFetchedFamilyForCodepoint(codepoint);
 	}
 
 	private string? FindFetchedFamilyForCodepoint(int codepoint)
 	{
-		foreach (var family in GetFamiliesForCodepoint(codepoint, _coverageTable))
+		var isText = IsLetterOrMark(codepoint);
+		foreach (var family in GetCandidateFamilies(codepoint, isText))
 		{
-			if (_fetchedFonts.TryGetValue(family, out var bytes) && bytes is not null)
+			if (_fetchedFonts.ContainsKey(family))
 			{
 				return family;
+			}
+
+			if (isText && !_symbolFamilies.Contains(family))
+			{
+				// A script font has not been tried yet: fetch it rather than settle for a symbol font.
+				return null;
 			}
 		}
 
 		return null;
 	}
+
+	/// <summary>
+	/// The families that cover <paramref name="codepoint"/>, leaving out the ones that failed to load. For a letter or
+	/// mark, script fonts come first and symbol fonts last.
+	/// </summary>
+	private IEnumerable<string> GetCandidateFamilies(int codepoint, bool isText)
+	{
+		var families = GetFamiliesForCodepoint(codepoint, _coverageTable)
+			.Where(family => !_fetchedFonts.TryGetValue(family, out var bytes) || bytes is not null);
+		return isText ? families.OrderBy(_symbolFamilies.Contains) : families;
+	}
+
+	/// <summary>
+	/// The candidates worth fetching for <paramref name="codepoint"/>. For a letter or mark: its untried script fonts,
+	/// or its untried symbol fonts once no script font is left.
+	/// </summary>
+	private IEnumerable<string> GetUntriedFamilies(int codepoint)
+	{
+		var isText = IsLetterOrMark(codepoint);
+		var untried = GetCandidateFamilies(codepoint, isText).Where(family => !_fetchedFonts.ContainsKey(family)).ToList();
+		if (!isText)
+		{
+			return untried;
+		}
+
+		var scripts = untried.Where(family => !_symbolFamilies.Contains(family)).ToList();
+		return scripts.Count > 0 ? scripts : untried;
+	}
+
+	// Symbols and punctuation keep whichever covering font is already loaded (Noto Sans Math for an operator, rather
+	// than fetching a larger CJK font that also covers it); only text needs a font made for its script.
+	private static bool IsLetterOrMark(int codepoint)
+		=> CharUnicodeInfo.GetUnicodeCategory(codepoint) is
+			UnicodeCategory.UppercaseLetter or UnicodeCategory.LowercaseLetter or UnicodeCategory.TitlecaseLetter
+			or UnicodeCategory.ModifierLetter or UnicodeCategory.OtherLetter
+			or UnicodeCategory.NonSpacingMark or UnicodeCategory.SpacingCombiningMark or UnicodeCategory.EnclosingMark;
 
 	private async Task FetchFontsForMissingCodepoints()
 	{
@@ -137,7 +192,7 @@ internal sealed class CoverageTableFontFallbackService : IFontFallbackService
 		var missingCodepoints = _missingCodepoints.ToList();
 		_missingCodepoints.Clear();
 
-		var families = SelectMinimalCoveringFamilies(missingCodepoints, _coverageTable);
+		var families = SelectMinimalCoveringFamilies(missingCodepoints);
 		foreach (var family in families)
 		{
 			Stream? stream = null;
@@ -215,7 +270,7 @@ internal sealed class CoverageTableFontFallbackService : IFontFallbackService
 		return copy.ToArray();
 	}
 
-	private static List<string> SelectMinimalCoveringFamilies(IEnumerable<int> codepoints, IReadOnlyList<FontFallbackCoverageRange> coverageTable)
+	private List<string> SelectMinimalCoveringFamilies(IEnumerable<int> codepoints)
 	{
 		var requested = codepoints.Distinct().ToList();
 		requested.Sort();
@@ -225,7 +280,7 @@ internal sealed class CoverageTableFontFallbackService : IFontFallbackService
 		}
 
 		var uncovered = new HashSet<int>(requested);
-		var coverageByFamily = BuildCoverageMap(requested, coverageTable);
+		var coverageByFamily = BuildCoverageMap(requested);
 		var selected = new List<string>();
 
 		while (uncovered.Count > 0)
@@ -248,12 +303,12 @@ internal sealed class CoverageTableFontFallbackService : IFontFallbackService
 		return selected;
 	}
 
-	private static Dictionary<string, HashSet<int>> BuildCoverageMap(IEnumerable<int> requested, IReadOnlyList<FontFallbackCoverageRange> coverageTable)
+	private Dictionary<string, HashSet<int>> BuildCoverageMap(IEnumerable<int> requested)
 	{
 		var map = new Dictionary<string, HashSet<int>>(StringComparer.Ordinal);
 		foreach (var codepoint in requested)
 		{
-			var families = GetFamiliesForCodepoint(codepoint, coverageTable);
+			var families = GetUntriedFamilies(codepoint);
 			foreach (var family in families)
 			{
 				if (!map.TryGetValue(family, out var covered))

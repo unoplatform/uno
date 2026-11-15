@@ -4,26 +4,17 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Uno.UI.Dispatching;
-using Windows.Foundation.Metadata;
 using Windows.System;
 
 namespace Microsoft.UI.Xaml;
 
 class FrameworkTemplatePoolDefaultPlatformProvider : IFrameworkTemplatePoolPlatformProvider
 {
-	private static readonly bool _canUseMemoryManager;
 	private readonly Stopwatch _watch = new Stopwatch();
 	private TimeSpan _lastMemorySnapshot = TimeSpan.FromMinutes(-30);
 	private ulong _appMemoryUsageLimit;
 	private ulong _appMemoryUsage;
 	private readonly static TimeSpan MemoryUsageUpdateResolution = TimeSpan.FromSeconds(5);
-
-	static FrameworkTemplatePoolDefaultPlatformProvider()
-	{
-		_canUseMemoryManager =
-			ApiInformation.IsPropertyPresent("Windows.System.MemoryManager, Uno", "AppMemoryUsage")
-			&& MemoryManager.AppMemoryUsage > 0;
-	}
 
 	public FrameworkTemplatePoolDefaultPlatformProvider()
 		=> _watch.Start();
@@ -32,7 +23,7 @@ class FrameworkTemplatePoolDefaultPlatformProvider : IFrameworkTemplatePoolPlatf
 		=> _watch.Elapsed;
 
 	public virtual bool CanUseMemoryManager
-		=> _canUseMemoryManager;
+		=> MemoryManager.IsAvailable;
 
 	public ulong AppMemoryUsage
 	{

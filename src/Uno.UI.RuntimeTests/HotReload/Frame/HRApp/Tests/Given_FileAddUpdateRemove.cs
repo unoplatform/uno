@@ -8,11 +8,11 @@ using Microsoft.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RemoteControl;
 using Uno.UI.RemoteControl.HotReload;
-using Uno.UI.RuntimeTests.HRApp.Skia.Tests.Pages;
+using Uno.UI.RuntimeTests.HRApp.Tests.Pages;
 using Uno.UI.RuntimeTests.HRUnoLib;
 using _HR = Uno.UI.RuntimeTests.Tests.HotReload.HotReloadHelper;
 
-namespace Uno.UI.RuntimeTests.HRApp.Skia.Tests;
+namespace Uno.UI.RuntimeTests.HRApp.Tests;
 
 [TestClass]
 [RunsOnUIThread]
@@ -228,7 +228,7 @@ public class Given_FileAddUpdateRemove
 	private static DynamicType CreateType([CallerMemberName] string @class = "TestPage")
 	{
 		var name = $"{@class}_{Guid.NewGuid():N}";
-		return new DynamicType("Uno.UI.RuntimeTests", name, "Uno.UI.RuntimeTests.HRApp.Skia", _appDir);
+		return new DynamicType("Uno.UI.RuntimeTests", name, "Uno.UI.RuntimeTests.HRApp", _appDir);
 	}
 
 	private static DynamicType CreateLibType([CallerMemberName] string @class = "TestPage")

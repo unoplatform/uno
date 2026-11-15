@@ -7,9 +7,11 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Automation.Text;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Private.Infrastructure;
 using Uno.UI;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.System;
 
 #if HAS_UNO
 using Uno.UI.Runtime;
@@ -374,6 +376,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				Assert.AreEqual("testtest", textBox.Text, "Semantic typing should append at the current caret instead of inserting in reverse at the start.");
 				Assert.AreEqual("testtest", GetSemanticTextBoxValue(textBox), "Semantic textbox DOM value should stay aligned after appending text.");
 				Assert.AreEqual("8", GetSemanticTextBoxCaret(textBox), "Caret should remain at the end after appending to preexisting text.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		// Soft keyboards send Backspace without a physical code (Samsung Keyboard), and Enter as an unidentified keydown then
+		// a code-less keyup (Android keyboards). The semantic input shares the hidden input's key handling: the browser
+		// applies the deletion, which the TextBox follows, and the TextBox gets a single KeyDown and KeyUp for Enter.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_SemanticTextBox_Receives_Soft_Keyboard_Keys()
+		{
+			var textBox = new TextBox { Text = "one two" };
+			var (keyDowns, keyUps) = (0, 0);
+			textBox.AddHandler(UIElement.KeyDownEvent, new KeyEventHandler((_, e) => keyDowns += e.Key == VirtualKey.Enter ? 1 : 0), handledEventsToo: true);
+			textBox.AddHandler(UIElement.KeyUpEvent, new KeyEventHandler((_, e) => keyUps += e.Key == VirtualKey.Enter ? 1 : 0), handledEventsToo: true);
+
+			try
+			{
+				await UITestHelper.Load(textBox);
+				textBox.Focus(FocusState.Programmatic);
+				textBox.Select(4, 0);
+				textBox.GetOrCreateAutomationPeer();
+
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
+				await UITestHelper.WaitFor(() => !HiddenNativeTextBoxExists(), timeoutMS: 5000, message: "The semantic textbox should own focus.");
+
+				var keyDown = RunOnSemanticElement(textBox,
+					"const e = new KeyboardEvent('keydown', { key: 'Backspace', code: '', keyCode: 8, bubbles: true, cancelable: true }); t.dispatchEvent(e);"
+					+ " t.dispatchEvent(new KeyboardEvent('keyup', { key: 'Backspace', code: '', keyCode: 8, bubbles: true, cancelable: true }));"
+					+ " return e.defaultPrevented ? 'prevented' : 'allowed';");
+				await UITestHelper.WaitForIdle();
+
+				Assert.AreEqual("allowed", keyDown, "the browser must apply the key");
+				Assert.AreEqual("one two", textBox.Text, "the TextBox must not apply the key too");
+
+				SetSemanticTextControlValueAndSelection(textBox, "onetwo", 3, 3);
+				await UITestHelper.WaitForIdle();
+
+				Assert.AreEqual("onetwo", textBox.Text);
+				Assert.AreEqual(3, textBox.SelectionStart);
+
+				RunOnSemanticElement(textBox,
+					"t.dispatchEvent(new KeyboardEvent('keydown', { key: 'Unidentified', code: '', keyCode: 229, bubbles: true, cancelable: true }));"
+					+ " t.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter', code: '', keyCode: 13, bubbles: true, cancelable: true }));"
+					+ " return 'ok';");
+				await UITestHelper.WaitForIdle();
+
+				Assert.AreEqual(1, keyDowns);
+				Assert.AreEqual(1, keyUps);
 			}
 			finally
 			{
@@ -759,6 +815,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				TypeCharacterIntoSemanticTextBox(textBox, character.ToString());
 			}
 		}
+
+		// Runs the script with the element's semantic node as `t`.
+		private static string RunOnSemanticElement(UIElement element, string script)
+			=> InvokeBrowserJs($"(function(){{const t = document.getElementById('{GetSemanticElementId(element)}'); if (!t) {{ return 'missing'; }} {script} }})()");
 
 		private static string EscapeJavaScriptString(string value)
 			=> value

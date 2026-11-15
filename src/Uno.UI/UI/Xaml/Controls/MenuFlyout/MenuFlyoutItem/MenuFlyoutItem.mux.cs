@@ -390,13 +390,7 @@ partial class MenuFlyoutItem
 			if (command is not null)
 			{
 				m_epCanExecuteChangedHandler.Disposable = null;
-				void OnCanExecuteChanged(object sender, EventArgs args)
-				{
-					UpdateCanExecute();
-				}
-
-				command.CanExecuteChanged += OnCanExecuteChanged;
-				m_epCanExecuteChangedHandler.Disposable = Disposable.Create(() => command.CanExecuteChanged -= OnCanExecuteChanged);
+				m_epCanExecuteChangedHandler.Disposable = WeakCanExecuteChangedSubscription.Create(command, this, static item => item.UpdateCanExecute());
 			}
 
 			// In case we missed an update to CanExecute while the CanExecuteChanged handler was unhooked,
@@ -445,13 +439,7 @@ partial class MenuFlyoutItem
 		{
 			var spNewCommand = pNewValue as ICommand;
 
-			void OnCanExecuteUpdated(object sender, object args)
-			{
-				UpdateCanExecute();
-			}
-
-			spNewCommand.CanExecuteChanged += OnCanExecuteUpdated;
-			m_epCanExecuteChangedHandler.Disposable = Disposable.Create(() => spNewCommand.CanExecuteChanged -= OnCanExecuteUpdated);
+			m_epCanExecuteChangedHandler.Disposable = WeakCanExecuteChangedSubscription.Create(spNewCommand, this, static item => item.UpdateCanExecute());
 
 			if (spNewCommand is XamlUICommand newCommandAsUICommand)
 			{

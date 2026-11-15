@@ -657,9 +657,10 @@ namespace Uno.UI.Tasks.LinkerHintsGenerator
 					return null;
 				}
 
+				// Not required="false": ILLink then keeps the type only if something else uses it, which drops attached
+				// properties reached only by name (binding paths, XamlReader). Android runs ILLink before ILC.
 				return new XElement("type",
 					new XAttribute("fullname", typeDefinition.FullName),
-					new XAttribute("required", "false"),
 					methodNames.OrderBy(n => n).Select(name =>
 						new XElement("method",
 							new XAttribute("name", name))));

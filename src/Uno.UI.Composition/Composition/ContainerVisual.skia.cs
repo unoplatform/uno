@@ -138,11 +138,14 @@ public partial class ContainerVisual : Visual
 		source = rect;
 		if (isAncestorClip)
 		{
-			Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted);
-			var childToParentTransform = (Parent?.TotalMatrix ?? Matrix4x4.Identity) * totalMatrixInverted;
-			if (!childToParentTransform.IsIdentity)
+			if (GetChildToParentTransform() is not { } matrix)
 			{
-				var matrix = childToParentTransform.ToMatrix3x2();
+				// Not mapped at all rather than mapped wrongly: the clip then narrows nothing.
+				return default;
+			}
+
+			if (!matrix.IsIdentity)
+			{
 				if (matrix.M12 != 0 || matrix.M21 != 0)
 				{
 					mapping = matrix;
@@ -153,6 +156,19 @@ public partial class ContainerVisual : Visual
 		}
 
 		return rect;
+	}
+
+	private Matrix3x2? GetChildToParentTransform()
+	{
+		if (Matrix4x4.Invert(TotalMatrix, out var totalMatrixInverted))
+		{
+			return ((Parent?.TotalMatrix ?? Matrix4x4.Identity) * totalMatrixInverted).ToMatrix3x2();
+		}
+
+		// A TotalMatrix that flattens Z has no inverse, but the clip only needs to undo this visual's own transform on its
+		// plane: the 2D part, unless that is projective or collapses the visual onto a line.
+		var localMatrix = LocalMatrix;
+		return localMatrix.IsPlanarAffine() && Matrix3x2.Invert(localMatrix.ToMatrix3x2(), out var inverted2D) ? inverted2D : null;
 	}
 
 	/// <summary>The arrange clip as a shape, which a rotated ancestor clip needs: its bounding box would let

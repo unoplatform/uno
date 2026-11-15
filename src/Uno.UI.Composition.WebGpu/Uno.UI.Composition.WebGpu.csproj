@@ -18,7 +18,7 @@
 	</PropertyGroup>
 
 	<!-- Modern-ABI native (wgpu-native, pinned) provisioned at build via a GitHub-release fetch;
-	     the generated binding in Native/WebGpuInterop.cs P/Invokes it via a DllImportResolver. -->
+	     SilkCompat's generated binding (in the init half) P/Invokes it via a DllImportResolver. -->
 	<Import Project="wgpu-native.targets" />
 
 	<ItemGroup>
@@ -27,5 +27,7 @@
 		     this renderer project provisions them (wgpu-native.targets above), so they ship only with an app that
 		     references this renderer (i.e. opts into WebGPU). -->
 		<ProjectReference Include="..\Uno.UI.Composition.WebGpu.Init\Uno.UI.Composition.WebGpu.Init.csproj" />
+		<PackageReference Include="Silk.NET.WebGPU" />
+		<PackageReference Include="Silk.NET.WebGPU.Extensions.WGPU" />
 	</ItemGroup>
 </Project>

@@ -2,6 +2,8 @@
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Composition.Drawing;
+using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Documents;
 
@@ -39,4 +41,11 @@ internal interface IParsedText
 	// Distance from the top of the first line to its baseline. Used to surface RichTextBlock/
 	// TextBlock BaselineOffset for embedded-element alignment (CTextBlock::GetBaselineOffset).
 	float FirstLineBaseline { get; }
+
+	/// <summary>
+	/// Draws the spell-check squiggles laid out by the last <see cref="Draw"/>, in the text's own coordinates.
+	/// <see cref="Draw"/> leaves them out: they sit below the line box, where the text's own clip would cut them, so the
+	/// owning TextBox draws them in a layer of its own.
+	/// </summary>
+	void DrawSpellCheckSquiggles(IDrawingSession session, Color color);
 }
