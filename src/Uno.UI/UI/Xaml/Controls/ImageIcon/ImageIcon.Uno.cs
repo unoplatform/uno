@@ -1,36 +1,19 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
+﻿#nullable enable
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class ImageIcon
+partial class ImageIcon
 {
-	private bool _initialized = false;
-	private bool _applyTemplateCalled = false;
-
-	private void EnsureInitialized()
+	// TODO Uno specific: WinUI's ImageIcon derives from BitmapIcon natively (DeriveFromBitmapIconHelper_base),
+	// so CBitmapIcon::ApplyTemplate creates its Image. Uno's ImageIcon derives from IconElement and mirrors it.
+	private protected override void ApplyTemplate(out bool addedVisuals)
 	{
-		InitializeVisualTree();
+		addedVisuals = false;
 
-		// Uno workaround: OnApplyTemplate is not called when there is no template.
-		if (!_applyTemplateCalled)
+		if (GetChildElementNoRef() is null)
 		{
-			OnApplyTemplate();
-			_applyTemplateCalled = true;
-		}
-	}
-
-	private void InitializeVisualTree()
-	{
-		if (!_initialized)
-		{
-			var image = new Image
-			{
-				Stretch = Stretch.Uniform
-			};
-
-			AddIconChild(image);
-			_initialized = true;
+			AddChildElement(new Image());
+			addedVisuals = true;
 		}
 	}
 }

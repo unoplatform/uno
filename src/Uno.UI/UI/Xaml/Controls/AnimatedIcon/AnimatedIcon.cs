@@ -1,8 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference AnimatedIcon.cpp, commit 1b9db23
+// MUX Reference AnimatedIcon.cpp
 
 using System;
+using Microsoft.UI.Private.Controls;
 using System.Globalization;
 using System.Numerics;
 using Uno.Disposables;
@@ -28,21 +29,13 @@ namespace Microsoft.UI.Xaml.Controls
 		public AnimatedIcon()
 		{
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_AnimatedIcon);
-
-#if !HAS_UNO
-			m_progressPropertySet = Microsoft.UI.Xaml.Window.Current.Compositor.CreatePropertySet();
+			var compositor = CompositionTarget.GetCompositorForCurrentThread();
+			m_progressPropertySet = compositor.CreatePropertySet();
 			m_progressPropertySet.InsertScalar(s_progressPropertyName, 0);
-#else
-			// Use the shared compositor so the property set is owned by a real compositor and
-			// animations started on it get ticked. Previously this was `new CompositionPropertySet(null)`
-			// (a workaround from when AnimatedIcon's animations weren't supported), which left
-			// PlaySegment unable to actually animate Progress and made the icon snap to the final
-			// state on every transition.
-			m_progressPropertySet = Microsoft.UI.Composition.Compositor.GetSharedCompositor().CreatePropertySet();
-			m_progressPropertySet.InsertScalar(s_progressPropertyName, 0);
-#endif
 			Loaded += OnLoaded;
+#if HAS_UNO
 			Unloaded += OnIconUnloaded;
+#endif
 
 			this.RegisterPropertyChangedCallback(ForegroundProperty, OnForegroundPropertyChanged);
 			this.RegisterPropertyChangedCallback(FlowDirectionProperty, OnFlowDirectionPropertyChanged);
@@ -51,15 +44,11 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
-
 			// Construct the visual from the Source property in on apply template so that it participates
-			// in the initial measure for the object. Reuse the existing animated visual if one was
-			// already constructed (e.g. on a template re-apply) so we don't lose its animation state —
-			// matches WinUI's `m_animatedVisual ? m_animatedVisual.RootVisual() : ConstructVisual()`.
-			if (m_animatedVisual is null)
-			{
-				ConstructAndInsertVisual();
-			}
+			// in the initial measure for the object.
+			var visual = m_animatedVisual is { } animatedVisual ? animatedVisual.RootVisual : ConstructVisual();
+			InsertVisual(visual);
+
 			var panel = VisualTreeHelper.GetChild(this, 0) as Panel;
 			m_rootPanel = panel;
 			m_currentState = GetState(this);
@@ -78,10 +67,7 @@ namespace Microsoft.UI.Xaml.Controls
 						path.Visibility = Visibility.Collapsed;
 					}
 				}
-				if (m_animatedVisual is { } visual)
-				{
-					ElementCompositionPreview.SetElementChildVisual(panel, visual.RootVisual);
-				}
+				ElementCompositionPreview.SetElementChildVisual(panel, visual);
 
 				TrySetForegroundProperty();
 			}
@@ -90,17 +76,16 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnLoaded(object sender, RoutedEventArgs args)
 		{
 #if HAS_UNO
-			// Uno specific: Called to ensure OnApplyTemplate runs and Foreground is subscribed
-			EnsureInitialized();
-
-			// Attach the AnimatedIcon's element visual as the Owner of m_progressPropertySet so
-			// animations started on it (PlaySegment) get a CompositionTarget to tick against.
-			// Without this, m_progressPropertySet has no owner and Compositor.RegisterAnimation
-			// can't find a target — the keyframe animation never advances and the icon snaps to
-			// its destination state.
+			// TODO Uno specific: Uno's compositor only ticks animations on a property set owned by a Visual.
 			if (m_progressPropertySet?.Owner is null)
 			{
 				m_progressPropertySet!.Owner = ElementCompositionPreview.GetElementVisual(this);
+			}
+
+			// TODO Uno specific: re-subscribe to the Foreground brush dropped by OnIconUnloaded.
+			if (m_foregroundColorPropertyChangedRevoker.Disposable is null)
+			{
+				OnForegroundPropertyChanged(this, null);
 			}
 #endif
 
@@ -150,10 +135,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (m_animatedVisual is { } visual)
 			{
-				// Uno-specific: IconElement hosts content in a synthetic root Grid that has no WinUI
-				// counterpart, and the animated visual is attached to it as a composition child visual. It
-				// still has to go through layout, or it never gets a slot and nothing renders.
+#if HAS_UNO
+				// TODO Uno specific: Uno only renders a child visual hosted on an element that went through layout,
+				// so the root Grid holding the animated visual is measured and arranged too.
 				base.MeasureOverride(availableSize);
+#endif
 
 				// Animated Icon scales using the Uniform strategy, meaning that it scales the horizonal and vertical
 				// dimensions equally by the maximum amount that doesn't exceed the available size in either dimension.
@@ -198,8 +184,10 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (m_animatedVisual is { } visual)
 			{
-				// See MeasureOverride: the synthetic root Grid hosting the animated visual needs a layout slot.
+#if HAS_UNO
+				// TODO Uno specific: see MeasureOverride.
 				base.ArrangeOverride(finalSize);
+#endif
 
 				var visualSize = visual.Size;
 
@@ -453,10 +441,10 @@ namespace Microsoft.UI.Xaml.Controls
 							// provided string doesn't parse to a float we can't distinguish between the string "0.0" and
 							// the string "a" (for example) from the parse output alone. Instead we use the wcstof's second
 							// parameter to determine if the 0.0 return value came from a valid parse or from the default return.
-							string strEnd = null;
-							var parsedFloat = Wcstof(toState, ref strEnd);
+							// TODO Uno specific: Wcstof returns whether wcstof's strEnd reached the end of the string.
+							var parsedWholeString = Wcstof(toState, out var parsedFloat);
 
-							if (strEnd == toState)
+							if (parsedWholeString)
 							{
 								PlaySegment(float.NaN, parsedFloat, cleanupAction, playbackMultiplier);
 								m_lastAnimationSegmentStart = "";
@@ -476,28 +464,6 @@ namespace Microsoft.UI.Xaml.Controls
 					AnimatedIconTestHooks.NotifyLastAnimationSegmentChanged(this);
 				}
 			}
-		}
-
-		private float Wcstof(string input, ref string strEnd)
-		{
-			for (int currentLength = input.Length; currentLength > 0; currentLength--)
-			{
-				var shortenedInput = input.Substring(0, currentLength);
-				if (float.TryParse(shortenedInput, NumberStyles.Float, NumberFormatInfo.InvariantInfo, out var parsed))
-				{
-					if (input.Length - currentLength == 0)
-					{
-						strEnd = null;
-					}
-					else
-					{
-						strEnd = input.Substring(currentLength, input.Length - currentLength);
-					}
-					return parsed;
-				}
-			}
-			strEnd = input;
-			return 0.0f;
 		}
 
 		void PlaySegment(float from, float to, Action cleanupAction, float playbackMultiplier = 1.0f)
@@ -566,7 +532,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnSourcePropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
-			if (!ConstructAndInsertVisual())
+			var visual = ConstructVisual();
+			if (!InsertVisual(visual))
 			{
 				SetRootPanelChildToFallbackIcon();
 			}
@@ -605,36 +572,25 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateMirrorTransform();
 		}
 
-		private bool ConstructAndInsertVisual()
+		private Visual ConstructVisual()
 		{
-			Visual GetVisual()
+			if (Source is { } source)
 			{
-				if (Source is { } source)
-				{
-					TrySetForegroundProperty(source);
+				TrySetForegroundProperty(source);
 
-#if HAS_UNO
-					// Use the AnimatedIcon's own element compositor so the visual lives in the same
-					// compositor as the rest of the visual tree.
-					var sourceCompositor = ElementCompositionPreview.GetElementVisual(this).Compositor;
-					IAnimatedVisual visual = source.TryCreateAnimatedVisual(sourceCompositor, out _);
-#else
-					object diagnostics;
-					var visual = source.TryCreateAnimatedVisual(Window.Current.Compositor, diagnostics);
-#endif
-					m_animatedVisual = visual;
-					return visual != null ? visual.RootVisual : null;
-				}
-
-				else
-				{
-					m_animatedVisual = null;
-					return (Visual)(null);
-				}
+				var visual = source.TryCreateAnimatedVisual(CompositionTarget.GetCompositorForCurrentThread(), out _);
+				m_animatedVisual = visual;
+				return visual != null ? visual.RootVisual : null;
 			}
+			else
+			{
+				m_animatedVisual = null;
+				return (Visual)(null);
+			}
+		}
 
-			var visual = GetVisual();
-
+		private bool InsertVisual(Visual visual)
+		{
 			if (m_rootPanel is { } rootPanel)
 			{
 				ElementCompositionPreview.SetElementChildVisual(rootPanel, visual);

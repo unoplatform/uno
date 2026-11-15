@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference PathIconSource_Partial.cpp, tag winui3/release/1.4.2
+// MUX Reference PathIconSource_Partial.cpp
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
@@ -26,7 +26,7 @@ public partial class PathIconSource : IconSource
 
 		var pathIcon = new PathIcon();
 
-		pathIcon.Data = Data;
+		pathIcon.Data = data;
 
 		return pathIcon;
 	}

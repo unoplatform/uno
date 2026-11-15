@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference IconSource_Partial.cpp, tag winui3/release/1.4.2
+// MUX Reference IconSource_Partial.cpp
 
 using System;
 using System.Collections.Generic;
@@ -31,26 +31,18 @@ public partial class IconSource : DependencyObject
 	public IconElement CreateIconElement()
 	{
 		IconElement element;
-		// Uno Specific: we don't have IsComposed()
-		// if (IsComposed())
-		// {
-		// 	IFC(ctl::do_query_interface(pVirtuals, this));
-		//
-		// 	// SYNC_CALL_TO_APP DIRECT - This next line may directly call out to app code.
-		// 	IFC(pVirtuals->CreateIconElementCore(ppReturnValue));
-		// }
-		// else
-		// {
-		// 	IFC(CreateIconElementCore(ppReturnValue));
-		// }
+		// IconSourceGenerated::CreateIconElement dispatches to the virtual CreateIconElementCore.
 		element = CreateIconElementCore();
 
-		if (element != null
-			// Uno Specific: WinUI doesn't check if Foreground is null, it sets it anyway
-			&& Foreground != null)
+		if (element != null)
 		{
 			Brush foreground = Foreground;
-			element.Foreground = foreground;
+
+			// This check ensures that we are not forcing developers to provide a foreground, if no foreground is set, it picks the default foreground based on theme.
+			if (foreground != null)
+			{
+				element.Foreground = foreground;
+			}
 		}
 
 		WeakReference<IconElement> weakElement;
@@ -89,6 +81,8 @@ public partial class IconSource : DependencyObject
 		return null;
 	}
 
+	// TODO Uno specific: WinUI overrides OnPropertyChanged2 for every property, Uno routes each
+	// IconSource property's changed callback here instead.
 	internal static void OnPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 	{
 		var iconSource = sender as IconSource;
