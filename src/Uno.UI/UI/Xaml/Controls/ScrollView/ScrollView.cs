@@ -1067,8 +1067,8 @@ public partial class ScrollView : Control, IScrollView
 
 		if (m_bringIntoViewOperations.Count > 0)
 		{
-			// Uno: iterate backwards so expired operations can be removed during the iteration.
-			for (int i = m_bringIntoViewOperations.Count - 1; i >= 0; i--)
+			// TODO Uno specific: index loop instead of upstream's iterator, since a List can't be modified during foreach.
+			for (int i = 0; i < m_bringIntoViewOperations.Count;)
 			{
 				var bringIntoViewOperation = m_bringIntoViewOperations[i];
 
@@ -1084,6 +1084,7 @@ public partial class ScrollView : Control, IScrollView
 				{
 					// Increment the number of ticks ellapsed since the FocusManager::TryFocusAsync call, and continue to wait for BringingIntoView notifications.
 					bringIntoViewOperation.TickOperation();
+					i++;
 				}
 			}
 		}
