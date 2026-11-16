@@ -12,4 +12,4 @@ Google's [Dawn](https://dawn.googlesource.com/dawn) WebGPU implementation, as th
 
 On Windows, Dawn compiles shaders with the system's `d3dcompiler_47.dll` and uses the system's Vulkan loader, so nothing else ships with it.
 
-The libraries are linked from Dawn's release builds, or built from Dawn's source where a release does not cover the platform, by the scripts in `build/dawn` of the [Uno Platform repository](https://github.com/unoplatform/uno). Dawn is licensed under the BSD 3-Clause License; `LICENSE` in this package carries it, along with the licenses of the third-party code built into it.
+The libraries are linked from Dawn's release builds, or built from Dawn's source where a release does not cover the platform, by the scripts in `build/dawn` of the [Uno Platform repository](https://github.com/unoplatform/uno). Dawn is licensed under the BSD 3-Clause License; `LICENSE.txt` in this package carries it, along with the licenses of the third-party code built into it.

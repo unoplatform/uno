@@ -94,7 +94,7 @@ stages:
         # Dawn's license and those of the dependencies fetched into the source tree, for the package.
         cd "$(dawnCache)/src"
         mkdir -p "$(Build.ArtifactStagingDirectory)/licenses"
-        find . -maxdepth 4 \( -path ./LICENSE -o -path './third_party/*/LICENSE*' -o -path './third_party/*/src/LICENSE*' \) -exec cp --parents {} "$(Build.ArtifactStagingDirectory)/licenses" \;
+        find . -maxdepth 4 -type f \( -path ./LICENSE -o -path './third_party/*/LICENSE*' -o -path './third_party/*/src/LICENSE*' \) -exec cp --parents {} "$(Build.ArtifactStagingDirectory)/licenses" \;
         cp -r "$(dawnCache)/exports" "$(Build.ArtifactStagingDirectory)/exports"
       displayName: Collect licenses and exports
     - publish: $(Build.ArtifactStagingDirectory)

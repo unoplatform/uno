@@ -32,7 +32,7 @@ $platform = if ($Arch -eq 'arm64') { 'ARM64' } else { 'x64' }
 cmake -S $Source -B $build -G 'Visual Studio 17 2022' -A $platform `
 	-C (Join-Path $Source '.github\workflows\dawn-ci.cmake') `
 	-DCMAKE_BUILD_TYPE=Release `
-	-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded `
+	-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded -DABSL_MSVC_STATIC_RUNTIME=ON `
 	-DDAWN_BUILD_MONOLITHIC_LIBRARY=STATIC `
 	-DDAWN_USE_BUILT_DXC=OFF `
 	-DDAWN_BUILD_SAMPLES=OFF -DDAWN_BUILD_TESTS=OFF -DDAWN_USE_GLFW=OFF `

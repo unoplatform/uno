@@ -38,16 +38,29 @@
 		</ItemGroup>
 	</Target>
 
-	<!-- Only one engine reaches the app: with wgpu-native selected, Dawn's library is left out of the output. -->
-	<Target Name="_UnoWebGpuDropDawnFromOutput" BeforeTargets="CopyFilesToOutputDirectory" Condition="'$(UnoWebGpuNative)' == 'WgpuNative'">
+	<!-- A portable desktop app copies every RID's runtimes/ folder; Android's libraries would only be dead weight there. -->
+	<Target Name="_UnoWebGpuDropDawnAndroidFromOutput" BeforeTargets="_CopyFilesMarkedCopyLocal" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'android'">
 		<ItemGroup>
-			<ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" Condition="('%(Filename)' == 'webgpu' Or '%(Filename)' == 'libwebgpu') And '%(NuGetPackageId)' == 'Uno.WinUI.Composition.WebGpu.Dawn'" />
+			<ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" Condition="'%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Uno.WinUI.Composition.WebGpu.Dawn' And ('%(ReferenceCopyLocalPaths.DestinationSubDirectory)' == 'runtimes\android-arm64\native\' Or '%(ReferenceCopyLocalPaths.DestinationSubDirectory)' == 'runtimes\android-arm\native\' Or '%(ReferenceCopyLocalPaths.DestinationSubDirectory)' == 'runtimes\android-x64\native\' Or '%(ReferenceCopyLocalPaths.DestinationSubDirectory)' == 'runtimes\android-x86\native\')" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_UnoWebGpuDropDawnAndroidFromPublish" AfterTargets="ComputeResolvedFilesToPublishList" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'android'">
+		<ItemGroup>
+			<ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(ResolvedFileToPublish.NuGetPackageId)' == 'Uno.WinUI.Composition.WebGpu.Dawn' And ('%(ResolvedFileToPublish.RelativePath)' == 'runtimes\android-arm64\native\libwebgpu.so' Or '%(ResolvedFileToPublish.RelativePath)' == 'runtimes\android-arm\native\libwebgpu.so' Or '%(ResolvedFileToPublish.RelativePath)' == 'runtimes\android-x64\native\libwebgpu.so' Or '%(ResolvedFileToPublish.RelativePath)' == 'runtimes\android-x86\native\libwebgpu.so')" />
+		</ItemGroup>
+	</Target>
+
+	<!-- Only one engine reaches the app: with wgpu-native selected, Dawn's library is left out of the output. -->
+	<Target Name="_UnoWebGpuDropDawnFromOutput" BeforeTargets="_CopyFilesMarkedCopyLocal" Condition="'$(UnoWebGpuNative)' == 'WgpuNative'">
+		<ItemGroup>
+			<ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" Condition="('%(ReferenceCopyLocalPaths.Filename)' == 'webgpu' Or '%(ReferenceCopyLocalPaths.Filename)' == 'libwebgpu') And '%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Uno.WinUI.Composition.WebGpu.Dawn'" />
 		</ItemGroup>
 	</Target>
 
 	<Target Name="_UnoWebGpuDropDawnFromPublish" AfterTargets="ComputeResolvedFilesToPublishList" Condition="'$(UnoWebGpuNative)' == 'WgpuNative'">
 		<ItemGroup>
-			<ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="('%(Filename)' == 'webgpu' Or '%(Filename)' == 'libwebgpu') And '%(NuGetPackageId)' == 'Uno.WinUI.Composition.WebGpu.Dawn'" />
+			<ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="('%(ResolvedFileToPublish.Filename)' == 'webgpu' Or '%(ResolvedFileToPublish.Filename)' == 'libwebgpu') And '%(ResolvedFileToPublish.NuGetPackageId)' == 'Uno.WinUI.Composition.WebGpu.Dawn'" />
 		</ItemGroup>
 	</Target>
 
