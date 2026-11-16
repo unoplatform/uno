@@ -25,9 +25,9 @@ The following rules are part of the supported behavior:
 7. If no solution is found, the result is `NoCandidates`; health is available immediately and reports the missing workspace without waiting for upstream timeouts.
 8. If solutions are found but none resolve to a valid Uno workspace, the result is `NoValidWorkspace`; health is available immediately and DevServer does not start.
 9. Late MCP roots that confirm the already selected workspace must **not** restart the session.
-10. Late MCP roots that resolve to a different workspace must **not** switch the running session to a new workspace. The session remains diagnostic/degraded for that run.
+10. Late MCP roots that resolve to a different workspace must **not** switch the running session to a new workspace, nor degrade it: roots are hints (deprecated by SEP-2577). Before any DevServer runs, roots still decide where it starts; roots that do not resolve then leave the session diagnostic.
 11. `uno.devserver health --json` must return the same logical `HealthReport` shape as `uno_health`.
-12. An explicit `uno_app_select_solution` request is authoritative for the current MCP session. The selected path must be an absolute `.sln` / `.slnx` candidate within scope, and it must resolve to a valid Uno workspace before DevServer may start.
+12. An explicit `uno_app_select_solution` request (or `--solution` at startup) is authoritative for the current MCP session. The selected path may be any absolute local `.sln` / `.slnx`, inside or outside the scanned scope (candidates are suggestions), and it stays selected across file changes and MCP roots. The tool rejects a solution that does not resolve to a valid Uno workspace, and `--solution` refuses a missing or non-solution path (exit code 2); a `--solution` whose global.json does not declare the Uno SDK, or a selection that stops resolving, stays selected with the session degraded until it does.
 
 ---
 
@@ -53,11 +53,13 @@ The following rules are part of the supported behavior:
 | Solutions under `node_modules`, `bin`, `obj`, `.vs`, `.idea`, `packages` | Ignored during scan | Finder unit | Yes | Covered |
 | Git repo with `.gitignore` excluding solution folders | Ignored solutions are not candidates | Finder unit | Yes | Covered |
 | Fake/corrupt `.git` repo or `git` unavailable | Hardcoded fallback; no crash; scan still works | Finder unit | Yes | Covered |
-| Solution deeper than 3 levels | Not supported for auto-discovery; result is `NoCandidates` | Resolver unit | Yes | Covered |
+| Solution deeper than 3 levels | Not supported for auto-discovery; result is `NoCandidates`. Selectable explicitly, and launched even when the monitor's rescan does not reach it | Resolver unit + monitor unit | Yes | Covered |
 | MCP roots arrive later and confirm same workspace | No restart; session continues unchanged | Lifecycle/proxy unit | Yes | Covered |
-| MCP roots arrive later and point to different workspace | No hot switch; session stays diagnostic/degraded | Lifecycle/proxy unit + health/report unit | Yes | Covered |
+| MCP roots arrive later and point to different workspace | No hot switch and no degradation while a DevServer runs; before one runs, roots decide where it starts | Decisions unit + lifecycle/proxy unit | Yes | Covered |
+| MCP roots arrive after an explicit selection | Ignored, even while the selected solution does not resolve | Decisions unit + lifecycle/proxy unit | Yes | Covered |
 | Explicit `uno_app_select_solution` with valid Uno candidate | Selected workspace becomes authoritative; start or continue on that workspace | Lifecycle/proxy unit + MCP integration + health/report unit | Yes | Covered |
-| Explicit `uno_app_select_solution` with non-Uno / out-of-scope / malformed path | Request rejected with structured diagnostics; no host start | Lifecycle/proxy unit + MCP integration | Yes | Covered |
+| Explicit `uno_app_select_solution` outside the scanned scope (deeper, or another folder) | Accepted; that workspace becomes authoritative | Lifecycle/proxy unit + resolver unit | Yes | Covered |
+| Explicit `uno_app_select_solution` with non-Uno / missing / non-solution / UNC / malformed path | Request rejected with structured diagnostics; no host start | Lifecycle/proxy unit + MCP integration | Yes | Covered |
 | CLI `health --json` | Same logical payload shape as `uno_health` | CLI integration + formatter/model unit | Yes | Covered |
 
 ---

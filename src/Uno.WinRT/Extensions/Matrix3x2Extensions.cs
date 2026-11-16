@@ -63,6 +63,20 @@ namespace Uno.Extensions
 		/// <returns>A new rectangle</returns>
 		public static Rect Transform(this Matrix3x2 matrix, Rect rect)
 		{
+			// Most visual transforms only translate; culling transforms a rect per visual per frame. Same result as the
+			// corner walk below (including its float rounding), without four point transforms and a min/max.
+			if (matrix.M11 == 1 && matrix.M12 == 0 && matrix.M21 == 0 && matrix.M22 == 1 && rect.Width >= 0 && rect.Height >= 0)
+			{
+				if (matrix.M31 == 0 && matrix.M32 == 0)
+				{
+					return new Rect(new Point(rect.Left, rect.Top), new Point(rect.Right, rect.Bottom));
+				}
+
+				return new Rect(
+					new Point((float)rect.Left + matrix.M31, (float)rect.Top + matrix.M32),
+					new Point((float)rect.Right + matrix.M31, (float)rect.Bottom + matrix.M32));
+			}
+
 			var leftTop = matrix.Transform(rect.Left, rect.Top);
 			var leftBottom = matrix.Transform(rect.Left, rect.Bottom);
 			var rightTop = matrix.Transform(rect.Right, rect.Top);

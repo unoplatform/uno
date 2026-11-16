@@ -14,7 +14,7 @@ App SDK app would write.
 |Platform|Availability|Notes|
 |---|---|---|
 |**Android**|✅ Available|On a cold start, and while the app is already running.|
-|**iOS**|✅ Available|On a cold start, and while the app is already running — through the scene delegate for apps declaring a scene manifest, and through the application delegate otherwise.|
+|**iOS**|✅ Available|On a cold start, and while the app is already running. Under the UIKit scene lifecycle, a cold-start activation arrives after `OnLaunched`, see below.|
 |**tvOS**|✅ Available|As iOS.|
 |**WebAssembly**|✅ Available|Cold start only: `registerProtocolHandler` navigates the browser, so the app is always started fresh and `AppInstance.Activated` never fires for a protocol activation.|
 |**Skia Desktop (Windows, macOS, Linux)**|❌ Not yet|No activation is delivered. `GetActivatedEventArgs()` reports an `ExtendedActivationKind.Launch` over the process command line.|
@@ -46,6 +46,12 @@ Declare your custom URL scheme in `info.plist` in the platform head:
 
 The same declaration is how a macOS bundle registers a scheme, but the Skia desktop head does not yet
 deliver the resulting activation to the app.
+
+Under the UIKit scene lifecycle, which apps with a scene manifest use and Uno Platform adopts for apps built
+with the version 27 SDKs (see [Scene lifecycle](xref:Uno.Features.CustomizingUIApplicationDelegate#scene-lifecycle)),
+UIKit delivers the activation an app starts with once its scene connects, after `OnLaunched`. In `OnLaunched`,
+`GetActivatedEventArgs()` then still reports a launch, and the activation is raised on `AppInstance.Activated`
+right after: handle both, as shown in [Handling protocol activation](#handling-protocol-activation).
 
 ### Android
 

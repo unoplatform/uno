@@ -72,6 +72,8 @@ internal interface ITextBoxHost
 
 	bool IsSpellCheckEnabled { get; }
 
+	bool PreventKeyboardDisplayOnProgrammaticFocus { get; }
+
 	/// <summary>
 	/// Whether the hosted value is a password. Replaces the <c>this is PasswordBox</c> tests the shared
 	/// implementation used to carry, and is what suppresses clipboard access and IME composition.

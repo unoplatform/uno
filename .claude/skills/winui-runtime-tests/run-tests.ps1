@@ -153,6 +153,11 @@ if (-not $process.WaitForExit($TimeoutSeconds * 1000)) {
 	throw "Test run timed out after $TimeoutSeconds seconds."
 }
 
+if (-not $KeepRegistered) {
+	# winapp 0.7.x cannot always tell which package --unregister-on-exit should remove, and leaves it registered.
+	& $winapp unregister --manifest $manifestPath --force 2>&1 | Out-Null
+}
+
 Write-Host ""
 Write-Host "winapp exited with code $($process.ExitCode) after $($sw.Elapsed)."
 if ($process.ExitCode -ne 0) {

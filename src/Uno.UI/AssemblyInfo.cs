@@ -10,10 +10,9 @@ using Uno.Foundation.Extensibility;
 [assembly: InternalsVisibleTo("Uno.UI.RemoteControl")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
-[assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.XamlHost")]
 [assembly: InternalsVisibleTo("SamplesApp")]
-[assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
+[assembly: InternalsVisibleTo("UnoIslandsSamplesApp")]
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.X11")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Win32")]
@@ -23,6 +22,7 @@ using Uno.Foundation.Extensibility;
 
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DGL")]
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics2DSK")]
+[assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DWebGpu")]
 
 [assembly: AssemblyMetadata("IsTrimmable", "True")]
 
@@ -41,5 +41,4 @@ using Uno.Foundation.Extensibility;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.WebAssembly.Browser")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Android")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.AppleUIKit")]
-[assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.HRApp.Skia")]
 [assembly: InternalsVisibleTo("Uno.WinUI.SpellChecking")]

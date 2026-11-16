@@ -36,6 +36,7 @@ internal class Program
 			Console.WriteLine();
 			Console.WriteLine("MCP options:");
 			WriteOption("--mcp-app", "Start in App MCP STDIO mode");
+			WriteOption("--solution <path>", "Serve this .sln/.slnx, wherever it is (MCP mode only; uno_app_select_solution can change it)");
 			WriteOption("--mcp-wait-tools-list", "Wait for upstream server tools before responding to list_tools (MCP mode only)");
 			WriteOption("--force-roots-fallback", "This mode can be used when the MCP client does not support the roots feature");
 			WriteOption("--force-generate-tool-cache", "Deprecated (no-op). Kept for backward compatibility.");

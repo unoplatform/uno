@@ -704,10 +704,16 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"ScrollViewer setting ViewportHeight={ActualHeight}, ViewportWidth={ActualWidth}");
 			}
 
+			var oldSize = new Size(ExtentWidth, ExtentHeight);
+
+			// Only needed to raise the automation events below.
+			var hasAutomationListener = AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged);
+			var (oldViewportWidth, oldViewportHeight, oldScrollableWidth, oldScrollableHeight, oldHorizontalOffset, oldVerticalOffset) = hasAutomationListener
+				? (ViewportWidth, ViewportHeight, ScrollableWidth, ScrollableHeight, HorizontalOffset, VerticalOffset)
+				: default;
+
 			ViewportHeight = vpHeight;
 			ViewportWidth = vpWidth;
-
-			var oldSize = new Size(ExtentWidth, ExtentHeight);
 
 			if (_presenter?.CustomContentExtent is { } customExtent)
 			{
@@ -810,6 +816,28 @@ namespace Microsoft.UI.Xaml.Controls
 			if (oldSize != newSize)
 			{
 				ExtentSizeChanged?.Invoke(this, new(this, oldSize, newSize));
+			}
+
+			// MUX Reference ScrollViewer_Partial.cpp, ScrollViewer::InvalidateScrollInfo_TryUpdateValues:
+			// extent/viewport changes are raised to automation clients too, not only offset changes.
+			if (hasAutomationListener &&
+				(!NumericExtensions.AreClose(oldSize.Width, ExtentWidth) ||
+				!NumericExtensions.AreClose(oldSize.Height, ExtentHeight) ||
+				!NumericExtensions.AreClose(oldViewportWidth, ViewportWidth) ||
+				!NumericExtensions.AreClose(oldViewportHeight, ViewportHeight) ||
+				!NumericExtensions.AreClose(oldScrollableWidth, ScrollableWidth) ||
+				!NumericExtensions.AreClose(oldScrollableHeight, ScrollableHeight)) &&
+				GetOrCreateAutomationPeer() is ScrollViewerAutomationPeer peer)
+			{
+				peer.RaiseAutomationEvents(
+					oldSize.Width,
+					oldSize.Height,
+					oldViewportWidth,
+					oldViewportHeight,
+					MinHorizontalOffset,
+					MinVerticalOffset,
+					oldHorizontalOffset,
+					oldVerticalOffset);
 			}
 		}
 

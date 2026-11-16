@@ -107,12 +107,14 @@ public class Given_CoreWebView2Environment
 		Assert.AreEqual("text/html", response.Headers.GetHeader("CONTENT-TYPE"));
 		Assert.AreEqual(3, response.Headers.Count());
 
+#if HAS_UNO // The WinAppSDK projection of the iterator does not expose the WinRT HasCurrent/Current/MoveNext protocol.
 		var cookies = response.Headers.GetHeaders("Set-Cookie");
 		Assert.IsTrue(cookies.HasCurrent);
 		Assert.AreEqual("a=1", cookies.Current.Value);
 		Assert.IsTrue(cookies.MoveNext());
 		Assert.AreEqual("b=2", cookies.Current.Value);
 		Assert.IsFalse(cookies.MoveNext());
+#endif
 	}
 
 	[TestMethod]

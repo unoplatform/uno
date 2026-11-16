@@ -23,4 +23,9 @@ public enum Win32RenderingBackend
 	/// CPU-based software rendering. No GPU acceleration.
 	/// </summary>
 	Software = 3,
+
+	/// <summary>
+	/// WebGPU, when the app registers the WebGPU graphics backend.
+	/// </summary>
+	WebGpu = 4,
 }

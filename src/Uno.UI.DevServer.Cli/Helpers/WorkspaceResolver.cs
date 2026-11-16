@@ -153,6 +153,11 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger, ISolu
 		return await ResolveSolutionAsync(normalizedRequestedDirectory, solutionPath, candidateSolutions, selectionSource);
 	}
 
+	/// <summary>
+	/// Resolves the workspace of an explicitly chosen solution, wherever it is: <paramref name="candidateSolutions"/>
+	/// are suggestions reported alongside the result, never a filter. The workspace is the folder of the nearest
+	/// global.json above the solution, which must declare an Uno SDK.
+	/// </summary>
 	internal async Task<WorkspaceResolution> ResolveSolutionAsync(
 		string requestedDirectory,
 		string solutionPath,
@@ -163,18 +168,11 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger, ISolu
 		var normalizedSolutionPath = Path.GetFullPath(solutionPath);
 		var globalJsonCache = new Dictionary<string, (string? sdkPackage, string? sdkVersion)>(StringComparer.Ordinal);
 
-		if (!File.Exists(normalizedSolutionPath)
-			|| !candidateSolutions.Any(candidate => PathComparison.PathsEqual(candidate, normalizedSolutionPath)))
+		if (!File.Exists(normalizedSolutionPath))
 		{
-			return new WorkspaceResolution
-			{
-				RequestedWorkingDirectory = normalizedRequestedDirectory,
-				ResolutionKind = candidateSolutions.Count == 0
-					? WorkspaceResolutionKind.NoCandidates
-					: WorkspaceResolutionKind.NoValidWorkspace,
-				CandidateSolutions = candidateSolutions,
-				SelectionSource = selectionSource,
-			};
+			return Unresolved(candidateSolutions.Count == 0
+				? WorkspaceResolutionKind.NoCandidates
+				: WorkspaceResolutionKind.NoValidWorkspace);
 		}
 
 		var resolved = await ResolveSolutionCoreAsync(
@@ -183,13 +181,21 @@ internal sealed class WorkspaceResolver(ILogger<WorkspaceResolver> logger, ISolu
 			candidateSolutions,
 			selectionSource,
 			globalJsonCache);
-		return resolved ?? new WorkspaceResolution
-		{
-			RequestedWorkingDirectory = normalizedRequestedDirectory,
-			ResolutionKind = WorkspaceResolutionKind.NoValidWorkspace,
-			CandidateSolutions = candidateSolutions,
-			SelectionSource = selectionSource,
-		};
+		return resolved is not null
+			? resolved with { IsExplicitSolutionSelection = true }
+			: Unresolved(WorkspaceResolutionKind.NoValidWorkspace);
+
+		// An unresolved explicit selection keeps its path: it stays selected (and watched) until it resolves.
+		WorkspaceResolution Unresolved(WorkspaceResolutionKind kind)
+			=> new()
+			{
+				RequestedWorkingDirectory = normalizedRequestedDirectory,
+				SelectedSolutionPath = normalizedSolutionPath,
+				ResolutionKind = kind,
+				CandidateSolutions = candidateSolutions,
+				SelectionSource = selectionSource,
+				IsExplicitSolutionSelection = true,
+			};
 	}
 
 	private async Task<WorkspaceResolution?> ResolveSolutionCoreAsync(
@@ -299,6 +305,13 @@ internal sealed record WorkspaceResolution
 	public required WorkspaceResolutionKind ResolutionKind { get; init; }
 	public WorkspaceSelectionSource SelectionSource { get; init; } = WorkspaceSelectionSource.Automatic;
 	public IReadOnlyList<string> CandidateSolutions { get; init; } = [];
+
+	/// <summary>
+	/// The solution was chosen explicitly (uno_app_select_solution or a solution path at startup), not discovered: file
+	/// changes re-resolve this solution instead of auto-discovering the workspace again. A directory override such as
+	/// --solution-dir does not set it.
+	/// </summary>
+	public bool IsExplicitSolutionSelection { get; init; }
 
 	public bool IsResolved => !string.IsNullOrWhiteSpace(EffectiveWorkspaceDirectory);
 }

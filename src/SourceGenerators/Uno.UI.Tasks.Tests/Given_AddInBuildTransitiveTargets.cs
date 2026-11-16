@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using AwesomeAssertions;
+﻿using AwesomeAssertions;
 
 namespace Uno.UI.Tasks.Tests;
 
@@ -58,29 +57,13 @@ public class Given_AddInBuildTransitiveTargets
 				</Project>
 				""");
 
-			var startInfo = new ProcessStartInfo("dotnet")
-			{
-				RedirectStandardOutput = true,
-				RedirectStandardError = true,
-				UseShellExecute = false,
-				WorkingDirectory = directory,
-			};
-			foreach (var argument in new[] { "msbuild", projectPath, "-nologo", "-nodeReuse:false", $"-getProperty:{property}" })
-			{
-				startInfo.ArgumentList.Add(argument);
-			}
-			startInfo.Environment["MSBUILDDISABLENODEREUSE"] = "1";
+			var result = DotnetMSBuild.Run(directory, [projectPath, $"-getProperty:{property}"]);
 
-			using var process = Process.Start(startInfo)!;
-			var stdout = process.StandardOutput.ReadToEndAsync();
-			var stderr = process.StandardError.ReadToEndAsync();
-			process.WaitForExit();
-
-			return (process.ExitCode, stdout.Result + stderr.Result);
+			return (result.ExitCode, result.Output);
 		}
 		finally
 		{
-			Directory.Delete(directory, recursive: true);
+			DotnetMSBuild.TryDeleteDirectory(directory);
 		}
 	}
 }

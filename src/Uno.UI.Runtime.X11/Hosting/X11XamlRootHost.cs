@@ -22,7 +22,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.X11;
 
-internal partial class X11XamlRootHost : IXamlRootHost
+internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 {
 	private const int DefaultColorDepth = 32;
 	private const int FallbackColorDepth = 24;
@@ -79,10 +79,12 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private readonly Window _window;
 
 	private int _synchronizedShutDownTopWindowIdleCounter;
+	private readonly X11TitleBarDecorations _titleBarDecorations = new();
 
 	private X11Window? _x11Window;
 	private X11Window? _x11TopWindow;
 	private IX11Renderer? _renderer;
+	private X11Accessibility? _accessibility;
 	// This window's negotiated backend, read by its CompositionTarget when it first needs one.
 	private Uno.UI.Composition.Drawing.IDrawingFactory? _drawingFactory;
 	Uno.UI.Composition.Drawing.IDrawingFactory? IXamlRootHost.Renderer => _drawingFactory;
@@ -125,13 +127,13 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		// Note: the timing of XamlRootMap.Register is very fragile. It needs to be early enough
 		// so things like UpdateWindowPropertiesFromPackage can read the DPI, but also late enough so that
 		// the X11Window is "initialized".
+		// The frame pacer must exist before XamlRootMap.Register, which asks the new host for any frame already
+		// requested, and before UpdateWindowPropertiesFromPackage: reading the DPI creates the DisplayInformation
+		// extension, whose UpdateDetails reports the screen refresh rate through UpdateRenderTimerFps.
+		_framePacer = CreateFramePacer();
+
 		_windowToHost[winUIWindow] = this;
 		XamlRootMap.Register(xamlRoot, this);
-
-		// The frame pacer must exist before UpdateWindowPropertiesFromPackage: reading the DPI
-		// creates the DisplayInformation extension, whose UpdateDetails reports the screen
-		// refresh rate through UpdateRenderTimerFps.
-		_framePacer = CreateFramePacer();
 
 		UpdateWindowPropertiesFromPackage();
 
@@ -143,6 +145,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			using (X11Helper.XLock(RootX11Window.Display))
 			{
+				DisposeAccessibility();
 				XamlRootMap.Unregister(xamlRoot);
 				_windowToHost.Remove(winUIWindow, out var _);
 				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
@@ -172,13 +175,17 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	}
 
 	internal void ExtendContentIntoTitleBar(bool extend)
-	{
-		if (Closed.IsCompleted)
-		{
-			return;
-		}
+		=> SetDecorations(_titleBarDecorations.ExtendContentIntoTitleBar(extend));
 
-		X11Helper.SetMotifWMDecorations(RootX11Window, !extend, 0xFF);
+	internal void SetPresenterHasTitleBar(bool hasTitleBar)
+		=> SetDecorations(_titleBarDecorations.SetPresenterHasTitleBar(hasTitleBar));
+
+	private void SetDecorations(int decorations)
+	{
+		if (!Closed.IsCompleted)
+		{
+			X11Helper.SetMotifWMDecorationsWord(RootX11Window, decorations);
+		}
 	}
 
 	private void UpdateWindowPropertiesFromPackage()
@@ -504,6 +511,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 
 		_ = X11Helper.XClearWindow(RootX11Window.Display, RootX11Window.Window); // the root window is never drawn, just always blank
+
+		InitializeAccessibility();
 	}
 
 	/// <summary>
@@ -630,12 +639,20 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			throw new InvalidOperationException("Could not create correct visual window.\n");
 		}
 
+		// The server can reject the context (e.g. BadValue on X_GLXCreateNewContext) after the driver already returned
+		// a handle; the error only arrives on the next round trip, and our error handler doesn't exit the process.
+		var errorsBefore = X11ApplicationHost.X11ErrorCount;
 		IntPtr context = GlxInterface.glXCreateNewContext(display, bestFbc, GlxConsts.GLX_RGBA_TYPE, IntPtr.Zero, /* True */ 1);
 		if (context == IntPtr.Zero)
 		{
 			throw new InvalidOperationException($"{nameof(GlxInterface.glXCreateNewContext)} failed and returned a null context.\n");
 		}
 		_ = XLib.XSync(display, false);
+		if (X11ApplicationHost.X11ErrorCount != errorsBefore)
+		{
+			GlxInterface.glXDestroyContext(display, context);
+			throw new InvalidOperationException($"{nameof(GlxInterface.glXCreateNewContext)} was rejected by the X server.");
+		}
 
 		XSetWindowAttributes attribs = default;
 		// Setting the colormap here is necessary, otherwise we get a GLX error on some environments. cf. https://github.com/unoplatform/uno/issues/21285
@@ -653,6 +670,18 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			visual->visual,
 			(UIntPtr)XCreateWindowFlags.CWColormap,
 			ref attribs);
+
+		// A context that can't be made current would only fail on every frame, so decline it here and let the
+		// negotiation fall back to the next backend.
+		var madeCurrent = GlxInterface.glXMakeCurrent(display, window, context);
+		_ = GlxInterface.glXMakeCurrent(display, X11Helper.None, IntPtr.Zero);
+		_ = XLib.XSync(display, false);
+		if (!madeCurrent || X11ApplicationHost.X11ErrorCount != errorsBefore)
+		{
+			GlxInterface.glXDestroyContext(display, context);
+			_ = XLib.XDestroyWindow(display, window);
+			throw new InvalidOperationException($"{nameof(GlxInterface.glXMakeCurrent)} failed on the new GLX context.");
+		}
 
 		_ = GlxInterface.glXGetFBConfigAttrib(display, bestFbc, GlxConsts.GLX_STENCIL_SIZE, out var stencil);
 		_ = GlxInterface.glXGetFBConfigAttrib(display, bestFbc, GlxConsts.GLX_SAMPLES, out var samples);
@@ -702,6 +731,31 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	}
 
 	UIElement? IXamlRootHost.RootElement => _window.RootElement;
+
+	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
+
+	internal void InitializeAccessibility()
+	{
+		if (_accessibility is not null)
+		{
+			return;
+		}
+
+		_accessibility = new X11Accessibility(this, _window);
+		_accessibility.Initialize();
+	}
+
+	internal void DisposeAccessibility()
+	{
+		if (_accessibility is not { } accessibility)
+		{
+			return;
+		}
+
+		_accessibility = null;
+		accessibility.Dispose();
+		AccessibilityRouter.NotifyDisposed(this);
+	}
 
 	Windows.UI.Color? IXamlRootHost.BackgroundColor
 	{

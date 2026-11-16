@@ -671,10 +671,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						where sym != null
 						from attribute in sym.GetAllAttributes()
 						where SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, apiExtensionAttributeSymbol)
-						select attribute.ConstructorArguments;
+						select (Assembly: sym, Registration: attribute.ConstructorArguments);
 
-			foreach (var registration in query)
+			foreach (var (assembly, registration) in query)
 			{
+				// The registration is emitted into this project's code, which can only name types it can see.
+				if (FindInaccessibleType(registration) is { } inaccessibleType)
+				{
+					_generatorContext.ReportDiagnostic(Diagnostic.Create(
+						XamlCodeGenerationDiagnostics.InaccessibleApiExtensionRule,
+						Location.None,
+						registration.ElementAt(0).Value,
+						assembly.Name,
+						inaccessibleType.ToDisplayString()));
+					continue;
+				}
+
 				if (registration.Length == 2)
 				{
 					writer.AppendLineIndented($"global::Uno.Foundation.Extensibility.ApiExtensibility.Register(typeof(global::{registration.ElementAt(0).Value}), o => new global::{registration.ElementAt(1).Value}(o));");
@@ -705,6 +717,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					throw new InvalidOperationException($"ApiExtensionAttribute should takes 2 to 4 arguments.");
 				}
 			}
+		}
+
+		private ITypeSymbol? FindInaccessibleType(ImmutableArray<TypedConstant> registration)
+		{
+			foreach (var argument in registration)
+			{
+				if (argument.Value is ITypeSymbol type
+					&& !_metadataHelper.Compilation.IsSymbolAccessibleWithin(type, _metadataHelper.Compilation.Assembly))
+				{
+					return type;
+				}
+			}
+
+			return null;
 		}
 
 		private void InitializeRemoteControlClient(IIndentedStringBuilder writer)
@@ -2328,6 +2354,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			foreach (var member in xamlObjectDefinition.Members)
 			{
 				if (member.Member.Name == memberName)
+				{
+					return member;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
+		/// Finds the x:Name or Name of an element, skipping attached properties such as AutomationProperties.Name.
+		/// </summary>
+		private XamlMemberDefinition? FindNameMember(XamlObjectDefinition xamlObjectDefinition)
+		{
+			foreach (var member in xamlObjectDefinition.Members)
+			{
+				if (member.Member.Name == "Name" && !IsAttachedProperty(member))
 				{
 					return member;
 				}
@@ -6780,7 +6822,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			foreach (var element in EnumerateSubElements(topLevelControl))
 			{
-				var nameMember = FindMember(element, "Name");
+				var nameMember = FindNameMember(element);
 
 				if (nameMember?.Value is string name)
 				{
@@ -6799,7 +6841,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var list = new List<string>();
 			foreach (var element in EnumerateSubElements(xamlObjectDefinition, stoppingCondition: IsNewScope))
 			{
-				var nameMember = FindMember(element, "Name");
+				var nameMember = FindNameMember(element);
 
 				if (nameMember?.Value is string name)
 				{
@@ -6913,7 +6955,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				|| loadMember?.Value?.ToString()?.ToLowerInvariant() == "false"
 				|| hasLoadMarkup)
 			{
-				var nameMember = FindMember(definition, "Name");
+				var nameMember = FindNameMember(definition);
 				var nameField = nameMember is { Value: string name } ? SanitizeResourceName(name) : null;
 
 				if (loadMember != null && nameMember == null)

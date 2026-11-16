@@ -1,4 +1,4 @@
 ﻿
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("SamplesApp.Windows")]
 [assembly: System.Runtime.CompilerServices.InternalsVisibleTo("SamplesApp")]
-[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("UnoIslandsSamplesApp")]
