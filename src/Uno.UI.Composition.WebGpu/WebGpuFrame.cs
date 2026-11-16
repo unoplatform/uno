@@ -434,6 +434,18 @@ internal sealed unsafe partial class WebGpuFrame
 			if (op.Kind == DrawKind.BackdropSegment) { cover = default; coverArea = 0f; continue; }
 			if (op.Bounds == default) { continue; }
 			var touched = PixelsTouched(op.Bounds);
+			if (bound.X > float.MinValue)
+			{
+				// A bounded pass is scissored to its bound, so that is all an op can touch: a full-window background is
+				// then hidden by whatever covers the bound, and an op wholly outside it draws nothing.
+				touched = Meet(touched, PixelsTouched(bound));
+				if (touched.Z < touched.X || touched.W < touched.Y)
+				{
+					ops.RemoveAt(i);
+					StatCulled++;
+					continue;
+				}
+			}
 			if (coverArea > 0f && Contains(cover, touched))
 			{
 				ops.RemoveAt(i);
