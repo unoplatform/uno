@@ -243,6 +243,80 @@
 		<SkipValidatePackage Condition="'$(_IsCiBuild)'=='true' and '$(_IsStableReleaseBranch)'=='true'">true</SkipValidatePackage>
 	</PropertyGroup>
 
+	<!--
+		Baseline of the package diff. Without one, generatepkgdiff downloads the latest stable from nuget.org,
+		which is 7.0 since 7.0 shipped: 6.8 doesn't have the API 7.0 added, so the diff reports all of it as removed.
+		This branch is compared with the latest 6.7 release on nuget.org instead, the stable line 6.8 must stay
+		compatible with, so each 6.7 service release becomes the baseline without a change here.
+		Set UnoPackageDiffBaselineVersion to compare with one exact version instead.
+	-->
+	<PropertyGroup>
+		<UnoPackageDiffBaselineLine Condition="'$(UnoPackageDiffBaselineLine)'==''">6.7</UnoPackageDiffBaselineLine>
+	</PropertyGroup>
+
+	<!--
+		Picks the highest stable Major.Minor.Patch of a line that every package has, from their nuget.org flat container
+		version indexes. A release whose packages are still being pushed, or that lacks one of them, is skipped.
+		The indexes are {"versions":["6.7.424",...]}: matching a whole quoted "Line.N" string is enough, as no other
+		string in them has that form, and it keeps the task free of a JSON dependency on .NET Framework MSBuild.
+	-->
+	<UsingTask TaskName="_UnoResolveLatestVersionOfLine" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+		<ParameterGroup>
+			<VersionIndexFiles ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+			<Line ParameterType="System.String" Required="true" />
+			<LatestVersion ParameterType="System.String" Output="true" />
+		</ParameterGroup>
+		<Task>
+			<Using Namespace="System.Collections.Generic" />
+			<Using Namespace="System.IO" />
+			<Using Namespace="System.Linq" />
+			<Using Namespace="System.Text.RegularExpressions" />
+			<Code Type="Method" Language="cs"><![CDATA[
+				public override bool Execute()
+				{
+					var pattern = new Regex("\"(" + Regex.Escape(Line) + "\\.\\d+)\"");
+					HashSet<Version> common = null;
+					Version newest = null;
+
+					foreach (var indexFile in VersionIndexFiles)
+					{
+						var versions = new HashSet<Version>(
+							pattern.Matches(File.ReadAllText(indexFile.ItemSpec)).Cast<Match>().Select(m => Version.Parse(m.Groups[1].Value)));
+
+						if (versions.Count > 0 && (newest == null || versions.Max() > newest))
+						{
+							newest = versions.Max();
+						}
+
+						if (common == null)
+						{
+							common = versions;
+						}
+						else
+						{
+							common.IntersectWith(versions);
+						}
+					}
+
+					if (common == null || common.Count == 0)
+					{
+						Log.LogError("No stable " + Line + ".x version is on nuget.org for all the compared packages.");
+						return false;
+					}
+
+					var latest = common.Max();
+					if (latest < newest)
+					{
+						Log.LogMessage(MessageImportance.High, newest + " isn't on nuget.org for all the compared packages yet, " + latest + " is used.");
+					}
+
+					LatestVersion = latest.ToString();
+					return true;
+				}
+			]]></Code>
+		</Task>
+	</UsingTask>
+
 	<Target Name="ValidatePackage" AfterTargets="BuildNuGetPackage" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(SkipValidatePackage)'!='true'">
 		<ItemGroup>
 			<_diffPackage Include="Uno.WinUI" Other="Uno.WinUI.$(NBGV_SemVer2).nupkg" />
@@ -275,8 +349,50 @@
 		<MakeDir Directories="$(OutputDir)\ApiDiff" />
 
 		<ItemGroup>
+			<_diffPackage>
+				<!-- nuget.org's flat container only serves lowercase ids. -->
+				<BaselineId>$([System.String]::Copy('%(Identity)').ToLowerInvariant())</BaselineId>
+			</_diffPackage>
+		</ItemGroup>
+
+		<PropertyGroup>
+			<_PackageDiffVersionIndexDir>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '$(BaseIntermediateOutputPath)', 'PackageDiffBaseline', 'versions'))</_PackageDiffVersionIndexDir>
+		</PropertyGroup>
+
+		<DownloadFile
+			Condition="'$(UnoPackageDiffBaselineVersion)'=='' and '$(UnoPackageDiffBaselineLine)'!=''"
+			SourceUrl="https://api.nuget.org/v3-flatcontainer/%(_diffPackage.BaselineId)/index.json"
+			DestinationFolder="$(_PackageDiffVersionIndexDir)"
+			DestinationFileName="%(_diffPackage.BaselineId).json"
+			SkipUnchangedFiles="false"
+			Retries="3"
+			RetryDelayMilliseconds="5000" />
+
+		<_UnoResolveLatestVersionOfLine
+			Condition="'$(UnoPackageDiffBaselineVersion)'=='' and '$(UnoPackageDiffBaselineLine)'!=''"
+			VersionIndexFiles="@(_diffPackage->'$(_PackageDiffVersionIndexDir)%(BaselineId).json')"
+			Line="$(UnoPackageDiffBaselineLine)">
+			<Output TaskParameter="LatestVersion" PropertyName="UnoPackageDiffBaselineVersion" />
+		</_UnoResolveLatestVersionOfLine>
+
+		<Message Importance="high" Condition="'$(UnoPackageDiffBaselineVersion)'!=''" Text="Package diff baseline: $(UnoPackageDiffBaselineVersion)" />
+
+		<!-- generatepkgdiff only resolves a package id to the latest stable, so the baseline is passed as a downloaded .nupkg. -->
+		<PropertyGroup Condition="'$(UnoPackageDiffBaselineVersion)'!=''">
+			<_PackageDiffBaselineDir>$([MSBuild]::NormalizeDirectory('$(MSBuildProjectDirectory)', '$(BaseIntermediateOutputPath)', 'PackageDiffBaseline', '$(UnoPackageDiffBaselineVersion)'))</_PackageDiffBaselineDir>
+		</PropertyGroup>
+
+		<DownloadFile
+			Condition="'$(UnoPackageDiffBaselineVersion)'!=''"
+			SourceUrl="https://api.nuget.org/v3-flatcontainer/%(_diffPackage.BaselineId)/$(UnoPackageDiffBaselineVersion)/%(_diffPackage.BaselineId).$(UnoPackageDiffBaselineVersion).nupkg"
+			DestinationFolder="$(_PackageDiffBaselineDir)"
+			Retries="3"
+			RetryDelayMilliseconds="5000" />
+
+		<ItemGroup>
 			<_DiffPackageInvocation Include="@(_diffPackage)">
-				<DiffBase>%(Identity)</DiffBase>
+				<DiffBase Condition="'$(UnoPackageDiffBaselineVersion)'==''">%(Identity)</DiffBase>
+				<DiffBase Condition="'$(UnoPackageDiffBaselineVersion)'!=''">$(_PackageDiffBaselineDir)%(BaselineId).$(UnoPackageDiffBaselineVersion).nupkg</DiffBase>
 				<DiffOther>%(Other)</DiffOther>
 				<DiffOutput>$(OutputDir)\ApiDiff\ApiDiff.%(Identity).$(NBGV_SemVer2).md</DiffOutput>
 			</_DiffPackageInvocation>
