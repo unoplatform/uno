@@ -1,9 +1,8 @@
-// <auto-provisioning loader> Resolves the "webgpu" DllImport to the pinned wgpu-native (modern ABI). On desktop the
-// native is provisioned under the DllImport's own name (libwebgpu.so / webgpu.dll / libwebgpu.dylib, see
-// wgpu-native.targets), so the runtime's default resolution finds it (app dir, runtimes/<rid>/native via deps.json,
-// rpath/LD_LIBRARY_PATH) with no explicit probing here. This resolver only covers the cases default resolution can't:
-// Apple static linking (symbols in the main program image) and Android (packed as libwgpu_native.so per ABI).
-// Registered via a module initializer so it's active before any P/Invoke.
+// Resolves the "webgpu" DllImport to the WebGPU library the app ships: Dawn, under the DllImport's own name (webgpu.dll /
+// libwebgpu.so / libwebgpu.dylib) so default resolution finds it, or wgpu-native when UnoWebGpuNative=WgpuNative selects
+// it, under its own name (wgpu_native.dll / libwgpu_native.*). This resolver covers what default resolution can't: the
+// wgpu-native name, the runtimes/<rid>/native folder of an app built for several platforms, Apple static linking (symbols
+// in the main program image) and Android. Registered via a module initializer so it's active before any P/Invoke.
 #nullable enable
 using System;
 using System.Reflection;
@@ -97,11 +96,11 @@ internal static class WebGpuLoader
 			}
 		}
 
-		// Desktop: an app built on one OS ships every desktop platform's native under runtimes/<rid>/native (the
-		// names collide across architectures, so they cannot all sit next to the app); load this platform's.
-		if (!OperatingSystem.IsBrowser() && TryLoadFromRuntimesFolder() is var ridNative && ridNative != IntPtr.Zero)
+		// Desktop: next to the app, or under runtimes/<rid>/native for an app built on one OS for every desktop platform
+		// (the names collide across architectures, so they cannot all sit next to the app). Dawn first, then wgpu-native.
+		if (!OperatingSystem.IsBrowser() && TryLoadDesktop() is var desktop && desktop != IntPtr.Zero)
 		{
-			return ridNative;
+			return desktop;
 		}
 
 		// Otherwise decline so the runtime's default resolution handles "webgpu" (desktop finds the
@@ -109,12 +108,23 @@ internal static class WebGpuLoader
 		return IntPtr.Zero;
 	}
 
-	private static IntPtr TryLoadFromRuntimesFolder()
+	private static IntPtr TryLoadDesktop()
 	{
-		var fileName = OperatingSystem.IsWindows() ? "webgpu.dll"
-			: OperatingSystem.IsMacOS() ? "libwebgpu.dylib"
-			: "libwebgpu.so";
-		var path = System.IO.Path.Combine(AppContext.BaseDirectory, "runtimes", RuntimeInformation.RuntimeIdentifier, "native", fileName);
-		return System.IO.File.Exists(path) && NativeLibrary.TryLoad(path, out var handle) ? handle : IntPtr.Zero;
+		var (dawn, wgpu) = OperatingSystem.IsWindows() ? ("webgpu.dll", "wgpu_native.dll")
+			: OperatingSystem.IsMacOS() ? ("libwebgpu.dylib", "libwgpu_native.dylib")
+			: ("libwebgpu.so", "libwgpu_native.so");
+		var ridFolder = System.IO.Path.Combine(AppContext.BaseDirectory, "runtimes", RuntimeInformation.RuntimeIdentifier, "native");
+		foreach (var file in new[] { dawn, wgpu })
+		{
+			foreach (var folder in new[] { AppContext.BaseDirectory, ridFolder })
+			{
+				var path = System.IO.Path.Combine(folder, file);
+				if (System.IO.File.Exists(path) && NativeLibrary.TryLoad(path, out var handle))
+				{
+					return handle;
+				}
+			}
+		}
+		return IntPtr.Zero;
 	}
 }

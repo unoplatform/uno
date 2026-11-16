@@ -17,8 +17,9 @@
 		<Description>WebGPU drawing backend for Uno Platform (implements the neutral IRenderBackend seam).</Description>
 	</PropertyGroup>
 
-	<!-- Modern-ABI native (wgpu-native, pinned) provisioned at build via a GitHub-release fetch;
-	     SilkCompat's generated binding (in the init half) P/Invokes it via a DllImportResolver. -->
+	<!-- The WebGPU library: Dawn from its package (the default), or with UnoWebGpuNative=WgpuNative the pinned
+	     wgpu-native, provisioned at build via a GitHub-release fetch. SilkCompat's generated binding (in the init half)
+	     P/Invokes either through a DllImportResolver. -->
 	<Import Project="wgpu-native.targets" />
 
 	<ItemGroup>
@@ -29,5 +30,6 @@
 		<ProjectReference Include="..\Uno.UI.Composition.WebGpu.Init\Uno.UI.Composition.WebGpu.Init.csproj" />
 		<PackageReference Include="Silk.NET.WebGPU" />
 		<PackageReference Include="Silk.NET.WebGPU.Extensions.WGPU" />
+		<PackageReference Include="Uno.WinUI.Composition.WebGpu.Dawn" />
 	</ItemGroup>
 </Project>
