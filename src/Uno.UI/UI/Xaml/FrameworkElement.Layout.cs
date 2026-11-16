@@ -944,8 +944,6 @@ namespace Microsoft.UI.Xaml
 				|| newRect.Height < 0
 				|| double.IsNaN(newRect.Width)
 				|| double.IsNaN(newRect.Height)
-				|| double.IsNaN(newRect.X)
-				|| double.IsNaN(newRect.Y)
 			)
 			{
 				throw new InvalidOperationException($"{FormatDebugName()}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
