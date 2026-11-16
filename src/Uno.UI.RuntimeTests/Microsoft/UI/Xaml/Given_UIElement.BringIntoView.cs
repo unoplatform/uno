@@ -20,6 +20,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			panel.BringIntoViewRequested += (_, _) => raised = true;
 
 			var element = new Border { Width = 50, Height = 50 };
+
+			// WinUI reports IsLoaded as true on entering the live tree unless a Loaded handler is still pending.
+			element.Loaded += (_, _) => { };
 			panel.Children.Add(element);
 			panel.UpdateLayout();
 
