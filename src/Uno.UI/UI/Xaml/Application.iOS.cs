@@ -28,6 +28,8 @@ public partial class Application
 			OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
 		}
 		_preventSecondaryActivationHandling = false;
+
+		completionHandler?.Invoke(true);
 	}
 
 	public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations(UIApplication application, [Transient] UIWindow forWindow)

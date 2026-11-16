@@ -54,6 +54,8 @@ public App : Application
 > [!IMPORTANT]
 > Make sure to call the `base` methods when you override key application lifecycle methods, so that the internals of Uno Platform are still properly executed.
 
+The base `PerformActionForShortcutItem` calls the completion handler it is given. An override that calls `base` must not call that handler again.
+
 ## Scene life cycle
 
 Apps built with the iOS 27 SDK must use the UIKit scene life cycle, or they quit at launch. Uno Platform adopts it on the app's behalf, for both Skia and native rendering: its application delegate assigns an Uno Platform scene delegate to the app's scene, so `Info.plist` needs no scene manifest.
