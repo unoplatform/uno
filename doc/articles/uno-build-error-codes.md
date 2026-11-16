@@ -566,3 +566,14 @@ The change was not applied, and the running app is unaffected. Hot Reload stays 
 - Or restart the app to pick up the change.
 
 A known cause is [dotnet/roslyn#86045](https://github.com/dotnet/roslyn/issues/86045): adding or changing an async lambda that awaits a `dynamic` value. Uno.Extensions MVUX generated such code for commands before [unoplatform/uno.extensions#3227](https://github.com/unoplatform/uno.extensions/issues/3227), so changing a command's parameters could trigger it.
+
+### UNOHR0002
+
+Hot Reload was blocked by compilation errors, or by a XAML generator error, in a project whose target framework defaults to a newer C# version than the compiler Hot Reload uses. Your build uses the .NET SDK's compiler, but Hot Reload compiles your changes with the compiler embedded in the Uno DevServer. When that compiler is older, syntax from the newer C# version builds fine but fails in Hot Reload, and every change to that project is blocked, XAML-only changes included. A XAML error can come from the same cause, for example an `x:Bind` to a member declared after that syntax. The message names the project, its default C# version and the newest version Hot Reload supports.
+
+To fix it, either:
+
+- Update Uno.Sdk to a version whose DevServer supports that C# version.
+- Or set `<LangVersion>` in the project to the version the message names, for example `<LangVersion>14.0</LangVersion>`, and avoid newer syntax.
+
+For example, `net11.0` projects default to C# 15, so a labeled `continue outer;` blocks Hot Reload until the DevServer embeds a C# 15 compiler.
