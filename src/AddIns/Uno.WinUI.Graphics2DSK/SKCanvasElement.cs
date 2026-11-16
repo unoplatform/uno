@@ -107,9 +107,12 @@ public abstract partial class SKCanvasElement : Grid
 	// backend. The surface persists across frames and is recreated only when the device size changes.
 	internal void PaintSoftware(IDrawingSession session, Vector2 size)
 	{
+		// A session without an SKCanvas records in the visual's logical space and applies the device scale on replay,
+		// so its matrix never carries it: without this factor the surface is rasterized at 1x and stretched.
+		var deviceScale = (float)(XamlRoot?.RasterizationScale ?? 1);
 		var m = session.TotalMatrix;
-		var sx = MathF.Max(1e-3f, new Vector2(m.M11, m.M12).Length());
-		var sy = MathF.Max(1e-3f, new Vector2(m.M21, m.M22).Length());
+		var sx = MathF.Max(1e-3f, new Vector2(m.M11, m.M12).Length() * deviceScale);
+		var sy = MathF.Max(1e-3f, new Vector2(m.M21, m.M22).Length() * deviceScale);
 		var w = Math.Max(1, (int)MathF.Ceiling(size.X * sx));
 		var h = Math.Max(1, (int)MathF.Ceiling(size.Y * sy));
 		if (_softSurface is null || _softW != w || _softH != h)

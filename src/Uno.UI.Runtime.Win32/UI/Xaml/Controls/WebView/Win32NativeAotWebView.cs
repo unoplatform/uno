@@ -190,8 +190,28 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IA
 			ref _moveFocusRequestedToken
 		).ThrowOnError();
 
+		_controller.add_GotFocus(
+			new WebView2.Utilities.CoreWebView2FocusChangedEventHandler((_, _) =>
+			{
+				if (weakRef.TryGetTarget(out var target)) target.Controller_GotFocus();
+			}),
+			ref _gotFocusToken
+		).ThrowOnError();
+
 		_eventsRegistered = true;
 		UpdateDocumentTitle();
+	}
+
+	private void Controller_GotFocus()
+	{
+		// The browser lives in a native child HWND, so the click that put Win32 focus in it never
+		// reaches XAML: the previously focused element (e.g. a TextBox) would keep XAML focus, and
+		// with it its caret, while the keystrokes go to the browser. Move XAML focus to the WebView,
+		// as WinUI does when its WebView2 is pressed (WebView2::HandlePointerPressed).
+		if (_coreWebView.Owner is Control { IsTabStop: true, FocusState: FocusState.Unfocused } owner)
+		{
+			owner.Focus(FocusState.Pointer);
+		}
 	}
 
 	private void ForwardBackgroundToPresenter()

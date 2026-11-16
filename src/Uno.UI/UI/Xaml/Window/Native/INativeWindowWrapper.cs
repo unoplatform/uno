@@ -63,7 +63,8 @@ internal interface INativeWindowWrapper : INativeAppWindow
 	/// <remarks>
 	/// Only heads that implement <see cref="SetSystemBackdrop"/> render a material, and even those are
 	/// gated on the OS version. Callers use this to decide whether to drop the root's opaque background,
-	/// so a head that would leave nothing behind it must answer false.
+	/// so a head that would leave nothing behind it must answer false. The answer can change while the
+	/// window lives; a head then calls <c>Window.RefreshSystemBackdropSupport</c>.
 	/// </remarks>
 	bool IsSystemBackdropSupported(Microsoft.UI.Xaml.Media.SystemBackdrop backdrop);
 }

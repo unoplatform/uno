@@ -102,7 +102,6 @@ for($i = 0; $i -lt $projects.Length; $i++)
 
     # Disable most costly features to speed up the build
     $extraArgs=@(
-        "-p:RunAOTCompilation=false",
         "-p:MtouchUseLlvm=false",
         "-p:MtouchLink=none",
         "-p:WasmShellILLinkerEnabled=false",

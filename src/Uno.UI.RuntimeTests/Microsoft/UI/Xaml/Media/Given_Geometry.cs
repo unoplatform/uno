@@ -266,7 +266,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			var positions = System.Runtime.InteropServices.MemoryMarshal.Cast<SkiaSharp.SKPoint, System.Numerics.Vector2>(
 				skFont.GetGlyphPositions(text, new SkiaSharp.SKPoint(0, 0)));
-			var font = new Uno.UI.Composition.Drawing.SkiaFont(skFont);
+			var font = new Uno.UI.Composition.Drawing.SkiaFont(skFont, new Uno.UI.Composition.Drawing.SkiaFontFace(skFont.Typeface));
 			var elements = new System.Collections.Generic.List<Uno.UI.Composition.Drawing.GlyphRunElement>();
 			font.BuildGlyphRun(new global::Uno.UI.Composition.Drawing.ManagedGeometryFactory(), glyphs, positions, 0f, elements);
 			// Per-glyph elements, and the geometry is the font's cache-owned outline: take the last glyph and do
@@ -294,7 +294,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				return; // the matched font doesn't actually carry this emoji glyph
 			}
 
-			var font = new Uno.UI.Composition.Drawing.SkiaFont(skFont);
+			var font = new Uno.UI.Composition.Drawing.SkiaFont(skFont, new Uno.UI.Composition.Drawing.SkiaFontFace(skFont.Typeface));
 			var positions = System.Runtime.InteropServices.MemoryMarshal.Cast<SkiaSharp.SKPoint, System.Numerics.Vector2>(
 				skFont.GetGlyphPositions("\U0001F600", new SkiaSharp.SKPoint(0, 0)));
 

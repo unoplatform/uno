@@ -3,7 +3,7 @@
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 		<!-- This is the SkiaSharp-free managed drawing backend used on ALL Skia platforms incl. Skia-on-Android, so it
 		     must stay net10.0 and NOT platform-cross-target under a mobile override — otherwise net10.0 consumers hit
-		     NU1201. Set the flag targetframework-override.props reads explicitly (mirrors Uno.UI.Composition.SkiaBackend
+		     NU1201. Set the flag targetframework-override.props reads explicitly (mirrors Uno.UI.Composition.Skia
 		     and Uno.UI.Composition.Drawing). Must precede the import below, which reads it. -->
 		<UnoShouldUseNoPlatformOverride>true</UnoShouldUseNoPlatformOverride>
 	</PropertyGroup>

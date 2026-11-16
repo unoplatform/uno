@@ -13,6 +13,7 @@ internal sealed partial class Win32NativeAotWebView : INativeWebViewController, 
 {
 	private WebView2.EventRegistrationToken _processFailedToken;
 	private WebView2.EventRegistrationToken _moveFocusRequestedToken;
+	private WebView2.EventRegistrationToken _gotFocusToken;
 
 	public event EventHandler<CoreWebView2MoveFocusRequestedEventArgs>? MoveFocusRequested;
 

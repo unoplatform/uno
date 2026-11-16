@@ -1,7 +1,9 @@
 #nullable enable
 
 using System;
+using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.AppleUIKit;
 
@@ -15,15 +17,26 @@ namespace Uno.UI.Runtime.AppleUIKit;
 /// </remarks>
 internal static class NativeCallbackGuard
 {
-	internal static void Run(Action action)
+	/// <returns>Whether <paramref name="action"/> completed without throwing.</returns>
+	internal static bool Run(Action action, [CallerMemberName] string callback = "")
 	{
 		try
 		{
 			action();
+			return true;
 		}
 		catch (Exception ex)
 		{
+			// Logged as well, since an app that doesn't handle UnhandledException would otherwise see nothing.
+			var log = typeof(NativeCallbackGuard).Log();
+
+			if (log.IsEnabled(LogLevel.Error))
+			{
+				log.Error($"The {callback} callback failed.", ex);
+			}
+
 			Application.Current?.RaiseRecoverableUnhandledException(ex);
+			return false;
 		}
 	}
 }

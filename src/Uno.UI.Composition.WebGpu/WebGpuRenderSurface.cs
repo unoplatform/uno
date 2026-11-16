@@ -1,4 +1,4 @@
-﻿// A render target the backend owns: its MSAA colour and the single-sample view it resolves into. Also the
+﻿// A render target the backend renders into: a colour texture and its view. Also the
 // per-recording resources a session hands back when it is released.
 #nullable disable
 using System;
@@ -15,9 +15,9 @@ using WColor = Windows.UI.Color;
 
 namespace Uno.UI.Composition.WebGpu;
 
-// Renderer-internal render surface (main pass + offscreen layers): the MSAA colour the backend owns,
-// its own colour for an offscreen, a pooled one for a layer, the host's IWebGpuRenderTarget.ColorView for the main
-// pass. Not the neutral seam type — that is the host's WebGpuSwapchainTarget.
+// Renderer-internal render surface (main pass + offscreen layers): its own colour for an offscreen, a pooled one for
+// a layer, the host's IWebGpuRenderTarget.ColorView for the main pass. Not the neutral seam type — that is the host's
+// WebGpuSwapchainTarget.
 internal sealed unsafe class WebGpuRenderSurface
 {
 	public Texture* Tex;
@@ -26,8 +26,8 @@ internal sealed unsafe class WebGpuRenderSurface
 	public int Height { get; }
 	public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
 
-	// Only the dedicated offscreen owns its colour. A pooled surface's is reclaimed by the pool; a swapchain surface's
-	// is the per-frame acquired image, borrowed from the context, which releases it in Present.
+	// Only the dedicated offscreen owns its colour. A pooled surface's is reclaimed by the pool; the main pass's is the
+	// host's target view, which the host owns.
 	private readonly bool _ownsColor;
 	private readonly WebGPU _api;
 
@@ -65,7 +65,7 @@ internal sealed unsafe class WebGpuRenderSurface
 		View = _api.TextureCreateView(Tex, null);
 	}
 
-	// The main pass: the colour is the acquired swapchain image, set per frame by the factory.
+	// The main pass: the colour is the host's target view, set by the factory; nothing is allocated here.
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, bool externalColor)
 	{
 		_api = device.Api;

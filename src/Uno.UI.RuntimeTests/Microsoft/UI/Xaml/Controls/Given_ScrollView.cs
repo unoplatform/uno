@@ -217,6 +217,13 @@ public class Given_ScrollView
 			.Select(sample => sample.Ms - durationMs * Math.Asin(sample.Fraction) * 2 / Math.PI)
 			.ToList();
 
+		// A lane whose frames take longer than half the motion cannot sample the curve twice.
+		var frameMs = samples.Zip(samples.Skip(1), (previous, next) => next.Ms - previous.Ms).DefaultIfEmpty(double.PositiveInfinity).Min();
+		if (starts.Count < 2 && frameMs > durationMs / 2)
+		{
+			Assert.Inconclusive($"frames take {frameMs:F0} ms, too long to sample a {durationMs:F0} ms curve twice");
+		}
+
 		Assert.IsTrue(starts.Count >= 2, $"expected the notch to span several frames, got {starts.Count}");
 		Assert.IsTrue(
 			starts.Max() - starts.Min() < 3,

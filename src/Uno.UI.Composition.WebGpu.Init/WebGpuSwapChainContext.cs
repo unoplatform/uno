@@ -81,11 +81,23 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 	/// (use one of the CreateXxxSurface factories).</param>
 	public WebGpuSwapChainContext(TextureFormat colorFormat, SurfaceFactory createSurface)
 	{
-		_device = WebGpuInitDevice.GetShared(colorFormat);
-		_surface = createSurface(_device.Inst);
+		_device = WebGpuInitDevice.GetShared(colorFormat, createSurface, out _surface);
 		if (_surface == null)
 		{
 			throw new InvalidOperationException("Failed to create the wgpu surface for this window.");
+		}
+
+		// The adapter was chosen for the first window; a later one it can't present to would abort the process on
+		// configure, so refuse it here instead.
+		SurfaceCapabilities caps = default;
+		Api.SurfaceGetCapabilities(_surface, _device.Adapter, &caps);
+		var formatCount = caps.FormatCount;
+		Api.SurfaceCapabilitiesFreeMembers(caps);
+		if (formatCount == 0)
+		{
+			Api.SurfaceRelease(_surface);
+			_surface = null;
+			throw new InvalidOperationException("WebGPU: the adapter cannot present to this window.");
 		}
 	}
 
@@ -114,13 +126,30 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		return _target!;
 	}
 
+	/// <summary>
+	/// False when the last present was dropped in a way a retry can fix (a timed-out or stale acquire); a host that
+	/// retries such frames reads it. A hidden window reports true: nothing can show until it is visible again.
+	/// </summary>
+	internal bool LastPresentSucceeded { get; private set; }
+
+	// A rendered frame the window has not shown yet. The offscreen keeps it, so the next present blits it again
+	// rather than leaving the window behind until something else changes.
+	private bool _presentOwed;
+
 	public void Present()
 	{
-		if (_disposed || !_frameAcquired || _target is null)
+		if (_disposed || _target is null)
+		{
+			return;
+		}
+
+		// Reconfiguring recreates the offscreen, so once the surface is stale only a newly rendered frame can be shown.
+		if (!_frameAcquired && (!_presentOwed || !_configured))
 		{
 			return;
 		}
 		_frameAcquired = false;
+		_presentOwed = true;
 
 		// wgpu's Vulkan swapchain gives the acquire a fixed one-second wait and reports running past it as a lost
 		// device (gfx-rs/wgpu#9029). On a CPU rasterizer the frame just submitted can take longer than that (the
@@ -149,6 +178,10 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 				_configured = false;
 			}
 
+			// An occluded surface presented nothing, so the window keeps what it showed before it was hidden. Report it
+			// so the render thread retries (with backoff) until the window shows again; nothing else asks for a frame
+			// when it is restored.
+			LastPresentSucceeded = false;
 			return;
 		}
 
@@ -171,6 +204,8 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		Api.QueueSubmit(_device.Q, 1, &cb);
 
 		Api.SurfacePresent(_surface);
+		_presentOwed = false;
+		LastPresentSucceeded = true;
 
 		Api.CommandBufferRelease(cb);
 		Api.CommandEncoderRelease(enc);

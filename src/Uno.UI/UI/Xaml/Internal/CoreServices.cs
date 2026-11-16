@@ -70,7 +70,7 @@ namespace Uno.UI.Xaml.Core
 		}
 
 		// Any root, not only the first: a minimized main window must not stop the others' layout and frame ticks.
-		private static bool HasRootWithBounds()
+		internal static bool HasRootWithBounds()
 		{
 			var contentRoots = CoreServices.Instance.ContentRootCoordinator.ContentRoots;
 			if (contentRoots.Count == 0)
@@ -118,6 +118,15 @@ namespace Uno.UI.Xaml.Core
 
 		private static void UpdateLayoutForAllRoots()
 		{
+			// MUX Reference: xcpcore.cpp:6422-6426 — the layout pass is a synchronous callout to app code,
+			// and applying templates makes a great many elements enter the tree, each of which resolves its
+			// theme references. WinUI caches those lookups for the duration of the pass (its scenario 2,
+			// "spares ~69k ResourceDictionary lookups"). ResourceDictionary already evicts affected entries
+			// when a dictionary is mutated (ResourceDictionary.Set/Remove call ThemeWalkResourceCache.RemoveCacheEntry,
+			// as MUX CResourceDictionary::AddKey/RemoveKey do),
+			// which is what makes caching safe across the callout.
+			using var themeResourceCacheSession = Instance.ThemeWalkResourceCache.BeginCachingThemeResources();
+
 			// NOTE: The below code should really be replaced with just this:
 			// ----------------------------
 			//if (GetXamlRoot()?.VisualTree?.RootElement is { } root)
@@ -133,6 +142,8 @@ namespace Uno.UI.Xaml.Core
 			// -----------------------------
 			// However, as we don't yet have XamlIslandRootCollection, we will need to enumerate the windows through ApplicationHelper.Windows.
 
+			PendingImageReleases.OnLayoutPassStarting();
+
 			// Before layout and before the record: what the frame's motion writes is then an ordinary pre-frame
 			// invalidation, and the layout it dirties is cleaned by this same tick instead of the next one.
 			CompositionTarget.RaiseFrameTick();
@@ -145,6 +156,9 @@ namespace Uno.UI.Xaml.Core
 			{
 				UpdateLayoutAndRaiseLoaded();
 			}
+
+			// Loaded has been raised for what this pass brought back into the tree: release the undisplayed images now due.
+			PendingImageReleases.OnLayoutPassCompleted();
 
 #if __SKIA__
 			foreach (var window in ApplicationHelper.WindowsInternal)

@@ -144,6 +144,12 @@ internal abstract class Win32NativeWebViewBase : INativeWebView, IReportsCancele
 
 	protected void DestroyWindow()
 	{
+		// A derived constructor that failed (e.g. WebView2Aot missing) leaves the base unconstructed.
+		if (Presenter is null || Hwnd == HWND.Null)
+		{
+			return;
+		}
+
 		void DestroyWindowCore()
 		{
 			if (Interlocked.Exchange(ref _destroyWindowRequested, 1) != 0)

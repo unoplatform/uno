@@ -276,6 +276,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.WaitFor(() => matched, 60000);
 		}
 #pragma warning restore MSTEST0045
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Other_Fallback_Fonts_Loaded_Then_Arabic_Stays_Joined()
+		{
+			// Noto Sans Math covers the Arabic letters (without joining forms) and Noto Sans Adlam covers the tatweel;
+			// once both are loaded, neither may take characters from an Arabic word.
+			var fallback = global::Uno.UI.Composition.Drawing.NotoFontFallbackService.Instance;
+			Assert.AreEqual("Noto Sans Math", await fallback.GetFontFamilyForCodepoint(0x1D400));
+			Assert.AreEqual("Noto Sans Adlam", await fallback.GetFontFamilyForCodepoint(0x1E900));
+
+			const string text = "\u0639\u0640\u0631\u0628\u064A";
+			var SUT = new TextBlock { Text = text, FontSize = 24 };
+			var expected = new TextBlock
+			{
+				Text = text,
+				FontSize = 24,
+				FontFamily = new FontFamily("ms-appx:///Assets/Fonts/NotoSansArabic-Regular.ttf"),
+			};
+			await UITestHelper.Load(new StackPanel { Children = { expected, SUT } });
+
+			// Unjoined letters are much wider, so the widths only meet once every character is in the Arabic font.
+			await UITestHelper.WaitFor(
+				() => expected.ActualWidth > 0 && Math.Abs(SUT.ActualWidth - expected.ActualWidth) < 1,
+				10000,
+				$"The fallback rendering ({SUT.ActualWidth}) should be as wide as Noto Sans Arabic's ({expected.ActualWidth}).");
+		}
 #endif
 
 		[TestMethod]

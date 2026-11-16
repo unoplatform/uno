@@ -313,7 +313,6 @@ public partial class Given_RichEditBox
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[BackendCondition(ConditionMode.Exclude, RuntimeTestBackends.WebGpu)] // Flaky on the GPU-less WebGPU CI agents #25600
 	public async Task When_Seeded_Randomized_Rich_Visual_Stress_Remains_Consistent()
 	{
 		const int seed = 0x524542;

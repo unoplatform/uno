@@ -302,7 +302,7 @@ internal partial class NativeWebView : ICleanableNativeWebView, Uno.UI.Xaml.Cont
 
 	public void ProcessNavigation(string html)
 	{
-		ScheduleNavigationStarting(html, CoreWebView2.BlankUri, () => NativeMethods.SetAttribute(_elementId, "srcdoc", AddWebMessageBridge(html)));
+		ScheduleNavigationStarting(html, CoreWebView2.BlankUri, () => NativeMethods.NavigateToString(_elementId, AddWebMessageBridge(html)));
 	}
 
 	private string AddWebMessageBridge(string html)

@@ -284,6 +284,7 @@ internal sealed partial class Win32NativeAotWebView
 			RemoveEvent("DOMContentLoaded", () => _nativeWebView.remove_DOMContentLoaded(_domContentLoadedToken));
 			RemoveEvent("ProcessFailed", () => _nativeWebView.remove_ProcessFailed(_processFailedToken));
 			RemoveEvent("MoveFocusRequested", () => _controller.remove_MoveFocusRequested(_moveFocusRequestedToken));
+			RemoveEvent("GotFocus", () => _controller.remove_GotFocus(_gotFocusToken));
 			_eventsRegistered = false;
 		}
 

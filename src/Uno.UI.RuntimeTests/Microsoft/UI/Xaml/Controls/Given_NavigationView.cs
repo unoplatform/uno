@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -771,6 +772,79 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var indicator = itemB.FindFirstDescendant<FrameworkElement>(f => f.Name == "SelectionIndicator");
 			Assert.IsNotNull(indicator, "Selected item should have a realized SelectionIndicator");
 			await WindowHelper.WaitFor(() => indicator.Opacity >= 0.99, timeoutMS: 3000);
+		}
+
+		// Menu items subscribe to the NavigationView's SplitView: a removed item must not stay rooted by it.
+		[TestMethod]
+		[DataRow("Item")]
+		[DataRow("Header")]
+		[DataRow("Separator")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_MenuItem_Removed_Then_Not_Rooted_By_SplitView(string kind)
+		{
+			var nv = new MUXC.NavigationView
+			{
+				PaneDisplayMode = MUXC.NavigationViewPaneDisplayMode.Left,
+				IsPaneOpen = true,
+				IsSettingsVisible = false,
+				Width = 400,
+				Height = 500,
+				MenuItems = { new MUXC.NavigationViewItem { Content = "Kept" } },
+			};
+			await UITestHelper.Load(nv);
+
+			var weakRef = AddMenuItem(nv, kind);
+			nv.MenuItems.Add(new MUXC.NavigationViewItem { Content = "Filler" });
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(((FrameworkElement)weakRef.Target).IsLoaded);
+
+			nv.MenuItems.RemoveAt(1);
+			await WindowHelper.WaitForIdle();
+
+			// The repeater keeps the last cleared element in its ElementClearing args, as WinUI does.
+			nv.MenuItems.RemoveAt(1);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(await TestHelper.TryWaitUntilCollected(weakRef), $"A removed {kind} is still rooted by the NavigationView's SplitView.");
+
+			GC.KeepAlive(nv);
+		}
+
+		[TestMethod]
+		public async Task When_SplitView_CompactPaneLength_Changes_Then_MenuItem_Follows()
+		{
+			var item = new MUXC.NavigationViewItem { Content = "Item" };
+			var nv = new MUXC.NavigationView
+			{
+				PaneDisplayMode = MUXC.NavigationViewPaneDisplayMode.Left,
+				IsPaneOpen = true,
+				IsSettingsVisible = false,
+				Width = 400,
+				Height = 500,
+				MenuItems = { item },
+			};
+			await UITestHelper.Load(nv);
+
+			// The subscription to the SplitView must survive a GC while the item is alive.
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
+
+			nv.CompactPaneLength = 72;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(72, item.CompactPaneLength);
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		private static WeakReference AddMenuItem(MUXC.NavigationView nv, string kind)
+		{
+			MUXC.NavigationViewItemBase item = kind switch
+			{
+				"Item" => new MUXC.NavigationViewItem { Content = "Removed" },
+				"Header" => new MUXC.NavigationViewItemHeader { Content = "Removed" },
+				_ => new MUXC.NavigationViewItemSeparator(),
+			};
+			nv.MenuItems.Add(item);
+			return new WeakReference(item);
 		}
 	}
 }

@@ -10,8 +10,9 @@
 		<projectUrl>https://platform.uno/</projectUrl>
 		<license type="expression">Apache-2.0</license>
 		<icon>uno.png</icon>
-		<description>Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today. Open source and professionally supported.</description>
-		<copyright>Copyright (C) 2015-2025 Uno Platform Inc. - all rights reserved</copyright>
+		<readme>README.md</readme>
+		<description>The Uno Platform UI framework. Build single-codebase .NET apps with C# and XAML on the WinUI 3 API, rendered with Skia on Web, Desktop, Mobile and Embedded. Open source and professionally supported.</description>
+		<copyright>Copyright (C) 2015-$year$ Uno Platform Inc. - all rights reserved</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 
 		<dependencies>
@@ -19,12 +20,12 @@
 			<!-- References from Uno.UI.Extras -->
 			<!-- BEGIN UWP-excluded -->
 			<group targetFramework="net10.0-windows10.0.19041.0">
-				<dependency id="Microsoft.WindowsAppSDK" version="2.4.0" />
-				<dependency id="Microsoft.Windows.SDK.BuildTools" version="10.0.28000.2526" />
+				<dependency id="Microsoft.WindowsAppSDK" version="2.5.1" />
+				<dependency id="Microsoft.Windows.SDK.BuildTools" version="10.0.28000.2705" />
 			</group>
 			<group targetFramework="net11.0-windows10.0.19041.0">
-				<dependency id="Microsoft.WindowsAppSDK" version="2.4.0" />
-				<dependency id="Microsoft.Windows.SDK.BuildTools" version="10.0.28000.2526" />
+				<dependency id="Microsoft.WindowsAppSDK" version="2.5.1" />
+				<dependency id="Microsoft.Windows.SDK.BuildTools" version="10.0.28000.2705" />
 			</group>
 			<!-- END UWP-excluded -->
 
@@ -57,7 +58,7 @@
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.9.4" />
 				<dependency id="Uno.WinRT" version="to-be-set-by-ci" />
-				<dependency id="HarfBuzzSharp" version="14.2.1.1" />
+				<dependency id="HarfBuzzSharp" version="14.4.0.100" />
 				<dependency id="Silk.NET.WebGPU" version="2.23.0" />
 			</group>
 
@@ -67,7 +68,7 @@
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.9.4" />
 				<dependency id="Uno.WinRT" version="to-be-set-by-ci" />
-				<dependency id="HarfBuzzSharp" version="14.2.1.1" />
+				<dependency id="HarfBuzzSharp" version="14.4.0.100" />
 				<dependency id="Silk.NET.WebGPU" version="2.23.0" />
 			</group>
 		</dependencies>
@@ -100,12 +101,7 @@
 	<files>
 		<!-- Icon File -->
 		<file src="..\..\src\Common\uno.png" target="/" />
-
-		<!-- UAP / netprevious -->
-		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$winuisourcepath$\Uno.UI.Extras*.dll" target="lib\$winuitargetpath$" />
-		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$winuisourcepath$\Uno.UI.Extras*.pdb" target="lib\$winuitargetpath$" />
-		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$winuisourcepath$\Uno.UI.Extras*.pri" target="lib\$winuitargetpath$" />
-		<file src="..\..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$winuisourcepath$\Uno.UI.Extras\**" target="lib\$winuitargetpath$\Uno.UI.Extras" />
+		<file src="README.md" target="/" />
 
 		<!-- BEGIN UWP-excluded -->
 		<!-- netcurrent, currently using netprevious to avoid netcore build issues -->
@@ -188,21 +184,22 @@
 		<file src="Uno.WinUI.targets" target="buildTransitive\net10.0-ios26.0" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net10.0-tvos26.0" />
 		<file src="Uno.WinUI.targets" target="buildTransitive\net11.0-android37.0" />
-		<file src="Uno.WinUI.targets" target="buildTransitive\net11.0-ios26.5" />
-		<file src="Uno.WinUI.targets" target="buildTransitive\net11.0-tvos26.5" />
-		<file src="Uno.WinUI.targets" target="buildTransitive\net11.0-windows" />
+		<file src="Uno.WinUI.targets" target="buildTransitive\net11.0-ios27.2" />
+		<file src="Uno.WinUI.targets" target="buildTransitive\net11.0-tvos27.2" />
+		<file src="Uno.WinUI.targets" target="buildTransitive\net11.0-windows7.0" />
 
 		<file src="Uno.WinUI.props" target="buildTransitive\net10.0" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net10.0-android36.0" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net10.0-ios26.0" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net10.0-tvos26.0" />
 		<file src="Uno.WinUI.props" target="buildTransitive\net11.0-android37.0" />
-		<file src="Uno.WinUI.props" target="buildTransitive\net11.0-ios26.5" />
-		<file src="Uno.WinUI.props" target="buildTransitive\net11.0-tvos26.5" />
-		<file src="Uno.WinUI.props" target="buildTransitive\net11.0-windows" />
+		<file src="Uno.WinUI.props" target="buildTransitive\net11.0-ios27.2" />
+		<file src="Uno.WinUI.props" target="buildTransitive\net11.0-tvos27.2" />
+		<file src="Uno.WinUI.props" target="buildTransitive\net11.0-windows7.0" />
 
 		<file src="uno.winui.cross-runtime.targets" target="buildTransitive" />
 		<file src="uno.winui.common.targets" target="buildTransitive" />
+		<file src="uno.winui.version.targets" target="buildTransitive" />
 		<file src="uno.winui.common.props" target="buildTransitive" />
 		<file src="uno.winui.runtime-replace.targets" target="buildTransitive" />
 		<file src="uno.winui.winappsdk.targets" target="buildTransitive" />

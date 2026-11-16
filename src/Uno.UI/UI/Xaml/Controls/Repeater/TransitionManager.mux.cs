@@ -1,7 +1,6 @@
 ﻿// MUX Reference TransitionManager.cpp, tag winui3/release/1.8.1
 
 using System.Collections.Specialized;
-using Uno.Disposables;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using static Microsoft.UI.Xaml.Controls._Tracing;
@@ -32,9 +31,8 @@ partial class TransitionManager
 
 		if (newTransitionProvider != null)
 		{
-			newTransitionProvider.TransitionCompleted += OnTransitionProviderTransitionCompleted;
-			m_transitionCompletedRevoker.Disposable = Disposable.Create(() =>
-				newTransitionProvider.TransitionCompleted -= OnTransitionProviderTransitionCompleted);
+			// Uno-specific: WinUI subscribes with a raw-'this' delegate, see TransitionManager.uno.cs.
+			m_transitionCompletedRevoker.Disposable = SubscribeToTransitionCompleted(newTransitionProvider, this);
 		}
 	}
 

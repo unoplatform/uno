@@ -209,6 +209,33 @@ public class Given_AcrylicBrush
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_AcrylicBrush_Over_Saturated_Content_Keeps_Its_Hue()
+	{
+		// The acrylic recipe blends the blurred backdrop with the luminosity colour in Luminosity mode and with the
+		// tint in Color mode: the backdrop keeps its hue and only takes the luminosity's brightness. Mixing the
+		// luminosity colour over it instead (0.96 opaque in the dark theme) turns any content behind into flat grey.
+		using var _ = ThemeHelper.UseDarkTheme();
+		var outerBorder = (Border)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+			"<Border xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'" +
+			"        Background='Red' Width='100' Height='100'" +
+			"        HorizontalAlignment='Left' VerticalAlignment='Top'>" +
+			"    <Border Width='100' Height='100'" +
+			"            Background='{ThemeResource AcrylicInAppFillColorDefaultBrush}' />" +
+			"</Border>");
+
+		await UITestHelper.Load(outerBorder);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var screenshot = await UITestHelper.ScreenShot(outerBorder);
+		var centerColor = screenshot.GetPixel(50, 50);
+
+		// The correct blend leaves a dark but clearly red result (about #871818); the grey mix gives about #302929.
+		Assert.IsTrue(centerColor.R - Math.Max(centerColor.G, centerColor.B) > 60,
+			$"Expected the red content to keep its hue through the acrylic, but got {centerColor}.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_TintLuminosityOpacity_Is_Set_By_ThemeResources()
 	{
 		// WinUI's XamlControlsResources programmatically sets TintLuminosityOpacity

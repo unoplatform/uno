@@ -199,7 +199,8 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 			var addInStopwatch = Stopwatch.StartNew();
 			try
 			{
-				var projectAssetsFiles = ProjectAssetsParser.FindProjectAssetsFiles(workDirectory, _logger);
+				var projectAssetsFiles = await ProjectAssetsParser.FindProjectAssetsFilesAsync(
+					workspaceResolution.SelectedSolutionPath, workDirectory, _logger);
 				resolvedAddIns = _addInResolver.ResolveAddIns(packagesJsonPath, projectAssetsFiles, NuGetCacheHelper.GetNuGetCachePaths(workDirectory));
 				addInsDiscoveryMethod = resolvedAddIns.Count > 0
 					? string.Join("+", resolvedAddIns.Select(a => a.DiscoverySource).Distinct())

@@ -33,6 +33,9 @@ internal sealed record WorkspaceSelectionSnapshot
 	public WorkspaceResolutionKind? ResolutionKind { get; init; }
 	public WorkspaceSelectionSource? SelectionSource { get; init; }
 	public IReadOnlyList<string>? CandidateSolutions { get; init; }
+
+	/// <summary>See <see cref="WorkspaceResolution.IsExplicitSolutionSelection"/>.</summary>
+	public bool IsExplicitSolutionSelection { get; init; }
 }
 
 internal sealed record DiscoverySummary

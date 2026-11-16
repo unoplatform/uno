@@ -3163,6 +3163,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[DataRow(0d, 1000.7)]
+		[DataRow(1500d, 500.3)]
+		[DataRow(100.3, 100.9)]
+		public async Task When_ChangeView_Animated_To_A_Fraction_Then_Offsets_Never_Move_Back(double start, double target)
+		{
+			// Each frame reports the pixel the content is drawn at, which must not step past a fractional target, or
+			// behind a fractional start, only to move back on the next ViewChanged.
+			var SUT = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				Content = new Border { Width = 180, Height = 2000, Background = new SolidColorBrush(Colors.DeepPink) },
+			};
+			await UITestHelper.Load(SUT);
+
+			// WinUI animates with float offsets, so it can end on 500.29998779296875 for 500.3. The steps this test catches
+			// are 0.1px or more.
+			const double Tolerance = 0.001;
+
+			SUT.ChangeView(null, start, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => Math.Abs(SUT.VerticalOffset - start) <= Tolerance); // WinUI applies it on a later frame
+
+			var offsets = new List<double> { SUT.VerticalOffset };
+			var isFinal = false;
+			SUT.ViewChanged += (_, e) =>
+			{
+				offsets.Add(SUT.VerticalOffset);
+				isFinal |= !e.IsIntermediate;
+			};
+
+			SUT.ChangeView(null, target, null, disableAnimation: false);
+			await WindowHelper.WaitFor(() => isFinal, timeoutMS: 3000);
+
+			var direction = Math.Sign(target - start);
+			Assert.IsTrue(
+				offsets.Zip(offsets.Skip(1)).All(step => (step.Second - step.First) * direction >= -Tolerance),
+				$"The offsets moved back: {string.Join(", ", offsets)}");
+			Assert.AreEqual(target, SUT.VerticalOffset, Tolerance);
+		}
+
+		[TestMethod]
 #if !HAS_UNO
 		[Ignore("IsInMotion is internal to Uno.")]
 #endif

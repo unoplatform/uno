@@ -357,7 +357,14 @@ internal readonly partial struct UnicodeText : IParsedText
 
 				if (!inline.FontInfo.FontHandle.ContainsGlyph(codepoint))
 				{
-					newFontDetails = GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle, fontListener) ?? inline.FontInfo;
+					// A character several scripts share (Common or Inherited, e.g. tatweel, the Arabic comma, combining
+					// marks) stays in the run's fallback font: a font change mid-word splits the shaping run and breaks
+					// joining. A letter of its own script still gets the fallback for that script.
+					newFontDetails = newScript is UScriptCommon or UScriptInherited
+						&& currentFontDetails != inline.FontInfo
+						&& currentFontDetails.FontHandle.ContainsGlyph(codepoint)
+						? currentFontDetails
+						: GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle, fontListener) ?? inline.FontInfo;
 				}
 				else
 				{
@@ -1467,36 +1474,81 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private readonly global::System.Runtime.CompilerServices.StrongBox<List<SpellCheckSquiggle>?> _spellCheckSquiggles = new();
 
+	// A long wave is drawn as repeats of one chunk this many periods wide: one small shape a backend can cache and
+	// cull per chunk, rather than a path as long as the word (a 100K-character word made one of 18M edges).
+	private const int SpellCheckSquiggleChunkPeriods = 40;
+
 	public void DrawSpellCheckSquiggles(IDrawingSession session, Color color)
 	{
 		foreach (var squiggle in _spellCheckSquiggles.Value ?? [])
 		{
-			using var path = BuildSpellCheckSquigglyPath(squiggle.MidY, squiggle.Left, squiggle.Right, squiggle.Scale);
-			// Widened here rather than handed to StrokePath, which implies flat caps: the wave has round joins and caps.
-			using var stroke = path.GetStrokeFillGeometry(new StrokeStyle
+			var chunkWidth = 2 * SpellCheckSquigglyStepScale * squiggle.Scale * SpellCheckSquiggleChunkPeriods;
+			if (squiggle.Right - squiggle.Left <= 2 * chunkWidth)
 			{
-				Thickness = squiggle.Scale,
-				StartCap = StrokeCap.Round,
-				EndCap = StrokeCap.Round,
-				LineJoin = StrokeJoin.Round,
-			});
-			session.DrawPath(stroke, color);
+				DrawSpellCheckSquiggle(session, color, squiggle, squiggle.Left, squiggle.Right, fromMidline: true);
+				continue;
+			}
+
+			// Every chunk after the first starts and ends on the same crest, so they share one geometry and meet
+			// where the single path would have passed; their round caps overlap into its round join.
+			var x = squiggle.Left + chunkWidth;
+			DrawSpellCheckSquiggle(session, color, squiggle, squiggle.Left, x, fromMidline: true);
+			var count = (int)((squiggle.Right - x) / chunkWidth);
+			using (var chunk = BuildSpellCheckSquiggleStroke(squiggle, 0, chunkWidth, fromMidline: false))
+			{
+				var instances = global::System.Buffers.ArrayPool<PathInstance>.Shared.Rent(count);
+				for (var i = 0; i < count; i++)
+				{
+					instances[i] = new PathInstance(chunk, new Vector2(x + i * chunkWidth, 0));
+				}
+
+				session.DrawPaths(instances.AsSpan(0, count), color);
+				global::System.Buffers.ArrayPool<PathInstance>.Shared.Return(instances, clearArray: true);
+			}
+
+			x += count * chunkWidth;
+
+			if (x < squiggle.Right)
+			{
+				DrawSpellCheckSquiggle(session, color, squiggle, x, squiggle.Right, fromMidline: false);
+			}
 		}
+	}
+
+	private static void DrawSpellCheckSquiggle(IDrawingSession session, Color color, SpellCheckSquiggle squiggle, float left, float right, bool fromMidline)
+	{
+		using var stroke = BuildSpellCheckSquiggleStroke(squiggle, left, right, fromMidline);
+		session.DrawPath(stroke, color);
+	}
+
+	private static IGeometry BuildSpellCheckSquiggleStroke(SpellCheckSquiggle squiggle, float left, float right, bool fromMidline)
+	{
+		using var path = BuildSpellCheckSquigglyPath(squiggle.MidY, left, right, squiggle.Scale, fromMidline);
+		// Widened here rather than handed to StrokePath, which implies flat caps: the wave has round joins and caps.
+		return path.GetStrokeFillGeometry(new StrokeStyle
+		{
+			Thickness = squiggle.Scale,
+			StartCap = StrokeCap.Round,
+			EndCap = StrokeCap.Round,
+			LineJoin = StrokeJoin.Round,
+		});
 	}
 
 	/// <summary>
 	/// Builds a single continuous spell-check zigzag from <paramref name="left"/> to <paramref name="right"/>.
 	/// The wave phase is anchored at the left edge and the trailing partial half-wave is truncated by
 	/// interpolation instead of snapping back to the midline, so the wave stays regular no matter where it ends.
+	/// <paramref name="fromMidline"/> false starts on the lower crest instead, where the wave is after any whole
+	/// number of periods.
 	/// </summary>
-	private static IGeometry BuildSpellCheckSquigglyPath(float midY, float left, float right, float scale)
+	private static IGeometry BuildSpellCheckSquigglyPath(float midY, float left, float right, float scale, bool fromMidline = true)
 	{
 		var step = SpellCheckSquigglyStepScale * scale;
 		var amplitude = SpellCheckSquigglyAmplitudeScale * scale;
 
 		var path = GeometryFactory.Current.CreatePathBuilder();
 		var x = left;
-		var lastY = midY;
+		var lastY = fromMidline ? midY : midY + amplitude;
 		path.MoveTo(new Vector2(x, lastY));
 		var up = true;
 		while (x + step < right)
@@ -2524,7 +2576,8 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		if (!isBelowContent && p.Y >= _xyTable[^1].prefixSummedHeight)
 		{
-			return extendedSelection ? _lines[^1].end - (ignoreEndingNewLine ? TrailingCRLFInLine(_lines[^1]) : 0) : -1;
+			// On the empty line after a trailing line break, whose only caret stop is the end of the text.
+			return extendedSelection ? _text.Length : -1;
 		}
 
 		int lineIndex;
@@ -2546,7 +2599,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				return 0;
 			}
 
-			return _text.Length - (ignoreEndingNewLine ? TrailingCRLFInLine(_endingNewLineLineHeight is null ? lastLine : null) : 0);
+			return _text.Length - (ignoreEndingNewLine && _endingNewLineLineHeight is null ? TrailingCRLFInLine(lastLine) : 0);
 		}
 		else
 		{
@@ -2707,6 +2760,11 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	public bool IsBaseDirectionRightToLeft => _rtl;
 
+	// The alignment the layout used: a default-aligned TextBox gets one from its content's direction.
+	internal TextAlignment TextAlignment => _textAlignment;
+
+	internal Size AvailableSize => _availableSize;
+
 	public float FirstLineBaseline => (float)GetBaselineForIndex(0);
 
 	private static List<int> GetWords(string text)
@@ -2835,6 +2893,10 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private static float GetLineSpaceAfter(Line line)
 		=> line is { isLastLineOfParagraph: true, paragraphLayout: { } layout } ? layout.SpaceAfter : 0;
+
+	// ICU UScriptCode values.
+	private const int UScriptCommon = 0;
+	private const int UScriptInherited = 1;
 
 	private static FontDetails? GetFallbackFont(int codepoint, float fontSize, FontWeight fontWeight, FontStretch fontStretch, FontStyle fontStyle, IFontCacheUpdateListener fontListener)
 	{

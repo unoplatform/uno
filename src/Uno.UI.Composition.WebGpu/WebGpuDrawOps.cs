@@ -99,6 +99,8 @@ internal unsafe struct DrawOp
 	/// <see cref="Bounds"/> -- that one decides whether something is hidden, this one decides what hides it.
 	/// </summary>
 	public Vector4 Cover;
+	/// <summary>The opaque colour an op with a <see cref="Cover"/> fills it with: a plain rect fill, or an opaque rounded rect.</summary>
+	public Windows.UI.Color Fill;
 	/// <summary>Its replay site's draw-order depth, matching what the vertex shader emits (see project).</summary>
 	public float Depth;
 	/// <summary>
@@ -106,6 +108,11 @@ internal unsafe struct DrawOp
 	/// (Z &lt;= X) unless the cull set it; applied on top of whatever scissor the op would otherwise get.
 	/// </summary>
 	public Vector4 CullScissor;
+	/// <summary>
+	/// Everything the op can touch, in the space its vertices are in; empty when unknown. Only drops an op that lands
+	/// wholly outside its site's clip -- unlike <see cref="Bounds"/>, it never makes the op hide anything or get hidden.
+	/// </summary>
+	public Vector4 Extent;
 
 	/// <summary>An op drawing a range of the pass's shared buffer for its kind.</summary>
 	public static DrawOp Shared(DrawKind kind, uint firstVertex, uint count, BindGroup* group1, in ClipData clip, BindGroup* clipBg)
@@ -174,6 +181,25 @@ internal sealed class WebGpuGeometryCache
 	public long StarvedBeforeEviction = -1;
 	// The command list this was built from, kept for the equality check that guards against a hash collision.
 	public List<WebGpuCommand> Src;
+	// Set by whichever path frees the entry for good. Its holders release on the UI or finalizer thread while the
+	// render thread evicts and sweeps, and two of them can each conclude they hold the last reference.
+	private int _released;
+
+	/// <summary>
+	/// Hands the entry's stamps (sites included) and bags to the device for a deferred free, once: a second caller
+	/// gets false and frees nothing, since a site's bind group and slab slot are not refcounted.
+	/// </summary>
+	public unsafe bool ReleaseFinal(WebGpuDevice device)
+	{
+		if (System.Threading.Interlocked.Exchange(ref _released, 1) != 0)
+		{
+			return false;
+		}
+
+		foreach (var st in Stamps) { device.DeferCompiledRelease(null, st.Owned); device.DeferSiteRelease(st.SiteBg, st.SiteSlot); }
+		device.DeferCompiledRelease(Owned, null);
+		return true;
+	}
 }
 
 /// <summary>One stamp of an arena entry: its ops carrying the clip groups for one replay site.</summary>
