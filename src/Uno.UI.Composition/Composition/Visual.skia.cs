@@ -422,7 +422,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		get => _anchorPoint;
 		set
 		{
-			SetProperty(ref _anchorPoint, value);
+			if (SetProperty(ref _anchorPoint, value))
+			{
+				VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+			}
 		}
 	}
 
@@ -458,6 +461,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// where its descendants are on screen, so it has to refresh accessibility geometry just like an
 	// offset or size change does.
 	partial void OnTransformMatrixChanged(Matrix4x4 value)
+		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
+
+	// The "Translation" property feeds GetTotalOffset, so changing it moves the rendered subtree too.
+	partial void OnTranslationChanged()
 		=> VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged?.Invoke(this);
 
 	partial void OnScaleChanged(Vector3 value)

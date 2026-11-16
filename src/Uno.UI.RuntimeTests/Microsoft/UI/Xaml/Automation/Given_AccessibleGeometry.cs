@@ -33,6 +33,7 @@ public class Given_AccessibleGeometry
 {
 	[TestMethod]
 	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24280")]
 	public async Task When_Nested_Transforms_Then_TransformToVisual_Composes_Whole_Chain()
 	{
 		var target = new Border { Width = 40, Height = 20 };
@@ -999,6 +1000,7 @@ public class Given_AccessibleGeometry
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24280")]
 	public async Task When_Ancestor_Is_Scaled_Then_Semantic_Rect_Is_Scaled()
 	{
 		var button = new Button { Content = "Target" };

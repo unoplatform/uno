@@ -65,6 +65,7 @@ namespace Microsoft.UI.Composition
 		}
 
 		partial void OnOffsetChanged(Vector3 value);
+		partial void OnTranslationChanged();
 
 		internal Vector3 ArrangeOffset
 		{
@@ -374,6 +375,7 @@ namespace Microsoft.UI.Composition
 				_ = Properties.TryGetVector3("Translation", out var translation);
 				Properties.InsertVector3("Translation", UpdateVector3(subPropertyName, translation, propertyValue));
 				Compositor.InvalidateRender(this, translationOnly: true);
+				OnTranslationChanged();
 			}
 			else
 			{
