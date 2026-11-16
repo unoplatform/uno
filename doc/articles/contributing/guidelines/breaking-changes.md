@@ -9,6 +9,8 @@ uid: Uno.Contributing.BreakingChanges
 Uno uses a [Package Diff tool](https://github.com/unoplatform/uno.PackageDiff) to ensure that [binary breaking changes](https://learn.microsoft.com/dotnet/standard/library-guidance/breaking-changes#binary-breaking-change) do not
 go unnoticed. As [part of our continuous integration process](https://github.com/unoplatform/uno/blob/b1a6eddcad3bcca6d9756b0a57ff6cf458321048/build/Uno.UI.Build.csproj#L529), the PackageDiffTool consumes the last published non-experimental package available on nuget.org, and compares it with the current PR.
 
+A servicing branch can compare with the latest release of an older line instead, set by `UnoPackageDiffBaselineLine` in `build/Uno.UI.Build.csproj`: `servicing/6.8` compares with the latest 6.7 release on nuget.org, since the latest stable is a 7.0 one. `UnoPackageDiffBaselineVersion` compares with one exact version.
+
 This process only diffs against previous versions of Uno, not against the WinUI assemblies, so it doesn't pick up all forms of mismatches. There are [some inconsistencies](https://github.com/unoplatform/uno/pull/1300) dating from before SyncGenerator was added. At some point it might be a good idea to extend SyncGenerator tool to try to report them all (or even automatically fix them)
 
 Breaking changes must be marked as such when committed using the [Conventional Commits formatting](../../uno-development/git-conventional-commits.md).
