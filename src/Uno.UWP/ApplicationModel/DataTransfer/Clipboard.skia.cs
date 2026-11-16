@@ -42,6 +42,9 @@ namespace Windows.ApplicationModel.DataTransfer
 			return _clipboardExtension.Value?.GetContent();
 		}
 
+		internal static bool IsTextAvailable()
+			=> GetContent()?.Contains(StandardDataFormats.Text) ?? false;
+
 		public static void SetContent(DataPackage content)
 		{
 			_clipboardExtension.Value?.SetContent(content);

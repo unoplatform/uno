@@ -287,8 +287,7 @@ public partial class TextBox : ITextSelectionGripperHost
 
 		try
 		{
-			var content = Clipboard.GetContent();
-			CanPasteClipboardContent = content?.Contains(StandardDataFormats.Text) ?? false;
+			CanPasteClipboardContent = Clipboard.IsTextAvailable();
 		}
 		catch
 		{
