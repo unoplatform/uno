@@ -3,10 +3,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.Tests.CompositionTests;
 
-[TestClass]
+[UITestClass]
 public class Given_CompositionGradientBrush
 {
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26408")]
 	public void When_LinearGradientBrush_Created_MappingMode_Is_Relative()
 	{
 		var compositor = Compositor.GetSharedCompositor();
@@ -16,6 +17,7 @@ public class Given_CompositionGradientBrush
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26408")]
 	public void When_RadialGradientBrush_Created_MappingMode_Is_Relative()
 	{
 		var compositor = Compositor.GetSharedCompositor();
