@@ -3,7 +3,7 @@
     {
       "id": "navigationview",
       "title": "NavigationView",
-      "baseline": "bac7a9c33ffe3696ec19121b16f166227eae4f1f",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
       "upstream": {
         "sources": [
           "controls/dev/NavigationView"
@@ -16,7 +16,11 @@
       },
       "uno": {
         "sources": [
-          "src/Uno.UI/UI/Xaml/Controls/NavigationView"
+          "src/Uno.UI/UI/Xaml/Controls/NavigationView",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationBackButton_themeresources.xaml",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationBackButton.xaml",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationView_themeresources.xaml",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationView.xaml"
         ],
         "tests": [
           "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/NavigationView"
