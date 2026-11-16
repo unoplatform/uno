@@ -34,7 +34,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwentyFourHour,
-				new DateTimeOffset(2020, 01, 02, 03, 04, 05, 0, TimeSpan.Zero),
+				AtLocalTime(2020, 01, 02, 03, 04, 05, 0),
 				year: 2020,
 				month: 01,
 				day: 02,
@@ -77,7 +77,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwentyFourHour,
-				new DateTimeOffset(2020, 08, 02, 03, 04, 05, 00, TimeSpan.Zero),
+				AtLocalTime(2020, 08, 02, 03, 04, 05, 00),
 				year: 2020,
 				month: 08,
 				day: 02,
@@ -124,7 +124,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
-				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				AtLocalTime(2020, 01, 02, 23, 04, 05, 00),
 				year: 2020,
 				month: 01,
 				day: 02,
@@ -167,7 +167,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
-				new DateTimeOffset(2020, 08, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				AtLocalTime(2020, 08, 02, 23, 04, 05, 00),
 				year: 2020,
 				month: 08,
 				day: 02,
@@ -214,7 +214,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
-				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				AtLocalTime(2020, 01, 02, 23, 04, 05, 00),
 				year: 2020,
 				month: 01,
 				day: 02,
@@ -263,7 +263,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
-				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				AtLocalTime(2020, 01, 02, 23, 04, 05, 00),
 				year: 2020,
 				month: 01,
 				day: 02,
@@ -312,7 +312,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
-				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				AtLocalTime(2020, 01, 02, 23, 04, 05, 00),
 				year: 2020,
 				month: 01,
 				day: 03,
@@ -361,7 +361,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
-				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				AtLocalTime(2020, 01, 02, 23, 04, 05, 00),
 				year: 2020,
 				month: 01,
 				day: 03,
@@ -410,7 +410,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
-				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				AtLocalTime(2020, 01, 02, 23, 04, 05, 00),
 				year: 2020,
 				month: 02,
 				day: 02,
@@ -459,7 +459,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 				culture: "en-US",
 				calendar: WG.CalendarIdentifiers.Gregorian,
 				clock: WG.ClockIdentifiers.TwelveHour,
-				new DateTimeOffset(2020, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				AtLocalTime(2020, 01, 02, 23, 04, 05, 00),
 				year: 2021,
 				month: 01,
 				day: 02,
@@ -509,7 +509,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			ValidateFormat(culture: "en-US",
 				  calendar: WG.CalendarIdentifiers.Gregorian,
 				  clock: WG.ClockIdentifiers.TwelveHour,
-				  date: new DateTimeOffset(year, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				  date: AtLocalTime(year, 01, 02, 23, 04, 05, 00),
 				  yearAsPaddedString: year.ToString(CultureInfo.InvariantCulture),
 				  yearAsString: year.ToString(CultureInfo.InvariantCulture),
 				  monthAsPaddedNumericString: "01",
@@ -538,7 +538,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 			ValidateFormat(culture: "en-US",
 				  calendar: WG.CalendarIdentifiers.Gregorian,
 				  clock: WG.ClockIdentifiers.TwentyFourHour,
-				  date: new DateTimeOffset(year, 01, 02, 23, 04, 05, 00, TimeSpan.Zero),
+				  date: AtLocalTime(year, 01, 02, 23, 04, 05, 00),
 				  yearAsPaddedString: year.ToString(CultureInfo.InvariantCulture),
 				  yearAsString: year.ToString(CultureInfo.InvariantCulture),
 				  monthAsPaddedNumericString: "01",
@@ -557,6 +557,14 @@ namespace Uno.UI.Tests.Windows_Globalization
 				  nanosecondAsString: "0",
 				  dayOfWeekAsSoloString: dayOfWeek,
 				  dayOfWeekAsString: dayOfWeek);
+		}
+
+		// Calendar shows a date in the local time zone, so the expected values hold only for a date
+		// given at that local time (in UTC they held only on machines set to UTC).
+		private static DateTimeOffset AtLocalTime(int year, int month, int day, int hour, int minute, int second, int millisecond)
+		{
+			var localTime = new DateTime(year, month, day, hour, minute, second, millisecond, DateTimeKind.Unspecified);
+			return new DateTimeOffset(localTime, TimeZoneInfo.Local.GetUtcOffset(localTime));
 		}
 
 		private void Validate(
