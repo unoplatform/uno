@@ -12,7 +12,7 @@ Day-to-day build setup (slnf filters, `UnoTargetFrameworkOverride`, `UnoFastDevB
 
 - **Never edit or commit `Generated/` folders** — auto-generated WinUI stubs. Don't remove `[Uno.NotImplemented]` stubs unless removing the whole feature; when you implement an API, move it out of `Generated/` per AGENTS.md "Implementing New WinUI Features".
 - **Never commit `src/crosstargeting_override.props`** (gitignored, per-developer). Close VS before changing `UnoTargetFrameworkOverride` — changing it with the solution open causes NuGet restore instability / VS hangs; delete `src/.vs/` if caching gets stuck.
-- **TFMs come from `Directory.Build.props`** properties (`NetCurrent`=net10.0, `NetPrevious`=net9.0, and the `Net*PreviousAndCurrent` families). Reference those properties — don't hardcode `net10.0`/`net9.0` in a `.csproj`.
+- **TFMs come from `Directory.Build.props`** properties (`NetCurrent`, `NetPrevious`, and the `Net*PreviousAndCurrent` families). Reference those properties — don't hardcode a TFM literal in a `.csproj`.
 - **Platform symbols & suffix exclusion are owned by `Uno.CrossTargetting.targets`** — never set platform `DefineConstants` or `Compile Remove="**/*.skia.cs"` yourself (see `platform-targeting.md`).
 - **Central Package Management is NOT enabled** in the main solution. Versions are pinned via `PackageReference … Update` in `src/Directory.Build.targets`. Don't add a `Directory.Packages.props` under `src/` — it would break the override-based versioning.
 - **Output paths** for the ~43 multi-variant projects are set centrally via `_AdjustedOutputProjects` in `Directory.Build.props` (`BaseOutputPath=bin\$(MSBuildProjectName)` so `.Skia`/`.Wasm`/`.Reference`/`.Tests` coexist). Don't set `BaseOutputPath` per-project; a new multi-TFM project with a novel suffix must be **added to `_AdjustedOutputProjects`** or it hits bin/obj collisions.
@@ -26,9 +26,10 @@ Day-to-day build setup (slnf filters, `UnoTargetFrameworkOverride`, `UnoFastDevB
 two properties worth setting while iterating:
 
 - **`UnoTargetFrameworkOverride`** restricts cross-targeted projects to a single TFM, skipping the
-  redundant second-TFM outputs. Pick one of `net10.0` (Skia/WASM), `net10.0-android`, `net10.0-ios`,
-  or `net10.0-windows10.0.19041.0` - and note `NetCurrent` is branch-specific, so use the value that
-  matches the branch you are on. Close Visual Studio before changing it.
+  redundant second-TFM outputs. Pick one of `$(NetCurrent)` (Skia/WASM), `$(NetCurrent)-android`,
+  `$(NetCurrent)-ios` or `$(NetCurrentWinAppSDK)` - the file is imported after `Directory.Build.props`,
+  so the properties expand there. A `-p:` flag needs the literal value from `Directory.Build.props`.
+  Close Visual Studio before changing it.
 - **`UnoFastDevBuild`** disables `RunAnalyzersDuringBuild`, `EnforceCodeStyleInBuild` and the
   `Microsoft.CodeAnalysis.NetAnalyzers` package locally. It is guarded by `ContinuousIntegrationBuild`,
   so **CI is never affected** - analyzer-strict checks still run on every PR. Set it persistently with

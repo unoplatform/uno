@@ -28,7 +28,7 @@ Uno Platform is an open-source .NET UI cross-platform framework for building .NE
 These load **automatically** when you touch matching files - you never invoke them. They hold the
 subsystem-specific conventions so this always-loaded file stays lean: `code-style`, `platform-targeting`
 and `debugging-discipline` (`src/**/*.cs`); `dependency-properties` (`src/Uno.UI/**`); `runtime-tests`,
-`unit-tests`, `source-generators`, `samples`; and `build-system` (`*.csproj|props|targets`).
+`unit-tests`, `source-generators`, `samples`; and `build-system` (`src/**/*.{csproj,props,targets}`).
 
 Treat the loaded rule as your checklist, and use a `/skill` for the actual build/run/scaffold/port workflow.
 
@@ -79,11 +79,10 @@ These now live almost entirely in `Uno.WinRT`, `Uno.Foundation` and the `Uno.UI.
 **1.** `cd src && cp crosstargeting_override.props.sample crosstargeting_override.props` - per-developer,
 gitignored, **never commit it**.
 
-**2.** Set these in it (or pass them as `-p:` flags per build):
+**2.** Set these in it (or pass them as `-p:` flags per build, with the literal TFM):
 
 ```xml
-<!-- Use this branch's NetCurrent (or NetPrevious) from Directory.Build.props -->
-<UnoTargetFrameworkOverride>net10.0</UnoTargetFrameworkOverride>
+<UnoTargetFrameworkOverride>$(NetCurrent)</UnoTargetFrameworkOverride>
 <UnoFastDevBuild>true</UnoFastDevBuild>
 ```
 

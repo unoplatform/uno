@@ -28,7 +28,7 @@ Generators run inside the compiler — performance and cancellation discipline a
 
 `dotnet test Uno.UI.UnitTests/Uno.UI.UnitTests.csproj` - the quick check in AGENTS.md - does
 **not** run `Uno.UI.SourceGenerators.Tests`. CI's real gate is the whole
-`Uno.UI-UnitTests-only.slnf` (33 projects), which also covers `Uno.Xaml.Tests`,
+`Uno.UI-UnitTests-only.slnf`, which also covers `Uno.Xaml.Tests`,
 `Uno.Analyzers.Tests` and `Uno.HotReload.Tests`. After touching this project, run:
 
     dotnet test Uno.UI-UnitTests-only.slnf --no-build
