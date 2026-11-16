@@ -1,12 +1,16 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+// MUX Reference controls/dev/ScrollView/TestUI/ScrollViewBlankPage.xaml.cs, tag winui3/release/2.6.5
+
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Navigation;
 
 using ScrollPresenter = Microsoft.UI.Xaml.Controls.Primitives.ScrollPresenter;
 using ScrollView = Microsoft.UI.Xaml.Controls.ScrollView;
+using ScrollingScrollStartingEventArgs = Microsoft.UI.Xaml.Controls.ScrollingScrollStartingEventArgs;
+using ScrollingZoomStartingEventArgs = Microsoft.UI.Xaml.Controls.ScrollingZoomStartingEventArgs;
 using ScrollingScrollAnimationStartingEventArgs = Microsoft.UI.Xaml.Controls.ScrollingScrollAnimationStartingEventArgs;
 using ScrollingZoomAnimationStartingEventArgs = Microsoft.UI.Xaml.Controls.ScrollingZoomAnimationStartingEventArgs;
 using ScrollingScrollCompletedEventArgs = Microsoft.UI.Xaml.Controls.ScrollingScrollCompletedEventArgs;
@@ -166,6 +170,16 @@ public sealed partial class ScrollViewBlankPage : TestPage
 		AppendAsyncEventMessage($"ScrollPresenter.ViewChanged HorizontalOffset={sender.HorizontalOffset.ToString()}, VerticalOffset={sender.VerticalOffset}, ZoomFactor={sender.ZoomFactor}");
 	}
 
+	private void ScrollPresenter_ScrollStarting(ScrollPresenter sender, ScrollingScrollStartingEventArgs args)
+	{
+		AppendAsyncEventMessage($"ScrollPresenter.ScrollStarting OffsetsChangeCorrelationId={args.CorrelationId}, HorizontalOffset={args.HorizontalOffset}, VerticalOffset={args.VerticalOffset}, ZoomFactor={args.ZoomFactor}");
+	}
+
+	private void ScrollPresenter_ZoomStarting(ScrollPresenter sender, ScrollingZoomStartingEventArgs args)
+	{
+		AppendAsyncEventMessage($"ScrollPresenter.ZoomStarting ZoomFactorChangeCorrelationId={args.CorrelationId}, HorizontalOffset={args.HorizontalOffset}, VerticalOffset={args.VerticalOffset}, ZoomFactor={args.ZoomFactor}");
+	}
+
 	private void ScrollPresenter_ScrollAnimationStarting(ScrollPresenter sender, ScrollingScrollAnimationStartingEventArgs args)
 	{
 		AppendAsyncEventMessage($"ScrollPresenter.ScrollAnimationStarting OffsetsChangeCorrelationId={args.CorrelationId}, SP=({args.StartPosition.X}, {args.StartPosition.Y}), EP=({args.EndPosition.X}, {args.EndPosition.Y})");
@@ -199,6 +213,16 @@ public sealed partial class ScrollViewBlankPage : TestPage
 	private void ScrollView_ViewChanged(ScrollView sender, object args)
 	{
 		AppendAsyncEventMessage($"ScrollView.ViewChanged HorizontalOffset={sender.HorizontalOffset.ToString()}, VerticalOffset={sender.VerticalOffset}, ZoomFactor={sender.ZoomFactor}");
+	}
+
+	private void ScrollView_ScrollStarting(ScrollView sender, ScrollingScrollStartingEventArgs args)
+	{
+		AppendAsyncEventMessage($"ScrollView.ScrollStarting OffsetsChangeCorrelationId={args.CorrelationId}, HorizontalOffset={args.HorizontalOffset}, VerticalOffset={args.VerticalOffset}, ZoomFactor={args.ZoomFactor}");
+	}
+
+	private void ScrollView_ZoomStarting(ScrollView sender, ScrollingZoomStartingEventArgs args)
+	{
+		AppendAsyncEventMessage($"ScrollView.ZoomStarting ZoomFactorChangeCorrelationId={args.CorrelationId}, HorizontalOffset={args.HorizontalOffset}, VerticalOffset={args.VerticalOffset}, ZoomFactor={args.ZoomFactor}");
 	}
 
 	private void ScrollView_ScrollAnimationStarting(ScrollView sender, ScrollingScrollAnimationStartingEventArgs args)
@@ -257,6 +281,8 @@ public sealed partial class ScrollViewBlankPage : TestPage
 				scrollPresenter.ExtentChanged += ScrollPresenter_ExtentChanged;
 				scrollPresenter.StateChanged += ScrollPresenter_StateChanged;
 				scrollPresenter.ViewChanged += ScrollPresenter_ViewChanged;
+				scrollPresenter.ScrollStarting += ScrollPresenter_ScrollStarting;
+				scrollPresenter.ZoomStarting += ScrollPresenter_ZoomStarting;
 				scrollPresenter.ScrollAnimationStarting += ScrollPresenter_ScrollAnimationStarting;
 				scrollPresenter.ZoomAnimationStarting += ScrollPresenter_ZoomAnimationStarting;
 				scrollPresenter.ScrollCompleted += ScrollPresenter_ScrollCompleted;
@@ -278,6 +304,8 @@ public sealed partial class ScrollViewBlankPage : TestPage
 				scrollPresenter.ExtentChanged -= ScrollPresenter_ExtentChanged;
 				scrollPresenter.StateChanged -= ScrollPresenter_StateChanged;
 				scrollPresenter.ViewChanged -= ScrollPresenter_ViewChanged;
+				scrollPresenter.ScrollStarting -= ScrollPresenter_ScrollStarting;
+				scrollPresenter.ZoomStarting -= ScrollPresenter_ZoomStarting;
 				scrollPresenter.ScrollAnimationStarting -= ScrollPresenter_ScrollAnimationStarting;
 				scrollPresenter.ZoomAnimationStarting -= ScrollPresenter_ZoomAnimationStarting;
 				scrollPresenter.ScrollCompleted -= ScrollPresenter_ScrollCompleted;
@@ -299,6 +327,8 @@ public sealed partial class ScrollViewBlankPage : TestPage
 			scrollView.ExtentChanged += ScrollView_ExtentChanged;
 			scrollView.StateChanged += ScrollView_StateChanged;
 			scrollView.ViewChanged += ScrollView_ViewChanged;
+			scrollView.ScrollStarting += ScrollView_ScrollStarting;
+			scrollView.ZoomStarting += ScrollView_ZoomStarting;
 			scrollView.ScrollAnimationStarting += ScrollView_ScrollAnimationStarting;
 			scrollView.ZoomAnimationStarting += ScrollView_ZoomAnimationStarting;
 			scrollView.ScrollCompleted += ScrollView_ScrollCompleted;
@@ -319,6 +349,8 @@ public sealed partial class ScrollViewBlankPage : TestPage
 			scrollView.ExtentChanged -= ScrollView_ExtentChanged;
 			scrollView.StateChanged -= ScrollView_StateChanged;
 			scrollView.ViewChanged -= ScrollView_ViewChanged;
+			scrollView.ScrollStarting -= ScrollView_ScrollStarting;
+			scrollView.ZoomStarting -= ScrollView_ZoomStarting;
 			scrollView.ScrollAnimationStarting -= ScrollView_ScrollAnimationStarting;
 			scrollView.ZoomAnimationStarting -= ScrollView_ZoomAnimationStarting;
 			scrollView.ScrollCompleted -= ScrollView_ScrollCompleted;

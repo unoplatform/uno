@@ -1,6 +1,6 @@
 #nullable enable
 
-#if __SKIA__
+#if HAS_UNO
 
 using System;
 using System.Collections.Generic;
@@ -34,6 +34,31 @@ public class Given_ScrollView
 {
 	[TestCleanup]
 	public void Cleanup() => TestServices.WindowHelper.WindowContent = null;
+
+	[TestMethod]
+	public void When_Invalid_Anchor_Ratio_Or_Zoom_Boundary_Set_Then_Throws_And_Keeps_Value()
+	{
+		var sut = new ScrollView();
+
+		Assert.ThrowsExactly<ArgumentException>(() => sut.HorizontalAnchorRatio = 2.0);
+		Assert.ThrowsExactly<ArgumentException>(() => sut.VerticalAnchorRatio = -1.0);
+		Assert.ThrowsExactly<ArgumentException>(() => sut.MinZoomFactor = double.NaN);
+		Assert.ThrowsExactly<ArgumentException>(() => sut.MaxZoomFactor = double.PositiveInfinity);
+
+		Assert.AreEqual(0.0, sut.HorizontalAnchorRatio);
+		Assert.AreEqual(0.0, sut.VerticalAnchorRatio);
+		Assert.AreEqual(0.1, sut.MinZoomFactor);
+		Assert.AreEqual(10.0, sut.MaxZoomFactor);
+	}
+
+	[TestMethod]
+	public void When_ScrollBarController_Values_Invalid_Then_Throws_ArgumentException()
+	{
+		var sut = new ScrollBarController();
+
+		Assert.ThrowsExactly<ArgumentException>(() => sut.SetValues(minOffset: 10, maxOffset: 0, offset: 0, viewportLength: 0));
+		Assert.ThrowsExactly<ArgumentException>(() => sut.SetValues(minOffset: 0, maxOffset: 10, offset: 0, viewportLength: -1));
+	}
 
 	/// <summary>A precision touchpad reports wheel deltas finer than one 120-unit detent, and each must still scroll.</summary>
 	[TestMethod]
