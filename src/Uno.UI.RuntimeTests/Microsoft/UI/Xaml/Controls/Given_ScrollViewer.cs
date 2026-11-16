@@ -1594,6 +1594,86 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(100, SUT.VerticalOffset, 0.5);
 		}
+
+		[TestMethod]
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+		[Ignore("We're only testing managed scrollers.")]
+#endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24643")]
+		public async Task When_Viewport_Resized_During_Touch_Scroll_Then_Overscroll_Trimmed_From_Presenter_Offset_Vertical()
+		{
+			Border content;
+			var SUT = new ScrollViewer
+			{
+				Height = 300,
+				Width = 100,
+				Content = content = new Border { Height = 1000, Width = 100 }
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.ChangeView(null, 600, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+
+			var scp = SUT.FindVisualChildByType<ScrollContentPresenter>();
+			SUT.ClearOffsetIntents();
+
+			// The touch move runs ahead of the (deferred) committed VerticalOffset of 600.
+			scp.Set(verticalOffset: 650, isIntermediate: true, isTouch: true);
+			Assert.AreEqual(600, SUT.VerticalOffset, 0.5);
+
+			// 650 + 299 overflows the new 939 extent by 10, so the trim must land on 640 (a trim from the committed 600 lands on 590).
+			SUT.Height = 299;
+			content.Height = 939;
+			SUT.UpdateLayout();
+
+			Assert.AreEqual(640, scp.VerticalOffset, 0.5);
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(640, SUT.VerticalOffset, 0.5);
+		}
+
+		[TestMethod]
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+		[Ignore("We're only testing managed scrollers.")]
+#endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24643")]
+		public async Task When_Viewport_Resized_During_Touch_Scroll_Then_Overscroll_Trimmed_From_Presenter_Offset_Horizontal()
+		{
+			Border content;
+			var SUT = new ScrollViewer
+			{
+				Height = 100,
+				Width = 300,
+				HorizontalScrollMode = ScrollMode.Enabled,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+				VerticalScrollMode = ScrollMode.Disabled,
+				VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
+				Content = content = new Border { Height = 100, Width = 1000 }
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.ChangeView(600, null, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+
+			var scp = SUT.FindVisualChildByType<ScrollContentPresenter>();
+			SUT.ClearOffsetIntents();
+
+			scp.Set(horizontalOffset: 650, isIntermediate: true, isTouch: true);
+			Assert.AreEqual(600, SUT.HorizontalOffset, 0.5);
+
+			SUT.Width = 299;
+			content.Width = 939;
+			SUT.UpdateLayout();
+
+			Assert.AreEqual(640, scp.HorizontalOffset, 0.5);
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(640, SUT.HorizontalOffset, 0.5);
+		}
 #endif
 
 #if HAS_UNO // uses internal ToMatrix
