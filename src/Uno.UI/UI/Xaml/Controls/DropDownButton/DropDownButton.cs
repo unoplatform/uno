@@ -1,16 +1,21 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference DropDownButton.cpp, tag winui3/release/1.4.2
+// MUX Reference DropDownButton.cpp, DropDownButton.h, tag winui3/release/2.6.5
 
-using Uno.UI.Helpers.WinUI;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Uno.Disposables;
+using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class DropDownButton : Button
 {
 	private bool m_isFlyoutOpen;
+
+	private readonly SerialDisposable m_flyoutPropertyChangedRevoker = new();
+	private readonly SerialDisposable m_flyoutOpenedRevoker = new();
+	private readonly SerialDisposable m_flyoutClosedRevoker = new();
 
 	public DropDownButton()
 	{
@@ -19,34 +24,27 @@ public partial class DropDownButton : Button
 
 	protected override void OnApplyTemplate()
 	{
-		base.OnApplyTemplate();
+		var token = RegisterPropertyChangedCallback(FlyoutProperty, OnFlyoutPropertyChanged);
+		m_flyoutPropertyChangedRevoker.Disposable = Disposable.Create(() => UnregisterPropertyChangedCallback(FlyoutProperty, token));
 
 		RegisterFlyoutEvents();
 	}
 
-	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
-	{
-		if (args.Property == Button.FlyoutProperty)
-		{
-			OnFlyoutPropertyChanged(this, args);
-		}
-
-		base.OnPropertyChanged2(args);
-	}
-
 	private void RegisterFlyoutEvents()
 	{
-		if (Flyout != null)
+		m_flyoutOpenedRevoker.Disposable = null;
+		m_flyoutClosedRevoker.Disposable = null;
+
+		if (Flyout is { } flyout)
 		{
-			Flyout.Opened += OnFlyoutOpened;
-			Flyout.Closed += OnFlyoutClosed;
+			flyout.Opened += OnFlyoutOpened;
+			m_flyoutOpenedRevoker.Disposable = Disposable.Create(() => flyout.Opened -= OnFlyoutOpened);
+			flyout.Closed += OnFlyoutClosed;
+			m_flyoutClosedRevoker.Disposable = Disposable.Create(() => flyout.Closed -= OnFlyoutClosed);
 		}
 	}
 
-	internal bool IsFlyoutOpen()
-	{
-		return m_isFlyoutOpen;
-	}
+	internal bool IsFlyoutOpen() => m_isFlyoutOpen;
 
 	internal void OpenFlyout()
 	{
@@ -64,15 +62,7 @@ public partial class DropDownButton : Button
 		}
 	}
 
-	private void OnFlyoutPropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-	{
-		if (args.OldValue is Flyout flyout)
-		{
-			flyout.Opened -= OnFlyoutOpened;
-			flyout.Closed -= OnFlyoutClosed;
-		}
-		RegisterFlyoutEvents();
-	}
+	private void OnFlyoutPropertyChanged(DependencyObject sender, DependencyProperty args) => RegisterFlyoutEvents();
 
 	private void OnFlyoutOpened(object sender, object args)
 	{
@@ -86,8 +76,5 @@ public partial class DropDownButton : Button
 		SharedHelpers.RaiseAutomationPropertyChangedEvent(this, ExpandCollapseState.Expanded, ExpandCollapseState.Collapsed);
 	}
 
-	protected override AutomationPeer OnCreateAutomationPeer()
-	{
-		return new DropDownButtonAutomationPeer(this);
-	}
+	protected override AutomationPeer OnCreateAutomationPeer() => new DropDownButtonAutomationPeer(this);
 }
