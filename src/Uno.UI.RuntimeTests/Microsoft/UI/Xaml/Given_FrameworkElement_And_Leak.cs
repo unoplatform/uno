@@ -118,6 +118,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem), 15)]
 		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.RatingControl), 15)]
 		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.ItemsRepeater), 15)]
+		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.DropDownButton), 15)]
 		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.SplitButton), 15)]
 		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.TabView), 15)]
 		[ActivatableDataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.TabViewListView), 15)]
