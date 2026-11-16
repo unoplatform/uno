@@ -29,7 +29,7 @@ These load **automatically** when you touch matching files — you don't invoke 
 
 | Rule | Applies to | Covers |
 |------|-----------|--------|
-| `code-style.md` | `src/**/*.cs` | nullable, file headers (MUX/MIT), logging, `[Uno.NotImplemented]` |
+| `code-style.md` | `src/**/*.cs` | nullable, file headers (MUX/MIT), logging, `[Uno.NotImplemented]`, events, public API changes |
 | `platform-targeting.md` | `src/**/*.cs` | file-suffix vs `#if` vs `OperatingSystem.IsX()` vs `ApiExtensibility` |
 | `debugging-discipline.md` | `src/**/*.cs` | full root-cause/validation/diagnosis-bias protocols |
 | `dependency-properties.md` | `src/Uno.UI/**` | `[GeneratedDependencyProperty]`, metadata, callbacks |
@@ -271,20 +271,7 @@ Tabs, Allman braces (always), expression-bodied members for one-liners, `interna
 
 ### Events
 
-🚫 **NEVER declare `event Action` or `event Action<T>`**. Always use `EventHandler` or
-`EventHandler<TEventArgs>`. Raw `Action`/`Func` delegates as event fields bypass the
-standard `add`/`remove` contract and cannot be reliably subscribed across assembly
-boundaries.
-
-✅ Correct:
-```csharp
-public event EventHandler<MyEventArgs>? SomethingHappened;
-```
-
-🚫 Wrong — every agent must reject this:
-```csharp
-public event Action<MyData>? SomethingHappened; // NEVER
-```
+🚫 **NEVER declare `event Action` or `event Action<T>`** — use `EventHandler`/`EventHandler<TEventArgs>`. Rationale and example: `.claude/rules/code-style.md`.
 
 ### Implementing New WinUI Features
 
