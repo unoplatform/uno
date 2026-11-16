@@ -712,6 +712,7 @@ public class Given_InputManager
 
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS)] // Flaky on 6.x: https://github.com/unoplatform/uno/issues/26221
 #if __WASM__
 	[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
 #elif !HAS_INPUT_INJECTOR
