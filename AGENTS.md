@@ -49,7 +49,7 @@ These load **automatically** when you touch matching files — you don't invoke 
 
 | Technology | Purpose |
 |------------|---------|
-| .NET 11.0/10.0 | Multi-target framework (`NetCurrent`/`NetPrevious` in `Directory.Build.props`) |
+| .NET (`NetCurrent`/`NetPrevious`) | Multi-target framework; the exact TFMs are branch-specific, read them from `Directory.Build.props` |
 | C# & XAML | Primary languages |
 | TypeScript | Browser host interop only (`Uno.UI.Runtime.WebAssembly.Browser`, WebGPU init) |
 | Skia / WebGPU | Pluggable renderers for the Uno-drawn UI |
@@ -96,11 +96,11 @@ cp crosstargeting_override.props.sample crosstargeting_override.props
 <Project>
   <PropertyGroup>
     <!-- Choose ONE target: -->
-    <UnoTargetFrameworkOverride>net11.0</UnoTargetFrameworkOverride>                  <!-- Desktop -->
-    <!-- <UnoTargetFrameworkOverride>net11.0-browserwasm</UnoTargetFrameworkOverride>  WebAssembly -->
-    <!-- <UnoTargetFrameworkOverride>net11.0-android</UnoTargetFrameworkOverride>      Android -->
-    <!-- <UnoTargetFrameworkOverride>net11.0-ios</UnoTargetFrameworkOverride>          iOS -->
-    <!-- <UnoTargetFrameworkOverride>net11.0-windows10.0.19041.0</UnoTargetFrameworkOverride> Windows (WinAppSDK) -->
+    <UnoTargetFrameworkOverride>$(NetCurrent)</UnoTargetFrameworkOverride>                  <!-- Desktop -->
+    <!-- <UnoTargetFrameworkOverride>$(NetCurrent)-browserwasm</UnoTargetFrameworkOverride>  WebAssembly -->
+    <!-- <UnoTargetFrameworkOverride>$(NetCurrent)-android</UnoTargetFrameworkOverride>      Android -->
+    <!-- <UnoTargetFrameworkOverride>$(NetCurrent)-ios</UnoTargetFrameworkOverride>          iOS -->
+    <!-- <UnoTargetFrameworkOverride>$(NetCurrentWinAppSDK)</UnoTargetFrameworkOverride>     Windows (WinAppSDK) -->
 
     <!-- Disables analyzers + code-style enforcement for local builds. No effect on CI. -->
     <UnoFastDevBuild>true</UnoFastDevBuild>
@@ -108,14 +108,14 @@ cp crosstargeting_override.props.sample crosstargeting_override.props
 </Project>
 ```
 
-Or pass the same flags per-build instead of committing them:
+The file is imported after the root `Directory.Build.props`, so `$(NetCurrent)` expands there. Or pass the same flags per-build instead — a `-p:` flag needs the literal TFM (the `NetCurrent` value from `Directory.Build.props`):
 
 ```bash
 dotnet build … -p:UnoTargetFrameworkOverride=net11.0 -p:UnoFastDevBuild=true
 ```
 
 **Why these flags:**
-- `UnoTargetFrameworkOverride` — restricts cross-targeted projects to a single TFM, skipping the redundant `NetPrevious` (net10.0) outputs while you iterate on net11.0 (or vice versa). Every non-Windows value builds the same `Uno.UI`; the platform part only picks the host and the WinRT-layer variant.
+- `UnoTargetFrameworkOverride` — restricts cross-targeted projects to a single TFM, skipping the redundant `NetPrevious` outputs while you iterate on `NetCurrent` (or vice versa). Every non-Windows value builds the same `Uno.UI`; the platform part only picks the host and the WinRT-layer variant.
 - `UnoFastDevBuild` — disables `RunAnalyzersDuringBuild`, `EnforceCodeStyleInBuild`, and the `Microsoft.CodeAnalysis.NetAnalyzers` package for local builds. **Guarded by `ContinuousIntegrationBuild`, so CI is never affected** — analyzer-strict checks still run on every PR. Set persistently via the `UNO_FAST_DEV_BUILD=true` environment variable if you'd rather not edit the file.
 
 Combined impact on the `SamplesApp` desktop head (Windows, 32-core, warm NuGet cache): clean build ~3:23 → ~1:59, incremental rebuild after a Uno.UI edit ~2:23 → ~0:58. The `/runtime-tests` skill passes both flags by default (use `strict` to opt out for CI-equivalent coverage).
