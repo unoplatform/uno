@@ -95,6 +95,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			Unregister(strOldValue ?? "", this);
 			Register(strNewValue ?? "", this);
+
+			// A checked button that joins a group unchecks the group's other checked button.
+			if (IsChecked == true)
+			{
+				UpdateRadioButtonGroup();
+			}
 		}
 
 		private protected override void OnChecked()
