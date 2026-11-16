@@ -1005,11 +1005,11 @@ public class ItemsViewTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Invokes the ItemsView.StartBringItemIntoView methods.")]
-	[Ignore("Uno-specific: The test uses LinedFlowLayout which is not yet implemented in Uno.")]
 	public async Task CanBringItemIntoView()
 	{
 		await CanBringItemIntoView(useLinedFlowLayout: false, useUniformGridLayout: false);
-		await CanBringItemIntoView(useLinedFlowLayout: true, useUniformGridLayout: false);
+		// TODO Uno: Re-enable once LinedFlowLayout is implemented.
+		// await CanBringItemIntoView(useLinedFlowLayout: true, useUniformGridLayout: false);
 		await CanBringItemIntoView(useLinedFlowLayout: false, useUniformGridLayout: true);
 	}
 

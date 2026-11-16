@@ -12,27 +12,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RunsOnUIThread]
 		public async Task When_StartBringIntoView_In_Live_Tree_Before_Loaded()
 		{
-			var panel = new StackPanel();
-			var scrollViewer = new ScrollViewer { Height = 100, Content = panel };
-			await UITestHelper.Load(scrollViewer);
+			try
+			{
+				var panel = new StackPanel();
+				var scrollViewer = new ScrollViewer { Height = 100, Content = panel };
+				await UITestHelper.Load(scrollViewer);
 
-			var raised = false;
-			panel.BringIntoViewRequested += (_, _) => raised = true;
+				var raised = false;
+				panel.BringIntoViewRequested += (_, _) => raised = true;
 
-			var element = new Border { Width = 50, Height = 50 };
+				var element = new Border { Width = 50, Height = 50 };
 
-			// WinUI reports IsLoaded as true on entering the live tree unless a Loaded handler is still pending.
-			element.Loaded += (_, _) => { };
-			panel.Children.Add(element);
-			panel.UpdateLayout();
+				// WinUI reports IsLoaded as true on entering the live tree unless a Loaded handler is still pending.
+				element.Loaded += (_, _) => { };
+				panel.Children.Add(element);
+				panel.UpdateLayout();
 
-			// WinUI only requires the element to be in the live tree, not Loaded.
-			Assert.IsFalse(element.IsLoaded);
+				// WinUI only requires the element to be in the live tree, not Loaded.
+				Assert.IsFalse(element.IsLoaded);
 
-			element.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = false });
+				element.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = false });
 
-			// WinUI routes BringIntoViewRequested asynchronously.
-			await TestServices.WindowHelper.WaitFor(() => raised);
+				// WinUI routes BringIntoViewRequested asynchronously.
+				await TestServices.WindowHelper.WaitFor(() => raised, timeoutMS: 2000, message: "BringIntoViewRequested was not raised.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
 		}
 	}
 }

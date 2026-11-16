@@ -409,10 +409,11 @@ public class Given_ScrollView
 		};
 
 		// The dispatcher swallows exceptions thrown by CompositionTarget.Rendering handlers, so watch first-chance ones.
+		// The handler runs on the throwing thread before unwinding, so its stack still shows the throwing ScrollView frame.
 		InvalidOperationException? collectionModified = null;
 		void OnFirstChanceException(object? sender, FirstChanceExceptionEventArgs e)
 		{
-			if (e.Exception is InvalidOperationException { Message: var message } ex && message.StartsWith("Collection was modified", StringComparison.Ordinal))
+			if (e.Exception is InvalidOperationException ex && Environment.StackTrace.Contains("ScrollView.OnCompositionTargetRendering", StringComparison.Ordinal))
 			{
 				collectionModified ??= ex;
 			}
@@ -427,11 +428,22 @@ public class Given_ScrollView
 
 			await TestServices.KeyboardHelper.Down(first);
 
-			// The queued bring-into-view operation expires after a few rendering ticks.
-			for (var i = 0; i < 10; i++)
+			await TestServices.WindowHelper.WaitFor(
+				() => FocusManager.GetFocusedElement(scrollView.XamlRoot!) == second,
+				timeoutMS: 2000,
+				message: "XY navigation did not move focus to the second button.");
+
+			// The queued bring-into-view operation expires after 3 rendering ticks; wait a few more.
+			var renderedFrames = 0;
+			void OnRendering(object? s, object a) => renderedFrames++;
+			CompositionTarget.Rendering += OnRendering;
+			try
 			{
-				await TestServices.WindowHelper.WaitForIdle();
-				await Task.Delay(20);
+				await TestServices.WindowHelper.WaitFor(() => renderedFrames >= 6, timeoutMS: 2000, message: "Rendering frames were not raised.");
+			}
+			finally
+			{
+				CompositionTarget.Rendering -= OnRendering;
 			}
 
 			Assert.AreEqual(second, FocusManager.GetFocusedElement(scrollView.XamlRoot!));
