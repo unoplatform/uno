@@ -36,19 +36,6 @@ internal static unsafe partial class Xlate
 	private static long _dawnSubmissions;
 	private static readonly ConcurrentDictionary<ulong, ulong> _dawnPending = new();
 
-	// dawn::native::DawnInstanceDescriptor (DawnNative.h), the C++ struct chained onto instance creation.
-	[StructLayout(LayoutKind.Sequential)]
-	private struct DawnInstanceDescriptor
-	{
-		public WGPUChainedStruct Chain;
-		public uint AdditionalRuntimeSearchPathsCount;
-		public IntPtr AdditionalRuntimeSearchPaths;
-		public IntPtr Platform;
-		public int BackendValidationLevel;
-		public byte BeginCaptureOnStartup;
-		public IntPtr LoggingNext, LoggingCallback, LoggingUserdata1, LoggingUserdata2;
-	}
-
 	private const WGPUSType DawnInstanceDescriptorSType = (WGPUSType)0x00050006;
 	private const WGPUSType DawnTogglesDescriptorSType = (WGPUSType)0x0005000A;
 
@@ -94,19 +81,27 @@ internal static unsafe partial class Xlate
 		return paths;
 	}
 
+	private static int Align(int offset, int alignment) => (offset + alignment - 1) / alignment * alignment;
+
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
 	private static nint DawnCreateInstance(nint descriptor)
 	{
-		var dawn = new DawnInstanceDescriptor
-		{
-			Chain = new WGPUChainedStruct { SType = DawnInstanceDescriptorSType },
-			AdditionalRuntimeSearchPathsCount = _dawnSearchPaths == IntPtr.Zero ? 0u : 1u,
-			AdditionalRuntimeSearchPaths = _dawnSearchPaths,
-			BackendValidationLevel = DawnBackendValidationDisabled,
-		};
+		// dawn::native::DawnInstanceDescriptor (DawnNative.h) is C++: it derives from the 2-field chained struct, and outside
+		// MSVC the derived fields start in the base's tail padding. So its fields are written at the offsets each ABI gives.
+		var p = IntPtr.Size;
+		var count = OperatingSystem.IsWindows() ? Align(p + 4, p) : p + 4;
+		var paths = Align(count + 4, p);
+		var validation = paths + 2 * p;
+		var dawn = stackalloc byte[Align(validation + 5, p) + 4 * p];
+		new Span<byte>(dawn, Align(validation + 5, p) + 4 * p).Clear();
+		*(WGPUSType*)(dawn + p) = DawnInstanceDescriptorSType;
+		*(uint*)(dawn + count) = _dawnSearchPaths == IntPtr.Zero ? 0u : 1u;
+		*(IntPtr*)(dawn + paths) = _dawnSearchPaths;
+		*(int*)(dawn + validation) = DawnBackendValidationDisabled;
+
 		// Waiting on a future with a timeout, which the blocking poll does, is an instance feature on Dawn.
 		var feature = WGPUInstanceFeatureName.TimedWaitAny;
-		var d = new WGPUInstanceDescriptor { NextInChain = (WGPUChainedStruct*)&dawn, RequiredFeatureCount = 1, RequiredFeatures = &feature };
+		var d = new WGPUInstanceDescriptor { NextInChain = (WGPUChainedStruct*)dawn, RequiredFeatureCount = 1, RequiredFeatures = &feature };
 		return _dawnInstance = WGPU.wgpuCreateInstance(&d);
 	}
 
