@@ -241,6 +241,10 @@ Run these after making changes:
 | `NETSDK1005` on System.Xaml (`no target netstandard2.0`) | `Uno.Xaml.csproj` and `System.Xaml-net_4_x.csproj` share one `obj/`; `dotnet restore src/SourceGenerators/System.Xaml/Uno.Xaml.csproj` and rebuild |
 | Last resort | `git clean -fdx` (close VS first) |
 
+### CI Investigation (Azure DevOps)
+
+CI runs in org `uno-platform`, project `Uno Platform` (URL-encode it; `uno` doesn't resolve). Prefer an Azure DevOps MCP server or `az pipelines` / `az devops invoke` over hand-rolled `curl`. Filter every response to what you need (`--query`, or `jq '.records[] | select(.result=="failed")'`) — never print a full timeline or log JSON into the transcript; they routinely exceed 500 KB.
+
 ### Key Build Properties
 
 | Property | Purpose |
