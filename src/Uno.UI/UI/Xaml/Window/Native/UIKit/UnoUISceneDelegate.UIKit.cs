@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System;
-using System.Globalization;
 using System.Runtime.CompilerServices;
 using Foundation;
 using Microsoft.UI.Xaml;
@@ -47,11 +46,14 @@ internal sealed class UnoUISceneDelegate : UIWindowSceneDelegate
 	private static readonly Selector _performActionForShortcutItem = new("application:performActionForShortcutItem:completionHandler:");
 #endif
 
-	// Before _isEnabled, which reads them.
+	// Before _lifeCycle, which reads them.
 	private static readonly bool _hasSceneManifest = GetInfoValue("UIApplicationSceneManifest") is not null;
 	private static readonly NSObject? _useSceneLifecycle = GetInfoValue(UseSceneLifecycleKey);
 	private static readonly string? _sdkVersion = GetInfoValue("DTPlatformVersion")?.ToString();
-	private static readonly bool _isEnabled = ReadIsEnabled();
+	private static readonly (AppleUIKitLifecycleMode Mode, AppleUIKitLifecycleDecidedBy DecidedBy) _lifeCycle = AppleUIKitLifecycleDecision.Decide(
+		_hasSceneManifest,
+		_useSceneLifecycle is NSNumber useSceneLifecycle ? useSceneLifecycle.BoolValue : null,
+		_sdkVersion);
 
 	private static UIWindow? _appWindow;
 	private static UIWindowScene? _pendingScene;
@@ -69,7 +71,7 @@ internal sealed class UnoUISceneDelegate : UIWindowSceneDelegate
 	/// <summary>
 	/// Gets whether the app runs the scene life cycle, either declared by its own scene manifest or adopted by Uno.
 	/// </summary>
-	internal static bool UsesSceneLifecycle => _hasSceneManifest || _isEnabled;
+	internal static bool UsesSceneLifecycle => _lifeCycle.Mode != AppleUIKitLifecycleMode.App;
 
 	/// <summary>
 	/// Gets whether an application delegate must hide <paramref name="selector"/>, as UIKit adopts the scene life
@@ -96,7 +98,7 @@ internal sealed class UnoUISceneDelegate : UIWindowSceneDelegate
 
 			log.Info(
 				$"Running the {(UsesSceneLifecycle ? "scene" : "app")} life cycle (scene manifest: {_hasSceneManifest}, " +
-				$"{UseSceneLifecycleKey}: {useSceneLifecycle}, SDK version: {_sdkVersion ?? "unknown"}).");
+				$"{UseSceneLifecycleKey}: {useSceneLifecycle}, SDK version: {(string.IsNullOrEmpty(_sdkVersion) ? "unknown" : _sdkVersion)}).");
 		}
 
 		if (!_hasSceneManifest && log.IsEnabled(LogLevel.Warning))
@@ -105,7 +107,7 @@ internal sealed class UnoUISceneDelegate : UIWindowSceneDelegate
 			{
 				log.Warn($"{UseSceneLifecycleKey} is ignored, as it is neither a boolean nor a number.");
 			}
-			else if (_useSceneLifecycle is null && !TryGetSdkMajorVersion(out _))
+			else if (_lifeCycle.DecidedBy == AppleUIKitLifecycleDecidedBy.UnknownSdkVersion)
 			{
 				log.Warn($"The SDK version is unknown, so Uno adopts the scene life cycle. Set {UseSceneLifecycleKey} to choose.");
 			}
@@ -457,26 +459,6 @@ internal sealed class UnoUISceneDelegate : UIWindowSceneDelegate
 
 			return false;
 		}
-	}
-
-	private static bool ReadIsEnabled()
-	{
-		if (_useSceneLifecycle is NSNumber useSceneLifecycle)
-		{
-			return useSceneLifecycle.BoolValue;
-		}
-
-		// UIKit requires the scene life cycle from the version 27 SDKs on, a version iOS, tvOS and Mac Catalyst share.
-		// Apps built with an older SDK keep the app life cycle unless they opt in.
-		return !TryGetSdkMajorVersion(out var sdkMajorVersion) || sdkMajorVersion >= 27;
-	}
-
-	private static bool TryGetSdkMajorVersion(out int sdkMajorVersion)
-	{
-		sdkMajorVersion = 0;
-
-		return _sdkVersion is not null
-			&& int.TryParse(_sdkVersion.Split('.')[0], NumberStyles.None, CultureInfo.InvariantCulture, out sdkMajorVersion);
 	}
 
 	private static NSObject? GetInfoValue(string key)
