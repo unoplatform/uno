@@ -127,7 +127,6 @@ stages:
       xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
       poolName: '${{ parameters.poolName }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
-      # Groups 1-3 on pull requests only for UIKit changes; group 0 always runs.
       extraGroupsCondition: "and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.UIKitTestsRequired'], 'true')))"
 
   # The same app on the WebGPU backend, on the simulator's Metal.
@@ -150,7 +149,7 @@ stages:
 # https://github.com/unoplatform/uno/issues/25659
 # - stage: runtime_tests_skia_tvos
 #   displayName: Tests - tvOS
-#   # On PRs only UIKit changes run it, as for iOS: these lanes run on per-minute Mac agents.
+#   # On PRs only UIKit changes run it (unlike iOS, which always runs group 0): it runs on per-minute Mac agents.
 #   condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.UIKitTestsRequired'], 'true')))
 #   # Builds from source and never consumes native-assets-macos, so it need not wait for that stage.
 #   dependsOn:

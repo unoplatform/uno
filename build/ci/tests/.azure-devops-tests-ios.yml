@@ -12,8 +12,9 @@ parameters:
   # UNO_* variables handed to the app, e.g. 'UNO_WEBGPU=1'.
   appEnvironment: ''
   condition: ''
-  # When set, replaces `condition` for every group but the first, so a lane can run one group on
-  # every build and the rest only when needed.
+  # When set, replaces `condition` for every group but key '0', so a lane can run one group on every
+  # build and the rest only when needed. It replaces rather than adds: include the lane's own gate if
+  # you set both.
   extraGroupsCondition: ''
 
   # Runtime Test Groups

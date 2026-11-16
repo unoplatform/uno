@@ -5,9 +5,9 @@ and, for iOS/tvOS, the changed lines.
 
 .DESCRIPTION
 This script inspects the diff between the PR head and its target branch to figure out which
-optional test stages (template tests, the screenshot comparison, iOS and tvOS) should execute. It sets
-Azure DevOps variables (both standard and task output) for each scope so subsequent stages can
-conditionally run.
+optional test stages or lanes (template tests, the screenshot comparison, iOS runtime-test
+groups 1-3 and tvOS) should execute. It sets Azure DevOps variables (both standard and task
+output) for each scope so subsequent stages can conditionally run.
 
 When the script cannot determine scope (e.g., non-PR build or git fetch failure) it enables
 every scope to stay safe.
@@ -36,15 +36,12 @@ $scopeVariables = [ordered]@{
 #                           that could affect rendered output.
 #   WebGpuTestsRequired   - the WebGPU backend, its native packaging and loaders, or the runtime-test
 #                           infrastructure. Gates every WebGPU lane but Linux's, which always runs.
-#   UIKitTestsRequired    - iOS/tvOS code, the Apple toolchain (Xcode image, SDK, workloads) or the
-#                           iOS/tvOS CI plumbing. Gates iOS Skia runtime-test groups 1-3 (every
-#                           PR still builds the iOS app and runs group 0) and the tvOS stage,
-#                           which run on per-minute Mac agents. Matches
-#                           PascalCase names (iOSResourceConverter) and the files that gate these
-#                           lanes, so a change to the gate runs the lanes it gates. Shared files
-#                           are caught by their changed lines instead (see $uikitContentPattern),
-#                           PRs into any branch other than master always enable it, and so does
-#                           the ci/run-ios label ($uikitLabel).
+#   UIKitTestsRequired    - "Run the full Apple lanes": iOS Skia runtime-test groups 1-3 (every PR
+#                           builds the iOS app and runs group 0) and the tvOS stage, all on
+#                           per-minute Mac agents. Set by iOS/tvOS paths (including PascalCase names
+#                           like iOSResourceConverter), the Apple toolchain and the files that gate
+#                           these lanes; by iOS/tvOS code in shared files ($uikitContentPattern);
+#                           by any target branch other than master; and by the ci/run-ios label.
 $patterns = @{
     TemplateTestsRequired = [regex]'(?i)(?:^build/|\.csproj$|\.props$|\.targets$|^src/uno\.sdk/|^src/sourcegenerators/uno\.ui\.tasks/|^src/.*devserver.*|^src/.*remotecontrol.*)'
     ScreenshotsRequired   = [regex]'(?i)^src/(uno\.ui|addins).*\.cs$'
@@ -97,7 +94,7 @@ $targetRef = if ([string]::IsNullOrWhiteSpace($env:SYSTEM_PULLREQUEST_TARGETBRAN
     $env:SYSTEM_PULLREQUEST_TARGETBRANCH
 }
 
-# Release and servicing PRs stabilize a branch, so they keep the iOS stage.
+# Release and servicing PRs stabilize a branch, so they run every iOS group.
 if ($targetRef -notmatch '^(refs/heads/)?master$') {
     Write-Host "Target branch '$targetRef' is not master: enabling UIKitTestsRequired."
     $scopeVariables['UIKitTestsRequired'] = $true
@@ -168,26 +165,36 @@ if (-not $scopeVariables['UIKitTestsRequired']) {
     }
 }
 
-# Maintainers force the full iOS stage on a PR with this label. The labels are read anonymously
+# Maintainers force every iOS group on a PR with this label. The labels are read anonymously
 # (GitHub allows 60 such calls an hour per IP); if that fails the label is ignored with a warning
 # rather than enabling iOS on every PR. Setup's result is reused by job reruns, so a label added
 # later needs a new run (comment `/azp run` on the PR).
 $uikitLabel = 'ci/run-ios'
+# Without a PR number there are no labels to read, so that isn't a failed read.
+$labelsRead = -not $env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER
 if (-not $scopeVariables['UIKitTestsRequired'] -and $env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER) {
     $repository = if ($env:BUILD_REPOSITORY_NAME) { $env:BUILD_REPOSITORY_NAME } else { 'unoplatform/uno' }
     try {
-        $labels = Invoke-RestMethod -Uri "https://api.github.com/repos/$repository/issues/$($env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)/labels" -Headers @{ 'User-Agent' = 'uno-ci-test-scope'; 'Accept' = 'application/vnd.github+json' } -TimeoutSec 20
+        $labels = Invoke-RestMethod -Uri "https://api.github.com/repos/$repository/issues/$($env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER)/labels?per_page=100" -Headers @{ 'User-Agent' = 'uno-ci-test-scope'; 'Accept' = 'application/vnd.github+json' } -TimeoutSec 20
         if (@($labels | Where-Object { $_.name -eq $uikitLabel }).Count -gt 0) {
             Write-Host "The PR has the '$uikitLabel' label: enabling UIKitTestsRequired."
             $scopeVariables['UIKitTestsRequired'] = $true
         }
+        $labelsRead = $true
     } catch {
-        Write-Host "##vso[task.logissue type=warning]Unable to read the PR's labels, so '$uikitLabel' is ignored: $($_.Exception.Message)"
+        $reason = (($_.Exception.Message -split "`r?`n") | Select-Object -First 1)
+        Write-Host "##vso[task.logissue type=warning]Unable to read the PR's labels, so '$uikitLabel' is ignored: $reason"
     }
 }
 
 if (-not $scopeVariables['UIKitTestsRequired']) {
-    Write-Host "No iOS/tvOS paths, changed lines or '$uikitLabel' label: Tests - iOS runs only its app build and Skia group 0 on this PR. To run every group, add the label and comment '/azp run' on the PR (rerunning failed jobs reuses this result)."
+    # Skipped groups look like any other skipped job, and GitHub shows the same green check, so tag the build.
+    Write-Host "##vso[build.addbuildtag]ios-group0-only"
+    if ($labelsRead) {
+        Write-Host "No iOS/tvOS paths, changed lines or '$uikitLabel' label: Tests - iOS runs only its app build and Skia group 0 on this PR (build tag ios-group0-only). To run every group, add the label and comment '/azp run' on the PR (rerunning failed jobs reuses this result)."
+    } else {
+        Write-Host "No iOS/tvOS paths or changed lines, and the PR's labels couldn't be read: Tests - iOS runs only its app build and Skia group 0 on this PR (build tag ios-group0-only). If the PR has the '$uikitLabel' label, comment '/azp run' to try again."
+    }
 }
 
 Publish-TestScopes -Values $scopeVariables
