@@ -119,7 +119,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"AutoMaximizeSuggestionArea", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: BoolBoxes.False)
+			new FrameworkPropertyMetadata(defaultValue: BoolBoxes.True)
 		);
 
 		public static global::Microsoft.UI.Xaml.DependencyProperty HeaderProperty { get; } =
