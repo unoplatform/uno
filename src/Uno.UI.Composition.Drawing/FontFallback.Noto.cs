@@ -55,7 +55,7 @@ internal static class NotoFontFallbackService
 		return new CoverageTableFontFallbackService(coverage, FetchNotoFontStream);
 	}
 
-	private static async Task<Stream?> FetchNotoFontStream(
+	internal static async Task<Stream?> FetchNotoFontStream(
 		string fontFamily,
 		FontWeight weight,
 		FontStretch stretch,
@@ -73,8 +73,33 @@ internal static class NotoFontFallbackService
 			return null;
 		}
 
-		var uri = new Uri(variants["Regular"]);
+		var uri = ResolveFontUri(variants["Regular"], FontFallback.NotoFontsBaseUri);
 		return await AppDataUriEvaluator.ToStream(uri, ct);
+	}
+
+	/// <summary>The origin every URL in <see cref="FallbackFontMaps.FontWeightsToRawUrls"/> starts with.</summary>
+	internal static readonly Uri DefaultBaseUri = new("https://raw.githubusercontent.com/");
+
+	/// <summary>
+	/// <paramref name="rawUrl"/> (a map entry) re-rooted under <paramref name="baseUri"/>: the path after
+	/// <see cref="DefaultBaseUri"/> is kept, so a mirror lays the files out as the notofonts repositories do.
+	/// </summary>
+	internal static Uri ResolveFontUri(string rawUrl, Uri baseUri)
+	{
+		var raw = new Uri(rawUrl);
+		if (baseUri == DefaultBaseUri)
+		{
+			return raw;
+		}
+
+		var relative = DefaultBaseUri.MakeRelativeUri(raw);
+		if (relative.IsAbsoluteUri || relative.OriginalString.StartsWith("../", StringComparison.Ordinal))
+		{
+			// not under the default origin (the generated maps only hold raw.githubusercontent.com URLs)
+			return raw;
+		}
+
+		return new Uri(baseUri, relative);
 	}
 
 	private static string SelectCjkVariantForCurrentCulture()
