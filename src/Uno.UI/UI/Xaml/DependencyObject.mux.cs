@@ -283,8 +283,8 @@ public partial class DependencyObject
 			// session is open (CoreServices.OnTick), so this is inert outside one.
 			UpdateAllThemeReferences(
 				owner,
-				Uno.UI.Xaml.Core.CoreServices.Instance.ThemeWalkResourceCache,
-				ThemeResolution.ResolveOwnerTheme(owner));
+				cache: Uno.UI.Xaml.Core.CoreServices.Instance.ThemeWalkResourceCache,
+				ownerThemeOverride: ThemeResolution.ResolveOwnerTheme(owner));
 		}
 	}
 

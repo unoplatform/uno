@@ -100,7 +100,8 @@ namespace Uno.UI.Xaml.Core
 			// and applying templates makes a great many elements enter the tree, each of which resolves its
 			// theme references. WinUI caches those lookups for the duration of the pass (its scenario 2,
 			// "spares ~69k ResourceDictionary lookups"). ResourceDictionary already evicts affected entries
-			// when a dictionary is mutated (ResourceDictionary.cs:249, :494 — MUX Resources.cpp:207, :335),
+			// when a dictionary is mutated (ResourceDictionary.Set/Remove call ThemeWalkResourceCache.RemoveCacheEntry,
+			// as MUX CResourceDictionary::AddKey/RemoveKey do),
 			// which is what makes caching safe across the callout.
 			using var themeResourceCacheSession = Instance.ThemeWalkResourceCache.BeginCachingThemeResources();
 
