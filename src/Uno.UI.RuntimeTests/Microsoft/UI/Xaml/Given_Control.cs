@@ -449,6 +449,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.IsNotNull(SUT.FindFirstDescendant<Border>("ControlTemplateRoot"), "Failed to find the expected template root (Border#ControlTemplateRoot)");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25217")]
+		public async Task When_Template_Changed_After_Loaded()
+		{
+			var SUT = new Button { Content = "Hello" };
+			await UITestHelper.Load(SUT);
+
+			var template = SUT.Template;
+			var initialWidth = SUT.ActualWidth;
+			Assert.IsTrue(initialWidth > 0);
+
+			SUT.Template = null;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			SUT.Template = template;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, VisualTreeHelper.GetChildrenCount(SUT), "The new template was not applied");
+			Assert.AreEqual(initialWidth, SUT.ActualWidth);
+		}
+
 #if HAS_UNO
 		/// <remarks>
 		/// If this test starts failing, it may be because you have added a new UI control that's coming from
