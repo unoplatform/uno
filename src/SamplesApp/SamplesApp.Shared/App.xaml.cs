@@ -519,6 +519,9 @@ namespace SamplesApp
 
 				builder.AddFilter("Uno.UI.Media", LogLevel.Information);
 
+				// Which UIKit life cycle the app runs, and why
+				builder.AddFilter("Uno.UI.Xaml.UnoUISceneDelegate", LogLevel.Information);
+
 				builder.AddFilter("Uno", LogLevel.Warning);
 				builder.AddFilter("Windows", LogLevel.Warning);
 				builder.AddFilter("Microsoft", LogLevel.Warning);

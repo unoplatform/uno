@@ -540,7 +540,7 @@ public class Given_Window
 	{
 #if HAS_UNO
 		// UIKit and the scene delegate are read through reflection, as the Skia runtime tests are built without the iOS
-		// bindings. The native SamplesApp opts into the scene life cycle; the Skia one runs the default for its SDK.
+		// bindings. The Skia SamplesApp opts into the scene life cycle; the native one runs the default for its SDK.
 		static object GetProperty(object target, string name) => target?.GetType().GetProperty(name)?.GetValue(target);
 
 		var sceneDelegateType = Type.GetType("Uno.UI.Xaml.UnoUISceneDelegate, Uno.UI")
@@ -553,6 +553,8 @@ public class Given_Window
 
 		if (usesSceneLifecycle is false)
 		{
+			// The Skia iOS SamplesApp sets UnoUseSceneLifecycle, so that CI covers the scene life cycle whatever its SDK.
+			Assert.AreNotEqual(RuntimeTestPlatforms.SkiaIOS, RuntimeTestsPlatformHelper.CurrentPlatform, "The Skia iOS SamplesApp must run the scene life cycle.");
 			Assert.Inconclusive("The app runs the app life cycle, where the window's scene has no delegate.");
 		}
 
