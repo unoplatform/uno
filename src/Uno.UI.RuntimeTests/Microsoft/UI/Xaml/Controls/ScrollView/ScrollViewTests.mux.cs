@@ -34,9 +34,6 @@ using System.Threading.Tasks;
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
 
 [TestClass]
-#if !__SKIA__
-[Ignore("Not well supported on platforms other than Skia")]
-#endif
 public class ScrollViewTests : MUXApiTestBase
 {
 	private const int c_MaxWaitDuration = 5000;

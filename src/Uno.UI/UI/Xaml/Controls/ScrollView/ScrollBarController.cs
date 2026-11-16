@@ -20,13 +20,19 @@ internal sealed partial class ScrollBarController : IScrollController
 		//SCROLLVIEW_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
 	}
 
-	~ScrollBarController()
-	{
-		//SCROLLVIEW_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
+#if HAS_UNO
+	// TODO Uno: Original C++ destructor cleanup. Uno does not support cleanup via finalizers.
+	// Move this logic into Loaded/Unloaded event handlers or other lifecycle methods to avoid leaks.
 
-		UnhookScrollBarEvent();
-		UnhookScrollBarPropertyChanged();
-	}
+	// Original destructor logic (not executed):
+	// ~ScrollBarController()
+	// {
+	// 	SCROLLVIEW_TRACE_INFO(nullptr, TRACE_MSG_METH, METH_NAME, this);
+
+	// 	UnhookScrollBarEvent();
+	// 	UnhookScrollBarPropertyChanged();
+	// }
+#endif
 
 	public void SetScrollBar(ScrollBar scrollBar)
 	{
@@ -196,6 +202,7 @@ internal sealed partial class ScrollBarController : IScrollController
 		}
 	}
 
+#pragma warning disable IDE0051 // Upstream calls it only from the destructor, which Uno doesn't port.
 	private void UnhookScrollBarPropertyChanged()
 	{
 		//SCROLLVIEW_TRACE_VERBOSE(null, TRACE_MSG_METH, METH_NAME, this);
@@ -223,6 +230,7 @@ internal sealed partial class ScrollBarController : IScrollController
 			}
 		}
 	}
+#pragma warning restore IDE0051
 
 	private void UpdateCanScroll()
 	{

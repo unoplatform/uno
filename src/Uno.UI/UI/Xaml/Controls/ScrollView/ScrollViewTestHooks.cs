@@ -56,14 +56,4 @@ internal partial class ScrollViewTestHooks
 			scrollView.ScrollControllersAutoHidingChangedDbg();
 		}
 	}
-
-	public ScrollPresenter GetScrollPresenterPart(ScrollView scrollView)
-	{
-		if (scrollView is not null)
-		{
-			return scrollView.GetScrollPresenterPart();
-		}
-
-		return null;
-	}
 }

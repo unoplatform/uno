@@ -24,9 +24,6 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-#if !__SKIA__
-[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__")]
-#endif
 public partial class ScrollView : Control, IScrollView
 {
 	// Change to 'true' to turn on debugging outputs in Output window
@@ -47,17 +44,23 @@ public partial class ScrollView : Control, IScrollView
 		HookScrollViewEvents();
 	}
 
-	~ScrollView()
-	{
-		//SCROLLVIEW_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
+#if HAS_UNO
+	// TODO Uno: Original C++ destructor cleanup. Uno does not support cleanup via finalizers.
+	// Move this logic into Loaded/Unloaded event handlers or other lifecycle methods to avoid leaks.
 
-		UnhookHorizontalScrollControllerEvents(true /*isForDestructor*/);
-		UnhookVerticalScrollControllerEvents(true /*isForDestructor*/);
-		UnhookCompositionTargetRendering();
-		UnhookScrollPresenterEvents(true /*isForDestructor*/);
-		UnhookScrollViewEvents();
-		ResetHideIndicatorsTimer();
-	}
+	// Original destructor logic (not executed):
+	// ~ScrollView()
+	// {
+	// 	SCROLLVIEW_TRACE_INFO(nullptr, TRACE_MSG_METH, METH_NAME, this);
+
+	// 	UnhookHorizontalScrollControllerEvents(true /*isForDestructor*/);
+	// 	UnhookVerticalScrollControllerEvents(true /*isForDestructor*/);
+	// 	UnhookCompositionTargetRendering();
+	// 	UnhookScrollPresenterEvents(true /*isForDestructor*/);
+	// 	UnhookScrollViewEvents();
+	// 	ResetHideIndicatorsTimer();
+	// }
+#endif
 
 	#region IScrollView
 
@@ -719,11 +722,6 @@ public partial class ScrollView : Control, IScrollView
 		UpdateScrollControllersAutoHiding(true /*forceUpdate*/);
 	}
 
-	internal ScrollPresenter GetScrollPresenterPart()
-	{
-		return m_scrollPresenter as ScrollPresenter;
-	}
-
 	internal static void ValidateAnchorRatio(double value)
 	{
 		ScrollPresenter.ValidateAnchorRatio(value);
@@ -739,9 +737,7 @@ public partial class ScrollView : Control, IScrollView
 	{
 		var dependencyProperty = args.Property;
 
-#if DEBUG
 		//SCROLLVIEW_TRACE_VERBOSE(null, L"%s(property: %s)\n", METH_NAME, DependencyPropertyToString(dependencyProperty).c_str());
-#endif
 
 		bool horizontalChange = dependencyProperty == HorizontalScrollBarVisibilityProperty;
 		bool verticalChange = dependencyProperty == VerticalScrollBarVisibilityProperty;
@@ -1204,6 +1200,7 @@ public partial class ScrollView : Control, IScrollView
 		AddHandler(UIElement.PointerCanceledEvent, m_onPointerCanceledEventHandler, true);
 	}
 
+#pragma warning disable IDE0051 // Upstream calls it only from the destructor, which Uno doesn't port.
 	private void UnhookScrollViewEvents()
 	{
 		//if (m_gettingFocusToken.value != 0)
@@ -1264,6 +1261,7 @@ public partial class ScrollView : Control, IScrollView
 			m_onPointerCanceledEventHandler = null;
 		}
 	}
+#pragma warning restore IDE0051
 
 	private void HookScrollPresenterEvents()
 	{
