@@ -1,5 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference Generated/ScrollView.properties.h, tag winui3/release/2.6.5
 
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Helpers.Boxes;
@@ -90,7 +91,11 @@ public partial class ScrollView : Control
 	public double HorizontalAnchorRatio
 	{
 		get => (double)GetValue(HorizontalAnchorRatioProperty);
-		set => SetValue(HorizontalAnchorRatioProperty, Boxer.Box(value));
+		set
+		{
+			ValidateAnchorRatio(value);
+			SetValue(HorizontalAnchorRatioProperty, Boxer.Box(value));
+		}
 	}
 
 	public static DependencyProperty HorizontalAnchorRatioProperty { get; } =
@@ -162,7 +167,11 @@ public partial class ScrollView : Control
 	public double MaxZoomFactor
 	{
 		get => (double)GetValue(MaxZoomFactorProperty);
-		set => SetValue(MaxZoomFactorProperty, Boxer.Box(value));
+		set
+		{
+			ValidateZoomFactoryBoundary(value);
+			SetValue(MaxZoomFactorProperty, Boxer.Box(value));
+		}
 	}
 
 	public static DependencyProperty MaxZoomFactorProperty { get; } =
@@ -175,7 +184,11 @@ public partial class ScrollView : Control
 	public double MinZoomFactor
 	{
 		get => (double)GetValue(MinZoomFactorProperty);
-		set => SetValue(MinZoomFactorProperty, Boxer.Box(value));
+		set
+		{
+			ValidateZoomFactoryBoundary(value);
+			SetValue(MinZoomFactorProperty, Boxer.Box(value));
+		}
 	}
 
 	public static DependencyProperty MinZoomFactorProperty { get; } =
@@ -223,7 +236,11 @@ public partial class ScrollView : Control
 	public double VerticalAnchorRatio
 	{
 		get => (double)GetValue(VerticalAnchorRatioProperty);
-		set => SetValue(VerticalAnchorRatioProperty, Boxer.Box(value));
+		set
+		{
+			ValidateAnchorRatio(value);
+			SetValue(VerticalAnchorRatioProperty, Boxer.Box(value));
+		}
 	}
 
 	public static DependencyProperty VerticalAnchorRatioProperty { get; } =

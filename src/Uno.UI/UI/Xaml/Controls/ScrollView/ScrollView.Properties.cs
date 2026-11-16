@@ -1,5 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference Generated/ScrollView.properties.cpp, tag winui3/release/2.6.5
+
+using System;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -333,13 +337,12 @@ public partial class ScrollView : Control
 
 		var value = (double)args.NewValue;
 		var coercedValue = value;
-		owner.ValidateAnchorRatio(coercedValue);
-		// UNO TODO
-		//if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
-		//{
-		//	sender.SetValue(args.Property(), winrt::box_value<double>(coercedValue));
-		//	return;
-		//}
+		ValidateAnchorRatio(coercedValue);
+		if (BitConverter.DoubleToInt64Bits(value) != BitConverter.DoubleToInt64Bits(coercedValue)) // compare bits to avoid tripping over NaN
+		{
+			sender.SetValue(args.Property, Boxer.Box(coercedValue));
+			return;
+		}
 
 		owner.OnPropertyChanged(args);
 	}
@@ -392,13 +395,12 @@ public partial class ScrollView : Control
 
 		var value = (double)args.NewValue;
 		var coercedValue = value;
-		owner.ValidateZoomFactoryBoundary(coercedValue);
-		// UNO TODO:
-		//if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
-		//{
-		//	sender.SetValue(args.Property(), winrt::box_value<double>(coercedValue));
-		//	return;
-		//}
+		ValidateZoomFactoryBoundary(coercedValue);
+		if (BitConverter.DoubleToInt64Bits(value) != BitConverter.DoubleToInt64Bits(coercedValue)) // compare bits to avoid tripping over NaN
+		{
+			sender.SetValue(args.Property, Boxer.Box(coercedValue));
+			return;
+		}
 
 		owner.OnPropertyChanged(args);
 	}
@@ -411,13 +413,12 @@ public partial class ScrollView : Control
 
 		var value = (double)args.NewValue;
 		var coercedValue = value;
-		owner.ValidateZoomFactoryBoundary(coercedValue);
-		// UNO TODO:
-		//if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
-		//{
-		//	sender.SetValue(args.Property(), winrt::box_value<double>(coercedValue));
-		//	return;
-		//}
+		ValidateZoomFactoryBoundary(coercedValue);
+		if (BitConverter.DoubleToInt64Bits(value) != BitConverter.DoubleToInt64Bits(coercedValue)) // compare bits to avoid tripping over NaN
+		{
+			sender.SetValue(args.Property, Boxer.Box(coercedValue));
+			return;
+		}
 
 		owner.OnPropertyChanged(args);
 	}
@@ -438,13 +439,12 @@ public partial class ScrollView : Control
 
 		var value = (double)args.NewValue;
 		var coercedValue = value;
-		owner.ValidateAnchorRatio(coercedValue);
-		// UNO TODO:
-		//if (std::memcmp(&value, &coercedValue, sizeof(value)) != 0) // use memcmp to avoid tripping over nan
-		//{
-		//	sender.SetValue(args.Property(), winrt::box_value<double>(coercedValue));
-		//	return;
-		//}
+		ValidateAnchorRatio(coercedValue);
+		if (BitConverter.DoubleToInt64Bits(value) != BitConverter.DoubleToInt64Bits(coercedValue)) // compare bits to avoid tripping over NaN
+		{
+			sender.SetValue(args.Property, Boxer.Box(coercedValue));
+			return;
+		}
 
 		owner.OnPropertyChanged(args);
 	}

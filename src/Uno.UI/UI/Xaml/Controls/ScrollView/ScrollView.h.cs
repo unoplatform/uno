@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ScrollView.h, tag winui3/release/2.5.1, commit ba3a8d59e
+// MUX Reference ScrollView.h, tag winui3/release/2.6.5
 
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -94,7 +94,8 @@ public partial class ScrollView : Control
 
 	private FocusInputDeviceKind m_focusInputDeviceKind = FocusInputDeviceKind.None;
 
-	// Used to detect changes for UISettings.AutoHiScrollBars.
+	// TODO Uno: UISettings.AutoHideScrollBarsChanged is not implemented.
+	// Used to detect changes for UISettings.AutoHideScrollBars.
 	//private IUISettings5 m_uiSettings5;
 	//IUISettings5::AutoHideScrollBarsChanged_revoker m_autoHideScrollBarsChangedRevoker{};
 

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ScrollViewTestHooks.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
+// MUX Reference ScrollViewTestHooks.cpp, tag winui3/release/2.6.5
 
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -53,7 +53,7 @@ internal partial class ScrollViewTestHooks
 				hooks.m_autoHideScrollControllersMap.Add(scrollView, value);
 			}
 
-			scrollView.ScrollControllersAutoHidingChanged();
+			scrollView.ScrollControllersAutoHidingChangedDbg();
 		}
 	}
 
