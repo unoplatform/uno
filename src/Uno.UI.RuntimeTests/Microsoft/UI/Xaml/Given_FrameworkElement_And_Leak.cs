@@ -173,25 +173,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				weakRefs.Add((totalRefCount++, new WeakReference<DependencyObject>(target)));
 			}
 
-			IEnumerable<(int Ordinal, DependencyObject Target)> RemoveDeadRefsAndGetAliveRefs()
+			List<(int Ordinal, DependencyObject Target)> RemoveDeadRefsAndGetAliveRefs()
 			{
-				var toRemove = new List<(int Ordinal, WeakReference<DependencyObject> Reference)>();
-				foreach (var weakRef in weakRefs)
+				List<(int Ordinal, DependencyObject Target)> alive = new();
+				weakRefs.RemoveWhere(weakRef =>
 				{
 					if (weakRef.Reference.TryGetTarget(out var target))
 					{
-						yield return (weakRef.Ordinal, target);
+						alive.Add((weakRef.Ordinal, target));
+						return false;
 					}
-					else
-					{
-						toRemove.Add(weakRef);
-					}
-				}
 
-				foreach (var weakReference in toRemove)
-				{
-					weakRefs.Remove(weakReference);
-				}
+					return true;
+				});
+
+				return alive;
 			}
 
 			var forest = new List<string>();
@@ -220,16 +216,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await MaterializeControl(controlType, rootContainer);
 
 			// Some platforms have a problem with GC timing and / or the way things like async methods are compiled
-			// where the last created instance of the control will remain in memory, so we check that objects from
-			// all but the last instance of the control are collected
+			// where the last created instance of the control will remain in memory, so we tolerate as many
+			// survivors as the last instance tracked. This bounds the total only; it does not prove each
+			// earlier instance was collected.
 			var expected = totalRefCount - totalRefCountExceptForLastControlInstance;
 
 			var sw = Stopwatch.StartNew();
 
 			var endTime = TimeSpan.FromSeconds(30);
 			// The alive count only decreases, so there is nothing left to wait for once it meets the bar.
-			// Count() also enumerates fully, which is what lets the iterator prune the dead refs.
-			while (sw.Elapsed < endTime && RemoveDeadRefsAndGetAliveRefs().Count() > expected)
+			while (sw.Elapsed < endTime && RemoveDeadRefsAndGetAliveRefs().Count > expected)
 			{
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
@@ -265,8 +261,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 
 			// A single snapshot feeds both the diagnostics and the assertion, so the two cannot disagree.
-			var alive = RemoveDeadRefsAndGetAliveRefs().ToArray();
-			var refcount = alive.Length;
+			var alive = RemoveDeadRefsAndGetAliveRefs();
+			var refcount = alive.Count;
 			var aliveEarlier = alive.Count(x => x.Ordinal < totalRefCountExceptForLastControlInstance);
 			var aliveLast = refcount - aliveEarlier;
 			var retainedTypes = alive
@@ -278,7 +274,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var retainedMessage =
 				$"platform={RuntimeTestsPlatformHelper.CurrentPlatform}, settled in {sw.Elapsed.TotalSeconds:F1}s, " +
 				$"alive={refcount} (expected <= {expected}), from earlier instances={aliveEarlier}, from last instance={aliveLast}, " +
-				$"retained: {retainedTypes.JoinBy("; ")}";
+				$"retained: {string.Join("; ", retainedTypes)}";
 
 			if (refcount > 0 && (OperatingSystem.IsIOS() || OperatingSystem.IsAndroid() || OperatingSystem.IsBrowser()))
 			{
@@ -303,8 +299,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 			}
 
-			// A failure on a single platform indicts that platform, not the bar: the survivors named in the
-			// message are the lead to follow, so don't raise `expected` or drop the row to make it pass.
 			refcount.Should().BeLessThanOrEqualTo(expected, retainedMessage);
 
 			[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "Use of [ActivatableDataRow] ensures that string fulfill TypeRequirements.")]
