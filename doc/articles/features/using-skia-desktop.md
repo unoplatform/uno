@@ -76,8 +76,8 @@ In your project file:
 
 ```xml
 <PropertyGroup>
-   <SkiaSharpVersion>4.156.0</SkiaSharpVersion>
-   <HarfBuzzSharpVersion>14.4.0.100</HarfBuzzSharpVersion>
+   <SkiaSharpVersion>4.156.1</SkiaSharpVersion>
+   <HarfBuzzSharpVersion>14.4.0.101</HarfBuzzSharpVersion>
 </PropertyGroup>
 <ItemGroup>
    <PackageReference Include="SkiaSharp" />
@@ -90,9 +90,9 @@ And in `Directory.Packages.props`:
 
 ```xml
 <ItemGroup>
-   <PackageVersion Include="SkiaSharp" Version="4.156.0" />
-   <PackageVersion Include="SkiaSharp.Skottie" Version="4.156.0" />
-   <PackageVersion Include="HarfBuzzSharp" Version="14.4.0.100" />
+   <PackageVersion Include="SkiaSharp" Version="4.156.1" />
+   <PackageVersion Include="SkiaSharp.Skottie" Version="4.156.1" />
+   <PackageVersion Include="HarfBuzzSharp" Version="14.4.0.101" />
 </ItemGroup>
 ```
 
