@@ -233,6 +233,12 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	public virtual void ExtendContentIntoTitleBar(bool extend) { }
 
+	/// <summary>
+	/// True when the platform draws its own caption buttons over extended content (e.g. the macOS traffic lights),
+	/// so WindowChrome must not draw the XAML ones and the host reports the AppWindowTitleBar insets itself.
+	/// </summary>
+	internal virtual bool HasNativeCaptionButtons => false;
+
 	public virtual void Show(bool activateWindow)
 	{
 		if (!WasShown)

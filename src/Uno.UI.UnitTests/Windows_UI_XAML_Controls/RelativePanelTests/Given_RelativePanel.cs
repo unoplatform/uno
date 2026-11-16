@@ -6,7 +6,7 @@ using Uno.Extensions;
 
 namespace Uno.UI.Tests.RelativePanelTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_RelativePanel
 	{
 		[TestMethod]

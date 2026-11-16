@@ -3,7 +3,7 @@ using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_xBind_Functions
 	{
 		[TestMethod]

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using Microsoft.UI.Xaml.Documents;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -85,9 +86,7 @@ internal sealed partial class TextBoxCore
 
 		// Clamping to the first and last line centres keeps an over-shooting drag on the text
 		// instead of returning a miss.
-		var firstLine = parsedText.GetRectForIndex(0);
-		var lastLine = parsedText.GetRectForIndex(Text.Length);
-		_caretDragYRange = (firstLine.Top + (firstLine.Height / 2), lastLine.Top + (lastLine.Height / 2));
+		_caretDragYRange = parsedText.GetLineCentreRange();
 
 		_caretModeBeforeCaretDrag ??= CaretMode;
 

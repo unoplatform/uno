@@ -1,30 +1,31 @@
 #nullable enable
 
-using System.Runtime.InteropServices.JavaScript;
+using Silk.NET.WebGPU;
 
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
-/// The neutral WebGPU device face for the <see cref="GraphicsContextKind.WebGpu"/> kind — the opaque WebGPU
-/// handles (instance / adapter / device / queue) plus the host's chosen colour format and MSAA sample count, all
-/// as <c>nint</c>/<c>uint</c> so no GPU-library type crosses the seam. The seam names no specific WebGPU
-/// implementation, so host and backend can agree on whichever one they use (e.g. wgpu-native or Dawn).
+/// The WebGPU device the host created for the <see cref="GraphicsContextKind.WebGpu"/> kind, as Silk.NET.WebGPU
+/// objects, and the colour format it chose.
 /// </summary>
-public interface IWebGpuDeviceContext : IGraphicsContext
+public unsafe interface IWebGpuDeviceContext : IGraphicsContext
 {
-	nint Instance { get; }
-	nint Adapter { get; }
-	nint Device { get; }
-	nint Queue { get; }
-
 	/// <summary>
-	/// Browser only (null on every native target): the live JavaScript <c>GPUDevice</c> object. On WASM the device
-	/// is created via <c>navigator.gpu</c> in JS, so the honest handle across the seam is the JS object — a backend
-	/// converts it to whatever it needs (Uno's emdawn backend imports it to a wgpu pointer; a direct-JS backend uses
-	/// it as-is), rather than the contract presupposing a native pointer / emdawn import.
+	/// The API these objects belong to. Every call on them goes through it: an API loaded separately binds another
+	/// WebGPU implementation, which cannot use them.
 	/// </summary>
-	JSObject? JsDevice => null;
+	WebGPU Api { get; }
 
-	/// <summary>The WebGPU colour-format enum value the backend's pipelines must use, chosen by the host. 0 means the backend's default.</summary>
-	uint ColorFormat { get; }
+	/// <summary>The instance, or null in the browser, where JavaScript creates the device.</summary>
+	Instance* Instance { get; }
+
+	/// <summary>The adapter, or null in the browser, where JavaScript creates the device.</summary>
+	Adapter* Adapter { get; }
+
+	Device* Device { get; }
+
+	Queue* Queue { get; }
+
+	/// <summary>The colour format the backend's pipelines must use.</summary>
+	TextureFormat ColorFormat { get; }
 }

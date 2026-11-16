@@ -74,6 +74,9 @@ public partial class TreeViewNode : DependencyObject, ICustomPropertyProvider, I
 
 	internal TreeNodeSelectionState SelectionState { get; set; }
 
+	// Uno specific: TreeViewViewModel's selection count when this node was unselected without a container (#25796).
+	internal int? UnselectedWithoutContainerAt { get; set; }
+
 	private void UpdateDepth(int depth)
 	{
 		// Update our depth

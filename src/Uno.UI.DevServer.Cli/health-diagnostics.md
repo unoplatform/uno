@@ -1,6 +1,6 @@
 # Health & Diagnostics
 
-`HealthService` exposes an always-available `uno_health` MCP tool and a `uno://health` resource so AI agents can inspect DevServer state even before the upstream Host is ready. The CLI also exposes `uno.devserver health`, with `--json` returning the same `HealthReport` payload. The bridge also exposes `uno_app_select_solution` so an agent can explicitly choose a Uno solution when auto-discovery is ambiguous or deferred.
+`HealthService` exposes an always-available `uno_health` MCP tool and a `uno://health` resource so AI agents can inspect DevServer state even before the upstream Host is ready. The CLI also exposes `uno.devserver health`, with `--json` returning the same `HealthReport` payload. The bridge also exposes `uno_app_select_solution` (see [Solution selection](#solution-selection)).
 
 ## Active Server Ownership
 
@@ -67,6 +67,7 @@ These are added directly by `HealthService.BuildHealthReport()`:
 |-----------|----------|---------|
 | `HostNotStarted` | Fatal | DevServer not yet started |
 | `NoSolutionFound` | Warning | No `.sln` or `.slnx` file found in working directory tree |
+| `WorkspaceNotResolved` | Fatal | An explicitly selected solution is not served (see [Solution selection](#solution-selection)) |
 | `HostCrashed` | Warning/Fatal | Connection state `Reconnecting` / `Degraded` |
 | `HostUnreachable` | Warning | Started but not yet connected |
 | `HostMcpEndpointNotAvailable` | Fatal | Host responds to HTTP but `/mcp` returns 404/400 — the host version predates MCP support (requires 6.6 or later). The MCP bridge cannot function without this endpoint. Remediation: upgrade the Uno.WinUI.DevServer package. |
@@ -80,11 +81,15 @@ Three codes exist in the `IssueCode` enum but are **not currently mapped** in CL
 - `AddInLoadFailed`
 - `AddInBinaryNotFound`
 
+## Solution selection
+
+`uno_app_select_solution` accepts the absolute local path of any `.sln`/`.slnx` whose nearest `global.json` declares the Uno SDK, inside or outside the workspace: `candidateSolutions` are suggestions, not a filter. An explicit selection (that tool, or `--solution` at startup) stays in place across file changes and MCP roots until another one is made; while it is not served, health is unhealthy, still reports it as `SelectedSolutionPath`, and raises `WorkspaceNotResolved` naming the cause (the file is missing, or its nearest `global.json` has no usable Uno SDK, or there is none) in place of the `HostCrashed` / `HostUnreachable` advice to wait.
+
 ## Notable HealthReport Fields
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `DiscoveredSolutions` | `string[]?` | `.sln`/`.slnx` paths relative to the active monitor working directory. This may be `null` when a caller omits the field, or an empty array when discovery completed with no candidates. |
+| `DiscoveredSolutions` | `string[]?` | `.sln`/`.slnx` paths relative to the active monitor working directory, including the selected solution when the depth-limited scan does not reach it. This may be `null` when a caller omits the field, or an empty array when discovery completed with no candidates. |
 | `ConnectionState` | `ConnectionState?` | Lifecycle state of the MCP bridge (see `Mcp/ConnectionState.cs` for state diagram) |
 | `EffectiveWorkspaceDirectory` | `string?` | Resolved workspace directory used for discovery and cache identity |
 | `SelectedSolutionPath` | `string?` | Solution selected for the current workspace |

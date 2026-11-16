@@ -6,8 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using Uno.WebGpu.Native;
-using static Uno.WebGpu.Native.WGPU;
+using Silk.NET.WebGPU;
+using Buffer = Silk.NET.WebGPU.Buffer;
 
 namespace Uno.UI.Composition.WebGpu;
 
@@ -15,9 +15,9 @@ internal sealed unsafe partial class WebGpuCoverage
 {
 	internal const int SheetSize = 2048;
 
-	internal sealed class BakeBatch
+	internal sealed unsafe class BakeBatch
 	{
-		public IntPtr Target;                          // the texture the resolve writes; consumers bind it right away
+		public TextureView* Target;                     // the texture the resolve writes; consumers bind it right away
 		public int TargetW, TargetH;
 		public bool Load;                              // an atlas page keeps its other entries; a fresh texture is cleared
 		public int MinX = int.MaxValue, MinY = int.MaxValue, MaxX, MaxY;   // union of the slots: the accumulator's extent
@@ -29,17 +29,17 @@ internal sealed unsafe partial class WebGpuCoverage
 	}
 
 	private readonly List<BakeBatch> _pendingBakes = new();
-	private readonly Dictionary<IntPtr, BakeBatch> _bakeByTarget = new();
+	private readonly Dictionary<nint, BakeBatch> _bakeByTarget = new();
 	private BakeBatch _sheet;   // the frame sheet still taking slots
 
 	// The batch writing into a texture this frame, opened on first use. Atlas pages Load: the resolve touches only
 	// the new slots and everything else on the page must survive.
-	internal BakeBatch BatchFor(IntPtr target, int w, int h, bool load)
+	internal BakeBatch BatchFor(TextureView* target, int w, int h, bool load)
 	{
-		if (!_bakeByTarget.TryGetValue(target, out var b))
+		if (!_bakeByTarget.TryGetValue((nint)target, out var b))
 		{
 			b = new BakeBatch { Target = target, TargetW = w, TargetH = h, Load = load, Shelf = new Shelf(w, h) };
-			_bakeByTarget[target] = b;
+			_bakeByTarget[(nint)target] = b;
 			_pendingBakes.Add(b);
 		}
 		return b;
@@ -67,7 +67,7 @@ internal sealed unsafe partial class WebGpuCoverage
 		{
 			var fresh = new Shelf(SheetSize, SheetSize);
 			if (!TryPack(ref fresh, rects, pos)) { sheet = null; return false; }
-			var view = _d.Pool.Rent(SheetSize, SheetSize, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, _d.ColorFormat);
+			var view = _d.Pool.Rent(SheetSize, SheetSize, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, _d.ColorFormat);
 			sheet = _sheet = BatchFor(view, SheetSize, SheetSize, load: false);
 			sheet.Shelf = fresh;
 		}
@@ -137,7 +137,7 @@ internal sealed unsafe partial class WebGpuCoverage
 
 		// Hoisted: a stackalloc inside the loop would grow the frame once per batch.
 		var size = stackalloc float[4];
-		var ae = stackalloc WGPUBindGroupEntry[3];
+		var ae = stackalloc BindGroupEntry[3];
 		foreach (var b in _pendingBakes)
 		{
 			// Accumulator dims rounded up so the pool sees a few sizes per target, not one per frame.
@@ -150,28 +150,28 @@ internal sealed unsafe partial class WebGpuCoverage
 
 			var edgeBytes = edges.Length * sizeof(float);
 			var extBytes = ext.Length * sizeof(float);
-			var edgeBuf = _d.BufferPool.Rent(edgeBytes, WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst);
-			var extBuf = _d.BufferPool.Rent(extBytes, WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst);
-			var sizeBuf = _d.BufferPool.Rent(16, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
-			fixed (float* p = edges) { wgpuQueueWriteBuffer(_d.Q, edgeBuf, 0, (IntPtr)p, (nuint)edgeBytes); }
-			fixed (float* p = ext) { wgpuQueueWriteBuffer(_d.Q, extBuf, 0, (IntPtr)p, (nuint)extBytes); }
+			var edgeBuf = _d.BufferPool.Rent(edgeBytes, BufferUsage.Storage | BufferUsage.CopyDst);
+			var extBuf = _d.BufferPool.Rent(extBytes, BufferUsage.Storage | BufferUsage.CopyDst);
+			var sizeBuf = _d.BufferPool.Rent(16, BufferUsage.Uniform | BufferUsage.CopyDst);
+			fixed (float* p = edges) { Api.QueueWriteBuffer(_d.Q, edgeBuf, 0, p, (nuint)edgeBytes); }
+			fixed (float* p = ext) { Api.QueueWriteBuffer(_d.Q, extBuf, 0, p, (nuint)extBytes); }
 			size[0] = aw; size[1] = ah; size[2] = 0f; size[3] = 0f;
-			wgpuQueueWriteBuffer(_d.Q, sizeBuf, 0, (IntPtr)size, 16);
+			Api.QueueWriteBuffer(_d.Q, sizeBuf, 0, size, 16);
 
-			var accView = _d.Pool.Rent(aw, ah, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.CoverageFormat);
-			ae[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = edgeBuf, Offset = 0, Size = (nuint)edgeBytes };
-			ae[1] = new WGPUBindGroupEntry { Binding = 1, Buffer = extBuf, Offset = 0, Size = (nuint)extBytes };
-			ae[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = sizeBuf, Offset = 0, Size = 16 };
-			var abgd = new WGPUBindGroupDescriptor { Layout = _d.CoverageSheetBgl, EntryCount = 3, Entries = ae };
-			var accumBg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &abgd));
-			var acc = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = accView, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
-			var adesc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &acc };
-			var apass = wgpuCommandEncoderBeginRenderPass(_f.Encoder, &adesc);
-			wgpuRenderPassEncoderSetPipeline(apass, _d.CoverageSheetPipe);
-			wgpuRenderPassEncoderSetBindGroup(apass, 0, (IntPtr)accumBg, 0, (uint*)null);
-			wgpuRenderPassEncoderDraw(apass, (uint)(ext.Length * 6), 1, 0, 0);
-			wgpuRenderPassEncoderEnd(apass);
-			wgpuRenderPassEncoderRelease(apass);
+			var accView = _d.Pool.Rent(aw, ah, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.CoverageFormat);
+			ae[0] = new BindGroupEntry { Binding = 0, Buffer = edgeBuf, Offset = 0, Size = (nuint)edgeBytes };
+			ae[1] = new BindGroupEntry { Binding = 1, Buffer = extBuf, Offset = 0, Size = (nuint)extBytes };
+			ae[2] = new BindGroupEntry { Binding = 2, Buffer = sizeBuf, Offset = 0, Size = 16 };
+			var abgd = new BindGroupDescriptor { Layout = _d.CoverageSheetBgl, EntryCount = 3, Entries = ae };
+			var accumBg = _d.TrackBg(Api.DeviceCreateBindGroup(_d.Dev, &abgd));
+			var acc = new RenderPassColorAttachment { DepthSlice = uint.MaxValue, View = accView, LoadOp = LoadOp.Clear, StoreOp = StoreOp.Store, ClearValue = default };
+			var adesc = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &acc };
+			var apass = Api.CommandEncoderBeginRenderPass(_f.Encoder, &adesc);
+			Api.RenderPassEncoderSetPipeline(apass, _d.CoverageSheetPipe);
+			Api.RenderPassEncoderSetBindGroup(apass, 0, accumBg, 0, null);
+			Api.RenderPassEncoderDraw(apass, (uint)(ext.Length * 6), 1, 0, 0);
+			Api.RenderPassEncoderEnd(apass);
+			Api.RenderPassEncoderRelease(apass);
 
 			// Per slot, 6 verts of (ndc in the target, texel in the accumulator, evenOdd, exclude).
 			var verts = new float[b.Count * 36];
@@ -188,19 +188,19 @@ internal sealed unsafe partial class WebGpuCoverage
 				V(x0, y0, eo, ex); V(x1, y0, eo, ex); V(x1, y1, eo, ex);
 				V(x0, y0, eo, ex); V(x1, y1, eo, ex); V(x0, y1, eo, ex);
 			}
-			var re = new WGPUBindGroupEntry { Binding = 0, TextureView = accView };
-			var rbgd = new WGPUBindGroupDescriptor { Layout = _d.CoverageResolveSheetBgl, EntryCount = 1, Entries = &re };
-			var resolveBg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &rbgd));
+			var re = new BindGroupEntry { Binding = 0, TextureView = accView };
+			var rbgd = new BindGroupDescriptor { Layout = _d.CoverageResolveSheetBgl, EntryCount = 1, Entries = &re };
+			var resolveBg = _d.TrackBg(Api.DeviceCreateBindGroup(_d.Dev, &rbgd));
 			var quads = _f.MakeBuffer(verts);
-			var rca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = b.Target, LoadOp = b.Load ? WGPULoadOp.Load : WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
-			var rdesc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &rca };
-			var rpass = wgpuCommandEncoderBeginRenderPass(_f.Encoder, &rdesc);
-			wgpuRenderPassEncoderSetPipeline(rpass, _d.CoverageResolveSheetPipe);
-			wgpuRenderPassEncoderSetBindGroup(rpass, 0, (IntPtr)resolveBg, 0, (uint*)null);
-			wgpuRenderPassEncoderSetVertexBuffer(rpass, 0, quads, 0, (nuint)(verts.Length * sizeof(float)));
-			wgpuRenderPassEncoderDraw(rpass, (uint)(b.Count * 6), 1, 0, 0);
-			wgpuRenderPassEncoderEnd(rpass);
-			wgpuRenderPassEncoderRelease(rpass);
+			var rca = new RenderPassColorAttachment { DepthSlice = uint.MaxValue, View = b.Target, LoadOp = b.Load ? LoadOp.Load : LoadOp.Clear, StoreOp = StoreOp.Store, ClearValue = default };
+			var rdesc = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &rca };
+			var rpass = Api.CommandEncoderBeginRenderPass(_f.Encoder, &rdesc);
+			Api.RenderPassEncoderSetPipeline(rpass, _d.CoverageResolveSheetPipe);
+			Api.RenderPassEncoderSetBindGroup(rpass, 0, resolveBg, 0, null);
+			Api.RenderPassEncoderSetVertexBuffer(rpass, 0, quads, 0, (nuint)(verts.Length * sizeof(float)));
+			Api.RenderPassEncoderDraw(rpass, (uint)(b.Count * 6), 1, 0, 0);
+			Api.RenderPassEncoderEnd(rpass);
+			Api.RenderPassEncoderRelease(rpass);
 			// The accumulator was consumed by the resolve just encoded; re-rentable within the frame.
 			_d.Pool.Return(accView);
 			BakeBatches++;

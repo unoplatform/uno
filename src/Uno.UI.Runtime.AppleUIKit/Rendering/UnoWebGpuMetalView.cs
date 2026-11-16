@@ -3,15 +3,14 @@ using System.Threading;
 using CoreAnimation;
 using CoreGraphics;
 using Foundation;
-using ObjCRuntime;
 using UIKit;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.AppleUIKit;
 
 /// <summary>
-/// WebGPU-backed render view for AppleUIKit (iOS/tvOS): a <c>UIView</c> whose backing
-/// <see cref="CAMetalLayer"/> drives a wgpu swapchain, drawn through the neutral
+/// WebGPU-backed render view for AppleUIKit (iOS/tvOS): a <c>UIView</c> hosting a <see cref="CAMetalLayer"/> that
+/// drives a wgpu swapchain, drawn through the neutral
 /// <c>CompositionTarget.OnNativePlatformFrameRequested</c> seam. Opt in by registering the WebGPU backend on the host builder; needs an Apple device build
 /// with the wgpu-native iOS static lib linked via wgpu-native.targets.
 /// </summary>
@@ -22,6 +21,11 @@ internal sealed partial class UnoWebGpuMetalView : UIView, IAppleUIKitRenderView
 	private readonly nint _fps;
 	private readonly float _scale;
 	private Thread? _renderThread;
+	// A sublayer rather than the view's backing layer: wgpu configures it (drawable size, pixel format, timeouts) on
+	// the render thread, and UIKit only allows a view's own layer to be modified on the main thread.
+	private readonly CAMetalLayer _metalLayer = new();
+	// The drawable size in pixels, as last laid out on the main thread; the render thread only reads it.
+	private int _pixelWidth, _pixelHeight;
 
 	// VoiceOver, Switch Control and XCTest read the accessibility elements through these; the first read builds them.
 	[Export("accessibilityElements")]
@@ -44,17 +48,13 @@ internal sealed partial class UnoWebGpuMetalView : UIView, IAppleUIKitRenderView
 	public NSObject? AccessibilityHitTest(CGPoint point, UIEvent? uievent)
 		=> _owner?.AccessibilityHitTest(point);
 
-	[Export("layerClass")]
-	public static Class LayerClass() => new Class(typeof(CAMetalLayer));
-
-	private CAMetalLayer MetalLayer => (CAMetalLayer)Layer;
-
 	public UnoWebGpuMetalView()
 		: base(CGRect.Empty)
 	{
 		// Match the screen's pixel density so the wgpu drawable is full-resolution (drawableSize is in pixels).
 		ContentScaleFactor = UIScreen.MainScreen.Scale;
-		MetalLayer.ContentsScale = UIScreen.MainScreen.Scale;
+		_metalLayer.ContentsScale = UIScreen.MainScreen.Scale;
+		Layer.AddSublayer(_metalLayer);
 
 		// UIKit APIs are UI-thread-checked: create the link and read the display rate/scale here, not on the render thread.
 		_link = CADisplayLink.Create(OnDisplayLink);
@@ -127,8 +127,7 @@ internal sealed partial class UnoWebGpuMetalView : UIView, IAppleUIKitRenderView
 
 		try
 		{
-			var size = MetalLayer.DrawableSize;
-			if (size.Width < 1 || size.Height < 1)
+			if (Volatile.Read(ref _pixelWidth) < 1 || Volatile.Read(ref _pixelHeight) < 1)
 			{
 				return;
 			}
@@ -145,15 +144,22 @@ internal sealed partial class UnoWebGpuMetalView : UIView, IAppleUIKitRenderView
 	/// Creates the WebGpu swapchain context over this view's <c>CAMetalLayer</c>.
 	/// </summary>
 	internal global::Uno.UI.Composition.Drawing.ISwapChain CreateGraphicsContext()
-		=> global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateMetal((IntPtr)MetalLayer.Handle, _scale);
+		=> global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateMetal((IntPtr)_metalLayer.Handle, _scale);
 
 	public override void LayoutSubviews()
 	{
 		base.LayoutSubviews();
 
-		// Keep the drawable sized in pixels; a size change reconfigures the wgpu surface on the next frame.
+		// Keep the layer over the whole view, without the implicit animation a sublayer's frame change gets. The
+		// drawable size is wgpu's: a size change reconfigures the surface on the next frame.
+		CATransaction.Begin();
+		CATransaction.DisableActions = true;
+		_metalLayer.Frame = Bounds;
+		CATransaction.Commit();
+
 		var scale = ContentScaleFactor;
-		MetalLayer.DrawableSize = new CGSize(Bounds.Width * scale, Bounds.Height * scale);
+		Volatile.Write(ref _pixelWidth, (int)(Bounds.Width * scale));
+		Volatile.Write(ref _pixelHeight, (int)(Bounds.Height * scale));
 		QueueRender();
 	}
 

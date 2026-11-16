@@ -230,6 +230,12 @@ internal static partial class NativeUno
 		delegate* unmanaged[Cdecl]<nint, double, double, void> resizeCallback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_window_non_client_hit_test_callback(delegate* unmanaged[Cdecl]<nint, double, double, MacOSNonClientPointerAction> hitTestCallback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_window_activation_changed_callback(delegate* unmanaged[Cdecl]<nint, int, int, void> activationChangedCallback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial uint uno_get_system_theme();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
@@ -350,6 +356,16 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_set_always_on_top(nint window, [MarshalAs(UnmanagedType.I1)] bool isAlwaysOnTop);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_set_extends_content_into_title_bar(nint window, [MarshalAs(UnmanagedType.I1)] bool extend, double titleBarHeight, [MarshalAs(UnmanagedType.I1)] bool showCaptionButtons);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial int uno_window_get_caption_buttons_state(nint window);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_window_get_caption_buttons_bounds(nint window, out double minX, out double maxX, out double windowWidth);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_set_border_and_title_bar(nint window, [MarshalAs(UnmanagedType.I1)] bool hasBorder, [MarshalAs(UnmanagedType.I1)] bool hasTitleBar);
@@ -485,13 +501,16 @@ internal static partial class NativeUno
 	internal static partial bool uno_cursor_set(CoreCursorType cursorType);
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
-	internal static partial nint uno_native_create_sample(nint window, string text);
+	internal static partial nint uno_native_create_sample(string text);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial nint uno_native_create_host(nint view);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_native_arrange(nint element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_native_attach(nint element);
+	internal static partial void uno_native_attach(nint element, nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_native_detach(nint element);

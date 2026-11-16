@@ -1,4 +1,4 @@
-#if __SKIA__
+﻿#if __SKIA__
 #nullable enable
 
 using System;
@@ -63,7 +63,7 @@ partial class SvgImageSource
 			return ImageData.Empty;
 		}
 
-		if (renderer.Parse(imageData.ByteArray, Uno.UI.Composition.Drawing.GeometryFactory.Current, Uno.UI.Composition.Drawing.DrawingFactory.Current) is { } document)
+		if (renderer.Parse(imageData.ByteArray, Uno.UI.Composition.Drawing.GeometryFactory.Current) is { } document)
 		{
 			_svgDocument = document;
 			_svgSurface = new(document);

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Xml;
 using Uno.Roslyn;
 using Microsoft.CodeAnalysis;
@@ -23,12 +24,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void InitTelemetry(GeneratorExecutionContext context)
 		{
-			var telemetryOptOut = context.GetMSBuildPropertyValue("UnoPlatformTelemetryOptOut");
-
-			bool? isTelemetryOptout()
-				=> telemetryOptOut.Equals("true", StringComparison.OrdinalIgnoreCase)
-				|| telemetryOptOut.Equals("1", StringComparison.OrdinalIgnoreCase)
-				|| _isDesignTimeBuild;
+			// The opt-out variable is read through the build: a reused compiler server may predate it, and the
+			// telemetry library ignores it when it's "1".
+			if (IsTelemetryDisabled(
+				context.GetMSBuildPropertyValue("UnoPlatformTelemetryOptOut"),
+				context.GetMSBuildPropertyValue("UNO_PLATFORM_TELEMETRY_OPTOUT"),
+				context.GetMSBuildPropertyValue("UnoIsHotReloadHost"),
+				_isDesignTimeBuild))
+			{
+				return;
+			}
 
 			string getCurrentDirectory()
 			{
@@ -47,23 +52,35 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return Environment.CurrentDirectory;
 			}
 
-			if (isTelemetryOptout() is true)
-			{
-				_telemetry = new Telemetry(
-					InstrumentationKey,
-					"uno/generation",
-					enabledProvider: isTelemetryOptout,
-					currentDirectoryProvider: getCurrentDirectory,
-					versionAssembly: GetType().Assembly);
-			}
+			_telemetry = new Telemetry(
+				InstrumentationKey,
+				"uno/generation",
+				currentDirectoryProvider: getCurrentDirectory,
+				versionAssembly: GetType().Assembly);
+		}
+
+		/// <summary>
+		/// Whether the generator creates no telemetry client: the build or its environment opted out, it's a
+		/// design-time or hot-reload build, or the generator itself runs in a browser.
+		/// </summary>
+		internal static bool IsTelemetryDisabled(string telemetryOptOut, string environmentOptOut, string hotReloadHost, bool isDesignTimeBuild)
+		{
+			static bool isSet(string value)
+				=> string.Equals(value, "true", StringComparison.OrdinalIgnoreCase)
+				|| string.Equals(value, "1", StringComparison.OrdinalIgnoreCase);
+
+			return isSet(telemetryOptOut)
+				|| isSet(environmentOptOut)
+				|| isSet(hotReloadHost)
+				|| isDesignTimeBuild
+				|| RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER"));
 		}
 
 		private bool IsTelemetryEnabled => _telemetry?.Enabled ?? false;
 
 		private void TrackGenerationDone(TimeSpan elapsed)
 		{
-			if (IsTelemetryEnabled
-				&& !_isDesignTimeBuild)
+			if (IsTelemetryEnabled)
 			{
 				try
 				{
@@ -86,8 +103,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void TrackGenerationFailed(Exception exception, TimeSpan elapsed)
 		{
-			if (IsTelemetryEnabled
-				&& !_isDesignTimeBuild)
+			if (IsTelemetryEnabled)
 			{
 				try
 				{
@@ -112,8 +128,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void TrackStartGeneration(XamlFileDefinition[] files)
 		{
-			if (IsTelemetryEnabled
-				&& !_isDesignTimeBuild)
+			if (IsTelemetryEnabled)
 			{
 				try
 				{

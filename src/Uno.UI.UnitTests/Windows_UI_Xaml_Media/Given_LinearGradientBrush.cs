@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Media
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_LinearGradientBrush
 	{
 		private const float Delta = 0.001f;

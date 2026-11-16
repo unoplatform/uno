@@ -5,7 +5,7 @@ using ItemAspectRatio = Microsoft.UI.Xaml.Controls.LinedFlowLayoutItemAspectRati
 
 namespace Uno.UI.Tests.RepeaterTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_LinedFlowLayoutItemAspectRatios
 	{
 		[TestMethod]

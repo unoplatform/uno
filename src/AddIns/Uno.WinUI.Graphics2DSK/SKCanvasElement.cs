@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Numerics;
+using System.Threading;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
@@ -106,9 +107,12 @@ public abstract partial class SKCanvasElement : Grid
 	// backend. The surface persists across frames and is recreated only when the device size changes.
 	internal void PaintSoftware(IDrawingSession session, Vector2 size)
 	{
+		// A session without an SKCanvas records in the visual's logical space and applies the device scale on replay,
+		// so its matrix never carries it: without this factor the surface is rasterized at 1x and stretched.
+		var deviceScale = (float)(XamlRoot?.RasterizationScale ?? 1);
 		var m = session.TotalMatrix;
-		var sx = MathF.Max(1e-3f, new Vector2(m.M11, m.M12).Length());
-		var sy = MathF.Max(1e-3f, new Vector2(m.M21, m.M22).Length());
+		var sx = MathF.Max(1e-3f, new Vector2(m.M11, m.M12).Length() * deviceScale);
+		var sy = MathF.Max(1e-3f, new Vector2(m.M21, m.M22).Length() * deviceScale);
 		var w = Math.Max(1, (int)MathF.Ceiling(size.X * sx));
 		var h = Math.Max(1, (int)MathF.Ceiling(size.Y * sy));
 		if (_softSurface is null || _softW != w || _softH != h)
@@ -156,7 +160,39 @@ public abstract partial class SKCanvasElement : Grid
 	/// Invalidates the element and triggers a redraw.
 	/// </summary>
 #if CROSSRUNTIME
+	/// <remarks>
+	/// Safe to call from any thread. Drawing is commonly driven by work that finishes off the UI
+	/// thread - a decode, a download, a background render - and invalidating there directly would
+	/// race the frame: it marks the visual dirty and drops the cached recording of every ancestor,
+	/// which the UI thread may be rebuilding and the render thread may be replaying. Off the UI
+	/// thread the invalidation is posted; on it, it is applied inline so that calling
+	/// <see cref="Invalidate"/> from inside <see cref="RenderOverride"/> still schedules the next
+	/// frame without a dispatcher hop.
+	/// </remarks>
 	public void Invalidate()
+	{
+		if (DispatcherQueue is not { } dispatcher || dispatcher.HasThreadAccess)
+		{
+			InvalidateCore();
+			return;
+		}
+
+		// Coalesce: invalidation is idempotent, and a background loop that invalidates per unit of
+		// work would otherwise post a callback per call and starve the UI thread of the frame it is
+		// asking for. One pending post is enough to get the next frame.
+		if (Interlocked.Exchange(ref _invalidatePending, 1) == 0)
+		{
+			dispatcher.TryEnqueue(() =>
+			{
+				Volatile.Write(ref _invalidatePending, 0);
+				InvalidateCore();
+			});
+		}
+	}
+
+	private int _invalidatePending;
+
+	private void InvalidateCore()
 	{
 		_canvasVisual?.Invalidate();
 		_island?.Invalidate();

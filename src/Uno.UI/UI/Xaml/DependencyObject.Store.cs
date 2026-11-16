@@ -57,7 +57,33 @@ namespace Microsoft.UI.Xaml
 
 		private static readonly IEventProvider _trace = Tracing.Get(DependencyObjectTraceProvider.Id);
 
-		private readonly DependencyPropertyDetailsCollection _properties;
+		// Created on first use, so data-only objects (Binding, Setter, ...) that never touch a DP don't pay for it.
+		private DependencyPropertyDetailsCollection? _properties;
+
+		private DependencyPropertyDetailsCollection Properties
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => _properties ?? CreateProperties();
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		private DependencyPropertyDetailsCollection CreateProperties()
+		{
+			var properties = new DependencyPropertyDetailsCollection(this, _dataContextProperty);
+			if (_bindingsSuspended)
+			{
+				properties.SuspendBindings();
+			}
+
+			return _properties = properties;
+		}
+
+		// Null for a non-FrameworkElement owner, which has no DataContext property.
+		private DependencyPropertyDetails? DataContextPropertyDetails
+			=> _dataContextProperty is null ? null : Properties.DataContextPropertyDetails;
+
+		private DependencyPropertyDetails?[] AllPropertyDetails
+			=> _properties?.GetAllDetails() ?? Array.Empty<DependencyPropertyDetails?>();
 		private ResourceBindingCollection? _resourceBindings;
 		private ThemeResourceMap? _themeResources;
 
@@ -77,11 +103,11 @@ namespace Microsoft.UI.Xaml
 		private InheritedPropertiesDisposable? _inheritedProperties;
 		private ManagedWeakReference? _parentRef;
 		private object? _hardParentRef;
-		private readonly Dictionary<DependencyProperty, ManagedWeakReference> _inheritedForwardedProperties = new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
+		private Dictionary<DependencyProperty, ManagedWeakReference>? _inheritedForwardedProperties;
 		private Stack<DependencyPropertyValuePrecedences?>? _overriddenPrecedences;
 
 		private static long _propertyChangedToken;
-		private readonly Dictionary<long, IDisposable> _propertyChangedTokens = new Dictionary<long, IDisposable>();
+		private Dictionary<long, IDisposable>? _propertyChangedTokens;
 
 		private bool _registeringInheritedProperties;
 		private bool _unregisteringInheritedProperties;
@@ -192,7 +218,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal void ClonePropertiesToAnotherStoreForHotReload(DependencyObject otherStore)
 		{
-			_properties.CloneToForHotReload(otherStore._properties, this, otherStore);
+			_properties?.CloneToForHotReload(otherStore.Properties, this, otherStore);
 		}
 
 		public DependencyObject()
@@ -217,7 +243,13 @@ namespace Microsoft.UI.Xaml
 			_originalObjectType = effectiveOwner.GetType();
 			_dataContextProperty = effectiveOwner is FrameworkElement ? FrameworkElement.DataContextProperty : null;
 
-			_properties = new DependencyPropertyDetailsCollection(this, _dataContextProperty);
+			// FrameworkTemplate and Style have no DataContext in WinUI and are usually shared (resources), so they
+			// must never cache an inherited DataContext, whichever path (bindable child, collection item, parent
+			// propagation) delivers it: the shared instance would keep that DataContext alive.
+			if (IsDataContextIsolatedValue(effectiveOwner))
+			{
+				_inheritanceContextEnabled = false;
+			}
 
 			__InitializeBinder();
 
@@ -294,7 +326,7 @@ namespace Microsoft.UI.Xaml
 				return GetValueFromMethodCall(property);
 			}
 
-			if (_properties.DataContextPropertyDetails?.Property == property)
+			if (DataContextPropertyDetails?.Property == property)
 			{
 				// Historically, we didn't have this fast path for default value.
 				// We add this to maintain the original behavior in GetValue(DependencyPropertyDetails) overload.
@@ -302,7 +334,7 @@ namespace Microsoft.UI.Xaml
 				TryRegisterInheritedProperties(force: true);
 			}
 
-			DependencyPropertyDetails? propertyDetails = _properties.FindPropertyDetails(property);
+			DependencyPropertyDetails? propertyDetails = _properties?.FindPropertyDetails(property);
 			if (propertyDetails is null)
 			{
 				// Performance: Avoid force-creating DependencyPropertyDetails when not needed.
@@ -321,7 +353,7 @@ namespace Microsoft.UI.Xaml
 		/// <returns></returns>
 		internal object? ReadLocalValueInternal(DependencyProperty property)
 		{
-			var details = _properties.FindPropertyDetails(property);
+			var details = _properties?.FindPropertyDetails(property);
 			if (property == _dataContextProperty)
 			{
 				TryRegisterInheritedProperties(force: true);
@@ -347,7 +379,7 @@ namespace Microsoft.UI.Xaml
 
 		internal object? ReadInheritedValueOrDefaultValue(DependencyProperty property)
 		{
-			var details = _properties.FindPropertyDetails(property);
+			var details = _properties?.FindPropertyDetails(property);
 			if (property == _dataContextProperty)
 			{
 				TryRegisterInheritedProperties(force: true);
@@ -390,7 +422,7 @@ namespace Microsoft.UI.Xaml
 
 		private (ModifiedValue? modifiedValue, DependencyPropertyDetails? details) GetModifiedValue(DependencyProperty property)
 		{
-			var details = _properties.FindPropertyDetails(property);
+			var details = _properties?.FindPropertyDetails(property);
 			if (details is null)
 			{
 				return (null, null);
@@ -406,7 +438,7 @@ namespace Microsoft.UI.Xaml
 				return GetValueFromMethodCall(propertyDetails.Property);
 			}
 
-			if (propertyDetails == _properties.DataContextPropertyDetails)
+			if (propertyDetails == DataContextPropertyDetails)
 			{
 				TryRegisterInheritedProperties(force: true);
 			}
@@ -453,7 +485,7 @@ namespace Microsoft.UI.Xaml
 		{
 			// There is no need to force-create property details here.
 			// If it's not yet created, then simply the precedence is DefaultValue
-			return _properties.FindPropertyDetails(property)?.CurrentHighestValuePrecedence ?? DependencyPropertyValuePrecedences.DefaultValue;
+			return _properties?.FindPropertyDetails(property)?.CurrentHighestValuePrecedence ?? DependencyPropertyValuePrecedences.DefaultValue;
 		}
 
 		/// <summary>
@@ -599,7 +631,7 @@ namespace Microsoft.UI.Xaml
 				ValidatePropertyOwner(property);
 
 				// Resolve the stack once for the instance, for performance.
-				propertyDetails ??= _properties.GetPropertyDetails(property);
+				propertyDetails ??= Properties.GetPropertyDetails(property);
 
 				if (precedence <= DependencyPropertyValuePrecedences.Local)
 				{
@@ -725,7 +757,7 @@ namespace Microsoft.UI.Xaml
 						&& !ReferenceEquals(childProviderClearNewValue.Parent, ActualInstance))
 					{
 						// Sets the DataContext of the new precedence value
-						childProviderClearNewValue.RestoreInheritedDataContext(GetHighestValueFromDetails(_properties.DataContextPropertyDetails!));
+						childProviderClearNewValue.RestoreInheritedDataContext(GetHighestValueFromDetails(DataContextPropertyDetails!));
 					}
 				}
 
@@ -736,7 +768,7 @@ namespace Microsoft.UI.Xaml
 						&& !ReferenceEquals(childProviderSet.Parent, ActualInstance))
 					{
 						// Sets the DataContext of the new precedence value
-						childProviderSet.RestoreInheritedDataContext(GetHighestValueFromDetails(_properties.DataContextPropertyDetails!));
+						childProviderSet.RestoreInheritedDataContext(GetHighestValueFromDetails(DataContextPropertyDetails!));
 					}
 
 					if (previousValue is DependencyObject childProviderSetNewValue)
@@ -751,7 +783,7 @@ namespace Microsoft.UI.Xaml
 		// The inherited (mentor/parent) DataContext value as this store currently holds it: a FrameworkElement owner
 		// keeps it under its DataContextProperty; a non-FE owner has no DataContextProperty and caches it.
 		internal object? GetInheritedDataContextValue()
-			=> _dataContextProperty is { } dcProperty ? GetValue(dcProperty) : _properties.InheritedDataContext;
+			=> _dataContextProperty is { } dcProperty ? GetValue(dcProperty) : _properties?.InheritedDataContext;
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal void ClearInheritedDataContext()
@@ -803,7 +835,7 @@ namespace Microsoft.UI.Xaml
 				// Add inheritable attached properties to the inherited forwarded
 				// properties, so they can be automatically propagated when a child
 				// store is late added.
-				_inheritedForwardedProperties[property] = SelfWeakReference;
+				(_inheritedForwardedProperties ??= new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default))[property] = SelfWeakReference;
 			}
 		}
 
@@ -953,14 +985,14 @@ namespace Microsoft.UI.Xaml
 
 			var registration = RegisterPropertyChangedCallback(property, (PropertyChangedCallback)((s, e) => callback((DependencyObject)s, property)));
 
-			_propertyChangedTokens.Add(_propertyChangedToken, registration);
+			(_propertyChangedTokens ??= new Dictionary<long, IDisposable>()).Add(_propertyChangedToken, registration);
 
 			return _propertyChangedToken;
 		}
 
 		internal void UnregisterPropertyChangedCallbackInternal(DependencyProperty property, long token)
 		{
-			if (_propertyChangedTokens.TryGetValue(token, out var registration))
+			if (_propertyChangedTokens is not null && _propertyChangedTokens.TryGetValue(token, out var registration))
 			{
 				registration.Dispose();
 
@@ -970,7 +1002,7 @@ namespace Microsoft.UI.Xaml
 
 		internal IDisposable RegisterPropertyChangedCallback(DependencyProperty property, PropertyChangedCallback callback, DependencyPropertyDetails? propertyDetails = null)
 		{
-			propertyDetails ??= _properties.GetPropertyDetails(property);
+			propertyDetails ??= Properties.GetPropertyDetails(property);
 
 			if (ReferenceEquals(callback.Target, ActualInstance))
 			{
@@ -1010,7 +1042,7 @@ namespace Microsoft.UI.Xaml
 				WeakReferenceReturnDisposable releaseWeakDelegate,
 				IDisposable callbackManagerCookie,
 				ManagedWeakReference doStoreRef)
-				: base(callback.Target, doStoreRef.CloneWeakReference())
+				: base(callback.Target, doStoreRef.Target)
 			{
 				_callback = callback;
 				_releaseWeakDelegate = releaseWeakDelegate;
@@ -1077,7 +1109,7 @@ namespace Microsoft.UI.Xaml
 				WeakReferenceReturnDisposable weakCallbackRelease,
 				ManagedWeakReference instanceRef,
 				ExplicitPropertyChangedCallback callback)
-				: base(callback.Target, instanceRef.CloneWeakReference())
+				: base(callback.Target, instanceRef.Target)
 			{
 				_weakCallback = weakCallback;
 				_weakCallbackRelease = weakCallbackRelease;
@@ -1188,7 +1220,7 @@ namespace Microsoft.UI.Xaml
 				var instanceRef = SelfWeakReference;
 
 				return new RegisterParentChangedCallbackConditionalDisposable(
-					instanceRef.CloneWeakReference(),
+					this,
 					instanceRef,
 					weakCallbackRef,
 					weakCallback,
@@ -1211,7 +1243,7 @@ namespace Microsoft.UI.Xaml
 			private ParentChangedCallback _callback;
 
 			public RegisterParentChangedCallbackConditionalDisposable(
-				WeakReference conditionSource,
+				object conditionSource,
 				ManagedWeakReference doStoreRef,
 				ManagedWeakReference weakCallbackRef,
 				ParentChangedCallback weakCallback,
@@ -1251,7 +1283,7 @@ namespace Microsoft.UI.Xaml
 
 		internal (object? value, DependencyPropertyValuePrecedences precedence) GetBaseValue(DependencyProperty property)
 		{
-			var details = _properties.FindPropertyDetails(property);
+			var details = _properties?.FindPropertyDetails(property);
 			if (property == _dataContextProperty)
 			{
 				TryRegisterInheritedProperties(force: true);
@@ -1300,7 +1332,7 @@ namespace Microsoft.UI.Xaml
 				// This should be for OnDemand DPs in general which we don't yet support
 				dp == UIElement.KeyboardAcceleratorsProperty)
 			{
-				_properties.GetPropertyDetails(dp).SetValue(defaultValue, DependencyPropertyValuePrecedences.Local);
+				Properties.GetPropertyDetails(dp).SetValue(defaultValue, DependencyPropertyValuePrecedences.Local);
 			}
 
 			return defaultValue;
@@ -1313,7 +1345,7 @@ namespace Microsoft.UI.Xaml
 
 		internal DependencyPropertyDetails GetPropertyDetails(DependencyProperty property)
 		{
-			return _properties.GetPropertyDetails(property);
+			return Properties.GetPropertyDetails(property);
 		}
 
 		// Keep a list of inherited properties that have been updated so they can be reset.
@@ -1348,7 +1380,9 @@ namespace Microsoft.UI.Xaml
 			// FrameworkElement's value and it cascades to its bindable children — without storing a DataContext on it.
 			if (_dataContextProperty is null && parentProperty.UniqueId == _parentDataContextProperty.UniqueId)
 			{
-				ApplyDataContext(newValue == DependencyProperty.UnsetValue ? null : newValue);
+				// Same inheritance-context gate as SetInheritedDataContext: a store that opted out (FrameworkTemplate,
+				// Style, a value shared by several owners) must not cache the parent's DataContext either.
+				ApplyDataContext(!_inheritanceContextEnabled || newValue == DependencyProperty.UnsetValue ? null : newValue);
 				return;
 			}
 
@@ -1371,7 +1405,7 @@ namespace Microsoft.UI.Xaml
 			{
 				// Always update the inherited properties with the new value, the instance
 				// may change if a far ancestor changed.
-				_inheritedForwardedProperties[parentProperty] = sourceInstance;
+				(_inheritedForwardedProperties ??= new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default))[parentProperty] = sourceInstance;
 
 				// If not, propagate the DP down to the child listeners, if any.
 				var localChildrenStores = _childrenStores;
@@ -1396,7 +1430,7 @@ namespace Microsoft.UI.Xaml
 					// these cases may be required in case the
 					// graph is built in reverse (such as with the
 					// XamlReader)
-					|| _properties.HasBindings
+					|| _properties is { HasBindings: true }
 					|| _childrenStores.Count != 0
 				)
 			)
@@ -1474,7 +1508,7 @@ namespace Microsoft.UI.Xaml
 			{
 				_unregisteringInheritedProperties = true;
 
-				_inheritedForwardedProperties.Clear();
+				_inheritedForwardedProperties?.Clear();
 
 				if (_updatedProperties is not null)
 				{
@@ -1500,7 +1534,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (_parentDataContextProperty.UniqueId == property.UniqueId)
 			{
-				return (_dataContextProperty, _properties.DataContextPropertyDetails);
+				return (_dataContextProperty, DataContextPropertyDetails);
 			}
 			else
 			{
@@ -1509,7 +1543,7 @@ namespace Microsoft.UI.Xaml
 
 				if (localProperty != null)
 				{
-					var propertyDetails = _properties.GetPropertyDetails(localProperty);
+					var propertyDetails = Properties.GetPropertyDetails(localProperty);
 
 					if (localProperty.IsInherited)
 					{
@@ -1520,7 +1554,7 @@ namespace Microsoft.UI.Xaml
 					&& property.IsInherited
 				)
 				{
-					return (property, _properties.GetPropertyDetails(property));
+					return (property, Properties.GetPropertyDetails(property));
 				}
 			}
 
@@ -1551,34 +1585,116 @@ namespace Microsoft.UI.Xaml
 			FrameworkElement? resourceContextProvider = null,
 			ResourceDictionary? containingDictionary = null)
 		{
-			if (containingDictionary is not null)
+			foreach (var dictionary in EnumerateResourceDictionaries(includeAppResources, resourceContextProvider, containingDictionary))
 			{
-				yield return containingDictionary;
+				yield return dictionary;
+			}
+		}
+
+		/// <summary>
+		/// Allocation-free counterpart of <see cref="GetResourceDictionaries"/>, for the lookups that run
+		/// per theme reference and per implicit-style resolution.
+		/// </summary>
+		internal ResourceDictionaryWalker EnumerateResourceDictionaries(
+			bool includeAppResources,
+			FrameworkElement? resourceContextProvider = null,
+			ResourceDictionary? containingDictionary = null)
+			=> new(
+				// for non-FE, favor context provider over actual-instance
+				ActualInstance as FrameworkElement ?? resourceContextProvider ?? ActualInstance,
+				includeAppResources,
+				containingDictionary);
+
+		/// <summary>
+		/// Walks the ResourceDictionaries in scope, nearest first: the containing dictionary, then each
+		/// ancestor's non-empty Resources, then the application resources.
+		/// </summary>
+		internal struct ResourceDictionaryWalker : IDisposable
+		{
+			private readonly bool _includeAppResources;
+			private ResourceDictionary? _containingDictionary;
+			private DependencyObject? _candidate;
+			private FrameworkElement? _advanceFrom;
+			private bool _appResourcesVisited;
+			private ResourceDictionary? _current;
+
+			internal ResourceDictionaryWalker(DependencyObject? candidate, bool includeAppResources, ResourceDictionary? containingDictionary)
+			{
+				_candidate = candidate;
+				_includeAppResources = includeAppResources;
+				_containingDictionary = containingDictionary;
+				_advanceFrom = null;
+				_appResourcesVisited = false;
+				_current = null;
 			}
 
-			// for non-FE, favor context provider over actual-instance
-			var candidate = ActualInstance as FrameworkElement ?? resourceContextProvider ?? ActualInstance;
-			while (candidate is not null)
+			public bool MoveNext()
 			{
-				if (candidate is FrameworkElement fe)
+				if (_containingDictionary is { } containingDictionary)
 				{
-					if (fe.TryGetResources() is { IsEmpty: false }) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
+					_containingDictionary = null;
+					_current = containingDictionary;
+					return true;
+				}
+
+				// Read the parent only once the consumer has used the dictionary, as the iterator does: a
+				// lazily materialised resource can run arbitrary XAML initialization from the loop body.
+				if (_advanceFrom is { } previous)
+				{
+					_candidate = previous.Parent;
+					_advanceFrom = null;
+				}
+
+				while (_candidate is not null)
+				{
+					if (_candidate is FrameworkElement fe)
 					{
-						yield return fe.Resources;
-					}
+						if (fe.TryGetResources() is { IsEmpty: false }) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
+						{
+							_advanceFrom = fe;
+							_current = fe.Resources;
+							return true;
+						}
 
-					candidate = fe.Parent;
+						_candidate = fe.Parent;
+					}
+					else
+					{
+						_candidate = VisualTreeHelper.GetParent(_candidate);
+					}
 				}
-				else
+
+				if (_includeAppResources && !_appResourcesVisited)
 				{
-					candidate = VisualTreeHelper.GetParent(candidate);
+					_appResourcesVisited = true;
+
+					if (Application.Current is { } application)
+					{
+						// In the case of StaticResource resolution we skip Application.Resources because we assume these were already checked at initialize-time.
+						_current = application.Resources;
+						return true;
+					}
 				}
+
+				_current = null;
+				return false;
 			}
 
-			if (includeAppResources && Application.Current != null)
+			public readonly ResourceDictionary Current => _current!;
+
+			public readonly ResourceDictionaryWalker GetEnumerator() => this;
+
+			/// <summary>
+			/// Clears the references the walk accumulated. Every call site stops at the first match, and an
+			/// early exit otherwise leaves the ancestor and dictionary it stopped on rooted in the
+			/// enumerator's stack slot. foreach calls this from a finally, so they don't outlive the loop.
+			/// </summary>
+			public void Dispose()
 			{
-				// In the case of StaticResource resolution we skip Application.Resources because we assume these were already checked at initialize-time.
-				yield return Application.Current.Resources;
+				_containingDictionary = null;
+				_candidate = null;
+				_advanceFrom = null;
+				_current = null;
 			}
 		}
 
@@ -1587,7 +1703,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal Style? GetImplicitStyle(in SpecializedResourceDictionary.ResourceKey styleKey)
 		{
-			foreach (var dict in GetResourceDictionaries(includeAppResources: true))
+			foreach (var dict in EnumerateResourceDictionaries(includeAppResources: true))
 			{
 				if (dict.TryGetValue(styleKey, out var style, shouldCheckSystem: false))
 				{
@@ -1637,6 +1753,13 @@ namespace Microsoft.UI.Xaml
 			if (childStore != null)
 			{
 				Propagate(childStore);
+
+				// A non-FE store keeps its DataContext outside the property table: a child joining after it arrived
+				// (e.g. the second Setter of a lazily-built VisualState) gets the cached one.
+				if (_dataContextProperty is null && _properties?.InheritedDataContext is { } inheritedDataContext)
+				{
+					CallChildCallback(childStore, instanceRef, FrameworkElement.DataContextProperty, inheritedDataContext);
+				}
 			}
 			else
 			{
@@ -1653,7 +1776,7 @@ namespace Microsoft.UI.Xaml
 
 		private void PropagateInheritedNonLocalProperties(DependencyObject? childStore)
 		{
-			if (_inheritedForwardedProperties.Count == 0)
+			if (_inheritedForwardedProperties is null || _inheritedForwardedProperties.Count == 0)
 			{
 				// Avoid unnecessary AncestorsDictionary allocation and ActualInstance resolution.
 				return;
@@ -1671,7 +1794,7 @@ namespace Microsoft.UI.Xaml
 			// call to IsAncestor.
 			var actualInstanceAlias = ActualInstance;
 
-			foreach (var sourceInstanceProperties in _inheritedForwardedProperties)
+			foreach (var sourceInstanceProperties in _inheritedForwardedProperties!)
 			{
 
 				if (

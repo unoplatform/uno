@@ -34,13 +34,19 @@ internal sealed class ManagedFontProvider : IFontProvider
 	// (iOS/WASM); parsed once per size.
 	private readonly byte[]? _bundledDefaultFont;
 	private readonly Dictionary<float, IFont?> _bundledDefaultBySize = new();
+	private readonly bool _enableFallback;
 
 	/// <summary>Creates a system-font provider.</summary>
 	/// <param name="bundledDefaultFont">
 	/// Optional sfnt bytes used as the default face when the system-font index is empty (iOS/WASM). Pass the app's
 	/// bundled font (e.g. Open Sans) on those platforms; leave <c>null</c> where system fonts are enumerable.
 	/// </param>
-	public ManagedFontProvider(byte[]? bundledDefaultFont = null) => _bundledDefaultFont = bundledDefaultFont;
+	/// <param name="enableFallback">Whether codepoints the requested font lacks are resolved from other fonts.</param>
+	public ManagedFontProvider(byte[]? bundledDefaultFont = null, bool enableFallback = true)
+	{
+		_bundledDefaultFont = bundledDefaultFont;
+		_enableFallback = enableFallback;
+	}
 
 	// Loaded fonts, keyed by file + collection index + pixel size. ManagedFont bakes the pixel size into every
 	// metric it reports, so the size must be part of the key exactly — rounding it aliases 14.9px onto 14px.
@@ -88,8 +94,17 @@ internal sealed class ManagedFontProvider : IFontProvider
 		return best is null ? null : Load(best, fontSize);
 	}
 
+	public async ValueTask<IFont?> MatchFamilyAsync(string familyName, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
+		=> (_enableFallback ? await FontFallback.MatchFamilyAsync(this, familyName, weight, stretch, style, fontSize) : null)
+			?? MatchFamily(familyName, weight, stretch, style, fontSize);
+
 	public ValueTask<IFont?> MatchCharacterAsync(int codepoint, FontWeight weight, FontStretch stretch, FontStyle style, float fontSize)
 	{
+		if (!_enableFallback)
+		{
+			return default;
+		}
+
 		var key = (codepoint, weight.Weight, stretch, style, fontSize);
 		lock (_gate)
 		{

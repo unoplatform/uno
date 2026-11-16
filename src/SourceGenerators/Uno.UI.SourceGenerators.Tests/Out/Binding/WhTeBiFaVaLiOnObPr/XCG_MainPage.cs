@@ -122,8 +122,8 @@ namespace TestRepro
 							global::Microsoft.UI.Xaml.Controls.ContentPresenter.ContentProperty,
 							new Microsoft.UI.Xaml.Data.Binding()
 							{
-								Path = @"Tag",
-								FallbackValue = @"0",
+								Path = "Tag",
+								FallbackValue = "0",
 								RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
 							}
 						);

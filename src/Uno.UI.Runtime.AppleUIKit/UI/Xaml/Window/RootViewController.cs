@@ -10,6 +10,7 @@ using ObjCRuntime;
 using UIKit;
 using Uno.Helpers.Theming;
 using Uno.UI.Helpers;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.AppleUIKit.Hosting;
 using Windows.Devices.Sensors;
 using Windows.Graphics.Display;
@@ -27,6 +28,10 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	// The negotiated graphics context (Skia-on-Metal or WebGPU-on-CAMetalLayer). The host names no backend.
 	private ISwapChain? _context;
 	private IDrawingFactory? _renderer;
+
+	// Read by this window's CompositionTarget when it needs a backend. Implicit rather than explicit: the iOS
+	// trimmer preserves this NSObject subclass's members by name and can't resolve an explicit member's dotted one.
+	public IDrawingFactory? Renderer => _renderer;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
 	private TopViewLayer? _topViewLayer;
@@ -195,10 +200,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		}
 
 		var ct = RootElement?.Visual.CompositionTarget as CompositionTarget;
-		if (ct is not null)
-		{
-			ct.Renderer = _renderer!;
-		}
 		var clipGeometry = ct?.OnNativePlatformFrameRequested(_context);
 
 		if (clipGeometry is not null)
@@ -214,16 +215,37 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 			case GraphicsContextKind.Metal:
 				var metalView = new UnoMetalView();
 				metalView.SetOwner(this);
-				_renderView = metalView;
-				return metalView.CreateGraphicsContext();
+				return AdoptRenderView(metalView, metalView.CreateGraphicsContext);
 			case GraphicsContextKind.WebGpu:
 				var webgpuView = new UnoWebGpuMetalView();
 				webgpuView.SetOwner(this);
-				_renderView = webgpuView;
-				return webgpuView.CreateGraphicsContext();
+				return AdoptRenderView(webgpuView, webgpuView.CreateGraphicsContext);
 			default:
 				return null;
 		}
+	}
+
+	// A view whose context fails is disposed, so negotiation can move on to the next kind without its display link
+	// keeping it alive.
+	private ISwapChain? AdoptRenderView<TView>(TView view, Func<ISwapChain?> createContext)
+		where TView : UIView, IAppleUIKitRenderView
+	{
+		try
+		{
+			if (createContext() is { } context)
+			{
+				_renderView = view;
+				return context;
+			}
+		}
+		catch
+		{
+			view.Dispose();
+			throw;
+		}
+
+		view.Dispose();
+		return null;
 	}
 
 	private void UpdateNativeClipping(IGeometry geometry)

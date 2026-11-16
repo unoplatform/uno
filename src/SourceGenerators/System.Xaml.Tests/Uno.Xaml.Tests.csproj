@@ -10,7 +10,6 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="NUnit" />
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" PrivateAssets="All" />
 		<PackageReference Include="NUnit3TestAdapter" />
 		<PackageReference Include="Microsoft.Testing.Extensions.TrxReport" />
 	</ItemGroup>

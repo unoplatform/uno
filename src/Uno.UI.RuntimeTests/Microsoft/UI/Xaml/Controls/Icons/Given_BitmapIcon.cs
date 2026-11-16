@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Imaging;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
@@ -68,9 +69,7 @@ public class Given_BitmapIcon
 			Foreground = new SolidColorBrush(Colors.Green)
 		};
 
-		TestServices.WindowHelper.WindowContent = bitmapIcon;
-		await TestServices.WindowHelper.WaitForLoaded(bitmapIcon);
-		await TestServices.WindowHelper.WaitForIdle();
+		await LoadOpened(bitmapIcon);
 
 		// Foreground is ignored when ShowAsMonochrome is false
 		var sc = await UITestHelper.ScreenShot(bitmapIcon);
@@ -89,7 +88,7 @@ public class Given_BitmapIcon
 			Foreground = new SolidColorBrush(Colors.Green)
 		};
 
-		await UITestHelper.Load(bitmapIcon);
+		await LoadOpened(bitmapIcon);
 
 		var sc = await UITestHelper.ScreenShot(bitmapIcon);
 		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Windows.UI.Color.FromArgb(255, 240, 28, 36));
@@ -97,7 +96,7 @@ public class Given_BitmapIcon
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // Flaky on Skia iOS/tvOS only - https://github.com/unoplatform/uno/issues/24489
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24489")]
 	public async Task When_Foreground_Changed_With_ShowAsMonochrome_True()
 	{
 		var bitmapIcon = new BitmapIcon
@@ -109,8 +108,7 @@ public class Given_BitmapIcon
 			Foreground = new SolidColorBrush(Colors.Red)
 		};
 
-		await UITestHelper.Load(bitmapIcon);
-		await TestServices.WindowHelper.WaitForIdle();
+		var image = await LoadOpened(bitmapIcon);
 
 		// Sanity check - the initial red monochrome tint is actually rendered.
 		// Catches false positives if the image fails to load.
@@ -118,7 +116,6 @@ public class Given_BitmapIcon
 		ImageAssert.HasColorInRectangle(initial, new Rectangle(0, 0, initial.Width, initial.Height), Colors.Red);
 
 		// Track reloads on the internal Image.
-		var image = bitmapIcon.FindFirstDescendantOrThrow<Image>();
 		int imageOpenedCount = 0;
 		image.ImageOpened += (s, e) => imageOpenedCount++;
 
@@ -145,10 +142,7 @@ public class Given_BitmapIcon
 			Foreground = new SolidColorBrush(Colors.Red)
 		};
 
-		await UITestHelper.Load(bitmapIcon);
-		await TestServices.WindowHelper.WaitForIdle();
-
-		var image = bitmapIcon.FindFirstDescendantOrThrow<Image>();
+		var image = await LoadOpened(bitmapIcon);
 
 		// Track whether the image gets reloaded after our foreground change.
 		int imageOpenedCount = 0;
@@ -175,14 +169,12 @@ public class Given_BitmapIcon
 			Foreground = new SolidColorBrush(Colors.Red)
 		};
 
-		await UITestHelper.Load(bitmapIcon);
-		await TestServices.WindowHelper.WaitForIdle();
+		var image = await LoadOpened(bitmapIcon);
 
 		// Sanity check - monochrome tint applied, image is red.
 		var initial = await UITestHelper.ScreenShot(bitmapIcon);
 		ImageAssert.HasColorInRectangle(initial, new Rectangle(0, 0, initial.Width, initial.Height), Colors.Red);
 
-		var image = bitmapIcon.FindFirstDescendantOrThrow<Image>();
 		int imageOpenedCount = 0;
 		image.ImageOpened += (s, e) => imageOpenedCount++;
 
@@ -209,14 +201,12 @@ public class Given_BitmapIcon
 			Foreground = new SolidColorBrush(Colors.Blue)
 		};
 
-		await UITestHelper.Load(bitmapIcon);
-		await TestServices.WindowHelper.WaitForIdle();
+		var image = await LoadOpened(bitmapIcon);
 
 		// Sanity check - original image colors (not blue-tinted).
 		var initial = await UITestHelper.ScreenShot(bitmapIcon);
 		ImageAssert.DoesNotHaveColorInRectangle(initial, new Rectangle(0, 0, initial.Width, initial.Height), Colors.Blue);
 
-		var image = bitmapIcon.FindFirstDescendantOrThrow<Image>();
 		int imageOpenedCount = 0;
 		image.ImageOpened += (s, e) => imageOpenedCount++;
 
@@ -227,5 +217,17 @@ public class Given_BitmapIcon
 		var after = await UITestHelper.ScreenShot(bitmapIcon);
 		ImageAssert.HasColorInRectangle(after, new Rectangle(0, 0, after.Width, after.Height), Colors.Blue);
 		Assert.AreEqual(0, imageOpenedCount, "Image must not be reloaded when ShowAsMonochrome toggles from false to true");
+	}
+
+	// Load only waits for the icon's size, which it has before its image is decoded.
+	private static async Task<Image> LoadOpened(BitmapIcon bitmapIcon)
+	{
+		await UITestHelper.Load(bitmapIcon);
+
+		var image = bitmapIcon.FindFirstDescendantOrThrow<Image>();
+		await TestServices.WindowHelper.WaitFor(() => image.Source is BitmapSource { PixelWidth: > 0 }, timeoutMS: 5000, message: "The BitmapIcon's image should open.");
+		await TestServices.WindowHelper.WaitForIdle();
+
+		return image;
 	}
 }

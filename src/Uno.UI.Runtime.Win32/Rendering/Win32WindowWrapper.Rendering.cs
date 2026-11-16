@@ -55,7 +55,7 @@ internal partial class Win32WindowWrapper
 		}
 		catch (Exception e)
 		{
-			this.LogInfo()?.Info($"Vulkan context creation failed ({e.Message}); falling through.");
+			this.LogWarn()?.Warn($"Vulkan context creation failed ({e.Message}); falling through.");
 			return null;
 		}
 	}
@@ -70,6 +70,10 @@ internal partial class Win32WindowWrapper
 					RenderingNegativePathReevaluated?.Invoke(this, clipPath),
 					NativeDispatcherPriority.Normal);
 			});
+
+		// The window is registered, and can be asked for frames, before graphics negotiation creates this thread;
+		// those requests had nothing to signal and the target would wait for them forever.
+		_renderThread.SignalNewFrame();
 	}
 
 	/// <summary>
@@ -90,7 +94,6 @@ internal partial class Win32WindowWrapper
 			return null;
 		}
 
-		ct.Renderer = _renderer;
 		var clipPath = ct.OnNativePlatformFrameRequested(_context);
 
 		// The context skips its present when no frame was acquired (nothing recorded yet, empty bounds) or drops

@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-#pragma warning disable 105 // Disabled until the tree is migrate to WinUI
+// MUX Reference controls/dev/InfoBadge/TestUI/InfoBadgePage.xaml.cs
+
+#pragma warning disable CS0105 // Duplicate using directive, kept from upstream
 
 using System;
 using Microsoft.UI.Xaml;

@@ -366,6 +366,14 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 		if (contour.Closed && contour.Segments.Length == 4) { return TryInferEllipse(contour); }
 		if (!contour.Closed || contour.Segments.Length != 8) { return null; }
 		var seg = contour.Segments;
+		var start = contour.Start;
+		if (seg[0].Kind == ManagedSegmentKind.Cubic)
+		{
+			// Started at the top-left arc (WinUI's dash origin): read it as the arc-last form.
+			start = seg[0].End;
+			seg = [.. seg[1..], seg[0]];
+		}
+
 		for (int i = 0; i < 8; i++)
 		{
 			var expected = (i % 2 == 0) ? ManagedSegmentKind.Line : ManagedSegmentKind.Cubic;
@@ -373,7 +381,6 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 		}
 
 		const float Tol = 0.01f;
-		var start = contour.Start;
 		float t = start.Y;
 		float r = seg[1].End.X;
 		float b = seg[3].End.Y;

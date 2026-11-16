@@ -2,6 +2,7 @@
 
 using System;
 using Microsoft.UI.Xaml;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Hosting;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Runtime;
@@ -40,6 +41,11 @@ internal sealed class AndroidSkiaXamlRootHost : IXamlRootHost, IAccessibilityOwn
 		}
 	}
 
+	/// <summary>
+	/// Disconnects the accessibility adapter from a render view that is going away with its activity.
+	/// </summary>
+	internal void DetachRenderView() => _accessibility.Detach();
+
 	// Resolved through the wrapper (not stored) so it follows the activity currently
 	// driving the window across activity re-creation.
 	internal ApplicationActivity Activity => _wrapper.CurrentActivity;
@@ -50,14 +56,18 @@ internal sealed class AndroidSkiaXamlRootHost : IXamlRootHost, IAccessibilityOwn
 
 	void IXamlRootHost.InvalidateRender() => Activity.InvalidateRender();
 
+	// Whatever the activity's render view negotiated for its current surface. It changes when the surface is
+	// re-created, so it is read through rather than stored.
+	IDrawingFactory? IXamlRootHost.Renderer => _wrapper.CurrentActivity?.RenderView?.Renderer;
+
 	UIElement? IXamlRootHost.RootElement => _window.RootElement;
 
 	/// <summary>
 	/// Resolves the <see cref="ApplicationActivity"/> that owns the window hosting the given <see cref="XamlRoot"/>.
 	/// </summary>
 	internal static ApplicationActivity? GetActivity(XamlRoot? xamlRoot)
-		=> xamlRoot is not null && XamlRootMap.GetHostForRoot(xamlRoot) is AndroidSkiaXamlRootHost host
-			? host.Activity
+		=> xamlRoot is not null && XamlRootMap.GetHostForRoot(xamlRoot) is AndroidSkiaXamlRootHost { Activity: { IsDestroyed: false } activity }
+			? activity
 			: null;
 
 	public void Dispose()

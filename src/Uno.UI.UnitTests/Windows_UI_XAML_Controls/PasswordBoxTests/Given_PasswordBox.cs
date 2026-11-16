@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace Uno.UI.Tests.PasswordBoxTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_PasswordBox
 	{
 		[TestMethod]

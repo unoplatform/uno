@@ -291,6 +291,7 @@ public partial class Border : FrameworkElement
 		_Debug.Assert(element is Panel
 			|| element is Border
 			|| element is ContentPresenter
+			|| element is Primitives.ScrollPresenter
 		);
 
 		return element.Background != null

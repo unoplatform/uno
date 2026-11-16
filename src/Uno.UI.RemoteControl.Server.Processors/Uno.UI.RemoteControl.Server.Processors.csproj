@@ -33,10 +33,10 @@
 		<PackageReference Include="Uno.Core.Extensions.Disposables" />
 
 		<!-- Override the vulnerable System.Security.Cryptography.Xml that Microsoft.Build.Tasks.Core
-		     pulls in transitively. 10.0.10 is the first release clear of the July 2026 .NET
-		     XML-encryption advisories (CVE-2026-47304 / GHSA-g8r8-53c2-pm3f plus GHSA-cvvh-rhrc-wg4q,
-		     GHSA-23rf-6693-g89p, GHSA-8q5v-6pqq-x66h; all affect <= 10.0.9). The 8.0.x line has no
-		     fixed release (8.0.4 is the highest published and still in range). -->
+		     pulls in transitively, along with its System.Security.Cryptography.Pkcs dependency.
+		     10.0.13 is the first release clear of the October 2026 advisories (GHSA-7hqp-7c5m-4vq6,
+		     GHSA-c399-9853-6jmj, GHSA-r955-8q5j-3h83, GHSA-846f-f764-76mx, GHSA-2fmv-rv2c-59x7;
+		     all affect <= 10.0.12) and the earlier July ones fixed in 10.0.10. -->
 		<PackageReference Include="System.Security.Cryptography.Xml" />
 	</ItemGroup>
 

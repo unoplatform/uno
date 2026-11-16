@@ -28,7 +28,7 @@ using global::System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.DualScreen")]
 [assembly: InternalsVisibleTo("Uno.UI.DualScreen.netcoremobile")]
 [assembly: InternalsVisibleTo("SamplesApp")]
-[assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
+[assembly: InternalsVisibleTo("UnoIslandsSamplesApp")]
 [assembly: InternalsVisibleTo("XamlGenerationTests")]
 [assembly: InternalsVisibleTo("XamlGenerationTests.Core")]
 [assembly: InternalsVisibleTo("Uno.UI.Adapter.Microsoft.Extensions.Logging")]

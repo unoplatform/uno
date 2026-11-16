@@ -9,7 +9,7 @@ using WG = Windows.Globalization;
 
 namespace Uno.UI.Tests.Windows_Globalization
 {
-	[TestClass]
+	[UITestClass]
 	public class When_Calendar
 	{
 		[TestMethod]

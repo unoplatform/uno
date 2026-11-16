@@ -9,7 +9,7 @@ using Windows.Foundation.Metadata;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.CreateFromStringTests
 {
-	[TestClass]
+	[UITestClass]
 	public class Given_CreateFromString
 	{
 		[TestMethod]
