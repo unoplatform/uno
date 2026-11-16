@@ -3,10 +3,6 @@ using Windows.Foundation;
 
 namespace Windows.UI.Core;
 
-
-#if !UNO_HAS_MANAGED_POINTERS
-[global::Uno.NotImplemented]
-#endif
 public partial interface ICorePointerInputSource
 {
 	event TypedEventHandler<object, PointerEventArgs> PointerCaptureLost;

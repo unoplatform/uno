@@ -7,7 +7,7 @@ using Uno.Extensions;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests;
 
-[TestClass]
+[UITestClass]
 public class Given_VisualStateGroup_FindTransition
 {
 	// Regression tests for https://github.com/unoplatform/uno/pull/17436:

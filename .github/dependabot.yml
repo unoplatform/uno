@@ -465,9 +465,6 @@ updates:
   - dependency-name: Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime
     versions:
     - ">= 16.9.a, < 16.10"
-  - dependency-name: Xamarin.AndroidX.Legacy.Support.v4
-    versions:
-    - "> 1.0.0, < 1.1"
   - dependency-name: Microsoft.VisualStudio.Shell.Interop.8.0
     versions:
     - "> 8.0.50728"

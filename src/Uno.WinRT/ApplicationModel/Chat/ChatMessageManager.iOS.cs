@@ -9,7 +9,7 @@ using Windows.Foundation;
 
 namespace Windows.ApplicationModel.Chat
 {
-	public partial class ChatMessageManager
+	public static partial class ChatMessageManager
 	{
 		public static IAsyncAction ShowComposeSmsMessageAsync(ChatMessage message)
 		{

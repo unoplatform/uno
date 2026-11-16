@@ -17,7 +17,7 @@ namespace Uno.UI.Tests.Foundation
 	/// assemblies, metadata and everything they reference — resident for the process lifetime. The
 	/// cache is a pure memoization, so its keys must be weak.
 	/// </summary>
-	[TestClass]
+	[UITestClass]
 	public class Given_LogExtensionPoint_Alc
 	{
 		[TestMethod]

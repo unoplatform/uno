@@ -68,8 +68,6 @@
 
 		<_UnoUnderlyingPlatform Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">android</_UnoUnderlyingPlatform>
 		<_UnoUnderlyingPlatform Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">uikit</_UnoUnderlyingPlatform>
-		<_UnoUnderlyingPlatform Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">wasm</_UnoUnderlyingPlatform>
-		<_UnoUnderlyingPlatform Condition="'$(_UnoUnderlyingPlatform)'=='' AND '$(UnoRuntimeIdentifier)'=='Skia'">skia</_UnoUnderlyingPlatform>
 	</PropertyGroup>
 
 	<!--
@@ -126,6 +124,7 @@
 									 TargetProjectDirectory="$(ProjectDir)"
 									 TargetPlatform="$(_UnoUnderlyingPlatform)"
 									 OutputPath="$(_ResourceOutputPath)"
+									 AndroidStampFile="$(_ResourceStampFile)"
 									 DefaultLanguage="$(DefaultLanguage)"
 									 IsUnoHead="$(_IsUnoHead)"
 									 ProjectName="$(AssemblyName)"
@@ -146,6 +145,7 @@
 
 			<!-- Ensure files are tracked properly for incremental build and clean targets -->
 			<FileWrites Include="@(GeneratedFiles)" />
+			<FileWrites Include="$(_ResourceStampFile)" Condition="'$(_UnoUnderlyingPlatform)' == 'android'" />
 		</ItemGroup>
 	</Target>
 

@@ -1,4 +1,3 @@
-using CommonServiceLocator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
@@ -23,7 +22,7 @@ using Uno.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_Binder
 	{
 		[TestMethod]
@@ -33,7 +32,7 @@ namespace Uno.UI.Tests.BinderTests
 			var child = new Target2(SUT);
 
 			child.SetBinding(Target2.DataContextProperty, new Binding("Child"));
-			child.SetBinding("TargetValue", new Binding("Value"));
+			child.SetBindingInternal("TargetValue", new Binding("Value"));
 			SUT.ChildrenBinders.Add(child);
 
 			var source = new MySource();
@@ -55,7 +54,7 @@ namespace Uno.UI.Tests.BinderTests
 			var child = new Target2(SUT);
 
 			child.SetBinding(Target2.DataContextProperty, new Binding("Child"));
-			child.SetBinding("TargetValue", new Binding("Value", converter: new OppositeConverter()));
+			child.SetBindingInternal("TargetValue", new Binding("Value", converter: new OppositeConverter()));
 			SUT.ChildrenBinders.Add(child);
 
 			var source = new MySource();
@@ -79,7 +78,7 @@ namespace Uno.UI.Tests.BinderTests
 			var converter = new OppositeConverter();
 
 			child.SetBinding(Target2.DataContextProperty, new Binding("Item.List[0]"));
-			child.SetBinding("TargetValue", new Binding("Details.Info", converter: converter) { FallbackValue = 10 });
+			child.SetBindingInternal("TargetValue", new Binding("Details.Info", converter: converter) { FallbackValue = 10 });
 			SUT.ChildrenBinders.Add(child);
 
 			SUT.DataContext = new SourceLevel0();
@@ -139,7 +138,7 @@ namespace Uno.UI.Tests.BinderTests
 			var converter = new BoolToNumber();
 
 			child.SetBinding(Target2.DataContextProperty, new Binding("Item.List[0]"));
-			child.SetBinding("TargetValue", new Binding("Details.InfoBoolean", converter: converter) { FallbackValue = 10 });
+			child.SetBindingInternal("TargetValue", new Binding("Details.InfoBoolean", converter: converter) { FallbackValue = 10 });
 			SUT.ChildrenBinders.Add(child);
 
 			SUT.DataContext = new SourceLevel0();
@@ -198,8 +197,8 @@ namespace Uno.UI.Tests.BinderTests
 
 			var converter = new BoolToNumber();
 
-			child.SetBinding("DataContext", new Binding("Item_zzz.List[0]"));
-			child.SetBinding("TargetValue", new Binding("Details.InfoBoolean", converter: converter) { FallbackValue = 10 });
+			child.SetBindingInternal("DataContext", new Binding("Item_zzz.List[0]"));
+			child.SetBindingInternal("TargetValue", new Binding("Details.InfoBoolean", converter: converter) { FallbackValue = 10 });
 			SUT.ChildrenBinders.Add(child);
 
 			// With the invalid path (Item_zzz instead of Item), the converter should be be called at all.
@@ -219,8 +218,8 @@ namespace Uno.UI.Tests.BinderTests
 
 			var converter = new BoolToNumber();
 
-			child.SetBinding("DataContext", new Binding("Item.List[0]"));
-			child.SetBinding("TargetValue", new Binding("Details_zzz.InfoBoolean", converter: converter) { FallbackValue = 10 });
+			child.SetBindingInternal("DataContext", new Binding("Item.List[0]"));
+			child.SetBindingInternal("TargetValue", new Binding("Details_zzz.InfoBoolean", converter: converter) { FallbackValue = 10 });
 			SUT.ChildrenBinders.Add(child);
 
 			// With the invalid path (Details_zzz instead of Details), the converter should not be called at all.
@@ -239,7 +238,7 @@ namespace Uno.UI.Tests.BinderTests
 			var child = new Target2(SUT);
 
 			child.SetBinding(Target2.DataContextProperty, new Binding("Child"));
-			child.SetBinding("TargetValue", new Binding("Value"));
+			child.SetBindingInternal("TargetValue", new Binding("Value"));
 			SUT.ChildrenBinders.Add(child);
 
 			var source = new MySource();
@@ -271,7 +270,7 @@ namespace Uno.UI.Tests.BinderTests
 			var child = new Target2(SUT);
 
 			child.SetBinding(Target2.DataContextProperty, new Binding("Child"));
-			child.SetBinding("TargetValue", new Binding("Value"));
+			child.SetBindingInternal("TargetValue", new Binding("Value"));
 			SUT.ChildrenBinders.Add(child);
 
 			var source = new MySource();
@@ -299,8 +298,8 @@ namespace Uno.UI.Tests.BinderTests
 
 			var control = new MyControl();
 
-			control.SetBinding("MyProperty", new Binding { Path = "TargetValue", Mode = BindingMode.TwoWay });
-			control.SetBinding("MyBrushProperty", new Binding { Path = "Brush", Mode = BindingMode.TwoWay });
+			control.SetBindingInternal("MyProperty", new Binding { Path = "TargetValue", Mode = BindingMode.TwoWay });
+			control.SetBindingInternal("MyBrushProperty", new Binding { Path = "Brush", Mode = BindingMode.TwoWay });
 
 			control.DataContext = targetA;
 			Assert.AreEqual(10, targetA.TargetValue);
@@ -907,7 +906,7 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(-1, SUT.Property1);
 			Assert.AreEqual(-2, SUT.Property2);
 
-			SUT.SetBinding(SelfBindingTest.Property2Property, new Binding { Path = "Property1", RelativeSource = new RelativeSource(RelativeSourceMode.Self) });
+			SUT.SetBindingInternal(SelfBindingTest.Property2Property, new Binding { Path = "Property1", RelativeSource = new RelativeSource(RelativeSourceMode.Self) });
 
 			Assert.AreEqual(-1, SUT.Property1);
 			Assert.AreEqual(-1, SUT.Property2);
@@ -958,7 +957,7 @@ namespace Uno.UI.Tests.BinderTests
 			var SUT = new UIDependencyObject();
 			SUT.SetBinding(UIDependencyObject.MyValueProperty, new Binding("MyModelValue"));
 			var SUT2 = new NonUIDependencyObject();
-			SUT2.SetBinding(NonUIDependencyObject.MyValueProperty, new Binding("MyModelValue"));
+			SUT2.SetBindingInternal(NonUIDependencyObject.MyValueProperty, new Binding("MyModelValue"));
 			var model = new NonUIDependencyObject_Model();
 
 			Assert.AreEqual(-1, SUT2.MyValue);

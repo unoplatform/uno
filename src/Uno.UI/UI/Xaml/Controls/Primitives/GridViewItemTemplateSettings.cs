@@ -4,6 +4,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class GridViewItemTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 	{
+		internal GridViewItemTemplateSettings()
+		{
+		}
+
 		[global::Uno.NotImplemented]
 		public int DragItemsCount
 		{

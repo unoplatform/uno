@@ -9,7 +9,7 @@ using Uno.Foundation;
 
 namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 {
-	public static partial class MidiDeviceConnectionWatcher
+	internal static partial class MidiDeviceConnectionWatcher
 	{
 		private static readonly object _syncLock = new object();
 

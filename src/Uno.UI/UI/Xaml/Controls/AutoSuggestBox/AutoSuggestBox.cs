@@ -11,6 +11,9 @@ using Windows.Foundation.Collections;
 using Windows.System;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Automation;
+#if __SKIA__
+using Microsoft.UI.Xaml.Automation.Peers;
+#endif
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
@@ -118,6 +121,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnItemsChanged(IObservableVector<object> sender, IVectorChangedEventArgs @event)
 		{
 			UpdateSuggestionList();
+			RaiseSuggestionsListLayoutInvalidated();
 		}
 
 		protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
@@ -188,6 +192,21 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// WinUI raises LayoutInvalidated on the suggestions list part from OnItemsChanged (Items /
+		// ItemsSource collection changes) — not on text changes — so a UIA client re-reads the
+		// re-laid-out suggestions. Gated on an active listener to avoid materializing a peer during
+		// normal layout.
+		private void RaiseSuggestionsListLayoutInvalidated()
+		{
+#if __SKIA__
+			if (_suggestionsList is not null && AutomationPeer.ListenerExistsHelper(AutomationEvents.LayoutInvalidated))
+			{
+				FrameworkElementAutomationPeer.CreatePeerForElement(_suggestionsList)
+					?.RaiseAutomationEvent(AutomationEvents.LayoutInvalidated);
+			}
+#endif
+		}
+
 		private void UpdateTextFromSuggestion(Object o)
 		{
 			_textChangeReason = AutoSuggestionBoxTextChangeReason.SuggestionChosen;
@@ -236,10 +255,12 @@ namespace Microsoft.UI.Xaml.Controls
 					windowRect.Height -= inputPaneRect.Height;
 				}
 
-				var popupTransform = (MatrixTransform)popup.TransformToVisual(XamlRoot.Content);
+				// Measure in window coordinates, like windowRect: the content is offset from the window while it
+				// scrolls above the input pane.
+				var popupTransform = (MatrixTransform)popup.TransformToVisual(null);
 				var popupRect = new Rect(popupTransform.Matrix.OffsetX, popupTransform.Matrix.OffsetY, popup.ActualWidth, popup.ActualHeight);
 
-				var containerTransform = (MatrixTransform)_layoutRoot.TransformToVisual(XamlRoot.Content);
+				var containerTransform = (MatrixTransform)_layoutRoot.TransformToVisual(null);
 				var containerRect = new Rect(containerTransform.Matrix.OffsetX, containerTransform.Matrix.OffsetY, _layoutRoot.ActualWidth, _layoutRoot.ActualHeight);
 				var textBoxHeight = _layoutRoot.ActualHeight;
 

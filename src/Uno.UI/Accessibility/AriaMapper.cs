@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.Runtime;
 
 /// <summary>
 /// Maps automation peers to ARIA attributes and semantic element types.
@@ -31,6 +31,7 @@ public static class AriaMapper
 		{ AutomationControlType.ListItem, "option" },
 		{ AutomationControlType.Menu, "menu" },
 		{ AutomationControlType.MenuItem, "menuitem" },
+		{ AutomationControlType.MenuBar, "menubar" },
 		{ AutomationControlType.Tab, "tablist" },
 		{ AutomationControlType.TabItem, "tab" },
 		{ AutomationControlType.Tree, "tree" },
@@ -47,6 +48,8 @@ public static class AriaMapper
 		{ AutomationControlType.ToolTip, "tooltip" },
 		{ AutomationControlType.DataGrid, "grid" },
 		{ AutomationControlType.DataItem, "row" },
+		{ AutomationControlType.Table, "table" },
+		{ AutomationControlType.Separator, "separator" },
 		{ AutomationControlType.Document, "document" },
 		{ AutomationControlType.Window, "dialog" },
 		{ AutomationControlType.Pane, "region" },
@@ -169,6 +172,11 @@ public static class AriaMapper
 		if (peer.IsPassword())
 		{
 			return SemanticElementType.Password;
+		}
+
+		if (peer is FrameworkElementAutomationPeer { Owner: Microsoft.UI.Xaml.Controls.RichEditBox })
+		{
+			return SemanticElementType.TextArea;
 		}
 
 		if (peer is FrameworkElementAutomationPeer frameworkPeer &&
@@ -318,6 +326,15 @@ public static class AriaMapper
 				}
 				else if (controlType == AutomationControlType.Menu || controlType == AutomationControlType.MenuItem)
 				{
+					attributes.HasPopup = "menu";
+				}
+				else if (peer is SplitButtonAutomationPeer or DropDownButtonAutomationPeer)
+				{
+					// SplitButton's secondary area and DropDownButton both open a menu flyout.
+					// Keyed on the concrete peer types on purpose: DropDownButton reports the
+					// Button control type and Expander ALSO reports Button + ExpandCollapse (for
+					// inline expand/collapse) — so a control-type check would wrongly tag Expander
+					// as a menu button. Expander still gets aria-expanded, just not aria-haspopup.
 					attributes.HasPopup = "menu";
 				}
 			}
@@ -572,6 +589,10 @@ public static class AriaMapper
 			_ => null
 		};
 	}
+
+	internal static bool CanExposeLandmarkRole(string? landmarkRole, bool hasAccessibleName)
+		=> !string.IsNullOrEmpty(landmarkRole) &&
+			(landmarkRole is not ("region" or "form") || hasAccessibleName);
 
 	/// <summary>
 	/// Gets the pattern capabilities for an automation peer.

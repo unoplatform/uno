@@ -7,6 +7,10 @@ namespace Windows.Devices.Sensors
 	/// </summary>
 	public partial class SimpleOrientationSensorOrientationChangedEventArgs
 	{
+		internal SimpleOrientationSensorOrientationChangedEventArgs()
+		{
+		}
+
 		/// <summary>
 		/// Gets the current sensor orientation.
 		/// </summary>

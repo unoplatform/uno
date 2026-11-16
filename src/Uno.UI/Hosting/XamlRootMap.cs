@@ -36,6 +36,7 @@ internal static class XamlRootMap
 		_map[xamlRoot] = host;
 		_reverseMap[host] = xamlRoot;
 		xamlRoot.VisualTree.ContentRoot.SetHost(host); // Note: This might be a duplicated call but it's supported by ContentRoot and safe
+		xamlRoot.VisualTree.ContentRoot.CompositionTarget.OnHostAttached();
 
 		Registered?.Invoke(null, xamlRoot);
 	}
@@ -69,4 +70,10 @@ internal static class XamlRootMap
 	/// </summary>
 	internal static IEnumerable<KeyValuePair<XamlRoot, IXamlRootHost>> Enumerate() =>
 		_map.ToArray();
+
+	/// <summary>
+	/// Live hosts, iterated without a copy or an allocation: only for callers that don't register or unregister
+	/// hosts while iterating.
+	/// </summary>
+	internal static Dictionary<XamlRoot, IXamlRootHost>.ValueCollection Hosts => _map.Values;
 }

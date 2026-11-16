@@ -1,6 +1,6 @@
 using System;
 
-namespace Uno.UI.Runtime.Skia
+namespace Uno.UI.Runtime
 {
 	/// <summary>
 	/// Public shim used by runtime tests to interact with platform-specific accessibility helpers.

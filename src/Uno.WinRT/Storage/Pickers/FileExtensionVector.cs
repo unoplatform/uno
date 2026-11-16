@@ -59,13 +59,11 @@ namespace Windows.Storage.Pickers
 		public int Count
 		{
 			get => _items.Count;
-			set => throw new InvalidOperationException();
 		}
 
 		public bool IsReadOnly
 		{
 			get => false;
-			set => throw new InvalidOperationException();
 		}
 
 		public IEnumerator<string> GetEnumerator() => _items.GetEnumerator();

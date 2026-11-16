@@ -13,12 +13,12 @@
     <Page.Resources>
         <DataTemplate x:Key="FolderItemTemplate" x:DataType="storage:IStorageFolder">
             <TextBlock>
-                <Run FontWeight="Bold" Text="{x:Bind Name}" />
+                <Run FontWeight="Bold" Text="{x:Bind Name, Mode=OneTime}" />
             </TextBlock>
         </DataTemplate>
         <DataTemplate x:Key="FileItemTemplate" x:DataType="storage:IStorageFile">
             <TextBlock>
-                <Run Text="{x:Bind Name}" />
+                <Run Text="{x:Bind Name, Mode=OneTime}" />
             </TextBlock>
         </DataTemplate>
     </Page.Resources>
@@ -60,7 +60,7 @@
                     </StackPanel>
                     <ListView
                         Height="300"
-                        ItemTemplateSelector="{x:Bind StorageItemListTemplateSelector}"
+                        ItemTemplateSelector="{x:Bind StorageItemListTemplateSelector, Mode=OneTime}"
                         ItemsSource="{x:Bind ViewModel.StorageItemList}" />
                     <TextBlock
                         Foreground="Red"

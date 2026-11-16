@@ -1,8 +1,8 @@
 ﻿#nullable enable
 using System;
 using System.Linq;
-using SkiaSharp;
 using Uno.Extensions;
+using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Composition;
@@ -30,29 +30,38 @@ partial class CompositionClip
 	private protected virtual Rect? GetBoundsCore(Visual visual)
 		=> null;
 
-	internal virtual SKPath? GetClipPath(Visual visual) => null;
+	internal virtual IGeometry? GetClipPath(Visual visual) => null;
 	/// <summary>
 	/// Optionally overridable if the clip path can be provided as a rounded rect.
 	/// </summary>
-	private protected virtual SKRoundRect? GetClipRoundedRect(Visual visual) => null;
+	private protected virtual RoundRectangle? GetClipRoundedRect(Visual visual) => null;
 	/// <summary>
 	/// Optionally overridable if the clip path can be provided as a rect.
 	/// </summary>
-	private protected virtual SKRect? GetClipRect(Visual visual) => null;
+	private protected virtual Rect? GetClipRect(Visual visual) => null;
 
-	internal void ApplyClip(Visual visual, SKCanvas canvas)
+	internal void ApplyClip(Visual visual, IDrawingSession session)
 	{
 		if (GetClipRect(visual) is { } clipRect)
 		{
-			canvas.ClipRect(clipRect, antialias: true);
+			session.ClipRect(clipRect);
 		}
 		else if (GetClipRoundedRect(visual) is { } roundedRect)
 		{
-			canvas.ClipRoundRect(roundedRect, antialias: true);
+			session.ClipRoundRect(roundedRect);
 		}
 		else if (GetClipPath(visual) is { } clipPath)
 		{
-			canvas.ClipPath(clipPath, antialias: true);
+			session.ClipPath(clipPath);
+			clipPath.Release();
+		}
+		else
+		{
+			// A clip that yields no shape at all (a geometric clip with no geometry) clips everything out, which is
+			// what master did: its render path went through GetPrePaintingClipping, which returned an EMPTY path
+			// for this state and clipped the visual and its subtree away. GetPrePaintingClipping still reads it
+			// that way here, so painting unclipped would contradict this visual's own shadow and automation bounds.
+			session.ClipRect(default);
 		}
 	}
 }

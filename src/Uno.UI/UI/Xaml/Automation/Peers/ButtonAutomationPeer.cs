@@ -38,9 +38,12 @@ public partial class ButtonAutomationPeer : ButtonBaseAutomationPeer, IInvokePro
 	/// </summary>
 	public void Invoke()
 	{
-		if (IsEnabled())
+		if (!IsEnabled())
 		{
-			(Owner as ButtonBase).ProgrammaticClick();
+			// UIA_E_ELEMENTNOTENABLED — match WinUI: check enabled before acting.
+			throw new ElementNotEnabledException();
 		}
+
+		(Owner as ButtonBase).ProgrammaticClick();
 	}
 }

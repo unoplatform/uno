@@ -1,5 +1,4 @@
 ﻿using System;
-using CommonServiceLocator;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -26,8 +25,8 @@ namespace Uno.UI.RemoteControl.Host
 		{
 			var services = app.Services;
 
-			var provider = new ServiceLocatorAdapter(services);
-			ServiceLocator.SetLocatorProvider(() => provider);
+			// Lets Uno.Core logging resolve the host's ILoggerFactory.
+			LogExtensionPoint.ServiceProvider = services;
 
 			var options = services.GetRequiredService<IOptionsMonitor<RemoteControlOptions>>().CurrentValue;
 

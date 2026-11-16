@@ -1,4 +1,8 @@
-﻿using Microsoft.CodeAnalysis.Testing;
+﻿using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Testing;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
 
 namespace Uno.UI.SourceGenerators.Tests.Windows_UI_Xaml_Controls.ParserTests;
@@ -249,7 +253,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("CS0117").WithSpan(Path.Combine("Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator", "MainPage_0e3f323f9a22a3699cbcd4f0217eee4a.cs"), 57, 6, 57, 19).WithArguments("Microsoft.UI.Xaml.Controls.Grid", "InvalidMember")
+			DiagnosticResult.CompilerError("CS0117").WithSpan(Path.Join("Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator", "MainPage_0e3f323f9a22a3699cbcd4f0217eee4a.cs"), 49, 6, 49, 19).WithArguments("Microsoft.UI.Xaml.Controls.Grid", "InvalidMember")
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
@@ -279,7 +283,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("CS0246").WithSpan(Path.Combine("Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator", "MainPage_0e3f323f9a22a3699cbcd4f0217eee4a.cs"), 61, 12, 61, 32).WithArguments("TypeThatDoesNotExist"),
+			DiagnosticResult.CompilerError("CS0246").WithSpan(Path.Join("Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator", "MainPage_0e3f323f9a22a3699cbcd4f0217eee4a.cs"), 53, 12, 53, 32).WithArguments("TypeThatDoesNotExist"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
@@ -432,6 +436,63 @@ public partial class Given_Parser
 		]);
 
 		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_Empty_Double_Value()
+	{
+		// WinUI's generic.xaml has <SplineDoubleKeyFrame Value="" /> in the SplitView style; WinUI parses it as 0.
+		var xamlFiles = new[]
+		{
+			new XamlFile(
+				"MainPage.xaml",
+				"""
+				<Page x:Class="TestRepro.MainPage"
+					  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<Grid x:Name="Root" Opacity=" ">
+						<Grid.Resources>
+							<Storyboard x:Key="Story">
+								<DoubleAnimationUsingKeyFrames Storyboard.TargetName="Root" Storyboard.TargetProperty="Opacity">
+									<SplineDoubleKeyFrame KeyTime="0:0:1" Value="" />
+								</DoubleAnimationUsingKeyFrames>
+							</Storyboard>
+						</Grid.Resources>
+					</Grid>
+				</Page>
+				"""),
+		};
+
+		var test = new GeneratedSourceCapturingTest(xamlFiles)
+		{
+			TestState = { Sources = { _emptyCodeBehind } },
+			TestBehaviors = TestBehaviors.SkipGeneratedSourcesCheck,
+		};
+
+		await test.RunAsync();
+
+		var generated = string.Join("\n", test.GeneratedSources);
+		StringAssert.Matches(generated, ZeroValueRegex(), generated);
+		StringAssert.Matches(generated, ZeroOpacityRegex(), generated);
+	}
+
+	[GeneratedRegex(@"\bValue = 0d\b")]
+	private static partial Regex ZeroValueRegex();
+
+	[GeneratedRegex(@"\bOpacity = 0d\b")]
+	private static partial Regex ZeroOpacityRegex();
+
+	private sealed class GeneratedSourceCapturingTest(XamlFile[] xamlFiles, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
+		: Verify.Test(xamlFiles, testFilePath, testMethodName)
+	{
+		public List<string> GeneratedSources { get; } = new();
+
+		protected override async Task<(Compilation compilation, ImmutableArray<Diagnostic> generatorDiagnostics)> GetProjectCompilationAsync(Project project, IVerifier verifier, CancellationToken cancellationToken)
+		{
+			var result = await base.GetProjectCompilationAsync(project, verifier, cancellationToken);
+			GeneratedSources.AddRange(result.compilation.SyntaxTrees.Skip(project.DocumentIds.Count).Select(t => t.ToString()));
+			return result;
+		}
 	}
 
 	[TestMethod]

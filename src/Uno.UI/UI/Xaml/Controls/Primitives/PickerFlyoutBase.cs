@@ -7,6 +7,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class PickerFlyoutBase : FlyoutBase
 	{
+		protected PickerFlyoutBase()
+		{
+		}
+
 		public static DependencyProperty TitleProperty
 		{
 			[DynamicDependency(nameof(GetTitle))]

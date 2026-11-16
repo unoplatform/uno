@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
+using Microsoft.UI;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;

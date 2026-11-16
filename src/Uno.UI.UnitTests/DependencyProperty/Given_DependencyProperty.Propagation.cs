@@ -1,5 +1,4 @@
-﻿using CommonServiceLocator;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
@@ -24,7 +23,7 @@ using System.Diagnostics;
 
 namespace Uno.UI.Tests.BinderTests.Propagation
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_DependencyProperty_Propagation
 	{
 		[TestInitialize]
@@ -425,7 +424,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 				var t1 = new VisualTransition();
 				var sb = new Storyboard();
 				anim = new DoubleAnimation();
-				anim.SetBinding(DoubleAnimation.ToProperty, new Binding() { Path = "Tag", RelativeSource = RelativeSource.TemplatedParent });
+				anim.SetBindingInternal(DoubleAnimation.ToProperty, new Binding() { Path = "Tag", RelativeSource = RelativeSource.TemplatedParent });
 				sb.Children.Add(anim);
 				t1.Storyboard = sb;
 				vg.Transitions.Add(t1);

@@ -5,6 +5,10 @@ namespace Windows.UI.Core
 	/// </summary>
 	public sealed partial class CoreWindowEventArgs : ICoreWindowEventArgs
 	{
+		internal CoreWindowEventArgs()
+		{
+		}
+
 		/// <summary>
 		/// Specifies the property that gets or sets whether the event was handled.
 		/// </summary>

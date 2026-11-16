@@ -18,7 +18,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml;
 /// whole ALC. Each map now exposes <c>DestroyForWindowId</c> (called from ALC window close) that
 /// removes the entry.
 /// </summary>
-[TestClass]
+[UITestClass]
 public class Given_WindowId_Maps_Alc
 {
 	[TestMethod]

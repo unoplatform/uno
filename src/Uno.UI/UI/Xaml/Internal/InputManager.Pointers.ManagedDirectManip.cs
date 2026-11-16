@@ -407,7 +407,13 @@ partial class InputManager
 
 			/// <inheritdoc />
 			public ManipulationModes OnStarting(GestureRecognizer recognizer, ManipulationStartingEventArgs args)
-				=> ManipulationModes.All;
+			{
+				// On the press itself: the manipulation only starts once the finger has travelled the start
+				// threshold, which one held still never does, so waiting for it would keep coasting under the finger.
+				Tracker.InterruptInertia();
+
+				return ManipulationModes.All;
+			}
 
 			/// <inheritdoc />
 			public void OnStarted(GestureRecognizer recognizer, ManipulationStartedEventArgs args, bool isResuming)
@@ -429,6 +435,9 @@ partial class InputManager
 				}
 
 				Tracker.ReceiveInertiaStarting(new Point(args.Velocities.Linear.X * 1000, args.Velocities.Linear.Y * 1000));
+
+				// The tracker runs its own inertia, so the recognizer's would only raise updates nobody applies.
+				recognizer.CompleteGesture();
 				return true;
 			}
 
@@ -518,7 +527,11 @@ partial class InputManager
 			}
 
 			public void Remove(PointerDeviceType pointer)
-				=> _hasValues[(int)pointer] = false;
+			{
+				var index = (int)pointer;
+				_hasValues[index] = false;
+				_values[index] = default!;
+			}
 
 			/// <inheritdoc />
 			public IEnumerator<KeyValuePair<PointerDeviceType, TValue>> GetEnumerator()

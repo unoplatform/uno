@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference dxaml\xcp\dxaml\lib\Frame_Partial.cpp, tag winui3/release/1.5.5, commit fd8e26f1d
+// MUX Reference dxaml\xcp\dxaml\lib\Frame_Partial.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
 
 using System;
 using System.Collections.Generic;
@@ -19,12 +19,6 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class Frame
 {
 	private const int InitialTransientCacheSize = 10;
-
-	private void CtorWinUI()
-	{
-		DefaultStyleKey = typeof(Frame);
-		Initialize();
-	}
 
 	// TODO:MZ: Avoid destructor
 	~Frame()
@@ -89,13 +83,6 @@ partial class Frame
 	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
 		base.OnPropertyChanged2(args);
-
-#if HAS_UNO // Make sure we don't overrule legacy behavior if required
-		if (!_useWinUIBehavior)
-		{
-			return;
-		}
-#endif
 
 		if (args.Property == SourcePageTypeProperty)
 		{
@@ -412,17 +399,7 @@ partial class Frame
 		}
 	}
 
-	internal void RemovePageFromCache(string descriptor)
-	{
-#if HAS_UNO // Do not use this method when legacy behavior is preferred
-		if (!_useWinUIBehavior)
-		{
-			return;
-		}
-#endif
-
-		m_upNavigationCache.UncachePageContent(descriptor);
-	}
+	internal void RemovePageFromCache(string descriptor) => m_upNavigationCache.UncachePageContent(descriptor);
 
 	//------------------------------------------------------------------------
 	//
@@ -566,6 +543,8 @@ partial class Frame
 		{
 			RaiseNavigationFailed(strDescriptor, ex, out var isHandled);
 
+			// If NavigationFailedEventArgs.Handled was set to True, do not let the error propagate & raise an
+			// exception, or raise an unhandled exception below, allowing the app to continue its execution.
 			if (!isHandled)
 			{
 				RaiseUnhandledException(ex);
@@ -576,7 +555,10 @@ partial class Frame
 				Content = oldObject;
 			}
 
-			throw;
+			if (!isHandled)
+			{
+				throw;
+			}
 		}
 	}
 

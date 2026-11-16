@@ -38,7 +38,7 @@ internal class ColorHelperTestsViewModel(UnitTestDispatcherCompat dispatcher) : 
 	{
 		//UNO TODO: Remove after updating to WinUI 1.6+
 #if HAS_UNO
-		ColorName = Windows.UI.ColorHelper.ToDisplayName(Windows.UI.ColorHelper.ConvertColorFromHexString(ColorValue));
+		ColorName = Microsoft.UI.ColorHelper.ToDisplayName(Microsoft.UI.ColorHelper.ConvertColorFromHexString(ColorValue));
 #endif
 	});
 

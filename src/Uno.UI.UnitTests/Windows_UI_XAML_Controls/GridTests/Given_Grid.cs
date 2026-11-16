@@ -10,7 +10,7 @@ using Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls;
 
 namespace Uno.UI.Tests.GridTests
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_Grid : Context
 	{
 		[TestMethod]

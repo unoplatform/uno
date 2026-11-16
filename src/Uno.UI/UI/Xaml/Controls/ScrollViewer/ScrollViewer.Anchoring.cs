@@ -8,6 +8,8 @@
 //  ResetAnchorElement, get_CurrentAnchorImpl).
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Media;
+using Uno.Extensions;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 
@@ -18,6 +20,12 @@ public partial class ScrollViewer
 	// Used when HorizontalAnchorRatio or VerticalAnchorRatio is 0.0 or 1.0 to determine
 	// whether the Content is scrolled to an edge. It is declared at an edge if it's within 1/10th of a pixel.
 	private const double c_edgeDetectionTolerance = 0.1;
+
+	// Matches WinUI's default (see the public HorizontalAnchorRatio/VerticalAnchorRatio docs:
+	// "A normalized value (0.0 to 1.0). The default is 0.0.") and ScrollPresenter's own
+	// s_defaultAnchorRatio (ScrollPresenter.h.cs). Element-based scroll anchoring toward the
+	// leading edge is therefore active by default, matching WinUI, rather than opt-in.
+	private const double c_defaultAnchorRatio = 0.0;
 
 	private readonly List<UIElement> m_anchorCandidates = new();
 
@@ -46,24 +54,24 @@ public partial class ScrollViewer
 		DependencyProperty.Register(
 			nameof(HorizontalAnchorRatio), typeof(double),
 			typeof(ScrollViewer),
-			new FrameworkPropertyMetadata(double.NaN));
+			new FrameworkPropertyMetadata(Boxer.Box(c_defaultAnchorRatio)));
 
 	public double HorizontalAnchorRatio
 	{
 		get => (double)GetValue(HorizontalAnchorRatioProperty);
-		set => SetValue(HorizontalAnchorRatioProperty, value);
+		set => SetValue(HorizontalAnchorRatioProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty VerticalAnchorRatioProperty { get; } =
 		DependencyProperty.Register(
 			nameof(VerticalAnchorRatio), typeof(double),
 			typeof(ScrollViewer),
-			new FrameworkPropertyMetadata(double.NaN));
+			new FrameworkPropertyMetadata(Boxer.Box(c_defaultAnchorRatio)));
 
 	public double VerticalAnchorRatio
 	{
 		get => (double)GetValue(VerticalAnchorRatioProperty);
-		set => SetValue(VerticalAnchorRatioProperty, value);
+		set => SetValue(VerticalAnchorRatioProperty, Boxer.Box(value));
 	}
 
 	public event global::Windows.Foundation.TypedEventHandler<ScrollViewer, AnchorRequestedEventArgs>? AnchorRequested;
@@ -402,7 +410,7 @@ public partial class ScrollViewer
 			(element == content || SharedHelpers.IsAncestor(element, content));
 	}
 
-	private Rect GetDescendantBounds(UIElement content, UIElement descendant)
+	internal static Rect GetDescendantBounds(UIElement content, UIElement descendant)
 	{
 		var descendantAsFE = descendant as FrameworkElement;
 		var descendantRect = new Rect(
@@ -414,8 +422,7 @@ public partial class ScrollViewer
 		var contentAsFE = content as FrameworkElement;
 		Thickness contentMargin = contentAsFE?.Margin ?? default;
 
-		var transform = descendant.TransformToVisual(content);
-		return transform.TransformBounds(new Rect(
+		return UIElement.GetTransform(descendant, content).Transform(new Rect(
 			contentMargin.Left + descendantRect.X,
 			contentMargin.Top + descendantRect.Y,
 			descendantRect.Width,
@@ -424,6 +431,9 @@ public partial class ScrollViewer
 
 	// Applies a flicker-less shift of the ScrollViewer's offset.
 	// Clamps negative adjustments to avoid stepping into negative territory.
+	// Like WinUI, the shift is applied as a correction rather than through the public ChangeView: it must
+	// never arm an offset intent (a touch motion would snap back to it once it ends). An intent the caller
+	// already armed is carried along instead, since the content it points at moved by the same amount.
 	private void PerformPositionAdjustment(bool isHorizontalDimension, double unzoomedAdjustment, Rect zoomedViewport)
 	{
 		// zoomFactor is 1 in Uno's managed ScrollViewer pipeline.
@@ -437,7 +447,11 @@ public partial class ScrollViewer
 				zoomedAdjustment = -zoomedHorizontalOffset;
 			}
 			var newHorizontalOffset = zoomedAdjustment + zoomedHorizontalOffset;
-			ChangeView(newHorizontalOffset, null, null, disableAnimation: true);
+			if (_horizontalOffsetIntent is double horizontalIntent)
+			{
+				_horizontalOffsetIntent = horizontalIntent + zoomedAdjustment;
+			}
+			ChangeViewInternal(newHorizontalOffset, null);
 		}
 		else
 		{
@@ -447,7 +461,11 @@ public partial class ScrollViewer
 				zoomedAdjustment = -zoomedVerticalOffset;
 			}
 			var newVerticalOffset = zoomedAdjustment + zoomedVerticalOffset;
-			ChangeView(null, newVerticalOffset, null, disableAnimation: true);
+			if (_verticalOffsetIntent is double verticalIntent)
+			{
+				_verticalOffsetIntent = verticalIntent + zoomedAdjustment;
+			}
+			ChangeViewInternal(null, newVerticalOffset);
 		}
 	}
 

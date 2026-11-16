@@ -1,5 +1,5 @@
 ﻿// Generates tables for font fallback based on notofonts GitHub repository.
-// Typical usage: dotnet run -- --summary-only > ../Uno.UI/UI/Xaml/Documents/FontFallbackMaps.cs
+// Typical usage: dotnet run -- --summary-only > ../Uno.UI.Composition.Drawing/FontFallback.Maps.cs
 
 using System.CommandLine;
 using System.Diagnostics;
@@ -173,7 +173,7 @@ static class AppHost
 	{
 		writer.WriteLine("using System.Collections.Generic;");
 		writer.WriteLine();
-		writer.WriteLine("namespace Microsoft.UI.Xaml.Documents.TextFormatting;");
+		writer.WriteLine("namespace Uno.UI.Composition.Drawing;");
 		writer.WriteLine();
 		writer.WriteLine("internal static class FallbackFontMaps");
 		writer.WriteLine("{");

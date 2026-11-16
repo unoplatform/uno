@@ -4,6 +4,10 @@ namespace Windows.Media.Capture
 {
 	public partial class CameraCaptureUIPhotoCaptureSettings
 	{
+		internal CameraCaptureUIPhotoCaptureSettings()
+		{
+		}
+
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__
 		[global::Uno.NotImplemented]
 #endif

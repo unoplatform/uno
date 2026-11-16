@@ -1,5 +1,4 @@
-﻿using CommonServiceLocator;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
@@ -15,6 +14,7 @@ using Uno.Disposables;
 using System.ComponentModel;
 using Uno.UI;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Controls;
@@ -22,7 +22,7 @@ using System.Reflection;
 
 namespace Uno.UI.Tests.BinderTests
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_Binder_FastConvert
 	{
 		[TestMethod]
@@ -51,6 +51,23 @@ namespace Uno.UI.Tests.BinderTests
 				object actualLower = BindingPropertyHelper.Convert(() => typeof(FontWeight), weight.Name.ToLowerInvariant());
 				Assert.AreEqual(expected, actualLower);
 			}
+		}
+
+		[TestMethod]
+		public void When_String_To_IconElement()
+		{
+			var actual = BindingPropertyHelper.Convert(() => typeof(IconElement), "add");
+
+			Assert.IsInstanceOfType<SymbolIcon>(actual);
+			Assert.AreEqual(Symbol.Add, ((SymbolIcon)actual).Symbol);
+		}
+
+		[TestMethod]
+		public void When_Unknown_String_To_IconElement()
+		{
+			// The fast path declines an unknown symbol instead of throwing from Enum.Parse;
+			// the general converter then reports it like any other unconvertible value.
+			Assert.ThrowsExactly<NotSupportedException>(() => BindingPropertyHelper.Convert(() => typeof(IconElement), "NotASymbol"));
 		}
 
 		[TestMethod]

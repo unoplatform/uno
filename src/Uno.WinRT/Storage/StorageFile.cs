@@ -24,7 +24,7 @@ namespace Windows.Storage
 		internal static StorageFile GetFileFromPath(string path)
 			=> new StorageFile(new Local(path));
 
-		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
+		[NotImplemented("__NETSTD_REFERENCE__")]
 		public static IAsyncOperation<StorageFile> GetFileFromApplicationUriAsync(Uri uri)
 			=> AsyncOperation.FromTask(ct =>
 			{
@@ -170,42 +170,6 @@ namespace Windows.Storage
 		public IAsyncAction DeleteAsync(StorageDeleteOption option)
 			=> AsyncAction.FromTask(ct => Implementation.DeleteAsync(ct, option));
 		#endregion
-
-#if false
-		public async Task<Stream> GetThumbnailAsync(CancellationToken ct, ThumbnailMode mode, int size)
-		{
-			return await GetThumbnailAsync(ct, mode);
-		}
-		public async Task<Stream> GetThumbnailAsync(CancellationToken ct, ThumbnailMode mode)
-		{
-			var stream = await UIThread.Current.Run(async ict =>
-			{
-				try
-				{
-					var fileUrl = NSUrl.FromFilename(this.Path);
-					var movie = new MPMoviePlayerController(fileUrl);
-
-					movie.ShouldAutoplay = false;
-					movie.Stop();
-
-					var image = movie.ThumbnailImageAt(1.0, MPMovieTimeOption.Exact);
-
-					movie.SafeDispose();
-
-					return image.AsPNG().AsStream();
-				}
-
-				catch (Exception e)
-				{
-					this.Log().Error("The thumbnail could not retrieved.", e);
-					return null;
-				}
-
-			}, ct);
-
-			return stream;
-		}
-#endif
 
 		#region Helpers
 		private static FileAccess ToFileAccess(FileAccessMode accessMode)

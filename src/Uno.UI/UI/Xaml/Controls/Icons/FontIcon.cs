@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using Uno;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 using Windows.UI.Text;
 using Microsoft.UI.Xaml.Media;
@@ -56,7 +57,7 @@ public partial class FontIcon : IconElement, IThemeChangeAware
 	public double FontSize
 	{
 		get => (double)GetValue(FontSizeProperty);
-		set => SetValue(FontSizeProperty, value);
+		set => SetValue(FontSizeProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -152,7 +153,7 @@ public partial class FontIcon : IconElement, IThemeChangeAware
 			typeof(bool),
 			typeof(FontIcon),
 			new FrameworkPropertyMetadata(
-				true,
+				BoolBoxes.True,
 				(s, e) => ((FontIcon)s)._textBlock.IsTextScaleFactorEnabled = (bool)e.NewValue));
 
 	/// <summary>
@@ -173,7 +174,7 @@ public partial class FontIcon : IconElement, IThemeChangeAware
 			typeof(bool),
 			typeof(FontIcon),
 			new FrameworkPropertyMetadata(
-				false,
+				BoolBoxes.False,
 				propertyChangedCallback: (s, e) => ((FontIcon)s).UpdateMirroring()));
 
 	private void SynchronizeProperties()

@@ -11,12 +11,6 @@ namespace MUXControlsTestApp.Utilities
 		[Obsolete("Don't use IdleSynchronizer.Wait. Use 'await TestServices.WindowHelper.WaitForIdle()' instead.")]
 		public static void Wait()
 		{
-#if __WASM__
-			if (!Uno.UI.Dispatching.NativeDispatcher.IsThreadingSupported)
-			{
-				return;
-			}
-#endif
 #if !WINAPPSDK
 			if (!CoreDispatcher.Main.HasThreadAccess)
 #endif

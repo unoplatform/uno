@@ -1,0 +1,102 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml.Performance.Performance_RenderRegression"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:muxc="using:Microsoft.UI.Xaml.Controls">
+    <Page.Resources>
+        <!--  Rounded corner clips: the case that exercises per-visual clip handling during a scroll.  -->
+        <DataTemplate x:Key="FluentTile">
+            <Button
+                Width="140"
+                Height="90"
+                HorizontalContentAlignment="Stretch"
+                VerticalContentAlignment="Stretch">
+                <Grid RowSpacing="4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <FontIcon
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="24"
+                        Glyph="&#xE8A5;" />
+                    <TextBlock
+                        Grid.Row="1"
+                        HorizontalAlignment="Center"
+                        Text="{Binding}" />
+                </Grid>
+            </Button>
+        </DataTemplate>
+        <DataTemplate x:Key="BorderTile">
+            <Border
+                Width="140"
+                Height="90"
+                Background="{ThemeResource SystemControlBackgroundBaseLowBrush}">
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Text="{Binding}" />
+            </Border>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel
+            Margin="8"
+            Orientation="Horizontal"
+            Spacing="8">
+            <ToggleButton x:Name="AutoScrollToggle" Content="Auto-scroll" />
+            <ToggleButton x:Name="TickerToggle" Content="Ticker" />
+            <ToggleButton x:Name="SpinnerToggle" Content="Spinner" />
+            <ComboBox
+                x:Name="TemplatePicker"
+                SelectedIndex="0"
+                ToolTipService.ToolTip="Item template">
+                <ComboBoxItem Content="FluentTile" />
+                <ComboBoxItem Content="BorderTile" />
+            </ComboBox>
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <ScrollViewer x:Name="Scroller">
+                <muxc:ItemsRepeater x:Name="Repeater">
+                    <muxc:ItemsRepeater.Layout>
+                        <muxc:UniformGridLayout
+                            MinColumnSpacing="4"
+                            MinItemHeight="90"
+                            MinItemWidth="140"
+                            MinRowSpacing="4" />
+                    </muxc:ItemsRepeater.Layout>
+                </muxc:ItemsRepeater>
+            </ScrollViewer>
+
+            <!--  Localized updates: these change a small area while the rest of the window stays put.  -->
+            <Border
+                Margin="24"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Background="{ThemeResource SystemControlBackgroundBaseLowBrush}">
+                <TextBlock
+                    x:Name="Ticker"
+                    Width="120"
+                    Margin="8"
+                    FontSize="20"
+                    Text="0" />
+            </Border>
+            <ProgressRing
+                x:Name="Spinner"
+                Width="60"
+                Height="60"
+                Margin="24"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                IsActive="False" />
+        </Grid>
+    </Grid>
+</Page>

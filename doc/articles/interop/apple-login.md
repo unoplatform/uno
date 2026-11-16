@@ -47,20 +47,27 @@ In Uno Platform projects, implementing a "Sign in with Apple" Button is possible
    > [!NOTE]
    > It's important to retain a reference to the delegate (`_appleSignInDelegate`) to avoid garbage collection issues. This ensures that the authorization process is completed without interruption.
 
-4. Inject the Apple Sign-In button into the visual tree using `VisualTreeHelper.AdaptNative`:
+4. Inject the Apple Sign-In button into the visual tree by setting it as the `Content` of a `ContentControl`:
 
    ```csharp
-   var adaptedAppleButton = VisualTreeHelper.AdaptNative(appleSignInButton);
+   var appleButtonHost = new ContentControl
+   {
+       Content = appleSignInButton,
+       HorizontalContentAlignment = HorizontalAlignment.Stretch,
+       VerticalContentAlignment = VerticalAlignment.Stretch,
+   };
    var borderWrapper = new Border
    {
        MinHeight = 50,
        MinWidth = 250,
        HorizontalAlignment = HorizontalAlignment.Center,
-       Child = adaptedAppleButton,
+       Child = appleButtonHost,
    };
 
    m_MainStackPanel.Children.Add(borderWrapper);
    ```
+
+   A native view can't be added to a panel directly; it is hosted as the content of a `ContentControl`, which overlays it on the Skia-rendered UI. See [Embedding Native Elements in Skia Apps](xref:Uno.Skia.Embedding.Native).
 
 5. Handle the button's `TouchUpInside` event to initiate Apple Sign-In:
 

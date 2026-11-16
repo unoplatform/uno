@@ -1,0 +1,45 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Keyboard_Dismiss_Button"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:not_win="http://uno.ui/not_win#using:Uno.UI.Xaml.Controls"
+    d:DesignHeight="700"
+    d:DesignWidth="400"
+    mc:Ignorable="d not_win">
+
+    <ScrollViewer Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <StackPanel Padding="12" Spacing="12">
+            <TextBlock
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Text="iOS only. Tap into each box: the ones marked ✅ show a bar with a Done button above the keyboard, which dismisses it. The others show no bar."
+                TextWrapping="Wrap" />
+
+            <TextBlock FontWeight="SemiBold" Text="✅ Multiline, opted in on the control" />
+            <TextBox
+                x:Name="MultilineTextBox"
+                Height="120"
+                not_win:TextBoxExtensions.ShowKeyboardDismissButton="True"
+                AcceptsReturn="True"
+                PlaceholderText="Enter inserts a newline here, so Done is the only way out"
+                TextWrapping="Wrap" />
+
+            <TextBlock FontWeight="SemiBold" Text="✅ Opted in on the container (inherited)" />
+            <StackPanel not_win:TextBoxExtensions.ShowKeyboardDismissButton="True" Spacing="8">
+                <TextBox PlaceholderText="Single-line inside the opted-in panel" />
+                <PasswordBox PlaceholderText="PasswordBox inside the opted-in panel" />
+                <TextBox not_win:TextBoxExtensions.ShowKeyboardDismissButton="False" PlaceholderText="❌ Opted out locally, inside the same panel" />
+            </StackPanel>
+
+            <TextBlock FontWeight="SemiBold" Text="❌ Not opted in" />
+            <TextBox PlaceholderText="No bar above the keyboard" />
+
+            <TextBlock
+                x:Name="StatusText"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                Text="Focus: none"
+                TextWrapping="Wrap" />
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

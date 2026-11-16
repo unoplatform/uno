@@ -2,49 +2,64 @@
 
 using System;
 using System.Numerics;
-using SkiaSharp;
+using Uno.UI.Composition.Drawing;
 
 
 namespace Microsoft.UI.Composition
 {
 	public partial class CompositionGeometry : CompositionObject
 	{
+		internal enum EllipseFigureStart
+		{
+			Top,
+			Right,
+			Left,
+		}
+
 		/// <summary>
 		/// Kappa = (sqrt(2) - 1) * 4/3;
-		//  Used to calculate bezier control points for each of the circle four arcs. 
+		//  Used to calculate bezier control points for each of the circle four arcs.
 		//  - Approximating a 1/4 circle with a bezier curve.
 		/// </summary>
 		private const double CIRCLE_BEZIER_KAPPA = 0.552284749830793398402251632279597438092895833835930764235;
 
-		internal static SKPath BuildLineGeometry(Vector2 start, Vector2 end)
+		/// <summary>
+		/// The same outline as <see cref="BuildGeometry"/>, starting where WinUI starts an untrimmed dash pattern, or null
+		/// when that is the trim origin too.
+		/// </summary>
+		internal virtual IGeometry? BuildDashGeometry() => null;
+
+		internal static IGeometry BuildLineGeometry(Vector2 start, Vector2 end)
 		{
-			var builder = new SKPathBuilder();
+			var builder = GeometryFactory.Current.CreatePathBuilder();
 
-			builder.MoveTo(start.ToSKPoint());
-			builder.LineTo(end.ToSKPoint());
+			builder.MoveTo(start);
+			builder.LineTo(end);
 
-			return builder.Detach();
+			return builder.Build();
 		}
 
-		internal static SKPath BuildRectangleGeometry(Vector2 offset, Vector2 size)
+		internal static IGeometry BuildRectangleGeometry(Vector2 offset, Vector2 size)
 		{
-			var builder = new SKPathBuilder();
+			var builder = GeometryFactory.Current.CreatePathBuilder();
 
 			// Top left
-			builder.MoveTo(new SKPoint(offset.X, offset.Y));
+			builder.MoveTo(offset);
 			// Top right
-			builder.RLineTo(new SKPoint(size.X, 0));
+			builder.LineTo(offset + new Vector2(size.X, 0));
 			// Bottom right
-			builder.RLineTo(new SKPoint(0, size.Y));
+			builder.LineTo(offset + new Vector2(size.X, size.Y));
 			// Bottom left
-			builder.RLineTo(new SKPoint(-size.X, 0));
+			builder.LineTo(offset + new Vector2(0, size.Y));
 			// Top left
 			builder.Close();
 
-			return builder.Detach();
+			return builder.Build();
 		}
 
-		internal static SKPath BuildRoundedRectangleGeometry(Vector2 offset, Vector2 size, Vector2 cornerRadius)
+		/// <param name="startAtTopLeftArc">Starts the figure where the top-left arc begins (WinUI's dash origin) instead of
+		/// where it ends (the trim origin).</param>
+		internal static IGeometry BuildRoundedRectangleGeometry(Vector2 offset, Vector2 size, Vector2 cornerRadius, bool startAtTopLeftArc = false)
 		{
 			float radiusX = Clamp(cornerRadius.X, 0, size.X * 0.5f);
 			float radiusY = Clamp(cornerRadius.Y, 0, size.Y * 0.5f);
@@ -52,101 +67,102 @@ namespace Microsoft.UI.Composition
 			float bezierX = (float)((1.0 - CIRCLE_BEZIER_KAPPA) * radiusX);
 			float bezierY = (float)((1.0 - CIRCLE_BEZIER_KAPPA) * radiusY);
 
-			var builder = new SKPathBuilder();
-			var lastPoint = new SKPoint(offset.X + radiusX, offset.Y);
+			var builder = GeometryFactory.Current.CreatePathBuilder();
+			var topLeftArcEnd = new Vector2(offset.X + radiusX, offset.Y);
+			var lastPoint = topLeftArcEnd;
 
-			builder.MoveTo(lastPoint);
+			void AddTopLeftArc() => builder.CubicTo(
+				new Vector2(offset.X, offset.Y + bezierY),
+				new Vector2(offset.X + bezierX, offset.Y),
+				topLeftArcEnd);
+
+			if (startAtTopLeftArc)
+			{
+				builder.MoveTo(new Vector2(offset.X, offset.Y + radiusY));
+				AddTopLeftArc();
+			}
+			else
+			{
+				builder.MoveTo(lastPoint);
+			}
+
 			// Top line
-			builder.LineTo(lastPoint + new SKPoint(size.X - 2 * radiusX, 0));
-			lastPoint += new SKPoint(size.X - 2 * radiusX, 0);
+			builder.LineTo(lastPoint + new Vector2(size.X - 2 * radiusX, 0));
+			lastPoint += new Vector2(size.X - 2 * radiusX, 0);
 			// Top-right Arc
 			builder.CubicTo(
-				lastPoint + new SKPoint(radiusX - bezierX, 0),   // 1st control point
-				lastPoint + new SKPoint(radiusX, bezierY),       // 2nd control point
-				lastPoint + new SKPoint(radiusX, radiusY));      // End point
-			lastPoint += new SKPoint(radiusX, radiusY);
+				lastPoint + new Vector2(radiusX - bezierX, 0),   // 1st control point
+				lastPoint + new Vector2(radiusX, bezierY),       // 2nd control point
+				lastPoint + new Vector2(radiusX, radiusY));      // End point
+			lastPoint += new Vector2(radiusX, radiusY);
 
 			// Right line
-			builder.LineTo(lastPoint + new SKPoint(0, size.Y - 2 * radiusY));
-			lastPoint += new SKPoint(0, size.Y - 2 * radiusY);
+			builder.LineTo(lastPoint + new Vector2(0, size.Y - 2 * radiusY));
+			lastPoint += new Vector2(0, size.Y - 2 * radiusY);
 			// Bottom-right Arc
 			builder.CubicTo(
-				lastPoint + new SKPoint(0, bezierY),             // 1st control point
-				lastPoint + new SKPoint(-bezierX, radiusY),      // 2nd control point
-				lastPoint + new SKPoint(-radiusX, radiusY));     // End point
-			lastPoint += new SKPoint(-radiusX, radiusY);
+				lastPoint + new Vector2(0, bezierY),             // 1st control point
+				lastPoint + new Vector2(-bezierX, radiusY),      // 2nd control point
+				lastPoint + new Vector2(-radiusX, radiusY));     // End point
+			lastPoint += new Vector2(-radiusX, radiusY);
 
 			// Bottom line
-			builder.LineTo(lastPoint + new SKPoint(-(size.X - 2 * radiusX), 0));
-			lastPoint = lastPoint + new SKPoint(-(size.X - 2 * radiusX), 0);
+			builder.LineTo(lastPoint + new Vector2(-(size.X - 2 * radiusX), 0));
+			lastPoint = lastPoint + new Vector2(-(size.X - 2 * radiusX), 0);
 			// Bottom-left Arc
 			builder.CubicTo(
-				lastPoint + new SKPoint(-radiusX + bezierX, 0),  // 1st control point
-				lastPoint + new SKPoint(-radiusX, -bezierY),     // 2nd control point
-				lastPoint + new SKPoint(-radiusX, -radiusY));    // End point
-			lastPoint += new SKPoint(-radiusX, -radiusY);
+				lastPoint + new Vector2(-radiusX + bezierX, 0),  // 1st control point
+				lastPoint + new Vector2(-radiusX, -bezierY),     // 2nd control point
+				lastPoint + new Vector2(-radiusX, -radiusY));    // End point
+			lastPoint += new Vector2(-radiusX, -radiusY);
 
 			// Left line
-			builder.LineTo(lastPoint + new SKPoint(0, -(size.Y - 2 * radiusY)));
-			lastPoint += new SKPoint(0, -(size.Y - 2 * radiusY));
-			// Top-left Arc
-			builder.CubicTo(
-				lastPoint + new SKPoint(0, -radiusY + bezierY),  // 1st control point
-				lastPoint + new SKPoint(bezierX, -radiusY),      // 2nd control point
-				lastPoint + new SKPoint(radiusX, -radiusY));     // End point
+			builder.LineTo(lastPoint + new Vector2(0, -(size.Y - 2 * radiusY)));
+			lastPoint += new Vector2(0, -(size.Y - 2 * radiusY));
+			if (!startAtTopLeftArc)
+			{
+				AddTopLeftArc();
+			}
 
 			builder.Close();
 
-			return builder.Detach();
+			return builder.Build();
 		}
 
-		internal static SKPath BuildEllipseGeometry(Vector2 center, Vector2 radius)
+		internal static IGeometry BuildEllipseGeometry(Vector2 center, Vector2 radius, EllipseFigureStart start = EllipseFigureStart.Top)
 		{
-			SKRect rect = SKRect.Create(center.X - radius.X, center.Y - radius.Y, radius.X * 2, radius.Y * 2);
+			// The figure winds clockwise. Composition trims measure from the top (12 o'clock, the After Effects/Lottie
+			// convention) so trimmed arcs grow from the top as on WinUI, while WinUI dashes a Composition ellipse from
+			// 9 o'clock and a XAML EllipseGeometry from 3 o'clock.
+			var kx = (float)(CIRCLE_BEZIER_KAPPA * radius.X);
+			var ky = (float)(CIRCLE_BEZIER_KAPPA * radius.Y);
+			ReadOnlySpan<Vector2> anchors =
+			[
+				new(center.X, center.Y - radius.Y),
+				new(center.X + radius.X, center.Y),
+				new(center.X, center.Y + radius.Y),
+				new(center.X - radius.X, center.Y),
+			];
+			ReadOnlySpan<Vector2> tangents = [new(kx, 0), new(0, ky), new(-kx, 0), new(0, -ky)];
+			var first = start switch
+			{
+				EllipseFigureStart.Right => 1,
+				EllipseFigureStart.Left => 3,
+				_ => 0,
+			};
 
-			float bezierX = (float)((1.0 - CIRCLE_BEZIER_KAPPA) * radius.X);
-			float bezierY = (float)((1.0 - CIRCLE_BEZIER_KAPPA) * radius.Y);
-
-			// IMPORTANT:
-			// - The order of following operations is important for dashed strokes.
-			// - Stroke might get merged in the end.
-			// - The path starts at the top (12 o'clock) and winds clockwise, matching
-			//   Windows.UI.Composition (and the After Effects/Lottie convention). This is
-			//   what a trim window [0..t] measures against, so trimmed ellipses — e.g. the
-			//   determinate ProgressRing fill and LottieGen-generated progress arcs — grow
-			//   from the top exactly as they do on WinUI. (WPF, by contrast, starts at the
-			//   bottom-right; do not "restore" that here.)
-
-			var builder = new SKPathBuilder();
-
-			builder.MoveTo(new SKPoint(rect.Left + radius.X, rect.Top));
-			// Top-right Arc
-			builder.CubicTo(
-				new SKPoint(rect.Right - bezierX, rect.Top),       // 1st control point
-				new SKPoint(rect.Right, rect.Top + bezierY),       // 2nd control point
-				new SKPoint(rect.Right, rect.Top + radius.Y));      // End point
-
-			// Bottom-right Arc
-			builder.CubicTo(
-				new SKPoint(rect.Right, rect.Bottom - bezierY),  // 1st control point
-				new SKPoint(rect.Right - bezierX, rect.Bottom),  // 2nd control point
-				new SKPoint(rect.Right - radius.X, rect.Bottom)); // End point
-
-			// Bottom-left Arc
-			builder.CubicTo(
-				new SKPoint(rect.Left + bezierX, rect.Bottom),      // 1st control point
-				new SKPoint(rect.Left, rect.Bottom - bezierY),      // 2nd control point
-				new SKPoint(rect.Left, rect.Bottom - radius.Y));     // End point
-
-			// Top-left Arc
-			builder.CubicTo(
-				new SKPoint(rect.Left, rect.Top + bezierY),           // 1st control point
-				new SKPoint(rect.Left + bezierX, rect.Top),           // 2nd control point
-				new SKPoint(rect.Left + radius.X, rect.Top));          // End point
+			var builder = GeometryFactory.Current.CreatePathBuilder();
+			builder.MoveTo(anchors[first]);
+			for (var i = 0; i < 4; i++)
+			{
+				var from = (first + i) % 4;
+				var to = (from + 1) % 4;
+				builder.CubicTo(anchors[from] + tangents[from], anchors[to] - tangents[to], anchors[to]);
+			}
 
 			builder.Close();
 
-			return builder.Detach();
+			return builder.Build();
 		}
 
 		private static float Clamp(float value, float minValue, float maxValue)

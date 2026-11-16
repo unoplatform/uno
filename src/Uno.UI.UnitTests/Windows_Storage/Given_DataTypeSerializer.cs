@@ -5,7 +5,7 @@ using Windows.Storage;
 
 namespace Uno.UI.Tests.Windows_Storage;
 
-[TestClass]
+[UITestClass]
 public class Given_DataTypeSerializer
 {
 	[TestMethod]

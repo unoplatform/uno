@@ -33,7 +33,7 @@ var host = UnoPlatformHostBuilder.Create()
 host.Run();
 ```
 
-This builder allows us to configure the SkiaHost and setup which platforms will be supported at runtime. The builder evaluates the platform's availability one by one, in the order of definition.
+This builder allows us to configure the host and set up which platforms will be supported at runtime. The builder evaluates the platform's availability one by one, in the order of definition.
 
 ### Additional setup
 
@@ -56,7 +56,7 @@ builder.SetMinimumLevel(LogLevel.Debug);
 Then change the logging level of the Skia Host to `Information` or `Debug`:
 
 ```csharp
-builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Information);
+builder.AddFilter("Uno.UI.Runtime.", LogLevel.Information);
 ```
 
 You may also need to initialize the logging system earlier than what is found in Uno.UI's default templates by calling this in `Main`:
@@ -67,48 +67,58 @@ YourAppNamespace.App.ConfigureFilters(); // Enable tracing of the Skia host
 
 ## Upgrading to a later version of SkiaSharp
 
-By default, the [Uno.Sdk](xref:Uno.Features.Uno.Sdk) brings a tested set of **SkiaSharp** dependencies that match the native libraries it ships. To move to a different SkiaSharp version, override the `SkiaSharpVersion` MSBuild property in your project. This retargets the SkiaSharp packages the Uno.Sdk manages, including the platform native-asset packages, to the same version in one place:
+By default, the [Uno.Sdk](xref:Uno.Features.Uno.Sdk) brings a tested set of **SkiaSharp** and **HarfBuzzSharp** packages. To move to a different version, change the native and the managed packages together, to the same version:
+
+- The `SkiaSharpVersion` and `HarfBuzzSharpVersion` properties retarget the native-asset packages the Uno.Sdk references for each platform.
+- The managed `SkiaSharp`, `SkiaSharp.Skottie` and `HarfBuzzSharp` packages come through the Uno Platform packages, so reference them directly at the same version.
+
+In your project file:
 
 ```xml
 <PropertyGroup>
-   <SkiaSharpVersion>4.148.0</SkiaSharpVersion>
+   <SkiaSharpVersion>4.156.0</SkiaSharpVersion>
+   <HarfBuzzSharpVersion>14.4.0.100</HarfBuzzSharpVersion>
 </PropertyGroup>
-```
-
-> [!NOTE]
-> A SkiaSharp version mismatch between the managed packages and the bundled native libraries surfaces at runtime, not at build time. Prefer the `SkiaSharpVersion` property so every managed and native SkiaSharp package stays aligned. For the versions the Uno.Sdk manages, see [Using the Uno.Sdk](xref:Uno.Features.Uno.Sdk).
-
-### SkiaSharp 4
-
-SkiaSharp 4.0 reached general availability as `4.148.0`, and Uno Platform is a co-maintainer of SkiaSharp. SkiaSharp 4 support is opt-in: set `SkiaSharpVersion` to a `4.x` version as shown above. SkiaSharp 4 turns several long-deprecated APIs into compile errors (for example, text APIs that moved from `SKPaint` to `SKFont`), so a project moving from `3.x` may need small code changes before it builds.
-
-### Pinning packages individually
-
-If you need to control individual packages instead of using the `SkiaSharpVersion` property, reference every **SkiaSharp** and **HarfBuzzSharp** package, including the native-asset packages for each target you build, at the same version. Use `Update` so you retarget the references the Uno.Sdk already provides:
-
-```xml
 <ItemGroup>
-   <PackageReference Update="SkiaSharp" Version="4.148.0" />
-   <PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="4.148.0" />
-   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="4.148.0" />
-   <PackageReference Update="HarfBuzzSharp" Version="14.2.0" />
+   <PackageReference Include="SkiaSharp" />
+   <PackageReference Include="SkiaSharp.Skottie" />
+   <PackageReference Include="HarfBuzzSharp" />
 </ItemGroup>
 ```
 
+And in `Directory.Packages.props`:
+
+```xml
+<ItemGroup>
+   <PackageVersion Include="SkiaSharp" Version="4.156.0" />
+   <PackageVersion Include="SkiaSharp.Skottie" Version="4.156.0" />
+   <PackageVersion Include="HarfBuzzSharp" Version="14.4.0.100" />
+</ItemGroup>
+```
+
+If your project doesn't use Central Package Management, set the `Version` on the `PackageReference` items instead.
+
+> [!IMPORTANT]
+> SkiaSharp checks its native library when the app starts. If the managed `SkiaSharp` package and the native `libSkiaSharp` library have different versions, the app fails at startup with "The version of the native libSkiaSharp library (…) is incompatible with this version of SkiaSharp". Setting only `SkiaSharpVersion` moves the native packages but not the managed one, so always reference the managed packages too. For the versions the Uno.Sdk manages, see [Using the Uno.Sdk](xref:Uno.Features.Uno.Sdk).
+
+### SkiaSharp 4
+
+SkiaSharp 4.0 reached general availability as `4.148.0`, and Uno Platform is a co-maintainer of SkiaSharp. **Since Uno Platform 7.0, SkiaSharp 4 is the default** — the Uno.Sdk resolves the SkiaSharp package group at a `4.x` version, and the steps above move it to another version. SkiaSharp 4 turns several long-deprecated APIs into compile errors (for example, text APIs that moved from `SKPaint` to `SKFont`), so a project carrying its own SkiaSharp code from `3.x` may need small changes before it builds.
+
 ## Rendering Backend Selection
 
-By default, Uno Platform uses OpenGL for hardware-accelerated rendering on desktop, with an automatic fallback to software rendering. You can override this per platform using the host builder:
+By default, Uno Platform tries the GPU backends in a fixed order (Vulkan, then OpenGL, then software) and uses the first available one. You can force a single backend, or disable specific ones, per platform using the host builder:
 
 ```csharp
 var host = UnoPlatformHostBuilder.Create()
     .App(() => new App())
-    .UseX11(b => b.RenderingBackend(X11RenderingBackend.Vulkan))
-    .UseWin32(b => b.RenderingBackend(Win32RenderingBackend.Vulkan))
+    .UseX11(b => b.ForceRenderingBackend(X11RenderingBackend.Vulkan))   // only Vulkan
+    .UseWin32(b => b.DisableRenderingBackends(Win32RenderingBackend.Vulkan)) // everything except Vulkan
     .UseMacOS()
     .Build();
 ```
 
-Each platform exposes its own `RenderingBackend` enum with only the backends it supports. For details, see [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
+Each platform exposes its own `RenderingBackend` enum with only the backends it supports. `ForceRenderingBackend` restricts negotiation to that one backend; `DisableRenderingBackends` removes the listed backends and leaves the rest. For details, see [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
 
 Alternatively, you can use `FeatureConfiguration.Rendering` flags for backwards compatibility. The builder API takes precedence when both are used.
 

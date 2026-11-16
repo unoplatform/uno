@@ -19,6 +19,7 @@ stages:
         README.md
         README/**
         build/**
+        src/Directory.Packages.props
         src/Uno.Sdk/packages.json
 
     - template: templates/gitversion-run.yml
@@ -47,10 +48,6 @@ stages:
         filePath: build/ci/scripts/determine-test-scope.ps1
 
 - template: setup/.azure-devops-master-health.yml
-  parameters:
-    vmImage: '$(linuxVMImage)'
-
-- template: setup/.azure-devops-setup-font-fallback.yml
   parameters:
     vmImage: '$(linuxVMImage)'
 
@@ -114,16 +111,14 @@ stages:
     parameters:
       poolName: '$(linuxScaledPool)'
 
-- template: tests/.azure-devops-tests-skia-stages.yml
+- template: tests/.azure-devops-tests-runtime-stages.yml
   parameters:
     vmImage: '$(windows2022HostedVMImage)'
     vmMacImage: '$(macOSVMImage)'
-    vmMacImageTest: '$(macOSVMImage_UITests)'
     vmLinuxImage: '$(linuxVMImage)'
     vmLinuxPool: '$(linuxScaledPool)'
     poolName: '$(windowsScaledPool)'
     xCodeRootBuild: '$(xCodeRoot)'
-    xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
     XAML_FLAVOR_BUILD: WinUI
 
 - stage: wasdk_tests
@@ -140,11 +135,10 @@ stages:
   displayName: Tests - Screenshots
   # This stage only run screenshot comparison, which is not relevant for unit tests and also uap_tests.
   condition: and(succeededOrFailed(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.ScreenshotsRequired'], 'true')))
+  # Only the Linux and Windows stages publish screenshot-tests-results. Waiting on the mobile and
+  # WASM stages put this comparison behind iOS, the slowest stage, for no gain.
   dependsOn:
     - Setup
-    - runtime_tests_skia_browser
-    - runtime_tests_skia_android
-    - runtime_tests_skia_ios
     - runtime_tests_skia_linux
     - runtime_tests_skia_windows
 
@@ -162,9 +156,7 @@ stages:
   - template: publish/.azure-devops-publish-ios-testflight.yml
     parameters:
       vmImage: '$(macOSVMImage)'
-      vmImageTest: '$(macOSVMImage_UITests)'
       xCodeRootBuild: '$(xCodeRoot)'
-      xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
       
 ##
 ## Publishing

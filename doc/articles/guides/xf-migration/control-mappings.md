@@ -199,11 +199,10 @@ When migrating controls:
 
 ## Platform-Specific Considerations
 
-### Native Renderer vs Skia
+### Rendering
 
-- **Native renderer** on iOS/Android: Maps WinUI controls to native platform controls
-- **Skia renderer**: Uses Skia for consistent pixel-perfect rendering across platforms
-- Some controls behave differently between renderers - test thoroughly
+- Uno Platform renders WinUI controls with [Skia](xref:uno.features.renderer.skia) on every target, so they look and behave the same across platforms rather than mapping to native platform controls
+- When you need an actual platform control, [embed it as a native element](xref:Uno.Skia.Embedding.Native)
 
 ### WebAssembly
 

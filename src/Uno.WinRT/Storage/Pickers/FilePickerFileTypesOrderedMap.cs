@@ -48,12 +48,10 @@ namespace Windows.Storage.Pickers
 		public ICollection<string> Keys
 		{
 			get => _items.Keys;
-			set => throw new InvalidOperationException();
 		}
 		public ICollection<IList<string>> Values
 		{
 			get => _items.Values;
-			set => throw new InvalidOperationException();
 		}
 
 		public void Add(KeyValuePair<string, IList<string>> item)
@@ -82,13 +80,11 @@ namespace Windows.Storage.Pickers
 		public int Count
 		{
 			get => _items.Count;
-			set => throw new InvalidOperationException();
 		}
 
 		public bool IsReadOnly
 		{
 			get => false;
-			set => throw new InvalidOperationException();
 		}
 
 		public IEnumerator<KeyValuePair<string, IList<string>>> GetEnumerator() => _items.GetEnumerator();

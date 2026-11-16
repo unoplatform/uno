@@ -100,7 +100,7 @@
 
 
 
-    <Style x:Key="XamlDefaultCommandBar" TargetType="local:CommandBar">
+    <Style x:Key="DefaultCommandBarStyle" TargetType="local:CommandBar">
         <Setter Property="Background" Value="{ThemeResource CommandBarBackground}" />
         <Setter Property="Foreground" Value="{ThemeResource CommandBarForeground}" />
         <Setter Property="Padding" Value="4,0,0,0" />
@@ -1059,7 +1059,7 @@
         </Setter>
     </Style>
 
-    <contract6Present:Style x:Key="CommandBarWithoutRevealStyle" TargetType="local:CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}" />
+    <contract6Present:Style x:Key="CommandBarWithoutRevealStyle" TargetType="local:CommandBar" BasedOn="{StaticResource DefaultCommandBarStyle}" />
 
     <Style x:Key="EllipsisButton" TargetType="Button">
         <Setter Property="Background" Value="{ThemeResource AppBarButtonBackground}" />
@@ -1158,11 +1158,5 @@
         </Setter>
     </Style>
 
-    <!-- Backward compatibility naming -->
-    <Style x:Key="XamlCommandBar"
-           TargetType="CommandBar"
-           BasedOn="{StaticResource XamlDefaultCommandBar}" />
-
-    <Style TargetType="CommandBar"
-           BasedOn="{StaticResource XamlDefaultCommandBar}" />
+    <Style TargetType="CommandBar" BasedOn="{StaticResource DefaultCommandBarStyle}" />
 </ResourceDictionary>

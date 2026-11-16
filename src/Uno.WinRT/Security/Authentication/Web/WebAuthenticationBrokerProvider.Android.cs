@@ -25,8 +25,14 @@ namespace Uno.AuthenticationBroker
 		{
 			if (_schemes == null)
 			{
-				var appType = ContextHelper.Current.GetType();
-				var applicationTypes = appType.Assembly.GetTypes();
+				// The activity's type is what identifies the app assembly declaring the callback
+				// activities; the application context type can live in Mono.Android instead.
+				if (ContextHelper.Current is not { } current)
+				{
+					return Array.Empty<string>();
+				}
+
+				var applicationTypes = current.GetType().Assembly.GetTypes();
 
 				static IEnumerable<string> ExtractSchemes(IntentFilterAttribute a)
 				{

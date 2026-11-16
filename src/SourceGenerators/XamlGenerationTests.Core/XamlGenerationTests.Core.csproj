@@ -17,7 +17,7 @@
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.Reference.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Extras\Uno.UI.Extras.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Extras\Uno.UI.Extras.Generic.csproj" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

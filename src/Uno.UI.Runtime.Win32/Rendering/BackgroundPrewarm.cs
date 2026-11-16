@@ -1,0 +1,67 @@
+#nullable enable
+
+using System;
+using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
+using Uno.Foundation.Logging;
+
+namespace Uno.UI.Runtime.Win32;
+
+/// <summary>
+/// Creates an expensive resource on a background thread while startup continues, and hands it to a single consumer.
+/// Any failure (creation, or the consumer's completion throwing) falls back to the consumer's synchronous path, so
+/// the warm-up can only make startup faster, never change its outcome. Single-use: call either Claim or Discard.
+/// </summary>
+internal sealed class BackgroundPrewarm<T> where T : class, IDisposable
+{
+	private readonly Task<T> _task;
+
+	public BackgroundPrewarm(Func<T> create)
+		=> _task = Task.Factory.StartNew(create, CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
+
+	/// <summary>
+	/// Waits for the warmed resource and lets <paramref name="complete"/> finish it for its target. When creation or
+	/// completion throws, the resource is disposed and <paramref name="createFallback"/> runs.
+	/// </summary>
+	public T Claim(Action<T> complete, Func<T> createFallback)
+	{
+		T? warmed = null;
+		try
+		{
+			var waitStart = Stopwatch.GetTimestamp();
+			// Blocking is safe: the task runs on its own thread, not the caller's context. It is unbounded on purpose,
+			// as a fallback after a timeout would call into the same driver the stalled thread still holds.
+			warmed = _task.GetAwaiter().GetResult();
+			var waited = Stopwatch.GetElapsedTime(waitStart);
+			complete(warmed);
+			this.LogDebug()?.Debug($"Using the prewarmed {typeof(T).Name} (waited {waited.TotalMilliseconds:F0} ms for it).");
+			return warmed;
+		}
+		catch (Exception e)
+		{
+			this.LogInfo()?.Info($"The prewarmed {typeof(T).Name} is not usable ({e.Message}); creating it synchronously.");
+		}
+
+		warmed?.Dispose();
+		return createFallback();
+	}
+
+	/// <summary>Disposes the resource once created, for when no consumer will claim it.</summary>
+	public void Discard()
+		=> _task.ContinueWith(
+			static t =>
+			{
+				if (t.IsCompletedSuccessfully)
+				{
+					t.Result.Dispose();
+				}
+				else
+				{
+					_ = t.Exception;
+				}
+			},
+			CancellationToken.None,
+			TaskContinuationOptions.None,
+			TaskScheduler.Default);
+}

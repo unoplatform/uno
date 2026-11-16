@@ -1,11 +1,11 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Diagnostics;
 using System.Threading;
 using Windows.Foundation;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Hosting;
@@ -66,12 +66,25 @@ public partial class CompositionTarget
 	//             | Repeat... |-|                                       |                                                                                                                 |                        |                                 |
 	//             |-----------| |                                       |                                                                                                                 |                        |                                 |
 	//                           |                                       |                                                                                                                 |                        |                                 |
-	private readonly object _renderingStateGate = new();
+	private readonly Lock _renderingStateGate = new();
 
 	private bool _renderRequested; // only set or read under _renderingStateGate
 	private bool _renderedAheadOfTime; // only set or read under _renderingStateGate
 	private bool _renderRequestedAfterAheadOfTimePaint; // only set or read under _renderingStateGate
 	private bool _shouldEnqueueRenderOnNextNativePlatformFrameRequested = true; // only set from the UI thread, only reset from the rendering/gpu thread
+
+	// Every host answers a request with a frame, so a request left unanswered is a host bug that would otherwise
+	// leave the app silently frozen. Written from the rendering thread, read from the UI thread.
+	private long _lastNativeFrameTimestamp = Stopwatch.GetTimestamp();
+	private long _renderRequestTimestamp; // only set or read under _renderingStateGate
+	private long _lastStalledRenderLogTimestamp;
+	private int _stalledRenderReports;
+
+	private const int StalledRenderReportMs = 2000;
+	private const int StalledRenderReportIntervalMs = 5000;
+
+	/// <summary>Reports per stall, so a window the host legitimately stopped drawing (minimized) doesn't log forever.</summary>
+	private const int MaxStalledRenderReports = 3;
 
 	private bool RenderRequested
 	{
@@ -93,11 +106,16 @@ public partial class CompositionTarget
 			if (!_renderedAheadOfTime && !RenderRequested)
 			{
 				RenderRequested = true;
+				_renderRequestTimestamp = Stopwatch.GetTimestamp();
 				shouldEnqueue = true;
 			}
 			else if (_renderedAheadOfTime)
 			{
 				_renderRequestedAfterAheadOfTimePaint = true;
+
+				// Still ask for a frame. Clearing this state depends on one arriving to run the render callback,
+				// and the only other request is the one the ahead-of-time paint made.
+				shouldEnqueue = true;
 			}
 			AssertRenderStateMachine();
 			LogRenderState();
@@ -105,15 +123,78 @@ public partial class CompositionTarget
 
 		if (shouldEnqueue)
 		{
-			if (ContentRoot.XamlRoot is { } xamlRoot && XamlRootMap.GetHostForRoot(xamlRoot) is { } host)
-			{
-				host.InvalidateRender();
-			}
+			AskHostForFrame();
 			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(ICompositionTarget.RequestNewFrame)} invalidated render");
 		}
 		else
 		{
 			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(ICompositionTarget.RequestNewFrame)} found no need to invalidate render.");
+			ReportIfRenderRequestStalled();
+		}
+	}
+
+	/// <summary>
+	/// Logs a render request the host has left unanswered. Only reports: re-asking or re-arming the handshake would
+	/// queue a second render for a frame that is merely slow.
+	/// </summary>
+	private void ReportIfRenderRequestStalled()
+	{
+		long requestTimestamp;
+		lock (_renderingStateGate)
+		{
+			requestTimestamp = _renderRequestTimestamp;
+		}
+
+		// Measured from the request, not the last frame: an idle window gets no frames, so that would age a new request.
+		var requestAgeMs = (long)Stopwatch.GetElapsedTime(requestTimestamp).TotalMilliseconds;
+		if (Interlocked.Read(ref _lastNativeFrameTimestamp) >= requestTimestamp
+			|| requestAgeMs < StalledRenderReportMs
+			|| _stalledRenderReports >= MaxStalledRenderReports)
+		{
+			return;
+		}
+
+		var lastLog = Interlocked.Read(ref _lastStalledRenderLogTimestamp);
+		if (lastLog != 0 && Stopwatch.GetElapsedTime(lastLog).TotalMilliseconds < StalledRenderReportIntervalMs)
+		{
+			return;
+		}
+
+		Interlocked.Exchange(ref _lastStalledRenderLogTimestamp, Stopwatch.GetTimestamp());
+		_stalledRenderReports++;
+
+		if (this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn(
+				$"CompositionTarget#{GetHashCode()}: a render request has been outstanding for {requestAgeMs}ms with no "
+				+ $"frame from the host (renderRequested={_renderRequested}, renderedAheadOfTime={_renderedAheadOfTime}, "
+				+ $"requestedAfterAheadOfTimePaint={_renderRequestedAfterAheadOfTimePaint}).");
+		}
+	}
+
+	/// <summary>
+	/// Called once the window's host is registered. A request made before it existed latched with nobody asked, and
+	/// every later request coalesces into it, so the new host is asked for the frame it is owed.
+	/// </summary>
+	internal void OnHostAttached()
+	{
+		bool isWaitingForFrame;
+		lock (_renderingStateGate)
+		{
+			isWaitingForFrame = RenderRequested || _renderedAheadOfTime;
+		}
+
+		if (isWaitingForFrame)
+		{
+			AskHostForFrame();
+		}
+	}
+
+	private void AskHostForFrame()
+	{
+		if (ContentRoot.XamlRoot is { } xamlRoot && XamlRootMap.GetHostForRoot(xamlRoot) is { } host)
+		{
+			host.InvalidateRender();
 		}
 	}
 
@@ -123,6 +204,9 @@ public partial class CompositionTarget
 		NativeDispatcher.CheckThreadAccess();
 
 		Interlocked.Exchange(ref _shouldEnqueueRenderOnNextNativePlatformFrameRequested, true);
+
+		// Once per native frame, before a record this callback may make.
+		SampleFrameTimestamp();
 
 		lock (_renderingStateGate)
 		{
@@ -144,16 +228,17 @@ public partial class CompositionTarget
 			}
 			else if (RenderRequested)
 			{
-				lock (_renderingStateGate)
-				{
-					RenderRequested = false;
-				}
+				RenderRequested = false;
 				this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)} fired from {nameof(EnqueueRenderCallback)}");
 				Render();
 			}
 			AssertRenderStateMachine();
 			LogRenderState();
 		}
+
+		// One native frame, one tick: ticking from every dispatcher pump would free-run the drivers between two
+		// vsyncs, sampling clock jitter into the motion and running a layout pass each time.
+		ArmFrameTick();
 	}
 
 	/// <summary>
@@ -163,16 +248,29 @@ public partial class CompositionTarget
 	/// be called once per <see cref="IXamlRootHost.InvalidateRender"/> call, but the contract allows any number
 	/// of repeated calls, even if no new invalidations are requested.
 	/// </summary>
-	internal SKPath OnNativePlatformFrameRequested(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
+	internal IGeometry OnNativePlatformFrameRequested(ISwapChain swapChain, global::System.Numerics.Matrix4x4? rootTransform = null, Action<IDrawingSession>? overlay = null)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnNativePlatformFrameRequested)}");
+
+		Interlocked.Exchange(ref _lastNativeFrameTimestamp, Stopwatch.GetTimestamp());
+		_stalledRenderReports = 0;
 
 		if (Interlocked.Exchange(ref _shouldEnqueueRenderOnNextNativePlatformFrameRequested, false))
 		{
 			NativeDispatcher.Main.EnqueueRender(this, EnqueueRenderCallback);
 		}
 
-		return Draw(canvas, resizeFunc);
+		// Present in a finally: a swapchain that takes a device lock in AcquireRenderTarget releases it in
+		// Present, so a throwing frame would otherwise hold it forever and deadlock the next teardown.
+		try
+		{
+			return Draw(swapChain, rootTransform, overlay);
+		}
+		finally
+		{
+			swapChain.Present();
+			RaiseFramePresented();
+		}
 	}
 
 	internal void OnRenderFrameOpportunity()
@@ -182,7 +280,7 @@ public partial class CompositionTarget
 		// the rate of Render calls the same.
 		NativeDispatcher.CheckThreadAccess();
 
-		if (SkiaRenderHelper.CanRecordPicture(ContentRoot.VisualTree.RootElement))
+		if (FrameRenderHelper.CanRecordFrame(ContentRoot.VisualTree.RootElement))
 		{
 			var shouldRender = false;
 			lock (_renderingStateGate)

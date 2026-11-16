@@ -4,6 +4,9 @@ namespace Microsoft.UI.Input
 {
 	public sealed partial class InputLightDismissEventArgs
 	{
+		internal InputLightDismissEventArgs()
+		{
+		}
 	}
 }
 #endif

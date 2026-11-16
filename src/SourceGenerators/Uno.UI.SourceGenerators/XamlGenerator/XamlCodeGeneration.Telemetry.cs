@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Xml;
 using Uno.Roslyn;
 using Microsoft.CodeAnalysis;
@@ -17,16 +18,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		private const string InstrumentationKey = "9a44058e-1913-4721-a979-9582ab8bedce";
 
+		private static readonly char[] _defineConstantsSeparators = new[] { ',', ';' };
+
 		private Telemetry _telemetry = null!;
 
 		private void InitTelemetry(GeneratorExecutionContext context)
 		{
-			var telemetryOptOut = context.GetMSBuildPropertyValue("UnoPlatformTelemetryOptOut");
-
-			bool? isTelemetryOptout()
-				=> telemetryOptOut.Equals("true", StringComparison.OrdinalIgnoreCase)
-				|| telemetryOptOut.Equals("1", StringComparison.OrdinalIgnoreCase)
-				|| _isDesignTimeBuild;
+			// The opt-out variable is read through the build: a reused compiler server may predate it, and the
+			// telemetry library ignores it when it's "1".
+			if (IsTelemetryDisabled(
+				context.GetMSBuildPropertyValue("UnoPlatformTelemetryOptOut"),
+				context.GetMSBuildPropertyValue("UNO_PLATFORM_TELEMETRY_OPTOUT"),
+				context.GetMSBuildPropertyValue("UnoIsHotReloadHost"),
+				_isDesignTimeBuild))
+			{
+				return;
+			}
 
 			string getCurrentDirectory()
 			{
@@ -45,23 +52,35 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return Environment.CurrentDirectory;
 			}
 
-			if (isTelemetryOptout() is true)
-			{
-				_telemetry = new Telemetry(
-					InstrumentationKey,
-					"uno/generation",
-					enabledProvider: isTelemetryOptout,
-					currentDirectoryProvider: getCurrentDirectory,
-					versionAssembly: GetType().Assembly);
-			}
+			_telemetry = new Telemetry(
+				InstrumentationKey,
+				"uno/generation",
+				currentDirectoryProvider: getCurrentDirectory,
+				versionAssembly: GetType().Assembly);
+		}
+
+		/// <summary>
+		/// Whether the generator creates no telemetry client: the build or its environment opted out, it's a
+		/// design-time or hot-reload build, or the generator itself runs in a browser.
+		/// </summary>
+		internal static bool IsTelemetryDisabled(string telemetryOptOut, string environmentOptOut, string hotReloadHost, bool isDesignTimeBuild)
+		{
+			static bool isSet(string value)
+				=> string.Equals(value, "true", StringComparison.OrdinalIgnoreCase)
+				|| string.Equals(value, "1", StringComparison.OrdinalIgnoreCase);
+
+			return isSet(telemetryOptOut)
+				|| isSet(environmentOptOut)
+				|| isSet(hotReloadHost)
+				|| isDesignTimeBuild
+				|| RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER"));
 		}
 
 		private bool IsTelemetryEnabled => _telemetry?.Enabled ?? false;
 
 		private void TrackGenerationDone(TimeSpan elapsed)
 		{
-			if (IsTelemetryEnabled
-				&& !_isDesignTimeBuild)
+			if (IsTelemetryEnabled)
 			{
 				try
 				{
@@ -84,8 +103,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void TrackGenerationFailed(Exception exception, TimeSpan elapsed)
 		{
-			if (IsTelemetryEnabled
-				&& !_isDesignTimeBuild)
+			if (IsTelemetryEnabled)
 			{
 				try
 				{
@@ -110,8 +128,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void TrackStartGeneration(XamlFileDefinition[] files)
 		{
-			if (IsTelemetryEnabled
-				&& !_isDesignTimeBuild)
+			if (IsTelemetryEnabled)
 			{
 				try
 				{
@@ -170,27 +187,60 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private string BuildUnoRuntimeValue()
-		{
-			var constants = _generatorContext.GetMSBuildPropertyValue("DefineConstantsProperty");
+			=> GetUnoRuntime(
+				_generatorContext.GetMSBuildPropertyValue("TargetFramework"),
+				_generatorContext.GetMSBuildPropertyValue("DefineConstantsProperty"));
 
-			if (constants.Contains("__WASM__"))
+		/// <summary>
+		/// Classifies the build by target platform, from the target framework or, when it names none, from the
+		/// platform symbols. A plain netX.0 project is reported as "Plain".
+		/// </summary>
+		internal static string GetUnoRuntime(string targetFramework, string defineConstants)
+		{
+			var separatorIndex = targetFramework?.IndexOf('-') ?? -1;
+			if (separatorIndex >= 0 && targetFramework is not null)
+			{
+				// trim trailing version, eg: android12.3
+				var identifier = targetFramework.Substring(separatorIndex + 1).TrimEnd('.', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+
+				return identifier.ToLowerInvariant() switch
+				{
+					"desktop" => "Desktop",
+					"android" => "Android",
+					"ios" => "iOS",
+					"tvos" => "tvOS",
+					"browserwasm" => "WebAssembly",
+					_ => "Unknown",
+				};
+			}
+
+			var symbols = new HashSet<string>(
+				(defineConstants ?? "").Split(_defineConstantsSeparators, StringSplitOptions.RemoveEmptyEntries),
+				StringComparer.Ordinal);
+
+			if (symbols.Contains("__DESKTOP__") || symbols.Contains("DESKTOP"))
+			{
+				return "Desktop";
+			}
+			if (symbols.Contains("__ANDROID__"))
+			{
+				return "Android";
+			}
+			// Checked before __IOS__, in case a tvOS build defines both.
+			if (symbols.Contains("__TVOS__"))
+			{
+				return "tvOS";
+			}
+			if (symbols.Contains("__IOS__"))
+			{
+				return "iOS";
+			}
+			if (symbols.Contains("__WASM__") || symbols.Contains("BROWSERWASM"))
 			{
 				return "WebAssembly";
 			}
-			if (constants.Contains("__SKIA__"))
-			{
-				return "Skia";
-			}
-			if (constants.Contains("__TIZEN__"))
-			{
-				return "Tizen";
-			}
-			if (constants.Contains("UNO_REFERENCE_API"))
-			{
-				return "Reference";
-			}
 
-			return "Unknown";
+			return "Plain";
 		}
 	}
 }

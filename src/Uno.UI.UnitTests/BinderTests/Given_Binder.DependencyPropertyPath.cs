@@ -1,5 +1,4 @@
-﻿using CommonServiceLocator;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
@@ -18,7 +17,7 @@ using Microsoft.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests.DependencyPropertyPath
 {
-	[TestClass]
+	[UITestClass]
 	public partial class Given_Binder_DependencyPropertyPath
 	{
 		[TestMethod]
@@ -34,7 +33,7 @@ namespace Uno.UI.Tests.BinderTests.DependencyPropertyPath
 
 			var target = new Control1();
 
-			target.SetBinding(
+			target.SetBindingInternal(
 				Control1.OtherControlProperty,
 				new Binding($"{nameof(source.OtherControl)}.({typeof(Attachable).Namespace}:{nameof(Attachable)}.MyValue)")
 				{

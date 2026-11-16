@@ -1,4 +1,6 @@
-// MUX Reference HyperlinkAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference HyperlinkAutomationPeer_Partial.cpp, tag winui3/release/2.4.0, commit e8442d07a
 
 using System;
 using Microsoft.UI.Xaml.Automation.Provider;
@@ -38,6 +40,12 @@ internal partial class HyperlinkAutomationPeer : AutomationPeer, IInvokeProvider
 
 		throw new InvalidOperationException("Owner Hyperlink has been garbage collected.");
 	}
+
+	// Used by the Text pattern adapter (TextAdapter.RangeFromChild) to map a link peer back to its
+	// owning Hyperlink. Returns null if the owner has been collected.
+#nullable enable
+	internal Hyperlink? Owner => _ownerWeak.TryGetTarget(out var owner) ? owner : null;
+#nullable restore
 
 	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
@@ -160,22 +168,56 @@ internal partial class HyperlinkAutomationPeer : AutomationPeer, IInvokeProvider
 		return AutomationProperties.GetLiveSetting(owner);
 	}
 
+	// CCoreServices::GetTextElementBoundingRect -> CRichTextBlock::GetTextElementBoundRect: the range's
+	// text bounds, unioned because a link wraps, then transformed to screen space.
 	protected override Rect GetBoundingRectangleCore()
 	{
-		// TODO Uno: GetTextElementBoundingRect is not available in Uno.
-		// This needs lower-level text infrastructure to compute the
-		// bounding rectangle of the Hyperlink inline within its containing TextBlock.
-		return default;
+		if (GetLinkBounds(out var element) is not { Length: > 0 } bounds)
+		{
+			return default;
+		}
+
+		var union = bounds[0];
+		for (var i = 1; i < bounds.Length; i++)
+		{
+			union.Union(bounds[i]);
+		}
+
+		return element.TransformToVisual(null).TransformBounds(union);
 	}
 
 	protected override bool IsKeyboardFocusableCore() => true;
 
 	protected override Point GetClickablePointCore()
 	{
-		// TODO Uno: Computing clickable point for inline text elements requires
-		// text view infrastructure (ITextView, content start/end offsets,
-		// TextRangeToTextBounds) which is not yet available.
-		return default;
+		if (GetLinkBounds(out var element) is not { Length: > 0 } bounds)
+		{
+			return default;
+		}
+
+		// We're looking for the point at the start of the link, so we only care about the first
+		// rectangle, and return its top-left because the length is determined from there.
+		var first = bounds[0];
+		var point = element.TransformToVisual(null).TransformPoint(new Point(first.Left, first.Top));
+
+		// Round up the Y pixel so we don't get the previous line when there is more than one line.
+		return new Point(point.X, Math.Ceiling(point.Y));
+	}
+
+	// A TextElement has no bounding-box API, so the containing control owns the geometry.
+	private Rect[] GetLinkBounds(out FrameworkElement element)
+	{
+		var owner = GetOwner();
+		element = owner.GetContainingFrameworkElement();
+
+		if (Text.TextAdapter.GetTextView(element) is not { } textView ||
+			owner.ContentStart is not { } contentStart ||
+			owner.ContentEnd is not { } contentEnd)
+		{
+			return Array.Empty<Rect>();
+		}
+
+		return textView.TextRangeToTextBounds((uint)contentStart.Offset, (uint)contentEnd.Offset);
 	}
 
 	protected override bool IsOffscreenCore()

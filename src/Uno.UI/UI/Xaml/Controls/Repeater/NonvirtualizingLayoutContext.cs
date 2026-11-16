@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public IReadOnlyList<UIElement> Children => ChildrenCore;
 
-		public virtual IReadOnlyList<UIElement> ChildrenCore => throw new NotSupportedException();
+		protected virtual IReadOnlyList<UIElement> ChildrenCore => throw new NotSupportedException();
 
 		internal VirtualizingLayoutContext GetVirtualizingContextAdapter()
 		{

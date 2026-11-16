@@ -19,7 +19,7 @@ Windows produce no on-screen output. To read pixels, use the standard WinUI `Ren
 
 ## Get started
 
-Reference the `Uno.WinUI.Runtime.Skia.Headless` package from your desktop head, then select the host with
+Reference the `Uno.WinUI.Runtime.Headless` package from your desktop head, then select the host with
 `UseHeadless()` on the `UnoPlatformHostBuilder`:
 
 ```csharp

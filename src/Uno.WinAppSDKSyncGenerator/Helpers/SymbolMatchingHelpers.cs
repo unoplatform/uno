@@ -9,11 +9,6 @@ internal static class SymbolMatchingHelpers
 {
 	public static bool AreMatching(ISymbol uapSymbol, ISymbol unoSymbol)
 	{
-		if (ShouldSkipSymbol(uapSymbol))
-		{
-			return true;
-		}
-
 		if (uapSymbol is IEventSymbol uapEvent)
 		{
 			var result = unoSymbol is IEventSymbol unoEvent && AreEventsMatching(uapEvent, unoEvent);
@@ -61,25 +56,6 @@ internal static class SymbolMatchingHelpers
 		}
 	}
 
-	private static bool ShouldSkipSymbol(ISymbol uapSymbol)
-	{
-		if (uapSymbol.ContainingSymbol?.Name is
-			"ColorKeyFrameCollection" or
-			"Matrix" or
-			"KeyTime" or
-			"PointCollection" or
-			"RepeatBehavior" or
-			"Matrix3D" or
-			"InlineCollection" or
-			"GeneratorPosition" or
-			"ToggleSwitch")
-		{
-			return true;
-		}
-
-		return false;
-	}
-
 	private static bool AreMatchingCommon(ISymbol uapSymbol, ISymbol unoSymbol)
 	{
 		if (unoSymbol.Kind == SymbolKind.ErrorType)
@@ -116,19 +92,21 @@ internal static class SymbolMatchingHelpers
 			// The divergence here shouldn't be problematic/noticeable.
 			return true;
 		}
-		// Skipping accessibility check for now. It causes two issues:
-		// 1. For some reason, Roslyn is returning private accessibility for some public properties (Specifically, for some interface implementations).
-		// 2. For types declared without explicit accessibility, it's going to be considered internal (however, the generated file later will have the correct accessibility)
-		var result = /*uapSymbol.DeclaredAccessibility == unoSymbol.DeclaredAccessibility &&*/
+		// Type accessibility is left to the compiler: it rejects a hand-written partial that conflicts with the generated one.
+		var result = (uapSymbol is INamedTypeSymbol || uapSymbol.DeclaredAccessibility == GetExternalAccessibility(unoSymbol)) &&
 			uapSymbol.IsAbstract == unoSymbol.IsAbstract &&
 			uapSymbol.IsOverride == unoSymbol.IsOverride &&
 			StripGlobal(uapSymbol.Name) == StripGlobal(unoSymbol.Name) &&
-			// Temporary skip named type: Until we match seal-ness and static-ness with UWP.
+			// Temporary skip named type: Until we match seal-ness with WinUI.
 			(uapSymbol.IsSealed == unoSymbol.IsSealed || uapSymbol.Kind == SymbolKind.NamedType) &&
 			(uapSymbol.IsStatic == unoSymbol.IsStatic) &&
 			uapSymbol.IsVirtual == unoSymbol.IsVirtual;
 		return result;
 	}
+
+	// Uno uses "protected internal" so framework code can reach protected members; outside the assembly it is "protected".
+	private static Accessibility GetExternalAccessibility(ISymbol symbol)
+		=> symbol.DeclaredAccessibility is Accessibility.ProtectedOrInternal ? Accessibility.Protected : symbol.DeclaredAccessibility;
 
 	private static string StripGlobal(string s)
 	{
@@ -160,15 +138,11 @@ internal static class SymbolMatchingHelpers
 		{
 			return false;
 		}
-		// TODO:
-		//if (uapProperty.IsReadOnly != unoProperty.IsReadOnly)
-		//{
-		//	return false;
-		//}
-		//if (uapProperty.IsWriteOnly != unoProperty.IsWriteOnly)
-		//{
-		//	return false;
-		//}
+		if (IsPubliclyAccessible(uapProperty.GetMethod) != IsPubliclyAccessible(unoProperty.GetMethod) ||
+			IsPubliclyAccessible(uapProperty.SetMethod) != IsPubliclyAccessible(unoProperty.SetMethod))
+		{
+			return false;
+		}
 		if (uapProperty.IsIndexer != unoProperty.IsIndexer)
 		{
 			return false;
@@ -178,19 +152,16 @@ internal static class SymbolMatchingHelpers
 			return false;
 		}
 
-		if (!AreMatching(uapProperty.Type, unoProperty.Type) &&
-			// object vs UIElement
-			uapProperty.Name != "Content" &&
-			// IEasingFunction vs EasingFunctionBase
-			uapProperty.Name != "EasingFunction" &&
-			// string vs object
-			uapProperty.Name != "ElementName")
+		if (!AreMatching(uapProperty.Type, unoProperty.Type))
 		{
 			return false;
 		}
 
 		return true;
 	}
+
+	private static bool IsPubliclyAccessible(IMethodSymbol accessor)
+		=> accessor?.DeclaredAccessibility is Accessibility.Public or Accessibility.Protected or Accessibility.ProtectedOrInternal;
 
 	private static bool AreMethodsMatching(IMethodSymbol uapMethod, IMethodSymbol unoMethod)
 	{
