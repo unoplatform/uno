@@ -37,8 +37,9 @@ $scopeVariables = [ordered]@{
 #   WebGpuTestsRequired   - the WebGPU backend, its native packaging and loaders, or the runtime-test
 #                           infrastructure. Gates every WebGPU lane but Linux's, which always runs.
 #   UIKitTestsRequired    - iOS/tvOS code, the Apple toolchain (Xcode image, SDK, workloads) or the
-#                           iOS/tvOS CI plumbing. Gates the iOS and tvOS stages, which run on
-#                           per-minute Mac agents; other changes get them on master. Matches
+#                           iOS/tvOS CI plumbing. Gates iOS Skia runtime-test groups 1-3 (every
+#                           PR still builds the iOS app and runs group 0) and the tvOS stage,
+#                           which run on per-minute Mac agents. Matches
 #                           PascalCase names (iOSResourceConverter) and the files that gate these
 #                           lanes, so a change to the gate runs the lanes it gates. Shared files
 #                           are caught by their changed lines instead (see $uikitContentPattern),
@@ -48,7 +49,7 @@ $patterns = @{
     TemplateTestsRequired = [regex]'(?i)(?:^build/|\.csproj$|\.props$|\.targets$|^src/uno\.sdk/|^src/sourcegenerators/uno\.ui\.tasks/|^src/.*devserver.*|^src/.*remotecontrol.*)'
     ScreenshotsRequired   = [regex]'(?i)^src/(uno\.ui|addins).*\.cs$'
     WebGpuTestsRequired   = [regex]'(?i)(?:webgpu|wgpu|^build/ci/tests/|^build/test-scripts/)'
-    UIKitTestsRequired    = [regex]'(?i)(?:^|[/._-])(?:tvos|ios|uikit|appleuikit|apple)(?:[/._-]|$)|(?:^|[/._-])(?-i:iOS|tvOS|UIKit|Apple)(?-i:[A-Z])|^\.vsts-ci\.yml$|(?:^|/)_?global\.json$|^build/ci/templates/(?:dotnet-mobile-install-mac|ios-build-select-version|mac-rerun-limit)\.yml$|^build/ci/\.azure-devops-stages\.yml$|^build/ci/tests/\.azure-devops-tests-runtime-stages\.yml$|^build/ci/scripts/determine-test-scope\.ps1$'
+    UIKitTestsRequired    = [regex]'(?i)(?:^|[/._-])(?:tvos|ios|uikit|appleuikit|apple)(?:[/._-]|$)|(?:^|[/._-])(?-i:iOS|tvOS|UIKit|Apple)(?-i:[A-Z])|^\.vsts-ci\.yml$|(?:^|/)_?global\.json$|^build/ci/templates/(?:dotnet-mobile-install-mac|ios-build-select-version)\.yml$|^build/ci/\.azure-devops-stages\.yml$|^build/ci/tests/\.azure-devops-tests-runtime-stages\.yml$|^build/ci/scripts/determine-test-scope\.ps1$'
 }
 
 # iOS/tvOS-only code in shared files: C# conditionals and platform checks, iOS-only runtime-test
@@ -167,8 +168,10 @@ if (-not $scopeVariables['UIKitTestsRequired']) {
     }
 }
 
-# Maintainers force the iOS stage on a PR with this label. The labels are read anonymously; if that
-# fails the label is ignored rather than enabling iOS on every PR, since a rerun picks it up.
+# Maintainers force the full iOS stage on a PR with this label. The labels are read anonymously
+# (GitHub allows 60 such calls an hour per IP); if that fails the label is ignored with a warning
+# rather than enabling iOS on every PR. Setup's result is reused by job reruns, so a label added
+# later needs a new run (comment `/azp run` on the PR).
 $uikitLabel = 'ci/run-ios'
 if (-not $scopeVariables['UIKitTestsRequired'] -and $env:SYSTEM_PULLREQUEST_PULLREQUESTNUMBER) {
     $repository = if ($env:BUILD_REPOSITORY_NAME) { $env:BUILD_REPOSITORY_NAME } else { 'unoplatform/uno' }
@@ -184,7 +187,7 @@ if (-not $scopeVariables['UIKitTestsRequired'] -and $env:SYSTEM_PULLREQUEST_PULL
 }
 
 if (-not $scopeVariables['UIKitTestsRequired']) {
-    Write-Host "No iOS/tvOS paths, changed lines or '$uikitLabel' label: Tests - iOS is skipped on this PR and runs on master. Add the label and rerun the pipeline to run it."
+    Write-Host "No iOS/tvOS paths, changed lines or '$uikitLabel' label: Tests - iOS runs only its app build and Skia group 0 on this PR. To run every group, add the label and comment '/azp run' on the PR (rerunning failed jobs reuses this result)."
 }
 
 Publish-TestScopes -Values $scopeVariables
