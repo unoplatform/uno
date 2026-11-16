@@ -44,7 +44,8 @@ internal static class TextContextMenuHelper
 	private static AppBarButton? FindCommand(XamlRoot xamlRoot, VirtualKey accelerator)
 		=> VisualTreeHelper.GetOpenPopupsForXamlRoot(xamlRoot)
 			.Select(popup => popup.Child)
-			.OfType<DependencyObject>()
+			// UIElement, not DependencyObject: on native Android, EnumerateDescendants extends Android views.
+			.OfType<UIElement>()
 			.SelectMany(x => x.EnumerateDescendants().Prepend(x))
 			.OfType<AppBarButton>()
 			.FirstOrDefault(button => button.KeyboardAccelerators.Any(ka => ka.Key == accelerator));
