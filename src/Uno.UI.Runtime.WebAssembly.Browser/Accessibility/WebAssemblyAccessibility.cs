@@ -719,10 +719,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 		catch (Exception ex)
 		{
-			// A peer queried before it is fully initialized: the state follows its property changes.
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			// Pattern providers can be app-defined peers, which may throw anything. This runs from the
+			// list's container callbacks, so a failure must not break realization; the state then
+			// reaches the element through its later property changes.
+			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().Debug($"[A11y] Initial state of {itemElement.GetType().Name} not applied: {ex.Message}");
+				this.Log().Warn($"[A11y] Initial state of {itemElement.GetType().Name} not applied: {ex.Message}", ex);
 			}
 		}
 	}
