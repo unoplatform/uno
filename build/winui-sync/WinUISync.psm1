@@ -219,8 +219,10 @@ function Find-AreaThemeXaml {
 				$dir = Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo -Ref $Ref -Path 'controls/dev/CommonStyles'
 				$commonStyles = if ($dir) { @(Invoke-Git $UpstreamRepo @('ls-tree', '--name-only', "${Ref}:$dir")) } else { @() }
 			}
-			$wanted = "$($Matches[2])_themeresources.xaml"
-			$match = $commonStyles | Where-Object { $_ -ieq $wanted } | Select-Object -First 1
+			$name = $Matches[2]
+			# An item presenter's styles live under its item's name (GridViewItemPresenter -> GridViewItem).
+			$wanted = @("${name}_themeresources.xaml") + @(if ($name -match '^(\w+)Presenter$') { "$($Matches[1])_themeresources.xaml" })
+			$match = $wanted | ForEach-Object { $w = $_; $commonStyles | Where-Object { $_ -ieq $w } } | Select-Object -First 1
 			if ($match) { $byName[$match.ToLowerInvariant()] = "controls/dev/CommonStyles/$match" }
 		}
 	}
