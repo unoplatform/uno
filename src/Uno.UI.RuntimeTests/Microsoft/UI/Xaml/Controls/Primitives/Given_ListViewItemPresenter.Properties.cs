@@ -233,6 +233,48 @@ public class Given_ListViewItemPresenter_Properties
 	}
 
 	[TestMethod]
+	public void When_Alias_Cleared_Then_Forwarded_Value_Removed()
+	{
+		var presenter = new ListViewItemPresenter();
+
+		presenter.ListViewItemPresenterPadding = new Thickness(8);
+		Assert.AreEqual(new Thickness(8), presenter.Padding);
+
+		presenter.ClearValue(ListViewItemPresenter.ListViewItemPresenterPaddingProperty);
+
+		Assert.AreEqual(default(Thickness), presenter.Padding);
+	}
+
+	[TestMethod]
+	public void When_Alias_Local_Cleared_Then_Style_Value_Forwarded()
+	{
+		var presenter = new ListViewItemPresenter();
+		Style style = new(typeof(ListViewItemPresenter));
+		style.Setters.Add(new Setter(ListViewItemPresenter.ListViewItemPresenterPaddingProperty, new Thickness(3)));
+		presenter.Style = style;
+
+		presenter.ListViewItemPresenterPadding = new Thickness(8);
+		Assert.AreEqual(new Thickness(8), presenter.Padding);
+
+		presenter.ClearValue(ListViewItemPresenter.ListViewItemPresenterPaddingProperty);
+
+		Assert.AreEqual(new Thickness(3), presenter.Padding);
+	}
+
+	[TestMethod]
+	public void When_Alias_Style_Setter_Does_Not_Override_Local_Alias()
+	{
+		var presenter = new ListViewItemPresenter();
+		presenter.ListViewItemPresenterPadding = new Thickness(8);
+
+		Style style = new(typeof(ListViewItemPresenter));
+		style.Setters.Add(new Setter(ListViewItemPresenter.ListViewItemPresenterPaddingProperty, new Thickness(3)));
+		presenter.Style = style;
+
+		Assert.AreEqual(new Thickness(8), presenter.Padding);
+	}
+
+	[TestMethod]
 	public void When_Background_Resolves_To_ContentPresenter()
 	{
 		Assert.AreSame(ContentPresenter.BackgroundProperty, ListViewItemPresenter.BackgroundProperty);
