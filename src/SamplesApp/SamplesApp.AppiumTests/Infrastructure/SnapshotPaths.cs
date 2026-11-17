@@ -29,7 +29,7 @@ internal static class SnapshotPaths
 				?? throw new InvalidDataException("Unable to resolve the SamplesApp.AppiumTests tests directory.");
 			var projectDirectory = Path.GetDirectoryName(testsDirectory)
 				?? throw new InvalidDataException("Unable to resolve the SamplesApp.AppiumTests project directory.");
-			return Path.Combine(projectDirectory, "Snapshots");
+			return Path.Join(projectDirectory, "Snapshots");
 		}
 
 		throw new InvalidDataException(
@@ -41,7 +41,7 @@ internal static class SnapshotPaths
 		AccessibilitySnapshotDefinition definition,
 		AppiumTestOptions? options = null,
 		[CallerFilePath] string? callerFilePath = null)
-		=> Path.Combine(
+		=> Path.Join(
 			ResolveSnapshotsDirectory(options, callerFilePath),
 			FlavorOf(platform),
 			definition.SnapshotId + ".json");

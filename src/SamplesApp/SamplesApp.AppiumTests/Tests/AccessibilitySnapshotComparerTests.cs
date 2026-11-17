@@ -99,7 +99,7 @@ public sealed class AccessibilitySnapshotComparerTests
 		var json = SnapshotSerializer.Serialize(snapshot);
 		json.Should().NotContain("\r\n");
 
-		var path = Path.Combine(AppContext.BaseDirectory, $"snapshot-roundtrip-{Guid.NewGuid():N}.json");
+		var path = Path.Join(AppContext.BaseDirectory, $"snapshot-roundtrip-{Guid.NewGuid():N}.json");
 		try
 		{
 			SnapshotSerializer.Write(path, snapshot);

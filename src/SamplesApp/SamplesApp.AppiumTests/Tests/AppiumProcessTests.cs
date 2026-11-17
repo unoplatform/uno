@@ -69,9 +69,9 @@ public sealed class AppiumProcessTests
 	[TestMethod]
 	public void RunProcess_Timeout_Also_Bounds_Streams_Inherited_By_A_Child()
 	{
-		var directory = Path.Combine(Environment.CurrentDirectory, "AppiumProcessTests", Guid.NewGuid().ToString("N"));
+		var directory = Path.Join(Environment.CurrentDirectory, "AppiumProcessTests", Guid.NewGuid().ToString("N"));
 		Directory.CreateDirectory(directory);
-		var pidFile = Path.Combine(directory, "child.pid");
+		var pidFile = Path.Join(directory, "child.pid");
 		var (fileName, arguments) = Shell(
 			$"""
 			$info = New-Object System.Diagnostics.ProcessStartInfo

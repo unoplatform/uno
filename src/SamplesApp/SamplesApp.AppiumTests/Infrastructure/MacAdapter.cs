@@ -535,12 +535,12 @@ public sealed class MacAdapter : IPlatformAdapter
 			artifactsDirectory,
 			"mac-bundles",
 			$"SamplesAppAppium-{slug}.app");
-		var contents = Path.Combine(bundleRoot, "Contents");
-		var macOS = Path.Combine(contents, "MacOS");
+		var contents = Path.Join(bundleRoot, "Contents");
+		var macOS = Path.Join(contents, "MacOS");
 		Directory.CreateDirectory(macOS);
 		const string executableName = "SamplesAppAppium";
 
-		File.WriteAllText(Path.Combine(contents, "Info.plist"),
+		File.WriteAllText(Path.Join(contents, "Info.plist"),
 			$@"<?xml version=""1.0"" encoding=""UTF-8""?>
 <!DOCTYPE plist PUBLIC ""-//Apple//DTD PLIST 1.0//EN"" ""http://www.apple.com/DTDs/PropertyList-1.0.dtd"">
 <plist version=""1.0"">
@@ -558,7 +558,7 @@ public sealed class MacAdapter : IPlatformAdapter
 ");
 
 		var script = CreateWrapperScript(dotnetPath, dllPath, sampleQuery);
-		var executablePath = Path.Combine(macOS, executableName);
+		var executablePath = Path.Join(macOS, executableName);
 		File.WriteAllText(executablePath, script);
 		File.SetUnixFileMode(executablePath,
 			UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute |
