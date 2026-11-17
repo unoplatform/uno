@@ -543,11 +543,20 @@ public partial class Given_ContentPresenter
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25920")]
 	public async Task When_Binding_DataContext_Set_After_First_Measure()
 	{
-		// A ContentPresenter's own DataContext is its Content, so the binding needs an ancestor DataContext.
+		// The binding sits on the templated parent: a ContentPresenter's own DataContext is its Content.
 		var root = (Grid)XamlReader.Load(
-			"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><ContentPresenter Content='{Binding Foo}'/></Grid>");
-		var SUT = (ContentPresenter)root.Children[0];
+			"""
+			<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+				<ContentControl Content='{Binding Foo}'>
+					<ContentControl.Template>
+						<ControlTemplate TargetType='ContentControl'><ContentPresenter/></ControlTemplate>
+					</ContentControl.Template>
+				</ContentControl>
+			</Grid>
+			""");
+		var parent = (ContentControl)root.Children[0];
 		root.Measure(new Size(200, 200));
+		var SUT = (ContentPresenter)VisualTreeHelper.GetChild(parent, 0);
 
 		var model = new PresenterModel { Foo = "first" };
 		root.DataContext = model;
@@ -572,7 +581,7 @@ public partial class Given_ContentPresenter
 	{
 		var SUT = new ApplyTemplateCountingPresenter { Content = new Border { Width = 10, Height = 10 } };
 		SUT.Measure(new Size(200, 200));
-		Assert.AreEqual(0, SUT.ApplyTemplateCount, "Measure sets up the implicit bindings without calling the overridable OnApplyTemplate.");
+		Assert.AreEqual(1, SUT.ApplyTemplateCount, "WinUI runs OnApplyTemplate from measure.");
 
 		try
 		{
