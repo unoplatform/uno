@@ -593,6 +593,50 @@ public class Given_ListViewBaseItem
 	}
 
 	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_Container_DragStarting_Deferred_Cancel_Then_Drag_State_Cleared()
+	{
+		var (list, item, recorder) = await Setup();
+		list.CanDragItems = true;
+		var dragItemsStarting = false;
+		list.DragItemsStarting += (_, _) => dragItemsStarting = true;
+		var canceled = false;
+		item.DragStarting += async (_, e) =>
+		{
+			var deferral = e.GetDeferral();
+			await Task.Yield();
+			e.Cancel = true;
+			canceled = true;
+			deferral.Complete();
+		};
+		await WindowHelper.WaitForIdle();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available");
+		using var mouse = injector.GetMouse();
+
+		var from = Center(item);
+		mouse.Press(from);
+		await WindowHelper.WaitForIdle();
+		try
+		{
+			mouse.MoveTo(new Point(from.X, from.Y + 150), 5);
+			await UITestHelper.WaitFor(() => canceled, timeoutMS: 3000, message: "The container drag must start and be canceled.");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(dragItemsStarting);
+			Assert.AreEqual(0, item.TemplateSettings.DragItemsCount, "A canceled drag start resets the dragged items count.");
+			Assert.AreEqual("NotDragging", LastState(recorder, DragStates), string.Join(", ", recorder.States));
+		}
+		finally
+		{
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Touch_Holding_Then_Drag_Canceled_Clears_Holding()
 	{
