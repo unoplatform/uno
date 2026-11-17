@@ -68,6 +68,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSMutableDictionary<NSNumber*, UNOAccessibilityElement*> *elements;
 @property (nonatomic, strong, nullable) UNOAccessibilityElement *rootElement;
 @property (nonatomic, strong, nullable) UNOAccessibilityElement *focusedElement;
+// Elements hanging on the root while their managed parent is not part of the tree, keyed by that parent's handle.
+@property (nonatomic, strong) NSMutableDictionary<NSNumber*, NSMutableArray<UNOAccessibilityElement*>*> *orphansByParent;
 // Set once an accessibility client first asks this window for its tree, so managed code is asked to build it only once.
 @property (nonatomic) BOOL treeRequested;
 
