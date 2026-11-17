@@ -603,6 +603,14 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	{
 		SetDefaultTemplateBindings();
 		base.ApplyTemplate(out addedVisuals);
+
+		// MUX Reference framework.cpp (CFrameworkElement::InvokeApplyTemplate): OnApplyTemplate runs from measure too.
+		// Uno-specific: Uno's presenter never reports added visuals here, so it runs once, shared with the Loaded fallback.
+		if (!_appliedTemplate)
+		{
+			_appliedTemplate = true;
+			OnApplyTemplate();
+		}
 	}
 
 	protected override void OnApplyTemplate()
