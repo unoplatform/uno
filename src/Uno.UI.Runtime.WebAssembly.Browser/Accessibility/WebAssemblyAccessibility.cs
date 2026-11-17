@@ -56,6 +56,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// WebAssembly runs in a single browser tab; disposal is not part of the
 		// per-window lifecycle exercised by the Skia-Desktop router.
 		_relationshipPeers.Clear();
+		_reAddsAfterComposition.Clear();
 	}
 
 	private bool _isAccessibilityEnabled;
@@ -1120,6 +1121,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		@this._genericPathHandles.Clear();
 		@this._pendingLabelledBy.Clear();
 		@this._relationshipPeers.Clear();
+		@this._reAddsAfterComposition.Clear();
 		@this._relationshipRefreshQueued = false;
 		@this._grids.Clear();
 		@this._columnHeaders.Clear();
@@ -3325,6 +3327,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		_relationshipPeers.Clear();
 		_grids.Clear();
 		_columnHeaders.Clear();
+		// The rebuild reads every element's current state, which supersedes re-adds waiting on a composition.
+		_reAddsAfterComposition.Clear();
 
 		_isCreatingAOM = true;
 		try
