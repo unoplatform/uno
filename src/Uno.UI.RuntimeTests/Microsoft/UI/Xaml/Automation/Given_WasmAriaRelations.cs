@@ -302,6 +302,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_ComboBox_With_ControlledPeers_Opens_And_Closes_Then_Authored_IdRef_Is_Kept()
+		{
+			var target = new TextBlock { Text = "Controlled target" };
+			AutomationProperties.SetName(target, "Controlled target");
+			var comboBox = new ComboBox { Items = { "Option A", "Option B" }, SelectedIndex = 0 };
+			AutomationProperties.GetControlledPeers(comboBox).Add(target);
+			var panel = new StackPanel { Children = { comboBox, target } };
+
+			try
+			{
+				await UITestHelper.Load(panel);
+				EnableAccessibilityThroughDom();
+				var targetId = GetSemanticElementId(target);
+				await UITestHelper.WaitFor(
+					() => SemanticElementExists(target) && GetSemanticAttribute(comboBox, "aria-controls") == targetId,
+					timeoutMS: 5000,
+					message: "aria-controls must reference the authored ControlledPeers target.");
+
+				for (var cycle = 0; cycle < 2; cycle++)
+				{
+					comboBox.IsDropDownOpen = true;
+					await UITestHelper.WaitFor(
+						() => GetControlsIds(comboBox) is { Length: 2 } ids && ids.Contains(targetId),
+						timeoutMS: 5000,
+						message: $"Cycle {cycle}: an open dropdown must add its listbox to aria-controls without dropping the authored target.");
+
+					comboBox.IsDropDownOpen = false;
+					await UITestHelper.WaitFor(
+						() => GetSemanticAttribute(comboBox, "aria-controls") == targetId,
+						timeoutMS: 5000,
+						message: $"Cycle {cycle}: closing the dropdown must restore the authored aria-controls.");
+				}
+
+				// The cache must match the DOM, so a later refresh still notices the target leaving.
+				panel.Children.Remove(target);
+				await UITestHelper.WaitFor(
+					() => !SemanticElementHasAttribute(comboBox, "aria-controls"),
+					timeoutMS: 5000,
+					message: "aria-controls must drop the target once it leaves the tree.");
+			}
+			finally
+			{
+				comboBox.IsDropDownOpen = false;
+				TestServices.WindowHelper.WindowContent = null;
+				await UITestHelper.WaitForIdle();
+			}
+
+			static string[] GetControlsIds(ComboBox comboBox)
+				=> GetSemanticAttribute(comboBox, "aria-controls").Split(' ', StringSplitOptions.RemoveEmptyEntries);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_DescribedBy_Default_Collection_Changes_During_Peer_Read_Then_IdRef_Is_Preserved()
 		{
 			var target = new TextBlock { Text = "Description" };

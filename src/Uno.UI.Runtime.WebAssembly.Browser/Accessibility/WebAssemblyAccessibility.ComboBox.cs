@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -26,6 +27,9 @@ internal partial class WebAssemblyAccessibility
 	// (semantic tree walk consults it for every Popup it encounters). Populated lazily on
 	// DropDownOpened (the Popup may not exist at registration time) and cleared on close.
 	private readonly Dictionary<Popup, ComboBox> _comboBoxByPopup = new();
+	// aria-controls IDREF of an open dropdown's listbox, keyed by the combobox head handle. Merged into
+	// the authored ControlledPeers by UpdateRelationships, the single writer of aria-controls.
+	private readonly Dictionary<IntPtr, string> _implicitAriaControls = new();
 
 	/// <summary>
 	/// Subscribes to a ComboBox's dropdown lifecycle so its listbox region can be torn down
@@ -113,8 +117,8 @@ internal partial class WebAssemblyAccessibility
 			region.Dispose();
 			_comboBoxListBoxes.Remove(comboBox);
 
-			// Drop the head's relationships to the now-removed listbox.
-			NativeMethods.UpdateAriaControls(comboBox.Visual.Handle, string.Empty);
+			// Drop the head's relationships to the now-removed listbox, keeping any authored ControlledPeers.
+			SetImplicitAriaControls(comboBox.Visual.Handle, null);
 			NativeMethods.UpdateActiveDescendant(comboBox.Visual.Handle, IntPtr.Zero);
 		}
 	}
@@ -220,7 +224,7 @@ internal partial class WebAssemblyAccessibility
 		// WAI-ARIA combobox pattern: the head owns the popup listbox via aria-controls so
 		// screen readers associate the two separate DOM subtrees and aria-activedescendant
 		// can reference options that live outside the head's own subtree.
-		NativeMethods.UpdateAriaControls(comboBox.Visual.Handle, $"uno-semantics-{region.ContainerHandle}");
+		SetImplicitAriaControls(comboBox.Visual.Handle, $"uno-semantics-{region.ContainerHandle}");
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -228,5 +232,41 @@ internal partial class WebAssemblyAccessibility
 		}
 
 		return region;
+	}
+
+	private void SetImplicitAriaControls(IntPtr headHandle, string? listBoxId)
+	{
+		if (listBoxId is null)
+		{
+			if (!_implicitAriaControls.Remove(headHandle))
+			{
+				return;
+			}
+		}
+		else
+		{
+			_implicitAriaControls[headHandle] = listBoxId;
+		}
+
+		if (_relationshipPeers.TryGetValue(headHandle, out var state) && state.Peer.TryGetTarget(out var peer))
+		{
+			// Re-resolve the authored relations so the written IDREFs and their cache stay in sync.
+			UpdateRelationships(peer, headHandle);
+		}
+		else
+		{
+			NativeMethods.UpdateAriaControls(headHandle, listBoxId ?? string.Empty);
+		}
+	}
+
+	private SemanticElementFactory.RelationshipIds WithImplicitAriaControls(IntPtr handle, SemanticElementFactory.RelationshipIds ids)
+	{
+		if (!_implicitAriaControls.TryGetValue(handle, out var implicitId)
+			|| ids.Controls.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains(implicitId))
+		{
+			return ids;
+		}
+
+		return ids with { Controls = ids.Controls.Length == 0 ? implicitId : $"{ids.Controls} {implicitId}" };
 	}
 }

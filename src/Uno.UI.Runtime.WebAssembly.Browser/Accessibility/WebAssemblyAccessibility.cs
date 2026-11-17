@@ -56,6 +56,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// WebAssembly runs in a single browser tab; disposal is not part of the
 		// per-window lifecycle exercised by the Skia-Desktop router.
 		_relationshipPeers.Clear();
+		_implicitAriaControls.Clear();
 	}
 
 	private bool _isAccessibilityEnabled;
@@ -1539,6 +1540,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				state.PendingPeer = null;
 				var hasRelationships = SemanticElementFactory.ResolveRelationshipAttributes(currentPeer, out var ids);
+				ids = WithImplicitAriaControls(handle, ids);
 				if (!_relationshipPeers.TryGetValue(handle, out var current) || !ReferenceEquals(current, state))
 				{
 					return;
