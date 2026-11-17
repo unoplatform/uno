@@ -105,6 +105,21 @@ If your project doesn't use Central Package Management, set the `Version` on the
 
 SkiaSharp 4.0 reached general availability as `4.148.0`, and Uno Platform is a co-maintainer of SkiaSharp. **Since Uno Platform 7.0, SkiaSharp 4 is the default** — the Uno.Sdk resolves the SkiaSharp package group at a `4.x` version, and the steps above move it to another version. SkiaSharp 4 turns several long-deprecated APIs into compile errors (for example, text APIs that moved from `SKPaint` to `SKFont`), so a project carrying its own SkiaSharp code from `3.x` may need small changes before it builds.
 
+#### Uno Platform 6.x
+
+On Uno Platform 6.x, the Uno.Sdk uses SkiaSharp 3.119 by default. To move a 6.x app to SkiaSharp 4, set `SkiaSharpVersion` to `4.155.2` or a later `4.155` version:
+
+```xml
+<PropertyGroup>
+   <SkiaSharpVersion>4.155.2</SkiaSharpVersion>
+</PropertyGroup>
+```
+
+- On 6.x, this property is the only change needed: the 6.x Uno.Sdk moves the managed SkiaSharp packages with it.
+- SkiaSharp `4.156` and later require Uno Platform 7. Their `SkiaSharp.Views.Uno.WinUI` package depends on Uno Platform 7, so restore fails with `NU1605` on 6.x.
+- With `4.155.0` and `4.155.1`, WebAssembly builds on Uno Platform 6.7 fail with `invalid argument '-std=c++20' not allowed with 'C'`. `4.155.2` fixes this.
+- iOS builds need Xcode 26.2 or later, the SDK the SkiaSharp 4 native libraries are built with.
+
 ## Rendering Backend Selection
 
 By default, Uno Platform tries the GPU backends in a fixed order (Vulkan, then OpenGL, then software) and uses the first available one. You can force a single backend, or disable specific ones, per platform using the host builder:
