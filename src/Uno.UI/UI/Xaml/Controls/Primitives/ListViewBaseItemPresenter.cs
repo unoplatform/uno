@@ -57,21 +57,42 @@ public abstract partial class ListViewBaseItemPresenter : ContentPresenter
 		return base.GetDefaultValue2(property, out defaultValue);
 	}
 
+	private const int AliasSlotBits = 3;
+	private const int AliasSlotMask = (1 << AliasSlotBits) - 1;
+	private const int NoForwardedAliases =
+		(int)DependencyPropertyValuePrecedences.DefaultValue
+		| (int)DependencyPropertyValuePrecedences.DefaultValue << AliasSlotBits
+		| (int)DependencyPropertyValuePrecedences.DefaultValue << (2 * AliasSlotBits);
+
+	// Per alias slot, the precedence its last value was forwarded at.
+	private int _forwardedAliasPrecedences = NoForwardedAliases;
+
 	// Backs the deprecated alias DPs, which have no storage: they read and write the ContentPresenter property.
-	private protected static object? ForwardAlias(DependencyObject instance, bool isGet, object? valueToSet, DependencyProperty alias, DependencyProperty target)
+	private protected static object? ForwardAlias(DependencyObject instance, bool isGet, object? valueToSet, DependencyProperty alias, DependencyProperty target, int slot)
 	{
 		if (isGet)
 		{
 			return instance.GetValue(target);
 		}
 
-		// The store replays the alias default when the alias value is cleared; forwarding it would clobber a TemplateBinding on the target.
+		var presenter = (ListViewBaseItemPresenter)instance;
+		var shift = slot * AliasSlotBits;
+		var previous = (DependencyPropertyValuePrecedences)((presenter._forwardedAliasPrecedences >> shift) & AliasSlotMask);
 		var precedence = instance.GetCurrentHighestValuePrecedence(alias);
+
+		// WinUI's target holds a single value that each forwarded write replaces; Uno's layered store needs the previous layer cleared.
+		if (previous != DependencyPropertyValuePrecedences.DefaultValue && previous != precedence)
+		{
+			instance.ClearValue(target, previous);
+		}
+
+		// Clearing the alias only drops what it forwarded, so a TemplateBinding or local value on the target survives.
 		if (precedence != DependencyPropertyValuePrecedences.DefaultValue)
 		{
-			// TODO Uno: the store passes no incoming precedence (a value below the alias' current one lands higher), and keeps no Style value under a Local one on the target.
 			instance.SetValue(target, valueToSet, precedence);
 		}
+
+		presenter._forwardedAliasPrecedences = (presenter._forwardedAliasPrecedences & ~(AliasSlotMask << shift)) | ((int)precedence << shift);
 
 		return null;
 	}

@@ -322,7 +322,7 @@ partial class GridViewItemPresenter
 			ownerType: typeof(GridViewItemPresenter),
 			typeMetadata: new FrameworkPropertyMetadata(defaultValue: default(HorizontalAlignment))
 			{
-				PropMethodCall = (instance, isGet, value) => ForwardAlias(instance, isGet, value, GridViewItemPresenterHorizontalContentAlignmentProperty!, ContentPresenter.HorizontalContentAlignmentProperty),
+				PropMethodCall = (instance, isGet, value) => ForwardAlias(instance, isGet, value, GridViewItemPresenterHorizontalContentAlignmentProperty!, ContentPresenter.HorizontalContentAlignmentProperty, slot: 0),
 			});
 
 	#endregion
@@ -346,7 +346,7 @@ partial class GridViewItemPresenter
 			ownerType: typeof(GridViewItemPresenter),
 			typeMetadata: new FrameworkPropertyMetadata(defaultValue: default(VerticalAlignment))
 			{
-				PropMethodCall = (instance, isGet, value) => ForwardAlias(instance, isGet, value, GridViewItemPresenterVerticalContentAlignmentProperty!, ContentPresenter.VerticalContentAlignmentProperty),
+				PropMethodCall = (instance, isGet, value) => ForwardAlias(instance, isGet, value, GridViewItemPresenterVerticalContentAlignmentProperty!, ContentPresenter.VerticalContentAlignmentProperty, slot: 1),
 			});
 
 	#endregion
@@ -370,7 +370,7 @@ partial class GridViewItemPresenter
 			ownerType: typeof(GridViewItemPresenter),
 			typeMetadata: new FrameworkPropertyMetadata(defaultValue: default(Thickness))
 			{
-				PropMethodCall = (instance, isGet, value) => ForwardAlias(instance, isGet, value, GridViewItemPresenterPaddingProperty!, ContentPresenter.PaddingProperty),
+				PropMethodCall = (instance, isGet, value) => ForwardAlias(instance, isGet, value, GridViewItemPresenterPaddingProperty!, ContentPresenter.PaddingProperty, slot: 2),
 			});
 
 	#endregion

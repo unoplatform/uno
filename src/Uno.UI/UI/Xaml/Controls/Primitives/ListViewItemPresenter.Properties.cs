@@ -322,7 +322,7 @@ partial class ListViewItemPresenter
 			ownerType: typeof(ListViewItemPresenter),
 			typeMetadata: new FrameworkPropertyMetadata(defaultValue: default(HorizontalAlignment))
 			{
-				PropMethodCall = (instance, isGet, value) => ForwardAlias(instance, isGet, value, ListViewItemPresenterHorizontalContentAlignmentProperty!, ContentPresenter.HorizontalContentAlignmentProperty),
+				PropMethodCall = (instance, isGet, value) => ForwardAlias(instance, isGet, value, ListViewItemPresenterHorizontalContentAlignmentProperty!, ContentPresenter.HorizontalContentAlignmentProperty, slot: 0),
 			});
 
 	#endregion
@@ -346,7 +346,7 @@ partial class ListViewItemPresenter
 			ownerType: typeof(ListViewItemPresenter),
 			typeMetadata: new FrameworkPropertyMetadata(defaultValue: default(VerticalAlignment))
 			{
-				PropMethodCall = (instance, isGet, value) => ForwardAlias(instance, isGet, value, ListViewItemPresenterVerticalContentAlignmentProperty!, ContentPresenter.VerticalContentAlignmentProperty),
+				PropMethodCall = (instance, isGet, value) => ForwardAlias(instance, isGet, value, ListViewItemPresenterVerticalContentAlignmentProperty!, ContentPresenter.VerticalContentAlignmentProperty, slot: 1),
 			});
 
 	#endregion
@@ -370,7 +370,7 @@ partial class ListViewItemPresenter
 			ownerType: typeof(ListViewItemPresenter),
 			typeMetadata: new FrameworkPropertyMetadata(defaultValue: default(Thickness))
 			{
-				PropMethodCall = (instance, isGet, value) => ForwardAlias(instance, isGet, value, ListViewItemPresenterPaddingProperty!, ContentPresenter.PaddingProperty),
+				PropMethodCall = (instance, isGet, value) => ForwardAlias(instance, isGet, value, ListViewItemPresenterPaddingProperty!, ContentPresenter.PaddingProperty, slot: 2),
 			});
 
 	#endregion
