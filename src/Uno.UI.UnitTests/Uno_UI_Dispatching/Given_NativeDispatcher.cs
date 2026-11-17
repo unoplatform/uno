@@ -147,17 +147,21 @@ public class Given_NativeDispatcher
 			_previousDispatchBehindPending = NativeDispatcher.DispatchBehindPendingOverride;
 
 			NativeDispatcher.HasThreadAccessOverride = () => true;
-			// Otherwise an enqueue behind a pending dispatch posts an extra pump turn.
-			NativeDispatcher.DispatchBehindPendingOverride = () => false;
 			NativeDispatcher.DispatchOverride = (action, _) => _pending.Enqueue(action);
 
 			Dispatcher.RemoveCompositionTargets(_ => true);
 
+			// Work enqueued from a background thread before this test waits on a dispatch posted to the UI thread,
+			// which only runs after the test: pump through it so that work is drained here instead.
+			NativeDispatcher.DispatchBehindPendingOverride = () => true;
 			var primed = false;
 			Dispatcher.Enqueue(() => primed = true);
 			Drain();
 
 			Assert.IsTrue(primed, "Another test left work pending on the dispatcher.");
+
+			// Otherwise an enqueue behind a pending dispatch posts an extra pump turn.
+			NativeDispatcher.DispatchBehindPendingOverride = () => false;
 		}
 
 		public NativeDispatcher Dispatcher => NativeDispatcher.Main;
