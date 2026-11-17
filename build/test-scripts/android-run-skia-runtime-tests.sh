@@ -180,6 +180,10 @@ fi
 
 echo "Resolved launcher activity: $UNO_UITEST_ACTIVITY"
 
+# A dialog that took window focus since the launcher check would keep the keyboard from ever showing.
+$ANDROID_HOME/platform-tools/adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS > /dev/null
+echo "Focused window before launch: $($ANDROID_HOME/platform-tools/adb shell dumpsys window | grep -m1 mCurrentFocus | tr -d '\r')"
+
 # start the android app using environment variables using adb
 $ANDROID_HOME/platform-tools/adb shell am start \
   -n "$UNO_UITEST_ACTIVITY" \
