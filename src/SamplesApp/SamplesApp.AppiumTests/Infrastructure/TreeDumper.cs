@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json;
 using OpenQA.Selenium;
 
@@ -61,13 +62,11 @@ public static class TreeDumper
 			AutomationId = string.Empty,
 		};
 
-		foreach (var child in topLevel)
+		foreach (var node in topLevel
+			.Select(child => CaptureRecursive(driver, adapter, child, depth: 0))
+			.OfType<AccessibilityNode>())
 		{
-			var node = CaptureRecursive(driver, adapter, child, depth: 0);
-			if (node is not null)
-			{
-				root.Children.Add(node);
-			}
+			root.Children.Add(node);
 		}
 
 		return root;
@@ -114,13 +113,11 @@ public static class TreeDumper
 
 		var children = adapter.GetChildren(driver, element);
 
-		foreach (var child in children)
+		foreach (var sub in children
+			.Select(child => CaptureRecursive(driver, adapter, child, depth + 1))
+			.OfType<AccessibilityNode>())
 		{
-			var sub = CaptureRecursive(driver, adapter, child, depth + 1);
-			if (sub is not null)
-			{
-				node.Children.Add(sub);
-			}
+			node.Children.Add(sub);
 		}
 
 		return node;

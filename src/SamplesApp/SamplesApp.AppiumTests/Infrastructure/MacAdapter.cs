@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -81,7 +82,7 @@ public sealed class MacAdapter : IPlatformAdapter
 
 	private static string? ReadBundleId(string appBundle, out string? diagnostic)
 	{
-		var plist = Path.Combine(appBundle, "Contents", "Info.plist");
+		var plist = Path.Join(appBundle, "Contents", "Info.plist");
 		if (!File.Exists(plist))
 		{
 			diagnostic = $"Info.plist was not found at '{plist}'.";
@@ -530,7 +531,7 @@ public sealed class MacAdapter : IPlatformAdapter
 	{
 		var dotnetPath = ResolveDotnet();
 		var slug = Path.GetFileNameWithoutExtension(Path.GetRandomFileName());
-		var bundleRoot = Path.Combine(
+		var bundleRoot = Path.Join(
 			artifactsDirectory,
 			"mac-bundles",
 			$"SamplesAppAppium-{slug}.app");
@@ -597,18 +598,9 @@ public sealed class MacAdapter : IPlatformAdapter
 	}
 
 	private static string? GetAttributeAny(IWebElement element, params string[] names)
-	{
-		foreach (var name in names)
-		{
-			var value = element.GetAttribute(name);
-			if (!string.IsNullOrWhiteSpace(value))
-			{
-				return value;
-			}
-		}
-
-		return null;
-	}
+		=> names
+			.Select(element.GetAttribute)
+			.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value));
 
 	private static bool? ParseBool(string? value)
 		=> value?.Trim().ToLowerInvariant() switch

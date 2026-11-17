@@ -221,7 +221,7 @@ public sealed class AppiumTestSession : IDisposable
 
 	public string WriteActualSnapshot(string snapshotId, AccessibilitySnapshot snapshot)
 	{
-		var actualPath = Path.Combine(
+		var actualPath = Path.Join(
 			Options.ArtifactsDirectory,
 			"snapshot-actual",
 			Options.Flavor,
@@ -236,7 +236,7 @@ public sealed class AppiumTestSession : IDisposable
 		try
 		{
 			var tree = TreeDumper.Capture(Driver, Adapter);
-			var path = Path.Combine(
+			var path = Path.Join(
 				Options.ArtifactsDirectory,
 				"snapshot-actual",
 				Options.Flavor,
@@ -406,7 +406,7 @@ public sealed class AppiumTestSession : IDisposable
 			root = AppContext.BaseDirectory;
 		}
 
-		return Path.Combine(
+		return Path.Join(
 			root!,
 			"AppiumArtifacts",
 			SanitizePathSegment(testContext.FullyQualifiedTestClassName ?? "UnknownClass"),

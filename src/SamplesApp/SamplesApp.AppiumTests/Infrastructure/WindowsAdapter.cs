@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Globalization;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Appium;
@@ -265,18 +266,9 @@ public sealed class WindowsAdapter : IPlatformAdapter
 	}
 
 	private static string? GetAttributeAny(IWebElement element, params string[] names)
-	{
-		foreach (var name in names)
-		{
-			var value = element.GetAttribute(name);
-			if (!string.IsNullOrWhiteSpace(value))
-			{
-				return value;
-			}
-		}
-
-		return null;
-	}
+		=> names
+			.Select(element.GetAttribute)
+			.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value));
 
 	private static bool? ParseBool(string? value)
 		=> value?.Trim().ToLowerInvariant() switch
