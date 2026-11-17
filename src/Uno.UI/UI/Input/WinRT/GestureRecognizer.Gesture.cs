@@ -269,12 +269,15 @@ namespace Windows.UI.Input
 
 			private void StartHoldingTimer()
 			{
+				// Keeps the timer and its PendingHolds entry one-to-one.
+				StopHoldingTimer();
+
 				_holdingTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
 				_holdingTimer.Interval = TimeSpan.FromMicroseconds(HoldMinDelayMicroseconds);
 				_holdingTimer.State = this;
 				_holdingTimer.Tick += OnHoldingTimerTick;
 				_holdingTimer.Start();
-				_pendingHolds.Add(this);
+				PendingHolds.Add(this);
 			}
 
 			private void StopHoldingTimer()
@@ -283,7 +286,7 @@ namespace Windows.UI.Input
 				{
 					timer.Stop();
 					_holdingTimer = null;
-					_pendingHolds.Remove(this);
+					PendingHolds.Remove(this);
 				}
 			}
 
@@ -313,12 +316,12 @@ namespace Windows.UI.Input
 			// The pending holds of the same press owned by descendants of the gesture's owner, deepest first.
 			private static Gesture[] GetDescendantHoldsOfSamePress(Gesture gesture)
 			{
-				if (_pendingHolds.Count < 2 || gesture._recognizer.Owner is not global::Microsoft.UI.Xaml.UIElement owner)
+				if (PendingHolds.Count < 2 || gesture._recognizer.Owner is not global::Microsoft.UI.Xaml.UIElement owner)
 				{
 					return [];
 				}
 
-				return _pendingHolds
+				return PendingHolds
 					.Where(other => other != gesture
 						&& other.PointerIdentifier == gesture.PointerIdentifier
 						&& other.Down.Timestamp == gesture.Down.Timestamp)
