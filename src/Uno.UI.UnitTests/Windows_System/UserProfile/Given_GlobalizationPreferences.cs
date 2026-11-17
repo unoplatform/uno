@@ -7,7 +7,7 @@ using Windows.System.UserProfile;
 
 namespace Uno.UI.Tests.Windows_System.UserProfile;
 
-[TestClass]
+[UITestClass]
 public class Given_GlobalizationPreferences
 {
 	[TestMethod]
