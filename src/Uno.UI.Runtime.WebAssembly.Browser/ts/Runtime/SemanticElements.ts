@@ -915,7 +915,7 @@ namespace Uno.UI.Runtime {
 				element.setAttribute('aria-expanded', String(expanded));
 				// Clear activedescendant when collapsing
 				if (!expanded) {
-					element.removeAttribute('aria-activedescendant');
+					SemanticElements.setActiveDescendant(element, null);
 				}
 			}
 		}
@@ -928,12 +928,7 @@ namespace Uno.UI.Runtime {
 			SemanticElements.runInVirtualizedOrder(() => {
 				const container = document.getElementById(`uno-semantics-${containerHandle}`);
 				if (container) {
-					if (activeItemHandle !== 0) {
-						const activeId = `uno-semantics-${activeItemHandle}`;
-						container.setAttribute('aria-activedescendant', activeId);
-					} else {
-						container.removeAttribute('aria-activedescendant');
-					}
+					SemanticElements.setActiveDescendant(container, activeItemHandle !== 0 ? `uno-semantics-${activeItemHandle}` : null);
 				}
 			});
 		}
@@ -1654,24 +1649,83 @@ namespace Uno.UI.Runtime {
 			}
 
 			if (active) {
-				container.setAttribute('aria-activedescendant', item.id);
+				SemanticElements.setActiveDescendant(container, item.id);
 			} else if (container.getAttribute('aria-activedescendant') === item.id) {
-				container.removeAttribute('aria-activedescendant');
+				SemanticElements.setActiveDescendant(container, null);
+			}
+		}
+
+		/**
+		 * Owners of aria-activedescendant keyed by the referenced item id, so removing an item doesn't need a
+		 * document-wide scan. An item can have two owners: its listbox and, for a ComboBox option, the head.
+		 */
+		private static activeDescendantOwners: Map<string, Set<HTMLElement>> = new Map();
+
+		/**
+		 * Sets or clears an owner's aria-activedescendant. Every write goes through here to keep the
+		 * owner index in sync.
+		 */
+		private static setActiveDescendant(owner: HTMLElement, itemId: string | null): void {
+			const previous = owner.getAttribute('aria-activedescendant');
+			if (previous === itemId) {
+				return;
+			}
+
+			if (previous) {
+				const owners = SemanticElements.activeDescendantOwners.get(previous);
+				if (owners) {
+					owners.delete(owner);
+					if (owners.size === 0) {
+						SemanticElements.activeDescendantOwners.delete(previous);
+					}
+				}
+			}
+
+			if (itemId) {
+				owner.setAttribute('aria-activedescendant', itemId);
+				let owners = SemanticElements.activeDescendantOwners.get(itemId);
+				if (!owners) {
+					owners = new Set();
+					SemanticElements.activeDescendantOwners.set(itemId, owners);
+				}
+				owners.add(owner);
+			} else {
+				owner.removeAttribute('aria-activedescendant');
 			}
 		}
 
 		/**
 		 * Removes every aria-activedescendant that references a node being removed: its container's, or for a
-		 * ComboBox option, the head's (outside the listbox subtree). Only item roles can be referenced.
+		 * ComboBox option, the head's (outside the listbox subtree).
 		 */
 		public static clearActiveDescendantTo(element: HTMLElement): void {
-			const role = element.getAttribute('role');
-			if (!element.id || (role !== 'option' && role !== 'row' && role !== 'treeitem' && role !== 'gridcell')) {
+			const owners = element.id ? SemanticElements.activeDescendantOwners.get(element.id) : undefined;
+			if (!owners) {
 				return;
 			}
 
-			for (const owner of Array.from(document.querySelectorAll(`[aria-activedescendant="${element.id}"]`))) {
-				owner.removeAttribute('aria-activedescendant');
+			SemanticElements.activeDescendantOwners.delete(element.id);
+			for (const owner of owners) {
+				if (owner.getAttribute('aria-activedescendant') === element.id) {
+					owner.removeAttribute('aria-activedescendant');
+				}
+			}
+		}
+
+		/**
+		 * Drops index entries for owners removed with a whole subtree (no per-item removal ran for them).
+		 * Linear in the number of owners, which is the number of lists with an active item.
+		 */
+		public static pruneDetachedActiveDescendantOwners(): void {
+			for (const [itemId, owners] of SemanticElements.activeDescendantOwners) {
+				for (const owner of owners) {
+					if (!owner.isConnected) {
+						owners.delete(owner);
+					}
+				}
+				if (owners.size === 0) {
+					SemanticElements.activeDescendantOwners.delete(itemId);
+				}
 			}
 		}
 
@@ -1710,6 +1764,7 @@ namespace Uno.UI.Runtime {
 			const element = document.getElementById(`uno-semantics-${containerHandle}`);
 			if (element && element.parentElement) {
 				element.parentElement.removeChild(element);
+				SemanticElements.pruneDetachedActiveDescendantOwners();
 			}
 		}
 	}
