@@ -125,6 +125,20 @@ public class Given_NativeDispatcher
 			order);
 	}
 
+	// Background work (a timer, a task continuation) from an earlier test posts its dispatch to the UI thread,
+	// which cannot run it until the current test returns.
+	[TestMethod]
+	public void When_Background_Work_Is_Pending_Then_Pump_Still_Starts()
+	{
+		var ran = false;
+		System.Threading.Tasks.Task.Run(() => NativeDispatcher.Main.Enqueue(() => ran = true)).Wait();
+
+		using (new DispatcherPump())
+		{
+			Assert.IsTrue(ran);
+		}
+	}
+
 	/// <summary>
 	/// Owns the dispatcher's native pump for the duration of a test, so dispatch order is deterministic.
 	/// </summary>
