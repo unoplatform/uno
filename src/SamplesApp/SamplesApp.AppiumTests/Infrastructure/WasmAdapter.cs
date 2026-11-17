@@ -211,6 +211,9 @@ return '';
 				patterns.Add("expandcollapse");
 				patterns.Add("selection");
 				break;
+			case "listbox":
+				patterns.Add("selection");
+				break;
 		}
 
 		patterns.Sort(StringComparer.Ordinal);
