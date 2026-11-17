@@ -523,6 +523,7 @@ public partial class Given_ContentPresenter
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25920")]
 	public void When_Implicit_Content_Binding_Presented_On_First_Measure()
 	{
 		var SUT = new ContentControl
@@ -539,6 +540,7 @@ public partial class Given_ContentPresenter
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25920")]
 	public async Task When_Binding_DataContext_Set_After_First_Measure()
 	{
 		// A ContentPresenter's own DataContext is its Content, so the binding needs an ancestor DataContext.
@@ -565,10 +567,12 @@ public partial class Given_ContentPresenter
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25920")]
 	public async Task When_OnApplyTemplate_Called_Once_Across_Measure_And_Load()
 	{
 		var SUT = new ApplyTemplateCountingPresenter { Content = new Border { Width = 10, Height = 10 } };
 		SUT.Measure(new Size(200, 200));
+		Assert.AreEqual(0, SUT.ApplyTemplateCount, "Measure sets up the implicit bindings without calling the overridable OnApplyTemplate.");
 
 		try
 		{
