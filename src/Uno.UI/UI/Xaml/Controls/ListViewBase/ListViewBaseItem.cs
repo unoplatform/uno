@@ -27,4 +27,6 @@ public abstract partial class ListViewBaseItem : SelectorItem
 	internal ListViewBaseItem()
 	{
 	}
+
+	private protected override void OnDragStartCanceled() => (ItemsControl.ItemsControlFromItemContainer(this) as ListViewBase)?.OnItemContainerDragStartCanceled(this);
 }

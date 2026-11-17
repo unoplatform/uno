@@ -198,6 +198,26 @@ namespace Microsoft.UI.Xaml.Controls
 
 		}
 
+		// MUX Reference ListViewBase_Partial_Reorder.cpp, lines 268-274 (wasCanceled): a DragStarting handler on the
+		// container canceled after OnItemContainerDragStarting committed the drag state, and no DropCompleted follows.
+		internal void OnItemContainerDragStartCanceled(ListViewBaseItem container)
+		{
+			container.DropCompleted -= OnItemContainerDragCompleted;
+
+			DragEnter -= OnReorderDragUpdated;
+			DragOver -= OnReorderDragUpdated;
+			DragLeave -= OnReorderDragLeave;
+			Drop -= OnReorderCompleted;
+
+			SetIsHolding(false);
+
+			// MUX Reference ListViewBase_Partial_Reorder.cpp, lines 610-639 (CompleteDrop)
+			SetPendingAutoPanVelocity(PanVelocity.Stationary);
+			CleanupReordering();
+			ClearPrimaryDragContainer();
+			ChangeSelectorItemsVisualState(true);
+		}
+
 		private static void OnItemContainerDragCompleted(UIElement sender, DropCompletedEventArgs innerArgs)
 		{
 			// Note: It's not the responsibility of the ListView to remove item from the source, not matter the AcceptedOperation.
