@@ -601,6 +601,13 @@ namespace Uno.UI.Runtime {
 			// Use child.remove() instead of parent.removeChild(child) to handle
 			// cases where the child's actual DOM parent differs from the semantic parent
 			// (e.g., after re-parenting or when duplicate IDs existed previously).
+			if (SemanticElements.composingHandle !== 0) {
+				// A removed input gets no compositionend.
+				const composing = Accessibility.getSemanticElementByHandle(SemanticElements.composingHandle);
+				if (!composing || child.contains(composing)) {
+					SemanticElements.composingHandle = 0;
+				}
+			}
 			child.remove();
 		}
 

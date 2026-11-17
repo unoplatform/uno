@@ -661,6 +661,11 @@ namespace Uno.UI.Runtime {
 			element.addEventListener('compositionstart', () => {
 				SemanticElements.composingHandle = handle;
 			});
+			element.addEventListener('blur', () => {
+				if (SemanticElements.composingHandle === handle) {
+					SemanticElements.composingHandle = 0;
+				}
+			});
 			element.addEventListener('compositionend', () => {
 				// Cleared before the callback: managed code flushes re-adds it deferred while composing.
 				if (SemanticElements.composingHandle === handle) {

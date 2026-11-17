@@ -2997,7 +2997,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// Re-creating the input would discard the uncommitted IME text; replay once the composition ends.
 		if (restoreFocus && NativeMethods.IsSemanticElementComposing(focusHandle))
 		{
-			_reAddsAfterComposition.Add(new WeakReference<UIElement>(element));
+			if (!_reAddsAfterComposition.Exists(r => r.TryGetTarget(out var queued) && queued == element))
+			{
+				_reAddsAfterComposition.Add(new WeakReference<UIElement>(element));
+			}
 			return;
 		}
 
