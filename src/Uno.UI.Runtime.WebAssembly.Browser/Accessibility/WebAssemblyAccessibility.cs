@@ -71,6 +71,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	private bool _suppressDeparture;
 	internal ModalFocusScope? ActiveModalScope { get; set; }
 	private readonly List<VirtualizedSemanticRegion> _virtualizedRegions = new();
+	private readonly List<WeakReference<UIElement>> _reAddsAfterComposition = new();
 	// Unsubscribe actions for the ContentDialogs whose Opened/Closed events drive modal focus scopes.
 	// Weak so a dialog that left the tree is not kept alive; it stays subscribed so Closed still runs.
 	private readonly ConditionalWeakTable<ContentDialog, Action> _trackedDialogs = new();
@@ -1269,6 +1270,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				valueProvider.SetValue(value);
 			}
 		}
+
+		// compositionend reports through here once the value is committed.
+		@this.FlushReAddsAfterComposition();
 	}
 
 	[JSExport]
@@ -2971,6 +2975,30 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	private void ReAddSemanticElement(UIElement element)
 	{
+		// A detached element has no nodes yet; attaching it builds them from its current properties.
+		if (!element.IsActiveInVisualTree)
+		{
+			return;
+		}
+
+		if (TryReEmitVirtualizedItem(element))
+		{
+			return;
+		}
+
+		// Restore only browser focus that was in the subtree: XAML focus does not change when the user
+		// moves to HTML outside the app, so it alone would steal focus back.
+		var focused = element.XamlRoot is { } xamlRoot ? FocusManager.GetFocusedElement(xamlRoot) as UIElement : null;
+		var focusHandle = focused is not null && IsSelfOrDescendant(focused, element) ? ResolveToSemanticHandle(focused) : IntPtr.Zero;
+		var restoreFocus = focusHandle != IntPtr.Zero && NativeMethods.IsSemanticElementFocused(focusHandle);
+
+		// Re-creating the input would discard the uncommitted IME text; replay once the composition ends.
+		if (restoreFocus && NativeMethods.IsSemanticElementComposing(focusHandle))
+		{
+			_reAddsAfterComposition.Add(new WeakReference<UIElement>(element));
+			return;
+		}
+
 		var parent = element.GetParent() as UIElement
 			?? element.GetParentInternal(publicParentOnly: false) as UIElement;
 		if (parent is null)
@@ -2979,35 +3007,86 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				RebuildSemanticTree(rootElement);
 			}
-			return;
 		}
-
-		var semanticParentHandle = FindSemanticParent(parent);
-		var semanticParent = FindAncestorByHandle(parent, semanticParentHandle);
-		var anchorHandle = semanticParent is not null
-			? FindNextSemanticSibling(semanticParent, semanticParentHandle, element)
-			: IntPtr.Zero;
-		var focused = element.XamlRoot is { } xamlRoot ? FocusManager.GetFocusedElement(xamlRoot) as UIElement : null;
-		var focusInSubtree = focused is not null && IsSelfOrDescendant(focused, element);
-
-		OnChildRemoved(parent, element);
-		OnChildAdded(parent, element, null);
-
-		// The subtree was appended under its semantic parent: move its top-level nodes back to their
-		// reading-order position, i.e. before the next semantic sibling in the flattened tree.
-		if (anchorHandle != IntPtr.Zero)
+		else
 		{
-			foreach (var handle in GetTopLevelSemanticHandles(element, semanticParentHandle))
+			var semanticParentHandle = FindSemanticParent(parent);
+			var semanticParent = FindAncestorByHandle(parent, semanticParentHandle);
+			var anchorHandle = semanticParent is not null
+				? FindNextSemanticSibling(semanticParent, semanticParentHandle, element)
+				: IntPtr.Zero;
+
+			OnChildRemoved(parent, element);
+			OnChildAdded(parent, element, null);
+
+			// The subtree was appended under its semantic parent: move its top-level nodes back to their
+			// reading-order position, i.e. before the next semantic sibling in the flattened tree.
+			if (anchorHandle != IntPtr.Zero)
 			{
-				NativeMethods.MoveSemanticElementBefore(handle, anchorHandle);
+				foreach (var handle in GetTopLevelSemanticHandles(element, semanticParentHandle))
+				{
+					NativeMethods.MoveSemanticElementBefore(handle, anchorHandle);
+				}
 			}
 		}
 
 		// Re-creating (or moving) the nodes drops browser focus while XAML focus is unchanged, so no GotFocus restores it.
-		if (focusInSubtree && ResolveToSemanticHandle(focused!) is var focusHandle && focusHandle != IntPtr.Zero)
+		if (restoreFocus && ResolveToSemanticHandle(focused!) is var newFocusHandle && newFocusHandle != IntPtr.Zero)
 		{
-			NativeMethods.FocusSemanticElement(focusHandle);
+			NativeMethods.FocusSemanticElement(newFocusHandle);
 		}
+	}
+
+	private void FlushReAddsAfterComposition()
+	{
+		if (_reAddsAfterComposition.Count == 0)
+		{
+			return;
+		}
+
+		var pending = _reAddsAfterComposition.ToArray();
+		_reAddsAfterComposition.Clear();
+		foreach (var reference in pending)
+		{
+			if (reference.TryGetTarget(out var element))
+			{
+				ReAddSemanticElement(element);
+			}
+		}
+	}
+
+	// A realized ListView/ItemsRepeater container is owned by its region, not _semanticParentMap, so it is
+	// re-emitted there: the node is updated in place, keeping its position and focus.
+	private bool TryReEmitVirtualizedItem(UIElement element)
+	{
+		foreach (var region in _virtualizedRegions)
+		{
+			var (index, totalCount, role) = FindUIElementByHandle(element, region.ContainerHandle) switch
+			{
+				ListViewBase listView => (listView.IndexFromContainer(element), listView.Items?.Count ?? 0, listView is GridView ? "row" : "option"),
+				ItemsRepeater repeater when element.GetParent() == repeater && ItemsRepeater.GetVirtualizationInfo(element) is { IsRealized: true } info
+					=> (info.Index, repeater.ItemsSourceView?.Count ?? 0, "option"),
+				_ => (-1, 0, string.Empty),
+			};
+
+			if (index < 0)
+			{
+				continue;
+			}
+
+			if (IsSemanticElement(element))
+			{
+				EmitRealizedItem(region, region.ContainerHandle, element, index, totalCount, role);
+			}
+			else if (region.ContainsRealizedHandle(element.Visual.Handle))
+			{
+				region.RemoveRealizedItem(element.Visual.Handle, index);
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static UIElement? FindAncestorByHandle(UIElement start, IntPtr handle)
@@ -3323,6 +3402,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.moveSemanticElementBefore")]
 		internal static partial void MoveSemanticElementBefore(IntPtr handle, IntPtr anchorHandle);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.isSemanticElementFocused")]
+		internal static partial bool IsSemanticElementFocused(IntPtr handle);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.isSemanticElementComposing")]
+		internal static partial bool IsSemanticElementComposing(IntPtr handle);
 
 		// ===== Relationship Attributes =====
 

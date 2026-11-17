@@ -523,6 +523,123 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual(innerId, ActiveElementId(), "Browser focus must be restored to the focused descendant.");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Detached_Element_Gets_LiveSetting_Then_Tree_And_Focus_Are_Kept()
+		{
+			var button = new Button { Content = "Focused" };
+
+			await UITestHelper.Load(button);
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(button), timeoutMS: 5000, message: "Timed out waiting for the semantic tree.");
+
+			button.Focus(FocusState.Keyboard);
+			var buttonId = GetSemanticElementId(button);
+			await UITestHelper.WaitFor(() => ActiveElementId() == buttonId, timeoutMS: 5000, message: "DOM focus did not reach the button.");
+			InvokeBrowserJs($"(function(){{document.getElementById('{buttonId}').dataset.marker='kept';return '';}})()");
+
+			// Neither element is in the tree: attaching them later reads the setting, so nothing may be rebuilt now.
+			AutomationProperties.SetLiveSetting(new Grid(), AutomationLiveSetting.Polite);
+			AutomationProperties.SetLiveSetting(new TextBlock { Text = "Detached" }, AutomationLiveSetting.Assertive);
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("kept", GetSemanticAttribute(button, "data-marker"), "The semantic tree must not be rebuilt for a detached element.");
+			Assert.AreEqual(buttonId, ActiveElementId(), "Browser focus must stay on the focused button.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Focus_Is_Outside_App_Then_LiveSetting_Change_Does_Not_Take_It()
+		{
+			var inner = new Button { Content = "Inner" };
+			var region = new Grid { Children = { inner } };
+
+			await UITestHelper.Load(region);
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(inner), timeoutMS: 5000, message: "Timed out waiting for the semantic tree.");
+
+			inner.Focus(FocusState.Keyboard);
+			var innerId = GetSemanticElementId(inner);
+			await UITestHelper.WaitFor(() => ActiveElementId() == innerId, timeoutMS: 5000, message: "DOM focus did not reach the inner button.");
+
+			// The user moves to HTML outside the app: XAML focus stays on the inner button.
+			InvokeBrowserJs("(function(){const i=document.createElement('input');i.id='uno-test-outside';document.body.appendChild(i);i.focus();return '';})()");
+			try
+			{
+				Assert.AreEqual("uno-test-outside", ActiveElementId());
+
+				AutomationProperties.SetLiveSetting(region, AutomationLiveSetting.Polite);
+				await UITestHelper.WaitFor(() => SemanticElementExists(region), timeoutMS: 5000, message: "The container must join the semantic tree.");
+				await UITestHelper.WaitForIdle();
+
+				Assert.AreEqual("uno-test-outside", ActiveElementId(), "Re-creating the subtree must not pull browser focus back into the app.");
+			}
+			finally
+			{
+				InvokeBrowserJs("(function(){document.getElementById('uno-test-outside')?.remove();return '';})()");
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_TextBox_Is_Composing_Then_Container_ReAdd_Waits_For_CompositionEnd()
+		{
+			var textBox = new TextBox { Width = 200 };
+			var region = new Grid { Children = { textBox } };
+
+			await UITestHelper.Load(region);
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic tree.");
+
+			textBox.Focus(FocusState.Keyboard);
+			var inputId = GetSemanticElementId(textBox);
+			await UITestHelper.WaitFor(() => ActiveElementId() == inputId, timeoutMS: 5000, message: "DOM focus did not reach the semantic input.");
+			InvokeBrowserJs($"(function(){{const t=document.getElementById('{inputId}');t.dataset.marker='kept';t.dispatchEvent(new CompositionEvent('compositionstart'));return '';}})()");
+
+			AutomationProperties.SetLiveSetting(region, AutomationLiveSetting.Polite);
+			await UITestHelper.WaitForIdle();
+
+			Assert.IsFalse(SemanticElementExists(region), "The container must not be re-created while the input is composing.");
+			Assert.AreEqual("kept", GetSemanticAttribute(textBox, "data-marker"), "The composing input must not be re-created.");
+			Assert.AreEqual(inputId, ActiveElementId());
+
+			InvokeBrowserJs($"(function(){{document.getElementById('{inputId}').dispatchEvent(new CompositionEvent('compositionend',{{data:''}}));return '';}})()");
+			await UITestHelper.WaitFor(() => SemanticElementExists(region), timeoutMS: 5000, message: "The deferred re-add must run once the composition ends.");
+			Assert.AreEqual(GetSemanticElementId(region), InvokeBrowserJs($"(function(){{return document.getElementById('{inputId}').parentElement.id;}})()"));
+			Assert.AreEqual(inputId, ActiveElementId(), "Browser focus must be restored to the re-created input.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Realized_ListViewItem_AccessibilityView_Changes_Then_Node_Keeps_Its_Position()
+		{
+			var listView = new ListView { ItemsSource = new[] { "Alpha", "Beta" }, Height = 200 };
+			AutomationProperties.SetName(listView, "Items");
+
+			await UITestHelper.Load(listView);
+			await UITestHelper.WaitFor(() => listView.ContainerFromIndex(1) is not null, timeoutMS: 5000, message: "Items were not realized.");
+			var first = (ListViewItem)listView.ContainerFromIndex(0);
+			var second = (ListViewItem)listView.ContainerFromIndex(1);
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(first) && SemanticElementExists(second), timeoutMS: 5000, message: "Timed out waiting for the realized item nodes.");
+
+			var order = $"(function(){{return Array.from(document.getElementById('{GetSemanticElementId(listView)}').children).map(c => c.id).join(',');}})()";
+			var expectedOrder = string.Join(",", GetSemanticElementId(first), GetSemanticElementId(second));
+			Assert.AreEqual(expectedOrder, InvokeBrowserJs(order));
+			InvokeBrowserJs($"(function(){{document.getElementById('{GetSemanticElementId(first)}').dataset.marker='kept';return '';}})()");
+
+			AutomationProperties.SetAccessibilityView(first, AccessibilityView.Content);
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("kept", GetSemanticAttribute(first, "data-marker"), "A realized item must be updated in place by its region.");
+			Assert.AreEqual(expectedOrder, InvokeBrowserJs(order), "The realized item must keep its reading-order position.");
+		}
+
 		private static string ActiveElementId()
 			=> InvokeBrowserJs("(function(){return document.activeElement ? document.activeElement.id : '';})()");
 
