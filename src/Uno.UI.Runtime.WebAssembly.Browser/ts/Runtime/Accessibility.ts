@@ -889,6 +889,23 @@ namespace Uno.UI.Runtime {
 		}
 
 		/**
+		 * True when browser focus is on the semantic element or inside it.
+		 */
+		public static isSemanticElementFocused(handle: number): boolean {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			const active = document.activeElement;
+			return !!element && !!active && (element === active || element.contains(active));
+		}
+
+		/**
+		 * True when the focused semantic text input has an IME composition in progress.
+		 */
+		public static isSemanticElementComposing(handle: number): boolean {
+			return SemanticElements.composingHandle === handle
+				&& Accessibility.getSemanticElementByHandle(handle) === document.activeElement;
+		}
+
+		/**
 		 * Moves a semantic element before a sibling, keeping DOM reading order aligned with the visual tree.
 		 */
 		public static moveSemanticElementBefore(handle: number, anchorHandle: number): void {

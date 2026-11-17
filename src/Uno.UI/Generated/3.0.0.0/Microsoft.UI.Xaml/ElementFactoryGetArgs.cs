@@ -2,46 +2,14 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.UI.Xaml;
 
-#if __SKIA__
+#if false
 [global::Uno.NotImplemented]
 #endif
 public partial class ElementFactoryGetArgs
 {
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public object Data
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ElementFactoryGetArgs", "Data");
-		}
-		set
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ElementFactoryGetArgs", "Data");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.UIElement Parent
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.ElementFactoryGetArgs", "Parent");
-		}
-		set
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ElementFactoryGetArgs", "Parent");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public ElementFactoryGetArgs()
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.ElementFactoryGetArgs", "ElementFactoryGetArgs()");
-	}
-#endif
+	// Skipping already declared property Data
+	// Skipping already declared property Parent
+	// Skipping already declared method Microsoft.UI.Xaml.ElementFactoryGetArgs.ElementFactoryGetArgs()
 	// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.ElementFactoryGetArgs()
 	// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.Data.get
 	// Forced skipping of method Microsoft.UI.Xaml.ElementFactoryGetArgs.Data.set

@@ -3,7 +3,7 @@
     {
       "id": "navigationview",
       "title": "NavigationView",
-      "baseline": "bac7a9c33ffe3696ec19121b16f166227eae4f1f",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
       "upstream": {
         "sources": [
           "controls/dev/NavigationView"
@@ -16,7 +16,11 @@
       },
       "uno": {
         "sources": [
-          "src/Uno.UI/UI/Xaml/Controls/NavigationView"
+          "src/Uno.UI/UI/Xaml/Controls/NavigationView",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationBackButton_themeresources.xaml",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationBackButton.xaml",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationView_themeresources.xaml",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationView.xaml"
         ],
         "tests": [
           "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/NavigationView"
@@ -171,6 +175,100 @@
         {
           "upstream": "dxaml/xcp/dxaml/themes/generic.xaml",
           "uno": "src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml"
+        }
+      ]
+    },
+    {
+      "id": "infobadge",
+      "title": "InfoBadge",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
+      "upstream": {
+        "sources": [
+          "controls/dev/InfoBadge"
+        ],
+        "tests": [
+          "controls/dev/InfoBadge/APITests",
+          "controls/dev/InfoBadge/InteractionTests",
+          "controls/dev/InfoBadge/TestUI"
+        ]
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/InfoBadge"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/InfoBadge",
+          "src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/InfoBadgeTests"
+        ]
+      },
+      "mirror": [
+        {
+          "upstream": "controls/dev/InfoBadge/InfoBadge.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/InfoBadge.xaml"
+        },
+        {
+          "upstream": "controls/dev/InfoBadge/InfoBadge_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/InfoBadge_themeresources.xaml"
+        }
+      ]
+    },
+    {
+      "id": "splitbutton",
+      "title": "SplitButton",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
+      "upstream": {
+        "sources": [
+          "controls/dev/SplitButton"
+        ],
+        "tests": [
+          "controls/dev/SplitButton/APITests",
+          "controls/dev/SplitButton/InteractionTests",
+          "controls/dev/SplitButton/TestUI"
+        ],
+        "strings": "controls/dev/SplitButton/Strings"
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/SplitButton",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/SplitButton_themeresources.xaml",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/SplitButton.xaml"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/SplitButton"
+        ],
+        "strings": "src/Uno.UI/UI/Xaml/Controls/SplitButton/Strings"
+      }
+    },
+    {
+      "id": "dropdownbutton",
+      "title": "DropDownButton",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
+      "upstream": {
+        "sources": [
+          "controls/dev/DropDownButton"
+        ],
+        "tests": [
+          "controls/dev/DropDownButton/InteractionTests",
+          "controls/dev/DropDownButton/TestUI"
+        ]
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/DropDownButton"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/DropDownButton",
+          "src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/DropDownButton"
+        ]
+      },
+      "mirror": [
+        {
+          "upstream": "controls/dev/DropDownButton/DropDownButton.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/DropDownButton.xaml"
+        },
+        {
+          "upstream": "controls/dev/DropDownButton/DropDownButton_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/DropDownButton_themeresources.xaml"
         }
       ]
     }
