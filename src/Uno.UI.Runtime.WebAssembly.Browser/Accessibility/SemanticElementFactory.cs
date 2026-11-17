@@ -117,10 +117,10 @@ internal static partial class SemanticElementFactory
 			}
 		}
 
-		// Apply aria-description from HelpText for VoiceOver secondary context. A column header whose help text
-		// is its sort direction already reports it as aria-sort, so it is not announced twice.
+		// Apply aria-description (FullDescription, else HelpText) for VoiceOver secondary context. A column header
+		// whose help text is its sort direction already reports it as aria-sort, so it is not announced twice.
 		if (created && !string.IsNullOrEmpty(attributes.Description)
-			&& !(elementType == SemanticElementType.ColumnHeader && GetSortFromHelpText(attributes.Description) is not null))
+			&& !(elementType == SemanticElementType.ColumnHeader && IsSortOnlyDescription(peer)))
 		{
 			NativeMethods.UpdateAriaDescription(handle, attributes.Description);
 		}
@@ -1068,6 +1068,10 @@ internal static partial class SemanticElementFactory
 
 		return GetSortFromHelpText(peer.GetHelpText());
 	}
+
+	// The description falls back to HelpText only without a FullDescription; an explicit one is always kept.
+	internal static bool IsSortOnlyDescription(AutomationPeer peer)
+		=> string.IsNullOrEmpty(peer.GetFullDescription()) && GetSortFromHelpText(peer.GetHelpText()) is not null;
 
 	internal static string? GetSortFromHelpText(string? helpText)
 	{

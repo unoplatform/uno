@@ -376,6 +376,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_ColumnHeader_Has_FullDescription_Then_It_Is_Kept()
+		{
+			// Only a HelpText fallback can be the toolkit's sort direction; an authored FullDescription is not a sort.
+			var header = new ColumnHeaderControl();
+			AutomationProperties.SetFullDescription(header, "Ascending");
+
+			await UITestHelper.Load(header, x => x.IsLoaded);
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(header), timeoutMS: 5000, message: "Timed out waiting for the header semantic element.");
+
+			Assert.IsFalse(SemanticElementHasAttribute(header, "aria-sort"));
+			Assert.AreEqual("Ascending", GetSemanticAttribute(header, "aria-description"), "An explicit FullDescription must be kept.");
+
+			AutomationProperties.SetHelpText(header, "Descending");
+			await UITestHelper.WaitForIdle();
+			Assert.AreEqual("Ascending", GetSemanticAttribute(header, "aria-description"), "HelpText must not override FullDescription.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_ColumnHeader_ItemStatus_Changes_Then_Aria_Sort_Follows()
 		{
 			var header = new ColumnHeaderControl();

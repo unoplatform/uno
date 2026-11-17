@@ -2655,8 +2655,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				this.Log().Trace($"[A11y] PROP CHANGE: HelpText handle={element.Visual.Handle} element={element.GetType().Name} new='{newValue}'");
 			}
 			var handle = element.Visual.Handle;
-			var isSortHelpText = _columnHeaders.ContainsKey(handle) && SemanticElementFactory.GetSortFromHelpText(newValue as string) is not null;
-			NativeMethods.UpdateAriaDescription(handle, isSortHelpText ? string.Empty : (string)newValue);
+			// HelpText is only the aria-description fallback: an explicit FullDescription takes precedence (AriaMapper).
+			var fullDescription = peer.GetFullDescription();
+			var description = !string.IsNullOrEmpty(fullDescription)
+				? fullDescription
+				: _columnHeaders.ContainsKey(handle) && SemanticElementFactory.GetSortFromHelpText(newValue as string) is not null
+					? string.Empty
+					: newValue as string ?? string.Empty;
+			NativeMethods.UpdateAriaDescription(handle, description);
 			UpdateColumnHeaderSort(handle);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.LandmarkTypeProperty &&
