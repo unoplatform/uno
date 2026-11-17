@@ -583,9 +583,8 @@ internal static partial class SemanticElementFactory
 		bool isFocusable)
 	{
 		var splitButton = owner as SplitButton;
-		var secondaryPart = splitButton?.SecondaryButtonPart;
 		var (groupLabel, primaryLabel, secondaryLabel) = GetSplitButtonLabels(splitButton, peer);
-		var secondaryWidth = secondaryPart is { ActualWidth: > 0 } ? (float)secondaryPart.ActualWidth : 0f;
+		var (primaryDisabled, secondaryDisabled) = GetSplitButtonPartsDisabled(splitButton, attributes.Disabled);
 		var pressed = peer.GetPattern(PatternInterface.Toggle) is IToggleProvider toggleProvider
 			? (toggleProvider.ToggleState == ToggleState.On ? "true" : "false")
 			: null;
@@ -601,13 +600,40 @@ internal static partial class SemanticElementFactory
 			groupLabel,
 			primaryLabel,
 			secondaryLabel,
-			secondaryWidth,
+			GetSecondaryPartWidth(splitButton),
 			attributes.Expanded ?? false,
 			pressed,
-			attributes.Disabled,
+			primaryDisabled,
+			secondaryDisabled,
 			isFocusable);
 		return true;
 	}
+
+	private static float GetSecondaryPartWidth(SplitButton? splitButton)
+		=> splitButton?.SecondaryButtonPart is { ActualWidth: > 0 } secondaryPart ? (float)secondaryPart.ActualWidth : 0f;
+
+	/// <summary>
+	/// The template binds Command to the primary part only, so CanExecute == false disables that part
+	/// while the split button and its menu part stay enabled.
+	/// </summary>
+	private static (bool Primary, bool Secondary) GetSplitButtonPartsDisabled(SplitButton? splitButton, bool splitButtonDisabled)
+		=> (splitButtonDisabled || splitButton?.PrimaryButtonPart is { IsEnabled: false },
+			splitButtonDisabled || splitButton?.SecondaryButtonPart is { IsEnabled: false });
+
+	/// <summary>
+	/// Re-reads the enabled state of each part after the split button or one of its parts changed IsEnabled.
+	/// </summary>
+	internal static void UpdateSplitButtonPartsDisabled(SplitButton splitButton)
+	{
+		var (primaryDisabled, secondaryDisabled) = GetSplitButtonPartsDisabled(splitButton, !splitButton.IsEnabled);
+		NativeMethods.UpdateSplitButtonPartsDisabled(splitButton.Visual.Handle, primaryDisabled, secondaryDisabled);
+	}
+
+	/// <summary>
+	/// Re-sends the menu part's measured width, which is unknown when the node is created before layout.
+	/// </summary>
+	internal static void UpdateSplitButtonGeometry(SplitButton splitButton)
+		=> NativeMethods.UpdateSplitButtonGeometry(splitButton.Visual.Handle, GetSecondaryPartWidth(splitButton));
 
 	/// <summary>
 	/// The group carries only an explicit name; the primary button is named by its content, as the
@@ -1420,8 +1446,14 @@ internal static partial class SemanticElementFactory
 		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.updateSplitButtonLabels")]
 		internal static partial void UpdateSplitButtonLabels(IntPtr handle, string? label, string? primaryLabel, string? secondaryLabel);
 
+		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.updateSplitButtonPartsDisabled")]
+		internal static partial void UpdateSplitButtonPartsDisabled(IntPtr handle, bool primaryDisabled, bool secondaryDisabled);
+
+		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.updateSplitButtonGeometry")]
+		internal static partial void UpdateSplitButtonGeometry(IntPtr handle, float secondaryWidth);
+
 		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.createSplitButtonElement")]
-		internal static partial void CreateSplitButtonElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, string? primaryLabel, string? secondaryLabel, float secondaryWidth, bool expanded, string? pressed, bool disabled, bool isFocusable);
+		internal static partial void CreateSplitButtonElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, string? primaryLabel, string? secondaryLabel, float secondaryWidth, bool expanded, string? pressed, bool primaryDisabled, bool secondaryDisabled, bool isFocusable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.createButtonElement")]
 		internal static partial void CreateButtonElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, bool disabled, bool isFocusable);

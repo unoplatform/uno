@@ -363,15 +363,18 @@ namespace Uno.UI.Runtime {
 			}
 		}
 
-		// A node made of focusable parts (a split button) keeps focus on the part that has it.
-		private static focusNode(element: HTMLElement) {
+		/**
+		 * Focuses a semantic node. A node made of focusable parts (a split button) keeps focus on the part
+		 * that has it, or delegates it to its focus target part.
+		 */
+		public static focusNode(element: HTMLElement, preventScroll: boolean = true) {
 			if (element.dataset.unoFocusDelegate === 'true') {
 				if (!element.contains(document.activeElement)) {
-					SemanticElements.getSplitButtonPart(element, 'primary')?.focus({ preventScroll: true });
+					SemanticElements.getSplitButtonFocusTarget(element)?.focus({ preventScroll });
 				}
 				return;
 			}
-			element.focus({ preventScroll: true });
+			element.focus({ preventScroll });
 		}
 
 		/**
@@ -627,8 +630,7 @@ namespace Uno.UI.Runtime {
 				if (element.dataset.unoFocusDelegate === 'true') {
 					// The group itself is never a tab stop; remember the request so re-enabling honors it.
 					element.dataset.unoFocusable = String(isFocusable);
-					const primary = SemanticElements.getSplitButtonPart(element, 'primary');
-					SemanticElements.applySplitButtonState(element, primary?.disabled ?? false);
+					SemanticElements.refreshSplitButtonState(element);
 				} else {
 					Accessibility.updateElementFocusability(element, isFocusable);
 				}
@@ -1058,6 +1060,9 @@ namespace Uno.UI.Runtime {
 				element.style.top = `${y}px`;
 				element.style.width = `${width}px`;
 				element.style.height = `${height}px`;
+				if (element.dataset.unoFocusDelegate === 'true') {
+					SemanticElements.layoutSplitButtonParts(element);
+				}
 			}
 		}
 
