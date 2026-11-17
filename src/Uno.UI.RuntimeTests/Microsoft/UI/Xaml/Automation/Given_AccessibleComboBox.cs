@@ -397,9 +397,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		}
 
 		/// <summary>
-		/// A screen reader activates an option by clicking its semantic node. As in WinUI
-		/// (ComboBoxItemDataAutomationPeer::SelectImpl), that selects the item and collapses the ComboBox.
-		/// </summary>
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
@@ -437,6 +434,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			}
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Option_Selection_Changes_Before_Deferred_Update_Then_Latest_Wins()
+		{
+			var comboBox = await LoadAccessibleComboBox();
+
+			try
+			{
+				comboBox.IsDropDownOpen = true;
+				await UITestHelper.WaitFor(() => GetListBoxOptionCount(comboBox) == 3, timeoutMS: 5000, message: "Timed out waiting for the dropdown options.");
+
+				var second = (ComboBoxItem)comboBox.ContainerFromIndex(1);
+				await UITestHelper.WaitFor(() => SemanticElementExists(second), timeoutMS: 5000, message: "Timed out waiting for the second option.");
+
+				// Selected while the option is not in the DOM yet, so that update is deferred;
+				// deselected right after, which is applied at once.
+				var id = GetSemanticElementId(second);
+				var handle = id.Substring("uno-semantics-".Length);
+				InvokeBrowserJs(
+					"(function(){" +
+					"const semantics = globalThis.Uno.UI.Runtime.SemanticElements;" +
+					$"const option = document.getElementById('{id}');" +
+					"option.id = '';" +
+					$"semantics.updateSelectionState({handle}, true);" +
+					$"option.id = '{id}';" +
+					$"semantics.updateSelectionState({handle}, false);" +
+					"return 'ok';" +
+					"})()");
+				await Task.Delay(250);
+				await UITestHelper.WaitForIdle();
+
+				Assert.AreEqual("false", GetSemanticAttribute(second, "aria-selected"), "A deferred update must not overwrite a newer one.");
+			}
+			finally
+			{
+				comboBox.IsDropDownOpen = false;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		/// <summary>
+		/// A screen reader activates an option by clicking its semantic node. As in WinUI
+		/// (ComboBoxItemDataAutomationPeer::SelectImpl), that selects the item and collapses the ComboBox.
+		/// </summary>
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
