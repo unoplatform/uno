@@ -217,6 +217,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_ListBox_Item_Selected_Before_Accessibility_Then_It_Is_The_Active_Descendant()
+		{
+			var listBox = new ListBox
+			{
+				ItemsSource = new List<string> { "Item 1", "Item 2", "Item 3" },
+				SelectedIndex = 1,
+			};
+			AutomationProperties.SetName(listBox, "Items");
+
+			await UITestHelper.Load(listBox);
+			var selected = (UIElement)listBox.ContainerFromIndex(1);
+			Assert.IsNotNull(selected, "The selected ListBoxItem must be realized.");
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(selected), timeoutMS: 5000, message: "Timed out waiting for the selected option's semantic element.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("true", GetSemanticAttribute(selected, "aria-selected"));
+			Assert.AreEqual(
+				GetSemanticElementId(selected),
+				GetSemanticAttribute(listBox, "aria-activedescendant"),
+				"A ListBox must point aria-activedescendant at an item selected before its node was created.");
+
+			listBox.SelectedIndex = 2;
+			var next = (UIElement)listBox.ContainerFromIndex(2);
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(listBox, "aria-activedescendant") == GetSemanticElementId(next),
+				timeoutMS: 5000,
+				message: "aria-activedescendant must follow a later selection change.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		[DataRow(false)]
 		[DataRow(true)]
 		public async Task When_Container_Is_Tagged_Raw_While_Prepared_Then_It_Is_Not_In_The_Tree(bool isGridView)

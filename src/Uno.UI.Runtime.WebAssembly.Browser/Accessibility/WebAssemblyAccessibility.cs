@@ -2629,6 +2629,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				{
 					NativeMethods.UpdateActiveDescendant(ownerComboBox.Visual.Handle, element.Visual.Handle);
 				}
+				else if (ItemsControl.ItemsControlFromItemContainer(element) is Selector ownerSelector)
+				{
+					// The peer's parent is only known once the list's children were enumerated.
+					NativeMethods.UpdateActiveDescendant(ownerSelector.Visual.Handle, element.Visual.Handle);
+				}
 				else if (peer.GetParent() is FrameworkElementAutomationPeer { Owner: { } parentOwner })
 				{
 					NativeMethods.UpdateActiveDescendant(parentOwner.Visual.Handle, element.Visual.Handle);
