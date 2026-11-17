@@ -20,9 +20,9 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 	private readonly IntPtr _containerHandle;
 	private readonly Dictionary<int, IntPtr> _realizedHandles = new();
 	private readonly Dictionary<IntPtr, int> _realizedIndices = new();
-	// Index a recycled container was realized at before being re-realized elsewhere, so a late
-	// unrealize for that old index can be told apart from one for the live realization.
-	private readonly Dictionary<IntPtr, int> _supersededIndices = new();
+	// Indices a recycled container was realized at before being re-realized elsewhere, so a late
+	// unrealize for an old index can be told apart from one for the live realization.
+	private readonly Dictionary<IntPtr, HashSet<int>> _supersededIndices = new();
 	private int _totalItemCount;
 	private bool _isFocusPinned;
 	private int? _pinnedIndex;
@@ -75,9 +75,17 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 		{
 			_realizedIndices.Remove(existing);
 		}
+		if (_supersededIndices.TryGetValue(itemHandle, out var superseded))
+		{
+			superseded.Remove(index);
+		}
 		if (_realizedIndices.TryGetValue(itemHandle, out var previousIndex) && previousIndex != index)
 		{
-			_supersededIndices[itemHandle] = previousIndex;
+			if (superseded is null)
+			{
+				_supersededIndices[itemHandle] = superseded = new();
+			}
+			superseded.Add(previousIndex);
 			if (_realizedHandles.TryGetValue(previousIndex, out var previous) && previous == itemHandle)
 			{
 				_realizedHandles.Remove(previousIndex);
@@ -104,10 +112,13 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 			return;
 		}
 
-		// A late callback for the index a container was re-realized away from must not evict the live node.
-		if (_supersededIndices.TryGetValue(itemHandle, out var supersededIndex) && supersededIndex == index)
+		// A late callback for an index the container was re-realized away from must not evict the live node.
+		if (_supersededIndices.TryGetValue(itemHandle, out var superseded) && superseded.Remove(index))
 		{
-			_supersededIndices.Remove(itemHandle);
+			if (superseded.Count == 0)
+			{
+				_supersededIndices.Remove(itemHandle);
+			}
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				this.Log().Trace($"ItemUnrealized skipped (stale, re-realized) container={_containerHandle} item={itemHandle} index={index}");
