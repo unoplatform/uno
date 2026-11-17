@@ -2,8 +2,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Xaml.Controls;
+using Windows.Foundation;
 
 namespace Microsoft.Web.WebView2.Core;
 
@@ -11,64 +13,101 @@ namespace Microsoft.Web.WebView2.Core;
 /// Represents the browser environment a WebView runs under.
 /// </summary>
 /// <remarks>
-/// The members fall into two groups with different requirements. The statics report which browser is installed
-/// and must answer before any WebView exists, so they resolve through <see cref="ICoreWebView2EnvironmentStaticsExtension"/>.
-/// The instance members describe the environment of a live WebView and resolve through the owning
-/// <see cref="CoreWebView2"/>. Because <see cref="CreateAsync"/> is not implemented, the only way to obtain an
-/// instance is <see cref="CoreWebView2.Environment"/>.
+/// Environments created with <see cref="CreateAsync"/> or <see cref="CreateWithOptionsAsync"/> retain their
+/// creation options and are attached to the owning WebView during initialization. Environment metadata then
+/// resolves through that live WebView. Static browser-version queries resolve through the platform extension.
 /// </remarks>
 public partial class CoreWebView2Environment
 {
 	private const string TypeName = "Microsoft.Web.WebView2.Core.CoreWebView2Environment";
 
-	private readonly CoreWebView2 _owner;
+	private readonly List<WeakReference<CoreWebView2>> _owners = new();
+	private INativeWebViewEnvironment? _nativeEnvironment;
+	private Task<INativeWebViewEnvironment>? _nativeEnvironmentTask;
+	private string _browserVersionString = string.Empty;
+	private readonly string _userDataFolder;
 
-	internal CoreWebView2Environment(CoreWebView2 owner) => _owner = owner;
+	internal CoreWebView2Environment(string? browserExecutableFolder, string? userDataFolder, CoreWebView2EnvironmentOptions? options)
+	{
+		BrowserExecutableFolder = browserExecutableFolder;
+		_userDataFolder = userDataFolder ?? string.Empty;
+		Options = options;
+	}
 
-	/// <summary>
-	/// Gets the version of the browser currently used by this environment.
-	/// </summary>
-	public string BrowserVersionString => Native(nameof(BrowserVersionString)).BrowserVersionString;
+	internal CoreWebView2Environment(CoreWebView2 owner)
+	{
+		AttachOwner(owner);
+		_userDataFolder = string.Empty;
+	}
 
-	/// <summary>
-	/// Gets the user data folder this environment was created with.
-	/// </summary>
-	public string UserDataFolder => Native(nameof(UserDataFolder)).UserDataFolder;
+	internal string? BrowserExecutableFolder { get; }
 
-	/// <summary>
-	/// Gets the folder crash dumps are written to. The folder is created lazily and may not exist yet.
-	/// </summary>
+	internal string RequestedUserDataFolder => _userDataFolder;
+
+	internal CoreWebView2EnvironmentOptions? Options { get; }
+	internal bool IsDefaultEnvironment { get; set; }
+
+	internal void AttachOwner(CoreWebView2 owner)
+	{
+		foreach (var reference in _owners)
+		{
+			if (reference.TryGetTarget(out var current) && ReferenceEquals(current, owner))
+			{
+				return;
+			}
+		}
+		_owners.RemoveAll(reference => !reference.TryGetTarget(out _));
+		_owners.Add(new WeakReference<CoreWebView2>(owner));
+	}
+
+	public string BrowserVersionString
+	{
+		get => FindNativeEnvironment()?.BrowserVersionString ?? _browserVersionString;
+		internal set => _browserVersionString = value;
+	}
+
+	public string UserDataFolder =>
+		FindNativeEnvironment()?.UserDataFolder ?? _userDataFolder;
+
 	public string FailureReportFolderPath => Native(nameof(FailureReportFolderPath)).FailureReportFolderPath;
 
-	/// <summary>
-	/// Gets a snapshot of the processes backing this environment.
-	/// </summary>
 	public IReadOnlyList<CoreWebView2ProcessInfo> GetProcessInfos() => Native("GetProcessInfos()").GetProcessInfos();
 
-	/// <summary>
-	/// Gets the version of the installed browser, or of the browser in the default location.
-	/// </summary>
-	/// <exception cref="NotImplementedException">The current platform cannot report a browser version.</exception>
+	public static IAsyncOperation<CoreWebView2Environment> CreateAsync() =>
+		CreateWithOptionsAsync(browserExecutableFolder: null, userDataFolder: null, options: null);
+
+	public static IAsyncOperation<CoreWebView2Environment> CreateWithOptionsAsync(
+		string? browserExecutableFolder,
+		string? userDataFolder,
+		CoreWebView2EnvironmentOptions? options) =>
+		AsyncOperation.FromTask(async ct =>
+		{
+			var environment = new CoreWebView2Environment(browserExecutableFolder, userDataFolder, options);
+			await environment.EnsureNativeEnvironmentAsync();
+			return environment;
+		});
+
+	internal async Task<INativeWebViewEnvironment?> EnsureNativeEnvironmentAsync()
+	{
+		if (_nativeEnvironment is not null)
+		{
+			return _nativeEnvironment;
+		}
+		if (ApiExtensibility.CreateInstance<ICoreWebView2EnvironmentStaticsExtension>(typeof(CoreWebView2Environment), out var extension))
+		{
+			_nativeEnvironmentTask ??= extension.CreateEnvironmentAsync(this);
+			_nativeEnvironment = await _nativeEnvironmentTask;
+		}
+		return _nativeEnvironment;
+	}
+
 	public static string GetAvailableBrowserVersionString()
 		=> Statics("GetAvailableBrowserVersionString()").GetAvailableBrowserVersionString(null);
 
-	/// <summary>
-	/// Gets the version of the browser in <paramref name="browserExecutableFolder"/>, or of the installed
-	/// browser when it is null or empty.
-	/// </summary>
-	/// <remarks>
-	/// A non-empty <paramref name="browserExecutableFolder"/> is authoritative: when no browser is found there,
-	/// the call fails rather than falling back to the installed one.
-	/// </remarks>
 	public static string GetAvailableBrowserVersionString(string? browserExecutableFolder)
 		=> Statics("GetAvailableBrowserVersionString(string browserExecutableFolder)")
 			.GetAvailableBrowserVersionString(browserExecutableFolder);
 
-	/// <summary>
-	/// Compares two browser version strings, returning a negative value, zero, or a positive value when
-	/// <paramref name="browserVersionString1"/> is respectively older than, the same as, or newer than
-	/// <paramref name="browserVersionString2"/>.
-	/// </summary>
 	public static int CompareBrowserVersionString(string browserVersionString1, string browserVersionString2)
 	{
 		if (browserVersionString1 is null)
@@ -85,8 +124,29 @@ public partial class CoreWebView2Environment
 			.CompareBrowserVersionString(browserVersionString1, browserVersionString2);
 	}
 
-	private ISupportsWebViewEnvironmentInfo Native(string memberName)
-		=> _owner.RequireCapability<ISupportsWebViewEnvironmentInfo>(TypeName, memberName);
+	public CoreWebView2ControllerOptions CreateCoreWebView2ControllerOptions() => new();
+
+	public CoreWebView2PrintSettings CreatePrintSettings() => new();
+
+	private INativeWebViewEnvironment? FindNativeEnvironment()
+	{
+		if (_nativeEnvironment is not null)
+		{
+			return _nativeEnvironment;
+		}
+		foreach (var reference in _owners)
+		{
+			if (reference.TryGetTarget(out var owner) && owner.NativeWebViewForCookies is INativeWebViewEnvironment native)
+			{
+				return native;
+			}
+		}
+		return null;
+	}
+
+	private INativeWebViewEnvironment Native(string memberName)
+		=> FindNativeEnvironment()
+			?? throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException(TypeName, memberName);
 
 	private static ICoreWebView2EnvironmentStaticsExtension Statics(string memberName)
 		=> ApiExtensibility.CreateInstance<ICoreWebView2EnvironmentStaticsExtension>(typeof(CoreWebView2Environment), out var extension)

@@ -15,8 +15,7 @@ public class Given_CoreWebView2Profile
 {
 	private static readonly TimeSpan ClearBrowsingDataTimeout = TimeSpan.FromSeconds(30);
 
-	// The Win32 WebView2 constructor blocks the UI thread in a nested pump while the environment and
-	// controller are created; that cold start outlasts the 1s default on CI.
+	// A cold native environment and controller startup can outlast the 1s default on CI.
 	private const int LoadTimeoutMS = 10_000;
 
 	/// <summary>
@@ -30,7 +29,20 @@ public class Given_CoreWebView2Profile
 	/// these tests to destabilize unrelated ones.
 	/// </remarks>
 	[TestCleanup]
-	public void Cleanup() => TestServices.WindowHelper.WindowContent = null;
+	public void Cleanup()
+	{
+		try
+		{
+			if (TestServices.WindowHelper.WindowContent is Border { Child: WebView2 webView })
+			{
+				webView.Close();
+			}
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
 
 	[TestMethod]
 	public async Task When_Profile_And_Environment_Are_Available()
@@ -163,7 +175,11 @@ public class Given_CoreWebView2Profile
 		await TestServices.WindowHelper.WaitForLoaded(border, timeoutMS: LoadTimeoutMS);
 		await TestServices.WindowHelper.WaitForIdle();
 
-		await webView.EnsureCoreWebView2Async();
+		var root = Environment.GetEnvironmentVariable("UNO_WEBVIEW2_TEST_USER_DATA_ROOT")
+			?? Path.Combine(Environment.CurrentDirectory, "webview2-test-profiles");
+		var environment = await CoreWebView2Environment.CreateWithOptionsAsync(
+			null, Path.Combine(root, "webview2-profile-" + Guid.NewGuid().ToString("N")), null);
+		await webView.EnsureCoreWebView2Async(environment);
 
 		Assert.IsNotNull(webView.CoreWebView2, "The CoreWebView2 was not initialized.");
 		return webView.CoreWebView2;

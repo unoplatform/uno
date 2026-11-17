@@ -89,6 +89,7 @@ public class Given_WebView2
 		try
 		{
 			await UITestHelper.Load(webView);
+			await webView.EnsureCoreWebView2Async();
 			await NavigateToMarker(webView, "kept");
 			var elementId = GetIframeElementId(webView);
 
@@ -382,6 +383,7 @@ public class Given_WebView2
 		try
 		{
 			await UITestHelper.Load(webView);
+			await webView.EnsureCoreWebView2Async();
 
 			// A navigated WebView2 registers load and message listeners, which must not keep it alive.
 			await NavigateToMarker(webView, "collected");

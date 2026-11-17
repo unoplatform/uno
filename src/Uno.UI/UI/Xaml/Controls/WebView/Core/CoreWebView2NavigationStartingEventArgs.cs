@@ -9,8 +9,13 @@ namespace Microsoft.Web.WebView2.Core;
 /// </summary>
 public partial class CoreWebView2NavigationStartingEventArgs : EventArgs
 {
-	public CoreWebView2NavigationStartingEventArgs(ulong navigationId, string? uri) =>
-		(NavigationId, Uri) = (navigationId, uri);
+	public CoreWebView2NavigationStartingEventArgs(ulong navigationId, string? uri)
+		: this(navigationId, uri, isRedirected: false, isUserInitiated: false)
+	{
+	}
+
+	internal CoreWebView2NavigationStartingEventArgs(ulong navigationId, string? uri, bool isRedirected, bool isUserInitiated) =>
+		(NavigationId, Uri, IsRedirected, IsUserInitiated) = (navigationId, uri, isRedirected, isUserInitiated);
 
 	/// <summary>
 	/// Gets the ID of the navigation.

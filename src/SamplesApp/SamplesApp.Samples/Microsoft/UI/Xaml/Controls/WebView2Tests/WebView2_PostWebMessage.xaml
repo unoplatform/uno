@@ -1,0 +1,58 @@
+﻿<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.WebView2Tests.WebView2_PostWebMessage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.WebView2Tests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Padding="12" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            FontSize="18"
+            FontWeight="SemiBold"
+            Text="CoreWebView2.PostWebMessageAsString / PostWebMessageAsJson" />
+
+        <TextBlock
+            Grid.Row="1"
+            Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+            Text="Sends a message from the host to the page. The hosted page subscribes via window.chrome.webview.addEventListener('message', ...) and appends each event.data to its log."
+            TextWrapping="Wrap" />
+
+        <Grid Grid.Row="2" ColumnSpacing="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBox
+                x:Name="MessageInput"
+                Grid.Column="0"
+                PlaceholderText="hello from the host"
+                Text="hello from the host" />
+
+            <Button
+                Grid.Column="1"
+                Click="OnPostStringClick"
+                Content="PostAsString" />
+
+            <Button
+                Grid.Column="2"
+                Click="OnPostJsonClick"
+                Content="PostAsJson {n: 42}" />
+        </Grid>
+
+        <controls:WebView2 x:Name="WebView" Grid.Row="3" />
+    </Grid>
+</Page>

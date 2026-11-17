@@ -10,20 +10,8 @@ public partial class CoreWebView2Environment
 	// Skipping already declared property BrowserVersionString
 	// Skipping already declared property FailureReportFolderPath
 	// Skipping already declared property UserDataFolder
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2Environment> CreateAsync()
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateAsync()");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2Environment> CreateWithOptionsAsync(string browserExecutableFolder, string userDataFolder, global::Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions options)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateWithOptionsAsync(string browserExecutableFolder, string userDataFolder, CoreWebView2EnvironmentOptions options)");
-	}
-#endif
+	// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.CreateAsync()
+	// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.CreateWithOptionsAsync(string, string, Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions)
 	// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.GetAvailableBrowserVersionString()
 	// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.GetAvailableBrowserVersionString(string)
 	// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.CompareBrowserVersionString(string, string)
@@ -34,13 +22,7 @@ public partial class CoreWebView2Environment
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "GetAvailableBrowserVersionString(string browserExecutableFolder, CoreWebView2EnvironmentOptions options)");
 	}
 #endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions CreateCoreWebView2ControllerOptions()
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreateCoreWebView2ControllerOptions()");
-	}
-#endif
+	// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.CreateCoreWebView2ControllerOptions()
 #if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]
 	public global::Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer CreateSharedBuffer(ulong Size)
@@ -99,13 +81,7 @@ public partial class CoreWebView2Environment
 #endif
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Environment.BrowserProcessExited.add
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Environment.BrowserProcessExited.remove
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings CreatePrintSettings()
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Environment", "CreatePrintSettings()");
-	}
-#endif
+	// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.CreatePrintSettings()
 	// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Environment.GetProcessInfos()
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Environment.ProcessInfosChanged.add
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Environment.ProcessInfosChanged.remove

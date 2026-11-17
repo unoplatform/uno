@@ -30,9 +30,9 @@ public partial class CoreWebView2
 	{
 		get
 		{
-			if (_nativeWebView is not ISupportsWebViewEnvironmentInfo)
+			if (CustomEnvironment is { } customEnvironment)
 			{
-				throw CapabilityUnavailable(CoreWebView2TypeName, nameof(Environment));
+				return customEnvironment;
 			}
 
 			return _environment ??= new CoreWebView2Environment(this);
@@ -126,6 +126,12 @@ public partial class CoreWebView2
 	/// Dispatches after web content sends a message to the app host.
 	/// </summary>
 	public event TypedEventHandler<CoreWebView2, CoreWebView2WebMessageReceivedEventArgs> WebMessageReceived;
+
+	/// <summary>Occurs when a WebView2 process fails or unexpectedly exits.</summary>
+	public event TypedEventHandler<CoreWebView2, CoreWebView2ProcessFailedEventArgs> ProcessFailed;
+
+	internal void RaiseProcessFailed(CoreWebView2ProcessFailedEventArgs args) =>
+		ProcessFailed?.Invoke(this, args);
 
 	internal event TypedEventHandler<CoreWebView2, WebViewUnsupportedUriSchemeIdentifiedEventArgs> UnsupportedUriSchemeIdentified;
 
