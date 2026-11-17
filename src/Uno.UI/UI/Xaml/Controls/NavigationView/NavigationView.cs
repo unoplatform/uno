@@ -5550,7 +5550,7 @@ public partial class NavigationView : ContentControl
 
 	private NavigationViewItemBase ResolveContainerForItem(object item)
 	{
-		var args = new ElementFactoryGetArgs();
+		var args = new global::Microsoft.UI.Xaml.ElementFactoryGetArgs();
 		args.Data = item;
 
 		var container = m_navigationViewItemsFactory.GetElement(args);
@@ -5566,7 +5566,7 @@ public partial class NavigationView : ContentControl
 
 	private void RecycleContainer(UIElement container)
 	{
-		var args = new ElementFactoryRecycleArgs();
+		var args = new global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs();
 		args.Element = container;
 		m_navigationViewItemsFactory.RecycleElement(args);
 	}

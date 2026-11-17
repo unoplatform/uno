@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 internal class NavigationViewItemsFactory : ElementFactory
 {
-	private IElementFactoryShim m_itemTemplateWrapper = null;
+	private IElementFactory m_itemTemplateWrapper = null;
 	private NavigationViewItemBase m_settingsItem = null;
 	private List<NavigationViewItem> navigationViewItemPool = new List<NavigationViewItem>();
 
@@ -27,10 +27,15 @@ internal class NavigationViewItemsFactory : ElementFactory
 		}
 		else if (newValue is IElementFactory customElementFactory)
 		{
-			// Mirrors the upstream QI: a custom IElementFactory that does not also implement
-			// IElementFactoryShim degrades to plain NavigationViewItem wrapping instead of throwing.
-			m_itemTemplateWrapper = customElementFactory as IElementFactoryShim;
+			m_itemTemplateWrapper = customElementFactory;
 		}
+#if HAS_UNO
+		// TODO Uno: remove with IElementFactoryShim.
+		else if (newValue is IElementFactoryShim shim)
+		{
+			m_itemTemplateWrapper = new ElementFactoryShimAdapter(shim);
+		}
+#endif
 
 		navigationViewItemPool = new List<NavigationViewItem>();
 	}
@@ -42,9 +47,9 @@ internal class NavigationViewItemsFactory : ElementFactory
 
 	// Retrieve the element that will be displayed for a specific data item.
 	// If the resolved element is not derived from NavigationViewItemBase, wrap in a NavigationViewItem before returning.
-	protected override UIElement GetElementCore(ElementFactoryGetArgs args)
+	private protected override UIElement GetElementCore(global::Microsoft.UI.Xaml.ElementFactoryGetArgs args)
 	{
-		object GetNewContent(IElementFactoryShim itemTemplateWrapper, NavigationViewItemBase settingsItem)
+		object GetNewContent(IElementFactory itemTemplateWrapper, NavigationViewItemBase settingsItem)
 		{
 			// Do not template SettingsItem
 			if (settingsItem != null && settingsItem == args.Data)
@@ -88,7 +93,7 @@ internal class NavigationViewItemsFactory : ElementFactory
 			if (m_itemTemplateWrapper is ItemTemplateWrapper itemTemplateWrapper)
 			{
 				// Recycle newContent
-				var tempArgs = new ElementFactoryRecycleArgs();
+				var tempArgs = new global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs();
 				tempArgs.Element = newContent as UIElement;
 				m_itemTemplateWrapper.RecycleElement(tempArgs);
 
@@ -103,7 +108,7 @@ internal class NavigationViewItemsFactory : ElementFactory
 		return nviImpl;
 	}
 
-	protected override void RecycleElementCore(ElementFactoryRecycleArgs args)
+	private protected override void RecycleElementCore(global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs args)
 	{
 		var element = args.Element;
 		if (element != null)
@@ -141,7 +146,7 @@ internal class NavigationViewItemsFactory : ElementFactory
 		}
 	}
 
-	private void UnlinkElementFromParent(ElementFactoryRecycleArgs args)
+	private void UnlinkElementFromParent(global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs args)
 	{
 		// We want to unlink the containers from the parent repeater
 		// in case we are required to move it to a different repeater.

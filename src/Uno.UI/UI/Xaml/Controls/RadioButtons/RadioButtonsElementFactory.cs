@@ -5,25 +5,35 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	internal class RadioButtonsElementFactory : ElementFactory
 	{
-		private IElementFactoryShim m_itemTemplateWrapper = null;
+		private IElementFactory m_itemTemplateWrapper = null;
 
+		// MUX Reference RadioButtonsElementFactory.cpp (UserElementFactory), main
 		internal void UserElementFactory(object newValue)
 		{
-			m_itemTemplateWrapper = newValue as IElementFactoryShim;
-			if (m_itemTemplateWrapper == null)
+			if (newValue is DataTemplate dataTemplate)
 			{
-				// ItemTemplate set does not implement IElementFactoryShim. We also want to support DataTemplate.
-				var dataTemplate = newValue as DataTemplate;
-				if (dataTemplate != null)
-				{
-					m_itemTemplateWrapper = new ItemTemplateWrapper(dataTemplate);
-				}
+				m_itemTemplateWrapper = new ItemTemplateWrapper(dataTemplate);
 			}
+			else if (newValue is DataTemplateSelector selector)
+			{
+				m_itemTemplateWrapper = new ItemTemplateWrapper(selector);
+			}
+			else if (newValue is IElementFactory customElementFactory)
+			{
+				m_itemTemplateWrapper = customElementFactory;
+			}
+#if HAS_UNO
+			// TODO Uno: remove with IElementFactoryShim.
+			else if (newValue is IElementFactoryShim shim)
+			{
+				m_itemTemplateWrapper = new ElementFactoryShimAdapter(shim);
+			}
+#endif
 		}
 
-		protected override UIElement GetElementCore(ElementFactoryGetArgs args)
+		private protected override UIElement GetElementCore(global::Microsoft.UI.Xaml.ElementFactoryGetArgs args)
 		{
-			object GetContent(IElementFactoryShim itemTemplateWrapper)
+			object GetContent(IElementFactory itemTemplateWrapper)
 			{
 				if (itemTemplateWrapper != null)
 				{
@@ -55,7 +65,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return newRadioButton;
 		}
 
-		protected override void RecycleElementCore(ElementFactoryRecycleArgs args)
+		private protected override void RecycleElementCore(global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs args)
 		{
 
 		}
