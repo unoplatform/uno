@@ -68,6 +68,10 @@
 			</array>
 		</dict>
 	</array>
+	<!-- Runs the UIKit scene life cycle whatever the SDK, so that the runtime tests cover it. The native head keeps the
+	     default for its SDK. -->
+	<key>UnoUseSceneLifecycle</key>
+	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
