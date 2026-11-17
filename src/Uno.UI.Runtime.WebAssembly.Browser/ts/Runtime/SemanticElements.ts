@@ -1712,11 +1712,25 @@ namespace Uno.UI.Runtime {
 			}
 		}
 
+		private static ownerPruneScheduled = false;
+
 		/**
 		 * Drops index entries for owners removed with a whole subtree (no per-item removal ran for them).
-		 * Linear in the number of owners, which is the number of lists with an active item.
+		 * Coalesced to one pass per synchronous batch, so a bulk teardown costs O(owners) once, not per node.
 		 */
-		public static pruneDetachedActiveDescendantOwners(): void {
+		public static schedulePruneDetachedActiveDescendantOwners(): void {
+			if (SemanticElements.ownerPruneScheduled || SemanticElements.activeDescendantOwners.size === 0) {
+				return;
+			}
+
+			SemanticElements.ownerPruneScheduled = true;
+			queueMicrotask(() => {
+				SemanticElements.ownerPruneScheduled = false;
+				SemanticElements.pruneDetachedActiveDescendantOwners();
+			});
+		}
+
+		private static pruneDetachedActiveDescendantOwners(): void {
 			for (const [itemId, owners] of SemanticElements.activeDescendantOwners) {
 				for (const owner of owners) {
 					if (!owner.isConnected) {
@@ -1764,7 +1778,7 @@ namespace Uno.UI.Runtime {
 			const element = document.getElementById(`uno-semantics-${containerHandle}`);
 			if (element && element.parentElement) {
 				element.parentElement.removeChild(element);
-				SemanticElements.pruneDetachedActiveDescendantOwners();
+				SemanticElements.schedulePruneDetachedActiveDescendantOwners();
 			}
 		}
 	}

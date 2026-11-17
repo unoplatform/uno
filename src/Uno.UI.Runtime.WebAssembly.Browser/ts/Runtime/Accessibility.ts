@@ -603,7 +603,7 @@ namespace Uno.UI.Runtime {
 			// (e.g., after re-parenting or when duplicate IDs existed previously).
 			SemanticElements.clearActiveDescendantTo(child);
 			child.remove();
-			SemanticElements.pruneDetachedActiveDescendantOwners();
+			SemanticElements.schedulePruneDetachedActiveDescendantOwners();
 		}
 
 		public static updateIsFocusable(handle: number, isFocusable: boolean): void {
