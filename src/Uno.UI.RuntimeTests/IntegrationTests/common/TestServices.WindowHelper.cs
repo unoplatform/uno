@@ -163,6 +163,8 @@ namespace Private.Infrastructure
 
 			private static long _lastSlowIdleLogTimestamp;
 
+			private const int BuildTreeWorkTimeoutMs = 5000;
+
 			internal static async Task WaitForIdle()
 			{
 				var start = Stopwatch.GetTimestamp();
@@ -174,6 +176,9 @@ namespace Private.Infrastructure
 #endif
 
 				var elapsedMs = (long)Stopwatch.GetElapsedTime(start).TotalMilliseconds;
+
+				await WaitForBuildTreeWork();
+
 				if (elapsedMs < SlowIdleMs)
 				{
 					return;
@@ -202,6 +207,23 @@ namespace Private.Infrastructure
 				public static partial Task WhenTextInputInteropIdle();
 			}
 #endif
+
+			// MUX Reference IdleSynchronizer.cpp, WaitForIdle(waitForBuildTreeWork = true): the BuildTreeService runs once per
+			// displayed frame, so the idle queue is reached between two of its passes.
+			private static async Task WaitForBuildTreeWork()
+			{
+#if HAS_UNO
+				var start = Stopwatch.GetTimestamp();
+				var buildTreeService = DXamlCore.Current.GetBuildTreeService();
+				while (buildTreeService.ActiveWorkersCount > 0 && Stopwatch.GetElapsedTime(start).TotalMilliseconds < BuildTreeWorkTimeoutMs)
+				{
+					await Task.Delay(1);
+					await RootElementDispatcher.RunIdleAsync(_ => { });
+				}
+#else
+				await Task.CompletedTask;
+#endif
+			}
 
 			/// <summary>
 			/// Waits for <paramref name="element"/> to be loaded and measured in the visual tree.
