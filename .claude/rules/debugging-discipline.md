@@ -11,10 +11,10 @@ AGENTS.md carries the short version. This is the full protocol for bug fixes and
 ## Root-cause-first debugging
 When fixing crashes, rendering issues, or selection/indexing bugs, follow this order:
 
-1. **Reproduce first** — capture exact repro steps and expected vs actual. Keep one known-good repro path and rerun it after each meaningful change.
+1. **Reproduce first** — capture exact repro steps and expected vs actual. Keep one known-good repro path and rerun it after each meaningful change. Measure any quantitative claim in the report ("only one renders", "always") before designing around it — a wrong premise makes the analysis reject the true root cause.
 2. **Identify the broken invariant** — prefer state/lifecycle invariants over symptom-level checks. For pipelines that derive secondary state (maps, indices, caches, metadata), verify those derived structures are rebuilt from final post-mutation state.
 3. **Fix root cause before adding guards** — do not lead with null/index guards if ownership/lifecycle is wrong. Defensive guards are allowed only *after* root-cause correction, as secondary hardening.
-4. **Prove correctness with targeted tests** — add/extend tests that fail before and pass after the root fix; cover the triggering scenario and one adjacent regression scenario.
+4. **Prove correctness with targeted tests** — add/extend tests that fail before and pass after the root fix; cover the triggering scenario and one adjacent regression scenario. Run the negative control: revert the fix, rebuild, and watch the test go red — a test that passes without the fix guards nothing.
 5. **Validate with runtime behavior, not compile-only** — run the closest runtime/integration path (the `/runtime-tests` skill for UI). If full runtime execution isn't possible here, say so explicitly and give the exact command(s) for maintainers.
 6. **Communicate confidence accurately** — separate (a) code-review assessment, (b) compile validation, (c) runtime validation. Never present guard-only mitigation as a complete root-cause fix.
 
