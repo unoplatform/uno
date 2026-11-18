@@ -29,9 +29,9 @@ namespace TestRepro
 	partial class XuidGeneratorError : global::Microsoft.UI.Xaml.Controls.ContentDialog
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_ContentDialog1_7987c32aca55089a14f8c6c711f92359 = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_ContentDialog1_b17d28913e745a8e4e58c648ca621cbc = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_ContentDialog1_7987c32aca55089a14f8c6c711f92359 = "ms-appx:///TestProject/0/ContentDialog1.xaml";
+		private const string __baseUri_ContentDialog1_b17d28913e745a8e4e58c648ca621cbc = "ms-appx:///TestProject/0/ContentDialog1.xaml";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -46,18 +46,18 @@ namespace TestRepro
 			PrimaryButtonText = global::Uno.UI.Helpers.MarkupHelper.GetResourceStringForXUid("TestProject/Resources", "XuidGeneratorErrorUid/PrimaryButtonText");
 			
 			this
-			.ContentDialog1_7987c32aca55089a14f8c6c711f92359_XamlApply((ContentDialog1_7987c32aca55089a14f8c6c711f92359XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+			.ContentDialog1_b17d28913e745a8e4e58c648ca621cbc_XamlApply((ContentDialog1_b17d28913e745a8e4e58c648ca621cbcXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 			{
 			// Source ContentDialog1.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/ContentDialog1.xaml(1,2): Property 'base' does not exist on 'ContentDialog', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
-			.ContentDialog1_7987c32aca55089a14f8c6c711f92359_XamlApply((ContentDialog1_7987c32aca55089a14f8c6c711f92359XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+			.ContentDialog1_b17d28913e745a8e4e58c648ca621cbc_XamlApply((ContentDialog1_b17d28913e745a8e4e58c648ca621cbcXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 			{
 			// Class TestRepro.XuidGeneratorError
 			global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "XuidGeneratorErrorUid");
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_ContentDialog1_7987c32aca55089a14f8c6c711f92359);
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_ContentDialog1_b17d28913e745a8e4e58c648ca621cbc);
 			__p1.CreationComplete();
 			}
 			))
@@ -70,11 +70,11 @@ namespace TestRepro
 }
 namespace MyProject
 {
-	static class ContentDialog1_7987c32aca55089a14f8c6c711f92359XamlApplyExtensions
+	static class ContentDialog1_b17d28913e745a8e4e58c648ca621cbcXamlApplyExtensions
 	{
 		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.ContentDialog instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.ContentDialog ContentDialog1_7987c32aca55089a14f8c6c711f92359_XamlApply(this global::Microsoft.UI.Xaml.Controls.ContentDialog instance, XamlApplyHandler0 handler)
+		public static global::Microsoft.UI.Xaml.Controls.ContentDialog ContentDialog1_b17d28913e745a8e4e58c648ca621cbc_XamlApply(this global::Microsoft.UI.Xaml.Controls.ContentDialog instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;

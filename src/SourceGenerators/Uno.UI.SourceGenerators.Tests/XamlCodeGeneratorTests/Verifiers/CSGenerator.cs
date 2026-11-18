@@ -104,6 +104,7 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 
 			// The folder every XAML input of a test is pinned to; see the item-path notes in RunImplAsync.
 			private const string ProjectItemFolder = "//Project/0/";
+			private const string ItemLinkFolder = "0/";
 
 			// The generators whose output is snapshotted, each keyed by the short code its snapshots are
 			// named after. The code, not the type name, is what lands on disk -- again, path length.
@@ -217,9 +218,10 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 
 				globalConfigBuilder.AppendLine();
 
-				// The item paths are frozen: a generated file is named after a hash of the item path it
-				// came from (XamlFileDefinition.UniqueID), and that name is also emitted INTO the
-				// generated code, so moving the items renames and rewrites every snapshot. That is why
+				// The item links are frozen: a generated file is named after a hash of the item link
+				// (XamlFileDefinition.UniqueID), and that name is also emitted INTO the generated code,
+				// so changing the links renames and rewrites every snapshot. The `// Source` comments
+				// still depend on the item paths (see below), which is why
 				// the project file above sits next to them rather than one folder up, and why Link --
 				// which an item is free to declare independently of where it physically lives -- carries
 				// the `0/` folder instead.
@@ -238,7 +240,7 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 				{
 					globalConfigBuilder.Append($@"[{ProjectItemFolder}{xamlFile.FileName}]
 build_metadata.AdditionalFiles.SourceItemGroup = Page
-build_metadata.AdditionalFiles.Link = 0/{xamlFile.FileName}
+build_metadata.AdditionalFiles.Link = {ItemLinkFolder}{xamlFile.FileName}
 ");
 					TestState.AdditionalFiles.Add(($"{ProjectItemFolder}{xamlFile.FileName}", NormalizeNewLines(xamlFile.Contents)));
 				}
@@ -437,7 +439,7 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 			/// </summary>
 			/// <remarks>
 			/// The generated source is named after XamlFileDefinition.UniqueID -- the sanitized file name plus
-			/// a 32-character hash of the item path -- and the harness pins that item path, so the hash adds
+			/// a 32-character hash of the item link -- and the harness pins that item link, so the hash adds
 			/// 32 characters that identify nothing the snapshot doesn't already say. It is put back by
 			/// <see cref="ExpandUniqueId"/>, which recomputes it the same way. Only names that round-trip
 			/// against one of the test's own XAML files are collapsed; anything else keeps the name it has.
@@ -449,7 +451,7 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 				foreach (var xamlFile in _xamlFiles)
 				{
 					var sanitized = SanitizeFileName(xamlFile.FileName);
-					if (fileName == $"{sanitized}_{HashBuilder.Build(ProjectItemFolder + xamlFile.FileName)}.cs")
+					if (fileName == $"{sanitized}_{HashBuilder.Build(ItemLinkFolder + xamlFile.FileName)}.cs")
 					{
 						return IsSanitizedNameUnique(sanitized) ? $"{sanitized}.cs" : fileName;
 					}
@@ -465,7 +467,7 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 					var sanitized = SanitizeFileName(xamlFile.FileName);
 					if (snapshotName == $"{sanitized}.cs" && IsSanitizedNameUnique(sanitized))
 					{
-						return $"{sanitized}_{HashBuilder.Build(ProjectItemFolder + xamlFile.FileName)}.cs";
+						return $"{sanitized}_{HashBuilder.Build(ItemLinkFolder + xamlFile.FileName)}.cs";
 					}
 				}
 

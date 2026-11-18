@@ -29,9 +29,9 @@ namespace TestRepro
 	public sealed partial class MyResourceDictionary : global::Microsoft.UI.Xaml.ResourceDictionary
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_MyResourceDictionary_147dbe765eba23608d8cd771f768c620 = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_MyResourceDictionary_147dbe765eba23608d8cd771f768c620 = "ms-appx:///TestProject/0/MyResourceDictionary.xaml";
+		private const string __baseUri_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df = "ms-appx:///TestProject/0/MyResourceDictionary.xaml";
 		public void InitializeComponent()
 		{
 			this["myTemplate"] = 
@@ -50,12 +50,12 @@ namespace TestRepro
 		private static _View Build_ResDicΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			
-			return new __MyResourceDictionary_147dbe765eba23608d8cd771f768c620.__ResDicΞ0_DatTem().Build(__owner, __settings);
+			return new __MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df.__ResDicΞ0_DatTem().Build(__owner, __settings);
 		}
 
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		private class __MyResourceDictionary_147dbe765eba23608d8cd771f768c620
+		private class __MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df
 		{
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -64,9 +64,9 @@ namespace TestRepro
 			public class __ResDicΞ0_DatTem
 			{
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-				private const string __baseUri_prefix_MyResourceDictionary_147dbe765eba23608d8cd771f768c620 = "ms-appx:///TestProject/";
+				private const string __baseUri_prefix_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df = "ms-appx:///TestProject/";
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-				private const string __baseUri_MyResourceDictionary_147dbe765eba23608d8cd771f768c620 = "ms-appx:///TestProject/0/MyResourceDictionary.xaml";
+				private const string __baseUri_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df = "ms-appx:///TestProject/0/MyResourceDictionary.xaml";
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
@@ -82,7 +82,7 @@ namespace TestRepro
 							Name = "tb",
 							// Source MyResourceDictionary.xaml (Line 12:5)
 						}
-						.MyResourceDictionary_147dbe765eba23608d8cd771f768c620_XamlApply((MyResourceDictionary_147dbe765eba23608d8cd771f768c620XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+						.MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_XamlApply((MyResourceDictionary_7b2c1860cad238fddbad1631e88b57dfXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 						{
 						global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 						/* _isTopLevelDictionary:True */
@@ -97,7 +97,7 @@ namespace TestRepro
 							}
 								.BindingApply(___b => /*defaultBindModeOneWay*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is global::TestRepro.MyModel ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null , new [] {"MyString"}))
 						);
-						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MyResourceDictionary_147dbe765eba23608d8cd771f768c620);
+						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df);
 						__p1.CreationComplete();
 						}
 						))
@@ -159,11 +159,11 @@ namespace MyProject
 	public sealed partial class GlobalStaticResources
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_MyResourceDictionary_147dbe765eba23608d8cd771f768c620 = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_MyResourceDictionary_147dbe765eba23608d8cd771f768c620 = "ms-appx:///TestProject/0/MyResourceDictionary.xaml";
+		private const string __baseUri_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df = "ms-appx:///TestProject/0/MyResourceDictionary.xaml";
 		// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.
-		internal sealed class ResourceDictionarySingleton__MyResourceDictionary_147dbe765eba23608d8cd771f768c620 : global::Uno.UI.IXamlResourceDictionaryProvider
+		internal sealed class ResourceDictionarySingleton__MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df : global::Uno.UI.IXamlResourceDictionaryProvider
 		{
 			private static global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 			private static global::Uno.UI.IXamlResourceDictionaryProvider __that;
@@ -173,7 +173,7 @@ namespace MyProject
 				{
 					if (__that == null)
 					{
-						__that = new ResourceDictionarySingleton__MyResourceDictionary_147dbe765eba23608d8cd771f768c620();
+						__that = new ResourceDictionarySingleton__MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df();
 					}
 
 					return __that;
@@ -181,9 +181,9 @@ namespace MyProject
 			}
 
 			private readonly global::Uno.UI.Xaml.XamlParseContext __ParseContext_;
-			internal static global::Uno.UI.Xaml.XamlParseContext GetParseContext() => ((ResourceDictionarySingleton__MyResourceDictionary_147dbe765eba23608d8cd771f768c620)Instance).__ParseContext_;
+			internal static global::Uno.UI.Xaml.XamlParseContext GetParseContext() => ((ResourceDictionarySingleton__MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df)Instance).__ParseContext_;
 
-			public ResourceDictionarySingleton__MyResourceDictionary_147dbe765eba23608d8cd771f768c620()
+			public ResourceDictionarySingleton__MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df()
 			{
 				__ParseContext_ = global::MyProject.GlobalStaticResources.__ParseContext_;
 			}
@@ -197,43 +197,43 @@ namespace MyProject
 				)
 				;
 
-			private global::Microsoft.UI.Xaml.ResourceDictionary _MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary;
+			private global::Microsoft.UI.Xaml.ResourceDictionary _MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary;
 
-			internal global::Microsoft.UI.Xaml.ResourceDictionary MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary
+			internal global::Microsoft.UI.Xaml.ResourceDictionary MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary
 			{
 				get
 				{
-					if (_MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary == null)
+					if (_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary == null)
 					{
-						_MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary = global::Microsoft.UI.Xaml.ResourceDictionary.CreateWithCapacity(1);
-						_MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary.IsParsing = true;
-						_MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary["myTemplate"] = 
+						_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary = global::Microsoft.UI.Xaml.ResourceDictionary.CreateWithCapacity(1);
+						_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary.IsParsing = true;
+						_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary["myTemplate"] = 
 						new global::Uno.UI.Xaml.WeakResourceInitializer(this, Get_1)
 						;
-						_MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary.Source = new global::System.Uri("ms-resource:///Files/0/MyResourceDictionary.xaml");
-						_MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary.CreationComplete();
+						_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary.Source = new global::System.Uri("ms-resource:///Files/0/MyResourceDictionary.xaml");
+						_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary.CreationComplete();
 					}
-					return _MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary;
+					return _MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary;
 				}
 			}
 
-			global::Microsoft.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary;
+			global::Microsoft.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary;
 			private static _View Build_ResDicΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 			{
 				
-				return new __Resources.__MyResourceDictionary_147dbe765eba23608d8cd771f768c620.__ResDicΞ0_DatTem().Build(__owner, __settings);
+				return new __Resources.__MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df.__ResDicΞ0_DatTem().Build(__owner, __settings);
 			}
 
 		}
 
-		internal static global::Microsoft.UI.Xaml.ResourceDictionary MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary => ResourceDictionarySingleton__MyResourceDictionary_147dbe765eba23608d8cd771f768c620.Instance.GetResourceDictionary();
+		internal static global::Microsoft.UI.Xaml.ResourceDictionary MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary => ResourceDictionarySingleton__MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df.Instance.GetResourceDictionary();
 	}
 }
 namespace MyProject.__Resources
 {
 	[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 	[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-	internal class __MyResourceDictionary_147dbe765eba23608d8cd771f768c620
+	internal class __MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df
 	{
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -242,9 +242,9 @@ namespace MyProject.__Resources
 		public class __ResDicΞ0_DatTem
 		{
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private const string __baseUri_prefix_MyResourceDictionary_147dbe765eba23608d8cd771f768c620 = "ms-appx:///TestProject/";
+			private const string __baseUri_prefix_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df = "ms-appx:///TestProject/";
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-			private const string __baseUri_MyResourceDictionary_147dbe765eba23608d8cd771f768c620 = "ms-appx:///TestProject/0/MyResourceDictionary.xaml";
+			private const string __baseUri_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df = "ms-appx:///TestProject/0/MyResourceDictionary.xaml";
 			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 			global::System.Object __ResourceOwner_1;
 			_View __rootInstance = null;
@@ -260,7 +260,7 @@ namespace MyProject.__Resources
 						Name = "tb",
 						// Source MyResourceDictionary.xaml (Line 12:5)
 					}
-					.MyResourceDictionary_147dbe765eba23608d8cd771f768c620_XamlApply((MyResourceDictionary_147dbe765eba23608d8cd771f768c620XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+					.MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_XamlApply((MyResourceDictionary_7b2c1860cad238fddbad1631e88b57dfXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 					{
 					global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 					/* _isTopLevelDictionary:True */
@@ -275,7 +275,7 @@ namespace MyProject.__Resources
 						}
 							.BindingApply(___b => /*defaultBindModeOneWay*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is global::TestRepro.MyModel ___tctx ? (TryGetInstance_xBind_2(___tctx, out var bindResult2) ? (true, bindResult2) : (false, default)) : (false, default), null , new [] {"MyString"}))
 					);
-					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MyResourceDictionary_147dbe765eba23608d8cd771f768c620);
+					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df);
 					__p1.CreationComplete();
 					}
 					))
@@ -331,11 +331,11 @@ namespace MyProject.__Resources
 }
 namespace MyProject
 {
-	static class MyResourceDictionary_147dbe765eba23608d8cd771f768c620XamlApplyExtensions
+	static class MyResourceDictionary_7b2c1860cad238fddbad1631e88b57dfXamlApplyExtensions
 	{
 		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.TextBlock instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.TextBlock MyResourceDictionary_147dbe765eba23608d8cd771f768c620_XamlApply(this global::Microsoft.UI.Xaml.Controls.TextBlock instance, XamlApplyHandler0 handler)
+		public static global::Microsoft.UI.Xaml.Controls.TextBlock MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_XamlApply(this global::Microsoft.UI.Xaml.Controls.TextBlock instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;

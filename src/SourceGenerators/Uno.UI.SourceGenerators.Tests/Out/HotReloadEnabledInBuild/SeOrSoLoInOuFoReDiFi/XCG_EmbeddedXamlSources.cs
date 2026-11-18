@@ -42,8 +42,8 @@ internal static class EmbeddedXamlSourcesProvider
 			var xamlSources = new global::System.Collections.Generic.Dictionary<string, (string ActualPath, global::System.Func<(string Hash, string Payload)> Getter)>(2, global::System.StringComparer.OrdinalIgnoreCase);
 
 			// Use method groups to avoid closure allocation and ensure no lambda is created, to allow proper HR support
-			xamlSources[NormalizePath(@"//Project/0/MyDictionary.xaml")] = (NormalizePath(@"//Project/0/MyDictionary.xaml"), GetSources_MyDictionary_b31577bd88a443cc7e422162f7097e83);
-			xamlSources[NormalizePath(@"//Project/0/OtherDictionary.xaml")] = (NormalizePath(@"//Project/0/OtherDictionary.xaml"), GetSources_OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921);
+			xamlSources[NormalizePath(@"//Project/0/MyDictionary.xaml")] = (NormalizePath(@"//Project/0/MyDictionary.xaml"), GetSources_MyDictionary_e86d74cc1fc7d970a463d17e1b414bcd);
+			xamlSources[NormalizePath(@"//Project/0/OtherDictionary.xaml")] = (NormalizePath(@"//Project/0/OtherDictionary.xaml"), GetSources_OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05);
 
 			if (global::System.Threading.Interlocked.CompareExchange(ref _XamlSources, xamlSources, previousHashList) == previousHashList)
 			{
@@ -95,7 +95,7 @@ internal static class EmbeddedXamlSourcesProvider
 	private static string NormalizePath(string path) => path.Replace('\\', '/');
 
 	#region Sources for //Project/0/MyDictionary.xaml
-	private static (string hash, string payload) GetSources_MyDictionary_b31577bd88a443cc7e422162f7097e83()
+	private static (string hash, string payload) GetSources_MyDictionary_e86d74cc1fc7d970a463d17e1b414bcd()
 	{
 		return (
 			"2b12e365c973f20eb88ae3d343d09035a75fc256", // hash
@@ -120,7 +120,7 @@ internal static class EmbeddedXamlSourcesProvider
 	#endregion
 
 	#region Sources for //Project/0/OtherDictionary.xaml
-	private static (string hash, string payload) GetSources_OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921()
+	private static (string hash, string payload) GetSources_OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05()
 	{
 		return (
 			"87413f85bfe7702d0b326695f480cd59dd74d40a", // hash

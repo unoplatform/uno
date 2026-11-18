@@ -42,7 +42,7 @@ namespace MyProject
 			if(!_stylesRegistered)
 			{
 				_stylesRegistered = true;
-				RegisterDefaultStyles_MyRD_77da33433823c3123d21641a41765572();
+				RegisterDefaultStyles_MyRD_00877dfe3a13a8a0feda37bfe52fbb42();
 			}
 		}
 		// Register ResourceDictionaries using ms-appx:/// syntax, this is called for external resources
@@ -51,16 +51,16 @@ namespace MyProject
 			if(!_dictionariesRegistered)
 			{
 				_dictionariesRegistered = true;
-				global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///TestProject/0/MyRD.xaml", context: __ParseContext_, dictionary: () => MyRD_77da33433823c3123d21641a41765572_ResourceDictionary);
+				global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///TestProject/0/MyRD.xaml", context: __ParseContext_, dictionary: () => MyRD_00877dfe3a13a8a0feda37bfe52fbb42_ResourceDictionary);
 			}
 		}
 		// Register ResourceDictionaries using ms-resource:/// syntax, this is called for local resources
 		internal static void RegisterResourceDictionariesBySourceLocal()
 		{
-			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-resource:///Files/0/MyRD.xaml", context: null, dictionary: () => MyRD_77da33433823c3123d21641a41765572_ResourceDictionary, null);
-			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///0/MyRD.xaml", context: null, dictionary: () => MyRD_77da33433823c3123d21641a41765572_ResourceDictionary);
+			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-resource:///Files/0/MyRD.xaml", context: null, dictionary: () => MyRD_00877dfe3a13a8a0feda37bfe52fbb42_ResourceDictionary, null);
+			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///0/MyRD.xaml", context: null, dictionary: () => MyRD_00877dfe3a13a8a0feda37bfe52fbb42_ResourceDictionary);
 		}
-		static partial void RegisterDefaultStyles_MyRD_77da33433823c3123d21641a41765572();
+		static partial void RegisterDefaultStyles_MyRD_00877dfe3a13a8a0feda37bfe52fbb42();
 		
 	}
 }
