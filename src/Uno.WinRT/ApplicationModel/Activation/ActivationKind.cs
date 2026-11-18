@@ -206,5 +206,30 @@ public enum ActivationKind
 	/// <summary>
 	/// The app was activated as a barcode scanner provider.
 	/// </summary>
-	BarcodeScannerProvider = 1022
+	BarcodeScannerProvider = 1022,
+
+	/// <summary>
+	/// The app was activated to show the print support job UI.
+	/// </summary>
+	PrintSupportJobUI = 1023,
+
+	/// <summary>
+	/// The app was activated to show the print support settings UI.
+	/// </summary>
+	PrintSupportSettingsUI = 1024,
+
+	/// <summary>
+	/// The app was activated by a phone call.
+	/// </summary>
+	PhoneCallActivation = 1025,
+
+	/// <summary>
+	/// The app was activated in the foreground by a VPN plug-in.
+	/// </summary>
+	VpnForeground = 1026,
+
+	/// <summary>
+	/// The app was activated to show the print support enterprise management UI.
+	/// </summary>
+	PrintSupportEnterpriseManagementUI = 1027,
 }

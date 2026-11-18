@@ -12,7 +12,6 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Threading;
-using Windows.Devices.AllJoyn;
 using Windows.Foundation;
 using Windows.Media.Streaming.Adaptive;
 using Windows.Security.Cryptography.Core;
