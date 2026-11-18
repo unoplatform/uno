@@ -407,6 +407,40 @@
           "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/PipsPager_themeresources.xaml"
         }
       ]
+    },
+    {
+      "id": "progressbar",
+      "title": "ProgressBar",
+      "baseline": "1b5b1a0ccc05ce5c8b5931dc303666975b57f498",
+      "upstream": {
+        "sources": [
+          "controls/dev/ProgressBar"
+        ],
+        "tests": [
+          "controls/dev/ProgressBar/APITests",
+          "controls/dev/ProgressBar/InteractionTests"
+        ],
+        "strings": "controls/dev/ProgressBar/Strings"
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/ProgressBar"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/ProgressBar"
+        ],
+        "strings": "src/Uno.UI/UI/Xaml/Controls/ProgressBar/Strings"
+      },
+      "mirror": [
+        {
+          "upstream": "controls/dev/ProgressBar/ProgressBar.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/ProgressBar.xaml"
+        },
+        {
+          "upstream": "controls/dev/ProgressBar/ProgressBar_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/ProgressBar_themeresources.xaml"
+        }
+      ]
     }
   ]
 }
