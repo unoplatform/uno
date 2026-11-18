@@ -4,6 +4,7 @@ using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
@@ -190,9 +191,11 @@ public partial class Given_PipsPager
 
 		await UITestHelper.Load(SUT);
 
-		var repeater = SUT.FindFirstDescendant<ItemsRepeater>("PipsPagerItemsRepeater");
-		var stackLayout = repeater?.Layout as StackLayout;
-		Assert.IsNotNull(stackLayout, "Inner StackLayout not found");
+		if (SUT.FindFirstDescendant<ItemsRepeater>("PipsPagerItemsRepeater")?.Layout is not StackLayout stackLayout)
+		{
+			Assert.Fail("Inner StackLayout not found");
+			return;
+		}
 		Assert.IsTrue(stackLayout.IsVirtualizationEnabled);
 
 		SUT.WrapMode = PipsPagerWrapMode.Wrap;
@@ -200,6 +203,52 @@ public partial class Given_PipsPager
 
 		SUT.WrapMode = PipsPagerWrapMode.None;
 		Assert.IsTrue(stackLayout.IsVirtualizationEnabled);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Pip_Is_Recycled_Click_Selects_Once()
+	{
+		var SUT = new PipsPager { NumberOfPages = 5 };
+
+		await UITestHelper.Load(SUT);
+
+		if (SUT.FindFirstDescendant<ItemsRepeater>("PipsPagerItemsRepeater") is not { } repeater)
+		{
+			Assert.Fail("Inner ItemsRepeater not found");
+			return;
+		}
+
+		var originalPips = Enumerable.Range(0, 5).Select(repeater.TryGetElement).ToArray();
+
+		// Shrinking and growing again recycles the trailing pips and prepares them anew.
+		SUT.NumberOfPages = 2;
+		await TestServices.WindowHelper.WaitForIdle();
+		SUT.NumberOfPages = 5;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		if (repeater.TryGetElement(2) is not Button pip)
+		{
+			Assert.Fail("Pip 2 was not realized");
+			return;
+		}
+		CollectionAssert.Contains(originalPips, pip, "The pip must be recycled for this test to exercise re-preparation");
+
+		// Resetting from the handler makes every click handler still attached to the pip select it again.
+		var selections = 0;
+		SUT.SelectedIndexChanged += (s, e) =>
+		{
+			if (SUT.SelectedPageIndex == 2)
+			{
+				selections++;
+				SUT.SelectedPageIndex = 0;
+			}
+		};
+
+		new ButtonAutomationPeer(pip).Invoke();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(1, selections);
 	}
 
 	[TestMethod]
