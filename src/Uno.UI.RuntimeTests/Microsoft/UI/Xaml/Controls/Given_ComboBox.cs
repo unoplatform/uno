@@ -129,6 +129,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private TextBox GetEditableText(ComboBox comboBox) => comboBox.FindFirstChild<TextBox>(c => c.Name == "EditableText");
 
 		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/16486")]
+		public async Task When_IsEditable_DropDownOpen_InteriorCornersSquare()
+		{
+			var SUT = new ComboBox
+			{
+				IsEditable = true,
+				CornerRadius = new CornerRadius(4),
+				ItemsSource = Enumerable.Range(0, 5).Select(x => $"Item {x}").ToArray(),
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+
+			try
+			{
+				await UITestHelper.Load(SUT);
+				var textBox = GetEditableText(SUT);
+				Assert.AreEqual(new CornerRadius(4), textBox.CornerRadius);
+
+				SUT.IsDropDownOpen = true;
+				await UITestHelper.WaitFor(() => textBox.CornerRadius != new CornerRadius(4), timeoutMS: 2000, "EditableText corners were not updated when the drop-down opened");
+
+				var popupBorder = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Single().Child as Border;
+				Assert.AreEqual("PopupBorder", popupBorder?.Name);
+
+				// The ComboBox sits at the top of the window, so the drop-down opens below it.
+				Assert.AreEqual(new CornerRadius(4, 4, 0, 0), textBox.CornerRadius);
+				Assert.AreEqual(0, popupBorder.CornerRadius.TopLeft);
+				Assert.AreEqual(0, popupBorder.CornerRadius.TopRight);
+
+				SUT.IsDropDownOpen = false;
+				await UITestHelper.WaitForIdle();
+
+				Assert.AreEqual(new CornerRadius(4), textBox.CornerRadius);
+			}
+			finally
+			{
+				SUT.IsDropDownOpen = false;
+				VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot);
+			}
+		}
+
+		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ComboBox_MinWidth()
 		{
