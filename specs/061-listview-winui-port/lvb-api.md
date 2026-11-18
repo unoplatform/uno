@@ -4,7 +4,7 @@ Single source of truth for every file ported against `ListViewBase_Partial.h`. W
 
 Members under "Already in the header port" must not be written again. Their code lives in `ListViewBase.partial.h.mux.cs`, which also holds the `ListViewBase.g.h` part: the events, the non-mixin DPs and the explicit interface forwarders. That whole file sits inside `#if LISTVIEW_PORT_CUTOVER`, so wrap each .cpp port in the same guard until integration.
 
-Sources are under `D:\Throwaway\winui251\src\dxaml\xcp\dxaml\lib`, except `LiveReorderHelper` (see below).
+Sources are under `dxaml/xcp/dxaml/lib` of the WinUI 2.5.1 sources, except `LiveReorderHelper` (see below).
 
 ## Rules for the .cpp ports
 
@@ -62,7 +62,7 @@ Trap: `ItemsControl.OnItemsVectorChanged` is the only caller, and it raises this
 **Scroll host handler.** `IDPChangedEventHandler` has no Uno form. `m_tpOffsetChangedHandler` is an `IDisposable?`: register `RegisterPropertyChangedCallback` for `ScrollViewer.HorizontalOffsetProperty` and `VerticalOffsetProperty` and compose the two with `CompositeDisposable`. `OnScrollHostPropertyChanged(DependencyObject, DependencyProperty)` keeps its shape and its internal check on the DP. `Clear()` is `Dispose()` then `null`.
 
 **Pending porting work nobody owns yet.**
-- `LiveReorderHelper` (`inc/LiveReorderHelper.h`, `lib/LiveReorderHelper.cpp`, 215 lines) is not in the winui251 drop. It is at `D:\Work\microsoft-ui-xaml2\dxaml\xcp\components\livereorderhelper`. The Reorder port needs it as `src/Uno.UI/DirectUI/Components/LiveReorderHelper.mux.cs`, namespace `DirectUI.Components.LiveReorderHelper`. The header port aliases `DirectUI.Components.LiveReorderHelper.MovedItems`. The MUX Reference line must name that source, since it is not the 2.5.1 drop. `std::vector` iteration through `begin()`/`end()` becomes `GetEnumerator()`.
+- `LiveReorderHelper` (`inc/LiveReorderHelper.h`, `lib/LiveReorderHelper.cpp`, 215 lines) is not in the 2.5.1 drop. It is at `dxaml/xcp/components/livereorderhelper` in the newer WinUI sources. The Reorder port needs it as `src/Uno.UI/DirectUI/Components/LiveReorderHelper.mux.cs`, namespace `DirectUI.Components.LiveReorderHelper`. The header port aliases `DirectUI.Components.LiveReorderHelper.MovedItems`. The MUX Reference line must name that source, since it is not the 2.5.1 drop. `std::vector` iteration through `begin()`/`end()` becomes `GetEnumerator()`.
 - `LoadMoreItemsOperation` (`incrementalloading.h/.cpp`) does not exist in Uno. The DataVirtualization port needs it.
 - `DragDropVisual` does not exist in Uno, so its parameters and `m_tpDragDropVisual` are `object`. Its code paths stay in `#if !HAS_UNO`. Uno's drag currently flows through `DragDrop.cs` and `DragStartingEventArgs`, so `OnDragGesture` needs a decision from the Reorder porter: keep `OnItemContainerDragStarting` as Uno's trigger, or map `RaiseDragDropEventAsyncOperation` onto it.
 

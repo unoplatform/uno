@@ -3,7 +3,7 @@
 Replace Uno's `VirtualizingPanelLayout`-based ListView/GridView with a port of the WinUI C++ implementation
 (`ModernCollectionBasePanel`, `ItemsStackPanel`, `ItemsWrapGrid`, layout strategies, `ListViewBase`, and the hosts they rely on).
 
-- **Branch:** `dev/mazi/pending/listviewrevamp`, stacked on `dev/mazi/listviewitempresenter` (PR #25389).
+- **Branch:** `dev/mazi/pending/listviewrevamp`, on `master` (the item presenter port it built on, PR #25389, is merged).
 - **WinUI reference:** tag `winui3/release/2.5.1`, commit `ba3a8d59e6d`. Every ported file carries
   `// MUX Reference <File>, tag winui3/release/2.5.1, commit ba3a8d59e6d`.
 - **Boundaries:** `CalendarPanel` keeps its inline panel copy and only shares types. The `SemanticZoom` control and
