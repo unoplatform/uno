@@ -185,8 +185,10 @@ public partial class Given_PipsPager
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // IsVirtualizationEnabled is MUX_PREVIEW, not public on WinAppSDK
 	public async Task When_WrapMode_Changes_Virtualization_Follows()
 	{
+#if HAS_UNO
 		var SUT = new PipsPager { NumberOfPages = 10 };
 
 		await UITestHelper.Load(SUT);
@@ -203,6 +205,9 @@ public partial class Given_PipsPager
 
 		SUT.WrapMode = PipsPagerWrapMode.None;
 		Assert.IsTrue(stackLayout.IsVirtualizationEnabled);
+#else
+		await Task.CompletedTask;
+#endif
 	}
 
 	[TestMethod]
