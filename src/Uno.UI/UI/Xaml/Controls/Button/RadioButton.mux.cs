@@ -9,6 +9,7 @@ using Windows.System;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -252,6 +253,15 @@ namespace Microsoft.UI.Xaml.Controls
 			bool groupNameExists = false;
 			string? groupName;
 			GetGroupName(out groupNameExists, out groupName);
+			DependencyObject? spParent = GetParentForGroup(groupNameExists, this);
+
+			// If we don't get a parent then don't do anything and let it be handled on enter impl.  Without
+			// a parent we don't know what the scope of a named group item is and for unnamed items, they
+			// will all share the same group preventing different groups from having buttons selected.
+			if (spParent is null)
+			{
+				return;
+			}
 
 			var groupsByName = DXamlCore.Current.GetRadioButtonGroupsByName(false);
 
@@ -260,8 +270,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (groupsByName.TryGetValue(groupName, out var groupElements))
 				{
-					DependencyObject? spParent = GetParentForGroup(groupNameExists, this);
-
 					foreach (var radioButtonRef in groupElements)
 					{
 						// Resolve the weak reference to get an actual RadioButton
@@ -323,12 +331,12 @@ namespace Microsoft.UI.Xaml.Controls
 			// If there is no groupName, then get the parent of the RadioButton.
 			if (!groupNameExists)
 			{
-				radioButtonParent = radioButton.Parent;
+				radioButtonParent = VisualTreeHelper.GetParent(radioButton); // MUX Reference: core GetParent (VisualRelativeKind_Parent), not the logical Parent.
 			}
 			// Otherwise, use the root
 			else
 			{
-				radioButtonParent = VisualTree.GetRootForElement(radioButton); //Uno specific: Return RootVisual instead of VisualTreeHelper.GetRootStatic(radioButton);
+				radioButtonParent = VisualTree.GetForElement(radioButton)?.RootElement; // MUX Reference: core GetTreeRoot (VisualRelativeKind_Root), the RootVisual or the island root.
 			}
 
 			if (radioButtonParent != null)
