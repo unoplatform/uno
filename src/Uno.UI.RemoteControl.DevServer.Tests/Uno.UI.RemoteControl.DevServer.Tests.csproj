@@ -66,6 +66,7 @@
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\HealthReportFormatter.cs" Link="Helpers\HealthReportFormatter.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\AssemblyVersionHelper.cs" Link="Helpers\AssemblyVersionHelper.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\DevServerProcessHelper.cs" Link="Helpers\DevServerProcessHelper.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\DotnetRootLocator.cs" Link="Helpers\DotnetRootLocator.cs" />
 
 		<!-- Link MCP sources for unit testing -->
 		<!-- TODO: MCP tests that only depend on CLI types should be migrated to Uno.UI.DevServer.Cli.Tests -->
