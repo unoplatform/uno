@@ -6,7 +6,8 @@
 
 using System;
 using System.Collections.Generic;
-using Windows.UI.Core;
+using Microsoft.UI.Composition;
+using Uno.UI.Xaml.Core;
 
 namespace DirectUI
 {
@@ -14,11 +15,9 @@ namespace DirectUI
 	{
 		private readonly List<WeakReference<ITreeBuilder>> _activeWorkers = new();
 		private readonly List<WeakReference<ITreeBuilder>> _suspendedWorkers = new();
-		private bool _isDrainScheduled;
+		private bool _isWaitingForFrames;
 
 		internal int ActiveWorkersCount => _activeWorkers.Count;
-
-		internal bool HasSuspendedWorkers => _suspendedWorkers.Count > 0;
 
 		public void RegisterWork(ITreeBuilder treeBuildingElement)
 		{
@@ -27,40 +26,54 @@ namespace DirectUI
 			treeBuildingElement.IsRegisteredForCallbacks = true;
 
 			// Request another UI thread frame to handle the new build tree work
-			ScheduleDrain();
+			CoreServices.RequestAdditionalFrame();
 		}
 
-		// TODO Uno: WinUI calls BuildTrees once per UI tick. Uno has no such tick, so a Low priority item stands in,
-		// which leaves input and Normal items to run between two passes.
-		private void ScheduleDrain()
+		internal bool HasWork => _activeWorkers.Count > 0 || _suspendedWorkers.Count > 0;
+
+		// MUX Reference FxCallbacks.cpp, FrameworkCallbacks_PhasedWorkDistributor_PerformWork: the core calls this on every
+		// tick (xcpcore.cpp, after the Rendering event) and requests another tick while work is left.
+		internal void PerformWork()
 		{
-			if (!_isDrainScheduled)
+			DXamlCore.Current.GetBudgetManager().StoreFrameTime();
+
+			RequestFramesWhileWorkLeft(BuildTrees());
+		}
+
+		// TODO Uno: WinUI's frame scheduler paces the tick requested for the work left to the display. Uno ticks as soon as
+		// one is requested, so a frame driver arms one tick per displayed frame instead, and a worker that yields without
+		// making progress doesn't keep a core busy.
+		private void RequestFramesWhileWorkLeft(bool workLeft)
+		{
+			var frameTicks = Compositor.GetSharedCompositor().FrameTicks;
+
+			if (workLeft && !frameTicks.HasHosts)
 			{
-				_isDrainScheduled = true;
-				var isEnqueuing = true;
-				_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Low, () =>
-				{
-					_isDrainScheduled = false;
+				// No window draws frames (and the frame source dropped its drivers): fall back to an unpaced tick.
+				_isWaitingForFrames = false;
+				CoreServices.RequestAdditionalFrame();
+				return;
+			}
 
-					DXamlCore.Current.GetBudgetManager().StoreFrameTime();
+			if (workLeft == _isWaitingForFrames)
+			{
+				return;
+			}
 
-					// A dispatcher running this inline has no tick between passes: rescheduling would recurse forever.
-					if (BuildTrees() && !isEnqueuing)
-					{
-						ScheduleDrain();
-					}
-				});
-				isEnqueuing = false;
+			_isWaitingForFrames = workLeft;
+			if (workLeft)
+			{
+				frameTicks.FrameStarting += OnFrameStarting;
+			}
+			else
+			{
+				frameTicks.FrameStarting -= OnFrameStarting;
 			}
 		}
 
-		// Uno equivalent of the tick looking at the suspended queue: a worker leaves it after a change that goes through layout.
-		internal void OnLayoutTick()
+		// The frame's tick runs PerformWork itself.
+		private static void OnFrameStarting(object? sender, long timestamp)
 		{
-			if (HasSuspendedWorkers)
-			{
-				ScheduleDrain();
-			}
 		}
 
 		internal bool BuildTrees()
@@ -150,6 +163,8 @@ namespace DirectUI
 
 		internal void ClearWork()
 		{
+			RequestFramesWhileWorkLeft(false);
+
 			ClearWork(_activeWorkers);
 			ClearWork(_suspendedWorkers);
 

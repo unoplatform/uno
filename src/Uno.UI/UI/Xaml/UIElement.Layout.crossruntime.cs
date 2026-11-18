@@ -397,7 +397,6 @@ namespace Microsoft.UI.Xaml
 			{
 				_isLayoutingVisualTreeRoot = false;
 				unchecked { LayoutTick++; }
-				DirectUI.DXamlCore.Current.GetBuildTreeService().OnLayoutTick();
 			}
 		}
 

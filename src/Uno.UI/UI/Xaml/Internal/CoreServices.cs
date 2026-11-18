@@ -157,6 +157,14 @@ namespace Uno.UI.Xaml.Core
 				UpdateLayoutAndRaiseLoaded();
 			}
 
+			// xcpcore.cpp: the phased work (BuildTreeService) runs once per tick, after Rendering, and what it changes is
+			// laid out by this same tick.
+			if (DirectUI.DXamlCore.Current.GetBuildTreeService() is { HasWork: true } buildTreeService)
+			{
+				buildTreeService.PerformWork();
+				UpdateLayoutAndRaiseLoaded();
+			}
+
 			// xcpcore.cpp: realizes the layout transitions registered by this frame's layout, before the record, and advances the layout counter.
 			Microsoft.UI.Xaml.Media.Animation.Transition.OnFrameLayoutCompleted();
 
