@@ -29,11 +29,19 @@ public partial class ImageIcon : IconElement
 
 	protected override void OnApplyTemplate()
 	{
-		if (VisualTreeHelper.GetChild(this, 0) is Grid grid)
+		var firstChild = VisualTreeHelper.GetChild(this, 0);
+
+		// The first child may be a Grid (old behavior) or directly an Image (new behavior).
+		if (firstChild is Grid grid)
 		{
 			var image = (Image)VisualTreeHelper.GetChild(grid, 0);
 			image.Source = Source;
 			m_rootImage = image;
+		}
+		else if (firstChild is Image directImage)
+		{
+			directImage.Source = Source;
+			m_rootImage = directImage;
 		}
 		else
 		{

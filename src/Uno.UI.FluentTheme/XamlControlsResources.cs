@@ -19,6 +19,20 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 
 			Source = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.WinUIThemeResourceURL);
+
+			ApplyStyleOptimizations();
+		}
+
+		/// <summary>
+		/// Overlays the optimized (perf2026) control styles when the app opted in through
+		/// <see cref="Uno.UI.FeatureConfiguration.Style.UseDefaultStyleOptimizations"/>.
+		/// </summary>
+		private void ApplyStyleOptimizations()
+		{
+			if (Uno.UI.FeatureConfiguration.Style.UseDefaultStyleOptimizations)
+			{
+				OverlayFrom(new Uno.UI.FluentTheme.Perf2026Resources());
+			}
 		}
 
 		[NotImplemented]
