@@ -21,7 +21,8 @@ namespace Uno.Buffers
 		private sealed class Bucket
 		{
 			internal readonly int _bufferLength;
-			private readonly T[][] _buffers;
+			private readonly int _numberOfBuffers;
+			private T[][] _buffers; // allocated on first Rent, so unused size classes cost nothing
 			private readonly int _poolId;
 			private static readonly int SizeOfT = Unsafe.SizeOf<T>();
 
@@ -47,7 +48,7 @@ namespace Uno.Buffers
 					global::System.Diagnostics.Debugger.IsAttached
 #endif
 					);
-				_buffers = new T[numberOfBuffers][];
+				_numberOfBuffers = numberOfBuffers;
 				_bufferLength = bufferLength;
 				_poolId = poolId;
 			}
@@ -58,7 +59,6 @@ namespace Uno.Buffers
 			/// <summary>Takes an array from the bucket.  If the bucket is empty, returns null.</summary>
 			internal T[] Rent()
 			{
-				T[][] buffers = _buffers;
 				T[] buffer = null;
 
 				// While holding the lock, grab whatever is at the next available index and
@@ -67,10 +67,17 @@ namespace Uno.Buffers
 				// necessary to properly handle thread aborts on platforms which have them.
 				bool lockTaken = false, allocateBuffer = false;
 
+				// Allocate the slot table outside the spin lock so other threads don't spin while it's created.
+				if (_buffers == null)
+				{
+					Interlocked.CompareExchange(ref _buffers, new T[_numberOfBuffers][], null);
+				}
+
 				try
 				{
 					_lock.Enter(ref lockTaken);
 
+					T[][] buffers = _buffers;
 					if (_index < buffers.Length)
 					{
 						buffer = buffers[_index];
