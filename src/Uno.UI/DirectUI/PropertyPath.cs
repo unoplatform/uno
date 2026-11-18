@@ -85,9 +85,9 @@ partial class PropertyPathListener // src\dxaml\xcp\dxaml\lib\PropertyPath.cpp
 	{
 		m_pOwner = pOwner;
 
-		foreach (var itrDescriptor in pPropertyPathParser.Descriptors)
+		for (var i = 0; i < pPropertyPathParser.DescriptorCount; i++)
 		{
-			var spStep = itrDescriptor.CreateStep(this, fListenToChanges);
+			var spStep = pPropertyPathParser.GetDescriptorAt(i).CreateStep(this, fListenToChanges);
 			AppendStep(spStep);
 		}
 	}
