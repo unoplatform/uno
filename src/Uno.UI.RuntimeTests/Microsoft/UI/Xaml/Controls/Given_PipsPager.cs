@@ -193,13 +193,13 @@ public partial class Given_PipsPager
 		var repeater = SUT.FindFirstDescendant<ItemsRepeater>("PipsPagerItemsRepeater");
 		var stackLayout = repeater?.Layout as StackLayout;
 		Assert.IsNotNull(stackLayout, "Inner StackLayout not found");
-		Assert.IsFalse(stackLayout.DisableVirtualization);
+		Assert.IsTrue(stackLayout.IsVirtualizationEnabled);
 
 		SUT.WrapMode = PipsPagerWrapMode.Wrap;
-		Assert.IsTrue(stackLayout.DisableVirtualization);
+		Assert.IsFalse(stackLayout.IsVirtualizationEnabled);
 
 		SUT.WrapMode = PipsPagerWrapMode.None;
-		Assert.IsFalse(stackLayout.DisableVirtualization);
+		Assert.IsTrue(stackLayout.IsVirtualizationEnabled);
 	}
 
 	[TestMethod]
