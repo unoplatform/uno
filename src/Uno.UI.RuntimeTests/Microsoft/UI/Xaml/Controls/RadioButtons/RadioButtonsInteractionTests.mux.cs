@@ -146,7 +146,8 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaIOS)] // Flaky on iOS
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26579")]
 		public async Task BasicKeyboardTest()
 		{
 			elements = await RadioButtonsTestPage.Create();
@@ -557,7 +558,8 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaMacOS)] // Flaky on macOS
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26579")]
 		public async Task ScrollViewerSettingSelectionDoesNotMoveFocus()
 		{
 			elements = await RadioButtonsTestPage.Create();
