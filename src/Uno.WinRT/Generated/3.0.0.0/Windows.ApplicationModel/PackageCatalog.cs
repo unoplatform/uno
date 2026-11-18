@@ -26,6 +26,13 @@ public partial class PackageCatalog
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalog", "OpenForCurrentUser()");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.ApplicationModel.PackageCatalog OpenForPackage(global::Windows.ApplicationModel.Package package)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.PackageCatalog", "OpenForPackage(Package package)");
+	}
+#endif
 	// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageInstalling.add
 	// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageInstalling.remove
 	// Forced skipping of method Windows.ApplicationModel.PackageCatalog.PackageStaging.add

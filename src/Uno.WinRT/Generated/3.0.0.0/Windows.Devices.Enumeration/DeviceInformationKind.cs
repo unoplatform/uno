@@ -14,5 +14,6 @@ public enum DeviceInformationKind
 	// Skipping already declared field Windows.Devices.Enumeration.DeviceInformationKind.AssociationEndpointContainer
 	// Skipping already declared field Windows.Devices.Enumeration.DeviceInformationKind.AssociationEndpointService
 	// Skipping already declared field Windows.Devices.Enumeration.DeviceInformationKind.DevicePanel
+	// Skipping already declared field Windows.Devices.Enumeration.DeviceInformationKind.AssociationEndpointProtocol
 }
 #endif

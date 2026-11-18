@@ -11,5 +11,8 @@ public enum RemoteSystemAuthorizationKind
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	Anonymous = 1,
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	SameFamily = 2,
+#endif
 }
 #endif

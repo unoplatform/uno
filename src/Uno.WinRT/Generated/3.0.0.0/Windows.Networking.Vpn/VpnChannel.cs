@@ -24,11 +24,31 @@ public partial class VpnChannel
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Networking.Vpn.VpnConnectionDetailsPreview ConnectionDetail
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannel", "ConnectionDetail");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public object CurrentRequestTransportContext
 	{
 		get
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannel", "CurrentRequestTransportContext");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Networking.Vpn.VpnDisconnectReasonPreview DisconnectReason
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannel", "DisconnectReason");
 		}
 	}
 #endif
@@ -245,8 +265,52 @@ public partial class VpnChannel
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannel", "GetSlotTypeForTransportContext(object context)");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public void AppendVpnReceivePacketBuffer(global::Windows.Networking.Vpn.VpnPacketBuffer decapsulatedPacketBuffer)
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "AppendVpnReceivePacketBuffer(VpnPacketBuffer decapsulatedPacketBuffer)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public void AppendVpnSendPacketBuffer(global::Windows.Networking.Vpn.VpnPacketBuffer encapsulatedPacketBuffer)
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "AppendVpnSendPacketBuffer(VpnPacketBuffer encapsulatedPacketBuffer)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public void FlushVpnReceivePacketBuffers()
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "FlushVpnReceivePacketBuffers()");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public void FlushVpnSendPacketBuffers()
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "FlushVpnSendPacketBuffers()");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.Collections.ValueSet ActivateForeground(string packageRelativeAppId, global::Windows.Foundation.Collections.ValueSet sharedContext)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnChannel", "ActivateForeground(string packageRelativeAppId, ValueSet sharedContext)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public void SetErrorMessage(string message, uint errCode)
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnChannel", "SetErrorMessage(string message, uint errCode)");
+	}
+#endif
 	// Forced skipping of method Windows.Networking.Vpn.VpnChannel.Configuration.get
+	// Forced skipping of method Windows.Networking.Vpn.VpnChannel.ConnectionDetail.get
 	// Forced skipping of method Windows.Networking.Vpn.VpnChannel.CurrentRequestTransportContext.get
+	// Forced skipping of method Windows.Networking.Vpn.VpnChannel.DisconnectReason.get
 	// Forced skipping of method Windows.Networking.Vpn.VpnChannel.Id.get
 	// Forced skipping of method Windows.Networking.Vpn.VpnChannel.PlugInContext.get
 	// Forced skipping of method Windows.Networking.Vpn.VpnChannel.PlugInContext.set

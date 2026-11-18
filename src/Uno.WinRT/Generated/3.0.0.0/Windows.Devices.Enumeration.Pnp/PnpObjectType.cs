@@ -32,5 +32,8 @@ public enum PnpObjectType
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	DevicePanel = 8,
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	AssociationEndpointProtocol = 9,
+#endif
 }
 #endif

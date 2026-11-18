@@ -62,6 +62,16 @@ public partial class InkStroke
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public uint PointerId
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkStroke", "PointerId");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public bool Recognized
 	{
 		get
@@ -139,6 +149,7 @@ public partial class InkStroke
 	// Forced skipping of method Windows.UI.Input.Inking.InkStroke.Id.get
 	// Forced skipping of method Windows.UI.Input.Inking.InkStroke.PointTransform.get
 	// Forced skipping of method Windows.UI.Input.Inking.InkStroke.PointTransform.set
+	// Forced skipping of method Windows.UI.Input.Inking.InkStroke.PointerId.get
 	// Forced skipping of method Windows.UI.Input.Inking.InkStroke.Recognized.get
 	// Forced skipping of method Windows.UI.Input.Inking.InkStroke.Selected.get
 	// Forced skipping of method Windows.UI.Input.Inking.InkStroke.Selected.set

@@ -24,6 +24,20 @@ public partial class CoreInkIndependentInputSource
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.UI.Core.CoreCursor PointerCursor
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource", "PointerCursor");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource", "PointerCursor");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public static global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource Create(global::Windows.UI.Input.Inking.InkPresenter inkPresenter)
 	{
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource", "Create(InkPresenter inkPresenter)");
@@ -44,6 +58,8 @@ public partial class CoreInkIndependentInputSource
 	// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerReleasing.add
 	// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerReleasing.remove
 	// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.InkPresenter.get
+	// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerCursor.get
+	// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerCursor.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerEntering

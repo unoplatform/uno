@@ -102,6 +102,16 @@ public partial class HolographicViewConfiguration
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Holographic.HolographicDepthReprojectionMethod> SupportedDepthReprojectionMethods
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicViewConfiguration", "SupportedDepthReprojectionMethods");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.DirectX.DirectXPixelFormat> SupportedPixelFormats
 	{
 		get
@@ -127,5 +137,6 @@ public partial class HolographicViewConfiguration
 	// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.PixelFormat.set
 	// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.RefreshRate.get
 	// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.RenderTargetSize.get
+	// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.SupportedDepthReprojectionMethods.get
 	// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.SupportedPixelFormats.get
 }

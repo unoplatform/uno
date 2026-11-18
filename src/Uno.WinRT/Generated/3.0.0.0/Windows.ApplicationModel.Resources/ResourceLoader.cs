@@ -23,6 +23,13 @@ public partial class ResourceLoader
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.ResourceLoader", "GetForUIContext(UIContext context)");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static string GetDefaultPriPath(string packageFullName)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Resources.ResourceLoader", "GetDefaultPriPath(string packageFullName)");
+	}
+#endif
 	// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetString(string)
 	// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.GetStringForUri(System.Uri)
 }

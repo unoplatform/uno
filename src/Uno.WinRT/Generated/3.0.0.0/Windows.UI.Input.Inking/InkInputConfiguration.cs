@@ -28,6 +28,20 @@ public partial class InkInputConfiguration
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsPenHapticFeedbackEnabled
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.InkInputConfiguration", "IsPenHapticFeedbackEnabled");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkInputConfiguration", "IsPenHapticFeedbackEnabled");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public bool IsPrimaryBarrelButtonInputEnabled
 	{
 		get
@@ -42,6 +56,8 @@ public partial class InkInputConfiguration
 #endif
 	// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.IsEraserInputEnabled.get
 	// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.IsEraserInputEnabled.set
+	// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.IsPenHapticFeedbackEnabled.get
+	// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.IsPenHapticFeedbackEnabled.set
 	// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.IsPrimaryBarrelButtonInputEnabled.get
 	// Forced skipping of method Windows.UI.Input.Inking.InkInputConfiguration.IsPrimaryBarrelButtonInputEnabled.set
 }

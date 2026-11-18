@@ -20,5 +20,8 @@ public enum KnownFoldersAccessStatus
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	Allowed = 4,
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	AllowedPerAppFolder = 5,
+#endif
 }
 #endif

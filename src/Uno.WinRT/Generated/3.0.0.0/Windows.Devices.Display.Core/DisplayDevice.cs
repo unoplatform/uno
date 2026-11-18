@@ -14,6 +14,16 @@ public partial class DisplayDevice
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Graphics.DisplayAdapterId RenderAdapterId
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayDevice", "RenderAdapterId");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Devices.Display.Core.DisplaySource CreateScanoutSource(global::Windows.Devices.Display.Core.DisplayTarget target)
 	{
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayDevice", "CreateScanoutSource(DisplayTarget target)");
@@ -61,4 +71,12 @@ public partial class DisplayDevice
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayDevice", "IsCapabilitySupported(DisplayDeviceCapability capability)");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Devices.Display.Core.DisplayScanout CreateSimpleScanoutWithDirtyRectsAndOptions(global::Windows.Devices.Display.Core.DisplaySource source, global::Windows.Devices.Display.Core.DisplaySurface surface, uint subresourceIndex, uint syncInterval, global::System.Collections.Generic.IEnumerable<global::Windows.Graphics.RectInt32> dirtyRects, global::Windows.Devices.Display.Core.DisplayScanoutOptions options)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayDevice", "CreateSimpleScanoutWithDirtyRectsAndOptions(DisplaySource source, DisplaySurface surface, uint subresourceIndex, uint syncInterval, IEnumerable<RectInt32> dirtyRects, DisplayScanoutOptions options)");
+	}
+#endif
+	// Forced skipping of method Windows.Devices.Display.Core.DisplayDevice.RenderAdapterId.get
 }

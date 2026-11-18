@@ -11,6 +11,16 @@ public partial class Geocoordinate
 	// Skipping already declared property Altitude
 	// Skipping already declared property AltitudeAccuracy
 	// Skipping already declared property Heading
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsRemoteSource
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.Geocoordinate", "IsRemoteSource");
+		}
+	}
+#endif
 	// Skipping already declared property Latitude
 	// Skipping already declared property Longitude
 	// Skipping already declared property Point
@@ -23,6 +33,7 @@ public partial class Geocoordinate
 	// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Altitude.get
 	// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.AltitudeAccuracy.get
 	// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Heading.get
+	// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.IsRemoteSource.get
 	// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Latitude.get
 	// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Longitude.get
 	// Forced skipping of method Windows.Devices.Geolocation.Geocoordinate.Point.get

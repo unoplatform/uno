@@ -10,6 +10,16 @@ public partial class DeviceAccessInformation
 	// Skipping already declared property CurrentStatus
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool UserPromptRequired
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceAccessInformation", "UserPromptRequired");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public static global::Windows.Devices.Enumeration.DeviceAccessInformation CreateFromId(string deviceId)
 	{
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceAccessInformation", "CreateFromId(string deviceId)");
@@ -32,6 +42,7 @@ public partial class DeviceAccessInformation
 	// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.AccessChanged.add
 	// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.AccessChanged.remove
 	// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.CurrentStatus.get
+	// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.UserPromptRequired.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Enumeration.DeviceAccessInformation, global::Windows.Devices.Enumeration.DeviceAccessChangedEventArgs> AccessChanged

@@ -5,7 +5,7 @@ namespace Windows.UI.Core;
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 [global::Uno.NotImplemented]
 #endif
-public partial class CoreIndependentInputSource : global::Windows.UI.Core.ICoreInputSourceBase, global::Windows.UI.Core.ICorePointerInputSource, global::Windows.UI.Core.ICorePointerInputSource2
+public partial class CoreIndependentInputSource : global::Windows.UI.Core.ICoreInputSourceBase, global::Windows.UI.Core.ICorePointerInputSource, global::Windows.UI.Core.ICorePointerInputSource2, global::Windows.UI.Core.ICorePointerRedirector
 {
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	internal CoreIndependentInputSource()
@@ -110,6 +110,12 @@ public partial class CoreIndependentInputSource : global::Windows.UI.Core.ICoreI
 	// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.PointerReleased.remove
 	// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.PointerWheelChanged.add
 	// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.PointerWheelChanged.remove
+	// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.PointerRoutedAway.add
+	// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.PointerRoutedAway.remove
+	// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.PointerRoutedReleased.add
+	// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.PointerRoutedReleased.remove
+	// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.PointerRoutedTo.add
+	// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.PointerRoutedTo.remove
 	// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.Dispatcher.get
 	// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.DispatcherQueue.get
 	// Forced skipping of method Windows.UI.Core.CoreIndependentInputSource.HasCapture.get
@@ -246,7 +252,56 @@ public partial class CoreIndependentInputSource : global::Windows.UI.Core.ICoreI
 		}
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.ICorePointerRedirector, global::Windows.UI.Core.PointerEventArgs> PointerRoutedAway
+	{
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		add
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreIndependentInputSource", "event PointerRoutedAway");
+		}
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		remove
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreIndependentInputSource", "event PointerRoutedAway");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.ICorePointerRedirector, global::Windows.UI.Core.PointerEventArgs> PointerRoutedReleased
+	{
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		add
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreIndependentInputSource", "event PointerRoutedReleased");
+		}
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		remove
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreIndependentInputSource", "event PointerRoutedReleased");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.ICorePointerRedirector, global::Windows.UI.Core.PointerEventArgs> PointerRoutedTo
+	{
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		add
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreIndependentInputSource", "event PointerRoutedTo");
+		}
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		remove
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreIndependentInputSource", "event PointerRoutedTo");
+		}
+	}
+#endif
 	// Processing: Windows.UI.Core.ICoreInputSourceBase
 	// Processing: Windows.UI.Core.ICorePointerInputSource
 	// Processing: Windows.UI.Core.ICorePointerInputSource2
+	// Processing: Windows.UI.Core.ICorePointerRedirector
 }

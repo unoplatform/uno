@@ -24,10 +24,21 @@ public partial class PenDevice
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Devices.Haptics.SimpleHapticsController SimpleHapticsController
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PenDevice", "SimpleHapticsController");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public static global::Windows.Devices.Input.PenDevice GetFromPointerId(uint pointerId)
 	{
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Input.PenDevice", "GetFromPointerId(uint pointerId)");
 	}
 #endif
 	// Forced skipping of method Windows.Devices.Input.PenDevice.PenId.get
+	// Forced skipping of method Windows.Devices.Input.PenDevice.SimpleHapticsController.get
 }

@@ -5697,12 +5697,21 @@
 	     Major.Minor), so the 6.7 set above is no longer consulted for packages that have a 7.0 stable.
 	     Only the breaking changes merged after the 7.0 release go here. -->
 	<IgnoreSet baseVersion="7.0">
+	  <Events>
+		  <Member fullName=".*Windows\.Devices\.AllJoyn\..+" reason="Removed from the Windows SDK projection (10.0.26100+); the sync generator now reads 10.0.28000" isRegex="true" />
+	  </Events>
+	  <Fields>
+		  <Member fullName=".*Windows\.Devices\.AllJoyn\..+" reason="Removed from the Windows SDK projection (10.0.26100+); the sync generator now reads 10.0.28000" isRegex="true" />
+	  </Fields>
 	  <Properties>
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.StackLayout::DisableVirtualization()" reason="Removed the Uno-only inverse of IsVirtualizationEnabled; WinUI has no DisableVirtualization (use !IsVirtualizationEnabled)" />
+		  <Member fullName=".*Windows\.Devices\.AllJoyn\..+" reason="Removed from the Windows SDK projection (10.0.26100+); the sync generator now reads 10.0.28000" isRegex="true" />
 	  </Properties>
 	  <Methods>
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.StackLayout.get_DisableVirtualization()" reason="Removed the Uno-only inverse of IsVirtualizationEnabled; WinUI has no DisableVirtualization (use !IsVirtualizationEnabled)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.StackLayout.set_DisableVirtualization(System.Boolean value)" reason="Removed the Uno-only inverse of IsVirtualizationEnabled; WinUI has no DisableVirtualization (use !IsVirtualizationEnabled)" />
+		  <Member fullName=".*Windows\.Devices\.AllJoyn\..+" reason="Removed from the Windows SDK projection (10.0.26100+); the sync generator now reads 10.0.28000" isRegex="true" />
+		  <Member fullName=".*Windows\.ApplicationModel\.IAppInfoStatics(::|\.).+" reason="No longer public in the Windows SDK projection; the sync generator now reads 10.0.28000" isRegex="true" />
 		  <!-- Legacy WASM interop whose JavaScript (AsyncInteropHelper, MonoSupport) shipped only with the DOM heads removed in 7.0; it could no longer run. -->
 		  <Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Uno.Foundation.WebAssemblyRuntime.InvokeAsync(System.String promiseCode)" reason="Removed legacy WASM eval-based async interop; its JavaScript is no longer shipped (breaking changes for 7.0)" />
 		  <Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Uno.Foundation.WebAssemblyRuntime.InvokeAsync(System.String promiseCode, System.Threading.CancellationToken ct)" reason="Removed legacy WASM eval-based async interop; its JavaScript is no longer shipped (breaking changes for 7.0)" />
@@ -5714,6 +5723,8 @@
 	  <Types>
 		  <!-- Emulated LinearGradientBrush borders for the native renderers removed in 7.0; on Skia it rendered nothing. -->
 		  <Member fullName="Uno.UI.Controls.FauxGradientBorderPresenter" reason="Removed the no-op FauxGradientBorderPresenter; Skia draws gradient borders natively (#26572)" />
+		  <Member fullName="Windows\.Devices\.AllJoyn\..+" reason="Removed from the Windows SDK projection (10.0.26100+); the sync generator now reads 10.0.28000" isRegex="true" />
+		  <Member fullName="Windows.ApplicationModel.IAppInfoStatics" reason="No longer public in the Windows SDK projection; the sync generator now reads 10.0.28000" />
 	  </Types>
 	</IgnoreSet>
 	<![CDATA[

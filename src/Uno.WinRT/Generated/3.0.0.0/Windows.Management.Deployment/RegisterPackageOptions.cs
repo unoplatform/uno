@@ -75,6 +75,16 @@ public partial class RegisterPackageOptions
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::System.Collections.Generic.IDictionary<global::System.Uri, string> ExpectedDigests
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.RegisterPackageOptions", "ExpectedDigests");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::System.Uri ExternalLocationUri
 	{
 		get
@@ -184,6 +194,7 @@ public partial class RegisterPackageOptions
 	// Forced skipping of method Windows.Management.Deployment.RegisterPackageOptions.DependencyPackageUris.get
 	// Forced skipping of method Windows.Management.Deployment.RegisterPackageOptions.DeveloperMode.get
 	// Forced skipping of method Windows.Management.Deployment.RegisterPackageOptions.DeveloperMode.set
+	// Forced skipping of method Windows.Management.Deployment.RegisterPackageOptions.ExpectedDigests.get
 	// Forced skipping of method Windows.Management.Deployment.RegisterPackageOptions.ExternalLocationUri.get
 	// Forced skipping of method Windows.Management.Deployment.RegisterPackageOptions.ExternalLocationUri.set
 	// Forced skipping of method Windows.Management.Deployment.RegisterPackageOptions.ForceAppShutdown.get

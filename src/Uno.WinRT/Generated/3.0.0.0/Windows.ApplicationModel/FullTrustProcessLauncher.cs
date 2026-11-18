@@ -35,4 +35,18 @@ public static partial class FullTrustProcessLauncher
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.FullTrustProcessLauncher", "LaunchFullTrustProcessForAppAsync(string fullTrustPackageRelativeAppId, string parameterGroupId)");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.FullTrustProcessLaunchResult> LaunchFullTrustProcessForCurrentAppWithArgumentsAsync(string commandLine)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.FullTrustProcessLauncher", "LaunchFullTrustProcessForCurrentAppWithArgumentsAsync(string commandLine)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.FullTrustProcessLaunchResult> LaunchFullTrustProcessForAppWithArgumentsAsync(string fullTrustPackageRelativeAppId, string commandLine)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.FullTrustProcessLauncher", "LaunchFullTrustProcessForAppWithArgumentsAsync(string fullTrustPackageRelativeAppId, string commandLine)");
+	}
+#endif
 }

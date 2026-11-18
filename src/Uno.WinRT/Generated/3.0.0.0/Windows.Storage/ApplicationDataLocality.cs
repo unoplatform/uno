@@ -17,5 +17,8 @@ public enum ApplicationDataLocality
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	LocalCache = 3,
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	SharedLocal = 4,
+#endif
 }
 #endif

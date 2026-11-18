@@ -47,6 +47,16 @@ public partial class StagePackageOptions
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::System.Collections.Generic.IDictionary<global::System.Uri, string> ExpectedDigests
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.StagePackageOptions", "ExpectedDigests");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::System.Uri ExternalLocationUri
 	{
 		get
@@ -104,6 +114,20 @@ public partial class StagePackageOptions
 		get
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.StagePackageOptions", "OptionalPackageUris");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Management.Deployment.PackageOperationPriority PackageOperationPriority
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.StagePackageOptions", "PackageOperationPriority");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.StagePackageOptions", "PackageOperationPriority");
 		}
 	}
 #endif
@@ -186,6 +210,7 @@ public partial class StagePackageOptions
 	// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.DependencyPackageUris.get
 	// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.DeveloperMode.get
 	// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.DeveloperMode.set
+	// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.ExpectedDigests.get
 	// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.ExternalLocationUri.get
 	// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.ExternalLocationUri.set
 	// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.ForceUpdateFromAnyVersion.get
@@ -194,6 +219,8 @@ public partial class StagePackageOptions
 	// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.InstallAllResources.set
 	// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.OptionalPackageFamilyNames.get
 	// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.OptionalPackageUris.get
+	// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.PackageOperationPriority.get
+	// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.PackageOperationPriority.set
 	// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.RelatedPackageUris.get
 	// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.RequiredContentGroupOnly.get
 	// Forced skipping of method Windows.Management.Deployment.StagePackageOptions.RequiredContentGroupOnly.set

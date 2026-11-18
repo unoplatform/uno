@@ -147,6 +147,13 @@ public partial class NetworkOperatorTetheringManager
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager", "GetTetheringClients()");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult> StartTetheringAsync(global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringSessionAccessPointConfiguration configuration)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager", "StartTetheringAsync(NetworkOperatorTetheringSessionAccessPointConfiguration configuration)");
+	}
+#endif
 	// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager.ClientCount.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager.MaxClientCount.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager.TetheringOperationalState.get

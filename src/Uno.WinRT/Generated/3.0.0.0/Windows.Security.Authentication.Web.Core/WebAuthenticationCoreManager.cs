@@ -105,4 +105,11 @@ public static partial class WebAuthenticationCoreManager
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebAuthenticationCoreManager", "FindSystemAccountProviderAsync(string webAccountProviderId, string authority, User user)");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Web.Core.WebAuthenticationAddAccountResult> AddAccountWithTransferTokenAsync(global::Windows.Security.Authentication.Web.Core.WebAuthenticationTransferTokenRequest request)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authentication.Web.Core.WebAuthenticationCoreManager", "AddAccountWithTransferTokenAsync(WebAuthenticationTransferTokenRequest request)");
+	}
+#endif
 }

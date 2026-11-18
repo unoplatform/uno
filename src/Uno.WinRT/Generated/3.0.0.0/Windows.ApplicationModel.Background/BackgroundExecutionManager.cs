@@ -56,4 +56,25 @@ public static partial class BackgroundExecutionManager
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundExecutionManager", "RequestAccessKindAsync(BackgroundAccessRequestKind requestedAccess, string reason)");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.Foundation.IAsyncOperation<bool> RequestAccessKindForModernStandbyAsync(global::Windows.ApplicationModel.Background.BackgroundAccessRequestKind requestedAccess, string reason)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundExecutionManager", "RequestAccessKindForModernStandbyAsync(BackgroundAccessRequestKind requestedAccess, string reason)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.ApplicationModel.Background.BackgroundAccessStatus GetAccessStatusForModernStandby()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundExecutionManager", "GetAccessStatusForModernStandby()");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.ApplicationModel.Background.BackgroundAccessStatus GetAccessStatusForModernStandby(string applicationId)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundExecutionManager", "GetAccessStatusForModernStandby(string applicationId)");
+	}
+#endif
 }
