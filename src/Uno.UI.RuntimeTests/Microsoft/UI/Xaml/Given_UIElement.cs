@@ -129,6 +129,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_RightToLeft_Then_RenderTransform_Set()
+		{
+			var sut = new Border
+			{
+				Width = 50,
+				Height = 50,
+				FlowDirection = FlowDirection.RightToLeft,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			};
+			await UITestHelper.Load(new Grid { Children = { sut } });
+
+			var transform = new TranslateTransform { X = 10 };
+			sut.RenderTransform = transform;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreSame(transform, sut.RenderTransform);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		[RequiresScaling(1f)]
 		public async Task When_TranslateTransform_And_Clip()
 		{

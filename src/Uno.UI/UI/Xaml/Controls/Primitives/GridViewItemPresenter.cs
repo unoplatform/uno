@@ -5,13 +5,13 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
-public partial class GridViewItemPresenter : ContentPresenter
+public partial class GridViewItemPresenter : ListViewBaseItemPresenter
 {
-	protected override bool GoToElementStateCore(string stateName, bool useTransitions)
+	private void OnChromePropertyChanged(DependencyPropertyChangedEventArgs args)
 	{
-		// Return false to indicate we didn't handle the state change.
-		// This allows VisualStateManager to fall through and apply visual states
-		// from the control template's visual state groups.
-		return false;
+		OnPropertyChangedNewStyle(args);
+
+		// Uno-specific: stands in for the NWSetContentDirty render dirty flag every presenter DP carries in WinUI.
+		InvalidateRender();
 	}
 }

@@ -922,6 +922,11 @@ namespace Microsoft.UI.Xaml
 		public IAsyncOperation<DataPackageOperation> StartDragAsync(PointerPoint pointerPoint)
 			=> AsyncOperation.FromTask(ct => StartDragAsyncCore(pointerPoint, _pendingRaisedEvent.args, ct));
 
+		// Lets a container undo state it committed in its own DragStarting handler, since DropCompleted is not raised.
+		private protected virtual void OnDragStartCanceled()
+		{
+		}
+
 		private async Task<DataPackageOperation> StartDragAsyncCore(PointerPoint pointer, PointerRoutedEventArgs ptArgs, CancellationToken ct)
 		{
 			ptArgs ??= PointerRoutedEventArgs.LastPointerEvent;
@@ -959,6 +964,7 @@ namespace Microsoft.UI.Xaml
 			if (routedArgs.Cancel)
 			{
 				// The completed event is not raised if the starting has been cancelled
+				OnDragStartCanceled();
 				throw new TaskCanceledException();
 			}
 
