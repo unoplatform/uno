@@ -596,10 +596,34 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	#endregion
 
+	// MUX Reference ContentPresenter.cpp (CContentPresenter::ApplyTemplate), tag winui3/release/2.5.1
+	// The implicit Content/ContentTemplate bindings are set up from the measure pass, before the template expands,
+	// so the first layout already presents the templated parent's content.
+	private protected override void ApplyTemplate(out bool addedVisuals)
+	{
+		SetDefaultTemplateBindings();
+		base.ApplyTemplate(out addedVisuals);
+
+		// MUX Reference framework.cpp (CFrameworkElement::InvokeApplyTemplate): OnApplyTemplate runs from measure too.
+		// Uno-specific: Uno's presenter never reports added visuals here, so it runs once, shared with the Loaded fallback.
+		if (!_appliedTemplate)
+		{
+			_appliedTemplate = true;
+			OnApplyTemplate();
+		}
+	}
+
 	protected override void OnApplyTemplate()
 	{
 		base.OnApplyTemplate();
 
+		// Uno-specific: also runs on Loaded, for a templated parent assigned after the first measure.
+		SetDefaultTemplateBindings();
+	}
+
+	// The per-property DefaultValue/IsPropertyTemplateBound checks make this safe to run repeatedly.
+	private void SetDefaultTemplateBindings()
+	{
 		// Applying the template will not delete existing visuals. This will be done conditionally
 		// when the template is invalidated.
 		// Uno specific: since we don't call this early enough, we have to comment out the condition
