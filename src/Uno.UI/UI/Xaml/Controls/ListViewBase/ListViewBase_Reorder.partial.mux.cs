@@ -192,12 +192,13 @@ partial class ListViewBase
 
 #if HAS_UNO
 						// TODO Uno: Uno completes the drag through the item's DropCompleted event, WinUI through the completion of its StartDragAsyncOperation.
+						// A start canceled after this point (a deferred DragStarting cancel) completes it as Canceled, as WinUI's DoCancel does.
 						WeakReference<ListViewBase> wpThis = new(this);
-						TypedEventHandler<UIElement, DropCompletedEventArgs>? callbackPtr = null;
+						TypedEventHandler<UIElement, DropCompletedEventArgs>? dropCompletedHandler = null;
 
-						callbackPtr = (sender, args) =>
+						void callbackPtr(DropCompletedEventArgs? args, AsyncStatus status)
 						{
-							sender.DropCompleted -= callbackPtr;
+							spOriginatingItem.DropCompleted -= dropCompletedHandler;
 
 							// DragDrop::CleanupDragDrop
 							spOriginatingItem.SetDragVisualCaptured(false);
@@ -205,7 +206,9 @@ partial class ListViewBase
 
 							if (wpThis.TryGetTarget(out var spThis))
 							{
-								spThis.OnDragCompleted(args, spItems!);
+								spThis.m_unoDragStartCanceledCallback = null;
+
+								spThis.OnDragCompleted(args, status, spItems!);
 
 								// Calls OnDropGesture to update the state of the dragged items
 								spThis.OnDropGesture(null, new Point(-1, -1));
@@ -213,9 +216,11 @@ partial class ListViewBase
 								// TODO Uno: OnDrop's CompleteDrop clears m_tpDragPointer first, so OnDropGesture may not release the visual.
 								spThis.NotifyDragVisualReleased();
 							}
-						};
+						}
 
-						spOriginatingItem.DropCompleted += callbackPtr;
+						dropCompletedHandler = (_, args) => callbackPtr(args, AsyncStatus.Completed);
+						spOriginatingItem.DropCompleted += dropCompletedHandler;
+						m_unoDragStartCanceledCallback = (spOriginatingItem, () => callbackPtr(null, AsyncStatus.Canceled));
 #else
 						if (useWinRtDragDrop)
 						{
@@ -337,20 +342,22 @@ partial class ListViewBase
 	//
 	// TODO Uno: takes the DropCompletedEventArgs Uno raises on the item in place of the IAsyncOperation and its status.
 	private void OnDragCompleted(
-		DropCompletedEventArgs pArgs,
+		DropCompletedEventArgs? pArgs,
+		AsyncStatus status,
 		IList<object> pItems)
 	{
 		bool canDragItems = false;
 		canDragItems = CanDragItems;
 
-		if (canDragItems) // only raise DragItemsCompleted if DragItemsStarting was raised
+		if (status == AsyncStatus.Completed
+			 && canDragItems) // only raise DragItemsCompleted if DragItemsStarting was raised
 		{
 			DataPackageOperation dropResult;
 
 			// Create the event args
-			DragItemsCompletedEventArgs spArgs = new(pArgs, new ReadOnlyCollection<object>(pItems));
+			DragItemsCompletedEventArgs spArgs = new(pArgs!, new ReadOnlyCollection<object>(pItems));
 
-			dropResult = pArgs.DropResult;
+			dropResult = pArgs!.DropResult;
 
 			// Raise the event
 			DragItemsCompleted?.Invoke(this, spArgs);
