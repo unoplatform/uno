@@ -686,6 +686,48 @@ public class Given_ListViewBaseItem
 	}
 
 	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_Container_DragStarting_Then_Raised_After_DragItemsStarting()
+	{
+		var (list, item, _) = await Setup();
+		list.CanDragItems = true;
+		List<string> events = new();
+		list.DragItemsStarting += (_, e) =>
+		{
+			events.Add("DragItemsStarting");
+			e.Cancel = true;
+		};
+		item.DragStarting += (_, _) => events.Add("DragStarting");
+		await WindowHelper.WaitForIdle();
+
+		// Re-enabling the drag prepares the containers again, after the app handler.
+		list.CanDragItems = false;
+		list.CanDragItems = true;
+		await WindowHelper.WaitForIdle();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available");
+		using var mouse = injector.GetMouse();
+
+		var from = Center(item);
+		mouse.Press(from);
+		await WindowHelper.WaitForIdle();
+		try
+		{
+			mouse.MoveTo(new Point(from.X, from.Y + 150), 5);
+			await UITestHelper.WaitFor(() => events.Count >= 2, timeoutMS: 3000, message: "The container drag must start.");
+
+			Assert.AreEqual("DragItemsStarting", events[0], string.Join(", ", events));
+		}
+		finally
+		{
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Touch_Holding_Then_Drag_Canceled_Clears_Holding()
 	{
