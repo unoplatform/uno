@@ -13,17 +13,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal sealed record class XamlFileDefinition : IEquatable<XamlFileDefinition>, IComparable<XamlFileDefinition>, IXamlLocation
 	{
-		public XamlFileDefinition(string file, string link, string targetFilePath, string content, ImmutableArray<byte> checksum)
+		public XamlFileDefinition(string file, string link, string targetFilePath, string content, ImmutableArray<byte> checksum, string? stableIdentityPath = null)
 		{
 			FilePath = file;
 			SourceLink = link;
 			TargetFilePath = targetFilePath;
 			Content = content;
 
-			UniqueID = SanitizedFileName + "_" + HashBuilder.Build(FilePath);
+			// Don't hash the checkout root, so generated type names (and AOT profiles) are stable across machines.
+			UniqueID = SanitizedFileName + "_" + HashBuilder.Build(stableIdentityPath ?? GetStableIdentityPath(link, FilePath));
 
 			Checksum = string.Concat(checksum.Select(c => c.ToString("x2", CultureInfo.InvariantCulture)));
 		}
+
+		internal static string GetStableIdentityPath(string link, string filePath)
+		{
+			var normalizedLink = link.Replace('\\', '/');
+			return normalizedLink.Length > 0 && !IsAbsolutePath(normalizedLink) ? normalizedLink : filePath;
+		}
+
+		internal static bool IsAbsolutePath(string path)
+			=> path.StartsWith("/", StringComparison.Ordinal) || (path.Length > 1 && path[1] == ':');
 
 		private string SanitizedFileName => Path
 			.GetFileNameWithoutExtension(FilePath)
