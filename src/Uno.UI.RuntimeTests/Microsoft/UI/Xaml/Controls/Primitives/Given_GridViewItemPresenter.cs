@@ -96,9 +96,24 @@ public class Given_GridViewItemPresenter
 
 		var itemBounds = item.TransformToVisual(root).TransformBounds(new Rect(0, 0, item.ActualWidth, item.ActualHeight));
 		var checkBoxBounds = checkBox.TransformToVisual(root).TransformBounds(new Rect(0, 0, checkBox.ActualWidth, checkBox.ActualHeight));
-		var screenshot = await UITestHelper.ScreenShot(root);
+		// The default ItemContainerTransitions include an EntranceThemeTransition, so the items fade in on load, as on WinUI.
+		var edgeX = (float)itemBounds.X + 1;
+		var edgeY = (float)(itemBounds.Y + itemBounds.Height / 2);
+		var edgeColor = ((SolidColorBrush)outerBorder.BorderBrush).Color;
+		var deadline = DateTime.UtcNow.AddSeconds(5);
+		RawBitmap screenshot;
+		while (true)
+		{
+			screenshot = await UITestHelper.ScreenShot(root);
+			if (screenshot.GetPixel((int)edgeX, (int)edgeY) == edgeColor || DateTime.UtcNow > deadline)
+			{
+				break;
+			}
 
-		ImageAssert.HasColorAt(screenshot, (float)itemBounds.X + 1, (float)(itemBounds.Y + itemBounds.Height / 2), ((SolidColorBrush)outerBorder.BorderBrush).Color, tolerance: 10);
+			await Task.Delay(50);
+		}
+
+		ImageAssert.HasColorAt(screenshot, edgeX, edgeY, edgeColor, tolerance: 10);
 		// The check glyph sits close by, and its anti-aliasing tints this pixel on some agents (macOS).
 		ImageAssert.HasColorAt(screenshot, (float)checkBoxBounds.X + 3, (float)(checkBoxBounds.Y + checkBoxBounds.Height / 2), ((SolidColorBrush)checkBox.Background!).Color, tolerance: 32);
 
