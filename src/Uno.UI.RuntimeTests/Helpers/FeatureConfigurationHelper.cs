@@ -33,5 +33,19 @@ namespace Uno.UI.RuntimeTests.Helpers
 			});
 #endif
 		}
+		/// <summary>
+		/// Enables or disables the Grid-less <see cref="Microsoft.UI.Xaml.Controls.IconElement"/> visual tree
+		/// (Uno only) for the duration of a single test.
+		/// </summary>
+		public static IDisposable UseIconElementNoGridContainer(bool enabled)
+		{
+#if WINAPPSDK
+			return null;
+#else
+			var originalSetting = FeatureConfiguration.Perf2026.IconElementNoGridContainer;
+			FeatureConfiguration.Perf2026.IconElementNoGridContainer = enabled;
+			return Disposable.Create(() => FeatureConfiguration.Perf2026.IconElementNoGridContainer = originalSetting);
+#endif
+		}
 	}
 }
