@@ -932,6 +932,11 @@ namespace Microsoft.UI.Xaml
 		public IAsyncOperation<DataPackageOperation> StartDragAsync(PointerPoint pointerPoint)
 			=> AsyncOperation.FromTask(ct => StartDragAsyncCore(pointerPoint, _pendingRaisedEvent.args, ct));
 
+		// Lets a container act on DragStarting before the handlers of the event.
+		private protected virtual void OnDragStarting(DragStartingEventArgs args)
+		{
+		}
+
 		// Lets a container undo state it committed in its own DragStarting handler, since DropCompleted is not raised.
 		private protected virtual void OnDragStartCanceled()
 		{
@@ -949,6 +954,7 @@ namespace Microsoft.UI.Xaml
 			// Note: originalSource = this => DragStarting is not actually a routed event, the original source is always the sender
 			var routedArgs = new DragStartingEventArgs(this, ptArgs);
 			PrepareShare(routedArgs.Data); // Gives opportunity to the control to fulfill the data
+			OnDragStarting(routedArgs);
 			SafeRaiseEvent(DragStartingEvent, routedArgs); // The event won't bubble, cf. PrepareManagedDragAndDropEventBubbling
 
 			// We need to give a chance for layout updates, etc. This is particularly problematic with TreeView
