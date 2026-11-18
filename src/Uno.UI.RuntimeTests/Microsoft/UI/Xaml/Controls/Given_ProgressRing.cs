@@ -227,8 +227,10 @@ public class Given_ProgressRing
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // IndeterminateSource and the LottieGen source are Uno-only
 	public async Task When_Custom_Source_Keeps_Its_Colours()
 	{
+#if HAS_UNO
 		var source = new global::Microsoft.UI.Xaml.Controls.AnimatedVisuals.ProgressRingIndeterminate
 		{
 			Foreground = Microsoft.UI.Colors.Red,
@@ -245,6 +247,9 @@ public class Given_ProgressRing
 
 		Assert.AreEqual(Microsoft.UI.Colors.Red, source.Foreground);
 		Assert.AreEqual(Microsoft.UI.Colors.Blue, source.Background);
+#else
+		await Task.CompletedTask;
+#endif
 	}
 
 	private static ProgressRing CreateDeterminateRing(Brush foreground, Brush background) => new ProgressRing
