@@ -23,5 +23,10 @@ namespace Windows.Devices.Input
 		/// Mouse
 		/// </summary>
 		Mouse = 2,
+
+		/// <summary>
+		/// Touchpad
+		/// </summary>
+		Touchpad = 3,
 	}
 }
