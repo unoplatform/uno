@@ -23,6 +23,19 @@ partial class ListViewBase
 	// The args of the DragStarting being handled. WinUI's OnDragGesture creates its own.
 	private DragStartingEventArgs? m_unoDragStartingArgs;
 
+	// Completes a drag OnDragGesture started, as Canceled, when its start is canceled after OnDragGesture ran.
+	private (ListViewBaseItem Container, Action Complete)? m_unoDragStartCanceledCallback;
+
+	// UIElement raises no DropCompleted for a canceled start, so this stands in for WinUI's
+	// StartDragAsyncOperation completing as Canceled (DragStartingEventArgs::StartOrUpdateOperation).
+	internal void OnItemContainerDragStartCanceled(ListViewBaseItem container)
+	{
+		if (m_unoDragStartCanceledCallback is { } callback && callback.Container == container)
+		{
+			callback.Complete();
+		}
+	}
+
 	// Whether the container is the primary dragged container of a live reorder of this list, which
 	// Uno lays out under the pointer (WinUI leaves an empty gap there).
 	internal bool IsLiveReorderPrimaryContainer(UIElement container, DragEventArgs args)
