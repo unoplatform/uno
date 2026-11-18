@@ -10,11 +10,6 @@ using System.Runtime.CompilerServices;
 using Uno.UI.RuntimeTests.Helpers;
 using Combinatorial.MSTest;
 
-
-#if !HAS_UNO_WINUI && !WINAPPSDK
-using Microsoft.UI.Xaml.Controls;
-#endif
-
 #if HAS_UNO
 using Uno.UI.Xaml.Controls;
 #endif

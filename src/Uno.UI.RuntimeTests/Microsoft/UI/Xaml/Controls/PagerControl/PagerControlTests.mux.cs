@@ -12,11 +12,6 @@ using System.Collections.Generic;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Provider;
-
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Automation.Peers;
-#endif
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using System.Threading.Tasks;
