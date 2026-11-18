@@ -116,11 +116,14 @@ namespace Uno.UI.Tests.BinderTests
 		{
 			public int CollectionChangedCount;
 
+			public Action CollectionChangedCallback;
+
 			private protected override void OnCollectionChanged()
 			{
 				base.OnCollectionChanged();
 
 				CollectionChangedCount++;
+				CollectionChangedCallback?.Invoke();
 			}
 		}
 	}
