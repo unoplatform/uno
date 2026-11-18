@@ -960,16 +960,14 @@ namespace Microsoft.UI.Xaml
 		{
 			if (FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite)
 			{
-				var isFrameworkElement = _originalObjectType.Is(typeof(FrameworkElement));
-				var isMixinFrameworkElement = this is IFrameworkElement && !isFrameworkElement;
-
 				if (
 					!_originalObjectType.Is(property.OwnerType)
 					&& !property.IsAttached
 
 					// Don't fail validation for properties that are located on non-FrameworkElement types
 					// e.g. ScrollContentPresenter, for which using the Name property should not fail.
-					&& !isMixinFrameworkElement
+					// Evaluate the extra type checks last; validation runs on every property access in DEBUG.
+					&& !IsMixinFrameworkElement()
 				)
 				{
 					throw new InvalidOperationException(
@@ -977,6 +975,9 @@ namespace Microsoft.UI.Xaml
 					);
 				}
 			}
+
+			bool IsMixinFrameworkElement()
+				=> this is IFrameworkElement && !_originalObjectType.Is(typeof(FrameworkElement));
 		}
 
 		internal long RegisterPropertyChangedCallbackInternal(DependencyProperty property, DependencyPropertyChangedCallback callback)

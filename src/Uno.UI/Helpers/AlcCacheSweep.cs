@@ -22,23 +22,21 @@ internal static class AlcCacheSweep
 	/// </summary>
 	/// <returns>The number of removed entries, for teardown diagnostics.</returns>
 	internal static int RemoveNonDefaultAlcEntries<TValue>(IDictionary<Type, TValue> dictionary)
+		=> RemoveNonDefaultAlcEntries(dictionary, static key => key);
+
+	/// <summary>
+	/// Same as <see cref="RemoveNonDefaultAlcEntries{TValue}(IDictionary{Type, TValue})"/>, for caches
+	/// whose key is a composite carrying the <see cref="Type"/> that pins the context.
+	/// </summary>
+	/// <returns>The number of removed entries, for teardown diagnostics.</returns>
+	internal static int RemoveNonDefaultAlcEntries<TKey, TValue>(IDictionary<TKey, TValue> dictionary, Func<TKey, Type> typeSelector)
 	{
-		List<Type>? keysToRemove = null;
+		List<TKey>? keysToRemove = null;
 		foreach (var key in dictionary.Keys)
 		{
-			// Type.IsCollectible is the fast path — it also catches generic instantiations
-			// over collectible type arguments whose declaring assembly is a shared
-			// (default-ALC) one. Only fall back to the load-context lookup otherwise.
-			if (key.IsCollectible)
+			if (IsFromNonDefaultAlc(typeSelector(key)))
 			{
-				(keysToRemove ??= new List<Type>()).Add(key);
-				continue;
-			}
-
-			var alc = AssemblyLoadContext.GetLoadContext(key.Assembly);
-			if (alc is not null && alc != AssemblyLoadContext.Default)
-			{
-				(keysToRemove ??= new List<Type>()).Add(key);
+				(keysToRemove ??= new List<TKey>()).Add(key);
 			}
 		}
 
@@ -53,6 +51,23 @@ internal static class AlcCacheSweep
 		}
 
 		return keysToRemove.Count;
+	}
+
+	/// <summary>
+	/// Whether the type belongs to a non-default (collectible) <see cref="AssemblyLoadContext"/>.
+	/// </summary>
+	internal static bool IsFromNonDefaultAlc(Type type)
+	{
+		// Type.IsCollectible is the fast path — it also catches generic instantiations
+		// over collectible type arguments whose declaring assembly is a shared
+		// (default-ALC) one. Only fall back to the load-context lookup otherwise.
+		if (type.IsCollectible)
+		{
+			return true;
+		}
+
+		var alc = AssemblyLoadContext.GetLoadContext(type.Assembly);
+		return alc is not null && alc != AssemblyLoadContext.Default;
 	}
 
 	/// <summary>
