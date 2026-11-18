@@ -124,7 +124,7 @@ Next, open the project using Visual Studio Code.
 
 We can now explore the MCP:
 
-1. If you want to use our MCP tools, make sure to be logged in using your account in [Uno Studio](xref:Uno.GetStarted.Licensing) by using the command palette:
+1. If you want to use our MCP tools, make sure to be signed in to your account in the [Uno Platform Account dialog](xref:Uno.GetStarted.Licensing). Open it from the command palette with `Uno Platform: Account and License`:
 
     ![vscode project selection](Assets/vscode-uno-studio-open.png)
 
