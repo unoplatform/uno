@@ -74,6 +74,24 @@ public class Given_ProgressBar
 	}
 
 	[TestMethod]
+	public async Task When_DefaultProgressBarStyle_Then_Default_Template_Applies()
+	{
+		// WinUI defines DefaultProgressBarStyle as an empty style, so the default template still applies.
+		var sut = (ProgressBar)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+			"""
+			<ProgressBar xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+						 Width="200" Maximum="100" Value="50" Style="{StaticResource DefaultProgressBarStyle}" />
+			""");
+
+		using var _ = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(sut);
+
+		var indicator = sut.FindFirstDescendant<Rectangle>("DeterminateProgressBarIndicator");
+		Assert.IsNotNull(indicator);
+		Assert.AreEqual(100, indicator.Width, 0.01);
+	}
+
+	[TestMethod]
 	public async Task When_BorderThickness_Then_Determinate_Indicator_Fits_Inside_Border()
 	{
 		var sut = new ProgressBar
