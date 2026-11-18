@@ -363,6 +363,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_GroupName_Default_Two_ItemsControls()
+		{
+			var radioButton1 = new RadioButton();
+			var radioButton2 = new RadioButton();
+
+			WindowHelper.WindowContent = new StackPanel()
+			{
+				Children =
+				{
+					new ItemsControl() { Items = { radioButton1 } },
+					new ItemsControl() { Items = { radioButton2 } },
+				}
+			};
+			await WindowHelper.WaitForIdle();
+
+			radioButton1.IsChecked = true;
+			radioButton2.IsChecked = true;
+
+			// Each button's group is its own items host panel.
+			Assert.IsTrue(radioButton1.IsChecked);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_GroupName_Default_No_Parent()
+		{
+			var radioButton1 = new RadioButton();
+			var radioButton2 = new RadioButton();
+
+			radioButton1.IsChecked = true;
+			radioButton2.IsChecked = true;
+
+			// Without a parent there is no group scope, so nothing is unchecked.
+			Assert.IsTrue(radioButton1.IsChecked);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_RadioButtons_Unload_SelectedIndex()
 		{
 			var vm = new When_RadioButtons_Unload_VM
