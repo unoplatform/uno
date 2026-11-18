@@ -271,6 +271,40 @@
           "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/DropDownButton_themeresources.xaml"
         }
       ]
+    },
+    {
+      "id": "scrollview",
+      "title": "ScrollView",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
+      "upstream": {
+        "sources": [
+          "controls/dev/ScrollView"
+        ],
+        "tests": [
+          "controls/dev/ScrollView/APITests",
+          "controls/dev/ScrollView/InteractionTests",
+          "controls/dev/ScrollView/TestUI"
+        ]
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/ScrollView"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/ScrollView",
+          "src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/ScrollViewTests"
+        ]
+      },
+      "mirror": [
+        {
+          "upstream": "controls/dev/ScrollView/ScrollView.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/ScrollView.xaml"
+        },
+        {
+          "upstream": "controls/dev/ScrollView/ScrollView_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/ScrollView_themeresources.xaml"
+        }
+      ]
     }
   ]
 }
