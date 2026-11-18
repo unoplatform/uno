@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
+using Microsoft.UI.Xaml.Settings;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
@@ -18,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 /// <summary>
 /// Covers the opt-in perf2026 control styles, enabled through
-/// <see cref="FeatureConfiguration.Style.UseDefaultStyleOptimizations"/>.
+/// <see cref="XamlChangeId.DefaultStyleOptimizations"/>.
 ///
 /// The optimized dictionaries replace the visual state storyboards that only carry zero-duration
 /// <see cref="DiscreteObjectKeyFrame"/>s by <see cref="VisualState.Setters"/>, which apply at the
@@ -34,9 +35,10 @@ public class Given_DefaultStyleOptimizations
 	{
 		// The optimizations must stay opt-in: enabling them by default would change the
 		// visual tree of every app.
-		Assert.IsFalse(FeatureConfiguration.Style.UseDefaultStyleOptimizations);
-		Assert.IsFalse(FeatureConfiguration.Style.DeferOverriddenSetterValues);
-		Assert.IsFalse(FeatureConfiguration.Perf2026.EnableAll);
+		Assert.IsFalse(XamlOptionalChanges.IsChangeEnabled(XamlChangeId.DefaultStyleOptimizations));
+		Assert.IsFalse(XamlOptionalChanges.IsChangeEnabled(XamlChangeId.OptimizeApplyStyles));
+		Assert.IsFalse(XamlOptionalChanges.IsChangeEnabled(XamlChangeId.IconNoGridOptimization));
+		Assert.IsTrue(XamlOptionalChanges.IsLocked());
 	}
 
 	[TestMethod]
@@ -262,7 +264,7 @@ public class Given_DefaultStyleOptimizations
 #endif
 	public async Task When_Optimized_CommandBar_Opens_With_Visible_Ellipsis(bool noGrid)
 	{
-		using var _ = FeatureConfigurationHelper.UseIconElementNoGridContainer(noGrid);
+		using var _ = FeatureConfigurationHelper.UseOptionalChange(XamlChangeId.IconNoGridOptimization, noGrid);
 		var commandBar = new CommandBar
 		{
 			Width = 320,
@@ -366,30 +368,21 @@ public class Given_DefaultStyleOptimizations
 	[TestMethod]
 	public async Task When_Enabled_Then_Default_Style_Channel_Uses_Optimized_Style()
 	{
-		var previous = FeatureConfiguration.Style.UseDefaultStyleOptimizations;
+		using var optimizedStyles = FeatureConfigurationHelper.UseOptionalChange(XamlChangeId.DefaultStyleOptimizations, true);
+		_ = new XamlControlsResources();
 
-		try
+		var button = new Button
 		{
-			FeatureConfiguration.Style.UseDefaultStyleOptimizations = true;
-			_ = new XamlControlsResources();
+			Content = "Button",
+			Style = Style.GetDefaultStyleForType(typeof(Button)),
+		};
+		await UITestHelper.Load(button);
 
-			var button = new Button
-			{
-				Content = "Button",
-				Style = Style.GetDefaultStyleForType(typeof(Button)),
-			};
-			await UITestHelper.Load(button);
-
-			var states = GetStates(button);
-			Assert.AreEqual(
-				0,
-				CountTimelines(states.Values, IsConvertibleTimeline),
-				"The optimized default-style channel should select the registered Perf2026 style.");
-		}
-		finally
-		{
-			FeatureConfiguration.Style.UseDefaultStyleOptimizations = previous;
-		}
+		var states = GetStates(button);
+		Assert.AreEqual(
+			0,
+			CountTimelines(states.Values, IsConvertibleTimeline),
+			"The optimized default-style channel should select the registered Perf2026 style.");
 	}
 
 	[TestMethod]
@@ -458,18 +451,10 @@ public class Given_DefaultStyleOptimizations
 
 	private static XamlControlsResources CreateResources(bool optimized)
 	{
-		var previous = FeatureConfiguration.Style.UseDefaultStyleOptimizations;
-		try
-		{
-			FeatureConfiguration.Style.UseDefaultStyleOptimizations = optimized;
+		using var _ = FeatureConfigurationHelper.UseOptionalChange(XamlChangeId.DefaultStyleOptimizations, optimized);
 
-			// The optimized dictionaries are overlaid by the XamlControlsResources constructor.
-			return new XamlControlsResources();
-		}
-		finally
-		{
-			FeatureConfiguration.Style.UseDefaultStyleOptimizations = previous;
-		}
+		// The optimized dictionaries are overlaid by the XamlControlsResources constructor.
+		return new XamlControlsResources();
 	}
 
 	private static Style GetStyle(ResourceDictionary resources, object key)

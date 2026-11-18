@@ -27,18 +27,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	public class Given_Style
 	{
 #if HAS_UNO
-		private bool _previousDeferOverriddenSetterValues;
+		private IDisposable _optimizeApplyStyles;
 
 		[TestInitialize]
 		public void Initialize()
-		{
-			_previousDeferOverriddenSetterValues = FeatureConfiguration.Style.DeferOverriddenSetterValues;
-			FeatureConfiguration.Style.DeferOverriddenSetterValues = true;
-		}
+			=> _optimizeApplyStyles = FeatureConfigurationHelper.UseOptionalChange(Microsoft.UI.Xaml.Settings.XamlChangeId.OptimizeApplyStyles, true);
 
 		[TestCleanup]
 		public void Cleanup()
-			=> FeatureConfiguration.Style.DeferOverriddenSetterValues = _previousDeferOverriddenSetterValues;
+			=> _optimizeApplyStyles?.Dispose();
 #endif
 
 		[TestMethod]

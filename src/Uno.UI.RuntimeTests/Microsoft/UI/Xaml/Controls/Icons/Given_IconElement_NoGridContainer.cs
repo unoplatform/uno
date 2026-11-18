@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Settings;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
@@ -32,7 +33,7 @@ public class Given_IconElement_NoGridContainer
 	[TestMethod]
 	public void When_Disabled_FontIcon_Uses_Grid()
 	{
-		using var _ = FeatureConfigurationHelper.UseIconElementNoGridContainer(false);
+		using var _ = FeatureConfigurationHelper.UseOptionalChange(XamlChangeId.IconNoGridOptimization, false);
 
 		var fontIcon = new FontIcon { Glyph = Glyph };
 
@@ -46,7 +47,7 @@ public class Given_IconElement_NoGridContainer
 	[TestMethod]
 	public void When_Disabled_BitmapIcon_Uses_Grid()
 	{
-		using var _ = FeatureConfigurationHelper.UseIconElementNoGridContainer(false);
+		using var _ = FeatureConfigurationHelper.UseOptionalChange(XamlChangeId.IconNoGridOptimization, false);
 
 		var bitmapIcon = new BitmapIcon { UriSource = SearchIcon };
 
@@ -60,7 +61,7 @@ public class Given_IconElement_NoGridContainer
 	[TestMethod]
 	public void When_Enabled_FontIcon_Hosts_TextBlock_Directly()
 	{
-		using var _ = FeatureConfigurationHelper.UseIconElementNoGridContainer(true);
+		using var _ = FeatureConfigurationHelper.UseOptionalChange(XamlChangeId.IconNoGridOptimization, true);
 
 		var fontIcon = new FontIcon { Glyph = Glyph };
 
@@ -74,7 +75,7 @@ public class Given_IconElement_NoGridContainer
 	[TestMethod]
 	public void When_Enabled_BitmapIcon_Hosts_Image_Directly()
 	{
-		using var _ = FeatureConfigurationHelper.UseIconElementNoGridContainer(true);
+		using var _ = FeatureConfigurationHelper.UseOptionalChange(XamlChangeId.IconNoGridOptimization, true);
 
 		var bitmapIcon = new BitmapIcon { UriSource = SearchIcon };
 
@@ -85,7 +86,7 @@ public class Given_IconElement_NoGridContainer
 	[TestMethod]
 	public void When_Enabled_Other_Icons_Keep_Grid()
 	{
-		using var _ = FeatureConfigurationHelper.UseIconElementNoGridContainer(true);
+		using var _ = FeatureConfigurationHelper.UseOptionalChange(XamlChangeId.IconNoGridOptimization, true);
 
 		Assert.IsInstanceOfType(VisualTreeHelper.GetChild(new SymbolIcon(Symbol.Accept), 0), typeof(Grid));
 		Assert.IsInstanceOfType(VisualTreeHelper.GetChild(new PathIcon(), 0), typeof(Grid));
@@ -140,7 +141,7 @@ public class Given_IconElement_NoGridContainer
 	[DataRow(false)]
 	public async Task When_Foreground_Reaches_Icon_Child(bool noGrid)
 	{
-		using var _ = FeatureConfigurationHelper.UseIconElementNoGridContainer(noGrid);
+		using var _ = FeatureConfigurationHelper.UseOptionalChange(XamlChangeId.IconNoGridOptimization, noGrid);
 
 		var fontIcon = new FontIcon { Glyph = Glyph, Foreground = new SolidColorBrush(Colors.Red) };
 		var bitmapIcon = new BitmapIcon { UriSource = SearchIcon, Foreground = new SolidColorBrush(Colors.Red) };
@@ -169,7 +170,7 @@ public class Given_IconElement_NoGridContainer
 	[DataRow(false)]
 	public async Task When_Theme_Changes_Icon_Child_Follows(bool noGrid)
 	{
-		using var _ = FeatureConfigurationHelper.UseIconElementNoGridContainer(noGrid);
+		using var _ = FeatureConfigurationHelper.UseOptionalChange(XamlChangeId.IconNoGridOptimization, noGrid);
 
 		var reference = new TextBlock { Text = "test" };
 		var fontIcon = new FontIcon { Glyph = Glyph };
@@ -191,7 +192,7 @@ public class Given_IconElement_NoGridContainer
 	[DataRow(false)]
 	public async Task When_UriSource_Changes_Image_Source_Follows(bool noGrid)
 	{
-		using var _ = FeatureConfigurationHelper.UseIconElementNoGridContainer(noGrid);
+		using var _ = FeatureConfigurationHelper.UseOptionalChange(XamlChangeId.IconNoGridOptimization, noGrid);
 
 		var bitmapIcon = new BitmapIcon { Width = 50, Height = 50, UriSource = SearchIcon };
 		await UITestHelper.Load(bitmapIcon);
@@ -214,7 +215,7 @@ public class Given_IconElement_NoGridContainer
 	[DataRow(false)]
 	public async Task When_RightToLeft_FontIcon_Is_Mirrored(bool noGrid)
 	{
-		using var _ = FeatureConfigurationHelper.UseIconElementNoGridContainer(noGrid);
+		using var _ = FeatureConfigurationHelper.UseOptionalChange(XamlChangeId.IconNoGridOptimization, noGrid);
 
 		var fontIcon = new FontIcon
 		{
@@ -239,7 +240,7 @@ public class Given_IconElement_NoGridContainer
 	[TestMethod]
 	public async Task When_Enabled_Icon_Surface_Stays_HitTestable()
 	{
-		using var _ = FeatureConfigurationHelper.UseIconElementNoGridContainer(true);
+		using var _ = FeatureConfigurationHelper.UseOptionalChange(XamlChangeId.IconNoGridOptimization, true);
 
 		var fontIcon = new FontIcon { Glyph = Glyph, Width = 80, Height = 60 };
 		var host = new Border { Width = 80, Height = 60, Child = fontIcon };
@@ -256,7 +257,7 @@ public class Given_IconElement_NoGridContainer
 	[TestMethod]
 	public async Task When_Enabled_IconSourceElement_Still_Replaces_Child()
 	{
-		using var _ = FeatureConfigurationHelper.UseIconElementNoGridContainer(true);
+		using var _ = FeatureConfigurationHelper.UseOptionalChange(XamlChangeId.IconNoGridOptimization, true);
 
 		var iconSourceElement = new IconSourceElement { IconSource = new SymbolIconSource { Symbol = Symbol.Accept } };
 		await UITestHelper.Load(iconSourceElement);
@@ -300,7 +301,7 @@ public class Given_IconElement_NoGridContainer
 #endif
 	public async Task When_Enabled_BitmapIcon_Renders_Monochrome()
 	{
-		using var _ = FeatureConfigurationHelper.UseIconElementNoGridContainer(true);
+		using var _ = FeatureConfigurationHelper.UseOptionalChange(XamlChangeId.IconNoGridOptimization, true);
 
 		var bitmapIcon = new BitmapIcon
 		{
@@ -323,7 +324,7 @@ public class Given_IconElement_NoGridContainer
 
 	private static FontIcon CreateFontIcon(bool noGrid)
 	{
-		using var _ = FeatureConfigurationHelper.UseIconElementNoGridContainer(noGrid);
+		using var _ = FeatureConfigurationHelper.UseOptionalChange(XamlChangeId.IconNoGridOptimization, noGrid);
 
 		return new FontIcon
 		{
@@ -337,7 +338,7 @@ public class Given_IconElement_NoGridContainer
 
 	private static BitmapIcon CreateBitmapIcon(bool noGrid)
 	{
-		using var _ = FeatureConfigurationHelper.UseIconElementNoGridContainer(noGrid);
+		using var _ = FeatureConfigurationHelper.UseOptionalChange(XamlChangeId.IconNoGridOptimization, noGrid);
 
 		return new BitmapIcon
 		{

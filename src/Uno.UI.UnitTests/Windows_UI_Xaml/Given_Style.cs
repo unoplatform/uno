@@ -11,25 +11,25 @@ using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Settings;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
 	[UITestClass]
 	public class Given_Style
 	{
-		private bool _previousDeferOverriddenSetterValues;
+		private bool _previousOptimizeApplyStyles;
 
 		[TestInitialize]
 		public void Init()
 		{
 			UnitTestsApp.App.EnsureApplication();
-			_previousDeferOverriddenSetterValues = FeatureConfiguration.Style.DeferOverriddenSetterValues;
-			FeatureConfiguration.Style.DeferOverriddenSetterValues = true;
+			_previousOptimizeApplyStyles = XamlOptionalChanges.SetChangeEnabledForTesting(XamlChangeId.OptimizeApplyStyles, true);
 		}
 
 		[TestCleanup]
 		public void Cleanup()
-			=> FeatureConfiguration.Style.DeferOverriddenSetterValues = _previousDeferOverriddenSetterValues;
+			=> XamlOptionalChanges.SetChangeEnabledForTesting(XamlChangeId.OptimizeApplyStyles, _previousOptimizeApplyStyles);
 
 		[TestMethod]
 		public void When_Sealed_Style_Add_Setter()
@@ -301,7 +301,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			try
 			{
-				FeatureConfiguration.Style.DeferOverriddenSetterValues = false;
+				XamlOptionalChanges.SetChangeEnabledForTesting(XamlChangeId.OptimizeApplyStyles, false);
 
 				PlainControl control = new();
 				control.Tag = "local";
@@ -312,7 +312,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			}
 			finally
 			{
-				FeatureConfiguration.Style.DeferOverriddenSetterValues = _previousDeferOverriddenSetterValues;
+				XamlOptionalChanges.SetChangeEnabledForTesting(XamlChangeId.OptimizeApplyStyles, true);
 			}
 		}
 
