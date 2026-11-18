@@ -25,11 +25,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		/// <summary>
 		/// Overlays the optimized (perf2026) control styles when the app opted in through
-		/// <see cref="Uno.UI.FeatureConfiguration.Style.UseDefaultStyleOptimizations"/>.
+		/// <see cref="Microsoft.UI.Xaml.Settings.XamlChangeId.DefaultStyleOptimizations"/>.
 		/// </summary>
 		private void ApplyStyleOptimizations()
 		{
-			if (Uno.UI.FeatureConfiguration.Style.UseDefaultStyleOptimizations)
+			if (Microsoft.UI.Xaml.Settings.XamlOptionalChanges.IsChangeEnabled(Microsoft.UI.Xaml.Settings.XamlChangeId.DefaultStyleOptimizations))
 			{
 				OverlayFrom(new Uno.UI.FluentTheme.Perf2026Resources());
 			}

@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml
 
 		/// <summary>
 		/// Performance-optimized variants of the default styles, only used when
-		/// <see cref="FeatureConfiguration.Style.UseDefaultStyleOptimizations"/> is enabled.
+		/// <see cref="Microsoft.UI.Xaml.Settings.XamlChangeId.DefaultStyleOptimizations"/> is enabled.
 		/// </summary>
 		private readonly static Dictionary<Type, StyleProviderHandler> _optimizedLookup = new(Uno.Core.Comparison.FastTypeComparer.Default);
 		private readonly static Dictionary<Type, Style> _optimizedDefaultStyleCache = new(Uno.Core.Comparison.FastTypeComparer.Default);
@@ -177,7 +177,7 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		private static bool TryDeferSetter(DependencyObject o, DependencyPropertyValuePrecedences precedence, SetterBase setterBase)
 		{
-			if (!FeatureConfiguration.Style.DeferOverriddenSetterValues ||
+			if (!Microsoft.UI.Xaml.Settings.XamlOptionalChanges.IsOptimizeApplyStylesEnabled ||
 				setterBase is not Setter { Property: { } property } setter ||
 				setter.ThemeResourceKey.HasValue)
 			{
@@ -422,7 +422,7 @@ namespace Microsoft.UI.Xaml
 
 			Style? style = null;
 
-			if (FeatureConfiguration.Style.UseDefaultStyleOptimizations)
+			if (Microsoft.UI.Xaml.Settings.XamlOptionalChanges.AreOptimizedStylesEnabled)
 			{
 				style = GetStyleFromChannel(type, _optimizedDefaultStyleCache, _optimizedLookup);
 			}

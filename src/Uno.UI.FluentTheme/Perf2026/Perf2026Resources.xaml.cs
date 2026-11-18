@@ -11,7 +11,7 @@ namespace Uno.UI.FluentTheme
 	/// </summary>
 	/// <remarks>
 	/// This dictionary is overlaid on <see cref="Microsoft.UI.Xaml.Controls.XamlControlsResources"/>
-	/// when <see cref="global::Uno.UI.FeatureConfiguration.Style.UseDefaultStyleOptimizations"/> is
+	/// when <see cref="global::Microsoft.UI.Xaml.Settings.XamlChangeId.DefaultStyleOptimizations"/> is
 	/// enabled. It is not meant to be merged directly by apps.
 	/// </remarks>
 	[EditorBrowsable(EditorBrowsableState.Never)]

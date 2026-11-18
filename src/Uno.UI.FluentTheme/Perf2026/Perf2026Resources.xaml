@@ -6,7 +6,7 @@
 		Optimized (perf2026) variants of the Fluent v2 control styles, ported from WinUI.
 
 		This dictionary is only overlaid on XamlControlsResources when
-		FeatureConfiguration.Style.UseDefaultStyleOptimizations is enabled, so the default
+		XamlOptionalChanges enables XamlChangeId.DefaultStyleOptimizations, so the default
 		visual tree and behavior are unchanged unless an app opts in.
 
 		Each merged dictionary only carries the styles it actually optimizes; the keys it does

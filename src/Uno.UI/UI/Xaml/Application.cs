@@ -837,6 +837,9 @@ namespace Microsoft.UI.Xaml
 
 		private static partial Application? StartPartial(Func<ApplicationInitializationCallbackParams, Application?> callback)
 		{
+			// Matches WinUI, which locks the optional changes in DXamlCore::InitializeImpl, before any XAML initialization.
+			_ = Microsoft.UI.Xaml.Settings.XamlOptionalChanges.LockInternal();
+
 			_startInvoked = true;
 
 			// The framework is backend-agnostic and packaged once: it does NOT install a drawing backend. The app

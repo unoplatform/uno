@@ -88,7 +88,7 @@ public partial class IconElement : FrameworkElement
 	private protected virtual bool SupportsDirectChild => false;
 
 	private bool UsesDirectChild
-		=> _usesDirectChild ??= SupportsDirectChild && Uno.UI.FeatureConfiguration.Perf2026.IconElementNoGridContainer;
+		=> _usesDirectChild ??= SupportsDirectChild && Microsoft.UI.Xaml.Settings.XamlOptionalChanges.IsIconNoGridOptimizationEnabled;
 
 	// The root Grid carries a transparent background, which makes the whole icon surface hit-testable.
 	// Keep that behavior when the Grid (and its brush) are not allocated.
