@@ -578,18 +578,33 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		{
 			FrameworkElement root = null;
 			Rect bounds = default;
+			Rect searchBounds = default;
 			await RunOnUIThread(() =>
 			{
 				root = (FrameworkElement)WindowHelper.WindowContent;
 				var item = (FrameworkElement)list.ContainerFromIndex(0);
 				var listOffset = list.ActualOffset;
+				var isRtl = list.FlowDirection == FlowDirection.RightToLeft;
 
 				// The list mirrors its whole content, so the item is drawn at its offset counted from the right.
 				var itemOffset = item.TransformToVisual(list).TransformPoint(default);
-				var x = list.FlowDirection == FlowDirection.RightToLeft
+				var x = isRtl
 					? listOffset.X + list.ActualWidth - itemOffset.X - item.ActualWidth
 					: listOffset.X + itemOffset.X;
 				bounds = new Rect(x, listOffset.Y + itemOffset.Y, item.ActualWidth, item.ActualHeight);
+				searchBounds = bounds;
+
+#if HAS_UNO
+				// The presenter's selection also draws borders around the whole item, so only look inside its check box.
+				if (VisualTreeHelper.GetChild(item, 0) is ListViewBaseItemPresenter { m_multiSelectCheckBoxRectangle: { } checkBox })
+				{
+					var boxOffset = checkBox.TransformToVisual(item).TransformPoint(default);
+					var boxX = isRtl
+						? bounds.X + item.ActualWidth - boxOffset.X - checkBox.ActualWidth
+						: bounds.X + boxOffset.X;
+					searchBounds = new Rect(boxX - 1, bounds.Y + boxOffset.Y - 1, checkBox.ActualWidth + 2, checkBox.ActualHeight + 2);
+				}
+#endif
 			});
 
 			// The selection animations need to settle before the two captures differ only by the check box.
@@ -611,9 +626,9 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 				await WindowHelper.WaitForIdle();
 				await Task.Delay(500 * (attempt + 1));
 
-				for (var y = (int)bounds.Top; y < (int)bounds.Bottom; y++)
+				for (var y = (int)searchBounds.Top; y < (int)searchBounds.Bottom; y++)
 				{
-					for (var x = (int)bounds.Left; x < (int)bounds.Right; x++)
+					for (var x = (int)searchBounds.Left; x < (int)searchBounds.Right; x++)
 					{
 						var a = selected.GetPixel(x, y);
 						var b = deselected.GetPixel(x, y);
