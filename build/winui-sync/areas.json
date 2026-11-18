@@ -370,6 +370,43 @@
           "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/GridViewItem_themeresources.xaml"
         }
       ]
+    },
+    {
+      "id": "pipspager",
+      "title": "PipsPager",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
+      "upstream": {
+        "sources": [
+          "controls/dev/PipsPager"
+        ],
+        "tests": [
+          "controls/dev/PipsPager/APITests",
+          "controls/dev/PipsPager/InteractionTests",
+          "controls/dev/PipsPager/TestUI"
+        ],
+        "strings": "controls/dev/PipsPager/Strings"
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/PipsPager"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/PipsPager",
+          "src/SamplesApp/SamplesApp.UITests/Microsoft_UI_Xaml_Controls/PipsPager",
+          "src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/PipsPagerTests"
+        ],
+        "strings": "src/Uno.UI/UI/Xaml/Controls/PipsPager/Strings"
+      },
+      "mirror": [
+        {
+          "upstream": "controls/dev/PipsPager/PipsPager.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/PipsPager.xaml"
+        },
+        {
+          "upstream": "controls/dev/PipsPager/PipsPager_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/PipsPager_themeresources.xaml"
+        }
+      ]
     }
   ]
 }
