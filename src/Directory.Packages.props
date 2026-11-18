@@ -22,8 +22,12 @@
 		<!-- Generators that only run inside this repository's own build -->
 		<RoslynInternalGeneratorVersion>4.4.0-2.final</RoslynInternalGeneratorVersion>
 
-		<!-- The WebView2 version Microsoft.WindowsAppSDK itself depends on, for the WinAppSDK API sync -->
-		<WinAppSDKWebView2Version>1.0.3856.49</WinAppSDKWebView2Version>
+		<!-- Inputs of the WinAppSDK API sync generator: latest stable, independent of the repo's WinAppSDK pin -->
+		<WinAppSDKSyncVersion>2.7.0</WinAppSDKSyncVersion>
+		<WinAppSDKWebView2Version>1.0.4314.35</WinAppSDKWebView2Version>
+		<!-- Newest platform version the .NET SDK accepts; the projection below may be newer -->
+		<WinAppSDKSyncTargetPlatformVersion>10.0.26100.0</WinAppSDKSyncTargetPlatformVersion>
+		<WinAppSDKSyncWindowsSdkPackageVersion>10.0.28000.87</WinAppSDKSyncWindowsSdkPackageVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
