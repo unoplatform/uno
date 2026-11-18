@@ -49,7 +49,7 @@ public partial class PipsPager : Control
 	private const string c_pipsPagerScrollViewerName = "PipsPagerScrollViewer";
 
 #if !HAS_UNO
-	// TODO Uno: Unused upstream as well; excluded so IDE0051 does not fail the build.
+	// Uno specific: unused upstream too; kept for diffing but excluded so IDE0051 does not fail the build.
 	private const string c_pipsPagerVerticalOrientationButtonWidthPropertyName = "PipsPagerVerticalOrientationButtonWidth";
 	private const string c_pipsPagerVerticalOrientationButtonHeightPropertyName = "PipsPagerVerticalOrientationButtonHeight";
 
@@ -422,7 +422,7 @@ public partial class PipsPager : Control
 	}
 
 #if !HAS_UNO
-	// TODO Uno: Never subscribed upstream either; excluded so IDE0051 does not fail the build.
+	// Uno specific: never subscribed upstream either; kept for diffing but excluded so IDE0051 does not fail the build.
 	private void OnElementIndexChanged(ItemsRepeater itemsRepeater, ItemsRepeaterElementIndexChangedEventArgs args)
 	{
 		if (args.Element is { } pip)

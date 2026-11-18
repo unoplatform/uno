@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls;
 
 internal sealed class PipsPagerViewItemRevokers
 {
-	public SerialDisposable clickRevoker = new SerialDisposable();
+	public readonly SerialDisposable clickRevoker = new SerialDisposable();
 }
 
 public partial class PipsPager
