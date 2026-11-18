@@ -84,11 +84,11 @@ partial class ListViewBase
 			return;
 		}
 
-		// ContainerClearedForItem might not run for all containers. The handler is static, so it can't leak.
-		itemContainer.DragStarting -= OnItemContainerDragStarting;
-
 		itemContainer.CanDrag = true;
-		itemContainer.DragStarting += OnItemContainerDragStarting;
+		if (itemContainer is ListViewBaseItem listViewBaseItem)
+		{
+			listViewBaseItem.IsListViewDragSource = true;
+		}
 	}
 
 	internal static void ClearContainerForDragDrop(UIElement? itemContainer)
@@ -99,13 +99,16 @@ partial class ListViewBase
 		}
 
 		itemContainer.CanDrag = false;
-		itemContainer.DragStarting -= OnItemContainerDragStarting;
+		if (itemContainer is ListViewBaseItem listViewBaseItem)
+		{
+			listViewBaseItem.IsListViewDragSource = false;
+		}
 	}
 
-	private static void OnItemContainerDragStarting(UIElement sender, DragStartingEventArgs innerArgs)
+	// Runs before the container raises DragStarting, so DragItemsStarting comes first as in WinUI's ListViewBase::OnDragGesture.
+	internal static void OnItemContainerDragStarting(ListViewBaseItem draggedItemContainer, DragStartingEventArgs innerArgs)
 	{
-		if (sender is not ListViewBaseItem draggedItemContainer
-			|| ItemsControlFromItemContainer(sender) is not ListViewBase that)
+		if (ItemsControlFromItemContainer(draggedItemContainer) is not ListViewBase that)
 		{
 			return;
 		}
