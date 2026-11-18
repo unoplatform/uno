@@ -35,6 +35,31 @@ WinUI: added items fade in, removed items fade out, and their neighbors slide. A
 container stays in the panel until its animation ends. Set `ItemContainerTransitions` to an empty
 `TransitionCollection` to turn them off.
 
+### `ScrollViewer.ViewChanging` is raised
+
+`ScrollViewer.ViewChanging` is now raised before each `ViewChanged` while the view moves, as on
+WinUI.
+
+### ListView and GridView API aligned with WinUI
+
+`ListView` and `GridView` now run a port of the WinUI implementation, which removes Uno Platform-only
+API and changes a few signatures to match WinUI:
+
+- `VirtualizingPanelLayout` and `VirtualizingPanel.GetLayouter()` are removed. The items panels lay
+  out through the same code as WinUI's `ModernCollectionBasePanel`.
+- `GroupItem.GetTemplatedItemsControl()` and the protected `Selector.m_skipFocusSuggestion` field are
+  removed. Use `ItemsControl.ItemsControlFromItemContainer` to find the owner of a container.
+- `ScrollViewerView` and `ScrollViewerViewChangingEventArgs` are sealed.
+- `CarouselPanel` and `ItemsStackPanel` no longer declare their own `MeasureOverride` and
+  `ArrangeOverride`, and `ListViewBase` no longer overrides `OnDataContextChanged` and
+  `OnItemsSourceChanged`. Code that overrides them in a subclass and calls `base` still compiles.
+- Several overrides take the WinUI parameter names (for example `ScrollViewer.OnKeyDown(e)` and
+  `ItemsPresenter.MeasureOverride(availableSize)`), which only matters for callers using named
+  arguments.
+- `FrameworkElement.Parent` is `null` for the items of an `ItemsControl` that sit in its items panel,
+  as on WinUI. Use `VisualTreeHelper.GetParent` to reach the panel, or
+  `ItemsControl.ItemsControlFromItemContainer` to reach the owner.
+
 ## Uno Platform 7.0
 
 Uno Platform 7.0 is the Skia-unification major release: Skia is the rendering engine on every

@@ -56,4 +56,6 @@ The visual tree of a `ListView` is the same as on WinUI: `ScrollViewer`, `Scroll
 
 * **`CarouselPanel`** derives from the same panel as `ItemsStackPanel`, and doesn't support carouseling.
 * **Item transitions** run on the element itself rather than on a separate layout transition element, so they can't draw outside the bounds of the panel, and grid items changing column get a straight move instead of a crossfade.
-* **`ScrollViewer.ViewChanging`** isn't raised.
+* **Connected animations** aren't supported: `PrepareConnectedAnimation` throws, and `TryStartConnectedAnimationAsync` returns `false`.
+* **`SemanticZoom`** isn't implemented, so the `ISemanticZoomInformation` members of `ListViewBase` have no effect.
+* **`VirtualizingStackPanel`** isn't implemented. Use `ItemsStackPanel`, the default items panel of `ListView`.
