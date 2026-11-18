@@ -24,6 +24,20 @@ public partial class AppCapability
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public string DisplayMessage
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "DisplayMessage");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authorization.AppCapabilityAccess.AppCapability", "DisplayMessage");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.System.User User
 	{
 		get
@@ -77,6 +91,8 @@ public partial class AppCapability
 	// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.AccessChanged.add
 	// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.AccessChanged.remove
 	// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.CapabilityName.get
+	// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.DisplayMessage.get
+	// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.DisplayMessage.set
 	// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.User.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

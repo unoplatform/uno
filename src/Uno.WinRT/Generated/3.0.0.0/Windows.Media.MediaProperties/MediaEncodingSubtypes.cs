@@ -89,6 +89,16 @@ public static partial class MediaEncodingSubtypes
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static string Av1
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingSubtypes", "Av1");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public static string Avi
 	{
 		get
@@ -535,6 +545,7 @@ public static partial class MediaEncodingSubtypes
 	// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.AmrWb.get
 	// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Argb32.get
 	// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Asf.get
+	// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Av1.get
 	// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Avi.get
 	// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Bgra8.get
 	// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Bmp.get

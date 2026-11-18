@@ -12,5 +12,8 @@ public enum DisplayManagerOptions : uint
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	EnforceSourceOwnership = 1,
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	VirtualRefreshRateAware = 2,
+#endif
 }
 #endif

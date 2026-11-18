@@ -34,6 +34,16 @@ public partial class MobileBroadbandDeviceServiceTriggerDetails
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public uint EventId
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceTriggerDetails", "EventId");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Storage.Streams.IBuffer ReceivedData
 	{
 		get
@@ -44,5 +54,6 @@ public partial class MobileBroadbandDeviceServiceTriggerDetails
 #endif
 	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceTriggerDetails.DeviceId.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceTriggerDetails.DeviceServiceId.get
+	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceTriggerDetails.EventId.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceTriggerDetails.ReceivedData.get
 }

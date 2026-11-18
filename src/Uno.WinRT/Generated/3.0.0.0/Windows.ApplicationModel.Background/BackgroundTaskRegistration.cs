@@ -27,6 +27,16 @@ public partial class BackgroundTaskRegistration : global::Windows.ApplicationMod
 		}
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public double AppEnergyUsePredictionContribution
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "AppEnergyUsePredictionContribution");
+		}
+	}
+#endif
 	// Skipping already declared property Name
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -45,6 +55,16 @@ public partial class BackgroundTaskRegistration : global::Windows.ApplicationMod
 		get
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "TaskId");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::System.DateTimeOffset TaskLastThrottledInStandbyTimestamp
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "TaskLastThrottledInStandbyTimestamp");
 		}
 	}
 #endif
@@ -69,9 +89,11 @@ public partial class BackgroundTaskRegistration : global::Windows.ApplicationMod
 	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Completed.remove
 	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Progress.add
 	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Progress.remove
+	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.AppEnergyUsePredictionContribution.get
 	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Name.get
 	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.TaskGroup.get
 	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.TaskId.get
+	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.TaskLastThrottledInStandbyTimestamp.get
 	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Trigger.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

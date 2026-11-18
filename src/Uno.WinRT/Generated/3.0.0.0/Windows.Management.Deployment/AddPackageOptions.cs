@@ -61,6 +61,16 @@ public partial class AddPackageOptions
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::System.Collections.Generic.IDictionary<global::System.Uri, string> ExpectedDigests
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "ExpectedDigests");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::System.Uri ExternalLocationUri
 	{
 		get
@@ -131,6 +141,20 @@ public partial class AddPackageOptions
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool LimitToExistingPackages
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "LimitToExistingPackages");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "LimitToExistingPackages");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::System.Collections.Generic.IList<string> OptionalPackageFamilyNames
 	{
 		get
@@ -146,6 +170,20 @@ public partial class AddPackageOptions
 		get
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "OptionalPackageUris");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Management.Deployment.PackageOperationPriority PackageOperationPriority
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.AddPackageOptions", "PackageOperationPriority");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.AddPackageOptions", "PackageOperationPriority");
 		}
 	}
 #endif
@@ -244,6 +282,7 @@ public partial class AddPackageOptions
 	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.DependencyPackageUris.get
 	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.DeveloperMode.get
 	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.DeveloperMode.set
+	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.ExpectedDigests.get
 	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.ExternalLocationUri.get
 	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.ExternalLocationUri.set
 	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.ForceAppShutdown.get
@@ -254,8 +293,12 @@ public partial class AddPackageOptions
 	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.ForceUpdateFromAnyVersion.set
 	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.InstallAllResources.get
 	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.InstallAllResources.set
+	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.LimitToExistingPackages.get
+	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.LimitToExistingPackages.set
 	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.OptionalPackageFamilyNames.get
 	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.OptionalPackageUris.get
+	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.PackageOperationPriority.get
+	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.PackageOperationPriority.set
 	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.RelatedPackageUris.get
 	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.RequiredContentGroupOnly.get
 	// Forced skipping of method Windows.Management.Deployment.AddPackageOptions.RequiredContentGroupOnly.set

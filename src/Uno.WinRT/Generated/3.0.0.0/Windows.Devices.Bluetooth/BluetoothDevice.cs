@@ -168,13 +168,6 @@ public partial class BluetoothDevice : global::System.IDisposable
 	// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.SdpRecordsChanged.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-	public void Dispose()
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothDevice", "Dispose()");
-	}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceAccessStatus> RequestAccessAsync()
 	{
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "RequestAccessAsync()");
@@ -206,6 +199,13 @@ public partial class BluetoothDevice : global::System.IDisposable
 	public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult> GetRfcommServicesForIdAsync(global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId serviceId, global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 	{
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothDevice", "GetRfcommServicesForIdAsync(RfcommServiceId serviceId, BluetoothCacheMode cacheMode)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public void Dispose()
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.BluetoothDevice", "Dispose()");
 	}
 #endif
 	// Forced skipping of method Windows.Devices.Bluetooth.BluetoothDevice.BluetoothAddress.get

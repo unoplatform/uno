@@ -239,6 +239,16 @@ public static partial class CodecSubtypes
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static string VideoFormatAv1
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.CodecSubtypes", "VideoFormatAv1");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public static string VideoFormatDV25
 	{
 		get
@@ -540,6 +550,7 @@ public static partial class CodecSubtypes
 	// Forced skipping of method Windows.Media.Core.CodecSubtypes.AudioFormatWMAudioV9.get
 	// Forced skipping of method Windows.Media.Core.CodecSubtypes.AudioFormatWmaSpdif.get
 	// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormat420O.get
+	// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatAv1.get
 	// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatDV25.get
 	// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatDV50.get
 	// Forced skipping of method Windows.Media.Core.CodecSubtypes.VideoFormatDvc.get

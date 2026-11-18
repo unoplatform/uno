@@ -43,6 +43,16 @@ public partial class Compositor : global::System.IDisposable
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.System.DispatcherQueue DispatcherQueue
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Compositor", "DispatcherQueue");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public float GlobalPlaybackRate
 	{
 		get
@@ -557,6 +567,48 @@ public partial class Compositor : global::System.IDisposable
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.UI.Composition.AnimationPropertyInfo CreateAnimationPropertyInfo()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Compositor", "CreateAnimationPropertyInfo()");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.UI.Composition.RectangleClip CreateRectangleClip()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Compositor", "CreateRectangleClip()");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.UI.Composition.RectangleClip CreateRectangleClip(float left, float top, float right, float bottom)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Compositor", "CreateRectangleClip(float left, float top, float right, float bottom)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.UI.Composition.RectangleClip CreateRectangleClip(float left, float top, float right, float bottom, global::System.Numerics.Vector2 topLeftRadius, global::System.Numerics.Vector2 topRightRadius, global::System.Numerics.Vector2 bottomRightRadius, global::System.Numerics.Vector2 bottomLeftRadius)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Compositor", "CreateRectangleClip(float left, float top, float right, float bottom, Vector2 topLeftRadius, Vector2 topRightRadius, Vector2 bottomRightRadius, Vector2 bottomLeftRadius)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.UI.Composition.CompositionBackdropBrush TryCreateBlurredWallpaperBackdropBrush()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Compositor", "TryCreateBlurredWallpaperBackdropBrush()");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.UI.Composition.AnimationController CreateAnimationController()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Compositor", "CreateAnimationController()");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public void Dispose()
 	{
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Compositor", "Dispose()");
@@ -564,6 +616,7 @@ public partial class Compositor : global::System.IDisposable
 #endif
 	// Forced skipping of method Windows.UI.Composition.Compositor.Comment.get
 	// Forced skipping of method Windows.UI.Composition.Compositor.Comment.set
+	// Forced skipping of method Windows.UI.Composition.Compositor.DispatcherQueue.get
 	// Forced skipping of method Windows.UI.Composition.Compositor.GlobalPlaybackRate.get
 	// Forced skipping of method Windows.UI.Composition.Compositor.GlobalPlaybackRate.set
 	// Processing: System.IDisposable

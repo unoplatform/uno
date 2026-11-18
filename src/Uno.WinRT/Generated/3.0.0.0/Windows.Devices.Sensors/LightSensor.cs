@@ -99,6 +99,13 @@ public partial class LightSensor
 #endif
 	// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReadingChanged.add
 	// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReadingChanged.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsChromaticitySupported()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.LightSensor", "IsChromaticitySupported()");
+	}
+#endif
 	// Forced skipping of method Windows.Devices.Sensors.LightSensor.DeviceId.get
 	// Forced skipping of method Windows.Devices.Sensors.LightSensor.MaxBatchSize.get
 	// Forced skipping of method Windows.Devices.Sensors.LightSensor.MinimumReportInterval.get

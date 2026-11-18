@@ -16,6 +16,9 @@ public enum RemovalOptions : uint
 	PreserveRoamableApplicationData = 128,
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	DeferRemovalWhenPackagesAreInUse = 8192,
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	RemoveForAllUsers = 524288,
 #endif
 }

@@ -14,6 +14,26 @@ public partial class ConversationalAgentSignal
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public string DetectorId
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal", "DetectorId");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectorKind DetectorKind
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal", "DetectorKind");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public bool IsSignalVerificationRequired
 	{
 		get
@@ -96,6 +116,8 @@ public partial class ConversationalAgentSignal
 		}
 	}
 #endif
+	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.DetectorId.get
+	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.DetectorKind.get
 	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.IsSignalVerificationRequired.get
 	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.IsSignalVerificationRequired.set
 	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ConversationalAgentSignal.SignalContext.get

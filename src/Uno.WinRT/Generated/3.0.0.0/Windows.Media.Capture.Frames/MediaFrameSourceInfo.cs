@@ -44,6 +44,16 @@ public partial class MediaFrameSourceInfo
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsShareable
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Capture.Frames.MediaFrameSourceInfo", "IsShareable");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Media.Capture.MediaStreamType MediaStreamType
 	{
 		get
@@ -112,6 +122,7 @@ public partial class MediaFrameSourceInfo
 	// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.CoordinateSystem.get
 	// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.DeviceInformation.get
 	// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.Id.get
+	// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.IsShareable.get
 	// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.MediaStreamType.get
 	// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.ProfileId.get
 	// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.Properties.get

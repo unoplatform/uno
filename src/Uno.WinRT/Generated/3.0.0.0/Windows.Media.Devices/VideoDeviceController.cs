@@ -44,6 +44,16 @@ public partial class VideoDeviceController : global::Windows.Media.Devices.IMedi
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Media.Devices.CameraOcclusionInfo CameraOcclusionInfo
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "CameraOcclusionInfo");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Media.Devices.MediaDeviceControl Contrast
 	{
 		get
@@ -63,6 +73,16 @@ public partial class VideoDeviceController : global::Windows.Media.Devices.IMedi
 		set
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.VideoDeviceController", "DesiredOptimization");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Media.Devices.DigitalWindowControl DigitalWindowControl
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "DigitalWindowControl");
 		}
 	}
 #endif
@@ -447,12 +467,21 @@ public partial class VideoDeviceController : global::Windows.Media.Devices.IMedi
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "SetDevicePropertyByExtendedId(byte[] extendedPropertyId, byte[] propertyValue)");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool TryAcquireExclusiveControl(string deviceId, global::Windows.Media.Capture.MediaCaptureDeviceExclusiveControlReleaseMode mode)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Devices.VideoDeviceController", "TryAcquireExclusiveControl(string deviceId, MediaCaptureDeviceExclusiveControlReleaseMode mode)");
+	}
+#endif
 	// Forced skipping of method Windows.Media.Devices.VideoDeviceController.AdvancedPhotoControl.get
 	// Forced skipping of method Windows.Media.Devices.VideoDeviceController.BacklightCompensation.get
 	// Forced skipping of method Windows.Media.Devices.VideoDeviceController.Brightness.get
+	// Forced skipping of method Windows.Media.Devices.VideoDeviceController.CameraOcclusionInfo.get
 	// Forced skipping of method Windows.Media.Devices.VideoDeviceController.Contrast.get
 	// Forced skipping of method Windows.Media.Devices.VideoDeviceController.DesiredOptimization.get
 	// Forced skipping of method Windows.Media.Devices.VideoDeviceController.DesiredOptimization.set
+	// Forced skipping of method Windows.Media.Devices.VideoDeviceController.DigitalWindowControl.get
 	// Forced skipping of method Windows.Media.Devices.VideoDeviceController.Exposure.get
 	// Forced skipping of method Windows.Media.Devices.VideoDeviceController.ExposureCompensationControl.get
 	// Forced skipping of method Windows.Media.Devices.VideoDeviceController.ExposureControl.get

@@ -179,6 +179,34 @@ public partial class PhoneLine
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneLine", "EnableTextReply(bool value)");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.ApplicationModel.Calls.PhoneLineDialResult DialWithResult(string number, string displayName)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "DialWithResult(string number, string displayName)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneLineDialResult> DialWithResultAsync(string number, string displayName)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "DialWithResultAsync(string number, string displayName)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.ApplicationModel.Calls.PhoneCallsResult GetAllActivePhoneCalls()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "GetAllActivePhoneCalls()");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneCallsResult> GetAllActivePhoneCallsAsync()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLine", "GetAllActivePhoneCallsAsync()");
+	}
+#endif
 	// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.CanDial.get
 	// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.CellularDetails.get
 	// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.DisplayColor.get

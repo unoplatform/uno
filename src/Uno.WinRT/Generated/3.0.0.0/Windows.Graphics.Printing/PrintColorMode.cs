@@ -23,5 +23,8 @@ public enum PrintColorMode
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	Monochrome = 5,
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	AutoSelect = 6,
+#endif
 }
 #endif

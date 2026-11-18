@@ -182,6 +182,13 @@ public partial class ConnectionProfile
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "TryDeleteAsync()");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsDomainAuthenticatedBy(global::Windows.Networking.Connectivity.DomainAuthenticationKind kind)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Connectivity.ConnectionProfile", "IsDomainAuthenticatedBy(DomainAuthenticationKind kind)");
+	}
+#endif
 	// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.CanDelete.get
 	// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.IsWlanConnectionProfile.get
 	// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.IsWwanConnectionProfile.get

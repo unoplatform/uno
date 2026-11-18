@@ -26,5 +26,8 @@ public enum KeyCredentialStatus
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	SecurityDeviceLocked = 6,
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	AlgorithmNotSupported = 7,
+#endif
 }
 #endif

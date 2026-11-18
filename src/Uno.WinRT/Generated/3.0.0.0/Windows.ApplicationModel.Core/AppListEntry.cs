@@ -14,6 +14,16 @@ public partial class AppListEntry
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.ApplicationModel.AppInfo AppInfo
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.AppListEntry", "AppInfo");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public string AppUserModelId
 	{
 		get
@@ -46,6 +56,7 @@ public partial class AppListEntry
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Core.AppListEntry", "LaunchForUserAsync(User user)");
 	}
 #endif
+	// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.AppInfo.get
 	// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.AppUserModelId.get
 	// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.DisplayInfo.get
 }

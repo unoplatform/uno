@@ -44,6 +44,16 @@ public partial class AppInfo
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.ApplicationModel.AppExecutionContext ExecutionContext
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppInfo", "ExecutionContext");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public string Id
 	{
 		get
@@ -74,6 +84,16 @@ public partial class AppInfo
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public string[] SupportedFileExtensions
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppInfo", "SupportedFileExtensions");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public static global::Windows.ApplicationModel.AppInfo GetFromAppUserModelId(string appUserModelId)
 	{
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.AppInfo", "GetFromAppUserModelId(string appUserModelId)");
@@ -89,7 +109,9 @@ public partial class AppInfo
 	// Forced skipping of method Windows.ApplicationModel.AppInfo.Current.get
 	// Forced skipping of method Windows.ApplicationModel.AppInfo.AppUserModelId.get
 	// Forced skipping of method Windows.ApplicationModel.AppInfo.DisplayInfo.get
+	// Forced skipping of method Windows.ApplicationModel.AppInfo.ExecutionContext.get
 	// Forced skipping of method Windows.ApplicationModel.AppInfo.Id.get
 	// Forced skipping of method Windows.ApplicationModel.AppInfo.Package.get
 	// Forced skipping of method Windows.ApplicationModel.AppInfo.PackageFamilyName.get
+	// Forced skipping of method Windows.ApplicationModel.AppInfo.SupportedFileExtensions.get
 }

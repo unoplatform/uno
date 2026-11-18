@@ -5,7 +5,7 @@ namespace Windows.Storage;
 #if false || false || false || false || false || false
 [global::Uno.NotImplemented]
 #endif
-public partial class ApplicationData
+public partial class ApplicationData : global::System.IDisposable
 {
 	// Skipping already declared property Current
 	// Skipping already declared property LocalCacheFolder
@@ -45,6 +45,13 @@ public partial class ApplicationData
 	// Forced skipping of method Windows.Storage.ApplicationData.DataChanged.remove
 	// Skipping already declared method Windows.Storage.ApplicationData.GetPublisherCacheFolder(string)
 	// Skipping already declared method Windows.Storage.ApplicationData.ClearPublisherCacheFolderAsync(string)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public void Dispose()
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationData", "Dispose()");
+	}
+#endif
 	// Forced skipping of method Windows.Storage.ApplicationData.LocalCacheFolder.get
 	// Forced skipping of method Windows.Storage.ApplicationData.LocalFolder.get
 	// Forced skipping of method Windows.Storage.ApplicationData.LocalSettings.get
@@ -55,4 +62,5 @@ public partial class ApplicationData
 	// Forced skipping of method Windows.Storage.ApplicationData.TemporaryFolder.get
 	// Forced skipping of method Windows.Storage.ApplicationData.Version.get
 	// Skipping already declared event Windows.Storage.ApplicationData.DataChanged
+	// Processing: System.IDisposable
 }

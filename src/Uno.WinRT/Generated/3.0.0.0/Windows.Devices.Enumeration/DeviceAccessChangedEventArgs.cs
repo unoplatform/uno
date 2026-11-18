@@ -32,6 +32,17 @@ public partial class DeviceAccessChangedEventArgs
 		}
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool UserPromptRequired
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceAccessChangedEventArgs", "UserPromptRequired");
+		}
+	}
+#endif
 	// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.Id.get
 	// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.Status.get
+	// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessChangedEventArgs.UserPromptRequired.get
 }

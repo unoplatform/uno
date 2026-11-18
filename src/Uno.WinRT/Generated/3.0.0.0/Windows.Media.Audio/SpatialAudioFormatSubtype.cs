@@ -19,6 +19,16 @@ public static partial class SpatialAudioFormatSubtype
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static string DTSXForHomeTheater
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Audio.SpatialAudioFormatSubtype", "DTSXForHomeTheater");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public static string DTSXUltra
 	{
 		get
@@ -68,6 +78,7 @@ public static partial class SpatialAudioFormatSubtype
 	}
 #endif
 	// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DTSHeadphoneX.get
+	// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DTSXForHomeTheater.get
 	// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DTSXUltra.get
 	// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DolbyAtmosForHeadphones.get
 	// Forced skipping of method Windows.Media.Audio.SpatialAudioFormatSubtype.DolbyAtmosForHomeTheater.get

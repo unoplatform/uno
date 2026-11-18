@@ -27,6 +27,26 @@ public static partial class PowerManager
 		}
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.System.Power.EnergySaverStatus2 EnergySaverStatus2
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.PowerManager", "EnergySaverStatus2");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static bool IsEnergySaverStatus2Supported
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Power.PowerManager", "IsEnergySaverStatus2Supported");
+		}
+	}
+#endif
 #if false || false || __TVOS__ || false || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__TVOS__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public static global::Windows.System.Power.PowerSupplyStatus PowerSupplyStatus
@@ -67,8 +87,12 @@ public static partial class PowerManager
 	// Forced skipping of method Windows.System.Power.PowerManager.RemainingChargePercentChanged.remove
 	// Forced skipping of method Windows.System.Power.PowerManager.RemainingDischargeTimeChanged.add
 	// Forced skipping of method Windows.System.Power.PowerManager.RemainingDischargeTimeChanged.remove
+	// Forced skipping of method Windows.System.Power.PowerManager.EnergySaverStatus2Changed.add
+	// Forced skipping of method Windows.System.Power.PowerManager.EnergySaverStatus2Changed.remove
 	// Forced skipping of method Windows.System.Power.PowerManager.BatteryStatus.get
 	// Forced skipping of method Windows.System.Power.PowerManager.EnergySaverStatus.get
+	// Forced skipping of method Windows.System.Power.PowerManager.EnergySaverStatus2.get
+	// Forced skipping of method Windows.System.Power.PowerManager.IsEnergySaverStatus2Supported.get
 	// Forced skipping of method Windows.System.Power.PowerManager.PowerSupplyStatus.get
 	// Forced skipping of method Windows.System.Power.PowerManager.RemainingChargePercent.get
 	// Forced skipping of method Windows.System.Power.PowerManager.RemainingDischargeTime.get
@@ -149,6 +173,22 @@ public static partial class PowerManager
 		remove
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event RemainingDischargeTimeChanged");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static event global::System.EventHandler<object> EnergySaverStatus2Changed
+	{
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		add
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EnergySaverStatus2Changed");
+		}
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		remove
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.PowerManager", "event EnergySaverStatus2Changed");
 		}
 	}
 #endif

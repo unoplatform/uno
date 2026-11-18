@@ -194,6 +194,16 @@ public partial class MobileBroadbandDeviceInformation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Networking.NetworkOperators.MobileBroadbandSlotManager SlotManager
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation", "SlotManager");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public string SubscriberId
 	{
 		get
@@ -230,6 +240,7 @@ public partial class MobileBroadbandDeviceInformation
 	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.SimIccId.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.SimPnn.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.SimSpn.get
+	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.SlotManager.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.SubscriberId.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceInformation.TelephoneNumbers.get
 }

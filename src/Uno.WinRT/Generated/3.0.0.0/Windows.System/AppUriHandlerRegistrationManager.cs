@@ -14,6 +14,16 @@ public partial class AppUriHandlerRegistrationManager
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public string PackageFamilyName
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistrationManager", "PackageFamilyName");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.System.User User
 	{
 		get
@@ -38,10 +48,25 @@ public partial class AppUriHandlerRegistrationManager
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.System.AppUriHandlerRegistrationManager GetForPackage(string packageFamilyName)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistrationManager", "GetForPackage(string packageFamilyName)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.System.AppUriHandlerRegistrationManager GetForPackageForUser(string packageFamilyName, global::Windows.System.User user)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistrationManager", "GetForPackageForUser(string packageFamilyName, User user)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.System.AppUriHandlerRegistration TryGetRegistration(string name)
 	{
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerRegistrationManager", "TryGetRegistration(string name)");
 	}
 #endif
+	// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.PackageFamilyName.get
 	// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.User.get
 }

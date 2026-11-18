@@ -87,6 +87,17 @@ public partial class CoreInputView
 	// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.PrimaryViewShowing.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsKindSupported(global::Windows.UI.ViewManagement.Core.CoreInputViewKind type)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.Core.CoreInputView", "IsKindSupported(CoreInputViewKind type)");
+	}
+#endif
+	// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.PrimaryViewAnimationStarting.add
+	// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.PrimaryViewAnimationStarting.remove
+	// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.SupportedKindsChanged.add
+	// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.SupportedKindsChanged.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.Core.CoreInputView, global::Windows.UI.ViewManagement.Core.CoreInputViewOcclusionsChangedEventArgs> OcclusionsChanged
 	{
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -162,6 +173,38 @@ public partial class CoreInputView
 		remove
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputView", "event PrimaryViewShowing");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.Core.CoreInputView, global::Windows.UI.ViewManagement.Core.CoreInputViewAnimationStartingEventArgs> PrimaryViewAnimationStarting
+	{
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		add
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputView", "event PrimaryViewAnimationStarting");
+		}
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		remove
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputView", "event PrimaryViewAnimationStarting");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.Core.CoreInputView, object> SupportedKindsChanged
+	{
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		add
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputView", "event SupportedKindsChanged");
+		}
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		remove
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.Core.CoreInputView", "event SupportedKindsChanged");
 		}
 	}
 #endif

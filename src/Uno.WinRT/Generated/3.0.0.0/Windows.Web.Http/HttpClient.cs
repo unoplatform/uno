@@ -9,6 +9,20 @@ public partial class HttpClient : global::System.IDisposable, global::Windows.Fo
 {
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public string DefaultPrivacyAnnotation
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpClient", "DefaultPrivacyAnnotation");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpClient", "DefaultPrivacyAnnotation");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Web.Http.Headers.HttpRequestHeaderCollection DefaultRequestHeaders
 	{
 		get
@@ -187,6 +201,8 @@ public partial class HttpClient : global::System.IDisposable, global::Windows.Fo
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpClient", "ToString()");
 	}
 #endif
+	// Forced skipping of method Windows.Web.Http.HttpClient.DefaultPrivacyAnnotation.get
+	// Forced skipping of method Windows.Web.Http.HttpClient.DefaultPrivacyAnnotation.set
 	// Forced skipping of method Windows.Web.Http.HttpClient.DefaultRequestHeaders.get
 	// Processing: System.IDisposable
 }

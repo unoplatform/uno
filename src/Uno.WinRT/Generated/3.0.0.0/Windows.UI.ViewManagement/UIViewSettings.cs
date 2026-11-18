@@ -29,5 +29,30 @@ public partial class UIViewSettings
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.UIViewSettings", "GetForCurrentView()");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.UI.ViewManagement.UserInteractionMode GetPreferredInteractionMode(global::Windows.UI.ViewManagement.UserInteractionMode[] supportedModes)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.ViewManagement.UIViewSettings", "GetPreferredInteractionMode(UserInteractionMode[] supportedModes)");
+	}
+#endif
+	// Forced skipping of method Windows.UI.ViewManagement.UIViewSettings.PreferredInteractionModeChanged.add
+	// Forced skipping of method Windows.UI.ViewManagement.UIViewSettings.PreferredInteractionModeChanged.remove
 	// Forced skipping of method Windows.UI.ViewManagement.UIViewSettings.UserInteractionMode.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UIViewSettings, object> PreferredInteractionModeChanged
+	{
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		add
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.UIViewSettings", "event PreferredInteractionModeChanged");
+		}
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		remove
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.UIViewSettings", "event PreferredInteractionModeChanged");
+		}
+	}
+#endif
 }

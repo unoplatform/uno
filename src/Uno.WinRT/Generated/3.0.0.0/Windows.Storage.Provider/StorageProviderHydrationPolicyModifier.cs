@@ -18,5 +18,8 @@ public enum StorageProviderHydrationPolicyModifier : uint
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	AutoDehydrationAllowed = 4,
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	AllowFullRestartHydration = 8,
+#endif
 }
 #endif

@@ -35,5 +35,8 @@ public enum KnownVideoProfile
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	VideoHdr8 = 9,
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	CompressedCamera = 10,
+#endif
 }
 #endif

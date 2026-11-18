@@ -14,11 +14,41 @@ public partial class Direct3D11CaptureFrame : global::System.IDisposable
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public ulong ConfigurationIteration
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.Direct3D11CaptureFrame", "ConfigurationIteration");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Graphics.SizeInt32 ContentSize
 	{
 		get
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.Direct3D11CaptureFrame", "ContentSize");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Graphics.Capture.GraphicsCaptureDirtyRegionMode DirtyRegionMode
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.Direct3D11CaptureFrame", "DirtyRegionMode");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.RectInt32> DirtyRegions
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.Direct3D11CaptureFrame", "DirtyRegions");
 		}
 	}
 #endif
@@ -49,7 +79,10 @@ public partial class Direct3D11CaptureFrame : global::System.IDisposable
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Capture.Direct3D11CaptureFrame", "Dispose()");
 	}
 #endif
+	// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.ConfigurationIteration.get
 	// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.ContentSize.get
+	// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.DirtyRegionMode.get
+	// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.DirtyRegions.get
 	// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.Surface.get
 	// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.SystemRelativeTime.get
 	// Processing: System.IDisposable

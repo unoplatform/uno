@@ -143,6 +143,20 @@ public partial class MediaEncodingProfile
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.Media.MediaProperties.MediaEncodingProfile CreateVp9(global::Windows.Media.MediaProperties.VideoEncodingQuality quality)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "CreateVp9(VideoEncodingQuality quality)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.Media.MediaProperties.MediaEncodingProfile CreateAv1(global::Windows.Media.MediaProperties.VideoEncodingQuality quality)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.MediaProperties.MediaEncodingProfile", "CreateAv1(VideoEncodingQuality quality)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public void SetAudioTracks(global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.AudioStreamDescriptor> value)
 	{
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaEncodingProfile", "SetAudioTracks(IEnumerable<AudioStreamDescriptor> value)");

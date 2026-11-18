@@ -9,6 +9,13 @@ public static partial class KeyCredentialManager
 {
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.KeyCredentialRetrievalResult> RequestCreateForWindowAsync(global::Windows.UI.WindowId window, string name, global::Windows.Security.Credentials.KeyCredentialCreationOption option)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialManager", "RequestCreateForWindowAsync(WindowId window, string name, KeyCredentialCreationOption option)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public static global::Windows.Foundation.IAsyncOperation<bool> IsSupportedAsync()
 	{
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialManager", "IsSupportedAsync()");
@@ -40,6 +47,27 @@ public static partial class KeyCredentialManager
 	public static global::Windows.Foundation.IAsyncAction DeleteAsync(string name)
 	{
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialManager", "DeleteAsync(string name)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.KeyCredentialRetrievalResult> RequestCreateAsync(string name, global::Windows.Security.Credentials.KeyCredentialCreationOption option, string algorithm, string message, global::Windows.Security.Credentials.KeyCredentialCacheConfiguration cacheConfiguration, global::Windows.UI.WindowId windowId, global::Windows.Security.Credentials.ChallengeResponseKind callbackType, global::Windows.Security.Credentials.AttestationChallengeHandler attestationCallback)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialManager", "RequestCreateAsync(string name, KeyCredentialCreationOption option, string algorithm, string message, KeyCredentialCacheConfiguration cacheConfiguration, WindowId windowId, ChallengeResponseKind callbackType, AttestationChallengeHandler attestationCallback)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.KeyCredentialRetrievalResult> OpenAsync(string name, global::Windows.Security.Credentials.ChallengeResponseKind callbackType, global::Windows.Security.Credentials.AttestationChallengeHandler attestationCallback)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialManager", "OpenAsync(string name, ChallengeResponseKind callbackType, AttestationChallengeHandler attestationCallback)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.Storage.Streams.IBuffer GetSecureId()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredentialManager", "GetSecureId()");
 	}
 #endif
 }

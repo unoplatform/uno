@@ -34,6 +34,26 @@ public partial class PointerPoint
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsPhysicalPositionSupported
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPoint", "IsPhysicalPositionSupported");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.Point PhysicalPosition
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.PointerPoint", "PhysicalPosition");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Devices.Input.PointerDevice PointerDevice
 	{
 		get
@@ -122,6 +142,8 @@ public partial class PointerPoint
 #endif
 	// Forced skipping of method Windows.UI.Input.PointerPoint.FrameId.get
 	// Forced skipping of method Windows.UI.Input.PointerPoint.IsInContact.get
+	// Forced skipping of method Windows.UI.Input.PointerPoint.IsPhysicalPositionSupported.get
+	// Forced skipping of method Windows.UI.Input.PointerPoint.PhysicalPosition.get
 	// Forced skipping of method Windows.UI.Input.PointerPoint.PointerDevice.get
 	// Forced skipping of method Windows.UI.Input.PointerPoint.PointerId.get
 	// Forced skipping of method Windows.UI.Input.PointerPoint.Position.get

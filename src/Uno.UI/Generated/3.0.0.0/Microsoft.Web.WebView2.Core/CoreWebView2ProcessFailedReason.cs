@@ -26,5 +26,14 @@ public enum CoreWebView2ProcessFailedReason
 #if __SKIA__
 	ProfileDeleted = 6,
 #endif
+#if __SKIA__
+	NormalExit = 7,
+#endif
+#if __SKIA__
+	AbnormalExit = 8,
+#endif
+#if __SKIA__
+	IntegrityFailure = 9,
+#endif
 }
 #endif

@@ -79,6 +79,13 @@ public partial class PenAndInkSettings
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Input.Inking.PenAndInkSettings", "GetDefault()");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public void SetPenHandedness(global::Windows.UI.Input.Inking.PenHandedness value)
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.PenAndInkSettings", "SetPenHandedness(PenHandedness value)");
+	}
+#endif
 	// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.FontFamilyName.get
 	// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.HandwritingLineHeight.get
 	// Forced skipping of method Windows.UI.Input.Inking.PenAndInkSettings.IsHandwritingDirectlyIntoTextFieldEnabled.get
