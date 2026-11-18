@@ -25,7 +25,7 @@ public partial class ItemsWrapGrid : ModernCollectionBasePanel, IOrientedPanel
 	public double CacheLength
 	{
 		get => (double)GetValue(CacheLengthProperty);
-		set => SetValue(CacheLengthProperty, value);
+		set => SetValue(CacheLengthProperty, Boxer.Box(value));
 	}
 
 	// a wrapgrid is able to portal (AddDeleteTransition)

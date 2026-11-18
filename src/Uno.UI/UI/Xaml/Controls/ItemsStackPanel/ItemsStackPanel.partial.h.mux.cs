@@ -25,7 +25,7 @@ public partial class ItemsStackPanel : ModernCollectionBasePanel, IOrientedPanel
 	public double CacheLength
 	{
 		get => (double)GetValue(CacheLengthProperty);
-		set => SetValue(CacheLengthProperty, value);
+		set => SetValue(CacheLengthProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty ItemsUpdatingScrollModeProperty { get; } =
