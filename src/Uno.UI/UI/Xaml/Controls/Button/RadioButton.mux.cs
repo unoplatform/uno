@@ -13,6 +13,7 @@ using Windows.System;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -357,7 +358,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// If there is no groupName, then get the parent of the RadioButton.
 			if (!groupNameExists)
 			{
-				radioButtonParent = radioButton.Parent;
+				radioButtonParent = VisualTreeHelper.GetParent(radioButton); // MUX Reference: core GetParent (VisualRelativeKind_Parent), not the logical Parent.
 			}
 			// Otherwise, use the root
 			else
