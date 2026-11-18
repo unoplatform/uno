@@ -5706,6 +5706,10 @@
 		  <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0)" reason="Removed legacy WASM unmarshalled interop; its JavaScript dispatcher is no longer shipped (breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1)" reason="Removed legacy WASM unmarshalled interop; its JavaScript dispatcher is no longer shipped (breaking changes for 7.0)" />
 	  </Methods>
+	  <Types>
+		  <!-- Emulated LinearGradientBrush borders for the native renderers removed in 7.0; on Skia it rendered nothing. -->
+		  <Member fullName="Uno.UI.Controls.FauxGradientBorderPresenter" reason="Removed the no-op FauxGradientBorderPresenter; Skia draws gradient borders natively (#26572)" />
+	  </Types>
 	</IgnoreSet>
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
