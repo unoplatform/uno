@@ -47,7 +47,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				var Border11 = VisualTreeHelper.GetChild(templateRoot1, 0);
 				var Border12 = VisualTreeHelper.GetChild(Border11, 0);
 				var grid1 = VisualTreeHelper.GetChild(Border12, 0);
-				var rect1 = VisualTreeHelper.GetChild(grid1, 0) as Rectangle;
+				var rect1 = (Rectangle)VisualTreeHelper.GetChild(grid1, 0);
 				Verify.AreEqual(3, rect1.Height);
 
 				var progressBar2 = VisualTreeHelper.GetChild(root, 1);
@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				var Border21 = VisualTreeHelper.GetChild(templateRoot2, 0);
 				var Border22 = VisualTreeHelper.GetChild(Border21, 0);
 				var grid2 = VisualTreeHelper.GetChild(Border22, 0);
-				var rect2 = VisualTreeHelper.GetChild(grid2, 0) as Rectangle;
+				var rect2 = (Rectangle)VisualTreeHelper.GetChild(grid2, 0);
 				Verify.AreEqual(1, rect2.Height);
 			});
 		}
@@ -74,7 +74,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 		[TestMethod]
 		public async Task ChangeValueTest()
 		{
-			var page = await ProgressBarTestPage.Create();
+			await using var page = await ProgressBarTestPage.Create();
 
 			Verify.AreEqual(0, page.ProgressBar.Value);
 
@@ -91,14 +91,14 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 		[TestMethod]
 		public async Task UpdateIndicatorWidthTest()
 		{
-			var page = await ProgressBarTestPage.Create();
+			await using var page = await ProgressBarTestPage.Create();
 			await VerifyUpdateIndicatorWidth(page);
 		}
 
 		[TestMethod]
 		public async Task UpdateMinMaxTest()
 		{
-			var page = await ProgressBarTestPage.Create();
+			await using var page = await ProgressBarTestPage.Create();
 			var progressBar = page.ProgressBar;
 
 			double oldMinimumInputText = progressBar.Minimum;
@@ -141,7 +141,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 		[TestMethod]
 		public async Task ChangeStateTest()
 		{
-			var page = await ProgressBarTestPage.Create();
+			await using var page = await ProgressBarTestPage.Create();
 			var progressBar = page.ProgressBar;
 
 			// Verify all properties are set to false by default for testing
@@ -188,7 +188,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 		[TestMethod]
 		public async Task PaddingOffsetTest()
 		{
-			var page = await ProgressBarTestPage.Create();
+			await using var page = await ProgressBarTestPage.Create();
 			var progressBar = page.ProgressBar;
 
 			// Set ProgressBar Padding settings to default for testing
@@ -212,14 +212,14 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 		[TestMethod]
 		public async Task RetemplateUpdateIndicatorWidthTest()
 		{
-			var page = await ProgressBarTestPage.Create();
+			await using var page = await ProgressBarTestPage.Create();
 			await VerifyUpdateIndicatorWidth(page);
 		}
 
 		[TestMethod]
 		public async Task ReTemplateChangeStateTest()
 		{
-			var page = await ProgressBarTestPage.Create();
+			await using var page = await ProgressBarTestPage.Create();
 			var progressBar = page.ProgressBar;
 
 			// Verify all properties are set to false by default for testing
@@ -290,7 +290,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 			Verify.IsLessThan(Math.Abs(calculatedValue - page.IndicatorWidth), 0.5, "Indicator Width is adjusted based on range and ProgressBar width");
 		}
 
-		private sealed class ProgressBarTestPage
+		private sealed class ProgressBarTestPage : IAsyncDisposable
 		{
 			private ProgressBarTestPage(ProgressBar progressBar) => ProgressBar = progressBar;
 
@@ -310,6 +310,12 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 				await TestServices.WindowHelper.WaitForIdle();
 
 				return new ProgressBarTestPage(progressBar);
+			}
+
+			public async ValueTask DisposeAsync()
+			{
+				TestServices.WindowHelper.WindowContent = null;
+				await TestServices.WindowHelper.WaitForIdle();
 			}
 
 			private Grid LayoutRoot => (Grid)VisualTreeHelper.GetChild(ProgressBar, 0);
