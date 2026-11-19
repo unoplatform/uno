@@ -8,6 +8,12 @@
 		<IsMSALSupported>true</IsMSALSupported>
 
 		<OptimizePNGs Condition=" '$(OptimizePNGs)' == '' ">false</OptimizePNGs>
+
+		<!--
+		The iOS SDK fails a build against the version 27 SDKs with MT7199 when Info.plist has no scene manifest.
+		Uno Platform adopts the scene lifecycle in code for such apps, which that check can't see.
+		-->
+		<ValidateSceneManifest Condition=" '$(ValidateSceneManifest)' == '' ">false</ValidateSceneManifest>
 	</PropertyGroup>
 
 	<!--
