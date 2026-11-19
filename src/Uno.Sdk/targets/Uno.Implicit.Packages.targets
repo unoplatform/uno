@@ -16,6 +16,14 @@
 		</UnoImplicitPackages_BeforeTargets>
 	</PropertyGroup>
 
+	<!-- Select at execution time so MauiVersion overrides in Directory.Build.targets are honored too. -->
+	<Target Name="_UnoMauiEmbeddingUseTransitiveControls" BeforeTargets="UnoImplicitPackages"
+			Condition="$(UnoFeatures.Contains(';mauiembedding;')) And !$(UnoFeatures.Contains(';mauinativeembedding;')) And '$(MauiVersion)' == ''">
+		<ItemGroup>
+			<_UnoProjectSystemPackageReference Remove="Microsoft.Maui.Controls" />
+		</ItemGroup>
+	</Target>
+
 	<Target Name="UnoImplicitPackages" BeforeTargets="$(UnoImplicitPackages_BeforeTargets)" Condition=" '$(TargetFramework)' != '' ">
 		<PropertyGroup>
 			<_UnoCacheFolder>$([System.IO.Path]::GetFullPath('$(IntermediateOutputPath)'))</_UnoCacheFolder>
