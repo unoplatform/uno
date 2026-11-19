@@ -49,8 +49,11 @@ line of history, so do not rely on it to find changes.
   this range, port it too when it is small and self-contained. If it is large, or it lives in another
   control's folder, do not port it. Record it under *Skipped* with the upstream path and what
   depends on it.
+- **Perf2026 variants** (`*_perf2026*.xaml`): Uno keeps its copies under `src/Uno.UI.FluentTheme/Perf2026/`.
+  Port a change into the Uno copy when this area maps it; otherwise record it under *Skipped* with
+  the upstream path.
 - **Not applicable:** changes with no meaning in Uno (Windows-only plumbing, build and project
-  files, telemetry, `*_perf2026*` variants Uno does not use, test infrastructure Uno does not have).
+  files, telemetry, test infrastructure Uno does not have).
   List each under *Not applicable* with a one-line reason. When unsure whether something applies,
   treat it as *Skipped*, not as *Not applicable*.
 - **Already there:** an earlier run may have stopped part-way on this branch, so some of these
