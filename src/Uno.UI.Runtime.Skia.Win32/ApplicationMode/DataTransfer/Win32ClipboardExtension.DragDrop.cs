@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Windows.ApplicationModel.DataTransfer;
@@ -58,22 +57,20 @@ internal partial class Win32ClipboardExtension
 	}
 	private static unsafe void GetBitmap(HGLOBAL handle, DataPackage package)
 	{
-		package.SetDataProvider(StandardDataFormats.Bitmap, _ =>
+		using var lockDisposable = Win32Helper.GlobalLock(handle, out var dib);
+		if (lockDisposable is null)
 		{
-			using var lockDisposable = Win32Helper.GlobalLock(handle, out var dib);
-			if (lockDisposable is null)
-			{
-				return Task.FromException<object>(new InvalidOperationException($"{nameof(PInvoke.GlobalLock)} failed: {Win32Helper.GetErrorMessage()}"));
-			}
+			return;
+		}
 
-			var memSize = (uint)PInvoke.GlobalSize(handle);
-			if (memSize <= Marshal.SizeOf<BITMAPINFOHEADER>())
-			{
-				return Task.FromException<object>(new InvalidOperationException($"{nameof(PInvoke.GlobalSize)} returned {memSize}: {Win32Helper.GetErrorMessage()}"));
-			}
+		var memSize = (uint)PInvoke.GlobalSize(handle);
+		if (memSize <= Marshal.SizeOf<BITMAPINFOHEADER>())
+		{
+			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.GlobalSize)} returned {memSize}: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
 
-			return Task.FromResult<object>(RandomAccessStreamReference.CreateFromStream(new MemoryStream(ConvertDibToBmp(dib, memSize)).AsRandomAccessStream()));
-		});
+		package.SetBitmap(RandomAccessStreamReference.CreateFromStream(new MemoryStream(ConvertDibToBmp(dib, memSize)).AsRandomAccessStream()));
 	}
 	internal static unsafe List<IStorageItem>? GetFileDropList(HGLOBAL handle)
 	{
