@@ -95,12 +95,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			Unregister(strOldValue ?? "", this);
 			Register(strNewValue ?? "", this);
-
-			// A checked button that joins a group unchecks the group's other checked button.
-			if (IsChecked == true)
-			{
-				UpdateRadioButtonGroup();
-			}
+			UpdateRadioButtonGroup();
 		}
 
 		private protected override void OnChecked()
@@ -252,6 +247,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateRadioButtonGroup()
 		{
+			// If we are not checked then we don't have any effect on other buttons
+			var isCheckedReference = IsChecked;
+			if (isCheckedReference != null && !isCheckedReference.Value)
+			{
+				return;
+			}
+
 			RadioButton? pRadioButtonNoRef = null;
 			bool bIsChecked = false;
 
@@ -267,6 +269,10 @@ namespace Microsoft.UI.Xaml.Controls
 				if (groupsByName.TryGetValue(groupName, out var groupElements))
 				{
 					DependencyObject? spParent = GetParentForGroup(groupNameExists, this);
+					if (spParent == null)
+					{
+						return;
+					}
 
 					foreach (var radioButtonRef in groupElements)
 					{
