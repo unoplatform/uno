@@ -148,18 +148,29 @@ namespace Uno.UI.Tests.ItemsControlTests
 		{
 			var panel = new StackPanel();
 			var selector = new RecordingTemplateSelector();
+			var implicitTextBlockCreated = false;
 
-			var SUT = new ItemsControl()
+			try
 			{
-				ItemsPanelRoot = panel,
-				InternalItemsPanelRoot = panel,
-				ItemTemplateSelector = selector,
-				ItemsSource = new[] { "a", "b", "c" },
-			};
+				ImplicitTextBlock.TestHookCreated = _ => implicitTextBlockCreated = true;
 
-			Assert.AreEqual(0, selector.NullItemCalls);
-			CollectionAssert.AreEquivalent(new[] { "a", "b", "c" }, selector.Items.Distinct().ToArray());
-			Assert.AreEqual(3, panel.Children.Count);
+				var SUT = new ItemsControl()
+				{
+					ItemsPanelRoot = panel,
+					InternalItemsPanelRoot = panel,
+					ItemTemplateSelector = selector,
+					ItemsSource = new[] { "a", "b", "c" },
+				};
+
+				Assert.AreEqual(0, selector.NullItemCalls);
+				CollectionAssert.AreEquivalent(new[] { "a", "b", "c" }, selector.Items.Distinct().ToArray());
+				Assert.AreEqual(3, panel.Children.Count);
+				Assert.IsFalse(implicitTextBlockCreated, "No ImplicitTextBlock placeholder should be created when ItemTemplateSelector is used.");
+			}
+			finally
+			{
+				ImplicitTextBlock.TestHookCreated = null;
+			}
 		}
 
 		[TestMethod]
@@ -193,6 +204,11 @@ namespace Uno.UI.Tests.ItemsControlTests
 				{
 					NullItemCalls++;
 					return null;
+				}
+
+				if (container is ContentPresenter cp)
+				{
+					Assert.IsFalse(cp.IsUsingDefaultTemplate);
 				}
 
 				Items.Add(item);
