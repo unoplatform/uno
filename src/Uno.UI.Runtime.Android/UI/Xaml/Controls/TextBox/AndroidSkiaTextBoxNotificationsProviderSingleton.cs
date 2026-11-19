@@ -70,8 +70,11 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 
 	public void OnEnteredVisualTree(TextBoxCore textBox)
 	{
-		LiveTextBoxes.Add(textBox);
-		LiveTextBoxesMap.Add(textBox.GetHashCode(), textBox);
+		// Unloaded runs before the next Loaded (also when re-parenting), but never register an instance twice.
+		if (LiveTextBoxesMap.TryAdd(textBox.GetHashCode(), textBox))
+		{
+			LiveTextBoxes.Add(textBox);
+		}
 	}
 
 	public void OnLeaveVisualTree(TextBoxCore textBox)
