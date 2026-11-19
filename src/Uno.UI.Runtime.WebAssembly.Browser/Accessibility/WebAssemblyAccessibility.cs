@@ -853,6 +853,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				{
 					TryUpdateScrollRegionRole(changedElement);
 
+					// A split button node built before layout (OnChildAdded) has no measured menu part yet.
+					if (FindOwningSplitButton(changedElement) is { } splitButton && HasSemanticElement(splitButton.Visual.Handle))
+					{
+						SemanticElementFactory.UpdateSplitButtonGeometry(splitButton);
+					}
+
 					// A zoom change alters the scroll port's range without raising any scroll pattern
 					// property change, but its view change re-emits the port here.
 					if (changedElement is IScrollPortGeometry)
@@ -2456,6 +2462,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	{
 		Debug.Assert(IsAccessibilityEnabled);
 
+		// A split button node is named by its explicit name and its (Raw) template parts, not by its peer name.
+		if (FindOwningSplitButton(element) is { } splitButton)
+		{
+			if (HasSemanticElement(splitButton.Visual.Handle))
+			{
+				SemanticElementFactory.UpdateSplitButtonLabels(splitButton);
+			}
+			return;
+		}
+
 		// The name drives the role of a generic-path node (generic→group, named region/form landmarks),
 		// so re-resolve it as creation would.
 		if (_genericPathHandles.Contains(element.Visual.Handle))
@@ -2466,6 +2482,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		NativeMethods.UpdateAriaLabel(element.Visual.Handle, automationId);
 	}
+
+	// The split button a node belongs to: the split button itself or one of its (Raw) template parts.
+	private static SplitButton? FindOwningSplitButton(UIElement element)
+		=> element switch
+		{
+			SplitButton splitButton => splitButton,
+			Button button when button.GetTemplatedParent() is SplitButton owner
+				&& (owner.PrimaryButtonPart == button || owner.SecondaryButtonPart == button) => owner,
+			_ => null,
+		};
 
 	/// <summary>
 	/// The role of a node built by the generic path of <see cref="AddSemanticElement"/>. Creation, the live
@@ -2610,7 +2636,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			// ToggleButton uses aria-pressed, ToggleSwitch uses role="switch" + aria-checked,
 			// CheckBox/RadioButton use native checked property + aria-checked
 			var elementType = AriaMapper.GetSemanticElementType(peer, element);
-			if (elementType == SemanticElementType.ToggleButton)
+			if (elementType is SemanticElementType.ToggleButton or SemanticElementType.SplitButton)
 			{
 				NativeMethods.UpdateAriaPressed(element.Visual.Handle, ariaChecked ?? "false");
 			}
@@ -2690,7 +2716,19 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				this.Log().Trace($"[A11y] PROP CHANGE: IsEnabled handle={element.Visual.Handle} element={element.GetType().Name} disabled={isDisabled}");
 			}
-			NativeMethods.UpdateDisabledState(element.Visual.Handle, isDisabled);
+
+			// A split button node mirrors each (Raw) part's own enabled state, e.g. a primary part disabled by CanExecute.
+			if (FindOwningSplitButton(element) is { } splitButton)
+			{
+				if (HasSemanticElement(splitButton.Visual.Handle))
+				{
+					SemanticElementFactory.UpdateSplitButtonPartsDisabled(splitButton);
+				}
+			}
+			else
+			{
+				NativeMethods.UpdateDisabledState(element.Visual.Handle, isDisabled);
+			}
 		}
 		else if (automationProperty == ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty &&
 			TryGetPeerOwner(peer, out element))
