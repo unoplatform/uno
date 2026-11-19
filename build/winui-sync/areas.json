@@ -512,6 +512,30 @@
           "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/RadioButton.xaml"
         }
       ]
+    },
+    {
+      "id": "expander",
+      "title": "Expander",
+      "baseline": "1b5b1a0ccc05ce5c8b5931dc303666975b57f498",
+      "upstream": {
+        "sources": [
+          "controls/dev/Expander"
+        ],
+        "tests": [
+          "controls/dev/Expander/APITests",
+          "controls/dev/Expander/InteractionTests"
+        ]
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/Expander",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/Expander_themeresources.xaml",
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/Expander.xaml"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/Expander"
+        ]
+      }
     }
   ]
 }
