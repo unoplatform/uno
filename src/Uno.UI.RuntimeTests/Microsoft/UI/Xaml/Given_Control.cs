@@ -454,21 +454,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25217")]
 		public async Task When_Template_Changed_After_Loaded()
 		{
-			var SUT = new Button { Content = "Hello" };
+			// Not a ContentControl: with a null Template, WinUI's ContentControl creates default visuals
+			// for its content, which would change the tree between the two sets.
+			var SUT = new TemplatedControl
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Template = CreateSizedTemplate("FirstTemplateRoot", 40),
+			};
 			await UITestHelper.Load(SUT);
 
-			var template = SUT.Template;
-			var initialWidth = SUT.ActualWidth;
-			Assert.IsTrue(initialWidth > 0);
+			Assert.IsNotNull(SUT.FindFirstDescendant<Border>("FirstTemplateRoot"));
+			Assert.AreEqual(40, SUT.ActualWidth);
 
 			SUT.Template = null;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			SUT.Template = template;
+			SUT.Template = CreateSizedTemplate("SecondTemplateRoot", 60);
 			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(1, VisualTreeHelper.GetChildrenCount(SUT), "The new template was not applied");
-			Assert.AreEqual(initialWidth, SUT.ActualWidth);
+			Assert.IsNotNull(SUT.FindFirstDescendant<Border>("SecondTemplateRoot"), "The new template was not applied");
+			Assert.AreEqual(60, SUT.ActualWidth);
+
+			static ControlTemplate CreateSizedTemplate(string rootName, double width) =>
+				(ControlTemplate)XamlReader.Load($"""
+					<ControlTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+									 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+						<Border x:Name="{rootName}" Width="{width}" Height="20" />
+					</ControlTemplate>
+					""");
+		}
+
+		private partial class TemplatedControl : Control
+		{
 		}
 
 #if HAS_UNO
