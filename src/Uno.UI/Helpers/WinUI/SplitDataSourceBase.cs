@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference SplitDataSourceBase.h, commit bac7a9c33
+// MUX Reference SplitDataSourceBase.h
 
 //
 // This file is a C# translation of the SplitDataSourceBase.h file from WinUI controls.
