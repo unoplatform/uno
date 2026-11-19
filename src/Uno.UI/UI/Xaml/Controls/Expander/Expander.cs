@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference Expander.cpp, tag winui3/release/1.4.2
+// MUX Reference Expander.cpp
 
 using System.Numerics;
 using Uno.Disposables;
@@ -67,6 +67,7 @@ public partial class Expander : ContentControl
 				// 2. If the expander doesn't have any AutomationProperties.Name set,
 				// we will try setting one based on the header. This is how
 				// WPF's expanders work.
+				// Uno specific: GetNameCore is protected in C#; GetName forwards to it.
 				if (string.IsNullOrEmpty(AutomationProperties.GetName(this))
 					&& !string.IsNullOrEmpty(toggleButtonPeer.GetName()))
 				{
@@ -204,8 +205,8 @@ public partial class Expander : ContentControl
 
 		if (FrameworkElementAutomationPeer.FromElement(this) is AutomationPeer peer)
 		{
-			var expanderPeer = peer as ExpanderAutomationPeer;
-			expanderPeer?.RaiseExpandCollapseAutomationEvent(
+			var expanderPeer = (ExpanderAutomationPeer)peer;
+			expanderPeer.RaiseExpandCollapseAutomationEvent(
 				isExpanded ?
 					ExpandCollapseState.Expanded :
 					ExpandCollapseState.Collapsed
