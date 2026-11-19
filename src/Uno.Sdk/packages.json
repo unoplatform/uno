@@ -39,7 +39,8 @@
 		"versionOverride": {
 			"net10.0": "10.1.1",
 			"net11.0": "11.1.0-dev.5"
-		}
+		},
+		"versionProperty": "UnoWasmBootstrapVersion"
 	},
 	{
 		"group": "OSLogging",
@@ -47,49 +48,56 @@
 		"packages": [
 			"Uno.Extensions.Logging.OSLog",
 			"Uno.Extensions.Logging.WebAssembly.Console"
-		]
+		],
+		"versionProperty": "UnoLoggingVersion"
 	},
 	{
 		"group": "CoreLogging",
 		"version": "5.0.0",
 		"packages": [
 			"Uno.Core.Extensions.Logging.Singleton"
-		]
+		],
+		"versionProperty": "UnoCoreLoggingSingletonVersion"
 	},
 	{
 		"group": "Dsp",
 		"version": "1.4.0",
 		"packages": [
 			"Uno.Dsp.Tasks"
-		]
+		],
+		"versionProperty": "UnoDspTasksVersion"
 	},
 	{
 		"group": "Resizetizer",
 		"version": "2.0.1",
 		"packages": [
 			"Uno.Resizetizer"
-		]
+		],
+		"versionProperty": "UnoResizetizerVersion"
 	},
 	{
 		"group": "sdkextras",
 		"version": "6.4.1",
 		"packages": [
 			"Uno.Sdk.Extras"
-		]
+		],
+		"versionProperty": "UnoSdkExtrasVersion"
 	},
 	{
 		"group": "settings",
 		"version": "2.0.6",
 		"packages": [
 			"Uno.Settings.DevServer"
-		]
+		],
+		"versionProperty": "UnoSettingsVersion"
 	},
 	{
 		"group": "hotdesign",
 		"version": "2.0.1",
 		"packages": [
 			"Uno.UI.HotDesign"
-		]
+		],
+		"versionProperty": "UnoHotDesignVersion"
 	},
 	{
 		"group": "SkiaSharp",
@@ -104,7 +112,8 @@
 			"SkiaSharp.NativeAssets.macOS",
 			"SkiaSharp.NativeAssets.Win32",
 			"SkiaSharp.NativeAssets.WebAssembly"
-		]
+		],
+		"versionProperty": "SkiaSharpVersion"
 	},
 	{
 		"group": "HarfBuzzSharp",
@@ -117,35 +126,40 @@
 			"HarfBuzzSharp.NativeAssets.macOS",
 			"HarfBuzzSharp.NativeAssets.Win32",
 			"HarfBuzzSharp.NativeAssets.WebAssembly"
-		]
+		],
+		"versionProperty": "HarfBuzzSharpVersion"
 	},
 	{
 		"group": "SvgSkia",
 		"version": "5.2.3",
 		"packages": [
 			"Svg.Skia"
-		]
+		],
+		"versionProperty": "SvgSkiaVersion"
 	},
 	{
 		"group": "WinAppSdk",
 		"version": "2.5.1",
 		"packages": [
 			"Microsoft.WindowsAppSDK"
-		]
+		],
+		"versionProperty": "WinAppSdkVersion"
 	},
 	{
 		"group": "WinAppSdkBuildTools",
 		"version": "10.0.28000.2957",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools"
-		]
+		],
+		"versionProperty": "WinAppSdkBuildToolsVersion"
 	},
 	{
 		"group": "WinAppSdkBuildToolsWinApp",
 		"version": "0.8.0",
 		"packages": [
 			"Microsoft.Windows.SDK.BuildTools.WinApp"
-		]
+		],
+		"versionProperty": "WinAppSdkBuildToolsWinAppVersion"
 	},
 	{
 		"group": "MicrosoftLoggingConsole",
@@ -155,7 +169,8 @@
 		],
 		"versionOverride": {
 			"net11.0": "11.0.0"
-		}
+		},
+		"versionProperty": "MicrosoftLoggingVersion"
 	},
 	{
 		"group": "MsalClient",
@@ -163,21 +178,24 @@
 		"packages": [
 			"Microsoft.Identity.Client",
 			"Microsoft.Identity.Client.Extensions.Msal"
-		]
+		],
+		"versionProperty": "MicrosoftIdentityClientVersion"
 	},
 	{
 		"group": "Mvvm",
 		"version": "8.4.2",
 		"packages": [
 			"CommunityToolkit.Mvvm"
-		]
+		],
+		"versionProperty": "CommunityToolkitMvvmVersion"
 	},
 	{
 		"group": "Reactor",
 		"version": "0.1.1",
 		"packages": [
 			"Uno.Microsoft.UI.Reactor"
-		]
+		],
+		"versionProperty": "UnoReactorVersion"
 	},
 	{
 		"group": "UnoFonts",
@@ -186,84 +204,96 @@
 			"Uno.Fonts.OpenSans",
 			"Uno.Fonts.Fluent",
 			"Uno.Fonts.Roboto"
-		]
+		],
+		"versionProperty": "UnoFontsVersion"
 	},
 	{
 		"group": "AndroidMaterial",
 		"version": "1.14.0.6",
 		"packages": [
 			"Xamarin.Google.Android.Material"
-		]
+		],
+		"versionProperty": "AndroidMaterialVersion"
 	},
 	{
 		"group": "AndroidXSplashScreen",
 		"version": "1.2.0.3",
 		"packages": [
 			"Xamarin.AndroidX.Core.SplashScreen"
-		]
+		],
+		"versionProperty": "AndroidXSplashScreenVersion"
 	},
 	{
 		"group": "AndroidXAppCompat",
 		"version": "1.8.0",
 		"packages": [
 			"Xamarin.AndroidX.AppCompat"
-		]
+		],
+		"versionProperty": "AndroidXAppCompatVersion"
 	},
 	{
 		"group": "AndroidXRecyclerView",
 		"version": "1.4.0.6",
 		"packages": [
 			"Xamarin.AndroidX.RecyclerView"
-		]
+		],
+		"versionProperty": "AndroidXRecyclerViewVersion"
 	},
 	{
 		"group": "AndroidXActivity",
 		"version": "1.13.0.1",
 		"packages": [
 			"Xamarin.AndroidX.Activity"
-		]
+		],
+		"versionProperty": "AndroidXActivityVersion"
 	},
 	{
 		"group": "AndroidXBrowser",
 		"version": "1.10.0.1",
 		"packages": [
 			"Xamarin.AndroidX.Browser"
-		]
+		],
+		"versionProperty": "AndroidXBrowserVersion"
 	},
 	{
 		"group": "AndroidXSwipeRefreshLayout",
 		"version": "1.2.0.3",
 		"packages": [
 			"Xamarin.AndroidX.SwipeRefreshLayout"
-		]
+		],
+		"versionProperty": "AndroidXSwipeRefreshLayoutVersion"
 	},
 	{
 		"group": "AndroidXLeanback",
 		"version": "1.2.0.4",
 		"packages": [
 			"Xamarin.AndroidX.Leanback"
-		]
+		],
+		"versionProperty": "AndroidXLeanbackVersion"
 	},
 	{
 		"group": "AndroidXCarApp",
 		"version": "1.7.0.4",
 		"packages": [
 			"Xamarin.AndroidX.Car.App.App"
-		]
+		],
+		"versionProperty": "AndroidXCarAppVersion"
 	},
 	{
 		"group": "AndroidXWear",
 		"version": "1.4.0.2",
 		"packages": [
 			"Xamarin.AndroidX.Wear"
-		]
+		],
+		"versionProperty": "AndroidXWearVersion"
 	},
 	{
 		"group": "AndroidXWearTiles",
 		"version": "1.6.2",
 		"packages": [
 			"Xamarin.AndroidX.Wear.Tiles"
-		]
+		],
+		"versionProperty": "AndroidXWearTilesVersion"
 	},
 	{
 		"group": "AndroidXNavigation",
@@ -273,7 +303,8 @@
 			"Xamarin.AndroidX.Navigation.Fragment",
 			"Xamarin.AndroidX.Navigation.Runtime",
 			"Xamarin.AndroidX.Navigation.Common"
-		]
+		],
+		"versionProperty": "AndroidXNavigationVersion"
 	},
 	{
 		"group": "AndroidXCollection",
@@ -281,7 +312,8 @@
 		"packages": [
 			"Xamarin.AndroidX.Collection",
 			"Xamarin.AndroidX.Collection.Ktx"
-		]
+		],
+		"versionProperty": "AndroidXCollectionVersion"
 	},
 	{
 		"group": "AndroidXFragment",
@@ -289,14 +321,16 @@
 		"packages": [
 			"Xamarin.AndroidX.Fragment",
 			"Xamarin.AndroidX.Fragment.Ktx"
-		]
+		],
+		"versionProperty": "AndroidXFragmentVersion"
 	},
 	{
 		"group": "AndroidXLifecycle",
 		"version": "2.11.0.1",
 		"packages": [
 			"Xamarin.AndroidX.Lifecycle.LiveData"
-		]
+		],
+		"versionProperty": "AndroidXLifecycleVersion"
 	},
 	{
 		"group": "Maui",
@@ -307,7 +341,8 @@
 		],
 		"versionOverride": {
 			"net11.0": "11.0.0"
-		}
+		},
+		"versionProperty": "MauiVersion"
 	},
 	{
 		"group": "UnoMaui",
@@ -315,21 +350,24 @@
 		"packages": [
 			"Uno.Maui.Embedding",
 			"Uno.Maui.Handlers"
-		]
+		],
+		"versionProperty": "UnoMauiVersion"
 	},
 	{
 		"group": "UnoRetarget",
 		"version": "0.1.0-dev.4",
 		"packages": [
 			"Uno.WinUI.Retarget"
-		]
+		],
+		"versionProperty": "UnoRetargetVersion"
 	},
 	{
 		"group": "MauiCompatibility",
 		"version": "10.0.120",
 		"packages": [
 			"Microsoft.Maui.Controls.Compatibility"
-		]
+		],
+		"versionProperty": "MauiVersion"
 	},
 	{
 		"group": "CSharpMarkup",
@@ -337,7 +375,8 @@
 		"packages": [
 			"Uno.WinUI.Markup",
 			"Uno.Extensions.Markup.Generators"
-		]
+		],
+		"versionProperty": "UnoCSharpMarkupVersion"
 	},
 	{
 		"group": "Extensions",
@@ -368,7 +407,8 @@
 			"Uno.Extensions.Logging.Serilog",
 			"Uno.Extensions.Storage.WinUI",
 			"Uno.HotTesting.Reactive"
-		]
+		],
+		"versionProperty": "UnoExtensionsVersion"
 	},
 	{
 		"group": "Toolkit",
@@ -381,7 +421,8 @@
 			"Uno.Toolkit.WinUI.Markup",
 			"Uno.Toolkit.Skia.WinUI",
 			"Uno.Toolkit.WinUI.Simple"
-		]
+		],
+		"versionProperty": "UnoToolkitVersion"
 	},
 	{
 		"group": "Themes",
@@ -393,27 +434,31 @@
 			"Uno.Cupertino.WinUI",
 			"Uno.Simple.WinUI",
 			"Uno.Simple.WinUI.Markup"
-		]
+		],
+		"versionProperty": "UnoThemesVersion"
 	},
 	{
 		"group": "VlcNativeWindowsAssets",
 		"version": "3.0.24",
 		"packages": [
 			"VideoLAN.LibVLC.Windows"
-		]
+		],
+		"versionProperty": "VlcNativeWindowsAssetsVersion"
 	},
 	{
 		"group": "MicrosoftWebView2",
 		"version": "1.0.4314.35",
 		"packages": [
 			"Microsoft.Web.WebView2"
-		]
+		],
+		"versionProperty": "MicrosoftWebView2Version"
 	},
 	{
 		"group": "AppMcp",
 		"version": "2.0.1",
 		"packages": [
 			"Uno.UI.App.Mcp"
-		]
+		],
+		"versionProperty": "UnoAppMcpVersion"
 	}
 ]
