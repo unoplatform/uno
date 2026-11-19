@@ -111,6 +111,32 @@ public class Given_Win32DragDrop
 		Assert.AreSame(error, actual);
 	}
 
+	[TestMethod]
+	public async Task When_Drag_Leaves_Window_Awaiter_Gets_InvalidOperationException()
+	{
+		var handlerType = Type.GetType("Uno.UI.Runtime.Win32.Win32DragDropExtension, Uno.UI.Runtime.Win32", throwOnError: true)!
+			.GetNestedType("AsyncHDropHandler", BindingFlags.NonPublic);
+		Assert.IsNotNull(handlerType);
+		var constructor = handlerType.GetConstructors().Single();
+		var handler = constructor.Invoke(new[] { Activator.CreateInstance(constructor.GetParameters()[0].ParameterType) });
+
+		handlerType.GetMethod("Leave")!.Invoke(handler, null);
+
+		var task = (Task<List<IStorageItem>>)handlerType.GetProperty("Task")!.GetValue(handler)!;
+		Exception? actual = null;
+		try
+		{
+			await task.WaitAsync(TimeSpan.FromSeconds(5));
+		}
+		catch (Exception error)
+		{
+			actual = error;
+		}
+
+		Assert.IsInstanceOfType<InvalidOperationException>(actual);
+		Assert.AreNotEqual(typeof(InvalidOperationException), actual!.GetType(), "Leave() should fault with its own exception type so it can be logged at Debug.");
+	}
+
 	private const string UnobservedFileDropMessage = "Given_Win32DragDrop unobserved file drop";
 
 	[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
