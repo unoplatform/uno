@@ -75,10 +75,10 @@ holds Uno's deltas) stay in `uno.sources`; the sync PR names them so a person ch
 ./build/winui-sync/seed-area.ps1 -Id teachingtip -Title TeachingTip `
     -UpstreamRepo <path to a full microsoft-ui-xaml clone> `
     -UpstreamSources controls/dev/TeachingTip `
-    -UpstreamTests controls/dev/TeachingTip/APITests `
+    -UpstreamTests controls/dev/TeachingTip/APITests, controls/dev/TeachingTip/TestUI `
     -UpstreamStrings controls/dev/TeachingTip/Strings `
     -UnoSources src/Uno.UI/UI/Xaml/Controls/TeachingTip `
-    -UnoTests src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/TeachingTip `
+    -UnoTests src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/TeachingTip, src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/TeachingTipTests `
     -UnoStrings src/Uno.UI/UI/Xaml/Controls/TeachingTip/Strings
 ```
 
