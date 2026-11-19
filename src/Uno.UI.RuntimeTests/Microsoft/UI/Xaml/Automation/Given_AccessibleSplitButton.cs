@@ -209,14 +209,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_SplitButton_Added_After_Accessibility_Enabled_Then_Menu_Part_Is_Measured()
 		{
-			var host = new StackPanel();
-			await UITestHelper.Load(host);
-			EnableAccessibilityThroughDom();
+			// EnsureAccessibilityEnabledAsync replaces the window content with its probe, so it must run before the host is loaded.
 			await EnsureAccessibilityEnabledAsync();
+			var host = new Grid { Width = 400, Height = 200, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+			await UITestHelper.Load(host);
 
 			var splitButton = new SplitButton { Content = "Export with a long label", Flyout = new MenuFlyout { Items = { new MenuFlyoutItem { Text = "As PDF" } } } };
 			host.Children.Add(splitButton);
-			await UITestHelper.WaitForLoaded(splitButton);
+			await UITestHelper.WaitFor(() => splitButton.SecondaryButtonPart is { ActualWidth: > 0 }, timeoutMS: 5000,
+				message: "The split button added after accessibility was enabled must be laid out.");
 			await UITestHelper.WaitFor(() => SemanticElementExists(splitButton), timeoutMS: 5000, message: "Timed out waiting for the split button semantic element.");
 			var id = GetSemanticElementId(splitButton);
 
