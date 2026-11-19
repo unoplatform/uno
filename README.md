@@ -9,7 +9,6 @@
 [![NuGet Downloads](https://img.shields.io/nuget/dt/uno.winui.svg?style=flat&color=7a67f8&label=NuGet%20Downloads)](https://www.nuget.org/packages/uno.winui)
 [![GitHub Stars](https://img.shields.io/github/stars/unoplatform/uno?style=flat&color=7a67f8&label=GitHub%20Stars)](https://github.com/unoplatform/uno/stargazers/)
 [![All Contributors](https://img.shields.io/github/contributors/unoplatform/uno.svg?style=flat&color=7a67f8&label=Contributors)](https://GitHub.com/unoplatform/uno/graphs/contributors)
-[![Open Uno in Gitpod](https://img.shields.io/badge/gitpod-setup%20automated-159bff?logo=gitpod&style=flat&label=Gitpod)](https://gitpod.io/#https://github.com/unoplatform/uno)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=flat)](https://github.com/unoplatform/uno/blob/master/CONTRIBUTING.md)
 
 Uno Platform is an open-source developer platform for building single-codebase .NET applications that run natively on Web, Desktop, Mobile, and Embedded systems. It uses the WinUI 3 API surface, allowing you to reuse your existing C# and XAML skills to reach all platforms.
