@@ -40,7 +40,9 @@ line of history, so do not rely on it to find changes.
    the version. Do not add a `tag ...` or `commit ...` to a header; remove one where you find it in a
    file you change. A new Uno file gets a header naming its upstream file.
 7. Tests: port upstream test changes into the Uno test paths above, following how the existing
-   tests there were ported. Do not run tests.
+   tests there were ported. Interaction tests run on the shim described in
+   `src/Uno.UI.RuntimeTests/MUX/InteractionTests/README.md`: apply the same mechanical edits it
+   lists. Do not run tests.
 
 ## What to port, what to leave
 
@@ -50,8 +52,7 @@ line of history, so do not rely on it to find changes.
   control's folder, do not port it. Record it under *Skipped* with the upstream path and what
   depends on it.
 - **Not applicable:** changes with no meaning in Uno (Windows-only plumbing, build and project
-  files, telemetry, `*_perf2026*` variants Uno does not use, test infrastructure Uno does not have,
-  `InteractionTests` folders, which Uno cannot run yet).
+  files, telemetry, `*_perf2026*` variants Uno does not use, test infrastructure Uno does not have).
   List each under *Not applicable* with a one-line reason. When unsure whether something applies,
   treat it as *Skipped*, not as *Not applicable*.
 - **Already there:** an earlier run may have stopped part-way on this branch, so some of these
