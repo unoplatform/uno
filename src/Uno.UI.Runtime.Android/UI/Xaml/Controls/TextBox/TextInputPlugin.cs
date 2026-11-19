@@ -266,7 +266,8 @@ internal sealed class TextInputPlugin
 			child.SetEnabled(textBox.Owner.IsEnabled && !textBox.IsReadOnly);
 			child.SetVisibility(ViewStates.Visible);
 
-			if (GetAutofillHints(textBox) is { } hints)
+			var isBeforePassword = i + 1 < textBoxes.Count && textBoxes[i + 1].IsPassword;
+			if (GetAutofillHints(textBox, isBeforePassword) is { } hints)
 			{
 				child.SetAutofillHints(hints);
 			}
@@ -276,10 +277,8 @@ internal sealed class TextInputPlugin
 		}
 	}
 
-	// Skia has no public API to specify autofill hints yet, so they are derived from the
-	// password mode and input scope (same approach as the iOS TextContentType).
-	// Unknown fields get no hint and are left to the autofill service heuristics (hint, inputType).
-	private static string[]? GetAutofillHints(TextBoxCore textBox)
+	// No public API to set autofill hints yet: derived from the password mode and input scope, like the iOS TextContentType.
+	private static string[]? GetAutofillHints(TextBoxCore textBox, bool isBeforePassword)
 	{
 		if (textBox.IsPassword)
 		{
@@ -291,6 +290,9 @@ internal sealed class TextInputPlugin
 			InputScopeNameValue.EmailNameOrAddress or InputScopeNameValue.EmailSmtpAddress => [View.AutofillHintEmailAddress],
 			InputScopeNameValue.TelephoneNumber => [View.AutofillHintPhone],
 			InputScopeNameValue.PersonalFullName => [View.AutofillHintName],
+			// The username of a login form: some services (Google) don't recognize it without the hint.
+			_ when isBeforePassword => [View.AutofillHintUsername],
+			// Left to the autofill service heuristics (inputType).
 			_ => null,
 		};
 	}
