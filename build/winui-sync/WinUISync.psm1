@@ -539,11 +539,12 @@ function Get-SyncPlan {
 					if (-not $tmp) { $tmp = New-TempDirectory }
 					$mirrorRoot = Join-Path $tmp 'mirror'
 					foreach ($m in (Get-AreaMirror $area)) {
-						$copy = @(Invoke-Git $UnoRoot @('show', "${branchRef}:$($m.uno)") -AllowExitCodes 128)
-						if ((Get-LastGitExitCode) -ne 0) { continue }
+						$bytes = $null
+						try { $bytes = Get-UpstreamFileBytes -UpstreamRepo $UnoRoot -Ref $branchRef -Path $m.uno } catch { $bytes = $null }
+						if ($null -eq $bytes) { continue }
 						$dest = Join-Path $mirrorRoot $m.uno
 						New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null
-						[System.IO.File]::WriteAllText($dest, ($copy -join "`n") + "`n")
+						[System.IO.File]::WriteAllBytes($dest, $bytes)
 					}
 				}
 			}
