@@ -1861,7 +1861,13 @@ namespace Microsoft.UI.Xaml
 			// below, which would otherwise leave a first arrange that happens to match the default rect
 			// permanently suppressed. A non-finite offset (e.g. Canvas.Left = NaN) is accepted as in WinUI,
 			// but nothing can be painted there.
-			Visual.IsArrangePending = !double.IsFinite(finalRect.X) || !double.IsFinite(finalRect.Y);
+			var hasFiniteOffset = double.IsFinite(finalRect.X) && double.IsFinite(finalRect.Y);
+			Visual.IsArrangePending = !hasFiniteOffset;
+
+			if (!hasFiniteOffset && this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"{this}: ArrangeVisual({finalRect}) -- non-finite offset, element will not be rendered");
+			}
 
 			var oldFinalRect = _lastFinalRect;
 			var oldClippedFrame = _lastClippedFrame;
