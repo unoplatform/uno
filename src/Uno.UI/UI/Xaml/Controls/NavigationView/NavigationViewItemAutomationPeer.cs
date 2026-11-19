@@ -65,7 +65,7 @@ public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomati
 
 	protected override string GetClassNameCore()
 	{
-		return nameof(NavigationViewItem);
+		return typeof(NavigationViewItem).FullName!;
 	}
 
 	protected override AutomationControlType GetAutomationControlTypeCore()
