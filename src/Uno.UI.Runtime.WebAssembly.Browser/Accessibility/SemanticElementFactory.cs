@@ -225,7 +225,7 @@ internal static partial class SemanticElementFactory
 		// (aria-level, aria-busy, lang). These are independent of the resolved element type.
 		if (created && owner is not null)
 		{
-			ApplyOwnerScopedAriaAttributes(owner, handle);
+			ApplyOwnerScopedAriaAttributes(owner, peer, handle);
 		}
 
 		return created;
@@ -1207,7 +1207,7 @@ internal static partial class SemanticElementFactory
 	/// Shared between the factory path and the generic <c>AddSemanticElement</c> path so both
 	/// emit the same attributes regardless of the resolved element type.
 	/// </remarks>
-	internal static void ApplyOwnerScopedAriaAttributes(UIElement owner, IntPtr handle)
+	internal static void ApplyOwnerScopedAriaAttributes(UIElement owner, AutomationPeer? peer, IntPtr handle)
 	{
 		// aria-level from AutomationProperties.Level (distinct from heading level, which is
 		// emitted by the heading factory). Level is a 1-based hierarchical position; negative means unset.
@@ -1217,11 +1217,9 @@ internal static partial class SemanticElementFactory
 			NativeMethods.UpdateAriaLevel(handle, level);
 		}
 
-		// aria-busy from AutomationProperties.ItemStatus. ItemStatus is a free-form status
-		// string ("New", "Busy", "Loading", ...); we map it conservatively to aria-busy only
-		// when it clearly conveys a busy/in-progress state.
-		var itemStatus = AutomationProperties.GetItemStatus(owner);
-		if (IsBusyStatus(itemStatus))
+		// aria-busy from ItemStatus. ItemStatus is a free-form status string ("New", "Busy", "Loading", ...);
+		// we map it conservatively to aria-busy only when it clearly conveys a busy/in-progress state.
+		if (IsBusyStatus(GetItemStatus(owner, peer)))
 		{
 			NativeMethods.UpdateAriaBusy(handle, true);
 		}
@@ -1234,6 +1232,13 @@ internal static partial class SemanticElementFactory
 			NativeMethods.UpdateLang(handle, lang);
 		}
 	}
+
+	/// <summary>
+	/// Reads ItemStatus from the peer when there is one, so a peer overriding <c>GetItemStatusCore</c> is
+	/// honored, and from the attached property otherwise. Used both at creation and on runtime changes.
+	/// </summary>
+	internal static string? GetItemStatus(UIElement owner, AutomationPeer? peer)
+		=> peer is not null ? peer.GetItemStatus() : AutomationProperties.GetItemStatus(owner);
 
 	/// <summary>
 	/// Determines whether an <see cref="AutomationProperties.ItemStatusProperty"/> value
