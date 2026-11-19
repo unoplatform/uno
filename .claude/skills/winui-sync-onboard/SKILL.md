@@ -48,7 +48,8 @@ Manifest paths are written **without** a leading `src/`. Upstream keeps the same
    `git -C <clone> ls-tree -d --name-only <latest stable tag> src/controls/dev/`
    For a feature area (focus, text, layout), list every upstream folder that makes it up, usually under `dxaml/xcp/...`. Check where the existing Uno files say they came from: their `MUX Reference` headers name the upstream files.
    When the upstream code sits in a folder shared with many other controls (`dxaml/xcp/dxaml/lib`, `dxaml/xcp/core/inc`), list the control's individual files instead of the folder, headers included. Do the same on the Uno side when the port shares its folder with other controls.
-2. **Upstream tests.** Subfolders such as `APITests`, `InteractionTests`, or `<Name>_ApiTests`. Skip `TestUI` unless the Uno port has a matching sample page that was ported from it.
+2. **Upstream tests.** Subfolders such as `APITests` or `<Name>_ApiTests`. Skip `TestUI` unless the Uno port has a matching sample page that was ported from it.
+   **Interaction tests are out of scope for now:** do not map `InteractionTests` folders and do not port their tests, since Uno does not have the infrastructure to run them yet. When they sit inside a mapped source folder (`controls/dev/<Name>/InteractionTests`), their changes still show up in the diff: list them under *Not applicable*.
 3. **Upstream strings.** `controls/dev/<Name>/Strings`, if the folder exists.
 4. **Uno sources.** Usually `src/Uno.UI/UI/Xaml/Controls/<Name>`. Search for the control's files rather than assuming; some ports are split over several folders, and all of them go in the list. Include the control's automation peers.
 5. **Uno tests.** Ported MUX tests live under `src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/<Name>` (files named `*.mux.cs`). Uno-written tests such as `Given_<Name>.cs` are not part of the mapping.
