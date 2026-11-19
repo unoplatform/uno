@@ -59,6 +59,8 @@ stages:
 
 - stage: runtime_tests_skia_browser_threads
   displayName: Tests - WebAssembly Threads
+  # On pull requests only when they touch WebAssembly, threading or the test infrastructure (determine-test-scope.ps1).
+  condition: and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.outputs['DetermineScope.SetScope.WasmMTTestsRequired'], 'true')))
   dependsOn:
     - Setup
 
