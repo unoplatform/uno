@@ -204,7 +204,7 @@ Apply these conversions systematically:
 | `m_expandingEventSource(*this, nullptr)` | `Expanding?.Invoke(this, null)` |
 | `static constexpr auto c_name = L"Name"sv` | `private const string c_name = "Name"` |
 | `winrt::get_self<::Settings>(TemplateSettings())` | `TemplateSettings` (direct access) |
-| `MUX_ASSERT(expr)` | `MUX_ASSERT(expr)` (with `using static Microsoft.UI.Xaml.Controls._Tracing;`) |
+| `MUX_ASSERT(expr)` | `MUX_ASSERT(expr)` (with `using static Microsoft.UI.Xaml.Controls._Tracing;`) — it's `[Conditional("DEBUG")]`, so the whole call **and its arguments** vanish in Release; hoist side effects (`MUX_ASSERT(x.Focus(...))`) into a local first |
 | `auto_revoke` event subscription | `SerialDisposable` pattern (see section 2.5) |
 | C++ destructor (`~ControlName()`) | **No finalizer** — comment out with `TODO Uno:` (see section 2.6) |
 | `winrt::hstring` | `string` |

@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+// MUX Reference APITests/RadioButtonsTests.cs
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -91,8 +93,17 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 				radioButtons.IsEnabled = true;
 
 				Content = radioButtons;
-				Content.UpdateLayout();
+			});
+			await TestServices.WindowHelper.WaitForIdle();
 
+			RunOnUIThread.Execute(() =>
+			{
+				Content.UpdateLayout();
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
 				var radioButtonsLayoutRoot = (FrameworkElement)VisualTreeHelper.GetChild(radioButtons, 0);
 				commonStatesGroup = VisualStateManager.GetVisualStateGroups(radioButtonsLayoutRoot).First(vsg => vsg.Name.Equals("CommonStates"));
 
@@ -105,10 +116,22 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 
 			RunOnUIThread.Execute(() =>
 			{
+				Content.UpdateLayout();
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
 				Verify.AreEqual("Disabled", commonStatesGroup.CurrentState.Name);
 
 				// Check 3: Set IsEnabled back to true.
 				radioButtons.IsEnabled = true;
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+
+			RunOnUIThread.Execute(() =>
+			{
+				Content.UpdateLayout();
 			});
 			await TestServices.WindowHelper.WaitForIdle();
 
