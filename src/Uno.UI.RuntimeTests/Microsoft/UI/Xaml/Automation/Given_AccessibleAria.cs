@@ -430,6 +430,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Peer_Overrides_ItemStatus_Then_AriaBusy_Follows_The_Peer()
+		{
+			var region = new ItemStatusOverrideGrid { Width = 100, Height = 30, PeerItemStatus = "Busy" };
+			AutomationProperties.SetName(region, "Results");
+			AutomationProperties.SetItemStatus(region, "Ready");
+
+			await UITestHelper.Load(region);
+			region.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(region), timeoutMS: 5000, message: "Timed out waiting for the semantic element to be created.");
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreEqual("true", GetSemanticAttribute(region, "aria-busy"), "aria-busy at creation must come from the peer's ItemStatus.");
+
+			// A DP change passes the attached value; the runtime update must still agree with the peer.
+			region.PeerItemStatus = "Ready";
+			AutomationProperties.SetItemStatus(region, "Loading");
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(region, "aria-busy"), timeoutMS: 5000,
+				message: "aria-busy on a runtime change must come from the peer's ItemStatus, like at creation.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Unnamed_Live_Container_Changes_Then_Aria_Follows()
 		{
 			// No Name/LabeledBy: the Grid has no automation peer, yet it is emitted as a live region.
@@ -1372,6 +1397,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 
 
+		private sealed class ItemStatusOverrideGrid : Grid
+		{
+			public string PeerItemStatus { get; set; } = string.Empty;
+
+			protected override AutomationPeer OnCreateAutomationPeer() => new ItemStatusOverridePeer(this);
+		}
+
+		private sealed class ItemStatusOverridePeer(ItemStatusOverrideGrid owner) : FrameworkElementAutomationPeer(owner)
+		{
+			protected override string GetItemStatusCore() => owner.PeerItemStatus;
+		}
 #endif
 	}
 }

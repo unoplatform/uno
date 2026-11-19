@@ -2414,7 +2414,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			// Owner-scoped attributes sourced from AutomationProperties attached properties
 			// (aria-level, aria-busy, lang). Mirrors the factory path so both surface them.
-			SemanticElementFactory.ApplyOwnerScopedAriaAttributes(child, handle);
+			SemanticElementFactory.ApplyOwnerScopedAriaAttributes(child, automationPeer, handle);
 		}
 
 		return result;
@@ -2915,7 +2915,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 		else if (automationProperty == AutomationElementIdentifiers.ItemStatusProperty)
 		{
-			NativeMethods.UpdateAriaBusy(element.Visual.Handle, SemanticElementFactory.IsBusyStatus(newValue as string));
+			// newValue is the attached value for a DP change but the peer value for InvalidatePeer: read one source.
+			var itemStatus = SemanticElementFactory.GetItemStatus(element, element.GetOrCreateAutomationPeer());
+			NativeMethods.UpdateAriaBusy(element.Visual.Handle, SemanticElementFactory.IsBusyStatus(itemStatus));
 			UpdateColumnHeaderSort(element.Visual.Handle);
 		}
 	}
