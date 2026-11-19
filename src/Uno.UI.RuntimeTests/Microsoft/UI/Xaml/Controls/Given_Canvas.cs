@@ -38,7 +38,10 @@ public class Given_Canvas
 		Assert.AreEqual(42, SUT.GetValue(Canvas.ZIndexProperty));
 	}
 
+	// On native WinUI a non-finite Top leaves the children after the bad one unarranged
+	// (CCanvas::ArrangeOverride stops at the first failing Arrange), so the sibling checks are Uno-only.
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26371")]
 	[DataRow(double.NaN, 0d)]
 	[DataRow(0d, double.NaN)]
