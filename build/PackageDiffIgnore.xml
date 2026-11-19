@@ -5706,12 +5706,14 @@
 	  <Properties>
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.StackLayout::DisableVirtualization()" reason="Removed the Uno-only inverse of IsVirtualizationEnabled; WinUI has no DisableVirtualization (use !IsVirtualizationEnabled)" />
 		  <Member fullName=".*Windows\.Devices\.AllJoyn\..+" reason="Removed from the Windows SDK projection (10.0.26100+); the sync generator now reads 10.0.28000" isRegex="true" />
+		  <Member fullName="System.Byte Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes::SlaveConnectionIntervalRange()" reason="Renamed to PeripheralConnectionIntervalRange in the Windows SDK projection (10.0.28000); the sync generator now reads 10.0.28000" />
 	  </Properties>
 	  <Methods>
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.StackLayout.get_DisableVirtualization()" reason="Removed the Uno-only inverse of IsVirtualizationEnabled; WinUI has no DisableVirtualization (use !IsVirtualizationEnabled)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.StackLayout.set_DisableVirtualization(System.Boolean value)" reason="Removed the Uno-only inverse of IsVirtualizationEnabled; WinUI has no DisableVirtualization (use !IsVirtualizationEnabled)" />
 		  <Member fullName=".*Windows\.Devices\.AllJoyn\..+" reason="Removed from the Windows SDK projection (10.0.26100+); the sync generator now reads 10.0.28000" isRegex="true" />
 		  <Member fullName=".*Windows\.ApplicationModel\.IAppInfoStatics(::|\.).+" reason="No longer public in the Windows SDK projection; the sync generator now reads 10.0.28000" isRegex="true" />
+		  <Member fullName="System.Byte Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementDataTypes.get_SlaveConnectionIntervalRange()" reason="Renamed to PeripheralConnectionIntervalRange in the Windows SDK projection (10.0.28000); the sync generator now reads 10.0.28000" />
 		  <!-- Legacy WASM interop whose JavaScript (AsyncInteropHelper, MonoSupport) shipped only with the DOM heads removed in 7.0; it could no longer run. -->
 		  <Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Uno.Foundation.WebAssemblyRuntime.InvokeAsync(System.String promiseCode)" reason="Removed legacy WASM eval-based async interop; its JavaScript is no longer shipped (breaking changes for 7.0)" />
 		  <Member fullName="System.Threading.Tasks.Task`1&lt;System.String&gt; Uno.Foundation.WebAssemblyRuntime.InvokeAsync(System.String promiseCode, System.Threading.CancellationToken ct)" reason="Removed legacy WASM eval-based async interop; its JavaScript is no longer shipped (breaking changes for 7.0)" />
