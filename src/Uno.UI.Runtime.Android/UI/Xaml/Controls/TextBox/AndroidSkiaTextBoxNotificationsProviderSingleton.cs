@@ -75,12 +75,17 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 		{
 			LiveTextBoxes.Add(textBox);
 		}
+
+		GetTextInputPlugin(textBox.Owner.XamlRoot)?.NotifyViewVisibilityChanged(textBox.GetHashCode(), isVisible: true);
 	}
 
 	public void OnLeaveVisualTree(TextBoxCore textBox)
 	{
 		LiveTextBoxes.Remove(textBox);
 		LiveTextBoxesMap.Remove(textBox.GetHashCode());
+
+		// Lets the autofill framework offer to save the credentials once every field of the form is gone.
+		GetTextInputPlugin(textBox.Owner.XamlRoot)?.NotifyViewVisibilityChanged(textBox.GetHashCode(), isVisible: false);
 	}
 
 	public void FinishAutofillContext(bool shouldSave)

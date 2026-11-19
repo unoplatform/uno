@@ -86,6 +86,15 @@ internal sealed class TextInputPlugin
 		_afm.NotifyViewExited(_view, virtualId);
 	}
 
+	internal void NotifyViewVisibilityChanged(int virtualId, bool isVisible)
+	{
+		// Unlike the rest of AutofillManager (API 26), the virtual-view overload was added in API 27.
+		if (OperatingSystem.IsAndroidVersionAtLeast(27))
+		{
+			_afm?.NotifyViewVisibilityChanged(_view, virtualId, isVisible);
+		}
+	}
+
 	internal void FinishAutofillContext(bool shouldSave)
 	{
 		if (_afm is null)
