@@ -2993,6 +2993,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			case AutomationEvents.AutomationFocusChanged:
 				// Route focus changes to the semantic DOM so the browser focus ring follows
+				UIElement? mirroredFocusElement = null;
 				if (TryGetPeerOwner(peer, out var focusElement))
 				{
 					if (this.Log().IsEnabled(LogLevel.Trace))
@@ -3003,8 +3004,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					if (HasSemanticElement(focusElement.Visual.Handle))
 					{
 						NativeMethods.FocusSemanticElement(focusElement.Visual.Handle);
+						mirroredFocusElement = focusElement;
 					}
 				}
+				_focusSynchronizer?.OnFocusChangeMirrored(mirroredFocusElement);
 				break;
 
 			case AutomationEvents.StructureChanged:
