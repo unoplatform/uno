@@ -1028,9 +1028,21 @@ namespace Uno.UI.Runtime {
 		}
 
 		public static updateSemanticElementPositioning(handle: number, width: number, height: number, x: number, y: number) {
+			// A pooled item can finish layout before its queued DOM recreation. Apply that
+			// geometry after the pending mutation instead of losing it or restoring the pool rect.
+			if (SemanticElements.hasPendingVirtualizedMutation(handle)) {
+				SemanticElements.updateVirtualizedItemGeometry(handle, width, height, x, y);
+				return;
+			}
+			Accessibility.applySemanticElementPositioning(handle, width, height, x, y);
+		}
+
+		public static applySemanticElementPositioning(handle: number, width: number, height: number, x: number, y: number) {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
 				element.hidden = false;
+				// Children of a DOM scroll port arrive in content coordinates (see GetRectInSemanticParent),
+				// so the native scroller's own offset is the only scroll applied to them.
 				element.style.left = `${x}px`;
 				element.style.top = `${y}px`;
 				element.style.width = `${width}px`;
