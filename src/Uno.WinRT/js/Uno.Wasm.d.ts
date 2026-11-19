@@ -439,6 +439,7 @@ declare namespace Uno.Storage {
         static getInfos(...items: Array<FileSystemHandle | File>): NativeStorageItemInfo[];
         private static storeItems;
         private static generateGuids;
+        private static newGuid;
     }
 }
 declare namespace Uno.Storage {
