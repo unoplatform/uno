@@ -125,6 +125,20 @@ public class Given_NativeDispatcher
 			order);
 	}
 
+	// Background work (a timer, a task continuation) from an earlier test posts its dispatch to the UI thread,
+	// which cannot run it until the current test returns.
+	[TestMethod]
+	public void When_Background_Work_Is_Pending_Then_Pump_Still_Starts()
+	{
+		var ran = false;
+		System.Threading.Tasks.Task.Run(() => NativeDispatcher.Main.Enqueue(() => ran = true)).Wait();
+
+		using (new DispatcherPump())
+		{
+			Assert.IsTrue(ran);
+		}
+	}
+
 	/// <summary>
 	/// Owns the dispatcher's native pump for the duration of a test, so dispatch order is deterministic.
 	/// </summary>
@@ -147,17 +161,21 @@ public class Given_NativeDispatcher
 			_previousDispatchBehindPending = NativeDispatcher.DispatchBehindPendingOverride;
 
 			NativeDispatcher.HasThreadAccessOverride = () => true;
-			// Otherwise an enqueue behind a pending dispatch posts an extra pump turn.
-			NativeDispatcher.DispatchBehindPendingOverride = () => false;
 			NativeDispatcher.DispatchOverride = (action, _) => _pending.Enqueue(action);
 
 			Dispatcher.RemoveCompositionTargets(_ => true);
 
+			// Work enqueued from a background thread before this test waits on a dispatch posted to the UI thread,
+			// which only runs after the test: pump through it so that work is drained here instead.
+			NativeDispatcher.DispatchBehindPendingOverride = () => true;
 			var primed = false;
 			Dispatcher.Enqueue(() => primed = true);
 			Drain();
 
 			Assert.IsTrue(primed, "Another test left work pending on the dispatcher.");
+
+			// Otherwise an enqueue behind a pending dispatch posts an extra pump turn.
+			NativeDispatcher.DispatchBehindPendingOverride = () => false;
 		}
 
 		public NativeDispatcher Dispatcher => NativeDispatcher.Main;

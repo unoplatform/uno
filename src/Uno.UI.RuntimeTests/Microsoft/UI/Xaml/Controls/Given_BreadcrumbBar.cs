@@ -72,6 +72,35 @@ public class Given_BreadcrumbBar
 		Assert.IsTrue(items.All(i => AutomationProperties.GetSizeOfSet(i) == 3));
 	}
 
+	[TestMethod]
+	public async Task When_ItemTemplate_Is_Custom_ElementFactory_Then_It_Creates_The_Items()
+	{
+		var factory = new BreadcrumbItemFactory();
+		var bar = new BreadcrumbBar { ItemsSource = new[] { "Home", "Library" }, ItemTemplate = factory };
+
+		await UITestHelper.Load(bar);
+
+		CollectionAssert.IsSubsetOf(new[] { "Home", "Library" }, factory.RequestedData.ToArray(), $"GetElement Data: [{string.Join(", ", factory.RequestedData)}]");
+		var items = Descendants(bar).OfType<BreadcrumbBarItem>().Where(i => i.Content is "Home" or "Library").ToArray();
+		Assert.AreEqual(2, items.Length);
+		Assert.IsTrue(items.All(i => i.Tag is "factory"), "The items should be the ones the factory created.");
+	}
+
+	private sealed partial class BreadcrumbItemFactory : IElementFactory
+	{
+		public List<object> RequestedData { get; } = new();
+
+		public UIElement GetElement(global::Microsoft.UI.Xaml.ElementFactoryGetArgs args)
+		{
+			RequestedData.Add(args.Data);
+			return new BreadcrumbBarItem { Tag = "factory" };
+		}
+
+		public void RecycleElement(global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs args)
+		{
+		}
+	}
+
 	private static IEnumerable<DependencyObject> Descendants(DependencyObject parent)
 	{
 		for (var i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)

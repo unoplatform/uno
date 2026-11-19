@@ -8,6 +8,7 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
 
+// Uno specific: stands in for the WinRT default interface IScrollView, the test hooks' map key.
 internal interface IScrollView
 {
 	Visibility ComputedHorizontalScrollBarVisibility { get; }

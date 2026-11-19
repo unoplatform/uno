@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference SplitButton.properties.cpp, tag winui3/release/1.4.2
+// MUX Reference SplitButton.properties.cpp
 
 using System.Windows.Input;
 using Microsoft.UI.Xaml;
@@ -35,6 +35,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty CommandParameterProperty { get; } =
 			DependencyProperty.Register(nameof(CommandParameter), typeof(object), typeof(SplitButton), new FrameworkPropertyMetadata(null, OnCommandParameterChanged));
 
+		// Uno specific: LogicalChild parents the flyout to the SplitButton, so it inherits DataContext and resources like Button.Flyout.
 		public static DependencyProperty FlyoutProperty { get; } =
 			DependencyProperty.Register(nameof(Flyout), typeof(FlyoutBase), typeof(SplitButton), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.LogicalChild, OnFlyoutChanged));
 

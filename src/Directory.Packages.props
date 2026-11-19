@@ -8,8 +8,8 @@
 		<CommunityToolkitMvvmVersion>8.2.2</CommunityToolkitMvvmVersion>
 		<MSTestVersion>4.2.1</MSTestVersion>
 		<MicrosoftTestingPlatformVersion>2.2.1</MicrosoftTestingPlatformVersion>
-		<SkiaSharpVersion>4.151.1</SkiaSharpVersion>
-		<HarfbuzzSharpVersion>14.2.1.1</HarfbuzzSharpVersion>
+		<SkiaSharpVersion>4.156.1</SkiaSharpVersion>
+		<HarfbuzzSharpVersion>14.4.0.101</HarfbuzzSharpVersion>
 		<UnoICUVersion>77.4.1</UnoICUVersion>
 		<UnoXamlMergeTaskVersion>1.27.0-dev.44</UnoXamlMergeTaskVersion>
 
@@ -96,7 +96,7 @@
 		<PackageVersion Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.9.28" />
 		<PackageVersion Include="Microsoft.VSSDK.BuildTools" Version="17.7.2196" />
 		<PackageVersion Include="Microsoft.Web.WebView2" Version="1.0.2592.51" />
-		<PackageVersion Include="Microsoft.Win32.SystemEvents" Version="11.0.0-rc.3.26522.148" />
+		<PackageVersion Include="Microsoft.Win32.SystemEvents" Version="11.0.0" />
 		<PackageVersion Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
 		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2705" />
 		<PackageVersion Include="Microsoft.Windows.SDK.BuildTools.WinApp" Version="0.7.1" />
@@ -163,7 +163,7 @@
 		<PackageVersion Include="Uno.Core.Extensions.Logging.Singleton" Version="5.0.0" />
 		<PackageVersion Include="Uno.Core.Extensions.Threading" Version="5.0.0" />
 		<!-- Minimum for Uno.Settings.DevServer 2.x: the host's copy owns the TelemetryUserContext its add-ins publish to -->
-		<PackageVersion Include="Uno.DevTools.Telemetry" Version="1.4.1" />
+		<PackageVersion Include="Uno.DevTools.Telemetry" Version="1.4.11" />
 		<PackageVersion Include="Uno.Diagnostics.Eventing" Version="2.0.1" />
 		<PackageVersion Include="Uno.Extensions.Logging.OSLog" Version="1.7.0" />
 		<PackageVersion Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.7.0" />
@@ -232,6 +232,12 @@
 		<PackageVersion Update="Microsoft.Build.Framework" Version="$(DevServerMSBuildToolsVersion)" />
 		<PackageVersion Update="Microsoft.Build.Tasks.Core" Version="$(DevServerMSBuildToolsVersion)" />
 		<PackageVersion Update="Microsoft.Build.Utilities.Core" Version="$(DevServerMSBuildToolsVersion)" />
+	</ItemGroup>
+
+	<!-- Floor required by Microsoft.CodeAnalysis.Workspaces.MSBuild on the dev-server Roslyn line (spec 061 R3) -->
+	<ItemGroup Condition=" '$(DevServerExtensionsVersion)' != '' ">
+		<PackageVersion Update="Microsoft.Extensions.DependencyInjection" Version="$(DevServerExtensionsVersion)" />
+		<PackageVersion Update="Microsoft.Extensions.Logging" Version="$(DevServerExtensionsVersion)" />
 	</ItemGroup>
 
 	<!-- Only set when validating a specific C# compiler; see MicrosoftNetCompilersToolsetVersion in Directory.Build.props -->

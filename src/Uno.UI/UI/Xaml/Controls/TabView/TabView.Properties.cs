@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference src\controls\dev\Generated\TabView.properties.cpp, commit 65718e2813
+// MUX Reference src\controls\dev\Generated\TabView.properties.cpp
 
 using System.Collections.Generic;
 using System.Windows.Input;
