@@ -6,6 +6,29 @@ uid: Uno.Development.FeatureFlags
 
 Uno provides a set of feature flags that can be set early in an app's startup to control its behavior. Some of these flags are for backward compatibility, some of them provide fine-grained customizability of a particular feature, and some of them allow to toggle between more 'WinUI-like' and more 'native-like' behavior in a particular context.
 
+## Optional performance changes (`XamlOptionalChanges`)
+
+Uno implements WinUI's `Microsoft.UI.Xaml.Settings.XamlOptionalChanges` API, which opts an app into performance changes ported from WinUI. These changes can alter visual tree shapes or the order in which style values are evaluated, so they are disabled by default.
+
+Enable them before the app starts. Once `Application.Start` runs, the set of changes is locked, and `EnableChange`/`DisableChange` throw an `InvalidOperationException`. In an Uno Platform app, that means the top of `Program.Main`, before the host is built:
+
+```csharp
+using Microsoft.UI.Xaml.Settings;
+
+XamlOptionalChanges.EnableChange(XamlChangeId.DefaultStyleOptimizations);
+XamlOptionalChanges.EnableChange(XamlChangeId.OptimizeApplyStyles);
+XamlOptionalChanges.EnableChange(XamlChangeId.IconNoGridOptimization);
+```
+
+| `XamlChangeId` | Effect |
+|---|---|
+| `DefaultStyleOptimizations` | Uses performance-optimized variants of the built-in Fluent styles for `Button`, `CheckBox`, `ComboBox`, `Slider`, `ToggleSwitch`, `ScrollBar`, `AppBarButton`, `AppBarToggleButton`, `CommandBar`, `NavigationView`'s back button and `TabView`. Visual states that only carry zero-duration `DiscreteObjectKeyFrame`s use `VisualState.Setters` instead of a `Storyboard`, and templates perform fewer resource lookups. Controls without an optimized variant keep their default style. |
+| `OptimizeApplyStyles` | A style setter whose value is overridden by a higher precedence (a local value, a template binding, or an explicit style over a built-in one) does not create its value until it becomes the effective value. Setters backed by a `StaticResource`/`ThemeResource` are always applied, so their resource bindings stay registered. |
+| `IconNoGridOptimization` | `FontIcon` and `BitmapIcon` host their inner `TextBlock`/`Image` directly instead of nesting it in a transparent `Grid`, saving two objects and one layout/render level per icon. Code that reaches into an icon by index (for example `VisualTreeHelper.GetChild(icon, 0)`) observes the inner element instead of the `Grid`, and pointer-event `OriginalSource` can be the `IconElement` itself. Other icon types keep the `Grid`. |
+| `DeferContextFlyoutInit` | Accepted, but has no effect on Uno yet. |
+
+`XamlOptionalChanges.IsChangeEnabled` reports the current state at any time.
+
 ## Disabling accessibility text scaling (Android and iOS)
 
 By default, Uno automatically enables accessibility text scaling on iOS and Android devices. However, to have more control, the feature flag `Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor` was added to control.

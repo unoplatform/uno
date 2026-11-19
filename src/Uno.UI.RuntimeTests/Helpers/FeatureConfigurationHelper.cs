@@ -33,5 +33,19 @@ namespace Uno.UI.RuntimeTests.Helpers
 			});
 #endif
 		}
+
+		/// <summary>
+		/// Enables or disables a <see cref="Microsoft.UI.Xaml.Settings.XamlOptionalChanges"/> change for the duration of
+		/// a single test, bypassing the lock taken when the app started.
+		/// </summary>
+		public static IDisposable UseOptionalChange(Microsoft.UI.Xaml.Settings.XamlChangeId changeId, bool enabled)
+		{
+#if WINAPPSDK
+			return null;
+#else
+			var previous = Microsoft.UI.Xaml.Settings.XamlOptionalChanges.SetChangeEnabledForTesting(changeId, enabled);
+			return Disposable.Create(() => Microsoft.UI.Xaml.Settings.XamlOptionalChanges.SetChangeEnabledForTesting(changeId, previous));
+#endif
+		}
 	}
 }

@@ -20,7 +20,8 @@
           "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationBackButton_themeresources.xaml",
           "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationBackButton.xaml",
           "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationView_themeresources.xaml",
-          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationView.xaml"
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationView.xaml",
+          "src/Uno.UI.FluentTheme/Perf2026/NavigationBackButton_perf2026.xaml"
         ],
         "tests": [
           "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/NavigationView"
@@ -95,7 +96,8 @@
         "sources": [
           "src/Uno.UI/UI/Xaml/Controls/TabView",
           "src/Uno.UI.FluentTheme/Resources/PriorityDefault/TabView_themeresources.xaml",
-          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/TabView.xaml"
+          "src/Uno.UI.FluentTheme/Resources/PriorityDefault/TabView.xaml",
+          "src/Uno.UI.FluentTheme/Perf2026/TabView_perf2026.xaml"
         ],
         "tests": [
           "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/TabView"
@@ -370,6 +372,38 @@
           "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/GridViewItem_themeresources.xaml"
         }
       ]
+    },
+    {
+      "id": "perf2026",
+      "title": "Perf2026 optimizations",
+      "baseline": "1b5b1a0ccc05ce5c8b5931dc303666975b57f498",
+      "upstream": {
+        "sources": [
+          "controls/dev/CommonStyles/AppBarButton_themeresources_perf2026.xaml",
+          "controls/dev/CommonStyles/AppBarToggleButton_themeresources_perf2026.xaml",
+          "controls/dev/CommonStyles/Button_themeresources_perf2026.xaml",
+          "controls/dev/CommonStyles/CheckBox_themeresources_perf2026.xaml",
+          "controls/dev/CommonStyles/ScrollBar_themeresources_perf2026.xaml",
+          "controls/dev/CommonStyles/Slider_themeresources_perf2026.xaml",
+          "controls/dev/CommonStyles/ToggleSwitch_themeresources_perf2026.xaml",
+          "controls/dev/ComboBox/ComboBox_themeresources_perf2026.xaml",
+          "dxaml/xcp/dxaml/lib/XamlOptionalChanges_Partial.cpp",
+          "dxaml/xcp/components/runtimeEnabledFeatures/inc/OptionalChangeState.h"
+        ]
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI.FluentTheme/Perf2026/AppBarButton_themeresources_perf2026.xaml",
+          "src/Uno.UI.FluentTheme/Perf2026/AppBarToggleButton_themeresources_perf2026.xaml",
+          "src/Uno.UI.FluentTheme/Perf2026/Button_themeresources_perf2026.xaml",
+          "src/Uno.UI.FluentTheme/Perf2026/CheckBox_themeresources_perf2026.xaml",
+          "src/Uno.UI.FluentTheme/Perf2026/ScrollBar_themeresources_perf2026.xaml",
+          "src/Uno.UI.FluentTheme/Perf2026/Slider_themeresources_perf2026.xaml",
+          "src/Uno.UI.FluentTheme/Perf2026/ToggleSwitch_themeresources_perf2026.xaml",
+          "src/Uno.UI.FluentTheme/Perf2026/ComboBox_themeresources_perf2026.xaml",
+          "src/Uno.UI/UI/Xaml/Settings/XamlOptionalChanges.cs"
+        ]
+      }
     }
   ]
 }

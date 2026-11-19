@@ -2,49 +2,15 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Settings;
 
-#if __SKIA__
+#if false
 [global::Uno.NotImplemented]
 #endif
 public partial class XamlOptionalChanges
 {
-#if __SKIA__
-	internal XamlOptionalChanges()
-	{
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static bool EnableChange(global::Microsoft.UI.Xaml.Settings.XamlChangeId changeId)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Settings.XamlOptionalChanges", "EnableChange(XamlChangeId changeId)");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static bool DisableChange(global::Microsoft.UI.Xaml.Settings.XamlChangeId changeId)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Settings.XamlOptionalChanges", "DisableChange(XamlChangeId changeId)");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static bool IsChangeEnabled(global::Microsoft.UI.Xaml.Settings.XamlChangeId changeId)
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Settings.XamlOptionalChanges", "IsChangeEnabled(XamlChangeId changeId)");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static bool Lock()
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Settings.XamlOptionalChanges", "Lock()");
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static bool IsLocked()
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Settings.XamlOptionalChanges", "IsLocked()");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Xaml.Settings.XamlOptionalChanges.XamlOptionalChanges()
+	// Skipping already declared method Microsoft.UI.Xaml.Settings.XamlOptionalChanges.EnableChange(Microsoft.UI.Xaml.Settings.XamlChangeId)
+	// Skipping already declared method Microsoft.UI.Xaml.Settings.XamlOptionalChanges.DisableChange(Microsoft.UI.Xaml.Settings.XamlChangeId)
+	// Skipping already declared method Microsoft.UI.Xaml.Settings.XamlOptionalChanges.IsChangeEnabled(Microsoft.UI.Xaml.Settings.XamlChangeId)
+	// Skipping already declared method Microsoft.UI.Xaml.Settings.XamlOptionalChanges.Lock()
+	// Skipping already declared method Microsoft.UI.Xaml.Settings.XamlOptionalChanges.IsLocked()
 }
