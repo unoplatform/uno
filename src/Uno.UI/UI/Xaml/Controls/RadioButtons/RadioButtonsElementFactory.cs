@@ -1,13 +1,14 @@
-﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference RadioButtonsElementFactory.cpp
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	internal class RadioButtonsElementFactory : ElementFactory
 	{
-		private IElementFactory m_itemTemplateWrapper = null;
+		private IElementFactory m_itemTemplateWrapper;
 
-		// MUX Reference RadioButtonsElementFactory.cpp (UserElementFactory), main
 		internal void UserElementFactory(object newValue)
 		{
 			if (newValue is DataTemplate dataTemplate)
@@ -33,20 +34,18 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected override UIElement GetElementCore(global::Microsoft.UI.Xaml.ElementFactoryGetArgs args)
 		{
-			object GetContent(IElementFactory itemTemplateWrapper)
+			object GetNewContent(IElementFactory itemTemplateWrapper)
 			{
-				if (itemTemplateWrapper != null)
+				if (itemTemplateWrapper is not null)
 				{
 					return itemTemplateWrapper.GetElement(args);
 				}
 				return args.Data;
 			}
-
-			var newContent = GetContent(m_itemTemplateWrapper);
+			var newContent = GetNewContent(m_itemTemplateWrapper);
 
 			// Element is already a RadioButton, so we just return it.
-			var radioButton = newContent as RadioButton;
-			if (radioButton != null)
+			if (newContent is RadioButton radioButton)
 			{
 				return radioButton;
 			}
@@ -56,8 +55,7 @@ namespace Microsoft.UI.Xaml.Controls
 			newRadioButton.Content = args.Data;
 
 			// If a user provided item template exists, we pass the template down to the ContentPresenter of the RadioButton.
-			var itemTemplateWrapper = m_itemTemplateWrapper as ItemTemplateWrapper;
-			if (itemTemplateWrapper != null)
+			if (m_itemTemplateWrapper is ItemTemplateWrapper itemTemplateWrapper)
 			{
 				newRadioButton.ContentTemplate = itemTemplateWrapper.Template;
 			}
@@ -67,7 +65,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private protected override void RecycleElementCore(global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs args)
 		{
-
 		}
 	}
 }

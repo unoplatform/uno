@@ -475,6 +475,43 @@
           "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/ProgressRing_themeresources.xaml"
         }
       ]
+    },
+    {
+      "id": "radiobuttons",
+      "title": "RadioButtons",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
+      "upstream": {
+        "sources": [
+          "controls/dev/RadioButtons"
+        ],
+        "tests": [
+          "controls/dev/RadioButtons/APITests",
+          "controls/dev/RadioButtons/InteractionTests"
+        ]
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/RadioButtons",
+          "src/Uno.UI/UI/Xaml/Automation/Peers/RadioButtonsAutomationPeer.cs"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/RadioButtons"
+        ]
+      },
+      "mirror": [
+        {
+          "upstream": "controls/dev/RadioButtons/RadioButtons.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/RadioButtons.xaml"
+        },
+        {
+          "upstream": "controls/dev/RadioButtons/RadioButtons_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/RadioButtons_themeresources.xaml"
+        },
+        {
+          "upstream": "controls/dev/RadioButtons/RadioButton.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/RadioButton.xaml"
+        }
+      ]
     }
   ]
 }

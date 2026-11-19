@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference ColumnMajorUniformToLargestGridLayout.cpp
+
+using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 
@@ -7,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	public partial class ColumnMajorUniformToLargestGridLayout : NonVirtualizingLayout
 	{
 		private int m_actualColumnCount = 1;
-		private Size m_largestChildSize = Size.Empty;
+		private Size m_largestChildSize = new Size(0, 0);
 
 		//Testhooks helpers, only function while m_testHooksEnabled == true
 		private bool m_testHooksEnabled = false;
@@ -17,6 +22,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private int m_columns = -1;
 
 		private int m_largerColumns = -1;
+
+		// std::numeric_limits<float>::epsilon(), unlike float.Epsilon (the smallest positive float).
+		private const float FloatEpsilon = 1.192092896e-07F;
 
 		protected internal override Size MeasureOverride(NonVirtualizingLayoutContext context, Size availableSize)
 		{
@@ -158,7 +166,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			var requestedColumnCount = Math.Min(MaxColumns, childCount);
 
 			// If columns can be added with effectively 0 extra space return as many columns as needed.
-			if (widthNeededForExtraColumn < float.Epsilon)
+			if (widthNeededForExtraColumn < FloatEpsilon)
 			{
 				return requestedColumnCount;
 			}
@@ -173,11 +181,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			return Math.Max(1, (int)(effectiveColumnCount));
 		}
 
-		private void ValidateGreaterThanZero(int value)
+		internal static void ValidateGreaterThanZero(int value)
 		{
 			if (value <= 0)
 			{
-				throw new ArgumentOutOfRangeException(nameof(value));
+				throw new ArgumentException(null, nameof(value));
 			}
 		}
 
