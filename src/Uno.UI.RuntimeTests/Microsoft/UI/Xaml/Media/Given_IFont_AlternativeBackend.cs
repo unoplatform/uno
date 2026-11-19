@@ -93,7 +93,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		public void When_Shaping_Combining_Mark_Then_Raised_Mark_Has_Negative_Y_Offset()
 		{
 			const float size = 64f;
-			const string text = "X́";
+			const string text = "X\u0301";
 
 			foreach (var candidate in EnumerateTypefaces())
 			{
