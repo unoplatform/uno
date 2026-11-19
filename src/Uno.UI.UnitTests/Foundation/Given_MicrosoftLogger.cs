@@ -7,7 +7,7 @@ using UnoLogLevel = Uno.Foundation.Logging.LogLevel;
 
 namespace Uno.UI.Tests.Foundation
 {
-	[UITestClass]
+	[TestClass]
 	public class Given_MicrosoftLogger
 	{
 		[TestMethod]
