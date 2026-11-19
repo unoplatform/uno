@@ -361,6 +361,24 @@ Describe 'Get-SyncPlan' {
 		$plan.Rows[0].prNumber | Should -Be 42
 	}
 
+	It 'reads the open sync branch''s mirrored files byte for byte' {
+		Mock -ModuleName WinUISync Get-OpenSyncPr { 42 }
+		# No trailing newline on either side, as in several of Uno's theme XAML copies.
+		$upSha = Add-TestCommit $fx.Repo @{ 'controls/dev/CommonStyles/Foo_themeresources.xaml' = "<Root>v1</Root>" } -Tag 'winui3/release/1.2.0'
+		$areaDef.baseline = $upSha
+		$areaDef.mirror = @([ordered]@{ upstream = 'controls/dev/CommonStyles/Foo_themeresources.xaml'; uno = 'src/Foo_themeresources.xaml' })
+		$json = @{ areas = @($areaDef) } | ConvertTo-Json -Depth 6
+		Add-TestCommit $uno @{ $manifestRel = $json; 'src/Foo_themeresources.xaml' = "<Root>v1</Root>" } | Out-Null
+		Invoke-TestGit $uno checkout -q -b work | Out-Null
+		$branchSha = Add-TestCommit $uno @{ 'src/Foo/branch.txt' = 'x' }
+		Invoke-TestGit $uno update-ref refs/remotes/origin/sync/winui/foo $branchSha | Out-Null
+		Invoke-TestGit $uno checkout -q main | Out-Null
+
+		$plan = Get-SyncPlan -UpstreamRepo $fx.Repo -UnoRoot $uno -ManifestPath (Join-Path $uno $manifestRel)
+
+		$plan.Rows[0].status | Should -Be 'up to date'
+	}
+
 	It 'returns an empty matrix when nothing changed' {
 		Mock -ModuleName WinUISync Get-OpenSyncPr { $null }
 
