@@ -3,15 +3,12 @@
 
 // MUX Reference Expander.cpp
 
-using System.Numerics;
 using Uno.Disposables;
-using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Hosting;
 using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -22,18 +19,13 @@ public partial class Expander : ContentControl
 	private const string c_expanderContent = "ExpanderContent";
 	private const string c_expanderContentClip = "ExpanderContentClip";
 
-	// Uno specific: Added to dispose event handlers
-	private readonly SerialDisposable _eventSubscriptions = new SerialDisposable();
+	private readonly SerialDisposable m_expanderContentSizeChangedRevoker = new();
 
 	public Expander()
 	{
 		this.SetDefaultStyleKey();
 
 		SetValue(TemplateSettingsProperty, new ExpanderTemplateSettings());
-
-		// Uno specific: we might leak on iOS: https://github.com/unoplatform/uno/pull/14257#discussion_r1381585268
-		Loaded += Expander_Loaded;
-		Unloaded += Expander_Unloaded;
 	}
 
 	protected override AutomationPeer OnCreateAutomationPeer() => new ExpanderAutomationPeer(this);
@@ -57,7 +49,6 @@ public partial class Expander : ContentControl
 				// 1. Set the events source of the toggle button peer to the expander's.
 				if (FrameworkElementAutomationPeer.FromElement(this) is AutomationPeer expanderPeer)
 				{
-					// Uno Doc: EventSource is not implemented in the Uno Platform
 					var expanderEventsSource = expanderPeer.EventsSource != null ?
 						expanderPeer.EventsSource :
 						expanderPeer;
@@ -76,46 +67,22 @@ public partial class Expander : ContentControl
 			}
 		}
 
-		// Uno specific: Added to dispose event handlers
-		_eventSubscriptions.Disposable = null;
-		var registrations = new CompositeDisposable();
-		_eventSubscriptions.Disposable = registrations;
-
 		if (GetTemplateChild<Border>(c_expanderContentClip) is Border expanderContentClip)
 		{
-			// TODO Uno specific: The Composition clipping APIs are currently unsupported,
-			// so UIElement.Clip a layout slot for the Expander content when the
-			// SizeChanged event is fired.
-#if HAS_UNO
-			expanderContentClip.SizeChanged += OnContentClipSizeChanged;
-			registrations.Add(() => expanderContentClip.SizeChanged -= OnContentClipSizeChanged);
-#else
 			var visual = ElementCompositionPreview.GetElementVisual(expanderContentClip);
 			visual.Clip = visual.Compositor.CreateInsetClip();
-#endif
 		}
 
+		m_expanderContentSizeChangedRevoker.Disposable = null;
 		if (GetTemplateChild<Border>(c_expanderContent) is Border expanderContent)
 		{
 			expanderContent.SizeChanged += OnContentSizeChanged;
-			registrations.Add(() => expanderContent.SizeChanged -= OnContentSizeChanged);
+			m_expanderContentSizeChangedRevoker.Disposable = Disposable.Create(() => expanderContent.SizeChanged -= OnContentSizeChanged);
 		}
 
 		UpdateExpandState(false);
 		UpdateExpandDirection(false);
 	}
-
-#if HAS_UNO
-	private void OnContentClipSizeChanged(object sender, SizeChangedEventArgs args)
-	{
-		// TODO Uno specific: LayoutInformation.GetLayoutSlot(element) is currently inconsistent
-		// on some platforms, so construct the Rect from ActualSize. A non-zero Point
-		// is not required for this case.
-		var expanderContentClip = sender as Border;
-		var layoutSlot = new Rect(new Point(0, 0), expanderContentClip.ActualSize.ToSize());
-		expanderContentClip.Clip = new RectangleGeometry() { Rect = layoutSlot };
-	}
-#endif
 
 	private void OnContentSizeChanged(object sender, SizeChangedEventArgs args)
 	{
@@ -214,14 +181,4 @@ public partial class Expander : ContentControl
 		}
 	}
 
-	// Uno specific: We need to ensure events are subscribed/unsubscribed on load/unload to avoid memory leaks.
-	private void Expander_Loaded(object sender, RoutedEventArgs e)
-	{
-		if (_eventSubscriptions.Disposable is null)
-		{
-			OnApplyTemplate();
-		}
-	}
-
-	private void Expander_Unloaded(object sender, RoutedEventArgs e) => _eventSubscriptions.Disposable = null;
 }
