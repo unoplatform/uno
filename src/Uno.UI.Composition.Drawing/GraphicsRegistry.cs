@@ -207,6 +207,7 @@ internal static class GraphicsRegistry
 				"No host graphics context factory set. The host must set GraphicsRegistry.ContextFactory before initializing.");
 
 		var attempts = new StringBuilder();
+		List<Exception> failures = new();
 		foreach (var (backend, kind, isDisabled) in EnumerateCandidates(backends, DisabledContextKinds))
 		{
 			if (isDisabled)
@@ -225,6 +226,7 @@ internal static class GraphicsRegistry
 			catch (Exception e)
 			{
 				attempts.Append($"\n  - {backend.GetType().Name}/{kind}: context factory threw ({e.GetType().Name}: {e.GetBaseException().Message})");
+				failures.Add(e);
 				if (typeof(GraphicsRegistry).Log().IsEnabled(LogLevel.Debug))
 				{
 					typeof(GraphicsRegistry).Log().Debug($"Graphics negotiation: {backend.GetType().Name}/{kind} context factory threw: {e}");
@@ -269,12 +271,19 @@ internal static class GraphicsRegistry
 			catch (Exception e)
 			{
 				attempts.Append($"\n  - {backend.GetType().Name}/{kind}: CreateGraphics threw ({e.GetType().Name}: {e.Message})");
+				failures.Add(e);
 				context.Dispose();
 			}
 		}
 
 		throw new InvalidOperationException(
-			$"No registered backend could initialize on this host. Attempts:{attempts}");
+			$"No registered backend could initialize on this host. Attempts:{attempts}",
+			failures.Count switch
+			{
+				0 => null,
+				1 => failures[0],
+				_ => new AggregateException(failures),
+			});
 	}
 
 	// The closed kind → device-context narrowing: hand the typed provider the context's device face. The `?.`
