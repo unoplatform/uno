@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Devices.Input;
+using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 
 namespace Uno.UI.Tests.Windows_UI_Input;
@@ -44,6 +45,46 @@ public class Given_InjectedInputState
 		for (var i = 1; i < frameIds.Count; i++)
 		{
 			Assert.IsTrue(frameIds[i] > frameIds[i - 1], $"FrameId of frame {i} ({frameIds[i]}) is not greater than the previous one ({frameIds[i - 1]})");
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26163")]
+	public void When_Mouse_Frame_Injected_Then_Following_Touch_FrameIds_Are_Greater()
+	{
+		// Mouse, touch and pen share one counter: UIElement._lastDragStartFrameId is shared by all pointer types,
+		// so a touch frame injected after a mouse frame must not get a lower id.
+		var mouseState = new InjectedInputState(PointerDeviceType.Mouse);
+		var mouseIds = new List<uint>();
+		foreach (var options in new[] { InjectedInputMouseOptions.LeftDown, InjectedInputMouseOptions.Move, InjectedInputMouseOptions.LeftUp })
+		{
+			var mouseArgs = new InjectedInputMouseInfo { MouseOptions = options }.ToEventArgs(mouseState, VirtualKeyModifiers.None);
+			mouseState.Update(mouseArgs);
+			mouseIds.Add(mouseArgs.CurrentPoint.FrameId);
+		}
+
+		var touchState = new InjectedInputState(PointerDeviceType.Touch);
+		var touchIds = new List<uint>();
+		foreach (var options in new[]
+		{
+			InjectedInputPointerOptions.New | InjectedInputPointerOptions.InRange | InjectedInputPointerOptions.InContact | InjectedInputPointerOptions.PointerDown,
+			InjectedInputPointerOptions.Update | InjectedInputPointerOptions.InRange | InjectedInputPointerOptions.InContact,
+			InjectedInputPointerOptions.PointerUp,
+		})
+		{
+			var touchArgs = new InjectedInputTouchInfo
+			{
+				PointerInfo = new InjectedInputPointerInfo { PointerId = 1, PointerOptions = options }
+			}.ToEventArgs(touchState);
+			touchState.Update(touchArgs);
+			touchIds.Add(touchArgs.CurrentPoint.FrameId);
+		}
+
+		var all = new List<uint>(mouseIds);
+		all.AddRange(touchIds);
+		for (var i = 1; i < all.Count; i++)
+		{
+			Assert.IsTrue(all[i] > all[i - 1], $"FrameId of frame {i} ({all[i]}) is not greater than the previous one ({all[i - 1]})");
 		}
 	}
 }

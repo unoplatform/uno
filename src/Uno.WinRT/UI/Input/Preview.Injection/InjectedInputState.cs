@@ -52,8 +52,8 @@ internal class InjectedInputState
 		FrameId = (uint)(Timestamp / 1000);
 	}
 
-	// Each injected frame gets a new, increasing, non-zero id: UIElement.OnDragStarting drops a drag whose FrameId
-	// is not above the last one, which starts at 0.
+	// Each injected frame gets a new, increasing id, like real input: per-frame dedup (`DragOperation.Moved`,
+	// `PointerCapture`) relies on it. Mouse, touch and pen share this counter.
 	internal static uint NextFrameId() => (uint)Interlocked.Increment(ref _lastFrameId);
 
 	public void Update(PointerEventArgs args)
