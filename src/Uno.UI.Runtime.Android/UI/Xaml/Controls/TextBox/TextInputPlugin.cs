@@ -60,17 +60,18 @@ internal sealed class TextInputPlugin
 		}
 
 		var physicalRect = GetPhysicalRect(textBox.Owner);
+		var offset = new int[2];
+		_view.GetLocationOnScreen(offset);
+		physicalRect = physicalRect.OffsetRect(offset[0], offset[1]);
 		_afm.NotifyViewEntered(_view, virtualId, new((int)physicalRect.Left, (int)physicalRect.Top, (int)physicalRect.Right, (int)physicalRect.Bottom));
 	}
 
-	private Windows.Foundation.Rect GetPhysicalRect(Control textBox)
+	// Bounds in physical pixels, relative to the render view.
+	private static Windows.Foundation.Rect GetPhysicalRect(Control textBox)
 	{
-		int[] offset = new int[2];
-		_view.GetLocationOnScreen(offset);
 		var transform = UIElement.GetTransform(from: textBox, to: null);
 		var logicalRect = transform.Transform(new Windows.Foundation.Rect(default, new Windows.Foundation.Size(textBox.Visual.Size.X, textBox.Visual.Size.Y)));
-		var physicalRect = logicalRect.LogicalToPhysicalPixels();
-		return physicalRect.OffsetRect(offset[0], offset[1]);
+		return logicalRect.LogicalToPhysicalPixels();
 	}
 
 	internal void NotifyViewExited(TextBoxCore textBox, int virtualId)
@@ -227,29 +228,62 @@ internal sealed class TextInputPlugin
 
 	internal void OnProvideAutofillVirtualStructure(ViewStructure? structure)
 	{
-#if false // Removing temporarily. We'll need to add it back.
+		if (structure?.AutofillId is not { } parentId)
+		{
+			return;
+		}
+
+		// Expose each live TextBox as a virtual child of the render view, so autofill services
+		// (Google, password managers) see fields like they did with native EditText controls.
 		var textBoxes = AndroidSkiaTextBoxNotificationsProviderSingleton.Instance.LiveTextBoxes;
-		var index = structure!.AddChildCount(textBoxes.Count);
-		var parentId = structure.AutofillId!;
-		for (int i = 0; i < textBoxes.Count; i++)
+		var index = structure.AddChildCount(textBoxes.Count);
+		for (var i = 0; i < textBoxes.Count; i++)
 		{
 			var textBox = textBoxes[i];
 			var child = structure.NewChild(index + i);
-			child!.SetAutofillId(parentId, textBox.GetHashCode());
-			child.SetDataIsSensitive(textBox is PasswordBox);
+			if (child is null)
+			{
+				continue;
+			}
 
-			// This is not really correct implementation.
-			// We cannot determine ourselves the autofill hints.
-			// Consider exposing a public API for the user to be able to specify this.
-			child.SetAutofillHints([textBox is PasswordBox ? "password" : "username"]);
+			// Must match the ids used by NotifyViewEntered/NotifyValueChanged and View.Autofill.
+			child.SetAutofillId(parentId, textBox.GetHashCode());
+			child.SetClassName("android.widget.EditText");
+			// User-entered text is sensitive (like a native EditText): stripped from fill requests, still sent for saving.
+			child.SetDataIsSensitive(true);
 			child.SetAutofillType(AutofillType.Text);
+			child.SetAutofillValue(AutofillValue.ForText(textBox.Text ?? string.Empty));
+			child.SetInputType((int)ConvertInputScope(textBox));
+			child.SetEnabled(textBox.Owner.IsEnabled && !textBox.IsReadOnly);
 			child.SetVisibility(ViewStates.Visible);
-			// Do we need child.Hint? How to set it?
 
-			var physicalRect = GetPhysicalRect(textBox);
+			if (GetAutofillHints(textBox) is { } hints)
+			{
+				child.SetAutofillHints(hints);
+			}
+
+			var physicalRect = GetPhysicalRect(textBox.Owner);
 			child.SetDimens((int)physicalRect.Left, (int)physicalRect.Top, 0, 0, (int)physicalRect.Width, (int)physicalRect.Height);
 		}
-#endif
+	}
+
+	// Skia has no public API to specify autofill hints yet, so they are derived from the
+	// password mode and input scope (same approach as the iOS TextContentType).
+	// Unknown fields get no hint and are left to the autofill service heuristics (hint, inputType).
+	private static string[]? GetAutofillHints(TextBoxCore textBox)
+	{
+		if (textBox.IsPassword)
+		{
+			return [View.AutofillHintPassword];
+		}
+
+		return textBox.InputScope.GetFirstInputScopeNameValue() switch
+		{
+			InputScopeNameValue.EmailNameOrAddress or InputScopeNameValue.EmailSmtpAddress => [View.AutofillHintEmailAddress],
+			InputScopeNameValue.TelephoneNumber => [View.AutofillHintPhone],
+			InputScopeNameValue.PersonalFullName => [View.AutofillHintName],
+			_ => null,
+		};
 	}
 
 	internal static InputTypes ConvertInputScope(IImeSessionHost host)
