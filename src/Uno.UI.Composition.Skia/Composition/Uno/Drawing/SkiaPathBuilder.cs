@@ -81,7 +81,8 @@ internal sealed class SkiaPathBuilder : IPathBuilder, IPrimitiveGeometryBuilder
 		// The builder is reused rather than reallocated; Detach hands over an independent path.
 		var geometry = new SkiaGeometrySource2D(_builder.Detach());
 		_builder.Reset();
-		FillRule = GeometryFillRule.NonZero;
+		// A reset builder fills by winding already, and setting it costs a native round trip per path.
+		_fillRule = GeometryFillRule.NonZero;
 		return geometry;
 	}
 }
