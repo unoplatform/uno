@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using AwesomeAssertions;
 
 namespace Uno.UI.Tasks.Tests;
@@ -355,17 +354,7 @@ public class Given_NuGetOverrideTasks
 			return Run("_UnoOverrideTasksPackage", $"-p:TargetDir={outputFolder}", $"-p:TargetName=Uno.UI.Tasks.{suffix}", $"-p:TargetFileName=Uno.UI.Tasks.{suffix}.dll");
 		}
 
-		public void Dispose()
-		{
-			try
-			{
-				Directory.Delete(_directory, recursive: true);
-			}
-			catch (Exception e) when (e is IOException or UnauthorizedAccessException)
-			{
-				// Leaving a temp folder behind must never fail a test run.
-			}
-		}
+		public void Dispose() => DotnetMSBuild.TryDeleteDirectory(_directory);
 
 		private (int ExitCode, string Output) Run(string target, params string[] properties)
 		{
@@ -379,30 +368,14 @@ public class Given_NuGetOverrideTasks
 
 			string[] arguments =
 			[
-				"msbuild", projectPath, "-nologo", "-nodeReuse:false", "-tl:off", $"-flp:LogFile={logPath};Verbosity=normal", $"-t:{target}",
+				projectPath, "-tl:off", $"-flp:LogFile={logPath};Verbosity=normal", $"-t:{target}",
 				"-p:UnoNugetOverrideVersion=1.2.3-override", $"-p:_UnoOverriddenTasksPackageFolder={PackageFolder}",
 				.. properties,
 			];
-			var startInfo = new ProcessStartInfo("dotnet")
-			{
-				RedirectStandardOutput = true,
-				RedirectStandardError = true,
-				UseShellExecute = false,
-				WorkingDirectory = _directory,
-			};
-			foreach (var argument in arguments)
-			{
-				startInfo.ArgumentList.Add(argument);
-			}
-			startInfo.Environment["MSBUILDDISABLENODEREUSE"] = "1";
+			var result = DotnetMSBuild.Run(RepositoryPaths.Root, arguments);
 
-			using var process = Process.Start(startInfo)!;
-			var stdout = process.StandardOutput.ReadToEndAsync();
-			var stderr = process.StandardError.ReadToEndAsync();
-			process.WaitForExit();
-
-			var log = File.Exists(logPath) ? File.ReadAllText(logPath) : stdout.Result + stderr.Result;
-			return (process.ExitCode, log);
+			var log = File.Exists(logPath) ? File.ReadAllText(logPath) : result.Output;
+			return (result.ExitCode, log);
 		}
 
 		private string PathOf(string file) => Path.Combine(PackageFolder, "buildTransitive", file);
