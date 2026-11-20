@@ -317,9 +317,13 @@ The WASM specific `Uno.Storage.Pickers.FileSystemAccessApiInformation` API repor
 * `IsOpenPickerSupported` - `FileOpenPicker` can pick files, with the File System Access API or the upload picker.
 * `IsSavePickerSupported` - `FileSavePicker` can pick a file, with the File System Access API or the download picker.
 * `AreFilePickersSupported` - both `FileOpenPicker` and `FileSavePicker` can pick files.
-* `IsFolderPickerSupported` - the File System Access API folder picker is available. `FolderPicker` has no other implementation.
+* `IsNativeOpenPickerSupported` - the browser has the File System Access API file open picker.
+* `IsNativeSavePickerSupported` - the browser has the File System Access API file save picker.
+* `IsFolderPickerSupported` - the browser has the File System Access API folder picker. `FolderPicker` has no other implementation, so unlike the file picker checks above, this one is about the File System Access API.
 
 The download and upload pickers don't need the File System Access API, so with a configuration that includes them, `IsOpenPickerSupported` and `IsSavePickerSupported` are `true` in browsers without it. A picker that is not supported throws `NotSupportedException`.
+
+`IsNativeOpenPickerSupported` and `IsNativeSavePickerSupported` don't depend on `WasmConfiguration`. Use them to decide what to offer before picking: a file from the File System Access API save picker can be written again in place, while each `CompleteUpdatesAsync` of a download picker file starts a new download. With the default `FileSystemAccessApiWithFallback` configuration, `FileSavePicker` uses the download picker when `IsNativeSavePickerSupported` is `false`, so offer only **Save As** then. With `DownloadUpload`, saving always uses the download picker.
 
 ```csharp
 #if __WASM__
@@ -336,6 +340,11 @@ if (FileSystemAccessApiInformation.IsSavePickerSupported)
 if (FileSystemAccessApiInformation.AreFilePickersSupported)
 {
     // Both FileOpenPicker and FileSavePicker can pick files.
+}
+
+if (!FileSystemAccessApiInformation.IsNativeSavePickerSupported)
+{
+    // Saved files are downloaded, offer only Save As.
 }
 
 if (FileSystemAccessApiInformation.IsFolderPickerSupported)

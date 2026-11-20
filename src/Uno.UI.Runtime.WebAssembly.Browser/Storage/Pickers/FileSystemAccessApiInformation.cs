@@ -22,6 +22,21 @@ public static class FileSystemAccessApiInformation
 	public static bool IsSavePickerSupported => FileSavePicker.IsSupported();
 
 	/// <summary>
+	/// Checks whether the browser has the File System Access API file open picker, whatever the current
+	/// <see cref="WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration"/>.
+	/// </summary>
+	/// <returns>A value indicating whether the picker is supported.</returns>
+	public static bool IsNativeOpenPickerSupported => FileOpenPicker.IsNativePickerSupported();
+
+	/// <summary>
+	/// Checks whether the browser has the File System Access API file save picker, whatever the current
+	/// <see cref="WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration"/>.
+	/// A file it picks can be written again in place, while each commit of a download picker file is a new download.
+	/// </summary>
+	/// <returns>A value indicating whether the picker is supported.</returns>
+	public static bool IsNativeSavePickerSupported => FileSavePicker.IsNativePickerSupported();
+
+	/// <summary>
 	/// Checks whether both <see cref="FileOpenPicker"/> and <see cref="FileSavePicker"/> can pick files under the current
 	/// <see cref="WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration"/>.
 	/// </summary>

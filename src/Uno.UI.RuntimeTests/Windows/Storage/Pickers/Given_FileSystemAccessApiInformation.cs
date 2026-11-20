@@ -59,6 +59,26 @@ public class Given_FileSystemAccessApiInformation
 		}
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24130")]
+	[DataRow("FileSystemAccessApiWithFallback", "IsNativeSavePickerSupported", "showSaveFilePicker")]
+	[DataRow("FileSystemAccessApiWithFallback", "IsNativeOpenPickerSupported", "showOpenFilePicker")]
+	[DataRow("DownloadUpload", "IsNativeSavePickerSupported", "showSaveFilePicker")]
+	[DataRow("DownloadUpload", "IsNativeOpenPickerSupported", "showOpenFilePicker")]
+	public void When_Native_Support_Is_Checked_Then_It_Follows_The_Browser_Whatever_The_Configuration(string configuration, string property, string nativePicker)
+	{
+		var previousConfiguration = SetWasmConfiguration(configuration);
+
+		try
+		{
+			Assert.AreEqual(InvokeJS($"typeof {nativePicker}") == "function", GetSupport(property));
+		}
+		finally
+		{
+			SetWasmConfiguration(previousConfiguration);
+		}
+	}
+
 	// Safari 15.2 to 18 has an origin-private file system without createWritable.
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24130")]
