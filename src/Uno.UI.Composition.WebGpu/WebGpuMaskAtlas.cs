@@ -8,12 +8,10 @@ using Silk.NET.WebGPU;
 namespace Uno.UI.Composition.WebGpu;
 
 /// <summary>
-/// The device's one store for coverage masks: glyph and fill entries cached under a key, masks owned by a cached
-/// recording, masks drawn for one frame only, and blurred shadows. Entries differ only in who frees their slot: a
-/// recording when it is released (<see cref="Free"/>), the next frame start (<see cref="FreeNextFrame"/>), or the
-/// idle sweep (<see cref="HoldForCache"/>). Every entry is a slot on a shared page: pages are pooled by texture format
-/// and size, regular masks on <see cref="Size"/> pages and anything bigger on larger ones, so a frame's bakes batch per
-/// page whatever their lifetime or size.
+/// The device's one cache of coverage masks (fills, glyphs, clips, blurred shadows). Every mask is looked up by the key
+/// of what it rasterizes and baked into a slot on a miss; pages are pooled by format and size and the pools grow as
+/// needed. The cache holds one reference to each entry and the idle sweep drops it, while a recording that uses an
+/// entry holds its own until released. A mask seen in one frame only is swept within a few frames.
 /// </summary>
 internal sealed unsafe class WebGpuMaskAtlas
 {
@@ -32,15 +30,6 @@ internal sealed unsafe class WebGpuMaskAtlas
 	/// </summary>
 	public const int MaxArea = 256 * 256;
 
-	/// <summary>
-	/// Regular pages beyond which a keyed entry is refused rather than opening another. Keyed entries are the cache: a
-	/// transform that animates mints a fresh key every frame, so without a ceiling the cache grows without bound.
-	/// </summary>
-	public const int MaxPages = 8;
-
-	/// <summary>Regular pages beyond which a keyless mask goes on a large page instead; its owner bounds it, not the cache.</summary>
-	public const int MaxSharedPages = 32;
-
 	/// <summary>Frames an empty page is kept before its texture is destroyed.</summary>
 	public const int EmptyPageIdleFrames = 60;
 
@@ -58,9 +47,6 @@ internal sealed unsafe class WebGpuMaskAtlas
 	/// its final device orientation.
 	/// </summary>
 	internal readonly record struct Key(long Shape, int M11, int M12, int M21, int M22, int PhaseX, int PhaseY, int W, int H, int Extra = 0);
-
-	/// <summary>Too big for a regular page: such an entry goes on a large page.</summary>
-	public static bool IsBig(int w, int h) => w > MaxDim || h > MaxDim || w * h > MaxArea;
 
 	/// <summary>A reserved region. Origin is the device-space corner the entry was rasterized against.</summary>
 	internal sealed record Slot(int X, int Y, int W, int H, float OriginX, float OriginY)
@@ -83,6 +69,9 @@ internal sealed unsafe class WebGpuMaskAtlas
 
 		/// <summary>Frame this entry was last used, for the cache's own reference (see <see cref="HoldForCache"/>).</summary>
 		public long LastUsed;
+
+		/// <summary>Distinct frames the entry was used in.</summary>
+		public int Uses;
 
 		/// <summary>True while the cache holds one of this slot's references.</summary>
 		public bool CacheHeld;
@@ -126,7 +115,6 @@ internal sealed unsafe class WebGpuMaskAtlas
 	private readonly Dictionary<Key, Slot> _slots = new();
 	private readonly List<Pool> _pools = new();
 	private readonly List<Page> _pages = new();
-	private readonly List<Slot> _frameSlots = new();
 	private long _frame;
 
 	public WebGpuMaskAtlas(WebGpuDevice d) => _d = d;
@@ -159,16 +147,62 @@ internal sealed unsafe class WebGpuMaskAtlas
 	}
 
 	/// <summary>
-	/// Reserves a w x h region for a keyed mask entry: on a regular page while the cache is under its ceiling, or on a
-	/// large page when it is too big for one. Null when the cache is full.
+	/// The entry for <paramref name="key"/>: the cached one, or a fresh w x h slot the caller bakes into
+	/// (<paramref name="fresh"/>). The cache holds a reference either way; a recording that keeps the entry
+	/// <see cref="Retain"/>s its own.
 	/// </summary>
-	public Slot? Allocate(in Key key, int w, int h, float originX, float originY)
+	public Slot Acquire(in Key key, int w, int h, float originX, float originY, out bool fresh)
 	{
-		if (w <= 0 || h <= 0 || w > MaxPageSize || h > MaxPageSize) { return null; }
-		var slot = IsBig(w, h)
-			? Reserve(PoolFor(_d.ColorFormat, MaskPageUsage, PageSizeFor(w, h)), w, h, w, h, pageCap: int.MaxValue)
-			: Reserve(PoolFor(_d.ColorFormat, MaskPageUsage, Size), w, h, w, h, MaxPages);
-		return slot is null ? null : Keep(slot with { OriginX = originX, OriginY = originY }, key);
+		if (TryGet(key, out var hit))
+		{
+			Use(hit);
+			fresh = false;
+			return hit;
+		}
+		var slot = Reserve(PoolFor(_d.ColorFormat, MaskPageUsage, PageSizeFor(w, h)), w, h, w, h)
+			?? throw new InvalidOperationException($"WebGPU could not place a {w}x{h} mask (out of GPU memory, or the device was lost).");
+		fresh = true;
+		return Insert(slot with { OriginX = originX, OriginY = originY }, key);
+	}
+
+	/// <summary>
+	/// Entries for all of <paramref name="keys"/> on ONE page, since a clip's masks bind as one texture: the cached ones
+	/// when they already share a page, else fresh slots for all of them (<paramref name="fresh"/>), on the smallest page
+	/// size that holds them together.
+	/// </summary>
+	public void AcquireGroup(Key[] keys, (int W, int H)[] sizes, Vector2[] origins, Slot[] slots, out bool fresh)
+	{
+		Page? shared = null;
+		var hits = true;
+		for (var i = 0; i < keys.Length && hits; i++)
+		{
+			hits = TryGet(keys[i], out slots[i]) && (shared ??= slots[i].Owner) == slots[i].Owner;
+		}
+		if (hits)
+		{
+			foreach (var s in slots) { Use(s); }
+			fresh = false;
+			return;
+		}
+
+		long area = 0;
+		int maxEdge = 0;
+		foreach (var (w, h) in sizes)
+		{
+			area += (long)w * h;
+			maxEdge = Math.Max(maxEdge, Math.Max(w, h));
+		}
+		// From the smallest page that could hold the group (with room for packing losses) upwards.
+		for (var size = PageSizeFor(maxEdge, maxEdge); ; size *= 2)
+		{
+			if (area * 3 / 2 <= (long)size * size && TryReserveGroup(PoolFor(_d.ColorFormat, MaskPageUsage, size), sizes, slots)) { break; }
+			if (size >= MaxPageSize)
+			{
+				throw new InvalidOperationException($"WebGPU could not place {sizes.Length} clip masks on one {MaxPageSize}px page.");
+			}
+		}
+		for (var i = 0; i < keys.Length; i++) { slots[i] = Insert(slots[i] with { OriginX = origins[i].X, OriginY = origins[i].Y }, keys[i]); }
+		fresh = true;
 	}
 
 	/// <summary>
@@ -178,66 +212,39 @@ internal sealed unsafe class WebGpuMaskAtlas
 	public Slot AllocateShadow(in Key key, int w, int h, int regionW, int regionH, float originX, float originY)
 	{
 		var pool = PoolFor(WebGpuDevice.DefaultColorFormat, ShadowPageUsage, PageSizeFor(regionW, regionH));
-		var slot = Reserve(pool, regionW, regionH, w, h, int.MaxValue)
+		var slot = Reserve(pool, regionW, regionH, w, h)
 			?? throw new InvalidOperationException($"WebGPU could not place a {regionW}x{regionH} shadow (out of GPU memory, or the device was lost).");
-		return Keep(slot with { OriginX = originX, OriginY = originY }, key);
+		return Insert(slot with { OriginX = originX, OriginY = originY }, key);
 	}
 
-	private Slot Keep(Slot slot, in Key key)
+	// A fresh slot becomes the key's entry, its one reference held by the cache.
+	private Slot Insert(Slot slot, in Key key)
 	{
 		slot = slot with { Key = key, Keyed = true };
 		_slots[key] = slot;
+		HoldForCache(slot, _frame);
+		slot.Uses = 1;
 		return slot;
 	}
 
-	/// <summary>A w x h region for a mask nobody looks up: on a regular page when one has room, else on a large page.</summary>
-	public Slot AllocateKeyless(int w, int h)
+	// A hit: counted for the sweep, and held by the cache again if the sweep had let it go while a recording kept it.
+	private void Use(Slot slot)
 	{
-		var regular = PageSizeFor(w, h) == Size ? Reserve(PoolFor(_d.ColorFormat, MaskPageUsage, Size), w, h, w, h, MaxSharedPages) : null;
-		return regular
-			?? Reserve(PoolFor(_d.ColorFormat, MaskPageUsage, Math.Max(2 * Size, PageSizeFor(w, h))), w, h, w, h, int.MaxValue)
-			?? throw new InvalidOperationException($"WebGPU could not place a {w}x{h} mask (out of GPU memory, or the device was lost).");
-	}
-
-	/// <summary>
-	/// Regions for all of <paramref name="sizes"/> on ONE page, since a clip's masks bind as one texture: a regular page
-	/// when they fit one together, else a large page sized for them.
-	/// </summary>
-	public void AllocateKeylessGroup((int W, int H)[] sizes, Slot[] slots)
-	{
-		var regular = PoolFor(_d.ColorFormat, MaskPageUsage, Size);
-		var fitsRegular = true;
-		long area = 0;
-		int maxEdge = 0;
-		foreach (var (w, h) in sizes)
+		NoteUse(slot, _frame);
+		if (!slot.CacheHeld)
 		{
-			fitsRegular &= PageSizeFor(w, h) == Size;
-			area += (long)w * h;
-			maxEdge = Math.Max(maxEdge, Math.Max(w, h));
-		}
-		if (fitsRegular && TryReserveGroup(regular, sizes, slots, MaxSharedPages)) { return; }
-
-		// Large pages, from the smallest that could hold the group (with room for packing losses) upwards.
-		var edge = Math.Max(maxEdge, (int)Math.Ceiling(Math.Sqrt(area * 1.5)));
-		for (var size = PageSizeFor(edge, edge); ; size *= 2)
-		{
-			size = Math.Max(size, 2 * Size);
-			if (TryReserveGroup(PoolFor(_d.ColorFormat, MaskPageUsage, size), sizes, slots, int.MaxValue)) { return; }
-			if (size >= MaxPageSize)
-			{
-				throw new InvalidOperationException($"WebGPU could not place {sizes.Length} clip masks on one {MaxPageSize}px page.");
-			}
+			slot.RefCount++;
+			HoldForCache(slot, _frame);
 		}
 	}
 
-	private bool TryReserveGroup(Pool pool, (int W, int H)[] sizes, Slot[] slots, int pageCap)
+	private bool TryReserveGroup(Pool pool, (int W, int H)[] sizes, Slot[] slots)
 	{
 		foreach (var page in pool.Pages)
 		{
 			if (TryPlaceAll(page, sizes, slots)) { return true; }
 		}
-		if (pool.Pages.Count >= pageCap || AddPage(pool) is not { } fresh) { return false; }
-		return TryPlaceAll(fresh, sizes, slots);
+		return AddPage(pool) is { } fresh && TryPlaceAll(fresh, sizes, slots);
 	}
 
 	// All of them on this page, or none.
@@ -260,15 +267,14 @@ internal sealed unsafe class WebGpuMaskAtlas
 		return true;
 	}
 
-	// A region on the pool's pages, opening another page while under the cap.
-	private Slot? Reserve(Pool pool, int regionW, int regionH, int w, int h, int pageCap)
+	// A region on the pool's pages, opening another page when they are all full.
+	private Slot? Reserve(Pool pool, int regionW, int regionH, int w, int h)
 	{
 		foreach (var page in pool.Pages)
 		{
 			if (TryTake(page, regionW, regionH, w, h) is { } slot) { return slot; }
 		}
-		if (pool.Pages.Count >= pageCap || AddPage(pool) is not { } fresh) { return null; }
-		return TryTake(fresh, regionW, regionH, w, h);
+		return AddPage(pool) is { } fresh ? TryTake(fresh, regionW, regionH, w, h) : null;
 	}
 
 	private static Slot? TryTake(Page page, int regionW, int regionH, int w, int h)
@@ -317,47 +323,28 @@ internal sealed unsafe class WebGpuMaskAtlas
 	/// <summary>Frames an entry may go unused before the cache drops its reference.</summary>
 	public const int CacheIdleFrames = 180;
 
-	/// <summary>An entry on a large page holds a lot of texture, so once it stops recurring it is let go soon.</summary>
+	/// <summary>An entry on a large page holds a lot of texture, so once it goes idle it is let go soon.</summary>
 	public const int LargeIdleFrames = 30;
 
+	/// <summary>An entry used in a single frame (moving or animated content) is let go almost at once.</summary>
+	public const int OnceIdleFrames = 2;
+
 	private readonly List<Slot> _cacheHeld = new();
-	private readonly List<Key> _stale = new();
-
-	private readonly Dictionary<Key, (long Frame, int Run)> _requests = new();
-
-	/// <summary>Consecutive frames a per-frame op's key must recur before the cache admits it.</summary>
-	public const int AdmitRun = 8;
-
-	/// <summary>
-	/// Whether a per-frame op's key has recurred for <see cref="AdmitRun"/> consecutive frames: static content pays a
-	/// few per-frame bakes at first sight, moving content never enters the cache.
-	/// </summary>
-	public bool Recurring(in Key key, long frame)
-	{
-		var run = _requests.TryGetValue(key, out var last) && last.Frame == frame - 1 ? last.Run + 1 : 1;
-		_requests[key] = (frame, run);
-		return run >= AdmitRun;
-	}
 
 	/// <summary>Records that an entry was used this frame, so the idle sweep keeps it.</summary>
 	public void NoteUse(Slot slot, long frame)
 	{
-		if (slot is not null) { slot.LastUsed = frame; }
+		if (slot is null || slot.LastUsed == frame) { return; }
+		slot.LastUsed = frame;
+		slot.Uses++;
 	}
 
-	/// <summary>Gives the cache a reference to an entry baked for a per-frame op; the idle sweep drops it.</summary>
-	public void HoldForCache(Slot slot, long frame)
+	// The cache's reference to an entry; the idle sweep drops it.
+	private void HoldForCache(Slot slot, long frame)
 	{
-		if (slot is null || slot.CacheHeld) { return; }
 		slot.CacheHeld = true;
 		slot.LastUsed = frame;
 		_cacheHeld.Add(slot);
-	}
-
-	/// <summary>Frees a slot a per-frame op used, at the next frame start.</summary>
-	public void FreeNextFrame(Slot slot)
-	{
-		lock (_frameSlots) { _frameSlots.Add(slot); }
 	}
 
 	/// <summary>Takes an additional reference for a recording that reuses an entry it did not bake.</summary>
@@ -379,17 +366,11 @@ internal sealed unsafe class WebGpuMaskAtlas
 	}
 
 	/// <summary>
-	/// Frame start: frees last frame's per-frame slots, drops the cache's idle references, and destroys the pages that
-	/// stayed empty, keeping one regular page.
+	/// Frame start: drops the cache's idle references, and destroys the pages that stayed empty, keeping one regular page.
 	/// </summary>
 	public void BeginFrame(long frame)
 	{
 		_frame = frame;
-		lock (_frameSlots)
-		{
-			foreach (var s in _frameSlots) { Free(s); }
-			_frameSlots.Clear();
-		}
 		SweepCache(frame);
 
 		foreach (var pool in _pools)
@@ -408,17 +389,12 @@ internal sealed unsafe class WebGpuMaskAtlas
 
 	private void SweepCache(long frame)
 	{
-		if ((frame & 63) == 0)
-		{
-			foreach (var kv in _requests) { if (kv.Value.Frame < frame - 2) { _stale.Add(kv.Key); } }
-			foreach (var k in _stale) { _requests.Remove(k); }
-			_stale.Clear();
-		}
 		for (var i = _cacheHeld.Count - 1; i >= 0; i--)
 		{
 			var slot = _cacheHeld[i];
 			if (!slot.CacheHeld) { _cacheHeld.RemoveAt(i); continue; }
-			if (frame - slot.LastUsed <= (slot.Owner is { W: > Size } ? LargeIdleFrames : CacheIdleFrames)) { continue; }
+			var idle = slot.Uses <= 1 ? OnceIdleFrames : slot.Owner is { W: > Size } ? LargeIdleFrames : CacheIdleFrames;
+			if (frame - slot.LastUsed <= idle) { continue; }
 			slot.CacheHeld = false;
 			_cacheHeld.RemoveAt(i);
 			// A recording that also uses the entry holds its own reference, so this reclaims only when the cache was the last holder.
@@ -439,6 +415,14 @@ internal sealed unsafe class WebGpuMaskAtlas
 		_pages.Clear();
 		_pools.Clear();
 	}
+
+	/// <summary>
+	/// The key of a mask baked as given: the outline at <paramref name="scale"/>, shifted by <paramref name="shift"/>
+	/// pixels, in a w x h slot. For masks <see cref="TryKey"/> refuses; it can never equal one of its keys.
+	/// </summary>
+	public static Key ExactKey(long shape, Vector2 scale, Vector2 shift, int w, int h, bool evenOdd)
+		=> new(shape, int.MinValue, BitConverter.SingleToInt32Bits(scale.X), BitConverter.SingleToInt32Bits(scale.Y), int.MinValue,
+			BitConverter.SingleToInt32Bits(shift.X), BitConverter.SingleToInt32Bits(shift.Y), w, h, evenOdd ? 2 : 1);
 
 	/// <summary>
 	/// Builds the cache key for a fill, or returns false when it is not atlasable: rotated/skewed transforms

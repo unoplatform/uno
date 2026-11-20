@@ -61,14 +61,14 @@ internal sealed unsafe partial class WebGpuEffects
 		size = new Vector2(w, h);
 
 		// Every shadow of the frame bakes on the shadow sheet for its blur radius, so N shadows cost one bake and one
-		// blur pyramid, not N. One whose key has held for a run of frames (see Recurring) is static: its blurred slot
-		// is copied out of the sheet into an entry of its own, at the pyramid's top-level size, and drawn from there.
+		// blur pyramid, not N. A keyed one's blurred slot is then copied out of the sheet into its cache entry, at the
+		// pyramid's top-level size, and drawn from there.
 		float sigma = MathF.Max(sh.SigmaX, sh.SigmaY);
 		if (TryReserveShadowSlot(sigma, w, h, out var sheet, out var sx, out var sy))
 		{
 			_cov.AddBake(sheet.Bake, sx, sy, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - sh.Offset, Vector2.One, sh.EvenOdd);
 			ShadowSlotsBaked++;
-			if (!(keyed && _d.Atlas.Recurring(key, _d.FrameSeq)))
+			if (!keyed)
 			{
 				uv = new Vector4(sx, sy, sx + w, sy + h) / WebGpuCoverage.SheetSize;
 				return sheet.Blurred;
@@ -80,7 +80,6 @@ internal sealed unsafe partial class WebGpuEffects
 			// The entry samples its blurred w x h, which at the top level is w/step x h/step of the tw x th it holds.
 			var page = slot.Owner;
 			slot.Uv = new Vector4((float)slot.X / page.W, (float)slot.Y / page.H, (slot.X + (float)w / step) / page.W, (slot.Y + (float)h / step) / page.H);
-			_d.Atlas.HoldForCache(slot, _d.FrameSeq);
 			_pendingCopies.Add(((nint)sheet.Blurred, sx / step, sy / step, (nint)page.Texture, slot.X, slot.Y, tw, th));
 			uv = slot.Uv;
 			return slot.Owner.View;
