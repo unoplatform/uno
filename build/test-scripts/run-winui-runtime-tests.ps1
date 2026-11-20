@@ -8,6 +8,18 @@ function Assert-ExitCodeIsZero()
 	}
 }
 
+function Write-CrashDetails($since)
+{
+    # The exit code alone doesn't say what crashed, and the lane collects no dumps.
+    $events = Get-WinEvent -FilterHashtable @{ LogName = 'Application'; ProviderName = 'Application Error'; Id = 1000; StartTime = $since } -ErrorAction SilentlyContinue
+    if ($events) {
+        $events | ForEach-Object { Write-Host $_.Message }
+    }
+    else {
+        Write-Host "No Application Error event was logged for this exit."
+    }
+}
+
 $UNO_TESTS_FAILED_LIST="$env:BUILD_SOURCESDIRECTORY\build\uitests-failure-results\failed-tests-winui-runtimetests.txt"
 $TEST_RESULTS_FILE="$env:BUILD_SOURCESDIRECTORY\build\winui-runtime-tests-results.xml"
 
@@ -43,40 +55,58 @@ $exeAlias = "unosamplesapp.exe"
 
 Write-Host "Using app execution alias: $exeAlias"
 
-# Launch the app with runtime test arguments
-Write-Host "Launching app with runtime tests..."
+# A crash in native WinUI loses every result, and has landed on different tests, so it gets one more run.
+# A crash that repeats, or a run that hangs, still fails.
+$maxAttempts = 2
 
-$process = Start-Process -FilePath $exeAlias -ArgumentList $runtimeTestArgs -PassThru -NoNewWindow
+for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+    # Launch the app with runtime test arguments
+    Write-Host "Launching app with runtime tests (attempt $attempt of $maxAttempts)..."
 
-Write-Host "App launched with PID: $($process.Id)"
-Write-Host "Waiting for test results..."
+    $attemptStart = Get-Date
+    $process = Start-Process -FilePath $exeAlias -ArgumentList $runtimeTestArgs -PassThru -NoNewWindow
 
-# Wait for the test results file with timeout
-$timeout = 600 # 10 minutes
-$elapsed = 0
-$checkInterval = 5
+    Write-Host "App launched with PID: $($process.Id)"
+    Write-Host "Waiting for test results..."
 
-while ($elapsed -lt $timeout) {
-    # Check if process has exited
-    if ($process.HasExited) {
-        Write-Host "App process has exited with code: $($process.ExitCode)"
-        break
+    # Wait for the test results file with timeout
+    $timeout = 600 # 10 minutes
+    $elapsed = 0
+    $checkInterval = 5
+
+    while ($elapsed -lt $timeout) {
+        # Check if process has exited
+        if ($process.HasExited) {
+            Write-Host "App process has exited with code: $($process.ExitCode)"
+            break
+        }
+
+        if (Test-Path $TEST_RESULTS_FILE) {
+            Write-Host "Test results file found!"
+            # Wait a bit more for the app to finish writing and exit cleanly
+            Start-Sleep -Seconds 5
+            break
+        }
+
+        Start-Sleep -Seconds $checkInterval
+        $elapsed += $checkInterval
+        Write-Host "Waiting for test results... ($elapsed seconds elapsed)"
     }
 
     if (Test-Path $TEST_RESULTS_FILE) {
-        Write-Host "Test results file found!"
-        # Wait a bit more for the app to finish writing and exit cleanly
-        Start-Sleep -Seconds 5
         break
     }
 
-    Start-Sleep -Seconds $checkInterval
-    $elapsed += $checkInterval
-    Write-Host "Waiting for test results... ($elapsed seconds elapsed)"
-}
-
-if (-not (Test-Path $TEST_RESULTS_FILE)) {
     Write-Host "Test results file was not created within the timeout period"
+
+    if ($process.HasExited -and $process.ExitCode -ne 0) {
+        Write-CrashDetails $attemptStart
+
+        if ($attempt -lt $maxAttempts) {
+            Write-Host "##vso[task.logissue type=warning]The WinUI runtime tests app crashed with exit code $($process.ExitCode). Running the tests again."
+            continue
+        }
+    }
 
     # Try to get the app process logs if still running
     if (-not $process.HasExited) {

@@ -290,11 +290,17 @@ jobs:
     NuGetAuditMode: direct
 
   steps:
+  # Versions come from nbgv-cache, so no history is needed. A full fetch on a slow agent can use up the job's timeout.
+  - checkout: self
+    fetchDepth: 1
+    fetchTags: false
+    retryCountOnTaskFailure: 3
+
   - task: DownloadBuildArtifacts@0
     inputs:
       artifactName: 'nuget-packages'
 
-  # Install the .NET 10 SDK in the default system location so 
+  # Install the .NET 10 SDK in the default system location so
   # the devserver tests can find them.
   - task: UseDotNet@2
     displayName: Install .NET 10 SDK
@@ -368,6 +374,12 @@ jobs:
     NuGetAuditMode: direct
 
   steps:
+  # Versions come from nbgv-cache, so no history is needed. A full fetch on a slow agent can use up the job's timeout.
+  - checkout: self
+    fetchDepth: 1
+    fetchTags: false
+    retryCountOnTaskFailure: 3
+
   - task: DownloadBuildArtifacts@0
     inputs:
       artifactName: 'nuget-packages'
