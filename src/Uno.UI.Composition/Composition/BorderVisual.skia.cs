@@ -138,12 +138,21 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 		if (_backgroundShape is { } backgroundShape)
 		{
-			session.Session.Save();
-			// it's necessary to clip the background because not all backgrounds are simple rounded rectangles with a solid color.
-			// E.g. effect brushes will draw outside the intended area if they're not clipped.
-			_backgroundClip?.ApplyClip(this, session.Session);
+			// It's necessary to clip the background because not all backgrounds are simple rounded rectangles with a solid
+			// color: e.g. effect brushes would draw outside the intended area. A solid one filled as the very rounded
+			// rect it is clipped to can't, so it skips the clip.
+			var clipped = _backgroundClip is not null
+				&& !(backgroundShape.FillBrush is CompositionColorBrush && backgroundShape.RoundedRectFillHint is not null);
+			if (clipped)
+			{
+				session.Session.Save();
+				_backgroundClip!.ApplyClip(this, session.Session);
+			}
 			backgroundShape.Render(in session);
-			session.Session.Restore();
+			if (clipped)
+			{
+				session.Session.Restore();
+			}
 		}
 
 		base.Paint(in session);
