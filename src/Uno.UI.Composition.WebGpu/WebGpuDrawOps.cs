@@ -201,6 +201,9 @@ internal sealed class WebGpuGeometryCache
 	public long StarvedBeforeEviction = -1;
 	// The command list this was built from, kept for the equality check that guards against a hash collision.
 	public List<WebGpuCommand> Src;
+	// The native memory of the recording this was built from, which its ops' clips and Src point into: held for as
+	// long as the entry, since a shared entry outlives the recording that built it.
+	public NativeArena SrcArena;
 	// Set by whichever path frees the entry for good. Its holders release on the UI or finalizer thread while the
 	// render thread evicts and sweeps, and two of them can each conclude they hold the last reference.
 	private int _released;
@@ -216,8 +219,9 @@ internal sealed class WebGpuGeometryCache
 			return false;
 		}
 
-		foreach (var st in Stamps) { device.DeferCompiledRelease(null, st.Owned); device.DeferSiteRelease(st.SiteBg, st.SiteSlot); }
+		foreach (var st in Stamps) { device.DeferCompiledRelease(null, st.Owned); device.DeferSiteRelease(st.SiteBg, st.SiteSlot); device.DeferNativeFree(st.TakeKept()); }
 		device.DeferCompiledRelease(Owned, null);
+		device.DeferArenaRelease(System.Threading.Interlocked.Exchange(ref SrcArena, null));
 		return true;
 	}
 }
@@ -240,6 +244,40 @@ internal sealed unsafe class StampSlot
 	public BindGroup* SiteBg;
 	/// <summary>Its ops were built independent of where the site sits, so a move can reuse them untouched.</summary>
 	public bool SiteOps;
+
+	// Clip holds the session clip it was stamped under, compared on every later replay. The session's entries live
+	// in the frame's recording, gone once that frame is, so the stamp keeps its own copy.
+	// Swapped atomically: the entry's final release (any thread) takes it while the render thread may be growing it.
+	private nint _kept;
+	private int _keptCapacity;
+
+	public ClipData Keep(in ClipData session, WebGpuDevice device)
+	{
+		var clip = session;
+		var n = session.Entries.Length;
+		if (n == 0)
+		{
+			return clip;
+		}
+		var kept = (ClipEntry*)_kept;
+		if (kept is null || n > _keptCapacity)
+		{
+			kept = (ClipEntry*)System.Runtime.InteropServices.NativeMemory.Alloc((nuint)(n * sizeof(ClipEntry)));
+			_keptCapacity = n;
+			device.DeferNativeFree(System.Threading.Interlocked.Exchange(ref _kept, (nint)kept));
+		}
+		session.Entries.Span.CopyTo(new Span<ClipEntry>(kept, n));
+		clip.Entries = new ClipEntries(kept, n);
+		return clip;
+	}
+
+	/// <summary>Hands the copy over for a deferred free, with the stamp.</summary>
+	public nint TakeKept()
+	{
+		Clip.Entries = default;
+		_keptCapacity = 0;
+		return System.Threading.Interlocked.Exchange(ref _kept, 0);
+	}
 }
 
 /// <summary>

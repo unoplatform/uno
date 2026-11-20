@@ -52,6 +52,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 
 	private Matrix4x4 _m = Matrix4x4.Identity;
 	private ClipData _clip = ClipData.None;
+
+	// Where this recording's clip entries live: freed with the recording.
+	private NativeArena Arena => _data.Arena ??= new NativeArena();
 	private float[] _pendingColorMatrix;   // active effect colour matrix, applied per DrawImage in the image shader
 	private readonly WebGpuRenderRecord _data = new();
 	private List<WebGpuCommand> _target;   // current emit target (root command list, or a layer's list)
@@ -213,7 +216,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 			Radii = radii,
 			RadiiY = radiiY,
 			Exclude = exclude,
-		});
+		}, Arena);
 	}
 
 	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect)
@@ -352,15 +355,14 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 				}
 			}
 			var keptCount = entries.Length - System.Numerics.BitOperations.PopCount(inertMask);
-			if (keptCount == 0) { clip.Entries = null; }
+			if (keptCount == 0) { clip.Entries = default; }
 			else if (keptCount < entries.Length)
 			{
-				var kept = new ClipEntry[keptCount];
+				clip.Entries = ClipEntries.Extend(Arena, default, keptCount, out var kept);
 				for (int i = 0, k = 0; i < entries.Length; i++)
 				{
 					if ((inertMask & (1UL << i)) == 0) { kept[k++] = entries[i]; }
 				}
-				clip.Entries = kept;
 			}
 		}
 		clip.ScissorInert = true;

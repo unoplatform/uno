@@ -78,9 +78,10 @@ internal static class Geo
 internal unsafe struct ClipData
 {
 	public Vector4 Aabb;    // device L,T,R,B scissor
-							// Every analytic clip in force, all ANDed per-fragment (clipCov). null/empty = none. Copy-on-write: each push
-							// allocates a fresh array so Save/Restore snapshots and sibling commands keep their own reference.
-	public ClipEntry[] Entries;
+							// Every analytic clip in force, all ANDed per-fragment (clipCov); empty = none. In the native arena of
+							// the recording (or frame) that made them, and never written once built, so a push copies the prefix and
+							// Save/Restore snapshots and sibling commands keep their own run.
+	public ClipEntries Entries;
 	// Every path clip in force, innermost last; each becomes a mask entry at op build (see ResolveClipMasks), so
 	// nesting has no limit. Copy-on-write like Entries.
 	public PathClip[] Paths;
@@ -104,46 +105,10 @@ internal unsafe struct ClipData
 	// that could not fold the full rect constraint) — blocks the emit's derived-widening fallback.
 	public bool ScissorLoadBearing;
 
-	public static void PushEntry(ref ClipData clip, in ClipEntry e)
+	public static void PushEntry(ref ClipData clip, in ClipEntry e, NativeArena arena)
 	{
-		// The arrays are never written once built, so the same push onto the same prefix (a visual recorded again
-		// with the clip it had last frame) hands out the same array instead of a new one per recording.
-		var pushes = t_pushes ??= new();
-		var key = new PushKey(clip.Entries, e);
-		if (pushes.TryGetValue(key, out var shared))
-		{
-			clip.Entries = shared;
-			return;
-		}
-
-		int n = clip.Entries?.Length ?? 0;
-		var arr = new ClipEntry[n + 1];
-		if (n > 0) { System.Array.Copy(clip.Entries, arr, n); }
-		arr[n] = e;
-		if (pushes.Count >= MaxSharedPushes)
-		{
-			pushes.Clear();
-		}
-		pushes[key] = arr;
-		clip.Entries = arr;
-	}
-
-	private const int MaxSharedPushes = 4096;
-
-	[System.ThreadStatic]
-	private static System.Collections.Generic.Dictionary<PushKey, ClipEntry[]> t_pushes;
-
-	private readonly struct PushKey(ClipEntry[] prefix, ClipEntry entry) : System.IEquatable<PushKey>
-	{
-		private readonly ClipEntry[] _prefix = prefix;
-		private readonly ClipEntry _entry = entry;
-
-		public bool Equals(PushKey other) => ReferenceEquals(_prefix, other._prefix) && _entry.Equals(other._entry);
-
-		public override bool Equals(object obj) => obj is PushKey other && Equals(other);
-
-		public override int GetHashCode()
-			=> System.HashCode.Combine(System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(_prefix), _entry.GetHashCode());
+		clip.Entries = ClipEntries.Extend(arena, clip.Entries, 1, out var tail);
+		tail[0] = e;
 	}
 
 	public static PathClip[] PushPath(PathClip[] existing, PathClip pc)
