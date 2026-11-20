@@ -22,7 +22,7 @@ partial class ItemsRepeater
 	// A convention we use in the ItemsRepeater codebase for an invalid Rect value.
 	internal static Rect InvalidRect = new Rect(-1, -1, -1, -1);
 
-	internal IElementFactoryShim ItemTemplateShim => m_itemTemplateWrapper;
+	internal global::Microsoft.UI.Xaml.IElementFactory ItemTemplateShim => m_itemTemplateWrapper;
 
 	internal ViewManager ViewManager => m_viewManager;
 
@@ -56,7 +56,7 @@ partial class ItemsRepeater
 
 	ItemsSourceView m_itemsSourceView;
 
-	IElementFactoryShim m_itemTemplateWrapper;
+	global::Microsoft.UI.Xaml.IElementFactory m_itemTemplateWrapper;
 
 	VirtualizingLayoutContext m_layoutContext;
 	object m_layoutState;

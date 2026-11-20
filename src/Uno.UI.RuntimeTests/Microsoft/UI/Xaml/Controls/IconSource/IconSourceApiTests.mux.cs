@@ -32,10 +32,6 @@ using Microsoft.UI.Xaml.Controls.AnimatedVisuals;
 using Private.Infrastructure;
 using System.Threading.Tasks;
 
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
-
 #if HAS_UNO
 using Uno.UI;
 #endif

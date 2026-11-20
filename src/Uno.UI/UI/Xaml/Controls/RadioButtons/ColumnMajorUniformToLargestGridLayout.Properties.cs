@@ -1,4 +1,9 @@
-﻿using Microsoft.UI.Xaml;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference ColumnMajorUniformToLargestGridLayout.properties.cpp
+
+using Microsoft.UI.Xaml;
 using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
@@ -48,7 +53,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			var value = (int)args.NewValue;
 			var coercedValue = value;
-			owner.ValidateGreaterThanZero(coercedValue);
+			ValidateGreaterThanZero(coercedValue);
 			if (value != coercedValue)
 			{
 				sender.SetValue(args.Property, Boxer.Box(coercedValue));

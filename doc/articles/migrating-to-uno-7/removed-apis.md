@@ -407,6 +407,12 @@ XAML is unaffected.
 
 See also: [Base classes are no longer directly constructible](xref:Uno.Development.MigratingToUno7.WinUIParity#base-classes-are-no-longer-directly-constructible).
 
+## Template factory constructors removed
+
+The `Func<View>` constructors of `DataTemplate`, `ControlTemplate`, `ItemsPanelTemplate` and `FrameworkTemplate`, and their public `(object owner, FrameworkTemplateBuilder factory)` and `(object owner, NewFrameworkTemplateBuilder factory)` constructors, are removed, as is `NewFrameworkTemplateBuilder`. WinUI has none of them. Declare the template in XAML with an `x:Key`, or load it with `XamlReader.Load`.
+
+See also: [Templates can no longer be built from a factory delegate](xref:Uno.Development.MigratingToUno7.WinUIParity#templates-can-no-longer-be-built-from-a-factory-delegate).
+
 ## Custom `IAnimatedVisualSource` implementations
 
 `Microsoft.UI.Xaml.Controls.IAnimatedVisualSource` was a nine-method Uno-only contract. WinUI's
