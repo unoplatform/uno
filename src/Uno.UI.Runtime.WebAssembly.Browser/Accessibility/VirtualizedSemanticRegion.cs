@@ -19,9 +19,10 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 {
 	private readonly IntPtr _containerHandle;
 	private readonly Dictionary<int, IntPtr> _realizedHandles = new();
-	// Parallel set kept in sync with _realizedHandles.Values so ContainsRealizedHandle
-	// is O(1) on the focus/lookup hot path instead of O(n) Dictionary.ContainsValue.
-	private readonly HashSet<IntPtr> _realizedHandleSet = new();
+	private readonly Dictionary<IntPtr, int> _realizedIndices = new();
+	// Indices a recycled container was realized at before being re-realized elsewhere, so a late
+	// unrealize for an old index can be told apart from one for the live realization.
+	private readonly Dictionary<IntPtr, HashSet<int>> _supersededIndices = new();
 	private int _totalItemCount;
 	private bool _isFocusPinned;
 	private int? _pinnedIndex;
@@ -57,25 +58,42 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 	/// <summary>Gets the data index of the pinned (focused) item, if any.</summary>
 	internal int? PinnedIndex => _pinnedIndex;
 	/// <summary>True if the given item handle currently has a realized DOM node in this region.</summary>
-	internal bool ContainsRealizedHandle(IntPtr handle) => _realizedHandleSet.Contains(handle);
+	internal bool ContainsRealizedHandle(IntPtr handle) => _realizedIndices.ContainsKey(handle);
 
 	/// <summary>
 	/// Called when an item is realized (ElementPrepared).
 	/// </summary>
-	internal void OnItemRealized(IntPtr itemHandle, int index, int totalCount, float x, float y, float width, float height, string role, string label)
+	internal void OnItemRealized(IntPtr itemHandle, int index, int totalCount, float x, float y, float width, float height, string role, string label, bool? selected, string automationId)
 	{
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			this.Log().Trace($"ItemRealized container={_containerHandle} item={itemHandle} index={index} total={totalCount} role='{role}' label='{label}' pos=({x},{y}) size={width}x{height}");
 		}
 		_totalItemCount = totalCount;
-		if (_realizedHandles.TryGetValue(index, out var existing) && existing != itemHandle)
+		if (_realizedHandles.TryGetValue(index, out var existing) && existing != itemHandle
+			&& _realizedIndices.TryGetValue(existing, out var existingIndex) && existingIndex == index)
 		{
-			_realizedHandleSet.Remove(existing);
+			_realizedIndices.Remove(existing);
+		}
+		if (_supersededIndices.TryGetValue(itemHandle, out var superseded))
+		{
+			superseded.Remove(index);
+		}
+		if (_realizedIndices.TryGetValue(itemHandle, out var previousIndex) && previousIndex != index)
+		{
+			if (superseded is null)
+			{
+				_supersededIndices[itemHandle] = superseded = new();
+			}
+			superseded.Add(previousIndex);
+			if (_realizedHandles.TryGetValue(previousIndex, out var previous) && previous == itemHandle)
+			{
+				_realizedHandles.Remove(previousIndex);
+			}
 		}
 		_realizedHandles[index] = itemHandle;
-		_realizedHandleSet.Add(itemHandle);
-		NativeMethods.AddVirtualizedItem(_containerHandle, itemHandle, index, totalCount, x, y, width, height, role, label);
+		_realizedIndices[itemHandle] = index;
+		NativeMethods.AddVirtualizedItem(_containerHandle, itemHandle, index, totalCount, x, y, width, height, role, label, selected, automationId);
 		WebAssemblyAccessibility.Instance.QueueRelationshipRefresh();
 	}
 
@@ -94,21 +112,31 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 			return;
 		}
 
+		// A late callback for an index the container was re-realized away from must not evict the live node.
+		if (_supersededIndices.TryGetValue(itemHandle, out var superseded) && superseded.Remove(index))
+		{
+			if (superseded.Count == 0)
+			{
+				_supersededIndices.Remove(itemHandle);
+			}
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"ItemUnrealized skipped (stale, re-realized) container={_containerHandle} item={itemHandle} index={index}");
+			}
+			return;
+		}
+
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
 			this.Log().Trace($"ItemUnrealized container={_containerHandle} item={itemHandle} index={index}");
 		}
 
-		// Only clear the index mapping when it still points at the same handle. If a new item was
-		// realized into this index before the unrealize callback arrived (race that OnItemRealized
-		// already partially handles), the index now belongs to a different live handle and must
-		// not be evicted. The handle being unrealized is always purged from _realizedHandleSet
-		// independently so DOM/state stay in sync.
 		if (_realizedHandles.TryGetValue(index, out var current) && current == itemHandle)
 		{
 			_realizedHandles.Remove(index);
 		}
-		_realizedHandleSet.Remove(itemHandle);
+		_realizedIndices.Remove(itemHandle);
+		_supersededIndices.Remove(itemHandle);
 		NativeMethods.RemoveVirtualizedItem(itemHandle);
 		WebAssemblyAccessibility.Instance.QueueRelationshipRefresh();
 	}
@@ -164,7 +192,8 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 			Detach?.Invoke();
 			Detach = null;
 			_realizedHandles.Clear();
-			_realizedHandleSet.Clear();
+			_realizedIndices.Clear();
+			_supersededIndices.Clear();
 			NativeMethods.UnregisterVirtualizedContainer(_containerHandle);
 			WebAssemblyAccessibility.Instance.QueueRelationshipRefresh();
 		}
@@ -176,7 +205,7 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 		internal static partial void RegisterVirtualizedContainer(IntPtr containerHandle, string role, string label, bool multiselectable);
 
 		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.addVirtualizedItem")]
-		internal static partial void AddVirtualizedItem(IntPtr containerHandle, IntPtr itemHandle, int index, int totalCount, float x, float y, float width, float height, string role, string label);
+		internal static partial void AddVirtualizedItem(IntPtr containerHandle, IntPtr itemHandle, int index, int totalCount, float x, float y, float width, float height, string role, string label, bool? selected, string automationId);
 
 		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.removeVirtualizedItem")]
 		internal static partial void RemoveVirtualizedItem(IntPtr itemHandle);

@@ -3,6 +3,8 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
@@ -114,7 +116,7 @@ internal partial class WebAssemblyAccessibility
 			_comboBoxListBoxes.Remove(comboBox);
 
 			// Drop the head's relationships to the now-removed listbox.
-			NativeMethods.UpdateAriaControls(comboBox.Visual.Handle, string.Empty);
+			NativeMethods.UpdateRuntimeAriaControls(comboBox.Visual.Handle, string.Empty);
 			NativeMethods.UpdateActiveDescendant(comboBox.Visual.Handle, IntPtr.Zero);
 		}
 	}
@@ -156,7 +158,16 @@ internal partial class WebAssemblyAccessibility
 
 		var totalCount = comboBox.Items.Count;
 		var offset = GetOffsetRelativeToSemanticParent(item, region.ContainerHandle);
-		var label = item.GetOrCreateAutomationPeer()?.GetName() ?? string.Empty;
+		var itemPeer = item.GetOrCreateAutomationPeer();
+		if (itemPeer is not null &&
+			comboBox.GetOrCreateAutomationPeer() is ComboBoxAutomationPeer comboBoxPeer &&
+			comboBoxPeer.CreateItemAutomationPeer(comboBox.Items[index]) is { } itemDataPeer)
+		{
+			// Semantic realization bypasses the automation child walk, so establish the same
+			// container-to-data-peer route before exposing the option.
+			itemPeer.EventsSource = itemDataPeer;
+		}
+		var label = itemPeer?.GetName() ?? string.Empty;
 
 		region.OnItemRealized(
 			item.Visual.Handle,
@@ -165,7 +176,9 @@ internal partial class WebAssemblyAccessibility
 			offset.X, offset.Y,
 			item.Visual.Size.X, item.Visual.Size.Y,
 			"option",
-			label);
+			label,
+			item.IsSelected,
+			AutomationProperties.GetAutomationId(item));
 
 		// Point aria-activedescendant at the selected option so the combobox head
 		// announces the active item without moving DOM focus off the head.
@@ -220,7 +233,7 @@ internal partial class WebAssemblyAccessibility
 		// WAI-ARIA combobox pattern: the head owns the popup listbox via aria-controls so
 		// screen readers associate the two separate DOM subtrees and aria-activedescendant
 		// can reference options that live outside the head's own subtree.
-		NativeMethods.UpdateAriaControls(comboBox.Visual.Handle, $"uno-semantics-{region.ContainerHandle}");
+		NativeMethods.UpdateRuntimeAriaControls(comboBox.Visual.Handle, $"uno-semantics-{region.ContainerHandle}");
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{

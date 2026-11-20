@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference ItemsControlAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
+// MUX reference ItemsControlAutomationPeer_Partial.cpp, tag winui3/release/1.8.4, commit dc46907e
 
 #nullable enable
 #pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type
@@ -659,12 +659,24 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 
 	internal void OnItemsChanged(NotifyCollectionChangedEventArgs args)
 	{
+		if (_itemPeers.Count == 0 && _itemPeerStorage.Count == 0 && _itemPeerStorageForPattern.Count == 0)
+		{
+			return;
+		}
+
 		if (args.Action == NotifyCollectionChangedAction.Reset)
 		{
-			ClearItemAutomationPeerCache();
+			// Peers of items that survive a reset keep their identity.
+			if (Owner is ItemsControl { Items.Count: > 0 } resetOwner)
+			{
+				PruneItemAutomationPeerCache(resetOwner);
+			}
+			else
+			{
+				ClearItemAutomationPeerCache();
+			}
 		}
 		else if (args.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Replace &&
-			_itemPeers.Count > 0 &&
 			Owner is ItemsControl itemsControl)
 		{
 			// A group change removes items that OldItems doesn't list.
@@ -682,8 +694,9 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 		HashSet<ItemAutomationPeer>? stalePeers = null;
 		foreach (var item in oldItems)
 		{
-			// The cache is keyed by reference, which a boxed value never matches again.
-			if (item is ValueType)
+			// The cache is keyed by reference, which a boxed value never matches again,
+			// and a vector change doesn't report the item it replaced.
+			if (item is null or ValueType)
 			{
 				ReleaseItemPeers(stalePeers);
 				return false;
@@ -737,17 +750,19 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 			}
 		}
 
-		if (staleItems is null)
+		if (staleItems is not null)
 		{
-			return;
+			foreach (var item in staleItems)
+			{
+				_itemPeers.Remove(item);
+			}
+
+			ReleaseItemPeers(stalePeers);
 		}
 
-		foreach (var item in staleItems)
-		{
-			_itemPeers.Remove(item);
-		}
-
-		ReleaseItemPeers(stalePeers);
+		// Peers kept only by the secondary stores aren't keyed in _itemPeers.
+		_itemPeerStorage.RemoveAll(peer => !currentItems.Contains(peer.Item));
+		_itemPeerStorageForPattern.RemoveAll(peer => !currentItems.Contains(peer.Item));
 	}
 
 	private void ReleaseItemPeers(HashSet<ItemAutomationPeer>? peers)

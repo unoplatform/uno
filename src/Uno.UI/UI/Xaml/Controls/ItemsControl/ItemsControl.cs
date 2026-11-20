@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using Windows.Foundation.Collections;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Automation.Peers;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
@@ -1171,6 +1171,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 			ClearContainerForItemOverride(element, item);
 			ContainerClearedForItem(item, element as SelectorItem);
+
+			if (element is UIElement container &&
+				FrameworkElementAutomationPeer.FromElement(container) is { EventsSource: ItemAutomationPeer itemPeer } containerPeer &&
+				ReferenceEquals(itemPeer.ItemsControlAutomationPeer.Owner, this))
+			{
+				containerPeer.EventsSource = null;
+			}
 
 			UIElement.PrepareForRecycle(element);
 

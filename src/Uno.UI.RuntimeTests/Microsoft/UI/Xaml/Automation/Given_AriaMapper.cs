@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
@@ -18,6 +19,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	[TestClass]
 	public class Given_AriaMapper
 	{
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_Thumb_Then_No_Phantom_Slider_Role()
+		{
+#if HAS_UNO
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(new Thumb());
+			Assert.AreEqual(AutomationControlType.Thumb, peer.GetAutomationControlType());
+			Assert.IsNull(peer.GetPattern(PatternInterface.RangeValue));
+			Assert.IsNull(AriaMapper.GetAriaRole(AutomationControlType.Thumb));
+			Assert.IsNull(AriaMapper.GetAriaAttributes(peer).Role);
+			Assert.AreEqual(SemanticElementType.Generic, AriaMapper.GetSemanticElementType(peer));
+#endif
+		}
+
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]

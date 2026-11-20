@@ -955,11 +955,27 @@ namespace Uno.UI.Runtime {
 		public static updateAriaControls(handle: number, idList: string): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				if (idList) {
-					element.setAttribute("aria-controls", idList);
-				} else {
-					element.removeAttribute("aria-controls");
-				}
+				element.dataset.unoAuthoredControls = idList.trim();
+				Accessibility.applyAriaControls(element);
+			}
+		}
+
+		public static updateRuntimeAriaControls(handle: number, idList: string): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			if (element) {
+				element.dataset.unoRuntimeControls = idList.trim();
+				Accessibility.applyAriaControls(element);
+			}
+		}
+
+		private static applyAriaControls(element: HTMLElement): void {
+			const ids = `${element.dataset.unoAuthoredControls || ''} ${element.dataset.unoRuntimeControls || ''}`
+				.split(/\s+/).filter(Boolean);
+			const idList = Array.from(new Set(ids)).join(' ');
+			if (idList) {
+				element.setAttribute("aria-controls", idList);
+			} else {
+				element.removeAttribute("aria-controls");
 			}
 		}
 

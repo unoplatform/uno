@@ -91,6 +91,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			}
 		}
 
+		foreach (var region in _comboBoxListBoxes.Values)
+		{
+			if (region.ContainsRealizedHandle(handle))
+			{
+				return true;
+			}
+		}
+
 		return false;
 	}
 
@@ -679,7 +687,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		var label = itemElement.GetOrCreateAutomationPeer()?.GetName() ?? string.Empty;
+		var peer = itemElement.GetOrCreateAutomationPeer();
+		var label = peer?.GetName() ?? string.Empty;
+		var selected = itemElement is SelectorItem selectorItem
+			? selectorItem.IsSelected
+			: peer is not null ? AriaMapper.GetAriaAttributes(peer).Selected : null;
 		var offset = GetOffsetRelativeToSemanticParent(itemElement, containerHandle);
 		region.OnItemRealized(
 			itemElement.Visual.Handle,
@@ -687,7 +699,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			totalCount,
 			offset.X, offset.Y,
 			itemElement.Visual.Size.X, itemElement.Visual.Size.Y,
-			role, label);
+			role, label, selected, AutomationProperties.GetAutomationId(itemElement));
 	}
 
 	private void TryUnregisterVirtualizedContainer(UIElement element)
@@ -1329,7 +1341,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		string value,
 		int selectionStart,
 		int selectionEnd,
-		bool selectionIsBackward)
+		bool selectionIsBackward,
+		int replacementStart,
+		int replacementLength)
 	{
 		var @this = Instance;
 		if (@this.Log().IsEnabled(LogLevel.Trace))
@@ -1349,11 +1363,22 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				return;
 			}
 
-			if (owner is ITextBoxHost { Core: { } core })
+			// The text box core tracks a directed selection (anchor, caret); the browser reports an
+			// ordered range plus its direction.
+			if (selectionIsBackward)
 			{
-				var maxLength = value?.Length ?? 0;
-				selectionStart = Math.Max(0, Math.Min(selectionStart, maxLength));
-				selectionEnd = Math.Max(selectionStart, Math.Min(selectionEnd, maxLength));
+				(selectionStart, selectionEnd) = (selectionEnd, selectionStart);
+			}
+
+			var core = (owner as ITextBoxHost)?.Core;
+			if (core is not null)
+			{
+				if (core.IsPassword && replacementStart >= 0)
+				{
+					value = ApplyPasswordTextEdit(core.Text, value, replacementStart, replacementLength, ref selectionStart, ref selectionEnd);
+				}
+
+				NormalizeTextSelection(value ?? string.Empty, core.IsPassword, ref selectionStart, ref selectionEnd);
 				core.SetPendingSelection(selectionStart, selectionEnd - selectionStart);
 			}
 
@@ -1361,8 +1386,70 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			if (peer?.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
 			{
 				valueProvider.SetValue(value);
+				if (core is not null)
+				{
+					// Match the native-input path even when SetValue did not change the text.
+					NormalizeTextSelection(core.Text, core.IsPassword, ref selectionStart, ref selectionEnd);
+					core.SelectInternal(selectionStart, selectionEnd - selectionStart);
+					@this.SyncTextBoxValueAndSelection(core);
+				}
 			}
 		}
+	}
+
+	private static string ApplyPasswordTextEdit(string previous, string? inserted, int replacementStart, int replacementLength, ref int selectionAnchor, ref int selectionCaret)
+	{
+		var originalStart = Math.Clamp(replacementStart, 0, previous.Length);
+		var originalEnd = originalStart + Math.Clamp(replacementLength, 0, previous.Length - originalStart);
+		var start = AlignPasswordBoundary(previous, originalStart, forward: originalStart == originalEnd);
+		var end = AlignPasswordBoundary(previous, originalEnd, forward: true);
+		var insertedLength = inserted?.Length ?? 0;
+
+		selectionAnchor = MapPosition(selectionAnchor);
+		selectionCaret = MapPosition(selectionCaret);
+		return string.Concat(previous.AsSpan(0, start), inserted.AsSpan(), previous.AsSpan(end));
+
+		int MapPosition(int position)
+		{
+			if (position < originalStart)
+			{
+				return Math.Min(position, start);
+			}
+			if (position <= originalStart + insertedLength)
+			{
+				return start + position - originalStart;
+			}
+
+			var previousPosition = originalEnd + position - originalStart - insertedLength;
+			return start + insertedLength + Math.Max(0, previousPosition - end);
+		}
+	}
+
+	private static void NormalizeTextSelection(string text, bool password, ref int anchor, ref int caret)
+	{
+		anchor = Math.Clamp(anchor, 0, text.Length);
+		caret = Math.Clamp(caret, 0, text.Length);
+		if (!password)
+		{
+			return;
+		}
+		var backward = anchor > caret;
+		var start = Math.Min(anchor, caret);
+		var end = Math.Max(anchor, caret);
+		start = AlignPasswordBoundary(text, start, forward: start == end);
+		end = AlignPasswordBoundary(text, end, forward: true);
+		(anchor, caret) = backward ? (end, start) : (start, end);
+	}
+
+	private static int AlignPasswordBoundary(string text, int index, bool forward)
+	{
+		// Mask bullets are UTF-16 units, not valid text insertion boundaries.
+		// MUX TextBoxHelpers::IsNotInSurrogateCRLF (dc46907e) excludes positions inside a pair.
+		if (index > 0 && index < text.Length && char.IsSurrogatePair(text[index - 1], text[index]))
+		{
+			return forward ? index + 1 : index - 1;
+		}
+		return index;
 	}
 
 	[JSExport]
@@ -1427,10 +1514,29 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 		{
-			var peer = owner.GetOrCreateAutomationPeer();
-			if (peer?.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
+			var peer = owner.GetOrCreateAutomationPeer()?.ResolveProviderPeer(resolveEventsSource: true);
+			var selectionItemProvider = peer?.GetPattern(PatternInterface.SelectionItem) as ISelectionItemProvider;
+			if (selectionItemProvider is null &&
+				owner is ComboBoxItem comboBoxItem &&
+				ItemsControl.ItemsControlFromItemContainer(comboBoxItem) is ComboBox comboBox)
 			{
-				selectionItemProvider.Select();
+				var index = comboBox.IndexFromContainer(comboBoxItem);
+				if (index >= 0 &&
+					comboBox.GetOrCreateAutomationPeer() is ComboBoxAutomationPeer comboBoxPeer)
+				{
+					selectionItemProvider = comboBoxPeer
+						.CreateItemAutomationPeer(comboBox.Items[index])
+						?.GetPattern(PatternInterface.SelectionItem) as ISelectionItemProvider;
+				}
+			}
+
+			if (selectionItemProvider is ComboBoxItemDataAutomationPeer comboBoxItemDataPeer)
+			{
+				comboBoxItemDataPeer.Select();
+			}
+			else
+			{
+				selectionItemProvider?.Select();
 			}
 		}
 	}
@@ -2744,6 +2850,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		else if (automationProperty == SelectionItemPatternIdentifiers.IsSelectedProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
+			// An unrealized data item has no option node; the owner's node is not its substitute.
+			if (peer is ItemAutomationPeer itemPeer && itemPeer.GetContainer() is null)
+			{
+				return;
+			}
+
 			var selected = (bool)newValue;
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -2760,44 +2872,40 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				NativeMethods.UpdateSelectionState(element.Visual.Handle, selected);
 			}
 
-			// Update roving tabindex: the newly selected item gets tabindex=0,
-			// other group members get tabindex=-1 (for listbox options, radio groups, tabs)
-			if (selected)
-			{
-				// Use groupHandle=0 to let TS infer the group from the element's context
-				NativeMethods.UpdateRovingTabindex(IntPtr.Zero, element.Visual.Handle);
+			var ownerComboBox = element is ComboBoxItem comboBoxItem
+				? ItemsControl.ItemsControlFromItemContainer(comboBoxItem) as ComboBox
+				: null;
 
-				// Update aria-activedescendant on the parent container (combobox/listbox)
-				// so screen readers announce the active option without moving DOM focus.
-				// A ComboBox option lives in a separate listbox subtree, so the relationship
-				// must be expressed on the combobox head (which carries the matching
-				// aria-controls), not on the option's automation parent.
-				if (element is ComboBoxItem comboBoxItem &&
-					ItemsControl.ItemsControlFromItemContainer(comboBoxItem) is ComboBox ownerComboBox)
-				{
-					NativeMethods.UpdateActiveDescendant(ownerComboBox.Visual.Handle, element.Visual.Handle);
-				}
-				else if (peer.GetParent() is FrameworkElementAutomationPeer { Owner: { } parentOwner })
-				{
-					NativeMethods.UpdateActiveDescendant(parentOwner.Visual.Handle, element.Visual.Handle);
-				}
+			// ComboBox keeps the tab stop on its head and uses an active descendant.
+			if (selected && ownerComboBox is null)
+			{
+				NativeMethods.UpdateRovingTabindex(IntPtr.Zero, element.Visual.Handle);
+			}
+
+			if (ownerComboBox is not null)
+			{
+				var activeHandle = ownerComboBox.IsDropDownOpen &&
+					ownerComboBox.SelectedIndex >= 0 &&
+					ownerComboBox.ContainerFromIndex(ownerComboBox.SelectedIndex) is UIElement selectedItem &&
+					_comboBoxListBoxes.TryGetValue(ownerComboBox, out var region) &&
+					region.ContainsRealizedHandle(selectedItem.Visual.Handle)
+						? selectedItem.Visual.Handle
+						: IntPtr.Zero;
+				NativeMethods.UpdateActiveDescendant(ownerComboBox.Visual.Handle, activeHandle);
+			}
+			else if (selected && peer.GetParent() is FrameworkElementAutomationPeer { Owner: { } parentOwner })
+			{
+				NativeMethods.UpdateActiveDescendant(parentOwner.Visual.Handle, element.Visual.Handle);
 			}
 		}
 		else if (automationProperty == ValuePatternIdentifiers.ValueProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
-			if (element is ComboBox)
+			if (element is ComboBox comboBox)
 			{
-				// Don't overwrite aria-label with the selected value -- that destroys the
-				// control's accessible name (FR-020). The selection itself is already announced
-				// via aria-activedescendant -> the ComboBoxItem option, whose own text the
-				// screen reader reads alongside the head's name. If we ever need to reflect
-				// the selected text on the head itself (editable-combobox UX), aria-valuetext
-				// is the right attribute; aria-label is not.
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"[A11y] PROP CHANGE: ComboBox Value handle={element.Visual.Handle} (no aria-label update; activedescendant carries selection)");
-				}
+				NativeMethods.UpdateComboBoxValue(
+					element.Visual.Handle,
+					SemanticElementFactory.ResolveComboBoxValue(peer, comboBox));
 			}
 			else if (peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
 			{
@@ -3164,7 +3272,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	private static void UpdateTextBoxValueKeepingSelection(IntPtr handle, string? value, TextBoxCore? core = null)
 	{
 		core ??= TryGetTextBoxForHandle(handle, out var resolvedCore) ? resolvedCore : null;
-		var normalizedValue = value ?? core?.Text ?? string.Empty;
+		var normalizedValue = core?.IsPassword == true
+			? PasswordBoxAutomationPeer.MaskPasswordValue(core.Text)
+			: value ?? core?.Text ?? string.Empty;
 
 		if (TryGetTextSelection(core, normalizedValue.Length, out var selectionStart, out var selectionEnd))
 		{
@@ -3213,6 +3323,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		selectionStart = Math.Max(0, Math.Min(core.SelectionStart, maxLength));
 		selectionEnd = Math.Max(selectionStart, Math.Min(core.SelectionStart + core.SelectionLength, maxLength));
+		if (core.IsBackwardSelection)
+		{
+			(selectionStart, selectionEnd) = (selectionEnd, selectionStart);
+		}
 		return true;
 	}
 
@@ -3282,6 +3396,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.updateActiveDescendant")]
 		internal static partial void UpdateActiveDescendant(IntPtr containerHandle, IntPtr activeItemHandle);
 
+		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.updateComboBoxValue")]
+		internal static partial void UpdateComboBoxValue(IntPtr handle, string selectedValue);
+
 		// ===== VoiceOver Enhancement Methods =====
 
 		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.updateAriaDescription")]
@@ -3323,6 +3440,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.updateAriaDescribedBy")]
 		internal static partial void UpdateAriaDescribedBy(IntPtr handle, string idList);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.updateRuntimeAriaControls")]
+		internal static partial void UpdateRuntimeAriaControls(IntPtr handle, string idList);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.updateAriaControls")]
 		internal static partial void UpdateAriaControls(IntPtr handle, string idList);

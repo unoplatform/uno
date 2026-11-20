@@ -159,9 +159,9 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 
 	internal void ScrollIntoView()
 	{
-		if (ItemsControlAutomationPeer is { } parent)
+		if (ItemsControlAutomationPeer?.Owner is Selector selector)
 		{
-			(parent.Owner as Selector).ScrollIntoViewInternal(Item, /*isHeader*/ false, /*isFooter*/ false, /*isFromPublicAPI*/ true, ScrollIntoViewAlignment.Default, default, default);
+			selector.ScrollIntoViewInternal(Item, /*isHeader*/ false, /*isFooter*/ false, /*isFromPublicAPI*/ true, ScrollIntoViewAlignment.Default, default, default);
 		}
 	}
 }
