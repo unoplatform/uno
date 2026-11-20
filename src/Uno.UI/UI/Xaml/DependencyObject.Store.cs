@@ -82,8 +82,8 @@ namespace Microsoft.UI.Xaml
 		private DependencyPropertyDetails? DataContextPropertyDetails
 			=> _dataContextProperty is null ? null : Properties.DataContextPropertyDetails;
 
-		private DependencyPropertyDetails?[] AllPropertyDetails
-			=> _properties?.GetAllDetails() ?? Array.Empty<DependencyPropertyDetails?>();
+		private DependencyPropertyDetailsCollection.AllDetails AllPropertyDetails
+			=> _properties?.GetAllDetails() ?? new(null, null, Array.Empty<DependencyPropertyDetails?>());
 		private ResourceBindingCollection? _resourceBindings;
 		private ThemeResourceMap? _themeResources;
 

@@ -28,6 +28,11 @@ namespace Microsoft.UI.Xaml
 		private DependencyPropertyDetails?[] _entries = _noEntries;
 		private int _count;
 
+		// The first two details sit in fields until a third arrives: most objects (a segment, a brush, a transform)
+		// set one or two properties, and the table's array would cost more than the details themselves.
+		private DependencyPropertyDetails? _slot0;
+		private DependencyPropertyDetails? _slot1;
+
 		// A shared single empty slot rather than an empty array, so a lookup needs no length check. It is never
 		// written to: the first Add always grows.
 		private static readonly DependencyPropertyDetails?[] _noEntries = new DependencyPropertyDetails?[1];
@@ -48,9 +53,9 @@ namespace Microsoft.UI.Xaml
 
 		internal void CloneToForHotReload(DependencyPropertyDetailsCollection other, DependencyObject store, DependencyObject otherStore)
 		{
-			for (int i = 0; i < _entries.Length; i++)
+			foreach (var entry in GetAllDetails())
 			{
-				if (_entries[i] is { Property: { } oldDP } oldDetails)
+				if (entry is { Property: { } oldDP } oldDetails)
 				{
 					var newDP = DependencyProperty.GetProperty(oldDP.OwnerType, oldDP.Name);
 					if (newDP is null)
@@ -116,6 +121,20 @@ namespace Microsoft.UI.Xaml
 		private DependencyPropertyDetails? TryGetPropertyDetails(DependencyProperty property, bool forceCreate)
 		{
 			var entries = _entries;
+			if (ReferenceEquals(entries, _noEntries))
+			{
+				if (_slot0 is { } slot0 && ReferenceEquals(slot0.Property, property))
+				{
+					return slot0;
+				}
+
+				if (_slot1 is { } slot1 && ReferenceEquals(slot1.Property, property))
+				{
+					return slot1;
+				}
+
+				return forceCreate ? Add(property) : null;
+			}
 
 			// The capacity is a power of two, so masking is the modulo.
 			var mask = entries.Length - 1;
@@ -136,6 +155,29 @@ namespace Microsoft.UI.Xaml
 
 		private DependencyPropertyDetails Add(DependencyProperty property)
 		{
+			if (ReferenceEquals(_entries, _noEntries))
+			{
+				if (_slot0 is null)
+				{
+					_count++;
+					return _slot0 = new DependencyPropertyDetails(property, property == _dataContextProperty);
+				}
+
+				if (_slot1 is null)
+				{
+					_count++;
+					return _slot1 = new DependencyPropertyDetails(property, property == _dataContextProperty);
+				}
+
+				// A third property: the slotted details move into the table, which holds every entry from here on.
+				var spilled = new DependencyPropertyDetails?[8];
+				Insert(spilled, _slot0);
+				Insert(spilled, _slot1);
+				_entries = spilled;
+				_slot0 = null;
+				_slot1 = null;
+			}
+
 			if ((_count + 1) * 2 > _entries.Length)
 			{
 				Grow();
@@ -179,11 +221,79 @@ namespace Microsoft.UI.Xaml
 			_entries = newEntries;
 		}
 
+		private static void Insert(DependencyPropertyDetails?[] entries, DependencyPropertyDetails details)
+		{
+			var mask = entries.Length - 1;
+			var index = details.Property.UniqueId & mask;
+
+			while (entries[index] is not null)
+			{
+				index = (index + 1) & mask;
+			}
+
+			entries[index] = details;
+		}
+
 		/// <summary>
-		/// Returns the backing table: sparse, in hash order (not registration order), and a snapshot that may
-		/// or may not reflect properties added while it is being walked.
+		/// Returns every entry: sparse (nulls included), in no particular order, and a snapshot that may or may not
+		/// reflect properties added while it is being walked.
 		/// </summary>
-		internal DependencyPropertyDetails?[] GetAllDetails() => _entries;
+		internal AllDetails GetAllDetails() => new(_slot0, _slot1, _entries);
+
+		internal readonly struct AllDetails
+		{
+			private readonly DependencyPropertyDetails? _slot0;
+			private readonly DependencyPropertyDetails? _slot1;
+			private readonly DependencyPropertyDetails?[] _entries;
+
+			public AllDetails(DependencyPropertyDetails? slot0, DependencyPropertyDetails? slot1, DependencyPropertyDetails?[] entries)
+			{
+				_slot0 = slot0;
+				_slot1 = slot1;
+				_entries = entries;
+			}
+
+			public Enumerator GetEnumerator() => new(this);
+
+			internal struct Enumerator
+			{
+				private readonly AllDetails _all;
+				private int _index;
+
+				public Enumerator(AllDetails all)
+				{
+					_all = all;
+					_index = -1;
+				}
+
+				public DependencyPropertyDetails? Current { get; private set; }
+
+				public bool MoveNext()
+				{
+					var entries = _all._entries ?? Array.Empty<DependencyPropertyDetails?>();
+					_index++;
+					if (_index == 0)
+					{
+						Current = _all._slot0;
+						return true;
+					}
+
+					if (_index == 1)
+					{
+						Current = _all._slot1;
+						return true;
+					}
+
+					if (_index - 2 < entries.Length)
+					{
+						Current = entries[_index - 2];
+						return true;
+					}
+
+					return false;
+				}
+			}
+		}
 
 	}
 }
