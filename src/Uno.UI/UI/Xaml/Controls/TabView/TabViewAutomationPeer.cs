@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference: TabViewAutomationPeer.cpp, commit 65718e2813
+// MUX Reference: TabViewAutomationPeer.cpp
 
 using System;
 using Microsoft.UI.Xaml.Automation.Provider;
@@ -26,7 +26,7 @@ public partial class TabViewAutomationPeer : FrameworkElementAutomationPeer, ISe
 	protected override object GetPatternCore(PatternInterface patternInterface) =>
 		patternInterface == PatternInterface.Selection ? this : base.GetPatternCore(patternInterface);
 
-	protected override string GetClassNameCore() => nameof(TabView);
+	protected override string GetClassNameCore() => typeof(TabView).FullName!;
 
 	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Tab;
 

@@ -16,10 +16,6 @@ using Windows.System;
 using MenuBarItem = Microsoft.UI.Xaml.Controls.MenuBarItem;
 using FocusHelper = Uno.UI.RuntimeTests.MUX.Input.Focus.FocusHelper;
 
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Tests.Common;
-#endif
-
 namespace Uno.UI.RuntimeTests.MUX.Input.KeyboardAccelerators;
 
 [TestClass]

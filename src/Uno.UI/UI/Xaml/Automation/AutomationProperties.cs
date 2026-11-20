@@ -22,7 +22,7 @@ public partial class AutomationProperties
 			"AcceleratorKey",
 			typeof(string),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(string), OnAutomationPropertyChanged));
+			new FrameworkPropertyMetadata(string.Empty, OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the AccessKey attached property, which specifies the access key (mnemonic) for an element.
@@ -32,7 +32,7 @@ public partial class AutomationProperties
 			"AccessKey",
 			typeof(string),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(string), OnAutomationPropertyChanged));
+			new FrameworkPropertyMetadata(string.Empty, OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the AccessibilityView attached property, which controls whether and how the element appears in the UI Automation tree.
@@ -132,7 +132,7 @@ public partial class AutomationProperties
 			"FullDescription",
 			typeof(string),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(string), OnAutomationPropertyChanged));
+			new FrameworkPropertyMetadata(string.Empty, OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the HeadingLevel attached property, which indicates the heading level for structured content.
@@ -152,7 +152,7 @@ public partial class AutomationProperties
 			"HelpText",
 			typeof(string),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(string), OnAutomationPropertyChanged));
+			new FrameworkPropertyMetadata(string.Empty, OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the IsDataValidForForm attached property, which indicates whether the element’s value is valid for form submission.
@@ -202,7 +202,7 @@ public partial class AutomationProperties
 			"ItemStatus",
 			typeof(string),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(string), OnAutomationPropertyChanged));
+			new FrameworkPropertyMetadata(string.Empty, OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the ItemType attached property, which describes the type of item represented by the element.
@@ -212,7 +212,7 @@ public partial class AutomationProperties
 			"ItemType",
 			typeof(string),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(string), OnAutomationPropertyChanged));
+			new FrameworkPropertyMetadata(string.Empty, OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the LabeledBy attached property, which references an element that provides the accessible label.
@@ -263,7 +263,7 @@ public partial class AutomationProperties
 			"LocalizedControlType",
 			typeof(string),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(string), OnAutomationPropertyChanged));
+			new FrameworkPropertyMetadata(string.Empty, OnAutomationPropertyChanged));
 
 	/// <summary>
 	/// Identifies the LocalizedLandmarkType attached property, which supplies a localized string describing the landmark type.
@@ -273,7 +273,7 @@ public partial class AutomationProperties
 			"LocalizedLandmarkType",
 			typeof(string),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(default(string), OnLocalizedLandmarkTypeChanged));
+			new FrameworkPropertyMetadata(string.Empty, OnLocalizedLandmarkTypeChanged));
 
 	/// <summary>
 	/// Identifies the Name attached property, which provides the accessible name for an element.

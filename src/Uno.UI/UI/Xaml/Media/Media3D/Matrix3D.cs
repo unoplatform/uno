@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Numerics;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Media.Media3D;
 
@@ -180,7 +181,7 @@ public partial struct Matrix3D : IFormattable
 			return "Identity";
 		}
 
-		return string.Join(',', new[]
+		return string.Join(TokenizerHelper.GetNumericListSeparator(provider), new[]
 		{
 			M11, M12, M13, M14,
 			M21, M22, M23, M24,

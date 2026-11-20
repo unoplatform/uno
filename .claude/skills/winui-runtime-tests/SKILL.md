@@ -41,7 +41,7 @@ An **MSIX fallback** remains for the rare cases that need a real package (see *M
 
 Every item below was hit in practice, not theorized:
 
-1. **`crosstargeting_override.props` MUST be set to the windows TFM.** `src/crosstargeting_override.props` must contain `<UnoTargetFrameworkOverride>net11.0-windows10.0.19041.0</UnoTargetFrameworkOverride>`. Without it MSBuild resolves every TFM and drags in Skia/Wasm, producing hundreds of `CS0535: does not implement interface member 'DependencyObject.XXX'`. `build-app.ps1` refuses to build if it is missing or non-windows. **Restore the user's previous value when you are done.**
+1. **`crosstargeting_override.props` MUST be set to the windows TFM.** `src/crosstargeting_override.props` must contain `<UnoTargetFrameworkOverride>net11.0-windows10.0.19041.0</UnoTargetFrameworkOverride>`. Without it MSBuild resolves every TFM and drags in the Uno-rendered targets, which fail the WinAppSDK build. `build-app.ps1` refuses to build if it is missing or non-windows. **Restore the user's previous value when you are done.**
 
 2. **The build needs the pinned preview SDK.** `master` targets net11, while the repo-root `global.json` sets `allowPrerelease: false` and would select a .NET 10 SDK (`NETSDK1045`, then a wall of `NETSDK1004`). CI copies `build/ci/net11/_global.json` over `global.json`; `build-app.ps1` does the same and **always restores it**. The SDK lives side-by-side at `%LOCALAPPDATA%\Microsoft\dotnet` and does *not* show up in `dotnet --list-sdks`.
 
@@ -119,10 +119,10 @@ Add `-Strict` for `strict` mode. The script pins the SDK, swaps and restores `gl
 
 | Error | Cause | Fix |
 |-------|-------|-----|
-| `CS0535: does not implement 'DependencyObject.XXX'` | `crosstargeting_override.props` missing/wrong TFM — Skia is being built | Set the windows TFM (Phase 1) |
+| `CS0535: does not implement 'DependencyObject.XXX'` | `crosstargeting_override.props` missing/wrong TFM — the Uno targets are being built | Set the windows TFM (Phase 1) |
 | `NETSDK1045: does not support targeting .NET 11` | Repo-root `global.json` selected a .NET 10 SDK | Use `build-app.ps1` (pitfall 2) |
 | `MSB4062: ResourcesGenerationTask_v0 could not be loaded` | Wrong TFM pulling unexpected dependencies | Set the windows TFM |
-| `CS0012: type 'Grid' defined in unreferenced assembly 'Uno.UI'` | Graphics3DGL built Skia-only | `-p:BuildGraphics3DGLForWindows=true` (already in `build-app.ps1`) |
+| `CS0012: type 'Grid' defined in unreferenced assembly 'Uno.UI'` | Graphics3DGL built for Uno targets only | `-p:BuildGraphics3DGLForWindows=true` (already in `build-app.ps1`) |
 | `PRI175` / `PRI252: .xbf not found` | Path ≥ 260 chars | Shorten the repo path or `subst` |
 | `MSB1008: Only one project` | Bash ate `/r` | Use dash syntax |
 
@@ -250,8 +250,8 @@ The filter can also arrive via the `UITEST_RUNTIME_TESTS_FILTER` environment var
 ### Versions
 | Item | Value |
 |------|-------|
-| WinAppSDK | 2.4.0 — keep the csproj, `src/Uno.Sdk/packages.json`, the CI runtime installer URL and this table in lockstep |
-| Windows App Runtime (CI) | `https://aka.ms/windowsappsdk/2.4/2.4.0/windowsappruntimeinstall-x64.exe` — pin the exact stable version; `<minor>/latest` can resolve to an experimental build whose framework fails the MSIX dependency with `0x80073CF3` |
+| WinAppSDK | 2.5.1 — keep the csproj, `src/Uno.Sdk/packages.json`, the CI runtime installer URL and this table in lockstep |
+| Windows App Runtime (CI) | `https://aka.ms/windowsappsdk/2.5/2.5.1/windowsappruntimeinstall-x64.exe` — pin the exact stable version; `<minor>/latest` can resolve to an experimental build whose framework fails the MSIX dependency with `0x80073CF3` |
 | `winapp` CLI | 0.7.x — bundled in `Microsoft.Windows.SDK.BuildTools.WinApp` (referenced by the head) |
 
 ### Inspecting a running app

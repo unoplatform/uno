@@ -17,10 +17,6 @@ using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
 
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
-
 #if USING_TAEF
 using WEX.TestExecution;
 using WEX.TestExecution.Markup;
