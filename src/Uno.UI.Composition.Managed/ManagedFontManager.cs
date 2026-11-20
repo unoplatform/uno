@@ -35,6 +35,13 @@ internal sealed class ManagedFontProvider : IFontProvider
 	private readonly byte[]? _bundledDefaultFont;
 	private readonly Dictionary<float, IFont?> _bundledDefaultBySize = new();
 	private readonly bool _enableFallback;
+	private readonly IEnumerable<string>? _fontDirectories;
+
+	internal ManagedFontProvider(IEnumerable<string> fontDirectories)
+		: this()
+	{
+		_fontDirectories = fontDirectories;
+	}
 
 	/// <summary>Creates a system-font provider.</summary>
 	/// <param name="bundledDefaultFont">
@@ -169,7 +176,7 @@ internal sealed class ManagedFontProvider : IFontProvider
 			return bundled;
 		}
 
-		throw new InvalidOperationException("No usable system font was found and no bundled default font was provided to the managed font provider.");
+		return new ManagedPlaceholderFont(fontSize);
 	}
 
 	private IFont? GetBundledDefault(float fontSize)
@@ -292,7 +299,7 @@ internal sealed class ManagedFontProvider : IFontProvider
 			var byFamily = new Dictionary<string, List<FaceEntry>>();
 			var allFaces = new List<FaceEntry>();
 
-			foreach (var dir in GetFontDirectories())
+			foreach (var dir in _fontDirectories ?? GetFontDirectories())
 			{
 				IEnumerable<string> files;
 				try
