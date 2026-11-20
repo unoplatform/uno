@@ -14,6 +14,20 @@ public class Given_Calendar
 	private const string TwelveHour = ClockIdentifiers.TwelveHourValue;
 	private const string TwentyFourHour = ClockIdentifiers.TwentyFourHourValue;
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public void When_No_Culture_Names_The_Months_Then_Month_Is_Its_Number()
+	{
+		// No culture names the Chinese lunar months, so WinRT writes the month's number ("13月", the twelfth month of
+		// a year with a leap month). The language's Gregorian names would give January.
+		var calendar = new Calendar(["en-US"], CalendarIdentifiers.ChineseLunar, TwentyFourHour);
+		calendar.SetDateTime(new System.DateTimeOffset(new System.DateTime(2024, 1, 15, 12, 0, 0)));
+
+		Assert.AreEqual(13, calendar.Month);
+		Assert.AreEqual("13", calendar.MonthAsString());
+		Assert.AreEqual("13", calendar.MonthAsSoloString());
+	}
+
 	// Expectations are ICU's culture data.
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18834")]

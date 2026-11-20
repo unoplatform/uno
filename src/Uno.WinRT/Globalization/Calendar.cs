@@ -148,6 +148,14 @@ namespace Windows.Globalization
 			return culture;
 		}
 
+		private static bool HasGregorianMonths(_Calendar calendar)
+			=> calendar is global::System.Globalization.GregorianCalendar
+				or global::System.Globalization.JulianCalendar
+				or global::System.Globalization.JapaneseCalendar
+				or global::System.Globalization.KoreanCalendar
+				or global::System.Globalization.TaiwanCalendar
+				or global::System.Globalization.ThaiBuddhistCalendar;
+
 		private static _Calendar? FindOptionalCalendar(CultureInfo culture, Type calendarType)
 		{
 			foreach (var optionalCalendar in culture.OptionalCalendars)
@@ -621,6 +629,13 @@ namespace Windows.Globalization
 				};
 
 				return names[calendar.GetMonth(date) - 1];
+			}
+
+			if (format.Calendar.GetType() != calendar.GetType() && !HasGregorianMonths(calendar))
+			{
+				// No culture here names this calendar's months (Chinese lunar), so the culture's Gregorian names
+				// would name another month. WinRT writes the month's number too ("13月").
+				return calendar.GetMonth(date).ToString(formatCulture);
 			}
 
 			if (inDate)
