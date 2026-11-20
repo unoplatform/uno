@@ -54,8 +54,7 @@ public class Given_FileSavePicker_Download
 
 	private static async Task<string> PickNameAsync(FileSavePicker picker)
 	{
-		var configuration = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration;
-		WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = WasmPickerConfiguration.DownloadUpload;
+		var configuration = SetWasmConfiguration("DownloadUpload");
 		StorageFile? file = null;
 
 		try
@@ -69,13 +68,23 @@ public class Given_FileSavePicker_Download
 		}
 		finally
 		{
-			WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = configuration;
+			SetWasmConfiguration(configuration);
 
 			if (file is not null)
 			{
 				await file.DeleteAsync();
 			}
 		}
+	}
+
+	// The Android and iOS builds of Uno.WinRT have no WasmPickerConfiguration, but load this assembly's types too.
+	// The enum therefore only appears in this non-async method's body, never in a signature, field or attribute.
+	private static string SetWasmConfiguration(string configuration)
+	{
+		var previous = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration;
+		WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = Enum.Parse<WasmPickerConfiguration>(configuration);
+
+		return previous.ToString();
 	}
 }
 #endif
