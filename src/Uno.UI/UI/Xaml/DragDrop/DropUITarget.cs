@@ -28,11 +28,12 @@ namespace Microsoft.UI.Xaml
 		});
 
 
-		// Note: As drag events are routed (so they may be received by multiple elements), we might not have an entry for each drop targets.
-		//		 We will instead have entry only for leaf (a.k.a. OriginalSource).
-		//		 This is valid as UWP does clear the UIOverride as soon as a DragLeave is raised, no matter the number of drop target under pointer.
+		// The UI override and accepted operation of each drop target the drag has been over, until the drag ends.
 		private readonly Dictionary<UIElement, (DragUIOverride uiOverride, DataPackageOperation acceptedOperation)> _pendingDropTargets
 			= new Dictionary<UIElement, (DragUIOverride uiOverride, DataPackageOperation acceptedOperation)>();
+
+		// The drop target the drag was last over. The UI override is reset when the drag reaches another one.
+		private UIElement? _currentDropTarget;
 
 		/// <inheritdoc />
 		public IAsyncOperation<DataPackageOperation> EnterAsync(CoreDragInfo dragInfo, CoreDragUIOverride dragUIOverride)
@@ -71,6 +72,7 @@ namespace Microsoft.UI.Xaml
 			{
 				var leaveTasks = _pendingDropTargets.ToArray().Select(RaiseLeave);
 				_pendingDropTargets.Clear();
+				_currentDropTarget = null;
 				Task.WhenAll(leaveTasks);
 				return Task.CompletedTask;
 
@@ -149,6 +151,7 @@ namespace Microsoft.UI.Xaml
 			{
 				// When we don't find any target, we should make sure to reset the uiOverride data
 				// as it's the same instance which is re-used by the DragOperation (like UWP).
+				_currentDropTarget = null;
 				dragUIOverride?.Clear();
 
 				return null;
@@ -162,7 +165,7 @@ namespace Microsoft.UI.Xaml
 			dropTarget ??= target.element; // Safety only!
 
 			DragEventArgs args;
-			if (_pendingDropTargets.TryGetValue(dropTarget, out var state))
+			if (dropTarget == _currentDropTarget && _pendingDropTargets.TryGetValue(dropTarget, out var state))
 			{
 				args = new DragEventArgs(target.element!, dragInfo, state.uiOverride)
 				{
@@ -171,13 +174,15 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
-				// When we reach a new target UI element, we should make sure to reset the uiOverride data
+				// When we reach another drop target, even one that the drag was over before, we should make sure to reset the uiOverride data
 				// as it's the same instance which is re-used by the DragOperation (like UWP).
+				// WinUI clears it once the drag leaves the element that set it (DragDrop::CheckIfCustomVisualShouldBeCleared).
 				// It's the responsibility to the new 'target.element', to configure the whole UI override.
 				dragUIOverride?.Clear();
 
 				args = new DragEventArgs(target.element!, dragInfo, new DragUIOverride(dragUIOverride ?? new CoreDragUIOverride()));
 			}
+			_currentDropTarget = dropTarget;
 
 			return (dropTarget, args);
 		}
