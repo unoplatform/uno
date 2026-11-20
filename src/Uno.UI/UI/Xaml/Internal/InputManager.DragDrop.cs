@@ -55,7 +55,10 @@ partial class InputManager
 			if (_dragRoot.PendingDragCount == 0)
 			{
 				// As WinUI's VisualTree::RemoveRoot does, leave the live tree before the layer is removed.
-				_dragRoot.Leave(new LeaveParams(isLive: true));
+				if (_dragRoot.IsActiveInVisualTree)
+				{
+					_dragRoot.Leave(new LeaveParams(isLive: true));
+				}
 				rootElement.Children.Remove(_dragRoot);
 				_dragRoot = null;
 			}
