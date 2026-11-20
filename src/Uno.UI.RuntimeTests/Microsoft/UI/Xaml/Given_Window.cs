@@ -313,10 +313,83 @@ public class Given_Window
 			Assert.Inconclusive("The driver doesn't report an adapter LUID.");
 		}
 
-		Assert.AreEqual(GetFirstHardwareAdapterLuid(), deviceLuid);
+		Assert.AreEqual(GetFirstHardwareAdapter()?.AdapterLuid, deviceLuid);
 
 		static object GetField(object target, string name)
 			=> target?.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(target);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public void When_WebGpu_Then_Adapter_Is_DXGIs_First_Hardware_Adapter()
+	{
+		const BindingFlags Private = BindingFlags.Instance | BindingFlags.NonPublic;
+
+		var wrapper = TestServices.WindowHelper.CurrentTestWindow.NativeWrapper;
+		var context = wrapper.GetType().GetField("_context", Private)!.GetValue(wrapper);
+		if (context?.GetType().GetProperty("Kind")?.GetValue(context)?.ToString() != "WebGpu")
+		{
+			Assert.Inconclusive("The window did not negotiate a WebGPU context.");
+		}
+
+		var device = context.GetType().GetField("_device", Private)!.GetValue(context)!;
+		if ((bool)device.GetType().GetProperty("IsSoftwareVulkan")!.GetValue(device)!)
+		{
+			Assert.Inconclusive("The adapter rasterizes on the CPU, which DXGI doesn't list as hardware.");
+		}
+
+		var adapterInfo = context.GetType().GetProperty("AdapterInfo", Private)!.GetValue(context)!;
+		var expected = GetFirstHardwareAdapter()!.Value;
+
+		// wgpu's OpenGL backend reports only a name.
+		var vendorId = (uint)adapterInfo.GetType().GetProperty("VendorId")!.GetValue(adapterInfo)!;
+		if (vendorId != 0)
+		{
+			Assert.AreEqual(expected.VendorId, vendorId);
+			Assert.AreEqual(expected.DeviceId, (uint)adapterInfo.GetType().GetProperty("DeviceId")!.GetValue(adapterInfo)!);
+		}
+		else
+		{
+			StringAssert.StartsWith((string)adapterInfo.GetType().GetProperty("Name")!.GetValue(adapterInfo)!, expected.Description);
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	[DataRow(0x8086u, 0xA7A0u, null, true, DisplayName = "Same ids")]
+	[DataRow(0x8086u, 0x1234u, null, false, DisplayName = "Another device of the vendor")]
+	[DataRow(0x10DEu, 0x2838u, null, false, DisplayName = "Another vendor")]
+	[DataRow(0x8086u, 0u, "Intel Whatever The Driver Says", true, DisplayName = "OpenGL: only a vendor is known, and it matches")]
+	[DataRow(0x10DEu, 0u, "NVIDIA RTX 4000 Ada Generation Laptop GPU/PCIe/SSE2", false, DisplayName = "OpenGL: only a vendor is known, and it differs")]
+	[DataRow(0u, 0u, "Intel(R) Iris(R) Xe Graphics", true, DisplayName = "wgpu's OpenGL: named the same")]
+	[DataRow(0u, 0u, "NVIDIA RTX 4000 Ada Generation Laptop GPU/PCIe/SSE2", false, DisplayName = "wgpu's OpenGL: named differently")]
+	[DataRow(0u, 0u, null, false, DisplayName = "Nothing known, so the fallback rather than black")]
+	public void When_Comparing_Renderer_With_Display_Adapter(uint vendorId, uint deviceId, string name, bool expected)
+	{
+		var type = Type.GetType("Uno.UI.Runtime.Win32.Win32DisplayAdapter, Uno.UI.Runtime.Win32", throwOnError: true)!;
+		var display = type.GetMethod("Parse", BindingFlags.Static | BindingFlags.NonPublic)!
+			.Invoke(null, [@"PCI\VEN_8086&DEV_A7A0&SUBSYS_0B041028&REV_04", "Intel(R) Iris(R) Xe Graphics"])!;
+
+		Assert.AreEqual(0x8086u, type.GetProperty("VendorId")!.GetValue(display));
+		Assert.AreEqual(0xA7A0u, type.GetProperty("DeviceId")!.GetValue(display));
+		Assert.AreEqual(expected, type.GetMethod("Matches", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(display, [vendorId, deviceId, name]));
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public void When_Display_Adapter_Is_Not_On_PCI_Then_Only_Its_Name_Is_Known()
+	{
+		var type = Type.GetType("Uno.UI.Runtime.Win32.Win32DisplayAdapter, Uno.UI.Runtime.Win32", throwOnError: true)!;
+		var display = type.GetMethod("Parse", BindingFlags.Static | BindingFlags.NonPublic)!
+			.Invoke(null, [@"SWD\REMOTEDISPLAYENUM\RdpIdd_IndirectDisplay", "Microsoft Remote Display Adapter"])!;
+
+		Assert.AreEqual(0u, type.GetProperty("VendorId")!.GetValue(display));
+		Assert.AreEqual(0u, type.GetProperty("DeviceId")!.GetValue(display));
+
+		var matches = type.GetMethod("Matches", BindingFlags.Instance | BindingFlags.NonPublic)!;
+		Assert.IsFalse((bool)matches.Invoke(display, [0x8086u, 0xA7A0u, "Intel(R) Iris(R) Xe Graphics"])!);
+		Assert.IsTrue((bool)matches.Invoke(display, [0u, 0u, "Microsoft Remote Display Adapter"])!);
 	}
 
 	[TestMethod]
@@ -428,18 +501,40 @@ public class Given_Window
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public async Task When_Window_On_Another_Adapters_Display_Then_Backdrop_Falls_Back_Until_It_Returns(ElementTheme theme, byte expected)
 	{
-		var wrapper = TestServices.WindowHelper.CurrentTestWindow.NativeWrapper;
-		var context = wrapper.GetType().GetField("_context", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(wrapper);
-		if (context?.GetType().GetProperty("Kind")?.GetValue(context)?.ToString() != "Vulkan")
-		{
-			Assert.Inconclusive("The window did not negotiate a Vulkan context.");
-		}
+		const BindingFlags Private = BindingFlags.Instance | BindingFlags.NonPublic;
 
-		var vulkan = context.GetType().GetField("_vk", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(context)!;
-		if (vulkan.GetType().GetProperty("DeviceLuid", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(vulkan) is not long deviceLuid)
+		var wrapper = TestServices.WindowHelper.CurrentTestWindow.NativeWrapper;
+		var context = wrapper.GetType().GetField("_context", Private)!.GetValue(wrapper);
+		var kind = context?.GetType().GetProperty("Kind")?.GetValue(context)?.ToString();
+
+		// The name a display would need to match each context, or the LUID for a Vulkan device.
+		long deviceLuid = 0;
+		string rendererName = null;
+		switch (kind)
 		{
-			Assert.Inconclusive("The driver doesn't report an adapter LUID.");
-			return;
+			case "Vulkan":
+				var vulkan = context.GetType().GetField("_vk", Private)!.GetValue(context)!;
+				if (vulkan.GetType().GetProperty("DeviceLuid", Private)!.GetValue(vulkan) is not long luid)
+				{
+					Assert.Inconclusive("The driver doesn't report an adapter LUID.");
+					return;
+				}
+				deviceLuid = luid;
+				break;
+			case "OpenGL":
+				rendererName = (string)context.GetType().GetField("_renderer", Private)!.GetValue(context)!;
+				break;
+			case "WebGpu":
+				var adapterInfo = context.GetType().GetProperty("AdapterInfo", Private)!.GetValue(context)!;
+				rendererName = (string)adapterInfo.GetType().GetProperty("Name")!.GetValue(adapterInfo)!;
+				if ((bool)adapterInfo.GetType().GetProperty("IsD3D12")!.GetValue(adapterInfo)!)
+				{
+					Assert.Inconclusive("wgpu's D3D12 path always falls back.");
+				}
+				break;
+			default:
+				Assert.Inconclusive("The window did not negotiate a context bound to an adapter.");
+				return;
 		}
 
 		var content = new Border { Width = 100, Height = 100 };
@@ -450,6 +545,15 @@ public class Given_Window
 		var hwnd = ((Uno.UI.NativeElementHosting.Win32NativeWindow)wrapper.NativeWindow).Hwnd;
 		var luidOverride = Type.GetType("Uno.UI.Runtime.Win32.Vulkan.Win32VulkanSurfaceFactory, Uno.UI.Runtime.Win32", throwOnError: true)!
 			.GetProperty("PresentingAdapterLuidOverride", BindingFlags.Static | BindingFlags.NonPublic)!;
+		var displayAdapterType = Type.GetType("Uno.UI.Runtime.Win32.Win32DisplayAdapter, Uno.UI.Runtime.Win32", throwOnError: true)!;
+		var displayAdapterOverride = displayAdapterType.GetProperty("Override", BindingFlags.Static | BindingFlags.NonPublic)!;
+		object NamedAdapter(string name) => displayAdapterType.GetMethod("Parse", BindingFlags.Static | BindingFlags.NonPublic)!.Invoke(null, ["", name]);
+
+		void SimulateDisplayOn(bool contextsAdapter)
+		{
+			luidOverride.SetValue(null, contextsAdapter ? deviceLuid : deviceLuid + 1);
+			displayAdapterOverride.SetValue(null, NamedAdapter(contextsAdapter && rendererName is not null ? rendererName : "Another Adapter"));
+		}
 
 		var window = TestServices.WindowHelper.CurrentTestWindow;
 		var previousBackdrop = window.SystemBackdrop;
@@ -462,18 +566,18 @@ public class Given_Window
 		try
 		{
 			windowContent.RequestedTheme = theme;
-			luidOverride.SetValue(null, deviceLuid);
+			SimulateDisplayOn(contextsAdapter: true);
 			window.SystemBackdrop = new MicaBackdrop();
 			await TestServices.WindowHelper.WaitForIdle();
 			Assert.AreEqual(materialMode, root.BackdropBackground, "The rendering adapter drives the display, so the material shows.");
 
 			// What unplugging a screen or dragging the window to another adapter's screen ends in.
-			luidOverride.SetValue(null, deviceLuid + 1);
+			SimulateDisplayOn(contextsAdapter: false);
 			SendMessage(hwnd, WM_DISPLAYCHANGE, 0, 0);
 			await TestServices.WindowHelper.WaitForIdle();
 			AssertPaintsPageBackground(root, expected);
 
-			luidOverride.SetValue(null, deviceLuid);
+			SimulateDisplayOn(contextsAdapter: true);
 			SendMessage(hwnd, WM_DISPLAYCHANGE, 0, 0);
 			await TestServices.WindowHelper.WaitForIdle();
 			Assert.AreEqual(materialMode, root.BackdropBackground, "The material returns with the adapter.");
@@ -481,7 +585,7 @@ public class Given_Window
 			// A resize alone can change the window's monitor, with no move: the largest overlap decides it.
 			var backdropMonitor = wrapper.GetType().GetField("_backdropMonitor", BindingFlags.Instance | BindingFlags.NonPublic)!;
 			backdropMonitor.SetValue(wrapper, Activator.CreateInstance(backdropMonitor.FieldType));
-			luidOverride.SetValue(null, deviceLuid + 1);
+			SimulateDisplayOn(contextsAdapter: false);
 			window.AppWindow.Resize(new Windows.Graphics.SizeInt32(previousSize.Width + 1, previousSize.Height));
 			await TestServices.WindowHelper.WaitForIdle();
 			AssertPaintsPageBackground(root, expected);
@@ -489,6 +593,7 @@ public class Given_Window
 		finally
 		{
 			luidOverride.SetValue(null, null);
+			displayAdapterOverride.SetValue(null, null);
 			window.AppWindow.Resize(previousSize);
 			window.SystemBackdrop = previousBackdrop;
 			windowContent.RequestedTheme = previousTheme;
@@ -496,7 +601,7 @@ public class Given_Window
 		}
 	}
 
-	private static long? GetFirstHardwareAdapterLuid()
+	private static DXGI_ADAPTER_DESC1? GetFirstHardwareAdapter()
 	{
 		const int EnumAdapters1Slot = 12, GetDesc1Slot = 10;
 		const uint WarpVendorId = 0x1414, WarpDeviceId = 0x8C;
@@ -513,7 +618,7 @@ public class Given_Window
 					System.Runtime.InteropServices.Marshal.ThrowExceptionForHR(VTableMethod<GetDesc1Delegate>(adapter, GetDesc1Slot)(adapter, out var desc));
 					if (desc.VendorId != WarpVendorId || desc.DeviceId != WarpDeviceId)
 					{
-						return desc.AdapterLuid;
+						return desc;
 					}
 				}
 				finally

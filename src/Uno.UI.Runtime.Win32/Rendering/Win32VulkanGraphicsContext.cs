@@ -16,7 +16,7 @@ namespace Uno.UI.Runtime.Win32;
 /// the whole frame; <see cref="Present"/> blits the render image to the swapchain and releases it. The ctor throws
 /// when Vulkan is unavailable so negotiation falls through to the next kind.
 /// </summary>
-internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceContext, IWin32PacedContext, IWin32PresentReporting
+internal sealed class Win32VulkanGraphicsContext : ISwapChain, IVulkanDeviceContext, IWin32PacedContext, IWin32PresentReporting, IWin32AdapterBoundContext
 {
 	// Instance + device creation is ~90% of the Vulkan init cost and needs no window, so the first window's device
 	// is created on a background thread while the app starts up.
