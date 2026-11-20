@@ -57,19 +57,32 @@ namespace Microsoft.UI.Xaml.Media
 
 			// Replaced, releasable and held by none: its wait to be released.
 			internal PendingImageReleases.Entry Wait;
+
+			// For data the cache shares, this source's use of it while a subscription holds it (SharedImageDecode).
+			internal SharedImageDecode.SourceUse Use;
 		}
 
 		// Changes whenever _imageData is replaced.
 		private int _dataVersion;
 
+		// What the shared decodes this source uses know it by.
+		private SharedImageDecode.User _shareUser;
+
 		// The wait of what this source decoded while nothing subscribes to it.
 		private PendingImageReleases.Entry _pendingRelease;
+
+		private Vector2? _releasedPixelSize;
 
 		/// <summary>
 		/// The pixel size of what this source released because nothing displayed it, until it opens again or changes: an
 		/// Image measures with it meanwhile, so it doesn't collapse while the source decodes or downloads again.
 		/// </summary>
-		internal Vector2? ReleasedPixelSize { get; private set; }
+		internal Vector2? ReleasedPixelSize
+		{
+			// A shared decode released because nothing displayed it stays this source's data until it opens again.
+			get => _releasedPixelSize ?? (_imageData.Share is { IsReleased: true } share ? share.ReleasedPixelSize : null);
+			private set => _releasedPixelSize = value;
+		}
 
 		protected ImageSource()
 		{
@@ -140,7 +153,7 @@ namespace Microsoft.UI.Xaml.Media
 
 			CancelPendingRelease();
 
-			if (_imageData.HasData)
+			if (HasLiveData)
 			{
 				subscription.Deliver(_imageData);
 			}
@@ -376,6 +389,20 @@ namespace Microsoft.UI.Xaml.Media
 			held.Count += change;
 			Debug.Assert(held.Count >= 0, "A subscription let go of a surface it did not hold.");
 
+			// A shared decode counts this source as one of its users while any of its subscriptions holds it.
+			if (held.Data.Share is { } share)
+			{
+				if (change > 0 && held.Count == 1 && !share.IsReleased)
+				{
+					held.Use = share.AddSource(_shareUser ??= new());
+				}
+				else if (held.Count == 0 && held.Use is { } use)
+				{
+					held.Use = null;
+					share.RemoveSource(use, _shareUser);
+				}
+			}
+
 			if (change > 0 && held.Wait is { } wait)
 			{
 				// Held again: it no longer waits.
@@ -552,7 +579,8 @@ namespace Microsoft.UI.Xaml.Media
 				return held.Data;
 			}
 
-			return ReferenceEquals(surface, _imageData.CompositionSurface) ? _imageData : default;
+			// A shared decode no subscription holds waits on its own: the subscriber becomes one of its users again.
+			return ReferenceEquals(surface, _imageData.CompositionSurface) ? _imageData : SharedImageDecode.FindLive(surface);
 		}
 
 		// A failure stays until the source changes, as on WinUI, where a source that needs no reload is not reloaded for an
@@ -577,7 +605,11 @@ namespace Microsoft.UI.Xaml.Media
 		/// Indicates that this source has already been opened
 		/// (So the onSourceOpened callback of Subscribe will be invoked synchronously!)
 		/// </summary>
-		internal bool IsOpened => _imageData.HasData;
+		internal bool IsOpened => HasLiveData;
+
+		// A source keeps shared data while nothing subscribes to it, but the shared decode may be released meanwhile: the
+		// source then has no data, and its next subscriber opens it again.
+		private bool HasLiveData => _imageData.HasData && _imageData.Share is not { IsReleased: true };
 
 		private protected void InvalidateSource()
 		{
@@ -630,7 +662,17 @@ namespace Microsoft.UI.Xaml.Media
 						if (!isEnqueued)
 						{
 							KeepWeakCallbacksWhileOpening(false);
+
+							// Nothing will complete the open: it is stopped, so that a result still to come gives up its use of
+							// a shared decode itself.
+							_opening.Disposable = null;
 						}
+					}
+
+					// A result already at hand is given up here, which releases it or ends that use.
+					if (!isEnqueued && asyncImg.IsCompletedSuccessfully)
+					{
+						Complete(asyncImg.Result);
 					}
 				}
 				else
@@ -648,25 +690,34 @@ namespace Microsoft.UI.Xaml.Media
 			// releases what it produced, unless it is the one surface a WriteableBitmap opens into.
 			void Complete(ImageData data)
 			{
-				if (!ct.IsCancellationRequested)
+				try
 				{
-					_isOpening = false;
-					try
+					if (!ct.IsCancellationRequested)
 					{
-						OnOpened(data);
-					}
-					finally
-					{
-						// Kept through the delivery; an open its listeners started meanwhile keeps its own.
-						if (!_isOpening)
+						_isOpening = false;
+						try
 						{
-							KeepWeakCallbacksWhileOpening(false);
+							OnOpened(data);
+						}
+						finally
+						{
+							// Kept through the delivery; an open its listeners started meanwhile keeps its own.
+							if (!_isOpening)
+							{
+								KeepWeakCallbacksWhileOpening(false);
+							}
 						}
 					}
+					else if (!ReferenceEquals(data.CompositionSurface, _imageData.CompositionSurface))
+					{
+						ReleaseSurface(data);
+					}
 				}
-				else if (!ReferenceEquals(data.CompositionSurface, _imageData.CompositionSurface))
+				finally
 				{
-					ReleaseSurface(data);
+					// A shared result comes with its open as one of its users, which ends once the subscriptions it was delivered
+					// to hold it, even if one of them threw.
+					data.Share?.EndOpen();
 				}
 			}
 		}

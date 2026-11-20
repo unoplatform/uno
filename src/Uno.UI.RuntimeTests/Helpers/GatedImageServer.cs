@@ -15,7 +15,7 @@ namespace Uno.UI.RuntimeTests.Helpers;
 /// Minimal loopback HTTP server that serves ms-appx:///Assets/square100.png, sending the response headers immediately but
 /// holding the image bytes until <see cref="ReleaseResponses"/>, so a test can act while a download is deterministically
 /// in flight. <see cref="HoldResponses"/> holds the later ones again. With <see cref="FailNextRequest"/> set, the next
-/// request gets an HTTP 500 instead of the image.
+/// request gets an HTTP 500 instead of the image; with <see cref="FailResponses"/> set, every response does, once released.
 /// </summary>
 internal sealed class GatedImageServer : IDisposable
 {
@@ -61,6 +61,23 @@ internal sealed class GatedImageServer : IDisposable
 		get => _failNextRequest;
 		set => _failNextRequest = value;
 	}
+
+	/// <summary>
+	/// Whether responses fail (500, no body) once released, rather than serving the image: a download in flight that fails.
+	/// </summary>
+	public bool FailResponses { get; set; }
+
+	/// <summary>
+	/// A response header added to the image, such as "Cache-Control: no-store".
+	/// </summary>
+	public string? ExtraHeader { get; set; }
+
+	public string Status { get; set; } = "200 OK";
+
+	/// <summary>
+	/// Whether a request for <see cref="Uri"/> is redirected to another path, which serves the image.
+	/// </summary>
+	public bool RedirectRequests { get; set; }
 
 	public void ReleaseResponses() => Volatile.Read(ref _release).TrySetResult();
 
@@ -131,7 +148,23 @@ internal sealed class GatedImageServer : IDisposable
 				return;
 			}
 
-			var headers = $"HTTP/1.1 200 OK\r\nContent-Type: image/png\r\nContent-Length: {_body.Length}\r\nConnection: close\r\n\r\n";
+			if (FailResponses)
+			{
+				await Volatile.Read(ref _release).Task.ConfigureAwait(false);
+				await stream.WriteAsync(Encoding.ASCII.GetBytes("HTTP/1.1 500 Internal Server Error\r\nContent-Length: 0\r\nConnection: close\r\n\r\n")).ConfigureAwait(false);
+				await stream.FlushAsync().ConfigureAwait(false);
+				return;
+			}
+
+			if (RedirectRequests && Encoding.ASCII.GetString(request, 0, read).StartsWith($"GET {Uri.AbsolutePath} ", StringComparison.Ordinal))
+			{
+				await stream.WriteAsync(Encoding.ASCII.GetBytes("HTTP/1.1 302 Found\r\nLocation: /redirected.png\r\nContent-Length: 0\r\nConnection: close\r\n\r\n")).ConfigureAwait(false);
+				await stream.FlushAsync().ConfigureAwait(false);
+				return;
+			}
+
+			var extra = ExtraHeader is { Length: > 0 } header ? header + "\r\n" : "";
+			var headers = $"HTTP/1.1 {Status}\r\nContent-Type: image/png\r\nContent-Length: {_body.Length}\r\nConnection: close\r\n{extra}\r\n";
 			await stream.WriteAsync(Encoding.ASCII.GetBytes(headers)).ConfigureAwait(false);
 			await stream.FlushAsync().ConfigureAwait(false);
 

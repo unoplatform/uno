@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Uno.Collections;
 
 
-// TODO: Remove this in the next major release. Use LRUCache instead
+// TODO: Remove this in the next major release.
 public partial class LruCache<TKey, TValue>
 {
 	// essentially, a KeyValuePair where the value is mutable
