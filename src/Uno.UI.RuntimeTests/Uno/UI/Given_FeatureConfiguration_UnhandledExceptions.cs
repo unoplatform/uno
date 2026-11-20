@@ -8,7 +8,11 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.Extensions;
+using Uno.UI.DevTools.Input;
+using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
 using BindingHelper = Uno.UI.Xaml.BindingHelper;
 using MuxUnhandledExceptionEventArgs = Microsoft.UI.Xaml.UnhandledExceptionEventArgs;
@@ -169,6 +173,40 @@ public class Given_FeatureConfiguration_UnhandledExceptions
 
 			Assert.ThrowsExactly<TestException>(() =>
 				sut.SafeRaiseEvent(UIElement.TappedEvent, new TappedRoutedEventArgs()));
+
+			Assert.AreEqual(1, reported);
+		}
+		finally
+		{
+			Application.Current.UnhandledException -= Handler;
+			FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions = originalFlag;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_PointerPressed_Throws_FlagOn_Unhandled_ReportedOnce()
+	{
+		var originalFlag = FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions;
+		var reported = 0;
+
+		void Handler(object s, MuxUnhandledExceptionEventArgs e) => reported++;
+
+		try
+		{
+			var sut = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Microsoft.UI.Colors.Red) };
+			sut.PointerPressed += (_, _) => throw new TestException("from-pointer");
+
+			await UITestHelper.Load(sut);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions = true;
+			Application.Current.UnhandledException += Handler;
+
+			// Goes through the InputManager, whose outer catch sees the error the element already reported.
+			Assert.ThrowsExactly<TestException>(() => mouse.Press(sut.GetAbsoluteBounds().GetCenter()));
 
 			Assert.AreEqual(1, reported);
 		}
