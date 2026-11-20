@@ -105,7 +105,10 @@ public class Given_ManagedImageDecoder
 	[DataRow("gif-local-table-overrun")]
 	[DataRow("gif-screen-over-cap")]
 	[DataRow("gif-frame-over-cap")]
+	[DataRow("gif-lzw-code-size-12")]
 	[DataRow("gif-lzw-code-size-13")]
+	[DataRow("gif-lzw-code-size-32")]
+	[DataRow("gif-lzw-code-size-44")]
 	[DataRow("gif-sub-block-overrun")]
 	[DataRow("gif-no-image")]
 	[DataRow("bmp-short")]
@@ -281,7 +284,7 @@ public class Given_ManagedImageDecoder
 		"gif-local-table-overrun" => Gif(5, 3, globalTable: false, localTable: true)[..34],
 		"gif-screen-over-cap" => Gif(5, 3, screenWidth: 65535, screenHeight: 65535),
 		"gif-frame-over-cap" => Gif(5, 3, frameWidth: 65535, frameHeight: 65535),
-		"gif-lzw-code-size-13" => Gif(5, 3, minCodeSize: 13),
+		_ when name.StartsWith("gif-lzw-code-size-", StringComparison.Ordinal) => Gif(5, 3, minCodeSize: int.Parse(name["gif-lzw-code-size-".Length..])),
 		"gif-sub-block-overrun" => Gif(5, 3, subBlocks: [0x40, 0x84, 0x1D]),
 		"gif-no-image" => Gif(5, 3, frames: 0),
 

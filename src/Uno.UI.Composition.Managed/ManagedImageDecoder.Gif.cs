@@ -115,9 +115,10 @@ internal static partial class ManagedImageDecoder
 				p += tableLength;
 			}
 
-			// The LZW minimum code size, whose clear code DecodeLzw's 4096-entry tables must hold, then the data sub-blocks.
+			// The LZW minimum code size, whose clear and end codes DecodeLzw's 4096-entry tables must hold, then the data
+			// sub-blocks. (Compared directly: a shift would mask the count to 5 bits and let 32 and above through.)
 			var dataOffset = p;
-			if ((1 << d[p++]) > 4096)
+			if (d[p++] >= 12)
 			{
 				return false;
 			}
