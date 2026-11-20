@@ -75,7 +75,24 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal override IGeometry GetGeometry() => BuildGeometry(false);
 
-		internal override IGeometry GetFilledGeometry() => BuildGeometry(true);
+		// No figure filled (a chart's line): nothing to fill, rather than an empty path built for every render.
+		internal override IGeometry GetFilledGeometry() => HasFilledFigure ? BuildGeometry(true) : null;
+
+		private bool HasFilledFigure
+		{
+			get
+			{
+				foreach (PathFigure figure in Figures)
+				{
+					if (figure.IsFilled)
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
+		}
 
 		private IGeometry BuildGeometry(bool skipUnfilled)
 		{
