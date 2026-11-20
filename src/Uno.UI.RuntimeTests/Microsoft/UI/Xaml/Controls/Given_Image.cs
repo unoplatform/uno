@@ -911,6 +911,62 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse(MayBeAnimated(await ReadAssetAsync("ms-appx:///Assets/Formats/uno-overalls.png")));
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25543")]
+		[DataRow("ms-appx:///Assets/Formats/animated.gif", 480)]
+		[DataRow("ms-appx:///Assets/Formats/animated.webp", 24)]
+		public async Task When_Codec_Declines_Animated_Image_Then_Browser_Shows_It(string uri, int size)
+		{
+			// A codec that can't decode the animation (as the managed decoder can't an animated WebP) leaves its first
+			// frame to the browser decode, as before the content check sent the image to the codec.
+			using var _ = DecliningDecoder.Register();
+			var bitmap = await FromStreamAsync(uri);
+			var image = new Image { Width = 100, Height = 100, Source = bitmap };
+			string failure = null;
+			var opened = false;
+			image.ImageOpened += (_, _) => opened = true;
+			image.ImageFailed += (_, e) => failure = e.ErrorMessage;
+
+			await UITestHelper.Load(image);
+			await WindowHelper.WaitFor(() => opened || failure is not null, timeoutMS: 10000, message: "The image should open or fail");
+
+			Assert.IsNull(failure, $"The image failed to open: {failure}");
+			Microsoft.UI.Composition.CompositionImageSurface surface = null;
+			bitmap.Subscribe(data => surface = data.CompositionSurface as Microsoft.UI.Composition.CompositionImageSurface).Dispose();
+			Assert.IsNotNull(surface?.Image, "The browser should decode the first frame.");
+			Assert.AreEqual((size, size), (surface.Image.PixelWidth, surface.Image.PixelHeight));
+		}
+
+		private sealed class DecliningDecoder : Uno.UI.Composition.Drawing.IImageEncoderDecoder
+		{
+			private readonly Uno.UI.Composition.Drawing.IImageEncoderDecoder _inner;
+
+			private DecliningDecoder(Uno.UI.Composition.Drawing.IImageEncoderDecoder inner) => _inner = inner;
+
+			public static IDisposable Register()
+			{
+				var inner = Uno.UI.Composition.Drawing.ImageEncoderDecoder.Current;
+				Uno.UI.Composition.Drawing.ImageEncoderDecoder.Current = new DecliningDecoder(inner);
+				return Uno.Disposables.Disposable.Create(() => Uno.UI.Composition.Drawing.ImageEncoderDecoder.Current = inner);
+			}
+
+			public bool TryDecode(System.IO.Stream stream, int? targetWidth, int? targetHeight, out Uno.UI.Composition.Drawing.ImageFrames frames)
+			{
+				frames = null;
+				return false;
+			}
+
+			public Uno.UI.Composition.Drawing.IImage CreateImage(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
+				=> _inner.CreateImage(pixelWidth, pixelHeight, bgraPremul);
+
+			public Uno.UI.Composition.Drawing.ImageFrames CreateFrames(Uno.UI.Composition.Drawing.IImage image) => _inner.CreateFrames(image);
+
+			public void Encode(System.IO.Stream destination, byte[] pixels, int width, int height, Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat, Windows.Graphics.Imaging.BitmapAlphaMode alphaMode, Uno.UI.Composition.Drawing.BitmapEncoderFormat format, int quality)
+				=> _inner.Encode(destination, pixels, width, height, pixelFormat, alphaMode, format, quality);
+		}
+
 		private static async Task AssertFramesAdvance(BitmapImage bitmap, string what)
 		{
 			var image = new Image { Width = 100, Height = 100, Source = bitmap };

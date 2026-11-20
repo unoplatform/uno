@@ -45,7 +45,15 @@ internal static partial class ImageSourceHelpers
 
 		bool hasTargetSize = targetWidth is not null || targetHeight is not null;
 
-		if (OperatingSystem.IsBrowser() && !hasTargetSize && !MayBeAnimated(buffer))
+		// Only the codec decodes every frame of an animation. The content check is only a hint, so the browser still
+		// gets a buffer the codec declines, and shows its first frame.
+		var codecData = OperatingSystem.IsBrowser() && !hasTargetSize && MayBeAnimated(buffer) ? LoadWithCodec(buffer, targetWidth, targetHeight) : default(ImageData?);
+		if (codecData is { Kind: not ImageDataKind.Error })
+		{
+			return codecData.Value;
+		}
+
+		if (OperatingSystem.IsBrowser() && !hasTargetSize)
 		{
 			// The JS object holds the decoded pixels until it is released, and its finalizer only runs when the GC
 			// happens to collect: allocations outside the managed heap don't prompt one.
@@ -53,7 +61,7 @@ internal static partial class ImageSourceHelpers
 
 			if (decodedBufferObject.GetPropertyAsString("error") is { } errorMessage)
 			{
-				typeof(ImageSourceHelpers).LogError()?.Error($"Failed to load image with the browser Canvas API. Falling back to SKCodec-based loading/decoding: {errorMessage}");
+				typeof(ImageSourceHelpers).LogError()?.Error($"Failed to load image with the browser Canvas API: {errorMessage}");
 			}
 			else
 			{
@@ -91,6 +99,11 @@ internal static partial class ImageSourceHelpers
 			}
 		}
 
+		return codecData ?? LoadWithCodec(buffer, targetWidth, targetHeight);
+	}
+
+	private static ImageData LoadWithCodec(byte[] buffer, int? targetWidth, int? targetHeight)
+	{
 		var surface = new CompositionImageSurface();
 		var result = surface.LoadFromStream(targetWidth, targetHeight, new MemoryStream(buffer));
 
