@@ -16,13 +16,58 @@ internal sealed class WebGpuShapeCache
 	internal sealed class Shape
 	{
 		// All in the recording's space with the recorded translation left out (the command adds its Offset), so one
-		// glyph drawn at a hundred positions is one entry.
-		public float[] Edges;      // x0,y0,x1,y1 per edge; null when the outline could not be captured
+		// glyph drawn at a hundred positions is one entry. In native memory, freed by Sweep once the shape went
+		// unused: a geometry made every frame tessellates every frame.
+		public NativeFloats Edges;      // x0,y0,x1,y1 per edge; null when the outline could not be captured
 		public long Hash;          // the outline relative to its bbox corner: identical shapes share atlas entries
 		public Vector2 BbMin, BbMax;
-		public float[] Tris;       // triangles tiling the fill (x,y per vertex); null when only a mask can draw it
-		public float[] Cov;        // per-vertex coverage of Tris' AA ring; null = hard edges
+		public NativeFloats Tris;       // triangles tiling the fill (x,y per vertex); null when only a mask can draw it
+		public NativeFloats Cov;        // per-vertex coverage of Tris' AA ring; null = hard edges
 		public static readonly Shape Empty = new();
+
+		// Where the cache holds it, and the frame it was last handed out in (see Sweep).
+		internal Dictionary<Key, Shape> Owner;
+		internal Key OwnerKey;
+		internal long LastUsed;
+
+		internal void FreeData()
+		{
+			Edges.Free(); Tris.Free(); Cov.Free();
+			Edges = Tris = Cov = default;
+			Hash = 0; BbMin = BbMax = default; Owner = null; OwnerKey = default;
+		}
+	}
+
+	// Shapes holding native memory, for Sweep; and the ones it freed, for reuse.
+	private readonly List<Shape> _live = new();
+	private readonly Stack<Shape> _spare = new();
+	private const long ShapeIdleFrames = 120;
+
+	/// <summary>The current frame, for the shapes handed out to remember (see <see cref="Sweep"/>).</summary>
+	internal long Frame;
+
+	private Shape NewShape() => _spare.Count > 0 ? _spare.Pop() : new Shape();
+
+	/// <summary>Frees the shapes nothing asked for in a while. Called at the frame start, before any walk.</summary>
+	internal void Sweep()
+	{
+		if ((Frame & 31) != 0) { return; }
+		var kept = 0;
+		for (var i = 0; i < _live.Count; i++)
+		{
+			var s = _live[i];
+			if (Frame - s.LastUsed < ShapeIdleFrames) { _live[kept++] = s; continue; }
+			if (s.Owner is { } owner)
+			{
+				lock (owner)
+				{
+					if (owner.TryGetValue(s.OwnerKey, out var held) && ReferenceEquals(held, s)) { owner.Remove(s.OwnerKey); }
+				}
+			}
+			s.FreeData();
+			if (_spare.Count < 4096) { _spare.Push(s); }
+		}
+		_live.RemoveRange(kept, _live.Count - kept);
 	}
 
 	// The quantisation policy, the one place deciding which transforms share a shape: density in sixteenths (exact
@@ -30,7 +75,7 @@ internal sealed class WebGpuShapeCache
 	public static float DensityClass(float scale) => MathF.Max(1f / 16f, MathF.Round(scale * 16f) / 16f);
 	private static long Q(float v) => (long)MathF.Round(v * 64f);
 
-	private readonly record struct Key(long M11, long M12, long M21, long M22, float Density, bool EvenOdd, float Stroke, StrokeJoin Join);
+	internal readonly record struct Key(long M11, long M12, long M21, long M22, float Density, bool EvenOdd, float Stroke, StrokeJoin Join);
 	private readonly ConditionalWeakTable<IGeometry, Dictionary<Key, Shape>> _byGeometry = new();
 
 	// Why fills took the mask route, and why tessellation refused (UNO_WEBGPU_STATS).
@@ -52,11 +97,13 @@ internal sealed class WebGpuShapeCache
 		{
 			if (!shapes.TryGetValue(key, out var s))
 			{
-				if (shapes.Count >= 8) { shapes.Clear(); }   // a zoom's worth of classes; the geometry bounds the lifetime
+				if (shapes.Count >= 8) { shapes.Clear(); }   // a zoom's worth of classes; Sweep frees what this drops
 				var linear = new Matrix3x2(m.M11, m.M12, m.M21, m.M22, 0f, 0f);
 				s = stroke > 0f ? BuildStrip(g, linear, stroke, density, join) : BuildFill(g, linear, density, evenOdd);
 				shapes[key] = s;
+				if (!ReferenceEquals(s, Shape.Empty)) { s.Owner = shapes; s.OwnerKey = key; _live.Add(s); }
 			}
+			s.LastUsed = Frame;
 			return s;
 		}
 	}
@@ -157,7 +204,7 @@ internal sealed class WebGpuShapeCache
 		if (contours.Count == 0) { return Shape.Empty; }
 		PathTessellator.Simplify(contours, 0.03f / density);
 
-		var s = new Shape();
+		var s = NewShape();
 		var total = 0;
 		var bbMin = new Vector2(float.MaxValue); var bbMax = new Vector2(float.MinValue);
 		foreach (var c in contours) { total += c.Count; foreach (var p in c) { bbMin = Vector2.Min(bbMin, p); bbMax = Vector2.Max(bbMax, p); } }
@@ -169,14 +216,14 @@ internal sealed class WebGpuShapeCache
 		// and the area check rejects outlines on which the two fill rules disagree, so a success serves either rule.
 		if (Tessellate(contours, total, density, out s.Tris, out s.Cov)) { return s; }
 		// A single non-zero contour that is star-shaped about its centroid tiles as a plain fan: hard edges, one pass.
-		if (!evenOdd && contours.Count == 1 && CentroidFan(contours[0]) is { } fan) { s.Tris = fan; return s; }
+		if (!evenOdd && contours.Count == 1 && CentroidFan(contours[0]) is { IsNull: false } fan) { s.Tris = fan; return s; }
 		StatFanRefused++;
 		return s;
 	}
 
-	private static float[] Edges(List<List<Vector2>> contours, int total)
+	private static NativeFloats Edges(List<List<Vector2>> contours, int total)
 	{
-		var edges = new float[total * 4];
+		var native = NativeFloats.Alloc(total * 4, out var edges);
 		var w = 0;
 		foreach (var pts in contours)
 		{
@@ -186,13 +233,13 @@ internal sealed class WebGpuShapeCache
 				edges[w++] = a.X; edges[w++] = a.Y; edges[w++] = b.X; edges[w++] = b.Y;
 			}
 		}
-		return edges;
+		return native;
 	}
 
 	// The outline's identity for the atlas: its edges relative to its own bbox corner, bit for bit, so two geometry
 	// objects with the same outline share one entry and nothing that differs by even a rounding step does (a shared
 	// mask must render exactly as a fresh bake would). Never zero, so zero can mean "no outline".
-	private static long EdgeHash(float[] edges, Vector2 origin, bool evenOdd)
+	private static long EdgeHash(ReadOnlySpan<float> edges, Vector2 origin, bool evenOdd)
 	{
 		ulong h = 14695981039346656037UL;
 		for (var i = 0; i < edges.Length; i++)
@@ -212,9 +259,9 @@ internal sealed class WebGpuShapeCache
 	private readonly List<float> _tessVerts = new();
 	private readonly List<float> _tessCoverage = new();
 
-	private bool Tessellate(List<List<Vector2>> contours, int total, float density, out float[] tris, out float[] cov)
+	private bool Tessellate(List<List<Vector2>> contours, int total, float density, out NativeFloats tris, out NativeFloats cov)
 	{
-		tris = cov = null;
+		tris = cov = default;
 		if (total > PathTessellator.MaxPoints) { StatTessPoints++; return false; }
 		var idx = PathTessellator.TryTriangulate(contours);
 		if (idx is null) { StatTessTri++; return false; }
@@ -237,19 +284,21 @@ internal sealed class WebGpuShapeCache
 		// Half the antialiasing ring, in the recording's units: half a device pixel at this density.
 		var verts = _tessVerts; var coverage = _tessCoverage;
 		if (!PathTessellator.BuildGeometry(contours, idx, 0.5f / density, verts, coverage)) { StatTessFold++; return false; }
-		tris = verts.ToArray();
-		cov = coverage.ToArray();
+		tris = NativeFloats.Copy(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(verts));
+		cov = NativeFloats.Copy(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(coverage));
 		return true;
 	}
 
 	// A fan from the centroid tiles the contour iff every triangle winds the same way: sum|area| == |sum area|.
-	private static float[] CentroidFan(List<Vector2> pts)
+	[ThreadStatic] private static float[] t_fanScratch;
+
+	private static NativeFloats CentroidFan(List<Vector2> pts)
 	{
 		var n = pts.Count;
 		var c = Vector2.Zero;
 		foreach (var p in pts) { c += p; }
 		c /= n;
-		var fan = new float[n * 6];
+		var fan = t_fanScratch is { } scratch && scratch.Length >= n * 6 ? scratch : t_fanScratch = new float[Math.Max(n * 6, 64)];
 		double abs = 0, signed = 0;
 		for (var i = 0; i < n; i++)
 		{
@@ -258,7 +307,7 @@ internal sealed class WebGpuShapeCache
 			double ar = ((double)a.X - c.X) * ((double)b.Y - c.Y) - ((double)b.X - c.X) * ((double)a.Y - c.Y);
 			abs += Math.Abs(ar); signed += ar;
 		}
-		return abs > 0 && Math.Abs(abs - Math.Abs(signed)) <= 1e-4 * abs ? fan : null;
+		return abs > 0 && Math.Abs(abs - Math.Abs(signed)) <= 1e-4 * abs ? NativeFloats.Copy(fan.AsSpan(0, n * 6)) : default;
 	}
 
 	// ------------------------------------------------------------------------------------------------ strokes
@@ -269,11 +318,11 @@ internal sealed class WebGpuShapeCache
 	// their join edge exactly, so a translucent stroke does not double-blend, except where the polyline crosses itself.
 	[ThreadStatic] private static List<float> t_stripScratch;
 
-	private static Shape BuildStrip(IGeometry g, in Matrix3x2 linear, float width, float density, StrokeJoin join)
+	private Shape BuildStrip(IGeometry g, in Matrix3x2 linear, float width, float density, StrokeJoin join)
 	{
 		// Flattened in local space at the density the linear map will produce.
 		var scale = MathF.Max(new Vector2(linear.M11, linear.M12).Length(), new Vector2(linear.M21, linear.M22).Length());
-		var flat = new OpenFlattener(FlattenTolerancePx / MathF.Max(density * scale, 1e-3f));
+		var flat = (t_openFlattener ??= new OpenFlattener(0)).Reuse(FlattenTolerancePx / MathF.Max(density * scale, 1e-3f));
 		g.StreamSegments(flat);
 		// Only the finished strip is kept, copied out of this scratch.
 		var tris = t_stripScratch ??= new List<float>();
@@ -285,15 +334,28 @@ internal sealed class WebGpuShapeCache
 			Strip(pts, closed, h, join, density * scale, linear, tris, ref bbMin, ref bbMax);
 		}
 		if (tris.Count == 0) { return Shape.Empty; }
-		return new Shape { Tris = tris.ToArray(), BbMin = bbMin, BbMax = bbMax };
+		var s = NewShape();
+		s.Tris = NativeFloats.Copy(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(tris));
+		s.BbMin = bbMin; s.BbMax = bbMax;
+		return s;
 	}
 
 	// Flattens in the geometry's own space and keeps open contours open.
+	[ThreadStatic] private static OpenFlattener t_openFlattener;
+
 	private sealed class OpenFlattener : IGeometrySink
 	{
 		private readonly Flattener _inner;
 		public readonly List<(List<Vector2> Pts, bool Closed)> Contours = new();
 		public OpenFlattener(float tolerance) { _inner = new Flattener(Matrix3x2.Identity, tolerance, fill: false); }
+
+		/// <summary>Starts over, reusing the point lists of the previous use, which must be done with its contours.</summary>
+		public OpenFlattener Reuse(float tolerance)
+		{
+			Contours.Clear();
+			_inner.Reuse(Matrix3x2.Identity, tolerance, fill: false);
+			return this;
+		}
 		public void BeginFigure(Vector2 start) => _inner.BeginFigure(start);
 		public void LineTo(Vector2 point) => _inner.LineTo(point);
 		public void QuadTo(Vector2 control, Vector2 point) => _inner.QuadTo(control, point);
@@ -305,6 +367,8 @@ internal sealed class WebGpuShapeCache
 			if (_inner.Contours.Count > before) { Contours.Add((_inner.Contours[^1], closed)); }
 		}
 	}
+
+	[ThreadStatic] private static Joint[] t_joints;
 
 	private static void Strip(List<Vector2> pts, bool closed, float h, StrokeJoin join, float deviceScale, in Matrix3x2 m, List<float> tris, ref Vector2 bbMin, ref Vector2 bbMax)
 	{
@@ -322,7 +386,7 @@ internal sealed class WebGpuShapeCache
 		var wedged = join is StrokeJoin.Round or StrokeJoin.Bevel;
 
 		// One Joint per vertex, in one array: a miter join is the common case and must cost what it always did.
-		var joints = new Joint[n];
+		var joints = t_joints is { } spare && spare.Length >= n ? spare : t_joints = new Joint[Math.Max(n, 64)];
 		for (int i = 0; i < n; i++)
 		{
 			var hasPrev = i > 0 || closed;

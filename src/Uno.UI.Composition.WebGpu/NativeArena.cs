@@ -193,6 +193,39 @@ internal static unsafe class NativeChunkPool
 	}
 }
 
+/// <summary>Floats in native memory, owned by whoever allocated them (see <see cref="WebGpuShapeCache"/>).</summary>
+internal readonly unsafe struct NativeFloats
+{
+	private readonly float* _ptr;
+
+	private NativeFloats(float* ptr, int length) { _ptr = ptr; Length = length; }
+
+	public int Length { get; }
+
+	public bool IsNull => _ptr is null;
+
+	public ReadOnlySpan<float> Span => new(_ptr, Length);
+
+	public static implicit operator ReadOnlySpan<float>(NativeFloats f) => f.Span;
+
+	public static NativeFloats Copy(ReadOnlySpan<float> source)
+	{
+		var p = (float*)NativeMemory.Alloc((nuint)Math.Max(1, source.Length), sizeof(float));
+		source.CopyTo(new Span<float>(p, source.Length));
+		return new NativeFloats(p, source.Length);
+	}
+
+	/// <summary>Unwritten floats for the caller to fill through <paramref name="span"/>.</summary>
+	public static NativeFloats Alloc(int length, out Span<float> span)
+	{
+		var p = (float*)NativeMemory.Alloc((nuint)Math.Max(1, length), sizeof(float));
+		span = new Span<float>(p, length);
+		return new NativeFloats(p, length);
+	}
+
+	public void Free() => NativeMemory.Free(_ptr);
+}
+
 /// <summary>A run of clip entries in native memory (see <see cref="NativeArena"/>); never written once built.</summary>
 internal readonly unsafe struct ClipEntries
 {
