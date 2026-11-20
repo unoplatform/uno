@@ -167,7 +167,9 @@ for this: when its `Info.plist` has none, Uno Platform adopts the scene lifecycl
 once the app is built with a version 27 SDK, and hosts the app's window in its scene. The switch
 therefore comes with the move to Xcode 27, not with the upgrade to 7.0: an app built with an
 older SDK keeps the app lifecycle unless it sets `UnoUseSceneLifecycle`. An app that declares a
-manifest keeps using it.
+manifest keeps using it. The .NET iOS SDK's build check for a scene manifest (MT7199) can't see
+that adoption, so the Uno.Sdk turns it off for iOS apps, see
+[Scene lifecycle](xref:Uno.Features.CustomizingUIApplicationDelegate#scene-lifecycle).
 
 Under the scene lifecycle UIKit no longer calls the application delegate's URL, user activity,
 home-screen shortcut, and foreground and background methods. For an app without a manifest, Uno

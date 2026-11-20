@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ProgressRingAutomationPeer.cpp, tag winui3/release/1.8.4
+// MUX Reference ProgressRingAutomationPeer.cpp and ProgressRingAutomationPeer.h
 
 #nullable enable
 
@@ -39,7 +39,7 @@ public partial class ProgressRingAutomationPeer : FrameworkElementAutomationPeer
 	}
 
 	protected override string GetClassNameCore()
-		=> nameof(ProgressRing);
+		=> typeof(ProgressRing).FullName!;
 
 	protected override string GetNameCore()
 	{

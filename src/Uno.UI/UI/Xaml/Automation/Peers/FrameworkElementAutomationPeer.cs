@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 public partial class FrameworkElementAutomationPeer : AutomationPeer
 {
 	private string m_LocalizedControlType;
-	private string m_ClassName;
+	private string m_ClassName = string.Empty;
 	private ScrollItemAdapter m_spScrollItemAdapter;
 
 	private AutomationControlType m_ControlType = AutomationControlType.Custom;

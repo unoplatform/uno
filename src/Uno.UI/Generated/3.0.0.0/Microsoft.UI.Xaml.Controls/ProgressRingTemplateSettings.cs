@@ -2,46 +2,14 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls;
 
-#if __SKIA__
+#if false
 [global::Uno.NotImplemented]
 #endif
 public partial class ProgressRingTemplateSettings : global::Microsoft.UI.Xaml.DependencyObject
 {
-#if __SKIA__
-	internal ProgressRingTemplateSettings()
-	{
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public double EllipseDiameter
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings", "EllipseDiameter");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Thickness EllipseOffset
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings", "EllipseOffset");
-		}
-	}
-#endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public double MaxSideLength
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings", "MaxSideLength");
-		}
-	}
-#endif
+	// Skipping already declared property EllipseDiameter
+	// Skipping already declared property EllipseOffset
+	// Skipping already declared property MaxSideLength
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.EllipseDiameter.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.EllipseOffset.get
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings.MaxSideLength.get

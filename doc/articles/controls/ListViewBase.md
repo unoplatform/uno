@@ -14,6 +14,14 @@ For contributors, see in-depth documentation on [the internals of ListView](../u
 
 `GridView` uses WinUI's default style too, except that its `ItemsPanel` is a `WrapPanel`: `ItemsWrapGrid` is not implemented yet. `ItemsStackPanel` is supported as on Windows.
 
+### Item chrome
+
+Starting with Uno Platform 7.1, `ListViewItem` and `GridViewItem` draw their hover, selection, focus and multi-select visuals through `ListViewItemPresenter` and `GridViewItemPresenter`, as in WinUI. Compared to earlier versions:
+
+* The default Fluent item styles no longer use the expanded templates, so hover, selection and multi-select visuals look like WinUI's, and named template parts such as `MultiSelectSquare` no longer exist. `ListViewItemExpanded` still ships and can be set as `ItemContainerStyle`. The Fluent `GridViewItemExpanded` is removed, as WinUI has none, so `{StaticResource GridViewItemExpanded}` resolves to an older, non-Fluent style. Copy the template into your app if you depend on it.
+* `ListViewItemPresenter` and `GridViewItemPresenter` must be the root of the item template, as in WinUI. A retemplate such as `<Grid><ListViewItemPresenter /></Grid>` throws `InvalidOperationException` ("can only be used as the first child in the template") during measure. Make the presenter the template root, or use a plain `ContentPresenter`.
+* `GridViewItem` defaults to `AllowDrop="True"`, as in WinUI. While a drag is over the middle of an item with `AllowDrop="True"` (the center 60% of a `ListViewItem`, 40% of a `GridViewItem`), the item shows its drag-over state and marks `DragOver` handled. So `DragOver` handlers on the list or its ancestors are not called there, and built-in reordering only happens over the edge zones of the item. Register handlers with `AddHandler(UIElement.DragOverEvent, handler, handledEventsToo: true)`, or set `AllowDrop` to `False` in your `ItemContainerStyle`.
+
 ## Performance tips
 
 ### Observable collections

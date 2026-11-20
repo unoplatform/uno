@@ -219,8 +219,10 @@ function Find-AreaThemeXaml {
 				$dir = Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo -Ref $Ref -Path 'controls/dev/CommonStyles'
 				$commonStyles = if ($dir) { @(Invoke-Git $UpstreamRepo @('ls-tree', '--name-only', "${Ref}:$dir")) } else { @() }
 			}
-			$wanted = "$($Matches[2])_themeresources.xaml"
-			$match = $commonStyles | Where-Object { $_ -ieq $wanted } | Select-Object -First 1
+			$name = $Matches[2]
+			# An item presenter's styles live under its item's name (GridViewItemPresenter -> GridViewItem).
+			$wanted = @("${name}_themeresources.xaml") + @(if ($name -match '^(\w+)Presenter$') { "$($Matches[1])_themeresources.xaml" })
+			$match = $wanted | ForEach-Object { $w = $_; $commonStyles | Where-Object { $_ -ieq $w } } | Select-Object -First 1
 			if ($match) { $byName[$match.ToLowerInvariant()] = "controls/dev/CommonStyles/$match" }
 		}
 	}
@@ -537,11 +539,12 @@ function Get-SyncPlan {
 					if (-not $tmp) { $tmp = New-TempDirectory }
 					$mirrorRoot = Join-Path $tmp 'mirror'
 					foreach ($m in (Get-AreaMirror $area)) {
-						$copy = @(Invoke-Git $UnoRoot @('show', "${branchRef}:$($m.uno)") -AllowExitCodes 128)
-						if ((Get-LastGitExitCode) -ne 0) { continue }
+						$bytes = $null
+						try { $bytes = Get-UpstreamFileBytes -UpstreamRepo $UnoRoot -Ref $branchRef -Path $m.uno } catch { $bytes = $null }
+						if ($null -eq $bytes) { continue }
 						$dest = Join-Path $mirrorRoot $m.uno
 						New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null
-						[System.IO.File]::WriteAllText($dest, ($copy -join "`n") + "`n")
+						[System.IO.File]::WriteAllBytes($dest, $bytes)
 					}
 				}
 			}

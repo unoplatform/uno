@@ -9,6 +9,14 @@ lifecycle stays intact and the two-phase render cycle keeps running, but there i
 input device, and no OS chrome. It is cross-platform (Windows, Linux, macOS) and runs anywhere the
 managed Skia stack does.
 
+> [!IMPORTANT]
+> The headless host requires a registered **Skia graphics backend** because it only provides
+> a software rendering context. Applications configured with WebGPU alone cannot use
+> `UseHeadless()`.
+>
+> If your application uses WebGPU and also needs headless rendering, register Skia as an
+> additional graphics backend.
+
 Typical uses:
 
 - CI / automated UI testing
@@ -37,7 +45,14 @@ host.Run();
 > `UnoPlatformHostBuilder` selects the **first** registered host builder that reports itself supported, and
 > the headless host reports supported on every operating system. So if you register it before other desktop
 > hosts (e.g. `UseX11()`/`UseWin32()`/`UseMacOS()`) it shadows them. Register it on its own — for example in
-> a dedicated test/offscreen head — or last, as a fallback.
+> a dedicated test/offscreen head.
+>
+> Registering it last, as a fallback, only works on Linux: `UseX11()` and `UseLinuxFrameBuffer()` report
+> unsupported when there is no usable display, so the selection falls through to the headless host.
+> `UseWin32()` and `UseMacOS()` report supported whenever the app runs on their operating system, even
+> without an interactive session, so a headless host registered after them is never reached. On Windows and
+> macOS, select it explicitly instead — for example, check an argument or environment variable in
+> `Program.Main` and call `UseHeadless()` in place of `UseWin32()`/`UseMacOS()`.
 
 ## Running the app
 
