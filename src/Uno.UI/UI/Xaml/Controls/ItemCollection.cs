@@ -151,7 +151,15 @@ namespace Microsoft.UI.Xaml.Controls
 			set
 			{
 				ThrowIfItemsSourceSet();
+				var oldItem = _inner[index];
 				_inner[index] = value;
+
+				// The args carry the items, as for a replacement in the ItemsSource, so that the ItemsControl's
+				// collection-change handling sees which item was replaced.
+				(VectorChanged, _untypedVectorChanged).TryRaise(this, new VectorChangedEventArgs(
+					new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, value, oldItem, index),
+					CollectionChange.ItemChanged,
+					(uint)index));
 			}
 		}
 
