@@ -874,11 +874,11 @@ namespace Microsoft.UI.Xaml
 				// Force a schedule to let the dotnet exports be initialized properly
 				var launch = new TaskCompletionSource();
 				currentApp.DeferredLaunch = launch.Task;
-				DispatcherQueue.Main.TryEnqueue(() =>
+				DispatcherQueue.Main.TryEnqueue(async () =>
 				{
 					try
 					{
-						currentApp.PrepareOnLaunched();
+						await currentApp.PrepareOnLaunchedAfterFontPreloadAsync();
 						launch.SetResult();
 					}
 					catch (Exception e)
@@ -909,14 +909,34 @@ namespace Microsoft.UI.Xaml
 		private void PrepareOnLaunched()
 		{
 			using var _ = WritePhaseEventTrace(TraceProvider.LaunchedStart, TraceProvider.LaunchedStop);
-			InitializeSystemTheme();
-
-			InitializationCompleted();
-			FontPreloadTask = PreloadFonts();
+			StartLaunch();
 
 			// Any activation the process started with has already been pushed to AppInstance by the
 			// platform host, which runs before the app exists.
 			InvokeOnLaunched();
+		}
+
+		/// <summary>
+		/// The browser fetches the default fonts over the network, and content measured before they arrive keeps sizes
+		/// cached from a fallback font (e.g. RatingControl). The splash screen already waits for this same preload.
+		/// </summary>
+		private async Task PrepareOnLaunchedAfterFontPreloadAsync()
+		{
+			StartLaunch();
+
+			// PreloadFonts never faults: a font that fails to load is only logged.
+			await FontPreloadTask;
+
+			using var _ = WritePhaseEventTrace(TraceProvider.LaunchedStart, TraceProvider.LaunchedStop);
+			InvokeOnLaunched();
+		}
+
+		private void StartLaunch()
+		{
+			InitializeSystemTheme();
+
+			InitializationCompleted();
+			FontPreloadTask = PreloadFonts();
 		}
 
 		private static async Task PreloadFonts()
