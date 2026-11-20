@@ -137,20 +137,13 @@ public partial class Given_PipsPager
 
 	[TestMethod]
 	[RunsOnUIThread]
-	// NativeWinUI and SkiaWasm excluded, like the neighbouring test: animated
-	// BringIntoView scroll stalls under headless WASM (#23524), and
-	// waitForCompositionAnimations is a no-op outside Skia, so the scroll-settle
-	// wait below cannot be verified on those targets here.
+	// Not verified on NativeWinUI. SkiaWasm: animated BringIntoView scroll
+	// stalls under the headless browser (#23524).
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/16513")]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_NumberOfPages_GreaterThan_MaxVisiblePips_Horizontal()
 	{
-		// Re-enabled after being ignored as flaky (#9080). The original compared a
-		// single pixel at (Width - 5, Height / 2) with tolerance 0 after fixed-timing
-		// waits, so it raced the animated BringIntoView scroll and flaked on the
-		// antialiased pip edge. This version waits for the actual scroll end state
-		// and asserts layout/offset, the same pattern as the neighbouring
-		// When_SelectedIndex_Beyond_MaxVisiblePips_All_Visible_Pips_Are_Realized test.
+		// Asserts the trailing slot still renders a pip once the scroll has settled.
 		var SUT = new PipsPager
 		{
 			NumberOfPages = 7,
@@ -170,8 +163,7 @@ public partial class Given_PipsPager
 		SUT.SelectedPageIndex = 3;
 		await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 		// Wait for the animated BringIntoView scroll to settle with the selected pip
-		// centred in the viewport, instead of a fixed delay which could elapse before
-		// the scroll finished.
+		// centred in the viewport before asserting or screenshotting.
 		await UITestHelper.WaitFor(
 			() =>
 			{
@@ -182,7 +174,7 @@ public partial class Given_PipsPager
 
 				var x = selectedPip.TransformToVisual(SUT).TransformPoint(new Windows.Foundation.Point(0, 0)).X;
 				var centre = x + selectedPip.ActualWidth / 2;
-				return scrollViewer.HorizontalOffset > 0 && System.Math.Abs(centre - SUT.ActualWidth / 2) <= selectedPip.ActualWidth / 2;
+				return scrollViewer.HorizontalOffset > 0 && System.Math.Abs(centre - SUT.ActualWidth / 2) <= 1;
 			},
 			timeoutMS: 5000,
 			message: "Selected pip did not scroll to the centre of the viewport after SelectedPageIndex = 3");
@@ -203,9 +195,8 @@ public partial class Given_PipsPager
 		Assert.IsTrue(trailingX >= 0 && trailingX < SUT.ActualWidth,
 			$"Pip 5 X position {trailingX} is outside pager width {SUT.ActualWidth}. ScrollViewer offset={horizontalOffset}");
 
-		// Visual check on the trailing slot region rather than one exact pixel: with
-		// an opaque white background, any rendered pip ink near the trailing edge
-		// proves the trailing slot still renders after the scroll.
+		// With an opaque white background, any rendered pip ink near the trailing
+		// edge proves the trailing slot still renders after the scroll.
 		var screenshot = await UITestHelper.ScreenShot(SUT, opaque: true);
 		bool inkInTrailingSlot = false;
 		int midY = screenshot.Height / 2;
