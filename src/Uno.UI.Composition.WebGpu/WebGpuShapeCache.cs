@@ -242,13 +242,17 @@ internal sealed class WebGpuShapeCache
 	// OUTLINE into a bbox-sized mask whose cost is the bbox rather than the ink. Offsets are computed in the
 	// geometry's own space before the linear map, so a non-uniform scale strokes correctly. Consecutive quads share
 	// their join edge exactly, so a translucent stroke does not double-blend, except where the polyline crosses itself.
+	[ThreadStatic] private static List<float> t_stripScratch;
+
 	private static Shape BuildStrip(IGeometry g, in Matrix3x2 linear, float width, float density, StrokeJoin join)
 	{
 		// Flattened in local space at the density the linear map will produce.
 		var scale = MathF.Max(new Vector2(linear.M11, linear.M12).Length(), new Vector2(linear.M21, linear.M22).Length());
 		var flat = new OpenFlattener(FlattenTolerancePx / MathF.Max(density * scale, 1e-3f));
 		g.StreamSegments(flat);
-		var tris = new List<float>();
+		// Only the finished strip is kept, copied out of this scratch.
+		var tris = t_stripScratch ??= new List<float>();
+		tris.Clear();
 		var bbMin = new Vector2(float.MaxValue); var bbMax = new Vector2(float.MinValue);
 		var h = width * 0.5f;
 		foreach (var (pts, closed) in flat.Contours)
