@@ -6,7 +6,7 @@ uid: uno.publishing.desktop.linux
 
 ## Snap Packages
 
-We support creating .snap packages on **Ubuntu 20.04** or later.
+We support creating .snap packages on **Ubuntu 20.04, 22.04, 24.04 and 26.04**. To build on another Linux distribution, see [Choosing the snap base](#choosing-the-snap-base).
 
 ### Requirements
 
@@ -17,13 +17,13 @@ sudo apt-get install -y snapd
 sudo snap install core22
 sudo snap install multipass
 sudo snap install lxd
-sudo snap install snapcraft
+sudo snap install snapcraft --classic
 lxd init --minimal
 sudo usermod --append --groups lxd $USER # In order for the current user to use LXD
 ```
 
 > [!NOTE]
-> In the above script, replace `core22` with `core20` if building on Ubuntu 20.04, or `core24` if building on Ubuntu 24.04.
+> In the above script, replace `core22` with `core20` if building on Ubuntu 20.04, `core24` if building on Ubuntu 24.04, or `core26` if building on Ubuntu 26.04. Building `core26` snaps requires snapcraft 9.0 or later (`sudo snap refresh snapcraft`).
 > [!NOTE]
 > Docker may interfere with Lxd causing network connectivity issues, for solutions see:
 > https://documentation.ubuntu.com/lxd/en/stable-5.0/howto/network_bridge_firewalld/#prevent-connectivity-issues-with-lxd-and-docker
@@ -50,6 +50,16 @@ You may use absolute or relative (to the `.csproj`) paths.
 The `.desktop` filename MUST conform to the [Desktop File](https://specifications.freedesktop.org/desktop-entry-spec/latest) spec.
 
 If you wish, you can generate a default snap manifest and desktop file by running the command above, then tweak them.
+
+#### Choosing the snap base
+
+By default, the snap base is selected from the Ubuntu version of the build machine. To build on another distribution, or to target a different base, set the `UnoSnapBase` property to `core20`, `core22`, `core24` or `core26`:
+
+```shell
+dotnet publish -f net10.0-desktop -p:SelfContained=true -p:PackageFormat=snap -p:UnoSnapBase=core24
+```
+
+The selected base must be installed (for example, `sudo snap install core24`). When using [destructive mode](#ci-restrictions), the base must match the Ubuntu version of the build machine.
 
 #### CI Restrictions
 
