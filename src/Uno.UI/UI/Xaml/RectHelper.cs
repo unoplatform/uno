@@ -70,12 +70,8 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		public static Rect Union(Rect target, Point point)
 		{
-			var left = Math.Min(target.Left, point.X);
-			var right = Math.Max(target.Right, point.X);
-			var top = Math.Min(target.Top, point.Y);
-			var bottom = Math.Max(target.Bottom, point.Y);
-
-			return new Rect(left, top, right - left, bottom - top);
+			target.Union(new Rect(point.X, point.Y, 0, 0));
+			return target;
 		}
 
 		/// <summary>
@@ -86,12 +82,8 @@ namespace Microsoft.UI.Xaml
 		/// </remarks>
 		public static Rect Union(Rect target, Rect rect)
 		{
-			var left = Math.Min(target.Left, rect.Left);
-			var right = Math.Max(target.Right, rect.Right);
-			var top = Math.Min(target.Top, rect.Top);
-			var bottom = Math.Max(target.Bottom, rect.Bottom);
-
-			return new Rect(left, top, right - left, bottom - top);
+			target.Union(rect);
+			return target;
 		}
 	}
 }

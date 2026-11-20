@@ -329,6 +329,18 @@ public partial struct Rect : IFormattable
 	/// <param name="rect">The rectangle to union with the current rectangle.</param>
 	public void Union(Rect rect)
 	{
+		// Empty has infinite edges whose sum is NaN, so it must not take part in the min/max below.
+		if (IsEmpty)
+		{
+			this = rect;
+			return;
+		}
+
+		if (rect.IsEmpty)
+		{
+			return;
+		}
+
 		var left = Math.Min(Left, rect.Left);
 		var right = Math.Max(Left + Width, rect.Right);
 		var top = Math.Min(Top, rect.Top);
