@@ -195,7 +195,7 @@ internal sealed unsafe partial class WebGpuFrame
 			{
 				var density = maskScale ?? atlasScale ?? Vector2.One;
 				var shape = Coverage.ShapeOf(pc, density);
-				if (shape.Tris is null) { TryBigFill(pc, shape, ops, owned, density, filtered: atlasScale is null, place: place); }
+				if (shape.Tris.IsNull) { TryBigFill(pc, shape, ops, owned, density, filtered: atlasScale is null, place: place); }
 				else { AddFan(pc, shape, ops, owned); }
 			}
 			else { BuildSimpleOp(cmds[ci], ops, owned, atlasScale, maskScale); }
@@ -207,7 +207,7 @@ internal sealed unsafe partial class WebGpuFrame
 	private void AddFan(PathCmd pc, WebGpuShapeCache.Shape shape, List<DrawOp> ops, OwnedResources owned)
 	{
 		float r = pc.Color.R / 255f, g = pc.Color.G / 255f, b = pc.Color.B / 255f, a = pc.Color.A / 255f;
-		var off = pc.Offset; var tris = shape.Tris; var cov = shape.Cov;
+		var off = pc.Offset; var tris = shape.Tris.Span; var cov = shape.Cov.Span;
 		var clipBg = MakeClipBg(pc.Clip, owned);
 		var count = (uint)(tris.Length / 2);
 		var dst = owned is null ? _solid : Scratch;
@@ -216,7 +216,7 @@ internal sealed unsafe partial class WebGpuFrame
 		var v = Grow(dst, tris.Length / 2 * VertexStride.Solid);
 		for (int i = 0, o = 0; i < tris.Length; i += 2, o += VertexStride.Solid)
 		{
-			float ca = a * (cov is null ? 1f : cov[i >> 1]);
+			float ca = a * (cov.IsEmpty ? 1f : cov[i >> 1]);
 			v[o] = tris[i] + off.X; v[o + 1] = tris[i + 1] + off.Y; v[o + 2] = r; v[o + 3] = g; v[o + 4] = b; v[o + 5] = ca; v[o + 6] = 0f; v[o + 7] = 0f;
 		}
 		ops.Add(owned is null
@@ -248,7 +248,7 @@ internal sealed unsafe partial class WebGpuFrame
 					var shape = Coverage.ShapeOf(pf, density);
 					// A small axis-aligned shape (a glyph) draws from the coverage atlas: one tinted quad, antialiasing baked in.
 					if (atlasScale is { } asc && Coverage.TryAtlasFill(pf, shape, ops, owned, asc)) { break; }
-					if (shape.Tris is null) { TryBigFill(pf, shape, ops, owned, density, filtered: atlasScale is null); break; }
+					if (shape.Tris.IsNull) { TryBigFill(pf, shape, ops, owned, density, filtered: atlasScale is null); break; }
 					AddFan(pf, shape, ops, owned);
 					break;
 				}

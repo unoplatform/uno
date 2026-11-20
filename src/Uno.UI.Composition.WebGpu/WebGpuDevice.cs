@@ -278,6 +278,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		GradSlab?.Reset();
 		_clipBgSlab?.Reset();
 		FrameSeq++;
+		Shapes.Frame = FrameSeq;
+		Shapes.Sweep();
 		Pool.BeginFrame();
 		BufferPool.BeginFrame();
 		foreach (var bg in _pendingBindGroups) { Api.BindGroupRelease((BindGroup*)bg); }

@@ -90,7 +90,7 @@ internal sealed unsafe partial class WebGpuCoverage
 		set = default;
 		if (!AtlasEnabled) { return false; }
 		var shape = ShapeOf(p);
-		if (shape.Edges is null) { return false; }
+		if (shape.Edges.IsNull) { return false; }
 		if (!WebGpuMaskAtlas.TryKey(shape.Hash, Matrix4x4.Identity, new Vector2(p.Bbox.X, p.Bbox.Y), new Vector2(p.Bbox.Z, p.Bbox.W), Vector2.One,
 			out var key, out var w, out var h, out var ox, out var oy, allowBig: true)) { return false; }
 		if (_d.Atlas.TryGet(key, out var slot))
@@ -135,7 +135,7 @@ internal sealed unsafe partial class WebGpuCoverage
 			var slot = slots[i];
 			HoldKeyless(slot, owned);
 			var shape = ShapeOf(paths[i]);
-			if (shape.Edges is not null) { AddBake(batch, slot.X, slot.Y, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - paths[i].Offset, Vector2.One, paths[i].EvenOdd); }
+			if (!shape.Edges.IsNull) { AddBake(batch, slot.X, slot.Y, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - paths[i].Offset, Vector2.One, paths[i].EvenOdd); }
 			entries[i] = MaskEntry(ox, oy, slot.X, slot.Y, w, h, paths[i].Exclude);
 		}
 		ClipMasksBaked += n;

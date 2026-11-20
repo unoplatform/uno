@@ -42,7 +42,7 @@ internal sealed unsafe partial class WebGpuEffects
 		int sigmaKey = ((int)(sh.SigmaX * 16f) << 16) ^ (int)(sh.SigmaY * 16f);
 		var shape = _d.Shapes.Get(sh.Geometry, sh.M, 1f, sh.EvenOdd);
 		WebGpuMaskAtlas.Key key = default; int w = 0, h = 0; float ox = 0f, oy = 0f;
-		var keyed = shape.Edges is not null && WebGpuMaskAtlas.TryKey(shape.Hash, Matrix4x4.Identity, bbMin, bbMax, Vector2.One, out key, out w, out h, out ox, out oy, allowBig: true, extra: sigmaKey) && WebGpuCoverage.AtlasEnabled;
+		var keyed = !shape.Edges.IsNull && WebGpuMaskAtlas.TryKey(shape.Hash, Matrix4x4.Identity, bbMin, bbMax, Vector2.One, out key, out w, out h, out ox, out oy, allowBig: true, extra: sigmaKey) && WebGpuCoverage.AtlasEnabled;
 		uv = new Vector4(0f, 0f, 1f, 1f);
 		if (keyed && _d.Atlas.TryGet(key, out var hit))
 		{

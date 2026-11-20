@@ -54,7 +54,7 @@ internal sealed unsafe partial class WebGpuCoverage
 	// Queues one outline into a slot of the batch. Edges are in the shape's space (the fill's, less its offset, which
 	// the caller folds into origin) and map to target pixels by (e - origin) * scale + 1 (the one-pixel skirt) + the
 	// slot corner.
-	internal void AddBake(BakeBatch b, int x, int y, int w, int h, float[] edges, Vector2 origin, Vector2 scale, bool evenOdd)
+	internal void AddBake(BakeBatch b, int x, int y, int w, int h, ReadOnlySpan<float> edges, Vector2 origin, Vector2 scale, bool evenOdd)
 	{
 		float right = x + w;
 		for (var i = 0; i < edges.Length; i += 4)

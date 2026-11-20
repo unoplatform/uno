@@ -106,7 +106,7 @@ internal sealed unsafe partial class WebGpuCoverage
 		// the entry) but renders identical content crisp through the retained path and tessellated through the
 		// command-list fallback.
 		bool hitOnly = owned is null;
-		if (shape.Edges is null) { AtlasNoEdges++; return false; }
+		if (shape.Edges.IsNull) { AtlasNoEdges++; return false; }
 		// The mask's footprint must come from the geometry the bake will rasterize, not from the command's bounds:
 		// those are the geometry's declared bounds mapped by the matrix, and a geometry whose outline reaches past
 		// them leaves the slot too small. The accumulate pass clamps every edge to the slot's right bound, so the
