@@ -57,6 +57,45 @@ public class Given_SKCanvasElement
 	}
 
 	[TestMethod]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_Opacity(bool onAncestor)
+	{
+		var SUT = new BlueFillSKCanvasElement
+		{
+			Height = 100,
+			Width = 100,
+			Opacity = onAncestor ? 1 : 0.5
+		};
+
+		var container = new Border
+		{
+			Height = 100,
+			Width = 100,
+			Opacity = onAncestor ? 0.5 : 1,
+			Child = SUT
+		};
+
+		// An opaque backdrop, so that the expected color doesn't depend on the screenshot's transparency.
+		var border = new Border
+		{
+			Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.White),
+			Height = 100,
+			Width = 100,
+			Child = container
+		};
+
+		await UITestHelper.Load(border);
+		await UITestHelper.WaitFor(() => SUT.Rendered, timeoutMS: 5000);
+		await UITestHelper.WaitForRender(2, timeoutMS: 5000);
+
+		var bitmap = await UITestHelper.ScreenShot(border);
+
+		// Blue at 50% over white.
+		ImageAssert.HasColorAt(bitmap, 50, 50, "#8080FF", tolerance: 8);
+	}
+
+	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25656")]
 	public async Task When_Drawn_Through_Software_Surface_Then_Sharp_At_Device_Scale()
 	{
