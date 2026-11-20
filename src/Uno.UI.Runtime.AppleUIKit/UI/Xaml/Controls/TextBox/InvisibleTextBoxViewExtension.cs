@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -34,6 +35,30 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 	internal UIView? NativeView => _textBoxView as UIView;
 
 	private IImeSessionHost? ImeHost => _owner.Host as IImeSessionHost;
+
+	/// <summary>
+	/// Whether MaxLength lets the native view replace <paramref name="range"/> of its text. A change that fits goes in, and so
+	/// does a deletion, as on WinUI, and a change that results in the TextBox's own text, as when a PasswordBox's native field puts
+	/// its text back on focus.
+	/// </summary>
+	internal static bool IsAllowedByMaxLength(IImeSessionHost host, string? nativeText, NSRange range, string replacementString)
+	{
+		var text = nativeText ?? string.Empty;
+		if (host.MaxLength <= 0
+			|| replacementString.Length == 0
+			|| text.Length + replacementString.Length - range.Length <= host.MaxLength)
+		{
+			return true;
+		}
+
+		if (range.Location < 0 || range.Length < 0 || range.Location + range.Length > text.Length)
+		{
+			return false;
+		}
+
+		var start = (int)range.Location;
+		return text.Remove(start, (int)range.Length).Insert(start, replacementString) == host.Text;
+	}
 
 	internal AppleUIKitImeTextBoxExtension? GetImeExtension(IInvisibleTextBoxView source)
 	{

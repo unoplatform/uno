@@ -57,14 +57,8 @@ internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 			//	return false;
 			//}
 
-			if (host.MaxLength > 0)
-			{
-				// When replacing text from pasting (multiple characters at once)
-				// we should only allow it (return true) when the new text length
-				// is lower or equal to the allowed length.
-				var newLength = (textBoxView.Text?.Length ?? 0) + replacementString.Length - range.Length;
-				return newLength <= host.MaxLength;
-			}
+			// Typing and pasting go in only when they fit; deleting and putting the TextBox's own text back always do.
+			return InvisibleTextBoxViewExtension.IsAllowedByMaxLength(host, textBoxView.Text, range, replacementString);
 		}
 
 		return true;
