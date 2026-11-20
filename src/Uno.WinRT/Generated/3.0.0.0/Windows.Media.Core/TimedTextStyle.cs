@@ -23,6 +23,16 @@ public partial class TimedTextStyle
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Media.Core.TimedTextBouten Bouten
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "Bouten");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Media.Core.TimedTextFlowDirection FlowDirection
 	{
 		get
@@ -32,6 +42,20 @@ public partial class TimedTextStyle
 		set
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "FlowDirection");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public double FontAngleInDegrees
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "FontAngleInDegrees");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "FontAngleInDegrees");
 		}
 	}
 #endif
@@ -149,6 +173,20 @@ public partial class TimedTextStyle
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsTextCombined
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "IsTextCombined");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "IsTextCombined");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public bool IsUnderlineEnabled
 	{
 		get
@@ -233,6 +271,16 @@ public partial class TimedTextStyle
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Media.Core.TimedTextRuby Ruby
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.Core.TimedTextStyle", "Ruby");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public TimedTextStyle()
 	{
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedTextStyle", "TimedTextStyle()");
@@ -241,8 +289,11 @@ public partial class TimedTextStyle
 	// Forced skipping of method Windows.Media.Core.TimedTextStyle.TimedTextStyle()
 	// Forced skipping of method Windows.Media.Core.TimedTextStyle.Background.get
 	// Forced skipping of method Windows.Media.Core.TimedTextStyle.Background.set
+	// Forced skipping of method Windows.Media.Core.TimedTextStyle.Bouten.get
 	// Forced skipping of method Windows.Media.Core.TimedTextStyle.FlowDirection.get
 	// Forced skipping of method Windows.Media.Core.TimedTextStyle.FlowDirection.set
+	// Forced skipping of method Windows.Media.Core.TimedTextStyle.FontAngleInDegrees.get
+	// Forced skipping of method Windows.Media.Core.TimedTextStyle.FontAngleInDegrees.set
 	// Forced skipping of method Windows.Media.Core.TimedTextStyle.FontFamily.get
 	// Forced skipping of method Windows.Media.Core.TimedTextStyle.FontFamily.set
 	// Forced skipping of method Windows.Media.Core.TimedTextStyle.FontSize.get
@@ -259,6 +310,8 @@ public partial class TimedTextStyle
 	// Forced skipping of method Windows.Media.Core.TimedTextStyle.IsLineThroughEnabled.set
 	// Forced skipping of method Windows.Media.Core.TimedTextStyle.IsOverlineEnabled.get
 	// Forced skipping of method Windows.Media.Core.TimedTextStyle.IsOverlineEnabled.set
+	// Forced skipping of method Windows.Media.Core.TimedTextStyle.IsTextCombined.get
+	// Forced skipping of method Windows.Media.Core.TimedTextStyle.IsTextCombined.set
 	// Forced skipping of method Windows.Media.Core.TimedTextStyle.IsUnderlineEnabled.get
 	// Forced skipping of method Windows.Media.Core.TimedTextStyle.IsUnderlineEnabled.set
 	// Forced skipping of method Windows.Media.Core.TimedTextStyle.LineAlignment.get
@@ -271,4 +324,5 @@ public partial class TimedTextStyle
 	// Forced skipping of method Windows.Media.Core.TimedTextStyle.OutlineRadius.set
 	// Forced skipping of method Windows.Media.Core.TimedTextStyle.OutlineThickness.get
 	// Forced skipping of method Windows.Media.Core.TimedTextStyle.OutlineThickness.set
+	// Forced skipping of method Windows.Media.Core.TimedTextStyle.Ruby.get
 }

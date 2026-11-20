@@ -44,6 +44,16 @@ public partial class MobileBroadbandCellsInfo
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.NetworkOperators.MobileBroadbandCellNR> NeighboringCellsNR
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "NeighboringCellsNR");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma> NeighboringCellsTdscdma
 	{
 		get
@@ -94,6 +104,16 @@ public partial class MobileBroadbandCellsInfo
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.NetworkOperators.MobileBroadbandCellNR> ServingCellsNR
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo", "ServingCellsNR");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.NetworkOperators.MobileBroadbandCellTdscdma> ServingCellsTdscdma
 	{
 		get
@@ -115,11 +135,13 @@ public partial class MobileBroadbandCellsInfo
 	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.NeighboringCellsCdma.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.NeighboringCellsGsm.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.NeighboringCellsLte.get
+	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.NeighboringCellsNR.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.NeighboringCellsTdscdma.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.NeighboringCellsUmts.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.ServingCellsCdma.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.ServingCellsGsm.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.ServingCellsLte.get
+	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.ServingCellsNR.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.ServingCellsTdscdma.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandCellsInfo.ServingCellsUmts.get
 }

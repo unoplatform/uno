@@ -9,6 +9,36 @@ public static partial class BackgroundWorkCost
 {
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.ApplicationModel.Background.EnergyUseLevel AppEnergyUseLevel
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundWorkCost", "AppEnergyUseLevel");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.ApplicationModel.Background.EnergyUseLevel AppEnergyUsePrediction
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundWorkCost", "AppEnergyUsePrediction");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::System.DateTimeOffset AppLastThrottledInStandbyTimestamp
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundWorkCost", "AppLastThrottledInStandbyTimestamp");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public static global::Windows.ApplicationModel.Background.BackgroundWorkCostValue CurrentBackgroundWorkCost
 	{
 		get
@@ -17,5 +47,8 @@ public static partial class BackgroundWorkCost
 		}
 	}
 #endif
+	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundWorkCost.AppEnergyUseLevel.get
+	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundWorkCost.AppEnergyUsePrediction.get
+	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundWorkCost.AppLastThrottledInStandbyTimestamp.get
 	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundWorkCost.CurrentBackgroundWorkCost.get
 }

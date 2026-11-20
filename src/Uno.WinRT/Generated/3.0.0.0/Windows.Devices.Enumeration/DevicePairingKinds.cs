@@ -24,5 +24,8 @@ public enum DevicePairingKinds : uint
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	ProvidePasswordCredential = 16,
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	ProvideAddress = 32,
+#endif
 }
 #endif

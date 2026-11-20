@@ -9,6 +9,17 @@ public partial class AnalyticsVersionInfo
 {
 	// Skipping already declared property DeviceFamily
 	// Skipping already declared property DeviceFamilyVersion
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public string ProductName
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.AnalyticsVersionInfo", "ProductName");
+		}
+	}
+#endif
 	// Forced skipping of method Windows.System.Profile.AnalyticsVersionInfo.DeviceFamily.get
 	// Forced skipping of method Windows.System.Profile.AnalyticsVersionInfo.DeviceFamilyVersion.get
+	// Forced skipping of method Windows.System.Profile.AnalyticsVersionInfo.ProductName.get
 }

@@ -44,5 +44,8 @@ public enum CoreWebView2PermissionKind
 #if __SKIA__
 	WindowManagement = 12,
 #endif
+#if __SKIA__
+	PersistentStorage = 13,
+#endif
 }
 #endif

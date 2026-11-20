@@ -14,11 +14,31 @@ public partial class PhoneLineTransportDevice
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.ApplicationModel.Calls.TransportDeviceAudioRoutingStatus AudioRoutingStatus
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineTransportDevice", "AudioRoutingStatus");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public string DeviceId
 	{
 		get
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineTransportDevice", "DeviceId");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool InBandRingingEnabled
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineTransportDevice", "InBandRingingEnabled");
 		}
 	}
 #endif
@@ -109,6 +129,44 @@ public partial class PhoneLineTransportDevice
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.PhoneLineTransportDevice", "ConnectAsync()");
 	}
 #endif
+	// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.AudioRoutingStatusChanged.add
+	// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.AudioRoutingStatusChanged.remove
+	// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.InBandRingingEnabledChanged.add
+	// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.InBandRingingEnabledChanged.remove
+	// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.AudioRoutingStatus.get
 	// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.DeviceId.get
+	// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.InBandRingingEnabled.get
 	// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.Transport.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Calls.PhoneLineTransportDevice, object> AudioRoutingStatusChanged
+	{
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		add
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneLineTransportDevice", "event AudioRoutingStatusChanged");
+		}
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		remove
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneLineTransportDevice", "event AudioRoutingStatusChanged");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Calls.PhoneLineTransportDevice, object> InBandRingingEnabledChanged
+	{
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		add
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneLineTransportDevice", "event InBandRingingEnabledChanged");
+		}
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		remove
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneLineTransportDevice", "event InBandRingingEnabledChanged");
+		}
+	}
+#endif
 }

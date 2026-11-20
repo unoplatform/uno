@@ -13,5 +13,6 @@ namespace Windows.Devices.Enumeration
 		AssociationEndpointContainer,
 		AssociationEndpointService,
 		DevicePanel,
+		AssociationEndpointProtocol,
 	}
 }

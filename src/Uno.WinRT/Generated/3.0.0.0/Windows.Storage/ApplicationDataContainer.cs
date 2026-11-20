@@ -5,7 +5,7 @@ namespace Windows.Storage;
 #if false || false || false || false || false || false
 [global::Uno.NotImplemented]
 #endif
-public partial class ApplicationDataContainer
+public partial class ApplicationDataContainer : global::System.IDisposable
 {
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -34,8 +34,16 @@ public partial class ApplicationDataContainer
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationDataContainer", "DeleteContainer(string name)");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public void Dispose()
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationDataContainer", "Dispose()");
+	}
+#endif
 	// Forced skipping of method Windows.Storage.ApplicationDataContainer.Containers.get
 	// Forced skipping of method Windows.Storage.ApplicationDataContainer.Locality.get
 	// Forced skipping of method Windows.Storage.ApplicationDataContainer.Name.get
 	// Forced skipping of method Windows.Storage.ApplicationDataContainer.Values.get
+	// Processing: System.IDisposable
 }

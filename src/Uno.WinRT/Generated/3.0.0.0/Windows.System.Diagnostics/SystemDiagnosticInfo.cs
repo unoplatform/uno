@@ -14,6 +14,16 @@ public partial class SystemDiagnosticInfo
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.System.ProcessorArchitecture PreferredArchitecture
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemDiagnosticInfo", "PreferredArchitecture");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.System.Diagnostics.SystemCpuUsage CpuUsage
 	{
 		get
@@ -39,6 +49,14 @@ public partial class SystemDiagnosticInfo
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemDiagnosticInfo", "GetForCurrentSystem()");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static bool IsArchitectureSupported(global::Windows.System.ProcessorArchitecture type)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Diagnostics.SystemDiagnosticInfo", "IsArchitectureSupported(ProcessorArchitecture type)");
+	}
+#endif
+	// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.PreferredArchitecture.get
 	// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.CpuUsage.get
 	// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.MemoryUsage.get
 }

@@ -67,6 +67,34 @@ public partial class QueryOptions
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IncludeCloudProviders
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "IncludeCloudProviders");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "IncludeCloudProviders");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IncludeLocalSemanticIndex
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Storage.Search.QueryOptions", "IncludeLocalSemanticIndex");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "IncludeLocalSemanticIndex");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Storage.Search.IndexerOption IndexerOption
 	{
 		get
@@ -186,6 +214,10 @@ public partial class QueryOptions
 	// Forced skipping of method Windows.Storage.Search.QueryOptions.FolderDepth.get
 	// Forced skipping of method Windows.Storage.Search.QueryOptions.FolderDepth.set
 	// Forced skipping of method Windows.Storage.Search.QueryOptions.GroupPropertyName.get
+	// Forced skipping of method Windows.Storage.Search.QueryOptions.IncludeCloudProviders.get
+	// Forced skipping of method Windows.Storage.Search.QueryOptions.IncludeCloudProviders.set
+	// Forced skipping of method Windows.Storage.Search.QueryOptions.IncludeLocalSemanticIndex.get
+	// Forced skipping of method Windows.Storage.Search.QueryOptions.IncludeLocalSemanticIndex.set
 	// Forced skipping of method Windows.Storage.Search.QueryOptions.IndexerOption.get
 	// Forced skipping of method Windows.Storage.Search.QueryOptions.IndexerOption.set
 	// Forced skipping of method Windows.Storage.Search.QueryOptions.Language.get

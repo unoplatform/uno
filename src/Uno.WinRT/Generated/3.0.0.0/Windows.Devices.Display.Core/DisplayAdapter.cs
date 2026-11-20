@@ -34,6 +34,16 @@ public partial class DisplayAdapter
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsIndirectDisplayDevice
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "IsIndirectDisplayDevice");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public uint PciDeviceId
 	{
 		get
@@ -74,6 +84,16 @@ public partial class DisplayAdapter
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Devices.Display.Core.DisplayAdapter PreferredRenderAdapter
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayAdapter", "PreferredRenderAdapter");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::System.Collections.Generic.IReadOnlyDictionary<global::System.Guid, object> Properties
 	{
 		get
@@ -101,10 +121,12 @@ public partial class DisplayAdapter
 #endif
 	// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.DeviceInterfacePath.get
 	// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.Id.get
+	// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.IsIndirectDisplayDevice.get
 	// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.PciDeviceId.get
 	// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.PciRevision.get
 	// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.PciSubSystemId.get
 	// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.PciVendorId.get
+	// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.PreferredRenderAdapter.get
 	// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.Properties.get
 	// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.SourceCount.get
 }

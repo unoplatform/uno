@@ -62,6 +62,13 @@ public partial class GattServiceProvider
 #endif
 	// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProvider.AdvertisementStatusChanged.add
 	// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProvider.AdvertisementStatusChanged.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public void UpdateAdvertisingParameters(global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProviderAdvertisingParameters parameters)
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProvider", "UpdateAdvertisingParameters(GattServiceProviderAdvertisingParameters parameters)");
+	}
+#endif
 	// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProvider.AdvertisementStatus.get
 	// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattServiceProvider.Service.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

@@ -26,4 +26,11 @@ public partial class DisplayTaskPool
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayTaskPool", "ExecuteTask(DisplayTask task)");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Devices.Display.Core.DisplayTaskResult TryExecuteTask(global::Windows.Devices.Display.Core.DisplayTask task)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayTaskPool", "TryExecuteTask(DisplayTask task)");
+	}
+#endif
 }

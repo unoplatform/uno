@@ -8,5 +8,6 @@ public enum PointerDeviceType
 	// Skipping already declared field Windows.Devices.Input.PointerDeviceType.Touch
 	// Skipping already declared field Windows.Devices.Input.PointerDeviceType.Pen
 	// Skipping already declared field Windows.Devices.Input.PointerDeviceType.Mouse
+	// Skipping already declared field Windows.Devices.Input.PointerDeviceType.Touchpad
 }
 #endif

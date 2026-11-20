@@ -33,4 +33,22 @@ public partial class MobileBroadbandDeviceServiceCommandSession
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession", "CloseSession()");
 	}
 #endif
+	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession.CommandReceived.add
+	// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession.CommandReceived.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession, global::Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandEventArgs> CommandReceived
+	{
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		add
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession", "event CommandReceived");
+		}
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		remove
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession", "event CommandReceived");
+		}
+	}
+#endif
 }

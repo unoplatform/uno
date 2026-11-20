@@ -104,11 +104,31 @@ public partial class BluetoothLEAdvertisementReceivedEventArgs
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPhyType PrimaryPhy
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "PrimaryPhy");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public short RawSignalStrengthInDBm
 	{
 		get
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "RawSignalStrengthInDBm");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPhyType SecondaryPhy
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs", "SecondaryPhy");
 		}
 	}
 #endif
@@ -141,7 +161,9 @@ public partial class BluetoothLEAdvertisementReceivedEventArgs
 	// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs.IsDirected.get
 	// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs.IsScanResponse.get
 	// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs.IsScannable.get
+	// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs.PrimaryPhy.get
 	// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs.RawSignalStrengthInDBm.get
+	// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs.SecondaryPhy.get
 	// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs.Timestamp.get
 	// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementReceivedEventArgs.TransmitPowerLevelInDBm.get
 }

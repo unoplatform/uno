@@ -19,6 +19,16 @@ public static partial class RetailInfo
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static bool IsDemoModeEnabledEx
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Profile.RetailInfo", "IsDemoModeEnabledEx");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public static global::System.Collections.Generic.IReadOnlyDictionary<string, object> Properties
 	{
 		get
@@ -28,5 +38,6 @@ public static partial class RetailInfo
 	}
 #endif
 	// Forced skipping of method Windows.System.Profile.RetailInfo.IsDemoModeEnabled.get
+	// Forced skipping of method Windows.System.Profile.RetailInfo.IsDemoModeEnabledEx.get
 	// Forced skipping of method Windows.System.Profile.RetailInfo.Properties.get
 }

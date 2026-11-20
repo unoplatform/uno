@@ -38,6 +38,20 @@ public partial class HttpRequestMessage : global::System.IDisposable, global::Wi
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public string PrivacyAnnotation
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Web.Http.HttpRequestMessage", "PrivacyAnnotation");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpRequestMessage", "PrivacyAnnotation");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::System.Collections.Generic.IDictionary<string, object> Properties
 	{
 		get
@@ -74,6 +88,8 @@ public partial class HttpRequestMessage : global::System.IDisposable, global::Wi
 	// Forced skipping of method Windows.Web.Http.HttpRequestMessage.Headers.get
 	// Forced skipping of method Windows.Web.Http.HttpRequestMessage.Method.get
 	// Forced skipping of method Windows.Web.Http.HttpRequestMessage.Method.set
+	// Forced skipping of method Windows.Web.Http.HttpRequestMessage.PrivacyAnnotation.get
+	// Forced skipping of method Windows.Web.Http.HttpRequestMessage.PrivacyAnnotation.set
 	// Forced skipping of method Windows.Web.Http.HttpRequestMessage.Properties.get
 	// Forced skipping of method Windows.Web.Http.HttpRequestMessage.RequestUri.get
 	// Forced skipping of method Windows.Web.Http.HttpRequestMessage.RequestUri.set

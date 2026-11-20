@@ -21,6 +21,20 @@ public partial class VoipCallCoordinator
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static bool IsCallControlDeviceKindSupportedForAssociation(global::Windows.ApplicationModel.Calls.VoipCallControlDeviceKind kind)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "IsCallControlDeviceKindSupportedForAssociation(VoipCallControlDeviceKind kind)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static string GetDeviceSelectorForCallControl()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "GetDeviceSelectorForCallControl()");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.VoipPhoneCallResourceReservationStatus> ReserveCallResourcesAsync(string taskEntryPoint)
 	{
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "ReserveCallResourcesAsync(string taskEntryPoint)");
@@ -110,6 +124,34 @@ public partial class VoipCallCoordinator
 	public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.VoipPhoneCallResourceReservationStatus> ReserveCallResourcesAsync()
 	{
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "ReserveCallResourcesAsync()");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.ApplicationModel.Calls.VoipPhoneCall RequestNewIncomingCallWithOptions(global::Windows.ApplicationModel.Calls.IncomingVoipPhoneCallOptions callOptions)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "RequestNewIncomingCallWithOptions(IncomingVoipPhoneCallOptions callOptions)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.ApplicationModel.Calls.VoipPhoneCall RequestNewOutgoingCallWithOptions(global::Windows.ApplicationModel.Calls.OutgoingVoipPhoneCallOptions callOptions)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "RequestNewOutgoingCallWithOptions(OutgoingVoipPhoneCallOptions callOptions)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.ApplicationModel.Calls.VoipPhoneCall SetupNewAcceptedCallWithOptions(global::Windows.ApplicationModel.Calls.AcceptedVoipPhoneCallOptions callOptions)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "SetupNewAcceptedCallWithOptions(AcceptedVoipPhoneCallOptions callOptions)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.ApplicationModel.Calls.VoipPhoneCall RequestNewAppInitiatedCallWithOptions(global::Windows.ApplicationModel.Calls.AppInitiatedVoipPhoneCallOptions callOptions)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipCallCoordinator", "RequestNewAppInitiatedCallWithOptions(AppInitiatedVoipPhoneCallOptions callOptions)");
 	}
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

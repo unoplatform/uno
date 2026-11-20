@@ -33,6 +33,20 @@ public partial class GraphicsCaptureItem
 	}
 #endif
 	// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureItem.CreateFromVisual(Windows.UI.Composition.Visual)
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.Graphics.Capture.GraphicsCaptureItem TryCreateFromWindowId(global::Windows.UI.WindowId windowId)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.GraphicsCaptureItem", "TryCreateFromWindowId(WindowId windowId)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.Graphics.Capture.GraphicsCaptureItem TryCreateFromDisplayId(global::Windows.Graphics.DisplayId displayId)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.GraphicsCaptureItem", "TryCreateFromDisplayId(DisplayId displayId)");
+	}
+#endif
 	// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureItem.Closed.add
 	// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureItem.Closed.remove
 	// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureItem.DisplayName.get

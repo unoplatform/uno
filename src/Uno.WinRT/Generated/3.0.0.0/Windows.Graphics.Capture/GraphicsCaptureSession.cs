@@ -14,6 +14,58 @@ public partial class GraphicsCaptureSession : global::System.IDisposable
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public ulong ConfigurationIteration
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.GraphicsCaptureSession", "ConfigurationIteration");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Graphics.Capture.GraphicsCaptureDirtyRegionMode DirtyRegionMode
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.GraphicsCaptureSession", "DirtyRegionMode");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Capture.GraphicsCaptureSession", "DirtyRegionMode");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IncludeSecondaryWindows
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.GraphicsCaptureSession", "IncludeSecondaryWindows");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Capture.GraphicsCaptureSession", "IncludeSecondaryWindows");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsBorderRequired
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.GraphicsCaptureSession", "IsBorderRequired");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Capture.GraphicsCaptureSession", "IsBorderRequired");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public bool IsCursorCaptureEnabled
 	{
 		get
@@ -23,6 +75,20 @@ public partial class GraphicsCaptureSession : global::System.IDisposable
 		set
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Capture.GraphicsCaptureSession", "IsCursorCaptureEnabled");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::System.TimeSpan MinUpdateInterval
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Capture.GraphicsCaptureSession", "MinUpdateInterval");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Capture.GraphicsCaptureSession", "MinUpdateInterval");
 		}
 	}
 #endif
@@ -47,7 +113,16 @@ public partial class GraphicsCaptureSession : global::System.IDisposable
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Capture.GraphicsCaptureSession", "Dispose()");
 	}
 #endif
+	// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.ConfigurationIteration.get
+	// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.DirtyRegionMode.get
+	// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.DirtyRegionMode.set
+	// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.IncludeSecondaryWindows.get
+	// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.IncludeSecondaryWindows.set
+	// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.IsBorderRequired.get
+	// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.IsBorderRequired.set
 	// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.IsCursorCaptureEnabled.get
 	// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.IsCursorCaptureEnabled.set
+	// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.MinUpdateInterval.get
+	// Forced skipping of method Windows.Graphics.Capture.GraphicsCaptureSession.MinUpdateInterval.set
 	// Processing: System.IDisposable
 }

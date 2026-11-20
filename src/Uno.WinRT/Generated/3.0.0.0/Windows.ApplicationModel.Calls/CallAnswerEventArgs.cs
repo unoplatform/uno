@@ -22,5 +22,16 @@ public partial class CallAnswerEventArgs
 		}
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public string SourceDeviceId
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.CallAnswerEventArgs", "SourceDeviceId");
+		}
+	}
+#endif
 	// Forced skipping of method Windows.ApplicationModel.Calls.CallAnswerEventArgs.AcceptedMedia.get
+	// Forced skipping of method Windows.ApplicationModel.Calls.CallAnswerEventArgs.SourceDeviceId.get
 }

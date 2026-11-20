@@ -64,6 +64,16 @@ public partial class ESim
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public int? SlotIndex
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.NetworkOperators.ESim", "SlotIndex");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Networking.NetworkOperators.ESimState State
 	{
 		get
@@ -135,6 +145,7 @@ public partial class ESim
 	// Forced skipping of method Windows.Networking.NetworkOperators.ESim.FirmwareVersion.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.ESim.MobileBroadbandModemDeviceId.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.ESim.Policy.get
+	// Forced skipping of method Windows.Networking.NetworkOperators.ESim.SlotIndex.get
 	// Forced skipping of method Windows.Networking.NetworkOperators.ESim.State.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]

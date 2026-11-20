@@ -14,6 +14,46 @@ public partial class GetEntitlementResult
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public string AvailabilityId
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult", "AvailabilityId");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsAlreadyOwned
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult", "IsAlreadyOwned");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public string OrderId
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult", "OrderId");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public string SkuId
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult", "SkuId");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementStatus Status
 	{
 		get
@@ -22,5 +62,9 @@ public partial class GetEntitlementResult
 		}
 	}
 #endif
+	// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult.AvailabilityId.get
+	// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult.IsAlreadyOwned.get
+	// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult.OrderId.get
+	// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult.SkuId.get
 	// Forced skipping of method Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementResult.Status.get
 }

@@ -38,5 +38,8 @@ public enum WiFiPhyKind
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	HE = 10,
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	Eht = 11,
+#endif
 }
 #endif

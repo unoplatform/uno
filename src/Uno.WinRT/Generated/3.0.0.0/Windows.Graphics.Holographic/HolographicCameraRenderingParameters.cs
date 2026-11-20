@@ -14,6 +14,20 @@ public partial class HolographicCameraRenderingParameters
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Graphics.Holographic.HolographicDepthReprojectionMethod DepthReprojectionMethod
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Graphics.Holographic.HolographicCameraRenderingParameters", "DepthReprojectionMethod");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicCameraRenderingParameters", "DepthReprojectionMethod");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface Direct3D11BackBuffer
 	{
 		get
@@ -88,6 +102,8 @@ public partial class HolographicCameraRenderingParameters
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicCameraRenderingParameters", "CommitDirect3D11DepthBuffer(IDirect3DSurface value)");
 	}
 #endif
+	// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraRenderingParameters.DepthReprojectionMethod.get
+	// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraRenderingParameters.DepthReprojectionMethod.set
 	// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraRenderingParameters.Direct3D11BackBuffer.get
 	// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraRenderingParameters.Direct3D11Device.get
 	// Forced skipping of method Windows.Graphics.Holographic.HolographicCameraRenderingParameters.IsContentProtectionEnabled.get

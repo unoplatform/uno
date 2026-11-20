@@ -7,6 +7,16 @@ namespace Windows.UI.Notifications;
 #endif
 public partial class ToastNotification
 {
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static bool IsExpandableContentSupported
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Notifications.ToastNotification", "IsExpandableContentSupported");
+		}
+	}
+#endif
 	// Skipping already declared property Content
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -123,6 +133,7 @@ public partial class ToastNotification
 	// Skipping already declared property Tag
 	// Skipping already declared method Windows.UI.Notifications.ToastNotification.ToastNotification(Windows.Data.Xml.Dom.XmlDocument)
 	// Forced skipping of method Windows.UI.Notifications.ToastNotification.ToastNotification(Windows.Data.Xml.Dom.XmlDocument)
+	// Forced skipping of method Windows.UI.Notifications.ToastNotification.IsExpandableContentSupported.get
 	// Forced skipping of method Windows.UI.Notifications.ToastNotification.Activated.add
 	// Forced skipping of method Windows.UI.Notifications.ToastNotification.Activated.remove
 	// Forced skipping of method Windows.UI.Notifications.ToastNotification.Dismissed.add

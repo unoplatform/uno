@@ -42,6 +42,16 @@ public partial class VoipPhoneCall
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsUsingAssociatedDevicesList
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipPhoneCall", "IsUsingAssociatedDevicesList");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::System.DateTimeOffset StartTime
 	{
 		get
@@ -106,10 +116,46 @@ public partial class VoipPhoneCall
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.VoipPhoneCall", "NotifyCallAccepted(VoipPhoneCallMedia media)");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public void NotifyCallActive(global::System.Collections.Generic.IEnumerable<string> associatedDeviceIds)
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.VoipPhoneCall", "NotifyCallActive(IEnumerable<string> associatedDeviceIds)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public void AddAssociatedCallControlDevice(string deviceId)
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.VoipPhoneCall", "AddAssociatedCallControlDevice(string deviceId)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public void RemoveAssociatedCallControlDevice(string deviceId)
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.VoipPhoneCall", "RemoveAssociatedCallControlDevice(string deviceId)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public void SetAssociatedCallControlDevices(global::System.Collections.Generic.IEnumerable<string> associatedDeviceIds)
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.VoipPhoneCall", "SetAssociatedCallControlDevices(IEnumerable<string> associatedDeviceIds)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::System.Collections.Generic.IReadOnlyList<string> GetAssociatedCallControlDevices()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Calls.VoipPhoneCall", "GetAssociatedCallControlDevices()");
+	}
+#endif
 	// Forced skipping of method Windows.ApplicationModel.Calls.VoipPhoneCall.CallMedia.get
 	// Forced skipping of method Windows.ApplicationModel.Calls.VoipPhoneCall.CallMedia.set
 	// Forced skipping of method Windows.ApplicationModel.Calls.VoipPhoneCall.ContactName.get
 	// Forced skipping of method Windows.ApplicationModel.Calls.VoipPhoneCall.ContactName.set
+	// Forced skipping of method Windows.ApplicationModel.Calls.VoipPhoneCall.IsUsingAssociatedDevicesList.get
 	// Forced skipping of method Windows.ApplicationModel.Calls.VoipPhoneCall.StartTime.get
 	// Forced skipping of method Windows.ApplicationModel.Calls.VoipPhoneCall.StartTime.set
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

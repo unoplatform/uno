@@ -8,11 +8,6 @@ namespace Windows.Graphics.Printing.PrintTicket;
 public partial class WorkflowPrintTicket
 {
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	internal WorkflowPrintTicket()
-	{
-	}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Graphics.Printing.PrintTicket.PrintTicketFeature DocumentBindingFeature
 	{
@@ -192,6 +187,14 @@ public partial class WorkflowPrintTicket
 		}
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public WorkflowPrintTicket(string printerName, global::Windows.Storage.Streams.IInputStream printTicketStream)
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket", "WorkflowPrintTicket(string printerName, IInputStream printTicketStream)");
+	}
+#endif
+	// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.WorkflowPrintTicket(string, Windows.Storage.Streams.IInputStream)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities GetCapabilities()

@@ -24,6 +24,16 @@ public partial class ActivationSignalDetector
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public string DetectorId
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "DetectorId");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectorKind Kind
 	{
 		get
@@ -142,7 +152,50 @@ public partial class ActivationSignalDetector
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "RemoveConfigurationAsync(string signalId, string modelId)");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<string>> GetAvailableModelIdsForSignalIdAsync(string signalId)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "GetAvailableModelIdsForSignalIdAsync(string signalId)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::System.Collections.Generic.IList<string> GetAvailableModelIdsForSignalId(string signalId)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "GetAvailableModelIdsForSignalId(string signalId)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationCreationResult> CreateConfigurationWithResultAsync(string signalId, string modelId, string displayName)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "CreateConfigurationWithResultAsync(string signalId, string modelId, string displayName)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationCreationResult CreateConfigurationWithResult(string signalId, string modelId, string displayName)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "CreateConfigurationWithResult(string signalId, string modelId, string displayName)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationRemovalResult> RemoveConfigurationWithResultAsync(string signalId, string modelId)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "RemoveConfigurationWithResultAsync(string signalId, string modelId)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationRemovalResult RemoveConfigurationWithResult(string signalId, string modelId)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector", "RemoveConfigurationWithResult(string signalId, string modelId)");
+	}
+#endif
 	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector.CanCreateConfigurations.get
+	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector.DetectorId.get
 	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector.Kind.get
 	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector.ProviderId.get
 	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetector.SupportedModelDataTypes.get

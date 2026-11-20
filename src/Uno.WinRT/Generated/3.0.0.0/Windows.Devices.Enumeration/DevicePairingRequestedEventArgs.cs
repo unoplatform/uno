@@ -70,6 +70,13 @@ public partial class DevicePairingRequestedEventArgs
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePairingRequestedEventArgs", "AcceptWithPasswordCredential(PasswordCredential passwordCredential)");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public void AcceptWithAddress(string address)
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePairingRequestedEventArgs", "AcceptWithAddress(string address)");
+	}
+#endif
 	// Forced skipping of method Windows.Devices.Enumeration.DevicePairingRequestedEventArgs.DeviceInformation.get
 	// Forced skipping of method Windows.Devices.Enumeration.DevicePairingRequestedEventArgs.PairingKind.get
 	// Forced skipping of method Windows.Devices.Enumeration.DevicePairingRequestedEventArgs.Pin.get

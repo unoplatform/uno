@@ -19,6 +19,16 @@ public static partial class KnownUserProperties
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static string AgeEnforcementRegion
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.KnownUserProperties", "AgeEnforcementRegion");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public static string DisplayName
 	{
 		get
@@ -98,6 +108,7 @@ public static partial class KnownUserProperties
 	}
 #endif
 	// Forced skipping of method Windows.System.KnownUserProperties.AccountName.get
+	// Forced skipping of method Windows.System.KnownUserProperties.AgeEnforcementRegion.get
 	// Forced skipping of method Windows.System.KnownUserProperties.DisplayName.get
 	// Forced skipping of method Windows.System.KnownUserProperties.DomainName.get
 	// Forced skipping of method Windows.System.KnownUserProperties.FirstName.get

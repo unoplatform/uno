@@ -7,4 +7,81 @@ namespace Windows.UI.Composition;
 #endif
 public partial class CompositionEasingFunction : global::Windows.UI.Composition.CompositionObject
 {
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.UI.Composition.CubicBezierEasingFunction CreateCubicBezierEasingFunction(global::Windows.UI.Composition.Compositor owner, global::System.Numerics.Vector2 controlPoint1, global::System.Numerics.Vector2 controlPoint2)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionEasingFunction", "CreateCubicBezierEasingFunction(Compositor owner, Vector2 controlPoint1, Vector2 controlPoint2)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.UI.Composition.LinearEasingFunction CreateLinearEasingFunction(global::Windows.UI.Composition.Compositor owner)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionEasingFunction", "CreateLinearEasingFunction(Compositor owner)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.UI.Composition.StepEasingFunction CreateStepEasingFunction(global::Windows.UI.Composition.Compositor owner)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionEasingFunction", "CreateStepEasingFunction(Compositor owner)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.UI.Composition.StepEasingFunction CreateStepEasingFunction(global::Windows.UI.Composition.Compositor owner, int stepCount)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionEasingFunction", "CreateStepEasingFunction(Compositor owner, int stepCount)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.UI.Composition.BackEasingFunction CreateBackEasingFunction(global::Windows.UI.Composition.Compositor owner, global::Windows.UI.Composition.CompositionEasingFunctionMode mode, float amplitude)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionEasingFunction", "CreateBackEasingFunction(Compositor owner, CompositionEasingFunctionMode mode, float amplitude)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.UI.Composition.BounceEasingFunction CreateBounceEasingFunction(global::Windows.UI.Composition.Compositor owner, global::Windows.UI.Composition.CompositionEasingFunctionMode mode, int bounces, float bounciness)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionEasingFunction", "CreateBounceEasingFunction(Compositor owner, CompositionEasingFunctionMode mode, int bounces, float bounciness)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.UI.Composition.CircleEasingFunction CreateCircleEasingFunction(global::Windows.UI.Composition.Compositor owner, global::Windows.UI.Composition.CompositionEasingFunctionMode mode)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionEasingFunction", "CreateCircleEasingFunction(Compositor owner, CompositionEasingFunctionMode mode)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.UI.Composition.ElasticEasingFunction CreateElasticEasingFunction(global::Windows.UI.Composition.Compositor owner, global::Windows.UI.Composition.CompositionEasingFunctionMode mode, int oscillations, float springiness)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionEasingFunction", "CreateElasticEasingFunction(Compositor owner, CompositionEasingFunctionMode mode, int oscillations, float springiness)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.UI.Composition.ExponentialEasingFunction CreateExponentialEasingFunction(global::Windows.UI.Composition.Compositor owner, global::Windows.UI.Composition.CompositionEasingFunctionMode mode, float exponent)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionEasingFunction", "CreateExponentialEasingFunction(Compositor owner, CompositionEasingFunctionMode mode, float exponent)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.UI.Composition.PowerEasingFunction CreatePowerEasingFunction(global::Windows.UI.Composition.Compositor owner, global::Windows.UI.Composition.CompositionEasingFunctionMode mode, float power)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionEasingFunction", "CreatePowerEasingFunction(Compositor owner, CompositionEasingFunctionMode mode, float power)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.UI.Composition.SineEasingFunction CreateSineEasingFunction(global::Windows.UI.Composition.Compositor owner, global::Windows.UI.Composition.CompositionEasingFunctionMode mode)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.CompositionEasingFunction", "CreateSineEasingFunction(Compositor owner, CompositionEasingFunctionMode mode)");
+	}
+#endif
 }

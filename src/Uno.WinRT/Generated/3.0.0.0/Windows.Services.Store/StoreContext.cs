@@ -275,6 +275,27 @@ public partial class StoreContext
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreContext", "SetInstallOrderForAssociatedStoreQueueItemsAsync(IEnumerable<StoreQueueItem> items)");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StoreProductQueryResult> GetUserPurchaseHistoryAsync(global::System.Collections.Generic.IEnumerable<string> productKinds)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreContext", "GetUserPurchaseHistoryAsync(IEnumerable<string> productKinds)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StoreProductQueryResult> GetAssociatedStoreProductsByInAppOfferTokenAsync(global::System.Collections.Generic.IEnumerable<string> inAppOfferTokens)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreContext", "GetAssociatedStoreProductsByInAppOfferTokenAsync(IEnumerable<string> inAppOfferTokens)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StorePurchaseResult> RequestPurchaseByInAppOfferTokenAsync(string inAppOfferToken)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StoreContext", "RequestPurchaseByInAppOfferTokenAsync(string inAppOfferToken)");
+	}
+#endif
 	// Forced skipping of method Windows.Services.Store.StoreContext.CanSilentlyDownloadStorePackageUpdates.get
 	// Forced skipping of method Windows.Services.Store.StoreContext.User.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__

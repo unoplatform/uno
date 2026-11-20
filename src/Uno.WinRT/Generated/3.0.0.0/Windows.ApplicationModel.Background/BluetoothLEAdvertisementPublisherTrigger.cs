@@ -61,6 +61,34 @@ public partial class BluetoothLEAdvertisementPublisherTrigger : global::Windows.
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPhyType PrimaryPhy
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger", "PrimaryPhy");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger", "PrimaryPhy");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPhyType SecondaryPhy
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger", "SecondaryPhy");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger", "SecondaryPhy");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public bool UseExtendedFormat
 	{
 		get
@@ -88,6 +116,10 @@ public partial class BluetoothLEAdvertisementPublisherTrigger : global::Windows.
 	// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.IsAnonymous.set
 	// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.PreferredTransmitPowerLevelInDBm.get
 	// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.PreferredTransmitPowerLevelInDBm.set
+	// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.PrimaryPhy.get
+	// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.PrimaryPhy.set
+	// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.SecondaryPhy.get
+	// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.SecondaryPhy.set
 	// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.UseExtendedFormat.get
 	// Forced skipping of method Windows.ApplicationModel.Background.BluetoothLEAdvertisementPublisherTrigger.UseExtendedFormat.set
 	// Processing: Windows.ApplicationModel.Background.IBackgroundTrigger

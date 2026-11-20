@@ -7,6 +7,16 @@ namespace Windows.Devices.Sensors;
 #endif
 public partial class LightSensorReading
 {
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Devices.Sensors.LightSensorChromaticity Chromaticity
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.LightSensorReading", "Chromaticity");
+		}
+	}
+#endif
 	// Skipping already declared property IlluminanceInLux
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -29,6 +39,7 @@ public partial class LightSensorReading
 	}
 #endif
 	// Skipping already declared property Timestamp
+	// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.Chromaticity.get
 	// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.IlluminanceInLux.get
 	// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.PerformanceCount.get
 	// Forced skipping of method Windows.Devices.Sensors.LightSensorReading.Properties.get
