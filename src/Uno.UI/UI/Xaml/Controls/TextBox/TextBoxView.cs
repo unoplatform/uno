@@ -180,7 +180,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal void UpdateTextFromNative(string newText)
+		/// <returns>Whether the host applied the text: it can refuse it, as MaxLength does.</returns>
+		internal bool UpdateTextFromNative(string newText)
 		{
 			if (Host is { } host)
 			{
@@ -188,7 +189,8 @@ namespace Microsoft.UI.Xaml.Controls
 				var oldSelection = SelectionBeforeKeyDown; // On Gtk, SelectionBeforeKeyDown just points to Selection, which is updated by SetTextNative, so we need to read it before SetTextNative.
 				var selectionStart = _overlayTextBoxViewExtension?.GetSelectionStart() ?? oldSelection.start;
 				var selectionLength = _overlayTextBoxViewExtension?.GetSelectionLength() ?? oldSelection.length;
-				var modifiedText = host.ProcessTextInput(newText, selectionStart, selectionLength); // new text after BeforeTextChanging, TextChanging, DP callback, etc
+				// new text after BeforeTextChanging, TextChanging, DP callback, etc
+				var modifiedText = host.ProcessTextInput(newText, selectionStart, selectionLength, out var applied);
 				UpdateDisplayBlockText(modifiedText);
 				if (modifiedText != newText)
 				{
@@ -207,7 +209,11 @@ namespace Microsoft.UI.Xaml.Controls
 						});
 					}
 				}
+
+				return applied;
 			}
+
+			return false;
 		}
 
 		public void UpdateMaxLength() => _overlayTextBoxViewExtension?.UpdateNativeView();
