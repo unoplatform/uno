@@ -12,6 +12,9 @@
 		<UnoSplashScreenFile Condition="$(UnoSplashScreenFile) == ''">$(UnoSplashFolder)splash_screen.svg</UnoSplashScreenFile>
 		<UnoSplashScreenBaseSize Condition="$(UnoSplashScreenBaseSize) == ''">300,300</UnoSplashScreenBaseSize>
 		<UnoSplashScreenColor Condition="$(UnoSplashScreenColor) == ''">#FFFFFF</UnoSplashScreenColor>
+		<!-- Uno.Resizetizer turns 'transparent' into opaque white. An empty color makes it write "transparent", so the WebAssembly loader follows the browser theme. -->
+		<_UnoSplashScreenItemColor>$(UnoSplashScreenColor)</_UnoSplashScreenItemColor>
+		<_UnoSplashScreenItemColor Condition="'$(IsBrowserWasm)' == 'true' and '$(UnoSplashScreenColor)' == 'transparent'"></_UnoSplashScreenItemColor>
 
 		<!-- Support net9.0, without a platform identifier -->
 		<_UnoResizetizerIsCompatibleApp Condition=" 
@@ -30,7 +33,7 @@
 			Condition="Exists('$(UnoIconBackgroundFile)') and Exists('$(UnoIconForegroundFile)')" />
 		<UnoSplashScreen Include="$(UnoSplashScreenFile)"
 			BaseSize="$(UnoSplashScreenBaseSize)"
-			Color="$(UnoSplashScreenColor)"
+			Color="$(_UnoSplashScreenItemColor)"
 			Scale="$(UnoSplashScreenScale)"
 			IsDefaultItem="true"
 			Exclude="@(UnoSplashScreen)"
