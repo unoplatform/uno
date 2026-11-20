@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Runtime.Vulkan;
 
@@ -32,8 +33,8 @@ internal sealed class AndroidVulkanGraphicsContext : ISwapChain, IVulkanDeviceCo
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Vulkan;
 
-	// The Vulkan render image keeps the previous frame's pixels, so the compositor can repaint only the damaged
-	// region — unless the image was recreated since the last present. SurfaceChanged does that on rotation, and it
+	// The Vulkan render image keeps the previous frame's pixels, so the compositor can repaint only the damaged region
+	// — unless the image was recreated since the last present. SurfaceChanged does that on rotation, and it
 	// can land after the frame that reported the new XAML size, so the compositor sees no resize. Read between
 	// AcquireRenderTarget and Present, under the frame lock that Resize also takes.
 	public bool PreservesContents => _vk.RenderImageHasContent;
@@ -76,7 +77,13 @@ internal sealed class AndroidVulkanGraphicsContext : ISwapChain, IVulkanDeviceCo
 			return;
 		}
 
-		_vk.BlitAndPresent();
+		// A skipped present leaves the frame in the render image, which the next successful present blits in full,
+		// so the only thing to do here is report it.
+		if (!_vk.BlitAndPresent() && this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn("AndroidVulkanGraphicsContext: frame was not presented (swapchain acquire or present failed)");
+		}
+
 		_frameLock.Dispose();
 		_frameLock = null;
 	}
