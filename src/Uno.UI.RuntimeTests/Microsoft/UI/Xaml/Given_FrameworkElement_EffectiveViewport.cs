@@ -1121,6 +1121,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_EVP_ZeroHeight_ScrollViewer_Then_Empty()
+		{
+			var border = new Border { Width = 256 };
+			var sv = new ScrollViewer
+			{
+				Width = 256,
+				Height = 0,
+				Content = border
+			};
+
+			Rect? viewport = null;
+			border.EffectiveViewportChanged += (_, args) => viewport = args.EffectiveViewport;
+
+			await UITestHelper.Load(sv, x => x.IsLoaded);
+			await WaitForIdle();
+
+			Assert.IsNotNull(viewport);
+			Assert.IsTrue(viewport.Value.IsEmpty, $"Expected an empty effective viewport, got {viewport}.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_EVP_Initial_Proc_Base()
 		{
 			Border sut;

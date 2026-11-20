@@ -165,6 +165,26 @@ from `System.Runtime.InteropServices.JavaScript` — the recommended, source-gen
 (thread-safe, CSP-compliant, no `eval`). The string-based `WebAssemblyRuntime.InvokeJS(string)`
 is *not* removed, but it is a legacy eval-based API and is not recommended for new code.
 
+### `WebAssemblyRuntime.InvokeAsync` and `InvokeJSUnmarshalled`
+
+`WebAssemblyRuntime.InvokeAsync` and `WebAssemblyRuntime.InvokeJSUnmarshalled` both
+called JavaScript that shipped only with the WebAssembly DOM heads removed in 7.0, so they
+failed at runtime in a Skia app. `InvokeAsync`'s `DispatchAsyncResult` and
+`DispatchAsyncError` callbacks are removed with it. Replace a call to `InvokeAsync` with a
+[JSImport](xref:Uno.Wasm.Bootstrap.JSInterop) method that returns `Task<string>`, which
+awaits the JavaScript promise without evaluating code from a string:
+
+```csharp
+// Before
+var title = await WebAssemblyRuntime.InvokeAsync("Promise.resolve(document.title)");
+
+// After: getTitle is exported by your own JavaScript module
+[JSImport("getTitle", "myModule")]
+static partial Task<string> GetTitleAsync();
+
+var title = await GetTitleAsync();
+```
+
 ### TypeScript interop marker
 
 `Uno.Foundation.Interop.TSInteropMessageAttribute` and its
@@ -386,6 +406,12 @@ is now a compile error. Set the content property instead:
 XAML is unaffected.
 
 See also: [Base classes are no longer directly constructible](xref:Uno.Development.MigratingToUno7.WinUIParity#base-classes-are-no-longer-directly-constructible).
+
+## Template factory constructors removed
+
+The `Func<View>` constructors of `DataTemplate`, `ControlTemplate`, `ItemsPanelTemplate` and `FrameworkTemplate`, and their public `(object owner, FrameworkTemplateBuilder factory)` and `(object owner, NewFrameworkTemplateBuilder factory)` constructors, are removed, as is `NewFrameworkTemplateBuilder`. WinUI has none of them. Declare the template in XAML with an `x:Key`, or load it with `XamlReader.Load`.
+
+See also: [Templates can no longer be built from a factory delegate](xref:Uno.Development.MigratingToUno7.WinUIParity#templates-can-no-longer-be-built-from-a-factory-delegate).
 
 ## Custom `IAnimatedVisualSource` implementations
 

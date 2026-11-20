@@ -127,13 +127,13 @@ internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 		// Note: the timing of XamlRootMap.Register is very fragile. It needs to be early enough
 		// so things like UpdateWindowPropertiesFromPackage can read the DPI, but also late enough so that
 		// the X11Window is "initialized".
+		// The frame pacer must exist before XamlRootMap.Register, which asks the new host for any frame already
+		// requested, and before UpdateWindowPropertiesFromPackage: reading the DPI creates the DisplayInformation
+		// extension, whose UpdateDetails reports the screen refresh rate through UpdateRenderTimerFps.
+		_framePacer = CreateFramePacer();
+
 		_windowToHost[winUIWindow] = this;
 		XamlRootMap.Register(xamlRoot, this);
-
-		// The frame pacer must exist before UpdateWindowPropertiesFromPackage: reading the DPI
-		// creates the DisplayInformation extension, whose UpdateDetails reports the screen
-		// refresh rate through UpdateRenderTimerFps.
-		_framePacer = CreateFramePacer();
 
 		UpdateWindowPropertiesFromPackage();
 
@@ -639,12 +639,20 @@ internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 			throw new InvalidOperationException("Could not create correct visual window.\n");
 		}
 
+		// The server can reject the context (e.g. BadValue on X_GLXCreateNewContext) after the driver already returned
+		// a handle; the error only arrives on the next round trip, and our error handler doesn't exit the process.
+		var errorsBefore = X11ApplicationHost.X11ErrorCount;
 		IntPtr context = GlxInterface.glXCreateNewContext(display, bestFbc, GlxConsts.GLX_RGBA_TYPE, IntPtr.Zero, /* True */ 1);
 		if (context == IntPtr.Zero)
 		{
 			throw new InvalidOperationException($"{nameof(GlxInterface.glXCreateNewContext)} failed and returned a null context.\n");
 		}
 		_ = XLib.XSync(display, false);
+		if (X11ApplicationHost.X11ErrorCount != errorsBefore)
+		{
+			GlxInterface.glXDestroyContext(display, context);
+			throw new InvalidOperationException($"{nameof(GlxInterface.glXCreateNewContext)} was rejected by the X server.");
+		}
 
 		XSetWindowAttributes attribs = default;
 		// Setting the colormap here is necessary, otherwise we get a GLX error on some environments. cf. https://github.com/unoplatform/uno/issues/21285
@@ -662,6 +670,18 @@ internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 			visual->visual,
 			(UIntPtr)XCreateWindowFlags.CWColormap,
 			ref attribs);
+
+		// A context that can't be made current would only fail on every frame, so decline it here and let the
+		// negotiation fall back to the next backend.
+		var madeCurrent = GlxInterface.glXMakeCurrent(display, window, context);
+		_ = GlxInterface.glXMakeCurrent(display, X11Helper.None, IntPtr.Zero);
+		_ = XLib.XSync(display, false);
+		if (!madeCurrent || X11ApplicationHost.X11ErrorCount != errorsBefore)
+		{
+			GlxInterface.glXDestroyContext(display, context);
+			_ = XLib.XDestroyWindow(display, window);
+			throw new InvalidOperationException($"{nameof(GlxInterface.glXMakeCurrent)} failed on the new GLX context.");
+		}
 
 		_ = GlxInterface.glXGetFBConfigAttrib(display, bestFbc, GlxConsts.GLX_STENCIL_SIZE, out var stencil);
 		_ = GlxInterface.glXGetFBConfigAttrib(display, bestFbc, GlxConsts.GLX_SAMPLES, out var samples);

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TabView.cpp, tag winui3/release/2.5.1, commit ba3a8d59e
+// MUX Reference TabView.cpp
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 

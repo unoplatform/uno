@@ -12,8 +12,9 @@ namespace DirectUI
 		// Used to set the colors of the two alternating brushes
 		// When isContinuous==true, the second rect is drawn inside the first
 		// When isContinuous==false, the first and second are drawn together as a dotted line
-		public SolidColorBrush firstBrush;
-		public SolidColorBrush secondBrush;
+		// Uno-specific: WinUI types these as CSolidColorBrush but static_casts any brush in, so they take any Brush.
+		public Brush firstBrush;
+		public Brush secondBrush;
 
 		// Used to disable/enable the drawing of the two different lines
 		public bool drawFirst;

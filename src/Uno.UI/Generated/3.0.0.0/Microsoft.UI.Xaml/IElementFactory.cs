@@ -2,15 +2,11 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Microsoft.UI.Xaml;
 
-#if __SKIA__
+#if false
 [global::Uno.NotImplemented]
 #endif
 public partial interface IElementFactory
 {
-#if __SKIA__
-	global::Microsoft.UI.Xaml.UIElement GetElement(global::Microsoft.UI.Xaml.ElementFactoryGetArgs args);
-#endif
-#if __SKIA__
-	void RecycleElement(global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs args);
-#endif
+	// Skipping already declared method Microsoft.UI.Xaml.IElementFactory.GetElement(Microsoft.UI.Xaml.ElementFactoryGetArgs)
+	// Skipping already declared method Microsoft.UI.Xaml.IElementFactory.RecycleElement(Microsoft.UI.Xaml.ElementFactoryRecycleArgs)
 }
