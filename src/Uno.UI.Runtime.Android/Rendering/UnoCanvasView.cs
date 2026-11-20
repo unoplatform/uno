@@ -9,7 +9,6 @@ using Android.OS;
 using Android.Runtime;
 using Android.Util;
 using Android.Views;
-using Android.Views.Autofill;
 using Android.Views.InputMethods;
 using AndroidX.Core.Graphics;
 using AndroidX.Core.View;
@@ -197,18 +196,7 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 	}
 
 	public override void Autofill(SparseArray values)
-	{
-		var count = values.Size();
-		for (int i = 0; i < count; i++)
-		{
-			var virtualId = values.KeyAt(i);
-			if (AndroidSkiaTextBoxNotificationsProviderSingleton.Instance.LiveTextBoxesMap.TryGetValue(virtualId, out var textBox))
-			{
-				var autofillValue = (AutofillValue)values.ValueAt(i)!;
-				textBox.Text = autofillValue.TextValue ?? string.Empty;
-			}
-		}
-	}
+		=> TextInputPlugin.Autofill(values);
 
 	public override IInputConnection? OnCreateInputConnection(EditorInfo? outAttrs)
 		=> TextInputPlugin.OnCreateInputConnection(outAttrs!);

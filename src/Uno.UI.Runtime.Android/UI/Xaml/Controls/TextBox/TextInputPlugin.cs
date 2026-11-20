@@ -4,6 +4,7 @@ using System.Linq;
 using Android.Content;
 using Android.OS;
 using Android.Text;
+using Android.Util;
 using Android.Views;
 using Android.Views.Autofill;
 using Android.Views.InputMethods;
@@ -237,6 +238,7 @@ internal sealed class TextInputPlugin
 		}
 	}
 
+	// Called by Android: an exception must not cross back into Java, an autofill service would crash the app.
 	internal void OnProvideAutofillVirtualStructure(ViewStructure? structure)
 	{
 		if (structure?.AutofillId is not { } parentId)
@@ -244,6 +246,46 @@ internal sealed class TextInputPlugin
 			return;
 		}
 
+		try
+		{
+			ProvideAutofillVirtualStructure(structure, parentId);
+		}
+		catch (Exception e)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"{nameof(OnProvideAutofillVirtualStructure)} failed", e);
+			}
+		}
+	}
+
+	internal void Autofill(SparseArray values)
+	{
+		try
+		{
+			for (var i = 0; i < values.Size(); i++)
+			{
+				if (AndroidSkiaTextBoxNotificationsProviderSingleton.Instance.LiveTextBoxesMap.TryGetValue(values.KeyAt(i), out var textBox)
+					&& textBox.Owner.IsEnabled
+					&& !textBox.IsReadOnly
+					&& ReferenceEquals(AndroidSkiaTextBoxNotificationsProviderSingleton.GetTextInputPlugin(textBox.Owner.XamlRoot), this)
+					&& values.ValueAt(i) is AutofillValue { IsText: true } value)
+				{
+					textBox.Text = value.TextValue ?? string.Empty;
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"{nameof(Autofill)} failed", e);
+			}
+		}
+	}
+
+	private void ProvideAutofillVirtualStructure(ViewStructure structure, AutofillId parentId)
+	{
 		// Expose each TextBox of this view as a virtual child, so autofill services
 		// (Google, password managers) see fields like they did with native EditText controls.
 		var fields = GetAutofillFields();
