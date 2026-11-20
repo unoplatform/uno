@@ -6,6 +6,7 @@
 #nullable enable
 
 using System;
+using System.Runtime.InteropServices;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 
@@ -74,6 +75,14 @@ internal sealed class ThemeResourceReference
 	/// (the CValue::IsUnset() analog, see SetLastResolvedValue).
 	/// </remarks>
 	internal bool IsResolved { get; private set; }
+
+	// MUX Reference: xcperrorresource.h
+	private const int E_NER_INVALID_OPERATION = unchecked((int)0x800F1000);
+
+	/// <summary>
+	/// Whether <paramref name="e"/> is the AG_E_PARSER_FAILED_RESOURCE_FIND failure raised by <see cref="RefreshValue"/>.
+	/// </summary>
+	internal static bool IsResourceNotFound(Exception e) => e is COMException { HResult: E_NER_INVALID_OPERATION };
 
 	/// <summary>
 	/// Uno-specific: assembly parse context for fallback resolution when the pinned dictionary is dead.
@@ -183,8 +192,13 @@ internal sealed class ThemeResourceReference
 
 			// MUX Reference: ThemeResource.cpp:95-123 — WinUI re-runs the search with the resource
 			// lookup logger and raises AG_E_PARSER_FAILED_RESOURCE_FIND when the pinned dictionary is
-			// alive but doesn't contain the key. We log a warning instead of throwing, since Uno has
-			// additional fallback paths.
+			// alive but doesn't contain the key. Uno only does so on request, and otherwise falls back
+			// to the top-level lookup below.
+			if (Uno.UI.FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource)
+			{
+				throw new COMException($"Cannot find a Resource with the Name/Key {ResourceKey.Key}", E_NER_INVALID_OPERATION);
+			}
+
 			if (typeof(ThemeResourceReference).Log().IsEnabled(LogLevel.Debug))
 			{
 				typeof(ThemeResourceReference).Log().Debug(

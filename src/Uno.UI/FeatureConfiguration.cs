@@ -681,27 +681,22 @@ namespace Uno.UI
 		public static class ResourceResolution
 		{
 			/// <summary>
-			/// When <c>true</c>, a <c>{StaticResource}</c> that is still unresolved once its owner is
-			/// live in the visual tree throws <see cref="global::Microsoft.UI.Xaml.Markup.XamlParseException"/>
-			/// (the closest analogue to WinUI's <c>AG_E_PARSER_FAILED_RESOURCE_FIND</c>). When
-			/// <c>false</c> (default), the failure is only logged as a warning.
+			/// When <c>true</c>, resource keys that cannot be found fail like in WinUI, which raises
+			/// <c>AG_E_PARSER_FAILED_RESOURCE_FIND</c>. When <c>false</c> (default), the failure is only
+			/// logged and the property keeps its previous value.
 			/// </summary>
 			/// <remarks>
-			/// Useful during development to catch typos in <c>{StaticResource}</c> keys.
+			/// Useful during development to catch typos in resource keys and keys missing from a theme dictionary.
 			/// <para>
-			/// Two deliberate narrowings keep this free of false positives, because resource resolution
-			/// is deferred and multi-pass rather than resolved once at parse time as in WinUI:
+			/// A <c>{StaticResource}</c> or <c>{ThemeResource}</c> still unresolved once its owner is loaded throws
+			/// <see cref="global::Microsoft.UI.Xaml.Markup.XamlParseException"/>. WinUI throws while parsing; Uno
+			/// resolves these keys later, once the tree scope is available, so an earlier miss proves nothing.
 			/// </para>
 			/// <para>
-			/// A <c>{StaticResource}</c> binding only exists because the key could not be resolved at
-			/// parse time and is retried once the tree scope is available, so it is only judged after
-			/// its owner is loaded — an earlier miss proves nothing.
-			/// </para>
-			/// <para>
-			/// <c>{ThemeResource}</c> is not covered at all: it resolves through the theme-reference
-			/// pipeline, for which the resource-binding walk is only a fallback, so a miss there does
-			/// not mean the value went unset. Covering it would need the theme-reference path to report
-			/// definitive failure itself.
+			/// A <c>{ThemeResource}</c> whose dictionary lacks the key for a newly applied theme throws
+			/// <see cref="global::System.Runtime.InteropServices.COMException"/> (<c>0x800F1000</c>) from the theme
+			/// change, e.g. the <c>RequestedTheme</c> setter. The value is not taken from application resources
+			/// instead.
 			/// </para>
 			/// </remarks>
 			public static bool ThrowOnUnresolvedResource { get; set; }

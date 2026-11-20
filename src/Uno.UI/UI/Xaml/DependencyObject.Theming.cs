@@ -513,13 +513,19 @@ public partial class DependencyObject
 		}
 		catch (Exception e)
 		{
+			// Restore the ref even on failure to avoid losing it
+			_themeResources!.Set(property, precedence, themeRef);
+
+			// MUX: Theming.cpp:390 — IFC_RETURN(themeResource->RefreshValue()) fails the theme walk.
+			if (ThemeResourceReference.IsResourceNotFound(e))
+			{
+				throw;
+			}
+
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
 				this.Log().Warn($"Failed to update theme resource binding for {property.Name}", e);
 			}
-
-			// Restore the ref even on failure to avoid losing it
-			_themeResources!.Set(property, precedence, themeRef);
 		}
 		finally
 		{
@@ -921,7 +927,7 @@ public partial class DependencyObject
 				var resolved = InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
 				if (resolved == false
 					&& Uno.UI.FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource
-					&& IsUnresolvedResourceFatal(binding.Binding, resourceContextProvider))
+					&& IsUnresolvedResourceFatal(binding.Property, binding.Binding, resourceContextProvider))
 				{
 					unresolvedKeys ??= new List<string>();
 					unresolvedKeys.Add($"'{binding.Binding.ResourceKey.Key}' (property '{binding.Property.Name}')");
@@ -951,14 +957,16 @@ public partial class DependencyObject
 	/// parse time and must be retried once the tree scope is available (see
 	/// <see cref="ResourceUpdateReason.StaticResourceLoading"/>). Until the owner is live in the tree
 	/// the retry has not had its chance, so a miss proves nothing.</item>
-	/// <item><c>{ThemeResource}</c> is excluded outright: it is resolved through the theme-reference
-	/// pipeline (Phase 1 / <c>_themeResources</c>), for which this binding walk is only a fallback.
-	/// A miss here does not mean the value was not set, so it cannot be treated as fatal.</item>
+	/// <item>A <c>{ThemeResource}</c> is only a miss when its theme reference never resolved either. A
+	/// pinned reference still resolves through <see cref="ThemeResourceReference.RefreshValue"/>, e.g. popup
+	/// content reparented away from its opener's dictionaries, and a pinned dictionary lacking the key for
+	/// a new theme is reported there, as in WinUI.</item>
 	/// </list>
 	/// </remarks>
-	private bool IsUnresolvedResourceFatal(ResourceBinding binding, FrameworkElement? resourceContextProvider)
-		=> (binding.UpdateReason & ResourceUpdateReason.ThemeResource) == 0
-			&& (ActualInstance as FrameworkElement ?? resourceContextProvider)?.IsLoaded == true;
+	private bool IsUnresolvedResourceFatal(DependencyProperty property, ResourceBinding binding, FrameworkElement? resourceContextProvider)
+		=> (ActualInstance as FrameworkElement ?? resourceContextProvider)?.IsLoaded == true
+			&& ((binding.UpdateReason & ResourceUpdateReason.ThemeResource) == 0
+				|| _themeResources?.Get(property, binding.Precedence) is not { IsResolved: true });
 
 	/// <summary>
 	/// Returns <c>true</c> if the resource was resolved, <c>false</c> if the binding update
