@@ -21,16 +21,15 @@ public class Given_FileSystemAccessApiInformation
 {
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24130")]
-	[DataRow(WasmPickerConfiguration.FileSystemAccessApiWithFallback, "IsSavePickerSupported")]
-	[DataRow(WasmPickerConfiguration.FileSystemAccessApiWithFallback, "IsOpenPickerSupported")]
-	[DataRow(WasmPickerConfiguration.FileSystemAccessApiWithFallback, "AreFilePickersSupported")]
-	[DataRow(WasmPickerConfiguration.DownloadUpload, "IsSavePickerSupported")]
-	[DataRow(WasmPickerConfiguration.DownloadUpload, "IsOpenPickerSupported")]
-	[DataRow(WasmPickerConfiguration.DownloadUpload, "AreFilePickersSupported")]
-	public void When_Download_Upload_Pickers_Are_Enabled_Then_File_Pickers_Are_Supported(WasmPickerConfiguration configuration, string property)
+	[DataRow("FileSystemAccessApiWithFallback", "IsSavePickerSupported")]
+	[DataRow("FileSystemAccessApiWithFallback", "IsOpenPickerSupported")]
+	[DataRow("FileSystemAccessApiWithFallback", "AreFilePickersSupported")]
+	[DataRow("DownloadUpload", "IsSavePickerSupported")]
+	[DataRow("DownloadUpload", "IsOpenPickerSupported")]
+	[DataRow("DownloadUpload", "AreFilePickersSupported")]
+	public void When_Download_Upload_Pickers_Are_Enabled_Then_File_Pickers_Are_Supported(string configuration, string property)
 	{
-		var previousConfiguration = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration;
-		WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = configuration;
+		var previousConfiguration = SetWasmConfiguration(configuration);
 
 		try
 		{
@@ -38,7 +37,7 @@ public class Given_FileSystemAccessApiInformation
 		}
 		finally
 		{
-			WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = previousConfiguration;
+			SetWasmConfiguration(previousConfiguration);
 		}
 	}
 
@@ -48,8 +47,7 @@ public class Given_FileSystemAccessApiInformation
 	[DataRow("IsOpenPickerSupported", "showOpenFilePicker")]
 	public void When_Only_File_System_Access_Api_Is_Enabled_Then_Support_Follows_The_Browser(string property, string nativePicker)
 	{
-		var previousConfiguration = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration;
-		WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = WasmPickerConfiguration.FileSystemAccessApi;
+		var previousConfiguration = SetWasmConfiguration("FileSystemAccessApi");
 
 		try
 		{
@@ -57,7 +55,7 @@ public class Given_FileSystemAccessApiInformation
 		}
 		finally
 		{
-			WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = previousConfiguration;
+			SetWasmConfiguration(previousConfiguration);
 		}
 	}
 
@@ -99,8 +97,7 @@ public class Given_FileSystemAccessApiInformation
 	// Picks a file with the download picker, writes it, commits it and returns what the read script makes of the download.
 	private static async Task<string> DownloadAsync(Func<StorageFile, Task> write, bool hasCreateWritable, string readScript)
 	{
-		var previousConfiguration = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration;
-		WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = WasmPickerConfiguration.DownloadUpload;
+		var previousConfiguration = SetWasmConfiguration("DownloadUpload");
 		InvokeJS(CaptureDownloadsScript.Replace("HAS_CREATE_WRITABLE", hasCreateWritable ? "true" : "false"));
 		StorageFile? file = null;
 
@@ -127,7 +124,7 @@ public class Given_FileSystemAccessApiInformation
 		finally
 		{
 			InvokeJS(RestoreScript);
-			WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = previousConfiguration;
+			SetWasmConfiguration(previousConfiguration);
 
 			if (file is not null)
 			{
@@ -218,6 +215,16 @@ public class Given_FileSystemAccessApiInformation
 			return "";
 		})()
 		""";
+
+	// The Android and iOS builds of Uno.WinRT have no WasmPickerConfiguration, but load this assembly's types too.
+	// The enum therefore only appears in this non-async method's body, never in a signature, field or attribute.
+	private static string SetWasmConfiguration(string configuration)
+	{
+		var previous = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration;
+		WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration = Enum.Parse<WasmPickerConfiguration>(configuration);
+
+		return previous.ToString();
+	}
 
 	private static bool GetSupport(string propertyName)
 	{
