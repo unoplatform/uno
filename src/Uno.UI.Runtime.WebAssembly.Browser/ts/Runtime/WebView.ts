@@ -33,7 +33,14 @@ namespace Microsoft.UI.Xaml.Controls {
         }
 
         static executeScript(htmlId: string, script: string): string {
-            return ((<HTMLIFrameElement>document.getElementById(htmlId)).contentWindow as any).eval(script);
+            const result = ((<HTMLIFrameElement>document.getElementById(htmlId)).contentWindow as any).eval(script);
+
+            // Like WebView2, the result is returned as JSON, and a result JSON can't encode (undefined, a cycle) as null.
+            try {
+                return JSON.stringify(result) ?? "null";
+            } catch {
+                return "null";
+            }
         }
 
         static getDocumentTitle(htmlId: string): string {
