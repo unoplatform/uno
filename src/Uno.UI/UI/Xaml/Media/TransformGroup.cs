@@ -95,8 +95,11 @@ namespace Microsoft.UI.Xaml.Media
 
 				case NotifyCollectionChangedAction.Reset:
 					// Clear() does not report the removed items: drop every registration and register what is left.
-					foreach (var (_, registration) in _childRegistrations)
+					foreach (var (child, registration) in _childRegistrations)
 					{
+#if __ANDROID__ || __APPLE_UIKIT__
+						child.View = null; // Animation support
+#endif
 						registration.Dispose();
 					}
 

@@ -443,7 +443,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			Transform transform,
 			Func<float, NSValue> nsValueConversion)
 		{
-			if (transform.View is null)
+			if (transform.View is not { } view)
 			{
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
@@ -453,7 +453,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return null;
 			}
 
-			return CreateCoreAnimation(transform.View, "transform", nsValueConversion);
+			return CreateCoreAnimation(view, "transform", nsValueConversion);
 		}
 
 		private UnoCoreAnimation? CreateCoreAnimation(
@@ -461,7 +461,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			string property,
 			Func<float, NSValue> nsValueConversion)
 		{
-			if (transform.View is null)
+			if (transform.View is not { } view)
 			{
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
 				{
@@ -471,7 +471,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return null;
 			}
 
-			return CreateCoreAnimation(transform.View, property, nsValueConversion, transform.StartAnimation, transform.EndAnimation);
+			return CreateCoreAnimation(view, property, nsValueConversion, transform.StartAnimation, transform.EndAnimation);
 		}
 
 		private UnoCoreAnimation CreateCoreAnimation(

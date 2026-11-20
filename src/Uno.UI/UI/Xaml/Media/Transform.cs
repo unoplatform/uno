@@ -94,7 +94,15 @@ namespace Microsoft.UI.Xaml.Media
 		// Currently we support only one view par transform.
 		// But we can declare a Transform as a static resource and use it on multiple views.
 		// Note: This is now used only for animations
-		internal virtual _View? View { get; set; }
+		// Held weakly: a transform shared through a Style setter or a resource outlives the views it's applied to.
+		// A new WeakReference each time: setting the Target of an existing one has been seen to return null (see ManagedGCHandle).
+		internal virtual _View? View
+		{
+			get => _view is not null && _view.TryGetTarget(out var view) ? view : null;
+			set => _view = value is null ? null : new WeakReference<_View>(value);
+		}
+
+		private WeakReference<_View>? _view;
 #endif
 
 		#region GeneralTransform overrides
