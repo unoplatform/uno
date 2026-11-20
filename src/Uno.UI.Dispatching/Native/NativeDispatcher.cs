@@ -95,6 +95,26 @@ namespace Uno.UI.Dispatching
 
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
+		/// <summary>
+		/// When <c>true</c>, exceptions thrown by work items are reported through <see cref="UnhandledExceptionHandler"/>
+		/// and propagate to the platform message pump unless handled (matching WinUI behavior).
+		/// Wired from <c>FeatureConfiguration.UnhandledExceptionHandling.PropagateDispatcherExceptions</c>.
+		/// </summary>
+		internal static bool PropagateUnhandledExceptions { get; set; }
+
+		/// <summary>
+		/// Raises <c>Application.UnhandledException</c> for a failing work item and returns whether the app
+		/// handled it. Set by Uno.UI, which owns <c>Application</c>.
+		/// </summary>
+		internal static Func<Exception, bool>? UnhandledExceptionHandler { get; set; }
+
+		/// <summary>
+		/// Whether a work item's exception should escape to the platform message pump. Like WinUI, the
+		/// app gets a chance to handle it through <c>Application.UnhandledException</c> first.
+		/// </summary>
+		internal static bool ShouldPropagate(Exception exception)
+			=> PropagateUnhandledExceptions && UnhandledExceptionHandler?.Invoke(exception) != true;
+
 		private NativeDispatcher()
 		{
 			Debug.Assert(
@@ -183,11 +203,17 @@ namespace Uno.UI.Dispatching
 				}
 			}
 
-			RunAction(@this, action);
-
-			// Restore the priority to the default for native events
-			// (i.e. not dispatched by this running loop)
-			@this._currentPriority = NativeDispatcherPriority.Normal;
+			try
+			{
+				RunAction(@this, action);
+			}
+			finally
+			{
+				// Restore the priority to the default for native events
+				// (i.e. not dispatched by this running loop), even when the action's
+				// exception propagates (PropagateUnhandledExceptions) and the pump keeps going.
+				@this._currentPriority = NativeDispatcherPriority.Normal;
+			}
 		}
 
 		/// <remarks>
@@ -208,6 +234,16 @@ namespace Uno.UI.Dispatching
 				}
 				catch (Exception exception)
 				{
+					if (PropagateUnhandledExceptions)
+					{
+						if (ShouldPropagate(exception))
+						{
+							throw;
+						}
+
+						return;
+					}
+
 					dispatcher.Log().Error("NativeDispatcher unhandled exception", exception);
 				}
 			}

@@ -513,13 +513,19 @@ public partial class DependencyObject
 		}
 		catch (Exception e)
 		{
+			// Restore the ref even on failure to avoid losing it
+			_themeResources!.Set(property, precedence, themeRef);
+
+			// MUX: Theming.cpp:390 — IFC_RETURN(themeResource->RefreshValue()) fails the theme walk.
+			if (ThemeResourceReference.IsResourceNotFound(e))
+			{
+				throw;
+			}
+
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
 				this.Log().Warn($"Failed to update theme resource binding for {property.Name}", e);
 			}
-
-			// Restore the ref even on failure to avoid losing it
-			_themeResources!.Set(property, precedence, themeRef);
 		}
 		finally
 		{
@@ -898,6 +904,7 @@ public partial class DependencyObject
 		}
 
 		// Phase 2: Update remaining resource bindings (StaticResourceLoading, HotReload) via tree walk
+		List<string>? unresolvedKeys = null;
 		if (_resourceBindings?.HasBindings == true)
 		{
 			dictionariesInScope ??= GetResourceDictionaries(includeAppResources: false, resourceContextProvider, containingDictionary).ToArray();
@@ -917,8 +924,21 @@ public partial class DependencyObject
 			var bindings = _resourceBindings.GetAllBindings();
 			foreach (var binding in bindings)
 			{
-				InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
+				var resolved = InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
+				if (resolved == false
+					&& Uno.UI.FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource
+					&& IsUnresolvedResourceFatal(binding.Property, binding.Binding, resourceContextProvider))
+				{
+					unresolvedKeys ??= new List<string>();
+					unresolvedKeys.Add($"'{binding.Binding.ResourceKey.Key}' (property '{binding.Property.Name}')");
+				}
 			}
+		}
+
+		if (unresolvedKeys is not null)
+		{
+			throw new global::Microsoft.UI.Xaml.Markup.XamlParseException(
+				$"Could not resolve resource bindings on '{_originalObjectType.Name}': {string.Join(", ", unresolvedKeys)}.");
 		}
 
 		// Phase 3: Propagate to non-FE DOs (brushes, animations, etc.)
@@ -926,17 +946,44 @@ public partial class DependencyObject
 		UpdateChildResourceBindings(updateReason, resourceContextProvider);
 	}
 
+	/// <summary>
+	/// Whether a failed lookup is a genuine resource-resolution failure, as opposed to a pass that
+	/// is simply too early to conclude anything. Backs <see cref="FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource"/>.
+	/// </summary>
+	/// <remarks>
+	/// Resolution here is deferred and multi-pass, so most misses are expected:
+	/// <list type="bullet">
+	/// <item>A <c>{StaticResource}</c> binding only exists because the key could not be resolved at
+	/// parse time and must be retried once the tree scope is available (see
+	/// <see cref="ResourceUpdateReason.StaticResourceLoading"/>). Until the owner is live in the tree
+	/// the retry has not had its chance, so a miss proves nothing.</item>
+	/// <item>A <c>{ThemeResource}</c> is only a miss when its theme reference never resolved either. A
+	/// pinned reference still resolves through <see cref="ThemeResourceReference.RefreshValue"/>, e.g. popup
+	/// content reparented away from its opener's dictionaries, and a pinned dictionary lacking the key for
+	/// a new theme is reported there, as in WinUI.</item>
+	/// </list>
+	/// </remarks>
+	private bool IsUnresolvedResourceFatal(DependencyProperty property, ResourceBinding binding, FrameworkElement? resourceContextProvider)
+		=> (ActualInstance as FrameworkElement ?? resourceContextProvider)?.IsLoaded == true
+			&& ((binding.UpdateReason & ResourceUpdateReason.ThemeResource) == 0
+				|| _themeResources?.Get(property, binding.Precedence) is not { IsResolved: true });
+
+	/// <summary>
+	/// Returns <c>true</c> if the resource was resolved, <c>false</c> if the binding update
+	/// completed without finding the resource, or <c>null</c> if the inner call threw (e.g.
+	/// the target was disposed mid-update) and the caller should ignore this binding.
+	/// </summary>
 	/// <remarks>
 	/// This method contains or is called by a try/catch containing method and
 	/// can be significantly slower than other methods as a result on WebAssembly.
 	/// See https://github.com/dotnet/runtime/issues/56309
 	/// </remarks>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private void InnerUpdateResourceBindings(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
+	private bool? InnerUpdateResourceBindings(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
 	{
 		try
 		{
-			InnerUpdateResourceBindingsUnsafe(updateReason, dictionariesInScope, property, binding);
+			return InnerUpdateResourceBindingsUnsafe(updateReason, dictionariesInScope, property, binding);
 		}
 		catch (Exception e)
 		{
@@ -944,6 +991,7 @@ public partial class DependencyObject
 			{
 				this.Log().Warn($"Failed to update binding, target may have been disposed", e);
 			}
+			return null;
 		}
 	}
 
@@ -964,18 +1012,24 @@ public partial class DependencyObject
 	private bool IsProvisionalBindingOutsideLiveTree(ResourceBinding binding)
 		=> IsProvisionalBinding(binding) && !IsActive;
 
+	/// <summary>
+	/// Returns <c>true</c> when the resource was successfully resolved (either from the
+	/// in-scope dictionaries or from a top-level lookup), <c>false</c> when the lookup
+	/// missed across all sources.
+	/// </summary>
 	/// <remarks>
 	/// This method contains or is called by a try/catch containing method and
 	/// can be significantly slower than other methods as a result on WebAssembly.
 	/// See https://github.com/dotnet/runtime/issues/56309
 	/// </remarks>
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private void InnerUpdateResourceBindingsUnsafe(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
+	private bool InnerUpdateResourceBindingsUnsafe(ResourceUpdateReason updateReason, ResourceDictionary[] dictionariesInScope, DependencyProperty property, ResourceBinding binding)
 	{
 		if ((binding.UpdateReason & updateReason) == ResourceUpdateReason.None)
 		{
-			// If the reason for the update doesn't match the reason(s) that the binding was created for, don't update it
-			return;
+			// If the reason for the update doesn't match the reason(s) that the binding was created for, don't update it.
+			// Treated as "resolved" for ThrowOnUnresolvedResource purposes — we did not look here.
+			return true;
 		}
 
 		// The Light/Dark sub-dictionary is selected at the dictionary leaf by the ambient active theme —
@@ -1038,7 +1092,8 @@ public partial class DependencyObject
 						this.Log().Debug($"Keeping provisional {{StaticResource {binding.ResourceKey.Key}}} on {ActualInstance?.GetType().Name}.{property.Name} until it enters the live tree.");
 					}
 
-					return;
+					// Deferred, not missing.
+					return true;
 				}
 
 				// The resource wasn't found in the in-scope (non-app) dictionaries, but an application-level
@@ -1068,8 +1123,14 @@ public partial class DependencyObject
 						themeRef?.SetTargetDictionary(providingDict);
 						themeRef?.SetLastResolvedValue(value);
 					}
+
+					return true;
 				}
+
+				return false;
 			}
+
+			return true;
 		}
 		finally
 		{

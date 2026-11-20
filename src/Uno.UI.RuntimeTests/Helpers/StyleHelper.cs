@@ -53,6 +53,12 @@ namespace Uno.UI.RuntimeTests.Helpers
 				return Disposable.Empty;
 			}
 
+#if HAS_UNO
+			// Live Fluent-templated elements lose their keys while the Fluent resources are gone, which is
+			// the WinUI crash above. Uno is lenient unless asked otherwise, so keep it lenient for this swap.
+			var throwOnUnresolvedResource = Uno.UI.FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource;
+			Uno.UI.FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource = false;
+#endif
 			resources.MergedDictionaries.Remove(xamlResources);
 			ForceReload();
 #if HAS_UNO
@@ -69,6 +75,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 #if HAS_UNO
 				// TODO Uno: WinUI has no resource swapping
 				Microsoft.UI.Xaml.Controls.Primitives.ListViewBaseItemPresenter.ClearIsRoundedListViewBaseItemChromeEnabledCache();
+				Uno.UI.FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource = throwOnUnresolvedResource;
 #endif
 			});
 			_pendingUwpStylesRestores.Add(restore);
