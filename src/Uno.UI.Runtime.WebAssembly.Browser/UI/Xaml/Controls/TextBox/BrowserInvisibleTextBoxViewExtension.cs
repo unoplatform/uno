@@ -212,6 +212,17 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 	[JSExport]
 	private static void OnNativeBlur()
+		=> OnNativeBlur(ownerHandle: IntPtr.Zero);
+
+	[JSExport]
+	private static Task OnNativeBlurAsync(IntPtr ownerHandle)
+	{
+		OnNativeBlur(ownerHandle);
+
+		return Task.CompletedTask;
+	}
+
+	private static void OnNativeBlur(IntPtr ownerHandle)
 	{
 		try
 		{
@@ -230,7 +241,9 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			{
 				typeof(BrowserInvisibleTextBoxViewExtension).Log().Trace($"OnNativeBlur: focused element is {focused?.GetType().Name ?? "null"}");
 			}
-			if (focused is Control control and (ITextBoxHost or RichEditBox))
+			// In MT the notification is applied later: focus may already be on another TextBox, which must keep it.
+			if (focused is Control control and (ITextBoxHost or RichEditBox)
+				&& (ownerHandle == IntPtr.Zero || control.Visual.Handle == ownerHandle))
 			{
 				control.Unfocus();
 			}
@@ -240,14 +253,6 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			// A managed exception must not cross back into the JS DOM-event callback.
 			Application.Current.RaiseRecoverableUnhandledException(e);
 		}
-	}
-
-	[JSExport]
-	private static Task OnNativeBlurAsync()
-	{
-		OnNativeBlur();
-
-		return Task.CompletedTask;
 	}
 
 	[JSExport]

@@ -312,7 +312,9 @@
 						return;
 					}
 
-					BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._exports.OnNativeBlurAsync());
+					// Captured now: by the time the UI thread applies it, another TextBox may own the input.
+					const ownerHandle = BrowserInvisibleTextBoxViewExtension.currentHandle;
+					BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._exports.OnNativeBlurAsync(ownerHandle));
 				});
 
 				// See below.
