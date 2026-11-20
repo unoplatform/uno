@@ -83,7 +83,29 @@ internal static class PathTessellator
 	/// Triangulates the contours, treating a contour nested an odd number of deep as a hole. Returns indices
 	/// into the concatenated point list, or null when the input is not something we can tessellate safely.
 	/// </summary>
-	public static int[]? TryTriangulate(IReadOnlyList<List<Vector2>> contours)
+	// Working storage of the triangulation, reused by every call on a thread: it runs per tessellated path per frame.
+	[ThreadStatic] private static Vector2[]? t_flat;
+	[ThreadStatic] private static Vector2[]? t_inset;
+	[ThreadStatic] private static int[]? t_depth;
+	[ThreadStatic] private static int[]? t_offsets;
+	[ThreadStatic] private static List<int>? t_tris;
+	[ThreadStatic] private static List<int>? t_holes;
+	[ThreadStatic] private static List<int>? t_poly;
+	[ThreadStatic] private static List<int>? t_seq;
+	[ThreadStatic] private static List<int>? t_live;
+
+	private static T[] Scratch<T>(ref T[]? array, int length)
+		=> array is { } a && a.Length >= length ? a : array = new T[Math.Max(length, (array?.Length ?? 0) * 2)];
+
+	private static List<int> Scratch(ref List<int>? list)
+	{
+		var l = list ??= new List<int>();
+		l.Clear();
+		return l;
+	}
+
+	/// <summary>The indices <see cref="TryTriangulate"/> produced, valid until the next call on the same thread.</summary>
+	public static List<int>? TryTriangulate(IReadOnlyList<List<Vector2>> contours)
 	{
 		var total = 0;
 		for (var i = 0; i < contours.Count; i++)
@@ -95,7 +117,7 @@ internal static class PathTessellator
 
 		// Flatten once: the ear clipper indexes points in its inner loops, and walking the contour list there
 		// would make a long text run quadratic in contour COUNT on top of the ear clipping itself.
-		var flat = new Vector2[total];
+		var flat = Scratch(ref t_flat, total);
 		var w = 0;
 		for (var i = 0; i < contours.Count; i++)
 		{
@@ -105,7 +127,8 @@ internal static class PathTessellator
 		// Contour i is a hole iff it sits inside an odd number of the others. This is the even-odd rule; for
 		// glyph outlines (non-zero with opposite-wound holes) it gives the same answer, and BuildGeometry's
 		// area check rejects the cases where the two rules would disagree.
-		var depth = new int[contours.Count];
+		var depth = Scratch(ref t_depth, contours.Count);
+		depth.AsSpan(0, contours.Count).Clear();
 		for (var i = 0; i < contours.Count; i++)
 		{
 			var probe = contours[i][0];
@@ -116,16 +139,16 @@ internal static class PathTessellator
 		}
 
 		// Group each hole with the immediate parent that encloses it (the deepest enclosing outer contour).
-		var offsets = new int[contours.Count];
+		var offsets = Scratch(ref t_offsets, contours.Count);
 		var run = 0;
 		for (var i = 0; i < contours.Count; i++) { offsets[i] = run; run += contours[i].Count; }
 
-		var tris = new List<int>(total * 3);
+		var tris = Scratch(ref t_tris);
 		for (var o = 0; o < contours.Count; o++)
 		{
 			if ((depth[o] & 1) != 0) { continue; }   // a hole, handled by its parent
 
-			var holes = new List<int>();
+			var holes = Scratch(ref t_holes);
 			for (var h = 0; h < contours.Count; h++)
 			{
 				if (h == o || (depth[h] & 1) == 0 || depth[h] != depth[o] + 1) { continue; }
@@ -141,7 +164,7 @@ internal static class PathTessellator
 			if (!EarClip(flat, poly, tris)) { return null; }
 		}
 
-		return tris.Count >= 3 ? tris.ToArray() : null;
+		return tris.Count >= 3 ? tris : null;
 	}
 
 	/// <summary>
@@ -151,7 +174,7 @@ internal static class PathTessellator
 	/// </summary>
 	public static bool BuildGeometry(
 		IReadOnlyList<List<Vector2>> contours,
-		int[] indices,
+		List<int> indices,
 		float aaHalf,
 		List<float> verts,
 		List<float> coverage)
@@ -164,29 +187,8 @@ internal static class PathTessellator
 
 		// Flat copy for O(1) indexing: this method runs EVERY frame, and resolving a global index by walking the
 		// contour list would be O(contours) per vertex -- ruinous for a text run, which is one contour per glyph.
-		var flat = System.Buffers.ArrayPool<Vector2>.Shared.Rent(total);
-		var inset = System.Buffers.ArrayPool<Vector2>.Shared.Rent(total);
-		try
-		{
-			return BuildGeometry(contours, indices, aaHalf, verts, coverage, total, flat, inset);
-		}
-		finally
-		{
-			System.Buffers.ArrayPool<Vector2>.Shared.Return(flat);
-			System.Buffers.ArrayPool<Vector2>.Shared.Return(inset);
-		}
-	}
-
-	private static bool BuildGeometry(
-		IReadOnlyList<List<Vector2>> contours,
-		int[] indices,
-		float aaHalf,
-		List<float> verts,
-		List<float> coverage,
-		int total,
-		Vector2[] flat,
-		Vector2[] inset)
-	{
+		var flat = Scratch(ref t_flat, total);
+		var inset = Scratch(ref t_inset, total);
 		var w = 0;
 		for (var i = 0; i < contours.Count; i++)
 		{
@@ -199,7 +201,7 @@ internal static class PathTessellator
 		if (aaHalf <= 0)
 		{
 			// No ring: the interior must sit on the true edge, not inset, or the shape loses half a pixel.
-			for (var t = 0; t + 2 < indices.Length; t += 3)
+			for (var t = 0; t + 2 < indices.Count; t += 3)
 			{
 				for (var k = 0; k < 3; k++)
 				{
@@ -280,7 +282,7 @@ internal static class PathTessellator
 			for (var i = 0; i < total; i++) { inset[i] *= ringScale; }
 		}
 
-		for (var t = 0; t + 2 < indices.Length; t += 3)
+		for (var t = 0; t + 2 < indices.Count; t += 3)
 		{
 			for (var k = 0; k < 3; k++)
 			{
@@ -360,7 +362,7 @@ internal static class PathTessellator
 	/// </summary>
 	private static List<int>? BridgeHoles(IReadOnlyList<List<Vector2>> contours, Vector2[] flat, int outer, List<int> holes, int[] offsets)
 	{
-		var poly = new List<int>(contours[outer].Count + 8);
+		var poly = Scratch(ref t_poly);
 		for (var i = 0; i < contours[outer].Count; i++) { poly.Add(offsets[outer] + i); }
 		if (holes.Count == 0) { return poly; }
 
@@ -399,7 +401,7 @@ internal static class PathTessellator
 			// Walk the hole in the opposite orientation to the outer contour, so the merged polygon stays simple.
 			var outerCcw = SignedArea2(contours[outer]) > 0;
 			var holeCcw = SignedArea2(hp) > 0;
-			var seq = new List<int>(hp.Count + 2);
+			var seq = Scratch(ref t_seq);
 			for (var s = 0; s <= hp.Count; s++)
 			{
 				var idx = outerCcw == holeCcw
@@ -437,7 +439,7 @@ internal static class PathTessellator
 		}
 		if (Math.Abs(area2) < 1e-9) { return false; }
 
-		var live = new List<int>(n);
+		var live = Scratch(ref t_live);
 		if (area2 > 0) { for (var i = 0; i < n; i++) { live.Add(poly[i]); } }
 		else { for (var i = n - 1; i >= 0; i--) { live.Add(poly[i]); } }
 

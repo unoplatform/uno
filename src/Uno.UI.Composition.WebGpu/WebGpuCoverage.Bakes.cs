@@ -29,6 +29,10 @@ internal sealed unsafe partial class WebGpuCoverage
 	}
 
 	private readonly List<BakeBatch> _pendingBakes = new();
+
+	[ThreadStatic]
+	private static VertBuf t_bakeVerts;
+
 	private readonly Dictionary<nint, BakeBatch> _bakeByTarget = new();
 
 	// The batch writing into a texture this frame, opened on first use. Atlas pages Load: the resolve touches only
@@ -127,7 +131,11 @@ internal sealed unsafe partial class WebGpuCoverage
 			Api.RenderPassEncoderRelease(apass);
 
 			// Per slot, 6 verts of (ndc in the target, texel in the accumulator, evenOdd, exclude).
-			var verts = new float[b.Count * 36];
+			// Uploaded as soon as it is filled (QueueWriteBuffer copies), so one scratch serves every batch.
+			var scratch = t_bakeVerts ??= new VertBuf();
+			scratch.Clear();
+			scratch.Grow(b.Count * 36);
+			var verts = scratch.A;
 			var slots = CollectionsMarshal.AsSpan(b.Slots);
 			var vi = 0;
 			void V(float px, float py, float eo, float ex)
@@ -144,13 +152,13 @@ internal sealed unsafe partial class WebGpuCoverage
 			var re = new BindGroupEntry { Binding = 0, TextureView = accView };
 			var rbgd = new BindGroupDescriptor { Layout = _d.CoverageResolveSheetBgl, EntryCount = 1, Entries = &re };
 			var resolveBg = _d.Groups.Get(&rbgd);
-			var quads = _f.MakeBuffer(verts);
+			var quads = _f.MakeBuffer(scratch);
 			var rca = new RenderPassColorAttachment { DepthSlice = uint.MaxValue, View = b.Target, LoadOp = b.Load ? LoadOp.Load : LoadOp.Clear, StoreOp = StoreOp.Store, ClearValue = default };
 			var rdesc = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &rca };
 			var rpass = Api.CommandEncoderBeginRenderPass(_f.Encoder, &rdesc);
 			Api.RenderPassEncoderSetPipeline(rpass, _d.CoverageResolveSheetPipe);
 			Api.RenderPassEncoderSetBindGroup(rpass, 0, resolveBg, 0, null);
-			Api.RenderPassEncoderSetVertexBuffer(rpass, 0, quads, 0, (nuint)(verts.Length * sizeof(float)));
+			Api.RenderPassEncoderSetVertexBuffer(rpass, 0, quads, 0, (nuint)(scratch.Count * sizeof(float)));
 			Api.RenderPassEncoderDraw(rpass, (uint)(b.Count * 6), 1, 0, 0);
 			Api.RenderPassEncoderEnd(rpass);
 			Api.RenderPassEncoderRelease(rpass);
