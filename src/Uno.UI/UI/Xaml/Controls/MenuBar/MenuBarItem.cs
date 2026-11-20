@@ -48,17 +48,6 @@ public partial class MenuBarItem : Control
 		var items = new ObservableVector<MenuFlyoutItemBase>();
 		items.VectorChanged += OnItemsVectorChanged;
 		SetValue(ItemsProperty, items);
-
-		Loaded += MenuBarItem_Loaded;
-	}
-
-	// Uno specific: re-resolves the parent MenuBar once loaded.
-	private void MenuBarItem_Loaded(object sender, RoutedEventArgs e)
-	{
-		if (SharedHelpers.GetAncestorOfType<MenuBar>(VisualTreeHelper.GetParent(this)) is { } menuBar)
-		{
-			m_menuBar = new WeakReference<MenuBar>(menuBar);
-		}
 	}
 
 	// Uno specific: WinUI propagates Enter/Leave to the Items through EnterSparseProperties. Items is not a
