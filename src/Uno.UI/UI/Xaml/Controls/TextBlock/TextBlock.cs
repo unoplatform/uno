@@ -838,6 +838,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			OnPaddingChangedPartial();
 			InvalidateTextBlock();
+
+			// The text is drawn offset by the padding, which may not change the parsed layout.
+			InvalidateInlineAndRequireRepaint();
 		}
 
 		partial void OnPaddingChangedPartial();
@@ -1666,7 +1669,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				ParsedText = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
 			}
-			ParsedText = ParseText(availableSizeWithoutPadding, out var desiredSize);
+			ParsedText = KeepIfDrawnTheSame(ParseText(availableSizeWithoutPadding, out var desiredSize));
 			_textLayoutWidth = availableSizeWithoutPadding.Width;
 			_textLayoutVersion++;
 
@@ -1737,6 +1740,13 @@ namespace Microsoft.UI.Xaml.Controls
 			_lastParsedTextCreationValues = (availableSizeWithoutPadding, size, adjustedTextAlignment);
 			return ret;
 		}
+
+		// A block measured at another width usually lays its text out the same (a card title resized with its card): keeping
+		// the current parse then keeps the recording drawn from it. A TextBox reads the parse's available width for its caret.
+		private IParsedText KeepIfDrawnTheSame(IParsedText parsed)
+			=> OwningTextBox is null && parsed is UnicodeText next && _parsedText is UnicodeText current && current.DrawsLike(next)
+				? _parsedText
+				: parsed;
 
 		private TextAlignment? GetAdjustedTextAlignment() =>
 			OwningTextBox is { IsTextAlignmentSetToDefault: true }
@@ -1810,7 +1820,7 @@ namespace Microsoft.UI.Xaml.Controls
 				&& !(ParsedText is UnicodeText parsed && parsed.IsLayoutValidFor(availableSizeWithoutPadding));
 			if (sizeChanged || _lastParsedTextCreationValues.alignment != GetAdjustedTextAlignment())
 			{
-				ParsedText = ParseText(availableSizeWithoutPadding, out arrangedSize);
+				ParsedText = KeepIfDrawnTheSame(ParseText(availableSizeWithoutPadding, out arrangedSize));
 			}
 
 			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);

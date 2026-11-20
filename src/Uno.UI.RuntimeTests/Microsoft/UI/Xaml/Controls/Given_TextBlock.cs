@@ -824,6 +824,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Wrapping_Block_Resized_With_Same_Lines_Then_Recording_Kept()
+		{
+			// Wrapping and trimming, like a card's title: such a block is arranged at its container's width.
+			var SUT = new TextBlock { Text = "ABC", TextWrapping = TextWrapping.Wrap, TextTrimming = TextTrimming.CharacterEllipsis, MaxLines = 2 };
+			var host = new Grid { Width = 200, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, Children = { SUT } };
+			await UITestHelper.Load(host);
+			await UITestHelper.WaitForRender();
+
+			var visual = SUT.Visual;
+			var recorded = visual.RecordedContentForTesting;
+			var width = visual.Size.X;
+
+			host.Width = 250;
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+
+			Assert.AreNotEqual(width, visual.Size.X, "The wrapping text block is arranged at its container's width.");
+			Assert.AreSame(recorded, visual.RecordedContentForTesting, "Its single left-aligned line draws the same way at either width.");
+
+			SUT.Padding = new Thickness(10, 0, 0, 0);
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+
+			Assert.AreNotSame(recorded, visual.RecordedContentForTesting, "Padding moves the text, so it is drawn again.");
+
+			recorded = visual.RecordedContentForTesting;
+			var lines = SUT.ActualHeight;
+			host.Width = 25;
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+
+			Assert.IsTrue(SUT.ActualHeight > lines, $"The narrowed block wraps: height {lines} -> {SUT.ActualHeight}.");
+			Assert.AreNotSame(recorded, visual.RecordedContentForTesting, "Its lines changed, so it is drawn again.");
+		}
+
+		[TestMethod]
 		public async Task When_Text_Set_While_Collapsed_Then_Laid_Out_And_Drawn_Once_Visible()
 		{
 			var SUT = new TextBlock { Text = "ABC" };
@@ -854,8 +890,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("ABC", TextAlignment.Left, TextWrapping.NoWrap, 300, 50, false, DisplayName = "Single line, height differs")]
 		[DataRow("ABC", TextAlignment.Left, TextWrapping.NoWrap, 200, 300, false, DisplayName = "Single left-aligned line, width differs")]
 		[DataRow("ABC", TextAlignment.Center, TextWrapping.NoWrap, 200, 300, true, DisplayName = "Centred, width differs")]
-		[DataRow("ABC", TextAlignment.Left, TextWrapping.Wrap, 200, 300, true, DisplayName = "Wrapping, width differs")]
-		[DataRow("A\nB", TextAlignment.Left, TextWrapping.NoWrap, 300, 100, true, DisplayName = "Two lines, height differs")]
+		[DataRow("The quick brown fox jumps over the lazy dog, again and again", TextAlignment.Left, TextWrapping.Wrap, 600, 300, true, DisplayName = "Wrapping, lines change")]
+		// A re-parse that lays the text out the same keeps the current one, so its recording is kept.
+		[DataRow("ABC", TextAlignment.Left, TextWrapping.Wrap, 200, 300, false, DisplayName = "Wrapping, same lines at the new width")]
+		[DataRow("A\nB", TextAlignment.Left, TextWrapping.NoWrap, 300, 100, false, DisplayName = "Two lines, height differs")]
+		// A character outside the default font is drawn with a fallback font, which every parse resolves again.
+		[DataRow("A\n✓", TextAlignment.Left, TextWrapping.NoWrap, 300, 100, false, DisplayName = "Two lines with a fallback font, height differs")]
 		public void When_Arranged_At_Other_Size_Then_Reparses_Only_If_Layout_Depends_On_It(string text, TextAlignment alignment, TextWrapping wrapping, double arrangeWidth, double arrangeHeight, bool expectReparse)
 		{
 			var SUT = new TextBlock { Text = text, TextAlignment = alignment, TextWrapping = wrapping };

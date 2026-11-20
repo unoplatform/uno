@@ -38,5 +38,17 @@ namespace Microsoft.UI.Composition
 		internal override bool CanPaint() => true;
 
 		internal override bool PaintsWithinOwnSize => true;
+
+		// Text is drawn from the parsed layout, which repaints when it is replaced (TextBlock.ParsedText), not from the
+		// arranged size: a block resized while its lines stay the same keeps its recording, as a move does.
+		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
+		{
+			if (propertyName is nameof(Size))
+			{
+				Compositor.InvalidateRender(this, translationOnly: true);
+				return;
+			}
+			base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
+		}
 	}
 }
