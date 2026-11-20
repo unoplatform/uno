@@ -419,6 +419,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		}
 
 		/// <summary>
+		/// A virtualized region without a selection model (NavigationView's menu ItemsRepeater) must keep
+		/// a selected item's aria-selected, both when it emits the item and when it re-emits it.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_NavigationView_Item_Is_Selected_Then_Its_Node_Keeps_Aria_Selected()
+		{
+			var home = new NavigationViewItem { Content = "Home" };
+			var settings = new NavigationViewItem { Content = "Settings" };
+			var nav = new NavigationView
+			{
+				PaneDisplayMode = NavigationViewPaneDisplayMode.Left,
+				IsPaneOpen = true,
+				IsSettingsVisible = false,
+				IsBackButtonVisible = NavigationViewBackButtonVisible.Collapsed,
+				Width = 400,
+				Height = 400,
+			};
+			nav.MenuItems.Add(home);
+			nav.MenuItems.Add(settings);
+			nav.SelectedItem = settings;
+
+			await UITestHelper.Load(nav);
+			await UITestHelper.WaitForIdle();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(settings), timeoutMS: 5000, message: "Timed out waiting for the NavigationView item semantic node.");
+			// Let the region's queued item updates run.
+			await UITestHelper.WaitForRender(frameCount: 5);
+
+			Assert.AreEqual("true", GetSemanticAttribute(settings, "aria-selected"), "The region must keep a selected item's aria-selected.");
+
+			AutomationProperties.SetAccessibilityView(settings, AccessibilityView.Raw);
+			AutomationProperties.SetAccessibilityView(settings, AccessibilityView.Content);
+			await UITestHelper.WaitForRender(frameCount: 5);
+
+			Assert.IsTrue(SemanticElementExists(settings), "The item must be emitted again once it is no longer Raw.");
+			Assert.AreEqual("true", GetSemanticAttribute(settings, "aria-selected"), "A re-emitted item must keep its aria-selected.");
+		}
+
+		/// <summary>
 		/// T058 (FR-032, WASM): a Collapsed element must NOT be emitted to the AT tree (WinUI parity —
 		/// Collapsed is absent from UIA), while a Visible sibling still emits. Guards the visibility-prune
 		/// in the semantic-tree walk; the positive guard ensures the prune is not vacuously over-broad.

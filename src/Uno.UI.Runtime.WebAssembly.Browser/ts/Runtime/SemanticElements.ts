@@ -1137,7 +1137,7 @@ namespace Uno.UI.Runtime {
 				(SemanticElements.getSplitButtonPart(element, 'secondary') ?? element).setAttribute('aria-expanded', String(expanded));
 				// Clear activedescendant when collapsing
 				if (!expanded) {
-					element.removeAttribute('aria-activedescendant');
+					SemanticElements.setActiveDescendant(element, null);
 				}
 			}
 		}
@@ -1147,25 +1147,24 @@ namespace Uno.UI.Runtime {
 		 * Screen readers use this to announce the currently focused option without moving DOM focus.
 		 */
 		public static updateActiveDescendant(containerHandle: number, activeItemHandle: number): void {
-			const container = document.getElementById(`uno-semantics-${containerHandle}`);
-			if (container) {
-				if (activeItemHandle !== 0) {
-					const activeId = `uno-semantics-${activeItemHandle}`;
-					container.setAttribute('aria-activedescendant', activeId);
-				} else {
-					container.removeAttribute('aria-activedescendant');
+			SemanticElements.runInVirtualizedOrder(() => {
+				const container = document.getElementById(`uno-semantics-${containerHandle}`);
+				if (container) {
+					SemanticElements.setActiveDescendant(container, activeItemHandle !== 0 ? `uno-semantics-${activeItemHandle}` : null);
 				}
-			}
+			});
 		}
 
 		/**
 		 * Updates the selected state of a list item element.
 		 */
 		public static updateSelectionState(handle: number, selected: boolean): void {
-			const element = document.getElementById(`uno-semantics-${handle}`);
-			if (element) {
-				element.setAttribute('aria-selected', String(selected));
-			}
+			SemanticElements.runInVirtualizedOrder(() => {
+				const element = document.getElementById(`uno-semantics-${handle}`);
+				if (element) {
+					element.setAttribute('aria-selected', String(selected));
+				}
+			});
 		}
 
 		/**
@@ -1717,6 +1716,18 @@ namespace Uno.UI.Runtime {
 		}
 
 		/**
+		 * Runs a selection update after the virtualized mutations already queued, so a realization snapshot
+		 * taken earlier cannot overwrite it; runs it immediately when nothing is queued.
+		 */
+		private static runInVirtualizedOrder(mutation: () => void): void {
+			if (SemanticElements.virtualizedMutationQueue.length > 0) {
+				SemanticElements.virtualizedMutationQueue.push(mutation);
+			} else {
+				mutation();
+			}
+		}
+
+		/**
 		 * Drops queued virtualized mutations; used when the semantic DOM is torn down.
 		 */
 		public static resetVirtualizedMutations(): void {
@@ -1725,6 +1736,8 @@ namespace Uno.UI.Runtime {
 				SemanticElements.virtualizedRafId = 0;
 			}
 			SemanticElements.virtualizedMutationQueue = [];
+			// The whole semantic DOM goes with it, without a per-item removal to unindex its owners.
+			SemanticElements.activeDescendantOwners.clear();
 		}
 
 		/**
@@ -1798,7 +1811,11 @@ namespace Uno.UI.Runtime {
 			width: number,
 			height: number,
 			role: string,
-			label: string
+			label: string,
+			ownsSelection: boolean,
+			selectable: boolean,
+			selected: boolean,
+			active: boolean
 		): void {
 			SemanticElements.scheduleVirtualizedMutation(() => {
 				const container = document.getElementById(`uno-semantics-${containerHandle}`);
@@ -1818,6 +1835,10 @@ namespace Uno.UI.Runtime {
 					// Ensure item is inside the correct container
 					if (existingItem.parentElement !== container) {
 						container.appendChild(existingItem);
+					}
+					// Without a selection model (an ItemsRepeater) the node's own peer already set its state.
+					if (ownsSelection) {
+						SemanticElements.applyVirtualizedSelection(container, existingItem, selectable, selected, active);
 					}
 					return;
 				}
@@ -1844,7 +1865,118 @@ namespace Uno.UI.Runtime {
 				});
 
 				container.appendChild(element);
+				if (ownsSelection) {
+					SemanticElements.applyVirtualizedSelection(container, element, selectable, selected, active);
+				} else if (selectable) {
+					element.setAttribute('aria-selected', String(selected));
+				}
 			});
+		}
+
+		/**
+		 * Applies a realized item's selection. The container's aria-activedescendant follows its active
+		 * item and is dropped when a recycled node now shows a different, inactive item.
+		 */
+		private static applyVirtualizedSelection(container: HTMLElement, item: HTMLElement, selectable: boolean, selected: boolean, active: boolean): void {
+			if (selectable) {
+				item.setAttribute('aria-selected', String(selected));
+			} else {
+				item.removeAttribute('aria-selected');
+			}
+
+			if (active) {
+				SemanticElements.setActiveDescendant(container, item.id);
+			} else if (container.getAttribute('aria-activedescendant') === item.id) {
+				SemanticElements.setActiveDescendant(container, null);
+			}
+		}
+
+		/**
+		 * Owners of aria-activedescendant keyed by the referenced item id, so removing an item doesn't need a
+		 * document-wide scan. An item can have two owners: its listbox and, for a ComboBox option, the head.
+		 */
+		private static activeDescendantOwners: Map<string, Set<HTMLElement>> = new Map();
+
+		/**
+		 * Sets or clears an owner's aria-activedescendant. Every write goes through here to keep the
+		 * owner index in sync.
+		 */
+		private static setActiveDescendant(owner: HTMLElement, itemId: string | null): void {
+			const previous = owner.getAttribute('aria-activedescendant');
+			if (previous === itemId) {
+				return;
+			}
+
+			if (previous) {
+				const owners = SemanticElements.activeDescendantOwners.get(previous);
+				if (owners) {
+					owners.delete(owner);
+					if (owners.size === 0) {
+						SemanticElements.activeDescendantOwners.delete(previous);
+					}
+				}
+			}
+
+			if (itemId) {
+				owner.setAttribute('aria-activedescendant', itemId);
+				let owners = SemanticElements.activeDescendantOwners.get(itemId);
+				if (!owners) {
+					owners = new Set();
+					SemanticElements.activeDescendantOwners.set(itemId, owners);
+				}
+				owners.add(owner);
+			} else {
+				owner.removeAttribute('aria-activedescendant');
+			}
+		}
+
+		/**
+		 * Removes every aria-activedescendant that references a node being removed: its container's, or for a
+		 * ComboBox option, the head's (outside the listbox subtree).
+		 */
+		public static clearActiveDescendantTo(element: HTMLElement): void {
+			const owners = element.id ? SemanticElements.activeDescendantOwners.get(element.id) : undefined;
+			if (!owners) {
+				return;
+			}
+
+			SemanticElements.activeDescendantOwners.delete(element.id);
+			for (const owner of owners) {
+				if (owner.getAttribute('aria-activedescendant') === element.id) {
+					owner.removeAttribute('aria-activedescendant');
+				}
+			}
+		}
+
+		private static ownerPruneScheduled = false;
+
+		/**
+		 * Drops index entries for owners removed with a whole subtree (no per-item removal ran for them).
+		 * Coalesced to one pass per synchronous batch, so a bulk teardown costs O(owners) once, not per node.
+		 */
+		public static schedulePruneDetachedActiveDescendantOwners(): void {
+			if (SemanticElements.ownerPruneScheduled || SemanticElements.activeDescendantOwners.size === 0) {
+				return;
+			}
+
+			SemanticElements.ownerPruneScheduled = true;
+			queueMicrotask(() => {
+				SemanticElements.ownerPruneScheduled = false;
+				SemanticElements.pruneDetachedActiveDescendantOwners();
+			});
+		}
+
+		private static pruneDetachedActiveDescendantOwners(): void {
+			for (const [itemId, owners] of SemanticElements.activeDescendantOwners) {
+				for (const owner of owners) {
+					if (!owner.isConnected) {
+						owners.delete(owner);
+					}
+				}
+				if (owners.size === 0) {
+					SemanticElements.activeDescendantOwners.delete(itemId);
+				}
+			}
 		}
 
 		/**
@@ -1855,6 +1987,7 @@ namespace Uno.UI.Runtime {
 			SemanticElements.scheduleVirtualizedMutation(() => {
 				const element = document.getElementById(`uno-semantics-${itemHandle}`);
 				if (element && element.parentElement) {
+					SemanticElements.clearActiveDescendantTo(element);
 					element.parentElement.removeChild(element);
 				}
 			});
@@ -1881,6 +2014,7 @@ namespace Uno.UI.Runtime {
 			const element = document.getElementById(`uno-semantics-${containerHandle}`);
 			if (element && element.parentElement) {
 				element.parentElement.removeChild(element);
+				SemanticElements.schedulePruneDetachedActiveDescendantOwners();
 			}
 		}
 	}
