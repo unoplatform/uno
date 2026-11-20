@@ -46,6 +46,12 @@
 		private static compositionText: string = "";
 		private static compositionStart: number = 0;
 		private static pendingCompositionStart: number = -1;
+		// The composition text last reported, so a preedit WebKit removes and puts back unchanged isn't reported again.
+		private static reportedText: string | null = null;
+		// The commit a compositionend announced before the input event that applies it (see awaitsCommitInput).
+		private static pendingCommit: string | null = null;
+		// WebKit removed the preedit with an input event of its own; it is reported with what follows (see syncCompositionInput).
+		private static preeditRemoved: boolean = false;
 		// The TextBox's text, set while the browser owns the value during a composition (see setText).
 		private static pendingText: string | null = null;
 		// The input's value as last synced with the TextBox, either way. A commit the browser applied without an input
@@ -174,7 +180,7 @@
 			document.addEventListener("click", swallow, { capture: true });
 		}
 
-		private static createInput(isPasswordBox: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string) {
+		private static createInput(isPasswordBox: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string, isReadOnly: boolean) {
 			BrowserInvisibleTextBoxViewExtension.acceptsReturn = acceptsReturn;
 			// A previous input may have been removed mid-composition without a compositionend;
 			// never carry that state over to a fresh element.
@@ -211,6 +217,7 @@
 			input.style.top = BrowserInvisibleTextBoxViewExtension.keepsInputOffscreen ? BrowserInvisibleTextBoxViewExtension.offscreenTop : "0px";
 			input.style.left = "0px";
 			input.value = text;
+			input.readOnly = isReadOnly;
 
 			input.setAttribute("inputmode", inputMode);
 			input.setAttribute("enterkeyhint", enterKeyHint);
@@ -231,7 +238,7 @@
 				}
 				BrowserInvisibleTextBoxViewExtension.runSyncingFromNative(() => {
 					if (BrowserInvisibleTextBoxViewExtension.isComposing && isActiveComposition()) {
-						BrowserInvisibleTextBoxViewExtension.syncCompositionFromInput(input);
+						BrowserInvisibleTextBoxViewExtension.syncCompositionInput(input, ev as InputEvent, isActiveComposition);
 					} else {
 						BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
 					}
@@ -273,6 +280,14 @@
 				if (input !== BrowserInvisibleTextBoxViewExtension.inputElement) {
 					return;
 				}
+				const announcedCommit = BrowserInvisibleTextBoxViewExtension.pendingCommit;
+				if (announcedCommit !== null && isActiveComposition()) {
+					// The commit a compositionend announced never came: that composition ends as it would have there.
+					BrowserInvisibleTextBoxViewExtension.runSyncingFromNative(() => BrowserInvisibleTextBoxViewExtension.completeComposition(input, announcedCommit));
+					if (input !== BrowserInvisibleTextBoxViewExtension.inputElement) {
+						return;
+					}
+				}
 				activeCompositionGeneration = ++BrowserInvisibleTextBoxViewExtension.compositionGeneration;
 				BrowserInvisibleTextBoxViewExtension.resetComposition();
 				// The IME now drives the selection; a restore pending from an earlier value assignment is stale.
@@ -299,32 +314,138 @@
 					return;
 				}
 				BrowserInvisibleTextBoxViewExtension.runSyncingFromNative(() => {
+					const committed = ev.data ?? "";
+					const removed = BrowserInvisibleTextBoxViewExtension.preeditRemoved;
 					// Firefox dispatches the commit's input event after compositionend. The committed value still belongs
 					// to the composition: the TextBox ends it with its final text, and RichEditBox keeps one undo step.
-					if (input.value !== BrowserInvisibleTextBoxViewExtension.syncedValue) {
+					// A preedit WebKit removed on its way to putting a commit in place waits for that commit instead.
+					if (input.value !== BrowserInvisibleTextBoxViewExtension.syncedValue && !(removed && committed.length > 0)) {
+						if (removed) {
+							BrowserInvisibleTextBoxViewExtension.preeditRemoved = false;
+							BrowserInvisibleTextBoxViewExtension.compositionText = "";
+						}
 						BrowserInvisibleTextBoxViewExtension.syncCompositionFromInput(input);
-					}
-
-					const wasReported = BrowserInvisibleTextBoxViewExtension.isCompositionReported;
-					const textDiffers = BrowserInvisibleTextBoxViewExtension.pendingText !== null;
-					BrowserInvisibleTextBoxViewExtension.resetComposition();
-					if (wasReported) {
-						if (ev.data.length > 0) {
-							BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(ev.data);
-						} else {
-							BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCanceled();
+						if (!isActiveComposition()) {
+							return;
 						}
 					}
-					if (textDiffers) {
-						// The TextBox re-applies its edits (a TextChanging filter, MaxLength) to the committed value and
-						// pushes the result to the input.
-						BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
+
+					if (BrowserInvisibleTextBoxViewExtension.isCompositionReported && BrowserInvisibleTextBoxViewExtension.awaitsCommitInput(input, committed, removed)) {
+						BrowserInvisibleTextBoxViewExtension.compositionText = committed;
+						BrowserInvisibleTextBoxViewExtension.pendingCommit = committed;
+						// The input event that applies the commit comes in the same task as compositionend, if at all. Blink
+						// cancels a composition whose text is selected with a compositionend alone, keeping the text: the
+						// composition then ends once this task is over, as it would have at compositionend, with a preedit
+						// removed in between synced first.
+						const generation = BrowserInvisibleTextBoxViewExtension.compositionGeneration;
+						setTimeout(() => {
+							if (BrowserInvisibleTextBoxViewExtension.pendingCommit !== committed
+								|| !BrowserInvisibleTextBoxViewExtension.isSyncTarget(input, generation)) {
+								return;
+							}
+							BrowserInvisibleTextBoxViewExtension.runSyncingFromNative(() => {
+								let commit = committed;
+								if (input.value !== BrowserInvisibleTextBoxViewExtension.syncedValue) {
+									// The preedit was removed and nothing put in its place: the composition was cancelled.
+									commit = "";
+									BrowserInvisibleTextBoxViewExtension.preeditRemoved = false;
+									BrowserInvisibleTextBoxViewExtension.compositionText = "";
+									BrowserInvisibleTextBoxViewExtension.syncCompositionFromInput(input);
+									if (!BrowserInvisibleTextBoxViewExtension.isSyncTarget(input, generation)) {
+										return;
+									}
+								}
+								BrowserInvisibleTextBoxViewExtension.completeComposition(input, commit);
+							});
+						}, 0);
+						return;
 					}
+					BrowserInvisibleTextBoxViewExtension.completeComposition(input, committed);
 				});
 			});
 
 			document.body.appendChild(input);
 			BrowserInvisibleTextBoxViewExtension.inputElement = input;
+		}
+
+		// Some WebKit orders (not current WebKit's) deliver compositionend before the input event that applies the commit:
+		// with the preedit still in the input, selected for the commit (or a cancel) to replace, or with the preedit just
+		// removed. The composition then ends with that input event, so TextCompositionEnded comes after the text change, as
+		// on WinUI. A commit no input event will apply still ends at compositionend.
+		private static awaitsCommitInput(input: HTMLInputElement | HTMLTextAreaElement, committed: string, removed: boolean): boolean {
+			if (removed) {
+				return committed.length > 0;
+			}
+			const preedit = BrowserInvisibleTextBoxViewExtension.compositionText;
+			const start = BrowserInvisibleTextBoxViewExtension.compositionStart;
+			return preedit.length > 0
+				&& committed !== preedit
+				&& input.selectionStart === start
+				&& input.selectionEnd === start + preedit.length;
+		}
+
+		// WebKit commits through input events of its own, with no compositionupdate for the committed text: the preedit
+		// is removed (deleteCompositionText), then the committed text put in place (insertFromComposition), then
+		// compositionend. The removal is reported with the insertion, so handlers don't see the composition emptied and
+		// refilled; when compositionend comes next instead, the composition was emptied, and once compositionend
+		// announced a cancel, the removal is all that comes.
+		private static syncCompositionInput(input: HTMLInputElement | HTMLTextAreaElement, ev: InputEvent, isActiveComposition: () => boolean) {
+			const inputType = ev.inputType;
+			const pendingCommit = BrowserInvisibleTextBoxViewExtension.pendingCommit;
+			if (inputType === "deleteCompositionText" && BrowserInvisibleTextBoxViewExtension.isCompositionReported && pendingCommit !== "") {
+				BrowserInvisibleTextBoxViewExtension.preeditRemoved = true;
+				return;
+			}
+
+			if (pendingCommit !== null && !ev.isComposing
+				&& inputType !== "insertCompositionText" && inputType !== "insertFromComposition" && inputType !== "deleteCompositionText") {
+				// The commit compositionend announced never came, and this is the next keystroke: the composition ends as it
+				// would have there, and the keystroke is a plain edit.
+				const generation = BrowserInvisibleTextBoxViewExtension.compositionGeneration;
+				BrowserInvisibleTextBoxViewExtension.completeComposition(input, pendingCommit);
+				if (BrowserInvisibleTextBoxViewExtension.isSyncTarget(input, generation)) {
+					BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
+				}
+				return;
+			}
+
+			const removed = BrowserInvisibleTextBoxViewExtension.preeditRemoved;
+			BrowserInvisibleTextBoxViewExtension.preeditRemoved = false;
+			if (inputType === "insertFromComposition" && ev.data) {
+				BrowserInvisibleTextBoxViewExtension.compositionText = ev.data;
+			}
+			if (!removed
+				|| input.value !== BrowserInvisibleTextBoxViewExtension.syncedValue
+				|| BrowserInvisibleTextBoxViewExtension.compositionText !== BrowserInvisibleTextBoxViewExtension.reportedText) {
+				BrowserInvisibleTextBoxViewExtension.syncCompositionFromInput(input);
+			}
+
+			if (pendingCommit !== null && isActiveComposition()) {
+				BrowserInvisibleTextBoxViewExtension.completeComposition(input, BrowserInvisibleTextBoxViewExtension.compositionText);
+			}
+		}
+
+		// Ends the composition with its commit; an empty one cancels it.
+		private static completeComposition(input: HTMLInputElement | HTMLTextAreaElement, committed: string) {
+			const generation = BrowserInvisibleTextBoxViewExtension.compositionGeneration;
+			const wasReported = BrowserInvisibleTextBoxViewExtension.isCompositionReported;
+			const textDiffers = BrowserInvisibleTextBoxViewExtension.pendingText !== null;
+			BrowserInvisibleTextBoxViewExtension.resetComposition();
+			if (wasReported) {
+				if (textDiffers) {
+					// The TextBox holds other text than the commit: the composition ends with its range in that text.
+					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
+				} else if (committed.length > 0) {
+					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(committed);
+				} else {
+					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCanceled();
+				}
+			}
+			if (textDiffers && BrowserInvisibleTextBoxViewExtension.isSyncTarget(input, generation)) {
+				// The TextBox re-applies its same-length edits (a casing filter) to the committed value and pushes
+				// the result to the input.
+				BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
+			}
 		}
 
 		// Tells the TextBox which part of the input's value is being composed. The composition is applied to the
@@ -353,6 +474,7 @@
 				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionStarted();
 			}
 			const cursorPosition = Math.max(0, Math.min(caret - start, text.length));
+			BrowserInvisibleTextBoxViewExtension.reportedText = text;
 			BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdated(text, cursorPosition, start);
 		}
 
@@ -368,17 +490,29 @@
 		}
 
 		private static syncCompositionFromInput(input: HTMLInputElement | HTMLTextAreaElement) {
+			const generation = BrowserInvisibleTextBoxViewExtension.compositionGeneration;
 			// Before the text sync, so the TextBox knows the change belongs to the composition.
 			BrowserInvisibleTextBoxViewExtension.reportComposition(input);
-			BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
+			if (BrowserInvisibleTextBoxViewExtension.isSyncTarget(input, generation)) {
+				BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
+			}
+		}
+
+		// A handler of a composition event (TextCompositionStarted, TextCompositionEnded) may have moved focus, replacing the
+		// input or handing it to another TextBox, which ends the composition: the input's value isn't that TextBox's.
+		private static isSyncTarget(input: HTMLInputElement | HTMLTextAreaElement, generation: number) {
+			return input === BrowserInvisibleTextBoxViewExtension.inputElement && generation === BrowserInvisibleTextBoxViewExtension.compositionGeneration;
 		}
 
 		private static syncTextFromInput(input: HTMLInputElement | HTMLTextAreaElement) {
+			// Whether the value changed since the previous sync or write tells an edit from the same text reported again. Both
+			// are the input's own value, so their line breaks are written the same way.
+			const textChanged = input.value !== BrowserInvisibleTextBoxViewExtension.syncedValue;
 			BrowserInvisibleTextBoxViewExtension.syncedValue = input.value;
 			if (input.selectionDirection == "backward") {
-				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd);
+				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd, textChanged);
 			} else {
-				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart);
+				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart, textChanged);
 			}
 		}
 
@@ -389,6 +523,9 @@
 			BrowserInvisibleTextBoxViewExtension.compositionText = "";
 			BrowserInvisibleTextBoxViewExtension.pendingCompositionStart = -1;
 			BrowserInvisibleTextBoxViewExtension.pendingText = null;
+			BrowserInvisibleTextBoxViewExtension.reportedText = null;
+			BrowserInvisibleTextBoxViewExtension.pendingCommit = null;
+			BrowserInvisibleTextBoxViewExtension.preeditRemoved = false;
 		}
 
 		// A textarea normalizes line breaks to \n, and an input strips them.
@@ -495,6 +632,15 @@
 			}
 		}
 
+		// A read-only input still takes focus, a caret, a selection, key events and copy, which the TextBox needs; it
+		// only refuses edits, so mobile browsers don't open the soft keyboard for it.
+		public static setReadOnly(isReadOnly: boolean) {
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (input) {
+				input.readOnly = isReadOnly;
+			}
+		}
+
 		public static setInputMode(inputMode: string) {
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			if (input) {
@@ -528,7 +674,7 @@
 			}
 		}
 
-		public static focus(handle: number, isPassword: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string): boolean {
+		public static focus(handle: number, isPassword: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string, isReadOnly: boolean): boolean {
 			// Supersede any detach a preceding managed blur scheduled: focus is moving between
 			// TextBoxes, and detaching in between would dismiss the soft keyboard (see blur).
 			BrowserInvisibleTextBoxViewExtension.detachGeneration++;
@@ -540,7 +686,8 @@
 			}
 
 			const existingInput = BrowserInvisibleTextBoxViewExtension.inputElement;
-			if (existingInput != null && BrowserInvisibleTextBoxViewExtension.canRetarget(existingInput, isPassword, acceptsReturn)) {
+			const wasComposing = BrowserInvisibleTextBoxViewExtension.isCompositionReported;
+			if (existingInput != null && BrowserInvisibleTextBoxViewExtension.canRetarget(existingInput, isPassword, acceptsReturn, isReadOnly)) {
 				// Reuse the shared input in place: mobile browsers keep the soft keyboard up across
 				// a TextBox-to-TextBox move only while an editable element stays focused throughout.
 				BrowserInvisibleTextBoxViewExtension.acceptsReturn = acceptsReturn;
@@ -562,7 +709,7 @@
 				// would dismiss the soft keyboard. The implicit blur of the old element is
 				// managed-initiated, so suppress its notification.
 				existingInput?.removeAttribute("id");
-				this.createInput(isPassword, text, acceptsReturn, inputMode, enterKeyHint);
+				this.createInput(isPassword, text, acceptsReturn, inputMode, enterKeyHint, isReadOnly);
 				BrowserInvisibleTextBoxViewExtension.runSuppressingBlur(() => {
 					BrowserInvisibleTextBoxViewExtension.inputElement.focus(BrowserInvisibleTextBoxViewExtension.focusOptions);
 					existingInput?.remove();
@@ -570,6 +717,12 @@
 			}
 
 			BrowserInvisibleTextBoxViewExtension.currentHandle = Number(handle);
+
+			// The replaced input's compositionend is ignored (see isActiveComposition), so a composition still open on it
+			// ends here: the same TextBox re-entered (a tap changing its focus state mid-word) would otherwise stay composing.
+			if (wasComposing) {
+				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
+			}
 
 			// Set for whichever element ends up live: the shared input is reused across TextBoxes, so tagging
 			// it only on creation leaves the policy unreported for every retargeted entry session. Inspectable
@@ -588,8 +741,10 @@
 
 		// The shared input can be handed to another TextBox without being recreated only when the
 		// element kind it was created with still matches the target TextBox.
-		private static canRetarget(input: HTMLInputElement | HTMLTextAreaElement, isPassword: boolean, acceptsReturn: boolean): boolean {
-			if (BrowserInvisibleTextBoxViewExtension.isComposing) {
+		private static canRetarget(input: HTMLInputElement | HTMLTextAreaElement, isPassword: boolean, acceptsReturn: boolean, isReadOnly: boolean): boolean {
+			// Mobile browsers show or hide the soft keyboard when an element takes focus, not when readOnly flips on the
+			// focused one: moving between a read-only and an editable TextBox focuses a new input.
+			if (BrowserInvisibleTextBoxViewExtension.isComposing || input.readOnly !== isReadOnly) {
 				return false;
 			}
 			const needsTextArea = acceptsReturn && !isPassword;
@@ -618,12 +773,19 @@
 		private static detachCore() {
 			BrowserInvisibleTextBoxViewExtension.detachGeneration++;
 			BrowserInvisibleTextBoxViewExtension.currentHandle = 0;
+			const wasComposing = BrowserInvisibleTextBoxViewExtension.isCompositionReported;
 			// Blur explicitly before removing: the .blur() method dispatches synchronously, so it
 			// lands inside the suppression window. WebKit can otherwise defer the implicit blur that
 			// fires on element removal past that window, which would clear the wrong TextBox's focus.
 			BrowserInvisibleTextBoxViewExtension.inputElement?.blur();
 			BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
 			BrowserInvisibleTextBoxViewExtension.inputElement = null;
+			// The removed input's compositionend is ignored, so a composition still open on it ends here: when the TextBox
+			// keeps focus (accessibility handing it over to its semantic element), nothing else would end it.
+			if (wasComposing) {
+				BrowserInvisibleTextBoxViewExtension.resetComposition();
+				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
+			}
 		}
 
 		public static blur(handle: number) {
@@ -661,7 +823,8 @@
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			if (input != null) {
 				// While a composition edits the text, the browser owns the value: overwriting it would destroy the
-				// composition. A TextBox text that differs from it (an app edit, MaxLength) is reconciled once it ends.
+				// composition. A TextBox text that differs from it only as a same-length filter changes it (upper case) is
+				// reconciled once it ends; for any other difference the TextBox ends the composition first.
 				if (BrowserInvisibleTextBoxViewExtension.isCompositionReported) {
 					BrowserInvisibleTextBoxViewExtension.pendingText = BrowserInvisibleTextBoxViewExtension.asInputValue(input, text) === input.value ? null : text;
 					return;
