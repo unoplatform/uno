@@ -378,8 +378,7 @@ partial class StorageFile
 		{
 			_shown.Remove(this);
 
-			// Releases the picker, and lets the next sheet present, after the UIKit callback that got here returns. A dropped picker is left to
-			// the GC instead, so that OnPresented can still close it if UIKit presents it after all.
+			// After the UIKit callback returns. A dropped picker is left to the GC, so OnPresented can still close it if UIKit presents it late.
 			NativeDispatcher.Main.Enqueue(() =>
 			{
 				if (!_isDropped || _isPresented)
@@ -394,12 +393,8 @@ partial class StorageFile
 			});
 		}
 
-		// UIKit drops a presentation without calling it back if, when the picker's service runs, the controller it was presented from is
-		// waiting for another delayed presentation asked for before it (such as a document picker or the share sheet, which don't show in
-		// PresentedViewController until then), or has left the window. Neither can be seen beforehand, so this checks until the sheet
-		// appears: once the presenter shows another controller, or is out of the window with nothing presented, the sheet won't appear.
-		// Once the sheet is shown, UIKit closes it without calling the picker's delegate when app code dismisses it, or the controller it was
-		// presented from, so this checks on until the sheet is gone.
+		// UIKit drops a presentation without a callback when the presenter is busy with another delayed one or left the window, and closes
+		// a shown sheet without calling the delegate when app code dismisses it. Neither is reported, so this polls until the sheet is gone.
 		private async Task WatchPresentationAsync(UIViewController presenter, UIDocumentPickerViewController picker)
 		{
 			var askedAt = Stopwatch.GetTimestamp();
@@ -458,10 +453,8 @@ partial class StorageFile
 		private static bool IsGone(UIDocumentPickerViewController picker)
 			=> picker.PresentingViewController is null && !picker.IsBeingPresented && !picker.IsBeingDismissed && picker.ViewIfLoaded?.Window is null;
 
-		// When the user closes the sheet, the picker calls its delegate as its dismissal ends: on the simulators, for saving (also a large
-		// file, or next to an existing one), Cancel and swiping down, that was before the picker was seen gone. A sheet that is gone without
-		// it was most likely dismissed by app code, but the delegate still gets a moment to come in, in case it comes later. Only then does
-		// the call end as Incomplete.
+		// A sheet gone without a delegate call was most likely dismissed by app code. The delegate still gets a moment to come in late
+		// before the call ends as Incomplete.
 		private async Task FinishGoneAsync()
 		{
 			await DelayAsync(_lateDelegateTime);
