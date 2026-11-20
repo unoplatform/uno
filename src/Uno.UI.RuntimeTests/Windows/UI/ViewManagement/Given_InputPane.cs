@@ -788,6 +788,63 @@ public class Given_InputPane
 		}
 	}
 
+	// The calendar fits above the keyboard, but on no side of the picker: it is moved into the area above the keyboard, over the picker.
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23608")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_CalendarDatePicker_Flyout_Fits_On_No_Side_Then_Kept_Above_Keyboard()
+	{
+		var picker = new CalendarDatePicker { HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+
+		var inputPane = InputPane.GetForCurrentView();
+		try
+		{
+			await UITestHelper.Load(new Grid { Children = { picker } });
+
+			var calendarHeight = (await OpenCalendar(picker)).ActualHeight;
+			picker.IsCalendarOpen = false;
+			await WindowHelper.WaitForIdle();
+
+			var occludedTop = WindowHeight * 0.6;
+			if (occludedTop < calendarHeight + 20)
+			{
+				Assert.Inconclusive($"The area above the keyboard ({occludedTop:F1}) is too short for the calendar ({calendarHeight:F1}).");
+			}
+
+			// Half the calendar's height of room above and below the picker, and none beside it.
+			picker.Width = WindowHelper.XamlRoot.Size.Width;
+			picker.Height = occludedTop - calendarHeight;
+			picker.Margin = new Thickness(0, calendarHeight / 2, 0, 0);
+			OccludeBelow(inputPane, occludedTop);
+			await WindowHelper.WaitForIdle();
+
+			var presenter = await OpenCalendar(picker);
+
+			Assert.IsTrue(
+				GetTop(presenter) >= -0.5 && GetBottom(presenter) <= occludedTop + 1,
+				$"The calendar (top {GetTop(presenter):F1}, bottom {GetBottom(presenter):F1}) is not above the keyboard top ({occludedTop:F1}).");
+		}
+		finally
+		{
+			picker.IsCalendarOpen = false;
+			VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ToList().ForEach(p => p.IsOpen = false);
+			await ClearOcclusion(inputPane);
+		}
+
+		static async Task<FrameworkElement> OpenCalendar(CalendarDatePicker picker)
+		{
+			picker.IsCalendarOpen = true;
+			FrameworkElement presenter = null;
+			await WindowHelper.WaitFor(
+				() => (presenter = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Select(p => p.Child).OfType<FlyoutPresenter>().FirstOrDefault()) is { ActualHeight: > 0 },
+				message: "The calendar flyout did not open.");
+			await WindowHelper.WaitForIdle();
+			return presenter;
+		}
+	}
+
 	private static (Grid Root, TextBox TopField, Button Button, Flyout Flyout, TextBox FlyoutField) BuildBottomFlyoutPage(
 		double listMaxHeight,
 		double? contentWidth = 320,
