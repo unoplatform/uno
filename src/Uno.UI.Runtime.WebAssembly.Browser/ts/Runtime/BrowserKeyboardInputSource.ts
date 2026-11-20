@@ -58,9 +58,18 @@
 				evt.key
 			);
 
-			if (result == HtmlEventDispatchResult.PreventDefault) {
+			if (result == HtmlEventDispatchResult.PreventDefault && !BrowserKeyboardInputSource.isPasteShortcut(evt)) {
 				evt.preventDefault();
 			}
+		}
+
+		// The browser paste event is the only channel through which pasted files reach the
+		// clipboard API, so the paste action must never be suppressed, even when managed
+		// code handles the key (e.g. a Ctrl+V KeyboardAccelerator).
+		private static isPasteShortcut(evt: KeyboardEvent): boolean {
+			return evt.type == "keydown" &&
+				(((evt.ctrlKey || evt.metaKey) && (evt.key == "v" || evt.key == "V")) ||
+					(evt.shiftKey && evt.key == "Insert"));
 		}
 	}
 }
