@@ -661,10 +661,11 @@ namespace Uno.UI
 			public static bool PropagateInputExceptions { get; set; }
 
 			/// <summary>
-			/// When <c>true</c>, exceptions thrown by dispatcher work items propagate to the
-			/// platform message pump (matching WinUI's <c>DispatcherQueue</c>, which fail-fasts
-			/// on unhandled errors). When <c>false</c> (default), the dispatcher catches and
-			/// logs the exception.
+			/// When <c>true</c>, exceptions thrown by dispatcher work items surface through
+			/// <see cref="Application.UnhandledException"/>; if the app does not mark them
+			/// <c>Handled = true</c>, they propagate to the platform message pump (matching WinUI,
+			/// which fail-fasts on unhandled errors). When <c>false</c> (default), the dispatcher
+			/// catches and logs the exception.
 			/// </summary>
 			/// <remarks>
 			/// Recommended for development to surface latent crashes that today silently break

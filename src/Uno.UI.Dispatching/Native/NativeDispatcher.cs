@@ -96,11 +96,24 @@ namespace Uno.UI.Dispatching
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
 		/// <summary>
-		/// When <c>true</c>, the dispatcher does not catch exceptions thrown by work items —
-		/// they propagate to the platform message pump (matching WinUI behavior).
+		/// When <c>true</c>, exceptions thrown by work items are reported through <see cref="UnhandledExceptionHandler"/>
+		/// and propagate to the platform message pump unless handled (matching WinUI behavior).
 		/// Wired from <c>FeatureConfiguration.UnhandledExceptionHandling.PropagateDispatcherExceptions</c>.
 		/// </summary>
 		internal static bool PropagateUnhandledExceptions { get; set; }
+
+		/// <summary>
+		/// Raises <c>Application.UnhandledException</c> for a failing work item and returns whether the app
+		/// handled it. Set by Uno.UI, which owns <c>Application</c>.
+		/// </summary>
+		internal static Func<Exception, bool>? UnhandledExceptionHandler { get; set; }
+
+		/// <summary>
+		/// Whether a work item's exception should escape to the platform message pump. Like WinUI, the
+		/// app gets a chance to handle it through <c>Application.UnhandledException</c> first.
+		/// </summary>
+		internal static bool ShouldPropagate(Exception exception)
+			=> PropagateUnhandledExceptions && UnhandledExceptionHandler?.Invoke(exception) != true;
 
 		private NativeDispatcher()
 		{
@@ -212,15 +225,6 @@ namespace Uno.UI.Dispatching
 		{
 			if (action != null)
 			{
-				if (PropagateUnhandledExceptions)
-				{
-					using (dispatcher.SynchronizationContext.Apply())
-					{
-						action();
-					}
-					return;
-				}
-
 				try
 				{
 					using (dispatcher.SynchronizationContext.Apply())
@@ -230,6 +234,16 @@ namespace Uno.UI.Dispatching
 				}
 				catch (Exception exception)
 				{
+					if (PropagateUnhandledExceptions)
+					{
+						if (ShouldPropagate(exception))
+						{
+							throw;
+						}
+
+						return;
+					}
+
 					dispatcher.Log().Error("NativeDispatcher unhandled exception", exception);
 				}
 			}

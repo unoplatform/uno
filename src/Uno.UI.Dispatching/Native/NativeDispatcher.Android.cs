@@ -100,7 +100,12 @@ namespace Uno.UI.Dispatching
 						{
 							if (PropagateUnhandledExceptions)
 							{
-								throw;
+								if (ShouldPropagate(exception))
+								{
+									throw;
+								}
+
+								continue;
 							}
 
 							this.Log().Error("Dispatcher unhandled exception", exception);
@@ -134,7 +139,12 @@ namespace Uno.UI.Dispatching
 
 							if (PropagateUnhandledExceptions)
 							{
-								throw;
+								if (ShouldPropagate(exception))
+								{
+									throw;
+								}
+
+								continue;
 							}
 
 							this.Log().Error("Dispatcher unhandled exception", exception);

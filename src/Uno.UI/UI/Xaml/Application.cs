@@ -91,6 +91,7 @@ namespace Microsoft.UI.Xaml
 			ApiInformation.RegisterAssembly(typeof(Microsoft.UI.Composition.Compositor).Assembly);
 
 			Uno.Helpers.DispatcherTimerProxy.SetDispatcherTimerGetter(() => new DispatcherTimer());
+			Uno.UI.Dispatching.NativeDispatcher.UnhandledExceptionHandler = static e => Current?.TryHandleUnhandledException(e) == true;
 			Uno.Helpers.VisualTreeHelperProxy.SetCloseAllFlyoutsAction(() =>
 			{
 				var contentRoots = WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots;
