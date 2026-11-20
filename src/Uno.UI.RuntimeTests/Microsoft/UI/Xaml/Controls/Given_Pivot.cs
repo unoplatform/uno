@@ -100,6 +100,70 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			pivotItem.Header = "New text";
 			headerItem.Content.Should().Be("New text");
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25438")]
+		public async Task When_Item_Inserted_Before_Selected_Then_Headers_Rebuilt()
+		{
+			var SUT = new Pivot
+			{
+				Items = { new PivotItem { Header = "A" }, new PivotItem { Header = "B" } },
+				SelectedIndex = 1,
+			};
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			SUT.Items.Insert(0, new PivotItem { Header = "New" });
+			await WindowHelper.WaitForIdle();
+
+			var headers = (PivotHeaderPanel)SUT.GetTemplateChild("StaticHeader");
+			headers.Children.Should().HaveCount(3);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25438")]
+		public async Task When_Item_Removed_Before_Selected_Then_Selection_Clamped()
+		{
+			var SUT = new Pivot
+			{
+				Items = { new PivotItem { Header = "A" }, new PivotItem { Header = "B" } },
+				SelectedIndex = 1,
+			};
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			SUT.Items.RemoveAt(0);
+			await WindowHelper.WaitForIdle();
+
+			var headers = (PivotHeaderPanel)SUT.GetTemplateChild("StaticHeader");
+			headers.Children.Should().HaveCount(1);
+			SUT.SelectedIndex.Should().Be(0);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25438")]
+		public async Task When_SelectedIndex_Set_Before_Template_Then_Headers_Created()
+		{
+			var SUT = new Pivot
+			{
+				Items =
+				{
+					new PivotItem { Header = "A" },
+					new PivotItem { Header = "B" },
+					new PivotItem { Header = "C" },
+				},
+				SelectedIndex = 2,
+			};
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var headers = (PivotHeaderPanel)SUT.GetTemplateChild("StaticHeader");
+			headers.Children.Should().HaveCount(3);
+			SUT.SelectedIndex.Should().Be(2);
+		}
 #endif
 
 		[TestMethod]

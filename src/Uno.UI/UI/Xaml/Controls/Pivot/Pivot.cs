@@ -133,7 +133,18 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.UpdateItems(args);
 
-			SynchronizeSelectedItem();
+			if (_isUWPTemplate)
+			{
+				// Items change before their headers are rebuilt, so the selection can't be synchronized against stale headers.
+				if (_staticHeader.Children.Count != NumberOfItems)
+				{
+					SynchronizeItems();
+				}
+				else
+				{
+					SynchronizeSelectedItem();
+				}
+			}
 		}
 
 		private void UnregisterHeaderEvents()
@@ -247,6 +258,10 @@ namespace Microsoft.UI.Xaml.Controls
 				if (SelectedIndex == -1 && HasItems)
 				{
 					SelectedIndex = 0;
+				}
+				else if (HasItems && SelectedIndex >= NumberOfItems)
+				{
+					SelectedIndex = NumberOfItems - 1;
 				}
 				else
 				{
