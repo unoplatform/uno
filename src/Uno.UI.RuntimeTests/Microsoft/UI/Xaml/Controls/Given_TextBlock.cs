@@ -824,6 +824,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Wrapping_Block_Resized_With_Same_Lines_Then_Recording_Kept()
+		{
+			// Wrapping and trimming, like a card's title: such a block is arranged at its container's width.
+			var SUT = new TextBlock { Text = "ABC", TextWrapping = TextWrapping.Wrap, TextTrimming = TextTrimming.CharacterEllipsis, MaxLines = 2 };
+			var host = new Grid { Width = 200, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top, Children = { SUT } };
+			await UITestHelper.Load(host);
+			await UITestHelper.WaitForRender();
+
+			var visual = SUT.Visual;
+			var recorded = visual.RecordedContentForTesting;
+			var width = visual.Size.X;
+
+			host.Width = 250;
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+
+			Assert.AreNotEqual(width, visual.Size.X, "The wrapping text block is arranged at its container's width.");
+			Assert.AreSame(recorded, visual.RecordedContentForTesting, "Its single left-aligned line draws the same way at either width.");
+
+			SUT.Padding = new Thickness(10, 0, 0, 0);
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitForRender();
+
+			Assert.AreNotSame(recorded, visual.RecordedContentForTesting, "Padding moves the text, so it is drawn again.");
+		}
+
+		[TestMethod]
 		public async Task When_Text_Set_While_Collapsed_Then_Laid_Out_And_Drawn_Once_Visible()
 		{
 			var SUT = new TextBlock { Text = "ABC" };

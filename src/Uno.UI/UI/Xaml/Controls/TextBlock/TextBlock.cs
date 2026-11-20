@@ -850,6 +850,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			OnPaddingChangedPartial();
 			InvalidateTextBlock();
+
+			// The text is drawn offset by the padding, which may not change the parsed layout.
+			InvalidateInlineAndRequireRepaint();
 		}
 
 		partial void OnPaddingChangedPartial();
