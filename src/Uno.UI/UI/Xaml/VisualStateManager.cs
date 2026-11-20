@@ -34,7 +34,19 @@ namespace Microsoft.UI.Xaml
 		internal static IList<VisualStateGroup> GetVisualStateGroups(IFrameworkElement obj)
 			=> (IList<VisualStateGroup>)obj.GetValue(VisualStateGroupsProperty);
 		public static IList<VisualStateGroup> GetVisualStateGroups(FrameworkElement obj)
-			=> (IList<VisualStateGroup>)obj.GetValue(VisualStateGroupsProperty);
+		{
+			var groups = (IList<VisualStateGroup>)obj.GetValue(VisualStateGroupsProperty);
+
+			// Like WinUI's on-demand property, the first read creates a per-element collection,
+			// instead of exposing the shared fixed-size default.
+			if (ReferenceEquals(groups, Array.Empty<VisualStateGroup>()))
+			{
+				groups = new DependencyObjectCollection<VisualStateGroup>(obj);
+				SetVisualStateGroups(obj, groups);
+			}
+
+			return groups;
+		}
 
 		public static void SetVisualStateGroups(FrameworkElement obj, IList<VisualStateGroup> value)
 		{
@@ -312,7 +324,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			var groupCollection = VisualStateManager.GetVisualStateGroups(pControl);
+			var groupCollection = VisualStateManager.GetVisualStateGroups((IFrameworkElement)pControl);
 			if (groupCollection is null)
 			{
 				return;
@@ -367,7 +379,7 @@ namespace Microsoft.UI.Xaml
 			// IFC_RETURN(actuator.InitializeStateTriggers(pControl));
 
 			// Uno Specific
-			foreach (var visualStateGroup in GetVisualStateGroups(pControl))
+			foreach (var visualStateGroup in GetVisualStateGroups((IFrameworkElement)pControl))
 			{
 				visualStateGroup.OnOwnerElementLoaded(pControl, null);
 				visualStateGroup.RefreshStateTriggers(forceUpdate);
