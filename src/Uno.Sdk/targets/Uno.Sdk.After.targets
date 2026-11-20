@@ -1,4 +1,13 @@
 <Project>
+	<PropertyGroup>
+		<!--
+			A library whose Windows App SDK target gets none of the base implicit Uno packages (see
+			DisableImplicitUnoWinAppSdkPackages). Read only by item conditions, so it is defined last, and a value
+			set in a Directory.Build.targets counts.
+		-->
+		<_UnoIsWinAppSdkOnlyLibrary Condition=" '$(DisableImplicitUnoWinAppSdkPackages)' == 'true' AND $(TargetFramework.Contains('windows10')) AND '$(_ImplicitRestoreOutputType)' != 'WinExe' AND '$(_ImplicitRestoreOutputType)' != 'Exe' ">true</_UnoIsWinAppSdkOnlyLibrary>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- Removes native usings to avoid Ambiguous reference -->
 		<Using Remove="@(Using->HasMetadata('Platform'))" />
