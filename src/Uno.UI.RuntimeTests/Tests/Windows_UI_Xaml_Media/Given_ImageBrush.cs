@@ -162,7 +162,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaMobile)] // No sockets in the browser
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.NativeMobile)] // No sockets in the browser, and native renderers load SVG through their own pipeline
 		public async Task When_SvgImageSource_Assigned_While_Opening()
 		{
 			// Setting UriSource opens the source, so the brush subscribes while that open is still in flight. A slow
