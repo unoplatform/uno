@@ -752,6 +752,45 @@ public partial class Given_RichEditBox
 		}
 	}
 
+	// A composition starts right after protected text, so the document refuses its text: the input takes the document's
+	// text back at once, with its caret, and the composition ends.
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Wasm_Composition_Refused_By_Protected_Text_Is_Written_Back()
+	{
+		var sut = new RichEditBox();
+		var ended = 0;
+		sut.TextCompositionEnded += (_, _) => ended++;
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			sut.Document.SetText(TextSetOptions.None, "ab");
+			sut.Document.GetRange(1, 2).CharacterFormat.ProtectedText = FormatEffect.On;
+			sut.Document.Selection.SetRange(2, 2);
+			sut.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+				"(function(){const input=document.getElementById('uno-input');input.setSelectionRange(2,2);input.dispatchEvent(new CompositionEvent('compositionstart'));input.dispatchEvent(new CompositionEvent('compositionupdate',{data:'x'}));input.value='abx';input.setSelectionRange(3,3);input.dispatchEvent(new InputEvent('input',{isComposing:true,inputType:'insertCompositionText',data:'x'}));return 'ok';})()");
+			await WindowHelper.WaitForIdle();
+
+			GetTextWithoutFinalEop(sut.Document, out var text);
+			Assert.AreEqual("ab", text);
+			Assert.IsFalse(sut.IsComposing, "the refused composition ends");
+			Assert.AreEqual(1, ended);
+			Assert.AreEqual(
+				"ab|2",
+				global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+					"(function(){const input=document.getElementById('uno-input');return `${input.value}|${input.selectionStart}`;})()"),
+				"the input takes the document's text and caret back at once");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
 	// Skia-Android and the browser apply the composition themselves and report it before syncing it to the document.
 	// TextCompositionChanged comes once the text is in the document, after TextChanging.
 	[TestMethod]
