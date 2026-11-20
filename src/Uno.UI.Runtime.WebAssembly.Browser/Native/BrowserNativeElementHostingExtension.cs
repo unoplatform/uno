@@ -143,8 +143,24 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 		=> OnNativeElementFocusChanged(unoElementId, gotFocus: true);
 
 	[JSExport]
+	internal static Task OnNativeElementFocusedAsync([JSMarshalAs<JSType.Number>] nint unoElementId)
+	{
+		OnNativeElementFocused(unoElementId);
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	internal static void OnNativeElementBlurred([JSMarshalAs<JSType.Number>] nint unoElementId)
 		=> OnNativeElementFocusChanged(unoElementId, gotFocus: false);
+
+	[JSExport]
+	internal static Task OnNativeElementBlurredAsync([JSMarshalAs<JSType.Number>] nint unoElementId)
+	{
+		OnNativeElementBlurred(unoElementId);
+
+		return Task.CompletedTask;
+	}
 
 	private static void OnNativeElementFocusChanged(nint unoElementId, bool gotFocus)
 	{

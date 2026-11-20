@@ -108,8 +108,13 @@ namespace Uno.UI.NativeElementHosting {
 			}
 
 			const exports = Uno.UI.Runtime.WebAssemblyWindowWrapper.getAssemblyExports().Uno.UI.Runtime.BrowserNativeElementHostingExtension;
-			BrowserHtmlElement.onNativeElementFocusedMethod = exports.OnNativeElementFocused;
-			BrowserHtmlElement.onNativeElementBlurredMethod = exports.OnNativeElementBlurred;
+			if (Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
+				BrowserHtmlElement.onNativeElementFocusedMethod = exports.OnNativeElementFocusedAsync;
+				BrowserHtmlElement.onNativeElementBlurredMethod = exports.OnNativeElementBlurredAsync;
+			} else {
+				BrowserHtmlElement.onNativeElementFocusedMethod = exports.OnNativeElementFocused;
+				BrowserHtmlElement.onNativeElementBlurredMethod = exports.OnNativeElementBlurred;
+			}
 
 			document.addEventListener("focusin", evt => {
 				const unoElementId = BrowserHtmlElement.findAttachedElementId(evt.target);
