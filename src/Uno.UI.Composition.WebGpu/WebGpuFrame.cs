@@ -287,7 +287,7 @@ internal sealed unsafe partial class WebGpuFrame
 				CmdKind.Path when cmd is PathCmd p => ClampToClip(new Vector4(p.BbMin.X, p.BbMin.Y, p.BbMax.X, p.BbMax.Y), p.Clip),
 				CmdKind.Shadow when cmd is ShadowCmd sh => ClampToClip(Inflate(new Vector4(sh.BbMin.X, sh.BbMin.Y, sh.BbMax.X, sh.BbMax.Y), MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f), sh.Clip),
 				CmdKind.Layer when cmd is LayerCmd l => ClampToClip(LayerBounds(l), l.Clip),
-				CmdKind.ReplayRef when cmd is ReplayRefCmd rr => ClampToClip(TransformBounds(rr.Data.IdentityBounds ??= CmdListBounds(rr.Commands), rr.Transform), rr.Clip),
+				CmdKind.ReplayRef when cmd is ReplayRefCmd rr => ClampToClip(TransformBounds(rr.Data.IdentityBounds ??= CmdListBounds(rr.Commands), rr.Transform2), rr.Clip),
 				// A backdrop samples/draws within its clip; with no finite clip it can cover the whole surface.
 				_ => IsFiniteAabb(cmd.Clip.Aabb) && cmd.Kind == CmdKind.Backdrop ? cmd.Clip.Aabb : new Vector4(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue),
 			};
