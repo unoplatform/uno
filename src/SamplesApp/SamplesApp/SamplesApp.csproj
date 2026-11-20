@@ -180,6 +180,8 @@
 		<ProjectReference Include="..\..\Uno.UI.Runtime.X11\Uno.UI.Runtime.X11.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Linux.FrameBuffer\Uno.UI.Runtime.Linux.FrameBuffer.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.MacOS\Uno.UI.Runtime.MacOS.csproj" />
+		<!-- Deployed next to the head so the runtime tests' AlcApp can start a headless secondary application -->
+		<ProjectReference Include="..\..\Uno.UI.Runtime.Headless\Uno.UI.Runtime.Headless.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.Win32\Uno.UI.MediaPlayer.Win32.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MediaPlayer.X11\Uno.UI.MediaPlayer.X11.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.WebView.X11\Uno.UI.WebView.X11.csproj" />

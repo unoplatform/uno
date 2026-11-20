@@ -21,7 +21,8 @@ namespace Uno.UI.Runtime.Headless;
 
 public class HeadlessHost : UnoPlatformHost, IApplicationHost, IDisposable
 {
-	private readonly EventLoop _eventLoop;
+	// Null for a secondary application, which reuses the dispatcher the primary host already installed.
+	private readonly EventLoop? _eventLoop;
 	private readonly ManualResetEvent _terminationGate = new(false);
 	private readonly CoreApplicationExtension _coreApplicationExtension;
 	private readonly HeadlessHostBuilder _hostBuilder;
@@ -40,13 +41,26 @@ public class HeadlessHost : UnoPlatformHost, IApplicationHost, IDisposable
 		_appBuilder = appBuilder;
 		_hostBuilder = builder;
 
-		_eventLoop = new EventLoop();
+		// A dispatcher already running means a primary host owns this process; this host launches a secondary
+		// (ALC) application on it, as X11ApplicationHost does.
+		if (Windows.UI.Core.CoreDispatcher.DispatchOverride is null)
+		{
+			_eventLoop = new EventLoop();
+		}
+
 		_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
 	}
 
 	protected override void Initialize()
 	{
-		_eventLoop.Schedule(InnerInitialize);
+		if (_eventLoop is not null)
+		{
+			_eventLoop.Schedule(InnerInitialize);
+		}
+		else
+		{
+			Windows.UI.Core.CoreDispatcher.DispatchOverride!(StartSecondaryApp, NativeDispatcherPriority.Normal);
+		}
 	}
 
 	protected override Task RunLoop()
@@ -61,10 +75,28 @@ public class HeadlessHost : UnoPlatformHost, IApplicationHost, IDisposable
 		// Tear down every window (stop its render thread, unregister from XamlRootMap) before returning.
 		_windowFactory?.TearDownWindows();
 
-		// SkipVisualTreePainting is a process-wide flag; restore what it was before this host ran.
-		FeatureConfiguration.Rendering.SkipVisualTreePainting = _previousSkipVisualTreePainting;
+		if (_eventLoop is not null)
+		{
+			// SkipVisualTreePainting is a process-wide flag; restore what it was before this host ran.
+			FeatureConfiguration.Rendering.SkipVisualTreePainting = _previousSkipVisualTreePainting;
+		}
 
 		return Task.CompletedTask;
+	}
+
+	private void StartSecondaryApp()
+	{
+		// The primary host's window factory, extensions and dispatcher stay registered.
+		WUX.Application.Start(CreateApp);
+	}
+
+	private WUX.Application CreateApp(ApplicationInitializationCallbackParams _)
+	{
+		var app = _appBuilder();
+		app.Host = this;
+
+		// Returned so Application.Start launches this instance: a secondary app is not Application.Current.
+		return app;
 	}
 
 	private void InnerInitialize()
@@ -86,13 +118,7 @@ public class HeadlessHost : UnoPlatformHost, IApplicationHost, IDisposable
 		ApiExtensibility.Register<DisplayInformation>(typeof(IDisplayInformationExtension), ResolveDisplayInformation);
 
 		void Dispatch(System.Action d, NativeDispatcherPriority p)
-			=> _eventLoop.Schedule(d);
-
-		void CreateApp(ApplicationInitializationCallbackParams _)
-		{
-			var app = _appBuilder();
-			app.Host = this;
-		}
+			=> _eventLoop!.Schedule(d);
 
 		Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
 		Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => Environment.CurrentManagedThreadId == _dispatcherThreadId;
