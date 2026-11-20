@@ -321,10 +321,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 		{
 			return clip;
 		}
-		if (clip.Entries is { Length: > 0 } entries)
+		if (clip.Entries is { Length: > 0 and <= 64 } entries)
 		{
-			ClipEntry[] kept = null;
-			int keptCount = 0;
+			// Which entries the op cannot be cut by; an array is built only when some, but not all, of them go.
+			ulong inertMask = 0;
 			for (int i = 0; i < entries.Length; i++)
 			{
 				var e = entries[i];
@@ -346,14 +346,22 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 					float ry = MathF.Max(MathF.Max(e.RadiiY.X, e.RadiiY.Y), MathF.Max(e.RadiiY.Z, e.RadiiY.W));
 					inert = lo.X >= e.Rect.X + rx && lo.Y >= e.Rect.Y + ry && hi.X <= e.Rect.Z - rx && hi.Y <= e.Rect.W - ry;
 				}
-				if (!inert)
+				if (inert)
 				{
-					kept ??= new ClipEntry[entries.Length];
-					kept[keptCount++] = e;
+					inertMask |= 1UL << i;
 				}
 			}
+			var keptCount = entries.Length - System.Numerics.BitOperations.PopCount(inertMask);
 			if (keptCount == 0) { clip.Entries = null; }
-			else if (keptCount < entries.Length) { System.Array.Resize(ref kept, keptCount); clip.Entries = kept; }
+			else if (keptCount < entries.Length)
+			{
+				var kept = new ClipEntry[keptCount];
+				for (int i = 0, k = 0; i < entries.Length; i++)
+				{
+					if ((inertMask & (1UL << i)) == 0) { kept[k++] = entries[i]; }
+				}
+				clip.Entries = kept;
+			}
 		}
 		clip.ScissorInert = true;
 		return clip;
