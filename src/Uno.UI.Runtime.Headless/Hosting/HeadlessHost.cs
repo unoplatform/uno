@@ -12,6 +12,7 @@ using Uno.Foundation.Logging;
 using Uno.Helpers;
 using Uno.UI;
 using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Headless.UI;
 using Uno.UI.Xaml.Controls;
@@ -42,6 +43,8 @@ public class HeadlessHost : UnoPlatformHost, IApplicationHost, IDisposable
 
 		_eventLoop = new EventLoop();
 		_coreApplicationExtension = new CoreApplicationExtension(_terminationGate);
+
+		RuntimePlatformHelper.SetHostPlatform(UnoRuntimePlatform.Headless);
 	}
 
 	protected override void Initialize()
