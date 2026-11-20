@@ -45,11 +45,27 @@ public static partial class RoslynExtensions
 	public static ValueTask<ImmutableDictionary<Project, EmitResult>> EmitCompilationOutputAsync(this Workspace workspace, CancellationToken ct)
 		=> workspace.CurrentSolution.EmitCompilationOutputAsync(ct);
 
-	public static async ValueTask<ImmutableDictionary<Project, EmitResult>> EmitCompilationOutputAsync(this Solution solution, CancellationToken ct)
+	/// <summary>
+	/// Emits the intermediate compilation output (the EnC baseline) of the projects of the solution.
+	/// </summary>
+	/// <param name="solution">The solution to emit.</param>
+	/// <param name="ct">Cancellation.</param>
+	/// <param name="onlyMissing">
+	/// When <see langword="true"/>, projects whose assembly already exists on disk are left untouched:
+	/// that file is a real build (the one the running application was built from, or referenced by it)
+	/// and overwriting it with a fresh compile would change its MVID, making every EnC delta
+	/// target a module the application never loaded.
+	/// </param>
+	public static async ValueTask<ImmutableDictionary<Project, EmitResult>> EmitCompilationOutputAsync(this Solution solution, CancellationToken ct, bool onlyMissing = false)
 	{
 		var results = ImmutableDictionary.CreateBuilder<Project, EmitResult>();
 		foreach (var project in solution.Projects)
 		{
+			if (onlyMissing && File.Exists(project.CompilationOutputInfo.AssemblyPath))
+			{
+				continue;
+			}
+
 			var compilation = await project.GetCompilationAsync(ct).ConfigureAwait(false);
 
 			var dllPath = project.CompilationOutputInfo.AssemblyPath ?? throw new InvalidOperationException("No CompilationOutputInfo.AssemblyPath defined.");
