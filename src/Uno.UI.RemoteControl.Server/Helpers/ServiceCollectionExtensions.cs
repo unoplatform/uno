@@ -39,9 +39,12 @@ namespace Uno.UI.RemoteControl.Server.Helpers
 				var telemetry = sp.GetRequiredService<ITelemetry>();
 				var launchOptions = new AppLaunch.ApplicationLaunchMonitor.Options();
 
-				// Support for configuring timeout via environment variable
+				// Support for configuring timeout via environment variable; values the monitor can't use keep the default
 				var timeoutEnv = Environment.GetEnvironmentVariable("UNO_DEVSERVER_APPLAUNCH_TIMEOUT");
-				if (!string.IsNullOrEmpty(timeoutEnv) && double.TryParse(timeoutEnv, out var timeoutSeconds))
+				if (!string.IsNullOrEmpty(timeoutEnv)
+					&& double.TryParse(timeoutEnv, out var timeoutSeconds)
+					&& timeoutSeconds > 0
+					&& timeoutSeconds <= AppLaunch.ApplicationLaunchMonitor.MaxTimeout.TotalSeconds)
 				{
 					launchOptions.Timeout = TimeSpan.FromSeconds(timeoutSeconds);
 				}
