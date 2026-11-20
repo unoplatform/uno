@@ -21,6 +21,28 @@ public interface IImageEncoderDecoder
 	/// </summary>
 	bool TryDecode(Stream stream, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out ImageFrames? frames);
 
+	/// <summary>
+	/// Reads the pixel size <see cref="TryDecode"/> produces with no target size (EXIF orientation applied) from an
+	/// encoded stream. Returns false when the size can't be read; it can be true for an image whose pixels then fail to
+	/// decode. The default decodes the image and reads its first frame; a codec overrides it to read only the header.
+	/// </summary>
+	bool TryGetSize(Stream stream, out int pixelWidth, out int pixelHeight)
+	{
+		if (TryDecode(stream, null, null, out var frames))
+		{
+			using (frames)
+			{
+				pixelWidth = frames.Frames[0].PixelWidth;
+				pixelHeight = frames.Frames[0].PixelHeight;
+				return true;
+			}
+		}
+
+		pixelWidth = 0;
+		pixelHeight = 0;
+		return false;
+	}
+
 	/// <summary>Wraps raw BGRA (premultiplied) pixels as a single neutral <see cref="IImage"/> (copied, so the source buffer stays reusable).</summary>
 	IImage CreateImage(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul);
 
