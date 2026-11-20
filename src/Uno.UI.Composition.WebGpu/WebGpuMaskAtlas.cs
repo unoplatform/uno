@@ -11,33 +11,37 @@ namespace Uno.UI.Composition.WebGpu;
 /// The device's one store for coverage masks: glyph and fill entries cached under a key, masks owned by a cached
 /// recording, masks drawn for one frame only, and blurred shadows. Entries differ only in who frees their slot: a
 /// recording when it is released (<see cref="Free"/>), the next frame start (<see cref="FreeNextFrame"/>), or the
-/// idle sweep (<see cref="HoldForCache"/>). Small entries are shelf-packed on shared pages; an entry too big for a
-/// shelf gets a standalone page, kept as a spare for a while once freed so the next entry of its size reuses it.
+/// idle sweep (<see cref="HoldForCache"/>). Every entry is a slot on a shared page: pages are pooled by texture format
+/// and size, regular masks on <see cref="Size"/> pages and anything bigger on larger ones, so a frame's bakes batch per
+/// page whatever their lifetime or size.
 /// </summary>
 internal sealed unsafe class WebGpuMaskAtlas
 {
-	/// <summary>Shared page edge in texels.</summary>
+	/// <summary>Regular page edge in texels.</summary>
 	public const int Size = 1024;
 
-	/// <summary>Per-axis bound: a slot cannot span pages, so nothing wider or taller than a page can ever be placed.</summary>
+	/// <summary>The largest page: WebGPU guarantees 2D textures at least this wide.</summary>
+	public const int MaxPageSize = 8192;
+
+	/// <summary>Per-axis bound for a keyed entry on a regular page.</summary>
 	public const int MaxDim = Size - 2;
 
 	/// <summary>
-	/// Footprint bound for a keyed entry, in AREA: text arrives as one fill per run, very wide and ~20px tall, so a
-	/// longest-side cap rejected every run past a few characters.
+	/// Footprint bound for a keyed entry on a regular page, in AREA: text arrives as one fill per run, very wide and
+	/// ~20px tall, so a longest-side cap rejected every run past a few characters. Bigger entries go on large pages.
 	/// </summary>
 	public const int MaxArea = 256 * 256;
 
 	/// <summary>
-	/// Keyed pages beyond which a keyed entry is refused rather than opening another. Keyed entries are the cache: a
+	/// Regular pages beyond which a keyed entry is refused rather than opening another. Keyed entries are the cache: a
 	/// transform that animates mints a fresh key every frame, so without a ceiling the cache grows without bound.
 	/// </summary>
 	public const int MaxPages = 8;
 
-	/// <summary>Keyless pages beyond which a keyless mask takes a standalone page instead; its owner bounds it, not the cache.</summary>
+	/// <summary>Regular pages beyond which a keyless mask goes on a large page instead; its owner bounds it, not the cache.</summary>
 	public const int MaxSharedPages = 32;
 
-	/// <summary>Frames an empty shared page, or a spare standalone one, is kept before its texture is destroyed.</summary>
+	/// <summary>Frames an empty page is kept before its texture is destroyed.</summary>
 	public const int EmptyPageIdleFrames = 60;
 
 	/// <summary>Fills refused for footprint: the counter to watch if content renders aliased.</summary>
@@ -55,7 +59,7 @@ internal sealed unsafe class WebGpuMaskAtlas
 	/// </summary>
 	internal readonly record struct Key(long Shape, int M11, int M12, int M21, int M22, int PhaseX, int PhaseY, int W, int H, int Extra = 0);
 
-	/// <summary>Too big for a shelf on a shared page: such an entry gets a standalone page.</summary>
+	/// <summary>Too big for a regular page: such an entry goes on a large page.</summary>
 	public static bool IsBig(int w, int h) => w > MaxDim || h > MaxDim || w * h > MaxArea;
 
 	/// <summary>A reserved region. Origin is the device-space corner the entry was rasterized against.</summary>
@@ -68,6 +72,11 @@ internal sealed unsafe class WebGpuMaskAtlas
 
 		/// <summary>The page this slot lives on; the draw samples this page's view.</summary>
 		public Page? Owner { get; init; }
+
+		/// <summary>The region the allocator handed out: its shelf, and the x range on it.</summary>
+		internal ShelfAllocator.Shelf? Shelf { get; init; }
+		internal int RegionX { get; init; }
+		internal int RegionW { get; init; }
 
 		/// <summary>Holders of this slot. One glyph entry backs every occurrence across many recordings, so only the last may reclaim it.</summary>
 		public int RefCount;
@@ -84,247 +93,232 @@ internal sealed unsafe class WebGpuMaskAtlas
 
 	/// <summary>
 	/// One texture. A live slot's UVs are baked into its users' draw ops, so a slot never moves: a full page means
-	/// opening another, and a page is only reset once it holds no live slot.
+	/// opening another, and a page's texture is only destroyed once it has held no live slot for a while.
 	/// </summary>
 	internal sealed class Page
 	{
 		public Texture* Texture;
 		public TextureView* View;
-		public int W = Size, H = Size;
+		public int W, H;
 		public TextureFormat Format;
 		public TextureUsage Usage;
-		// Sized to its entries and never shelf-packed (see StandalonePage).
-		public bool Standalone;
-		// A shared page holds keyless masks only, or keyed entries only: short-lived masks neither use up the cache's
-		// pages nor leave shelf space behind on pages its long-lived entries keep from ever emptying.
-		public bool Keyless;
-		public int ShelfY, ShelfH, CursorX;
+		public ShelfAllocator Allocator = null!;
 		public int Live;
-		// Frame the page last became empty (shared) or spare (standalone); -1 while it holds slots.
+		// Frame the page last became empty; -1 while it holds slots.
 		public long EmptySince = -1;
-		public readonly Dictionary<(int W, int H), Stack<Slot>> Free = new();
-
-		public void Reset()
-		{
-			ShelfY = ShelfH = CursorX = 0;
-			Free.Clear();
-		}
 	}
 
-	private const TextureUsage SharedUsage = TextureUsage.RenderAttachment | TextureUsage.TextureBinding | TextureUsage.CopyDst;
+	/// <summary>Pages of one format, usage and size.</summary>
+	private sealed class Pool
+	{
+		public TextureFormat Format;
+		public TextureUsage Usage;
+		public int PageSize;
+		public readonly List<Page> Pages = new();
+	}
+
+	private const TextureUsage MaskPageUsage = TextureUsage.RenderAttachment | TextureUsage.TextureBinding | TextureUsage.CopyDst;
+
+	/// <summary>Blurred shadows are copied in from the blur's output, which has its own format.</summary>
+	internal const TextureUsage ShadowPageUsage = TextureUsage.TextureBinding | TextureUsage.CopyDst;
 
 	private readonly WebGpuDevice _d;
 	private readonly Dictionary<Key, Slot> _slots = new();
+	private readonly List<Pool> _pools = new();
 	private readonly List<Page> _pages = new();
-	private readonly List<Page> _spares = new();
 	private readonly List<Slot> _frameSlots = new();
 	private long _frame;
 
 	public WebGpuMaskAtlas(WebGpuDevice d) => _d = d;
 
+	/// <summary>Every page of every pool.</summary>
 	public IReadOnlyList<Page> Pages => _pages;
 
-	/// <summary>Shared (shelf-packed) pages.</summary>
-	public int RegularPages
-	{
-		get
-		{
-			var n = 0;
-			for (var i = 0; i < _pages.Count; i++) { if (!_pages[i].Standalone) { n++; } }
-			return n;
-		}
-	}
-
-	private int SharedPages(bool keyless)
-	{
-		var n = 0;
-		for (var i = 0; i < _pages.Count; i++) { if (IsShared(_pages[i], keyless)) { n++; } }
-		return n;
-	}
-
-	private static bool IsShared(Page page, bool keyless) => !page.Standalone && page.Keyless == keyless;
+	/// <summary>Pages of the regular mask pool.</summary>
+	public int RegularPages => PoolFor(_d.ColorFormat, MaskPageUsage, Size).Pages.Count;
 
 	public bool TryGet(in Key key, out Slot slot) => _slots.TryGetValue(key, out slot!);
 
-	/// <summary>Reserves a w x h region for a keyed entry, or null when every page is full and the cache is at its ceiling.</summary>
+	private Pool PoolFor(TextureFormat format, TextureUsage usage, int pageSize)
+	{
+		foreach (var p in _pools)
+		{
+			if (p.Format == format && p.Usage == usage && p.PageSize == pageSize) { return p; }
+		}
+		var pool = new Pool { Format = format, Usage = usage, PageSize = pageSize };
+		_pools.Add(pool);
+		return pool;
+	}
+
+	// The page size a w x h region needs: regular when it fits one, else the smallest large size that holds it.
+	private static int PageSizeFor(int w, int h)
+	{
+		var edge = Math.Max(w, h);
+		if (edge <= Size) { return Size; }
+		return Math.Min(MaxPageSize, Math.Max(2 * Size, (int)BitOperations.RoundUpToPowerOf2((uint)edge)));
+	}
+
+	/// <summary>
+	/// Reserves a w x h region for a keyed mask entry: on a regular page while the cache is under its ceiling, or on a
+	/// large page when it is too big for one. Null when the cache is full.
+	/// </summary>
 	public Slot? Allocate(in Key key, int w, int h, float originX, float originY)
 	{
-		if (w <= 0 || h <= 0 || w > Size || h > Size) { return null; }
-		if (Reserve(w, h, keyless: false) is not { } slot) { return null; }
-		slot = slot with { OriginX = originX, OriginY = originY, Key = key, Keyed = true };
+		if (w <= 0 || h <= 0 || w > MaxPageSize || h > MaxPageSize) { return null; }
+		var slot = IsBig(w, h)
+			? Reserve(PoolFor(_d.ColorFormat, MaskPageUsage, PageSizeFor(w, h)), w, h, w, h, pageCap: int.MaxValue)
+			: Reserve(PoolFor(_d.ColorFormat, MaskPageUsage, Size), w, h, w, h, MaxPages);
+		return slot is null ? null : Keep(slot with { OriginX = originX, OriginY = originY }, key);
+	}
+
+	/// <summary>
+	/// Reserves a region for a keyed blurred shadow, stored reduced: the entry draws w x h but holds regionW x regionH
+	/// texels, copied in from the blur's output. The caller sets <see cref="Slot.Uv"/> to the part it samples.
+	/// </summary>
+	public Slot AllocateShadow(in Key key, int w, int h, int regionW, int regionH, float originX, float originY)
+	{
+		var pool = PoolFor(WebGpuDevice.DefaultColorFormat, ShadowPageUsage, PageSizeFor(regionW, regionH));
+		var slot = Reserve(pool, regionW, regionH, w, h, int.MaxValue)
+			?? throw new InvalidOperationException($"WebGPU could not place a {regionW}x{regionH} shadow (out of GPU memory, or the device was lost).");
+		return Keep(slot with { OriginX = originX, OriginY = originY }, key);
+	}
+
+	private Slot Keep(Slot slot, in Key key)
+	{
+		slot = slot with { Key = key, Keyed = true };
 		_slots[key] = slot;
 		return slot;
 	}
 
-	/// <summary>
-	/// Reserves a region of at least w x h on a shared page for a mask nobody looks up, or null when it is bigger than
-	/// half a page (take <see cref="StandalonePage"/> instead). Sized up to a power of two, so freed regions recur.
-	/// </summary>
-	public Slot? AllocateKeyless(int w, int h)
+	/// <summary>A w x h region for a mask nobody looks up: on a regular page when one has room, else on a large page.</summary>
+	public Slot AllocateKeyless(int w, int h)
 	{
-		int cw = SizeClass(w), ch = SizeClass(h);
-		if (cw > Size / 2 || ch > Size / 2) { return null; }
-		return Reserve(cw, ch, keyless: true);
+		var regular = PageSizeFor(w, h) == Size ? Reserve(PoolFor(_d.ColorFormat, MaskPageUsage, Size), w, h, w, h, MaxSharedPages) : null;
+		return regular
+			?? Reserve(PoolFor(_d.ColorFormat, MaskPageUsage, Math.Max(2 * Size, PageSizeFor(w, h))), w, h, w, h, int.MaxValue)
+			?? throw new InvalidOperationException($"WebGPU could not place a {w}x{h} mask (out of GPU memory, or the device was lost).");
 	}
 
 	/// <summary>
-	/// Reserves regions for all of <paramref name="sizes"/> on ONE shared page, since a clip's masks bind as one
-	/// texture; false when they do not fit one page together.
+	/// Regions for all of <paramref name="sizes"/> on ONE page, since a clip's masks bind as one texture: a regular page
+	/// when they fit one together, else a large page sized for them.
 	/// </summary>
-	public bool AllocateKeylessGroup((int W, int H)[] sizes, Slot[] slots)
+	public void AllocateKeylessGroup((int W, int H)[] sizes, Slot[] slots)
+	{
+		var regular = PoolFor(_d.ColorFormat, MaskPageUsage, Size);
+		var fitsRegular = true;
+		long area = 0;
+		int maxEdge = 0;
+		foreach (var (w, h) in sizes)
+		{
+			fitsRegular &= PageSizeFor(w, h) == Size;
+			area += (long)w * h;
+			maxEdge = Math.Max(maxEdge, Math.Max(w, h));
+		}
+		if (fitsRegular && TryReserveGroup(regular, sizes, slots, MaxSharedPages)) { return; }
+
+		// Large pages, from the smallest that could hold the group (with room for packing losses) upwards.
+		var edge = Math.Max(maxEdge, (int)Math.Ceiling(Math.Sqrt(area * 1.5)));
+		for (var size = PageSizeFor(edge, edge); ; size *= 2)
+		{
+			size = Math.Max(size, 2 * Size);
+			if (TryReserveGroup(PoolFor(_d.ColorFormat, MaskPageUsage, size), sizes, slots, int.MaxValue)) { return; }
+			if (size >= MaxPageSize)
+			{
+				throw new InvalidOperationException($"WebGPU could not place {sizes.Length} clip masks on one {MaxPageSize}px page.");
+			}
+		}
+	}
+
+	private bool TryReserveGroup(Pool pool, (int W, int H)[] sizes, Slot[] slots, int pageCap)
+	{
+		foreach (var page in pool.Pages)
+		{
+			if (TryPlaceAll(page, sizes, slots)) { return true; }
+		}
+		if (pool.Pages.Count >= pageCap || AddPage(pool) is not { } fresh) { return false; }
+		return TryPlaceAll(fresh, sizes, slots);
+	}
+
+	// All of them on this page, or none.
+	private bool TryPlaceAll(Page page, (int W, int H)[] sizes, Slot[] slots)
 	{
 		for (var i = 0; i < sizes.Length; i++)
 		{
-			if (SizeClass(sizes[i].W) > Size / 2 || SizeClass(sizes[i].H) > Size / 2) { return false; }
-		}
-		for (var pass = 0; pass < 2; pass++)
-		{
-			for (var p = 0; p < _pages.Count; p++)
+			if (TryTake(page, sizes[i].W, sizes[i].H, sizes[i].W, sizes[i].H) is { } slot)
 			{
-				if (IsShared(_pages[p], keyless: true) && TryPlaceAll(_pages[p], sizes, slots)) { return true; }
+				slots[i] = slot;
+				continue;
 			}
-			if (pass == 0 && (SharedPages(keyless: true) >= MaxSharedPages || !AddSharedPage(keyless: true))) { return false; }
-		}
-		return false;
-	}
-
-	private static int SizeClass(int n) => Math.Max(32, (int)BitOperations.RoundUpToPowerOf2((uint)Math.Max(1, n)));
-
-	private bool TryPlaceAll(Page page, (int W, int H)[] sizes, Slot[] slots)
-	{
-		int shelfY = page.ShelfY, shelfH = page.ShelfH, cursorX = page.CursorX;
-		var placed = 0;
-		var reused = new bool[sizes.Length];
-		for (; placed < sizes.Length; placed++)
-		{
-			int w = SizeClass(sizes[placed].W), h = SizeClass(sizes[placed].H);
-			if (TryReuse(page, w, h) is { } r) { slots[placed] = r; reused[placed] = true; continue; }
-			if (TryShelf(page, w, h) is not { } s) { break; }
-			slots[placed] = s;
-		}
-		if (placed == sizes.Length) { return true; }
-		// All or nothing: reused regions go back to their buckets, fresh ones by rewinding the shelf.
-		for (var i = 0; i < placed; i++)
-		{
-			page.Live--;
-			if (reused[i]) { PushFree(page, slots[i]); }
-			slots[i] = null!;
-		}
-		page.ShelfY = shelfY; page.ShelfH = shelfH; page.CursorX = cursorX;
-		return false;
-	}
-
-	private Slot? Reserve(int w, int h, bool keyless)
-	{
-		for (var pass = 0; pass < 2; pass++)
-		{
-			// A freed region of the same size first, on any page of this kind, before consuming new space.
-			for (var i = 0; i < _pages.Count; i++)
+			for (var j = 0; j < i; j++)
 			{
-				if (IsShared(_pages[i], keyless) && TryReuse(_pages[i], w, h) is { } reused) { return reused; }
+				Release(page, slots[j]);
+				slots[j] = null!;
 			}
-			for (var i = 0; i < _pages.Count; i++)
-			{
-				if (IsShared(_pages[i], keyless) && TryShelf(_pages[i], w, h) is { } fresh) { return fresh; }
-			}
-			if (pass == 0 && (SharedPages(keyless) >= (keyless ? MaxSharedPages : MaxPages) || !AddSharedPage(keyless))) { return null; }
+			return false;
 		}
-		return null;
-	}
-
-	private static Slot? TryReuse(Page page, int w, int h)
-	{
-		if (!page.Free.TryGetValue((w, h), out var bucket) || bucket.Count == 0) { return null; }
-		return Take(page, bucket.Pop() with { Key = default, Keyed = false, OriginX = 0, OriginY = 0 });
-	}
-
-	// Shelf packing: fill a row left to right, then start a new row below it.
-	private static Slot? TryShelf(Page page, int w, int h)
-	{
-		int shelfY = page.ShelfY, shelfH = page.ShelfH, cursorX = page.CursorX;
-		if (cursorX + w > page.W) { shelfY += shelfH; shelfH = 0; cursorX = 0; }
-		if (w > page.W || shelfY + h > page.H) { return null; }
-		page.ShelfY = shelfY; page.CursorX = cursorX + w; page.ShelfH = Math.Max(shelfH, h);
-		return Take(page, new Slot(cursorX, shelfY, w, h, 0, 0) { Owner = page });
-	}
-
-	private static Slot Take(Page page, Slot slot)
-	{
-		slot.RefCount = 1;
-		slot.CacheHeld = false;
-		slot.LastUsed = 0;
-		slot.Uv = new(0f, 0f, 1f, 1f);
-		page.Live++;
-		page.EmptySince = -1;
-		return slot;
-	}
-
-	private static void PushFree(Page page, Slot slot)
-	{
-		if (!page.Free.TryGetValue((slot.W, slot.H), out var bucket)) { page.Free[(slot.W, slot.H)] = bucket = new Stack<Slot>(); }
-		bucket.Push(slot);
-	}
-
-	private bool AddSharedPage(bool keyless)
-	{
-		if (NewPage(Size, Size, _d.ColorFormat, SharedUsage) is not { } page) { return false; }
-		page.Keyless = keyless;
-		_pages.Add(page);
 		return true;
 	}
 
-	private Page? NewPage(int w, int h, TextureFormat format, TextureUsage usage)
+	// A region on the pool's pages, opening another page while under the cap.
+	private Slot? Reserve(Pool pool, int regionW, int regionH, int w, int h, int pageCap)
+	{
+		foreach (var page in pool.Pages)
+		{
+			if (TryTake(page, regionW, regionH, w, h) is { } slot) { return slot; }
+		}
+		if (pool.Pages.Count >= pageCap || AddPage(pool) is not { } fresh) { return null; }
+		return TryTake(fresh, regionW, regionH, w, h);
+	}
+
+	private static Slot? TryTake(Page page, int regionW, int regionH, int w, int h)
+	{
+		if (!page.Allocator.TryAllocate(regionW, regionH, out var shelf, out var x, out var regionX, out var allocatedW)) { return null; }
+		page.Live++;
+		page.EmptySince = -1;
+		return new Slot(x, shelf.Y, w, h, 0, 0) { Owner = page, Shelf = shelf, RegionX = regionX, RegionW = allocatedW, RefCount = 1 };
+	}
+
+	// Gives a region back to its page's allocator. A page left empty is kept for a while (see BeginFrame).
+	private void Release(Page page, Slot slot)
+	{
+		page.Allocator.Free(slot.Shelf!, slot.RegionX, slot.RegionW);
+		if (--page.Live == 0) { page.EmptySince = _frame; }
+	}
+
+	private Page? AddPage(Pool pool)
 	{
 		var td = new TextureDescriptor
 		{
-			Size = new Extent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 },
-			Format = format,
+			Size = new Extent3D { Width = (uint)pool.PageSize, Height = (uint)pool.PageSize, DepthOrArrayLayers = 1 },
+			Format = pool.Format,
 			MipLevelCount = 1,
 			SampleCount = 1,
 			Dimension = TextureDimension.Dimension2D,
-			Usage = usage,
+			Usage = pool.Usage,
 		};
 		var tex = _d.Api.DeviceCreateTexture(_d.Dev, &td);
 		if (tex == null) { return null; }
-		return new Page { Texture = tex, View = _d.Api.TextureCreateView(tex, null), W = w, H = h, Format = format, Usage = usage };
-	}
-
-	/// <summary>
-	/// A page of its own, at least w x h, for entries too big to share one: a spare of the same format when one is close
-	/// enough in size, else a new texture rounded up so sizes recur. Its entries go on it with <see cref="Place"/>.
-	/// Null when no texture could be created (out of GPU memory, or the device was lost): the caller skips the mask.
-	/// </summary>
-	public Page? StandalonePage(int w, int h, TextureFormat format, TextureUsage usage)
-	{
-		int rw = Math.Max(w, Math.Min(4096, (w + 63) & ~63)), rh = Math.Max(h, Math.Min(4096, (h + 63) & ~63));
-		Page? best = null;
-		foreach (var sp in _spares)
+		var page = new Page
 		{
-			if (sp.Format != format || sp.Usage != usage || sp.W < w || sp.H < h || (long)sp.W * sp.H > 2L * rw * rh) { continue; }
-			if (best is null || (long)sp.W * sp.H < (long)best.W * best.H) { best = sp; }
-		}
-		if (best is not null) { _spares.Remove(best); }
-		if ((best ?? NewPage(rw, rh, format, usage)) is not { } page) { return null; }
-		page.Standalone = true;
-		page.EmptySince = -1;
-		page.Reset();
+			Texture = tex,
+			View = _d.Api.TextureCreateView(tex, null),
+			W = pool.PageSize,
+			H = pool.PageSize,
+			Format = pool.Format,
+			Usage = pool.Usage,
+			Allocator = new ShelfAllocator(pool.PageSize, pool.PageSize),
+		};
+		pool.Pages.Add(page);
 		_pages.Add(page);
 		return page;
-	}
-
-	/// <summary>A slot at (x, y) on a standalone page, keyed when <paramref name="key"/> is given.</summary>
-	public Slot Place(Page page, int x, int y, int w, int h, float originX = 0f, float originY = 0f, Key? key = null)
-	{
-		var slot = Take(page, new Slot(x, y, w, h, originX, originY) { Owner = page, Key = key ?? default, Keyed = key.HasValue });
-		if (key is { } k) { _slots[k] = slot; }
-		return slot;
 	}
 
 	/// <summary>Frames an entry may go unused before the cache drops its reference.</summary>
 	public const int CacheIdleFrames = 180;
 
-	/// <summary>A standalone cache entry is a whole texture, so once it stops recurring it is let go soon.</summary>
-	public const int StandaloneIdleFrames = 30;
+	/// <summary>An entry on a large page holds a lot of texture, so once it stops recurring it is let go soon.</summary>
+	public const int LargeIdleFrames = 30;
 
 	private readonly List<Slot> _cacheHeld = new();
 	private readonly List<Key> _stale = new();
@@ -381,24 +375,12 @@ internal sealed unsafe class WebGpuMaskAtlas
 		if (slot?.Owner is not { } page) { return; }
 		if (--slot.RefCount > 0) { return; }
 		if (slot.Keyed && _slots.TryGetValue(slot.Key, out var cur) && ReferenceEquals(cur, slot)) { _slots.Remove(slot.Key); }
-		if (!page.Standalone) { PushFree(page, slot); }
-		if (--page.Live > 0) { return; }
-
-		page.EmptySince = _frame;
-		if (page.Standalone)
-		{
-			_pages.Remove(page);
-			_spares.Add(page);
-		}
-		else
-		{
-			page.Reset();
-		}
+		Release(page, slot);
 	}
 
 	/// <summary>
 	/// Frame start: frees last frame's per-frame slots, drops the cache's idle references, and destroys the pages that
-	/// stayed empty (keeping one shared page) and the spares nothing reused.
+	/// stayed empty, keeping one regular page.
 	/// </summary>
 	public void BeginFrame(long frame)
 	{
@@ -410,18 +392,17 @@ internal sealed unsafe class WebGpuMaskAtlas
 		}
 		SweepCache(frame);
 
-		for (var i = _pages.Count - 1; i >= 0 && RegularPages > 1; i--)
+		foreach (var pool in _pools)
 		{
-			var p = _pages[i];
-			if (p.Standalone || p.EmptySince < 0 || frame - p.EmptySince <= EmptyPageIdleFrames) { continue; }
-			_pages.RemoveAt(i);
-			Destroy(p);
-		}
-		for (var i = _spares.Count - 1; i >= 0; i--)
-		{
-			if (frame - _spares[i].EmptySince <= EmptyPageIdleFrames) { continue; }
-			Destroy(_spares[i]);
-			_spares.RemoveAt(i);
+			var keep = pool.Format == _d.ColorFormat && pool.Usage == MaskPageUsage && pool.PageSize == Size ? 1 : 0;
+			for (var i = pool.Pages.Count - 1; i >= 0 && pool.Pages.Count > keep; i--)
+			{
+				var p = pool.Pages[i];
+				if (p.EmptySince < 0 || frame - p.EmptySince <= EmptyPageIdleFrames) { continue; }
+				pool.Pages.RemoveAt(i);
+				_pages.Remove(p);
+				Destroy(p);
+			}
 		}
 	}
 
@@ -437,7 +418,7 @@ internal sealed unsafe class WebGpuMaskAtlas
 		{
 			var slot = _cacheHeld[i];
 			if (!slot.CacheHeld) { _cacheHeld.RemoveAt(i); continue; }
-			if (frame - slot.LastUsed <= (slot.Owner is { Standalone: true } ? StandaloneIdleFrames : CacheIdleFrames)) { continue; }
+			if (frame - slot.LastUsed <= (slot.Owner is { W: > Size } ? LargeIdleFrames : CacheIdleFrames)) { continue; }
 			slot.CacheHeld = false;
 			_cacheHeld.RemoveAt(i);
 			// A recording that also uses the entry holds its own reference, so this reclaims only when the cache was the last holder.
@@ -455,9 +436,8 @@ internal sealed unsafe class WebGpuMaskAtlas
 	public void Dispose()
 	{
 		foreach (var p in _pages) { Destroy(p); }
-		foreach (var p in _spares) { Destroy(p); }
 		_pages.Clear();
-		_spares.Clear();
+		_pools.Clear();
 	}
 
 	/// <summary>
@@ -487,7 +467,7 @@ internal sealed unsafe class WebGpuMaskAtlas
 		var dw = (bbMax.X - bbMin.X) * scale.X;
 		var dh = (bbMax.Y - bbMin.Y) * scale.Y;
 		if (dw <= 0 || dh <= 0) { return false; }
-		// A big entry gets its own texture, capped at the largest a texture may be; a shared-page entry must fit a shelf.
+		// A big entry goes on a large page, capped at the largest a texture may be; a regular one must fit a shelf.
 		if (allowBig ? (dw > 4094 || dh > 4094) : (dw > MaxDim || dh > MaxDim || dw * dh > MaxArea))
 		{ RejBig++; return false; }
 
@@ -539,5 +519,167 @@ internal sealed unsafe class WebGpuMaskAtlas
 			h,
 			extra);
 		return true;
+	}
+}
+
+/// <summary>
+/// Packs rectangles on one page in shelves (rows) whose heights are rounded to a few classes, so masks of similar
+/// height share a shelf. Unlike a shelf packer that only appends, it gives space back: a freed range merges with its
+/// free neighbours on its shelf, a shelf left empty merges with the empty shelves next to it and can be re-cut for
+/// another height, and empty shelves at the bottom return to the page. Masks that come and go every frame at slightly
+/// different sizes therefore reuse the same space instead of exhausting the page (after the étagère allocator).
+/// </summary>
+internal sealed class ShelfAllocator
+{
+	internal sealed class Shelf
+	{
+		public int Y, H;
+		public int Used;
+		// Free x ranges, sorted and never adjacent: adjacent ranges are merged as they are freed.
+		public readonly List<(int X, int W)> Free = new();
+	}
+
+	// Widths round up to this, so freed ranges line up and slivers too narrow for anything are not left behind.
+	private const int WidthAlign = 4;
+
+	private readonly int _w, _h;
+	// Sorted by Y; together with the free space below the last one they tile the page.
+	private readonly List<Shelf> _shelves = new();
+	private int _bottom;
+
+	public ShelfAllocator(int w, int h)
+	{
+		_w = w;
+		_h = h;
+	}
+
+	// Height classes: fine for the small masks most entries are, coarser as they grow, so a shelf wastes at most ~12%
+	// of its height on any entry it takes.
+	private static int HeightClass(int h)
+		=> h <= 8 ? 8
+			: h <= 64 ? (h + 7) & ~7
+			: h <= 256 ? (h + 15) & ~15
+			: (h + 31) & ~31;
+
+	public bool TryAllocate(int w, int h, out Shelf shelf, out int x, out int regionX, out int regionW)
+	{
+		shelf = null!;
+		x = regionX = regionW = 0;
+		if (w <= 0 || h <= 0 || w > _w || h > _h) { return false; }
+		var aw = Math.Min(_w, (w + WidthAlign - 1) & ~(WidthAlign - 1));
+		var hc = Math.Min(_h, HeightClass(h));
+
+		// A shelf of the right height with room: the tightest height first, then the narrowest range that fits.
+		Shelf? best = null;
+		int bestIndex = -1;
+		for (var i = 0; i < _shelves.Count; i++)
+		{
+			var s = _shelves[i];
+			if (s.Used == 0 || s.H < hc || s.H > hc + hc / 2) { continue; }
+			var r = BestRange(s, aw);
+			if (r < 0) { continue; }
+			if (best is null || s.H < best.H || (s.H == best.H && s.Free[r].W < best.Free[bestIndex].W))
+			{
+				best = s;
+				bestIndex = r;
+			}
+		}
+		if (best is null)
+		{
+			// An empty shelf tall enough, cut down to the height needed (the rest stays an empty shelf), or a new one.
+			best = TakeEmptyShelf(hc) ?? NewShelf(hc);
+			if (best is null) { return false; }
+			bestIndex = 0;
+		}
+
+		var (fx, fw) = best.Free[bestIndex];
+		if (fw == aw) { best.Free.RemoveAt(bestIndex); }
+		else { best.Free[bestIndex] = (fx + aw, fw - aw); }
+		best.Used++;
+		shelf = best;
+		x = regionX = fx;
+		regionW = aw;
+		return true;
+	}
+
+	private static int BestRange(Shelf s, int w)
+	{
+		var best = -1;
+		for (var i = 0; i < s.Free.Count; i++)
+		{
+			if (s.Free[i].W >= w && (best < 0 || s.Free[i].W < s.Free[best].W)) { best = i; }
+		}
+		return best;
+	}
+
+	private Shelf? TakeEmptyShelf(int hc)
+	{
+		Shelf? best = null;
+		foreach (var s in _shelves)
+		{
+			if (s.Used == 0 && s.H >= hc && (best is null || s.H < best.H)) { best = s; }
+		}
+		if (best is null) { return null; }
+		if (best.H - hc >= 8)
+		{
+			var rest = new Shelf { Y = best.Y + hc, H = best.H - hc };
+			rest.Free.Add((0, _w));
+			_shelves.Insert(_shelves.IndexOf(best) + 1, rest);
+			best.H = hc;
+		}
+		return best;
+	}
+
+	private Shelf? NewShelf(int hc)
+	{
+		if (_bottom + hc > _h) { return null; }
+		var s = new Shelf { Y = _bottom, H = hc };
+		s.Free.Add((0, _w));
+		_shelves.Add(s);
+		_bottom += hc;
+		return s;
+	}
+
+	public void Free(Shelf shelf, int x, int w)
+	{
+		// Insert the range in order and merge it with the free ranges it touches.
+		var list = shelf.Free;
+		var i = 0;
+		while (i < list.Count && list[i].X < x) { i++; }
+		list.Insert(i, (x, w));
+		if (i + 1 < list.Count && list[i].X + list[i].W == list[i + 1].X)
+		{
+			list[i] = (list[i].X, list[i].W + list[i + 1].W);
+			list.RemoveAt(i + 1);
+		}
+		if (i > 0 && list[i - 1].X + list[i - 1].W == list[i].X)
+		{
+			list[i - 1] = (list[i - 1].X, list[i - 1].W + list[i].W);
+			list.RemoveAt(i);
+		}
+
+		if (--shelf.Used > 0) { return; }
+
+		// An empty shelf merges with the empty shelves around it, and empty shelves at the bottom go back to the page.
+		var index = _shelves.IndexOf(shelf);
+		while (index + 1 < _shelves.Count && _shelves[index + 1].Used == 0)
+		{
+			shelf.H += _shelves[index + 1].H;
+			_shelves.RemoveAt(index + 1);
+		}
+		while (index > 0 && _shelves[index - 1].Used == 0)
+		{
+			_shelves[index - 1].H += shelf.H;
+			_shelves.RemoveAt(index);
+			index--;
+			shelf = _shelves[index];
+		}
+		shelf.Free.Clear();
+		shelf.Free.Add((0, _w));
+		if (index == _shelves.Count - 1)
+		{
+			_bottom = shelf.Y;
+			_shelves.RemoveAt(index);
+		}
 	}
 }
