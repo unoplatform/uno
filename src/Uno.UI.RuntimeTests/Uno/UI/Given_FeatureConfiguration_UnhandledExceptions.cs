@@ -396,6 +396,34 @@ public class Given_FeatureConfiguration_UnhandledExceptions
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_HighContrast_Key_Only_In_Global_Theme_FlagOn_DoesNotThrow()
+	{
+		// The Fluent TextBox dictionaries define TextControlBackground for Light/Default but not HighContrast,
+		// in WinUI too. WinUI's RefreshValue lookup (LookupScope::All) falls back to the global theme
+		// resources, where generic.xaml has the HighContrast entry.
+		var originalFlag = FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource;
+		var originalHighContrast = Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride;
+		try
+		{
+			var sut = new TextBox();
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource = true;
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = true;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull(sut.Background);
+		}
+		finally
+		{
+			Uno.WinRTFeatureConfiguration.Accessibility.HighContrastOverride = originalHighContrast;
+			FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource = originalFlag;
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_ThemeResource_Missing_For_New_Theme_FlagOff_DoesNotThrow()
 	{
 		var originalFlag = FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource;
