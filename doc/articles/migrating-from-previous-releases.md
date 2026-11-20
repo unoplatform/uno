@@ -6,6 +6,14 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 To upgrade to the latest version of Uno Platform, [follow our guide](xref:Uno.Development.UpgradeUnoNuget).
 
+## Uno Platform 7.1
+
+### Removal of `StackLayout.DisableVirtualization`
+
+`StackLayout.DisableVirtualization` was an Uno Platform-only inverse of `IsVirtualizationEnabled`, and WinUI has no such property. It has been removed so `StackLayout` matches the WinUI API. Replace `layout.DisableVirtualization = value` with `layout.IsVirtualizationEnabled = !value`.
+
+This change is tracked by [issue #26577](https://github.com/unoplatform/uno/issues/26577).
+
 ## Uno Platform 7.0
 
 Uno Platform 7.0 is the Skia-unification major release: Skia is the rendering engine on every

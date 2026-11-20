@@ -11,6 +11,7 @@ using Microsoft.UI;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
@@ -520,6 +521,199 @@ public partial class Given_ContentPresenter
 
 		Assert.IsFalse(reference.IsAlive);
 	}
+
+	// The presenter is the template root, without explicit Content/ContentTemplate bindings (the
+	// ListViewItemPresenter templates rely on this): the first measure must already see the content.
+	[TestMethod]
+	public void When_Implicit_Content_Then_First_Measure_Includes_It()
+	{
+		var template = (ControlTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+			"""
+			<ControlTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" TargetType="ContentControl">
+				<ContentPresenter />
+			</ControlTemplate>
+			""");
+		var SUT = new ContentControl
+		{
+			Template = template,
+			Content = new Border { Width = 50, Height = 30 },
+		};
+
+		SUT.Measure(new Size(200, 200));
+
+		Assert.AreEqual(new Size(50, 30), SUT.DesiredSize);
+	}
+
+#if HAS_UNO
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25920")]
+	public void When_Implicit_Content_Binding_Presented_On_First_Measure()
+	{
+		var SUT = new ContentControl
+		{
+			Template = (ControlTemplate)XamlReader.Load(
+				"<ControlTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TargetType='ContentControl'><ContentPresenter/></ControlTemplate>"),
+			Content = new Border { Width = 40, Height = 50 },
+		};
+
+		SUT.Measure(new Size(200, 200));
+
+		Assert.IsFalse(SUT.IsLoaded);
+		Assert.AreEqual(new Size(40, 50), SUT.DesiredSize);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25920")]
+	public async Task When_Binding_DataContext_Set_After_First_Measure()
+	{
+		// The binding sits on the templated parent: a ContentPresenter's own DataContext is its Content.
+		var root = (Grid)XamlReader.Load(
+			"""
+			<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+				<ContentControl Content='{Binding Foo}'>
+					<ContentControl.Template>
+						<ControlTemplate TargetType='ContentControl'><ContentPresenter/></ControlTemplate>
+					</ContentControl.Template>
+				</ContentControl>
+			</Grid>
+			""");
+		var parent = (ContentControl)root.Children[0];
+		root.Measure(new Size(200, 200));
+		var SUT = (ContentPresenter)VisualTreeHelper.GetChild(parent, 0);
+
+		var model = new PresenterModel { Foo = "first" };
+		root.DataContext = model;
+
+		try
+		{
+			await UITestHelper.Load(root, x => x.IsLoaded);
+			Assert.AreEqual("first", SUT.Content);
+
+			model.Foo = "second";
+			Assert.AreEqual("second", SUT.Content);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25920")]
+	public async Task When_OnApplyTemplate_Called_Once_Across_Measure_And_Load()
+	{
+		var SUT = new ApplyTemplateCountingPresenter { Content = new Border { Width = 10, Height = 10 } };
+		SUT.Measure(new Size(200, 200));
+		Assert.AreEqual(1, SUT.ApplyTemplateCount, "WinUI runs OnApplyTemplate from measure.");
+
+		try
+		{
+			await UITestHelper.Load(SUT);
+			Assert.AreEqual(1, SUT.ApplyTemplateCount);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	private class ApplyTemplateCountingPresenter : ContentPresenter
+	{
+		public int ApplyTemplateCount { get; private set; }
+
+		protected override void OnApplyTemplate()
+		{
+			ApplyTemplateCount++;
+			base.OnApplyTemplate();
+		}
+	}
+
+	private class PresenterModel : System.ComponentModel.INotifyPropertyChanged
+	{
+		private string _foo;
+
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+		public string Foo
+		{
+			get => _foo;
+			set
+			{
+				_foo = value;
+				PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Foo)));
+			}
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Sentinel_Child_At_Index_0_Template_Root_Used_For_Layout()
+	{
+		var root = new Border() { Width = 80, Height = 30 };
+		var SUT = new SentinelContentPresenter() { Content = root };
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreSame(SUT.Sentinel, VisualTreeHelper.GetChild(SUT, 0));
+		Assert.AreSame(root, VisualTreeHelper.GetChild(SUT, 1));
+		Assert.AreEqual(new Size(80, 30), SUT.DesiredSize);
+		Assert.AreEqual(80, root.ActualWidth);
+		Assert.AreEqual(30, root.ActualHeight);
+		Assert.AreEqual(0, SUT.Sentinel.ActualWidth);
+	}
+
+	[TestMethod]
+	public async Task When_CornerRadius_Changed_Hook_Fires()
+	{
+		var SUT = new SentinelContentPresenter();
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+		SUT.CornerRadius = new CornerRadius(7);
+
+		Assert.AreEqual(1, SUT.CornerRadiusChangedCount);
+		Assert.AreEqual(new CornerRadius(7), SUT.LastNewCornerRadius);
+	}
+
+	[TestMethod]
+	public async Task When_Sentinel_Child_And_Content_Replaced()
+	{
+		var oldRoot = new Border() { Width = 80, Height = 30 };
+		var SUT = new SentinelContentPresenter() { Content = oldRoot };
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+
+		var newRoot = new Border() { Width = 40, Height = 20 };
+		SUT.Content = newRoot;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(2, VisualTreeHelper.GetChildrenCount(SUT));
+		Assert.AreSame(SUT.Sentinel, VisualTreeHelper.GetChild(SUT, 0));
+		Assert.AreSame(newRoot, VisualTreeHelper.GetChild(SUT, 1));
+		Assert.IsNull(VisualTreeHelper.GetParent(oldRoot));
+		Assert.AreEqual(new Size(40, 20), SUT.DesiredSize);
+	}
+
+	private class SentinelContentPresenter : ContentPresenter
+	{
+		public Border Sentinel { get; } = new Border() { Width = 500, Height = 500 };
+
+		public int CornerRadiusChangedCount { get; private set; }
+
+		public CornerRadius LastNewCornerRadius { get; private set; }
+
+		public SentinelContentPresenter() => AddChild(Sentinel);
+
+		private protected override void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
+		{
+			CornerRadiusChangedCount++;
+			LastNewCornerRadius = newValue;
+			base.OnCornerRadiusChanged(oldValue, newValue);
+		}
+	}
+#endif
 
 	public class AlignmentTestConfiguration
 	{

@@ -1,4 +1,8 @@
-﻿using Common;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference InteractionTests/PipsPagerElements.cs
+
+using Common;
 using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
@@ -23,6 +27,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 		private QueryEx NumberOfPagesComboBox;
 		private QueryEx MaxVisualIndicatorsComboBox;
 		private QueryEx OrientationComboBox;
+		private QueryEx WrapModeComboBox;
 		private QueryEx PreviousPageButtonIsVisibleCheckBox;
 		private QueryEx PreviousPageButtonIsEnabledCheckBox;
 		private QueryEx NextPageButtonIsVisibleCheckBox;
@@ -90,6 +95,10 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 		public QueryEx GetOrientationComboBox()
 		{
 			return GetElement(ref OrientationComboBox, "TestPipsPagerOrientationComboBox");
+		}
+		public QueryEx GetWrapModeComboBox()
+		{
+			return GetElement(ref WrapModeComboBox, "TestPipsPagerWrapModeComboBox");
 		}
 		public QueryEx GetCurrentPageTextBlock()
 		{

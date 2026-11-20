@@ -57,5 +57,5 @@ public partial class SelectorBarItemAutomationPeer : ItemContainerAutomationPeer
 	protected override string GetLocalizedControlTypeCore() =>
 		ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_SelectorBarItemDefaultControlName);
 
-	protected override string GetClassNameCore() => nameof(SelectorBarItem);
+	protected override string GetClassNameCore() => typeof(SelectorBarItem).FullName!;
 }

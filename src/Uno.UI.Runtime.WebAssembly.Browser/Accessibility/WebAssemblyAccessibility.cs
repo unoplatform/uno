@@ -177,6 +177,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// "parent handle not found in DOM" errors.
 	/// </summary>
 	private readonly Dictionary<IntPtr, IntPtr> _semanticParentMap = new();
+
+	// Zoom factor each semantic scroll port's descendants were last positioned at (see OnScrollSourceViewChanged).
+	private readonly ConditionalWeakTable<UIElement, StrongBox<float>> _scrollPortZoomFactors = new();
+
 	/// <summary>
 	/// Handles of elements pruned from the AOM because they were Visibility=Collapsed at build/add
 	/// time (T058). When such an element later becomes visible, OnSizeOrOffsetChanged re-emits it —
@@ -800,6 +804,52 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	/// <summary>
+	/// The semantic element of a scroll port is a native scroller that applies the scroll offset itself, and
+	/// every semantic element inside it is positioned relative to its semantic parent in content coordinates
+	/// (see <see cref="GetRectInSemanticParent"/>), so a scroll moves none of them: only the native offsets
+	/// follow, and positions are recomputed only when the zoom changes.
+	/// </summary>
+	protected override void OnScrollSourceViewChanged(UIElement scrollSource)
+	{
+		var scrollPort = scrollSource is ScrollViewer { Presenter: UIElement presenter } ? presenter : scrollSource;
+		if (scrollPort is not IScrollPortGeometry port || !_semanticParentMap.ContainsKey(scrollPort.Visual.Handle))
+		{
+			// Without a semantic scroller, the descendants are positioned relative to a semantic element
+			// above the scroll port, so they all moved.
+			base.OnScrollSourceViewChanged(scrollSource);
+			return;
+		}
+
+		UpdateNativeScrollOffsets(scrollPort);
+
+		var zoomFactor = port.ZoomFactor;
+		if (_scrollPortZoomFactors.TryGetValue(scrollPort, out var positionedZoomFactor) && positionedZoomFactor.Value == zoomFactor)
+		{
+			return;
+		}
+
+		// Only runs when the zoom changes, so a local stack keeps the walk safe from re-entrant scroll notifications.
+		var pending = new Stack<UIElement>();
+		pending.Push(scrollPort);
+		while (pending.Count > 0)
+		{
+			foreach (var child in pending.Pop().GetChildren())
+			{
+				// Elements without a semantic element have nothing to position.
+				if (_semanticParentMap.ContainsKey(child.Visual.Handle))
+				{
+					OnSizeOrOffsetChanged(child.Visual);
+				}
+
+				pending.Push(child);
+			}
+		}
+
+		// Recorded once the walk is done, so an interrupted walk is retried on the next scroll.
+		_scrollPortZoomFactors.AddOrUpdate(scrollPort, new StrongBox<float>(zoomFactor));
+	}
+
 	protected override void OnSizeOrOffsetChanged(Visual visual)
 	{
 		if (IsAccessibilityEnabled && visual is ContainerVisual containerVisual)
@@ -830,6 +880,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				if (containerVisual.Owner?.Target is UIElement changedElement)
 				{
 					TryUpdateScrollRegionRole(changedElement);
+
+					// A split button node built before layout (OnChildAdded) has no measured menu part yet.
+					if (FindOwningSplitButton(changedElement) is { } splitButton && HasSemanticElement(splitButton.Visual.Handle))
+					{
+						SemanticElementFactory.UpdateSplitButtonGeometry(splitButton);
+					}
 
 					// A zoom change alters the scroll port's range without raising any scroll pattern
 					// property change, but its view change re-emits the port here.
@@ -1003,6 +1059,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					@this.Log().Error($"[A11y] EnableAccessibility: max retries ({MaxEnableAccessibilityRetries}) exceeded; Window still not ready.");
 				}
 
+				// The enable button was removed when it was pressed: bring it back so the user can try again.
+				_enableAccessibilityRetryCount = 0;
+				NativeMethods.ResetSemanticsRoot();
 				return;
 			}
 		}
@@ -1015,36 +1074,50 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 
 		@this._isAccessibilityEnabled = true;
-		@this._isCreatingAOM = true;
 		try
 		{
-			@this.CreateAOM(rootElement);
+			@this._isCreatingAOM = true;
+			try
+			{
+				@this.CreateAOM(rootElement);
+			}
+			finally
+			{
+				@this._isCreatingAOM = false;
+			}
+			Control.OnIsFocusableChangedCallback = @this.UpdateIsFocusable;
+
+			// Initialize subsystems
+			@this._liveRegionManager = new LiveRegionManager();
+			@this._focusSynchronizer = new FocusSynchronizer(@this);
+			@this._focusSynchronizer.Initialize();
+
+			// Suppress the duplicate FocusManager.FocusNative path.
+			// The FocusSynchronizer handles all focus sync via FocusManager.GotFocus
+			// and performs semantic tree resolution before calling into JS.
+			FocusManager.SuppressNativeFocus = true;
+
+			@this._focusSearchRoot = rootElement;
+			NativeMethods.InstallFocusSentinels();
+
+			var focusManager = global::Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(rootElement);
+			if (focusManager is not null)
+			{
+				@this._focusController = focusManager.FocusObserver.FocusController;
+				@this._focusController.FocusDeparting -= @this.OnFocusDeparting;
+				@this._focusController.FocusDeparting += @this.OnFocusDeparting;
+			}
 		}
-		finally
+		catch (Exception ex)
 		{
-			@this._isCreatingAOM = false;
-		}
-		Control.OnIsFocusableChangedCallback = @this.UpdateIsFocusable;
+			// A half-enabled state is dead (the subsystems set up after the failure are missing) and would make
+			// every later call return early, so undo it: accessibility can then be enabled again.
+			if (@this.Log().IsEnabled(LogLevel.Error))
+			{
+				@this.Log().Error("[A11y] EnableAccessibility() failed; accessibility was disabled again so it can be retried.", ex);
+			}
 
-		// Initialize subsystems
-		@this._liveRegionManager = new LiveRegionManager();
-		@this._focusSynchronizer = new FocusSynchronizer(@this);
-		@this._focusSynchronizer.Initialize();
-
-		// Suppress the duplicate FocusManager.FocusNative path.
-		// The FocusSynchronizer handles all focus sync via FocusManager.GotFocus
-		// and performs semantic tree resolution before calling into JS.
-		FocusManager.SuppressNativeFocus = true;
-
-		@this._focusSearchRoot = rootElement;
-		NativeMethods.InstallFocusSentinels();
-
-		var focusManager = global::Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(rootElement);
-		if (focusManager is not null)
-		{
-			@this._focusController = focusManager.FocusObserver.FocusController;
-			@this._focusController.FocusDeparting -= @this.OnFocusDeparting;
-			@this._focusController.FocusDeparting += @this.OnFocusDeparting;
+			DisableAccessibility();
 		}
 	}
 
@@ -1118,6 +1191,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		@this._semanticParentMap.Clear();
 		@this._prunedHandles.Clear();
+		@this._scrollPortZoomFactors.Clear();
 		@this._genericPathHandles.Clear();
 		@this._pendingLabelledBy.Clear();
 		@this._relationshipPeers.Clear();
@@ -1152,6 +1226,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
+		// The native scroller is drawn with the port's transform to the root (see UpdateNativeScrollOffsets).
+		var scale = GetScrollPortScale(owner);
+		horizontalOffset /= scale.X;
+		verticalOffset /= scale.Y;
+
 		// The native range can exceed the managed one (e.g. a semantic child drawn past the content), and the
 		// scroller may apply offsets asynchronously, so clamp here and push the clamped target back.
 		var clampedHorizontalOffset = Math.Clamp(horizontalOffset, 0, port.ScrollableWidth);
@@ -1179,14 +1258,29 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	}
 
 	private static void UpdateNativeScrollOffsets(UIElement scrollPort, IScrollPortGeometry port, double horizontalOffset, double verticalOffset)
-		=> NativeMethods.UpdateNativeScrollOffsets(
+	{
+		// Like its semantic children (see GetRectInSemanticParent), the native scroller is sized with the
+		// port's transform to the root, so an ancestor scale applies to its offsets and range too.
+		var scale = GetScrollPortScale(scrollPort);
+		NativeMethods.UpdateNativeScrollOffsets(
 			scrollPort.Visual.Handle,
-			horizontalOffset,
-			verticalOffset,
-			port.ZoomedExtentWidth,
-			port.ZoomedExtentHeight,
+			horizontalOffset * scale.X,
+			verticalOffset * scale.Y,
+			port.ZoomedExtentWidth * scale.X,
+			port.ZoomedExtentHeight * scale.Y,
 			port.ScrollableWidth > 0,
 			port.ScrollableHeight > 0);
+	}
+
+	private static Vector2 GetScrollPortScale(UIElement scrollPort)
+	{
+		var toRoot = UIElement.GetTransform(from: scrollPort, to: null);
+		var scaleX = new Vector2(toRoot.M11, toRoot.M12).Length();
+		var scaleY = new Vector2(toRoot.M21, toRoot.M22).Length();
+
+		// A port scaled to nothing has no native range to map.
+		return new Vector2(scaleX > 0 ? scaleX : 1, scaleY > 0 ? scaleY : 1);
+	}
 
 	/// <summary>
 	/// Called when a button element is invoked (clicked, Enter pressed, or Space pressed).
@@ -2074,6 +2168,23 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	internal void BuildSemanticsTreeRecursive(IntPtr parentHandle, UIElement child, int depth = 0)
 	{
+		// Same contract as OnChildAdded: an element that fails (e.g. a peer throwing from a property the ARIA
+		// mapping reads) is logged and skipped with its subtree, and the rest of the tree is still built.
+		try
+		{
+			BuildSemanticsTreeRecursiveCore(parentHandle, child, depth);
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"[A11y] BuildSemanticsTreeRecursive failed for {child.GetType().Name}: {ex.Message}", ex);
+			}
+		}
+	}
+
+	private void BuildSemanticsTreeRecursiveCore(IntPtr parentHandle, UIElement child, int depth)
+	{
 		Debug.Assert(IsAccessibilityEnabled);
 
 		TrySubscribeScrollSource(child);
@@ -2167,6 +2278,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	{
 		var localRect = new Windows.Foundation.Rect(0, 0, element.Visual.Size.X, element.Visual.Size.Y);
 
+		// Semantic elements carry no CSS transform, so a transform shared by the element and its semantic parent
+		// (an ancestor ScaleTransform, a scroller's zoom) must not cancel out: both are placed with their
+		// transform to the root, and the element relative to where its parent's semantic element is placed.
+		var parentToRoot = UIElement.GetTransform(from: semanticParent, to: null);
+		var parentBounds = parentToRoot.Transform(new Windows.Foundation.Rect(0, 0, semanticParent.Visual.Size.X, semanticParent.Visual.Size.Y));
+
+		Windows.Foundation.Rect bounds;
+
 		// The semantic element of a scroll port is a native scroller that applies the scroll offset itself,
 		// so its children are positioned in zoomed content coordinates: relative to the scrolled content, whose
 		// arranged offset (unlike its visual transform) includes neither the scroll translation nor the zoom.
@@ -2174,14 +2293,18 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			var rect = UIElement.GetTransform(from: element, to: content).Transform(localRect);
 			var zoom = port.ZoomFactor;
-			return new Windows.Foundation.Rect(
+			bounds = parentToRoot.Transform(new Windows.Foundation.Rect(
 				content.ActualOffset.X + rect.X * zoom,
 				content.ActualOffset.Y + rect.Y * zoom,
 				rect.Width * zoom,
-				rect.Height * zoom);
+				rect.Height * zoom));
+		}
+		else
+		{
+			bounds = UIElement.GetTransform(from: element, to: null).Transform(localRect);
 		}
 
-		return UIElement.GetTransform(from: element, to: semanticParent).Transform(localRect);
+		return new Windows.Foundation.Rect(bounds.X - parentBounds.X, bounds.Y - parentBounds.Y, bounds.Width, bounds.Height);
 
 		static UIElement? GetScrollPortContent(UIElement element, UIElement scrollPort)
 		{
@@ -2313,6 +2436,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		if (result)
 		{
 			UpdateNativeScrollOffsets(child);
+
+			// Its semantic children are positioned at the current zoom from here on.
+			if (child is IScrollPortGeometry port)
+			{
+				_scrollPortZoomFactors.AddOrUpdate(child, new StrongBox<float>(port.ZoomFactor));
+			}
 		}
 
 		if (!result && this.Log().IsEnabled(LogLevel.Error))
@@ -2455,6 +2584,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	{
 		Debug.Assert(IsAccessibilityEnabled);
 
+		// A split button node is named by its explicit name and its (Raw) template parts, not by its peer name.
+		if (FindOwningSplitButton(element) is { } splitButton)
+		{
+			if (HasSemanticElement(splitButton.Visual.Handle))
+			{
+				SemanticElementFactory.UpdateSplitButtonLabels(splitButton);
+			}
+			return;
+		}
+
 		// The name drives the role of a generic-path node (generic→group, named region/form landmarks),
 		// so re-resolve it as creation would.
 		if (_genericPathHandles.Contains(element.Visual.Handle))
@@ -2465,6 +2604,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		NativeMethods.UpdateAriaLabel(element.Visual.Handle, automationId);
 	}
+
+	// The split button a node belongs to: the split button itself or one of its (Raw) template parts.
+	private static SplitButton? FindOwningSplitButton(UIElement element)
+		=> element switch
+		{
+			SplitButton splitButton => splitButton,
+			Button button when button.GetTemplatedParent() is SplitButton owner
+				&& (owner.PrimaryButtonPart == button || owner.SecondaryButtonPart == button) => owner,
+			_ => null,
+		};
 
 	/// <summary>
 	/// The role of a node built by the generic path of <see cref="AddSemanticElement"/>. Creation, the live
@@ -2609,7 +2758,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			// ToggleButton uses aria-pressed, ToggleSwitch uses role="switch" + aria-checked,
 			// CheckBox/RadioButton use native checked property + aria-checked
 			var elementType = AriaMapper.GetSemanticElementType(peer, element);
-			if (elementType == SemanticElementType.ToggleButton)
+			if (elementType is SemanticElementType.ToggleButton or SemanticElementType.SplitButton)
 			{
 				NativeMethods.UpdateAriaPressed(element.Visual.Handle, ariaChecked ?? "false");
 			}
@@ -2705,7 +2854,19 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				this.Log().Trace($"[A11y] PROP CHANGE: IsEnabled handle={element.Visual.Handle} element={element.GetType().Name} disabled={isDisabled}");
 			}
-			NativeMethods.UpdateDisabledState(element.Visual.Handle, isDisabled);
+
+			// A split button node mirrors each (Raw) part's own enabled state, e.g. a primary part disabled by CanExecute.
+			if (FindOwningSplitButton(element) is { } splitButton)
+			{
+				if (HasSemanticElement(splitButton.Visual.Handle))
+				{
+					SemanticElementFactory.UpdateSplitButtonPartsDisabled(splitButton);
+				}
+			}
+			else
+			{
+				NativeMethods.UpdateDisabledState(element.Visual.Handle, isDisabled);
+			}
 		}
 		else if (automationProperty == ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty &&
 			TryGetPeerOwner(peer, out element))
@@ -3330,6 +3491,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		NativeMethods.RemoveSemanticElement(IntPtr.Zero, _rootElementHandle);
 		_semanticParentMap.Clear();
 		_prunedHandles.Clear();
+		_scrollPortZoomFactors.Clear();
 		_genericPathHandles.Clear();
 		_pendingLabelledBy.Clear();
 		_relationshipPeers.Clear();
