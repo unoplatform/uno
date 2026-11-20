@@ -171,6 +171,17 @@ namespace Uno.UI.Tests.Buffers
 			Assert.AreEqual(0, refs.Collect());
 		}
 
+		[TestMethod]
+		public void When_Created_Does_Not_Allocate_Empty_Bucket_Tables()
+		{
+			var before = GC.GetAllocatedBytesForCurrentThread();
+			var pool = new ArrayPool<object>(1 << 20, 100_000);
+			var allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+
+			GC.KeepAlive(pool);
+			Assert.IsTrue(allocated < 1024 * 1024, $"Allocated {allocated} bytes creating an empty pool");
+		}
+
 		private class ReferenceManager
 		{
 			List<WeakReference> _refs = new();
