@@ -18,5 +18,6 @@ public interface IImage : IDrawingResource
 	/// (<see cref="PixelWidth"/> × <see cref="PixelHeight"/> × 4 bytes) — the neutral readback a backend uses to
 	/// upload the image to its own GPU texture.
 	/// </summary>
+	/// <param name="destination">Must hold at least <see cref="PixelWidth"/> × <see cref="PixelHeight"/> × 4 bytes.</param>
 	void CopyPixels(Span<byte> destination);
 }

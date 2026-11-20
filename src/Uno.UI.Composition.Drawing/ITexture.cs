@@ -15,4 +15,10 @@ public interface ITexture : IDrawingResource
 	int PixelWidth { get; }
 
 	int PixelHeight { get; }
+
+	/// <summary>
+	/// True when this texture draws the pixels of the <see cref="IImage"/> it was created from, through a reference
+	/// on that image (see <see cref="IDrawingFactory.CreateTexture(IImage)"/>), holding none of its own. False by default.
+	/// </summary>
+	bool SharesImagePixels => false;
 }

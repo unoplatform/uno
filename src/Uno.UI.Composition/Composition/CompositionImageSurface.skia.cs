@@ -41,9 +41,11 @@ namespace Microsoft.UI.Composition
 		public IImage? Image => FrameProvider?.CurrentImage;
 
 		/// <summary>
-		/// The memory held by the decoded frames and the texture drawn from the current one, 4 bytes per pixel of each.
+		/// The memory held by the decoded frames, and by the texture drawn from the current one unless it shares that
+		/// frame's pixels, 4 bytes per pixel of each.
 		/// </summary>
-		internal long DecodedByteCount => _framesByteCount + (_texture is { } texture ? (long)texture.PixelWidth * texture.PixelHeight * 4 : 0);
+		internal long DecodedByteCount
+			=> _framesByteCount + (_texture is { SharesImagePixels: false } texture ? (long)texture.PixelWidth * texture.PixelHeight * 4 : 0);
 
 		private long _framesByteCount;
 
