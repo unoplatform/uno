@@ -12,6 +12,10 @@ parameters:
   # UNO_* variables handed to the app, e.g. 'UNO_WEBGPU=1'.
   appEnvironment: ''
   condition: ''
+  # When set, replaces `condition` for every group but key '0', so a lane can run one group on every
+  # build and the rest only when needed. It replaces rather than adds: include the lane's own gate if
+  # you set both.
+  extraGroupsCondition: ''
 
   # Runtime Test Groups
   IOS_RUNTIME_TEST_GROUP_COUNT: 4
@@ -50,7 +54,10 @@ jobs:
       SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesapp.skia'
       UITEST_VARIANT: '${{ parameters.variant }}'
       appEnvironment: '${{ parameters.appEnvironment }}'
-      condition: '${{ parameters.condition }}'
+      ${{ if and(ne(RuntimeTestGroup.key, '0'), ne(parameters.extraGroupsCondition, '')) }}:
+        condition: '${{ parameters.extraGroupsCondition }}'
+      ${{ else }}:
+        condition: '${{ parameters.condition }}'
       TEST_KIND: runtime
       xCodeRoot: ${{ parameters.xCodeRootBuild }}
       dependsOn:
