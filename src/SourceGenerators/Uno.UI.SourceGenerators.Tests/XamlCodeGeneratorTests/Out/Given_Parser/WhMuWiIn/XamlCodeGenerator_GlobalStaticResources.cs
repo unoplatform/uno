@@ -42,9 +42,9 @@ namespace MyProject
 			if(!_stylesRegistered)
 			{
 				_stylesRegistered = true;
-				RegisterDefaultStyles_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a();
-				RegisterDefaultStyles_SecondPage_6b0363415e35aa5099bd5c22ab91d5f0();
-				RegisterDefaultStyles_ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2();
+				RegisterDefaultStyles_MainPage_6223b07b3d418584d0a26d35f5e25e2c();
+				RegisterDefaultStyles_SecondPage_dfee0712e8c8818b9ed05ba19f39b981();
+				RegisterDefaultStyles_ThirdPage_421fa96764a0dae83aeb3e317e849c3a();
 			}
 		}
 		// Register ResourceDictionaries using ms-appx:/// syntax, this is called for external resources
@@ -59,9 +59,9 @@ namespace MyProject
 		internal static void RegisterResourceDictionariesBySourceLocal()
 		{
 		}
-		static partial void RegisterDefaultStyles_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a();
-		static partial void RegisterDefaultStyles_SecondPage_6b0363415e35aa5099bd5c22ab91d5f0();
-		static partial void RegisterDefaultStyles_ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2();
+		static partial void RegisterDefaultStyles_MainPage_6223b07b3d418584d0a26d35f5e25e2c();
+		static partial void RegisterDefaultStyles_SecondPage_dfee0712e8c8818b9ed05ba19f39b981();
+		static partial void RegisterDefaultStyles_ThirdPage_421fa96764a0dae83aeb3e317e849c3a();
 		
 	}
 }
