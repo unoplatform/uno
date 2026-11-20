@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -17,6 +18,7 @@ using PointerUpdateKind = global::Microsoft.UI.Input.PointerUpdateKind;
 internal class InjectedInputState
 {
 	private static long _initialTimestamp = Stopwatch.GetTimestamp();
+	private static int _lastFrameId;
 
 	public InjectedInputState(PointerDeviceType type)
 	{
@@ -49,6 +51,10 @@ internal class InjectedInputState
 
 		FrameId = (uint)(Timestamp / 1000);
 	}
+
+	// Each injected frame gets a new, increasing id, like real input: per-frame dedup (`DragOperation.Moved`,
+	// `PointerCapture`) relies on it. Mouse, touch and pen share this counter.
+	internal static uint NextFrameId() => (uint)Interlocked.Increment(ref _lastFrameId);
 
 	public void Update(PointerEventArgs args)
 	{
