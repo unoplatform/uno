@@ -17,6 +17,7 @@ partial class SvgImageSource
 	private const string SvgPackageName = "Uno.WinUI.Svg";
 
 	private Task<ImageData>? _currentOpenTask;
+	private CancellationTokenSource? _loadCts;
 
 	private ISvgProvider? _svgProvider;
 
@@ -35,9 +36,17 @@ partial class SvgImageSource
 		}
 	}
 
-	private bool TryOpenSvgImageData(CancellationToken ct, out Task<ImageData> asyncImage)
+	private bool TryOpenSvgImageData(out Task<ImageData> asyncImage)
 	{
-		_currentOpenTask ??= LoadSvgImageAsync(ct);
+		// The load is shared by every open of this source, so it can't be bound to the token of the open that started
+		// it: SetSourceAsync and a subscribing brush both re-open the source while it loads, cancelling that token.
+		// Like WinUI, only a change of the source itself (UnloadImageSourceData) aborts the load.
+		if (_currentOpenTask is null)
+		{
+			_loadCts = new();
+			_currentOpenTask = LoadSvgImageAsync(_loadCts.Token);
+		}
+
 		asyncImage = _currentOpenTask;
 		return true;
 	}
@@ -51,6 +60,11 @@ partial class SvgImageSource
 		}
 
 		var imageData = await GetSvgImageDataAsync(ct);
+		if (ct.IsCancellationRequested)
+		{
+			// The source changed while reading; the load that replaced this one publishes the result.
+			return ImageData.Empty;
+		}
 
 		if (imageData.Kind == ImageDataKind.ByteArray &&
 			imageData.ByteArray is not null &&
@@ -74,6 +88,9 @@ partial class SvgImageSource
 
 	private protected override void UnloadImageSourceData()
 	{
+		_loadCts?.Cancel();
+		_loadCts?.Dispose();
+		_loadCts = null;
 		_currentOpenTask = null;
 		Unload();
 	}

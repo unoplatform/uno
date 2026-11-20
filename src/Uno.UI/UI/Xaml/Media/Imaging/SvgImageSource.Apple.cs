@@ -27,7 +27,7 @@ partial class SvgImageSource
 	private protected override bool IsSourceReady => true;
 
 	private protected override bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, out Task<ImageData> asyncImage) =>
-		TryOpenSvgImageData(ct, out asyncImage);
+		TryOpenSvgImageData(out asyncImage);
 
 	private async Task<ImageData> GetSvgImageDataAsync(CancellationToken ct)
 	{
