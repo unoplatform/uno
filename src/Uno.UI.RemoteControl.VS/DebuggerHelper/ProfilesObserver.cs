@@ -26,7 +26,7 @@ namespace Uno.UI.RemoteControl.VS.DebuggerHelper;
 
 #pragma warning disable VSTHRD010 // Invoke single-threaded types on Main thread
 
-internal class ProfilesObserver : IDisposable
+internal class ProfilesObserver : IAsyncDisposable
 {
 	private readonly AsyncPackage _asyncPackage;
 	private readonly Action<string> _debugLog;
@@ -90,12 +90,20 @@ internal class ProfilesObserver : IDisposable
 		{
 			await Task.Delay(2000);
 
-			TryUpdateSolution();
+			if (!_isDisposed)
+			{
+				TryUpdateSolution();
+			}
 		}
 	}
 
 	private void TryUpdateSolution()
 	{
+		if (_isDisposed)
+		{
+			return;
+		}
+
 		if (_dte.Solution.SolutionBuild.StartupProjects is object[] newStartupProjects)
 		{
 			if (_existingStartupProjects.Length == 0)
@@ -136,6 +144,11 @@ internal class ProfilesObserver : IDisposable
 			_debugLog("Starting observing profile");
 
 			await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+			if (_isDisposed)
+			{
+				return;
+			}
 
 			if ((await _dte.GetStartupProjectsAsync()) is { } startupProjects)
 			{
@@ -430,10 +443,14 @@ internal class ProfilesObserver : IDisposable
 		}
 	}
 
-	public void Dispose()
+	public async ValueTask DisposeAsync()
 	{
-		UnObserveSolutionEvents();
-		_projectRuleSubscriptionLink?.Dispose();
 		_isDisposed = true;
+
+		// DTE sinks and the CPS subscription are only ever mutated on the main thread; the package's DisposalToken bounds the hop at VS shutdown.
+		await _asyncPackage.JoinableTaskFactory.SwitchToMainThreadAsync(_asyncPackage.DisposalToken);
+
+		UnObserveSolutionEvents();
+		UnsubscribeCurrentProject();
 	}
 }
