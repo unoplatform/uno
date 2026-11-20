@@ -126,6 +126,65 @@ public class Given_Win32ExternalFileDrop
 		}
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26482")]
+	public async Task When_Virtual_Files_Not_Dropped_Then_No_UnobservedTaskException()
+	{
+		// A drag that isn't dropped faults the pending StorageItems, which only an app that asks for them awaits.
+		var targets = await TestTargets.Load();
+		var reported = new List<Exception>();
+		EventHandler<UnobservedTaskExceptionEventArgs> handler = (_, e) =>
+		{
+			lock (reported)
+			{
+				reported.AddRange(e.Exception.InnerExceptions);
+			}
+		};
+
+		TaskScheduler.UnobservedTaskException += handler;
+		try
+		{
+			DragVirtualFilesWithoutDrop(targets.NotAccepting);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			for (var i = 0; i < 3; i++)
+			{
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+				await Task.Yield();
+			}
+		}
+		finally
+		{
+			TaskScheduler.UnobservedTaskException -= handler;
+		}
+
+		lock (reported)
+		{
+			// The message must match the one VirtualFilesHandler.Cancel() faults with: the fault is never thrown, so it has no stack to match.
+			Assert.IsFalse(
+				reported.Any(e => e is InvalidOperationException { Message: "The dragged files weren't dropped." }),
+				"The faulted StorageItems task of a drag that wasn't dropped was reported through TaskScheduler.UnobservedTaskException.");
+		}
+	}
+
+	// Not inlined, so nothing on the test's stack keeps the drags' data packages alive.
+	[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+	private static void DragVirtualFilesWithoutDrop(FrameworkElement target)
+	{
+		using (var drag = ExternalDrag.Enter(target, CreateDataObject(hdropPath: null, "virtual.txt", useStream: false)))
+		{
+			drag.Over();
+			drag.Leave();
+		}
+
+		using (var drag = ExternalDrag.Enter(target, CreateDataObject(hdropPath: null, "virtual.txt", useStream: false)))
+		{
+			drag.Over();
+			drag.Drop();
+		}
+	}
+
 	private static string[] GetCopies() => Directory.Exists(_copiesRoot) ? Directory.GetDirectories(_copiesRoot) : [];
 
 	// The file as CF_HDROP when hdropPath is set, and always as FileGroupDescriptorW and FileContents.

@@ -112,9 +112,22 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 	// only exist as data, so an accepted drop copies them to disk, while the source still serves them.
 	private sealed class VirtualFilesHandler(FORMATETC descriptorFormat)
 	{
-		private readonly TaskCompletionSource<List<IStorageItem>> _tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
+		private readonly TaskCompletionSource<List<IStorageItem>> _tcs = CreateCompletion();
 
 		public async Task<object> GetStorageItemsAsync(CancellationToken ct) => await _tcs.Task;
+
+		// Only awaited when the app asks for the StorageItems, so a drag that isn't dropped would leave an unobserved fault.
+		// Drop logs its own failure.
+		private static TaskCompletionSource<List<IStorageItem>> CreateCompletion()
+		{
+			var tcs = new TaskCompletionSource<List<IStorageItem>>(TaskCreationOptions.RunContinuationsAsynchronously);
+			_ = tcs.Task.ContinueWith(
+				static t => _ = t.Exception,
+				CancellationToken.None,
+				TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously,
+				TaskScheduler.Default);
+			return tcs;
+		}
 
 		public void Cancel() => _tcs.TrySetException(new InvalidOperationException("The dragged files weren't dropped."));
 
