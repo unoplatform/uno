@@ -235,6 +235,21 @@ public class Given_ManagedImageDecoder
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
+	public void When_Gif_Later_Frame_Is_Refused_Then_Size_Is_Still_Read()
+	{
+		// The size read stops after the first frame, so its cost doesn't grow with the animation. A refusal in a later
+		// frame then shows only when the decode fails, as TryGetSize allows.
+		var still = Gif(5, 3);
+		var refused = Gif(5, 3, minCodeSize: 13);
+		byte[] bytes = [.. still[..^1], .. refused[19..]]; // The second frame starts after the 19-byte header and table.
+
+		Assert.IsFalse(Decode(bytes).Decoded, "Precondition: the decoder refuses the second frame.");
+		Assert.AreEqual((true, 5, 3), ReadSize(bytes));
+		Assert.AreEqual((true, 5, 3), ReadSizeFromStream(bytes));
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
 	[DataRow(0x7FFFFFF0u)]
 	[DataRow(0x7FFFFFF1u)]
 	public void When_Bmp_Palette_Offset_Is_Hostile_Then_Image_Still_Decodes(uint dibSize)

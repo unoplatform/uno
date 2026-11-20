@@ -9,8 +9,9 @@ internal static partial class ManagedImageDecoder
 	/// <summary>
 	/// Reads the size <see cref="TryDecode"/> produces with no target size (EXIF orientation applied) without decoding the
 	/// pixels, through the decode's own header readers, so that it refuses every file the decode refuses from the headers
-	/// those read: for a JPEG, the markers before its first scan and that scan's header. It can still be true for a file
-	/// whose compressed data, or a JPEG marker after its first scan, then fails the decode.
+	/// those read: for a JPEG, the markers before its first scan and that scan's header, and for a GIF, the blocks up to
+	/// the end of its first frame. It can still be true for a file whose compressed data, a JPEG marker after its first
+	/// scan, or a later GIF frame then fails the decode.
 	/// </summary>
 	public static bool TryGetSize(ImageBytes data, out int width, out int height)
 	{
@@ -47,7 +48,7 @@ internal static partial class ManagedImageDecoder
 				return true;
 
 			case ImageFormat.Gif:
-				return TryReadGif(d, null, out width, out height);
+				return TryReadGif(d, null, firstFrameOnly: true, out width, out height);
 
 			case ImageFormat.Bmp:
 				if (!TryReadBmpHeader(d, out var bmp))

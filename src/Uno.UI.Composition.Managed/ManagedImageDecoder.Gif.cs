@@ -16,9 +16,10 @@ internal static partial class ManagedImageDecoder
 	/// <summary>
 	/// Walks a GIF's blocks, reading the descriptors, extensions and sub-block lengths but not the image data, and applies
 	/// every refusal <see cref="TryDecodeGif"/> makes before decompressing a frame. <paramref name="onFrame"/> receives
-	/// each frame the decoder keeps, with the logical screen size.
+	/// each frame the decoder keeps, with the logical screen size. With <paramref name="firstFrameOnly"/>, the walk ends
+	/// after the first frame, so its cost doesn't grow with an animation's length.
 	/// </summary>
-	private static bool TryReadGif(ImageBytes d, Action<int, int, GifFrame>? onFrame, out int screenWidth, out int screenHeight)
+	private static bool TryReadGif(ImageBytes d, Action<int, int, GifFrame>? onFrame, bool firstFrameOnly, out int screenWidth, out int screenHeight)
 	{
 		var p = 6; // skip "GIF87a"/"GIF89a"
 		screenWidth = ReadU16LE(d, p);
@@ -148,6 +149,10 @@ internal static partial class ManagedImageDecoder
 				left, top, frameWidth, frameHeight, (imgPacked & 0x40) != 0, tableOffset, tableLength, dataOffset,
 				transparentIndex, delayMs, disposalMethod));
 			frameCount++;
+			if (firstFrameOnly)
+			{
+				break;
+			}
 
 			// Reset per-frame graphic control state: each frame carries its own graphic control extension, so a
 			// delay must not leak from the previous frame.
@@ -172,7 +177,7 @@ internal static partial class ManagedImageDecoder
 		byte[]? table = null;
 		var tableOffset = -1;
 
-		if (!TryReadGif(bytes, AddFrame, out var screenWidth, out var screenHeight))
+		if (!TryReadGif(bytes, AddFrame, firstFrameOnly: false, out var screenWidth, out var screenHeight))
 		{
 			return false;
 		}
