@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<linker>
+	<!-- Uno.Wasm.Bootstrap extracts these into the app's package folder at build time; nothing reads them at runtime. -->
+	<assembly fullname="Uno.WinRT">
+		<resource name="Windows.WasmScripts.Uno.Wasm.js" action="remove" />
+		<resource name="Windows.WasmScripts.setImmediate.js" action="remove" />
+	</assembly>
+</linker>
