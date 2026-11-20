@@ -182,6 +182,11 @@ internal sealed class WebGpuShapeCache
 		return h == 0 ? 1 : (long)h;
 	}
 
+	// Scratch for tessellation: only the finished vertices are kept, copied out of these.
+	private Vector2[] _tessPoints = [];
+	private readonly List<float> _tessVerts = new();
+	private readonly List<float> _tessCoverage = new();
+
 	private bool Tessellate(List<List<Vector2>> contours, int total, float density, out float[] tris, out float[] cov)
 	{
 		tris = cov = null;
@@ -191,7 +196,7 @@ internal sealed class WebGpuShapeCache
 
 		// The triangulation must cover the area the winding rule fills; if not, the rules disagree on this outline
 		// (self-intersection, same-wound overlap) and only a mask draws it right. Both are twice the true area.
-		var flat = new Vector2[total];
+		var flat = _tessPoints.Length >= total ? _tessPoints : _tessPoints = new Vector2[Math.Max(total, _tessPoints.Length * 2)];
 		var w = 0;
 		foreach (var c in contours) { foreach (var p in c) { flat[w++] = p; } }
 		double triArea = 0;
@@ -205,7 +210,7 @@ internal sealed class WebGpuShapeCache
 		if (Math.Abs(triArea - Math.Abs(windArea)) > 1e-2 * Math.Max(triArea, 1)) { StatTessArea++; return false; }
 
 		// Half the antialiasing ring, in the recording's units: half a device pixel at this density.
-		var verts = new List<float>(); var coverage = new List<float>();
+		var verts = _tessVerts; var coverage = _tessCoverage;
 		if (!PathTessellator.BuildGeometry(contours, idx, 0.5f / density, verts, coverage)) { StatTessFold++; return false; }
 		tris = verts.ToArray();
 		cov = coverage.ToArray();

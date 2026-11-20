@@ -164,7 +164,29 @@ internal static class PathTessellator
 
 		// Flat copy for O(1) indexing: this method runs EVERY frame, and resolving a global index by walking the
 		// contour list would be O(contours) per vertex -- ruinous for a text run, which is one contour per glyph.
-		var flat = new Vector2[total];
+		var flat = System.Buffers.ArrayPool<Vector2>.Shared.Rent(total);
+		var inset = System.Buffers.ArrayPool<Vector2>.Shared.Rent(total);
+		try
+		{
+			return BuildGeometry(contours, indices, aaHalf, verts, coverage, total, flat, inset);
+		}
+		finally
+		{
+			System.Buffers.ArrayPool<Vector2>.Shared.Return(flat);
+			System.Buffers.ArrayPool<Vector2>.Shared.Return(inset);
+		}
+	}
+
+	private static bool BuildGeometry(
+		IReadOnlyList<List<Vector2>> contours,
+		int[] indices,
+		float aaHalf,
+		List<float> verts,
+		List<float> coverage,
+		int total,
+		Vector2[] flat,
+		Vector2[] inset)
+	{
 		var w = 0;
 		for (var i = 0; i < contours.Count; i++)
 		{
@@ -173,7 +195,6 @@ internal static class PathTessellator
 
 		// Inward bisector offset per point. "Inward" means toward the filled region, which for a hole is out of
 		// the hole -- the winding of each contour already encodes that, so the same formula serves both.
-		var inset = new Vector2[total];
 		var at = 0;
 		if (aaHalf <= 0)
 		{
@@ -256,7 +277,7 @@ internal static class PathTessellator
 			// A margin below the fold point; a ramp that collapses to nothing still draws the shape, hard-edged,
 			// which is far better than not drawing it through this path at all.
 			ringScale = Math.Max(0f, ringScale * 0.9f);
-			for (var i = 0; i < inset.Length; i++) { inset[i] *= ringScale; }
+			for (var i = 0; i < total; i++) { inset[i] *= ringScale; }
 		}
 
 		for (var t = 0; t + 2 < indices.Length; t += 3)
