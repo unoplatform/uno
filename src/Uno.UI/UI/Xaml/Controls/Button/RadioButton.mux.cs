@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using DirectUI;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.System;
@@ -245,6 +246,17 @@ namespace Microsoft.UI.Xaml.Controls
 			return found;
 		}
 
+		// MUX Reference: RadioButton::EnterImpl in RadioButton_Partial.cpp
+		internal override void EnterImpl(EnterParams @params, int depth)
+		{
+			base.EnterImpl(@params, depth);
+
+			if (@params.IsLive)
+			{
+				UpdateRadioButtonGroup();
+			}
+		}
+
 		private void UpdateRadioButtonGroup()
 		{
 			// If we are not checked then we don't have any effect on other buttons
@@ -261,6 +273,13 @@ namespace Microsoft.UI.Xaml.Controls
 			string? groupName;
 			GetGroupName(out groupNameExists, out groupName);
 
+			// If we don't get a parent then don't do anything and let it be handled on enter impl
+			DependencyObject? spParent = GetParentForGroup(groupNameExists, this);
+			if (spParent == null)
+			{
+				return;
+			}
+
 			var groupsByName = DXamlCore.Current.GetRadioButtonGroupsByName(false);
 
 			// DXamlCore will delete RadioButton name table during shutdown, so check against it being a nullptr or having 0 elements.
@@ -268,12 +287,6 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (groupsByName.TryGetValue(groupName, out var groupElements))
 				{
-					DependencyObject? spParent = GetParentForGroup(groupNameExists, this);
-					if (spParent == null)
-					{
-						return;
-					}
-
 					foreach (var radioButtonRef in groupElements)
 					{
 						// Resolve the weak reference to get an actual RadioButton
@@ -340,7 +353,9 @@ namespace Microsoft.UI.Xaml.Controls
 			// Otherwise, use the root
 			else
 			{
-				radioButtonParent = VisualTree.GetRootForElement(radioButton); //Uno specific: Return RootVisual instead of VisualTreeHelper.GetRootStatic(radioButton);
+				// Uno specific: VisualTreeHelper.GetRootStatic(radioButton) in WinUI. RootElement is the RootVisual for window
+				// content and the XamlIsland for island content, where RootVisual is null.
+				radioButtonParent = VisualTree.GetForElement(radioButton)?.RootElement;
 			}
 
 			if (radioButtonParent != null)
