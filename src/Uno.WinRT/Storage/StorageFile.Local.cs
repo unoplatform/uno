@@ -13,7 +13,7 @@ namespace Windows.Storage
 {
 	partial class StorageFile
 	{
-		private sealed class Local : ImplementationBase
+		private class Local : ImplementationBase
 		{
 			public Local(string path)
 				: base(path)

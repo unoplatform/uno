@@ -19,7 +19,11 @@ namespace Windows.Storage.Pickers
 		{
 			if (_fileSavePickerExtension == null)
 			{
+#if __IOS__
+				return PickExportFile(token);
+#else
 				throw new NotSupportedException("FileSavePicker extension is not registered.");
+#endif
 			}
 
 			_fileSavePickerExtension.Customize(this);
