@@ -12,22 +12,22 @@ Platform-specific assets such as [`BundleResource`](https://learn.microsoft.com/
 
 ## Supported asset types
 
-At the moment, the following image file types are supported as `Content` assets:
+The following image file types are supported as `Content` assets:
 
-|             | `.bmp` (Win BMP) | `.gif`‡ | `.heic` (Apple) | `.jpg` & `.jpeg` (JFIF) | `.png` | `.webp` | `.pdf` | `.svg` |
-| ----------- | :-------------: | :---: | :-----------: | :-----------------: | :--: | :---: | :--: | :--: |
-| WinUI       |       ✔️        |   ✔️   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
-| Android 10  |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ✔️   |  ✔️   |  ✔️   |
-| iOS 13      |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ❌   |  ❌   |  ✔️   |
-| macOS       |       ✔️        |  ✔️‡   |       ✔️       |          ✔️          |  ✔️   |   ❌   |  ✔️   |  ❌   |
-| WebAssembly†       |       ✔️        |  ✔️‡   |      ❌†       |          ✔️          |  ✔️   |  ❌†   |  ❌†  |  ✔️   |
-| Skia Desktop |       ✔️        |  ✔️‡   |       ❌       |          ✔️          |  ✔️   |   ✔️   |  ❌   |  ✔️   |
+|                                    | `.bmp` (Win BMP) | `.gif` | `.heic` (Apple) | `.jpg` & `.jpeg` (JFIF) | `.png` | `.webp` | `.pdf` | `.svg` |
+| ---------------------------------- | :--------------: | :----: | :-------------: | :---------------------: | :----: | :-----: | :----: | :----: |
+| WinUI                              |        ✔️        |   ✔️   |       ❌        |           ✔️            |   ✔️   |   ✔️    |   ❌   |   ✔️   |
+| Skia renderer¹                     |        ✔️        |  ✔️²   |       ❌³       |           ✔️            |   ✔️   |   ✔️²   |   ❌   |  ✔️⁴   |
+| Android native renderer (6.x)¹     |       ❌⁵        |  ✔️⁶   |       ❌⁵       |           ✔️            |   ✔️   |   ❌⁵   |   ❌   |  ✔️⁴   |
+| iOS/tvOS native renderer (6.x)¹    |        ✔️        |  ✔️⁶   |       ✔️        |           ✔️            |   ✔️   |   ✔️⁶   |   ❌   |  ✔️⁴   |
+| WebAssembly native renderer (6.x)¹ |        ✔️        |  ✔️²   |       ❌³       |           ✔️            |   ✔️   |   ✔️²   |  ❌³   |   ✔️   |
 
-* † Actual WebAssembly image format support is browser dependent. For example, `.webp` is not working on Safari on macOS, but works on Chromium-based browsers. Check-marks (✔️) indicate a format that can safely be expected to work on all browsers able to run Wasm applications.
-* ‡ **Gif animation support**:
-  * Play/Pause not implemented in Uno yet
-  * Always animated on Wasm
-  * Not animated on other Uno platforms
+1. The Skia renderer is the default on every target except the Windows App SDK head, which uses WinUI. In 6.x, Android, iOS/tvOS and WebAssembly use it when `UnoFeatures` includes `SkiaRenderer` (the default for new projects), and the native renderers otherwise.
+2. Animated images always play. `BitmapImage.AutoPlay`, `IsPlaying`, `Play()` and `Stop()` are not implemented.
+3. Depends on the browser on WebAssembly. For example, Safari decodes `.heic` and Chrome doesn't.
+4. Uno Platform 6.x needs the `Svg` Uno feature. See [Using SVG images](xref:Uno.Features.SVG).
+5. Doesn't load as an `ms-appx:///` asset, because the native Android renderer only packages `.png`, `.jpg`, `.jpeg` and `.gif` files as images. It loads from a stream or a web URL.
+6. Animated images show only the first frame.
 
 ## Adding an asset to your project
 
@@ -174,44 +174,28 @@ A theme qualifier can be specified for the image loader to use an asset based on
 
 ### Custom (platform)
 
-Sometimes, you might want to use a different asset depending on the platform. Because there is no `platform` qualifier on WinUI/UWP, Uno Platform provides the `custom` qualifier.
+Sometimes, you might want to use a different asset depending on the platform. Because there is no `platform` qualifier on WinUI, Uno Platform provides the `custom` qualifier. Uno.UI's `RetargetAssets` task interprets it on Android, iOS, tvOS and Mac Catalyst heads and excludes the variants that don't match the platform. Uno Platform doesn't interpret it on other heads.
 
-| Platform | Qualifier value |
-|----------|-----------------|
-| UWP      | `uwp`           |
-| iOS      | `ios`           |
-| Android  | `android`       |
-
-Because the `custom` qualifier has no special meaning on WinUI/UWP, we have to interpret its value manually.
-
-On iOS and Android, Uno.UI's `RetargetAssets` task automatically interprets these values and excludes unsupported platforms.
-
-On UWP, you must add the following code to your `App.cs` or `App.xaml.cs` constructor:
-
-```csharp
-#if WINDOWS_UWP
-    Windows.ApplicationModel.Resources.Core.ResourceContext.SetGlobalQualifierValue("custom", "uwp");
-#endif
-```
+| Platform                | Qualifier value |
+|-------------------------|-----------------|
+| iOS, tvOS, Mac Catalyst | `ios`           |
+| Android                 | `android`       |
 
 #### Examples
 
 ```paths
-\Assets\Images\custom-uwp\logo.png
 \Assets\Images\custom-ios\logo.png
 \Assets\Images\custom-android\logo.png
 
-\Assets\Images\logo.custom-uwp.png
 \Assets\Images\logo.custom-ios.png
 \Assets\Images\logo.custom-android.png
 ```
 
-## Android: setting a custom image handler
+## Android native renderer: setting a custom image handler
 
-On Android, to handle the loading of images from a remote URL, the Image control has to be provided a
-`ImageSource.DefaultImageLoader`, such as the [Android Universal Image Loader](https://github.com/nostra13/Android-Universal-Image-Loader).
+With the native Android renderer (`UnoFeatures` without `SkiaRenderer`), the `Image` control needs an `ImageSource.DefaultImageLoader`, such as the [Android Universal Image Loader](https://github.com/nostra13/Android-Universal-Image-Loader), to load images from a remote URL. The Skia renderer doesn't use it.
 
-This package is installed by default when using the [Uno Cross-Platform solution templates](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022). If not using the solution template. You can install the [nventive.UniversalImageLoader](https://www.nuget.org/packages/nventive.UniversalImageLoader/) NuGet package and call the following code from your application's App constructor:
+The Uno.Sdk references the `Uno.UniversalImageLoader` package for native Android heads, and the app template configures it in `Platforms/Android/Main.Android.cs`. Otherwise, call the following code from your Android `Application` constructor:
 
 ```csharp
 private void ConfigureUniversalImageLoader()
@@ -226,7 +210,3 @@ private void ConfigureUniversalImageLoader()
     ImageSource.DefaultImageLoader = ImageLoader.Instance.LoadImageAsync;
 }
 ```
-
-## iOS/tvOS: referencing bundle images
-
-On iOS/tvOS, bundle images can be selected using "bundle://" (e.g. bundle:///SplashScreen). When selecting the bundle resource, do not include the zoom factor, nor the file extension.
