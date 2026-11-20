@@ -865,6 +865,8 @@ namespace Microsoft.UI.Xaml
 			{
 				Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
 			}
+
+			UpdateCodeName();
 		}
 
 		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
