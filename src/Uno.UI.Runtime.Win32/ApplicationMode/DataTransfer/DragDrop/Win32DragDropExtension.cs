@@ -39,8 +39,7 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 
 	private AsyncHDropHandler? _lastAsyncHDropHandler;
 
-	// The shell's drag-image manager and the drag's data object, from DragEnter to DragLeave or Drop. The manager is apartment-threaded:
-	// it's created, used and released on the UI thread, where OLE calls this drop target.
+	// From DragEnter to DragLeave or Drop. The manager is apartment-threaded, so it's only used on the UI thread, where OLE calls the drop target.
 	private unsafe IDropTargetHelper* _dropTargetHelper;
 	private unsafe IDataObject* _dropTargetHelperDataObject;
 	private bool _isDropTargetHelperUnavailable;

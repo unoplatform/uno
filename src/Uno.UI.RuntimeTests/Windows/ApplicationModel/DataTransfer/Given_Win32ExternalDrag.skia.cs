@@ -41,7 +41,6 @@ public class Given_Win32ExternalDrag
 	public async Task When_Bitmap_Dragged_Over_Then_No_Preview_Is_Generated()
 	{
 		// WinUI shows the drag source's own image for an external drag, and never builds one from the dragged data.
-		// The issue's minimal repro; the None row of When_Drop_Target_Overrides_DragUI_Then_Drag_Visual_Shows_It checks this and more.
 		var target = await TestDropTarget.Load(ContentOverride.None);
 		using var drag = ExternalDrag.Enter(target.Element, CreateDib(width: 2, height: 3));
 
@@ -137,8 +136,7 @@ public class Given_Win32ExternalDrag
 	[DataRow(true, false)]
 	public async Task When_External_Drag_Ends_Then_Shell_Drag_Image_Manager_And_Data_Object_Are_Released(bool drop, bool hasDragImage)
 	{
-		// Without a drag image, the manager's DragEnter fails, but the manager still keeps the data object until DragLeave or Drop.
-		// So they're forwarded anyway, as Chromium and WinForms do.
+		// Without a drag image, the manager's DragEnter fails but keeps the data object, so DragLeave and Drop are still forwarded.
 		var target = await TestDropTarget.Load(ContentOverride.None);
 		using var drag = ExternalDrag.Enter(target.Element, CreateDib(width: 2, height: 3), hasDragImage);
 		Assert.IsTrue(drag.HasDropTargetHelper);
