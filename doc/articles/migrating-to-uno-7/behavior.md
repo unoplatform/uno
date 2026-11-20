@@ -66,7 +66,9 @@ with their own `SKCanvas`/`SKPaint` drawing code may not compile: SkiaSharp 4 tu
 long-deprecated APIs into errors, most visibly the text APIs that moved from `SKPaint` to
 `SKFont`. If you pin SkiaSharp packages yourself, move **all** of them — managed and
 native-asset alike — to the same 4.x version, since a managed/native mismatch fails at
-runtime rather than at build time.
+runtime rather than at build time. If the 6.x app opted in with `SkiaSharpVersion` (a
+`4.155.x` version), remove it: 7.0 uses a later SkiaSharp, and the 4.155 value makes
+restore fail with `NU1605` (package downgrade).
 
 See also: [`SkiaSharp.Views.Uno.WinUI`](xref:Uno.Development.MigratingToUno7.Packages#skiasharpviewsunowinui-no-longer-referenced-implicitly), [SkiaSharp and HarfBuzz native assets](xref:Uno.Development.MigratingToUno7.Packages#runtime-hosts-no-longer-carry-skiasharp-or-harfbuzz-native-assets).
 

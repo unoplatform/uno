@@ -67,6 +67,9 @@ YourAppNamespace.App.ConfigureFilters(); // Enable tracing of the Skia host
 
 ## Upgrading to a later version of SkiaSharp
 
+> [!NOTE]
+> These steps are for Uno Platform 7. For a 6.x app, see [Uno Platform 6.x](#uno-platform-6x).
+
 By default, the [Uno.Sdk](xref:Uno.Features.Uno.Sdk) brings a tested set of **SkiaSharp** and **HarfBuzzSharp** packages. To move to a different version, change the native and the managed packages together, to the same version:
 
 - The `SkiaSharpVersion` and `HarfBuzzSharpVersion` properties retarget the native-asset packages the Uno.Sdk references for each platform.
@@ -104,6 +107,23 @@ If your project doesn't use Central Package Management, set the `Version` on the
 ### SkiaSharp 4
 
 SkiaSharp 4.0 reached general availability as `4.148.0`, and Uno Platform is a co-maintainer of SkiaSharp. **Since Uno Platform 7.0, SkiaSharp 4 is the default** — the Uno.Sdk resolves the SkiaSharp package group at a `4.x` version, and the steps above move it to another version. SkiaSharp 4 turns several long-deprecated APIs into compile errors (for example, text APIs that moved from `SKPaint` to `SKFont`), so a project carrying its own SkiaSharp code from `3.x` may need small changes before it builds.
+
+#### Uno Platform 6.x
+
+On Uno Platform 6.x, the Uno.Sdk uses SkiaSharp 3.119 by default. To move a 6.x app to SkiaSharp 4, set `SkiaSharpVersion` to the latest [`4.155.x` version](https://www.nuget.org/packages/SkiaSharp#versions-body-tab):
+
+```xml
+<PropertyGroup>
+   <!-- Replace 4.155.x with the latest 4.155 version -->
+   <SkiaSharpVersion>4.155.x</SkiaSharpVersion>
+</PropertyGroup>
+```
+
+- On 6.x, this property is the only change needed: the 6.x Uno.Sdk moves the managed SkiaSharp packages with it.
+- SkiaSharp `4.156` and later require Uno Platform 7. Their `SkiaSharp.Views.Uno.WinUI` package depends on Uno Platform 7, so restore fails with `NU1605` on 6.x.
+- `4.155.0` and `4.155.1` break WebAssembly builds on Uno Platform 6.7 with `invalid argument '-std=c++20' not allowed with 'C'`. Use a later `4.155.x` version.
+- iOS builds need Xcode 26.2 or later, the SDK the SkiaSharp 4 native libraries are built with.
+- When you move the app to Uno Platform 7, remove this `SkiaSharpVersion` override. See [SkiaSharp 4 is the default](xref:Uno.Development.MigratingToUno7.Behavior#skiasharp-4-is-the-default).
 
 ## Rendering Backend Selection
 
