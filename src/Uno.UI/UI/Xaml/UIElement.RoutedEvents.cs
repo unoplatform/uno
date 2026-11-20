@@ -753,7 +753,7 @@ namespace Microsoft.UI.Xaml
 					{
 						if (!IsHandled(args) || handler.HandledEventsToo)
 						{
-							parent.InvokeHandler(handler.Handler, args);
+							parent.InvokeAppHandler(handler.Handler, args);
 						}
 					}
 				}
@@ -951,7 +951,7 @@ namespace Microsoft.UI.Xaml
 					var handler = handlers[0];
 					if (!isHandled || handler.HandledEventsToo)
 					{
-						InvokeHandler(handler.Handler, args);
+						InvokeAppHandler(handler.Handler, args);
 						isHandled = IsHandled(args);
 					}
 
@@ -964,7 +964,7 @@ namespace Microsoft.UI.Xaml
 					{
 						if (!isHandled || handler.HandledEventsToo)
 						{
-							InvokeHandler(handler.Handler, args);
+							InvokeAppHandler(handler.Handler, args);
 							isHandled = IsHandled(args);
 						}
 					}
@@ -974,6 +974,39 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 #pragma warning restore IDE0055 // Fix formatting
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private void InvokeAppHandler(object handler, RoutedEventArgs args)
+		{
+			if (Uno.UI.FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions)
+			{
+				InvokeAppHandlerReportingErrors(handler, args);
+			}
+			else
+			{
+				InvokeHandler(handler, args);
+			}
+		}
+
+		/// <summary>
+		/// Reports a failing handler through <see cref="Application.UnhandledException"/>, and keeps raising the
+		/// event if the app handles it, like WinUI (DXamlCore::FireEvent reports, CEventManager keeps routing).
+		/// </summary>
+		/// <remarks>
+		/// Kept apart from <see cref="InvokeHandler"/>: methods with a try/catch are significantly slower on
+		/// WebAssembly (https://github.com/dotnet/runtime/issues/56309).
+		/// </remarks>
+		private void InvokeAppHandlerReportingErrors(object handler, RoutedEventArgs args)
+		{
+			try
+			{
+				InvokeHandler(handler, args);
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseUnhandledExceptionOrThrow(e, this);
+			}
+		}
 
 		private void InvokeHandler(object handler, RoutedEventArgs args)
 		{

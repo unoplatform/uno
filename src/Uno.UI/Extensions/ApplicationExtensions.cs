@@ -35,7 +35,12 @@ namespace Uno.Extensions
 			}
 			else
 			{
-				sender.GetType().Log().LogError("Unhandled exception (no Application available)", e);
+				if (!Application.IsUnhandledExceptionReported(e))
+				{
+					sender.GetType().Log().LogError("Unhandled exception (no Application available)", e);
+					Application.MarkUnhandledExceptionReported(e);
+				}
+
 				ExceptionDispatchInfo.Capture(e).Throw();
 			}
 		}

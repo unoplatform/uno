@@ -647,11 +647,12 @@ namespace Uno.UI
 		public static class UnhandledExceptionHandling
 		{
 			/// <summary>
-			/// When <c>true</c>, exceptions thrown during pointer-input event raising surface
-			/// through <see cref="Application.UnhandledException"/>; if the app does not mark
-			/// <c>Handled = true</c>, the exception propagates (matching WinUI's fail-fast
-			/// behavior on unhandled errors). When <c>false</c> (default), the legacy behavior
-			/// is preserved: such exceptions are caught and logged.
+			/// When <c>true</c>, exceptions thrown by routed-event handlers and during input event raising
+			/// surface through <see cref="Application.UnhandledException"/>. If the app marks it
+			/// <c>Handled = true</c>, the event keeps routing to the remaining handlers; otherwise the
+			/// exception propagates (matching WinUI's fail-fast behavior on unhandled errors). When
+			/// <c>false</c> (default), the legacy behavior is preserved: such exceptions are caught and
+			/// logged, and the rest of the route is skipped.
 			/// </summary>
 			/// <remarks>
 			/// Recommended for development to surface latent crashes that today look like input

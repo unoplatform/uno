@@ -467,20 +467,48 @@ namespace Microsoft.UI.Xaml
 
 		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
 
+		private const string UnhandledExceptionReportedKey = "Uno.UI.UnhandledExceptionReported";
+
 		/// <summary>
-		/// Raises <see cref="UnhandledException"/> for the given exception. If no handler marks
-		/// the event as handled, the exception is re-thrown preserving the original stack trace
-		/// (matching WinUI's behavior of fail-fasting on unhandled errors from input or dispatcher).
+		/// Raises <see cref="UnhandledException"/> for the given exception and returns whether a handler marked it
+		/// as handled, like WinUI's ErrorHelper::ProcessUnhandledError, which fails fast otherwise.
 		/// </summary>
-		internal void RaiseUnhandledException(Exception e)
+		/// <remarks>
+		/// An exception left unhandled is reported only once, so the outer catch sites it unwinds through
+		/// do not raise the event again.
+		/// </remarks>
+		internal bool TryHandleUnhandledException(Exception e)
 		{
+			if (IsUnhandledExceptionReported(e))
+			{
+				return false;
+			}
+
 			var args = new UnhandledExceptionEventArgs(e, fatal: true);
 			UnhandledException?.Invoke(this, args);
 			if (!args.Handled)
 			{
+				MarkUnhandledExceptionReported(e);
+			}
+
+			return args.Handled;
+		}
+
+		/// <summary>
+		/// Raises <see cref="UnhandledException"/> for the given exception. If no handler marks
+		/// the event as handled, the exception is re-thrown preserving the original stack trace.
+		/// </summary>
+		internal void RaiseUnhandledException(Exception e)
+		{
+			if (!TryHandleUnhandledException(e))
+			{
 				ExceptionDispatchInfo.Capture(e).Throw();
 			}
 		}
+
+		internal static bool IsUnhandledExceptionReported(Exception e) => e.Data.Contains(UnhandledExceptionReportedKey);
+
+		internal static void MarkUnhandledExceptionReported(Exception e) => e.Data[UnhandledExceptionReportedKey] = true;
 
 		private void InitializeTextScaling()
 		{
