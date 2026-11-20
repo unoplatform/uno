@@ -338,19 +338,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[TestMethod]
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24628")]
-		public async Task When_Item_Peer_AddToSelection_And_RemoveFromSelection_Then_Multiple_Selection_Changes()
+		[DataRow("ListView")]
+		[DataRow("ListBox")]
+		public async Task When_Item_Peer_AddToSelection_And_RemoveFromSelection_Then_Multiple_Selection_Changes(string selectorKind)
 		{
-			var listView = new ListView
-			{
-				ItemsSource = new List<string> { "Alpha", "Beta", "Gamma" },
-				SelectionMode = ListViewSelectionMode.Multiple,
-			};
+			Selector selector = selectorKind == "ListBox"
+				? new ListBox { SelectionMode = SelectionMode.Multiple }
+				: new ListView { SelectionMode = ListViewSelectionMode.Multiple };
+			selector.ItemsSource = new List<string> { "Alpha", "Beta", "Gamma" };
+			var selectedItems = selector is ListBox listBox ? listBox.SelectedItems : ((ListView)selector).SelectedItems;
 
 			try
 			{
-				await UITestHelper.Load(listView);
+				await UITestHelper.Load(selector);
 
-				var peer = (ItemsControlAutomationPeer)FrameworkElementAutomationPeer.CreatePeerForElement(listView);
+				var peer = (ItemsControlAutomationPeer)FrameworkElementAutomationPeer.CreatePeerForElement(selector);
 				var alpha = (ISelectionItemProvider)peer.CreateItemAutomationPeer("Alpha").GetPattern(PatternInterface.SelectionItem);
 				var gamma = (ISelectionItemProvider)peer.CreateItemAutomationPeer("Gamma").GetPattern(PatternInterface.SelectionItem);
 
@@ -358,15 +360,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				gamma.AddToSelection();
 				await TestServices.WindowHelper.WaitForIdle();
 
-				Assert.HasCount(2, listView.SelectedItems);
+				Assert.HasCount(2, selectedItems);
 				Assert.IsTrue(alpha.IsSelected);
 				Assert.IsTrue(gamma.IsSelected);
 
 				alpha.RemoveFromSelection();
 				await TestServices.WindowHelper.WaitForIdle();
 
-				Assert.HasCount(1, listView.SelectedItems);
-				Assert.AreEqual("Gamma", listView.SelectedItems[0]);
+				Assert.HasCount(1, selectedItems);
+				Assert.AreEqual("Gamma", selectedItems[0]);
 				Assert.IsFalse(alpha.IsSelected);
 				Assert.IsTrue(gamma.IsSelected);
 			}

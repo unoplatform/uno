@@ -17,7 +17,7 @@
 		</ResourceDictionary>
 	</ResourceDictionary.ThemeDictionaries>
 
-	<!-- VirtualizingStackPanel is not implemented on Skia, so FlipView keeps a StackPanel. -->
+	<!-- Uno's VirtualizingStackPanel doesn't implement AreScrollSnapPointsRegular yet (#26336), so FlipView keeps a StackPanel. -->
 	<Style TargetType="FlipView" BasedOn="{StaticResource DefaultFlipViewStyle}">
 		<Setter Property="ItemsPanel">
 			<Setter.Value>

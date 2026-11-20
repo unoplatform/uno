@@ -23,14 +23,7 @@ public partial class VirtualizingStackPanel : global::Microsoft.UI.Xaml.Controls
 		typeof(global::Microsoft.UI.Xaml.Controls.VirtualizingStackPanel),
 		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public static global::Microsoft.UI.Xaml.DependencyProperty OrientationProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.Register(
-		nameof(Orientation), typeof(global::Microsoft.UI.Xaml.Controls.Orientation),
-		typeof(global::Microsoft.UI.Xaml.Controls.VirtualizingStackPanel),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.Orientation)));
-#endif
+	// Skipping already declared property OrientationProperty
 #if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]
 	public static global::Microsoft.UI.Xaml.DependencyProperty VirtualizationModeProperty { get; } =
@@ -53,20 +46,7 @@ public partial class VirtualizingStackPanel : global::Microsoft.UI.Xaml.Controls
 		}
 	}
 #endif
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Controls.Orientation Orientation
-	{
-		get
-		{
-			return (global::Microsoft.UI.Xaml.Controls.Orientation)this.GetValue(OrientationProperty);
-		}
-		set
-		{
-			this.SetValue(OrientationProperty, value);
-		}
-	}
-#endif
+	// Skipping already declared property Orientation
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.VirtualizingStackPanel()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingStackPanel.VirtualizingStackPanel()
 #if __SKIA__

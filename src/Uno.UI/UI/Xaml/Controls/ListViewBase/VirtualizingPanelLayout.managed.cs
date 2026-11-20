@@ -200,6 +200,15 @@ namespace Microsoft.UI.Xaml.Controls
 			Generator = new VirtualizingPanelGenerator(this);
 		}
 
+		/// <summary>
+		/// Initializes the layout for an owner which is already loading, so that it doesn't miss that Loading.
+		/// </summary>
+		internal void InitializeWhileLoading(_Panel owner)
+		{
+			Initialize(owner);
+			OnLoading(owner, null!);
+		}
+
 		private void OnLoading(FrameworkElement frameworkElement, object args)
 		{
 			foreach (var parent in OwnerPanel.GetVisualAncestry())
