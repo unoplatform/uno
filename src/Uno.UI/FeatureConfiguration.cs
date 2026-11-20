@@ -452,6 +452,29 @@ namespace Uno.UI
 			/// </remarks>
 			public static string AdditionalBrowserArguments { get; set; }
 
+			/// <summary>
+			/// The browser features that pages shown in a <see cref="Microsoft.UI.Xaml.Controls.WebView2"/> can use, as Permissions
+			/// Policy directives.
+			/// </summary>
+			/// <remarks>
+			/// <para><b>WebAssembly only.</b> It is a no-op on every other target.</para>
+			/// <para>Each entry is a directive of the <c>iframe</c> <c>allow</c> attribute (<c>feature allowlist</c>), applied to the
+			/// iframes created afterwards. By default, the list lets every page play media automatically, go fullscreen, play protected
+			/// (DRM) media, copy to the clipboard and use passkeys. Chromium and Firefox treat permission requests from these pages as
+			/// requests from the app's own origin, so an existing grant to the app carries over without a prompt: list explicit origins for
+			/// features that need the user's permission, such as <c>camera https://example.com</c>, rather than a feature name alone.
+			/// See <see href="https://platform.uno/docs/articles/controls/WebView.html#browser-features-available-to-pages"/> for how
+			/// the entries are applied.</para>
+			/// </remarks>
+			public static IList<string> PermissionsPolicy { get; } = new List<string>
+			{
+				"autoplay",
+				"fullscreen",
+				"encrypted-media",
+				"clipboard-write",
+				"publickey-credentials-get",
+				"publickey-credentials-create",
+			};
 		}
 
 		public static class Xaml
