@@ -359,6 +359,104 @@ public class Given_CliManager
 	}
 
 	[TestMethod]
+	[Description("start, stop, disco and health resolve the workspace from --solution, the solution the IDE opened, instead of discovering it from the folder (#26122)")]
+	[DataRow("start")]
+	[DataRow("stop")]
+	[DataRow("disco")]
+	[DataRow("health")]
+	public async Task Command_WithSolution_ResolvesTheSolutionExplicitly(string command)
+	{
+		var directory = CreateTempDirectory();
+
+		try
+		{
+			var solutionPath = CreateSolutionFile(directory, "App.slnx");
+			var resolver = new ThrowingWorkspaceResolver();
+			var cliManager = CreateCliManager(resolver);
+
+			var exitCode = await cliManager.RunAsync([command, "--solution", solutionPath, "--solution-dir", directory]);
+
+			exitCode.Should().Be(1, "the throwing resolver stops the run before anything starts");
+			resolver.SolutionRequests.Should().Equal((directory, solutionPath));
+			resolver.ResolveAsyncCallCount.Should().Be(0);
+		}
+		finally
+		{
+			Directory.Delete(directory, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("Without --solution, several solutions under one global.json are ambiguous: disco lists them and fails (#26122)")]
+	public async Task DiscoJson_WhenSeveralSolutionsShareTheFolder_IsAmbiguous()
+	{
+		var directory = CreateTempDirectory();
+
+		try
+		{
+			CreateUnoWorkspace(directory, "App.sln", "App-Copy.sln");
+
+			var (exitCode, root) = await RunJsonAsync(["--solution-dir", directory, "disco", "--json"]);
+
+			exitCode.Should().Be(1);
+			root.GetProperty("resolutionKind").GetString().Should().Be("Ambiguous");
+			root.GetProperty("errors").EnumerateArray().Select(error => error.GetString()).Should().Contain("Workspace could not be resolved.");
+		}
+		finally
+		{
+			Directory.Delete(directory, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("With the arguments Visual Studio passes, disco and health select the --solution even when another solution shares its folder (#26122)")]
+	[DataRow("disco")]
+	[DataRow("health")]
+	public async Task Json_WithSolution_WhenSeveralSolutionsShareTheFolder_SelectsThatSolution(string command)
+	{
+		var directory = CreateTempDirectory();
+
+		try
+		{
+			var solutionPath = CreateUnoWorkspace(directory, "App.sln", "App-Copy.sln")[1];
+
+			var (_, root) = await RunJsonAsync([command, "--solution", solutionPath, "--solution-dir", directory, "--json"]);
+
+			root.GetProperty("resolutionKind").GetString().Should().Be("CurrentDirectory");
+			root.GetProperty("effectiveWorkspaceDirectory").GetString().Should().Be(directory);
+			root.GetProperty("selectedSolutionPath").GetString().Should().Be(solutionPath);
+		}
+		finally
+		{
+			Directory.Delete(directory, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("A --solution that is not in an Uno workspace leaves the workspace discovered from the folder, as before")]
+	public async Task DiscoJson_WithSolutionOutsideAnUnoWorkspace_DiscoversTheWorkspace()
+	{
+		var directory = CreateTempDirectory();
+		var outsideDirectory = CreateTempDirectory();
+
+		try
+		{
+			var solutionPath = CreateUnoWorkspace(directory, "App.sln")[0];
+			var outsideSolutionPath = CreateSolutionFile(outsideDirectory, "Other.sln");
+
+			var (_, root) = await RunJsonAsync(["disco", "--solution", outsideSolutionPath, "--solution-dir", directory, "--json"]);
+
+			root.GetProperty("resolutionKind").GetString().Should().Be("CurrentDirectory");
+			root.GetProperty("selectedSolutionPath").GetString().Should().Be(solutionPath);
+		}
+		finally
+		{
+			Directory.Delete(directory, recursive: true);
+			Directory.Delete(outsideDirectory, recursive: true);
+		}
+	}
+
+	[TestMethod]
 	[Description("--solution without a value is a usage error")]
 	public void ParseMcpSolutionArgument_WhenValueIsMissing_Fails()
 	{
@@ -393,6 +491,36 @@ public class Given_CliManager
 		Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 		File.WriteAllText(path, string.Empty);
 		return path;
+	}
+
+	// A global.json declaring the Uno SDK, with the given solutions next to it.
+	private static string[] CreateUnoWorkspace(string directory, params string[] solutionNames)
+	{
+		File.WriteAllText(Path.Join(directory, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
+		return [.. solutionNames.Select(name => CreateSolutionFile(directory, name))];
+	}
+
+	// Runs the CLI with the real workspace resolver and parses the JSON it writes to stdout.
+	private static async Task<(int ExitCode, JsonElement Root)> RunJsonAsync(string[] args)
+	{
+		var cliManager = CreateCliManager(new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance));
+
+		using var stdout = new StringWriter();
+		var previousOut = Console.Out;
+		Console.SetOut(stdout);
+
+		int exitCode;
+		try
+		{
+			exitCode = await cliManager.RunAsync(args);
+		}
+		finally
+		{
+			Console.SetOut(previousOut);
+		}
+
+		using var document = JsonDocument.Parse(stdout.ToString());
+		return (exitCode, document.RootElement.Clone());
 	}
 
 	private static string CreateTempDirectory()
