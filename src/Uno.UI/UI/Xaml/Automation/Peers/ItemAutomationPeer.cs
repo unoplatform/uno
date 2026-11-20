@@ -191,8 +191,25 @@ public partial class ItemAutomationPeer : AutomationPeer, IVirtualizedItemProvid
 	protected override string GetLocalizedControlTypeCore()
 		=> ForwardToContainer(p => p.GetLocalizedControlType(), base.GetLocalizedControlTypeCore);
 
+	// MUX Reference ItemAutomationPeer_Partial.cpp, ItemAutomationPeer::GetNameCore
 	protected override string GetNameCore()
-		=> ForwardToContainer(p => p.GetName(), base.GetNameCore);
+	{
+		string? returnValue = null;
+		var pContainerPeer = GetContainerPeer();
+		if (pContainerPeer != null)
+		{
+			// TODO: Check about GetPlainText
+			returnValue = pContainerPeer.GetName();
+		}
+
+		// A virtualized item has no container: its name comes from the item itself.
+		if (string.IsNullOrEmpty(returnValue) && _item is not null)
+		{
+			returnValue = FrameworkElement.GetStringFromObject(_item);
+		}
+
+		return returnValue ?? string.Empty;
+	}
 
 	protected override AutomationOrientation GetOrientationCore()
 		=> ForwardToContainer(p => p.GetOrientation(), base.GetOrientationCore);
