@@ -9,3 +9,4 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.WebAssembly.Browser")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Android")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.AppleUIKit")]
+[assembly: InternalsVisibleTo("Uno.UI.UnitTests")]
