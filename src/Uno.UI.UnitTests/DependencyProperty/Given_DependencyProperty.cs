@@ -74,6 +74,19 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24978")]
+		public void When_GetDefaultValue_Stretch_For_Derived_Ellipse_And_Rectangle()
+		{
+			Assert.AreEqual(Stretch.Fill, new DerivedEllipse().Stretch);
+			Assert.AreEqual(Stretch.Fill, new DerivedRectangle().Stretch);
+			Assert.AreEqual(Stretch.Fill, Shape.StretchProperty.GetMetadata(typeof(DerivedEllipse)).DefaultValue);
+			Assert.AreEqual(Stretch.Fill, Shape.StretchProperty.GetMetadata(typeof(DerivedRectangle)).DefaultValue);
+
+			// Other shapes keep the Shape default.
+			Assert.AreEqual(Stretch.None, new Line().Stretch);
+		}
+
+		[TestMethod]
 		public void When_SetValue_Registration_NotRaised()
 		{
 			var SUT = new MockDependencyObject();
@@ -1864,6 +1877,14 @@ namespace Uno.UI.Tests.BinderTests
 	partial class MockDependencyObject : FrameworkElement
 	{
 
+	}
+
+	partial class DerivedEllipse : Ellipse
+	{
+	}
+
+	partial class DerivedRectangle : Rectangle
+	{
 	}
 
 	partial class MockDependencyObject2 : MockDependencyObject
