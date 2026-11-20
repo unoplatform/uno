@@ -117,7 +117,8 @@ internal sealed class TextInputPlugin
 
 	internal void NotifyValueChanged(int virtualId, string newValue)
 	{
-		this.LogDebug()?.Debug($"NotifyValueChanged: {newValue}");
+		// Never log the value: it can be a password.
+		this.LogDebug()?.Debug($"NotifyValueChanged: {virtualId}");
 
 		_afm?.NotifyValueChanged(_view, virtualId, AutofillValue.ForText(newValue));
 		_inputConnection?.OnTextInputHostChanged();
