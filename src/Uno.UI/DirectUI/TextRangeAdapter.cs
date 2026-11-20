@@ -802,7 +802,7 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 		var language = string.IsNullOrWhiteSpace(format.LanguageTag) ? owner.Language : format.LanguageTag;
 		if (string.IsNullOrWhiteSpace(language))
 		{
-			return CultureInfo.CurrentCulture.LCID;
+			return CultureInfo.CurrentUICulture.LCID;
 		}
 
 		try
@@ -811,7 +811,7 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 		}
 		catch (CultureNotFoundException)
 		{
-			return CultureInfo.CurrentCulture.LCID;
+			return CultureInfo.CurrentUICulture.LCID;
 		}
 	}
 

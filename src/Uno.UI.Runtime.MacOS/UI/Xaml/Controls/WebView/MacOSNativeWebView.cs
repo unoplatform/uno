@@ -39,7 +39,7 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 		var ok = resourceLoader.GetString("OkResourceKey");
 		var cancel = resourceLoader.GetString("CancelResourceKey");
 
-		if (CultureInfo.CurrentCulture.TwoLetterISOLanguageName == "en")
+		if (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "en")
 		{
 			if (ok == $"[{OkResourceKey}]")
 			{
