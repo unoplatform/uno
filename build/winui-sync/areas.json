@@ -553,6 +553,39 @@
           "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/RadioButton.xaml"
         }
       ]
+    },
+    {
+      "id": "titlebar",
+      "title": "TitleBar",
+      "baseline": "1b5b1a0ccc05ce5c8b5931dc303666975b57f498",
+      "upstream": {
+        "sources": [
+          "controls/dev/TitleBar"
+        ],
+        "tests": [
+          "controls/dev/TitleBar/InteractionTests"
+        ],
+        "strings": "controls/dev/TitleBar/Strings"
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/TitleBar"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/TitleBar"
+        ],
+        "strings": "src/Uno.UI/UI/Xaml/Controls/TitleBar/Strings"
+      },
+      "mirror": [
+        {
+          "upstream": "controls/dev/TitleBar/TitleBar.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/TitleBar.xaml"
+        },
+        {
+          "upstream": "controls/dev/TitleBar/TitleBar_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/TitleBar_themeresources.xaml"
+        }
+      ]
     }
   ]
 }
