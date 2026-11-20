@@ -28,16 +28,16 @@ partial class ApplicationData
 	partial void InitializePartial() => WinRTFeatureConfiguration.ApplicationData.IsApplicationDataInitialized = true;
 
 	private string GetLocalCacheFolder() =>
-		EnsurePath(Path.Combine(GetLocalCacheFolderRootPath(), LocalCacheFolderName));
+		Path.Combine(GetLocalCacheFolderRootPath(), LocalCacheFolderName);
 
 	private string GetTemporaryFolder() =>
-		EnsurePath(Path.Combine(GetTemporaryFolderRootPath(), TemporaryFolderName));
+		Path.Combine(GetTemporaryFolderRootPath(), TemporaryFolderName);
 
 	private string GetLocalFolder() =>
-		EnsurePath(Path.Combine(GetApplicationDataFolderRootPath(), LocalFolderName));
+		Path.Combine(GetApplicationDataFolderRootPath(), LocalFolderName);
 
 	private string GetRoamingFolder() =>
-		EnsurePath(Path.Combine(GetApplicationDataFolderRootPath(), RoamingFolderName));
+		Path.Combine(GetApplicationDataFolderRootPath(), RoamingFolderName);
 
 	internal string GetSettingsFolderPath() =>
 		EnsurePath(Path.Combine(GetApplicationDataFolderRootPath(), SettingsFolderName));
