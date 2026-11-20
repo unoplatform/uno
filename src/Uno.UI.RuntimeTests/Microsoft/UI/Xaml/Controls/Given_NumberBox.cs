@@ -14,10 +14,6 @@ using static Private.Infrastructure.TestServices;
 using Uno.UI.Extensions;
 #endif
 
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
-
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
 [TestClass]

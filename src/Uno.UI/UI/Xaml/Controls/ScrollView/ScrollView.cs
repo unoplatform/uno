@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ScrollView.cpp, commit b8cfb8490
+// MUX Reference ScrollView.cpp
 
 using System;
 using System.Collections.Generic;
@@ -24,9 +24,6 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-#if !__SKIA__
-[NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__")]
-#endif
 public partial class ScrollView : Control, IScrollView
 {
 	// Change to 'true' to turn on debugging outputs in Output window
@@ -47,17 +44,23 @@ public partial class ScrollView : Control, IScrollView
 		HookScrollViewEvents();
 	}
 
-	~ScrollView()
-	{
-		//SCROLLVIEW_TRACE_INFO(null, TRACE_MSG_METH, METH_NAME, this);
+#if HAS_UNO
+	// TODO Uno: Original C++ destructor cleanup. Uno does not support cleanup via finalizers.
+	// Move this logic into Loaded/Unloaded event handlers or other lifecycle methods to avoid leaks.
 
-		UnhookHorizontalScrollControllerEvents(true /*isForDestructor*/);
-		UnhookVerticalScrollControllerEvents(true /*isForDestructor*/);
-		UnhookCompositionTargetRendering();
-		UnhookScrollPresenterEvents(true /*isForDestructor*/);
-		UnhookScrollViewEvents();
-		ResetHideIndicatorsTimer(true /*isForDestructor*/);
-	}
+	// Original destructor logic (not executed):
+	// ~ScrollView()
+	// {
+	// 	SCROLLVIEW_TRACE_INFO(nullptr, TRACE_MSG_METH, METH_NAME, this);
+
+	// 	UnhookHorizontalScrollControllerEvents(true /*isForDestructor*/);
+	// 	UnhookVerticalScrollControllerEvents(true /*isForDestructor*/);
+	// 	UnhookCompositionTargetRendering();
+	// 	UnhookScrollPresenterEvents(true /*isForDestructor*/);
+	// 	UnhookScrollViewEvents();
+	// 	ResetHideIndicatorsTimer();
+	// }
+#endif
 
 	#region IScrollView
 
@@ -522,7 +525,7 @@ public partial class ScrollView : Control, IScrollView
 		PointerRoutedEventArgs args)
 	{
 		// Don't process if this is a generated replay of the event.
-		// UNO docs: Generated events are not yet supported. This condition is always false.
+		// TODO Uno: PointerRoutedEventArgs.IsGenerated is not supported, so this is always false.
 		if (args.IsGenerated)
 		{
 			return;
@@ -714,22 +717,17 @@ public partial class ScrollView : Control, IScrollView
 	}
 
 	// Invoked by ScrollViewTestHooks
-	internal void ScrollControllersAutoHidingChanged()
+	internal void ScrollControllersAutoHidingChangedDbg()
 	{
 		UpdateScrollControllersAutoHiding(true /*forceUpdate*/);
 	}
 
-	internal ScrollPresenter GetScrollPresenterPart()
-	{
-		return m_scrollPresenter as ScrollPresenter;
-	}
-
-	internal void ValidateAnchorRatio(double value)
+	internal static void ValidateAnchorRatio(double value)
 	{
 		ScrollPresenter.ValidateAnchorRatio(value);
 	}
 
-	internal void ValidateZoomFactoryBoundary(double value)
+	internal static void ValidateZoomFactoryBoundary(double value)
 	{
 		ScrollPresenter.ValidateZoomFactoryBoundary(value);
 	}
@@ -739,9 +737,7 @@ public partial class ScrollView : Control, IScrollView
 	{
 		var dependencyProperty = args.Property;
 
-#if DEBUG
 		//SCROLLVIEW_TRACE_VERBOSE(null, L"%s(property: %s)\n", METH_NAME, DependencyPropertyToString(dependencyProperty).c_str());
-#endif
 
 		bool horizontalChange = dependencyProperty == HorizontalScrollBarVisibilityProperty;
 		bool verticalChange = dependencyProperty == VerticalScrollBarVisibilityProperty;
@@ -855,11 +851,12 @@ public partial class ScrollView : Control, IScrollView
 
 		if (AreScrollControllersAutoHiding())
 		{
-			HideIndicators();
+			// TODO Uno specific: no useSafeGet argument, managed references can't dangle.
+			HideIndicators(true /*useTransitions*/);
 		}
 	}
 
-	// UNO TODO
+	// TODO Uno: UISettings.AutoHideScrollBarsChanged is not implemented.
 	//private void OnAutoHideScrollBarsChanged(
 	//	UISettings uiSettings,
 	//	UISettingsAutoHideScrollBarsChangedEventArgs args)
@@ -1070,20 +1067,24 @@ public partial class ScrollView : Control, IScrollView
 
 		if (m_bringIntoViewOperations.Count > 0)
 		{
-			foreach (var bringIntoViewOperation in m_bringIntoViewOperations)
+			// TODO Uno specific: index loop instead of upstream's iterator, since a List can't be modified during foreach.
+			for (int i = 0; i < m_bringIntoViewOperations.Count;)
 			{
+				var bringIntoViewOperation = m_bringIntoViewOperations[i];
+
 				//SCROLLVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH_PTR_INT, METH_NAME, this, bringIntoViewOperation->TargetElement(), bringIntoViewOperation->TicksCount());
 
 				if (bringIntoViewOperation.HasMaxTicksCount)
 				{
 					// This ScrollView is no longer expected to receive BringingIntoView notifications from its ScrollPresenter,
 					// resulting from a FocusManager::TryFocusAsync call in ScrollView::HandleKeyDownForXYNavigation.
-					m_bringIntoViewOperations.Remove(bringIntoViewOperation);
+					m_bringIntoViewOperations.RemoveAt(i);
 				}
 				else
 				{
 					// Increment the number of ticks ellapsed since the FocusManager::TryFocusAsync call, and continue to wait for BringingIntoView notifications.
 					bringIntoViewOperation.TickOperation();
+					i++;
 				}
 			}
 		}
@@ -1110,10 +1111,9 @@ public partial class ScrollView : Control, IScrollView
 		}
 	}
 
-	private void ResetHideIndicatorsTimer(bool isForDestructor = false, bool restart = false)
+	private void ResetHideIndicatorsTimer(bool restart = false)
 	{
-		// UNO TODO
-		var hideIndicatorsTimer = m_hideIndicatorsTimer; //.safe_get(isForDestructor /*useSafeGet*/);
+		var hideIndicatorsTimer = m_hideIndicatorsTimer;
 
 		if (hideIndicatorsTimer is not null && hideIndicatorsTimer.IsEnabled)
 		{
@@ -1127,7 +1127,7 @@ public partial class ScrollView : Control, IScrollView
 
 	private void HookUISettingsEvent()
 	{
-		// UNO TODO:
+		// TODO Uno: UISettings.AutoHideScrollBarsChanged is not implemented.
 		// Introduced in 19H1, IUISettings5 exposes the AutoHideScrollBars property and AutoHideScrollBarsChanged event.
 		// if (!m_uiSettings5)
 		// {
@@ -1170,6 +1170,7 @@ public partial class ScrollView : Control, IScrollView
 		MUX_ASSERT(m_onPointerPressedEventHandler is null);
 		MUX_ASSERT(m_onPointerReleasedEventHandler is null);
 		MUX_ASSERT(m_onPointerCanceledEventHandler is null);
+		// TODO Uno specific: C# events return no tokens, so the token asserts don't apply.
 		//MUX_ASSERT(m_gettingFocusToken.value == 0);
 		//MUX_ASSERT(m_isEnabledChangedToken.value == 0);
 		//MUX_ASSERT(m_unloadedToken.value == 0);
@@ -1200,6 +1201,7 @@ public partial class ScrollView : Control, IScrollView
 		AddHandler(UIElement.PointerCanceledEvent, m_onPointerCanceledEventHandler, true);
 	}
 
+#pragma warning disable IDE0051 // Upstream calls it only from the destructor, which Uno doesn't port.
 	private void UnhookScrollViewEvents()
 	{
 		//if (m_gettingFocusToken.value != 0)
@@ -1260,11 +1262,13 @@ public partial class ScrollView : Control, IScrollView
 			m_onPointerCanceledEventHandler = null;
 		}
 	}
+#pragma warning restore IDE0051
 
 	private void HookScrollPresenterEvents()
 	{
 		//SCROLLVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
 
+		// TODO Uno specific: C# events return no tokens, so the token asserts don't apply.
 		//MUX_ASSERT(m_scrollPresenterExtentChangedToken.value == 0);
 		//MUX_ASSERT(m_scrollPresenterStateChangedToken.value == 0);
 		//MUX_ASSERT(m_scrollPresenterScrollAnimationStartingToken.value == 0);
@@ -1298,6 +1302,7 @@ public partial class ScrollView : Control, IScrollView
 			scrollPresenter.ZoomCompleted += OnScrollPresenterZoomCompleted;
 			scrollPresenter.BringingIntoView += OnScrollPresenterBringingIntoView;
 			scrollPresenter.AnchorRequested += OnScrollPresenterAnchorRequested;
+			// TODO Uno specific: no IScrollPresenter2 cast, ScrollPresenter exposes ScrollStarting and ZoomStarting directly.
 			scrollPresenter.ScrollStarting += OnScrollPresenterScrollStarting;
 			scrollPresenter.ZoomStarting += OnScrollPresenterZoomStarting;
 
@@ -1322,7 +1327,7 @@ public partial class ScrollView : Control, IScrollView
 		//	SCROLLVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
 		//}
 
-		// UNO TODO:
+		// TODO Uno specific: no safe_get, managed references can't dangle.
 		// auto scrollPresenter = isForDestructor ? m_scrollPresenter.safe_get() : m_scrollPresenter.get()
 		var scrollPresenter = m_scrollPresenter;
 		if (scrollPresenter is not null)
@@ -1449,7 +1454,7 @@ public partial class ScrollView : Control, IScrollView
 		//	SCROLLVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
 		//}
 
-		// UNO TODO:
+		// TODO Uno specific: no safe_get, managed references can't dangle.
 		//IScrollController horizontalScrollController = isForDestructor ? m_horizontalScrollController.safe_get() : m_horizontalScrollController.get()
 		IScrollController horizontalScrollController = m_horizontalScrollController;
 		if (horizontalScrollController is not null)
@@ -1467,7 +1472,7 @@ public partial class ScrollView : Control, IScrollView
 			}
 		}
 
-		// UNO TODO:
+		// TODO Uno specific: no safe_get, managed references can't dangle.
 		//UIElement horizontalScrollControllerElement = isForDestructor ? m_horizontalScrollControllerElement.safe_get() : m_horizontalScrollControllerElement.get()
 		UIElement horizontalScrollControllerElement = m_horizontalScrollControllerElement;
 		if (horizontalScrollControllerElement is not null)
@@ -1527,7 +1532,7 @@ public partial class ScrollView : Control, IScrollView
 		//	SCROLLVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
 		//}
 
-		// UNO TODO:
+		// TODO Uno specific: no safe_get, managed references can't dangle.
 		//IScrollController verticalScrollController = isForDestructor ? m_verticalScrollController.safe_get() : m_verticalScrollController.get()
 		IScrollController verticalScrollController = m_verticalScrollController;
 		if (verticalScrollController is not null)
@@ -1545,7 +1550,7 @@ public partial class ScrollView : Control, IScrollView
 			}
 		}
 
-		// UNO TODO:
+		// TODO Uno specific: no safe_get, managed references can't dangle.
 		//UIElement verticalScrollControllerElement = isForDestructor ? m_verticalScrollControllerElement.safe_get() : m_verticalScrollControllerElement.get()
 		UIElement verticalScrollControllerElement = m_verticalScrollControllerElement;
 		if (verticalScrollControllerElement is not null)
@@ -1702,6 +1707,7 @@ public partial class ScrollView : Control, IScrollView
 		return (IgnoredInputKinds & inputKind) == inputKind;
 	}
 
+	// TODO Uno specific: no useSafeGet parameter, managed references can't dangle.
 	private bool AreAllScrollControllersCollapsed()
 	{
 		return !SharedHelpers.IsAncestor(m_horizontalScrollControllerElement as DependencyObject /*child*/, this /*parent*/, true /*checkVisibility*/) &&
@@ -1736,7 +1742,7 @@ public partial class ScrollView : Control, IScrollView
 			}
 		}
 
-		// UNO TODO:
+		// TODO Uno: UISettings.AutoHideScrollBars is not implemented, so assume the Windows default (auto-hide).
 		m_autoHideScrollControllers = true;
 		//if (m_uiSettings5 is not null)
 		//{
@@ -1755,6 +1761,7 @@ public partial class ScrollView : Control, IScrollView
 		return m_scrollControllersSeparatorElement is not null && m_scrollControllersSeparatorElement.Visibility == Visibility.Visible;
 	}
 
+	// TODO Uno specific: no useSafeGet parameter, managed references can't dangle.
 	private void HideIndicators(
 		bool useTransitions = true)
 	{
@@ -1795,7 +1802,20 @@ public partial class ScrollView : Control, IScrollView
 			{
 				hideIndicatorsTimer = new DispatcherTimer();
 				hideIndicatorsTimer.Interval = new TimeSpan(ticks: s_noIndicatorCountdown);
-				hideIndicatorsTimer.Tick += OnHideIndicatorsTimerTick;
+				// TODO Uno specific: always takes containment change 62255131's path. The DispatcherTimer keeps a reference
+				// to its Tick handler, so capture a weak reference: a pending tick must not keep this ScrollView alive.
+				WeakReference<ScrollView> weakThis = new(this);
+				hideIndicatorsTimer.Tick += (sender, args) =>
+				{
+					if (weakThis.TryGetTarget(out var strongThis))
+					{
+						strongThis.OnHideIndicatorsTimerTick(sender, args);
+					}
+					else
+					{
+						((DispatcherTimer)sender).Stop();
+					}
+				};
 				m_hideIndicatorsTimer = hideIndicatorsTimer;
 			}
 
@@ -1808,7 +1828,7 @@ public partial class ScrollView : Control, IScrollView
 	private void UpdateScrollControllersAutoHiding(
 		bool forceUpdate = false)
 	{
-		// UNO TODO:
+		// TODO Uno: behaves as if IUISettings5 is available, since AutoHideScrollBarsChanged is not implemented.
 		if ((forceUpdate /*|| !m_uiSettings5*/) && m_autoHideScrollControllersValid)
 		{
 			m_autoHideScrollControllersValid = false;
@@ -1871,7 +1891,7 @@ public partial class ScrollView : Control, IScrollView
 				return;
 			}
 
-			ResetHideIndicatorsTimer(false /*isForDestructor*/, true /*restart*/);
+			ResetHideIndicatorsTimer(true /*restart*/);
 
 			// Mouse indicators dominate if they are already showing or if we have set the flag to prefer them.
 			if (m_preferMouseIndicators || m_showingMouseIndicators || !areScrollControllersAutoHiding)
@@ -2619,6 +2639,7 @@ public partial class ScrollView : Control, IScrollView
 		return canScrollInDirection;
 	}
 
+	// TODO Uno: DBG-only upstream, and its only caller is a commented-out trace.
 #if false
 
 	private string DependencyPropertyToString(DependencyProperty dependencyProperty)
