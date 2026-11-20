@@ -1,6 +1,7 @@
 parameters:
   vmImage: ''
   vmMacImage: ''
+  vmMacArm64Image: ''
   vmLinuxImage: ''
   vmLinuxPool: ''
   xCodeRootBuild: ''
@@ -89,7 +90,7 @@ stages:
   - template: .azure-devops-tests-ios-skia-build.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
-      vmMacImage: '${{ parameters.vmMacImage }}'
+      vmMacImage: '${{ parameters.vmMacArm64Image }}'
       vmLinuxImage: '${{ parameters.vmLinuxImage }}'
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
       xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
@@ -98,7 +99,7 @@ stages:
   - template: .azure-devops-tests-ios-skia.yml
     parameters:
       vmImage: '${{ parameters.vmImage }}'
-      vmMacImage: '${{ parameters.vmMacImage }}'
+      vmMacImage: '${{ parameters.vmMacArm64Image }}'
       vmLinuxImage: '${{ parameters.vmLinuxImage }}'
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
       xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
