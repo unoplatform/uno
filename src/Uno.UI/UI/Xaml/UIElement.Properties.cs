@@ -84,7 +84,7 @@ namespace Microsoft.UI.Xaml
 			set => SetVisibilityValue(value);
 		}
 
-		[GeneratedDependencyProperty(DefaultValue = null)]
+		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
 		public static DependencyProperty TransitionsProperty { get; } = CreateTransitionsProperty();
 
 		public TransitionCollection Transitions
