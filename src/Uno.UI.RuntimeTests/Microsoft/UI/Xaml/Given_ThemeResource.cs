@@ -233,9 +233,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 
+		// WinUI can't switch the application theme at runtime (ThemeHelper reports it inconclusive there), so the parity
+		// check is the element theme variant below.
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25716")]
 		[DataRow(false, 0, ThemedTextElement.Run, DisplayName = "TextBlock, Run")]
 		[DataRow(false, 1, ThemedTextElement.Run, DisplayName = "TextBlock, Run in a Span")]
@@ -245,31 +246,69 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(true, 1, ThemedTextElement.Run, DisplayName = "RichTextBlock, Run in a Span")]
 		[DataRow(true, 0, ThemedTextElement.Hyperlink, DisplayName = "RichTextBlock, default Hyperlink color")]
 		[DataRow(true, 0, ThemedTextElement.Paragraph, DisplayName = "RichTextBlock, Paragraph")]
-		public async Task When_Inline_Theme_Dependent_Foreground_And_Application_Theme_Toggled(bool useRichTextBlock, int spanDepth, ThemedTextElement themedElement)
+		public Task When_Inline_Theme_Dependent_Foreground_And_Application_Theme_Toggled(bool useRichTextBlock, int spanDepth, ThemedTextElement themedElement)
+			=> VerifyInlineForegroundAcrossThemeSwitches(useRichTextBlock, spanDepth, themedElement, HyperlinkState.Normal, switchElementTheme: false);
+
+		// The link brush of a hovered or pressed Hyperlink is resolved in the new theme too (CHyperlink::NotifyThemeChangedCore
+		// calls UpdateForegroundColor(theme, m_state)). The states are set directly, as WinUI has no API to set them.
+		[TestMethod]
+		[RequiresFullWindow]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25716")]
+		[DataRow(HyperlinkState.PointerOver, false)]
+		[DataRow(HyperlinkState.Pressed, false)]
+		[DataRow(HyperlinkState.PointerOver, true)]
+		[DataRow(HyperlinkState.Pressed, true)]
+		public Task When_Hyperlink_In_State_And_Theme_Toggled(HyperlinkState hyperlinkState, bool switchElementTheme)
+			=> VerifyInlineForegroundAcrossThemeSwitches(useRichTextBlock: false, spanDepth: 0, ThemedTextElement.Hyperlink, hyperlinkState, switchElementTheme);
+#endif
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25716")]
+		[DataRow(false, 0, ThemedTextElement.Run, DisplayName = "TextBlock, Run")]
+		[DataRow(false, 1, ThemedTextElement.Run, DisplayName = "TextBlock, Run in a Span")]
+		[DataRow(false, 2, ThemedTextElement.Run, DisplayName = "TextBlock, Run in nested Spans")]
+		[DataRow(false, 0, ThemedTextElement.Hyperlink, DisplayName = "TextBlock, default Hyperlink color")]
+		[DataRow(false, 1, ThemedTextElement.Hyperlink, DisplayName = "TextBlock, default Hyperlink color in a Span")]
+		[DataRow(true, 1, ThemedTextElement.Run, DisplayName = "RichTextBlock, Run in a Span")]
+		[DataRow(true, 0, ThemedTextElement.Hyperlink, DisplayName = "RichTextBlock, default Hyperlink color")]
+		[DataRow(true, 0, ThemedTextElement.Paragraph, DisplayName = "RichTextBlock, Paragraph")]
+		public Task When_Inline_Theme_Dependent_Foreground_And_Element_Theme_Toggled(bool useRichTextBlock, int spanDepth, ThemedTextElement themedElement)
+			=> VerifyInlineForegroundAcrossThemeSwitches(useRichTextBlock, spanDepth, themedElement, HyperlinkState.Normal, switchElementTheme: true);
+
+		private static async Task VerifyInlineForegroundAcrossThemeSwitches(
+			bool useRichTextBlock,
+			int spanDepth,
+			ThemedTextElement themedElement,
+			HyperlinkState hyperlinkState,
+			bool switchElementTheme)
 		{
 			const string Xmlns = "http://schemas.microsoft.com/winfx/2006/xaml/presentation";
 			const string ThemedForeground = "Foreground=\"{ThemeResource RunThemeTestBrush}\"";
 
-			var lightColor = Color.FromArgb(0xFF, 0x00, 0x80, 0x00);
-			var darkColor = Color.FromArgb(0xFF, 0xFF, 0xFF, 0x00);
+			var (linkKey, lightColor, darkColor) = hyperlinkState switch
+			{
+				HyperlinkState.PointerOver => ("HyperlinkForegroundPointerOver", Color.FromArgb(0xFF, 0x00, 0x00, 0x80), Color.FromArgb(0xFF, 0xFF, 0xA5, 0x00)),
+				HyperlinkState.Pressed => ("HyperlinkForegroundPressed", Color.FromArgb(0xFF, 0x80, 0x00, 0x00), Color.FromArgb(0xFF, 0x00, 0xFF, 0xFF)),
+				_ => ("HyperlinkForeground", Color.FromArgb(0xFF, 0x00, 0x80, 0x00), Color.FromArgb(0xFF, 0xFF, 0xFF, 0x00)),
+			};
 
-			// Overrides the default link color (HyperlinkForeground) so the Hyperlink rows can check it.
+			// Overrides the link color of the state being checked, so the Hyperlink rows can check it.
 			var appResources = new ResourceDictionary();
 			appResources.ThemeDictionaries["Light"] = new ResourceDictionary
 			{
 				["RunThemeTestBrush"] = new SolidColorBrush(lightColor),
-				["HyperlinkForeground"] = new SolidColorBrush(lightColor),
+				[linkKey] = new SolidColorBrush(lightColor),
 			};
 			appResources.ThemeDictionaries["Dark"] = new ResourceDictionary
 			{
 				["RunThemeTestBrush"] = new SolidColorBrush(darkColor),
-				["HyperlinkForeground"] = new SolidColorBrush(darkColor),
+				[linkKey] = new SolidColorBrush(darkColor),
 			};
 			Application.Current.Resources.MergedDictionaries.Add(appResources);
 
 			try
 			{
-				using var lightApp = ThemeHelper.UseApplicationLightTheme();
+				using var lightApp = switchElementTheme ? null : ThemeHelper.UseApplicationLightTheme();
 
 				var themedInline = themedElement switch
 				{
@@ -292,21 +331,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 				var topInlines = element is RichTextBlock richTextBlock ? ((Paragraph)richTextBlock.Blocks[0]).Inlines : ((TextBlock)element).Inlines;
 				var inline = topInlines[1];
-				while (inline is Span span)
+				while (inline is Span span and not Hyperlink)
 				{
 					inline = span.Inlines[0];
 				}
 
-				var run = (Run)inline;
+				var hyperlink = inline as Hyperlink;
+				var run = (Run)(hyperlink?.Inlines[0] ?? inline);
+
+				// The element theme is switched on this host; the application theme reaches through it.
+				var host = new Border { Child = element, RequestedTheme = switchElementTheme ? ElementTheme.Light : ElementTheme.Default };
 
 				using var _ = UITestHelper.ResetWindowContent();
-				await UITestHelper.Load(element);
+				await UITestHelper.Load(host);
+
+				if (hyperlinkState != HyperlinkState.Normal)
+				{
+#if HAS_UNO
+					var pointer = new Microsoft.UI.Xaml.Input.Pointer(1, Microsoft.UI.Input.PointerDeviceType.Mouse, isInContact: hyperlinkState == HyperlinkState.Pressed, isInRange: true);
+					hyperlink.SetPointerOver(pointer);
+					if (hyperlinkState == HyperlinkState.Pressed)
+					{
+						hyperlink.SetPointerPressed(pointer);
+					}
+#else
+					Assert.Inconclusive("WinUI has no API to set the state of a Hyperlink.");
+#endif
+				}
+
 				Assert.AreEqual(lightColor, ((SolidColorBrush)run.Foreground).Color, "initial Light");
 
 				// Each switch must apply the new theme's brush, not the one of the theme that is being left.
 				for (var i = 1; i <= 2; i++)
 				{
-					using (ThemeHelper.UseApplicationDarkTheme())
+					using (switchElementTheme ? UseElementTheme(host, ElementTheme.Dark) : ThemeHelper.UseApplicationDarkTheme())
 					{
 						await WindowHelper.WaitForIdle();
 						Assert.AreEqual(darkColor, ((SolidColorBrush)run.Foreground).Color, $"Dark ({i})");
@@ -320,16 +378,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				Application.Current.Resources.MergedDictionaries.Remove(appResources);
 			}
+
+			static IDisposable UseElementTheme(FrameworkElement element, ElementTheme theme)
+			{
+				var previous = element.RequestedTheme;
+				element.RequestedTheme = theme;
+				return Uno.Disposables.Disposable.Create(() => element.RequestedTheme = previous);
+			}
 		}
 
-		// The element whose theme-dependent foreground the Run shows: its own, its Hyperlink's default link color, or its Paragraph's.
+		// The element whose theme-dependent foreground the Run shows: its own, its Hyperlink's link color, or its Paragraph's.
 		public enum ThemedTextElement
 		{
 			Run,
 			Hyperlink,
 			Paragraph,
 		}
-#endif
+
+		public enum HyperlinkState
+		{
+			Normal,
+			PointerOver,
+			Pressed,
+		}
 
 		private async Task When_DefaultForeground(Color lightThemeColor, Color darkThemeColor)
 		{
