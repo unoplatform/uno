@@ -75,6 +75,12 @@ namespace Windows.Storage.Streams
 				return new MemoryStream(bytes).AsRandomAccessStream();
 			}
 
+			// The copy goes to an array, which can't hold more than 2 GB.
+			if (Size > (ulong)Array.MaxLength)
+			{
+				throw new NotSupportedException($"A stream of {Size} bytes is too large to clone.");
+			}
+
 			var previousPosition = _stream.Position;
 			try
 			{
