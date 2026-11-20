@@ -170,13 +170,31 @@ public class Given_DateTimeFormatter
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
-	public void When_Calendar_Has_No_DotNet_Calendar_Then_Formatter_Is_Created()
+	public void When_Calendar_Is_Unmapped_Lunar_Then_Formatter_Is_Created()
 	{
-		// .NET has no Korean lunar calendar, so the language's calendar formats, which WinRT may not do.
+		// Calendar doesn't map the Korean lunar identifier, so the language's calendar formats. WinRT rejects it.
 		// This only checks that the identifier is still accepted, as it was before calendars were used.
 		var formatter = new DateTimeFormatter("month year", ["en-US"], "ZZ", CalendarIdentifiers.KoreanLunar, ClockIdentifiers.TwelveHour);
 
 		Assert.AreEqual(CalendarIdentifiers.KoreanLunar, formatter.Calendar);
+	}
+
+	// As in WinRT. The lunar identifiers Calendar doesn't map stay accepted, see above.
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public void When_Identifier_Is_Unknown_Or_Languages_Are_Empty_Then_Throws()
+	{
+		Assert.ThrowsExactly<ArgumentException>(() => new DateTimeFormatter("shortdate", ["en-US"], "ZZ", "FooCalendar", ClockIdentifiers.TwelveHour));
+		Assert.ThrowsExactly<ArgumentException>(() => new DateTimeFormatter("shortdate", ["en-US"], "ZZ", "gregoriancalendar", ClockIdentifiers.TwelveHour));
+		Assert.ThrowsExactly<ArgumentException>(() => new DateTimeFormatter("shortdate", ["en-US"], "ZZ", CalendarIdentifiers.Gregorian, "13HourClock"));
+		Assert.ThrowsExactly<ArgumentException>(() => new DateTimeFormatter("shortdate", []));
+		Assert.ThrowsExactly<ArgumentException>(() => new DateTimeFormatter("shortdate", [], "ZZ", CalendarIdentifiers.Gregorian, ClockIdentifiers.TwelveHour));
+		Assert.ThrowsExactly<ArgumentException>(() => new DateTimeFormatter(YearFormat.Default, MonthFormat.Default, DayFormat.Default, DayOfWeekFormat.None, HourFormat.None, MinuteFormat.None, SecondFormat.None, []));
+		Assert.ThrowsExactly<ArgumentException>(() => new global::Windows.Globalization.Calendar([]));
+		Assert.ThrowsExactly<ArgumentException>(() => new global::Windows.Globalization.Calendar([], CalendarIdentifiers.Gregorian, ClockIdentifiers.TwelveHour));
+
+		// Under invariant globalization, the application languages are [""].
+		Assert.AreEqual("shortdate", new DateTimeFormatter("shortdate", [""]).Template);
 	}
 
 	[TestMethod]

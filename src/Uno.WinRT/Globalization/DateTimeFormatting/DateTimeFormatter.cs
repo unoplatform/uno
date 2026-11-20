@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Uno;
 using WinCalendar = Windows.Globalization.Calendar;
+using _Calendar = System.Globalization.Calendar;
 
 namespace Windows.Globalization.DateTimeFormatting;
 
@@ -69,10 +70,9 @@ public sealed partial class DateTimeFormatter
 
 		Languages = languageList ?? ApplicationLanguages.Languages;
 		var languageCulture = ApplicationLanguages.ResolveCulture(Languages);
-		// The identifiers .NET has no calendar for (the lunar ones but Chinese) format in the language's calendar.
-		var calendar = (calendarIdentifier is null ? null : WinCalendar.FindCalendar(calendarIdentifier)) ?? languageCulture.Calendar;
+		var calendar = calendarIdentifier is null ? languageCulture.Calendar : GetCalendar(calendarIdentifier, languageCulture);
 		Calendar = calendarIdentifier ?? WinCalendar.GetCalendarSystem(calendar);
-		Clock = clockIdentifier ?? WinCalendar.GetDefaultClock(languageCulture);
+		Clock = clockIdentifier is null ? WinCalendar.GetDefaultClock(languageCulture) : WinCalendar.GetClock(clockIdentifier);
 
 		// TODO:MZ:
 		GeographicRegion = region ?? "ZZ";
@@ -348,7 +348,14 @@ public sealed partial class DateTimeFormatter
 	}
 
 	private static IReadOnlyList<string>? ToLanguageList(IEnumerable<string>? languages)
-		=> languages?.Distinct().ToArray();
+		=> languages is null ? null : WinCalendar.ToLanguageList(languages.Distinct());
+
+	// As in WinRT, an unknown identifier throws. The lunar ones Calendar doesn't map (all but Chinese), which WinRT
+	// rejects too, are still accepted, as before, and format in the language's calendar.
+	private static _Calendar GetCalendar(string calendarIdentifier, CultureInfo languageCulture)
+		=> calendarIdentifier is CalendarIdentifiers.KoreanLunarValue or CalendarIdentifiers.JapaneseLunarValue or CalendarIdentifiers.TaiwanLunarValue or CalendarIdentifiers.VietnameseLunarValue
+			? languageCulture.Calendar
+			: WinCalendar.GetCalendar(calendarIdentifier);
 
 	// As in WinRT, each read gives a new formatter for the current application languages. The one built for them
 	// is kept until they change, so a read otherwise costs a reference comparison and a copy.

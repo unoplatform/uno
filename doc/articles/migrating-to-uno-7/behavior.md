@@ -269,6 +269,11 @@ Formatting now follows the user's regional settings rather than the language lis
   `CurrentCulture` to get, for example, 24-hour `TimePicker`s now gets the clock of its language:
   set `PrimaryLanguageOverride`, pass languages to the constructors, or set
   `TimePicker.ClockIdentifier` instead.
+- **`DateTimeFormatter` checks its arguments as WinRT does.** An unknown or miscased calendar or
+  clock identifier, or an empty language list, now throws `ArgumentException` rather than falling
+  back to the language's calendar or keeping the string. `Calendar` already threw for unknown
+  identifiers, and now throws for an empty language list too. The Korean, Japanese, Taiwan and
+  Vietnamese lunar identifiers stay accepted and format in the language's calendar.
 
 See also: [`ApplicationLanguages.UseLegacyPrimaryLanguageOverride`](xref:Uno.Development.MigratingToUno7.FeatureFlags#applicationlanguagesuselegacyprimarylanguageoverride).
 

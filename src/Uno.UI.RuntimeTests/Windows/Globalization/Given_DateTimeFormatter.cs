@@ -414,6 +414,17 @@ public class Given_DateTimeFormatter
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	public void When_Identifier_Is_Unknown_Or_Languages_Are_Empty_Then_Throws()
+	{
+		Assert.ThrowsExactly<ArgumentException>(() => new DateTimeFormatter("shortdate", new[] { "en-US" }, "ZZ", "FooCalendar", ClockIdentifiers.TwelveHour));
+		Assert.ThrowsExactly<ArgumentException>(() => new DateTimeFormatter("shortdate", new[] { "en-US" }, "ZZ", CalendarIdentifiers.Gregorian, "13HourClock"));
+		Assert.ThrowsExactly<ArgumentException>(() => new DateTimeFormatter("shortdate", Array.Empty<string>()));
+		Assert.ThrowsExactly<ArgumentException>(() => new DateTimeFormatter("shortdate", Array.Empty<string>(), "ZZ", CalendarIdentifiers.Gregorian, ClockIdentifiers.TwelveHour));
+		Assert.ThrowsExactly<ArgumentException>(() => new global::Windows.Globalization.Calendar(Array.Empty<string>()));
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
 	public void When_Calendar_Is_Given_Then_Dates_Follow_It()
 	{
 		var noon = new DateTimeOffset(new DateTime(2024, 1, 15, 12, 0, 0));

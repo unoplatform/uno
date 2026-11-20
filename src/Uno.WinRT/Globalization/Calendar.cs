@@ -12,9 +12,9 @@ namespace Windows.Globalization
 	{
 		#region Static id parsing helpers
 		internal static _Calendar GetCalendar(string calendar)
-			=> FindCalendar(calendar) ?? throw new ArgumentException(nameof(calendar), $"Unknown calendar {calendar}.");
+			=> FindCalendar(calendar) ?? throw new ArgumentException($"Unknown calendar {calendar}.", nameof(calendar));
 
-		// Null for the identifiers .NET has no calendar for (the lunar ones but Chinese).
+		// Null for an unknown identifier, and for the lunar ones this doesn't map (all but Chinese).
 		internal static _Calendar? FindCalendar(string calendar)
 		{
 			return calendar switch
@@ -60,7 +60,7 @@ namespace Windows.Globalization
 				global::System.Globalization.JapaneseLunisolarCalendar _ => CalendarIdentifiers.JapaneseLunar,
 				// Missing support in System.Globalization for VietnameseLunar calendar.
 				// case CalendarIdentifiers.VietnameseLunar: return new global::System.Globalization.VietnameseLunarCalendar();
-				_ => throw new ArgumentException(nameof(calendar), $"Unknown calendar {calendar}."),
+				_ => throw new ArgumentException($"Unknown calendar {calendar}.", nameof(calendar)),
 			};
 		}
 
@@ -148,6 +148,14 @@ namespace Windows.Globalization
 			return culture;
 		}
 
+		// As in WinRT, a language list names at least one language. Unlike WinRT, an empty language is accepted: it's
+		// the invariant culture, which ApplicationLanguages gives under invariant globalization.
+		internal static List<string> ToLanguageList(IEnumerable<string> languages)
+		{
+			var list = languages.ToList();
+			return list.Count > 0 ? list : throw new ArgumentException("The language list is empty.", nameof(languages));
+		}
+
 		private static bool HasGregorianMonths(_Calendar calendar)
 			=> calendar is global::System.Globalization.GregorianCalendar
 				or global::System.Globalization.JulianCalendar
@@ -179,7 +187,7 @@ namespace Windows.Globalization
 				_ => null,
 			};
 
-		private static string GetClock(string clock)
+		internal static string GetClock(string clock)
 		{
 			switch (clock)
 			{
@@ -187,7 +195,7 @@ namespace Windows.Globalization
 				case ClockIdentifiers.TwentyFourHourValue:
 					return clock;
 
-				default: throw new ArgumentException(nameof(clock));
+				default: throw new ArgumentException($"Unknown clock {clock}.", nameof(clock));
 			}
 		}
 		#endregion
@@ -222,7 +230,7 @@ namespace Windows.Globalization
 
 		public Calendar(IEnumerable<string> languages)
 		{
-			_languages = languages.ToList();
+			_languages = ToLanguageList(languages);
 			_resolvedCulture = ApplicationLanguages.ResolveCulture(_languages);
 			_calendar = _resolvedCulture.Calendar;
 			_formatCulture = _resolvedCulture;
@@ -233,7 +241,7 @@ namespace Windows.Globalization
 
 		public Calendar(IEnumerable<string> languages, string calendar, string clock)
 		{
-			_languages = languages.ToList();
+			_languages = ToLanguageList(languages);
 			_resolvedCulture = ApplicationLanguages.ResolveCulture(_languages);
 			_calendar = GetCalendar(calendar);
 			_formatCulture = ResolveFormatCulture(_resolvedCulture, _calendar);
