@@ -134,6 +134,13 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	private readonly System.Collections.Concurrent.ConcurrentQueue<(OwnedResources Owned, OwnedResources StampOwned)> _pendingCompiled = new();
 	internal void DeferCompiledRelease(OwnedResources owned, OwnedResources stampOwned) => _pendingCompiled.Enqueue((owned, stampOwned));
 
+	// Native memory an arena entry's ops point into, freed with its other resources: an op this frame already
+	// queued may still read it.
+	private readonly System.Collections.Concurrent.ConcurrentQueue<NativeArena> _pendingArenas = new();
+	private readonly System.Collections.Concurrent.ConcurrentQueue<nint> _pendingNative = new();
+	internal void DeferArenaRelease(NativeArena arena) { if (arena is not null) { _pendingArenas.Enqueue(arena); } }
+	internal void DeferNativeFree(nint memory) { if (memory != 0) { _pendingNative.Enqueue(memory); } }
+
 	// A stamp's site uniform slot and the bind group over it live as long as the stamp, not the frame, so they sit
 	// outside the per-frame tracking — which means the stamp's death is the only place they can be reclaimed.
 	// Primitives rather than the renderer's stamp type, to keep this tier free of renderer types.
@@ -291,6 +298,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 
 		// Free the arena entries whose owning recording was disposed.
 		while (_pendingCompiled.TryDequeue(out var c)) { DeferRelease(c.Owned); DeferRelease(c.StampOwned); }
+		while (_pendingArenas.TryDequeue(out var arena)) { arena.Release(); }
+		while (_pendingNative.TryDequeue(out var memory)) { System.Runtime.InteropServices.NativeMemory.Free((void*)memory); }
 
 		// ... and the site slots/bind groups of the stamps that went with them.
 		while (_pendingSites.TryDequeue(out var s))

@@ -26,8 +26,8 @@ internal sealed unsafe partial class WebGpuFrame
 	{
 		if (a.Paths is not null || b.Paths is not null) { return false; }
 		if (a.Coverage != b.Coverage || a.CoverageFiltered != b.CoverageFiltered) { return false; }
-		int n = a.Entries?.Length ?? 0;
-		if (n != (b.Entries?.Length ?? 0)) { return false; }
+		int n = a.Entries.Length;
+		if (n != (b.Entries.Length)) { return false; }
 		for (int i = 0; i < n; i++)
 		{
 			ref readonly var x = ref a.Entries[i];
@@ -47,7 +47,7 @@ internal sealed unsafe partial class WebGpuFrame
 		if (a.Coverage != b.Coverage || a.CoverageFiltered != b.CoverageFiltered) { return false; }
 		if (!ReferenceEquals(a.Entries, b.Entries))
 		{
-			int an = a.Entries?.Length ?? 0, bn = b.Entries?.Length ?? 0;
+			int an = a.Entries.Length, bn = b.Entries.Length;
 			if (an != bn) { return false; }
 			for (int i = 0; i < an; i++)
 			{
@@ -344,11 +344,11 @@ internal sealed unsafe partial class WebGpuFrame
 	// Folds the replay site's finite AABB into the op's clip. Axis-aligned, it tightens the local AABB through finv
 	// (and rides the ClipU rect slot); otherwise it becomes an entry with square corners in the session's space,
 	// exact under any transform. Either way the whole rect constraint is analytic and the scissor can widen.
-	private static void FoldSessionAabb(ref ClipData local, Vector4 sessionAabb, in Matrix3x2 finv, in Matrix3x2 t2)
+	private void FoldSessionAabb(ref ClipData local, Vector4 sessionAabb, in Matrix3x2 finv, in Matrix3x2 t2)
 	{
 		if (finv.M12 != 0 || finv.M21 != 0)
 		{
-			ClipData.PushEntry(ref local, new ClipEntry { M = t2, Rect = sessionAabb });
+			ClipData.PushEntry(ref local, new ClipEntry { M = t2, Rect = sessionAabb }, FrameArena);
 			return;
 		}
 		var q0 = new Vector2(sessionAabb.X * finv.M11 + sessionAabb.Y * finv.M21 + finv.M31, sessionAabb.X * finv.M12 + sessionAabb.Y * finv.M22 + finv.M32);
@@ -360,9 +360,9 @@ internal sealed unsafe partial class WebGpuFrame
 
 	// Folds the replay site's entries into the op's clip: each keeps its shape and reaches its own space from the
 	// recording's through the replay transform. Exact under any affine.
-	private static void FoldSessionEntries(ref ClipData local, ClipEntry[] sessionEntries, in Matrix3x2 t2)
+	private void FoldSessionEntries(ref ClipData local, in ClipEntries sessionEntries, in Matrix3x2 t2)
 	{
-		if (sessionEntries is not { Length: > 0 }) { return; }
+		if (sessionEntries.IsEmpty) { return; }
 		local.Entries = Folded(local.Entries, sessionEntries, t2);
 	}
 
@@ -370,13 +370,11 @@ internal sealed unsafe partial class WebGpuFrame
 	/// The op's entries followed by the session's, mapped into the op's space. One allocation of the final size,
 	/// where pushing one at a time allocated (and copied) once per session entry.
 	/// </summary>
-	private static ClipEntry[] Folded(ClipEntry[] own, ClipEntry[] sessionEntries, in Matrix3x2 t2)
+	private ClipEntries Folded(in ClipEntries own, in ClipEntries sessionEntries, in Matrix3x2 t2)
 	{
-		int n = own?.Length ?? 0;
-		var arr = new ClipEntry[n + sessionEntries.Length];
-		if (n > 0) { Array.Copy(own, arr, n); }
-		for (int i = 0; i < sessionEntries.Length; i++) { arr[n + i] = sessionEntries[i].Under(t2); }
-		return arr;
+		var folded = ClipEntries.Extend(FrameArena, own, sessionEntries.Length, out var tail);
+		for (int i = 0; i < sessionEntries.Length; i++) { tail[i] = sessionEntries[i].Under(t2); }
+		return folded;
 	}
 
 	/// <summary>
@@ -384,23 +382,25 @@ internal sealed unsafe partial class WebGpuFrame
 	/// fixed there, so the result depends only on the op's own entries array -- and a run of commands shares one,
 	/// because the recorder's clip arrays are copy-on-write. Turns a per-op allocation into one per distinct clip.
 	/// </summary>
-	private static void FoldSessionEntries(ref ClipData local, ClipEntry[] sessionEntries, in Matrix3x2 t2,
-		ref Dictionary<ClipEntry[], ClipEntry[]> memo, ref ClipEntry[] noneFolded)
+	private void FoldSessionEntries(ref ClipData local, in ClipEntries sessionEntries, in Matrix3x2 t2,
+		ref Dictionary<nint, ClipEntries> memo, ref ClipEntries noneFolded)
 	{
-		if (sessionEntries is not { Length: > 0 }) { return; }
-		if (local.Entries is not { } own)
+		if (sessionEntries.IsEmpty) { return; }
+		var own = local.Entries;
+		if (own.IsEmpty)
 		{
-			local.Entries = noneFolded ??= Folded(null, sessionEntries, t2);
+			if (noneFolded.IsEmpty) { noneFolded = Folded(default, sessionEntries, t2); }
+			local.Entries = noneFolded;
 			return;
 		}
-		memo ??= new Dictionary<ClipEntry[], ClipEntry[]>(ReferenceEqualityComparer.Instance);
-		if (!memo.TryGetValue(own, out var folded)) { memo[own] = folded = Folded(own, sessionEntries, t2); }
+		memo ??= new Dictionary<nint, ClipEntries>();
+		if (!memo.TryGetValue(own.Address, out var folded)) { memo[own.Address] = folded = Folded(own, sessionEntries, t2); }
 		local.Entries = folded;
 	}
 
 	// How many entries a stamp adds beyond the op's own: the session's, plus its finite AABB under a rotation.
 	private static int SessionEntryCount(in ClipData session, in Matrix3x2 finv)
-		=> (session.Entries?.Length ?? 0) + (IsFiniteAabb(session.Aabb) && (finv.M12 != 0 || finv.M21 != 0) ? 1 : 0);
+		=> (session.Entries.Length) + (IsFiniteAabb(session.Aabb) && (finv.M12 != 0 || finv.M21 != 0) ? 1 : 0);
 
 	// Folds device-space session path clips into a LOCAL-space clip the same way: each path's edges are mapped
 	// through finv, so its mask bakes in the recording's space and ClipU's finv lands every fragment on it. One

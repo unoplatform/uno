@@ -99,6 +99,9 @@ public sealed unsafe class WebGpuRenderRecord : IRenderRecord
 	// keeps its textures and geometries alive, so nesting costs one refcount rather than one per resource it
 	// transitively holds -- which a deep tree pays again at every level.
 	internal List<WebGpuRenderRecord> Nested;
+	// Native memory the commands point into (their clip entries); released with the last reference, after the arena
+	// entries built from these commands took their own.
+	internal NativeArena Arena;
 	// Guards the owner's Dispose against a second call, which would drop a reference it never took. Interlocked
 	// because Dispose (UI thread) can race the render thread's Compiled rebuild.
 	private int _disposed;
@@ -161,6 +164,7 @@ public sealed unsafe class WebGpuRenderRecord : IRenderRecord
 		}
 		if (Nested is { } nested) { foreach (var n in nested) { n.Release(); } }
 		Commands = null;
+		System.Threading.Interlocked.Exchange(ref Arena, null)?.Release();
 		GC.SuppressFinalize(this);
 	}
 

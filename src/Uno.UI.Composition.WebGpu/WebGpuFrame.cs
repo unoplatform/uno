@@ -29,6 +29,11 @@ internal sealed unsafe partial class WebGpuFrame
 	internal readonly WebGpuEffects Effects;
 	internal CommandEncoder* Encoder;
 
+	// The clips this frame composes on its way through the walk (a replay site's narrowed by each command's), which
+	// nothing keeps past the frame: a stamp keeps a copy of its own (StampSlot.Keep).
+	private NativeArena _frameArena;
+	internal NativeArena FrameArena => _frameArena ??= new NativeArena();
+
 	internal WebGpuFrame(WebGpuDevice d, WebGpuRenderSurface target)
 	{
 		_d = d;
@@ -108,6 +113,8 @@ internal sealed unsafe partial class WebGpuFrame
 				_d.ReturnVerts(_scratchBuf);
 				_scratchBuf = null;
 			}
+			_frameArena?.Release();
+			_frameArena = null;
 
 			// Same cadence as the stats line, so UNO_WEBGPU_STATS_EVERY=1 gives a per-FRAME phase breakdown rather
 			// than a 60-frame average - the only way to see a distribution instead of a mean.
@@ -353,7 +360,7 @@ internal sealed unsafe partial class WebGpuFrame
 		float ix = -1e30f, iy = -1e30f, iz = 1e30f, iw = 1e30f;
 		if (!cd.ScissorInert && IsFiniteAabb(cd.Aabb)) { ix = cd.Aabb.X + 1f; iy = cd.Aabb.Y + 1f; iz = cd.Aabb.Z - 1f; iw = cd.Aabb.W - 1f; }
 		var ents = cd.Entries;
-		for (int i = 0; ents is not null && i < ents.Length; i++)
+		for (int i = 0; i < ents.Length; i++)
 		{
 			ref readonly var e = ref ents[i];
 			if (e.Exclude || e.Mask || MathF.Abs(e.M.M12) > 1e-6f || MathF.Abs(e.M.M21) > 1e-6f
@@ -374,7 +381,7 @@ internal sealed unsafe partial class WebGpuFrame
 	// A clip that cannot cut the op's own shape anywhere inside its AABB: anything else and the op paints less
 	// than its rect, so it may not be trusted to hide what is under it.
 	private static bool ClipIsPlain(in ClipData c)
-		=> c.Paths is null && (c.Entries is null || c.Entries.Length == 0) && c.Coverage == null;
+		=> c.Paths is null && c.Entries.IsEmpty && c.Coverage == null;
 
 	// Coverage decides in PIXELS, not in the rect's own coordinates: a rect flush with the surface edge still fills
 	// its edge pixels, which a rect-versus-rect comparison with any margin for the antialiasing ramp would deny.
@@ -827,7 +834,7 @@ internal sealed unsafe partial class WebGpuFrame
 	{
 		if (session.Paths is not null) { return false; }
 		var e = session.Entries;
-		if (e is null) { return true; }
+		if (e.IsEmpty) { return true; }
 		if (e.Length > SiteUniformEntries) { return false; }
 		for (int i = 0; i < e.Length; i++) { if (e[i].Mask) { return false; } }
 		return true;
@@ -844,7 +851,7 @@ internal sealed unsafe partial class WebGpuFrame
 		// xoff.zw: the session clips written below are absolute device, while the fragment position the shader
 		// tests them at is relative to the target - a layer sheet slot does not share the window's origin.
 		u[4] = rm.M31; u[5] = rm.M32; u[6] = _basisOx; u[7] = _basisOy;
-		int n = carry ? (session.Entries?.Length ?? 0) : 0;
+		int n = carry ? (session.Entries.Length) : 0;
 		u[8] = n;
 		var ab = carry ? session.Aabb : new Vector4(-1e9f, -1e9f, 1e9f, 1e9f);
 		bool rect = ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f;
@@ -969,7 +976,7 @@ internal sealed unsafe partial class WebGpuFrame
 		if (xform == default) { xform = Matrix3x2.Identity; }   // default(Matrix3x2) is all-zero; treat as identity
 		if (finv == default) { finv = Matrix3x2.Identity; }
 		var entries = cd.Entries;
-		int na = entries?.Length ?? 0, nm = masks?.Length ?? 0, n = na + nm;
+		int na = entries.Length, nm = masks?.Length ?? 0, n = na + nm;
 		int more = Math.Max(0, n - ClipUniformEntries);
 		if (_clipMore.Length < more * ClipEntryFloats) { _clipMore = new float[Math.Max(more * ClipEntryFloats, _clipMore.Length * 2)]; }
 		var cu = _clipU;
@@ -1076,7 +1083,7 @@ internal sealed unsafe partial class WebGpuFrame
 	/// slot holds stale floats the shader never samples, so it is neither cleared nor copied.</summary>
 	private static int LiveClipUFloats(in ClipData cd, ClipEntry[] masks)
 	{
-		var n = (cd.Entries?.Length ?? 0) + (masks?.Length ?? 0);
+		var n = (cd.Entries.Length) + (masks?.Length ?? 0);
 		return ClipUHeaderFloats + Math.Min(n, ClipUniformEntries) * ClipEntryFloats;
 	}
 
@@ -1090,7 +1097,7 @@ internal sealed unsafe partial class WebGpuFrame
 	private bool PatchClipU(nint slot, in ClipData own, in ClipData session, in Matrix3x2 xform, in Matrix3x2 finv)
 	{
 		var cu = _d.ClipSlab.SlotSpan(slot);
-		int na = own.Entries?.Length ?? 0;
+		int na = own.Entries.Length;
 
 		// The rect slot: the op's own box, cut by the session's mapped back through finv (FoldSessionAabb).
 		var ab = own.Aabb;
@@ -1115,7 +1122,7 @@ internal sealed unsafe partial class WebGpuFrame
 		float ix = -1e30f, iy = -1e30f, iz = 1e30f, iw = 1e30f;
 		// size.xy (the rect slot's units per pixel) depends on finv's linear part alone, which this path keeps.
 		if (foldedAabb) { ix = ab.X + cu[4]; iy = ab.Y + cu[5]; iz = ab.Z - cu[4]; iw = ab.W - cu[5]; }
-		int n = na + (session.Entries?.Length ?? 0);
+		int n = na + (session.Entries.Length);
 		for (int i = 0; i < n; i++)
 		{
 			// Only a session entry moves: its matrix is the session's under the replay transform.
@@ -1213,7 +1220,7 @@ internal sealed unsafe partial class WebGpuFrame
 	}
 
 	private static int ClipMemoKey(in ClipData cd, in Matrix3x2 xform)
-		=> HashCode.Combine(cd.Aabb, (nint)cd.Coverage, cd.Entries?.Length ?? 0, cd.Paths?.Length ?? 0, xform.M31, xform.M32);
+		=> HashCode.Combine(cd.Aabb, (nint)cd.Coverage, cd.Entries.Length, cd.Paths?.Length ?? 0, xform.M31, xform.M32);
 
 	private ClipBinding MakeClipBgOwnedCore(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU)
 	{

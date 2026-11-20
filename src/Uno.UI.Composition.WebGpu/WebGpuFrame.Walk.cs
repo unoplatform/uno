@@ -17,23 +17,23 @@ internal sealed unsafe partial class WebGpuFrame
 	// the recording's space through m. Consecutive commands share their clip arrays, so the last result is kept.
 	private struct ClipComposer
 	{
-		private Vector4 _aabb; private ClipEntry[] _entries; private PathClip[] _paths; private bool _inert, _has;
+		private Vector4 _aabb; private ClipEntries _entries; private PathClip[] _paths; private bool _inert, _has;
 		private ClipData _out;
 
-		public ClipData Compose(in ClipData outer, in ClipData c, in Matrix3x2 m, in Matrix3x2 inv, bool direct)
+		public ClipData Compose(WebGpuFrame frame, in ClipData outer, in ClipData c, in Matrix3x2 m, in Matrix3x2 inv, bool direct)
 		{
-			if (_has && c.Aabb == _aabb && ReferenceEquals(c.Entries, _entries) && ReferenceEquals(c.Paths, _paths) && c.ScissorInert == _inert) { return _out; }
+			if (_has && c.Aabb == _aabb && c.Entries.SameAs(_entries) && ReferenceEquals(c.Paths, _paths) && c.ScissorInert == _inert) { return _out; }
 			_aabb = c.Aabb; _entries = c.Entries; _paths = c.Paths; _inert = c.ScissorInert; _has = true;
-			_out = ComposeClip(outer, c, m, inv, direct);
+			_out = frame.ComposeClip(outer, c, m, inv, direct);
 			return _out;
 		}
 	}
 
 	// True when the clip constrains nothing: the root of a frame, or a replay site inside such a recording.
-	private static bool IsNone(in ClipData c) => c.Entries is null && c.Paths is null && !IsFiniteAabb(c.Aabb);
+	private static bool IsNone(in ClipData c) => c.Entries.IsEmpty && c.Paths is null && !IsFiniteAabb(c.Aabb);
 
 	// `direct` = the matrix is the identity and the outer clip is none, so the command's own clip is the answer.
-	private static ClipData ComposeClip(in ClipData outer, in ClipData c, in Matrix3x2 m, in Matrix3x2 inv, bool direct)
+	private ClipData ComposeClip(in ClipData outer, in ClipData c, in Matrix3x2 m, in Matrix3x2 inv, bool direct)
 	{
 		if (direct) { return c; }
 		bool identity = m.IsIdentity;
@@ -49,11 +49,8 @@ internal sealed unsafe partial class WebGpuFrame
 		// The command's entries keep their shape and gain the way back from device space into the recording's.
 		if (c.Entries is { Length: > 0 } es)
 		{
-			int n = outer.Entries?.Length ?? 0;
-			var arr = new ClipEntry[n + es.Length];
-			if (n > 0) { Array.Copy(outer.Entries, arr, n); }
-			for (int i = 0; i < es.Length; i++) { arr[n + i] = identity ? es[i] : es[i].Under(inv); }
-			r.Entries = arr;
+			r.Entries = ClipEntries.Extend(FrameArena, outer.Entries, es.Length, out var tail);
+			for (int i = 0; i < es.Length; i++) { tail[i] = identity ? es[i] : es[i].Under(inv); }
 		}
 		if (c.Paths is { Length: > 0 } ps)
 		{
@@ -144,7 +141,7 @@ internal sealed unsafe partial class WebGpuFrame
 						// A run of rects sharing a clip is one draw: their verts are contiguous in the pass buffer. One whose
 						// edges miss the pixel grid leaves the run - the solid pipeline writes binary coverage, so only the
 						// rounded-rect pipeline's SDF can antialias it.
-						var cd = composer.Compose(outer, rc0.Clip, m, inv, direct);
+						var cd = composer.Compose(this, outer, rc0.Clip, m, inv, direct);
 						int j = ci; uint start = (uint)(_solid.Count / VertexStride.Solid);
 						while (j < cmds.Count && cmds[j] is RectCommand rcj && (j == ci || ClipDataEquals(rcj.Clip, rc0.Clip)))
 						{
@@ -179,7 +176,7 @@ internal sealed unsafe partial class WebGpuFrame
 				case CmdKind.RoundedRect:
 					{
 						var rri = (RoundedRectCmd)cmd;
-						var cd = composer.Compose(outer, rri.Clip, m, inv, direct);
+						var cd = composer.Compose(this, outer, rri.Clip, m, inv, direct);
 						uint st = (uint)(_rrect.Count / VertexStride.RoundedRect);
 						var (r0, r1, r2, r3) = identity ? (rri.P0, rri.P1, rri.P2, rri.P3) : (Map(rri.P0, m), Map(rri.P1, m), Map(rri.P2, m), Map(rri.P3, m));
 						var rn = (uint)AppendRrect(_rrect, rri, r0, r1, r2, r3);
@@ -194,14 +191,14 @@ internal sealed unsafe partial class WebGpuFrame
 					{
 						var pc = (PathCmd)cmd;
 						if (_emitStats) { StatWalkPaths++; }
-						var cd = composer.Compose(outer, pc.Clip, m, inv, direct);
+						var cd = composer.Compose(this, outer, pc.Clip, m, inv, direct);
 						BuildSimpleOp(direct ? pc : Under(pc, m, identity, cd), ops, null, atlasScale: Vector2.One);
 						break;
 					}
 				case CmdKind.Image:
 					{
 						var im = (ImageCmd)cmd;
-						var cd = composer.Compose(outer, im.Clip, m, inv, direct);
+						var cd = composer.Compose(this, outer, im.Clip, m, inv, direct);
 						if (identity) { EmitImage(im, im.P0, im.P1, im.P2, im.P3, cd, ops); }
 						else { EmitImage(im, Map(im.P0, m), Map(im.P1, m), Map(im.P2, m), Map(im.P3, m), cd, ops); }
 						break;
@@ -209,21 +206,21 @@ internal sealed unsafe partial class WebGpuFrame
 				case CmdKind.Gradient:
 					{
 						var gc = (GradientCmd)cmd;
-						var cd = composer.Compose(outer, gc.Clip, m, inv, direct);
+						var cd = composer.Compose(this, outer, gc.Clip, m, inv, direct);
 						EmitGradient(gc, m, identity, cd, ops);
 						break;
 					}
 				case CmdKind.Shadow:
 					{
 						var sh = (ShadowCmd)cmd;
-						var cd = composer.Compose(outer, sh.Clip, m, inv, direct);
+						var cd = composer.Compose(this, outer, sh.Clip, m, inv, direct);
 						EmitShadow(direct ? sh : Under(sh, m, identity, cd), ops);
 						break;
 					}
 				case CmdKind.Layer:
 					{
 						var lyr = (LayerCmd)cmd;
-						var cd = composer.Compose(outer, lyr.Clip, m, inv, direct);
+						var cd = composer.Compose(this, outer, lyr.Clip, m, inv, direct);
 						EmitLayer(lyr, m, outer, cd, ops);
 						break;
 					}
@@ -231,7 +228,7 @@ internal sealed unsafe partial class WebGpuFrame
 					{
 						var bk = (BackdropCmd)cmd;
 						// A backdrop splits the pass here so it samples the framebuffer resolved so far (see EncodeBackdropSegment).
-						var cd = composer.Compose(outer, bk.Clip, m, inv, direct);
+						var cd = composer.Compose(this, outer, bk.Clip, m, inv, direct);
 						var view = direct ? bk : new BackdropCmd { Effect = bk.Effect, Opacity = bk.Opacity, Clip = cd };
 						int bi = _backdrops.Count; _backdrops.Add(view);
 						ops.Add(DrawOp.Backdrop(bi, cd));
@@ -545,8 +542,8 @@ internal sealed unsafe partial class WebGpuFrame
 			if (!c.Clip.ScissorInert) { MixV4(c.Clip.Aabb); }
 			Mix((nint)c.Clip.Coverage);
 			Mix(c.Clip.CoverageFiltered ? 1 : 0);
-			Mix(c.Clip.Entries?.Length ?? 0);
-			if (c.Clip.Entries is { } ents)
+			Mix(c.Clip.Entries.Length);
+			if (c.Clip.Entries is { IsEmpty: false } ents)
 			{
 				foreach (var e in ents)
 				{
@@ -592,7 +589,7 @@ internal sealed unsafe partial class WebGpuFrame
 		if (!a.ScissorInert && !Same(a.Aabb, b.Aabb)) { return false; }
 		if (a.Coverage != b.Coverage || a.CoverageFiltered != b.CoverageFiltered) { return false; }
 		if (a.Paths is not null || b.Paths is not null) { return false; }
-		int an = a.Entries?.Length ?? 0, bn = b.Entries?.Length ?? 0;
+		int an = a.Entries.Length, bn = b.Entries.Length;
 		if (an != bn) { return false; }
 		for (int i = 0; i < an; i++)
 		{
@@ -703,6 +700,8 @@ internal sealed unsafe partial class WebGpuFrame
 			};
 			entry.Refs = 1;
 			entry.ContentKey = key;
+			// Its ops' clips point into the recording's native memory.
+			if (rr.Data.Arena is { } srcArena) { srcArena.AddRef(); entry.SrcArena = srcArena; }
 			if (WebGpuCoverage.AtlasNoRoom != noRoomBefore) { entry.StarvedBeforeEviction = _d.AtlasEvictions; }
 			if (entry.HasAtlas || entry.HasClipMask) { s_atlasHolders.Add(new WeakReference<WebGpuGeometryCache>(entry)); }
 			if (key != 0)
@@ -790,7 +789,7 @@ internal sealed unsafe partial class WebGpuFrame
 			{
 				// The slot now serves this site: a later site still matching the old placement would rewrite the
 				// uniform these ops read and draw this site there.
-				slot.Xform = rm; slot.Clip = session; slot.Basis = basis; slot.SessionEntries = sessionEntries;
+				slot.Xform = rm; slot.Clip = slot.Keep(session, _d); slot.Basis = basis; slot.SessionEntries = sessionEntries;
 				slot.Frame = _d.FrameSeq;
 				AppendSite(ops, slot.Ops, rm, session, siteDepth);
 				return;
@@ -811,8 +810,8 @@ internal sealed unsafe partial class WebGpuFrame
 				&& !(IsFiniteAabb(session.Aabb) && (finv.M12 != 0 || finv.M21 != 0))
 				&& SessionShapeUnchanged(slot.Clip, session);
 			Dictionary<PathClip[], PathClip[]> pathsMemo = null;
-			Dictionary<ClipEntry[], ClipEntry[]> entsMemo = null;
-			ClipEntry[] entsNoneFolded = null;
+			Dictionary<nint, ClipEntries> entsMemo = null;
+			ClipEntries entsNoneFolded = default;
 			for (int i = 0; i < entry.Ops.Count; i++)
 			{
 				var op = entry.Ops[i];
@@ -824,7 +823,7 @@ internal sealed unsafe partial class WebGpuFrame
 				scissorClip.ScissorInert = op.Clip.ScissorInert && session.ScissorInert;
 				// Overflow entries live in a storage buffer the patch does not hold, so those stay on the rebuild.
 				if (moved && op.Clip.Paths is null
-					&& (op.Clip.Entries?.Length ?? 0) + (session.Entries?.Length ?? 0) <= ClipUniformEntries)
+					&& (op.Clip.Entries.Length) + (session.Entries.Length) <= ClipUniformEntries)
 				{
 					scissorClip.AabbInClipU = PatchClipU(bufs[i], op.Clip, session, rm, finv);
 					scissorClip.ScissorLoadBearing = !scissorClip.AabbInClipU;
@@ -857,7 +856,7 @@ internal sealed unsafe partial class WebGpuFrame
 			}
 			stampOwned.ClipMemo = null;
 			slot.Owned = stampOwned; slot.Ops = stamped; slot.Bufs = bufs; slot.SiteOps = siteCarries;
-			slot.Xform = rm; slot.Clip = session; slot.Basis = basis; slot.SessionEntries = sessionEntries;
+			slot.Xform = rm; slot.Clip = slot.Keep(session, _d); slot.Basis = basis; slot.SessionEntries = sessionEntries;
 			if (_emitStats) { StampTicks += System.Diagnostics.Stopwatch.GetTimestamp() - t0; }
 		}
 		else
@@ -949,7 +948,7 @@ internal sealed unsafe partial class WebGpuFrame
 					var meet = Meet(box, ent[0].Rect);
 					if (Covers(meet, bounds)) { rect = meet; radii = ent[0].Radii; return true; }
 				}
-				else if (ent is null or { Length: 0 } && Covers(box, bounds))
+				else if (ent.IsEmpty && Covers(box, bounds))
 				{
 					rect = box; radii = Vector4.Zero; return true;
 				}
@@ -965,7 +964,7 @@ internal sealed unsafe partial class WebGpuFrame
 		if (cd.Paths is not null || cd.Coverage != null) { return false; }
 		if (!cd.ScissorInert && IsFiniteAabb(cd.Aabb)) { rect = Meet(rect, cd.Aabb); }
 		var ents = cd.Entries;
-		if (ents is null || ents.Length == 0) { return rect.Z > rect.X && rect.W > rect.Y; }
+		if (ents.IsEmpty) { return rect.Z > rect.X && rect.W > rect.Y; }
 		if (ents.Length != 1) { return false; }
 		ref readonly var e = ref ents[0];
 		// Axis-aligned only: a rotated clip does not leave a rounded RECT.
