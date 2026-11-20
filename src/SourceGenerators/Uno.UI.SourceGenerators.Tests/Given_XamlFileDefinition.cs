@@ -6,14 +6,17 @@ namespace Uno.UI.SourceGenerators.Tests;
 [TestClass]
 public class Given_XamlFileDefinition
 {
-	private static XamlFileDefinition Create(string file, string link, string? stableIdentityPath = null)
-		=> new(file, link, "theme/Styles.xaml", "<ResourceDictionary />", ImmutableArray<byte>.Empty, stableIdentityPath);
+	private static readonly string CheckoutA = Path.Join(Path.GetTempPath(), "checkout-a");
+	private static readonly string CheckoutB = Path.Join(Path.GetTempPath(), "checkout-b");
+
+	private static XamlFileDefinition Create(string file, string link, string? intermediateDirectory = null)
+		=> new(file, link, "theme/Styles.xaml", "<ResourceDictionary />", ImmutableArray<byte>.Empty, intermediateDirectory);
 
 	[TestMethod]
 	public void When_Checkout_Root_Differs_UniqueID_Is_Stable()
 	{
-		var a = Create(@"C:\checkout-a\theme\Styles.xaml", "theme/Styles.xaml");
-		var b = Create(@"D:\checkout-b\theme\Styles.xaml", "theme/Styles.xaml");
+		var a = Create(Path.Join(CheckoutA, "theme", "Styles.xaml"), "theme/Styles.xaml");
+		var b = Create(Path.Join(CheckoutB, "theme", "Styles.xaml"), "theme/Styles.xaml");
 
 		a.UniqueID.Should().Be(b.UniqueID);
 		a.UniqueID.Should().StartWith("Styles_");
@@ -22,8 +25,8 @@ public class Given_XamlFileDefinition
 	[TestMethod]
 	public void When_Link_Separator_Differs_UniqueID_Is_Stable()
 	{
-		var a = Create(@"C:\a\theme\Styles.xaml", @"theme\Styles.xaml");
-		var b = Create("/home/b/theme/Styles.xaml", "theme/Styles.xaml");
+		var a = Create(Path.Join(CheckoutA, "theme", "Styles.xaml"), @"theme\Styles.xaml");
+		var b = Create(Path.Join(CheckoutB, "theme", "Styles.xaml"), "theme/Styles.xaml");
 
 		a.UniqueID.Should().Be(b.UniqueID);
 	}
@@ -31,8 +34,8 @@ public class Given_XamlFileDefinition
 	[TestMethod]
 	public void When_Same_FileName_In_Different_Folders_UniqueID_Differs()
 	{
-		var a = Create(@"C:\a\theme\Styles.xaml", "theme/Styles.xaml");
-		var b = Create(@"C:\a\other\Styles.xaml", "other/Styles.xaml");
+		var a = Create(Path.Join(CheckoutA, "theme", "Styles.xaml"), "theme/Styles.xaml");
+		var b = Create(Path.Join(CheckoutA, "other", "Styles.xaml"), "other/Styles.xaml");
 
 		a.UniqueID.Should().NotBe(b.UniqueID);
 	}
@@ -40,48 +43,53 @@ public class Given_XamlFileDefinition
 	[TestMethod]
 	public void When_Link_Is_Absolute_Falls_Back_To_FilePath()
 	{
-		var a = Create(@"C:\a\obj\Generated.xaml", @"C:\a\obj\Generated.xaml");
-		var b = Create(@"D:\b\obj\Generated.xaml", @"D:\b\obj\Generated.xaml");
+		var fileA = Path.Join(CheckoutA, "obj", "Generated.xaml");
+		var fileB = Path.Join(CheckoutB, "obj", "Generated.xaml");
+
+		var a = Create(fileA, fileA);
+		var b = Create(fileB, fileB);
 
 		a.UniqueID.Should().NotBe(b.UniqueID);
 	}
 
 	[TestMethod]
-	public void When_Stable_Identity_Provided_It_Wins()
+	public void When_Generated_Xaml_Is_Under_Intermediate_Directory_UniqueID_Is_Stable()
 	{
-		var a = Create(@"C:\a\obj\Generated.xaml", @"C:\a\obj\Generated.xaml", "obj:theme/Generated.xaml");
-		var b = Create(@"D:\b\obj\Generated.xaml", @"D:\b\obj\Generated.xaml", "obj:theme/Generated.xaml");
+		var fileA = Path.Join(CheckoutA, ".artifacts", "obj", "theme", "Generated.xaml");
+		var fileB = Path.Join(CheckoutB, ".artifacts", "obj", "theme", "Generated.xaml");
+
+		var a = Create(fileA, fileA, Path.Join(CheckoutA, ".artifacts", "obj"));
+		var b = Create(fileB, fileB, Path.Join(CheckoutB, ".artifacts", "obj"));
 
 		a.UniqueID.Should().Be(b.UniqueID);
+		a.UniqueID.Should().StartWith("Generated_");
 	}
 
 	[TestMethod]
 	public void When_Generated_Xaml_Is_Under_Intermediate_Directory_Identity_Is_Relative_To_It()
 	{
-		var root = Path.Combine(Path.GetTempPath(), "checkout");
-		var source = Path.Combine(root, ".artifacts", "obj", "theme", "Generated.xaml");
+		var source = Path.Join(CheckoutA, ".artifacts", "obj", "theme", "Generated.xaml");
 
-		XamlFileParser.GetStableIdentityPath(source, source, Path.Combine(root, ".artifacts", "obj"))
+		XamlFileDefinition.GetIdentityPath(source, source, Path.Join(CheckoutA, ".artifacts", "obj"))
 			.Should().Be("obj:theme/Generated.xaml");
 	}
 
 	[TestMethod]
 	public void When_Intermediate_Directory_Has_Parent_Segments_Identity_Is_Relative_To_It()
 	{
-		var root = Path.Combine(Path.GetTempPath(), "checkout");
-		var source = Path.Combine(root, ".artifacts", "obj", "theme", "Generated.xaml");
-		var intermediate = Path.Combine(root, "src", "App", "..", "..", ".artifacts", "obj");
+		var source = Path.Join(CheckoutA, ".artifacts", "obj", "theme", "Generated.xaml");
+		var intermediate = Path.Join(CheckoutA, "src", "App", "..", "..", ".artifacts", "obj");
 
-		XamlFileParser.GetStableIdentityPath(source, source, intermediate)
+		XamlFileDefinition.GetIdentityPath(source, source, intermediate)
 			.Should().Be("obj:theme/Generated.xaml");
 	}
 
 	[TestMethod]
-	public void When_Link_Is_Relative_No_Intermediate_Identity_Is_Used()
+	public void When_Link_Is_Relative_Intermediate_Directory_Is_Ignored()
 	{
-		var source = Path.Combine(Path.GetTempPath(), "checkout", "theme", "Styles.xaml");
+		var source = Path.Join(CheckoutA, "theme", "Styles.xaml");
 
-		XamlFileParser.GetStableIdentityPath(source, "theme/Styles.xaml", Path.GetTempPath())
-			.Should().BeNull();
+		XamlFileDefinition.GetIdentityPath(source, "theme/Styles.xaml", CheckoutA)
+			.Should().Be("theme/Styles.xaml");
 	}
 }
