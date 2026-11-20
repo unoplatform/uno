@@ -60,11 +60,44 @@ namespace Windows.Globalization
 			};
 		}
 
-		private static string GetDefaultClock() =>
-			// Windows.System.UserProfile.GlobalizationPreferences.Clocks.FirstOrDefault();
-			new DateTime(1983, 9, 9, 13, 0, 0).ToString("g", CultureInfo.CurrentCulture).Contains("PM")
-				? ClockIdentifiers.TwelveHour
-				: ClockIdentifiers.TwentyFourHour;
+		// Like Windows, decide from the culture's time format ('h' is a 12-hour clock, 'H' a 24-hour one),
+		// not from its formatted output, whose AM/PM designator varies by culture ("p.m.", "오후", ...).
+		private static string GetDefaultClock()
+		{
+			var format = CultureInfo.CurrentCulture.DateTimeFormat;
+			var hourSpecifier = FindHourSpecifier(format.LongTimePattern) ?? FindHourSpecifier(format.ShortTimePattern);
+
+			return hourSpecifier == 'h' ? ClockIdentifiers.TwelveHour : ClockIdentifiers.TwentyFourHour;
+		}
+
+		// Returns the first 'h' or 'H' of a custom format pattern, skipping quoted literals and escaped characters.
+		private static char? FindHourSpecifier(string pattern)
+		{
+			for (var i = 0; i < pattern.Length; i++)
+			{
+				var c = pattern[i];
+				if (c is '\'' or '"')
+				{
+					for (i++; i < pattern.Length && pattern[i] != c; i++)
+					{
+						if (pattern[i] == '\\')
+						{
+							i++;
+						}
+					}
+				}
+				else if (c == '\\')
+				{
+					i++;
+				}
+				else if (c is 'h' or 'H')
+				{
+					return c;
+				}
+			}
+
+			return null;
+		}
 
 		private static string GetClock(string clock)
 		{
