@@ -405,12 +405,25 @@ internal sealed class PatternTimeZoneNode : PatternDateTimeNode
 	internal override void Format(StringBuilder builder, DateTimeOffset dateTime, PatternFormatContext context)
 	{
 		// The local time zone at that instant, as the value comes in local time: its standard or daylight name
-		// ("Eastern Daylight Time" in July). .NET has only those names, so the abbreviated one is the GMT offset WinRT
-		// writes when the language has no short name for the zone ("GMT-4", "GMT+5:30"), whatever the ideal length.
+		// ("Eastern Daylight Time" in July).
 		var zone = TimeZoneInfo.Local;
 		if (Kind == TimeZoneKind.Full)
 		{
 			builder.Append(zone.IsDaylightSavingTime(dateTime) ? zone.DaylightName : zone.StandardName);
+			return;
+		}
+
+		AppendAbbreviation(builder, zone, dateTime);
+	}
+
+	// .NET has no short zone names, so this is the GMT offset WinRT writes when the language has none for the zone
+	// ("GMT-4", "GMT+5:30"), whatever the ideal length. WinRT writes "UTC" for the UTC zone in every language probed,
+	// and its GMT form for the other zones at zero (London, Reykjavik).
+	internal static void AppendAbbreviation(StringBuilder builder, TimeZoneInfo zone, DateTimeOffset dateTime)
+	{
+		if (zone.Id is "UTC" or "Etc/UTC" or "Etc/UCT" or "UCT" or "Etc/Universal" or "Universal" or "Etc/Zulu" or "Zulu")
+		{
+			builder.Append("UTC");
 			return;
 		}
 

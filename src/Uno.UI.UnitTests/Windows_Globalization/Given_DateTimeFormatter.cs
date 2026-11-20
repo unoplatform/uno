@@ -2,6 +2,7 @@
 
 using System;
 using System.Globalization;
+using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Globalization;
 using Windows.Globalization.DateTimeFormatting;
@@ -301,6 +302,27 @@ public class Given_DateTimeFormatter
 
 		StringAssert.StartsWith(pattern, "{hour.integer");
 		Assert.IsFalse(pattern.Contains("{period", StringComparison.Ordinal), pattern);
+	}
+
+	// WinRT's abbreviations for these zones, given by their identifiers, in hu-HU (no short zone names).
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	[DataRow("UTC", 0, "UTC")]
+	[DataRow("Etc/UTC", 0, "UTC")]
+	[DataRow("Etc/Zulu", 0, "UTC")]
+	[DataRow("Etc/GMT", 0, "GMT")]
+	[DataRow("Europe/London", 0, "GMT")]
+	[DataRow("America/New_York", -300, "GMT-5")]
+	[DataRow("Asia/Kolkata", 330, "GMT+5:30")]
+	public void When_Zone_Is_Abbreviated_Then_Only_UTC_Is_Named(string id, int offsetMinutes, string expected)
+	{
+		var offset = TimeSpan.FromMinutes(offsetMinutes);
+		var zone = TimeZoneInfo.CreateCustomTimeZone(id, offset, id, id);
+		var builder = new StringBuilder();
+
+		PatternTimeZoneNode.AppendAbbreviation(builder, zone, new DateTimeOffset(2024, 1, 15, 12, 0, 0, offset));
+
+		Assert.AreEqual(expected, builder.ToString());
 	}
 
 	private static string FormatPeriod(string pattern, string cultureName)

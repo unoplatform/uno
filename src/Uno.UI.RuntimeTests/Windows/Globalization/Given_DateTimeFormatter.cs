@@ -54,6 +54,12 @@ public class Given_DateTimeFormatter
 		return duration.Minutes == 0 ? hours : hours + ":" + duration.Minutes.ToString("00", CultureInfo.InvariantCulture);
 	}
 
+	// WinRT writes "UTC" for the UTC zone, the CI agents' one, in every language probed.
+	private static string GetAbbreviatedZone(TimeZoneInfo zone, TimeSpan offset)
+		=> zone.Id is "UTC" or "Etc/UTC" or "Etc/UCT" or "UCT" or "Etc/Universal" or "Universal" or "Etc/Zulu" or "Zulu"
+			? "UTC"
+			: GetGmtOffset(offset);
+
 	[TestMethod]
 	[DataRow(0, "GMT")]
 	[DataRow(-300, "GMT-5")]
@@ -341,7 +347,7 @@ public class Given_DateTimeFormatter
 			var offset = zone.GetUtcOffset(date);
 			var expected = expectedPattern.StartsWith("{timezone.full", StringComparison.Ordinal)
 				? (zone.IsDaylightSavingTime(date) ? zone.DaylightName : zone.StandardName)
-				: GetGmtOffset(offset);
+				: GetAbbreviatedZone(zone, offset);
 
 			Assert.AreEqual(expected, NormalizeText(formatter.Format(new DateTimeOffset(date))), $"{template} in {date:MMMM}");
 		}
