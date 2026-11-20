@@ -29,6 +29,19 @@
 			IsDefaultItem="true"
 			Exclude="@(UnoIcon)"
 			Condition="Exists('$(UnoIconBackgroundFile)') and Exists('$(UnoIconForegroundFile)')" />
+		<!-- Windows App SDK padding per image type. Only passed when set, so Resizetizer's defaults and any UnoIcon item definition still apply. -->
+		<UnoIcon Update="@(UnoIcon->WithMetadataValue('IsDefaultItem', 'true'))"
+			WinAppSdkAppIconScale="$(UnoIconWinAppSdkAppIconScale)"
+			Condition="'$(UnoIconWinAppSdkAppIconScale)' != ''" />
+		<UnoIcon Update="@(UnoIcon->WithMetadataValue('IsDefaultItem', 'true'))"
+			WinAppSdkSmallTileScale="$(UnoIconWinAppSdkSmallTileScale)"
+			Condition="'$(UnoIconWinAppSdkSmallTileScale)' != ''" />
+		<UnoIcon Update="@(UnoIcon->WithMetadataValue('IsDefaultItem', 'true'))"
+			WinAppSdkTileScale="$(UnoIconWinAppSdkTileScale)"
+			Condition="'$(UnoIconWinAppSdkTileScale)' != ''" />
+		<UnoIcon Update="@(UnoIcon->WithMetadataValue('IsDefaultItem', 'true'))"
+			WinAppSdkStoreLogoScale="$(UnoIconWinAppSdkStoreLogoScale)"
+			Condition="'$(UnoIconWinAppSdkStoreLogoScale)' != ''" />
 		<UnoSplashScreen Include="$(UnoSplashScreenFile)"
 			BaseSize="$(UnoSplashScreenBaseSize)"
 			BackgroundColor="$(UnoSplashScreenBackgroundColor)"
