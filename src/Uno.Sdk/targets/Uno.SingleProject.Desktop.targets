@@ -62,6 +62,14 @@
 
 	</Target>
 
+	<!-- These packages carry their PDBs as native assets, which DebugType doesn't reach, and a RID-specific build copies them. -->
+	<Target Name="_UnoRemoveNativePdbs" AfterTargets="ResolvePackageAssets">
+		<ItemGroup>
+			<NativeCopyLocalItems Remove="@(NativeCopyLocalItems)"
+				Condition="'%(Extension)' == '.pdb' And ($([System.String]::Copy('%(NuGetPackageId)').StartsWith('SkiaSharp.NativeAssets.')) Or $([System.String]::Copy('%(NuGetPackageId)').StartsWith('HarfBuzzSharp.NativeAssets.')))" />
+		</ItemGroup>
+	</Target>
+
 	<!--
 		The Win32 host references WebView2Aot (and through it DirectNAot) for its WebView2 support. A WebView needs
 		WebView2Loader.dll from Microsoft.Web.WebView2, which the `webview` feature, a direct reference or a transitive
