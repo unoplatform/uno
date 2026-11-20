@@ -3022,8 +3022,8 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static unsafe void AppendBoundaries(int boundaryType, string text, int outputBaseOffset, List<int> list)
 	{
 		// WinUI applies the same line-break rules in every language, and ICU's root rules match them, so ICU gets the
-		// root locale: an empty string (NULL would mean the OS default). The UTF-16 UI culture name passed here before
-		// reached ICU as a one-letter name, which resolved to root as well.
+		// root locale: an empty string (NULL would mean the OS default). "\0"u8 rather than ""u8, because pinning an
+		// empty span yields a null pointer.
 		fixed (byte* locale = "\0"u8)
 		{
 			fixed (char* textPtr = &text.GetPinnableReference())
