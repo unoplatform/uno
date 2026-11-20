@@ -1261,9 +1261,10 @@ void uno_accessibility_add_element(NSWindow* window,
 			[parent.unoChildren addObject:element];
 		}
 	} else if (parentHandle != 0 && context.rootElement && !replacesRoot) {
-		// The parent is not part of the tree (for example the layer a popup is created in, which can appear after the
-		// tree was built). Hang the element on the root instead of replacing the root with it, which would hide the
-		// whole window content from accessibility clients for as long as the popup element stays.
+		// Safety net for a parent that managed code never added to the tree (managed code resolves known cases, such
+		// as an element under an AccessibilityView.Raw container, to a parent that is in the tree). Hang the element
+		// on the root instead of replacing the root with it, which would hide the whole window content.
+		UNO_A11Y_LOG(@"UNOAccessibility: parent %ld of element %ld is not in the tree, attaching to the root", (long)parentHandle, (long)handle);
 		element.unoParent = context.rootElement;
 		registerOrphan(context, element, parentHandle);
 		[context.rootElement.unoChildren addObject:element];
