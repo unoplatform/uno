@@ -42,7 +42,7 @@ internal static class EmbeddedXamlSourcesProvider
 			var xamlSources = new global::System.Collections.Generic.Dictionary<string, (string ActualPath, global::System.Func<(string Hash, string Payload)> Getter)>(1, global::System.StringComparer.OrdinalIgnoreCase);
 
 			// Use method groups to avoid closure allocation and ensure no lambda is created, to allow proper HR support
-			xamlSources[NormalizePath(@"C:/Project/0/MyDictionary.xaml")] = (NormalizePath(@"C:/Project/0/MyDictionary.xaml"), GetSources_MyDictionary_b7707bcf1e73425b710b6a5d04177088);
+			xamlSources[NormalizePath(@"C:/Project/0/MyDictionary.xaml")] = (NormalizePath(@"C:/Project/0/MyDictionary.xaml"), GetSources_MyDictionary_464cadc728b3c46b0be509d4bc4bb3db);
 
 			if (global::System.Threading.Interlocked.CompareExchange(ref _XamlSources, xamlSources, previousHashList) == previousHashList)
 			{
@@ -94,7 +94,7 @@ internal static class EmbeddedXamlSourcesProvider
 	private static string NormalizePath(string path) => path.Replace('\\', '/');
 
 	#region Sources for C:/Project/0/MyDictionary.xaml
-	private static (string hash, string payload) GetSources_MyDictionary_b7707bcf1e73425b710b6a5d04177088()
+	private static (string hash, string payload) GetSources_MyDictionary_464cadc728b3c46b0be509d4bc4bb3db()
 	{
 		return (
 			"f5612b407065b7c60b576f1975640cb2ad0e3734", // hash

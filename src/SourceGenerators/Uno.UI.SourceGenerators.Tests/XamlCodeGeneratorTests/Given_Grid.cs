@@ -15,10 +15,10 @@ public class Given_Grid
 		{
 			ExpectedDiagnostics =
 			{
-				// Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\Grid_Uses_Both_Syntaxes_794c1760299b374d12fe38ba3b633206.cs(116,6): error CS1912: Duplicate initialization of member 'ColumnDefinitions'
-				DiagnosticResult.CompilerError("CS1912").WithSpan(Path.Combine("Uno.UI.SourceGenerators","Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator","Grid_Uses_Both_Syntaxes_794c1760299b374d12fe38ba3b633206.cs"), 116, 6, 116, 23).WithArguments("ColumnDefinitions"),
-				// Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\Grid_Uses_Both_Syntaxes_794c1760299b374d12fe38ba3b633206.cs(160,6): error CS1912: Duplicate initialization of member 'RowDefinitions'
-				DiagnosticResult.CompilerError("CS1912").WithSpan(Path.Combine("Uno.UI.SourceGenerators","Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator","Grid_Uses_Both_Syntaxes_794c1760299b374d12fe38ba3b633206.cs"), 160, 6, 160, 20).WithArguments("RowDefinitions"),
+				// Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\Grid_Uses_Both_Syntaxes_9da6ea4c2573b4a41da7e6d5163567a4.cs(116,6): error CS1912: Duplicate initialization of member 'ColumnDefinitions'
+				DiagnosticResult.CompilerError("CS1912").WithSpan(Path.Combine("Uno.UI.SourceGenerators","Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator","Grid_Uses_Both_Syntaxes_9da6ea4c2573b4a41da7e6d5163567a4.cs"), 116, 6, 116, 23).WithArguments("ColumnDefinitions"),
+				// Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\Grid_Uses_Both_Syntaxes_9da6ea4c2573b4a41da7e6d5163567a4.cs(160,6): error CS1912: Duplicate initialization of member 'RowDefinitions'
+				DiagnosticResult.CompilerError("CS1912").WithSpan(Path.Combine("Uno.UI.SourceGenerators","Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator","Grid_Uses_Both_Syntaxes_9da6ea4c2573b4a41da7e6d5163567a4.cs"), 160, 6, 160, 20).WithArguments("RowDefinitions"),
 			},
 		};
 

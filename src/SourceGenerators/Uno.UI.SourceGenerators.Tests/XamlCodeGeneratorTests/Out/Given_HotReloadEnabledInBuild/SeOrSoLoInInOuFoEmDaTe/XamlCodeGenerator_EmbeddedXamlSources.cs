@@ -42,7 +42,7 @@ internal static class EmbeddedXamlSourcesProvider
 			var xamlSources = new global::System.Collections.Generic.Dictionary<string, (string ActualPath, global::System.Func<(string Hash, string Payload)> Getter)>(1, global::System.StringComparer.OrdinalIgnoreCase);
 
 			// Use method groups to avoid closure allocation and ensure no lambda is created, to allow proper HR support
-			xamlSources[NormalizePath(@"C:/Project/0/EmptyDataTemplatePage.xaml")] = (NormalizePath(@"C:/Project/0/EmptyDataTemplatePage.xaml"), GetSources_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706);
+			xamlSources[NormalizePath(@"C:/Project/0/EmptyDataTemplatePage.xaml")] = (NormalizePath(@"C:/Project/0/EmptyDataTemplatePage.xaml"), GetSources_EmptyDataTemplatePage_4e532b41b722647c53bcc51d1687bc3c);
 
 			if (global::System.Threading.Interlocked.CompareExchange(ref _XamlSources, xamlSources, previousHashList) == previousHashList)
 			{
@@ -94,7 +94,7 @@ internal static class EmbeddedXamlSourcesProvider
 	private static string NormalizePath(string path) => path.Replace('\\', '/');
 
 	#region Sources for C:/Project/0/EmptyDataTemplatePage.xaml
-	private static (string hash, string payload) GetSources_EmptyDataTemplatePage_0f836ad6c048ef5ac0e673406e3c3706()
+	private static (string hash, string payload) GetSources_EmptyDataTemplatePage_4e532b41b722647c53bcc51d1687bc3c()
 	{
 		return (
 			"5d034cfbcd11ff7f7f6cfe08e1339adcec1279e4", // hash

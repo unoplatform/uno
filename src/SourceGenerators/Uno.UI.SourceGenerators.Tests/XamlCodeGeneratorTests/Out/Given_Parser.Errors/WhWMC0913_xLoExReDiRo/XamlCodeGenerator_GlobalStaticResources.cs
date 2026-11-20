@@ -42,7 +42,7 @@ namespace MyProject
 			if(!_stylesRegistered)
 			{
 				_stylesRegistered = true;
-				RegisterDefaultStyles_MyRD_54c973a1da9b1117eefa4a9f970cf10f();
+				RegisterDefaultStyles_MyRD_b42d2c4bd4ddf1eb854430bfe33d1c00();
 			}
 		}
 		// Register ResourceDictionaries using ms-appx:/// syntax, this is called for external resources
@@ -51,16 +51,16 @@ namespace MyProject
 			if(!_dictionariesRegistered)
 			{
 				_dictionariesRegistered = true;
-				global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///TestProject/C:/Project/0/MyRD.xaml", context: __ParseContext_, dictionary: () => MyRD_54c973a1da9b1117eefa4a9f970cf10f_ResourceDictionary);
+				global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///TestProject/C:/Project/0/MyRD.xaml", context: __ParseContext_, dictionary: () => MyRD_b42d2c4bd4ddf1eb854430bfe33d1c00_ResourceDictionary);
 			}
 		}
 		// Register ResourceDictionaries using ms-resource:/// syntax, this is called for local resources
 		internal static void RegisterResourceDictionariesBySourceLocal()
 		{
-			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-resource:///Files/C:/Project/0/MyRD.xaml", context: null, dictionary: () => MyRD_54c973a1da9b1117eefa4a9f970cf10f_ResourceDictionary, null);
-			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///C:/Project/0/MyRD.xaml", context: null, dictionary: () => MyRD_54c973a1da9b1117eefa4a9f970cf10f_ResourceDictionary);
+			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-resource:///Files/C:/Project/0/MyRD.xaml", context: null, dictionary: () => MyRD_b42d2c4bd4ddf1eb854430bfe33d1c00_ResourceDictionary, null);
+			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///C:/Project/0/MyRD.xaml", context: null, dictionary: () => MyRD_b42d2c4bd4ddf1eb854430bfe33d1c00_ResourceDictionary);
 		}
-		static partial void RegisterDefaultStyles_MyRD_54c973a1da9b1117eefa4a9f970cf10f();
+		static partial void RegisterDefaultStyles_MyRD_b42d2c4bd4ddf1eb854430bfe33d1c00();
 		
 	}
 }
