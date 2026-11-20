@@ -107,7 +107,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 				await UITestHelper.Load(panel);
 				await WindowHelper.WaitFor(() => unknownText.ActualWidth > 0 && Math.Abs(unknownText.ActualWidth - defaultText.ActualWidth) < 0.5, 3000, "unknown family measured like the default font");
 
-				Assert.AreEqual(defaultText.ActualWidth, unknownText.ActualWidth, 0.5);
 				Assert.AreEqual(defaultText.ActualHeight, unknownText.ActualHeight, 0.5);
 			}
 			finally
