@@ -113,11 +113,19 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		private protected virtual void OnSetSource()
 		{
 #if __CROSSRUNTIME__
-			using var clone = _stream.CloneStream();
-			if (ImageEncoderDecoder.Current.TryGetSize(clone.AsStream(), out var pixelWidth, out var pixelHeight))
+			// The stream is ours (a clone made by SetSource): read the header from it and put it back where it was.
+			var position = _stream.Position;
+			try
 			{
-				PixelWidth = pixelWidth;
-				PixelHeight = pixelHeight;
+				if (ImageEncoderDecoder.Current.TryGetSize(_stream.AsStream(), out var pixelWidth, out var pixelHeight))
+				{
+					PixelWidth = pixelWidth;
+					PixelHeight = pixelHeight;
+				}
+			}
+			finally
+			{
+				_stream.Seek(position);
 			}
 #endif
 		}
