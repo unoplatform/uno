@@ -1,10 +1,12 @@
 ﻿#if HAS_UNO // Exercises Uno-only APIs (FeatureConfiguration, SafeRaiseEvent, Uno.UI.Xaml.BindingHelper) absent from native WinUI.
 using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
@@ -316,6 +318,129 @@ public class Given_FeatureConfiguration_UnhandledExceptions
 			FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource = originalFlag;
 			WindowHelper.WindowContent = null;
 		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_ThemeResource_Missing_FlagOn_Loaded_Throws_XamlParseException()
+	{
+		// WinUI: ThemeResourceExtension::ProvideValue raises AG_E_PARSER_FAILED_RESOURCE_FIND, surfacing
+		// as XamlParseException (0x802B000A). Uno defers every XAML {ThemeResource} to load time, so a
+		// key that never resolved is judged once the owner is live.
+		var originalFlag = FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource;
+		try
+		{
+			var xaml = "<ContentControl xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" Tag=\"{ThemeResource NonExistentThemeResource_ShouldThrow}\" />";
+			var sut = (ContentControl)XamlReader.Load(xaml);
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+
+			FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource = true;
+
+			var exception = Assert.ThrowsExactly<XamlParseException>(
+				() => BindingHelper.UpdateResourceBindings(sut));
+
+			Assert.IsTrue(
+				exception.Message.Contains("NonExistentThemeResource_ShouldThrow"),
+				$"Expected message to reference the missing key, got: {exception.Message}");
+		}
+		finally
+		{
+			FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource = originalFlag;
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[DataRow(false, DisplayName = "Key only in Light")]
+	[DataRow(true, DisplayName = "App resources also define the key")]
+	public async Task When_ThemeResource_Missing_For_New_Theme_FlagOn_Throws(bool appLevelKey)
+	{
+		// WinUI (verified on WinAppSDK 2.5.1): CThemeResource::RefreshValue raises
+		// AG_E_PARSER_FAILED_RESOURCE_FIND when the pinned dictionary lacks the key for the new theme. The
+		// RequestedTheme setter throws COMException 0x800F1000 and the old value stays; an app-level
+		// resource with the same key does not rescue it. The key must exist in the app's theme, as the
+		// initial lookup runs against it.
+		var originalFlag = FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource;
+		var key = appLevelKey ? "ThemeMissProbe_AppLevel" : "ThemeMissProbe_LightOnly";
+		if (appLevelKey)
+		{
+			Application.Current.Resources[key] = new SolidColorBrush(Microsoft.UI.Colors.Orange);
+		}
+
+		try
+		{
+			var (root, target, otherTheme) = CreateSingleThemeResource(key);
+			await UITestHelper.Load(root, x => x.IsLoaded);
+			Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)target.Background).Color);
+
+			FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource = true;
+
+			var exception = Assert.ThrowsExactly<COMException>(() => root.RequestedTheme = otherTheme);
+
+			Assert.AreEqual(unchecked((int)0x800F1000), exception.HResult);
+			Assert.IsTrue(exception.Message.Contains(key), $"Expected message to reference the missing key, got: {exception.Message}");
+			Assert.AreEqual(Microsoft.UI.Colors.Red, ((SolidColorBrush)target.Background).Color);
+		}
+		finally
+		{
+			FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource = originalFlag;
+			WindowHelper.WindowContent = null;
+			if (appLevelKey)
+			{
+				Application.Current.Resources.Remove(key);
+			}
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_ThemeResource_Missing_For_New_Theme_FlagOff_DoesNotThrow()
+	{
+		var originalFlag = FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource;
+		try
+		{
+			FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource = false;
+
+			var (root, _, otherTheme) = CreateSingleThemeResource("ThemeMissProbe_FlagOff");
+			await UITestHelper.Load(root, x => x.IsLoaded);
+
+			root.RequestedTheme = otherTheme;
+		}
+		finally
+		{
+			FeatureConfiguration.ResourceResolution.ThrowOnUnresolvedResource = originalFlag;
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	/// <summary>
+	/// Defines <paramref name="key"/> only in the theme dictionary of the app's current theme, so it resolves
+	/// initially and is missing once the root switches to the returned other theme.
+	/// </summary>
+	private static (Grid Root, Border Target, ElementTheme OtherTheme) CreateSingleThemeResource(string key)
+	{
+		var isAppLight = Application.Current.RequestedTheme == ApplicationTheme.Light;
+		var (current, other) = isAppLight ? ("Light", "Dark") : ("Dark", "Light");
+
+		var root = (Grid)XamlReader.Load($$"""
+			<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				  RequestedTheme="{{current}}">
+				<Grid.Resources>
+					<ResourceDictionary>
+						<ResourceDictionary.ThemeDictionaries>
+							<ResourceDictionary x:Key="{{current}}"><SolidColorBrush x:Key="{{key}}" Color="Red" /></ResourceDictionary>
+							<ResourceDictionary x:Key="{{other}}"><SolidColorBrush x:Key="Unrelated" Color="Blue" /></ResourceDictionary>
+						</ResourceDictionary.ThemeDictionaries>
+					</ResourceDictionary>
+				</Grid.Resources>
+				<Border x:Name="Target" Width="50" Height="50" Background="{ThemeResource {{key}}}" />
+			</Grid>
+			""");
+
+		return (root, (Border)root.FindName("Target"), isAppLight ? ElementTheme.Dark : ElementTheme.Light);
 	}
 }
 #endif
