@@ -318,11 +318,31 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateShapeVisual();
 
+		// The geometry last rendered, when this shape built it for itself and so drops it once replaced. Shapes build a
+		// new one on every arrange; left to the finalizer, each would survive a collection. A geometry some source keeps
+		// (a StreamGeometry's) is not owned. Recordings that still draw it hold their own reference.
+		private IGeometry? _ownedRenderedPath;
+
+		/// <summary>Set by a shape before <see cref="Render"/> when the path it passes was built for this render alone.</summary>
+		private protected bool RenderPathIsOwned { get; set; }
+
+		private void ReplaceOwnedRenderedPath(IGeometry? path)
+		{
+			var previous = _ownedRenderedPath;
+			_ownedRenderedPath = RenderPathIsOwned ? path : null;
+			RenderPathIsOwned = false;
+			if (previous is not null && !ReferenceEquals(previous, path))
+			{
+				previous.Dispose();
+			}
+		}
+
 		private protected virtual void Render(IGeometry? path, double? scaleX = null, double? scaleY = null, double? renderOriginX = null, double? renderOriginY = null)
 		{
 			if (path is not IGeometrySource2D source)
 			{
 				_geometry.Path = null;
+				ReplaceOwnedRenderedPath(null);
 				return;
 			}
 
@@ -338,6 +358,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			_shape.Offset = LayoutRound(new Vector2((float)(renderOriginX ?? 0), (float)(renderOriginY ?? 0)));
 
 			UpdateRender();
+			ReplaceOwnedRenderedPath(path);
 		}
 
 		private void UpdateRender()

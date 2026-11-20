@@ -32,6 +32,8 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void OnDataChanged(DependencyPropertyChangedEventArgs e)
 		{
+			_measuredPath = null;
+
 			if (e.OldValue is Geometry oldGeometry)
 			{
 				oldGeometry.GeometryChanged -= OnDataGeometryChanged;
@@ -45,18 +47,31 @@ namespace Microsoft.UI.Xaml.Shapes
 
 		private void OnDataGeometryChanged()
 		{
+			_measuredPath = null;
 			InvalidateMeasure();
 		}
 
 		private CompositionPathGeometry? _fillGeometry;
+		private IGeometry? _ownedFillPath;
+
+		// The geometry built to measure, handed to the arrange that follows instead of being built again. Data changes
+		// invalidate measure, so an arrange always follows the measure of the current Data.
+		private IGeometry? _measuredPath;
 
 		/// <inheritdoc />
 		protected override Size MeasureOverride(Size availableSize)
-			=> MeasureAbsoluteShape(availableSize, GetPath());
+			=> MeasureAbsoluteShape(availableSize, _measuredPath = GetPath());
 
 		/// <inheritdoc />
 		protected override Size ArrangeOverride(Size finalSize)
-			=> ArrangeAbsoluteShape(finalSize, GetPath());
+		{
+			var path = _measuredPath ?? GetPath();
+			_measuredPath = null;
+			// Every geometry builds a new path, except a StreamGeometry, which keeps the one it hands out unless a
+			// transform maps it into a new one.
+			RenderPathIsOwned = Data is not global::Uno.Media.StreamGeometry || Data.Transform is { MatrixCore.IsIdentity: false };
+			return ArrangeAbsoluteShape(finalSize, path);
+		}
 
 		private IGeometry? GetPath() => Data?.GetTransformedGeometry();
 
@@ -67,7 +82,10 @@ namespace Microsoft.UI.Xaml.Shapes
 
 			_fillGeometry ??= Visual.Compositor.CreatePathGeometry();
 			SpriteShape.FillGeometry = _fillGeometry;
-			if (Data?.GetTransformedFilledGeometry() is IGeometrySource2D filledSource)
+			// Only a PathGeometry has a separate fill geometry, built for this render alone.
+			var previousFill = _ownedFillPath;
+			_ownedFillPath = Data?.GetTransformedFilledGeometry();
+			if (_ownedFillPath is IGeometrySource2D filledSource)
 			{
 				_fillGeometry.Path = new CompositionPath(filledSource);
 			}
@@ -75,6 +93,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			{
 				_fillGeometry.Path = null;
 			}
+			previousFill?.Dispose();
 		}
 
 		#endregion
