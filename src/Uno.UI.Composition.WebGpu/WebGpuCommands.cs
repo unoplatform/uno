@@ -19,7 +19,7 @@ namespace Uno.UI.Composition.WebGpu;
 // One clip entry, reached from the space the clip is expressed in through M. Analytic: a rounded rect in its own
 // space, exact under any affine since the shape never leaves the space it was recorded in. Mask: M maps to the
 // mask's texels and Rect is its slot in the draw's mask texture (see WebGpuCoverage.ResolveClipMasks).
-internal struct ClipEntry
+internal struct ClipEntry : System.IEquatable<ClipEntry>
 {
 	public Matrix3x2 M;     // clip space -> this entry's space (a mask's texel space)
 	public Vector4 Rect;    // L,T,R,B in the entry's space; a mask's slot x,y,w,h
@@ -30,6 +30,14 @@ internal struct ClipEntry
 
 	// The same entry expressed in a space that reaches this one through `m` (p_here = Transform(p_new, m)).
 	public ClipEntry Under(in Matrix3x2 m) => new() { M = m * M, Rect = Rect, Radii = Radii, RadiiY = RadiiY, Exclude = Exclude, Mask = Mask };
+
+	public readonly bool Equals(ClipEntry other)
+		=> M.Equals(other.M) && Rect.Equals(other.Rect) && Radii.Equals(other.Radii) && RadiiY.Equals(other.RadiiY)
+			&& Exclude == other.Exclude && Mask == other.Mask;
+
+	public override readonly bool Equals(object obj) => obj is ClipEntry other && Equals(other);
+
+	public override readonly int GetHashCode() => System.HashCode.Combine(M, Rect, Radii, RadiiY, Exclude, Mask);
 }
 
 // One path clip as recorded: the geometry and the matrix that was current, its fill rule, and whether it keeps the
@@ -98,11 +106,44 @@ internal unsafe struct ClipData
 
 	public static void PushEntry(ref ClipData clip, in ClipEntry e)
 	{
+		// The arrays are never written once built, so the same push onto the same prefix (a visual recorded again
+		// with the clip it had last frame) hands out the same array instead of a new one per recording.
+		var pushes = t_pushes ??= new();
+		var key = new PushKey(clip.Entries, e);
+		if (pushes.TryGetValue(key, out var shared))
+		{
+			clip.Entries = shared;
+			return;
+		}
+
 		int n = clip.Entries?.Length ?? 0;
 		var arr = new ClipEntry[n + 1];
 		if (n > 0) { System.Array.Copy(clip.Entries, arr, n); }
 		arr[n] = e;
+		if (pushes.Count >= MaxSharedPushes)
+		{
+			pushes.Clear();
+		}
+		pushes[key] = arr;
 		clip.Entries = arr;
+	}
+
+	private const int MaxSharedPushes = 4096;
+
+	[System.ThreadStatic]
+	private static System.Collections.Generic.Dictionary<PushKey, ClipEntry[]> t_pushes;
+
+	private readonly struct PushKey(ClipEntry[] prefix, ClipEntry entry) : System.IEquatable<PushKey>
+	{
+		private readonly ClipEntry[] _prefix = prefix;
+		private readonly ClipEntry _entry = entry;
+
+		public bool Equals(PushKey other) => ReferenceEquals(_prefix, other._prefix) && _entry.Equals(other._entry);
+
+		public override bool Equals(object obj) => obj is PushKey other && Equals(other);
+
+		public override int GetHashCode()
+			=> System.HashCode.Combine(System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(_prefix), _entry.GetHashCode());
 	}
 
 	public static PathClip[] PushPath(PathClip[] existing, PathClip pc)
