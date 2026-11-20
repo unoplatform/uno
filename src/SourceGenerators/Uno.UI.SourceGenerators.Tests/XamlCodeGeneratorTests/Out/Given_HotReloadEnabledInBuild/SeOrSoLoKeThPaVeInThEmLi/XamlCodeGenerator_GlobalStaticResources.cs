@@ -46,7 +46,7 @@ namespace MyProject
 			if(!_stylesRegistered)
 			{
 				_stylesRegistered = true;
-				RegisterDefaultStyles_Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d();
+				RegisterDefaultStyles_Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31();
 			}
 		}
 		// Register ResourceDictionaries using ms-appx:/// syntax, this is called for external resources
@@ -55,16 +55,16 @@ namespace MyProject
 			if(!_dictionariesRegistered)
 			{
 				_dictionariesRegistered = true;
-				global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///TestProject/0/Ma in Pägé.xaml", context: __ParseContext_, dictionary: () => Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d_ResourceDictionary);
+				global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///TestProject/0/Ma in Pägé.xaml", context: __ParseContext_, dictionary: () => Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31_ResourceDictionary);
 			}
 		}
 		// Register ResourceDictionaries using ms-resource:/// syntax, this is called for local resources
 		internal static void RegisterResourceDictionariesBySourceLocal()
 		{
-			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-resource:///Files/0/Ma in Pägé.xaml", context: null, dictionary: () => Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d_ResourceDictionary, null);
-			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///0/Ma in Pägé.xaml", context: null, dictionary: () => Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d_ResourceDictionary);
+			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-resource:///Files/0/Ma in Pägé.xaml", context: null, dictionary: () => Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31_ResourceDictionary, null);
+			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///0/Ma in Pägé.xaml", context: null, dictionary: () => Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31_ResourceDictionary);
 		}
-		static partial void RegisterDefaultStyles_Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d();
+		static partial void RegisterDefaultStyles_Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31();
 		
 	}
 }
