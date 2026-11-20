@@ -92,17 +92,39 @@ namespace Microsoft.UI.Xaml.Media
 						}
 					}
 					break;
+
+				case NotifyCollectionChangedAction.Reset:
+					// Clear() does not report the removed items: drop every registration and register what is left.
+					foreach (var (_, registration) in _childRegistrations)
+					{
+						registration.Dispose();
+					}
+
+					_childRegistrations.Clear();
+
+					if (sender is TransformCollection items)
+					{
+						foreach (var item in items)
+						{
+							OnChildAdded(item);
+						}
+					}
+					break;
 			}
 
 			NotifyChanged();
 		}
+
+		// One entry per child occurrence, so a child added twice keeps a registration until its last removal.
+		private readonly List<(Transform Child, IDisposable Registration)> _childRegistrations = new();
 
 		private void OnChildAdded(Transform transform)
 		{
 #if __ANDROID__ || __APPLE_UIKIT__
 			transform.View = View; // Animation support
 #endif
-			transform.Changed += OnChildTransformChanged;
+			// Weak registration: a child transform shared across groups must not root the discarded ones.
+			_childRegistrations.Add((transform, transform.RegisterChanged(OnChildTransformChanged)));
 		}
 
 		private void OnChildRemoved(Transform transform)
@@ -110,7 +132,12 @@ namespace Microsoft.UI.Xaml.Media
 #if __ANDROID__ || __APPLE_UIKIT__
 			transform.View = null; // Animation support
 #endif
-			transform.Changed -= OnChildTransformChanged;
+			var index = _childRegistrations.FindIndex(r => ReferenceEquals(r.Child, transform));
+			if (index >= 0)
+			{
+				_childRegistrations[index].Registration.Dispose();
+				_childRegistrations.RemoveAt(index);
+			}
 		}
 
 		private void OnChildTransformChanged(object sender, EventArgs e)
