@@ -144,7 +144,26 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		IsAccessibilityEnabled
 		&& (eventId == AutomationEvents.AutomationFocusChanged || AreUiaClientsListening());
 
+	// Asked before every automation event an element could raise, a value change or a property change, so thousands of
+	// times a second in an animating UI, and the answer only changes when a client connects or leaves.
+	private const long UiaListeningCacheMs = 250;
+	private bool _uiaClientsListening;
+	private long _uiaClientsListeningExpiry = long.MinValue;
+
 	private bool AreUiaClientsListening()
+	{
+		var now = Environment.TickCount64;
+		if (now < _uiaClientsListeningExpiry)
+		{
+			return _uiaClientsListening;
+		}
+
+		_uiaClientsListening = QueryUiaClientsListening();
+		_uiaClientsListeningExpiry = now + UiaListeningCacheMs;
+		return _uiaClientsListening;
+	}
+
+	private bool QueryUiaClientsListening()
 	{
 		try
 		{
