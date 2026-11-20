@@ -53,7 +53,22 @@ namespace Microsoft.UI.Xaml.Documents
 		protected override void OnForegroundChanged()
 		{
 			base.OnForegroundChanged();
-			InvalidateInlinesForFormatChange();
+
+			if (GetOwningTextBlock() is not { } textBlock || !textBlock.TryUpdateForegrounds())
+			{
+				InvalidateInlinesForFormatChange();
+			}
+		}
+
+		private Controls.TextBlock GetOwningTextBlock()
+		{
+			var parent = this.GetParent();
+			while (parent is Span span)
+			{
+				parent = span.GetParent();
+			}
+
+			return parent as Controls.TextBlock;
 		}
 
 		protected override void OnFontFamilyChanged()
