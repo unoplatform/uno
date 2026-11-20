@@ -69,7 +69,13 @@ The scene life cycle is used by default by apps built with the version 27 SDKs o
 
 Setting it to `false` keeps the app life cycle, which only SDKs older than 27 support. The key is ignored when its value is neither a boolean nor a number. With an older SDK and no key, Uno Platform keeps the app life cycle even when the application delegate overrides `GetConfiguration`: set the key to `true` to use your own scene configuration.
 
+<<<<<<< HEAD
 At startup, Uno Platform logs which life cycle the app runs, at the `Information` level of the `Uno.UI.Xaml.UnoUISceneDelegate` logger.
+=======
+When an iOS app is built with a version 27 SDK, the .NET iOS SDK checks that its `Info.plist` declares a scene manifest, and fails the build with [MT7199](https://github.com/dotnet/macios/blob/main/docs/website/mtouch-errors.md#mt7199) otherwise. That check can't see the scene lifecycle Uno Platform adopts in code, so the Uno.Sdk turns it off by setting the `ValidateSceneManifest` MSBuild property to `false`, unless the project sets it. An app that sets `UnoUseSceneLifecycle` to `false` loses this check: built with a version 27 SDK, it builds, but iOS 27 refuses to launch it. tvOS apps aren't checked.
+
+At startup, Uno Platform logs which lifecycle the app runs and what decided it, at the `Information` level of the `Uno.UI.Runtime.AppleUIKit.AppleUIKitLifecycle` logger. The default [logging setup](xref:Uno.Development.Logging) only shows warnings from `Uno` loggers, so add a filter to see it:
+>>>>>>> 60b0762 (docs(ios): Document the scene manifest build check)
 
 Under the scene life cycle, UIKit no longer calls the application delegate's URL, user activity, home-screen shortcut, and foreground and background methods. The Uno Platform scene delegate forwards each of them to the application delegate when it implements them, so overrides such as `OpenUrl`, `ContinueUserActivity`, `PerformActionForShortcutItem`, `OnActivated` and `DidEnterBackground` keep working. A few differences remain:
 
