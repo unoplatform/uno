@@ -19,6 +19,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		{
 			var (_, renderingArea) = ArrangeRelativeShape(finalSize);
 
+			RenderPathIsOwned = true;
 			Render(renderingArea.Width > 0 && renderingArea.Height > 0
 				? GetGeometry(renderingArea)
 				: null);
