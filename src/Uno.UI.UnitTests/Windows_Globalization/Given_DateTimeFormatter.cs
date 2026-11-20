@@ -148,6 +148,25 @@ public class Given_DateTimeFormatter
 		Assert.AreEqual(expected, formatter.Format(new DateTimeOffset(new DateTime(year, month, day, 13, 5, 7))).Replace('\u202F', ' '));
 	}
 
+	// WinRT's template dates have no era in these calendars ("٠٣‏/‏رجب‏/‏١٤٤٥", "113年1月15日", "15 มกราคม 2567").
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
+	[DataRow("ar-SA", "HijriCalendar")]
+	[DataRow("ar-SA", "UmAlQuraCalendar")]
+	[DataRow("ar-SA", "GregorianCalendar")]
+	[DataRow("en-US", "UmAlQuraCalendar")]
+	[DataRow("zh-TW", "TaiwanCalendar")]
+	[DataRow("th-TH", "ThaiCalendar")]
+	public void When_Calendar_Is_Not_Japanese_Or_Korean_Then_Template_Has_No_Era(string language, string calendar)
+	{
+		foreach (var template in new[] { "shortdate", "longdate", "year month", "year month day", "year month day dayofweek", "month day" })
+		{
+			var pattern = new DateTimeFormatter(template, [language], "ZZ", calendar, ClockIdentifiers.TwentyFourHour).Patterns[0];
+
+			Assert.IsFalse(pattern.Contains("{era", StringComparison.Ordinal), $"{template}: {pattern}");
+		}
+	}
+
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25572")]
 	public void When_Calendar_Has_No_DotNet_Calendar_Then_Formatter_Is_Created()

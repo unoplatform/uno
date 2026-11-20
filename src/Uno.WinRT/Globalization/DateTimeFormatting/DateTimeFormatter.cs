@@ -577,9 +577,10 @@ public sealed partial class DateTimeFormatter
 			}
 		}
 
-		if (dateFormat.Calendar is GregorianCalendar)
+		if (_context.Calendar is not (JapaneseCalendar or KoreanCalendar))
 		{
-			// WinRT names no era in Gregorian dates, which some .NET patterns have ("MMMM yyyy g" for ar-SA).
+			// WinRT's template dates name an era only in the Japanese and Korean calendars (令和, 단기), where .NET's
+			// patterns have one in others too ("MMMM yyyy g" for ar-SA, "بعد الهجرة" in its Hijri dates).
 			datePattern = RemoveFields(datePattern, EraFieldRegex());
 		}
 
