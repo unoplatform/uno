@@ -13,6 +13,10 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 	internal List<TextBoxCore> LiveTextBoxes { get; } = new();
 	internal Dictionary<int, TextBoxCore> LiveTextBoxesMap { get; } = new();
 
+	// Visibility last reported to the autofill framework, per live TextBox.
+	private readonly Dictionary<TextBoxCore, bool> _reportedVisibility = new();
+	private FrameworkElement? _layoutUpdatedSource;
+
 	public static AndroidSkiaTextBoxNotificationsProviderSingleton Instance { get; } = new AndroidSkiaTextBoxNotificationsProviderSingleton();
 
 	private AndroidSkiaTextBoxNotificationsProviderSingleton()
@@ -21,7 +25,7 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 
 	// Resolves the text input plugin of the render view owning the given XamlRoot's window.
 	// TODO #8341: the foreground-activity fallback is ambiguous once multiple windows exist.
-	private static TextInputPlugin? GetTextInputPlugin(XamlRoot? xamlRoot = null)
+	internal static TextInputPlugin? GetTextInputPlugin(XamlRoot? xamlRoot = null)
 	{
 		var activity = AndroidSkiaXamlRootHost.GetActivity(xamlRoot)
 			?? BaseActivity.Current as ApplicationActivity;
@@ -70,14 +74,70 @@ internal sealed class AndroidSkiaTextBoxNotificationsProviderSingleton : ITextBo
 
 	public void OnEnteredVisualTree(TextBoxCore textBox)
 	{
-		LiveTextBoxes.Add(textBox);
-		LiveTextBoxesMap.Add(textBox.GetHashCode(), textBox);
+		// Unloaded runs before the next Loaded (also when re-parenting), but never register an instance twice.
+		if (LiveTextBoxesMap.TryAdd(textBox.GetHashCode(), textBox))
+		{
+			LiveTextBoxes.Add(textBox);
+			UpdateLayoutUpdatedSubscription();
+		}
+
+		ReportVisibility(textBox, IsEffectivelyVisible(textBox));
 	}
 
 	public void OnLeaveVisualTree(TextBoxCore textBox)
 	{
 		LiveTextBoxes.Remove(textBox);
 		LiveTextBoxesMap.Remove(textBox.GetHashCode());
+		UpdateLayoutUpdatedSubscription();
+
+		// Lets the autofill framework offer to save the credentials once every field of the form is gone.
+		ReportVisibility(textBox, isVisible: false);
+		_reportedVisibility.Remove(textBox);
+	}
+
+	// A TextBox hidden by a collapsed ancestor or a page being navigated away from.
+	internal static bool IsEffectivelyVisible(TextBoxCore textBox)
+		=> textBox.Owner.Visibility == Visibility.Visible && textBox.Owner.AreAllAncestorsVisible();
+
+	private void ReportVisibility(TextBoxCore textBox, bool isVisible)
+	{
+		if (_reportedVisibility.TryGetValue(textBox, out var reported) && reported == isVisible)
+		{
+			return;
+		}
+
+		_reportedVisibility[textBox] = isVisible;
+		GetTextInputPlugin(textBox.Owner.XamlRoot)?.NotifyViewVisibilityChanged(textBox.GetHashCode(), isVisible);
+	}
+
+	// LayoutUpdated is raised for every layout pass whichever element subscribed, so one live TextBox
+	// is enough to catch the visibility changes (e.g. a login panel collapsed instead of unloaded).
+	private void UpdateLayoutUpdatedSubscription()
+	{
+		var source = LiveTextBoxes.Count > 0 ? LiveTextBoxes[0].Owner : null;
+		if (ReferenceEquals(source, _layoutUpdatedSource))
+		{
+			return;
+		}
+
+		if (_layoutUpdatedSource is not null)
+		{
+			_layoutUpdatedSource.LayoutUpdated -= OnLayoutUpdated;
+		}
+
+		_layoutUpdatedSource = source;
+		if (source is not null)
+		{
+			source.LayoutUpdated += OnLayoutUpdated;
+		}
+	}
+
+	private void OnLayoutUpdated(object? sender, object e)
+	{
+		foreach (var textBox in LiveTextBoxes)
+		{
+			ReportVisibility(textBox, IsEffectivelyVisible(textBox));
+		}
 	}
 
 	public void FinishAutofillContext(bool shouldSave)

@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Android.Content;
 using Android.OS;
 using Android.Text;
+using Android.Util;
 using Android.Views;
 using Android.Views.Autofill;
 using Android.Views.InputMethods;
@@ -60,17 +63,18 @@ internal sealed class TextInputPlugin
 		}
 
 		var physicalRect = GetPhysicalRect(textBox.Owner);
+		var offset = new int[2];
+		_view.GetLocationOnScreen(offset);
+		physicalRect = physicalRect.OffsetRect(offset[0], offset[1]);
 		_afm.NotifyViewEntered(_view, virtualId, new((int)physicalRect.Left, (int)physicalRect.Top, (int)physicalRect.Right, (int)physicalRect.Bottom));
 	}
 
-	private Windows.Foundation.Rect GetPhysicalRect(Control textBox)
+	// Bounds in physical pixels, relative to the render view.
+	private static Windows.Foundation.Rect GetPhysicalRect(Control textBox)
 	{
-		int[] offset = new int[2];
-		_view.GetLocationOnScreen(offset);
 		var transform = UIElement.GetTransform(from: textBox, to: null);
 		var logicalRect = transform.Transform(new Windows.Foundation.Rect(default, new Windows.Foundation.Size(textBox.Visual.Size.X, textBox.Visual.Size.Y)));
-		var physicalRect = logicalRect.LogicalToPhysicalPixels();
-		return physicalRect.OffsetRect(offset[0], offset[1]);
+		return logicalRect.LogicalToPhysicalPixels();
 	}
 
 	internal void NotifyViewExited(TextBoxCore textBox, int virtualId)
@@ -83,6 +87,15 @@ internal sealed class TextInputPlugin
 		}
 
 		_afm.NotifyViewExited(_view, virtualId);
+	}
+
+	internal void NotifyViewVisibilityChanged(int virtualId, bool isVisible)
+	{
+		// Unlike the rest of AutofillManager (API 26), the virtual-view overload was added in API 27.
+		if (OperatingSystem.IsAndroidVersionAtLeast(27))
+		{
+			_afm?.NotifyViewVisibilityChanged(_view, virtualId, isVisible);
+		}
 	}
 
 	internal void FinishAutofillContext(bool shouldSave)
@@ -104,7 +117,8 @@ internal sealed class TextInputPlugin
 
 	internal void NotifyValueChanged(int virtualId, string newValue)
 	{
-		this.LogDebug()?.Debug($"NotifyValueChanged: {newValue}");
+		// Never log the value: it can be a password.
+		this.LogDebug()?.Debug($"NotifyValueChanged: {virtualId}");
 
 		_afm?.NotifyValueChanged(_view, virtualId, AutofillValue.ForText(newValue));
 		_inputConnection?.OnTextInputHostChanged();
@@ -225,31 +239,131 @@ internal sealed class TextInputPlugin
 		}
 	}
 
+	// Called by Android: an exception must not cross back into Java, an autofill service would crash the app.
 	internal void OnProvideAutofillVirtualStructure(ViewStructure? structure)
 	{
-#if false // Removing temporarily. We'll need to add it back.
-		var textBoxes = AndroidSkiaTextBoxNotificationsProviderSingleton.Instance.LiveTextBoxes;
-		var index = structure!.AddChildCount(textBoxes.Count);
-		var parentId = structure.AutofillId!;
-		for (int i = 0; i < textBoxes.Count; i++)
+		if (structure?.AutofillId is not { } parentId)
 		{
-			var textBox = textBoxes[i];
+			return;
+		}
+
+		try
+		{
+			ProvideAutofillVirtualStructure(structure, parentId);
+		}
+		catch (Exception e)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"{nameof(OnProvideAutofillVirtualStructure)} failed", e);
+			}
+		}
+	}
+
+	internal void Autofill(SparseArray values)
+	{
+		try
+		{
+			for (var i = 0; i < values.Size(); i++)
+			{
+				if (AndroidSkiaTextBoxNotificationsProviderSingleton.Instance.LiveTextBoxesMap.TryGetValue(values.KeyAt(i), out var textBox)
+					&& textBox.Owner.IsEnabled
+					&& !textBox.IsReadOnly
+					&& ReferenceEquals(AndroidSkiaTextBoxNotificationsProviderSingleton.GetTextInputPlugin(textBox.Owner.XamlRoot), this)
+					&& values.ValueAt(i) is AutofillValue { IsText: true } value)
+				{
+					textBox.Text = value.TextValue ?? string.Empty;
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"{nameof(Autofill)} failed", e);
+			}
+		}
+	}
+
+	private void ProvideAutofillVirtualStructure(ViewStructure structure, AutofillId parentId)
+	{
+		// Expose each TextBox of this view as a virtual child, so autofill services
+		// (Google, password managers) see fields like they did with native EditText controls.
+		var fields = GetAutofillFields();
+		var index = structure.AddChildCount(fields.Count);
+		for (var i = 0; i < fields.Count; i++)
+		{
+			var (textBox, physicalRect, isVisible) = fields[i];
 			var child = structure.NewChild(index + i);
-			child!.SetAutofillId(parentId, textBox.GetHashCode());
-			child.SetDataIsSensitive(textBox is PasswordBox);
+			if (child is null)
+			{
+				continue;
+			}
 
-			// This is not really correct implementation.
-			// We cannot determine ourselves the autofill hints.
-			// Consider exposing a public API for the user to be able to specify this.
-			child.SetAutofillHints([textBox is PasswordBox ? "password" : "username"]);
+			// Must match the ids used by NotifyViewEntered/NotifyValueChanged and View.Autofill.
+			child.SetAutofillId(parentId, textBox.GetHashCode());
+			child.SetClassName("android.widget.EditText");
+			// User-entered text is sensitive (like a native EditText): stripped from fill requests, still sent for saving.
+			child.SetDataIsSensitive(true);
 			child.SetAutofillType(AutofillType.Text);
-			child.SetVisibility(ViewStates.Visible);
-			// Do we need child.Hint? How to set it?
+			child.SetAutofillValue(AutofillValue.ForText(textBox.Text ?? string.Empty));
+			child.SetInputType((int)ConvertInputScope(textBox));
+			child.SetEnabled(textBox.Owner.IsEnabled && !textBox.IsReadOnly);
+			child.SetVisibility(isVisible ? ViewStates.Visible : ViewStates.Gone);
 
-			var physicalRect = GetPhysicalRect(textBox);
+			var isBeforePassword = isVisible && i + 1 < fields.Count && fields[i + 1] is { IsVisible: true, TextBox.IsPassword: true };
+			if (GetAutofillHints(textBox, isBeforePassword) is { } hints)
+			{
+				child.SetAutofillHints(hints);
+			}
+
 			child.SetDimens((int)physicalRect.Left, (int)physicalRect.Top, 0, 0, (int)physicalRect.Width, (int)physicalRect.Height);
 		}
-#endif
+	}
+
+	private readonly record struct AutofillField(TextBoxCore TextBox, Windows.Foundation.Rect PhysicalRect, bool IsVisible);
+
+	// The TextBoxes of this view's window in screen order (top to bottom, then left to right), hidden ones last:
+	// the order the username hint relies on.
+	private List<AutofillField> GetAutofillFields()
+	{
+		var fields = new List<AutofillField>();
+		foreach (var textBox in AndroidSkiaTextBoxNotificationsProviderSingleton.Instance.LiveTextBoxes)
+		{
+			if (!ReferenceEquals(AndroidSkiaTextBoxNotificationsProviderSingleton.GetTextInputPlugin(textBox.Owner.XamlRoot), this))
+			{
+				continue;
+			}
+
+			var isVisible = AndroidSkiaTextBoxNotificationsProviderSingleton.IsEffectivelyVisible(textBox);
+			fields.Add(new(textBox, isVisible ? GetPhysicalRect(textBox.Owner) : default, isVisible));
+		}
+
+		return fields
+			.OrderBy(f => !f.IsVisible)
+			.ThenBy(f => f.PhysicalRect.Top)
+			.ThenBy(f => f.PhysicalRect.Left)
+			.ToList();
+	}
+
+	// No public API to set autofill hints yet: derived from the password mode and input scope, like the iOS TextContentType.
+	private static string[]? GetAutofillHints(TextBoxCore textBox, bool isBeforePassword)
+	{
+		if (textBox.IsPassword)
+		{
+			return [View.AutofillHintPassword];
+		}
+
+		return textBox.InputScope.GetFirstInputScopeNameValue() switch
+		{
+			InputScopeNameValue.EmailNameOrAddress or InputScopeNameValue.EmailSmtpAddress => [View.AutofillHintEmailAddress],
+			InputScopeNameValue.TelephoneNumber => [View.AutofillHintPhone],
+			InputScopeNameValue.PersonalFullName => [View.AutofillHintName],
+			// The username of a login form: some services (Google) don't recognize it without the hint.
+			_ when isBeforePassword => [View.AutofillHintUsername],
+			// Left to the autofill service heuristics (inputType).
+			_ => null,
+		};
 	}
 
 	internal static InputTypes ConvertInputScope(IImeSessionHost host)

@@ -9,6 +9,7 @@ internal interface ITextBoxNotificationsProviderSingleton
 
 	void OnUnfocused(TextBoxCore core);
 
+	// Called on every Loaded/Unloaded of the text input, so the same instance can come again: implementations must be idempotent.
 	void OnEnteredVisualTree(TextBoxCore core);
 
 	void OnLeaveVisualTree(TextBoxCore core);
