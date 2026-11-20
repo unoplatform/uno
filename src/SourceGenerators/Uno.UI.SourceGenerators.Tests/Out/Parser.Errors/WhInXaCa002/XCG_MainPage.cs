@@ -261,6 +261,7 @@ namespace TestRepro
 										{
 										__nameScope.RegisterName("PreviewColumn", __p1);
 										__that.PreviewColumn = __p1;
+										global::Uno.UI.Helpers.MarkupHelper.SetXName(__p1, "PreviewColumn");
 										}
 										))
 									)

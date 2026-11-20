@@ -6,7 +6,7 @@ uid: Uno.Development.MigratingToUno7.Xaml
 
 Part of [Migrating to Uno Platform 7.0](xref:Uno.Development.MigratingToUno7).
 
-**Read this if** your XAML uses `clr-namespace:`, `XamlDefault*` or `NativeDefault*` styles, hand-merged Fluent dictionaries or relative URIs, or doesn't merge `XamlControlsResources`.
+**Read this if** your XAML uses `clr-namespace:`, `XamlDefault*` or `NativeDefault*` styles, hand-merged Fluent dictionaries, relative URIs or `x:Name` on custom `DependencyObject` types, or doesn't merge `XamlControlsResources`.
 
 **Skip it if** your XAML is plain WinUI markup with no relative URIs, and your app merges `XamlControlsResources`. Conditional prefixes such as `skia:` are covered in [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7.Libraries#removed-xaml-prefixes).
 
@@ -190,6 +190,24 @@ See also: [`Uno.UI.FluentTheme.v2` merged](xref:Uno.Development.MigratingToUno7.
 
 `ContentDialog`'s light-dismiss overlay now uses `SystemControlPageBackgroundMediumAltMediumBrush`,
 matching WinUI, so overriding `ContentDialogLightDismissOverlayBackground` no longer changes it.
+
+## Names
+
+### `x:Name` on a custom `DependencyObject` no longer sets its own `Name` property
+
+As on WinUI,
+`x:Name` on any non-`FrameworkElement` `DependencyObject` is stored in the framework's name property
+(`FrameworkElement.NameProperty`, read back with `GetValue(FrameworkElement.NameProperty)`), even when
+the type declares its own CLR `Name` property or a `"Name"` dependency property. Uno used to write
+`x:Name` into that property, so code that read it now gets its default value. Use a plain `Name="..."`
+attribute to set the type's own property, or read `GetValue(FrameworkElement.NameProperty)`.
+
+### `VisualState.Name` and `VisualStateGroup.Name` default to `""`, not `null`
+
+This matches WinUI.
+Code that checks an unnamed state or group with `Name == null` or `Name ?? ...` should use
+`string.IsNullOrEmpty(Name)`. As on WinUI, `VisualStateManager.GoToState(control, "", ...)` returns
+`false` and never activates an unnamed state.
 
 ## Related pages
 
