@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml
 			else if (_associatedParentRef is not null && AssociatedParent is null)
 			{
 				// The weakly held parent was already collected: drop the DataContext it propagated, as above.
-				_associatedParentRef = null;
+				ReleaseCollectedParent();
 				associationCleared = true;
 			}
 
