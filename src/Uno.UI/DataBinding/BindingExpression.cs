@@ -19,9 +19,13 @@ namespace Microsoft.UI.Xaml.Data
 		private readonly Type _targetOwnerType;
 
 		private ManagedWeakReference _dataContext;
-		private readonly SerialDisposable _subscription = new SerialDisposable();
+		private readonly SerialDisposable _subscription;
 
 		private BindingPath _bindingPath;
+		private Binding _parentBinding;
+		private readonly DependencyProperty _templateBindingSourceProperty;
+		private readonly string _templateBindingPath;
+		private IDisposable _templateBindingSubscription;
 		private bool _disposed;
 		private ManagedWeakReference _explicitSourceStore;
 		private readonly bool _isCompiledSource;
@@ -34,7 +38,12 @@ namespace Microsoft.UI.Xaml.Data
 		private bool _IsCurrentlyPushingTwoWay;
 		private bool _IsCurrentlyPushing;
 
-		public Binding ParentBinding { get; }
+		public Binding ParentBinding
+			=> _parentBinding ??= new Binding
+			{
+				Path = new PropertyPath(_templateBindingPath),
+				RelativeSource = RelativeSource.TemplatedParent,
+			};
 
 		internal DependencyPropertyDetails TargetPropertyDetails { get; }
 
@@ -48,6 +57,18 @@ namespace Microsoft.UI.Xaml.Data
 		/// The owner of the bound property: an expression offers no other way back to it.
 		/// </summary>
 		internal ManagedWeakReference ViewReference => _view;
+
+		internal bool IsTemplateBinding
+			=> _templateBindingSourceProperty is not null || _parentBinding?.IsTemplateBinding == true;
+
+		internal DependencyProperty TemplateBindingSourceProperty => _templateBindingSourceProperty;
+
+		internal string TemplateBindingPath => _templateBindingPath;
+
+		internal static string GetTemplateBindingPath(DependencyProperty sourceProperty)
+			=> sourceProperty.IsAttached
+				? $"({sourceProperty.OwnerType.Namespace}:{sourceProperty.OwnerType.Name}.{sourceProperty.Name})"
+				: sourceProperty.Name;
 
 		private object ExplicitSource
 		{
@@ -63,7 +84,7 @@ namespace Microsoft.UI.Xaml.Data
 		{
 			get
 			{
-				if (ParentBinding.IsTemplateBinding)
+				if (IsTemplateBinding)
 				{
 					return (_view?.Target as DependencyObject)?.GetTemplatedParent();
 				}
@@ -77,7 +98,7 @@ namespace Microsoft.UI.Xaml.Data
 			set
 			{
 				if (!_disposed &&
-					!ParentBinding.IsTemplateBinding &&
+					!IsTemplateBinding &&
 					ExplicitSource == null &&
 					DependencyObject.AreDifferent(_dataContext?.Target, value))
 				{
@@ -94,7 +115,7 @@ namespace Microsoft.UI.Xaml.Data
 			}
 		}
 
-		public object DataItem => _bindingPath.DataItem;
+		public object DataItem => _templateBindingSourceProperty is not null ? DataContext : _bindingPath.DataItem;
 
 		/// <summary>
 		/// The object and property name at the leaf of the binding path, i.e. what may implement
@@ -133,20 +154,14 @@ namespace Microsoft.UI.Xaml.Data
 			Binding binding
 		)
 		{
-			ParentBinding = binding;
+			_parentBinding = binding;
+			_subscription = new SerialDisposable();
 
 			// As bindings are only glue between layers, they must not prevent collection neither of View nor Binding Source
 			// Keep only a weak reference on View in order break the circular reference between Source.ValueChanged event and SetValue on View
 			// especially when Binding source is a StaticRessource which is never collected !
 			// Note: Bindings should still be disposed in order to also remove reference on the Source.
-			_view = viewReference;
-
-			if (_view?.Target is AttachedDependencyObject ado)
-			{
-				// This case is used to process x:Bind compiled bindings, where the POCO is wrapped around an
-				// AttachedDependencyObject instance to make it bindable.
-				_view = ado.OwnerWeakReference;
-			}
+			_view = GetViewReference(viewReference);
 
 			_targetOwnerType = targetPropertyDetails.Property.OwnerType;
 			TargetPropertyDetails = targetPropertyDetails;
@@ -206,6 +221,34 @@ namespace Microsoft.UI.Xaml.Data
 			ApplyElementName();
 		}
 
+		internal BindingExpression(
+			ManagedWeakReference viewReference,
+			DependencyPropertyDetails targetPropertyDetails,
+			DependencyProperty templateBindingSourceProperty,
+			string templateBindingPath)
+		{
+			_view = GetViewReference(viewReference);
+			_targetOwnerType = targetPropertyDetails.Property.OwnerType;
+			TargetPropertyDetails = targetPropertyDetails;
+			_boundPropertyType = targetPropertyDetails.Property.Type;
+			_templateBindingSourceProperty = templateBindingSourceProperty;
+			_templateBindingPath = templateBindingPath;
+
+			ApplyTemplateBindingParent();
+		}
+
+		private static ManagedWeakReference GetViewReference(ManagedWeakReference viewReference)
+		{
+			if (viewReference?.Target is AttachedDependencyObject ado)
+			{
+				// This case is used to process x:Bind compiled bindings, where the POCO is wrapped around an
+				// AttachedDependencyObject instance to make it bindable.
+				return ado.OwnerWeakReference;
+			}
+
+			return viewReference;
+		}
+
 		private ManagedWeakReference GetWeakTemplatedParent()
 		{
 			return (_view?.Target as DependencyObject)?.GetTemplatedParentWeakRef();
@@ -217,7 +260,7 @@ namespace Microsoft.UI.Xaml.Data
 			{
 				return _explicitSourceStore;
 			}
-			if (ParentBinding.IsTemplateBinding)
+			if (IsTemplateBinding)
 			{
 				return GetWeakTemplatedParent();
 			}
@@ -230,6 +273,11 @@ namespace Microsoft.UI.Xaml.Data
 		/// </summary>
 		public void UpdateSource()
 		{
+			if (_templateBindingSourceProperty is not null)
+			{
+				return;
+			}
+
 			if (TryGetTargetValue(out var value))
 			{
 				UpdateSource(value);
@@ -245,6 +293,11 @@ namespace Microsoft.UI.Xaml.Data
 		/// <param name="value">The expected current value of the target</param>
 		public void UpdateSource(object value)
 		{
+			if (_templateBindingSourceProperty is not null)
+			{
+				return;
+			}
+
 			if ((_IsCurrentlyPushing || _IsCurrentlyPushingTwoWay))
 			{
 				return;
@@ -322,7 +375,7 @@ namespace Microsoft.UI.Xaml.Data
 		/// <param name="value"></param>
 		public void SetSourceValue(object value)
 		{
-			if (_disposed)
+			if (_disposed || _templateBindingSourceProperty is not null)
 			{
 				return;
 			}
@@ -354,7 +407,15 @@ namespace Microsoft.UI.Xaml.Data
 			if (!_isBindingSuspended)
 			{
 				_isBindingSuspended = true;
-				_subscription.Disposable = null;
+				if (_templateBindingSourceProperty is not null)
+				{
+					_templateBindingSubscription?.Dispose();
+					_templateBindingSubscription = null;
+				}
+				else
+				{
+					_subscription.Disposable = null;
+				}
 			}
 		}
 
@@ -366,7 +427,14 @@ namespace Microsoft.UI.Xaml.Data
 			if (_isBindingSuspended)
 			{
 				_isBindingSuspended = false;
-				ApplyBinding();
+				if (_templateBindingSourceProperty is not null)
+				{
+					ApplyTemplateBindingParent();
+				}
+				else
+				{
+					ApplyBinding();
+				}
 			}
 		}
 
@@ -376,10 +444,26 @@ namespace Microsoft.UI.Xaml.Data
 		/// comes from a re-resolved <c>{ThemeResource}</c> TargetNullValue/FallbackValue, which must be
 		/// re-applied even though the DataContext itself didn't change.
 		/// </summary>
-		internal void Reapply() => ApplyBinding();
+		internal void Reapply()
+		{
+			if (_templateBindingSourceProperty is not null)
+			{
+				ApplyTemplateBindingParent();
+			}
+			else
+			{
+				ApplyBinding();
+			}
+		}
 
 		internal void RefreshTarget()
 		{
+			if (_templateBindingSourceProperty is not null)
+			{
+				RefreshTemplateBindingTarget();
+				return;
+			}
+
 			ApplyElementName();
 
 			if (
@@ -418,6 +502,11 @@ namespace Microsoft.UI.Xaml.Data
 
 		internal void ApplyElementName()
 		{
+			if (_templateBindingSourceProperty is not null)
+			{
+				return;
+			}
+
 			if (ParentBinding.ElementNameSubject is { } elementNameSubject)
 			{
 
@@ -473,6 +562,11 @@ namespace Microsoft.UI.Xaml.Data
 
 		private void ApplyExplicitSource()
 		{
+			if (_templateBindingSourceProperty is not null)
+			{
+				return;
+			}
+
 			if (_isElementNameSource || ExplicitSource != null && !_isCompiledSource)
 			{
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -486,6 +580,11 @@ namespace Microsoft.UI.Xaml.Data
 
 		internal void ApplyCompiledSource()
 		{
+			if (_templateBindingSourceProperty is not null)
+			{
+				return;
+			}
+
 			if (_isCompiledSource && ExplicitSource != null)
 			{
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -498,6 +597,11 @@ namespace Microsoft.UI.Xaml.Data
 		}
 		internal void SuspendCompiledSource()
 		{
+			if (_templateBindingSourceProperty is not null)
+			{
+				return;
+			}
+
 			if (_isCompiledSource && ExplicitSource != null)
 			{
 				SuspendBinding();
@@ -506,7 +610,33 @@ namespace Microsoft.UI.Xaml.Data
 
 		internal void ApplyTemplateBindingParent()
 		{
-			if (ParentBinding.IsTemplateBinding)
+			if (_templateBindingSourceProperty is not null)
+			{
+				_templateBindingSubscription?.Dispose();
+				_templateBindingSubscription = null;
+
+				if (_disposed || _isBindingSuspended)
+				{
+					return;
+				}
+
+				if (GetWeakTemplatedParent()?.Target is DependencyObject templatedParent)
+				{
+					_templateBindingSubscription = templatedParent.RegisterPropertyChangedCallback(
+						_templateBindingSourceProperty,
+						OnTemplateBindingSourceChanged);
+
+					SetTemplateBindingTargetValue(templatedParent.GetValue(_templateBindingSourceProperty));
+				}
+				else
+				{
+					ApplyTemplateBindingDefaultValue();
+				}
+
+				return;
+			}
+
+			if (IsTemplateBinding)
 			{
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
@@ -515,6 +645,79 @@ namespace Microsoft.UI.Xaml.Data
 
 				ApplyBinding();
 			}
+		}
+
+		private void RefreshTemplateBindingTarget()
+		{
+			if (GetWeakTemplatedParent()?.Target is DependencyObject templatedParent)
+			{
+				SetTemplateBindingTargetValue(templatedParent.GetValue(_templateBindingSourceProperty));
+			}
+			else
+			{
+				ApplyTemplateBindingDefaultValue();
+			}
+		}
+
+		private void OnTemplateBindingSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+			=> SetTemplateBindingTargetValue(args.NewValue);
+
+		private void SetTemplateBindingTargetValue(object value)
+		{
+			void SetValue()
+			{
+				if (ReferenceEquals(value, DependencyProperty.UnsetValue))
+				{
+					ApplyTemplateBindingDefaultValue();
+					return;
+				}
+
+				_IsCurrentlyPushing = true;
+				SetTargetValue(ConvertToBoundPropertyType(value));
+				_IsCurrentlyPushing = false;
+			}
+
+			if (FeatureConfiguration.BindingExpression.HandleSetTargetValueExceptions)
+			{
+				try
+				{
+					SetValue();
+				}
+				catch (Exception e) when (!IsFatalException(e))
+				{
+					_IsCurrentlyPushing = false;
+
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+					{
+						this.Log().Error("Failed to apply template binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
+					}
+
+					try
+					{
+						ApplyTemplateBindingDefaultValue();
+					}
+					catch (Exception e2) when (!IsFatalException(e2))
+					{
+						if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
+						{
+							this.Log().Error("Failed to apply the default value for template-bound property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e2.Message), e2);
+						}
+					}
+				}
+			}
+			else
+			{
+				SetValue();
+			}
+		}
+
+		private static bool IsFatalException(Exception exception)
+			=> exception is OutOfMemoryException or StackOverflowException or AccessViolationException;
+
+		private void ApplyTemplateBindingDefaultValue()
+		{
+			var viewTarget = _view.Target;
+			SetTargetValue(TargetPropertyDetails.Property.GetDefaultValue(viewTarget as DependencyObject, viewTarget?.GetType()));
 		}
 
 		private void TryGetSource(Binding binding)
@@ -569,7 +772,19 @@ namespace Microsoft.UI.Xaml.Data
 
 			if (viewTarget != null)
 			{
-				if (ParentBinding.RelativeSource?.Mode == RelativeSourceMode.TemplatedParent)
+				void SetValue()
+				{
+					if (_templateBindingSourceProperty is not null && viewTarget is DependencyObject dependencyObject)
+					{
+						dependencyObject.SetValue(TargetPropertyDetails.Property, value);
+					}
+					else
+					{
+						GetValueSetter()(viewTarget, value);
+					}
+				}
+
+				if (IsTemplateBinding)
 				{
 					// Very hacky workaround. In WinUI, setting a local value *after* animation value will
 					// cause the local value to take precedence, and we aligned this behavior in Uno.
@@ -580,7 +795,7 @@ namespace Microsoft.UI.Xaml.Data
 					try
 					{
 						ModifiedValue.SuppressLocalCanDefeatAnimations();
-						GetValueSetter()(viewTarget, value);
+						SetValue();
 					}
 					finally
 					{
@@ -589,7 +804,7 @@ namespace Microsoft.UI.Xaml.Data
 				}
 				else
 				{
-					GetValueSetter()(viewTarget, value);
+					SetValue();
 				}
 			}
 			else
@@ -935,9 +1150,11 @@ namespace Microsoft.UI.Xaml.Data
 
 		public void Dispose()
 		{
-			_subscription.Dispose();
-			_bindingPath.Dispose();
 			_disposed = true;
+			_templateBindingSubscription?.Dispose();
+			_templateBindingSubscription = null;
+			_subscription?.Dispose();
+			_bindingPath?.Dispose();
 		}
 	}
 }
