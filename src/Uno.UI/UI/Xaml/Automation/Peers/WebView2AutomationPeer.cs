@@ -18,7 +18,7 @@ public partial class WebView2AutomationPeer : FrameworkElementAutomationPeer
 		ArgumentNullException.ThrowIfNull(owner);
 	}
 
-	protected override string GetClassNameCore() => nameof(WebView2);
+	protected override string GetClassNameCore() => typeof(WebView2).FullName!;
 
 	protected override AutomationControlType GetAutomationControlTypeCore()
 		=> AutomationControlType.Pane;

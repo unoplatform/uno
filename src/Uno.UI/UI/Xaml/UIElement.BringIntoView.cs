@@ -37,9 +37,9 @@ public partial class UIElement
 			throw new ArgumentNullException(nameof(options));
 		}
 
-		if (Visibility == Visibility.Collapsed || this is FrameworkElement { IsLoaded: false })
+		if (!IsActiveInVisualTree)
 		{
-			// Element must be loaded and visible for bring into view.
+			// Bringing into view requires the element to be in the live tree (it doesn't need to be Loaded yet).
 			return;
 		}
 

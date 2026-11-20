@@ -14,10 +14,6 @@ using MUXControlsTestApp;
 using Private.Infrastructure;
 using System.Threading.Tasks;
 
-#if !HAS_UNO_WINUI
-using Windows.UI.Xaml.Controls;
-#endif
-
 namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 {
 	[TestClass]

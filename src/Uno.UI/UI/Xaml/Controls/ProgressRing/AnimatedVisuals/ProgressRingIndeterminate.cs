@@ -33,7 +33,7 @@
 // | Gradient stops           |     - |
 // | CompositionVisualSurface |     - |
 // ------------------------------------
-// MUX Reference ProgressRing/AnimatedVisuals/ProgressRingIndeterminate.cpp and .h, commit 8463f4516
+// MUX Reference ProgressRing/AnimatedVisuals/ProgressRingIndeterminate.cpp and .h
 
 using System;
 using System.Collections.Generic;

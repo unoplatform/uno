@@ -10,20 +10,23 @@
         ],
         "tests": [
           "controls/dev/NavigationView/NavigationView_ApiTests",
-          "controls/dev/NavigationView/NavigationView_InteractionTests"
+          "controls/dev/NavigationView/TestUI"
         ],
         "strings": "controls/dev/NavigationView/Strings"
       },
       "uno": {
         "sources": [
           "src/Uno.UI/UI/Xaml/Controls/NavigationView",
+          "src/Uno.UI/Helpers/WinUI/SplitDataSourceBase.cs",
+          "src/Uno.UI/Helpers/WinUI/SplitVector.cs",
           "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationBackButton_themeresources.xaml",
           "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationBackButton.xaml",
           "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationView_themeresources.xaml",
           "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationView.xaml"
         ],
         "tests": [
-          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/NavigationView"
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/NavigationView",
+          "src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/NavigationViewTests"
         ],
         "strings": "src/Uno.UI/UI/Xaml/Controls/NavigationView/Strings"
       }
@@ -38,7 +41,7 @@
         ],
         "tests": [
           "controls/dev/Breadcrumb/APITests",
-          "controls/dev/Breadcrumb/InteractionTests"
+          "controls/dev/Breadcrumb/TestUI"
         ],
         "strings": "controls/dev/Breadcrumb/Strings"
       },
@@ -47,6 +50,10 @@
           "src/Uno.UI/UI/Xaml/Controls/BreadcrumbBar",
           "src/Uno.UI.FluentTheme/Resources/PriorityDefault/BreadcrumbBar_themeresources.xaml",
           "src/Uno.UI.FluentTheme/Resources/PriorityDefault/BreadcrumbBar.xaml"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/Breadcrumb",
+          "src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/BreadcrumbTests"
         ],
         "strings": "src/Uno.UI/UI/Xaml/Controls/BreadcrumbBar/Strings"
       }
@@ -61,7 +68,7 @@
         ],
         "tests": [
           "controls/dev/SelectorBar/APITests",
-          "controls/dev/SelectorBar/InteractionTests"
+          "controls/dev/SelectorBar/TestUI"
         ],
         "strings": "controls/dev/SelectorBar/Strings"
       },
@@ -72,7 +79,8 @@
           "src/Uno.UI.FluentTheme/Resources/PriorityDefault/SelectorBar.xaml"
         ],
         "tests": [
-          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/SelectorBar"
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/SelectorBar",
+          "src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/SelectorBarTests"
         ],
         "strings": "src/Uno.UI/UI/Xaml/Controls/SelectorBar/Strings"
       }
@@ -87,7 +95,7 @@
         ],
         "tests": [
           "controls/dev/TabView/APITests",
-          "controls/dev/TabView/InteractionTests"
+          "controls/dev/TabView/TestUI"
         ],
         "strings": "controls/dev/TabView/Strings"
       },
@@ -98,7 +106,8 @@
           "src/Uno.UI.FluentTheme/Resources/PriorityDefault/TabView.xaml"
         ],
         "tests": [
-          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/TabView"
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/TabView",
+          "src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/TabViewTests"
         ],
         "strings": "src/Uno.UI/UI/Xaml/Controls/TabView/Strings"
       }
@@ -157,7 +166,33 @@
           "src/Uno.UI/UI/Xaml/Automation/Peers/HyperlinkButtonAutomationPeer.cs",
           "src/Uno.UI/UI/Xaml/Automation/Peers/RepeatButtonAutomationPeer.cs"
         ]
-      }
+      },
+      "mirror": [
+        {
+          "upstream": "controls/dev/CommonStyles/Button_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/Button_themeresources.xaml"
+        },
+        {
+          "upstream": "controls/dev/CommonStyles/CheckBox_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/CheckBox_themeresources.xaml"
+        },
+        {
+          "upstream": "controls/dev/CommonStyles/HyperlinkButton_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/HyperlinkButton_themeresources.xaml"
+        },
+        {
+          "upstream": "controls/dev/CommonStyles/RadioButton_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/RadioButton_themeresources.xaml"
+        },
+        {
+          "upstream": "controls/dev/CommonStyles/RepeatButton_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/RepeatButton_themeresources.xaml"
+        },
+        {
+          "upstream": "controls/dev/CommonStyles/ToggleButton_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/ToggleButton_themeresources.xaml"
+        }
+      ]
     },
     {
       "id": "genericxaml",
@@ -188,7 +223,6 @@
         ],
         "tests": [
           "controls/dev/InfoBadge/APITests",
-          "controls/dev/InfoBadge/InteractionTests",
           "controls/dev/InfoBadge/TestUI"
         ]
       },
@@ -222,7 +256,6 @@
         ],
         "tests": [
           "controls/dev/SplitButton/APITests",
-          "controls/dev/SplitButton/InteractionTests",
           "controls/dev/SplitButton/TestUI"
         ],
         "strings": "controls/dev/SplitButton/Strings"
@@ -248,7 +281,6 @@
           "controls/dev/DropDownButton"
         ],
         "tests": [
-          "controls/dev/DropDownButton/InteractionTests",
           "controls/dev/DropDownButton/TestUI"
         ]
       },
@@ -269,6 +301,256 @@
         {
           "upstream": "controls/dev/DropDownButton/DropDownButton_themeresources.xaml",
           "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/DropDownButton_themeresources.xaml"
+        }
+      ]
+    },
+    {
+      "id": "scrollview",
+      "title": "ScrollView",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
+      "upstream": {
+        "sources": [
+          "controls/dev/ScrollView"
+        ],
+        "tests": [
+          "controls/dev/ScrollView/APITests",
+          "controls/dev/ScrollView/TestUI"
+        ]
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/ScrollView"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/ScrollView",
+          "src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/ScrollViewTests"
+        ]
+      },
+      "mirror": [
+        {
+          "upstream": "controls/dev/ScrollView/ScrollView.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/ScrollView.xaml"
+        },
+        {
+          "upstream": "controls/dev/ScrollView/ScrollView_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/ScrollView_themeresources.xaml"
+        }
+      ]
+    },
+    {
+      "id": "listviewitempresenter",
+      "title": "ListViewItemPresenter",
+      "baseline": "ba3a8d59e6de4e2b86ca4f61c78bc26ccf129afd",
+      "upstream": {
+        "sources": [
+          "dxaml/xcp/core/core/elements/ListViewBaseItemChrome.cpp",
+          "dxaml/xcp/core/inc/ListViewBaseItemChrome.h",
+          "dxaml/xcp/core/core/elements/ListViewBaseItemSecondaryChrome.cpp",
+          "dxaml/xcp/core/inc/ListViewBaseItemSecondaryChrome.h",
+          "dxaml/xcp/dxaml/lib/ListViewBaseItemPresenter_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/ListViewBaseItemPresenter_Partial.h",
+          "dxaml/xcp/dxaml/lib/ListViewBaseItemSecondaryChrome_Partial.h",
+          "dxaml/xcp/dxaml/lib/ListViewItemPresenter_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/ListViewItemPresenter_Partial.h",
+          "dxaml/xcp/dxaml/lib/winrtgeneratedclasses/ListViewBaseItemTemplateSettings.g.cpp",
+          "dxaml/xcp/dxaml/lib/winrtgeneratedclasses/ListViewBaseItemTemplateSettings.g.h",
+          "dxaml/xcp/dxaml/lib/winrtgeneratedclasses/ListViewItemTemplateSettings.g.cpp",
+          "dxaml/xcp/dxaml/lib/winrtgeneratedclasses/ListViewItemTemplateSettings.g.h",
+          "dxaml/xcp/components/visualstateshelper/inc/VisualStatesHelper.h",
+          "dxaml/xcp/components/visualstateshelper/lib/VisualStatesHelper.cpp"
+        ]
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemChrome.h.mux.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemChrome.mux.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemChrome.uno.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemChromeVisual.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemPresenter.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemPresenter.h.mux.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemPresenter.mux.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemSecondaryChrome.h.mux.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemSecondaryChrome.mux.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemTemplateSettings.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewItemPresenter.Properties.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewItemPresenter.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewItemPresenter.mux.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewItemTemplateSettings.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/VisualStatesHelper.h.mux.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/VisualStatesHelper.mux.cs"
+        ]
+      },
+      "mirror": [
+        {
+          "upstream": "controls/dev/CommonStyles/ListViewItem_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/ListViewItem_themeresources.xaml"
+        }
+      ]
+    },
+    {
+      "id": "gridviewitempresenter",
+      "title": "GridViewItemPresenter",
+      "baseline": "ba3a8d59e6de4e2b86ca4f61c78bc26ccf129afd",
+      "upstream": {
+        "sources": [
+          "dxaml/xcp/dxaml/lib/GridViewItemPresenter_Partial.cpp",
+          "dxaml/xcp/dxaml/lib/GridViewItemPresenter_Partial.h",
+          "dxaml/xcp/dxaml/lib/winrtgeneratedclasses/GridViewItemTemplateSettings.g.cpp",
+          "dxaml/xcp/dxaml/lib/winrtgeneratedclasses/GridViewItemTemplateSettings.g.h"
+        ]
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/GridViewItemPresenter.Properties.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/GridViewItemPresenter.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/GridViewItemPresenter.mux.cs",
+          "src/Uno.UI/UI/Xaml/Controls/Primitives/GridViewItemTemplateSettings.cs"
+        ]
+      },
+      "mirror": [
+        {
+          "upstream": "controls/dev/CommonStyles/GridViewItem_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/GridViewItem_themeresources.xaml"
+        }
+      ]
+    },
+    {
+      "id": "pipspager",
+      "title": "PipsPager",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
+      "upstream": {
+        "sources": [
+          "controls/dev/PipsPager"
+        ],
+        "tests": [
+          "controls/dev/PipsPager/APITests",
+          "controls/dev/PipsPager/TestUI"
+        ],
+        "strings": "controls/dev/PipsPager/Strings"
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/PipsPager"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/PipsPager",
+          "src/SamplesApp/SamplesApp.UITests/Microsoft_UI_Xaml_Controls/PipsPager",
+          "src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/PipsPagerTests"
+        ],
+        "strings": "src/Uno.UI/UI/Xaml/Controls/PipsPager/Strings"
+      },
+      "mirror": [
+        {
+          "upstream": "controls/dev/PipsPager/PipsPager.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/PipsPager.xaml"
+        },
+        {
+          "upstream": "controls/dev/PipsPager/PipsPager_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/PipsPager_themeresources.xaml"
+        }
+      ]
+    },
+    {
+      "id": "progressbar",
+      "title": "ProgressBar",
+      "baseline": "1b5b1a0ccc05ce5c8b5931dc303666975b57f498",
+      "upstream": {
+        "sources": [
+          "controls/dev/ProgressBar"
+        ],
+        "tests": [
+          "controls/dev/ProgressBar/APITests"
+        ],
+        "strings": "controls/dev/ProgressBar/Strings"
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/ProgressBar"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/ProgressBar"
+        ],
+        "strings": "src/Uno.UI/UI/Xaml/Controls/ProgressBar/Strings"
+      },
+      "mirror": [
+        {
+          "upstream": "controls/dev/ProgressBar/ProgressBar.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/ProgressBar.xaml"
+        },
+        {
+          "upstream": "controls/dev/ProgressBar/ProgressBar_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/ProgressBar_themeresources.xaml"
+        }
+      ]
+    },
+    {
+      "id": "progressring",
+      "title": "ProgressRing",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
+      "upstream": {
+        "sources": [
+          "controls/dev/ProgressRing"
+        ],
+        "tests": [
+          "controls/dev/ProgressRing/APITests"
+        ],
+        "strings": "controls/dev/ProgressRing/Strings"
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/ProgressRing"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/ProgressRing"
+        ],
+        "strings": "src/Uno.UI/UI/Xaml/Controls/ProgressRing/Strings"
+      },
+      "mirror": [
+        {
+          "upstream": "controls/dev/ProgressRing/ProgressRing.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/ProgressRing.xaml"
+        },
+        {
+          "upstream": "controls/dev/ProgressRing/ProgressRing_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/ProgressRing_themeresources.xaml"
+        }
+      ]
+    },
+    {
+      "id": "radiobuttons",
+      "title": "RadioButtons",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
+      "upstream": {
+        "sources": [
+          "controls/dev/RadioButtons"
+        ],
+        "tests": [
+          "controls/dev/RadioButtons/APITests",
+          "controls/dev/RadioButtons/TestUI"
+        ]
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Controls/RadioButtons",
+          "src/Uno.UI/UI/Xaml/Automation/Peers/RadioButtonsAutomationPeer.cs"
+        ],
+        "tests": [
+          "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/RadioButtons",
+          "src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/RadioButtonsTests"
+        ]
+      },
+      "mirror": [
+        {
+          "upstream": "controls/dev/RadioButtons/RadioButtons.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/RadioButtons.xaml"
+        },
+        {
+          "upstream": "controls/dev/RadioButtons/RadioButtons_themeresources.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/RadioButtons_themeresources.xaml"
+        },
+        {
+          "upstream": "controls/dev/RadioButtons/RadioButton.xaml",
+          "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/RadioButton.xaml"
         }
       ]
     }

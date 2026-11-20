@@ -30,6 +30,10 @@ namespace Microsoft.UI.Xaml.Controls
 		private Button m_primaryButton = null;
 		private Button m_secondaryButton = null;
 
+		// Uno-specific: the WASM accessibility layer names its primary/menu buttons after these parts.
+		internal Button PrimaryButtonPart => m_primaryButton;
+		internal Button SecondaryButtonPart => m_secondaryButton;
+
 		private bool m_isFlyoutOpen = false;
 		private PointerDeviceType m_lastPointerDeviceType = PointerDeviceType.Mouse;
 		private bool m_isKeyDown = false;

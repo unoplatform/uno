@@ -19,9 +19,6 @@ using XamlControlsResources = Microsoft.UI.Xaml.Controls.XamlControlsResources;
 using Microsoft.UI.Xaml.Markup;
 using System;
 using System.Text;
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
 
 #if USING_TAEF
 using WEX.TestExecution;

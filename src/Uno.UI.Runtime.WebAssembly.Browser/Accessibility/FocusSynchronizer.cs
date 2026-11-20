@@ -103,6 +103,13 @@ internal sealed partial class FocusSynchronizer
 				return;
 			}
 
+			if (Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(focusedElement)?.IsNativeElementFocusOwner(focusedElement) == true)
+			{
+				// A hosted native element inside it holds browser focus: don't pull focus back to the semantic DOM.
+				TrackFocusedElement(focusedElement);
+				return;
+			}
+
 			var semanticHandle = _accessibility.ResolveToSemanticHandle(focusedElement);
 			if (semanticHandle == IntPtr.Zero)
 			{
@@ -156,6 +163,13 @@ internal sealed partial class FocusSynchronizer
 		// is still queued, and syncing this stale one would pull browser focus to an element that lost it.
 		if (element.XamlRoot is { } xamlRoot && FocusManager.GetFocusedElement(xamlRoot) != element)
 		{
+			return;
+		}
+
+		if (Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(element)?.IsNativeElementFocusOwner(element) == true)
+		{
+			// A hosted native element inside it holds browser focus: don't pull focus back to the semantic DOM.
+			TrackFocusedElement(element);
 			return;
 		}
 
