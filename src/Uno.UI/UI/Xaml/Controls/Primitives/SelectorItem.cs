@@ -192,10 +192,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// Screen readers use this to announce selection state changes.
 			if (AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged))
 			{
+				// A ListBoxItem's container peer carries the event too: Uno never recycles ListBox
+				// containers, so its IsSelected always belongs to the item it shows.
 				var peer = GetOrCreateAutomationPeer();
-				if (peer is Automation.Peers.SelectorItemAutomationPeer selectorItemPeer)
+				if (peer is Automation.Peers.SelectorItemAutomationPeer or Automation.Peers.ListBoxItemAutomationPeer)
 				{
-					selectorItemPeer.RaisePropertyChangedEvent(
+					peer.RaisePropertyChangedEvent(
 						Automation.SelectionItemPatternIdentifiers.IsSelectedProperty,
 						oldIsSelected,
 						newIsSelected);

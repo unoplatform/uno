@@ -219,15 +219,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_ListBox_Item_Selected_Before_Accessibility_Then_It_Is_The_Active_Descendant()
 		{
+			// Uno's ListBox neither supports its default VirtualizingStackPanel nor generates ListBoxItem
+			// containers for data items, so use explicit ListBoxItems in a StackPanel.
 			var listBox = new ListBox
 			{
-				ItemsSource = new List<string> { "Item 1", "Item 2", "Item 3" },
-				SelectedIndex = 1,
+				Width = 200,
+				Height = 200,
+				ItemsPanel = (ItemsPanelTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+					"<ItemsPanelTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><StackPanel /></ItemsPanelTemplate>"),
 			};
+			for (var i = 1; i <= 3; i++)
+			{
+				listBox.Items.Add(new ListBoxItem { Content = $"Item {i}" });
+			}
+			listBox.SelectedIndex = 1;
 			AutomationProperties.SetName(listBox, "Items");
 
 			await UITestHelper.Load(listBox);
-			var selected = (UIElement)listBox.ContainerFromIndex(1);
+			var selected = listBox.ContainerFromIndex(1) as ListBoxItem;
 			Assert.IsNotNull(selected, "The selected ListBoxItem must be realized.");
 
 			EnableAccessibilityThroughDom();
