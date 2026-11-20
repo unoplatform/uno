@@ -1006,6 +1006,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// The preedit removed, then a compositionend announcing a commit, and nothing after them: the announced commit never came,
+		// so the composition is cancelled once the task is over, with the text the removal left. The removal's own post-task
+		// sync leaves it to that fallback.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_WebKit_Preedit_Removed_Then_Announced_Commit_Never_Applied()
+		{
+			var SUT = await LoadFocusedForBrowserIme("ab ");
+			var events = TrackCompositionEvents(SUT);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(3, 3, "nihon", "ab nihon", 8));
+				await ReplayOnHiddenInput(WebKitInput("ab ", 3, "deleteCompositionText", "", isComposing: true) + ImeEnd("日本"));
+				await UITestHelper.WaitFor(() => !SUT.IsComposing, timeoutMS: 3000, message: "the composition should end after the task");
+
+				Assert.AreEqual("ab ", SUT.Text);
+				Assert.AreEqual(3, SUT.SelectionStart);
+				CollectionAssert.AreEqual(new[] { "changed 3+5 ab nihon", "changed 3+0 ab ", "ended 3+0 ab " }, events);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
 		// A TextChanging handler leaves the text shorter than where the composition starts. The ranges the composition
 		// events report stay within the text.
 		[TestMethod]
@@ -1966,10 +1994,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await ReplayOnHiddenInput(ImeStart());
 				await ReplayOnHiddenInput(ImeCompose(0, 0, "あ", "あ", 1));
 				await ReplayOnHiddenInput(ImeCompose(0, 1, "亜", "亜", 1));
-				// WebKit removes the preedit and puts the commit in place in one call, so in the same task.
+				// WebKit removes the preedit, puts the commit in place and ends the composition in one call, so in one task.
 				await ReplayOnHiddenInput(WebKitInput("", 0, "deleteCompositionText", "", isComposing: true)
-					+ WebKitInput("亜", 1, "insertFromComposition", "亜", isComposing: true));
-				await ReplayOnHiddenInput(ImeEnd("亜"));
+					+ WebKitInput("亜", 1, "insertFromComposition", "亜", isComposing: true)
+					+ ImeEnd("亜"));
 
 				Assert.AreEqual("亜", SUT.Text);
 				Assert.AreEqual(1, SUT.SelectionStart);
