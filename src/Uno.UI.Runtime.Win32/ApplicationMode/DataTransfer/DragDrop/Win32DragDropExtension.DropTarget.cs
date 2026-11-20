@@ -113,14 +113,13 @@ internal partial class Win32DragDropExtension
 			return medium.u.hGlobal;
 		});
 
-		// Create DragUI for visual feedback during drag operation
-		var dragUI = CreateDragUIForExternalDrag(dataObject, formatEtcList);
-
-		// DROPEFFECT and DataPackageOperation have the same binary representation
-		var info = new CoreDragInfo(src, package.GetView(), (DataPackageOperation)(*pdwEffect), dragUI);
+		// DROPEFFECT and DataPackageOperation have the same binary representation.
+		// No DragUI: the shell draws the source's own drag image, as in WinUI.
+		var info = new CoreDragInfo(src, package.GetView(), (DataPackageOperation)(*pdwEffect));
 		_coreDragDropManager.DragStarted(info);
 
 		*pdwEffect = (DROPEFFECT)_manager.ProcessMoved(src);
+		DropTargetHelperDragEnter(dataObject, pt, *pdwEffect);
 
 		return HRESULT.S_OK;
 	}
@@ -139,6 +138,7 @@ internal partial class Win32DragDropExtension
 		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.DragOver)} @ {position}");
 
 		*pdwEffect = (DROPEFFECT)_manager.ProcessMoved(src);
+		DropTargetHelperDragOver(pt, *pdwEffect);
 
 		return HRESULT.S_OK;
 	}
@@ -146,6 +146,9 @@ internal partial class Win32DragDropExtension
 	HRESULT IDropTarget.Interface.DragLeave()
 	{
 		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.DragLeave)}");
+
+		// As in Drop, end the shell's drag image first.
+		DropTargetHelperDragLeave();
 
 		_manager.ProcessAborted(_fakePointerId);
 		_lastAsyncHDropHandler?.Leave();
@@ -167,6 +170,9 @@ internal partial class Win32DragDropExtension
 
 		this.LogTrace()?.Trace($"{nameof(IDropTarget.Interface.Drop)} @ {position}");
 
+		// End the shell's drag image first, so the work below (up to a second for an async file drop) can't freeze it or, by throwing, leak it.
+		DropTargetHelperDrop(dataObject, pt, *pdwEffect);
+
 		_lastAsyncHDropHandler?.Drop(dataObject);
 		*pdwEffect = (DROPEFFECT)_manager.ProcessReleased(src);
 		if (_lastAsyncHDropHandler != null)
@@ -176,6 +182,108 @@ internal partial class Win32DragDropExtension
 		}
 
 		return HRESULT.S_OK;
+	}
+
+	// WinUI shows the source's own image for an external drag. The shell's drag-image manager (IDropTargetHelper) draws it
+	// when the drop target forwards its calls to it.
+	private unsafe void DropTargetHelperDragEnter(IDataObject* dataObject, POINTL pt, DROPEFFECT effect)
+	{
+		DropTargetHelperDragLeave(); // A DragEnter without a DragLeave or a Drop ends the previous drag.
+		if (_isDropTargetHelperUnavailable)
+		{
+			return;
+		}
+
+		var clsid = CLSID.DragDropHelper;
+		var iid = IDropTargetHelper.IID_Guid;
+		IDropTargetHelper* helper;
+		var hResult = PInvoke.CoCreateInstance(&clsid, null, CLSCTX.CLSCTX_INPROC_SERVER, &iid, (void**)&helper);
+		if (hResult.Failed)
+		{
+			_isDropTargetHelperUnavailable = true;
+			this.LogWarn()?.Warn(
+				$"{nameof(PInvoke.CoCreateInstance)} failed for the shell's drag-image manager, so external drags show no drag image: " +
+				Win32Helper.GetErrorMessage(hResult));
+			return;
+		}
+
+		_dropTargetHelper = helper;
+		// Kept to enter the manager again mid-drag (see UpdateDropTargetHelper).
+		dataObject->AddRef();
+		_dropTargetHelperDataObject = dataObject;
+		UpdateDropTargetHelper(pt, effect);
+	}
+
+	private unsafe void DropTargetHelperDragOver(POINTL pt, DROPEFFECT effect)
+	{
+		if (_dropTargetHelper is not null)
+		{
+			UpdateDropTargetHelper(pt, effect);
+		}
+	}
+
+	private unsafe void DropTargetHelperDragLeave()
+	{
+		if (_isDropTargetHelperEntered)
+		{
+			_dropTargetHelper->DragLeave();
+		}
+		ReleaseDropTargetHelper();
+	}
+
+	private unsafe void DropTargetHelperDrop(IDataObject* dataObject, POINTL pt, DROPEFFECT effect)
+	{
+		if (_isDropTargetHelperEntered)
+		{
+			var point = new System.Drawing.Point(pt.x, pt.y);
+			_dropTargetHelper->Drop(dataObject, &point, effect);
+		}
+		ReleaseDropTargetHelper();
+	}
+
+	// As in WinUI, a DragUIOverride content (drawn by DragView) or IsContentVisible = false replaces the source's image.
+	// Meanwhile the manager is told the drag left, which hides the image, and is entered again once the override goes away.
+	private unsafe void UpdateDropTargetHelper(POINTL pt, DROPEFFECT effect)
+	{
+		Debug.Assert(_dropTargetHelper is not null && _dropTargetHelperDataObject is not null);
+		var point = new System.Drawing.Point(pt.x, pt.y);
+		if (_manager.IsContentReplacedOrHidden(_fakePointerId))
+		{
+			if (_isDropTargetHelperEntered)
+			{
+				_dropTargetHelper->DragLeave();
+				_isDropTargetHelperEntered = false;
+			}
+		}
+		else if (_isDropTargetHelperEntered)
+		{
+			_dropTargetHelper->DragOver(&point, effect);
+		}
+		else
+		{
+			var hResult = _dropTargetHelper->DragEnter(_hwnd, _dropTargetHelperDataObject, &point, effect);
+			if (hResult.Failed)
+			{
+				// It fails when the source set no drag image, but keeps the data object until DragLeave or Drop, so those are still forwarded.
+				this.LogTrace()?.Trace($"IDropTargetHelper::DragEnter failed: {Win32Helper.GetErrorMessage(hResult)}");
+			}
+			_isDropTargetHelperEntered = true;
+		}
+	}
+
+	private unsafe void ReleaseDropTargetHelper()
+	{
+		_isDropTargetHelperEntered = false;
+		if (_dropTargetHelperDataObject is not null)
+		{
+			_dropTargetHelperDataObject->Release();
+			_dropTargetHelperDataObject = null;
+		}
+		if (_dropTargetHelper is not null)
+		{
+			_dropTargetHelper->Release();
+			_dropTargetHelper = null;
+		}
 	}
 
 	private Point GetScaledPosition(float x, float y)
