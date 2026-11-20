@@ -245,6 +245,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 			await Assert.ThrowsExactlyAsync<NotSupportedException>(async () => await sut.OpenReadAsync());
 		}
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25866")]
+		public void When_Stream_Over_Large_Stream_Is_Cloned_Then_It_Is_Not_Supported()
+		{
+			// A clone copies to an array, which can't hold this. (WinUI can't clone this wrapper at all.)
+			using var sut = new LargeStream(3L << 30).AsRandomAccessStream();
+
+			Assert.ThrowsExactly<NotSupportedException>(() => sut.CloneStream());
+		}
+
 		private static async Task<InMemoryRandomAccessStream> CreateInMemoryStream(byte[] content)
 		{
 			var stream = new InMemoryRandomAccessStream();
@@ -304,6 +314,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		public IAsyncOperation<bool> FlushAsync() => inner.FlushAsync();
 
 		public void Dispose() => inner.Dispose();
+	}
+
+	// A seekable stream of the given length that is never read.
+	internal sealed class LargeStream(long length) : Stream
+	{
+		public override bool CanRead => true;
+
+		public override bool CanSeek => true;
+
+		public override bool CanWrite => false;
+
+		public override long Length => length;
+
+		public override long Position { get; set; }
+
+		public override void Flush() { }
+
+		public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+
+		public override long Seek(long offset, SeekOrigin origin) => Position = origin switch
+		{
+			SeekOrigin.Begin => offset,
+			SeekOrigin.Current => Position + offset,
+			_ => length + offset,
+		};
+
+		public override void SetLength(long value) => throw new NotSupportedException();
+
+		public override void Write(byte[] buffer, int offset, int count) => throw new NotSupportedException();
 	}
 
 	// A stream that can't be cloned, like WinUI's AsRandomAccessStream() wrapper of a .NET stream.
