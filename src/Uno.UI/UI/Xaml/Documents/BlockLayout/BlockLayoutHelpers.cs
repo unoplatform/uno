@@ -136,8 +136,8 @@ internal static class BlockLayoutHelpers
 			// GetResolvedLanguageListStringNoRef() — resolved Language / LanguageList strings mapped to CultureInfo,
 			// and the trailing InheritedProperties argument (Silverlight inherited TextOptions/Typography) which the
 			// Uno TextRunProperties ctor omits.
-			CultureInfo.CurrentCulture,
-			CultureInfo.CurrentCulture);
+			CultureInfo.CurrentUICulture,
+			CultureInfo.CurrentUICulture);
 
 		pTextParagraphProperties = new TextParagraphProperties(
 			GetFlowDirection(pLayoutOwner!),
@@ -208,8 +208,8 @@ internal static class BlockLayoutHelpers
 			characterSpacing,
 			GetForegroundSource(pEffectiveParagraph),
 			// TODO Uno (integrate): resolved Language / LanguageList strings -> CultureInfo (see GetParagraphProperties).
-			CultureInfo.CurrentCulture,
-			CultureInfo.CurrentCulture);
+			CultureInfo.CurrentUICulture,
+			CultureInfo.CurrentUICulture);
 
 		// TODO Uno (integrate): CFontTypeface::MapCharacters / IFssFontFace — WinUI mapped the ellipsis to a concrete
 		// font face (asserting a single mapped char), then measured its nominal advance via

@@ -79,7 +79,7 @@ internal static class NotoFontFallbackService
 
 	private static string SelectCjkVariantForCurrentCulture()
 	{
-		var locale = CultureInfo.CurrentCulture.Name.ToLowerInvariant();
+		var locale = CultureInfo.CurrentUICulture.Name.ToLowerInvariant();
 		var split = locale.Split('-');
 		var languageSubtag = split[0];
 		var scriptSubtag = split.Length < 2 ? "" : split[1];
