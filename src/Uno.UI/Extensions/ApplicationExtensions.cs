@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Runtime.ExceptionServices;
 using System.Text;
@@ -9,7 +11,7 @@ namespace Uno.Extensions
 {
 	public static class ApplicationExtensions
 	{
-		internal static void RaiseRecoverableUnhandledExceptionOrLog(this Application application, Exception e, object sender)
+		internal static void RaiseRecoverableUnhandledExceptionOrLog(this Application? application, Exception e, object sender)
 		{
 			if (application != null)
 			{
@@ -27,7 +29,7 @@ namespace Uno.Extensions
 		/// stack trace. The exception is always re-thrown unless an
 		/// <see cref="Application.UnhandledException"/> handler marks it as handled.
 		/// </summary>
-		internal static void RaiseUnhandledExceptionOrThrow(this Application application, Exception e, object sender)
+		internal static void RaiseUnhandledExceptionOrThrow(this Application? application, Exception e, object sender)
 		{
 			if (application != null)
 			{
