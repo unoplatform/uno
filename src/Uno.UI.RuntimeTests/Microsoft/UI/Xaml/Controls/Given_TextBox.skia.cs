@@ -973,6 +973,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// The preedit removed with an input event of its own, and nothing else in the same task: the emptied preedit is synced
+		// once the task is over, so the TextBox doesn't keep it while the composition goes on.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_WebKit_Preedit_Removed_Alone()
+		{
+			var SUT = await LoadFocusedForBrowserIme("ab ");
+			var events = TrackCompositionEvents(SUT);
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(3, 3, "nihon", "ab nihon", 8));
+				await ReplayOnHiddenInput(WebKitInput("ab ", 3, "deleteCompositionText", "", isComposing: true));
+				await UITestHelper.WaitFor(() => SUT.Text == "ab ", timeoutMS: 3000, message: "the removal should be synced after the task");
+
+				Assert.AreEqual(3, SUT.SelectionStart);
+				Assert.IsTrue(SUT.IsComposing);
+				CollectionAssert.AreEqual(new[] { "changed 3+5 ab nihon", "changed 3+0 ab " }, events);
+
+				await ReplayOnHiddenInput(ImeEnd(""));
+
+				Assert.AreEqual("ab ", SUT.Text);
+				Assert.IsFalse(SUT.IsComposing);
+				CollectionAssert.AreEqual(new[] { "changed 3+5 ab nihon", "changed 3+0 ab ", "ended 3+0 ab " }, events);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
 		// A TextChanging handler leaves the text shorter than where the composition starts. The ranges the composition
 		// events report stay within the text.
 		[TestMethod]
@@ -1899,8 +1932,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				await ReplayOnHiddenInput(ImeStart());
 				await ReplayOnHiddenInput(ImeCompose(3, 3, "nihon", "ab nihon", 8));
-				await ReplayOnHiddenInput(WebKitInput("ab ", 3, "deleteCompositionText", "", isComposing: true));
-				await ReplayOnHiddenInput(WebKitInput("ab 日本", 5, "insertFromComposition", "日本", isComposing: true));
+				// WebKit removes the preedit and puts the commit in place in one call, so in the same task.
+				await ReplayOnHiddenInput(WebKitInput("ab ", 3, "deleteCompositionText", "", isComposing: true)
+					+ WebKitInput("ab 日本", 5, "insertFromComposition", "日本", isComposing: true));
 				Assert.IsTrue(SUT.IsComposing);
 				Assert.AreEqual("ab 日本", SUT.Text);
 
@@ -1932,8 +1966,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await ReplayOnHiddenInput(ImeStart());
 				await ReplayOnHiddenInput(ImeCompose(0, 0, "あ", "あ", 1));
 				await ReplayOnHiddenInput(ImeCompose(0, 1, "亜", "亜", 1));
-				await ReplayOnHiddenInput(WebKitInput("", 0, "deleteCompositionText", "", isComposing: true));
-				await ReplayOnHiddenInput(WebKitInput("亜", 1, "insertFromComposition", "亜", isComposing: true));
+				// WebKit removes the preedit and puts the commit in place in one call, so in the same task.
+				await ReplayOnHiddenInput(WebKitInput("", 0, "deleteCompositionText", "", isComposing: true)
+					+ WebKitInput("亜", 1, "insertFromComposition", "亜", isComposing: true));
 				await ReplayOnHiddenInput(ImeEnd("亜"));
 
 				Assert.AreEqual("亜", SUT.Text);

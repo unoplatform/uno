@@ -396,6 +396,21 @@
 			const pendingCommit = BrowserInvisibleTextBoxViewExtension.pendingCommit;
 			if (inputType === "deleteCompositionText" && BrowserInvisibleTextBoxViewExtension.isCompositionReported && pendingCommit !== "") {
 				BrowserInvisibleTextBoxViewExtension.preeditRemoved = true;
+				// What follows the removal comes in the same task. When nothing does, the preedit was emptied: it is synced once
+				// the task is over, so the TextBox doesn't keep it. A commit compositionend announced has its own fallback.
+				const generation = BrowserInvisibleTextBoxViewExtension.compositionGeneration;
+				setTimeout(() => {
+					if (!BrowserInvisibleTextBoxViewExtension.preeditRemoved
+						|| BrowserInvisibleTextBoxViewExtension.pendingCommit !== null
+						|| !BrowserInvisibleTextBoxViewExtension.isSyncTarget(input, generation)) {
+						return;
+					}
+					BrowserInvisibleTextBoxViewExtension.runSyncingFromNative(() => {
+						BrowserInvisibleTextBoxViewExtension.preeditRemoved = false;
+						BrowserInvisibleTextBoxViewExtension.compositionText = "";
+						BrowserInvisibleTextBoxViewExtension.syncCompositionFromInput(input);
+					});
+				}, 0);
 				return;
 			}
 
