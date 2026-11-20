@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -11,26 +10,83 @@ namespace Uno.UI.Helpers.WinUI
 	{
 		/// <summary>
 		/// Format string using C++ formatted resources, used for compatibility with WinUI C++ code base.
+		/// Mirrors Win32 <c>FormatMessage</c> with <c>FORMAT_MESSAGE_FROM_STRING</c>: <c>%1</c>..<c>%99</c>
+		/// (optionally followed by a <c>!printf!</c> spec, which is ignored) insert the matching parameter,
+		/// <c>%%</c> is a percent sign, <c>%0</c> ends the output, <c>%n</c>, <c>%t</c> and <c>%r</c> are a
+		/// line break, a tab and a carriage return, any other <c>%x</c> is <c>x</c>, and braces are literal.
 		/// </summary>
 		/// <param name="format"></param>
 		/// <param name="parms"></param>
-		/// <returns>A .NET formatted string</returns>
+		/// <returns>The formatted string, or an empty string when <c>FormatMessage</c> would fail: a parameter index past the supplied values, an unterminated <c>!spec!</c> or a trailing lone <c>%</c>.</returns>
 		/// <remarks>Do not use this method in another context.</remarks>
 		internal static string FormatString(string format, params object[] parms)
 		{
-			var dotnetFormat = CppFormat().Replace(format, "{$1}");
+			if (string.IsNullOrEmpty(format))
+			{
+				return string.Empty;
+			}
 
-			var list = parms.ToList();
+			var sb = new StringBuilder(format.Length + 16);
+			var i = 0;
+			while (i < format.Length)
+			{
+				var c = format[i++];
+				if (c != '%')
+				{
+					sb.Append(c);
+					continue;
+				}
 
-			// Skip the first parameter so we don't spend time parsing
-			// the output string, as the C++ index is staring at 1.
-			list.Insert(0, null);
+				if (i == format.Length)
+				{
+					return string.Empty;
+				}
 
-			return string.Format(CultureInfo.CurrentCulture, dotnetFormat.Replace("%%", "%"), list.ToArray());
+				var next = format[i++];
+				if (next == '0')
+				{
+					break;
+				}
+
+				if (next is >= '1' and <= '9')
+				{
+					var index = next - '0';
+					if (i < format.Length && char.IsAsciiDigit(format[i]))
+					{
+						index = index * 10 + (format[i++] - '0');
+					}
+
+					if (i < format.Length && format[i] == '!')
+					{
+						var close = format.IndexOf('!', i + 1);
+						if (close < 0)
+						{
+							return string.Empty;
+						}
+
+						i = close + 1;
+					}
+
+					if (index > parms.Length)
+					{
+						return string.Empty;
+					}
+
+					sb.Append(Convert.ToString(parms[index - 1], CultureInfo.CurrentCulture));
+					continue;
+				}
+
+				sb.Append(next switch
+				{
+					'n' => "\r\n",
+					't' => "\t",
+					'r' => "\r",
+					_ => next.ToString(),
+				});
+			}
+
+			return sb.ToString();
 		}
-
-		[GeneratedRegex(@"\%(\d+)!.*?!", RegexOptions.Singleline)]
-		private static partial Regex CppFormat();
 
 		internal static string Swprintf_s(string input, params object[] inpVars)
 		{
