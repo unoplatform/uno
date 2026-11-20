@@ -94,5 +94,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		internal void DisablePresenterResizing() => m_allowPresenterResizing = false;
+
+		/// <summary>
+		/// Whether the presenter was left resizable, i.e. <see cref="DisablePresenterResizing"/> wasn't called.
+		/// </summary>
+		internal bool AllowsPresenterResizing => m_allowPresenterResizing;
 	}
 }

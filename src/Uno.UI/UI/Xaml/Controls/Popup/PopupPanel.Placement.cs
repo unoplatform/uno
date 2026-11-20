@@ -292,10 +292,12 @@ partial class PopupPanel
 			}
 		}
 
-		// A flyout that fits nowhere and can't be resized (CalendarDatePicker's, which opts out as in WinUI) keeps its size. Like WinUI, whose
-		// TestAgainstLimitsAndPlace keeps the first choice's position within the container even when the flyout doesn't fit there, it is kept
-		// within the available area, covering its target. Its size is already limited to that area.
-		if (!placementFits && Flyout is { CanResizePresenter: false, IsTargetPositionSet: false } && preferredPlacement != FlyoutBase.MajorPlacementMode.Full)
+		// Like WinUI's TestAgainstLimitsAndPlace, a flyout that fits nowhere and can't be resized (CalendarDatePicker's, which opts out as in
+		// WinUI) keeps its size and is kept within the available area, covering its target. Flyouts shown at a point are placed by
+		// UpdateTargetPosition, and a Full placement is already centered in the area.
+		// TODO Uno: the area is the window's (WinUI's CalendarDatePicker flyout is windowed), the margin isn't added after the clamp,
+		// and the presenter is measured against the window, so it still overflows an area smaller than the window.
+		if (!placementFits && Flyout is { AllowsPresenterResizing: false, IsTargetPositionSet: false } && preferredPlacement != FlyoutBase.MajorPlacementMode.Full)
 		{
 			finalRect.X = Math.Max(visibleBounds.X, Math.Min(finalRect.X, visibleBounds.Right - finalRect.Width));
 			finalRect.Y = Math.Max(visibleBounds.Y, Math.Min(finalRect.Y, visibleBounds.Bottom - finalRect.Height));
