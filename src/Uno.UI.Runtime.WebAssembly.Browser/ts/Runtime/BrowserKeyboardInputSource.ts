@@ -47,6 +47,14 @@
 				}
 			}
 
+			// The hidden input of a TextBox raises some presses of Enter itself, release included. It goes by
+			// which presses are raised from here, and such a release is not raised again.
+			if (evt.type === "keydown") {
+				BrowserInvisibleTextBoxViewExtension.onKeyDownAtDocument(evt);
+			} else if (BrowserInvisibleTextBoxViewExtension.onKeyUpAtDocument(evt)) {
+				return;
+			}
+
 			let result = BrowserKeyboardInputSource._exports.OnNativeKeyboardEvent(
 				BrowserKeyboardInputSource._source,
 				evt.type == "keydown",
