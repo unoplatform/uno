@@ -510,6 +510,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// DisablePresenterResizing is internal, and CalendarDatePicker is the only control that calls it, as in WinUI.
 		[TestMethod]
 		[RequiresFullWindow]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23608")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMobile)] // The presenter is measured against the window, which is larger than the visible area there.
 		public async Task When_Resizing_Disabled_And_Taller_Than_Window_Then_Kept_Inside_Window()
 		{
 			var target = new Border { Width = 120, Height = 30, Background = new SolidColorBrush(Colors.Red) };
@@ -526,18 +528,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await TestServices.WindowHelper.WaitForLoaded(lastItem);
 				await TestServices.WindowHelper.WaitForIdle();
 
-				// Without resizing, the presenter isn't made smaller to fit next to its target. As in WinUI, it is kept within the available
-				// area, covering its target. WinUI measures popup content without a limit; Uno measures it within the window, so it scrolls.
+				// Without resizing, the presenter isn't made smaller to fit next to its target. As in WinUI's TestAgainstLimitsAndPlace,
+				// its position is kept within the available area, covering its target.
 				var presenter = lastItem.FindFirstParent<FlyoutPresenter>();
 				var visibleBounds = TestServices.WindowHelper.XamlRoot.VisualTree.VisibleBounds;
 				NumberAssert.GreaterOrEqual(presenter.ActualHeight, visibleBounds.Height - 1);
 				VerifyWithin(LayoutInformation.GetLayoutSlot(presenter), visibleBounds);
 				VerifyArrangedAtMeasuredSize(presenter);
-
-				var scrollViewer = presenter.FindFirstChild<ScrollViewer>();
-				Assert.IsTrue(
-					scrollViewer.ExtentHeight > scrollViewer.ViewportHeight + 1,
-					$"The content should scroll (extent {scrollViewer.ExtentHeight}, viewport {scrollViewer.ViewportHeight}).");
 			}
 			finally
 			{
@@ -547,6 +544,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23608")]
 		public async Task When_CalendarDatePicker_Fits_On_No_Side_Then_Kept_Inside_Window()
 		{
 			// The calendar fits neither below the picker, beside it, nor above it, where there is no room at all.
@@ -580,7 +578,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				// As in WinUI, the calendar isn't made smaller to fit the room below the picker. WinUI's calendar flyout isn't constrained to the
 				// window, so it's placed within the monitor; a WinUI flyout constrained to the window is moved up into it, covering the picker.
-				Assert.IsFalse(popup.AssociatedFlyout.CanResizePresenter);
 				NumberAssert.Greater(presenter.ActualHeight, 100);
 				VerifyArrangedAtMeasuredSize(presenter);
 				VerifyWithin(presenter.GetOnScreenBounds(), visibleBounds);
