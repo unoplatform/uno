@@ -146,7 +146,7 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaIOS)] // Flaky on iOS
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.SkiaWasm)] // Flaky on iOS and WASM
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26579")]
 		public async Task BasicKeyboardTest()
 		{
