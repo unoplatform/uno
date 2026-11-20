@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using AwesomeAssertions;
+﻿using AwesomeAssertions;
 
 namespace Uno.UI.Tasks.Tests;
 
@@ -55,30 +54,14 @@ public class Given_UnoDefaultFont
 				</Project>
 				""");
 
-			var startInfo = new ProcessStartInfo("dotnet")
-			{
-				RedirectStandardOutput = true,
-				RedirectStandardError = true,
-				UseShellExecute = false,
-				WorkingDirectory = directory,
-			};
-			foreach (var argument in new[] { "msbuild", projectPath, "-nologo", "-nodeReuse:false", "-getProperty:UnoDefaultFont" })
-			{
-				startInfo.ArgumentList.Add(argument);
-			}
-			startInfo.Environment["MSBUILDDISABLENODEREUSE"] = "1";
+			var result = DotnetMSBuild.Run(RepositoryPaths.Root, [projectPath, "-getProperty:UnoDefaultFont"]);
 
-			using var process = Process.Start(startInfo)!;
-			var stdout = process.StandardOutput.ReadToEndAsync();
-			var stderr = process.StandardError.ReadToEndAsync();
-			process.WaitForExit();
-
-			process.ExitCode.Should().Be(0, stdout.Result + stderr.Result);
-			return stdout.Result.Trim();
+			result.ExitCode.Should().Be(0, result.Output);
+			return result.StandardOutput.Trim();
 		}
 		finally
 		{
-			Directory.Delete(directory, recursive: true);
+			DotnetMSBuild.TryDeleteDirectory(directory);
 		}
 	}
 }
