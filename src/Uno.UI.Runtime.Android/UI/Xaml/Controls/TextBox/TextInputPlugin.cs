@@ -26,6 +26,8 @@ internal sealed class TextInputPlugin
 	private EditorInfo? _editorInfo;
 	private IImeSessionHost? _activeHost;
 	private (int Start, int End)? _pendingCompositionRange;
+	private const long HideDelayMilliseconds = 150;
+	private int _hideRequest;
 
 	/// <summary>
 	/// Gets the currently active <see cref="TextInputConnection"/>, if any.
@@ -163,6 +165,7 @@ internal sealed class TextInputPlugin
 	{
 		UpdateInputOptions(host);
 		SetActiveHost(host);
+		_hideRequest++;
 		_view.RequestFocus();
 		_imm?.ShowSoftInput(_view, 0);
 	}
@@ -345,10 +348,33 @@ internal sealed class TextInputPlugin
 		return textType;
 	}
 
+	/// <summary>
+	/// Hides the keyboard once the TextBox that lost focus has had a moment to hand it to another one.
+	/// </summary>
+	/// <remarks>
+	/// When content is replaced or a page navigates, the next TextBox takes focus a frame or more after the
+	/// previous one lost it. Hiding then showing again in between restarts the IME's view, which raises
+	/// InputPane.Showing once more and brings the focused element back into view, undoing any scroll since.
+	/// </remarks>
 	internal void HideTextInput()
 	{
-		_imm?.HideSoftInputFromWindow(_view.ApplicationWindowToken, 0);
+		var request = ++_hideRequest;
+		_view.PostDelayed(() =>
+		{
+			// Only a TextBox that shows the keyboard cancels the hide (ShowTextInput bumps the request): one that
+			// merely takes focus, read-only or with the keyboard suppressed, must still see it hidden.
+			if (request == _hideRequest)
+			{
+				HideRequestCount++;
+				_imm?.HideSoftInputFromWindow(_view.ApplicationWindowToken, 0);
+			}
+		}, HideDelayMilliseconds);
 	}
+
+	/// <summary>
+	/// How many keyboard hides were sent to Android, across all plugins. For tests.
+	/// </summary>
+	internal static int HideRequestCount { get; private set; }
 
 	internal IInputConnection? OnCreateInputConnection(EditorInfo? editorInfo)
 	{
