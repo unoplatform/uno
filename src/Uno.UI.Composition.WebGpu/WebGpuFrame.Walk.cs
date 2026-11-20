@@ -311,9 +311,13 @@ internal sealed unsafe partial class WebGpuFrame
 			: DrawOp.Own(DrawKind.Gradient, Vbuf(dst, VertexStride.Quad, owned), count, gbg, cd, MakeClipBg(cd, owned)));
 	}
 
-	private static float[] TransformedGradient(float[] src, in Matrix3x2 m)
+	// Rent and GradientBg copy the uniform out at once, so one scratch serves every transformed gradient.
+	private float[] _gradientScratch = [];
+
+	private float[] TransformedGradient(float[] src, in Matrix3x2 m)
 	{
-		var u = (float[])src.Clone();
+		var u = _gradientScratch.Length == src.Length ? _gradientScratch : _gradientScratch = new float[src.Length];
+		src.CopyTo(u, 0);
 		var a = Map(new Vector2(u[4], u[5]), m); u[4] = a.X; u[5] = a.Y;
 		float dt = m.M11 * m.M22 - m.M21 * m.M12;
 		if (MathF.Abs(dt) < 1e-12f) { dt = dt < 0 ? -1e-12f : 1e-12f; }
