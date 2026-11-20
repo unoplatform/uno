@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Windows.Globalization;
 using CultureInfo = System.Globalization.CultureInfo;
 
@@ -25,6 +26,25 @@ public class Given_Calendar
 
 		calendar.Day = 1;
 		Assert.AreEqual(1, calendar.Day);
+	}
+
+	// Uno follows the platform's culture data, and some rows need Windows' data: Android gives th-TH and ar-SA
+	// the Gregorian calendar by default, and iOS lists other calendars for en-US, whose Hebrew months are then
+	// "Shevat".
+	internal static void AssumeDefaultCalendarIsNotGregorian(string language)
+	{
+		if (new CultureInfo(language).Calendar is global::System.Globalization.GregorianCalendar)
+		{
+			Assert.Inconclusive($"The culture data here gives {language} the Gregorian calendar by default.");
+		}
+	}
+
+	internal static void AssumeLanguageHasNoNamesFor(string language, Type calendarType)
+	{
+		if (new CultureInfo(language).OptionalCalendars.Any(calendar => calendar.GetType() == calendarType))
+		{
+			Assert.Inconclusive($"The culture data here gives {language} names for the {calendarType.Name}.");
+		}
 	}
 
 	[TestMethod]
@@ -63,6 +83,10 @@ public class Given_Calendar
 		try
 		{
 			CultureInfo.CurrentCulture = new CultureInfo(currentCulture);
+			if (expectedSystem != CalendarIdentifiers.Gregorian)
+			{
+				AssumeDefaultCalendarIsNotGregorian(language);
+			}
 
 			var calendar = new Calendar(new[] { language });
 
@@ -108,8 +132,15 @@ public class Given_Calendar
 		changed.SetDateTime(date);
 		Assert.AreEqual("يناير", changed.MonthAsString());
 
+		// No culture formats with the Julian calendar, whose months are the Gregorian ones. January 20 is in
+		// January in both calendars.
+		var julian = new Calendar(new[] { "ar-SA" }, CalendarIdentifiers.Julian, ClockIdentifiers.TwentyFourHour);
+		julian.SetDateTime(new DateTimeOffset(new DateTime(2024, 1, 20, 12, 0, 0)));
+		Assert.AreEqual("يناير", julian.MonthAsString());
+
 		// en-US has no names for the Hebrew calendar, so, as in WinRT, they come from Hebrew, but the
 		// period stays English.
+		AssumeLanguageHasNoNamesFor("en-US", typeof(global::System.Globalization.HebrewCalendar));
 		var hebrew = new Calendar(new[] { "en-US" }, CalendarIdentifiers.Hebrew, ClockIdentifiers.TwelveHour);
 		hebrew.SetDateTime(date);
 		Assert.AreEqual(5, hebrew.Month);
@@ -117,12 +148,6 @@ public class Given_Calendar
 		Assert.AreEqual("PM", hebrew.PeriodAsString());
 		// WinRT separates the words with a no-break space.
 		Assert.AreEqual("יום שני", hebrew.DayOfWeekAsString().Replace('\u00A0', ' '));
-
-		// No culture formats with the Julian calendar, whose months are the Gregorian ones. January 20 is in
-		// January in both calendars.
-		var julian = new Calendar(new[] { "ar-SA" }, CalendarIdentifiers.Julian, ClockIdentifiers.TwentyFourHour);
-		julian.SetDateTime(new DateTimeOffset(new DateTime(2024, 1, 20, 12, 0, 0)));
-		Assert.AreEqual("يناير", julian.MonthAsString());
 	}
 
 	[TestMethod]
@@ -180,6 +205,11 @@ public class Given_Calendar
 		string expectedDay,
 		string expectedMonthNamePrefix)
 	{
+		if (calendarIdentifier.Length == 0)
+		{
+			AssumeDefaultCalendarIsNotGregorian(language);
+		}
+
 		var calendar = calendarIdentifier.Length > 0
 			? new Calendar(new[] { language }, calendarIdentifier, ClockIdentifiers.TwentyFourHour)
 			: new Calendar(new[] { language });
@@ -228,6 +258,11 @@ public class Given_Calendar
 	[DataRow("ar-SA", "", "1445", "7", "3")]
 	public void When_Calendar_Is_Not_Gregorian_Then_Numbers_Follow_It(string language, string calendarIdentifier, string expectedYear, string expectedMonth, string expectedDay)
 	{
+		if (calendarIdentifier.Length == 0)
+		{
+			AssumeDefaultCalendarIsNotGregorian(language);
+		}
+
 		var calendar = calendarIdentifier.Length > 0
 			? new Calendar(new[] { language }, calendarIdentifier, ClockIdentifiers.TwentyFourHour)
 			: new Calendar(new[] { language });
