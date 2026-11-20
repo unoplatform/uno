@@ -684,14 +684,28 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		var label = itemElement.GetOrCreateAutomationPeer()?.GetName() ?? string.Empty;
+		var peer = itemElement.GetOrCreateAutomationPeer();
+		var label = peer?.GetName() ?? string.Empty;
 		var offset = GetOffsetRelativeToSemanticParent(itemElement, containerHandle);
 
-		// Read selection from the list's model by index, as SelectorItemAutomationPeer.IsSelected does:
-		// a recycled container can still carry its previous item's IsSelected at this point.
-		var selectable = listView is { SelectionMode: not ListViewSelectionMode.None };
-		var selected = selectable && listView!.AutomationPeerIsSelected(index, listView.ItemFromIndex(index));
-		var active = selected && listView!.SelectedIndex == index;
+		bool selectable, selected, active;
+		if (listView is not null)
+		{
+			// Read selection from the list's model by index, as SelectorItemAutomationPeer.IsSelected does:
+			// a recycled container can still carry its previous item's IsSelected at this point.
+			selectable = listView.SelectionMode != ListViewSelectionMode.None;
+			selected = selectable && listView.AutomationPeerIsSelected(index, listView.ItemFromIndex(index));
+			active = selected && listView.SelectedIndex == index;
+		}
+		else
+		{
+			// An ItemsRepeater has no selection model: a selectable element (e.g. a NavigationViewItem or an
+			// ItemContainer) carries its own state, which a node created here must not lose.
+			var selectionItem = peer?.GetPattern(PatternInterface.SelectionItem) as ISelectionItemProvider;
+			selectable = selectionItem is not null;
+			selected = selectionItem?.IsSelected ?? false;
+			active = false;
+		}
 
 		region.OnItemRealized(
 			itemElement.Visual.Handle,
@@ -700,6 +714,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			offset.X, offset.Y,
 			itemElement.Visual.Size.X, itemElement.Visual.Size.Y,
 			role, label,
+			ownsSelection: listView is not null,
 			selectable, selected, active);
 	}
 

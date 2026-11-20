@@ -1812,6 +1812,7 @@ namespace Uno.UI.Runtime {
 			height: number,
 			role: string,
 			label: string,
+			ownsSelection: boolean,
 			selectable: boolean,
 			selected: boolean,
 			active: boolean
@@ -1835,7 +1836,10 @@ namespace Uno.UI.Runtime {
 					if (existingItem.parentElement !== container) {
 						container.appendChild(existingItem);
 					}
-					SemanticElements.applyVirtualizedSelection(container, existingItem, selectable, selected, active);
+					// Without a selection model (an ItemsRepeater) the node's own peer already set its state.
+					if (ownsSelection) {
+						SemanticElements.applyVirtualizedSelection(container, existingItem, selectable, selected, active);
+					}
 					return;
 				}
 
@@ -1861,7 +1865,11 @@ namespace Uno.UI.Runtime {
 				});
 
 				container.appendChild(element);
-				SemanticElements.applyVirtualizedSelection(container, element, selectable, selected, active);
+				if (ownsSelection) {
+					SemanticElements.applyVirtualizedSelection(container, element, selectable, selected, active);
+				} else if (selectable) {
+					element.setAttribute('aria-selected', String(selected));
+				}
 			});
 		}
 

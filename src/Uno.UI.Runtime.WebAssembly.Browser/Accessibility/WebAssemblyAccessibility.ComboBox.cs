@@ -168,6 +168,7 @@ internal partial class WebAssemblyAccessibility
 			item.Visual.Size.X, item.Visual.Size.Y,
 			"option",
 			label,
+			ownsSelection: true,
 			selectable: true,
 			selected,
 			active: false);
