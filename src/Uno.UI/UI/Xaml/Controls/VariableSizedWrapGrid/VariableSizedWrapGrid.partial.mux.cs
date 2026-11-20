@@ -223,7 +223,7 @@ partial class VariableSizedWrapGrid : IOrientedPanel
 		// Determine the number of items that will fit per line
 		pItemsPerLine = DoubleUtil.IsInfinity(pMaximumSize.Direct) ?
 			(isHorizontalOrientation ? columnTileCount : rowTileCount) :
-			(int)(pMaximumSize.Direct / pItemSize.Direct);
+			ToNativeInt(pMaximumSize.Direct / pItemSize.Direct);
 		pItemsPerLine = Math.Max(1, pItemsPerLine);
 		if (maxItemsPerLine > 0)
 		{
@@ -235,7 +235,7 @@ partial class VariableSizedWrapGrid : IOrientedPanel
 		maxCol = isHorizontalOrientation ? rowTileCount : columnTileCount;
 		if (!DoubleUtil.IsInfinity(pMaximumSize.Indirect))
 		{
-			maxCol = Math.Min((int)(Math.Floor(pMaximumSize.Indirect / pItemSize.Indirect)), maxCol);
+			maxCol = Math.Min(ToNativeInt(Math.Floor(pMaximumSize.Indirect / pItemSize.Indirect)), maxCol);
 		}
 		maxCol = Math.Max(1, maxCol);
 
@@ -259,6 +259,12 @@ partial class VariableSizedWrapGrid : IOrientedPanel
 		// Find Used GridSize
 		m_pMap.FindUsedGridSize(out pLineCount, out pItemsPerLine);
 	}
+
+	// Converts the way WinUI's C++ cast does on x86/x64: a NaN or out of range value, such as
+	// the infinity a zero item size gives, becomes int.MinValue. .NET saturates it to
+	// int.MaxValue instead (NaN to 0), which asked the occupancy map for int.MaxValue rows.
+	private static int ToNativeInt(double value)
+		=> double.IsNaN(value) || value >= int.MaxValue + 1.0 || value <= int.MinValue - 1.0 ? int.MinValue : (int)value;
 
 	protected override Size ArrangeOverride(Size finalSize)
 	{
