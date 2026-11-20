@@ -155,8 +155,9 @@ namespace Uno.Utils {
 			return Promise.resolve("");
 		}
 
-		// A read the browser refuses (no permission or user activation, page not focused, blocked by the
-		// permissions policy) is an expected outcome and is logged at debug level; any other failure is an error.
+		// A read the browser refuses (no permission or user activation, page not focused, blocked by the permissions
+		// policy) is expected, so it is logged at debug level. NotAllowedError also covers a few real failures (Chromium:
+		// permission service unavailable, detached document; Gecko: any failure to get the data), which land there too.
 		private static logReadFailure(message: string, reason: unknown) {
 			if (reason instanceof DOMException && reason.name === "NotAllowedError") {
 				console.debug(`${message}: ${reason}`);
