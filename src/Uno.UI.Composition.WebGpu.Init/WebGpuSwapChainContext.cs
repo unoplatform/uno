@@ -149,26 +149,43 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 			return;
 		}
 		_frameAcquired = false;
-		_presentOwed = true;
 
-		// wgpu's Vulkan swapchain gives the acquire a fixed one-second wait and reports running past it as a lost
-		// device (gfx-rs/wgpu#9029). On a CPU rasterizer the frame just submitted can take longer than that (the
-		// Android emulator's SwiftShader, which compiles each shader on first use), so let it finish first.
-		if (_device.IsSoftwareVulkan)
+		// Nothing can show again, so this is not a present worth retrying.
+		if (Xlate.IsDeviceLost)
 		{
-			_ = Wgpu.DevicePoll(_device.Dev, true, null);
+			_presentOwed = false;
+			LastPresentSucceeded = true;
+			return;
 		}
+
+		_presentOwed = true;
 
 		// Acquire the swapchain image at present time (after the scene render) and blit the offscreen frame into it.
 		SurfaceTexture st = default;
-		Api.SurfaceGetCurrentTexture(_surface, &st);
+		if (_device.IsSoftwareVulkan)
+		{
+			// wgpu's Vulkan swapchain gives the acquire a fixed one-second wait and reports running past it as a lost
+			// device (gfx-rs/wgpu#9029), from inside a call that then panics. On a CPU rasterizer the work ahead of the
+			// acquire can take longer than that (the Android emulator's SwiftShader, which compiles each shader on first
+			// use), so let it finish first, and keep other threads' renders from queueing in front of the acquire.
+			lock (Xlate.SubmissionGate)
+			{
+				_ = Wgpu.DevicePoll(_device.Dev, true, null);
+				Api.SurfaceGetCurrentTexture(_surface, &st);
+			}
+		}
+		else
+		{
+			Api.SurfaceGetCurrentTexture(_surface, &st);
+		}
+
 		if (st.Status != SurfaceGetCurrentTextureStatus.Success || st.Texture == null)
 		{
 			// A texture handed back with a failed acquire still references a back buffer, and an unreleased one
 			// makes the next resize (D3D12 ResizeBuffers) fail or block the render thread.
 			if (st.Texture != null)
 			{
-				Api.TextureRelease(st.Texture);
+				ReleaseAcquiredTexture(st.Texture);
 			}
 
 			// Only a surface that no longer matches its window needs reconfiguring; a timed-out or occluded
@@ -210,7 +227,17 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		Api.CommandBufferRelease(cb);
 		Api.CommandEncoderRelease(enc);
 		Api.TextureViewRelease(view);
-		Api.TextureRelease(st.Texture);
+		ReleaseAcquiredTexture(st.Texture);
+	}
+
+	// Releasing an acquired texture that was never presented discards it, which panics on a lost device. The device
+	// is gone for good, so leaking this one handle costs nothing.
+	private static void ReleaseAcquiredTexture(Texture* texture)
+	{
+		if (!Xlate.IsDeviceLost)
+		{
+			Api.TextureRelease(texture);
+		}
 	}
 
 	private void EnsureBlitPipeline()

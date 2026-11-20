@@ -192,6 +192,7 @@ internal static unsafe partial class Xlate
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
 	private static void OnDevice(WGPURequestDeviceStatus status, IntPtr device, WGPUStringView message, IntPtr callback, IntPtr userdata)
 	{
+		_device = device;
 		var text = CString(message);
 		((delegate* unmanaged[Cdecl]<int, IntPtr, IntPtr, IntPtr, void>)callback)(N2O_RequestDeviceStatus((int)status), device, text, userdata);
 		Free(text);
@@ -200,7 +201,8 @@ internal static unsafe partial class Xlate
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
 	private static void OnDeviceLost(IntPtr* device, WGPUDeviceLostReason reason, WGPUStringView message, IntPtr callback, IntPtr userdata)
 	{
-		if (callback == IntPtr.Zero)
+		// Every later call that reports errors reports the loss again; the app hears it once.
+		if (Interlocked.Exchange(ref _deviceLost, 1) != 0 || callback == IntPtr.Zero)
 		{
 			return;
 		}
@@ -212,7 +214,8 @@ internal static unsafe partial class Xlate
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
 	private static void OnUncapturedError(IntPtr* device, WGPUErrorType type, WGPUStringView message, IntPtr u1, IntPtr u2)
 	{
-		if (device == null || !_errorHandlers.TryGetValue(*device, out var handler))
+		// A lost device makes everything still recorded against it invalid, once per call at frame rate.
+		if (Volatile.Read(ref _deviceLost) != 0 || device == null || !_errorHandlers.TryGetValue(*device, out var handler))
 		{
 			return;
 		}
@@ -277,6 +280,7 @@ internal static unsafe partial class Xlate
 			Userdata1 = (IntPtr)request,
 		};
 		SetMapState(buffer, SW.BufferMapState.Pending);
+		Interlocked.Increment(ref _pendingMaps);
 		WGPU.wgpuBufferMapAsync(buffer, (WGPUMapMode)(ulong)mode, offset, size, info);
 	}
 
@@ -285,6 +289,7 @@ internal static unsafe partial class Xlate
 	{
 		var request = *(MapRequest*)requestPointer;
 		NativeMemory.Free((void*)requestPointer);
+		Interlocked.Decrement(ref _pendingMaps);
 		// Settled before the callback runs, which may read it.
 		SetMapState(request.Buffer, status == WGPUMapAsyncStatus.Success ? SW.BufferMapState.Mapped : SW.BufferMapState.Unmapped);
 		// The old BufferMapAsyncStatus: Success = 0, ValidationError = 1, Unknown = 2.
@@ -336,9 +341,16 @@ internal static unsafe partial class Xlate
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
 	private static void wgpuSurfaceGetCurrentTexture(nint surface, nint surfaceTexture)
 	{
+		var o = (SW.SurfaceTexture*)surfaceTexture;
+		if (IsDeviceLost)
+		{
+			o->Texture = null;
+			o->Status = SW.SurfaceGetCurrentTextureStatus.DeviceLost;
+			return;
+		}
+
 		WGPUSurfaceTexture st = default;
 		WGPU.wgpuSurfaceGetCurrentTexture(surface, &st);
-		var o = (SW.SurfaceTexture*)surfaceTexture;
 		o->Texture = (SW.Texture*)st.Texture;
 		o->Suboptimal = st.Status == WGPUSurfaceGetCurrentTextureStatus.SuccessSuboptimal;
 		o->Status = st.Status switch
@@ -356,6 +368,12 @@ internal static unsafe partial class Xlate
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvCdecl)])]
 	private static uint wgpuDevicePoll(nint device, uint wait, nint wrappedSubmissionIndex)
 	{
+		// Pending maps still have to settle, or whoever spins on one never returns.
+		if (Volatile.Read(ref _deviceLost) != 0 && Volatile.Read(ref _pendingMaps) == 0)
+		{
+			return 1;
+		}
+
 		var index = wrappedSubmissionIndex == 0 ? null : &((SX.WrappedSubmissionIndex*)wrappedSubmissionIndex)->SubmissionIndex;
 		return WGPU.wgpuDevicePoll(device, wait, index);
 	}
