@@ -210,15 +210,25 @@ public class Given_ManagedImageDecoder
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
-	public void When_Exif_Offsets_Are_Hostile_Then_Size_Read_Returns()
+	public void When_Exif_Offsets_Are_Hostile_Then_Image_Still_Decodes()
 	{
 		var jpeg = Jpeg(5, 3);
-		foreach (var offset in new uint[] { 0, 1, 7, 0x7FFFFFFF, 0x80000000, 0xFFFFFFF0, 0xFFFFFFFF })
+		// 0x7FFFFFF2 and 0x7FFFFFF3 put the IFD at int.MaxValue - 1 and int.MaxValue, where adding to it wraps.
+		foreach (var offset in new uint[] { 0, 1, 7, 0x7FFFFFF2, 0x7FFFFFF3, 0x7FFFFFFF, 0x80000000, 0xFFFFFFF0, 0xFFFFFFFF })
 		{
 			foreach (var count in new ushort[] { 0, 1, 0xFFFF })
 			{
 				var app1 = Exif(6, ifdOffset: offset, entryCount: count);
-				AssertConsistent([.. jpeg[..2], .. app1, .. jpeg[2..]], $"IFD offset 0x{offset:X8}, {count} entries");
+				byte[] bytes = [.. jpeg[..2], .. app1, .. jpeg[2..]];
+				AssertConsistent(bytes, $"IFD offset 0x{offset:X8}, {count} entries");
+
+				// The EXIF is best effort: an IFD it can't read leaves the image unrotated instead of failing it.
+				var (decoded, width, height) = Decode(bytes);
+				Assert.IsTrue(decoded, $"IFD offset 0x{offset:X8}, {count} entries: the image should still decode.");
+				if (offset > (uint)bytes.Length)
+				{
+					Assert.AreEqual((5, 3), (width, height), $"IFD offset 0x{offset:X8}: the orientation should be ignored.");
+				}
 			}
 		}
 	}

@@ -737,8 +737,10 @@ internal static partial class ManagedImageDecoder
 
 		var tiff = start + 6;
 		var little = d[tiff] == 'I' && d[tiff + 1] == 'I';
+		// An IFD outside the segment is ignored, as by Skia and WIC, rather than failing the image. A huge offset wraps
+		// negative, and the bounds are checked without adding to the offsets, which could wrap too.
 		var ifd = tiff + (int)ReadExif32(d, tiff + 4, little);
-		if (ifd + 2 > end)
+		if (ifd < tiff || ifd > end - 2)
 		{
 			return null;
 		}
@@ -746,11 +748,12 @@ internal static partial class ManagedImageDecoder
 		var count = ReadExif16(d, ifd, little);
 		for (var i = 0; i < count; i++)
 		{
-			var entry = ifd + 2 + i * 12;
-			if (entry + 12 > end)
+			if (i * 12 > end - 14 - ifd)
 			{
 				break;
 			}
+
+			var entry = ifd + 2 + i * 12;
 
 			if (ReadExif16(d, entry, little) == 0x0112) // Orientation
 			{
