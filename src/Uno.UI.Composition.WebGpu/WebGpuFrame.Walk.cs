@@ -402,8 +402,42 @@ internal sealed unsafe partial class WebGpuFrame
 		}
 		var rc = ComposeClip(outer, rr.Clip, m, inv, direct);
 		if (Culled(ClampToClip(db, rc))) { return; }
-		if (IsPlain(rr)) { EmitArena(rr, rm, rc, ops); }
+		if (IsPlain(rr) && !CompileLater(rr, rm)) { EmitArena(rr, rm, rc, ops); }
 		else { if (_emitStats) { StatWalkedRecords++; } Walk(rr.Commands, rm, rc, ops); }
+	}
+
+	/// <summary>
+	/// Whether a recording of quads is drawn straight into this frame rather than compiled into the arena. A visual
+	/// resized every frame (a breathing layout, an animated bar) records anew each time, and compiling a recording
+	/// that is gone by the next frame costs far more than drawing its few quads directly. One still around on a later
+	/// frame is compiled then. Only axis-aligned sites: the two routes antialias a rotated edge a little differently.
+	/// </summary>
+	private bool CompileLater(ReplayRefCmd rr, in Matrix3x2 rm)
+	{
+		if (rm.M12 != 0 || rm.M21 != 0 || rr.Data is not { Compiled: null } data || !(data.QuadsOnlyMemo ??= QuadsOnly(rr.Commands)))
+		{
+			return false;
+		}
+
+		if (data.FirstSeenFrame == 0)
+		{
+			data.FirstSeenFrame = _d.FrameSeq;
+		}
+
+		return data.FirstSeenFrame == _d.FrameSeq;
+	}
+
+	private static bool QuadsOnly(List<WebGpuCommand> cmds)
+	{
+		foreach (var c in cmds)
+		{
+			if (c.Kind is not (CmdKind.Rect or CmdKind.RoundedRect or CmdKind.Gradient) || c.Clip.Paths is not null)
+			{
+				return false;
+			}
+		}
+
+		return cmds.Count > 0;
 	}
 
 	// How many stamps one recording keeps: enough for a template replayed at a handful of sites in a frame
