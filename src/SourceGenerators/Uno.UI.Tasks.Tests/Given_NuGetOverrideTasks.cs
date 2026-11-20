@@ -157,6 +157,7 @@ public class Given_NuGetOverrideTasks
 		var (exitCode, output) = package.RunInstall(LocalSuffix);
 
 		exitCode.Should().Be(0, output);
+		output.Should().NotContain("dotnet build-server shutdown");
 		package.TasksFiles().Should().BeEquivalentTo(ScratchPackage.TasksFilesFor(LocalSuffix));
 		foreach (var file in BoundFiles)
 		{
@@ -241,6 +242,7 @@ public class Given_NuGetOverrideTasks
 		var (exitCode, output) = package.RunInstall(LocalSuffix);
 
 		exitCode.Should().Be(0, output);
+		output.Should().Contain("dotnet build-server shutdown", "the warning says how to release tasks a reused node holds");
 		package.TasksFiles().Should().Contain($"Uno.UI.Tasks.{Sha}.dll");
 		foreach (var file in BoundFiles)
 		{

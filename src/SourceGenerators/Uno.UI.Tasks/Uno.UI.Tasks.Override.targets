@@ -22,6 +22,8 @@
 		<MakeDir Directories="$(_UnoOverriddenTasksFolder)" />
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_UnoOverriddenTasksFolder)" />
 		<Copy SourceFiles="@(_UnoTasksOutputFile)" DestinationFiles="@(_UnoTasksOutputDestinationFile)" SkipUnchangedFiles="true" Retries="1" RetryDelayMilliseconds="500" ContinueOnError="true" />
+		<Warning Condition="'$(MSBuildLastTaskResult)'=='false'"
+				 Text="Some of the locally built tasks could not be copied to $(_UnoOverriddenTasksFolder). If a reused MSBuild node still has the tasks of a previous override loaded, run 'dotnet build-server shutdown' (or close Visual Studio) and build again." />
 	</Target>
 
 	<!--
