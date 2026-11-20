@@ -376,6 +376,34 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
+		/// Returns true if the member provides implicit items for a settable collection property whose type can be
+		/// instantiated. Like WinUI, the collection is created when the property value is null.
+		/// </summary>
+		private bool IsCreatableInlineCollection(XamlMemberDefinition member, [NotNullWhen(true)] out INamedTypeSymbol? collectionType)
+		{
+			if (member.Objects.Count > 0
+				&& member.Member.DeclaringType is { } declaringType
+				&& !HasMarkupExtension(member)
+				&& !HasCustomMarkupExtension(member)
+				&& GetPropertyWithName(declaringType, member.Member.Name) is
+				{
+					IsStatic: false,
+					GetMethod.DeclaredAccessibility: Accessibility.Public,
+					SetMethod.DeclaredAccessibility: Accessibility.Public,
+					Type: INamedTypeSymbol { IsAbstract: false } type
+				}
+				&& type.InstanceConstructors.Any(static c => c.Parameters.Length == 0 && c.DeclaredAccessibility == Accessibility.Public)
+				&& IsInlineCollection(member.Member, member.Objects))
+			{
+				collectionType = type;
+				return true;
+			}
+
+			collectionType = null;
+			return false;
+		}
+
+		/// <summary>
 		/// Returns true if the type implements either ICollection, IList or one of their generics
 		/// </summary>
 		private bool IsCollectionOrListType(INamedTypeSymbol? propertyType)

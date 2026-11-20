@@ -3563,6 +3563,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									throw new XamlGenerationException($"The property '{member.Member.Name}' of type '{propertyType}' does not support adding multiple objects", member);
 								}
 							}
+							// The top-level control (useGenericApply) applies its literal properties through a closure, which already did this.
+							else if (!useGenericApply && IsCreatableInlineCollection(member, out var creatableCollectionType))
+							{
+								BuildCreatableInlineCollection(writer, writer.AppliedParameterName, member, creatableCollectionType);
+							}
 							else
 							{
 								// GenerateWarning(writer, $"Unknown type {objectDefinition.Type} for property {member.Member.DeclaringType}");
@@ -6179,7 +6184,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					&& !IsLazyVisualStateManagerProperty(member)
 					&& _metadataHelper.FindEventType(type, member.Member.Name) == null
 					&& !IsXNameMember(member, objectDefinition.Type)
-					&& member.Member.Name != "_UnknownContent"; // We are defining the elements of a collection explicitly declared in XAML
+					&& member.Member.Name != "_UnknownContent" // We are defining the elements of a collection explicitly declared in XAML
+					// An object initializer can't create a null collection, so the apply block handles it.
+					&& (closureName is not null || !IsCreatableInlineCollection(member, out _));
 			}
 
 			BuildLiteralPropertiesWithFilter(writer, objectDefinition, closureName, extendedProperties, PropertyFilter);
@@ -6323,7 +6330,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								var isInitializableCollection = IsInitializableCollection(member.Member);
 								var isInlineCollection = IsInlineCollection(member.Member, nonBindingObjects);
 
-								if (isInlineCollection && closureName != null)
+								if (closureName != null && IsCreatableInlineCollection(member, out var creatableCollectionType))
+								{
+									BuildCreatableInlineCollection(writer, closureName, member, creatableCollectionType);
+								}
+								else if (isInlineCollection && closureName != null)
 								{
 									foreach (var child in nonBindingObjects)
 									{
@@ -6369,6 +6380,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 				}
+			}
+		}
+
+		private void BuildCreatableInlineCollection(IIndentedStringBuilder writer, string target, XamlMemberDefinition member, INamedTypeSymbol collectionType)
+		{
+			var localCollectionName = $"{target}_collection_{_collectionIndex++}";
+
+			writer.AppendLineIndented($"var {localCollectionName} = {target}.{member.Member.Name} ??= new {collectionType.GetFullyQualifiedTypeIncludingGlobal()}();");
+
+			foreach (var child in member.Objects)
+			{
+				writer.AppendLineIndented($"{localCollectionName}.Add(");
+				using (writer.Indent())
+				{
+					BuildChild(writer, member, child);
+				}
+				writer.AppendLineIndented(");");
 			}
 		}
 
