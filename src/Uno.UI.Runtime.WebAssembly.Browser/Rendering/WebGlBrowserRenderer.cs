@@ -8,10 +8,10 @@ using Uno.UI.Runtime.WebAssembly.Browser.Graphics;
 namespace Uno.UI.Runtime;
 
 // Makes the emscripten WebGL context current and hands the backend a neutral IGLRenderTarget (the canvas
-// default framebuffer).
+// default framebuffer, whose drawing buffer is preserved across frames).
 internal partial class WebGlBrowserRenderer : IBrowserRenderer
 {
-	private record struct JsInfo(JSObject NativeInstance, uint FboId, int Stencil, int Samples, int Depth);
+	private record struct JsInfo(JSObject NativeInstance, int Stencil, int Depth);
 
 	private readonly JsInfo _jsInfo;
 
@@ -28,9 +28,7 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 		{
 			var jsInfo = new JsInfo(
 				NativeInstance: jsObject.GetPropertyAsJSObject("instance")!,
-				FboId: (uint)jsObject.GetPropertyAsInt32("fboId"),
 				Stencil: jsObject.GetPropertyAsInt32("stencil"),
-				Samples: jsObject.GetPropertyAsInt32("samples"),
 				Depth: jsObject.GetPropertyAsInt32("depth")
 			);
 			renderer = new WebGlBrowserRenderer(jsInfo);
@@ -47,8 +45,12 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 
 	public void MakeCurrent() => NativeMethods.MakeCurrent(_jsInfo.NativeInstance);
 
+	/// <summary>False when the canvas lost the previous frame (resized or context lost), so it must repaint whole.</summary>
+	public bool IsContentPreserved() => NativeMethods.IsContentPreserved(_jsInfo.NativeInstance);
+
+	// Single-sampled: the canvas is created without MSAA, which Skia's coverage AA does not need.
 	public IRenderTarget Resize(int width, int height)
-		=> new WebGlRenderTarget(_jsInfo.FboId, _jsInfo.Samples, _jsInfo.Stencil, width, height);
+		=> new WebGlRenderTarget(0, 0, _jsInfo.Stencil, width, height);
 
 	public void Flush() { }
 
@@ -72,5 +74,8 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 
 		[JSImport($"globalThis.Uno.UI.Runtime.{nameof(WebGlBrowserRenderer)}.makeCurrent")]
 		internal static partial void MakeCurrent(JSObject nativeInstance);
+
+		[JSImport($"globalThis.Uno.UI.Runtime.{nameof(WebGlBrowserRenderer)}.isContentPreserved")]
+		internal static partial bool IsContentPreserved(JSObject nativeInstance);
 	}
 }
