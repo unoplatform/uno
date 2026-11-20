@@ -75,7 +75,9 @@ public sealed unsafe class WebGpuRenderRecord : IRenderRecord
 	internal WColor? ClearColor;
 	// Memoised scans of the immutable command list: every command is a plain draw (the recording lives in the arena);
 	// some command, directly or through a nested recording, is a backdrop; the union of the commands' bounds.
-	internal bool? PlainMemo, HasBackdropMemo;
+	internal bool? PlainMemo, HasBackdropMemo, QuadsOnlyMemo;
+	// The frame this recording was first replayed in; it is compiled into the arena only if replayed on a later one.
+	internal long FirstSeenFrame;
 	// Memoised content key of the immutable command list: 0 once computed and found unpoolable.
 	internal long? ContentKeyMemo;
 	internal Vector4? IdentityBounds;
