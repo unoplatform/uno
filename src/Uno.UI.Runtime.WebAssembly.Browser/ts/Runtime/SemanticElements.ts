@@ -880,7 +880,19 @@ namespace Uno.UI.Runtime {
 			});
 
 			// Handle IME composition events for international text input (T055)
+			element.addEventListener('compositionstart', () => {
+				SemanticElements.composingHandle = handle;
+			});
+			element.addEventListener('blur', () => {
+				if (SemanticElements.composingHandle === handle) {
+					SemanticElements.composingHandle = 0;
+				}
+			});
 			element.addEventListener('compositionend', () => {
+				// Cleared before the callback: managed code flushes re-adds it deferred while composing.
+				if (SemanticElements.composingHandle === handle) {
+					SemanticElements.composingHandle = 0;
+				}
 				if (callbacks.onTextInput) {
 					callbacks.onTextInput(
 						handle,
@@ -1703,6 +1715,9 @@ namespace Uno.UI.Runtime {
 		 */
 		private static virtualizedMutationQueue: (() => void)[] = [];
 		private static virtualizedRafId: number = 0;
+
+		/** Handle of the text input with an IME composition in progress, or 0. */
+		public static composingHandle: number = 0;
 
 		/**
 		 * Schedules a virtualized mutation to be flushed in the next animation frame.
