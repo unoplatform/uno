@@ -966,11 +966,12 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 					}
 				}
 			}
+		}
 
-			if (!areEqual)
-			{
-				_lastIndex = -1;
-			}
+		// As in WinUI, the reset is outside the startAfter block: a null startAfter searches from the first item.
+		if (!areEqual)
+		{
+			_lastIndex = -1;
 		}
 
 		// Fetch the Property value based on property type
