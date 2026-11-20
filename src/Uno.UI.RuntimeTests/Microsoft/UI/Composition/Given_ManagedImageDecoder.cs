@@ -233,6 +233,21 @@ public class Given_ManagedImageDecoder
 		}
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25556")]
+	[DataRow(0x7FFFFFF0u)]
+	[DataRow(0x7FFFFFF1u)]
+	public void When_Bmp_Palette_Offset_Is_Hostile_Then_Image_Still_Decodes(uint dibSize)
+	{
+		// The palette follows the DIB header, so this puts it near int.MaxValue, where adding to its offset wraps. Like
+		// any palette past the end of the file, it is left black instead of failing the image.
+		var bytes = Bmp(5, 3, bpp: 8);
+		BinaryPrimitives.WriteUInt32LittleEndian(bytes.AsSpan(14), dibSize);
+
+		Assert.AreEqual((true, 5, 3), Decode(bytes));
+		AssertAgrees(bytes);
+	}
+
 	private static void AssertAgrees(byte[] bytes)
 	{
 		var (decoded, width, height) = Decode(bytes);

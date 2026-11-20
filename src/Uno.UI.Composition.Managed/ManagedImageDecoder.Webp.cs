@@ -37,7 +37,7 @@ internal static partial class ManagedImageDecoder
 
 		var p = 12;
 		var hasAlphaChunk = false;
-		while (p + 8 <= d.Length)
+		while (p <= d.Length - 8)
 		{
 			var chunkSize = ReadU32LE(d, p + 4);
 			chunk = p + 8;
@@ -117,7 +117,7 @@ internal static partial class ManagedImageDecoder
 		ulong bits = 0;
 		for (var i = 0; i < 5; i++)
 		{
-			bits |= (ulong)(offset + i < d.Length ? d[offset + i] : 0) << (8 * i);
+			bits |= (ulong)(i < d.Length - offset ? d[offset + i] : 0) << (8 * i);
 		}
 
 		width = (int)((bits >> 8) & 0x3FFF) + 1;

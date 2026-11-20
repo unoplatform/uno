@@ -29,7 +29,7 @@ internal static partial class ManagedImageDecoder
 		var sawHeader = false;
 		long imageDataLength = 0;
 
-		while (p + 8 <= d.Length)
+		while (p <= d.Length - 8)
 		{
 			var rawLength = ReadU32(d, p);
 			var type = ReadU32(d, p + 4);

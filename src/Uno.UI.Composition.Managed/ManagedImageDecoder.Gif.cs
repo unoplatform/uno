@@ -30,7 +30,7 @@ internal static partial class ManagedImageDecoder
 		if ((packed & 0x80) != 0)
 		{
 			globalTableLength = (2 << (packed & 0x07)) * 3;
-			if (p + globalTableLength > d.Length)
+			if (globalTableLength > d.Length - p)
 			{
 				return false;
 			}
@@ -106,7 +106,7 @@ internal static partial class ManagedImageDecoder
 			if ((imgPacked & 0x80) != 0)
 			{
 				tableLength = (2 << (imgPacked & 0x07)) * 3;
-				if (p + tableLength > d.Length)
+				if (tableLength > d.Length - p)
 				{
 					return false;
 				}
@@ -131,7 +131,7 @@ internal static partial class ManagedImageDecoder
 					break;
 				}
 
-				if (p + length > d.Length)
+				if (length > d.Length - p)
 				{
 					return false;
 				}

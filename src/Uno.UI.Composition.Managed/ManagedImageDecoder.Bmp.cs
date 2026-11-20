@@ -120,7 +120,7 @@ internal static partial class ManagedImageDecoder
 			for (var i = 0; i < colorsUsed; i++)
 			{
 				var p = paletteOffset + i * entrySize;
-				if (p < 0 || p + 3 > d.Length)
+				if (p < 0 || p > d.Length - 3)
 				{
 					break;
 				}
