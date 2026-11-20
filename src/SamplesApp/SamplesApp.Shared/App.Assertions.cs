@@ -223,4 +223,11 @@ partial class App
 		Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView.Given_ApplicationView.StartupVisibleBounds = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds;
 #endif
 	}
+
+	private void AssertIssue26617()
+	{
+#if HAS_UNO
+		Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Given_Application_Launch.DefaultFontsLoadedAtLaunch = FontPreloadTask?.IsCompleted;
+#endif
+	}
 }
