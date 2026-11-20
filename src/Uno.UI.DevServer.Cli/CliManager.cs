@@ -103,7 +103,7 @@ internal class CliManager
 
 			if (requiresWorkspaceResolution)
 			{
-				workspaceResolution = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
+				workspaceResolution = await ResolveCommandWorkspaceAsync(originalArgs, requestedWorkingDirectory, hasExplicitWorkspaceOverride);
 				workingDirectory = workspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
 			}
 
@@ -321,6 +321,35 @@ internal class CliManager
 		=> hasExplicitWorkspaceOverride
 			? _workspaceResolver.ResolveExplicitWorkspaceAsync(requestedWorkingDirectory)
 			: _workspaceResolver.ResolveAsync(requestedWorkingDirectory);
+
+	/// <summary>
+	/// Resolves the workspace of start, stop, disco and health. A <c>--solution &lt;path&gt;</c> (read with the MCP
+	/// bridge's rules) that resolves to an Uno workspace selects that solution, as the MCP bridge does. IDEs pass the
+	/// solution they opened, so several solutions in one folder are no longer ambiguous for them (#26122). Otherwise
+	/// the workspace is discovered from the working directory or --solution-dir, as before. The argument itself is
+	/// left in place: start forwards it to the host.
+	/// </summary>
+	private async Task<WorkspaceResolution> ResolveCommandWorkspaceAsync(string[] args, string requestedWorkingDirectory, bool hasExplicitWorkspaceOverride)
+	{
+		// Debug only: below Error, these commands log to stdout, where disco --json and health --json write their JSON.
+		var solutionArgument = ParseMcpSolutionArgument(args, Environment.CurrentDirectory);
+		if (!solutionArgument.Success)
+		{
+			_logger.LogDebug("Ignoring --solution to resolve the workspace: {Error}", solutionArgument.Error);
+		}
+		else if (solutionArgument.SolutionPath is { } solutionPath)
+		{
+			var resolution = await _workspaceResolver.ResolveSolutionAsync(requestedWorkingDirectory, solutionPath);
+			if (resolution.IsResolved)
+			{
+				return resolution;
+			}
+
+			_logger.LogDebug("--solution {Solution} is not in an Uno workspace; discovering the workspace instead.", solutionPath);
+		}
+
+		return await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
+	}
 
 	internal void LogVersionBanner()
 	{

@@ -52,7 +52,7 @@ dotnet tool update -g uno.devserver
 ## Syntax
 
 ```bash
-uno-devserver disco [--json] [--addins-only]
+uno-devserver disco [--json] [--addins-only] [--solution <path>]
 ```
 
 | Option | Description |
@@ -60,6 +60,7 @@ uno-devserver disco [--json] [--addins-only]
 | *(none)* | Display a human-readable table with colored output |
 | `--json` | Emit the full discovery result as a JSON object |
 | `--addins-only` | Output only resolved add-in paths (semicolon-separated, or JSON array with `--json`) |
+| `--solution <path>` | Inspect the workspace of this `.sln`/`.slnx` instead of discovering it from the folder. Use it when the folder holds several solutions |
 
 ## Reading the output
 
@@ -181,6 +182,18 @@ See [Updating the Uno Platform version](xref:Uno.Development.UpgradeUnoNuget) fo
 
 > [!NOTE]
 > Declaring the version inline in the project file (`<Project Sdk="Uno.Sdk/6.6.29">`) is enough to build, but the Dev Server tooling resolves the `Uno.Sdk` version from `global.json` only — a `global.json` is still required for `disco` and the dev loop.
+
+### Several solutions in the same folder
+
+```text
+errors:
+- Workspace could not be resolved.
+candidateSolutions:
+- C:\src\MyApp\MyApp.sln
+- C:\src\MyApp\MyApp-Copy.sln
+```
+
+`resolutionKind` is `Ambiguous`: more than one solution shares the same `global.json`, and `disco` cannot tell which one you work with. Name it with `--solution`, for example `uno-devserver disco --solution MyApp.sln`. IDEs pass the solution they opened, so they are not affected.
 
 ### SDK package not restored
 
