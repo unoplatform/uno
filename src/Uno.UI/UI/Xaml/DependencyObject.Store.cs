@@ -1403,9 +1403,16 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
-				// Always update the inherited properties with the new value, the instance
-				// may change if a far ancestor changed.
-				(_inheritedForwardedProperties ??= new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default))[parentProperty] = sourceInstance;
+				if (newValue == DependencyProperty.UnsetValue)
+				{
+					_inheritedForwardedProperties?.Remove(parentProperty);
+				}
+				else
+				{
+					// Always update the inherited properties with the new value, the instance
+					// may change if a far ancestor changed.
+					(_inheritedForwardedProperties ??= new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default))[parentProperty] = sourceInstance;
+				}
 
 				// If not, propagate the DP down to the child listeners, if any.
 				var localChildrenStores = _childrenStores;
@@ -1508,8 +1515,6 @@ namespace Microsoft.UI.Xaml
 			{
 				_unregisteringInheritedProperties = true;
 
-				_inheritedForwardedProperties?.Clear();
-
 				if (_updatedProperties is not null)
 				{
 					foreach (var dp in _updatedProperties)
@@ -1522,11 +1527,47 @@ namespace Microsoft.UI.Xaml
 				{
 					SetValue(dataContextProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
 				}
+
+				ResetForwardedInheritedProperties();
 			}
 			finally
 			{
 				_unregisteringInheritedProperties = false;
 			}
+		}
+
+		/// <summary>
+		/// Clears the values this store forwarded to its children for properties it doesn't define (e.g. a Grid
+		/// forwarding IsEnabled), as their source is no longer an ancestor once this store is detached.
+		/// </summary>
+		private void ResetForwardedInheritedProperties()
+		{
+			var forwardedProperties = _inheritedForwardedProperties;
+			if (forwardedProperties is not { Count: > 0 })
+			{
+				return;
+			}
+
+			// Detached while iterating, as the child callbacks may re-enter this store.
+			_inheritedForwardedProperties = null;
+
+			var actualInstanceAlias = ActualInstance;
+			var localChildrenStores = _childrenStores;
+			for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+			{
+				var child = localChildrenStores[storeIndex];
+				foreach (var forwarded in forwardedProperties)
+				{
+					// Inheritable attached properties set on this store are sourced from itself: they are not stale.
+					if (!ReferenceEquals(forwarded.Value.Target, actualInstanceAlias))
+					{
+						child.OnParentPropertyChangedCallback(forwarded.Value, forwarded.Key, DependencyProperty.UnsetValue);
+					}
+				}
+			}
+
+			forwardedProperties.Clear();
+			_inheritedForwardedProperties ??= forwardedProperties;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
