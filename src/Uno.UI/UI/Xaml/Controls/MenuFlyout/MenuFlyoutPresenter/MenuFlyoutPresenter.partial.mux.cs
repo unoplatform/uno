@@ -362,9 +362,17 @@ partial class MenuFlyoutPresenter : IMenuPresenter
 		}
 	}
 
-	// TODO Uno: WinUI returns the owning MenuFlyout's DependencyObject_Name, which isn't stored on non-FrameworkElement
-	// objects yet; reading FrameworkElement.NameProperty on the MenuFlyout would throw under owner validation.
-	internal string GetOwnerName() => null;
+	internal string GetOwnerName()
+	{
+		var parentMenuFlyout = GetParentMenuFlyout();
+
+		if (parentMenuFlyout is not null)
+		{
+			return parentMenuFlyout.GetValue(DependencyObject.NameProperty) as string;
+		}
+
+		return null;
+	}
 
 #if HAS_UNO // Entrance theme animations are not supported in Uno yet
 #if false
