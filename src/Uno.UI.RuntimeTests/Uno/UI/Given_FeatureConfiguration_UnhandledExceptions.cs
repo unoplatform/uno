@@ -108,6 +108,77 @@ public class Given_FeatureConfiguration_UnhandledExceptions
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public void When_Handler_Throws_FlagOn_Handled_RouteContinues()
+	{
+		// WinUI reports a failing handler through Application.UnhandledException and, once the app
+		// marks it handled, keeps raising the event on the remaining handlers and ancestors
+		// (CEventManager ignores the per-listener failure, DXamlCore::FireEvent reports it).
+		var originalFlag = FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions;
+		var reported = 0;
+		var sameElementInvoked = false;
+		var parentInvoked = false;
+
+		void Handler(object s, MuxUnhandledExceptionEventArgs e)
+		{
+			reported++;
+			e.Handled = true;
+		}
+
+		try
+		{
+			FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions = true;
+			Application.Current.UnhandledException += Handler;
+
+			var sut = new Border();
+			var parent = new Border { Child = sut };
+			sut.Tapped += ThrowingHandler;
+			sut.Tapped += (s, e) => sameElementInvoked = true;
+			parent.Tapped += (s, e) => parentInvoked = true;
+
+			sut.SafeRaiseEvent(UIElement.TappedEvent, new TappedRoutedEventArgs());
+
+			Assert.AreEqual(1, reported);
+			Assert.IsTrue(sameElementInvoked, "The next handler on the same element should still run.");
+			Assert.IsTrue(parentInvoked, "The event should keep bubbling to the parent.");
+		}
+		finally
+		{
+			Application.Current.UnhandledException -= Handler;
+			FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions = originalFlag;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Handler_Throws_FlagOn_Unhandled_ReportedOnce()
+	{
+		var originalFlag = FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions;
+		var reported = 0;
+
+		void Handler(object s, MuxUnhandledExceptionEventArgs e) => reported++;
+
+		try
+		{
+			FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions = true;
+			Application.Current.UnhandledException += Handler;
+
+			var sut = new Border();
+			sut.Tapped += ThrowingHandler;
+
+			Assert.ThrowsExactly<TestException>(() =>
+				sut.SafeRaiseEvent(UIElement.TappedEvent, new TappedRoutedEventArgs()));
+
+			Assert.AreEqual(1, reported);
+		}
+		finally
+		{
+			Application.Current.UnhandledException -= Handler;
+			FeatureConfiguration.UnhandledExceptionHandling.PropagateInputExceptions = originalFlag;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_Dispatcher_Throws_FlagOff_Swallowed()
 	{
 		var originalFlag = FeatureConfiguration.UnhandledExceptionHandling.PropagateDispatcherExceptions;
@@ -134,9 +205,42 @@ public class Given_FeatureConfiguration_UnhandledExceptions
 		}
 	}
 
-	// Note: flag-on dispatcher propagation is intentionally not covered by an automated test.
-	// The exception propagates up to the platform message pump, which on most hosts terminates
-	// the process - incompatible with the runtime-test harness. Manual SamplesApp smoke covers it.
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Dispatcher_Throws_FlagOn_Handled_Continues()
+	{
+		// WinUI raises Application.UnhandledException for a failing dispatcher work item
+		// (FinalUnhandledErrorDetected -> ProcessUnhandledError) and only fails fast when unhandled.
+		// The unhandled case reaches the platform message pump, which the test harness cannot survive.
+		var originalFlag = FeatureConfiguration.UnhandledExceptionHandling.PropagateDispatcherExceptions;
+		Exception observed = null;
+
+		void Handler(object s, MuxUnhandledExceptionEventArgs e)
+		{
+			observed = e.Exception;
+			e.Handled = true;
+		}
+
+		try
+		{
+			FeatureConfiguration.UnhandledExceptionHandling.PropagateDispatcherExceptions = true;
+			Application.Current.UnhandledException += Handler;
+
+			var dispatcher = Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+			var ran = false;
+			dispatcher.TryEnqueue(ThrowingDispatcherWorkItem);
+			dispatcher.TryEnqueue(() => ran = true);
+
+			await WindowHelper.WaitFor(() => ran);
+
+			Assert.IsInstanceOfType(observed, typeof(TestException));
+		}
+		finally
+		{
+			Application.Current.UnhandledException -= Handler;
+			FeatureConfiguration.UnhandledExceptionHandling.PropagateDispatcherExceptions = originalFlag;
+		}
+	}
 
 	[TestMethod]
 	[RunsOnUIThread]
