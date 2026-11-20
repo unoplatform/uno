@@ -490,13 +490,18 @@ public partial class Given_ContextRequested_Injection
 	// Two fingers pressed less than 500 ms apart: the second press comes before the first hold starts the delayed context menu,
 	// so it is the second hold that must drop it (ContextMenuProcessor.ProcessContextRequestOnHoldingGesture).
 	// Each hold comes from its finger's 800 ms hold timer and takes its source from the last pointer event, so each finger
-	// moves within the tap range before its hold. An attempt where the first hold's request is no longer pending at the second
-	// hold, or where a hold got the other finger as source, says nothing about the regression: it is retried, a few times.
+	// moves within the tap range before its hold. The second press only fits in the 500 ms after the first one, and a busy
+	// UI thread can overshoot that. An attempt where the second press came too late, where the first hold's request is no
+	// longer pending at the second hold, or where a hold got the other finger as source, says nothing about the regression:
+	// it is retried, a few times.
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22229")]
 	public async Task When_Two_Fingers_Held_Second_Hold_Drops_First_Delayed_ContextFlyout()
 	{
-		const int maxAttempts = 3;
+		const int maxAttempts = 5;
+		// The middle of the 500 ms window, and the latest second press that still leaves room for timer jitter.
+		const int secondPressDelayMs = 250;
+		const int latestSecondPressMs = 400;
 
 		var flyout = new MenuFlyout();
 		flyout.Items.Add(new MenuFlyoutItem { Text = "Item" });
@@ -520,6 +525,7 @@ public partial class Given_ContextRequested_Injection
 
 		object firstHoldSource = null, secondHoldSource = null;
 		var firstRequestPendingAtSecondHold = false;
+		long secondPressAfterMs = 0;
 		target.Holding += (_, e) =>
 		{
 			if (e.HoldingState == Microsoft.UI.Input.HoldingState.Started)
@@ -548,13 +554,19 @@ public partial class Given_ContextRequested_Injection
 			try
 			{
 				finger1.Press(target.GetAbsoluteBounds().GetCenter());
-				await Task.Delay(250);
-				finger2.Press(other.GetAbsoluteBounds().GetCenter());
-				finger1.MoveBy(1, 0, steps: 1);
+				var sinceFirstPress = System.Diagnostics.Stopwatch.StartNew();
+				await Task.Delay(secondPressDelayMs);
+				secondPressAfterMs = sinceFirstPress.ElapsedMilliseconds;
 
-				await TestServices.WindowHelper.WaitFor(() => firstHoldSource is not null, timeoutMS: 5000, message: "The first hold should be recognized");
-				finger2.MoveBy(1, 0, steps: 1);
-				await TestServices.WindowHelper.WaitFor(() => secondHoldSource is not null, timeoutMS: 5000, message: "The second hold should be recognized");
+				if (secondPressAfterMs <= latestSecondPressMs)
+				{
+					finger2.Press(other.GetAbsoluteBounds().GetCenter());
+					finger1.MoveBy(1, 0, steps: 1);
+
+					await TestServices.WindowHelper.WaitFor(() => firstHoldSource is not null, timeoutMS: 5000, message: "The first hold should be recognized");
+					finger2.MoveBy(1, 0, steps: 1);
+					await TestServices.WindowHelper.WaitFor(() => secondHoldSource is not null, timeoutMS: 5000, message: "The second hold should be recognized");
+				}
 
 				if (firstHoldSource == target && secondHoldSource == other && firstRequestPendingAtSecondHold)
 				{
@@ -580,7 +592,7 @@ public partial class Given_ContextRequested_Injection
 				string Describe(object source) => source == target ? "first finger's element" : source == other ? "second finger's element" : source?.ToString() ?? "none";
 				Assert.Fail(
 					$"In {maxAttempts} attempts, the second hold never came while the first hold's request was pending. Last attempt: "
-					+ $"first hold source: {Describe(firstHoldSource)}, second hold source: {Describe(secondHoldSource)}, "
+					+ $"second press after {secondPressAfterMs} ms (latest {latestSecondPressMs} ms), first hold source: {Describe(firstHoldSource)}, second hold source: {Describe(secondHoldSource)}, "
 					+ $"first request pending at the second hold: {firstRequestPendingAtSecondHold}.");
 			}
 		}
