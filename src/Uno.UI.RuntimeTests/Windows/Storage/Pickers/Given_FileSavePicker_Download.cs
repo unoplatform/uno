@@ -40,6 +40,18 @@ public class Given_FileSavePicker_Download
 		Assert.AreEqual(suggestedFileName, await PickNameAsync(picker));
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25671")]
+	[DataRow("Report", "Report.pdf")]
+	[DataRow("Report.txt", "Report.txt.pdf")]
+	public async Task When_Name_Ends_With_No_Choice_Extension_Then_The_First_Choice_Extension_Is_Added(string suggestedFileName, string expectedName)
+	{
+		var picker = new FileSavePicker { SuggestedFileName = suggestedFileName };
+		picker.FileTypeChoices.Add("PDF", new List<string> { ".pdf" });
+
+		Assert.AreEqual(expectedName, await PickNameAsync(picker));
+	}
+
 	private static async Task<string> PickNameAsync(FileSavePicker picker)
 	{
 		var configuration = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration;
