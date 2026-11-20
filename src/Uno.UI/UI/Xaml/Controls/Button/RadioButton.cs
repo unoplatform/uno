@@ -54,6 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// WinUI registers a button at construction and unregisters it when its peer is destroyed. Uno has no
 		// deterministic destruction, so leaving a live tree stands in for it, including trees discarded before Loaded.
+		// Unlike WinUI, buttons in a removed subtree thus stop grouping with each other until they enter a live tree again.
 		internal override void EnterImpl(EnterParams @params, int depth)
 		{
 			base.EnterImpl(@params, depth);
