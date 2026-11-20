@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 
 using Microsoft.Web.WebView2.Core;
 
@@ -20,10 +21,12 @@ internal sealed class AotWebResourceRequestedEventArgsWrapper : INativeWebResour
 {
 	private readonly WebView2.ICoreWebView2WebResourceRequestedEventArgs _args;
 	private readonly WebView2.ICoreWebView2WebResourceRequestedEventArgs2? _args2;
+	private readonly WebView2.ICoreWebView2_2 _webView;
 
-	public AotWebResourceRequestedEventArgsWrapper(WebView2.ICoreWebView2WebResourceRequestedEventArgs args)
+	public AotWebResourceRequestedEventArgsWrapper(WebView2.ICoreWebView2WebResourceRequestedEventArgs args, WebView2.ICoreWebView2_2 webView)
 	{
 		_args = args;
+		_webView = webView;
 		_args2 = args as WebView2.ICoreWebView2WebResourceRequestedEventArgs2;
 		_args.get_Request(out var request).ThrowOnError();
 		Request = new AotWebResourceRequest(request);
@@ -44,10 +47,46 @@ internal sealed class AotWebResourceRequestedEventArgsWrapper : INativeWebResour
 			{
 				_args.put_Response(wr.NativeResponse).ThrowOnError();
 			}
+			else if (value is not null)
+			{
+				_args.put_Response(CreateNativeResponse(value)).ThrowOnError();
+			}
 			else
 			{
 				_args.put_Response(null!).ThrowOnError();
 			}
+		}
+	}
+
+	/// <summary>
+	/// Translates a response that was not created by this WebView, such as one from a detached
+	/// <see cref="CoreWebView2Environment"/>, into a native response from the WebView's environment.
+	/// </summary>
+	private unsafe WebView2.ICoreWebView2WebResourceResponse CreateNativeResponse(INativeWebResourceResponse response)
+	{
+		var headers = new StringBuilder();
+		foreach (var header in response.Headers)
+		{
+			headers.Append(header.Key).Append(": ").Append(header.Value).Append("\r\n");
+		}
+
+		var bytes = AotStreamHelpers.ReadIRandomAccessStream(response.Content);
+		var content = bytes.Length > 0 ? new ByteArrayIStream(bytes) : null;
+
+		_webView.get_Environment(out var environment).ThrowOnError();
+
+		var reasonPhrase = response.ReasonPhrase ?? string.Empty;
+		var headersString = headers.ToString();
+		fixed (char* p_reasonPhrase = reasonPhrase, p_headers = headersString)
+		{
+			environment.CreateWebResourceResponse(
+				content!,
+				response.StatusCode,
+				new PWSTR(p_reasonPhrase),
+				new PWSTR(p_headers),
+				out var nativeResponse).ThrowOnError();
+
+			return nativeResponse;
 		}
 	}
 
