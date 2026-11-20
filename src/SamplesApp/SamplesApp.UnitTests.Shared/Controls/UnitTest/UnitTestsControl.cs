@@ -566,7 +566,8 @@ namespace Uno.UI.Samples.Tests
 				var testCaseNode = doc.CreateElement("test-case");
 				testSuiteFixtureNode.AppendChild(testCaseNode);
 
-				testCaseNode.SetAttribute("name", ToXmlSafe(run.TestName));
+				// Azure DevOps shows only "name" as the test title, so include the class there.
+				testCaseNode.SetAttribute("name", ToXmlSafe(run.ShortName));
 				testCaseNode.SetAttribute("fullname", ToXmlSafe(run.FullName));
 				if (run.ClassName is not null)
 				{
