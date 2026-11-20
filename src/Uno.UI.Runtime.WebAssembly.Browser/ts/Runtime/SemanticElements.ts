@@ -1736,6 +1736,8 @@ namespace Uno.UI.Runtime {
 				SemanticElements.virtualizedRafId = 0;
 			}
 			SemanticElements.virtualizedMutationQueue = [];
+			// The whole semantic DOM goes with it, without a per-item removal to unindex its owners.
+			SemanticElements.activeDescendantOwners.clear();
 		}
 
 		/**
