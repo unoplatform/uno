@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.UI;
@@ -71,6 +72,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsTrue(master.HasOverflowContent, "Master should report overflow content (MaxLines=2 with long text)");
 				Assert.AreEqual(master, overflow.ContentSource, "Overflow ContentSource should be the master");
 				Assert.IsTrue(overflow.ActualHeight > 0, $"Overflow should render its content slice (height {overflow.ActualHeight})");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26187")]
+		public async Task When_IsTextTrimmedChanged_NotRaisedDuringLayout()
+		{
+			var master = new RichTextBlock { Width = 180, MaxLines = 1, TextTrimming = TextTrimming.CharacterEllipsis };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = LongText });
+			master.Blocks.Add(paragraph);
+
+			var overflow = new RichTextBlockOverflow { MaxLines = 1 };
+			master.OverflowContentTarget = overflow;
+			var container = new Border { Width = 180, Child = overflow };
+
+			var states = new List<bool>();
+			overflow.IsTextTrimmedChanged += (s, e) => states.Add(overflow.IsTextTrimmed);
+
+			var panel = new StackPanel();
+			panel.Children.Add(master);
+			panel.Children.Add(container);
+
+			try
+			{
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(overflow.IsTextTrimmed, "Setup: overflow should be trimmed at 180px with MaxLines=1.");
+				Assert.HasCount(1, states, "Setup: event should have been raised once.");
+
+				container.Width = 5000;
+				container.UpdateLayout();
+
+				// WinUI queues IsTextTrimmedChanged and delivers it after the layout pass.
+				Assert.HasCount(1, states, "IsTextTrimmedChanged was raised synchronously during layout.");
+
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsFalse(overflow.IsTextTrimmed, "Overflow should not be trimmed at 5000px.");
+				Assert.HasCount(2, states, "Event should be raised once the layout pass completes.");
 			}
 			finally
 			{
