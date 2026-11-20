@@ -121,19 +121,19 @@ public sealed partial class ApplicationData
 
 	private static StorageFolder CreateStorageFolder(string name, string folder)
 	{
-#if !__NETSTD_REFERENCE__ // The Reference getters return an empty path.
-		// On WinUI the system creates the app data folders, so the app never gets one that doesn't exist.
-		Directory.CreateDirectory(folder);
-#endif
-
 		try
 		{
+#if !__NETSTD_REFERENCE__ // The Reference getters return an empty path.
+			// On WinUI the system creates the app data folders, so the app never gets one that doesn't exist.
+			Directory.CreateDirectory(folder);
+#endif
+
 			return new StorageFolder(name, folder);
 		}
 		catch (Exception e)
 		{
 			throw new InvalidOperationException(
-				$"The creation of the StorageFolder \'{folder}\' failed. It may have been initialized too early, see for more information: https://aka.platform.uno/application-data",
+				$"The creation of the StorageFolder \'{folder}\' failed. It may have been initialized too early, or its location may not be writable, see for more information: https://aka.platform.uno/application-data",
 				e);
 		}
 	}
