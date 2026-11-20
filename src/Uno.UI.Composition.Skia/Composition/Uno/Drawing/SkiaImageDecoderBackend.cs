@@ -19,6 +19,9 @@ internal sealed class SkiaImageDecoderBackend : IImageEncoderDecoder
 	public bool TryDecode(Stream stream, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out ImageFrames? frames)
 		=> SkiaImageDecoder.TryDecode(stream, targetWidth, targetHeight, out frames);
 
+	public bool TryGetSize(Stream stream, out int pixelWidth, out int pixelHeight)
+		=> SkiaImageDecoder.TryGetSize(stream, out pixelWidth, out pixelHeight);
+
 	public IImage CreateImage(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
 	{
 		var info = new SKImageInfo(pixelWidth, pixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
