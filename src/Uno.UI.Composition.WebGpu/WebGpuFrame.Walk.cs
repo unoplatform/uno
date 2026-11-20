@@ -1,4 +1,4 @@
-// The walk: one pass over a frame's command tree. Matrices and clips compose top-down, every draw lands in the pass's
+﻿// The walk: one pass over a frame's command tree. Matrices and clips compose top-down, every draw lands in the pass's
 // shared buffers as a device-space op, a replayed recording of plain draws comes from its arena entry, and a layer
 // pushes a target, walks its content there, and pops as one textured draw.
 #nullable disable
@@ -462,40 +462,6 @@ internal sealed unsafe partial class WebGpuFrame
 		e.ReleaseFinal(_d);
 	}
 
-	// Every entry that holds atlas slots, for EvictAtlasHolders. Weak: a recording that is collected takes its entry.
-	private static readonly List<WeakReference<WebGpuGeometryCache>> s_atlasHolders = new();
-
-	/// <summary>
-	/// Makes atlas room once an entry was refused for want of it. A slot's UVs are baked into its holder's ops, so
-	/// room is made by retiring whole entries: those not drawn this frame or the last hand back their bags (and with
-	/// them their slots) and rebuild on their next replay. The site slots stay with the entry's final release, the
-	/// one place they are freed. Called before the walk.
-	/// </summary>
-	internal void EvictAtlasHolders()
-	{
-		if (!_d.AtlasStarved) { return; }
-		_d.AtlasStarved = false;
-		_d.AtlasEvictions++;
-		for (var i = s_atlasHolders.Count - 1; i >= 0; i--)
-		{
-			if (!s_atlasHolders[i].TryGetTarget(out var e) || e.Evicted) { s_atlasHolders.RemoveAt(i); continue; }
-			if (!ReferenceEquals(e.Device, _d) || e.SitesFrame >= _d.FrameSeq - 1) { continue; }
-			s_atlasHolders.RemoveAt(i);
-			e.Evicted = true;
-			// Unpooled first, so a holder releasing concurrently takes the unpooled path and frees the site slots.
-			if (e.ContentKey != 0 && s_entryPool.TryGetValue(e.ContentKey, out var pooled) && ReferenceEquals(pooled, e)) { s_entryPool.Remove(e.ContentKey); }
-			e.ContentKey = 0;
-			if (e.Refs <= 0)
-			{
-				// No holder left: either only the pool held it and has let it go, or its last holder already freed it.
-				e.ReleaseFinal(_d);
-				continue;
-			}
-			_d.DeferRelease(e.Owned);
-			foreach (var st in e.Stamps) { _d.DeferRelease(st.Owned); }
-		}
-	}
-
 	/// <summary>
 	/// Frees pooled entries no recording has held for a while. Called once per frame, before the walk.
 	/// </summary>
@@ -669,7 +635,7 @@ internal sealed unsafe partial class WebGpuFrame
 			if (_emitStats) { StatPoolHits++; }
 		}
 		bool miss = entry is null;
-		if (miss || entry.Evicted || (entry.StarvedBeforeEviction >= 0 && _d.AtlasEvictions > entry.StarvedBeforeEviction) || AtlasNeedsRebuild(entry, rm))
+		if (miss || AtlasNeedsRebuild(entry, rm))
 		{
 			if (_emitStats) { _statArenaRebuilds++; if (miss) { _statArMiss++; } else { _statArMasks++; } }
 			// Shared entries are released by their last holder (or the pool sweep), never by whoever rebuilds first.
@@ -679,7 +645,6 @@ internal sealed unsafe partial class WebGpuFrame
 			bool hasPath = false; foreach (var c in rr.Commands) { if (c is PathCmd) { hasPath = true; break; } }
 			int atlasBefore = WebGpuCoverage.AtlasHit + WebGpuCoverage.AtlasBaked;
 			int maskBefore = WebGpuCoverage.ClipMasksBaked + WebGpuCoverage.FillMasksBaked + WebGpuCoverage.FillMaskHits;
-			int noRoomBefore = WebGpuCoverage.AtlasNoRoom;
 			bool atlasSafe = TryAtlasScale(rm, out var scale);
 			BuildCoalesced(rr.Commands, built, owned, atlasScale: atlasSafe ? scale : null, maskScale: atlasSafe ? scale : MaskScale(rm), place: new Vector2(rm.M31, rm.M32));
 			RealizeOwnedVertices(built, owned);
@@ -702,8 +667,6 @@ internal sealed unsafe partial class WebGpuFrame
 			entry.ContentKey = key;
 			// Its ops' clips point into the recording's native memory.
 			if (rr.Data.Arena is { } srcArena) { srcArena.AddRef(); entry.SrcArena = srcArena; }
-			if (WebGpuCoverage.AtlasNoRoom != noRoomBefore) { entry.StarvedBeforeEviction = _d.AtlasEvictions; }
-			if (entry.HasAtlas || entry.HasClipMask) { s_atlasHolders.Add(new WeakReference<WebGpuGeometryCache>(entry)); }
 			if (key != 0)
 			{
 				if (s_entryPool.TryGetValue(key, out var displaced) && !ReferenceEquals(displaced, entry))

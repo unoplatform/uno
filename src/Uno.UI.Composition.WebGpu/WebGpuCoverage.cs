@@ -68,107 +68,77 @@ internal sealed unsafe partial class WebGpuCoverage
 		=> new() { Mask = true, M = Matrix3x2.CreateTranslation(-ox, -oy), Rect = new Vector4(x, y, w, h), Exclude = exclude };
 
 	/// <summary>
-	/// The mask entries for a clip's path list, baking on first use this frame. One path: a cached entry when its key
-	/// is known or recurs, else a keyless slot. Several: slots reserved together on one page. Runs during op BUILD.
+	/// The mask entries for a clip's path list, from the cache or baked on a miss. A clip's masks bind as one texture,
+	/// so several paths share a page. Runs during op BUILD.
 	/// </summary>
 	internal MaskSet ResolveClipMasks(in ClipData cd, OwnedResources owned)
 	{
 		if (!UsesMask(cd)) { return default; }
-		var key = (cd.Paths, owned);
-		if (_clipMasks.TryGetValue(key, out var cached)) { return cached; }
+		var memo = (cd.Paths, owned);
+		if (_clipMasks.TryGetValue(memo, out var cached)) { return cached; }
 
-		var set = cd.Paths.Length == 1 && TryCachedClipMask(cd.Paths[0], owned, out var one) ? one : BakeFrameClipMasks(cd.Paths, owned);
-		_clipMasks[key] = set;
-		return set;
-	}
-
-	// A single path clip is a shape like any fill: its mask is an atlas entry keyed by outline and transform, so a static
-	// clip bakes once and a scrolled one is a hit. Difference is applied where the entry is sampled, so the mask is the
-	// same either way. When the cache is full the clip takes a keyless mask instead (BakeFrameClipMasks).
-	private bool TryCachedClipMask(PathClip p, OwnedResources owned, out MaskSet set)
-	{
-		set = default;
-		if (!AtlasEnabled) { return false; }
-		var shape = ShapeOf(p);
-		if (shape.Edges.IsNull) { return false; }
-		if (!WebGpuMaskAtlas.TryKey(shape.Hash, Matrix4x4.Identity, new Vector2(p.Bbox.X, p.Bbox.Y), new Vector2(p.Bbox.Z, p.Bbox.W), Vector2.One,
-			out var key, out var w, out var h, out var ox, out var oy, allowBig: true)) { return false; }
-		if (_d.Atlas.TryGet(key, out var slot))
-		{
-			_d.Atlas.NoteUse(slot, _d.FrameSeq);
-			if (owned is not null) { _d.Atlas.Retain(slot); (owned.AtlasSlots ??= new()).Add(slot); }
-		}
-		else
-		{
-			if (owned is null && !_d.Atlas.Recurring(key, _d.FrameSeq)) { return false; }
-			if (_d.Atlas.Allocate(key, w, h, ox, oy) is not { } fresh) { return false; }
-			slot = fresh;
-			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
-			else { _d.Atlas.HoldForCache(slot, _d.FrameSeq); }
-			AddBake(BatchFor(slot.Owner), slot.X, slot.Y, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - p.Offset, Vector2.One, p.EvenOdd);
-			ClipMasksBaked++;
-		}
-		set = new MaskSet { View = slot.Owner.View, Entries = new[] { MaskEntry((int)slot.OriginX, (int)slot.OriginY, slot.X, slot.Y, slot.W, slot.H, p.Exclude) } };
-		return true;
-	}
-
-	// Keyless masks, one slot per path, all on one page (a clip's masks bind as one texture): a regular page when they
-	// fit one together, else a large one.
-	private MaskSet BakeFrameClipMasks(PathClip[] paths, OwnedResources owned)
-	{
+		var paths = cd.Paths;
 		var n = paths.Length;
-		var rects = new (int Ox, int Oy, int W, int H)[n];
+		var shapes = new WebGpuShapeCache.Shape[n];
+		var keys = new WebGpuMaskAtlas.Key[n];
 		var sizes = new (int W, int H)[n];
+		var origins = new Vector2[n];
 		for (var i = 0; i < n; i++)
 		{
-			MaskRect(paths[i], clampToSurface: owned is null, out var ox, out var oy, out var w, out var h);
-			rects[i] = (ox, oy, w, h);
-			sizes[i] = (w, h);
+			shapes[i] = ShapeOf(paths[i]);
+			keys[i] = ClipMaskKey(paths[i], shapes[i], owned, out origins[i], out sizes[i]);
 		}
 		var slots = new WebGpuMaskAtlas.Slot[n];
-		_d.Atlas.AllocateKeylessGroup(sizes, slots);
-		var batch = BatchFor(slots[0].Owner);
+		bool fresh;
+		if (n == 1) { slots[0] = _d.Atlas.Acquire(keys[0], sizes[0].W, sizes[0].H, origins[0].X, origins[0].Y, out fresh); }
+		else { _d.Atlas.AcquireGroup(keys, sizes, origins, slots, out fresh); }
+
 		var entries = new ClipEntry[n];
 		for (var i = 0; i < n; i++)
 		{
-			var (ox, oy, w, h) = rects[i];
+			var p = paths[i];
 			var slot = slots[i];
-			HoldKeyless(slot, owned);
-			var shape = ShapeOf(paths[i]);
-			if (!shape.Edges.IsNull) { AddBake(batch, slot.X, slot.Y, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - paths[i].Offset, Vector2.One, paths[i].EvenOdd); }
-			entries[i] = MaskEntry(ox, oy, slot.X, slot.Y, w, h, paths[i].Exclude);
+			var (w, h) = sizes[i];
+			int ox = (int)origins[i].X, oy = (int)origins[i].Y;
+			if (owned is not null) { _d.Atlas.Retain(slot); (owned.AtlasSlots ??= new()).Add(slot); }
+			if (fresh && !shapes[i].Edges.IsNull)
+			{
+				AddBake(BatchFor(slot.Owner), slot.X, slot.Y, w, h, shapes[i].Edges, new Vector2(ox + 1, oy + 1) - p.Offset, Vector2.One, p.EvenOdd);
+				ClipMasksBaked++;
+			}
+			entries[i] = MaskEntry(ox, oy, slot.X, slot.Y, w, h, p.Exclude);
 		}
-		ClipMasksBaked += n;
-		return new MaskSet { View = batch.Target, Entries = entries };
+		var set = new MaskSet { View = slots[0].Owner.View, Entries = entries };
+		_clipMasks[memo] = set;
+		return set;
+	}
+
+	// A clip path's mask key and the clip-space pixel its texel (0,0) sits on: keyed by outline and transform, or, when
+	// too big for that, by exactly what its bake rasterizes (clamped to the surface when per-frame).
+	private WebGpuMaskAtlas.Key ClipMaskKey(PathClip p, WebGpuShapeCache.Shape shape, OwnedResources owned, out Vector2 origin, out (int W, int H) size)
+	{
+		if (!shape.Edges.IsNull && WebGpuMaskAtlas.TryKey(shape.Hash, Matrix4x4.Identity, new Vector2(p.Bbox.X, p.Bbox.Y), new Vector2(p.Bbox.Z, p.Bbox.W), Vector2.One,
+			out var key, out var w, out var h, out var ox, out var oy, allowBig: true))
+		{
+			origin = new Vector2(ox, oy);
+			size = (w, h);
+			return key;
+		}
+		MaskRect(p, clampToSurface: owned is null, out var rx, out var ry, out var rw, out var rh);
+		origin = new Vector2(rx, ry);
+		size = (rw, rh);
+		return WebGpuMaskAtlas.ExactKey(shape.Hash, Vector2.One, p.Offset - origin, rw, rh, p.EvenOdd);
 	}
 
 	// Masks are baked into and sampled from; in the device's swapchain format, which the resolve pipelines target.
 	internal const TextureUsage MaskUsage = TextureUsage.RenderAttachment | TextureUsage.TextureBinding;
 
-	// A slot for a mask nobody looks up: on a regular page when it fits one, else a large one.
-	private WebGpuMaskAtlas.Slot KeylessSlot(int w, int h, OwnedResources owned)
-	{
-		var slot = _d.Atlas.AllocateKeyless(w, h);
-		HoldKeyless(slot, owned);
-		return slot;
-	}
-
-	// A keyless slot is freed with the recording that owns it, or at the next frame start.
-	private void HoldKeyless(WebGpuMaskAtlas.Slot slot, OwnedResources owned)
-	{
-		if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
-		else { _d.Atlas.FreeNextFrame(slot); }
-	}
-
 	internal static int FillMasksBaked, FillMaskHits;
-	// Of those bakes, the ones with no cache behind them at all: a fill the keyed route refused, which pays a
-	// bake on EVERY build. A high count next to a low hit count is the signal that the key is unstable.
-	internal static int FillMaskUncached;
 
 	/// <summary>
 	/// Draws a fill through an exact coverage mask: the route for every fill the atlas refused (too large, no key)
-	/// and the tessellator refused (self-overlap, even-odd, or one that simply failed). A bake per fill, so the
-	/// atlas and the ringed tiling fan take what they can first. <paramref name="scale"/> is the device
+	/// and the tessellator refused (self-overlap, even-odd, or one that simply failed). Cached like any mask, but
+	/// keyed by its exact placement, so the atlas and the ringed tiling fan take what they can first. <paramref name="scale"/> is the device
 	/// scale the GPU applies to the op's space afterwards, exactly as for the atlas.
 	/// </summary>
 	internal bool TryMaskFill(PathCmd pf, WebGpuShapeCache.Shape shape, OwnedResources owned, Vector2 scale, bool filtered, out DrawOp op)
@@ -191,12 +161,18 @@ internal sealed unsafe partial class WebGpuCoverage
 		}
 
 		var origin = new Vector2((ox + 1) / scale.X, (oy + 1) / scale.Y) - pf.Offset;
-		var slot = KeylessSlot(w, h, owned);
+		var key = WebGpuMaskAtlas.ExactKey(shape.Hash, scale, pf.Offset * scale - new Vector2(ox, oy), w, h, pf.EvenOdd);
+		var slot = _d.Atlas.Acquire(key, w, h, ox, oy, out var fresh);
+		if (owned is not null) { _d.Atlas.Retain(slot); (owned.AtlasSlots ??= new()).Add(slot); }
 		var page = slot.Owner;
-		AddBake(BatchFor(page), slot.X, slot.Y, w, h, shape.Edges, origin, scale, pf.EvenOdd);
+		if (fresh)
+		{
+			AddBake(BatchFor(page), slot.X, slot.Y, w, h, shape.Edges, origin, scale, pf.EvenOdd);
+			FillMasksBaked++;
+		}
+		else { FillMaskHits++; }
 		var view = page.View;
 		var uv = new Vector4(slot.X, slot.Y, slot.X + w, slot.Y + h) / new Vector4(page.W, page.H, page.W, page.H);
-		FillMasksBaked++; FillMaskUncached++;
 
 		// A solid quad with the mask as its coverage, 1:1 with device pixels once the GPU applies the scale -- the same
 		// draw an atlas entry uses, so it coalesces and re-stamps like one.

@@ -499,12 +499,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	/// <summary>The store for every coverage mask: glyphs, cached fills, clip masks and shadows (see <see cref="WebGpuMaskAtlas"/>).</summary>
 	public WebGpuMaskAtlas Atlas;
 
-	/// <summary>An entry was refused for want of room with every page open; the next frame evicts idle holders.</summary>
-	internal bool AtlasStarved;
-
-	/// <summary>Evictions run so far, so an entry built while starved can tell whether room has been made since.</summary>
-	internal long AtlasEvictions;
-
 	private ShaderModule* Module(string wgsl)
 	{
 		var code = SV(wgsl);
