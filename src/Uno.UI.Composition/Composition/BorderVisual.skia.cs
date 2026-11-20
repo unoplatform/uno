@@ -74,6 +74,14 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 	{
+		// Rebuilding the paths updates the shapes, which report back here. Whatever made the paths stale (a resize, a
+		// new corner radius) already invalidated this visual, and the rebuild runs while painting it: invalidating again
+		// would only make it record the same content once more on the next frame.
+		if (_updatingPaths && propertyName is nameof(BackgroundShape) or nameof(BorderShape))
+		{
+			return;
+		}
+
 		// Call base implementation - Visual calls Compositor.InvalidateRender().
 		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
 
@@ -200,12 +208,28 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		}
 	}
 
+	private bool _updatingPaths;
+
 	private void UpdatePathsAndCornerClip()
 	{
 		if (_borderPathValid && _backgroundPathValid)
 		{
 			return;
 		}
+
+		_updatingPaths = true;
+		try
+		{
+			UpdatePathsAndCornerClipCore();
+		}
+		finally
+		{
+			_updatingPaths = false;
+		}
+	}
+
+	private void UpdatePathsAndCornerClipCore()
+	{
 
 		var borderLeft = (float)_borderThickness.Left;
 		var borderTop = (float)_borderThickness.Top;
