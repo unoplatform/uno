@@ -70,6 +70,8 @@ public partial class DependencyObject
 	/// </summary>
 	internal void SetIsProcessingThemeWalk(bool value) => _isProcessingThemeWalk = value;
 
+	private bool IsLiveUIElement => ActualInstance is UIElement { IsActiveInVisualTree: true };
+
 	#endregion
 
 	// The CDependencyObject::EnterImpl theme block (depends.cpp:1044-1069) and the enter-property
@@ -211,6 +213,14 @@ public partial class DependencyObject
 
 	#region Theme resource binding storage — WinUI: SetThemeResource / SetThemeResourceBinding (Theming.cpp lines 349-400)
 
+	// Uno-specific: whether a theme reference was registered without being resolved against the live ancestors
+	// since the last UpdateAllThemeReferences pass that did. WinUI only refreshes theme references at Enter
+	// (depends.cpp:1056-1060); Uno repeats the pass at Loading, which only matters for the references added since.
+	// TODO Uno: drop the Loading pass once the setter flows resolve through the live ancestor walk.
+	private bool _hasThemeReferencesPendingLiveUpdate;
+
+	private void MarkThemeReferencesPendingLiveUpdate() => _hasThemeReferencesPendingLiveUpdate = true;
+
 	// Sets theme value on property. Also stores the theme reference so we can refresh the value on theme changes.
 	/// <remarks>
 	/// MUX Reference: CDependencyObject::SetThemeResourceBinding in Theming.cpp (lines 349-400).
@@ -237,7 +247,8 @@ public partial class DependencyObject
 		// Store the reference first so the staleness guard in UpdateThemeReference (the
 		// Theming.cpp:297-298 analog) recognizes it; UpdateThemeReference stores it back after the
 		// SetValue, exactly like the C++ SetThemeResource call at Theming.cpp:397.
-		SetThemeResource(property, themeRef, effectivePrecedence);
+		// A live element resolves the new reference against its ancestors right below.
+		StoreThemeResource(property, themeRef, effectivePrecedence, resolvedLive: IsLiveUIElement);
 
 		UpdateThemeReference(property, effectivePrecedence, themeRef, ActualInstance, cache: null);
 	}
@@ -251,6 +262,17 @@ public partial class DependencyObject
 	/// </remarks>
 	internal void SetThemeResource(DependencyProperty property, ThemeResourceReference themeRef, DependencyPropertyValuePrecedences? precedence = null)
 	{
+		// These callers resolve the value themselves, without the live ancestor walk.
+		StoreThemeResource(property, themeRef, precedence, resolvedLive: false);
+	}
+
+	private void StoreThemeResource(DependencyProperty property, ThemeResourceReference themeRef, DependencyPropertyValuePrecedences? precedence, bool resolvedLive)
+	{
+		if (!resolvedLive)
+		{
+			MarkThemeReferencesPendingLiveUpdate();
+		}
+
 		_themeResources ??= new ThemeResourceMap();
 
 		// Resolve the effective precedence using the same logic as SetResourceBinding
@@ -282,6 +304,12 @@ public partial class DependencyObject
 		if (_themeResources is not { HasEntries: true })
 		{
 			return;
+		}
+
+		// References registered by a cascade during this pass set the flag again.
+		if (owner == ActualInstance && IsLiveUIElement)
+		{
+			_hasThemeReferencesPendingLiveUpdate = false;
 		}
 
 		// MUX: Theming.cpp:271-276 — snapshot property indices to avoid mutation issues.
@@ -518,8 +546,9 @@ public partial class DependencyObject
 				this.Log().Warn($"Failed to update theme resource binding for {property.Name}", e);
 			}
 
-			// Restore the ref even on failure to avoid losing it
+			// Restore the ref even on failure to avoid losing it, and let the Loading pass retry it.
 			_themeResources!.Set(property, precedence, themeRef);
+			MarkThemeReferencesPendingLiveUpdate();
 		}
 		finally
 		{
@@ -850,7 +879,11 @@ public partial class DependencyObject
 
 		// Phase 1: Update theme resources via ancestor-walk + pinned-dictionary path
 		// MUX Reference: CDependencyObject::UpdateAllThemeReferences() in Theming.cpp
-		if ((updateReason & ResourceUpdateReason.ThemeResource) != 0)
+		// The Loading pass skips a live element whose references were all resolved at Enter.
+		if ((updateReason & ResourceUpdateReason.ThemeResource) != 0
+			&& ((updateReason & (ResourceUpdateReason.StaticResourceLoading | ResourceUpdateReason.HotReload)) != ResourceUpdateReason.StaticResourceLoading
+				|| _hasThemeReferencesPendingLiveUpdate
+				|| !IsLiveUIElement))
 		{
 			UpdateAllThemeReferences(ActualInstance, Uno.UI.Xaml.Core.CoreServices.Instance.ThemeWalkResourceCache, GetOwnerTheme());
 		}
