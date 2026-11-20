@@ -1291,10 +1291,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (!isOwnContainer)
 				{
-					containerAsContentPresenter.ContentTemplate = ItemTemplate;
-					containerAsContentPresenter.ContentTemplateSelector = ItemTemplateSelector;
+					// WinUI sets Content -> ContentTemplate -> ContentTemplateSelector in PrepareContainerForItemOverrideImpl.
+					// Defer template update until all three properties are set to avoid eagerly materializing and discarding
+					// an ImplicitTextBlock placeholder in the selector-only case.
+					try
+					{
+						containerAsContentPresenter.SuppressSetUpdateTemplate = true;
+						SetContent(containerAsContentPresenter, ContentPresenter.ContentProperty);
+						containerAsContentPresenter.ContentTemplate = ItemTemplate;
+						containerAsContentPresenter.ContentTemplateSelector = ItemTemplateSelector;
+					}
+					finally
+					{
+						containerAsContentPresenter.SuppressSetUpdateTemplate = false;
+					}
 
-					SetContent(containerAsContentPresenter, ContentPresenter.ContentProperty);
+					containerAsContentPresenter.SetUpdateTemplate();
 				}
 			}
 			else if (element is ContentControl containerAsContentControl)
