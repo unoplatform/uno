@@ -105,15 +105,56 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 		}
 	}
 
+	/// <summary>
+	/// Creates the completion source backing an async HDROP drop. Its task is awaited only when the app asks the
+	/// <see cref="DataPackageView"/> for <see cref="StandardDataFormats.StorageItems"/>, so in the common case where the drag
+	/// simply leaves the window (or the drop is not handled) nobody observes it. Any fault is therefore observed and logged
+	/// here, so it doesn't surface later through <see cref="TaskScheduler.UnobservedTaskException"/>; awaiters still get it.
+	/// The drag leaving the window is expected and logged at Debug; a real drop failure is logged at Warning.
+	/// </summary>
+	private static TaskCompletionSource<List<IStorageItem>> CreateFileDropCompletion()
+	{
+		var completion = new TaskCompletionSource<List<IStorageItem>>(TaskCreationOptions.RunContinuationsAsynchronously);
+		_ = completion.Task.ContinueWith(
+			static t =>
+			{
+				var error = t.Exception!.InnerException;
+				var logger = typeof(Win32DragDropExtension).Log();
+				if (error is DragLeftWindowException)
+				{
+					if (logger.IsEnabled(LogLevel.Debug))
+					{
+						logger.Debug("Async file drop was abandoned because the drag left the window.");
+					}
+				}
+				else if (logger.IsEnabled(LogLevel.Warning))
+				{
+					// Logger.Warn(string, Exception) doesn't forward the exception, so pass it through Log() to keep it.
+					logger.Log(LogLevel.Warning, "Async file drop failed.", error);
+				}
+			},
+			CancellationToken.None,
+			TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously,
+			TaskScheduler.Default);
+		return completion;
+	}
+
+	/// <summary>
+	/// Faults a pending async HDROP drop when the drag leaves the window, so the expected case can be told apart from a real
+	/// drop failure. Derives from <see cref="InvalidOperationException"/> so awaiters still see that type.
+	/// </summary>
+	private sealed class DragLeftWindowException()
+		: InvalidOperationException("Attempt to get file drop list after the dragging operation left the window.");
+
 	private class AsyncHDropHandler(FORMATETC hdropFormat)
 	{
-		private readonly TaskCompletionSource<List<IStorageItem>> _tcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
+		private readonly TaskCompletionSource<List<IStorageItem>> _tcs = CreateFileDropCompletion();
 
 		public Task<List<IStorageItem>> Task => _tcs.Task;
 
 		public DROPEFFECT DropEffect { private get; set; } = DROPEFFECT.DROPEFFECT_NONE;
 
-		public void Leave() => _tcs.SetException(new InvalidOperationException("Attempt to get file drop list after the dragging operation left the window."));
+		public void Leave() => _tcs.SetException(new DragLeftWindowException());
 
 		public unsafe void Drop(IDataObject* dataObject)
 		{
