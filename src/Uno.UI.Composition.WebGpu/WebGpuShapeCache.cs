@@ -67,18 +67,38 @@ internal sealed class WebGpuShapeCache
 	// fifth of a device pixel of the true curve at this density.
 	private sealed class Flattener : IGeometrySink
 	{
-		private readonly Matrix3x2 _m;
-		private readonly float _tolerance;
-		private readonly bool _fill;   // a fill closes every contour and needs three points; a stroke keeps a two-point line
+		private Matrix3x2 _m;
+		private float _tolerance;
+		private bool _fill;   // a fill closes every contour and needs three points; a stroke keeps a two-point line
 		public readonly List<List<Vector2>> Contours = new();
 		private List<Vector2> _cur;
 		private Vector2 _last;
+		// The point lists of earlier uses, refilled by the next (see Reuse).
+		private readonly Stack<List<Vector2>> _spare = new();
 
 		public Flattener(in Matrix3x2 m, float tolerance, bool fill = true) { _m = m; _tolerance = tolerance; _fill = fill; }
 
+		/// <summary>Starts over with the lists of the previous use, which must be done with its contours.</summary>
+		public Flattener Reuse(in Matrix3x2 m, float tolerance, bool fill)
+		{
+			foreach (var c in Contours) { c.Clear(); _spare.Push(c); }
+			Contours.Clear();
+			if (_cur is { } cur) { cur.Clear(); _spare.Push(cur); _cur = null; }
+			_m = m; _tolerance = tolerance; _fill = fill;
+			return this;
+		}
+
+		private List<Vector2> NewList() => _spare.Count > 0 ? _spare.Pop() : new List<Vector2>();
+
 		private Vector2 Map(Vector2 p) => Vector2.Transform(p, _m);
 
-		public void BeginFigure(Vector2 start) { _last = Map(start); _cur = new List<Vector2> { _last }; }
+		public void BeginFigure(Vector2 start)
+		{
+			if (_cur is { } dropped) { dropped.Clear(); _spare.Push(dropped); }
+			_last = Map(start);
+			_cur = NewList();
+			_cur.Add(_last);
+		}
 		public void LineTo(Vector2 point) { _cur?.Add(_last = Map(point)); }
 		public void QuadTo(Vector2 control, Vector2 point)
 		{
@@ -107,8 +127,9 @@ internal sealed class WebGpuShapeCache
 			{
 				// A fill closes every contour; a repeated closing point would make a zero-length edge.
 				if (_fill && (pts[^1] - pts[0]).LengthSquared() < 1e-12f) { pts.RemoveAt(pts.Count - 1); }
-				if (pts.Count >= (_fill ? 3 : 2)) { Contours.Add(pts); }
+				if (pts.Count >= (_fill ? 3 : 2)) { Contours.Add(pts); _cur = null; return; }
 			}
+			if (_cur is { } dropped) { dropped.Clear(); _spare.Push(dropped); }
 			_cur = null;
 		}
 
@@ -122,11 +143,15 @@ internal sealed class WebGpuShapeCache
 
 	private const float FlattenTolerancePx = 0.2f;
 
+	[System.ThreadStatic]
+	private static Flattener t_fillFlattener;
+
 	// ------------------------------------------------------------------------------------------------ fills
 
 	private Shape BuildFill(IGeometry g, in Matrix3x2 linear, float density, bool evenOdd)
 	{
-		var flat = new Flattener(linear, FlattenTolerancePx / density);
+		// A fill's contours are done with once its edges and triangles are built, so one flattener serves every fill.
+		var flat = (t_fillFlattener ??= new Flattener(linear, 0)).Reuse(linear, FlattenTolerancePx / density, fill: true);
 		g.StreamSegments(flat);
 		var contours = flat.Contours;
 		if (contours.Count == 0) { return Shape.Empty; }
@@ -200,7 +225,7 @@ internal sealed class WebGpuShapeCache
 		var w = 0;
 		foreach (var c in contours) { foreach (var p in c) { flat[w++] = p; } }
 		double triArea = 0;
-		for (var t = 0; t + 2 < idx.Length; t += 3)
+		for (var t = 0; t + 2 < idx.Count; t += 3)
 		{
 			var a = flat[idx[t]]; var b = flat[idx[t + 1]]; var c = flat[idx[t + 2]];
 			triArea += Math.Abs((double)(b.X - a.X) * (c.Y - a.Y) - (double)(c.X - a.X) * (b.Y - a.Y));

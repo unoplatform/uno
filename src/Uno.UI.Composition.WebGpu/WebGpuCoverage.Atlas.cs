@@ -47,7 +47,10 @@ internal sealed unsafe partial class WebGpuCoverage
 		return true;
 	}
 
-	private readonly VertBuf _atlasQuads = new();
+	// Scratch shared by the frames of a thread: a frame object, and so this coverage, is made per present.
+	[ThreadStatic]
+	private static VertBuf t_atlasQuads;
+	private VertBuf _atlasQuads => t_atlasQuads ??= new VertBuf();
 
 	// A batch ends after this many glyphs, so one long run (a 100K-glyph line) becomes ops compact enough for the
 	// replay to drop the ones its clip leaves out; a single op would rasterize every glyph against the scissor.
