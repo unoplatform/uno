@@ -439,6 +439,7 @@ public class Given_ImeSessionCoordinator_RootOwnership
 		public bool IsTextPredictionEnabled => true;
 		public CandidateWindowAlignment DesiredCandidateWindowAlignment => CandidateWindowAlignment.Default;
 		public string Text => string.Empty;
+		public int TextLength => 0;
 		public bool AcceptsReturn => true;
 		public bool IsSpellCheckEnabled => true;
 		public bool CanAcceptTextInput => true;

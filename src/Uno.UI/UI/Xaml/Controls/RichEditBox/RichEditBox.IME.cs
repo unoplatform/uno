@@ -105,6 +105,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		string IImeSessionHost.Text => GetPlainTextContent();
 
+		int IImeSessionHost.TextLength => GetPlainTextLength();
+
 		bool IImeSessionHost.AcceptsReturn => AcceptsReturn;
 
 		bool IImeSessionHost.IsSpellCheckEnabled => IsSpellCheckEnabled;

@@ -55,6 +55,8 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 
 	string IImeSessionHost.Text => Text;
 
+	int IImeSessionHost.TextLength => Text.Length;
+
 	bool IImeSessionHost.AcceptsReturn => AcceptsReturn;
 
 	bool IImeSessionHost.IsSpellCheckEnabled => IsSpellCheckEnabled;

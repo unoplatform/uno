@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		/// <summary>
 		/// Whether a platform's text input must take the host's text back at once after the host processed an edit the input
-		/// applied, which ends the input's composition: the host refused the edit (read-only, BeforeTextChanging), or kept text
+		/// applied, which ends the input's composition: the host refused the edit (BeforeTextChanging, read-only), or kept text
 		/// that no longer reaches where the composition starts. The keyboard then builds its next keystrokes and suggestions on
 		/// the text the host kept. Any other difference (MaxLength, a TextChanging limit or filter) waits for the composition
 		/// to end, as a conversion IME's reading (pinyin, kana) can be longer than the text it converts to; outside a
@@ -53,11 +53,14 @@ namespace Microsoft.UI.Xaml.Controls
 			=> (refused || compositionStart < 0 || keptText.Length < compositionStart) && !IsSameText(keptText, nativeText);
 
 		/// <summary>
-		/// <see cref="MustReturnTextToNative(string, string, bool, int)"/> with the host's text, read only when the answer
-		/// depends on it: reading a RichEditBox's text costs the document.
+		/// <see cref="MustReturnTextToNative(string, string, bool, int)"/> with the host's text, read only after a refusal or
+		/// outside a composition: reading a RichEditBox's text costs the document. Otherwise only the kept text's length counts,
+		/// as the input's text reaches where its composition starts, so a kept text shorter than that differs from it.
 		/// </summary>
 		internal static bool MustReturnTextToNative(IImeSessionHost host, string nativeText, bool refused, int compositionStart)
-			=> (refused || compositionStart != 0) && MustReturnTextToNative(host.Text, nativeText, refused, compositionStart);
+			=> refused || compositionStart < 0
+				? !IsSameText(host.Text, nativeText)
+				: host.TextLength < compositionStart;
 
 		// Compares without allocating a normalized copy, as this runs for every edit the platform applies.
 		private static bool IsSameText(string first, string second)

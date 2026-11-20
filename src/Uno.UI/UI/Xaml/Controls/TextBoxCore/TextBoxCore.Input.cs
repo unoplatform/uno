@@ -129,7 +129,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 	// An edit the platform's input field already applied, with the caret it left there. Like a key the TextBox handles,
 	// it extends the current typing run: its own caret move doesn't end the run, so undo takes back the whole of it.
-	// Returns false when the TextBox refused the edit (see IImeSessionHost.UpdateTextFromNative).
+	// Returns false when the TextBox refused the edit (BeforeTextChanging, IsReadOnly).
 	internal bool ApplyNativeInput(string text, int selectionStart, int selectionLength)
 	{
 		var textBefore = Text;
