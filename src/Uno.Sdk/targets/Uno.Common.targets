@@ -14,7 +14,8 @@
 		<_IsExecutable>false</_IsExecutable>
 		<_IsExecutable Condition=" '$(_InitialOutputType)' == 'WinExe' OR '$(_InitialOutputType)' == 'Exe' ">true</_IsExecutable>
 
-		<UnoDefaultFont Condition=" '$(UnoDefaultFont)'=='' AND !$(TargetFramework.Contains('windows10')) ">OpenSans</UnoDefaultFont>
+		<!-- Apps only: the default font applies to the whole app, so a library must not override the app's own choice. -->
+		<UnoDefaultFont Condition=" '$(UnoDefaultFont)'=='' AND $(_IsExecutable) == 'true' AND !$(TargetFramework.Contains('windows10')) ">OpenSans</UnoDefaultFont>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" $(Optimize) != 'true' ">
