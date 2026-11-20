@@ -1,0 +1,28 @@
+#nullable enable
+
+using Foundation;
+
+namespace Windows.Globalization;
+
+partial class DeviceClock
+{
+	// The current locale takes the language of the app's own localization, so an app without Korean resources on
+	// a Korean device gets en_KR, while the app language (ApplicationLanguages) is the first preferred language.
+	static partial void ReadPlatformLocaleTags(ref string? localeTag, ref string? languageTag)
+	{
+		localeTag = NSLocale.CurrentLocale.LocaleIdentifier;
+		languageTag = NSLocale.PreferredLanguages is { Length: > 0 } languages ? languages[0] : null;
+	}
+
+	// The "j" template asks for the locale's own hour, which the 24-Hour Time switch overrides.
+	static partial void ReadPlatform24Hour(ref bool? is24Hour)
+		=> is24Hour = IsTwentyFourHourPattern(NSDateFormatter.GetDateFormatFromTemplate("j", 0, NSLocale.CurrentLocale));
+
+	// The locale's patterns for the clock, which the H or h of the template forces.
+	static partial void ReadPlatformTimePatterns(string localeTag, bool is24Hour, ref string? shortPattern, ref string? longPattern)
+	{
+		using var locale = new NSLocale(localeTag);
+		shortPattern = NSDateFormatter.GetDateFormatFromTemplate(is24Hour ? "Hmm" : "hmm", 0, locale);
+		longPattern = NSDateFormatter.GetDateFormatFromTemplate(is24Hour ? "Hmmss" : "hmmss", 0, locale);
+	}
+}
