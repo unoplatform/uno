@@ -805,7 +805,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_SVGImageSource_UriSource_Set_While_SetSourceAsync_Pending()
 		{
 			// A UriSource set while the operation's load is still reading replaces the stream. As on WinUI, the operation
-			// still succeeds (only another SetSourceAsync cancels it) and the URI's content is drawn.
+			// still succeeds (only another SetSourceAsync cancels it).
 			var blue = await CreateSvgFileAsync("blue");
 			var svgImageSource = new SvgImageSource();
 			var opened = false;
@@ -820,7 +820,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(SvgImageSourceLoadStatus.Success, await operation);
 			await WindowHelper.WaitFor(() => opened, timeoutMS: 5000, message: "The URI's content was not opened.");
+#if HAS_UNO
+			// The URI, set last, is drawn. WinUI draws whichever of the stream's read and the URI's download ends last:
+			// SvgImageSource::OnStreamReadCompleted sets the stream's bytes whatever the UriSource is by then.
 			await AssertCenterColor(border, Colors.Blue);
+#endif
 		}
 
 		private static Windows.Storage.Streams.IRandomAccessStream CreateSvgStream(string fill)
