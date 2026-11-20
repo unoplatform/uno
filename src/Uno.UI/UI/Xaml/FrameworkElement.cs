@@ -63,6 +63,13 @@ namespace Microsoft.UI.Xaml
 
 		private bool _defaultStyleApplied;
 
+		/// <summary>
+		/// The <see cref="ResourceDictionary.ImplicitStyleScopeVersion"/> captured by a live Enter, which has
+		/// just applied the styles; consumed and cleared by the Loading pass that follows it. 0 when there is
+		/// nothing to reuse.
+		/// </summary>
+		private uint _stylesAppliedOnEnterVersion;
+
 		private ResourceDictionary _resources;
 
 		private static readonly Uri DefaultBaseUri = new Uri("ms-appx://local");
@@ -235,6 +242,13 @@ namespace Microsoft.UI.Xaml
 			{
 				_resources = value;
 				_resources?.SetResourceOwner(this);
+
+				// Only a live element can have entered descendants still waiting for their Loading pass.
+				if (IsActiveInVisualTree)
+				{
+					ResourceDictionary.InvalidateImplicitStyleScope();
+				}
+
 				_resources.InvalidateNotFoundCache(true);
 			}
 		}
@@ -376,8 +390,21 @@ namespace Microsoft.UI.Xaml
 
 			var effectiveTheme = GetTheme();
 
-			// Apply active style and default style when we enter the visual tree.
-			ApplyStyles();
+			// Apply active style and default style when we enter the visual tree. When the live Enter that
+			// precedes this pass already applied them and no implicit-style scope changed since (e.g. from an
+			// ancestor's Loading handler), the implicit style would resolve to the same Style — only the
+			// default style still needs a look.
+			var stylesAppliedOnEnterVersion = _stylesAppliedOnEnterVersion;
+			_stylesAppliedOnEnterVersion = 0;
+
+			if (stylesAppliedOnEnterVersion != 0 && stylesAppliedOnEnterVersion == ResourceDictionary.ImplicitStyleScopeVersion)
+			{
+				ApplyDefaultStyle();
+			}
+			else
+			{
+				ApplyStyles();
+			}
 
 			// This is replicating the UpdateAllThemeReferences call in Enter in WinUI.
 			// Updates theme references to account for new ancestor theme dictionaries.
