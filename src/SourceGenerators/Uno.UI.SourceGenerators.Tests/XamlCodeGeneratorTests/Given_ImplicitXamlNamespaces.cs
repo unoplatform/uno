@@ -97,7 +97,7 @@ public class Given_ImplicitXamlNamespaces
 			DiagnosticResult.CompilerError("UXAML0005")
 				.WithArguments("The type 'SharedControl' was found in multiple global XAML namespaces: 'TestRepro.NsA', 'TestRepro.NsB'. Use an explicit xmlns prefix to disambiguate."),
 			DiagnosticResult.CompilerError("CS0246")
-				.WithSpan("Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\\MainPage_d6cd66944958ced0c513e0a04797b51d.cs", 54, 9, 54, 22)
+				.WithSpan("Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\\MainPage_af209f8582f3f93856221c477471d5eb.cs", 54, 9, 54, 22)
 				.WithArguments("SharedControl"),
 		]);
 
