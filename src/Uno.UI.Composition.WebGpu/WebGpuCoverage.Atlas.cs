@@ -133,15 +133,9 @@ internal sealed unsafe partial class WebGpuCoverage
 			// A per-frame op enters the cache only once its key has held for two frames (see Recurring); until then
 			// it takes the per-frame bake, so moving content never accumulates entries.
 			if (owned is null && big && !_d.Atlas.Recurring(key, _d.FrameSeq)) { return false; }
-			if (WebGpuMaskAtlas.IsBig(w, h))
-			{
-				slot = AddStandaloneSlot(key, w, h, ox, oy, _d.ColorFormat);
-			}
-			else
-			{
-				// Opens another page when every one is exhausted, up to the cache's ceiling.
-				slot = _d.Atlas.Allocate(key, w, h, ox, oy);
-			}
+			// A big entry goes on a large page; a regular one opens another page when every one is exhausted, up to the
+			// cache's ceiling.
+			slot = _d.Atlas.Allocate(key, w, h, ox, oy);
 			if (slot is null) { AtlasNoRoom++; _d.AtlasStarved = true; return false; }
 			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
 			else { _d.Atlas.HoldForCache(slot, _d.FrameSeq); }
@@ -151,14 +145,6 @@ internal sealed unsafe partial class WebGpuCoverage
 
 		return true;
 	}
-
-	// A keyed entry on a standalone page, so it shares the key, reference count and idle sweep of a shelf slot.
-	internal WebGpuMaskAtlas.Slot AddStandaloneSlot(in WebGpuMaskAtlas.Key key, int w, int h, float ox, float oy, TextureFormat format)
-		=> AddStandaloneSlot(key, w, h, ox, oy, format, w, h, MaskUsage);
-
-	// The entry draws w x h from a page of at least texW x texH: a blurred shadow is stored at its pyramid's top level.
-	internal WebGpuMaskAtlas.Slot AddStandaloneSlot(in WebGpuMaskAtlas.Key key, int w, int h, float ox, float oy, TextureFormat format, int texW, int texH, TextureUsage usage)
-		=> _d.Atlas.Place(_d.Atlas.StandalonePage(texW, texH, format, usage), 0, 0, w, h, ox, oy, key);
 
 	/// <summary>
 	/// Appends one entry as 6 solid vertices (pos, colour, coverage uv), placed at the fill's OWN origin, and returns

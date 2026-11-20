@@ -33,8 +33,8 @@ internal sealed unsafe partial class WebGpuEffects
 	}
 
 	// The blurred shadow as a texture with its device-space placement. Cached in the atlas under the silhouette's
-	// geometry, transform and blur radius (a texture of its own, since a shadow is padded by its blur reach), so a
-	// static shadow bakes once: on a miss the silhouette's coverage is baked, blurred, and resampled into the entry.
+	// geometry, transform and blur radius (on a page of the blur's format, stored at the pyramid's top-level size), so a
+	// static shadow bakes once: on a miss the silhouette's coverage is baked, blurred, and copied into the entry.
 	internal TextureView* RenderShadow(ShadowCmd sh, out Vector2 origin, out Vector2 size, out Vector4 uv)
 	{
 		float pad = MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f;
@@ -76,10 +76,12 @@ internal sealed unsafe partial class WebGpuEffects
 			// The slot's texels on the top level, plus the one a bilinear tap at its far edge reads (the slot's gutter).
 			int step = 1 << BlurLevels(sigma);
 			int tw = (w + step - 1) / step + 1, th = (h + step - 1) / step + 1;
-			var slot = _cov.AddStandaloneSlot(key, w, h, ox, oy, WebGpuDevice.DefaultColorFormat, tw, th, TextureUsage.TextureBinding | TextureUsage.CopyDst);
-			slot.Uv = new Vector4(0f, 0f, (float)w / step / slot.Owner.W, (float)h / step / slot.Owner.H);
+			var slot = _d.Atlas.AllocateShadow(key, w, h, tw, th, ox, oy);
+			// The entry samples its blurred w x h, which at the top level is w/step x h/step of the tw x th it holds.
+			var page = slot.Owner;
+			slot.Uv = new Vector4((float)slot.X / page.W, (float)slot.Y / page.H, (slot.X + (float)w / step) / page.W, (slot.Y + (float)h / step) / page.H);
 			_d.Atlas.HoldForCache(slot, _d.FrameSeq);
-			_pendingCopies.Add(((nint)sheet.Blurred, sx / step, sy / step, (nint)slot.Owner.Texture, tw, th));
+			_pendingCopies.Add(((nint)sheet.Blurred, sx / step, sy / step, (nint)page.Texture, slot.X, slot.Y, tw, th));
 			uv = slot.Uv;
 			return slot.Owner.View;
 		}
@@ -100,7 +102,7 @@ internal sealed unsafe partial class WebGpuEffects
 
 	private readonly Dictionary<int, ShadowSheet> _shadowSheetByDepth = new();
 	private readonly List<(nint Src, int W, int H, float SigmaX, float SigmaY, nint Dst)> _pendingBlurs = new();
-	private readonly List<(nint SrcView, int X, int Y, nint Dst, int W, int H)> _pendingCopies = new();   // after the blurs
+	private readonly List<(nint SrcView, int X, int Y, nint Dst, int DstX, int DstY, int W, int H)> _pendingCopies = new();   // after the blurs
 	internal static int ShadowSlotsBaked;
 
 	// Reserves a w x h slot on the frame's shadow sheet for this blur depth. A slot already holds its shadow's blur
@@ -150,7 +152,7 @@ internal sealed unsafe partial class WebGpuEffects
 		foreach (var c in _pendingCopies)
 		{
 			var src = new ImageCopyTexture { Texture = _d.Pool.TexForView((TextureView*)c.SrcView), MipLevel = 0, Origin = new Origin3D { X = (uint)c.X, Y = (uint)c.Y }, Aspect = TextureAspect.All };
-			var dst = new ImageCopyTexture { Texture = (Texture*)c.Dst, MipLevel = 0, Origin = default, Aspect = TextureAspect.All };
+			var dst = new ImageCopyTexture { Texture = (Texture*)c.Dst, MipLevel = 0, Origin = new Origin3D { X = (uint)c.DstX, Y = (uint)c.DstY }, Aspect = TextureAspect.All };
 			var ext = new Extent3D { Width = (uint)c.W, Height = (uint)c.H, DepthOrArrayLayers = 1 };
 			Api.CommandEncoderCopyTextureToTexture(_f.Encoder, &src, &dst, &ext);
 		}
