@@ -165,7 +165,7 @@ namespace Microsoft.UI.Xaml
 			{
 				RefreshBindingPath();
 
-				if (ThemeResourceKey.HasValue && ResourceResolver.ApplyVisualStateSetter(ThemeResourceKey.Value, ThemeResourceContext, path, DependencyPropertyValuePrecedences.Animations, ResourceBindingUpdateReason))
+				if (ThemeResourceKey.HasValue && ResourceResolver.ApplyVisualStateSetter(ThemeResourceKey.Value, ThemeResourceContext, path, DependencyPropertyValuePrecedences.Animations, ResourceBindingUpdateReason, owner as DependencyObject))
 				{
 					// Applied as theme binding, no need to do more
 					return;
