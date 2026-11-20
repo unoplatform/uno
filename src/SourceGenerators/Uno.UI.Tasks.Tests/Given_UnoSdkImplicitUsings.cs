@@ -1,5 +1,4 @@
-﻿﻿using System.Diagnostics;
-using System.Text.Json;
+﻿using System.Text.Json;
 using AwesomeAssertions;
 
 namespace Uno.UI.Tasks.Tests;
@@ -207,10 +206,10 @@ public class Given_UnoSdkImplicitUsings
 				arguments = [.. arguments, $"-p:TargetFramework={targetFramework}"];
 			}
 
-			var (exitCode, output) = MSBuild(directory, arguments);
-			exitCode.Should().Be(0, output);
+			var result = DotnetMSBuild.Run(RepositoryPaths.Root, arguments);
+			result.ExitCode.Should().Be(0, result.Output);
 
-			using var json = JsonDocument.Parse(output);
+			using var json = JsonDocument.Parse(result.StandardOutput);
 			var items = json.RootElement.GetProperty("Items");
 			return new(
 				Usings: Identities(items, "Using", _ => true),
@@ -219,7 +218,7 @@ public class Given_UnoSdkImplicitUsings
 		}
 		finally
 		{
-			Directory.Delete(directory, recursive: true);
+			DotnetMSBuild.TryDeleteDirectory(directory);
 		}
 	}
 
@@ -227,30 +226,6 @@ public class Given_UnoSdkImplicitUsings
 		=> items.TryGetProperty(itemType, out var list)
 			? [.. list.EnumerateArray().Where(filter).Select(item => item.GetProperty("Identity").GetString()!)]
 			: [];
-
-	private static (int ExitCode, string Output) MSBuild(string workingDirectory, string[] arguments)
-	{
-		var startInfo = new ProcessStartInfo("dotnet")
-		{
-			RedirectStandardOutput = true,
-			RedirectStandardError = true,
-			UseShellExecute = false,
-			WorkingDirectory = workingDirectory,
-		};
-		string[] allArguments = ["msbuild", "-nologo", "-nodeReuse:false", .. arguments];
-		foreach (var argument in allArguments)
-		{
-			startInfo.ArgumentList.Add(argument);
-		}
-		startInfo.Environment["MSBUILDDISABLENODEREUSE"] = "1";
-
-		using var process = Process.Start(startInfo)!;
-		var stdout = process.StandardOutput.ReadToEndAsync();
-		var stderr = process.StandardError.ReadToEndAsync();
-		process.WaitForExit();
-
-		return (process.ExitCode, stdout.Result + stderr.Result);
-	}
 
 	private sealed record EvaluatedProject(string[] Usings, string[] UnoUsings, string[] ImplicitPackages);
 }
