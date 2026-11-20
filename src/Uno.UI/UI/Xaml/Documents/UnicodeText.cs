@@ -253,6 +253,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly Size _availableSize;
 	private readonly bool _layoutUsesAvailableWidth;
 	private readonly bool _layoutUsesAvailableHeight;
+	private readonly bool _isHeightTruncated;
 
 	internal unsafe UnicodeText(
 		Size availableSize,
@@ -438,6 +439,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				|| _textAlignment is TextAlignment.Center or TextAlignment.Right or TextAlignment.Justify
 				|| endingParagraphAlignment is not null
 				|| endingParagraphLayout is not null;
+			_isHeightTruncated = false;
 			_xyTable = [];
 			_indexToCluster = [];
 			_inlineObjects = null;
@@ -920,6 +922,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		var terminalBlockHeight = (endingParagraphLayout?.SpaceBefore ?? 0)
 			+ terminalEffectiveHeight
 			+ (endingParagraphLayout?.SpaceAfter ?? 0);
+		var heightTruncated = false;
 		float totalHeight = 0;
 		int nextTrimPointLookupStart = 0;
 		var endedEarly = false;
@@ -933,7 +936,9 @@ internal readonly partial struct UnicodeText : IParsedText
 					? terminalBlockHeight
 					: 0;
 			var actualLineCount = lines.Count + (textEndsInLineBreak ? 1 : 0);
-			var isEarlyLastLine = (maxLines > 0 && maxLines < actualLineCount && lineIndex == maxLines - 1) || (lineIndex < actualLineCount - 1 && nextLineHeight + totalHeight > availableSize.Height);
+			var droppedByHeight = lineIndex < actualLineCount - 1 && nextLineHeight + totalHeight > availableSize.Height;
+			heightTruncated |= droppedByHeight;
+			var isEarlyLastLine = (maxLines > 0 && maxLines < actualLineCount && lineIndex == maxLines - 1) || droppedByHeight;
 
 			var lineWidth = line.width;
 			LinkedListNode<Cluster> lastClusterIncludedInLine = line.clusterLast;
@@ -1246,6 +1251,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			|| paragraphLayouts is not null
 			|| endingParagraphAlignment is not null
 			|| endingParagraphLayout is not null;
+		_isHeightTruncated = heightTruncated;
 	}
 
 	/// <summary>
@@ -1269,6 +1275,13 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		return true;
 	}
+
+	/// <summary>
+	/// True when at least one line was dropped because it did not fit in the available height.
+	/// Mirrors WinUI's <c>m_pBreak != nullptr</c> test in <c>BlockNode::CanBypassMeasure</c>: a layout
+	/// that was cut short by the height constraint can only be reused at the very same height.
+	/// </summary>
+	internal bool IsHeightTruncated => _isHeightTruncated;
 
 	private static IEnumerable<LinkedListNode<Cluster>> EnumeratePossibleCharacterTrimmingBreaks(Line line)
 	{
