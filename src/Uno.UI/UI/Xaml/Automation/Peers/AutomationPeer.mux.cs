@@ -490,6 +490,12 @@ partial class AutomationPeer
 			return VisualTree.GetFocusManagerForElement(owner);
 		}
 
+		// m_pDO of a HyperlinkAutomationPeer is its Hyperlink, which is a TextElement rather than a UIElement.
+		if (this is HyperlinkAutomationPeer { Owner: { } hyperlink })
+		{
+			return VisualTree.GetFocusManagerForElement(hyperlink);
+		}
+
 		return null;
 	}
 
