@@ -9,16 +9,16 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class MenuFlyoutSubItem
 {
 	// MUX Reference: CMenuFlyoutSubItem::EnterImpl in MenuFlyoutSubItem.cpp
-	internal override void EnterImpl(EnterParams @params, int depth)
+	internal override void EnterImpl(DependencyObject namescopeOwner, EnterParams @params)
 	{
-		base.EnterImpl(@params, depth);
+		base.EnterImpl(namescopeOwner, @params);
 		MenuFlyout.KeyboardAcceleratorFlyoutItemEnter(this, this, MenuFlyoutSubItem.ItemsProperty, @params);
 	}
 
 	// MUX Reference: CMenuFlyoutSubItem::LeaveImpl in MenuFlyoutSubItem.cpp
-	internal override void LeaveImpl(LeaveParams @params)
+	internal override void LeaveImpl(DependencyObject namescopeOwner, LeaveParams @params)
 	{
-		base.LeaveImpl(@params);
+		base.LeaveImpl(namescopeOwner, @params);
 		MenuFlyout.KeyboardAcceleratorFlyoutItemLeave(this, this, MenuFlyoutSubItem.ItemsProperty, @params);
 	}
 }

@@ -109,9 +109,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// CRichTextBlock::EnterImpl
-		internal override void EnterImpl(EnterParams @params, int depth)
+		internal override void EnterImpl(DependencyObject? namescopeOwner, EnterParams @params)
 		{
-			base.EnterImpl(@params, depth);
+			base.EnterImpl(namescopeOwner, @params);
 
 			if (@params.IsLive)
 			{
@@ -122,9 +122,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// CRichTextBlock::LeaveImpl
-		internal override void LeaveImpl(LeaveParams @params)
+		internal override void LeaveImpl(DependencyObject? namescopeOwner, LeaveParams @params)
 		{
-			base.LeaveImpl(@params);
+			base.LeaveImpl(namescopeOwner, @params);
 
 			if (@params.IsLive)
 			{
