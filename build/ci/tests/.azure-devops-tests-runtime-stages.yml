@@ -99,47 +99,7 @@ stages:
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
-- stage: runtime_tests_skia_ios
-  displayName: Tests - iOS
-  # Builds from source and never consumes native-assets-macos, so it need not wait for that stage.
-  dependsOn:
-    - Setup
-
-  jobs:
-  - template: .azure-devops-tests-ios-build.yml
-    parameters:
-      vmImage: '${{ parameters.vmImage }}'
-      vmMacImage: '${{ parameters.vmMacImage }}'
-      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
-      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
-      poolName: '${{ parameters.poolName }}'
-      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
-  - template: .azure-devops-tests-ios.yml
-    parameters:
-      vmImage: '${{ parameters.vmImage }}'
-      vmMacImage: '${{ parameters.vmMacImage }}'
-      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
-      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
-      poolName: '${{ parameters.poolName }}'
-      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
-
-  # The same app on the WebGPU backend, on the simulator's Metal.
-  - template: .azure-devops-tests-ios.yml
-    parameters:
-      vmImage: '${{ parameters.vmImage }}'
-      vmMacImage: '${{ parameters.vmMacImage }}'
-      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
-      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
-      poolName: '${{ parameters.poolName }}'
-      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
-      renderer: 'WebGPU'
-      variant: 'webgpu'
-      appEnvironment: 'UNO_WEBGPU=1 UNO_WEBGPU_LOG=warn'
-      # On pull requests only when they touch WebGPU or the test infrastructure (determine-test-scope.ps1).
-      condition: "and(succeeded(), or(ne(variables['Build.Reason'], 'PullRequest'), eq(stageDependencies.Setup.DetermineScope.outputs['SetScope.WebGpuTestsRequired'], 'true')))"
+# The iOS and macOS desktop runtime tests run on GitHub Actions: .github/workflows/ci-macos.yml
 
 # Disable tvOS for now. CI fails on tvOS because it cannot run on the simulator on xcode-27
 # https://github.com/unoplatform/uno/issues/25659
@@ -226,38 +186,6 @@ stages:
       jobPrefix: 'Skia_Linux_Framebuffer'
       testRunTitle: 'Linux Framebuffer Skia Runtime Tests'
       testResultLabel: '-framebuffer'
-
-- stage: runtime_tests_skia_macos
-  displayName: Tests - Desktop macOS
-  dependsOn:
-    - Setup
-    - runtime_tests_skia_build
-
-  jobs:
-  - template: .azure-devops-tests-desktop-macos.yml
-    parameters:
-      vmImage: '${{ parameters.vmImage }}'
-      vmMacImage: '${{ parameters.vmMacImage }}'
-      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
-      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
-      poolName: '${{ parameters.poolName }}'
-      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
-
-  - template: .azure-devops-tests-desktop-macos.yml
-    parameters:
-      vmImage: '${{ parameters.vmImage }}'
-      vmMacImage: '${{ parameters.vmMacImage }}'
-      vmMacImageTest: '${{ parameters.vmMacImageTest }}'
-      vmLinuxImage: '${{ parameters.vmLinuxImage }}'
-      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      xCodeRootTest: '${{ parameters.xCodeRootTest }}'
-      xCodeRootBuild: '${{ parameters.xCodeRootBuild }}'
-      poolName: '${{ parameters.poolName }}'
-      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
-      jobName: 'Skia_macos_WebGpu_Runtime_Tests'
-      renderer: 'WebGPU'
-      testResultLabel: '-webgpu'
 
 - stage: runtime_tests_skia_windows
   displayName: Tests - Desktop Windows

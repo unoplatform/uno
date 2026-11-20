@@ -1,0 +1,294 @@
+# The iOS and macOS desktop lanes: free on GitHub-hosted runners, per-minute on Azure Pipelines.
+# Reuses the Azure Pipelines test scripts, so the BUILD_* variables below map what they read.
+name: macOS CI
+
+on:
+  push:
+    branches: &branches
+      - master
+      - 'servicing/*'
+      - 'release/beta/*'
+      - 'release/stable/*'
+      - 'feature/*'
+      - 'legacy/*'
+    paths: &paths
+      - '**'
+      - '!.dependabot/**'
+      - '!.github/**'
+      - '.github/workflows/ci-macos.yml'
+      - '.github/actions/macos-ci-setup/**'
+      - '!doc/**'
+      - '!**/*.md'
+      - '!build/cSpell.json'
+      - '!build/.markdownlint.json'
+  pull_request:
+    branches: *branches
+    paths: *paths
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# macOS runners are limited across the org, so a new push replaces a PR's running jobs.
+concurrency:
+  group: ci-macos-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 'true'
+  NUGET_CERT_REVOCATION_MODE: offline
+  CI_Build: 'true'
+  SourceLinkEnabled: 'false'
+  GlobalUnoCheckVersion: '1.35.0-dev.118'
+  DotNetSdkVersion: '11.0.100-rc.3.26522.148'
+  NET_TFM: 'net11.0'
+  XCODE_ROOT: '/Applications/Xcode_27.app'
+
+jobs:
+  scope:
+    name: Determine test scope
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    outputs:
+      webgpu: ${{ steps.scope.outputs.webgpu }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 200
+      - id: scope
+        shell: pwsh
+        env:
+          BUILD_REASON: ${{ github.event_name == 'pull_request' && 'PullRequest' || 'IndividualCI' }}
+          SYSTEM_PULLREQUEST_TARGETBRANCH: ${{ github.base_ref && format('refs/heads/{0}', github.base_ref) || '' }}
+        run: |
+          $output = & build/ci/scripts/determine-test-scope.ps1 6>&1 | Out-String
+          Write-Host $output
+          $required = $output -match 'WebGpuTestsRequired requires tests: true'
+          "webgpu=$($required.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
+
+  native:
+    name: Native macOS build
+    runs-on: xcode-27
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: ./.github/actions/macos-ci-setup
+        with:
+          select-xcode: 'false'
+      - name: Build Skia macOS native
+        working-directory: src/Uno.UI.Runtime.MacOS/UnoNativeMac
+        run: |
+          chmod +x build.sh
+          ./build.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: native-assets-macos
+          path: src/Uno.UI.Runtime.MacOS/UnoNativeMac/build/Release
+          retention-days: 7
+
+  desktop-build:
+    name: Build desktop SamplesApp
+    needs: native
+    runs-on: xcode-27
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: ./.github/actions/macos-ci-setup
+        with:
+          uno-check-tfm: ${{ env.NET_TFM }}-desktop
+          select-xcode: 'false'
+      - uses: actions/download-artifact@v4
+        with:
+          name: native-assets-macos
+          path: src/Uno.UI.Runtime.MacOS/UnoNativeMac/build/Release
+      - name: Build Generic Skia Head
+        run: |
+          mkdir -p "$RUNNER_TEMP/logs"
+          dotnet build src/SamplesApp/SamplesApp/SamplesApp.csproj -c Release "-p:UnoTargetFrameworkOverride=$NET_TFM-desktop" -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -f "$NET_TFM-desktop" "/bl:$RUNNER_TEMP/logs/build-generic.binlog"
+      - name: Pack the app
+        run: tar -C "src/SamplesApp/SamplesApp/bin/Release/$NET_TFM-desktop" -cf "$RUNNER_TEMP/samplesapp-desktop.tar" .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: samplesapp-desktop-skia
+          path: ${{ runner.temp }}/samplesapp-desktop.tar
+          compression-level: 1
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: samplesapp-desktop-skia-logs
+          path: ${{ runner.temp }}/logs
+          retention-days: 7
+
+  desktop-tests:
+    name: macOS ${{ matrix.renderer }} runtime tests
+    needs: [ scope, desktop-build ]
+    runs-on: xcode-27
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        renderer: ${{ fromJSON(needs.scope.outputs.webgpu == 'true' && '["Skia","WebGPU"]' || '["Skia"]') }}
+    env:
+      BUILD_SOURCESDIRECTORY: ${{ github.workspace }}
+      SamplesAppArtifactName: samplesapp-desktop-skia
+      SamplesAppArtifactPath: ${{ github.workspace }}/build/samplesapp-desktop-skia
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: ./.github/actions/macos-ci-setup
+        with:
+          select-xcode: 'false'
+      - uses: actions/download-artifact@v4
+        with:
+          name: samplesapp-desktop-skia
+          path: ${{ runner.temp }}/app
+      - name: Unpack the app
+        run: |
+          mkdir -p "$SamplesAppArtifactPath"
+          tar -C "$SamplesAppArtifactPath" -xf "$RUNNER_TEMP/app/samplesapp-desktop.tar"
+      # Used to build the hot reload test secondary app during the runtime tests.
+      - name: Build HR dependencies
+        run: |
+          (cd src/SourceGenerators/Uno.UI.Tasks && dotnet build -c Debug)
+          (cd src/SourceGenerators/Uno.UI.SourceGenerators && dotnet build -c Debug)
+          (cd src/Uno.UI.RemoteControl.Host && dotnet build -c Debug)
+      - name: Run macOS runtime tests
+        env:
+          UNO_TEST_RESULT_LABEL: ${{ matrix.renderer == 'WebGPU' && '-webgpu' || '' }}
+          RENDERER: ${{ matrix.renderer }}
+        run: |
+          if [ "$RENDERER" = "WebGPU" ]; then
+            export UNO_WEBGPU=1 UNO_WEBGPU_LOG=warn
+          fi
+          chmod +x build/test-scripts/macos-skia-runtime-tests.sh
+          build/test-scripts/macos-skia-runtime-tests.sh
+      - name: Check results
+        if: always()
+        run: python3 .github/actions/macos-ci-setup/summary.py "macOS ${{ matrix.renderer }}" build/skia-macos*-runtime-tests-results.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: runtime-tests-macos-${{ matrix.renderer }}
+          path: |
+            build/skia-macos*-runtime-tests-results.xml
+            build/uitests-failure-results
+          if-no-files-found: ignore
+          retention-days: 14
+
+  ios-build:
+    name: Build iOS SamplesApp
+    runs-on: xcode-27
+    timeout-minutes: 150
+    env:
+      BUILD_SOURCESDIRECTORY: ${{ github.workspace }}
+      BUILD_ARTIFACTSTAGINGDIRECTORY: ${{ github.workspace }}/artifacts
+      UNO_DISABLE_ANALYZERS_IN_SAMPLES: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: ./.github/actions/macos-ci-setup
+        with:
+          uno-check-tfm: ${{ env.NET_TFM }}-ios
+      - name: Build iOS Skia Head
+        run: |
+          mkdir -p "$BUILD_ARTIFACTSTAGINGDIRECTORY"
+          chmod +x build/test-scripts/skia-ios-uitest-build.sh
+          TFM="$NET_TFM-ios" build/test-scripts/skia-ios-uitest-build.sh
+      # upload-artifact drops the executable bits and symlinks an .app relies on.
+      - name: Pack the app
+        run: tar -C "src/SamplesApp/SamplesApp/bin/Release/$NET_TFM-ios/iossimulator-arm64" -cf "$RUNNER_TEMP/SamplesApp.app.tar" SamplesApp.app
+      - uses: actions/upload-artifact@v4
+        with:
+          name: samplesapp-ios-skia
+          path: ${{ runner.temp }}/SamplesApp.app.tar
+          compression-level: 1
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: samplesapp-ios-skia-logs
+          path: artifacts
+          retention-days: 7
+
+  ios-tests:
+    name: iOS ${{ matrix.renderer }} runtime tests ${{ matrix.group }}
+    needs: [ scope, ios-build ]
+    runs-on: xcode-27
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        group: [ '0', '1', '2', '3' ]
+        renderer: ${{ fromJSON(needs.scope.outputs.webgpu == 'true' && '["Skia","WebGPU"]' || '["Skia"]') }}
+    env:
+      BUILD_SOURCESDIRECTORY: ${{ github.workspace }}
+      BUILD_ARTIFACTSTAGINGDIRECTORY: ${{ github.workspace }}/artifacts
+      UITEST_SNAPSHOTS_ONLY: 'false'
+      UITEST_SNAPSHOTS_GROUP: ''
+      UITEST_AUTOMATED_GROUP: RuntimeTests
+      UITEST_RUNTIME_TEST_GROUP: ${{ matrix.group }}
+      UITEST_RUNTIME_TEST_GROUP_COUNT: '4'
+      UITEST_TEST_TIMEOUT: 90m
+      UNO_UITEST_BUCKET_COUNT: '5'
+      SAMPLESAPP_BUNDLE_ID: uno.platform.samplesapp.skia
+      UNO_UITEST_IOSBUNDLE_PATH: ${{ github.workspace }}/build/samplesapp-ios-skia/SamplesApp.app
+      UNO_TEST_APP_ENVIRONMENT: ${{ matrix.renderer == 'WebGPU' && 'UNO_WEBGPU=1 UNO_WEBGPU_LOG=warn' || '' }}
+    steps:
+      - name: Set the job deadline
+        run: echo "UNO_JOB_DEADLINE_EPOCH=$(( $(date +%s) + 90 * 60 ))" >> "$GITHUB_ENV"
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: ./.github/actions/macos-ci-setup
+      - uses: actions/download-artifact@v4
+        with:
+          name: samplesapp-ios-skia
+          path: ${{ runner.temp }}/app
+      - name: Unpack the app
+        run: |
+          mkdir -p build/samplesapp-ios-skia "$BUILD_ARTIFACTSTAGINGDIRECTORY"
+          tar -C build/samplesapp-ios-skia -xf "$RUNNER_TEMP/app/SamplesApp.app.tar"
+          rm -f "$HOME/Library/Preferences/Xamarin/Settings.plist"
+      - name: Run iOS Simulator Tests
+        env:
+          AGENT_TEMPDIRECTORY: ${{ runner.temp }}
+        run: |
+          chmod +x build/test-scripts/ios-uitest-run.sh
+          TFM="$NET_TFM-ios" build/test-scripts/ios-uitest-run.sh
+      - name: Check results
+        if: always()
+        run: python3 .github/actions/macos-ci-setup/summary.py "iOS ${{ matrix.renderer }} ${{ matrix.group }}" build/TestResult-original.xml
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: runtime-tests-ios-${{ matrix.renderer }}-${{ matrix.group }}
+          path: |
+            build/TestResult-original.xml
+            build/uitests-failure-results
+            ios-ui-tests-logs
+          if-no-files-found: ignore
+          retention-days: 14
+
+  # One stable name for a ruleset to require, whichever matrix legs ran.
+  result:
+    name: macOS CI result
+    if: always()
+    needs: [ scope, native, desktop-build, desktop-tests, ios-build, ios-tests ]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Fail unless every job succeeded
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "$RESULTS"
+          for r in $RESULTS; do
+            [ "$r" = "success" ] || exit 1
+          done

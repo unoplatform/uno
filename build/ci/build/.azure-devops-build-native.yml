@@ -7,8 +7,8 @@ jobs:
 - job: skia_package_macos_native_build
   cancelTimeoutInMinutes: 0
   displayName: 'macOS Build'
+  # Stays on Azure Pipelines: the managed build and the packages consume this artifact.
   pool:
-    name: 'GitHub-hosted Agents'
     vmImage: ${{ parameters.macOSImageName }}
 
   variables:
