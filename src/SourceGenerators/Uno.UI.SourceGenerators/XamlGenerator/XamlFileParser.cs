@@ -103,23 +103,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_cachedFiles.Remove(kvp => now - kvp.Value.LastTimeUsed > _cacheEntryLifetime);
 		}
 
-		internal static string? GetStableIdentityPath(string sourcePath, string sourceLink, string? intermediateDirectory)
-		{
-			// XAML generated into an intermediate output path outside the project directory has no relative link.
-			if (XamlFileDefinition.IsAbsolutePath(sourceLink) && !string.IsNullOrEmpty(intermediateDirectory))
-			{
-				// IntermediateOutputPath may contain "..", while the AdditionalText path is already normalized.
-				var root = Path.GetFullPath(intermediateDirectory!).Replace('\\', '/').TrimEnd('/') + "/";
-				var normalizedPath = sourcePath.Replace('\\', '/');
-				if (normalizedPath.StartsWith(root, StringComparison.OrdinalIgnoreCase))
-				{
-					return "obj:" + normalizedPath.Substring(root.Length);
-				}
-			}
-
-			return null;
-		}
-
 		private XamlFileDefinition? ParseFile(XamlSource src, string targetFilePath, string? intermediateDirectory, CancellationToken ct)
 		{
 			try
@@ -156,7 +139,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				ct.ThrowIfCancellationRequested();
 
-				var xamlFileDefinition = new XamlFileDefinition(sourcePath, sourceLink, targetFilePath, sourceText.ToString(), sourceText.GetChecksum(), GetStableIdentityPath(sourcePath, sourceLink, intermediateDirectory));
+				var xamlFileDefinition = new XamlFileDefinition(sourcePath, sourceLink, targetFilePath, sourceText.ToString(), sourceText.GetChecksum(), intermediateDirectory);
 				var ctx = new XamlFileParserContext(sourcePath);
 				try
 				{

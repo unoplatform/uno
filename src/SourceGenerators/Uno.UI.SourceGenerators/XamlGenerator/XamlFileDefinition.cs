@@ -13,7 +13,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal sealed record class XamlFileDefinition : IEquatable<XamlFileDefinition>, IComparable<XamlFileDefinition>, IXamlLocation
 	{
-		public XamlFileDefinition(string file, string link, string targetFilePath, string content, ImmutableArray<byte> checksum, string? stableIdentityPath = null)
+		public XamlFileDefinition(string file, string link, string targetFilePath, string content, ImmutableArray<byte> checksum, string? intermediateDirectory = null)
 		{
 			FilePath = file;
 			SourceLink = link;
@@ -21,18 +21,38 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			Content = content;
 
 			// Don't hash the checkout root, so generated type names (and AOT profiles) are stable across machines.
-			UniqueID = SanitizedFileName + "_" + HashBuilder.Build(stableIdentityPath ?? GetStableIdentityPath(link, FilePath));
+			UniqueID = SanitizedFileName + "_" + HashBuilder.Build(GetIdentityPath(file, link, intermediateDirectory));
 
 			Checksum = string.Concat(checksum.Select(c => c.ToString("x2", CultureInfo.InvariantCulture)));
 		}
 
-		internal static string GetStableIdentityPath(string link, string filePath)
+		/// <summary>
+		/// Checkout-independent path used to compute <see cref="UniqueID"/>: the relative link, else the path
+		/// relative to the intermediate directory (for XAML generated outside the project), else the full path.
+		/// </summary>
+		internal static string GetIdentityPath(string filePath, string link, string? intermediateDirectory)
 		{
 			var normalizedLink = link.Replace('\\', '/');
-			return normalizedLink.Length > 0 && !IsAbsolutePath(normalizedLink) ? normalizedLink : filePath;
+			if (normalizedLink.Length > 0 && !IsAbsolutePath(normalizedLink))
+			{
+				return normalizedLink;
+			}
+
+			if (!string.IsNullOrEmpty(intermediateDirectory))
+			{
+				// IntermediateOutputPath may contain "..", while the AdditionalText path is already normalized.
+				var root = Path.GetFullPath(intermediateDirectory!).Replace('\\', '/').TrimEnd('/') + "/";
+				var normalizedPath = filePath.Replace('\\', '/');
+				if (normalizedPath.StartsWith(root, StringComparison.OrdinalIgnoreCase))
+				{
+					return "obj:" + normalizedPath.Substring(root.Length);
+				}
+			}
+
+			return filePath;
 		}
 
-		internal static bool IsAbsolutePath(string path)
+		private static bool IsAbsolutePath(string path)
 			=> path.StartsWith("/", StringComparison.Ordinal) || (path.Length > 1 && path[1] == ':');
 
 		private string SanitizedFileName => Path
