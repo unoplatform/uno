@@ -297,6 +297,9 @@ internal static partial class NativeUno
 	internal static unsafe partial void uno_set_application_should_terminate_after_last_window_closed_callback(delegate* unmanaged[Cdecl]<int> callback);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static unsafe partial void uno_set_application_open_url_callback(delegate* unmanaged[Cdecl]<sbyte*, void> callback);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_application_quit();
 
 	[LibraryImport("libUnoNativeMac.dylib")]

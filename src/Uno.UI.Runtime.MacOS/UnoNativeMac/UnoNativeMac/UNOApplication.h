@@ -63,11 +63,16 @@ typedef bool (*application_should_terminate_after_last_window_closed_fn_ptr)(voi
 application_should_terminate_after_last_window_closed_fn_ptr uno_get_application_should_terminate_after_last_window_closed_callback(void);
 void uno_set_application_should_terminate_after_last_window_closed_callback(application_should_terminate_after_last_window_closed_fn_ptr p);
 
+typedef void (*application_open_url_fn_ptr)(const char *url);
+application_open_url_fn_ptr uno_get_application_open_url_callback(void);
+void uno_set_application_open_url_callback(application_open_url_fn_ptr p);
+
 void uno_application_quit(void);
 
 @interface UNOApplicationDelegate : NSObject <NSApplicationDelegate>
 
 - (void)applicationDidFinishLaunching:(NSNotification *)notification;
+- (void)application:(NSApplication *)application openURLs:(NSArray<NSURL *> *)urls;
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender;
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender;
 - (void)observeValueForKeyPath:(nullable NSString *)keyPath ofObject:(nullable id)object change:(nullable NSDictionary<NSKeyValueChangeKey, id> *)change context:(nullable void *)context;
