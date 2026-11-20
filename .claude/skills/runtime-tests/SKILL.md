@@ -49,7 +49,7 @@ Choose **Skia WASM** only when:
 
 **CRITICAL**: Set timeout to 15+ minutes. **NEVER cancel builds.**
 
-The default build commands below pass `-p:UnoFastDevBuild=true` (disables analyzers for local iteration — has no effect on CI) and `-p:UnoTargetFrameworkOverride=net11.0-desktop` (skips the redundant cross-targeted output for Skia libraries). Combined, these cut a clean `SamplesApp` desktop build from ~3:23 → ~1:59 and a Uno.UI-incremental rebuild from ~2:23 → ~0:58 on a 32-core Windows machine. Omit both flags if the user requested `strict` mode (see Phase 0).
+The default build commands below pass `-p:UnoFastDevBuild=true` (disables analyzers for local iteration — has no effect on CI) and `-p:UnoTargetFrameworkOverride=net11.0-desktop` (skips the redundant cross-targeted output for the Uno libraries). Combined, these cut a clean `SamplesApp` desktop build from ~3:23 → ~1:59 and a Uno.UI-incremental rebuild from ~2:23 → ~0:58 on a 32-core Windows machine. Omit both flags if the user requested `strict` mode (see Phase 0).
 
 #### Skia Desktop (default)
 ```bash

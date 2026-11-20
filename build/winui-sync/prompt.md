@@ -50,7 +50,8 @@ line of history, so do not rely on it to find changes.
   control's folder, do not port it. Record it under *Skipped* with the upstream path and what
   depends on it.
 - **Not applicable:** changes with no meaning in Uno (Windows-only plumbing, build and project
-  files, telemetry, `*_perf2026*` variants Uno does not use, test infrastructure Uno does not have).
+  files, telemetry, `*_perf2026*` variants Uno does not use, test infrastructure Uno does not have,
+  `InteractionTests` folders, which Uno cannot run yet).
   List each under *Not applicable* with a one-line reason. When unsure whether something applies,
   treat it as *Skipped*, not as *Not applicable*.
 - **Already there:** an earlier run may have stopped part-way on this branch, so some of these

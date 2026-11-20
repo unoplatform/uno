@@ -161,6 +161,22 @@ public partial class Given_DependencyProperty_PropMethodCall
 	}
 
 	[TestMethod]
+	public void When_Style_Applied_Under_Local_Value()
+	{
+		var control = new PropMethodCallTestControl();
+		control.TestInt = 42;
+
+		var style = new Style(typeof(PropMethodCallTestControl));
+		style.Setters.Add(new Setter(PropMethodCallTestControl.TestIntProperty, 10));
+		control.Style = style;
+
+		Assert.AreEqual(42, control.TestInt); // local still wins
+
+		control.ClearValue(PropMethodCallTestControl.TestIntProperty);
+		Assert.AreEqual(10, control.TestInt);
+	}
+
+	[TestMethod]
 	public void When_Non_Boolean_Type()
 	{
 		var control = new PropMethodCallTestControl();

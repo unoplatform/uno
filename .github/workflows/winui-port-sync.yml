@@ -188,7 +188,7 @@ jobs:
         id: agent
         if: steps.prompt.outcome == 'success'
         continue-on-error: true
-        uses: anthropics/claude-code-action@d535f5172dec02b204866b393d6b20b9b2aaf98d # v1.0.266
+        uses: anthropics/claude-code-action@f3b070c88125d33dbae5653df5f143101d4ea9dc # v1.0.276
         env:
           # Builds outlast the default 2-minute tool timeout.
           BASH_DEFAULT_TIMEOUT_MS: '2400000'
