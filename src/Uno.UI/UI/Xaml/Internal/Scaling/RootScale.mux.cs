@@ -123,6 +123,7 @@ internal abstract partial class RootScale
 				break;
 		}
 		float newScale = GetEffectiveRasterizationScale();
+		BumpScaleEpoch();
 		bool scaleChanged = !IsCloseReal(oldScale, newScale);
 		ApplyScale(scaleChanged);
 		_initialized = true;

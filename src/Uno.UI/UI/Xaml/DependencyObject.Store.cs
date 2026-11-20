@@ -205,6 +205,9 @@ namespace Microsoft.UI.Xaml
 				_visualTreeCacheWeakReference = value is not null
 					? WeakReferencePool.RentWeakReference(this, value)
 					: null;
+
+				// The layout-rounding scale an element remembered came from its old tree.
+				global::Uno.UI.Xaml.Core.Scaling.RootScale.BumpScaleEpoch();
 			}
 		}
 
