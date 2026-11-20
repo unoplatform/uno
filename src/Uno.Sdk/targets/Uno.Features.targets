@@ -112,11 +112,8 @@
 
 	<!--
 		MauiEmbedding: MAUI controls and libraries run on Uno through Uno.Maui.Embedding / Uno.Maui.Handlers (on top of Retarget, which it implies).
-		- MAUI itself must be the version the rewrite rules are written for, not the one of the mauinativeembedding feature (override with MauiVersion). Not applied when mauinativeembedding is also listed.
+		- Uno.Maui.Embedding supplies the MAUI minimum transitively; MauiVersion is an explicit override.
 		- UseMaui stays off: the project is an Uno project, not a MAUI one (the package turns off MAUI's global usings and default XAML items by itself).
 	-->
-	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;')) And !$(UnoFeatures.Contains(';mauinativeembedding;'))">
-		<MauiVersion Condition="'$(MauiVersion)' == ''">10.0.101</MauiVersion>
-	</PropertyGroup>
 
 </Project>

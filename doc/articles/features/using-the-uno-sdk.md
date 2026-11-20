@@ -175,7 +175,7 @@ Here are the supported properties:
 | `AndroidXWearVersion`               | [Xamarin.AndroidX.Wear](https://www.nuget.org/packages/Xamarin.AndroidX.Wear) and similar packages                   | Provides support for Wear OS watch applications.                                                               |
 | `AndroidXWearTilesVersion`          | [Xamarin.AndroidX.Wear.Tiles](https://www.nuget.org/packages/Xamarin.AndroidX.Wear.Tiles) and similar packages       | Provides Tiles API for Wear OS watch faces and complications.                                                  |
 | `CommunityToolkitMvvmVersion`       | [CommunityToolkit.Mvvm](https://www.nuget.org/packages/CommunityToolkit.Mvvm)                                        | Delivers a set of MVVM (Model-View-ViewModel) components for .NET applications.                                |
-| `MauiVersion`                       | [Microsoft.Maui.Controls](https://www.nuget.org/packages/Microsoft.Maui.Controls) and similar packages               | Overrides the version of .NET MAUI used by the `mauinativeembedding` UnoFeature, and the default of the `mauiembedding` UnoFeature (`10.0.101`).                                     |
+| `MauiVersion`                       | [Microsoft.Maui.Controls](https://www.nuget.org/packages/Microsoft.Maui.Controls) and similar packages               | Overrides the version of .NET MAUI used by the `MauiNativeEmbedding` and `MauiEmbedding` features.                                     |
 | `UnoMauiVersion`                    | [Uno.Maui.Handlers](https://www.nuget.org/packages/Uno.Maui.Handlers) and [Uno.Maui.Embedding](https://www.nuget.org/packages/Uno.Maui.Embedding) | Overrides the version of the Uno.Maui packages used by the `mauiembedding` UnoFeature. |
 | `MicrosoftIdentityClientVersion`    | [Microsoft.Identity.Client](https://www.nuget.org/packages/Microsoft.Identity.Client)                                | Provides an authentication library for Microsoft Identity Platform.                                            |
 | `MicrosoftLoggingVersion`           | [Microsoft.Extensions.Logging.Console](https://www.nuget.org/packages/Microsoft.Extensions.Logging.Console)          | Enables logging to the console with Microsoft's extensions.                                                    |
@@ -224,6 +224,12 @@ Those properties can be set from `Directory.Build.props` or may be set in the `c
 ```
 
 In the sample above, we are overriding the default versions of the `UnoToolkit`, `MicrosoftLogging`, and `CommunityToolkitMvvm` packages.
+
+### MAUI embedding version selection
+
+With `MauiEmbedding`, the `Uno.Maui.Embedding` package supplies the minimum MAUI version through its dependencies. A referenced MAUI library can require a newer patch without an SDK-added direct reference forcing a downgrade. The existing compatibility checks still apply: an untested patch produces `UMH001`; an unsupported minor or major version is rejected.
+
+Set `MauiVersion` when you want to choose the version explicitly. Put it in the solution's `Directory.Build.props` to align the Uno app and its MAUI libraries. An explicit version that conflicts with a library's requirements still produces a NuGet restore error. `MauiNativeEmbedding` keeps its existing version selection.
 
 ## Using Central Package Management with implicit packages
 
