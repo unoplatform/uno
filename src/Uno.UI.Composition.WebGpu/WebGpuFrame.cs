@@ -742,42 +742,53 @@ internal sealed unsafe partial class WebGpuFrame
 	/// itself, because a pointer is only 32 bits on WebAssembly.</summary>
 	private static nint PackVerts(OwnedResources owned, ReadOnlySpan<float> data, int stride)
 	{
-		var arenas = owned.VertexArenas ??= new List<VertBuf>();
-		if (arenas.Count == 0) { arenas.Add(new VertBuf()); }
-		var arena = arenas[arenas.Count - 1];
-		if (arena.Count > 0 && ((long)arena.Count + stride + data.Length) * sizeof(float) > MaxArenaBytes)
+		// Packing and upload run back to back for one bag at a time on a thread, so the thread's buffer serves every bag.
+		var arena = owned.VertexArena ??= t_arena ??= new VertBuf();
+		var chunks = owned.VertexChunks;
+		if (chunks.Count == 0) { chunks.Add(arena.Count); }
+		var chunkStart = chunks[chunks.Count - 1];
+		if (arena.Count > chunkStart && ((long)arena.Count - chunkStart + stride + data.Length) * sizeof(float) > MaxArenaBytes)
 		{
-			arena = new VertBuf();
-			arenas.Add(arena);
+			chunkStart = arena.Count;
+			chunks.Add(chunkStart);
 		}
 
-		var misaligned = arena.Count % stride;
+		var misaligned = (arena.Count - chunkStart) % stride;
 		if (misaligned != 0) { arena.Grow(stride - misaligned).Clear(); }
-		var first = arena.Count / stride;
+		var first = (arena.Count - chunkStart) / stride;
 		data.CopyTo(arena.Grow(data.Length));
 		var ranges = owned.PackedVertexRanges ??= new List<(int Chunk, uint First)>();
-		ranges.Add((arenas.Count - 1, (uint)first));
+		ranges.Add((chunks.Count - 1, (uint)first));
 		return -ranges.Count;
 	}
+
+	[ThreadStatic]
+	private static VertBuf t_arena;
 
 	/// <summary>Uploads a finished bag's arena chunks and points every op at the chunk it landed in.</summary>
 	internal void RealizeOwnedVertices(List<DrawOp> ops, OwnedResources owned)
 	{
-		if (owned?.VertexArenas is not { Count: > 0 } arenas) { return; }
-		var buffers = new Buffer*[arenas.Count];
-		for (var c = 0; c < arenas.Count; c++)
+		if (owned?.VertexArena is not { } arena) { return; }
+		var chunks = owned.VertexChunks;
+		var buffers = new Buffer*[chunks.Count];
+		for (var c = 0; c < chunks.Count; c++)
 		{
-			var arena = arenas[c];
-			if (arena.Count == 0) { continue; }
-			var size = arena.Count * sizeof(float);
+			var from = chunks[c];
+			var to = c + 1 < chunks.Count ? chunks[c + 1] : arena.Count;
+			if (to == from) { continue; }
+			var size = (to - from) * sizeof(float);
 			buffers[c] = _d.BufferPool.RentHeld(size, BufferUsage.Vertex | BufferUsage.CopyDst);
-			fixed (float* p = arena.A) { Api.QueueWriteBuffer(_d.Q, buffers[c], 0, p, (nuint)size); }
+			fixed (float* p = &arena.A[from]) { Api.QueueWriteBuffer(_d.Q, buffers[c], 0, p, (nuint)size); }
 			owned.Buffers.Add((nint)buffers[c]);
 		}
 
 		var ranges = owned.PackedVertexRanges!;
-		owned.VertexArenas = null;
+		owned.VertexArena = null;
 		owned.PackedVertexRanges = null;
+		chunks.Clear();
+		// The writes above copied the vertices out; a buffer that one huge recording grew is not kept.
+		if (arena.A.Length > MaxKeptArenaFloats) { t_arena = null; }
+		else { arena.Clear(); }
 		for (var i = 0; i < ops.Count; i++)
 		{
 			var tag = ops[i].Verts;
@@ -789,6 +800,8 @@ internal sealed unsafe partial class WebGpuFrame
 			ops[i] = op;
 		}
 	}
+
+	private const int MaxKeptArenaFloats = 1 << 20;
 
 	internal Buffer* Ubuf(int size, OwnedResources owned)
 	{
