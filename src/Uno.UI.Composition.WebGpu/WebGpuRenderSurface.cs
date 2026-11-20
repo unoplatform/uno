@@ -101,7 +101,9 @@ internal sealed class OwnedResources
 	// costs a whole placed-resource slot on the GPU (64 KB on D3D12), so a few thousand small ops commit hundreds
 	// of MB; packing also lets the encoder's merge rule fire, which a buffer per op makes impossible. Split into
 	// chunks because a recording's geometry can exceed the device's maximum buffer size on its own.
-	internal System.Collections.Generic.List<VertBuf> VertexArenas;
+	internal VertBuf VertexArena;
+	// Where each chunk starts in VertexArena, in floats.
+	internal readonly System.Collections.Generic.List<int> VertexChunks = new();
 	// Where each packed op's vertices landed (chunk, first vertex); an op's provisional Verts tag indexes this.
 	internal System.Collections.Generic.List<(int Chunk, uint First)> PackedVertexRanges;
 	public System.Collections.Generic.List<nint> BindGroups = new();
