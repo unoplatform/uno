@@ -97,7 +97,7 @@ public class Given_WebView2
 		try
 		{
 			policy.Remove("fullscreen");
-			policy.Add("camera");
+			policy.Add("camera https://example.com");
 			policy.Add("microphone https://example.com");
 
 			// The browser splits a directive on any ASCII whitespace, not only spaces.
@@ -106,16 +106,16 @@ public class Given_WebView2
 			var frame = await ShowCrossOriginContent();
 
 			Assert.AreEqual(
-				"autoplay *; encrypted-media *; clipboard-write *; publickey-credentials-get *; publickey-credentials-create *; camera *; " +
-				"microphone https://example.com; geolocation https://example.com",
+				"autoplay *; encrypted-media *; clipboard-write *; publickey-credentials-get *; publickey-credentials-create *; " +
+				"camera https://example.com; microphone https://example.com; geolocation https://example.com",
 				frame.Allow);
 			Assert.IsFalse(frame.HasAllowFullscreen, "The frame should not allow fullscreen through the allowfullscreen attribute.");
 
 			if (frame.AllowedFeatures is not null)
 			{
-				// The microphone and the location are delegated to another origin only.
+				// The camera, the microphone and the location are delegated to another origin only.
 				Assert.AreEqual(
-					"autoplay encrypted-media picture-in-picture clipboard-write publickey-credentials-get publickey-credentials-create camera",
+					"autoplay encrypted-media picture-in-picture clipboard-write publickey-credentials-get publickey-credentials-create",
 					frame.AllowedFeatures);
 			}
 		}

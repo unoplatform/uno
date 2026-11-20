@@ -75,14 +75,16 @@ Each entry is a [Permissions Policy](https://developer.mozilla.org/en-US/docs/We
 
 - By default, the list holds `autoplay`, `fullscreen`, `encrypted-media`, `clipboard-write`, `publickey-credentials-get` and `publickey-credentials-create`.
 - `publickey-credentials-get` lets pages sign in with a passkey, and `publickey-credentials-create` lets them create one. Chromium and Firefox support both in a frame from another site (creating a passkey there since Chrome 123 and Firefox 123), and creating one there also needs a click in that page. Safari lets a page from another site sign in with a passkey, but never lets it create one: WebKit only creates passkeys in a document that's same-origin with the pages that contain it.
-- A feature name alone applies to every page the web view shows.
+- A feature name alone applies to every page the web view shows, including any site its links and redirects lead to.
 - A feature name followed by an allowlist, such as `camera https://example.com`, is written as is.
 - A later entry for a feature replaces an earlier one, so adding `autoplay 'none'` overrides the default `autoplay` entry and blocks autoplay for every page.
 - A feature without an entry gets the browser's default, which for most features lets pages from the app's own origin use it, such as content shown with `NavigateToString`.
 - When `fullscreen` applies to every page, it's written as the `<iframe>`'s `allowfullscreen` attribute, which browsers read as `fullscreen *`.
-- The browser still asks the user before a page uses a feature that needs permission, such as the camera or the microphone.
 - If the app's server sends a `Permissions-Policy` header that lists a feature, the header's allowlist for it must also include the origins of the pages it's passed to, for example `camera=(self "https://example.com")`. A feature that the header limits to `self` can't be passed to pages from other sites. Features the header doesn't list aren't affected.
 - The setting has no effect on other targets.
+
+> [!IMPORTANT]
+> Chromium and Firefox show and remember a permission request from these pages as a request from the app's own origin. If the user already allowed the app to use a feature, such as the camera, a page that the feature is passed to can use it without being asked. For features that need the user's permission, list the origins that may use them, such as `camera https://example.com`, rather than the feature name alone.
 
 ## Executing JavaScript
 
