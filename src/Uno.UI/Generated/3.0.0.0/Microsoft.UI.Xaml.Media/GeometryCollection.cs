@@ -32,10 +32,4 @@ public partial class GeometryCollection : global::System.Collections.Generic.ILi
 	// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Geometry>
 	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Geometry>
 	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Geometry>
-	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Geometry>
-	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Geometry>
-	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.IEnumerable
 }

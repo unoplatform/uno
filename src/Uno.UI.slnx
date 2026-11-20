@@ -176,6 +176,9 @@
     <Project Path="Uno.ReferenceImplComparer.Tests/Uno.ReferenceImplComparer.Tests.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Debug" />
     </Project>
+    <Project Path="Uno.WinAppSDKSyncGenerator.Tests/Uno.WinAppSDKSyncGenerator.Tests.csproj">
+      <BuildType Solution="Release_NoSamples|*" Project="Debug" />
+    </Project>
     <Project Path="Uno.UI.TestComparer/Uno.UI.TestComparer.csproj">
       <BuildType Solution="Release_NoSamples|*" Project="Release" />
       <Build Solution="*|ARM64" Project="false" />

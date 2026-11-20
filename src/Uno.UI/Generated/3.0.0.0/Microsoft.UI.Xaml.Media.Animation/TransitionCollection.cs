@@ -24,18 +24,18 @@ public partial class TransitionCollection : global::System.Collections.Generic.I
 	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.Contains(Microsoft.UI.Xaml.Media.Animation.Transition)
 	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.CopyTo(Microsoft.UI.Xaml.Media.Animation.Transition[], int)
 	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.Remove(Microsoft.UI.Xaml.Media.Animation.Transition)
-	// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.TransitionCollection.GetEnumerator()
+#if __SKIA__
+	[global::Uno.NotImplemented("__SKIA__")]
+	public global::System.Collections.Generic.IEnumerator<global::Microsoft.UI.Xaml.Media.Animation.Transition> GetEnumerator()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Media.Animation.TransitionCollection", "GetEnumerator()");
+	}
+#endif
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.System.Collections.IEnumerable.GetEnumerator()
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.Transition>.get_Item(int)
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.TransitionCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.Transition>.set_Item(int, Microsoft.UI.Xaml.Media.Animation.Transition)
 	// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.Transition>
 	// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.Transition>
 	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.Transition>
-	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.Transition>
-	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.Transition>
-	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.Transition>
-	// Processing: System.Collections.IEnumerable
 	// Processing: System.Collections.IEnumerable
 }
