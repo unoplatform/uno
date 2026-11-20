@@ -18,6 +18,7 @@ using Uno.Foundation.Extensibility;
 using Uno.Logging;
 using Uno.UI.NativeElementHosting;
 using Uno.UI.Runtime;
+using Uno.UI.Runtime.X11;
 using Uno.UI.Xaml.Controls;
 using WebKit;
 using Action = System.Action;
@@ -37,7 +38,25 @@ namespace Uno.UI.WebView.X11;
 
 public class X11NativeWebViewProvider(CoreWebView2 coreWebView2) : INativeWebViewProvider
 {
-	INativeWebView INativeWebViewProvider.CreateNativeWebView(ContentPresenter contentPresenter) => new X11NativeWebView(coreWebView2, contentPresenter);
+	INativeWebView? INativeWebViewProvider.CreateNativeWebView(ContentPresenter contentPresenter)
+	{
+		// XWayland can provide DISPLAY even when the app uses the Wayland host.
+		// Check the active host before touching Xlib or initializing the GTK-backed view.
+		if (Microsoft.UI.Xaml.Application.Current?.Host is not X11ApplicationHost
+			|| string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DISPLAY")))
+		{
+			return null;
+		}
+
+		var display = XLib.XOpenDisplay(IntPtr.Zero);
+		if (display == IntPtr.Zero)
+		{
+			return null;
+		}
+
+		_ = XLib.XCloseDisplay(display);
+		return new X11NativeWebView(coreWebView2, contentPresenter);
+	}
 }
 
 public class X11NativeWebView : INativeWebView

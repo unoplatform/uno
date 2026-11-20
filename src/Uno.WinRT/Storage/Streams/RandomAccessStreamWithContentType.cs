@@ -85,6 +85,6 @@ namespace Windows.Storage.Streams
 
 		/// <inheritdoc />
 		public IRandomAccessStream CloneStream()
-			=> _stream.CloneStream();
+			=> new RandomAccessStreamWithContentType(_stream.CloneStream(), ContentType);
 	}
 }

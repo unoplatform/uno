@@ -69,6 +69,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		public IEasingFunction GetEasingFunction() => _easing;
 
+		/// <summary>
+		/// Whether the animation reaches its final value and ends on time even when no frame comes. Off for animations
+		/// that repeat, which would otherwise keep replaying without frames.
+		/// </summary>
+		internal bool EndsWithoutFrames { get; set; } = true;
+
 		/// <inheritdoc />
 		public void Start()
 		{
@@ -129,6 +135,11 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		private void ArmEndTimer()
 		{
+			if (!EndsWithoutFrames || Duration == long.MaxValue)
+			{
+				return;
+			}
+
 			if (_endTimer is null)
 			{
 				_endTimer = new DispatcherQueueTimer { IsRepeating = false };

@@ -37,16 +37,17 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 		_displayInformation = displayInformation;
 	}
 
-	private void UpdateDisplayInfo()
+	// Stages the new scale, which the caller publishes; true when the DPI changed, for the caller to report after that.
+	private bool UpdateDisplayInfo()
 	{
 		var newInfo = GetDisplayInfo();
 		var oldInfo = _displayInfo;
 		var oldRefreshRate = _refreshRate;
 		(_displayInfo, _refreshRate) = newInfo;
-		if (oldInfo.LogicalDpi != _displayInfo.LogicalDpi)
+		var dpiChanged = oldInfo.LogicalDpi != _displayInfo.LogicalDpi;
+		if (dpiChanged)
 		{
-			RasterizationScale = (float)_displayInfo.LogicalDpi / PInvoke.USER_DEFAULT_SCREEN_DPI;
-			_displayInformation?.NotifyDpiChanged();
+			StageRasterizationScale((float)_displayInfo.LogicalDpi / PInvoke.USER_DEFAULT_SCREEN_DPI);
 		}
 
 		if (_refreshRate != oldRefreshRate
@@ -57,6 +58,8 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 			// context doesn't implement the interface (swapchain-paced), so this simply skips it.
 			(_context as IWin32PacedContext)?.UpdateRefreshRate(_refreshRate);
 		}
+
+		return dpiChanged;
 	}
 
 	private unsafe (DisplayInfo, float) GetDisplayInfo()

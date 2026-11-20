@@ -75,7 +75,7 @@ internal partial class MacOSDragDropExtension : IDragDropExtension
 		}
 	}
 
-	public void StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
+	public bool StartNativeDrag(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
 	{
 		// AppKit's beginDraggingSession must run on the main thread AND from the originating
 		// mouse-event context ([NSApp currentEvent] must still be that mouse event, which the
@@ -85,21 +85,38 @@ internal partial class MacOSDragDropExtension : IDragDropExtension
 		// gone, causing the drag to be rejected — so only marshal when we lack thread access.
 		if (CoreDispatcher.Main.HasThreadAccess)
 		{
-			_ = StartNativeDragSafeAsync(info, onCompleted);
+			var start = StartNativeDragSafeAsync(info, onCompleted);
+			if (start.IsCompleted)
+			{
+				// Started or failed without yielding: a failure keeps the drag internal.
+				return start.Result;
+			}
+
+			_ = CompleteIfNotStartedAsync(start, onCompleted);
 		}
 		else
 		{
 			_ = CoreDispatcher.Main.RunAsync(
 				CoreDispatcherPriority.High,
-				async () => await StartNativeDragSafeAsync(info, onCompleted));
+				async () => await CompleteIfNotStartedAsync(StartNativeDragSafeAsync(info, onCompleted), onCompleted));
+		}
+		return true;
+	}
+
+	// A start that fails after the drag was accepted can only be reported through the completion.
+	private async Task CompleteIfNotStartedAsync(Task<bool> start, Action<DataPackageOperation> onCompleted)
+	{
+		if (!await start)
+		{
+			CompleteWith(onCompleted, DataPackageOperation.None);
 		}
 	}
 
-	private async Task StartNativeDragSafeAsync(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
+	private async Task<bool> StartNativeDragSafeAsync(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
 	{
 		try
 		{
-			await StartNativeDragCoreAsync(info, onCompleted);
+			return await StartNativeDragCoreAsync(info, onCompleted);
 		}
 		catch (Exception e)
 		{
@@ -107,11 +124,11 @@ internal partial class MacOSDragDropExtension : IDragDropExtension
 			{
 				this.Log().Error("Failed to start native drag on macOS Skia.", e);
 			}
-			CompleteWith(onCompleted, DataPackageOperation.None);
+			return false;
 		}
 	}
 
-	private async Task StartNativeDragCoreAsync(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
+	private async Task<bool> StartNativeDragCoreAsync(CoreDragInfo info, Action<DataPackageOperation> onCompleted)
 	{
 		var view = info.Data;
 
@@ -171,8 +188,9 @@ internal partial class MacOSDragDropExtension : IDragDropExtension
 		if (!started)
 		{
 			_pendingDragCompletion = null;
-			CompleteWith(onCompleted, DataPackageOperation.None);
 		}
+
+		return started;
 	}
 
 	private unsafe bool StartNativeDragUnsafe(DataPackageOperation allowed, string? text, string? html, string? rtf, string? uri, string[] filePaths, byte[]? bitmapBytes)

@@ -1,0 +1,26 @@
+<Page
+    x:Class="UITests.Windows_ApplicationModel.Clipboard_DesktopTransfers"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <ScrollViewer>
+        <StackPanel Padding="16" Spacing="8">
+            <TextBlock Text="Copy from a button press, then paste into another application. On Wayland, clipboard ownership requires a focused input serial." TextWrapping="Wrap" />
+            <TextBox x:Name="Input" Text="Uno Platform: café 😀 日本語" />
+            <Button Click="CopyText" Content="Copy text and HTML" />
+            <Button Click="CopyFiles" Content="Choose files and copy" />
+            <Button Click="CopyImage" Content="Choose an image and copy" />
+            <Button Click="Paste" Content="Read clipboard" />
+            <ToggleSwitch x:Name="AcceptMove" Header="Accept move as well as copy" />
+            <Border
+                Padding="24"
+                AllowDrop="True"
+                Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                DragOver="DragOverTarget"
+                Drop="DropTarget">
+                <TextBlock Text="Drop text, HTML, an image or local files here" TextWrapping="Wrap" />
+            </Border>
+            <TextBlock x:Name="Result" TextWrapping="Wrap" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>
