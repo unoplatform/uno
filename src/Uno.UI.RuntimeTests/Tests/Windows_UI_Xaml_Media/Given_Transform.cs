@@ -81,6 +81,42 @@ public class Given_Transform
 		GC.KeepAlive(transform);
 	}
 
+#if __ANDROID__ || __APPLE_UIKIT__
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.NativeMobile)]
+	public async Task When_RenderTransform_Shared_By_Style_Then_View_Is_Last_Live_Element()
+	{
+		// The native animators find the view to animate through Transform.View, which is held weakly: it must keep
+		// pointing at the last element the shared transform was applied to while that element is alive.
+		var transform = new TranslateTransform { X = 10 };
+		var style = new Style(typeof(Border));
+		style.Setters.Add(new Setter(UIElement.RenderTransformProperty, transform));
+
+		var first = new Border { Width = 20, Height = 20, Style = style };
+		var second = new Border { Width = 20, Height = 20, Style = style };
+		var root = new StackPanel { Children = { first, second } };
+		TestServices.WindowHelper.WindowContent = root;
+
+		try
+		{
+			await TestServices.WindowHelper.WaitForLoaded(second);
+
+			GC.Collect(2);
+			GC.WaitForPendingFinalizers();
+			GC.Collect(2);
+
+			Assert.AreSame(second, transform.View);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+
+		GC.KeepAlive(first);
+	}
+#endif
+
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25099")]
 	public async Task When_RenderTransform_Shared_By_Popup_Style_Then_Discarded_Popups_Collected()
