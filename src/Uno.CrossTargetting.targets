@@ -176,7 +176,8 @@
 				 Lines="override from $(MSBuildThisFileDirectory)"
 				 Overwrite="True"
 				 WriteOnlyWhenDifferent="true" />
-		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder) and $(_TargetNugetRefFolder)" />
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" Condition="'@(_OutputRefFiles)' == ''" />
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder) and $(_TargetNugetRefFolder)" Condition="'@(_OutputRefFiles)' != ''" />
 
 		<!-- Delete only files previously owned by this project/TFM. Shared package folders may also contain outputs from other projects. -->
 		<ReadLinesFromFile File="$(_OwnedOutputManifest)" Condition="Exists('$(_OwnedOutputManifest)')">
