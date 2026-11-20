@@ -117,8 +117,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		CharacterCasing IImeSessionHost.CharacterCasing => CharacterCasing;
 
-		void IImeSessionHost.UpdateTextFromNative(string text, int selectionStart, int selectionLength)
-			=> UpdateTextFromNative(text, selectionStart, selectionLength);
+		bool IImeSessionHost.UpdateTextFromNative(string text, int selectionStart, int selectionLength)
+			=> TryUpdateTextFromNative(text, selectionStart, selectionLength);
 
 		void IImeSessionHost.SelectFromNative(int selectionStart, int selectionLength)
 			=> SelectFromNative(selectionStart, selectionLength);

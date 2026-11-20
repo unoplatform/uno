@@ -23,8 +23,12 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 
 	private bool _isComposing;
 	private bool _restartPending;
+	private int _compositionStart = -1;
 
 	public bool IsComposing => _isComposing;
+
+	/// <summary>Where the browser's composition starts in the input's text (0 until reported), or -1 when there is none.</summary>
+	internal int CompositionStart => _isComposing ? Math.Max(_compositionStart, 0) : -1;
 
 	public event EventHandler? CompositionStarted;
 	public event EventHandler<ImeCompositionEventArgs>? CompositionUpdated;
@@ -85,10 +89,10 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 		}
 	}
 
-	// The host refused an edit of the composition (BeforeTextChanging, read-only, MaxLength) or kept text of another length
-	// (a length limit): its text goes back to the input at once instead of when the composition ends, so the keyboard's
-	// next keystrokes build on the text the host kept. Replacing the input's value ends the browser's composition, so it
-	// ends for the host too. Returns whether one was open.
+	// The host refused an edit of the composition (BeforeTextChanging, read-only) or cut its text before the composition:
+	// its text goes back to the input at once instead of when the composition ends, so the keyboard's next keystrokes
+	// build on the text the host kept. Replacing the input's value ends the browser's composition, so it ends for the
+	// host too. Returns whether one was open.
 	internal static bool EndRefusedComposition()
 	{
 		if (!Instance._isComposing)
@@ -106,6 +110,7 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 	private static void OnCompositionStarted()
 	{
 		Instance._isComposing = true;
+		Instance._compositionStart = -1;
 		BrowserInvisibleTextBoxViewExtension.RunFromNative(static () => Instance.CompositionStarted?.Invoke(Instance, EventArgs.Empty));
 	}
 
@@ -116,6 +121,7 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 		{
 			return;
 		}
+		Instance._compositionStart = compositionStart;
 		BrowserInvisibleTextBoxViewExtension.RunFromNative(() => Instance.CompositionUpdated?.Invoke(Instance, new ImeCompositionEventArgs(text, cursorPosition, textAlreadyApplied: true, compositionStart: compositionStart)));
 	}
 

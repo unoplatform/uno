@@ -39,29 +39,25 @@ namespace Microsoft.UI.Xaml.Controls
 
 		/// <summary>
 		/// Whether a platform's text input must take the host's text back at once after the host processed an edit the input
-		/// applied, which ends the input's composition: the host kept text of another length than the input's (MaxLength, a
-		/// length limit), or the input's text changed and the host refused it, keeping its own previous text. The keyboard then
-		/// builds its next keystrokes and suggestions on the text the host kept. A change that keeps the length (a casing
-		/// filter) stays in the composition until it ends, so an IME can still convert it, and so does the difference it left
-		/// when the input reports its text again unchanged. Line breaks match whether written as '\r' (the host) or '\n' (the
-		/// platform).
+		/// applied, which ends the input's composition: the host refused the edit (read-only, BeforeTextChanging), or kept text
+		/// that no longer reaches where the composition starts. The keyboard then builds its next keystrokes and suggestions on
+		/// the text the host kept. Any other difference (MaxLength, a TextChanging limit or filter) waits for the composition
+		/// to end, as a conversion IME's reading (pinyin, kana) can be longer than the text it converts to; outside a
+		/// composition it goes back too. Line breaks match whether written as '\r' (the host) or '\n' (the platform).
 		/// </summary>
 		/// <param name="keptText">The host's text after it processed the edit.</param>
-		/// <param name="hostTextBefore">The host's text before the edit.</param>
 		/// <param name="nativeText">The input's text with the edit.</param>
-		/// <param name="nativeTextBefore">The input's text before the edit, or null when unknown, which counts as changed.</param>
-		internal static bool MustReturnTextToNative(string keptText, string hostTextBefore, string nativeText, string? nativeTextBefore)
-			=> !IsSameText(keptText, nativeText)
-				&& (keptText.Length != nativeText.Length
-					|| (IsSameText(keptText, hostTextBefore) && (nativeTextBefore is null || !IsSameText(nativeText, nativeTextBefore))));
+		/// <param name="refused">Whether the host refused the edit (see <see cref="IImeSessionHost.UpdateTextFromNative"/>).</param>
+		/// <param name="compositionStart">Where the input's composition starts, or -1 when it has none.</param>
+		internal static bool MustReturnTextToNative(string keptText, string nativeText, bool refused, int compositionStart)
+			=> (refused || compositionStart < 0 || keptText.Length < compositionStart) && !IsSameText(keptText, nativeText);
 
 		/// <summary>
-		/// <see cref="MustReturnTextToNative(string, string, string, string)"/> for a platform that only tells whether the
-		/// input's text changed with the edit, so the text crosses once per edit: a changed text compares as an unknown one,
-		/// and an unchanged one as the input's text itself.
+		/// <see cref="MustReturnTextToNative(string, string, bool, int)"/> with the host's text, read only when the answer
+		/// depends on it: reading a RichEditBox's text costs the document.
 		/// </summary>
-		internal static bool MustReturnTextToNative(string keptText, string hostTextBefore, string nativeText, bool nativeTextChanged)
-			=> MustReturnTextToNative(keptText, hostTextBefore, nativeText, nativeTextChanged ? null : nativeText);
+		internal static bool MustReturnTextToNative(IImeSessionHost host, string nativeText, bool refused, int compositionStart)
+			=> (refused || compositionStart != 0) && MustReturnTextToNative(host.Text, nativeText, refused, compositionStart);
 
 		// Compares without allocating a normalized copy, as this runs for every edit the platform applies.
 		private static bool IsSameText(string first, string second)

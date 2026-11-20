@@ -199,20 +199,21 @@ class TextInputConnection : BaseInputConnection
 			{
 				var nativeText = _editable.ToString();
 				var nativeTextBefore = _editable.TextWhenBeginBatchEdit;
+				var imeChangedText = nativeTextBefore is not null && !string.Equals(nativeTextBefore, nativeText, StringComparison.Ordinal);
+				var compositionStart = GetComposingRange()?.Start ?? -1;
+				// A difference the host kept during the composition (MaxLength) goes back once it ends.
+				var compositionEnded = compositionStart < 0 && _editable.ComposingStartWhenBeginBatchEdit >= 0;
 
-				// Only after the IME changed the text, as reading a RichEditBox's text costs the document.
-				var hostTextBefore = nativeTextBefore is not null && !string.Equals(nativeTextBefore, nativeText, StringComparison.Ordinal)
-					? host.Text
-					: null;
-				host.UpdateTextFromNative(nativeText, selectionStart, selectionEnd - selectionStart);
+				var refused = !host.UpdateTextFromNative(nativeText, selectionStart, selectionEnd - selectionStart);
 				_endingBatch = false;
 
-				// The host refused the IME's edit, or kept text of another length (MaxLength, a length limit): the editable takes
-				// the host's text at once and the composition ends, so the keyboard builds its next keystrokes and suggestions on
-				// the text the host kept. The handlers that ran may have moved focus to another host, or cleared it.
-				if (hostTextBefore is not null
+				// The host refused the IME's edit, cut its text before the composition, or kept other text outside one: the
+				// editable takes the host's text at once and any composition ends, so the keyboard builds its next keystrokes
+				// and suggestions on the text the host kept. The handlers that ran may have moved focus to another host, or
+				// cleared it.
+				if ((imeChangedText || compositionEnded)
 					&& ReferenceEquals(ActiveHost, host)
-					&& ImeSessionCoordinator.MustReturnTextToNative(host.Text, hostTextBefore, nativeText, nativeTextBefore))
+					&& ImeSessionCoordinator.MustReturnTextToNative(host, nativeText, refused, compositionStart))
 				{
 					// One change for the listeners, with the final text: a TextCompositionEnded handler setting the text
 					// again is written afterwards (OnTextInputHostChanged).

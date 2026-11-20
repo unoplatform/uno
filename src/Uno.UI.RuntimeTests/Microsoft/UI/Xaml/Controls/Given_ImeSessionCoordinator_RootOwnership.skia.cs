@@ -447,9 +447,7 @@ public class Given_ImeSessionCoordinator_RootOwnership
 		public CharacterCasing CharacterCasing => CharacterCasing.Normal;
 		public List<string> Callbacks { get; } = new();
 
-		public void UpdateTextFromNative(string text, int selectionStart, int selectionLength)
-		{
-		}
+		public bool UpdateTextFromNative(string text, int selectionStart, int selectionLength) => true;
 
 		public void SelectFromNative(int selectionStart, int selectionLength)
 		{

@@ -43,6 +43,9 @@ internal class ObservableEditingState : SpannableStringBuilder
 	private int _composingStartWhenBeginBatchEdit;
 	private int _composingEndWhenBeginBatchEdit;
 
+	/// <summary>Where the composing region started when the last outermost batch edit began, or -1.</summary>
+	internal int ComposingStartWhenBeginBatchEdit => _composingStartWhenBeginBatchEdit;
+
 	private BaseInputConnection _dummyConnection;
 
 	// The View is only used for creating a dummy BaseInputConnection for setComposingRegion. The View

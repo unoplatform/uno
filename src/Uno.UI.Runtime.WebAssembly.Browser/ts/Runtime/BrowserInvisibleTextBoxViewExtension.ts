@@ -321,8 +321,8 @@
 						}
 					}
 					if (textDiffers && BrowserInvisibleTextBoxViewExtension.isSyncTarget(input, generation)) {
-						// The TextBox re-applies its same-length edits (a casing filter) to the committed value and pushes
-						// the result to the input.
+						// The TextBox re-applies its edits (a TextChanging filter, MaxLength) to the committed value and
+						// pushes the result to the input.
 						BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
 					}
 				});
@@ -388,14 +388,11 @@
 		}
 
 		private static syncTextFromInput(input: HTMLInputElement | HTMLTextAreaElement) {
-			// Whether the value changed since the previous sync or write tells an edit from the same text reported again. Both
-			// are the input's own value, so their line breaks are written the same way.
-			const textChanged = input.value !== BrowserInvisibleTextBoxViewExtension.syncedValue;
 			BrowserInvisibleTextBoxViewExtension.syncedValue = input.value;
 			if (input.selectionDirection == "backward") {
-				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd, textChanged);
+				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd);
 			} else {
-				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart, textChanged);
+				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart);
 			}
 		}
 
@@ -703,8 +700,8 @@
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			if (input != null) {
 				// While a composition edits the text, the browser owns the value: overwriting it would destroy the
-				// composition. A TextBox text that differs from it only as a same-length filter changes it (upper case) is
-				// reconciled once it ends; for any other difference the TextBox ends the composition first.
+				// composition. A TextBox text that differs from it (an app edit, MaxLength) is reconciled once it ends,
+				// unless the TextBox refused the edit or cut its text before the composition: it then ends the composition first.
 				if (BrowserInvisibleTextBoxViewExtension.isCompositionReported) {
 					BrowserInvisibleTextBoxViewExtension.pendingText = BrowserInvisibleTextBoxViewExtension.asInputValue(input, text) === input.value ? null : text;
 					return;

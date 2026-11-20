@@ -67,7 +67,7 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 
 	CharacterCasing IImeSessionHost.CharacterCasing => CharacterCasing;
 
-	void IImeSessionHost.UpdateTextFromNative(string text, int selectionStart, int selectionLength)
+	bool IImeSessionHost.UpdateTextFromNative(string text, int selectionStart, int selectionLength)
 	{
 		var isTextEcho = IsNativeEchoOfCurrentText(text);
 		if (isTextEcho && IsNativeEchoOfCurrentSelection(selectionStart, selectionLength))
@@ -79,13 +79,14 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 			}
 
 			OnPlatformTextSynced(refused: false);
-			return;
+			return true;
 		}
 
 		var textBefore = Text;
 		var (selectionStartBefore, selectionLengthBefore) = (SelectionStart, SelectionLength);
 		// Pending so the text change itself lands the caret here instead of passing through 0.
 		SetPendingSelection(selectionStart, selectionLength);
+		_textInputRefused = false;
 		ProcessTextInput(text);
 		var refused = !isTextEcho && Text == textBefore;
 
@@ -102,6 +103,7 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 		}
 
 		OnPlatformTextSynced(refused);
+		return !(refused && _textInputRefused);
 	}
 
 	// The platform's text sync has landed: raises the TextCompositionChanged it was holding, unless the TextBox refused
@@ -448,7 +450,7 @@ internal sealed partial class TextBoxCore : IImeSessionHost
 		{
 			// The platform already applied the text (e.g., Android EndBatchEdit), so don't cancel the composition.
 			// While its text is processed, edits by TextChanging handlers belong to it too: ProcessTextInput clears the flag. The
-			// platform ends the composition afterwards if such an edit changed the text's length (MustReturnTextToNative).
+			// platform ends the composition afterwards if such an edit cut the text before its start (MustReturnTextToNative).
 			if (!_isInputModifyingText)
 			{
 				_platformTextApplyInProgress = false;

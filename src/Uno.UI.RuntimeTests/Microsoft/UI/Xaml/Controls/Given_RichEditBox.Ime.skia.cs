@@ -625,11 +625,11 @@ public partial class Given_RichEditBox
 		}
 	}
 
-	// Gboard composes every word, here past MaxLength. The document keeps what fits, and the input takes it back at once
-	// and ends the composition, so the keyboard builds its next keystrokes and suggestions on the document's text.
+	// A composition goes past MaxLength. The document keeps what fits; the composition keeps its text until it ends, as a
+	// conversion IME may still bring it within MaxLength, and the input then takes the document's text.
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
-	public async Task When_Wasm_Composition_Past_MaxLength_Is_Written_Back()
+	public async Task When_Wasm_Composition_Past_MaxLength_Applies_At_Its_End()
 	{
 		var sut = new RichEditBox { MaxLength = 3 };
 		var ended = 0;
@@ -649,12 +649,25 @@ public partial class Given_RichEditBox
 
 			GetTextWithoutFinalEop(sut.Document, out var text);
 			Assert.AreEqual("abc", text);
-			Assert.AreEqual(1, ended, "the composition ends");
+			Assert.AreEqual(0, ended, "the composition goes on");
+			Assert.AreEqual(
+				"abcd|4",
+				global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+					"(function(){const input=document.getElementById('uno-input');return `${input.value}|${input.selectionStart}`;})()"),
+				"the composition keeps its text");
+
+			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+				"(function(){document.getElementById('uno-input').dispatchEvent(new CompositionEvent('compositionend',{data:'abcd'}));return 'ok';})()");
+			await WindowHelper.WaitForIdle();
+
+			GetTextWithoutFinalEop(sut.Document, out text);
+			Assert.AreEqual("abc", text);
+			Assert.AreEqual(1, ended);
 			Assert.AreEqual(
 				"abc|3",
 				global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
 					"(function(){const input=document.getElementById('uno-input');return `${input.value}|${input.selectionStart}`;})()"),
-				"the input takes the document's text at once");
+				"the input takes the document's text once the composition ends");
 		}
 		finally
 		{
@@ -662,8 +675,8 @@ public partial class Given_RichEditBox
 		}
 	}
 
-	// A key composed in the middle of a full document: the input takes the document's text back with the caret where the
-	// composition started.
+	// A key composed in the middle of a full document: once the composition ends, the input takes the document's text back
+	// with the caret where the composition started.
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Wasm_Composition_Past_MaxLength_In_The_Middle_Keeps_The_Caret()
@@ -686,7 +699,15 @@ public partial class Given_RichEditBox
 
 			GetTextWithoutFinalEop(sut.Document, out var text);
 			Assert.AreEqual("abc", text);
-			Assert.AreEqual(1, ended, "the composition ends");
+			Assert.AreEqual(0, ended, "the composition goes on");
+
+			global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+				"(function(){document.getElementById('uno-input').dispatchEvent(new CompositionEvent('compositionend',{data:'x'}));return 'ok';})()");
+			await WindowHelper.WaitForIdle();
+
+			GetTextWithoutFinalEop(sut.Document, out text);
+			Assert.AreEqual("abc", text);
+			Assert.AreEqual(1, ended);
 			Assert.AreEqual(
 				"abc|1",
 				global::Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(

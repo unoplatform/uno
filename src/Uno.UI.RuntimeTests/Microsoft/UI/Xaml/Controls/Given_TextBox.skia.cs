@@ -258,14 +258,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await ReplayOnHiddenInput(ImeCompose(0, 0, "hel", "hel", 3));
 				await ReplayOnHiddenInput(ImeCompose(0, 3, "hell", "hell", 4));
 				Assert.AreEqual("hel", SUT.Text, "MaxLength rejects the longer text");
-				Assert.AreEqual("hel|3", GetHiddenInputState(), "the input takes the TextBox's text at once");
-				Assert.IsFalse(SUT.IsComposing);
+				Assert.AreEqual("hell|4", GetHiddenInputState(), "the composition keeps its text until it ends");
+				Assert.IsTrue(SUT.IsComposing);
 
-				// The browser's end of the composition the value change cancelled changes nothing.
 				await ReplayOnHiddenInput(ImeEnd("hell"));
 
 				Assert.AreEqual("hel", SUT.Text);
-				Assert.AreEqual("hel|3", GetHiddenInputState());
+				Assert.AreEqual("hel|3", GetHiddenInputState(), "the input takes the TextBox's text once the composition ends");
+				Assert.IsFalse(SUT.IsComposing);
 			}
 			finally
 			{
@@ -1133,9 +1133,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		// A TextChanging handler limits the length and so puts the text back when the kana composition goes past it. The input
-		// takes the TextBox's text at once and the composition ends, so the keyboard builds on the text the TextBox kept: the
-		// kana is cut at the limit, and a conversion that would have brought it back within it doesn't come.
+		// A TextChanging handler limits the length, so it cuts the kana reading that goes past it. The reading stays in the
+		// input until the IME converts it, here into text within the limit, which the TextBox then takes.
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
@@ -1158,16 +1157,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await ReplayOnHiddenInput(ImeCompose(0, 1, "にほ", "にほ", 2));
 				await ReplayOnHiddenInput(ImeCompose(0, 2, "にほん", "にほん", 3));
 
-				Assert.AreEqual("にほ", SUT.Text, "the handler puts the text back");
-				Assert.AreEqual("にほ|2", GetHiddenInputState(), "the input takes the TextBox's text at once");
-				Assert.IsFalse(SUT.IsComposing, "the composition ends");
-				Assert.AreEqual(1, ended);
+				Assert.AreEqual("にほ", SUT.Text, "the handler cuts the text");
+				Assert.AreEqual("にほん|3", GetHiddenInputState(), "the reading stays in the input");
+				Assert.IsTrue(SUT.IsComposing, "the composition goes on");
+				Assert.AreEqual(0, ended);
 
-				// The browser's end of the composition the value change cancelled changes nothing.
-				await ReplayOnHiddenInput(ImeEnd("にほん"));
+				await ReplayOnHiddenInput(ImeCompose(0, 3, "日本", "日本", 2) + ImeEnd("日本"));
 
-				Assert.AreEqual("にほ", SUT.Text);
-				Assert.AreEqual("にほ|2", GetHiddenInputState());
+				Assert.AreEqual("日本", SUT.Text, "the conversion fits the limit");
+				Assert.AreEqual("日本|2", GetHiddenInputState());
+				Assert.IsFalse(SUT.IsComposing);
 				Assert.AreEqual(1, ended);
 			}
 			finally
@@ -1177,9 +1176,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		// A kana composition goes past MaxLength. The input takes the TextBox's text at once and the composition ends, so the
-		// keyboard builds on the text the TextBox kept: the kana is cut at MaxLength, and a conversion that would have brought
-		// it back within it doesn't come.
+		// A kana reading goes past MaxLength, which refuses it. The reading stays in the input until the IME converts it, here
+		// into text within MaxLength, which the TextBox then takes.
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
@@ -1196,16 +1194,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await ReplayOnHiddenInput(ImeCompose(0, 2, "にほん", "にほん", 3));
 
 				Assert.AreEqual("にほ", SUT.Text, "MaxLength refuses the longer text");
-				Assert.AreEqual("にほ|2", GetHiddenInputState(), "the input takes the TextBox's text at once");
-				Assert.IsFalse(SUT.IsComposing, "the composition ends");
-				Assert.AreEqual(1, ended);
+				Assert.AreEqual("にほん|3", GetHiddenInputState(), "the reading stays in the input");
+				Assert.IsTrue(SUT.IsComposing, "the composition goes on");
+				Assert.AreEqual(0, ended);
 
-				// The browser's end of the composition the value change cancelled changes nothing.
-				await ReplayOnHiddenInput(ImeEnd("にほん"));
+				await ReplayOnHiddenInput(ImeCompose(0, 3, "日本", "日本", 2) + ImeEnd("日本"));
 
-				Assert.AreEqual("にほ", SUT.Text);
-				Assert.AreEqual("にほ|2", GetHiddenInputState());
+				Assert.AreEqual("日本", SUT.Text, "the conversion fits MaxLength");
+				Assert.AreEqual("日本|2", GetHiddenInputState());
+				Assert.IsFalse(SUT.IsComposing);
 				Assert.AreEqual(1, ended);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
+		// A pinyin IME (Microsoft Pinyin in Chrome) composes the reading, several times longer than the text it converts to.
+		// MaxLength refuses the reading past "zhan", which stays in the input until the IME converts "zhangsan" to two
+		// characters within MaxLength.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Pinyin_Reading_Past_MaxLength_Converts_Within_It()
+		{
+			var SUT = await LoadFocusedForBrowserIme("", maxLength: 4);
+			var ended = new List<string>();
+			SUT.TextCompositionEnded += (_, e) => ended.Add($"{e.StartIndex}+{e.Length} {SUT.Text}");
+			try
+			{
+				await ReplayOnHiddenInput(ImeStart());
+				var reading = "zhangsan";
+				for (var i = 1; i <= reading.Length; i++)
+				{
+					await ReplayOnHiddenInput(ImeCompose(0, i - 1, reading[..i], reading[..i], i));
+				}
+
+				Assert.AreEqual("zhan", SUT.Text, "MaxLength refuses the reading past it");
+				Assert.AreEqual("zhangsan|8", GetHiddenInputState(), "the reading stays in the input");
+				Assert.IsTrue(SUT.IsComposing, "the composition goes on");
+				Assert.AreEqual(0, ended.Count);
+
+				await ReplayOnHiddenInput(ImeCompose(0, 8, "张三", "张三", 2) + ImeEnd("张三"));
+
+				Assert.AreEqual("张三", SUT.Text, "the conversion fits MaxLength");
+				Assert.AreEqual("张三|2", GetHiddenInputState());
+				Assert.AreEqual(2, SUT.SelectionStart);
+				Assert.IsFalse(SUT.IsComposing);
+				CollectionAssert.AreEqual(new[] { "0+2 张三" }, ended);
 			}
 			finally
 			{
@@ -1272,68 +1310,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-		[DataRow("AB", "AB", "ab", "ab", false, DisplayName = "Same-length filter, text reported again")]
-		[DataRow("AB", "A", "ab", "a", false, DisplayName = "Same-length filter, new letter")]
-		[DataRow("abc", "abc", "abcd", "abc", true, DisplayName = "Refused past MaxLength")]
-		[DataRow("", "ab", "abc", "ab", true, DisplayName = "Coerced shorter")]
-		[DataRow("a\rb", "a\rb", "a\nb", "a\nb", false, DisplayName = "Line breaks")]
-		[DataRow("ab", "ab", "cd", "ab", true, DisplayName = "Same-length replacement refused")]
-		// Under a casing filter, a case-only change of the preedit looks like a refusal, so it ends the composition by design.
-		[DataRow("AB", "AB", "Ab", "ab", true, DisplayName = "Same-length filter, preedit case changed")]
-		[DataRow("ABC", "ABC", "abd", "abc", true, DisplayName = "Same-length replacement refused after a filter")]
-		[DataRow("ab", "ab", "cd", null, true, DisplayName = "Refused, input text before unknown")]
-		[DataRow("ab", "ab", "ab", "ab", false, DisplayName = "Echo")]
-		public void When_Native_Text_Is_Compared_To_The_Kept_Text(string kept, string hostBefore, string native, string nativeBefore, bool mustReturn)
-		{
-			Assert.AreEqual(mustReturn, ImeSessionCoordinator.MustReturnTextToNative(kept, hostBefore, native, nativeBefore));
-			// The browser passes whether its input's value changed instead.
-			Assert.AreEqual(mustReturn, ImeSessionCoordinator.MustReturnTextToNative(kept, hostBefore, native, nativeTextChanged: native != nativeBefore));
-		}
+		[DataRow("AB", "ab", false, 0, false, DisplayName = "Same-length filter")]
+		[DataRow("abc", "abcd", false, 0, false, DisplayName = "Past MaxLength, waits for the end")]
+		[DataRow("ab", "abc", false, 2, false, DisplayName = "Cut at the composition start")]
+		[DataRow("", "abc", false, 2, true, DisplayName = "Cut before the composition start")]
+		[DataRow("ab", "cd", true, 0, true, DisplayName = "Refused")]
+		[DataRow("a\rb", "a\nb", true, 0, false, DisplayName = "Refused, but the same text with other line breaks")]
+		[DataRow("ab", "abc", true, -1, true, DisplayName = "Refused outside a composition")]
+		[DataRow("a", "abc", false, -1, true, DisplayName = "Limit outside a composition")]
+		[DataRow("AB", "ab", false, -1, true, DisplayName = "Same-length filter outside a composition")]
+		[DataRow("ab", "ab", false, 1, false, DisplayName = "Echo")]
+		public void When_Native_Text_Is_Compared_To_The_Kept_Text(string kept, string native, bool refused, int compositionStart, bool mustReturn)
+			=> Assert.AreEqual(mustReturn, ImeSessionCoordinator.MustReturnTextToNative(kept, native, refused, compositionStart));
 #endif
-
-		// Gboard composes every word, here past MaxLength ("abcde" in a TextBox limited to 3). The input keeps the TextBox's
-		// text right after the refused update, so the keyboard builds its suggestions on "abc"; the next letter is refused the
-		// same way, and one Backspace then deletes the "c".
-		[TestMethod]
-		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
-		public async Task When_Browser_Ime_Composes_Word_Past_MaxLength_Then_Input_Keeps_The_Limit()
-		{
-			var SUT = await LoadFocusedForBrowserIme("", maxLength: 3);
-			try
-			{
-				await ReplayOnHiddenInput(ImeStart());
-				await ReplayOnHiddenInput(ImeCompose(0, 0, "a", "a", 1));
-				await ReplayOnHiddenInput(ImeCompose(0, 1, "ab", "ab", 2));
-				await ReplayOnHiddenInput(ImeCompose(0, 2, "abc", "abc", 3));
-				await ReplayOnHiddenInput(ImeCompose(0, 3, "abcd", "abcd", 4));
-
-				Assert.AreEqual("abc", SUT.Text);
-				Assert.AreEqual(3, SUT.SelectionStart);
-				Assert.AreEqual("abc|3", GetHiddenInputState(), "the input keeps the TextBox's text right after the update");
-				Assert.IsFalse(SUT.IsComposing, "the composition ends");
-
-				// The browser ends the composition the value change cancelled, and the keyboard composes its next letter anew.
-				await ReplayOnHiddenInput(ImeEnd("abcd"));
-				await ReplayOnHiddenInput(ImeStart() + ImeCompose(3, 3, "e", "abce", 4));
-
-				Assert.AreEqual("abc", SUT.Text);
-				Assert.AreEqual("abc|3", GetHiddenInputState());
-				Assert.IsFalse(SUT.IsComposing);
-
-				// Chrome on Android applies the soft keyboard's Backspace to the input's own text.
-				await ReplayOnHiddenInput("const c=t.selectionStart;t.value=t.value.slice(0,c-1)+t.value.slice(c);t.setSelectionRange(c-1,c-1);t.dispatchEvent(new InputEvent('input',{inputType:'deleteContentBackward'}));");
-
-				Assert.AreEqual("ab", SUT.Text, "one Backspace deletes the TextBox's last character");
-				Assert.AreEqual(2, SUT.SelectionStart);
-				Assert.AreEqual("ab|2", GetHiddenInputState());
-			}
-			finally
-			{
-				WindowHelper.WindowContent = null;
-				await WindowHelper.WaitForIdle();
-			}
-		}
 
 		// A read-only TextBox makes the hidden input read-only, and follows IsReadOnly as it changes. The input still
 		// carries the caret, the selection and the keys: they move the caret, extend the selection and copy, as they do in a

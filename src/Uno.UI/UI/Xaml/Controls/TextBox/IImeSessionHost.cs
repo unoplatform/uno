@@ -67,7 +67,11 @@ namespace Microsoft.UI.Xaml.Controls
 		CharacterCasing CharacterCasing { get; }
 
 		/// <summary>Applies text and selection produced by a platform input connection.</summary>
-		void UpdateTextFromNative(string text, int selectionStart, int selectionLength);
+		/// <returns>
+		/// False when the host refused the text change (read-only, BeforeTextChanging), so the input must take the host's text
+		/// back; true when it took the change, even if a limit or a handler then kept other text (MaxLength, TextChanging).
+		/// </returns>
+		bool UpdateTextFromNative(string text, int selectionStart, int selectionLength);
 
 		/// <summary>Applies a selection-only update produced by a platform input connection.</summary>
 		void SelectFromNative(int selectionStart, int selectionLength);
