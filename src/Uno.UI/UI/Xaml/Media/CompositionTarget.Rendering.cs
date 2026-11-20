@@ -246,9 +246,6 @@ public partial class CompositionTarget
 			if (!_isRenderingActive)
 			{
 				_isRenderingActive = true;
-				// Ask the backend to keep a handable frame object from now on; it costs a wrapper per recording,
-				// so nothing pays for it until something subscribes.
-				global::Uno.UI.Composition.Drawing.RenderRecordingOptions.CaptureFrameData = true;
 				foreach (var (target, _) in _targets)
 				{
 					((ICompositionTarget)target).RequestNewFrame();
@@ -262,7 +259,6 @@ public partial class CompositionTarget
 			if (_rendering == null)
 			{
 				_isRenderingActive = false;
-				global::Uno.UI.Composition.Drawing.RenderRecordingOptions.CaptureFrameData = false;
 				foreach (var (target, _) in _targets)
 				{
 					var held = target._renderingFrame;
@@ -340,7 +336,18 @@ public partial class CompositionTarget
 			compositor.FrameTimestampInTicks = null;
 		}
 		var phaseT1 = _logFramePhases ? Stopwatch.GetTimestamp() : 0;
-		var frame = recording.Finish();
+		// Only the frame itself is handed to Rendering subscribers: the visuals' own recordings, finished during the
+		// walk above, keep the cheaper native form.
+		global::Uno.UI.Composition.Drawing.RenderRecordingOptions.CaptureFrameData = _isRenderingActive;
+		IRenderRecord frame;
+		try
+		{
+			frame = recording.Finish();
+		}
+		finally
+		{
+			global::Uno.UI.Composition.Drawing.RenderRecordingOptions.CaptureFrameData = false;
+		}
 		if (_logFramePhases)
 		{
 			var phaseT2 = Stopwatch.GetTimestamp();
