@@ -984,12 +984,12 @@ public class Given_FlowDirection
 	[RequiresFullWindow]
 	[DataRow(FlowDirection.LeftToRight)]
 	[DataRow(FlowDirection.RightToLeft)]
-	public async Task When_Flyout_Shown_At_Point_Near_Left_Edge(FlowDirection flowDirection)
+	public async Task When_MenuFlyout_Shown_At_Point_Near_Left_Edge(FlowDirection flowDirection)
 	{
-		// A flyout that doesn't fit on the left of the window is moved to its left edge. Only right-to-left first tries the other side of the point.
+		// A menu that doesn't fit on the left of its point opens towards the right of it, instead of being moved to the left edge of the window.
+		// Left-to-right opens there anyway; right-to-left flips there, like WinUI.
 		using var _ = UITestHelper.ResetWindowContent();
-		var content = new Border { Width = 80, Height = 40, Background = new SolidColorBrush(Colors.Red) };
-		var flyout = new Flyout { Content = content, Placement = FlyoutPlacementMode.Top };
+		var flyout = new MenuFlyout { Items = { new MenuFlyoutItem { Text = "First item" }, new MenuFlyoutItem { Text = "Second item" } } };
 		var target = new Border { Width = 200, Height = 200, Background = new SolidColorBrush(Colors.LightGray), FlowDirection = flowDirection, HorizontalAlignment = HorizontalAlignment.Left };
 		var root = new Grid { Children = { target } };
 
@@ -1002,17 +1002,19 @@ public class Given_FlowDirection
 
 		try
 		{
-			await TestServices.WindowHelper.WaitForLoaded(content);
+			var item = (MenuFlyoutItem)flyout.Items[0];
+			await TestServices.WindowHelper.WaitForLoaded(item);
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var presenter = content.FindFirstParent<FlyoutPresenter>();
+			var presenter = item.FindFirstParent<MenuFlyoutPresenter>();
 			Assert.IsNotNull(presenter);
 			var bounds = GetVisualBounds(presenter);
 			var rootBounds = GetVisualBounds(root);
 			var expectedPoint = target.TransformToVisual(null).TransformPoint(position);
 
 			Assert.AreEqual(rootBounds.Left + 20, expectedPoint.X, 2, "The point should be near the left edge of the window.");
-			Assert.AreEqual(rootBounds.Left, bounds.Left, 2, "The flyout should be moved to the left edge of the window.");
+			Assert.IsTrue(bounds.Width > 20, $"Test setup: the menu ({bounds.Width} wide) must not fit on the left of the point.");
+			Assert.AreEqual(expectedPoint.X, bounds.Left, 2, "The menu should open towards the right of the point.");
 		}
 		finally
 		{

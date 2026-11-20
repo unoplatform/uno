@@ -1015,7 +1015,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			double verticalOffset = 0.0;
 			double maxWidth = double.NaN;
 			double maxHeight = double.NaN;
-			FrameworkElement spPopupAsFE;
 			bool isMenuFlyout = this is MenuFlyout;
 			bool preferTopPlacement = false;
 
@@ -1112,14 +1111,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			//			horizontalOffset = m_exclusionRect.X + m_exclusionRect.Width;
 			//			break;
 			//	}
-			//}
-
-			spPopupAsFE = _popup;
-			//flowDirection = (spPopupAsFE.FlowDirection);
-			//if (m_isPositionedAtPoint)
-			//{
-			//	targetFlowDirection = (m_tpPlacementTarget.FlowDirection);
-			//	Debug.Assert(flowDirection == targetFlowDirection);
 			//}
 
 			//bool isRTL = (flowDirection == xaml.FlowDirection_RightToLeft);
