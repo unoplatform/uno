@@ -162,6 +162,8 @@ public class Win32Host : UnoPlatformHost, IApplicationHost
 		{
 			CoreDispatcher.DispatchOverride = Win32EventLoop.Schedule;
 			CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+
+			CommandLineActivation.Report(allowBareUri: false);
 		}
 	}
 
