@@ -558,7 +558,7 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaMacOS)] // Flaky on macOS
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaWasm)] // Flaky on macOS and WASM
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26579")]
 		public async Task ScrollViewerSettingSelectionDoesNotMoveFocus()
 		{
