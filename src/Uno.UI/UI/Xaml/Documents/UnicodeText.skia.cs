@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -150,8 +149,6 @@ internal readonly partial struct UnicodeText : IParsedText
 			var inlineStart = stringBuilder.Length;
 			stringBuilder.Append(inlineText);
 
-			AppendBoundaries( /* Line */ 2, inlineText, inlineStart, lineOpportunityBreaks);
-
 			var currentFontDetails = inline.FontInfo;
 			int currentScript = 0;
 			for (var i = 0; i < inlineText.Length; i += char.IsSurrogate(inlineText, i) ? 2 : 1)
@@ -219,6 +216,10 @@ internal readonly partial struct UnicodeText : IParsedText
 			_bidiBreaks = [];
 			return;
 		}
+
+		// Line breaking is a document-level operation. Computing boundaries per inline can split a
+		// CRLF pair when character formatting changes between its two code units.
+		AppendBoundaries(/* Line */ 2, _text, 0, lineOpportunityBreaks);
 
 		_bidiBreaks = new List<(int end, FlowDirection direction)>();
 		var embeddingLevels = ArrayPool<byte>.Shared.Rent(_text.Length);
@@ -1400,7 +1401,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			return 0;
 		}
-		return line is null ? TrailingCRLFCount(_text, _text.Length) : TrailingCRLFCount(_text, line.Value.end);
+		return GetHardLineBreakLengthEndingAt(_text, line?.end ?? _text.Length);
 	}
 
 	private float GetAlignmentOffsetForLine(Line? line)
@@ -1504,7 +1505,10 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private static unsafe void AppendBoundaries(int boundaryType, string text, int outputBaseOffset, List<int> list)
 	{
-		fixed (char* locale = &CultureInfo.CurrentUICulture.Name.GetPinnableReference())
+		// WinUI applies the same line-break rules in every language, and ICU's root rules match them, so ICU gets the
+		// root locale: an empty string (NULL would mean the OS default). The UTF-16 UI culture name passed here before
+		// reached ICU as a one-letter name, which resolved to root as well.
+		fixed (byte* locale = "\0"u8)
 		{
 			fixed (char* textPtr = &text.GetPinnableReference())
 			{
@@ -1558,20 +1562,25 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private static float AdvanceToPixels(float xAdvance, FontDetails details) => xAdvance * details.TextScale.textScaleX;
 
-	private static int TrailingCRLFCount(string str, int end)
+	private static int GetHardLineBreakLengthEndingAt(string text, int end)
 	{
-		if (str is [.., '\r', '\n'])
-		{
-			return 2;
-		}
-		else if (str[end - 1] == '\r' || str[end - 1] == '\n')
-		{
-			return 1;
-		}
-		else
+		if (end <= 0 || end > text.Length)
 		{
 			return 0;
 		}
+
+		if (end >= 2 && text[end - 2] == '\r' && text[end - 1] == '\n')
+		{
+			return 2;
+		}
+
+		var value = text[end - 1];
+		if (value == '\r' && end < text.Length && text[end] == '\n')
+		{
+			return 0;
+		}
+
+		return value is '\n' or '\v' or '\f' or '\r' or '\u0085' or '\u2028' or '\u2029' ? 1 : 0;
 	}
 
 	private static bool IsLineBreak(string text, int indexAfterLineBreakOpportunity)
