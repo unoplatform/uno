@@ -34,7 +34,7 @@
     {
       "id": "breadcrumbbar",
       "title": "BreadcrumbBar",
-      "baseline": "2a60e27c591846556fa9ec4d8f305afdf0f96dc1",
+      "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
       "upstream": {
         "sources": [
           "controls/dev/Breadcrumb"
