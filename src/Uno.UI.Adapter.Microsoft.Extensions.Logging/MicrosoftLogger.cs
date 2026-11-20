@@ -22,6 +22,10 @@ namespace Uno.UI.Adapter.Microsoft.Extensions.Logging
 		{
 			_logger = logger;
 
+			// If no level is enabled, the logger must report every level as disabled.
+			// Leaving the property at its default (Trace) would enable every level instead.
+			LogLevel = LogLevel.None;
+
 			for (int i = 0; i < _levelsList.Length; i++)
 			{
 				if (_logger.IsEnabled(_levelsList[i]))
