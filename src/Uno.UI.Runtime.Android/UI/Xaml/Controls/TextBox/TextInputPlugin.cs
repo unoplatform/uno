@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Android.Content;
 using Android.OS;
 using Android.Text;
@@ -242,13 +244,13 @@ internal sealed class TextInputPlugin
 			return;
 		}
 
-		// Expose each live TextBox as a virtual child of the render view, so autofill services
+		// Expose each TextBox of this view as a virtual child, so autofill services
 		// (Google, password managers) see fields like they did with native EditText controls.
-		var textBoxes = AndroidSkiaTextBoxNotificationsProviderSingleton.Instance.LiveTextBoxes;
-		var index = structure.AddChildCount(textBoxes.Count);
-		for (var i = 0; i < textBoxes.Count; i++)
+		var fields = GetAutofillFields();
+		var index = structure.AddChildCount(fields.Count);
+		for (var i = 0; i < fields.Count; i++)
 		{
-			var textBox = textBoxes[i];
+			var (textBox, physicalRect, isVisible) = fields[i];
 			var child = structure.NewChild(index + i);
 			if (child is null)
 			{
@@ -264,17 +266,41 @@ internal sealed class TextInputPlugin
 			child.SetAutofillValue(AutofillValue.ForText(textBox.Text ?? string.Empty));
 			child.SetInputType((int)ConvertInputScope(textBox));
 			child.SetEnabled(textBox.Owner.IsEnabled && !textBox.IsReadOnly);
-			child.SetVisibility(ViewStates.Visible);
+			child.SetVisibility(isVisible ? ViewStates.Visible : ViewStates.Gone);
 
-			var isBeforePassword = i + 1 < textBoxes.Count && textBoxes[i + 1].IsPassword;
+			var isBeforePassword = isVisible && i + 1 < fields.Count && fields[i + 1] is { IsVisible: true, TextBox.IsPassword: true };
 			if (GetAutofillHints(textBox, isBeforePassword) is { } hints)
 			{
 				child.SetAutofillHints(hints);
 			}
 
-			var physicalRect = GetPhysicalRect(textBox.Owner);
 			child.SetDimens((int)physicalRect.Left, (int)physicalRect.Top, 0, 0, (int)physicalRect.Width, (int)physicalRect.Height);
 		}
+	}
+
+	private readonly record struct AutofillField(TextBoxCore TextBox, Windows.Foundation.Rect PhysicalRect, bool IsVisible);
+
+	// The TextBoxes of this view's window in screen order (top to bottom, then left to right), hidden ones last:
+	// the order the username hint relies on.
+	private List<AutofillField> GetAutofillFields()
+	{
+		var fields = new List<AutofillField>();
+		foreach (var textBox in AndroidSkiaTextBoxNotificationsProviderSingleton.Instance.LiveTextBoxes)
+		{
+			if (!ReferenceEquals(AndroidSkiaTextBoxNotificationsProviderSingleton.GetTextInputPlugin(textBox.Owner.XamlRoot), this))
+			{
+				continue;
+			}
+
+			var isVisible = AndroidSkiaTextBoxNotificationsProviderSingleton.IsEffectivelyVisible(textBox);
+			fields.Add(new(textBox, isVisible ? GetPhysicalRect(textBox.Owner) : default, isVisible));
+		}
+
+		return fields
+			.OrderBy(f => !f.IsVisible)
+			.ThenBy(f => f.PhysicalRect.Top)
+			.ThenBy(f => f.PhysicalRect.Left)
+			.ToList();
 	}
 
 	// No public API to set autofill hints yet: derived from the password mode and input scope, like the iOS TextContentType.
