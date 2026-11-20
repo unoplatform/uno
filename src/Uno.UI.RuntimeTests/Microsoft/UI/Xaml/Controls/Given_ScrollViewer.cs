@@ -3319,6 +3319,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					}
 				};
 
+				// The frames between the input and the one the curve starts on are as long as the lane renders them:
+				// software-rendered lanes run well below 30Hz.
+				var frames = 0;
+				EventHandler<object> onRendering = (_, _) => frames++;
+
 				var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
 				using var mouse = input.GetMouse();
 				mouse.MoveTo(bounds.GetCenter());
@@ -3331,12 +3336,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				settledMs = null;
 				stopwatch.Start();
-				mouse.WheelDown();
+				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += onRendering;
+				try
+				{
+					mouse.WheelDown();
 
-				await WindowHelper.WaitFor(() => settledMs is not null, timeoutMS: 3000, message: "the wheel scroll never settled");
+					await WindowHelper.WaitFor(() => settledMs is not null, timeoutMS: 3000, message: "the wheel scroll never settled");
+				}
+				finally
+				{
+					Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= onRendering;
+				}
 
-				// 220ms of curve, plus a few frames (at as low as 30Hz) between the input and the frame it starts on.
-				Assert.IsTrue(settledMs <= 360, $"the scroll settled {settledMs:F0}ms after the last notch");
+				// 220ms of curve, plus a few frames (counted at no faster than 30Hz) between the input and the frame it
+				// starts on. Notches that stacked their curves instead would take about 880ms.
+				var frameMs = Math.Max(1000d / 30, settledMs!.Value / Math.Max(frames, 1));
+				var boundMs = 220 + 4 * frameMs;
+				Assert.IsTrue(settledMs <= boundMs, $"the scroll settled {settledMs:F0}ms after the last notch (bound {boundMs:F0}ms at {frameMs:F0}ms per frame over {frames} frames)");
 				Assert.AreEqual(4 * 30, SUT.VerticalOffset, 0.01, "four notches of 15% of the viewport");
 			}
 			finally
