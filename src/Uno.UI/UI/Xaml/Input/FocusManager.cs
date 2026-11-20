@@ -347,6 +347,95 @@ namespace Microsoft.UI.Xaml.Input
 		/// </summary>
 		internal static bool SuppressNativeFocus;
 
+		// Uno specific: focus sync with hosted native elements, not part of WinUI's FocusManager.
+
+		// The presenter whose native element took platform focus, set while XAML focus follows it: the platform
+		// focus must stay in that native element, so FocusNative is skipped for this move.
+		private ContentPresenter? _nativeElementFocusMoveHost;
+
+		// Where that move is meant to land (null when it clears focus). A GettingFocus redirect sends focus
+		// elsewhere, and that element needs platform focus like any other focus change.
+		private DependencyObject? _nativeElementFocusMoveTarget;
+
+		// The element that received XAML focus because a hosted native element took platform focus, and that element's presenter.
+		// Read by the async focus listeners (e.g. WASM FocusSynchronizer) that would otherwise move platform focus.
+		private DependencyObject? _nativeElementFocusOwner;
+		private ContentPresenter? _nativeElementFocusHost;
+
+		/// <summary>
+		/// Indicates whether <paramref name="element"/> is focused because a hosted native element in it
+		/// holds platform focus, in which case platform focus must not be moved to it.
+		/// </summary>
+		internal bool IsNativeElementFocusOwner(DependencyObject? element) =>
+			element is not null &&
+			ReferenceEquals(element, _nativeElementFocusOwner) &&
+			ReferenceEquals(element, _focusedElement) &&
+			_nativeElementFocusHost?.IsNativeElementAttached == true; // A detached native element has lost platform focus.
+
+		/// <summary>
+		/// Moves XAML focus after a hosted native element took platform focus, without moving platform focus.
+		/// </summary>
+		/// <param name="host">The presenter hosting the native element.</param>
+		/// <param name="target">The element to focus, or null to clear focus.</param>
+		internal void OnNativeElementGotFocus(ContentPresenter host, UIElement? target)
+		{
+			if (target is not null && ReferenceEquals(target, _focusedElement))
+			{
+				SetNativeElementFocusOwner(target, host);
+				return;
+			}
+
+			_nativeElementFocusMoveHost = host;
+			_nativeElementFocusMoveTarget = target;
+			try
+			{
+				if (target is not null)
+				{
+					target.Focus(FocusState.Pointer);
+				}
+				else if (_focusedElement is not null)
+				{
+					ClearFocus();
+				}
+			}
+			finally
+			{
+				_nativeElementFocusMoveHost = null;
+				_nativeElementFocusMoveTarget = null;
+			}
+		}
+
+		/// <summary>
+		/// Called when the native element of <paramref name="host"/> no longer holds platform focus while XAML focus
+		/// stays put (e.g. focus left it for something outside XAML, or the browser window lost focus).
+		/// </summary>
+		internal void OnNativeElementLostFocus(ContentPresenter host)
+		{
+			if (ReferenceEquals(host, _nativeElementFocusHost))
+			{
+				SetNativeElementFocusOwner(null, null);
+			}
+		}
+
+		private void SetNativeElementFocusOwner(DependencyObject? owner, ContentPresenter? host)
+		{
+			_nativeElementFocusOwner = owner;
+			_nativeElementFocusHost = host;
+		}
+
+		private void UpdateNativeFocus()
+		{
+			if (_nativeElementFocusMoveHost is not null && ReferenceEquals(_focusedElement, _nativeElementFocusMoveTarget))
+			{
+				SetNativeElementFocusOwner(_focusedElement, _nativeElementFocusMoveHost);
+			}
+			else
+			{
+				SetNativeElementFocusOwner(null, null);
+				FocusNative(_focusedElement as UIElement);
+			}
+		}
+
 		private static void FocusNative(UIElement? control)
 		{
 			// Resign native first responder so keyboard events return to the managed layer and are properly processed by the focused element.

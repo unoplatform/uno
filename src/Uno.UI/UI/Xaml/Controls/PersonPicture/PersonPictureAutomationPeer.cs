@@ -17,5 +17,5 @@ public partial class PersonPictureAutomationPeer : FrameworkElementAutomationPee
 
 	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Text;
 
-	protected override string GetClassNameCore() => nameof(PersonPicture);
+	protected override string GetClassNameCore() => typeof(PersonPicture).FullName!;
 }

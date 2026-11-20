@@ -117,6 +117,7 @@ public static class AriaMapper
 			AutomationControlType.Tree => SemanticElementType.Tree,
 			AutomationControlType.TreeItem => SemanticElementType.TreeItem,
 			AutomationControlType.DataGrid => SemanticElementType.Grid,
+			AutomationControlType.SplitButton => SemanticElementType.SplitButton,
 			AutomationControlType.DataItem => SemanticElementType.GridRow,
 			AutomationControlType.Menu => SemanticElementType.Menu,
 			AutomationControlType.MenuItem => SemanticElementType.MenuItem,
@@ -667,7 +668,9 @@ public enum SemanticElementType
 	/// <summary>div with role="menu"</summary>
 	Menu,
 	/// <summary>div with role="menuitem"</summary>
-	MenuItem
+	MenuItem,
+	/// <summary>role="group" holding the primary and menu buttons of a split button</summary>
+	SplitButton
 }
 
 /// <summary>

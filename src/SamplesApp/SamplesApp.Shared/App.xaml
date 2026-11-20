@@ -5,7 +5,6 @@
     xmlns:local="using:SamplesApp"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:not_win="http://uno.ui/not_win"
-    xmlns:uc="using:Uno.UI.Controls"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     mc:Ignorable="not_win">
     <Application.Resources>
@@ -145,30 +144,23 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <!--  Uno specific (LinearGradientBrush borders): Additional Grid as template root needed #6457  -->
-                            <Grid>
-                                <ContentPresenter
-                                    xmlns:local="using:Microsoft.UI.Xaml.Controls"
-                                    x:Name="ContentPresenter"
-                                    Padding="{TemplateBinding Padding}"
-                                    HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                    VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                    local:AnimatedIcon.State="Normal"
-                                    AutomationProperties.AccessibilityView="Raw"
-                                    Background="{TemplateBinding Background}"
-                                    BackgroundSizing="{TemplateBinding BackgroundSizing}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    Content="{TemplateBinding Content}"
-                                    ContentTemplate="{TemplateBinding ContentTemplate}"
-                                    ContentTransitions="{TemplateBinding ContentTransitions}"
-                                    CornerRadius="{TemplateBinding CornerRadius}"
-                                    Foreground="{TemplateBinding Foreground}" />
-                                <!--  Uno specific (LinearGradientBrush borders): #6457  -->
-                                <uc:FauxGradientBorderPresenter
-                                    RequestedBorderBrush="{Binding ElementName=ContentPresenter, Path=BorderBrush}"
-                                    RequestedBorderThickness="{Binding ElementName=ContentPresenter, Path=BorderThickness}"
-                                    RequestedCornerRadius="{Binding ElementName=ContentPresenter, Path=CornerRadius}" />
+                            <ContentPresenter
+                                xmlns:local="using:Microsoft.UI.Xaml.Controls"
+                                x:Name="ContentPresenter"
+                                Padding="{TemplateBinding Padding}"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                local:AnimatedIcon.State="Normal"
+                                AutomationProperties.AccessibilityView="Raw"
+                                Background="{TemplateBinding Background}"
+                                BackgroundSizing="{TemplateBinding BackgroundSizing}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                ContentTransitions="{TemplateBinding ContentTransitions}"
+                                CornerRadius="{TemplateBinding CornerRadius}"
+                                Foreground="{TemplateBinding Foreground}">
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup x:Name="CommonStates">
                                         <VisualState x:Name="Normal" />
@@ -223,7 +215,7 @@
                                         </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
-                            </Grid>
+                            </ContentPresenter>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>

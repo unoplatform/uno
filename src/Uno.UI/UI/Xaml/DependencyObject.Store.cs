@@ -2261,9 +2261,10 @@ namespace Microsoft.UI.Xaml
 					// Coercion/Animation values ARE stored in ModifiedValue; GetEffectiveValue works.
 					SetValueViaMethodCall(propertyDetails.Property, propertyDetails.GetEffectiveValue());
 				}
-				else if (value != DependencyProperty.UnsetValue)
+				else if (value != DependencyProperty.UnsetValue && precedence == highestPrecedence)
 				{
 					// Base value: pass incoming value directly, avoiding store-then-read-back.
+					// A write below the current precedence (a Style value under a Local one) leaves the backing field alone.
 					SetValueViaMethodCall(propertyDetails.Property, value);
 				}
 				// else: ClearValue (UnsetValue) where ReevaluateBaseValue already called

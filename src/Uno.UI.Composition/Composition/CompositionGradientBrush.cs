@@ -12,7 +12,7 @@ namespace Microsoft.UI.Composition
 	public partial class CompositionGradientBrush : CompositionBrush, I2DTransformableObject
 	{
 		private CompositionGradientExtendMode _extendMode;
-		private CompositionMappingMode _mappingMode;
+		private CompositionMappingMode _mappingMode = CompositionMappingMode.Relative;
 		private Matrix3x2 _transformMatrix = Matrix3x2.Identity;
 		private Matrix3x2 _relativeTransformMatrix = Matrix3x2.Identity;
 		private Vector2 _scale = new Vector2(1, 1);

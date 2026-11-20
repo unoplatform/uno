@@ -61,8 +61,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// </summary>
 		internal bool ShouldHandlePressed { get; set; } = true;
 
-		// Workaround for the fact that ListViewBaseItem exists internally on WinUI, but isn't included in the public API
-		private bool IsListViewBaseItem => this is ListViewItem || this is GridViewItem;
+		private bool IsListViewBaseItem => this is ListViewBaseItem;
 
 		/// <remarks>
 		/// Ensure that the ContentControl will create its children even
@@ -186,6 +185,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			Selector?.NotifyListItemSelected(this, oldIsSelected, newIsSelected);
 
+			if (IsListViewBaseItem)
+			{
+				// MUX Reference SelectorItem_Partial.cpp, line 77
+				ChangeVisualState(true);
+			}
+
 			Selector?.RaiseIsSelectedChangedAutomationEvent(this, newIsSelected);
 		}
 
@@ -231,6 +236,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private void UpdateVisualStates(bool useTransitions)
 		{
+			if (IsListViewBaseItem)
+			{
+				// ListViewBaseItem drives its states through ChangeVisualState.
+				return;
+			}
+
 			if (GetTemplateRoot() is { })
 			{
 				UpdateCommonStates(useTransitions);
@@ -241,6 +252,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private void UpdateCommonStates(bool useTransitions, bool isMouse = false, ManipulationUpdateKind manipulationUpdate = ManipulationUpdateKind.None)
 		{
+			if (IsListViewBaseItem)
+			{
+				return;
+			}
+
 			// On Windows, the pressed state appears only after a few, and won't appear at all if you quickly start to scroll with the finger.
 			// So here we make sure to delay the beginning of a manipulation to match this behavior (and avoid flickering when scrolling)
 			// We also make sure that when user taps (Enter->Pressed->Move*->Release->Exit) on the item, he is able to see the pressed (selected) state.
@@ -319,6 +335,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private void UpdateDisabledStates(bool useTransitions)
 		{
+			if (IsListViewBaseItem)
+			{
+				return;
+			}
+
 			// TODO: This may need to be adjusted later when we remove the Visual State mixins.
 			var state = IsEnabled ? DisabledStates.Enabled : DisabledStates.Disabled;
 			VisualStateManager.GoToState(this, state, useTransitions);
@@ -326,6 +347,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal void UpdateMultiSelectStates(bool useTransitions)
 		{
+			if (IsListViewBaseItem)
+			{
+				// ListViewBaseItem drives its states through ChangeVisualState.
+				return;
+			}
+
 			if (Selector is ListViewBase { SelectionMode: ListViewSelectionMode.Multiple, IsMultiSelectCheckBoxEnabled: true })
 			{
 				// We can safely always go to multiselect state
@@ -514,7 +541,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		protected override void OnGotFocus(RoutedEventArgs e)
 		{
 			base.OnGotFocus(e);
-			ChangeVisualState(true);
+
+			if (!IsListViewBaseItem)
+			{
+				ChangeVisualState(true);
+			}
 
 			if (Selector is ListViewBase lvb)
 			{
@@ -528,7 +559,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		protected override void OnLostFocus(RoutedEventArgs e)
 		{
 			base.OnLostFocus(e);
-			ChangeVisualState(true);
+
+			if (!IsListViewBaseItem)
+			{
+				ChangeVisualState(true);
+			}
 
 			NotifySelectorOfFocusChange(e);
 		}
@@ -557,81 +592,30 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			return null;
 		}
 
-		private protected override void ChangeVisualState(bool useTransitions)
+		// MUX Reference SelectorItem_Partial.cpp, lines 105-148, tag winui3/release/2.5.1
+		// Change to the correct visual state for the SelectorItem.
+		private protected override void ChangeVisualState(
+			// true to use transitions when updating the visual state, false
+			// to snap directly to the new visual state.
+			bool bUseTransitions)
 		{
-			// !!!!!! WARNING: This method is actually not used (at least on skia and wasm) !!!!!!
-			// cf. UpdateCommonStates instead ...
+			// Update the VisualStates of parent classes
+			base.ChangeVisualState(bUseTransitions);
 
-			base.ChangeVisualState(useTransitions);
+			// And batch the changes of the VisualStates for SelectorItem and derived classes
+			ChangeVisualStateWithContext(bUseTransitions);
+		}
 
-			if (IsListViewBaseItem)
-			{
-				var criteria = new ListViewBaseItemVisualStatesCriteria();
-
-				criteria.isEnabled = IsEnabled;
-				criteria.isSelected = IsSelected;
-				criteria.focusState = FocusState;
-
-				// Pressed state should be handled whether it's mouse or touch
-				// m_inCheckboxPressedForTouch is not used because it is part of the 8.1 template
-				criteria.isPressed = IsPointerPressed;
-				criteria.isPointerOver = IsPointerOver;
-				//criteria.isDragVisualCaptured = m_dragVisualCaptured; // Uno TODO
-
-				if (Selector is ListViewBase spListView)
-				{
-					criteria.isDragging = spListView.IsInDragDrop();
-					criteria.isDraggedOver = spListView.IsDragOverItem(this);
-					criteria.dragItemsCount = spListView.DragItemsCount();
-					criteria.isItemDragPrimary = spListView.IsContainerDragDropOwner(this);
-
-					// Holding gesture will show drag visual
-					criteria.canDrag = spListView.CanDragItems;
-					criteria.canReorder = spListView.CanReorderItems;
-					if (spListView.GetIsHolding())
-					{
-						criteria.isHolding = true;
-						// Uno TODO
-						//if (m_isHolding)
-						//{
-						//	criteria.isItemDragPrimary = true;
-						//}
-					}
-
-					criteria.isMultiSelect = spListView.IsMultiSelectCheckBoxEnabled;
-
-					var selectionMode = spListView.SelectionMode;
-
-					// if the ListView selection mode is None, we should appear as not Selected
-					criteria.isSelected &= (selectionMode != ListViewSelectionMode.None);
-
-					// Read-only mode
-					{
-						bool isItemClickEnabled = false;
-
-						isItemClickEnabled = spListView.IsItemClickEnabled;
-
-						if (selectionMode == ListViewSelectionMode.None && !isItemClickEnabled)
-						{
-							criteria.isPressed = false;
-							criteria.isPointerOver = false;
-						}
-					}
-
-					if (criteria.isMultiSelect)
-					{
-
-						criteria.isMultiSelect &= spListView.SelectionMode == ListViewSelectionMode.Multiple;
-					}
-
-					criteria.isInsideListView = true;
-
-					foreach (var state in VisualStatesHelper.GetValidVisualStatesListViewBaseItem(criteria))
-					{
-						GoToState(useTransitions, state);
-					}
-				}
-			}
+		// Change to the correct visual state for the SelectorItem using
+		// an existing VisualStateManagerBatchContext
+		private protected virtual void ChangeVisualStateWithContext(
+			// true to use transitions when updating the visual state, false
+			// to snap directly to the new visual state.
+			bool bUseTransitions)
+		{
+			// DataVirtualization state group
+			// TODO Uno: no data placeholders (m_isPlaceholder / m_isUIPlaceholder), so always DataAvailable.
+			GoToState(bUseTransitions, "DataAvailable");
 		}
 	}
 }

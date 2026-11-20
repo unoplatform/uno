@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.Graphics.GdiPlus;
+using Windows.Win32.UI.Accessibility;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Microsoft.UI.Composition;
 using Uno.UI.Hosting;
@@ -30,6 +31,8 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 	// All currently-attached extensions across all hosts. Filtered by XamlRoot when we need
 	// to find a child's siblings to compute its z-order anchor.
 	private static readonly List<Win32NativeElementHostingExtension> _attached = new();
+
+	private static HWINEVENTHOOK _focusHook;
 
 	private readonly ContentPresenter _presenter;
 	private Rect _lastArrangeRect;
@@ -110,8 +113,83 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		}
 
 		_attached.Add(this);
+		EnsureFocusHook();
 		((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RenderingNegativePathReevaluated += OnRenderingNegativePathReevaluated;
 	}
+
+	// Clicking into a hosted window moves Win32 focus to it (or, for WebView2, to a browser-process
+	// descendant of it) without the press ever reaching XAML. A WinEvent hook is the only way to observe
+	// focus landing in another process's window; it's delivered through this (UI) thread's message loop.
+	// It can't be scoped to those processes, so while a native element is attached every focus change on
+	// the desktop wakes this thread, for a callback that ends after a few IsChild checks.
+	private static void EnsureFocusHook()
+	{
+		if (_focusHook.IsNull)
+		{
+			unsafe
+			{
+				_focusHook = PInvoke.SetWinEventHook(
+					PInvoke.EVENT_OBJECT_FOCUS,
+					PInvoke.EVENT_OBJECT_FOCUS,
+					HINSTANCE.Null,
+					&OnWinEventFocus,
+					0,
+					0,
+					PInvoke.WINEVENT_OUTOFCONTEXT);
+			}
+
+			if (_focusHook.IsNull)
+			{
+				typeof(Win32NativeElementHostingExtension).LogError()?.Error($"{nameof(PInvoke.SetWinEventHook)} failed: XAML focus won't follow hosted windows taking focus.");
+			}
+		}
+	}
+
+	private static void ReleaseFocusHookIfUnused()
+	{
+		if (_attached.Count == 0 && !_focusHook.IsNull)
+		{
+			if (!PInvoke.UnhookWinEvent(_focusHook))
+			{
+				typeof(Win32NativeElementHostingExtension).LogError()?.Error($"{nameof(PInvoke.UnhookWinEvent)} failed.");
+			}
+			_focusHook = default;
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
+	private static void OnWinEventFocus(HWINEVENTHOOK hook, uint @event, HWND hwnd, int idObject, int idChild, uint idEventThread, uint dwmsEventTime)
+	{
+		try
+		{
+			if (hwnd.IsNull)
+			{
+				return;
+			}
+
+			foreach (var extension in _attached)
+			{
+				if (extension._presenter.Content is Win32NativeWindow window && IsSelfOrDescendant((HWND)window.Hwnd, hwnd))
+				{
+					// The event is queued: by the time it's processed, focus may have moved on (e.g. to a TextBox
+					// clicked right after), so only act if focus is still in that hosted window.
+					var info = new GUITHREADINFO { cbSize = (uint)Marshal.SizeOf<GUITHREADINFO>() };
+					if (!PInvoke.GetGUIThreadInfo(idEventThread, ref info) || IsSelfOrDescendant((HWND)window.Hwnd, info.hwndFocus))
+					{
+						extension._presenter.OnNativeElementGotFocus();
+					}
+
+					return;
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			typeof(Win32NativeElementHostingExtension).LogError()?.Error($"Failed to sync XAML focus with a hosted native window.", e);
+		}
+	}
+
+	private static bool IsSelfOrDescendant(HWND window, HWND other) => other == window || PInvoke.IsChild(window, other);
 
 	private unsafe void OnRenderingNegativePathReevaluated(object? sender, IGeometry path)
 	{
@@ -360,6 +438,7 @@ internal class Win32NativeElementHostingExtension : ContentPresenter.INativeElem
 		// WS_CHILD stays set across detach/re-attach cycles.
 
 		_attached.Remove(this);
+		ReleaseFocusHookIfUnused();
 		((Win32WindowWrapper)XamlRootMap.GetHostForRoot(_presenter.XamlRoot!)!).RenderingNegativePathReevaluated -= OnRenderingNegativePathReevaluated;
 	}
 

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference PipsPagerPage.xaml.cs, commit fc2d862
+// MUX reference PipsPagerPage.xaml.cs
 #pragma warning disable CS0105 // duplicate namespace because of WinUI source conversion
 
 using System;

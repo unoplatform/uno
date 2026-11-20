@@ -24,7 +24,7 @@ partial class TitleBarAutomationPeer
 
 	protected override string GetClassNameCore()
 	{
-		return nameof(TitleBar);
+		return typeof(TitleBar).FullName!;
 	}
 
 	protected override string GetNameCore()
