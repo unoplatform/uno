@@ -14,10 +14,12 @@ Look up the code or message you got, then follow the link for the fix.
 |---|---|---|
 | `NU1202` | A project still targets `net9.0-*` | [.NET 9 is no longer supported](xref:Uno.Development.MigratingToUno7.ProjectSetup#net-9-is-no-longer-supported) |
 | `NU1605` | `WinAppSdkVersion` is pinned to 1.x | [Windows App SDK minimum](xref:Uno.Development.MigratingToUno7.Packages#windows-app-sdk-minimum-raised-from-1x-to-240) |
+| `CS1705` on `WinRT.Runtime` | `WindowsSdkPackageVersion` selects a projection older than `.87` | [Windows SDK projection](xref:Uno.Development.MigratingToUno7.ProjectSetup#the-windows-sdk-projection-is-picked-by-the-unosdk) |
 | `MSB4100` | A condition uses the removed `IsMacCatalyst` or `IsIOSOrCatalyst` | [Mac Catalyst is removed](xref:Uno.Development.MigratingToUno7.ProjectSetup#mac-catalyst-is-removed) |
 | `CS0104` on `ScrollViewer`, `ComboBox` or `ScrollContentPresenter` | `using Uno.UI.Xaml.Controls;` next to the WinUI namespace | [`Uno.UI.Toolkit` types](xref:Uno.Development.MigratingToUno7.Renames#unouitoolkit-types-move-to-the-unoui-namespaces) |
 | `ThumbnailMode` not found | `Windows.Storage.ThumbnailMode` is removed | [`Windows.Storage.ThumbnailMode`](xref:Uno.Development.MigratingToUno7.WinUIParity#windowsstoragethumbnailmode-is-removed) |
 | `CS7036` on `GetTemplateChild` | `Control.GetTemplateChild` is no longer public, so an extension method bound instead | [`Control.GetTemplateChild`](xref:Uno.Development.MigratingToUno7.RemovedApis#controlgettemplatechild-is-no-longer-public) |
+| `CS1729` or `CS1503` on `new DataTemplate(`, `new ControlTemplate(` or `new ItemsPanelTemplate(` | The `Func<View>` and `(owner, builder)` template constructors are removed | [Templates can no longer be built from a factory delegate](xref:Uno.Development.MigratingToUno7.WinUIParity#templates-can-no-longer-be-built-from-a-factory-delegate) |
 | `UNOB0017` | Reference to `Uno.WinUI.WebAssembly` or `Uno.WinUI.Runtime.WebAssembly` | [`Uno.WinUI.WebAssembly`](xref:Uno.Development.MigratingToUno7.Packages#unowinuiwebassembly-package-removed-and-the-older-unowinuiruntimewebassembly) |
 | `UNOB0020` | A multi-targeted library was built against 6.x | [Platform targeting](xref:Uno.Development.MigratingToUno7.Libraries#platform-targeting-in-multi-targeted-libraries) |
 | `UNOB0022` | The `SingleProject` property | [The `Uno.Sdk` is required](xref:Uno.Development.MigratingToUno7.ProjectSetup#the-unosdk-is-required-for-applications) |
@@ -102,6 +104,7 @@ Each row is a literal string to search for across your C#, XAML and MSBuild file
 | `net9.0` | [.NET 9 is no longer supported](xref:Uno.Development.MigratingToUno7.ProjectSetup#net-9-is-no-longer-supported) |
 | `maccatalyst`, `__MACCATALYST__`, `IsMacCatalyst`, `IsIOSOrCatalyst`, `MacCatalystProjectFolder` | [Mac Catalyst is removed](xref:Uno.Development.MigratingToUno7.ProjectSetup#mac-catalyst-is-removed) |
 | `SupportedOSPlatformVersion`, `TargetPlatformMinVersion` | [Minimum OS versions](xref:Uno.Development.MigratingToUno7.ProjectSetup#minimum-os-versions-raised) |
+| `WindowsSdkPackageVersion` | [Windows SDK projection](xref:Uno.Development.MigratingToUno7.ProjectSetup#the-windows-sdk-projection-is-picked-by-the-unosdk) |
 | `UnoDisableHotRestartHelperGeneration` | [iOS Hot Restart](xref:Uno.Development.MigratingToUno7.ProjectSetup#ios-hot-restart-is-not-supported) |
 | `UnoSplashScreenColor` | [`UnoSplashScreenColor` removed](xref:Uno.Development.MigratingToUno7.ProjectSetup#unosplashscreencolor-removed) |
 | `UnoRuntimeIdentifier`, `UnoUIRuntimeIdentifier`, `UnoWinRTRuntimeIdentifier` | [Runtime identifier properties](xref:Uno.Development.MigratingToUno7.Libraries#runtime-identifier-properties-removed) |
@@ -117,7 +120,7 @@ Each row is a literal string to search for across your C#, XAML and MSBuild file
 | `AdaptNative`, `HtmlId`, `HtmlElementAttribute`, `SetHtmlAttribute`, `RegisterHtmlEventHandler` | [Native element hosting](xref:Uno.Development.MigratingToUno7.RemovedApis#native-element-hosting) |
 | `BindableView`, `BindableUIView`, `Android.Views.View`, `UIKit.UIView` | [Native base classes](xref:Uno.Development.MigratingToUno7.RemovedApis#native-base-classes--identity) |
 | `NativeDefault`, `IsNativeStyle`, `UseNativePopup`, `AreDimensionsConstrained` | [Native rendering types and helpers](xref:Uno.Development.MigratingToUno7.RemovedApis#native-rendering-types-and-helpers) |
-| `IJSObject`, `InvokeJSWithInterop`, `TSInteropMessage` | [WebAssembly interop](xref:Uno.Development.MigratingToUno7.RemovedApis#webassembly-interop) |
+| `IJSObject`, `InvokeJSWithInterop`, `InvokeAsync`, `InvokeJSUnmarshalled`, `TSInteropMessage` | [WebAssembly interop](xref:Uno.Development.MigratingToUno7.RemovedApis#webassembly-interop) |
 | `ItemClickCommand`, and `Command=` on `ListView` or `GridView` | [`ItemClickCommand`](xref:Uno.Development.MigratingToUno7.RemovedApis#listviewbaseitemclickcommand-and-listviewbasecommand) |
 | `GetTemplateChild`, `VisualTreeHelper.GetChildren` | [`GetTemplateChild`](xref:Uno.Development.MigratingToUno7.RemovedApis#controlgettemplatechild-is-no-longer-public), [`GetChildren`](xref:Uno.Development.MigratingToUno7.RemovedApis#visualtreehelpergetchildren-is-no-longer-public) |
 | `WindowSizeChangedEventHandler`, `VisibilityChangedEventArgs` | [`Window` events](xref:Uno.Development.MigratingToUno7.RemovedApis#window-events) |
@@ -126,7 +129,7 @@ Each row is a literal string to search for across your C#, XAML and MSBuild file
 | `IAnimatedVisualSource`, `LottieVisualSourceBase` | [`IAnimatedVisualSource`](xref:Uno.Development.MigratingToUno7.RemovedApis#custom-ianimatedvisualsource-implementations) |
 | `DependencyPropertyValuePrecedences` | [`DependencyPropertyValuePrecedences`](xref:Uno.Development.MigratingToUno7.RemovedApis#dependencypropertyvalueprecedences-members-changed) |
 | `IsLocalResource` | [`IsLocalResource` is renamed](xref:Uno.Development.MigratingToUno7.RemovedApis#unoextensionsuriextensionsislocalresource-is-renamed-to-ismsappx) |
-| `new Control()`, `new Panel()`, `new Timeline()`, `new DataTemplate(`, `FrameworkTemplateBuilder` | [Constructor accessibility](xref:Uno.Development.MigratingToUno7.WinUIParity#constructor-accessibility) |
+| `new Control()`, `new Panel()`, `new Timeline()`, `new DataTemplate(`, `new ControlTemplate(`, `new ItemsPanelTemplate(`, `FrameworkTemplateBuilder` | [Constructor accessibility](xref:Uno.Development.MigratingToUno7.WinUIParity#constructor-accessibility), [template factory delegates](xref:Uno.Development.MigratingToUno7.WinUIParity#templates-can-no-longer-be-built-from-a-factory-delegate) |
 | `is ContentControl`, `is TextBox`, `is Border` | [Type-hierarchy changes](xref:Uno.Development.MigratingToUno7.WinUIParity#type-hierarchy-changes) |
 | `.Background` on a `FrameworkElement`, `TextBlock`, `Image` or `Shape`; `FrameworkElement.BackgroundProperty` | [`Background`](xref:Uno.Development.MigratingToUno7.WinUIParity#background-is-no-longer-on-frameworkelement) |
 | `ref thickness.`, `Duration.Type`, `.GridUnitType =`, `GuidHelper.Equals`, `.LoadContent()` | [WinRT projection alignment](xref:Uno.Development.MigratingToUno7.WinUIParity#winrt-projection-alignment) |

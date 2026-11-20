@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference PipsPagerTests.cs, commit 2eebc34
+// MUX reference PipsPagerTests.cs
 
 using Common;
 using MUXControlsTestApp.Utilities;
@@ -21,14 +21,9 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Automation.Peers;
-#endif
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
-	[RequiresFullWindow]
 	public class PipsPagerTests : MUXApiTestBase
 	{
 		[TestMethod]

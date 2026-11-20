@@ -5,7 +5,6 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.Foundation;
-using Uno.Foundation.Interop;
 using Uno.Extensions;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;

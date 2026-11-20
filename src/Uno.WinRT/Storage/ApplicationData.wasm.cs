@@ -3,7 +3,6 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Uno.Foundation;
-using Uno.Foundation.Interop;
 using Uno.Foundation.Logging;
 
 namespace Windows.Storage;

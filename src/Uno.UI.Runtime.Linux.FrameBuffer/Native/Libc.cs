@@ -23,6 +23,8 @@ namespace Uno.UI.Runtime.Native
 		public const int EPERM = 1;
 		public const int EACCES = 13;
 
+		public const int EFD_CLOEXEC = 0x80000;
+
 		[DllImport("libc", SetLastError = true)]
 		public static extern int open(string pathname, int flags, int mode);
 
@@ -49,5 +51,14 @@ namespace Uno.UI.Runtime.Native
 
 		[DllImport("libc", SetLastError = true)]
 		public static extern int poll(pollfd* fds, IntPtr nfds, int timeout);
+
+		[DllImport("libc", SetLastError = true)]
+		public static extern int eventfd(uint initval, int flags);
+
+		[DllImport("libc", SetLastError = true)]
+		public static extern IntPtr read(int fd, void* buf, IntPtr count);
+
+		[DllImport("libc", SetLastError = true)]
+		public static extern IntPtr write(int fd, void* buf, IntPtr count);
 	}
 }

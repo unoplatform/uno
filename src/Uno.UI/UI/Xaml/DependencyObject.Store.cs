@@ -1753,6 +1753,13 @@ namespace Microsoft.UI.Xaml
 			if (childStore != null)
 			{
 				Propagate(childStore);
+
+				// A non-FE store keeps its DataContext outside the property table: a child joining after it arrived
+				// (e.g. the second Setter of a lazily-built VisualState) gets the cached one.
+				if (_dataContextProperty is null && _properties?.InheritedDataContext is { } inheritedDataContext)
+				{
+					CallChildCallback(childStore, instanceRef, FrameworkElement.DataContextProperty, inheritedDataContext);
+				}
 			}
 			else
 			{
@@ -2254,9 +2261,10 @@ namespace Microsoft.UI.Xaml
 					// Coercion/Animation values ARE stored in ModifiedValue; GetEffectiveValue works.
 					SetValueViaMethodCall(propertyDetails.Property, propertyDetails.GetEffectiveValue());
 				}
-				else if (value != DependencyProperty.UnsetValue)
+				else if (value != DependencyProperty.UnsetValue && precedence == highestPrecedence)
 				{
 					// Base value: pass incoming value directly, avoiding store-then-read-back.
+					// A write below the current precedence (a Style value under a Local one) leaves the backing field alone.
 					SetValueViaMethodCall(propertyDetails.Property, value);
 				}
 				// else: ClearValue (UnsetValue) where ReevaluateBaseValue already called
