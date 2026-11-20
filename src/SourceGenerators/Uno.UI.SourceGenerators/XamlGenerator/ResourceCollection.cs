@@ -25,8 +25,6 @@ internal class ResourceDetailsCollection
 		_localAssemblyName = localAssemblyName;
 	}
 
-	public bool HasLocalResources { get; internal set; }
-
 	/// <summary>
 	/// Adds resources to the current collection
 	/// </summary>
@@ -34,11 +32,6 @@ internal class ResourceDetailsCollection
 	{
 		foreach (var resource in resources)
 		{
-			if (resource.Assembly == _localAssemblyName)
-			{
-				HasLocalResources = true;
-			}
-
 			// Resources by file name
 			if (!_resourcesByFileName.TryGetValue(resource.FileName, out var fileResources))
 			{

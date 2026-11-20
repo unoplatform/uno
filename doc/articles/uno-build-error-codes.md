@@ -473,6 +473,17 @@ window.EnableHotReload();
 > dependency; `ProgressRing` now renders through generated Composition visuals and no longer
 > needs one. This heading is kept so existing links to it still resolve.
 
+### UXAML0003
+
+**Unable to parse resource file**
+
+A `.resw` file (a `PRIResource` item) is not valid XML, for instance because a tag is unclosed or `</root>` is missing. The message names the file and the position of the parse error. Fix the file: the error fails the build.
+
+During [Hot Reload](xref:Uno.Features.HotReload), the error is reported but does not block other edits. Until the file parses again, the pages regenerated meanwhile keep resolving `x:Uid` against the keys of the file's last version that parsed in the IDE or Dev Server session. As a result:
+
+- Keys added or renamed in the broken file only resolve once it parses again.
+- If the file has not parsed since the IDE or Dev Server started, the regenerated pages do not show its localized text until it is fixed.
+
 ### UXAML0006
 
 **The 'clr-namespace:' XAML namespace form is not supported**
