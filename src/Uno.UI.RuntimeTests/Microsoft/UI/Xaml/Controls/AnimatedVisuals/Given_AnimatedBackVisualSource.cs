@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Numerics;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
@@ -611,7 +612,7 @@ public class Given_AnimatedBackVisualSource
 
 		// Wait for the toggle's visual-state transitions to settle and the chevron's PlaySegment
 		// to complete.
-		await Task.Delay(TimeSpan.FromSeconds(2));
+		await WaitForRotation(rotateShape, 180f);
 		await TestServices.WindowHelper.WaitForIdle();
 
 		var expandedRotation = rotateShape.RotationAngleInDegrees;
@@ -621,6 +622,16 @@ public class Given_AnimatedBackVisualSource
 			$"Chevron rotation should land at ~180° after Expander.IsExpanded=true. " +
 			$"collapsedState={collapsedState}, collapsedRot={collapsedRotation}, " +
 			$"expandedState={expandedState}, expandedRot={expandedRotation}.");
+	}
+
+	// Composition animations only advance on host frames, and iOS CI can deliver none for many seconds.
+	private static async Task WaitForRotation(CompositionSpriteShape shape, float expected)
+	{
+		var waited = Stopwatch.StartNew();
+		while (MathF.Abs(shape.RotationAngleInDegrees - expected) >= 5f && waited.ElapsedMilliseconds < 30000)
+		{
+			await Task.Delay(50);
+		}
 	}
 
 	private static AnimatedIcon FindAnimatedIcon(DependencyObject root)
@@ -685,6 +696,7 @@ public class Given_AnimatedBackVisualSource
 		// ~310ms; with QueueOne we'd expect the current play to finish then the most recently
 		// queued one to play. 5 seconds is well over that.
 		await Task.Delay(TimeSpan.FromSeconds(5));
+		await WaitForRotation(rotateShape, 180f);
 		await TestServices.WindowHelper.WaitForIdle();
 		await TestServices.WindowHelper.WaitForIdle();
 
