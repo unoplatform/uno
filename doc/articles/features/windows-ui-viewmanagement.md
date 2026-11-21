@@ -53,12 +53,14 @@ Using the `GetColorValue` method, you can retrieve the system `Background` and `
 | Windows (Skia) | Windows accent palette (registry) | ✔ |
 | macOS (Skia) | System Settings → Appearance accent color | ✔ |
 | Linux (Skia, X11) | `accent-color` from the XDG Settings portal (GNOME 47+, KDE Plasma 6, or any backend implementing version 2 of `org.freedesktop.portal.Settings`) | ✔ |
-| Android | Material You dynamic colors (Android 12 and later) | Read at startup |
+| Android | Material You dynamic colors (`system_accent1_500`, Android 12 and later); default palette on older versions | When the app resumes |
 | iOS, WebAssembly, Linux (framebuffer) | Not available, default palette | ✖ |
 
 When the platform does not expose an accent color, the default blue palette (`#0078D7`) is used. Windows exposes its full palette of seven shades; the other platforms expose a single color and Uno Platform derives the lighter and darker shades from it using the same algorithm as Windows. When a color is picked in Windows Settings, Windows may also adjust the lightness of the accent itself. By default, Uno Platform keeps the accent exactly as provided and derives the shades around it; to reproduce the Windows adjustment, set `Uno.UI.FeatureConfiguration.AccentColor.NormalizeAccentColor` to `true`, see [Normalizing the accent color](../feature-flags.md#normalizing-the-accent-color).
 
 `ColorValuesChanged` is raised when the accent color changes at runtime. `{ThemeResource}` references to the accent resources update automatically; as in WinUI, `{StaticResource}` references keep the value they resolved to.
+
+On Android 12 and later, the system always provides a dynamic color palette, even when the user has never picked a color: it is then derived from the default wallpaper, so the accent varies between devices and system images (for example `#6476A5` on a freshly created Android 17 emulator) and the default blue palette is never used. Set `OverrideAccentColor` (see below) if the app needs a predictable accent.
 
 > [!NOTE]
 > On Linux, the accent color is read asynchronously from the desktop portal when the app starts, so the first frames use the default palette until the value arrives, and `{StaticResource}` references resolved during `OnLaunched` keep the default accent. See [X11 specifics](using-skia-desktop.md#x11-specifics) for the portal requirements.
