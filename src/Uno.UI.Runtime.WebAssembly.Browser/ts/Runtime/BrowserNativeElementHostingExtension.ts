@@ -13,7 +13,11 @@ namespace Uno.UI.NativeElementHosting {
 			if (anyModule.getAssemblyExports !== undefined) {
 				const browserExports = await anyModule.getAssemblyExports("Uno.UI");
 
-				BrowserHtmlElement.dispatchEventNativeElementMethod = browserExports.Uno.UI.NativeElementHosting.BrowserHtmlElement.DispatchEventNativeElementMethod;
+				if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
+					BrowserHtmlElement.dispatchEventNativeElementMethod = browserExports.Uno.UI.NativeElementHosting.BrowserHtmlElement.DispatchEventNativeElementMethodAsync;
+				} else {
+					BrowserHtmlElement.dispatchEventNativeElementMethod = browserExports.Uno.UI.NativeElementHosting.BrowserHtmlElement.DispatchEventNativeElementMethod;
+				}
 			} else {
 				throw `BrowserHtmlElement: Unable to find dotnet exports`;
 			}
@@ -35,6 +39,11 @@ namespace Uno.UI.NativeElementHosting {
 			}
 			this.clipPath.setAttribute("d", path);
 			this.clipPath.setAttribute("clip-rule", fillType);
+		}
+
+		public static setSvgClipPathForNativeElementHostAsync(path: string, fillType: string) : Promise<void> {
+			BrowserHtmlElement.setSvgClipPathForNativeElementHost(path, fillType);
+			return Promise.resolve();
 		}
 
 		private static getNativeElementHost(): HTMLElement {
@@ -99,8 +108,13 @@ namespace Uno.UI.NativeElementHosting {
 			}
 
 			const exports = Uno.UI.Runtime.WebAssemblyWindowWrapper.getAssemblyExports().Uno.UI.Runtime.BrowserNativeElementHostingExtension;
-			BrowserHtmlElement.onNativeElementFocusedMethod = exports.OnNativeElementFocused;
-			BrowserHtmlElement.onNativeElementBlurredMethod = exports.OnNativeElementBlurred;
+			if (Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
+				BrowserHtmlElement.onNativeElementFocusedMethod = exports.OnNativeElementFocusedAsync;
+				BrowserHtmlElement.onNativeElementBlurredMethod = exports.OnNativeElementBlurredAsync;
+			} else {
+				BrowserHtmlElement.onNativeElementFocusedMethod = exports.OnNativeElementFocused;
+				BrowserHtmlElement.onNativeElementBlurredMethod = exports.OnNativeElementBlurred;
+			}
 
 			document.addEventListener("focusin", evt => {
 				const unoElementId = BrowserHtmlElement.findAttachedElementId(evt.target);

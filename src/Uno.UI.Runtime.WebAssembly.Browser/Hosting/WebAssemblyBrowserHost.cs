@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.Web.WebView2.Core;
 using Uno.Extensions.ApplicationModel.Core;
+using Uno.Foundation;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Graphics;
@@ -23,6 +24,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Helpers;
 using Microsoft.Windows.AppLifecycle;
 using Windows.ApplicationModel.Activation;
+using __Windows.ApplicationModel.Core;
 
 namespace Uno.UI.Runtime.WebAssembly.Browser;
 
@@ -72,6 +74,9 @@ internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHos
 		if (!_isInitialized)
 		{
 			_isInitialized = true;
+
+			WebAssemblyThreading.Initialize();
+
 			NativeMethods.PersistBootstrapperLoader();
 
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
@@ -88,6 +93,8 @@ internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHos
 			ApiExtensibility.Register(typeof(IDragDropExtension), _ => BrowserDragDropExtension.Instance);
 			ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new WasmNativeOpenGLWrapper(xamlRoot));
 
+			await CoreApplicationNative.InitializeExports();
+
 			await WebAssemblyWindowWrapper.Initialize();
 
 			CompositionTarget.FrameRenderingOptions = (false, false);
@@ -98,7 +105,6 @@ internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHos
 	protected async override Task RunLoop()
 	{
 		var wasRunning = _isRunning;
-		Application? app = null;
 
 		_isRunning = true;
 
@@ -111,7 +117,7 @@ internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHos
 				BrowserHtmlElement.Initialize();
 			}
 
-			app = _appBuilder();
+			var app = _appBuilder();
 			app.Host = this;
 
 			if (!wasRunning)
@@ -146,12 +152,6 @@ internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHos
 
 			if (!wasRunning)
 			{
-				// OnLaunched runs after Start returns here; a throw must fault RunAsync as it does on the other hosts.
-				if (app?.DeferredLaunch is { } launch)
-				{
-					await launch;
-				}
-
 				// Secondary ALCs should not block the main loop
 				await Task.Delay(-1);
 			}

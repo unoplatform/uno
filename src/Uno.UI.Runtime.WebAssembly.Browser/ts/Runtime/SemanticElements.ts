@@ -844,9 +844,13 @@ namespace Uno.UI.Runtime {
 
 			element.addEventListener('paste', (event: ClipboardEvent) => {
 				const source = event.clipboardData?.getData('text') ?? '';
-				const sourceLimit = BrowserInvisibleTextBoxViewExtension.getNativePasteSourceLimit();
-				BrowserInvisibleTextBoxViewExtension.onNativePaste(
-					source.length > sourceLimit ? source.substring(0, sourceLimit) : source);
+				if (WebAssemblyThreading.isThreadingEnabled()) {
+					BrowserInvisibleTextBoxViewExtension.onNativePasteAsync(source);
+				} else {
+					const sourceLimit = BrowserInvisibleTextBoxViewExtension.getNativePasteSourceLimit();
+					BrowserInvisibleTextBoxViewExtension.onNativePaste(
+						source.length > sourceLimit ? source.substring(0, sourceLimit) : source);
+				}
 				event.preventDefault();
 			});
 
@@ -1056,6 +1060,7 @@ namespace Uno.UI.Runtime {
 				// Skip no-op writes to avoid caret and IME churn when the DOM value already matches.
 				if (element.value !== value) {
 					element.value = value;
+					BrowserInvisibleTextBoxViewExtension.countFocusedInputWrite(element);
 				}
 
 				// Negative sentinel from C# means "do not touch selection".
@@ -1070,6 +1075,7 @@ namespace Uno.UI.Runtime {
 							start,
 							end,
 							selectionIsBackward ? 'backward' : 'forward');
+						BrowserInvisibleTextBoxViewExtension.countFocusedInputWrite(element);
 					} catch {
 						// Some input types (e.g., password in some browsers) don't support setSelectionRange
 					}
