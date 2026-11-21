@@ -15,4 +15,9 @@ internal static class ExceptionHelper
 	{
 		throw new NullReferenceException($"Invalid pointer\r\n\r\n{parameterName}");
 	}
+
+	public static void ThrowArithmeticException()
+	{
+		throw new ArithmeticException("Overflow or underflow in the arithmetic operation.");
+	}
 }
