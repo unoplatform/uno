@@ -225,12 +225,7 @@ public partial class Given_ListViewItemPresenter
 	{
 		private readonly Color? _color;
 
-		public ColorCompositionBrush(Color? color)
-		{
-			_color = color;
-			// Uno syncs a wrapped color brush to FallbackColor, so keep them equal.
-			FallbackColor = color ?? Colors.Transparent;
-		}
+		public ColorCompositionBrush(Color? color) => _color = color;
 
 		public bool IsConnected { get; private set; }
 

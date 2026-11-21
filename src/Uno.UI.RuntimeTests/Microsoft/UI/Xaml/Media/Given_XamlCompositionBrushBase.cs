@@ -67,6 +67,62 @@ public class Given_XamlCompositionBrushBase
 		}
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26461")]
+	public async Task When_CompositionBrush_Is_ColorBrush()
+	{
+		var sut = new Border
+		{
+			Width = 100,
+			Height = 50
+		};
+
+		var compositor = ElementCompositionPreview.GetElementVisual(sut).Compositor;
+		var brush = new TestBrush(compositor.CreateColorBrush(Colors.Blue));
+		sut.Background = brush;
+
+		await UITestHelper.Load(sut);
+
+		var screenshot = await UITestHelper.ScreenShot(sut);
+		ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height / 2, Colors.Blue, tolerance: 5);
+
+		brush.FallbackColor = Colors.Red;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		screenshot = await UITestHelper.ScreenShot(sut);
+		ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height / 2, Colors.Blue, tolerance: 5);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	// Drawing FallbackColor for a null CompositionBrush is Uno's behavior; WinUI only documents it for brushes that can't render.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_CompositionBrush_Is_Null_Then_FallbackColor()
+	{
+		var brush = new TestBrush(null)
+		{
+			FallbackColor = Colors.Red
+		};
+		var sut = new Border
+		{
+			Width = 100,
+			Height = 50,
+			Background = brush
+		};
+
+		await UITestHelper.Load(sut);
+
+		var screenshot = await UITestHelper.ScreenShot(sut);
+		ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height / 2, Colors.Red, tolerance: 5);
+
+		brush.FallbackColor = Colors.Blue;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		screenshot = await UITestHelper.ScreenShot(sut);
+		ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height / 2, Colors.Blue, tolerance: 5);
+	}
+
 	private class TestBrush : Microsoft.UI.Xaml.Media.XamlCompositionBrushBase
 	{
 		private CompositionBrush Brush;
