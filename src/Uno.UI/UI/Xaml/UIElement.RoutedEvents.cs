@@ -564,7 +564,7 @@ namespace Microsoft.UI.Xaml
 		partial void RemoveDragAndDropHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
 		partial void RemoveContextMenuHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
 
-		private int CountHandler(RoutedEvent routedEvent)
+		internal int CountHandler(RoutedEvent routedEvent)
 			=> _eventHandlerStore is { } store && store.TryGetValue(routedEvent, out var handlers)
 				? handlers.Count
 				: 0;
