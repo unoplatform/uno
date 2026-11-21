@@ -33,9 +33,11 @@ public class Given_WasmAccessibleTextBoxFocus
 	{
 		var (textBox, log) = await LoadAsync(new TextBox { Text = "hello" });
 
+		WatchSharedInput();
 		textBox.Focus(focusState);
 		await SettleAsync();
 
+		Assert.IsFalse(StopWatchingSharedInput(), $"The TextBox should edit through its semantic input, not the shared hidden input {DescribeWindowFocus()}.");
 		CollectionAssert.AreEqual(new[] { "GotFocus" }, log, string.Join(", ", log));
 		if (focusState != FocusState.Programmatic)
 		{
@@ -50,9 +52,11 @@ public class Given_WasmAccessibleTextBoxFocus
 	{
 		var (passwordBox, log) = await LoadAsync(new PasswordBox { Password = "secret" });
 
+		WatchSharedInput();
 		passwordBox.Focus(FocusState.Programmatic);
 		await SettleAsync();
 
+		Assert.IsFalse(StopWatchingSharedInput(), $"The PasswordBox should edit through its semantic input, not the shared hidden input {DescribeWindowFocus()}.");
 		CollectionAssert.AreEqual(new[] { "GotFocus" }, log, string.Join(", ", log));
 	}
 
@@ -123,6 +127,26 @@ public class Given_WasmAccessibleTextBoxFocus
 	/// </remarks>
 	private static bool MoveDomFocus(string id, string method)
 		=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{id}'); let raised = false; const mark = () => raised = true; e.addEventListener('{method}', mark); e.{method}(); e.removeEventListener('{method}', mark); if (!raised) {{ e.dispatchEvent(new FocusEvent('{method}')); }} return String(raised);}})()") == "true";
+
+	/// <summary>
+	/// Starts recording whether the shared hidden input (#uno-input) gets attached.
+	/// </summary>
+	/// <remarks>
+	/// The bounce starts with the text control focusing that input before the semantic sync blurs it. Unlike the
+	/// focus and blur events that complete the bounce, attaching it doesn't depend on the window having OS focus,
+	/// so this catches the bounce on the CI agents too.
+	/// </remarks>
+	private static void WatchSharedInput()
+		=> InvokeBrowserJs("(function(){const s = { attached: document.getElementById('uno-input') !== null }; const scan = rs => { for (const r of rs) { for (const n of r.addedNodes) { if (n.id === 'uno-input') { s.attached = true; } } } }; s.observer = new MutationObserver(scan); s.observer.observe(document.body, { childList: true }); s.scan = scan; window.__unoTestSharedInput = s; return 'ok';})()");
+
+	/// <summary>
+	/// Stops recording and returns whether the shared hidden input was attached at any point since <see cref="WatchSharedInput"/>.
+	/// </summary>
+	private static bool StopWatchingSharedInput()
+		=> InvokeBrowserJs("(function(){const s = window.__unoTestSharedInput; delete window.__unoTestSharedInput; s.scan(s.observer.takeRecords()); s.observer.disconnect(); return String(s.attached || document.getElementById('uno-input') !== null);})()") == "true";
+
+	private static string DescribeWindowFocus()
+		=> $"(window has focus: {InvokeBrowserJs("(function(){return String(document.hasFocus());})()")})";
 
 	private static async Task SettleAsync()
 	{
