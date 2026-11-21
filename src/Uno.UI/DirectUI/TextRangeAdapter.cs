@@ -987,17 +987,12 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 		{
 			// Like every text range provider (and GetBoundingRectangleCore), report root-relative logical
 			// rectangles; the UIA bridge maps them to screen space (CUIATextRangeProviderWrapper::GetBoundingRectangles).
-			if (richEditBox.Document.TryGetRangeRectangles(
-				_start,
-				_end,
-				Microsoft.UI.Text.PointOptions.ClientCoordinates,
-				out var rectangles))
+			if (richEditBox.TryGetAccessibilityRangeRectangles(_start, _end, out var rectangles))
 			{
-				var toRoot = richEditBox.TransformToVisual(null);
 				returnValue = new double[rectangles.Length * 4];
 				for (var i = 0; i < rectangles.Length; i++)
 				{
-					var rootRect = toRoot.TransformBounds(rectangles[i]);
+					var rootRect = rectangles[i];
 					var offset = i * 4;
 					returnValue[offset] = rootRect.X;
 					returnValue[offset + 1] = rootRect.Y;

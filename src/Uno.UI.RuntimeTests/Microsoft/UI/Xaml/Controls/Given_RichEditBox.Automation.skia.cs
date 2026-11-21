@@ -14,6 +14,8 @@ using Microsoft.UI.Xaml.Automation.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -881,6 +883,104 @@ public partial class Given_RichEditBox
 		{
 			WindowHelper.WindowContent = null;
 		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24753")]
+	public async Task When_Automation_Bounding_Rectangles_Follow_Internal_Scroll()
+	{
+		var (sut, scrollViewer, displayBlock, text) = await LoadScrolledAutomationEditor();
+		try
+		{
+			var lineStart = text.IndexOf("Row10", StringComparison.Ordinal);
+			var expected = GetRenderedRootRect(displayBlock, lineStart, lineStart + "Row10".Length);
+			var viewport = scrollViewer.TransformToVisual(null).TransformBounds(
+				new Rect(0, 0, scrollViewer.ViewportWidth, scrollViewer.ViewportHeight));
+			Assert.IsTrue(
+				expected.Top >= viewport.Top - 1 && expected.Bottom <= viewport.Bottom + 1,
+				$"The rendered word {expected} must be inside the scrolled viewport {viewport}.");
+
+			var range = GetAutomationTextProvider(sut).DocumentRange.FindText("Row10", backward: false, ignoreCase: false);
+			Assert.IsNotNull(range);
+			range.GetBoundingRectangles(out var rectangles);
+
+			Assert.HasCount(4, rectangles);
+			Assert.AreEqual(expected.X, rectangles[0], 1, "X must match the rendered text.");
+			Assert.AreEqual(expected.Y, rectangles[1], 1, $"Y must match the rendered text (VerticalOffset {scrollViewer.VerticalOffset}).");
+			Assert.AreEqual(expected.Width, rectangles[2], 1);
+			Assert.AreEqual(expected.Height, rectangles[3], 1);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24753")]
+	public async Task When_Automation_RangeFromPoint_Follows_Internal_Scroll()
+	{
+		var (sut, scrollViewer, displayBlock, text) = await LoadScrolledAutomationEditor();
+		try
+		{
+			var lineStart = text.IndexOf("Row11", StringComparison.Ordinal);
+			var rendered = GetRenderedRootRect(displayBlock, lineStart, lineStart + "Row11".Length);
+			var point = new Point(rendered.X + rendered.Width / 2, rendered.Y + rendered.Height / 2);
+
+			var range = GetAutomationTextProvider(sut).RangeFromPoint(point);
+			range.ExpandToEnclosingUnit(TextUnit.Word);
+
+			Assert.AreEqual(
+				"Row11",
+				range.GetText(-1).Trim(),
+				$"The point {point} over the rendered word must hit it (VerticalOffset {scrollViewer.VerticalOffset}).");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	private static async Task<(RichEditBox Editor, ScrollViewer ScrollViewer, TextBlock DisplayBlock, string Text)> LoadScrolledAutomationEditor()
+	{
+		var text = string.Join('\r', Enumerable.Range(0, 30).Select(value => $"Row{value:D2} words"));
+		var sut = new RichEditBox
+		{
+			Width = 200,
+			Height = 100,
+			HorizontalAlignment = HorizontalAlignment.Left,
+			VerticalAlignment = VerticalAlignment.Top,
+		};
+		await UITestHelper.Load(new Grid
+		{
+			Padding = new Thickness(60, 40, 0, 0),
+			Children = { sut },
+		});
+		sut.Document.SetText(TextSetOptions.None, text);
+		await WindowHelper.WaitForIdle();
+
+		var scrollViewer = GetGeometryScrollViewer(sut);
+		var displayBlock = scrollViewer.Content as TextBlock
+			?? throw new AssertFailedException("The RichEditBox display block was not found.");
+		var lineTop = displayBlock.ParsedText.GetRectForIndex(text.IndexOf("Row10", StringComparison.Ordinal)).Top;
+		scrollViewer.ChangeView(null, lineTop, null, disableAnimation: true);
+		await WindowHelper.WaitForIdle();
+		Assert.IsGreaterThan(20, scrollViewer.VerticalOffset, "The content must be scrolled for this scenario.");
+
+		return (sut, scrollViewer, displayBlock, text);
+	}
+
+	private static ITextProvider GetAutomationTextProvider(RichEditBox editor)
+		=> FrameworkElementAutomationPeer.CreatePeerForElement(editor)?.GetPattern(PatternInterface.Text) as ITextProvider
+			?? throw new AssertFailedException("The RichEditBox text provider was not found.");
+
+	// Where the text is drawn, in root coordinates: independent of the TOM and UIA coordinate mapping.
+	private static Rect GetRenderedRootRect(TextBlock displayBlock, int start, int end)
+	{
+		var startRect = displayBlock.ParsedText.GetRectForIndex(start);
+		var endRect = displayBlock.ParsedText.GetRectForIndex(end);
+		return displayBlock.TransformToVisual(null).TransformBounds(
+			new Rect(startRect.X, startRect.Y, endRect.X - startRect.X, startRect.Height));
 	}
 
 	private sealed class TextEditAutomationListener : IAutomationPeerListener
