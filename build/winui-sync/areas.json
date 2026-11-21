@@ -553,6 +553,26 @@
           "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/RadioButton.xaml"
         }
       ]
+    },
+    {
+      "id": "theming",
+      "title": "Theming",
+      "baseline": "1b5b1a0ccc05ce5c8b5931dc303666975b57f498",
+      "upstream": {
+        "sources": [
+          "dxaml/xcp/components/theming/FrameworkTheming.cpp",
+          "dxaml/xcp/components/theming/inc/FrameworkTheming.h",
+          "dxaml/xcp/components/theming/inc/Theme.h",
+          "dxaml/xcp/components/theminginterop/inc/ThemingInterop.h"
+        ]
+      },
+      "uno": {
+        "sources": [
+          "src/Uno.UI/UI/Xaml/Theming/FrameworkTheming.cs",
+          "src/Uno.UI/UI/Xaml/Theming/Theme.cs",
+          "src/Uno.UI/UI/Xaml/Theming/IThemingInterop.cs"
+        ]
+      }
     }
   ]
 }
