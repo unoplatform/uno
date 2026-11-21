@@ -519,7 +519,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				DrainPendingLabelledBy();
 				QueueRelationshipRefresh();
-				QueueGridRefresh();
+				if (IsInTrackedGrid(parent))
+				{
+					QueueGridRefresh();
+				}
 			}
 		}
 	}
@@ -551,6 +554,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			// Only remove from DOM if this element was actually in the semantic tree
 			var childHandle = child.Visual.Handle;
+			// Checked before the removal below so a removed grid still refreshes.
+			var refreshGrids = _grids.ContainsKey(childHandle) || IsInTrackedGrid(parent);
 			_pendingLabelledBy.RemoveAll(entry => entry.Handle == childHandle);
 			_relationshipPeers.Remove(childHandle);
 			_grids.Remove(childHandle);
@@ -567,7 +572,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				_genericPathHandles.Remove(childHandle);
 			}
 			QueueRelationshipRefresh();
-			QueueGridRefresh();
+			if (refreshGrids)
+			{
+				QueueGridRefresh();
+			}
 		}
 		catch (Exception ex)
 		{
@@ -1818,12 +1826,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				continue;
 			}
 
-			if (peer.GetPattern(PatternInterface.Grid) is IGridProvider grid
-				&& (grid.RowCount != state.RowCount || grid.ColumnCount != state.ColumnCount))
+			if (peer.GetPattern(PatternInterface.Grid) is IGridProvider grid)
 			{
-				state.RowCount = grid.RowCount;
-				state.ColumnCount = grid.ColumnCount;
-				NativeMethods.UpdateGridCounts(handle, state.RowCount, state.ColumnCount);
+				var rowCount = grid.RowCount;
+				var columnCount = grid.ColumnCount;
+				if (rowCount != state.RowCount || columnCount != state.ColumnCount)
+				{
+					state.RowCount = rowCount;
+					state.ColumnCount = columnCount;
+					NativeMethods.UpdateGridCounts(handle, rowCount, columnCount);
+				}
 			}
 		}
 
