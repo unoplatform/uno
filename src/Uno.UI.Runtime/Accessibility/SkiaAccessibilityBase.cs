@@ -341,6 +341,12 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	protected virtual void OnScrollSourceViewChanged(UIElement scrollSource)
 		=> ReemitDescendantPositions(scrollSource);
 
+	/// <summary>
+	/// Whether <see cref="OnSizeOrOffsetChanged"/> is being called by the scroll re-emit walk, which visits every
+	/// descendant of the scrolled element, rather than by an actual offset or size change.
+	/// </summary>
+	protected bool IsReemittingDescendantPositions { get; private set; }
+
 	// Called on the UI thread from the scroll notification path only; the shared stack is
 	// reused to avoid per-scroll allocations and is not safe for re-entrant use.
 	private void ReemitDescendantPositions(UIElement element)
@@ -351,18 +357,26 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 			_reemitStack.Push(child);
 		}
 
-		while (_reemitStack.Count > 0)
+		IsReemittingDescendantPositions = true;
+		try
 		{
-			var child = _reemitStack.Pop();
-			if (child.Visual is ContainerVisual childVisual)
+			while (_reemitStack.Count > 0)
 			{
-				OnSizeOrOffsetChanged(childVisual);
-			}
+				var child = _reemitStack.Pop();
+				if (child.Visual is ContainerVisual childVisual)
+				{
+					OnSizeOrOffsetChanged(childVisual);
+				}
 
-			foreach (var descendant in child.GetChildren())
-			{
-				_reemitStack.Push(descendant);
+				foreach (var descendant in child.GetChildren())
+				{
+					_reemitStack.Push(descendant);
+				}
 			}
+		}
+		finally
+		{
+			IsReemittingDescendantPositions = false;
 		}
 	}
 
