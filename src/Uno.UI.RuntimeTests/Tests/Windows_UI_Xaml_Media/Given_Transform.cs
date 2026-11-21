@@ -56,9 +56,11 @@ public class Given_Transform
 			await TestServices.WindowHelper.WaitForLoaded(survivor);
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var before = await UITestHelper.ScreenShot(root);
-			ImageAssert.HasColorAt(before, 15, 5, Colors.Red, tolerance: 5);
-			ImageAssert.DoesNotHaveColorAt(before, 25, 5, Colors.Red, tolerance: 5);
+			await AssertScreenshotAsync(root, before =>
+			{
+				ImageAssert.HasColorAt(before, 15, 5, Colors.Red, tolerance: 5);
+				ImageAssert.DoesNotHaveColorAt(before, 25, 5, Colors.Red, tolerance: 5);
+			});
 
 			GC.Collect(2);
 			GC.WaitForPendingFinalizers();
@@ -70,8 +72,10 @@ public class Given_Transform
 #if __SKIA__
 			Assert.AreEqual(3, survivor.Visual.TransformMatrix.M11, "The shared transform no longer drives the surviving element's visual.");
 #endif
-			var after = await UITestHelper.ScreenShot(root);
-			ImageAssert.HasColorAt(after, 25, 5, Colors.Red, tolerance: 5);
+			await AssertScreenshotAsync(root, after =>
+			{
+				ImageAssert.HasColorAt(after, 25, 5, Colors.Red, tolerance: 5);
+			});
 		}
 		finally
 		{
@@ -258,8 +262,10 @@ public class Given_Transform
 			await TestServices.WindowHelper.WaitForLoaded(survivor);
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var before = await UITestHelper.ScreenShot(root);
-			ImageAssert.HasColorAt(before, 30, 5, Colors.Blue, tolerance: 5);
+			await AssertScreenshotAsync(root, before =>
+			{
+				ImageAssert.HasColorAt(before, 30, 5, Colors.Blue, tolerance: 5);
+			});
 
 			GC.Collect(2);
 			GC.WaitForPendingFinalizers();
@@ -268,8 +274,10 @@ public class Given_Transform
 			transform.X = 0.5;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var after = await UITestHelper.ScreenShot(root);
-			ImageAssert.HasColorAt(after, 30, 5, Colors.Red, tolerance: 5);
+			await AssertScreenshotAsync(root, after =>
+			{
+				ImageAssert.HasColorAt(after, 30, 5, Colors.Red, tolerance: 5);
+			});
 		}
 		finally
 		{
@@ -310,9 +318,11 @@ public class Given_Transform
 			await TestServices.WindowHelper.WaitForLoaded(survivor);
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var before = await UITestHelper.ScreenShot(root);
-			ImageAssert.HasColorAt(before, 5, 5, Colors.Red, tolerance: 5);
-			ImageAssert.DoesNotHaveColorAt(before, 25, 5, Colors.Red, tolerance: 5);
+			await AssertScreenshotAsync(root, before =>
+			{
+				ImageAssert.HasColorAt(before, 5, 5, Colors.Red, tolerance: 5);
+				ImageAssert.DoesNotHaveColorAt(before, 25, 5, Colors.Red, tolerance: 5);
+			});
 
 			GC.Collect(2);
 			GC.WaitForPendingFinalizers();
@@ -321,9 +331,11 @@ public class Given_Transform
 			transform.X = 20;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var after = await UITestHelper.ScreenShot(root);
-			ImageAssert.HasColorAt(after, 25, 5, Colors.Red, tolerance: 5);
-			ImageAssert.DoesNotHaveColorAt(after, 5, 5, Colors.Red, tolerance: 5);
+			await AssertScreenshotAsync(root, after =>
+			{
+				ImageAssert.HasColorAt(after, 25, 5, Colors.Red, tolerance: 5);
+				ImageAssert.DoesNotHaveColorAt(after, 5, 5, Colors.Red, tolerance: 5);
+			});
 		}
 		finally
 		{
@@ -370,9 +382,11 @@ public class Given_Transform
 			await TestServices.WindowHelper.WaitForLoaded(survivor);
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var before = await UITestHelper.ScreenShot(root);
-			ImageAssert.HasColorAt(before, 15, 5, Colors.Red, tolerance: 5);
-			ImageAssert.DoesNotHaveColorAt(before, 25, 5, Colors.Red, tolerance: 5);
+			await AssertScreenshotAsync(root, before =>
+			{
+				ImageAssert.HasColorAt(before, 15, 5, Colors.Red, tolerance: 5);
+				ImageAssert.DoesNotHaveColorAt(before, 25, 5, Colors.Red, tolerance: 5);
+			});
 
 			GC.Collect(2);
 			GC.WaitForPendingFinalizers();
@@ -381,8 +395,10 @@ public class Given_Transform
 			transform.ScaleX = 3;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var after = await UITestHelper.ScreenShot(root);
-			ImageAssert.HasColorAt(after, 25, 5, Colors.Red, tolerance: 5);
+			await AssertScreenshotAsync(root, after =>
+			{
+				ImageAssert.HasColorAt(after, 25, 5, Colors.Red, tolerance: 5);
+			});
 		}
 		finally
 		{
@@ -510,6 +526,17 @@ public class Given_Transform
 	}
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
+	// Native Android's screenshots don't capture render transforms (not even an unshared one), so the image checks only run
+	// on the other targets; the collection checks run everywhere.
+	private static async Task AssertScreenshotAsync(FrameworkElement root, Action<RawBitmap> check)
+	{
+#if __ANDROID__
+		await TestServices.WindowHelper.WaitForIdle();
+#else
+		check(await UITestHelper.ScreenShot(root));
+#endif
+	}
+
 	private static List<WeakReference> CreateStyledElements(Panel root, Style style, int count)
 	{
 		var refs = new List<WeakReference>(count);
