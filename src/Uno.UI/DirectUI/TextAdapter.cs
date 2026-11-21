@@ -184,7 +184,15 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 	{
 		if (_owner is RichEditBox richEditBox)
 		{
-			var range = richEditBox.Document.GetRangeFromPoint(screenLocation, Microsoft.UI.Text.PointOptions.None);
+			// The UIA bridge has already mapped the point to root-relative logical coordinates
+			// (CUIATextProviderWrapper::RangeFromPoint), the space GetBoundingRectangles reports in.
+			if (!richEditBox.TryGetAccessibilityClientPoint(screenLocation, out var clientLocation))
+			{
+				// A non-invertible transform (e.g. a zero scale): there's no point to hit.
+				return DocumentRange;
+			}
+
+			var range = richEditBox.Document.GetRangeFromPoint(clientLocation, Microsoft.UI.Text.PointOptions.ClientCoordinates);
 			return new TextRangeAdapter(_ownerPeer, _owner, range.StartPosition, range.EndPosition);
 		}
 

@@ -94,35 +94,22 @@ namespace Microsoft.UI.Xaml.Controls
 			bounds = default;
 			if (Visibility != Visibility.Visible
 				|| !IsLoaded
-				|| !TryGetRangeRectangles(
-					start,
-					end,
-					global::Microsoft.UI.Text.PointOptions.ClientCoordinates,
-					out var rectangles)
+				|| !TryGetAccessibilityRangeRectangles(start, end, out var rectangles)
 				|| rectangles.Length == 0)
 			{
 				return false;
 			}
 
-			var transform = TransformToVisual(null);
 			var left = double.PositiveInfinity;
 			var top = double.PositiveInfinity;
 			var right = double.NegativeInfinity;
 			var bottom = double.NegativeInfinity;
 			foreach (var rectangle in rectangles)
 			{
-				var viewportRectangle = _contentElement is ScrollViewer scrollViewer
-					? new Rect(
-						rectangle.X - scrollViewer.HorizontalOffset,
-						rectangle.Y - scrollViewer.VerticalOffset,
-						rectangle.Width,
-						rectangle.Height)
-					: rectangle;
-				var transformed = transform.TransformBounds(viewportRectangle);
-				left = Math.Min(left, transformed.Left);
-				top = Math.Min(top, transformed.Top);
-				right = Math.Max(right, transformed.Right);
-				bottom = Math.Max(bottom, transformed.Bottom);
+				left = Math.Min(left, rectangle.Left);
+				top = Math.Min(top, rectangle.Top);
+				right = Math.Max(right, rectangle.Right);
+				bottom = Math.Max(bottom, rectangle.Bottom);
 			}
 
 			bounds = new Rect(left, top, Math.Max(0, right - left), Math.Max(0, bottom - top));
@@ -135,6 +122,53 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return bounds.Width > 0 && bounds.Height > 0;
 		}
+
+		// UIA text geometry is root-relative and follows the rendered (scrolled) text, while TOM
+		// ClientCoordinates are document-relative, so the ContentElement scroll offset is removed.
+		internal bool TryGetAccessibilityRangeRectangles(int start, int end, out Rect[] rectangles)
+		{
+			if (!TryGetRangeRectangles(start, end, PointOptions.ClientCoordinates, out var clientRectangles))
+			{
+				rectangles = Array.Empty<Rect>();
+				return false;
+			}
+
+			var toRoot = TransformToVisual(null);
+			var scrollOffset = GetAccessibilityScrollOffset();
+			rectangles = new Rect[clientRectangles.Length];
+			for (var i = 0; i < clientRectangles.Length; i++)
+			{
+				var rectangle = clientRectangles[i];
+				rectangles[i] = toRoot.TransformBounds(new Rect(
+					rectangle.X - scrollOffset.X,
+					rectangle.Y - scrollOffset.Y,
+					rectangle.Width,
+					rectangle.Height));
+			}
+
+			return true;
+		}
+
+		// The inverse mapping: a root-relative point to the ClientCoordinates GetRangeFromPoint expects.
+		internal bool TryGetAccessibilityClientPoint(Point rootPoint, out Point clientPoint)
+		{
+			if (!TransformToVisual(null).TryTransformInverse(rootPoint, out var local)
+				|| !double.IsFinite(local.X)
+				|| !double.IsFinite(local.Y))
+			{
+				clientPoint = default;
+				return false;
+			}
+
+			var scrollOffset = GetAccessibilityScrollOffset();
+			clientPoint = new Point(local.X + scrollOffset.X, local.Y + scrollOffset.Y);
+			return true;
+		}
+
+		private Point GetAccessibilityScrollOffset()
+			=> _contentElement is ScrollViewer scrollViewer
+				? new Point(scrollViewer.HorizontalOffset, scrollViewer.VerticalOffset)
+				: default;
 
 		internal bool IsAccessibilityRangeFocused(int start, int end)
 		{
