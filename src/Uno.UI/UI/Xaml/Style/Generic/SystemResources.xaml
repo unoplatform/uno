@@ -13,7 +13,7 @@
 			<Color x:Key="SystemAccentColorLight1">#FF429CE3</Color>
 			<Color x:Key="SystemAccentColorLight2">#FF76B9ED</Color>
 			<Color x:Key="SystemAccentColorLight3">#FFA6D8FF</Color>
-			<!-- Accent RGB with the alpha WinUI applies for list selection; runtime-injected by AccentColorResourceUpdater -->
+			<!-- Accent RGB with the alpha WinUI applies for list selection; updated at runtime from FrameworkTheming -->
 			<Color x:Key="SystemListAccentLowColor">#660078D7</Color>
 			<Color x:Key="SystemListAccentMediumColor">#990078D7</Color>
 			<Color x:Key="SystemListAccentHighColor">#B20078D7</Color>
@@ -39,7 +39,7 @@
 			<Color x:Key="SystemAccentColorLight1">#FF429CE3</Color>
 			<Color x:Key="SystemAccentColorLight2">#FF76B9ED</Color>
 			<Color x:Key="SystemAccentColorLight3">#FFA6D8FF</Color>
-			<!-- Accent RGB with the alpha WinUI applies for list selection; runtime-injected by AccentColorResourceUpdater -->
+			<!-- Accent RGB with the alpha WinUI applies for list selection; updated at runtime from FrameworkTheming -->
 			<Color x:Key="SystemListAccentLowColor">#660078D7</Color>
 			<Color x:Key="SystemListAccentMediumColor">#990078D7</Color>
 			<Color x:Key="SystemListAccentHighColor">#B20078D7</Color>
@@ -65,7 +65,7 @@
 			<Color x:Key="SystemAccentColorLight1">#FF429CE3</Color>
 			<Color x:Key="SystemAccentColorLight2">#FF76B9ED</Color>
 			<Color x:Key="SystemAccentColorLight3">#FFA6D8FF</Color>
-			<!-- Accent RGB with the alpha WinUI applies for list selection; runtime-injected by AccentColorResourceUpdater -->
+			<!-- Accent RGB with the alpha WinUI applies for list selection; updated at runtime from FrameworkTheming -->
 			<Color x:Key="SystemListAccentLowColor">#660078D7</Color>
 			<Color x:Key="SystemListAccentMediumColor">#990078D7</Color>
 			<Color x:Key="SystemListAccentHighColor">#B20078D7</Color>
