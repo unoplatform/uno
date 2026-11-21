@@ -11,6 +11,11 @@
 		<IsMSALSupported>true</IsMSALSupported>
 	</PropertyGroup>
 
+	<!-- .NET 11 CoreCLR defaults to full composite R2R, which doubles the download size. Same opt-out as MAUI. -->
+	<PropertyGroup Condition=" '$(UseMonoRuntime)' != 'true' AND '$(Configuration)' == 'Release' AND '$(UnoEnableFullReadyToRun)' != 'true' AND !$(PublishReadyToRunCrossgen2ExtraArgs.Contains('--partial')) ">
+		<PublishReadyToRunCrossgen2ExtraArgs>$(PublishReadyToRunCrossgen2ExtraArgs);--partial</PublishReadyToRunCrossgen2ExtraArgs>
+	</PropertyGroup>
+
 	<Import Project="$(MSBuildThisFileDirectory)android-workarounds.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.Android.targets" Condition=" $(_IsUnoSingleProject) == 'true' " />
 
