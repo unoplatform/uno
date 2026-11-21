@@ -118,8 +118,10 @@ internal static partial class SemanticElementFactory
 			}
 		}
 
-		// Apply aria-description from HelpText for VoiceOver secondary context
-		if (created && !string.IsNullOrEmpty(attributes.Description))
+		// Apply aria-description (FullDescription, else HelpText) for VoiceOver secondary context. A column header
+		// whose help text is its sort direction already reports it as aria-sort, so it is not announced twice.
+		if (created && !string.IsNullOrEmpty(attributes.Description)
+			&& !(elementType == SemanticElementType.ColumnHeader && IsSortOnlyDescription(peer)))
 		{
 			NativeMethods.UpdateAriaDescription(handle, attributes.Description);
 		}
@@ -226,7 +228,7 @@ internal static partial class SemanticElementFactory
 		// (aria-level, aria-busy, lang). These are independent of the resolved element type.
 		if (created && owner is not null)
 		{
-			ApplyOwnerScopedAriaAttributes(owner, handle);
+			ApplyOwnerScopedAriaAttributes(owner, peer, handle);
 		}
 
 		return created;
@@ -994,6 +996,7 @@ internal static partial class SemanticElementFactory
 			colCount,
 			multiSelectable,
 			isFocusable);
+		WebAssemblyAccessibility.Instance.TrackGrid(peer, handle, rowCount, colCount);
 		return true;
 	}
 
@@ -1116,6 +1119,7 @@ internal static partial class SemanticElementFactory
 			colIndex,
 			sort,
 			isFocusable);
+		WebAssemblyAccessibility.Instance.TrackColumnHeader(peer, handle, sort);
 		return true;
 	}
 
@@ -1134,26 +1138,47 @@ internal static partial class SemanticElementFactory
 	}
 
 	/// <summary>
-	/// Resolves a column header's sort direction for aria-sort. UIA has no sort pattern and the
-	/// Community Toolkit DataGrid column-header peer does not expose sort state, so this reads the
-	/// generic ItemStatus channel ("ascending"/"descending") which an app — or an enhanced peer —
-	/// can populate. Returns null when no sort is advertised, so the JS omits aria-sort entirely.
+	/// Resolves a column header's sort direction for aria-sort. UIA has no sort pattern: an app (or an
+	/// enhanced peer) can report it through ItemStatus ("ascending"/"descending"), and the Community
+	/// Toolkit DataGrid column-header peer reports its column's SortDirection as the help text
+	/// "Ascending"/"Descending". Returns null when no sort is advertised, so the JS omits aria-sort.
 	/// </summary>
-	private static string? GetSortDirection(AutomationPeer peer)
+	/// <remarks>
+	/// The help text match relies on the Toolkit peer's literal, non-localized strings, and is only applied to
+	/// column-header nodes.
+	/// </remarks>
+	internal static string? GetSortDirection(AutomationPeer peer)
 	{
 		var status = peer.GetItemStatus();
-		if (string.IsNullOrEmpty(status))
+		if (!string.IsNullOrEmpty(status))
 		{
-			return null;
+			var normalized = status.ToLowerInvariant();
+			if (normalized.Contains("ascend"))
+			{
+				return "ascending";
+			}
+
+			if (normalized.Contains("descend"))
+			{
+				return "descending";
+			}
 		}
 
-		var normalized = status.ToLowerInvariant();
-		if (normalized.Contains("ascend"))
+		return GetSortFromHelpText(peer.GetHelpText());
+	}
+
+	// The description falls back to HelpText only without a FullDescription; an explicit one is always kept.
+	internal static bool IsSortOnlyDescription(AutomationPeer peer)
+		=> string.IsNullOrEmpty(peer.GetFullDescription()) && GetSortFromHelpText(peer.GetHelpText()) is not null;
+
+	internal static string? GetSortFromHelpText(string? helpText)
+	{
+		if (string.Equals(helpText, "Ascending", StringComparison.OrdinalIgnoreCase))
 		{
 			return "ascending";
 		}
 
-		if (normalized.Contains("descend"))
+		if (string.Equals(helpText, "Descending", StringComparison.OrdinalIgnoreCase))
 		{
 			return "descending";
 		}
@@ -1305,7 +1330,7 @@ internal static partial class SemanticElementFactory
 	/// Shared between the factory path and the generic <c>AddSemanticElement</c> path so both
 	/// emit the same attributes regardless of the resolved element type.
 	/// </remarks>
-	internal static void ApplyOwnerScopedAriaAttributes(UIElement owner, IntPtr handle)
+	internal static void ApplyOwnerScopedAriaAttributes(UIElement owner, AutomationPeer? peer, IntPtr handle)
 	{
 		// aria-level from AutomationProperties.Level (distinct from heading level, which is
 		// emitted by the heading factory). Level is a 1-based hierarchical position; negative means unset.
@@ -1315,11 +1340,9 @@ internal static partial class SemanticElementFactory
 			NativeMethods.UpdateAriaLevel(handle, level);
 		}
 
-		// aria-busy from AutomationProperties.ItemStatus. ItemStatus is a free-form status
-		// string ("New", "Busy", "Loading", ...); we map it conservatively to aria-busy only
-		// when it clearly conveys a busy/in-progress state.
-		var itemStatus = AutomationProperties.GetItemStatus(owner);
-		if (IsBusyStatus(itemStatus))
+		// aria-busy from ItemStatus. ItemStatus is a free-form status string ("New", "Busy", "Loading", ...);
+		// we map it conservatively to aria-busy only when it clearly conveys a busy/in-progress state.
+		if (IsBusyStatus(GetItemStatus(owner, peer)))
 		{
 			NativeMethods.UpdateAriaBusy(handle, true);
 		}
@@ -1334,10 +1357,17 @@ internal static partial class SemanticElementFactory
 	}
 
 	/// <summary>
+	/// Reads ItemStatus from the peer when there is one, so a peer overriding <c>GetItemStatusCore</c> is
+	/// honored, and from the attached property otherwise. Used both at creation and on runtime changes.
+	/// </summary>
+	internal static string? GetItemStatus(UIElement owner, AutomationPeer? peer)
+		=> peer is not null ? peer.GetItemStatus() : AutomationProperties.GetItemStatus(owner);
+
+	/// <summary>
 	/// Determines whether an <see cref="AutomationProperties.ItemStatusProperty"/> value
 	/// represents a busy / in-progress state that should surface as <c>aria-busy="true"</c>.
 	/// </summary>
-	private static bool IsBusyStatus(string? itemStatus)
+	internal static bool IsBusyStatus(string? itemStatus)
 	{
 		if (string.IsNullOrWhiteSpace(itemStatus))
 		{

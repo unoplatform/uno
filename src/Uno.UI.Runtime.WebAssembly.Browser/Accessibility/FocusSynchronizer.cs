@@ -22,6 +22,7 @@ internal sealed partial class FocusSynchronizer
 	private IntPtr _currentFocusedHandle;
 	private IntPtr _previousFocusedHandle;
 	private bool _isSyncing;
+	private WeakReference<UIElement>? _mirroredFocusElement;
 
 	/// <summary>
 	/// Gets whether a focus synchronization operation is in progress.
@@ -72,7 +73,15 @@ internal sealed partial class FocusSynchronizer
 		_currentFocusedHandle = IntPtr.Zero;
 		_previousFocusedHandle = IntPtr.Zero;
 		_isSyncing = false;
+		_mirroredFocusElement = null;
 	}
+
+	/// <summary>
+	/// Records whether the latest XAML focus change was mirrored to browser focus as it happened
+	/// (AutomationFocusChanged is raised synchronously), or null when it was not.
+	/// </summary>
+	internal void OnFocusChangeMirrored(UIElement? element)
+		=> _mirroredFocusElement = element is null ? null : new WeakReference<UIElement>(element);
 
 	/// <summary>
 	/// Syncs the currently-focused XAML element to the semantic DOM on first initialization.
@@ -150,6 +159,13 @@ internal sealed partial class FocusSynchronizer
 			return;
 		}
 
+		// GotFocus is raised asynchronously: when focus has moved on since, the GotFocus of the later change
+		// is still queued, and syncing this stale one would pull browser focus to an element that lost it.
+		if (element.XamlRoot is { } xamlRoot && FocusManager.GetFocusedElement(xamlRoot) != element)
+		{
+			return;
+		}
+
 		if (Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(element)?.IsNativeElementFocusOwner(element) == true)
 		{
 			// A hosted native element inside it holds browser focus: don't pull focus back to the semantic DOM.
@@ -180,7 +196,15 @@ internal sealed partial class FocusSynchronizer
 				_previousFocusedHandle = _currentFocusedHandle;
 				_currentFocusedHandle = semanticHandle;
 
-				NativeMethods.FocusSemanticElement(semanticHandle);
+				// A change already mirrored as it happened must not be re-applied: browser focus may have
+				// moved since, e.g. to HTML outside the app.
+				var alreadyMirrored = _mirroredFocusElement is { } mirrored
+					&& mirrored.TryGetTarget(out var mirroredElement)
+					&& mirroredElement == element;
+				if (!alreadyMirrored)
+				{
+					NativeMethods.FocusSemanticElement(semanticHandle);
+				}
 
 				// Drive the roving tabindex from focus movement, not only selection, so the
 				// single tab stop within a composite follows the focused element. groupHandle

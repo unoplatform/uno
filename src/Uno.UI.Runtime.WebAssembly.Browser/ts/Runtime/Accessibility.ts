@@ -625,6 +625,13 @@ namespace Uno.UI.Runtime {
 			// Use child.remove() instead of parent.removeChild(child) to handle
 			// cases where the child's actual DOM parent differs from the semantic parent
 			// (e.g., after re-parenting or when duplicate IDs existed previously).
+			if (SemanticElements.composingHandle !== 0) {
+				// A removed input gets no compositionend.
+				const composing = Accessibility.getSemanticElementByHandle(SemanticElements.composingHandle);
+				if (!composing || child.contains(composing)) {
+					SemanticElements.composingHandle = 0;
+				}
+			}
 			child.remove();
 		}
 
@@ -910,7 +917,39 @@ namespace Uno.UI.Runtime {
 				// on any change; the browser default (false — announce only changed nodes) is
 				// correct for the common status/log case. A region whose WinUI semantics require
 				// atomic announcement must opt in explicitly elsewhere.
-				element.setAttribute("aria-live", ariaLive);
+				if (ariaLive) {
+					element.setAttribute("aria-live", ariaLive);
+				} else {
+					element.removeAttribute("aria-live");
+				}
+			}
+		}
+
+		/**
+		 * True when browser focus is on the semantic element or inside it.
+		 */
+		public static isSemanticElementFocused(handle: number): boolean {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			const active = document.activeElement;
+			return !!element && !!active && (element === active || element.contains(active));
+		}
+
+		/**
+		 * True when the focused semantic text input has an IME composition in progress.
+		 */
+		public static isSemanticElementComposing(handle: number): boolean {
+			return SemanticElements.composingHandle === handle
+				&& Accessibility.getSemanticElementByHandle(handle) === document.activeElement;
+		}
+
+		/**
+		 * Moves a semantic element before a sibling, keeping DOM reading order aligned with the visual tree.
+		 */
+		public static moveSemanticElementBefore(handle: number, anchorHandle: number): void {
+			const element = Accessibility.getSemanticElementByHandle(handle);
+			const anchor = Accessibility.getSemanticElementByHandle(anchorHandle);
+			if (element && anchor && element !== anchor && anchor.parentElement && element.parentElement === anchor.parentElement) {
+				anchor.parentElement.insertBefore(element, anchor);
 			}
 		}
 
