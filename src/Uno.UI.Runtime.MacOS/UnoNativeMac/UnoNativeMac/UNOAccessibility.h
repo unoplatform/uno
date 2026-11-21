@@ -52,6 +52,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, nullable) NSString *unoLandmarkRole; // landmark type (main, navigation, search, form, region)
 @property (nonatomic) BOOL unoIsModal; // true for modal dialogs (VoiceOver restricts navigation)
 @property (nonatomic, weak, nullable) id unoParent;
+/// The handle of the managed parent that is not (yet) part of the tree while this element hangs on the root instead; 0 otherwise.
+@property (nonatomic) intptr_t unoOrphanOf;
 @property (nonatomic, strong) NSMutableArray<UNOAccessibilityElement *> *unoChildren;
 
 - (instancetype)initWithHandle:(intptr_t)handle parent:(nullable id)parent context:(nullable UNOAccessibilityContext *)context;
@@ -66,6 +68,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSMutableDictionary<NSNumber*, UNOAccessibilityElement*> *elements;
 @property (nonatomic, strong, nullable) UNOAccessibilityElement *rootElement;
 @property (nonatomic, strong, nullable) UNOAccessibilityElement *focusedElement;
+// Elements hanging on the root while their managed parent is not part of the tree, keyed by that parent's handle.
+@property (nonatomic, strong) NSMutableDictionary<NSNumber*, NSMutableArray<UNOAccessibilityElement*>*> *orphansByParent;
 // Set once an accessibility client first asks this window for its tree, so managed code is asked to build it only once.
 @property (nonatomic) BOOL treeRequested;
 

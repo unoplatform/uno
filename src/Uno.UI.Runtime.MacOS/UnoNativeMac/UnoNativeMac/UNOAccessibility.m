@@ -64,6 +64,7 @@ static accessibility_tree_requested_fn_ptr g_treeRequestedCallback = NULL;
 	if (self) {
 		_window = window;
 		_elements = [[NSMutableDictionary alloc] init];
+		_orphansByParent = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
@@ -1058,6 +1059,7 @@ void uno_accessibility_init_context(NSWindow* window) {
 			element.unoHandle = 0;
 		}
 		[existing.elements removeAllObjects];
+		[existing.orphansByParent removeAllObjects];
 		existing.rootElement = nil;
 		existing.focusedElement = nil;
 		UNO_A11Y_LOG(@"UNOAccessibility: re-initialized context for window %p", window);
@@ -1086,6 +1088,7 @@ void uno_accessibility_destroy_context(NSWindow* window) {
 		element.unoHandle = 0;
 	}
 	[context.elements removeAllObjects];
+	[context.orphansByParent removeAllObjects];
 	context.rootElement = nil;
 	context.focusedElement = nil;
 	context.window = nil;
@@ -1152,6 +1155,44 @@ static UNOAccessibilityElement* _Nullable findElementGlobal(intptr_t handle) {
 	return nil;
 }
 
+// Elements whose managed parent is not part of the tree hang on the root, marked with that parent's handle (unoOrphanOf) and
+// indexed in orphansByParent, so they go with that parent when it is removed. Reachable when a child is added under an element
+// collapsed at run time (UIElement.OnVisibilityChangedPartial removes it from the tree but it stays live); without this, removing
+// that element while still collapsed would leave the child on the root.
+static void registerOrphan(UNOAccessibilityContext *context, UNOAccessibilityElement *element, intptr_t parentHandle) {
+	element.unoOrphanOf = parentHandle;
+	NSMutableArray<UNOAccessibilityElement *> *orphans = context.orphansByParent[@(parentHandle)];
+	if (!orphans) {
+		orphans = [[NSMutableArray alloc] init];
+		context.orphansByParent[@(parentHandle)] = orphans;
+	}
+	[orphans addObject:element];
+}
+
+static void unregisterOrphan(UNOAccessibilityContext *context, UNOAccessibilityElement *element) {
+	if (element.unoOrphanOf == 0) {
+		return;
+	}
+	NSNumber *key = @(element.unoOrphanOf);
+	NSMutableArray<UNOAccessibilityElement *> *orphans = context.orphansByParent[key];
+	[orphans removeObjectIdenticalTo:element];
+	if (orphans.count == 0) {
+		[context.orphansByParent removeObjectForKey:key];
+	}
+	element.unoOrphanOf = 0;
+}
+
+static NSArray<NSNumber *> * collectOrphanHandles(UNOAccessibilityContext *context, intptr_t parentHandle) {
+	NSMutableArray<NSNumber *> *handles = [[NSMutableArray alloc] init];
+	if (parentHandle == 0) {
+		return handles;
+	}
+	for (UNOAccessibilityElement *orphan in context.orphansByParent[@(parentHandle)]) {
+		[handles addObject:@(orphan.unoHandle)];
+	}
+	return handles;
+}
+
 void uno_accessibility_add_element(NSWindow* window,
 	intptr_t parentHandle, intptr_t handle, int32_t index,
 	float width, float height, float x, float y,
@@ -1174,6 +1215,7 @@ void uno_accessibility_add_element(NSWindow* window,
 	// unique GCHandle intptrs; two contexts never share a handle.
 	UNOAccessibilityElement *existing = context.elements[@(handle)];
 	if (existing) {
+		unregisterOrphan(context, existing);
 		id existingParent = existing.unoParent;
 		if (existingParent && [existingParent isKindOfClass:[UNOAccessibilityElement class]]) {
 			[((UNOAccessibilityElement *)existingParent).unoChildren removeObject:existing];
@@ -1198,6 +1240,13 @@ void uno_accessibility_add_element(NSWindow* window,
 		} else {
 			[parent.unoChildren addObject:element];
 		}
+	} else if (parentHandle != 0 && context.rootElement) {
+		// The parent is not in the tree (see registerOrphan). Hang the element on the root instead of replacing the root
+		// with it, which would hide the whole window content.
+		UNO_A11Y_LOG(@"UNOAccessibility: parent %ld of element %ld is not in the tree, attaching to the root", (long)parentHandle, (long)handle);
+		element.unoParent = context.rootElement;
+		registerOrphan(context, element, parentHandle);
+		[context.rootElement.unoChildren addObject:element];
 	} else {
 		// This is a root-level element
 		context.rootElement = element;
@@ -1208,6 +1257,10 @@ void uno_accessibility_add_element(NSWindow* window,
 
 void uno_accessibility_remove_element(NSWindow* window, intptr_t parentHandle, intptr_t handle) {
 	UNOAccessibilityContext *context = uno_a11y_context_for_window(window);
+	// What hangs on the root because this handle was its (unregistered) parent goes with it.
+	for (NSNumber *orphan in collectOrphanHandles(context, handle)) {
+		uno_accessibility_remove_element(window, 0, orphan.longValue);
+	}
 	UNOAccessibilityElement *element = findElement(context, handle);
 	if (!element) {
 		return;
@@ -1231,6 +1284,10 @@ void uno_accessibility_remove_element(NSWindow* window, intptr_t parentHandle, i
 	}
 
 	UNOAccessibilityElement *parent = findElement(context, parentHandle);
+	if (!parent && [element.unoParent isKindOfClass:[UNOAccessibilityElement class]]) {
+		// The managed parent was never part of the tree (see uno_accessibility_add_element): the element hangs on the root.
+		parent = (UNOAccessibilityElement *)element.unoParent;
+	}
 	if (parent) {
 		[parent.unoChildren removeObject:element];
 	}
@@ -1244,6 +1301,7 @@ void uno_accessibility_remove_element(NSWindow* window, intptr_t parentHandle, i
 			if (context.rootElement == elem) {
 				context.rootElement = nil;
 			}
+			unregisterOrphan(context, elem);
 			elem.unoContext = nil;
 			elem.unoHandle = 0;
 		}
