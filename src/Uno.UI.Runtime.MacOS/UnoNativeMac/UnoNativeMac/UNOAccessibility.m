@@ -1156,7 +1156,9 @@ static UNOAccessibilityElement* _Nullable findElementGlobal(intptr_t handle) {
 }
 
 // Elements whose managed parent is not part of the tree hang on the root, marked with that parent's handle (unoOrphanOf) and
-// indexed in orphansByParent, until the parent is added (they move under it) or removed (they go with it).
+// indexed in orphansByParent, so they go with that parent when it is removed. Reachable when a child is added under an element
+// collapsed at run time (UIElement.OnVisibilityChangedPartial removes it from the tree but it stays live); without this, removing
+// that element while still collapsed would leave the child on the root.
 static void registerOrphan(UNOAccessibilityContext *context, UNOAccessibilityElement *element, intptr_t parentHandle) {
 	element.unoOrphanOf = parentHandle;
 	NSMutableArray<UNOAccessibilityElement *> *orphans = context.orphansByParent[@(parentHandle)];
@@ -1178,27 +1180,6 @@ static void unregisterOrphan(UNOAccessibilityContext *context, UNOAccessibilityE
 		[context.orphansByParent removeObjectForKey:key];
 	}
 	element.unoOrphanOf = 0;
-}
-
-static void adoptOrphans(UNOAccessibilityContext *context, UNOAccessibilityElement *parent) {
-	NSNumber *key = @(parent.unoHandle);
-	NSMutableArray<UNOAccessibilityElement *> *orphans = context.orphansByParent[key];
-	if (!orphans) {
-		return;
-	}
-	[context.orphansByParent removeObjectForKey:key];
-	for (UNOAccessibilityElement *orphan in orphans) {
-		if (orphan == parent) {
-			continue;
-		}
-		id currentParent = orphan.unoParent;
-		if ([currentParent isKindOfClass:[UNOAccessibilityElement class]]) {
-			[((UNOAccessibilityElement *)currentParent).unoChildren removeObjectIdenticalTo:orphan];
-		}
-		orphan.unoOrphanOf = 0;
-		orphan.unoParent = parent;
-		[parent.unoChildren addObject:orphan];
-	}
 }
 
 static NSArray<NSNumber *> * collectOrphanHandles(UNOAccessibilityContext *context, intptr_t parentHandle) {
@@ -1233,7 +1214,6 @@ void uno_accessibility_add_element(NSWindow* window,
 	// from its old parent to prevent orphaned references. Handles are process-
 	// unique GCHandle intptrs; two contexts never share a handle.
 	UNOAccessibilityElement *existing = context.elements[@(handle)];
-	BOOL replacesRoot = existing && existing == context.rootElement;
 	if (existing) {
 		unregisterOrphan(context, existing);
 		id existingParent = existing.unoParent;
@@ -1260,30 +1240,17 @@ void uno_accessibility_add_element(NSWindow* window,
 		} else {
 			[parent.unoChildren addObject:element];
 		}
-	} else if (parentHandle != 0 && context.rootElement && !replacesRoot) {
-		// Safety net for a parent that managed code never added to the tree (managed code resolves known cases, such
-		// as an element under an AccessibilityView.Raw container, to a parent that is in the tree). Hang the element
-		// on the root instead of replacing the root with it, which would hide the whole window content.
+	} else if (parentHandle != 0 && context.rootElement) {
+		// The parent is not in the tree (see registerOrphan). Hang the element on the root instead of replacing the root
+		// with it, which would hide the whole window content.
 		UNO_A11Y_LOG(@"UNOAccessibility: parent %ld of element %ld is not in the tree, attaching to the root", (long)parentHandle, (long)handle);
 		element.unoParent = context.rootElement;
 		registerOrphan(context, element, parentHandle);
 		[context.rootElement.unoChildren addObject:element];
 	} else {
-		// This is a root-level element. The root is always added first (managed code builds the tree from it before
-		// forwarding any dynamic addition), so an element with an unknown parent only lands here when it replaces the root.
-		if (replacesRoot) {
-			// Keep what hung on the old root (including orphans, which no managed re-add would bring back).
-			for (UNOAccessibilityElement *child in existing.unoChildren) {
-				child.unoParent = element;
-				[element.unoChildren addObject:child];
-			}
-			[existing.unoChildren removeAllObjects];
-		}
+		// This is a root-level element
 		context.rootElement = element;
 	}
-
-	// Elements that were waiting for this one as their parent move under it.
-	adoptOrphans(context, element);
 
 	UNO_A11Y_LOG(@"UNOAccessibility: [window %p] added element handle=%ld role=%s label=%s parent=%ld", window, (long)handle, role ?: "(null)", label ?: "(null)", (long)parentHandle);
 }
