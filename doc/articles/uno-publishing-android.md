@@ -24,6 +24,18 @@ To build your app from the CLI, on Windows, Linux, or macOS:
 
 - Once the build is done, the output `.apk` and `.aab` files are located in the `./publish` folder.
 
+### ReadyToRun on .NET 11
+
+On `net11.0-android`, Release builds run on CoreCLR, where .NET for Android compiles every method ahead of time (full composite ReadyToRun), which roughly doubles the download size. Uno.Sdk enables partial ReadyToRun instead (`--partial`), like .NET MAUI does, so only the startup-relevant methods are precompiled.
+
+To get full ReadyToRun back, set this in your `csproj`:
+
+```xml
+<PropertyGroup>
+    <UnoEnableFullReadyToRun>true</UnoEnableFullReadyToRun>
+</PropertyGroup>
+```
+
 ## Publishing your Android App
 
 Publishing an Uno Platform app uses the same steps as .NET for Android-based technologies.
