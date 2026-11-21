@@ -2,7 +2,10 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
@@ -86,6 +89,36 @@ public class Given_WasmSemanticPositioning
 
 		await AssertSemanticRectMatchesAsync(second.Button);
 		await AssertSemanticRectMatchesAsync(second.Text);
+	}
+
+	[TestMethod]
+	public async Task When_Scroll_Port_Without_Semantic_Node_Scrolls_Then_Semantic_Nodes_Follow()
+	{
+		await EnsureAccessibilityEnabledAsync();
+
+		var content = new StackPanel();
+		for (var i = 0; i < 20; i++)
+		{
+			content.Children.Add(new Border { Padding = new Thickness(4), Child = new Button { Content = $"Item {i}", Height = 40 } });
+		}
+		var other = (Button)((Border)content.Children[8]).Child;
+		var target = (Button)((Border)content.Children[10]).Child;
+
+		// Without a semantic scroll port, a scroll re-positions the semantic nodes through the scroll re-emit walk
+		// alone: the pruned Borders it visits aren't queued for a second pass.
+		var scrollPresenter = new ScrollPresenter { Width = 200, Height = 200, Content = content };
+		AutomationProperties.SetAccessibilityView(scrollPresenter, AccessibilityView.Raw);
+		await UITestHelper.Load(new Grid { Children = { scrollPresenter } });
+		await UITestHelper.WaitFor(() => SemanticElementExists(target), message: "The semantic node should be created.");
+		await UITestHelper.WaitForIdle();
+		Assert.IsFalse(SemanticElementExists(scrollPresenter), "The Raw scroll port should not have a semantic node.");
+
+		scrollPresenter.ScrollTo(0, 300, new ScrollingScrollOptions(ScrollingAnimationMode.Disabled));
+		await UITestHelper.WaitFor(() => Math.Abs(scrollPresenter.VerticalOffset - 300) < 1, message: "The ScrollPresenter should scroll.");
+		await UITestHelper.WaitForIdle();
+
+		await AssertSemanticRectMatchesAsync(other);
+		await AssertSemanticRectMatchesAsync(target);
 	}
 
 	private static async Task AssertSemanticRectMatchesAsync(FrameworkElement element)

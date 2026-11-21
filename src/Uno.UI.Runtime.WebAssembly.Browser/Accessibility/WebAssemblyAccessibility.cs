@@ -902,7 +902,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 						// A semantic node is positioned relative to its nearest semantic ancestor, across the pruned
 						// elements in between. Moving a pruned element (e.g. arranging a re-created page) moves its
 						// semantic descendants without changing their own offsets, so nothing else re-positions them.
-						if (handle != _rootElementHandle)
+						// The scroll re-emit walk is left out: it already re-positions every descendant itself.
+						if (handle != _rootElementHandle && !IsReemittingDescendantPositions)
 						{
 							QueueSemanticDescendantsPositioning(rootElement);
 						}
