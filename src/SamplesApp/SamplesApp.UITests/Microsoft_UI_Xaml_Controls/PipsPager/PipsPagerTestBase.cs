@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference InteractionTests/PipsPagerTestBase.cs
+
+using System;
 using System.Linq;
 using Common;
 using SamplesApp.UITests;
@@ -99,6 +103,11 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 			elements.GetOrientationComboBox().SelectItemByIndex((int)orientation);
 		}
 
+		protected void SetWrapMode(WrapMode wrapMode)
+		{
+			elements.GetWrapModeComboBox().SelectItemByIndex((int)wrapMode);
+		}
+
 		protected void VerifyOrientationChanged(string orientation)
 		{
 			Verify.AreEqual($"{orientation}", GetCurrentOrientation());
@@ -164,6 +173,11 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 
 		protected int GetSelectedNumberOfPagesAsInt32()
 		{
+			var selectedNumberOfPages = GetSelectedNumberOfPages();
+			if (selectedNumberOfPages == "Infinite")
+			{
+				return -1;
+			}
 			return Convert.ToInt32(GetSelectedNumberOfPages());
 		}
 		protected void VerifyNumberOfPages(string numberOfPages)
@@ -193,10 +207,17 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 		public enum NumberOfPagesOptions
 		{
 			Zero,
+			One,
 			Five,
 			Ten,
 			Twenty,
 			Infinite
+		}
+
+		public enum WrapMode
+		{
+			None,
+			Wrap
 		}
 
 		public enum Orientation

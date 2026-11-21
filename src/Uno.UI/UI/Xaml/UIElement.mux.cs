@@ -148,7 +148,16 @@ namespace Microsoft.UI.Xaml
 			// identity-based checks (HasKeyboardFocusImpl, SetFocusHelper) work correctly.
 			if (Visibility != Visibility.Collapsed && isPopupOpen)
 			{
-				return _uiElementAutomationPeer ??= OnCreateAutomationPeerInternal();
+				if (_uiElementAutomationPeer is null && OnCreateAutomationPeerInternal() is { } peer)
+				{
+					// Like WinUI's first automatic-property pass (m_fireUIAPropertyChanges), record the current values
+					// without raising: otherwise a peer created while its owner is disabled keeps the default
+					// IsEnabled=true and never reports the owner being re-enabled.
+					peer.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: false);
+					_uiElementAutomationPeer = peer;
+				}
+
+				return _uiElementAutomationPeer;
 			}
 			else
 			{
@@ -914,6 +923,9 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private UIElementFlag _uiElementFlags;
+
+		// The element Enter/Leave walk tracks its own bit, separate from DependencyObject.IsProcessingEnterLeave.
+		internal bool IsProcessingElementEnterLeave => (_uiElementFlags & UIElementFlag.IsProcessingEnterLeave) != 0;
 
 		// NOTE: This should actually be on DependencyObject, not UIElement.
 		// We'll be able to do it once DependencyObject is a class instead of an interface.

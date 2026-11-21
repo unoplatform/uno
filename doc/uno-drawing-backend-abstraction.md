@@ -516,7 +516,8 @@ output is the evidence the interface carries everything the backend needs.
 `WebGpuCommandRecorder` / `WebGpuPresentSession` + the device-bound `WebGpuDrawingFactory`). It renders
 through **Silk.NET.WebGPU**, which SilkCompat runs on the **modern `webgpu.h` ABI** (shared by all targets —
 Dawn and wgpu-native agree on the ABI); the native library is provisioned at build (desktop
-`wgpu-native` via `wgpu-native.targets`, browser `emdawnwebgpu` via `wgpu-wasm.targets`).
+`wgpu-native` via `wgpu-native.targets`, browser `emdawnwebgpu` via `wgpu-wasm.targets`, or SkiaSharp's copy when
+SkiaSharp 4.155+ links one).
 
 **On-window presentation** splits into two shapes, both opt-in via `UNO_WEBGPU=1|true|swapchain` (native hosts
 also expose a builder enum):

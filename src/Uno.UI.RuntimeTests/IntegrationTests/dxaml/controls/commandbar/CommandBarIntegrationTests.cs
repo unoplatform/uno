@@ -31,10 +31,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Controls;
 using TextBox = Microsoft.UI.Xaml.Controls.TextBox;
 
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
-
 namespace Windows.UI.Tests.Enterprise
 {
 	[TestClass]

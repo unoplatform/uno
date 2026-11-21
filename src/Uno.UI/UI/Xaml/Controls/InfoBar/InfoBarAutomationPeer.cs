@@ -28,7 +28,7 @@ public partial class InfoBarAutomationPeer : FrameworkElementAutomationPeer
 
 	protected override string GetClassNameCore()
 	{
-		return nameof(InfoBar);
+		return typeof(InfoBar).FullName!;
 	}
 
 	internal void RaiseOpenedEvent(InfoBarSeverity severity, string displayString)

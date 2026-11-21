@@ -12,14 +12,10 @@ internal class ObservableVector<T> : IObservableVector<T>, IObservableVector, IL
 		get { return _list[index]; }
 		set
 		{
-			var originalValue = _list[index];
+			// Like WinUI's Vector<T>::SetAt, ItemChanged is raised even when the same instance is set again.
+			_list[index] = value;
 
-			if (!ReferenceEquals(originalValue, value))
-			{
-				_list[index] = value;
-
-				RaiseVectorChanged(CollectionChange.ItemChanged, index);
-			}
+			RaiseVectorChanged(CollectionChange.ItemChanged, index);
 		}
 	}
 

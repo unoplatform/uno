@@ -169,7 +169,7 @@ public App()
 }
 ```
 
-The flag defaults to `true` in `DEBUG` builds and `false` in `RELEASE` builds.
+The flag defaults to `false`.
 
 | Platform | What it enables | How to open |
 | ---------- | ----------------- | ------------- |

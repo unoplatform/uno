@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference InteractionTests/SplitButtonTests.cpp, tag winui3/release/1.4.2
+// MUX Reference InteractionTests/SplitButtonTests.cs
 
 using System;
 using System.Linq;
@@ -191,7 +191,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 			TextBlock flyoutClosedCountTextBlock = FindElementByName<TextBlock>("FlyoutClosedCountTextBlock");
 
 			Log.Comment("Verify that SplitButton has no accessible children");
-			// Verify.AreEqual(0, splitButton.Children.Count); // Uno Specific: SplitButton doesn't have a Children property
+			// Verify.AreEqual(0, splitButton.Children.Count); // Uno specific: counts UIA control-view children, which peer.GetChildren() does not filter
 
 			Verify.AreEqual("0", clickCountTextBlock.Text);
 			Log.Comment("Verify that invoking the SplitButton causes a click");
@@ -294,19 +294,14 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 			Verify.AreEqual("Unchecked", toggleStateOnClickTextBlock.Text);
 
 			Log.Comment("Click primary button to check button");
-			// using (var toggleStateWaiter = new PropertyChangedEventWaiter(splitButton, Scope.Element, UIProperty.Get("Toggle.ToggleState")))
-			// {
-			//     ClickPrimaryButton(splitButton);
-			//     Verify.IsTrue(toggleStateWaiter.TryWait(TimeSpan.FromSeconds(1)), "Waiting for the Toggle.ToggleState event should succeed");
-			// }
+			// Uno specific: no UIA event waiter here, so the peer's ToggleState stands in for the Toggle.ToggleState event.
 			var peer = ((IToggleProvider)splitButton.GetAutomationPeer());
 			Assert.AreEqual(ToggleState.Off, peer.ToggleState);
-			peer.Toggle();
-			await WindowHelper.WaitForIdle();
+			await ClickPrimaryButton(splitButton, mouse);
 			Assert.AreEqual(ToggleState.On, peer.ToggleState);
 
 			Verify.AreEqual("Checked", toggleStateTextBlock.Text);
-			// Verify.AreEqual("Checked", toggleStateOnClickTextBlock.Text); // Uno TODO: WinUI expects OnClick to trigger, but there's no reason for it to.
+			Verify.AreEqual("Checked", toggleStateOnClickTextBlock.Text);
 
 			Log.Comment("Click primary button to uncheck button");
 			// ClickPrimaryButton(splitButton);

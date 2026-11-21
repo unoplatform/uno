@@ -37,14 +37,13 @@ function renderAffix() {
                 const pageUrl = encodeURIComponent(window.location.href);
                 const issueTitle = encodeURIComponent(`[Docs] Feedback: ${effectiveTitle}`);
                 
-                // Determine the repository based on URL content
+                // Determine the repository based on URL content. Only public repos: readers get a 404
+                // on a private one. Studio and Hot Design pages use the default.
                 let repoPath = 'unoplatform/uno';
                 const currentUrl = window.location.href;
-                
+
                 if (currentUrl.includes('uno.extensions')) {
                     repoPath = 'unoplatform/uno.extensions';
-                } else if (currentUrl.includes('/studio/')) {
-                    repoPath = 'unoplatform/uno.studio';
                 } else if (currentUrl.includes('uno.toolkit.ui')) {
                     repoPath = 'unoplatform/uno.toolkit.ui';
                 } else if (currentUrl.includes('uno.themes')) {

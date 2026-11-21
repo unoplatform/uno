@@ -164,7 +164,7 @@ this is the WinUI contract, C# emitted by [LottieGen](https://aka.ms/lottiegen) 
 
 Before 7.0, Uno's `IAnimatedVisualSource` was a nine-method Uno-only contract in which the source
 drove playback itself. See the
-[Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7) for the old-to-new
+[Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7.RemovedApis#custom-ianimatedvisualsource-implementations) for the old-to-new
 mapping.
 
 ## Limitations

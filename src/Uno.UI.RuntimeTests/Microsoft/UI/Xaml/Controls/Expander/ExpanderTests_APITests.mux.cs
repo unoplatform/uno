@@ -9,9 +9,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Common;
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
 using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Helpers;
 

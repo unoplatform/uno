@@ -1,4 +1,6 @@
-﻿using Microsoft.UI;
+﻿using System;
+using System.Globalization;
+using Microsoft.UI;
 using Windows.UI;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -15,6 +17,17 @@ namespace Uno.UI.Tests.Windows_UI
 			var color = new Color() { A = 255, R = 0, G = 128, B = 255 };
 
 			Assert.AreEqual("#FF0080FF", color.ToString());
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25248")]
+		public void When_Formatted_Through_IFormattable()
+		{
+			var color = new Color() { A = 255, R = 10, G = 20, B = 30 };
+
+			Assert.AreEqual("sc#255,00; 10,00; 20,00; 30,00", ((IFormattable)color).ToString("F2", new CultureInfo("de-DE")));
+			Assert.AreEqual("sc#255.00, 10.00, 20.00, 30.00", ((IFormattable)color).ToString("F2", CultureInfo.InvariantCulture));
+			Assert.AreEqual("#FF0A141E", ((IFormattable)color).ToString(null, new CultureInfo("de-DE")));
 		}
 
 		[TestMethod]
@@ -307,6 +320,21 @@ namespace Uno.UI.Tests.Windows_UI
 			Assert.AreEqual("#FFF5F5F5", Colors.WhiteSmoke.ToString(), "WhiteSmoke");
 			Assert.AreEqual("#FFFFFF00", Colors.Yellow.ToString(), "Yellow");
 			Assert.AreEqual("#FF9ACD32", Colors.YellowGreen.ToString(), "YellowGreen");
+		}
+
+		[TestMethod]
+		[DataRow("#F00", "#FFFF0000")]
+		[DataRow("#FFF", "#FFFFFFFF")]
+		[DataRow("#123", "#FF112233")]
+		[DataRow("ABC", "#FFAABBCC")]
+		[DataRow("#8F00", "#88FF0000")]
+		[DataRow("#0ABC", "#00AABBCC")]
+		[DataRow("#1A69A6", "#FF1A69A6")]
+		[DataRow("#801A69A6", "#801A69A6")]
+		public void When_ParsingHexColors(string input, string expected)
+		{
+			Assert.AreEqual(expected, Colors.FromARGB(input).ToString());
+			Assert.AreEqual(expected, Colors.Parse(input.StartsWith('#') ? input : "#" + input).ToString());
 		}
 	}
 }

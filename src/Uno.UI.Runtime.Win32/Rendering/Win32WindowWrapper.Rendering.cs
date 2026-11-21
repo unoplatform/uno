@@ -70,6 +70,10 @@ internal partial class Win32WindowWrapper
 					RenderingNegativePathReevaluated?.Invoke(this, clipPath),
 					NativeDispatcherPriority.Normal);
 			});
+
+		// The window is registered, and can be asked for frames, before graphics negotiation creates this thread;
+		// those requests had nothing to signal and the target would wait for them forever.
+		_renderThread.SignalNewFrame();
 	}
 
 	/// <summary>

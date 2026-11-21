@@ -7,12 +7,20 @@
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
+	<!-- Same Roslyn line, pins and package source as the Uno.HotReload flavor under test -->
+	<Import Project="../Uno.DevServer.Roslyn.props" />
+
 	<ItemGroup>
 		<PackageReference Include="AwesomeAssertions" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.HotReload\Uno.HotReload.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<!-- Read by Given_EmbeddedRoslyn: the embedded Roslyn must accept the SDK's default C# version (spec 061 G1) -->
+		<AssemblyMetadata Include="SdkMaxSupportedLangVersion" Value="$(MaxSupportedLangVersion)" />
 	</ItemGroup>
 
 </Project>

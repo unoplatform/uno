@@ -5,6 +5,11 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class ContentPresenter
 {
+	/// <remarks>
+	/// Implementations report platform focus moving into an attached native element (or a descendant of it) with
+	/// <see cref="OnNativeElementGotFocus"/>, and, where the platform can tell, focus leaving it for something
+	/// outside XAML with <see cref="OnNativeElementLostFocus"/>. Both are called on the UI thread.
+	/// </remarks>
 	internal interface INativeElementHostingExtension
 	{
 #if UNO_SUPPORTS_NATIVEHOST

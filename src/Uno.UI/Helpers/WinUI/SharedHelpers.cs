@@ -895,6 +895,9 @@ namespace Uno.UI.Helpers.WinUI
 			return FindResource(resource, Application.Current.Resources, defaultValue);
 		}
 
+		public static global::System.Numerics.Vector4 RgbaColor(global::Windows.UI.Color color)
+			=> new(color.R, color.G, color.B, color.A);
+
 		public static FrameworkElement FindInVisualTreeByName(FrameworkElement parent, string name)
 		{
 			return FindInVisualTree(
