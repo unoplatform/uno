@@ -1650,7 +1650,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					// return it again later, so a source stays tracked until its own node is removed.
 					state.HasRelationships |= hasRelationships;
 
-					// aria-labelledby replaced the flattened aria-label; restore the name once the labeller is gone.
+					// aria-labelledby replaced the flattened aria-label; once the labeller is gone, write the name
+					// resolved without it (a collapsed labeller contributes none, as in WinUI).
 					if (previous.LabelledBy.Length > 0 && ids.LabelledBy.Length == 0 && TryGetPeerOwner(currentPeer, out var owner))
 					{
 						OnAutomationNameChanged(owner, currentPeer, AriaMapper.ResolveLabel(currentPeer) ?? string.Empty);

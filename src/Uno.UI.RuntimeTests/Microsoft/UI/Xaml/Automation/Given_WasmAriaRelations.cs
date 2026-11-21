@@ -121,10 +121,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 				if (isLabelledBy)
 				{
-					await UITestHelper.WaitFor(
-						() => GetSemanticAttribute(source, "aria-label") == "Related target",
-						timeoutMS: 5000,
-						message: "The peer name must be restored as aria-label once the labeller leaves the tree.");
+					await UITestHelper.WaitForIdle();
+					AssertCollapsedLabellerGivesNoName(source);
 				}
 
 				target.Visibility = Visibility.Visible;
@@ -168,12 +166,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				await UITestHelper.WaitForIdle();
 
 				Assert.IsFalse(SemanticElementHasAttribute(source, attribute), $"{attribute} must not reference a collapsed target.");
+				if (attribute == "aria-labelledby")
+				{
+					AssertCollapsedLabellerGivesNoName(source);
+				}
 
 				target.Visibility = Visibility.Visible;
 				await UITestHelper.WaitFor(
 					() => SemanticElementExists(target) && GetSemanticAttribute(source, attribute) == GetSemanticElementId(target),
 					timeoutMS: 5000,
 					message: $"{attribute} must appear once a target that started collapsed is shown.");
+
+				if (attribute == "aria-labelledby")
+				{
+					Assert.IsFalse(SemanticElementHasAttribute(source, "aria-label"), "aria-labelledby must suppress the competing aria-label once the labeller is shown.");
+				}
 			}
 			finally
 			{
@@ -252,6 +259,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			}
 
 			return (source, target);
+		}
+
+		// WinUI's GetOrCreateAutomationPeer returns null for a Collapsed element, so a Collapsed labeller adds
+		// nothing to the name and this unnamed TextBox has none: no aria-label, not the labeller's text.
+		private static void AssertCollapsedLabellerGivesNoName(FrameworkElement source)
+		{
+			Assert.AreEqual(string.Empty, source.GetOrCreateAutomationPeer()?.GetName(), "A collapsed labeller must not name the peer.");
+			Assert.IsFalse(SemanticElementHasAttribute(source, "aria-label"), "A collapsed labeller must not name the semantic node.");
 		}
 #endif
 

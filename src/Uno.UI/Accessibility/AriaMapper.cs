@@ -445,8 +445,9 @@ public static class AriaMapper
 			// 2. Explicit owner-side fallback for LabeledBy / Name.
 			// In most cases peer.GetName() already covers these, but some peers can still
 			// surface an empty name while the owner metadata is available.
+			// A Collapsed labeller gets no peer from GetOrCreateAutomationPeer, so as in WinUI it contributes no name.
 			var labeledBy = AutomationProperties.GetLabeledBy(owner);
-			if (labeledBy is TextBlock labelTextBlock && !string.IsNullOrEmpty(labelTextBlock.Text))
+			if (labeledBy is TextBlock { Visibility: Visibility.Visible } labelTextBlock && !string.IsNullOrEmpty(labelTextBlock.Text))
 			{
 				return labelTextBlock.Text;
 			}
