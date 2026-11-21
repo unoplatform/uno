@@ -232,10 +232,13 @@ internal sealed partial class FocusSynchronizer
 			return;
 		}
 
-		// Focus reaching the semantic node of the element that already has XAML focus is the echo of mirroring
-		// XAML focus into the DOM (FocusSemanticElement, or a text control moving its native input onto its
-		// semantic node). Focusing again would re-apply it as Keyboard over the FocusState XAML gave it.
-		var isEcho = control.XamlRoot is { } xamlRoot && ReferenceEquals(FocusManager.GetFocusedElement(xamlRoot), control);
+		// Focus reaching the semantic node mirrored for the element that already has XAML focus (its own, or its
+		// nearest semantic ancestor's when it has none) is the echo of mirroring XAML focus into the DOM
+		// (FocusSemanticElement, or a text control moving its native input onto its semantic node). Focusing
+		// again would re-apply it as Keyboard over the FocusState XAML gave it, or pull focus onto the ancestor.
+		var isEcho = control.XamlRoot is { } xamlRoot
+			&& FocusManager.GetFocusedElement(xamlRoot) is UIElement focused
+			&& (ReferenceEquals(focused, control) || _accessibility.ResolveToSemanticHandle(focused) == handle);
 
 		_isSyncing = true;
 		try

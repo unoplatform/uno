@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
@@ -98,16 +101,38 @@ public class Given_WasmAccessibleTextBoxFocus
 		Assert.AreEqual("-1", InvokeBrowserJs($"(function(){{return String(document.getElementById('{firstId}').tabIndex);}})()"), "The other radio should leave the tab order.");
 	}
 
+	[TestMethod]
+	public async Task When_Element_Without_Semantic_Node_Focused_Then_Ancestor_Focus_Echo_Keeps_Focus()
+	{
+		// The inner button has no semantic node of its own, so its focus is mirrored onto the outer button's.
+		var inner = new Button { Content = "Inner" };
+		AutomationProperties.SetAccessibilityView(inner, AccessibilityView.Raw);
+		var outer = new Button { Content = new StackPanel { Children = { new TextBlock { Text = "Outer" }, inner } } };
+		var (_, log) = await LoadAsync(inner, new StackPanel { Children = { outer } }, semanticElement: outer);
+
+		inner.Focus(FocusState.Keyboard);
+		await SettleAsync();
+		Assert.IsFalse(SemanticElementExists(inner), "The inner button should have no semantic node of its own.");
+		Assert.AreEqual(GetSemanticElementId(outer), InvokeBrowserJs("(function(){return document.activeElement ? document.activeElement.id : '';})()"), "Focus should be mirrored onto the outer button's semantic node.");
+
+		// The browser reports that mirrored focus late, e.g. once the window regains OS focus.
+		var raised = MoveDomFocus(GetSemanticElementId(outer), "focus");
+		await SettleAsync();
+
+		CollectionAssert.AreEqual(new[] { "GotFocus" }, log, $"{string.Join(", ", log)} (browser raised focus: {raised})");
+		Assert.AreSame(inner, FocusManager.GetFocusedElement(inner.XamlRoot), "The echo should not move focus onto the outer button.");
+	}
+
 	private static Task<(T Control, List<string> Log)> LoadAsync<T>(T control) where T : Control
 		=> LoadAsync(control, null);
 
-	private static async Task<(T Control, List<string> Log)> LoadAsync<T>(T control, Panel container) where T : Control
+	private static async Task<(T Control, List<string> Log)> LoadAsync<T>(T control, Panel container, UIElement semanticElement = null) where T : Control
 	{
 		var other = new Button { Content = "Other" };
 		await UITestHelper.Load(container is null ? new StackPanel { Children = { other, control } } : new StackPanel { Children = { other, container } });
 
 		EnableAccessibilityThroughDom();
-		await UITestHelper.WaitFor(() => SemanticElementExists(control), message: "The semantic node should be created once accessibility is enabled.");
+		await UITestHelper.WaitFor(() => SemanticElementExists(semanticElement ?? control), message: "The semantic node should be created once accessibility is enabled.");
 
 		other.Focus(FocusState.Programmatic);
 		await SettleAsync();
