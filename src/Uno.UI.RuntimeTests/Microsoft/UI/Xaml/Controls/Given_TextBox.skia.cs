@@ -274,6 +274,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// A key composed in the middle of a full TextBox: MaxLength refuses it, and the input keeps the composition until it
+		// ends. The input's caret doesn't index the TextBox's text meanwhile, so the TextBox keeps its own, and the input takes
+		// both back once the composition ends.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Browser_Ime_Composes_Past_MaxLength_In_The_Middle_Keeps_The_Caret()
+		{
+			var SUT = await LoadFocusedForBrowserIme("abcd", maxLength: 4);
+			try
+			{
+				SUT.Select(2, 0);
+				await UITestHelper.WaitFor(() => GetHiddenInputState() == "abcd|2", timeoutMS: 3000, message: "the caret should reach the hidden input");
+
+				await ReplayOnHiddenInput(ImeStart());
+				await ReplayOnHiddenInput(ImeCompose(2, 2, "x", "abxcd", 3));
+				// The input's selectionchange for the composition's caret comes after the input event.
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual("abcd", SUT.Text);
+				Assert.AreEqual(2, SUT.SelectionStart);
+				Assert.IsTrue(SUT.IsComposing);
+
+				await ReplayOnHiddenInput(ImeEnd("x"));
+
+				Assert.AreEqual("abcd", SUT.Text);
+				Assert.AreEqual(2, SUT.SelectionStart);
+				Assert.AreEqual("abcd|2", GetHiddenInputState());
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]

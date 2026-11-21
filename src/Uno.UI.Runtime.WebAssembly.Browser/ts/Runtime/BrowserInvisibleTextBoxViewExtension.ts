@@ -95,7 +95,9 @@
 							if (restoresSelection) {
 								input.setSelectionRange(BrowserInvisibleTextBoxViewExtension.nextSelectionStart, BrowserInvisibleTextBoxViewExtension.nextSelectionEnd, BrowserInvisibleTextBoxViewExtension.nextSelectionDirection);
 							}
-							else {
+							// While the TextBox keeps other text than the composition's (MaxLength), the input's selection doesn't index
+							// the TextBox's text: the TextBox keeps its caret until the composition ends and is reconciled.
+							else if (!BrowserInvisibleTextBoxViewExtension.isCompositionReported || BrowserInvisibleTextBoxViewExtension.pendingText === null) {
 								if (input.selectionDirection == "backward") {
 									BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionEnd, input.selectionStart - input.selectionEnd);
 								} else {
