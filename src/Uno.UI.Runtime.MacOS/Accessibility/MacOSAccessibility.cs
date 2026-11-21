@@ -478,6 +478,9 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 	{
 		if (_accessibilityTreeInitialized && !_isCreatingAOM)
 		{
+			int? index = null;
+			parent = ResolveAccessibilityParent(parent, ref index);
+
 			var accessibilityView = AutomationProperties.GetAccessibilityView(child);
 			if (accessibilityView == AccessibilityView.Raw)
 			{
