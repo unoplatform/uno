@@ -129,6 +129,7 @@ public class Given_BreadcrumbBar
 	public async Task When_Item_Reloaded_Then_Single_PreviewKeyDown_Handler()
 	{
 #if HAS_UNO
+		// A duplicate handler is invisible (the first one marks Enter/Space handled), so count handlers directly.
 		var SUT = new BreadcrumbBar { ItemsSource = new List<string> { "A", "B" } };
 
 		await UITestHelper.Load(SUT);
