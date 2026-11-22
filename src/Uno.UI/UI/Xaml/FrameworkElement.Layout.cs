@@ -269,8 +269,8 @@ namespace Microsoft.UI.Xaml
 			double clippedDesiredWidth;
 			double clippedDesiredHeight;
 
-			double marginWidth = 0.0f;
-			double marginHeight = 0.0f;
+			double roundedMarginWidth = 0.0f;
+			double roundedMarginHeight = 0.0f;
 
 			//bool bTemplateApplied = false;
 
@@ -291,15 +291,62 @@ namespace Microsoft.UI.Xaml
 				}
 				// TODO: END Uno specific
 
-				// Subtract the margins from the available size
 				var margin = Margin;
-				marginWidth = margin.Left + margin.Right;
-				marginHeight = margin.Top + margin.Bottom;
+				roundedMarginWidth = margin.Left + margin.Right;
+				roundedMarginHeight = margin.Top + margin.Bottom;
 
+				// Layout round the margins too. This corresponds to the behavior in ArrangeCore, where we check the unclipped desired
+				// size against available space minus the rounded margin. This also prevents a bug where MeasureCore adds the unrounded
+				// margin (e.g. 14) to the desired size (e.g. 55.56) and rounds the final result (69.56 rounded to 69.33 under 2.25x scale),
+				// then ArrangeCore takes that rounded result (i.e. 69.33), subtracts the unrounded margin (i.e. 14) and ends up with a
+				// size smaller than the desired size (69.33 - 14 = 55.33 < 55.56). This ends up putting a layout clip on an element that
+				// doesn't need one, and causes big problems if the element is the scrollable extent of a carousel panel.
+				if (GetUseLayoutRounding())
+				{
+					// Note: Both MeasureCore and ArrangeCore round the total margin width/height together,
+					// rather than round left, right, top, and and bottom individually. This could result in
+					// reserving more availableSize for margin than is necessary: for example, Margin="1" at
+					// 125% should be properly rounded to Round(1 * 1.25) = 1 physical pixel on all sides,
+					// but rounding together is Round((1 + 1) * 1.25) = Round(2.5) = 3 physical pixels in each
+					// direction. That's one extra pixel of margin, and also means the content is no longer
+					// exactly centered. This is an opportunity for future improvement if there is an important
+					// rendering complaint about too much margin and this slight mis-centering.
+					// In contrast, BorderThickness values are properly rounded individually (see
+					// CBorder::GetLayoutRoundedThickness).
+					roundedMarginWidth = LayoutRound(roundedMarginWidth);
+					roundedMarginHeight = LayoutRound(roundedMarginHeight);
+				}
+
+				// Subtract the margins from the available size
 				// We check to see if availableSize.width and availableSize.height are finite since that will
 				// also protect against NaN getting in.
-				frameworkAvailableSize.Width = double.IsFinite(availableSize.Width) ? Math.Max(availableSize.Width - marginWidth, 0) : double.PositiveInfinity;
-				frameworkAvailableSize.Height = double.IsFinite(availableSize.Height) ? Math.Max(availableSize.Height - marginHeight, 0) : double.PositiveInfinity;
+				frameworkAvailableSize.Width = double.IsFinite(availableSize.Width) ? Math.Max(availableSize.Width - roundedMarginWidth, 0) : double.PositiveInfinity;
+				frameworkAvailableSize.Height = double.IsFinite(availableSize.Height) ? Math.Max(availableSize.Height - roundedMarginHeight, 0) : double.PositiveInfinity;
+
+				if (GetUseLayoutRounding())
+				{
+					// The parent panel may not have passed in an availableSize which was layout rounded. This
+					// can happen with Padding, which currently doesn't get layout rounded (see
+					// CBorder::HelperGetInnerRect and CBorder::HelperGetCombinedThickness, which most panels use).
+					//   Example (from ScrollBarMarginRoundingNoLayoutCycle test):
+					//     A ScrollViewer has height 654.222229 running in 2.25x scale is properly layout rounded
+					//     (654.222229 * 2.25 = 1472). The Grid above the VerticalScrollBar has Padding="1,1,1,1"
+					//     which it subtracts off without rounding to produce 652.222229, which is not rounded
+					//     (652.222229 * 2.25 = 1467.5).
+					// If we proceed with the non-rounded size, this element might use that full availableSize
+					// which may layout round at the end beyond the availableSize (in the above example,
+					// 652.222229 will round up to 652.444444, bigger than the availableSize).
+					// Layout round with Floor the frameworkAvailableSize to ensure we don't end up measuring and
+					// rounding up beyond the real available space.
+					if (double.IsFinite(frameworkAvailableSize.Width))
+					{
+						frameworkAvailableSize.Width = LayoutRoundFloor(frameworkAvailableSize.Width);
+					}
+					if (double.IsFinite(frameworkAvailableSize.Height))
+					{
+						frameworkAvailableSize.Height = LayoutRoundFloor(frameworkAvailableSize.Height);
+					}
+				}
 
 				// Layout transforms would get processed here.
 
@@ -373,20 +420,6 @@ namespace Microsoft.UI.Xaml
 				}
 
 				// Transform desired size to layout slot space (placeholder for when we do layout transforms)
-
-				// Layout round the margins too. This corresponds to the behavior in ArrangeCore, where we check the unclipped desired
-				// size against available space minus the rounded margin. This also prevents a bug where MeasureCore adds the unrounded
-				// margin (e.g. 14) to the desired size (e.g. 55.56) and rounds the final result (69.56 rounded to 69.33 under 2.25x scale),
-				// then ArrangeCore takes that rounded result (i.e. 69.33), subtracts the unrounded margin (i.e. 14) and ends up with a
-				// size smaller than the desired size (69.33 - 14 = 55.33 < 55.56). This ends up putting a layout clip on an element that
-				// doesn't need one, and causes big problems if the element is the scrollable extent of a carousel panel.
-				double roundedMarginWidth = marginWidth;
-				double roundedMarginHeight = marginHeight;
-				if (GetUseLayoutRounding())
-				{
-					roundedMarginWidth = LayoutRound(marginWidth);
-					roundedMarginHeight = LayoutRound(marginHeight);
-				}
 
 				//  Because of negative margins, clipped desired size may be negative.
 				//  Need to keep it as XFLOATS for that reason and maximize with 0 at the

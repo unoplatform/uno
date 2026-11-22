@@ -371,6 +371,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 				},
 			};
 
+#if HAS_UNO
+		// Based on WinUI's LayoutTests::ScrollBarMarginRoundingNoLayoutCycle. The ScrollViewer height is on the pixel
+		// grid, but the 1px Padding around the VerticalScrollBar leaves it an available height that is not.
+		[TestMethod]
+		[DataRow(2.25f)]
+		[DataRow(2.625f)]
+		[DataRow(2.75f)]
+		[DataRow(3.0f)]
+		public async Task When_Fractional_Scale_Scrolled_To_End_Then_Layout_Settles(float scale)
+		{
+			TestServices.WindowHelper.SetTestScaling(scale);
+			try
+			{
+				var content = new Border();
+				var SUT = new ScrollViewer
+				{
+					// Truncated to float like the window sizes on Android, so values carry the same rounding noise.
+					Height = (float)(Math.Round(670.18 * scale) / scale),
+					Width = 400,
+					Content = content,
+				};
+
+				await UITestHelper.Load(new StackPanel { Children = { SUT } });
+
+				var scrollBar = FindTemplateChild<ScrollBar>(SUT, "VerticalScrollBar");
+				var thumb = FindTemplateChild<FrameworkElement>(scrollBar, "VerticalPanningThumb");
+				Assert.IsNotNull(thumb);
+
+				for (var contentHeight = 900.0; contentHeight < 1000; contentHeight += 1.7)
+				{
+					content.Height = contentHeight;
+					SUT.UpdateLayout();
+					SUT.ChangeView(null, SUT.ScrollableHeight, null, disableAnimation: true);
+					await TestServices.WindowHelper.WaitForIdle();
+
+					var thumbHeight = thumb.ActualHeight;
+					thumb.InvalidateMeasure();
+					scrollBar.InvalidateMeasure();
+
+					try
+					{
+						// Throws a LayoutCycleException if the thumb keeps changing the ScrollBar's size.
+						SUT.UpdateLayout();
+					}
+					catch (Exception e)
+					{
+						Assert.Fail($"Layout did not settle for content height {contentHeight}: {e.Message}");
+					}
+
+					// The template wraps the ScrollBar in a Grid with Padding; a ScrollBar that desires more than it was
+					// given makes that Grid, and the ScrollBar's track, taller than the ScrollViewer.
+					var scrollBarHost = (FrameworkElement)VisualTreeHelper.GetParent(scrollBar);
+					Assert.IsTrue(thumbHeight > 0, $"the panning thumb should be visible for content height {contentHeight}");
+					Assert.AreEqual(thumbHeight, thumb.ActualHeight, $"the thumb height should be stable for content height {contentHeight}");
+					Assert.IsTrue(
+						scrollBarHost.ActualHeight <= SUT.ActualHeight + 0.001,
+						$"the ScrollBar host ({scrollBarHost.ActualHeight * scale} px) should fit in the ScrollViewer ({SUT.ActualHeight * scale} px) for content height {contentHeight}");
+				}
+			}
+			finally
+			{
+				TestServices.WindowHelper.UnsetTestScaling();
+			}
+		}
+#endif
+
 		private static Point Center(Rect rect)
 			=> new Point(rect.Left + (rect.Width / 2), rect.Top + (rect.Height / 2));
 
