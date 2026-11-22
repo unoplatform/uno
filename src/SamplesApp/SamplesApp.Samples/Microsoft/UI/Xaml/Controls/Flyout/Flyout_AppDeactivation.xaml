@@ -1,0 +1,44 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_AppDeactivation"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <StackPanel
+        Padding="12"
+        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+        Spacing="8">
+        <TextBlock Text="Open the flyout, then pick a file or leave the app and come back. The flyout stays open only when its Closing is cancelled or the feature flag is set." TextWrapping="Wrap" />
+        <CheckBox x:Name="CancelClosingCheckBox" Content="Cancel the flyout's Closing" />
+        <CheckBox
+            x:Name="PreventLightDismissCheckBox"
+            Checked="PreventLightDismissCheckBox_Changed"
+            Content="FeatureConfiguration.Popup.PreventLightDismissOnWindowDeactivated"
+            Unchecked="PreventLightDismissCheckBox_Changed" />
+        <Button x:Name="OwnerButton" Content="Open flyout">
+            <Button.Flyout>
+                <Flyout
+                    x:Name="SampleFlyout"
+                    Closed="SampleFlyout_Closed"
+                    Closing="SampleFlyout_Closing"
+                    Opened="SampleFlyout_Opened">
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="Flyout content" />
+                        <Button
+                            x:Name="PickButton"
+                            Click="PickButton_Click"
+                            Content="Pick a file" />
+                        <Button
+                            x:Name="CloseButton"
+                            Click="CloseButton_Click"
+                            Content="Close" />
+                    </StackPanel>
+                </Flyout>
+            </Button.Flyout>
+        </Button>
+        <Button Click="ClearLog_Click" Content="Clear log" />
+        <TextBlock x:Name="LogTextBlock" TextWrapping="Wrap" />
+    </StackPanel>
+</UserControl>
