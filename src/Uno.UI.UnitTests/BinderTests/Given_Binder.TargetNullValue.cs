@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
+using Uno.UI.Xaml;
 
 namespace Uno.UI.Tests.BinderTests
 {
@@ -163,6 +164,70 @@ namespace Uno.UI.Tests.BinderTests
 
 			Assert.AreEqual("initial", viewModel.Name);
 			Assert.AreEqual(0, viewModel.NameSetCount);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25251")]
+		public void When_TwoWay_Converter_Target_Equals_Converted_TargetNullValue_Source_Receives_Null()
+		{
+			var target = new MyControl();
+			var viewModel = new EditableViewModel { Name = null };
+
+			target.DataContext = viewModel;
+			target.SetBinding(
+				MyControl.MyPropertyProperty,
+				new Microsoft.UI.Xaml.Data.Binding(nameof(viewModel.Name))
+				{
+					Mode = BindingMode.TwoWay,
+					Converter = new UpperCaseConverter(),
+					TargetNullValue = "none",
+					UpdateSourceTrigger = UpdateSourceTrigger.Explicit,
+				}
+			);
+
+			Assert.AreEqual("NONE", target.MyProperty);
+
+			target.GetBindingExpression(MyControl.MyPropertyProperty).UpdateSource();
+
+			Assert.IsNull(viewModel.Name);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25251")]
+		public void When_xBind_TwoWay_Target_Equals_TargetNullValue_Source_Receives_Target_Value()
+		{
+			var target = new MyControl();
+			var viewModel = new EditableViewModel { Name = null };
+
+			var binding = new Microsoft.UI.Xaml.Data.Binding()
+			{
+				Path = nameof(viewModel.Name),
+				Mode = BindingMode.TwoWay,
+				TargetNullValue = "none",
+				UpdateSourceTrigger = UpdateSourceTrigger.Explicit,
+			};
+			binding.SetBindingXBindProvider(
+				viewModel,
+				ctx => (true, ((EditableViewModel)ctx).Name),
+				(ctx, value) => ((EditableViewModel)ctx).Name = (string)value,
+				new[] { nameof(viewModel.Name) });
+
+			target.SetBinding(MyControl.MyPropertyProperty, binding);
+			target.ApplyXBind();
+
+			Assert.AreEqual("none", target.MyProperty);
+
+			target.GetBindingExpression(MyControl.MyPropertyProperty).UpdateSource();
+
+			// WinUI's generated x:Bind back path assigns the target value as-is; TargetNullValue only applies forward.
+			Assert.AreEqual("none", viewModel.Name);
+		}
+
+		public class UpperCaseConverter : IValueConverter
+		{
+			public object Convert(object value, Type targetType, object parameter, string culture) => (value as string)?.ToUpperInvariant();
+
+			public object ConvertBack(object value, Type targetType, object parameter, string culture) => (value as string)?.ToLowerInvariant();
 		}
 
 		public class UnsetValueConverter : IValueConverter

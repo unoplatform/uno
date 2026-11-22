@@ -262,8 +262,9 @@ namespace Microsoft.UI.Xaml.Data
 			{
 				_IsCurrentlyPushingTwoWay = true;
 
-				if (ParentBinding.TargetNullValue is { } targetNullValue
-					&& Equals(value, ConvertToBoundPropertyType(targetNullValue)))
+				if (ParentBinding.XBindBack is null
+					&& ParentBinding.TargetNullValue is { } targetNullValue
+					&& Equals(value, ConvertValue(targetNullValue)))
 				{
 					value = null;
 				}
