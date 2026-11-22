@@ -36,6 +36,10 @@ public partial class ScrollBar
 		SizeChanged += OnSizeChanged;
 		Loaded += ReAttachEvents;
 		Unloaded += DetachEvents;
+
+		// TODO Uno: NOT PORTED - Uno has no UISettings.AutoHideScrollBarsChanged notification yet.
+		// DXamlCore::GetCurrent()->RegisterForChangeVisualStateOnDynamicScrollbarsSettingChanged(this);
+		// (and UnregisterFromDynamicScrollbarsSettingChanged in the destructor)
 	}
 
 	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
@@ -610,7 +614,6 @@ public partial class ScrollBar
 		// were added in RS4. Since Expanded can exist without ExpandedWithoutAnimation (and the same for collapsed)
 		// each time we try to transition  to a *WithoutAnimation state we need to check to make sure the transition was
 		// successful. If it was not we fallback to the appropriate expanded or collapsed state.
-		// No Quirks are required since these are new states and if the states are not present then they are no-op.
 		// UseTransitions is always true since the delay behavior is defined in the transitions when
 		// animations are enabled. When animations are disabled, the framework does not run transitions.
 		if (!IsConscious())
@@ -1102,7 +1105,7 @@ public partial class ScrollBar
 		out double pTouchIndicatorLength)
 	{
 		double result = double.NaN;
-		bool hideThumb = trackLength <= 0.0;
+		bool hideThumb = DoubleUtil.LessThanOrClose(trackLength, 0.0);
 		bool mouseIndicatorLengthWasSet = false;
 		bool touchIndicatorLengthWasSet = false;
 		pMouseIndicatorLength = 0.0;
@@ -1272,6 +1275,9 @@ public partial class ScrollBar
 			if (m_tpElementHorizontalPanningThumbVisibility.HasValue) m_tpElementHorizontalPanningThumb.Visibility = m_tpElementHorizontalPanningThumbVisibility.Value;
 			if (m_tpElementVerticalPanningThumbVisibility.HasValue) m_tpElementVerticalPanningThumb.Visibility = m_tpElementVerticalPanningThumbVisibility.Value;
 		}
+
+		// TODO Uno: NOT PORTED - Uno has no layout cycle warning contexts (CUIElement::StoreLayoutCycleWarningContext).
+		// StoreLayoutCycleWarningContext(trackLength, repeatButtonsLength, minimum, maximum, mouseIndicatorSize, touchIndicatorSize, mouseMinSize, touchMinSize, actualSize);
 	}
 
 	// during a SemanticZoomOperation we want to be able to block the scrollbar
@@ -1298,6 +1304,7 @@ public partial class ScrollBar
 
 		// If somebody is calling this when not dragging, are they confused?
 		var dragging = IsDragging;
+		global::System.Diagnostics.Debug.Assert(dragging);
 
 		m_dragValue += delta;
 	}
@@ -1310,7 +1317,11 @@ public partial class ScrollBar
 
 		if (roundValue)
 		{
-			value = LayoutRound(value);
+			float valueF = (float)value;
+
+			valueF = (float)LayoutRound(valueF);
+
+			value = valueF;
 		}
 
 		return roundValue;
