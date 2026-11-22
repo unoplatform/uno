@@ -171,10 +171,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		UIApplication.Notifications
 			.ObserveDidChangeStatusBarOrientation(DismissPopups);
 #endif
-
-		// Dismiss when the app is entering background
-		UIApplication.Notifications
-			.ObserveWillResignActive(DismissPopups);
 	}
 
 	private void DismissPopups(object? sender, object? args)

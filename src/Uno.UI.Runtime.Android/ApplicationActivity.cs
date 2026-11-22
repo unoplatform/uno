@@ -13,7 +13,6 @@ using Android.Widget;
 using AndroidX.Activity;
 using AndroidX.Core.Graphics;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI;
@@ -27,7 +26,6 @@ using Windows.Devices.Sensors;
 using Windows.Graphics.Display;
 using Windows.Storage.Pickers;
 using Windows.UI.ViewManagement;
-using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 
 namespace Uno.UI.Runtime.Android
@@ -569,13 +567,8 @@ namespace Uno.UI.Runtime.Android
 
 		protected override void OnPause()
 		{
+			// The base deactivates the window, and PopupRoot dismisses the light dismiss popups for that.
 			base.OnPause();
-
-			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #8341.
-			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
-			{
-				VisualTreeHelper.CloseLightDismissPopups(contentRoot.XamlRoot);
-			}
 
 			DismissKeyboard();
 		}
