@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference dxaml\xcp\dxaml\lib\ScrollBar_Partial.cpp, tag winui3/release/1.6.5, commit 444ec52426
+// MUX Reference dxaml\xcp\dxaml\lib\ScrollBar_Partial.cpp
 
 using System;
 using DirectUI;

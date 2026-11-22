@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference dxaml\xcp\dxaml\lib\winrtgeneratedclasses\ScrollBar.g.cpp, tag winui3/release/2.7.0, commit 1b5b1a0ccc
+// MUX Reference dxaml\xcp\dxaml\lib\winrtgeneratedclasses\ScrollBar.g.cpp
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
