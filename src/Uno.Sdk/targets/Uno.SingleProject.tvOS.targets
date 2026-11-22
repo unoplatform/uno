@@ -13,10 +13,11 @@
 		<CodesignEntitlements Condition=" Exists('$(tvOSProjectFolder)Entitlements-$(Configuration).plist') ">$(tvOSProjectFolder)Entitlements-$(Configuration).plist</CodesignEntitlements>
 	</PropertyGroup>
 
-	<ItemGroup Condition=" '$(UnoDisableMEDITrimmingWorkaround)' == '' ">
+	<ItemGroup Condition=" '$(UnoDisableMEDITrimmingWorkaround)' == '' AND '$(Optimize)' != 'true' ">
 		<!--
 		Workaround for tvOS requiring Microsoft.Extensions.DependencyInjection to be
-		excluded from linking on devices when logging is enabled
+		excluded from linking on devices when debug logging is enabled. Rooting it in Release
+		keeps System.Linq.Expressions in the CoreCLR composite R2R image (~5 MB).
 		-->
 		<TrimmerRootAssembly Include="Microsoft.Extensions.DependencyInjection" />
 	</ItemGroup>
