@@ -25,39 +25,53 @@ internal class LinuxAccentColorExtension : IAccentColorExtension
 
 	private AccentColorPalette? _currentPalette;
 
+	// UI-thread-owned. Once a SettingChanged value is applied, a later-arriving initial read is stale.
+	private bool _settingChangeApplied;
+
+	// Kept for the lifetime of the app once the setting watch is established.
+	private DBusConnection? _connection;
+
 	private LinuxAccentColorExtension()
 	{
 		_ = Init();
 	}
 
 	// Null (default palette) until the asynchronous portal read completes; the OS value then arrives through
-	// AccentColorChanged. Init continues off the UI thread and the setter marshals to the dispatcher, so the
+	// AccentColorChanged. Init continues off the UI thread and UpdatePalette marshals to the dispatcher, so the
 	// first write always lands after the startup frame that created this instance has subscribed.
 	public AccentColorPalette? GetAccentColorPalette() => _currentPalette;
 
-	private AccentColorPalette? CurrentPalette
+	private void UpdatePalette(AccentColorPalette? value, bool isInitialRead)
 	{
-		get => _currentPalette;
-		set
+		if (!NativeDispatcher.Main.HasThreadAccess)
 		{
-			if (NativeDispatcher.Main.HasThreadAccess)
+			NativeDispatcher.Main.Enqueue(() => UpdatePalette(value, isInitialRead));
+			return;
+		}
+
+		if (isInitialRead)
+		{
+			if (_settingChangeApplied)
 			{
-				// The shades are derived from the accent, so comparing Accent is enough to detect a change.
-				if (_currentPalette?.Accent != value?.Accent)
-				{
-					_currentPalette = value;
-					AccentColorChanged?.Invoke(this, EventArgs.Empty);
-				}
+				return;
 			}
-			else
-			{
-				NativeDispatcher.Main.Enqueue(() => CurrentPalette = value);
-			}
+		}
+		else
+		{
+			_settingChangeApplied = true;
+		}
+
+		// The shades are derived from the accent, so comparing Accent is enough to detect a change.
+		if (_currentPalette?.Accent != value?.Accent)
+		{
+			_currentPalette = value;
+			AccentColorChanged?.Invoke(this, EventArgs.Empty);
 		}
 	}
 
 	private async Task Init()
 	{
+		DBusConnection? connection = null;
 		try
 		{
 			var sessionsAddressBus = DBusAddress.Session;
@@ -70,7 +84,7 @@ internal class LinuxAccentColorExtension : IAccentColorExtension
 				return;
 			}
 
-			var connection = new DBusConnection(sessionsAddressBus);
+			connection = new DBusConnection(sessionsAddressBus);
 			await connection.ConnectAsync().ConfigureAwait(false);
 
 			var desktopService = new DBusService(connection, Service);
@@ -84,6 +98,7 @@ internal class LinuxAccentColorExtension : IAccentColorExtension
 				{
 					this.Log().Warn($"System accent color detection requires version 2 of the Settings portal, but version {version} was found. The default accent will be used.");
 				}
+				connection.Dispose();
 				return;
 			}
 
@@ -104,7 +119,7 @@ internal class LinuxAccentColorExtension : IAccentColorExtension
 
 					if (tuple is { Namespace: AppearanceNamespace, Key: AccentColorKey })
 					{
-						CurrentPalette = ToPalette(tuple.Value);
+						UpdatePalette(ToPalette(tuple.Value), isInitialRead: false);
 					}
 				}
 				catch (Exception e)
@@ -116,10 +131,12 @@ internal class LinuxAccentColorExtension : IAccentColorExtension
 				}
 			}).ConfigureAwait(false);
 
+			_connection = connection;
+
 			try
 			{
 				var result = await settings.ReadOneAsync(AppearanceNamespace, AccentColorKey).ConfigureAwait(false);
-				CurrentPalette = ToPalette(result);
+				UpdatePalette(ToPalette(result), isInitialRead: true);
 			}
 			catch (DBusErrorReplyException e) when (e.ErrorName == NotFoundErrorName)
 			{
@@ -139,6 +156,11 @@ internal class LinuxAccentColorExtension : IAccentColorExtension
 		}
 		catch (Exception e)
 		{
+			if (_connection is null)
+			{
+				connection?.Dispose();
+			}
+
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
 				this.Log().Error("Unable to observe the system accent color. (DBus Settings error, see https://aka.platform.uno/x11-dbus-troubleshoot for troubleshooting information)", e);
