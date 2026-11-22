@@ -117,7 +117,11 @@ namespace Uno.UI
 
 				var orientation = DisplayInformation.GetForCurrentView().CurrentOrientation;
 
-				var keyboardRect = new Rect(0, adjustResizeFrame.Bottom, realMetrics.WidthPixels, adjustNothingFrame.Bottom);
+				// The occluded area runs to the window's bottom: edge-to-edge puts the navigation bar, under the keyboard,
+				// inside the window. Like API 30+, end it where the window ends: NativeWindowWrapper sizes it from the real metrics.
+				var keyboardRect = adjustResizeFrame.Bottom < adjustNothingFrame.Bottom
+					? new Rect(0, adjustResizeFrame.Bottom, realMetrics.WidthPixels, realMetrics.HeightPixels)
+					: new Rect(0, adjustResizeFrame.Bottom, realMetrics.WidthPixels, adjustNothingFrame.Bottom);
 
 				switch (orientation)
 				{
