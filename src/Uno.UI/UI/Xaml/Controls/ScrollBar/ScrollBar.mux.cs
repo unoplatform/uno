@@ -34,8 +34,6 @@ public partial class ScrollBar
 		DefaultStyleKey = typeof(ScrollBar);
 
 		SizeChanged += OnSizeChanged;
-		Loaded += ReAttachEvents;
-		Unloaded += DetachEvents;
 
 		// TODO Uno: NOT PORTED - Uno has no UISettings.AutoHideScrollBarsChanged notification yet.
 		// DXamlCore::GetCurrent()->RegisterForChangeVisualStateOnDynamicScrollbarsSettingChanged(this);
@@ -343,15 +341,6 @@ public partial class ScrollBar
 		}
 	}
 
-	private static void ReAttachEvents(object snd, RoutedEventArgs args) // OnLoaded
-	{
-		if (snd is ScrollBar sb)
-		{
-			sb.DetachEvents(); // Do not double listen events!
-			sb.AttachEvents();
-		}
-	}
-
 	private void AttachEvents()
 	{
 		// Uno specific: WinUI has every interactive part ignore touch, as the bar is only an indicator there.
@@ -568,7 +557,6 @@ public partial class ScrollBar
 			return;
 		}
 
-		// Uno Specific: Performance optimization - only load half of the template if orientation is fixed.
 		base.ChangeVisualState(bUseTransitions);
 
 		var scrollingIndicator = IndicatorMode;
@@ -670,9 +658,11 @@ public partial class ScrollBar
 		// on the ScrollViewer and ScrollContentPresenter that will keep to ask ScrollBar for updating
 		// the track length continuously which is a layout cycle crash.
 		//
-		if (m_isUsingActualSizeAsExtent
-			&& (IsMeasureDirty || IsArrangeDirty) // TODO Uno: Should also check IsOnMeasureDirtyPath and IsOnArrangeDirtyPath
-		)
+		if ((m_isUsingActualSizeAsExtent) &&
+			(IsMeasureDirty ||
+			IsMeasureDirtyPath ||
+			IsArrangeDirty ||
+			IsArrangeDirtyPath))
 		{
 			var viewport = ViewportSize;
 
@@ -1111,13 +1101,6 @@ public partial class ScrollBar
 		pMouseIndicatorLength = 0.0;
 		pTouchIndicatorLength = 0.0;
 
-		// Uno workaround: If the scrollbar is smaller than the min size of the thumb,
-		//		we will try to set the visibility collapsed and then request to 'HideThumb',
-		//		which will drive uno to fall in an infinite layout cycle.
-		//		We instead cache the value and apply it only at the end.
-		double? m_tpElementHorizontalThumbWidth = default, m_tpElementVerticalThumbHeight = default, m_tpElementHorizontalPanningThumbWidth = default, m_tpElementVerticalPanningThumbHeight = default;
-		Visibility? m_tpElementHorizontalThumbVisibility = default, m_tpElementVerticalThumbVisibility = default, m_tpElementHorizontalPanningThumbVisibility = default, m_tpElementVerticalPanningThumbVisibility = default;
-
 		if (!hideThumb)
 		{
 			double mouseMinSize = 0.0;
@@ -1150,8 +1133,8 @@ public partial class ScrollBar
 				}
 				else
 				{
-					m_tpElementHorizontalThumbVisibility = Visibility.Visible;
-					m_tpElementHorizontalThumbWidth = result;
+					m_tpElementHorizontalThumb.Visibility = Visibility.Visible;
+					m_tpElementHorizontalThumb.Width = result;
 					mouseIndicatorLengthWasSet = true;
 				}
 			}
@@ -1174,8 +1157,8 @@ public partial class ScrollBar
 				}
 				else
 				{
-					m_tpElementVerticalThumbVisibility = Visibility.Visible;
-					m_tpElementVerticalThumbHeight = result;
+					m_tpElementVerticalThumb.Visibility = Visibility.Visible;
+					m_tpElementVerticalThumb.Height = result;
 					mouseIndicatorLengthWasSet = true;
 				}
 			}
@@ -1208,8 +1191,8 @@ public partial class ScrollBar
 				}
 				else
 				{
-					m_tpElementHorizontalPanningThumbVisibility = Visibility.Visible;
-					m_tpElementHorizontalPanningThumbWidth = result;
+					m_tpElementHorizontalPanningThumb.Visibility = Visibility.Visible;
+					m_tpElementHorizontalPanningThumb.Width = result;
 					touchIndicatorLengthWasSet = true;
 				}
 			}
@@ -1231,8 +1214,8 @@ public partial class ScrollBar
 				}
 				else
 				{
-					m_tpElementVerticalPanningThumbVisibility = Visibility.Visible;
-					m_tpElementVerticalPanningThumbHeight = result;
+					m_tpElementVerticalPanningThumb.Visibility = Visibility.Visible;
+					m_tpElementVerticalPanningThumb.Height = result;
 					touchIndicatorLengthWasSet = true;
 				}
 			}
@@ -1262,18 +1245,6 @@ public partial class ScrollBar
 			{
 				m_tpElementVerticalPanningThumb.Visibility = Visibility.Collapsed;
 			}
-		}
-		else
-		{
-			// Uno workaround: Apply the cached values
-			if (m_tpElementHorizontalThumbWidth.HasValue) m_tpElementHorizontalThumb.Width = m_tpElementHorizontalThumbWidth.Value;
-			if (m_tpElementVerticalThumbHeight.HasValue) m_tpElementVerticalThumb.Height = m_tpElementVerticalThumbHeight.Value;
-			if (m_tpElementHorizontalPanningThumbWidth.HasValue) m_tpElementHorizontalPanningThumb.Width = m_tpElementHorizontalPanningThumbWidth.Value;
-			if (m_tpElementVerticalPanningThumbHeight.HasValue) m_tpElementVerticalPanningThumb.Height = m_tpElementVerticalPanningThumbHeight.Value;
-			if (m_tpElementHorizontalThumbVisibility.HasValue) m_tpElementHorizontalThumb.Visibility = m_tpElementHorizontalThumbVisibility.Value;
-			if (m_tpElementVerticalThumbVisibility.HasValue) m_tpElementVerticalThumb.Visibility = m_tpElementVerticalThumbVisibility.Value;
-			if (m_tpElementHorizontalPanningThumbVisibility.HasValue) m_tpElementHorizontalPanningThumb.Visibility = m_tpElementHorizontalPanningThumbVisibility.Value;
-			if (m_tpElementVerticalPanningThumbVisibility.HasValue) m_tpElementVerticalPanningThumb.Visibility = m_tpElementVerticalPanningThumbVisibility.Value;
 		}
 
 		// TODO Uno: NOT PORTED - Uno has no layout cycle warning contexts (CUIElement::StoreLayoutCycleWarningContext).
