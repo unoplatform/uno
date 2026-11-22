@@ -34,7 +34,11 @@ internal sealed class AndroidKeyboardInputSource : IUnoKeyboardInputSource
 		try
 		{
 			var isDown = e.Action == KeyEventActions.Down;
-			var args = new KeyEventArgs("keyboard", virtualKey, modifiers, default(CorePhysicalKeyStatus)/*TODO*/, unicodeKey: (char)e.GetUnicodeChar(e.MetaState));
+			var unicodeChar = e.GetUnicodeChar(e.MetaState);
+
+			// 0 means the key types nothing (Back, arrows, F keys...). As a '\0' it would raise CharacterReceived:
+			// a ComboBox would type-ahead to its next item and a TextBox would insert it.
+			var args = new KeyEventArgs("keyboard", virtualKey, modifiers, default(CorePhysicalKeyStatus)/*TODO*/, unicodeKey: unicodeChar == 0 ? null : (char)unicodeChar);
 			if (isDown)
 			{
 				KeyDown?.Invoke(this, args);
