@@ -163,22 +163,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 #if __TVOS__
 		RemoteInput.AttachSwipeRecognizers(view);
 #endif
-
-		// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13847.
-
-#if !__TVOS__
-		// Dismiss on device rotation: this reproduces the windows behavior
-		UIApplication.Notifications
-			.ObserveDidChangeStatusBarOrientation(DismissPopups);
-#endif
-	}
-
-	private void DismissPopups(object? sender, object? args)
-	{
-		if (_xamlRoot is not null)
-		{
-			VisualTreeHelper.CloseLightDismissPopups(_xamlRoot);
-		}
 	}
 
 	private void NativeOverlayLayer_SubviewsChanged(object? sender, EventArgs e) => _lastSvgClipPath = null; // Ensure the clip path is invalidated for next render.
