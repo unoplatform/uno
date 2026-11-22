@@ -1335,9 +1335,13 @@ namespace Microsoft.UI.Xaml
 				return value;
 			}
 
+			// Uno: sizes are stored as floats, so a size on the pixel grid can come back a hair under it
+			// (e.g. (float)(7 / 1.25) * 1.25 < 7), which must not cost a whole pixel.
+			const double tolerance = 0.01;
+
 			double scaleFactor = GetScaleFactorForLayoutRounding();
 
-			return Math.Floor(value * scaleFactor) / scaleFactor;
+			return Math.Floor(value * scaleFactor + tolerance) / scaleFactor;
 #else
 			return value;
 #endif
