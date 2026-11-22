@@ -2661,6 +2661,15 @@ partial class ComboBox
 		}
 		else
 		{
+#if HAS_UNO
+			// A control character (Backspace's '\b') types nothing to search for, and the culture-aware prefix match
+			// ignores it, so it would match every item and select the next one.
+			if (char.IsControl(keyCode))
+			{
+				return;
+			}
+#endif
+
 			foundIndex = SearchItemSourceIndex(keyCode, true /*startSearchFromCurrentIndex*/, false /*searchExactMatch*/);
 			if (foundIndex >= 0)
 			{
