@@ -176,9 +176,11 @@ namespace Uno.UI.Runtime.Android
 
 			var handled = Wrapper.KeyboardSource.OnNativeKeyEvent(e);
 
-			if (!handled)
+			// Android goes back when the Back key-up reaches the activity after its key-down did, so an app that handles
+			// the key-down keeps Back. The key-up must still get there when a control handles every key-up (MenuFlyoutItem).
+			if (!handled || (e.KeyCode == Keycode.Back && e.Action == KeyEventActions.Up))
 			{
-				handled = base.DispatchKeyEvent(e);
+				handled = base.DispatchKeyEvent(e) || handled;
 			}
 
 			return handled;

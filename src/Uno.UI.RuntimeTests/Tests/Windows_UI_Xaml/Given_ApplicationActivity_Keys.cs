@@ -43,6 +43,27 @@ public class Given_ApplicationActivity_Keys
 	}
 
 	[TestMethod]
+	public async Task When_Back_KeyDown_Handled_Then_No_BackRequested()
+	{
+		if (IsPredictiveBack)
+		{
+			Assert.Inconclusive("With predictive back (API 36+), the system takes Back before it becomes a key event.");
+		}
+
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
+		var button = new Button { Content = "Handles Back" };
+		button.KeyDown += (_, e) => e.Handled |= e.Key == Windows.System.VirtualKey.GoBack;
+		await UITestHelper.Load(button);
+		button.Focus(FocusState.Programmatic);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		using var back = new BackRequestedCounter();
+		await SendBack();
+
+		Assert.AreEqual(0, back.Count, "An app that handles the Back key-down keeps Back from the system.");
+	}
+
+	[TestMethod]
 	public async Task When_Back_With_ComboBox_Open_Then_Only_DropDown_Closes()
 	{
 		using var resetWindowContent = UITestHelper.ResetWindowContent();
@@ -114,6 +135,48 @@ public class Given_ApplicationActivity_Keys
 		{
 			dialog.Hide();
 			await showTask;
+		}
+	}
+
+	[TestMethod]
+	[DataRow("Flyout")]
+	[DataRow("MenuFlyout")]
+	[DataRow("DatePickerFlyout")]
+	[DataRow("TimePickerFlyout")]
+	public async Task When_Back_With_Flyout_Open_Then_Only_Flyout_Closes(string kind)
+	{
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
+		var target = new Button { Content = "Target" };
+		await UITestHelper.Load(target);
+
+		FlyoutBase flyout = kind switch
+		{
+			"Flyout" => new Flyout { Content = new Button { Content = "Inside" } },
+			"MenuFlyout" => new MenuFlyout { Items = { new MenuFlyoutItem { Text = "One" }, new MenuFlyoutItem { Text = "Two" } } },
+			"DatePickerFlyout" => new DatePickerFlyout(),
+			"TimePickerFlyout" => new TimePickerFlyout(),
+			_ => throw new ArgumentOutOfRangeException(nameof(kind)),
+		};
+
+		var isOpen = false;
+		flyout.Opened += (_, _) => isOpen = true;
+		flyout.Closed += (_, _) => isOpen = false;
+
+		try
+		{
+			flyout.ShowAt(target);
+			await TestServices.WindowHelper.WaitFor(() => isOpen, message: $"the {kind} should open");
+			await TestServices.WindowHelper.WaitForIdle();
+
+			using var back = new BackRequestedCounter();
+			await SendBack();
+
+			Assert.IsFalse(isOpen, $"Back must close the {kind} (BackRequested raised {back.Count} times).");
+			Assert.AreEqual(0, back.Count, $"The Back that closed the {kind} must not also reach BackRequested.");
+		}
+		finally
+		{
+			flyout.Hide();
 		}
 	}
 
