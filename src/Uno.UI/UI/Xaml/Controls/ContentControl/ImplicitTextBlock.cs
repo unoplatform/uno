@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// The ContentPresenter / ContentControl that generated this implicit text for its string content.
 		internal DependencyObject ContentOwner { get; }
 
-		internal static Action<ImplicitTextBlock>? TestHookCreated { get; set; }
+		internal static Action<ImplicitTextBlock> TestHookCreated { get; set; }
 
 		public ImplicitTextBlock(DependencyObject parent)
 		{

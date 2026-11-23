@@ -1246,17 +1246,11 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	partial void DetachNativeElement(object content);
 
 
-	private bool _suppressSetUpdateTemplate;
-
-	internal bool SuppressSetUpdateTemplate
-	{
-		get => _suppressSetUpdateTemplate;
-		set => _suppressSetUpdateTemplate = value;
-	}
+	internal bool SuppressSetUpdateTemplate { get; set; }
 
 	internal void SetUpdateTemplate()
 	{
-		if (_suppressSetUpdateTemplate)
+		if (SuppressSetUpdateTemplate)
 		{
 			return;
 		}
