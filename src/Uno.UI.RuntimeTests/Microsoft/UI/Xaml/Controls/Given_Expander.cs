@@ -14,6 +14,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_Expander
 {
 	[TestMethod]
+	// Guards Uno's InsetClip on Skia. On WinAppSDK the Expander is still header-sized (48 px) when the screenshot is taken.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Content_Translated_Over_Header_Then_Clipped()
 	{
 		var SUT = new Expander
