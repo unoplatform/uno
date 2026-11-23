@@ -73,9 +73,7 @@ namespace Microsoft.UI.Text
 				var content = IsMathMode
 					? RichTextRtfCodec.WriteMath(_mathDocument ?? MathDocument.FromPlainText(PlainText))
 					: RichTextRtfCodec.Write(CaptureFragment(0, _textBuffer.Length));
-				bytes = EncodeRtfStream(
-					content,
-					appendNullTerminator: _textBuffer.Length == 0);
+				bytes = EncodeRtfStream(content);
 			}
 			else
 			{
@@ -99,7 +97,7 @@ namespace Microsoft.UI.Text
 			}
 
 			var bytes = isRtf
-				? EncodeRtfStream(RichTextRtfCodec.Write(CaptureFragment(start, end)), appendNullTerminator: false)
+				? EncodeRtfStream(RichTextRtfCodec.Write(CaptureFragment(start, end)))
 				: EncodePlainText(GetTextInRange(start, end, options));
 			WriteStreamBytes(value, bytes);
 		}
@@ -186,10 +184,11 @@ namespace Microsoft.UI.Text
 			return bytes;
 		}
 
-		private static byte[] EncodeRtfStream(string content, bool appendNullTerminator)
+		private static byte[] EncodeRtfStream(string content)
 		{
 			var byteCount = Encoding.Latin1.GetByteCount(content);
-			var terminatorLength = 2 + (appendNullTerminator ? 1 : 0);
+			// Native RichEdit NUL-pads RTF stream output to an even byte count.
+			var terminatorLength = 2 + ((byteCount + 2) % 2);
 			if (byteCount > RichTextRtfCodec.MaxRtfOutputLength - terminatorLength)
 			{
 				throw new ArgumentException("The RTF stream output is too large.", nameof(content));
