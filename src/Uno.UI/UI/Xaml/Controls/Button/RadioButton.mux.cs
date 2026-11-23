@@ -362,7 +362,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// Otherwise, use the root
 			else
 			{
-				radioButtonParent = VisualTree.GetRootForElement(radioButton); //Uno specific: Return RootVisual instead of VisualTreeHelper.GetRootStatic(radioButton);
+				radioButtonParent = GetTreeRoot(radioButton);
 			}
 
 			if (radioButtonParent != null)
@@ -371,6 +371,20 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			return parent;
+		}
+
+		// Port of CDependencyObject::GetTreeRoot(publicParentOnly: true): the topmost ancestor below the root visual or island root.
+		private static DependencyObject GetTreeRoot(DependencyObject element)
+		{
+			var pBase = element;
+			var pParent = pBase.GetParent() as DependencyObject;
+			while (pParent is not null && pParent is not RootVisual && pParent is not Uno.UI.Xaml.Islands.XamlIslandRoot)
+			{
+				pBase = pParent;
+				pParent = pParent.GetParent() as DependencyObject;
+			}
+
+			return pBase;
 		}
 
 		internal void AutomationRadioButtonOnToggle()
