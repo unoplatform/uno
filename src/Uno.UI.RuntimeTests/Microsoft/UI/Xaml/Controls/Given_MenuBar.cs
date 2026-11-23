@@ -56,6 +56,25 @@ public class Given_MenuBar
 	}
 
 	[TestMethod]
+	// KeyboardHelper is a no-op on WinAppSDK
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[Ignore("The next flyout closes right after opening: the deferred Closed callback in FlyoutBase.RemoveFromOpenFlyouts hides _openFlyouts[0], which is by then the new flyout.")]
+	public async Task When_Flyout_Open_And_Right_Arrow_Then_Next_Flyout_Opens()
+	{
+		var (_, items) = await Load(("File", true, 1), ("Edit", true, 1));
+
+		Invoke(items[0]);
+		await WindowHelper.WaitFor(() => items[0].IsFlyoutOpen());
+		await WindowHelper.WaitForIdle();
+
+		await KeyboardHelper.Right();
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsFalse(items[0].IsFlyoutOpen());
+		Assert.IsTrue(items[1].IsFlyoutOpen(), "The next item's flyout should open and stay open.");
+	}
+
+	[TestMethod]
 	public async Task When_Item_Has_No_Children_Then_Invoke_Opens_No_Flyout()
 	{
 		var (_, items) = await Load(("Empty", true, 0));
