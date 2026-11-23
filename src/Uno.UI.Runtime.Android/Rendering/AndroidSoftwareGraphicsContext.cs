@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using System.Collections.Concurrent;
 using Android.Opengl;
 using Android.Runtime;
 using Java.Nio;
@@ -40,17 +39,13 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 		"uniform sampler2D uTex;\n" +
 		"void main() { gl_FragColor = texture2D(uTex, vTex); }\n";
 
-	// Resources of a context disposed off the GL thread: a GL delete
-	// issued with no current context silently no-ops, and the CPU buffer can still back a live Skia surface.
-	// Drained by the next Present, on the GL thread, once the replacement context has been negotiated.
-	private static readonly ConcurrentQueue<(int Program, int Texture, ByteBuffer? Buffer)> _pendingDisposal = new();
-
 	private ByteBuffer? _buffer;
 	private nint _pixels;
 	private int _width, _height;
 	private AndroidSoftwareRenderTarget? _target;
 
 	private bool _glInitialized;
+	private long _eglContext;
 	private int _program;
 	private int _texture;
 	private int _posLocation;
@@ -88,7 +83,6 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 			return;
 		}
 
-		DrainPendingDisposal();
 		EnsureGL();
 
 		GLES20.GlViewport(0, 0, _width, _height);
@@ -113,21 +107,18 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 		GLES20.GlDisableVertexAttribArray(_texLocation);
 	}
 
-	private static void DrainPendingDisposal()
+	private static long CurrentEglContext() => EGL14.EglGetCurrentContext()?.NativeHandle ?? 0;
+
+	private static void DeleteGLObjects(int program, int texture)
 	{
-		while (_pendingDisposal.TryDequeue(out var pending))
+		if (texture != 0)
 		{
-			if (pending.Texture != 0)
-			{
-				GLES20.GlDeleteTextures(1, new[] { pending.Texture }, 0);
-			}
+			GLES20.GlDeleteTextures(1, new[] { texture }, 0);
+		}
 
-			if (pending.Program != 0)
-			{
-				GLES20.GlDeleteProgram(pending.Program);
-			}
-
-			pending.Buffer?.Dispose();
+		if (program != 0)
+		{
+			GLES20.GlDeleteProgram(program);
 		}
 	}
 
@@ -138,6 +129,7 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 			return;
 		}
 
+		_eglContext = CurrentEglContext();
 		_program = LinkProgram(VertexShaderSource, FragmentShaderSource);
 		_posLocation = GLES20.GlGetAttribLocation(_program, "aPos");
 		_texLocation = GLES20.GlGetAttribLocation(_program, "aTex");
@@ -200,15 +192,21 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 		return shader;
 	}
 
+	/// <remarks>
+	/// The caller disposes the backend first, so no Skia surface still wraps the CPU buffer.
+	/// </remarks>
 	public void Dispose()
 	{
-		// Queued rather than deleted inline: this can run on the UI thread, where the GL deletes would no-op and
-		// the backend may still hold an SKSurface over the buffer.
-		if (_program != 0 || _texture != 0 || _buffer is not null)
+		// GL names are per EGL context, so only the owning one may delete them. When it isn't current, it is either
+		// lost or being destroyed (a teardown after its surface is gone), and destroying it frees them.
+		if (_eglContext != 0 && CurrentEglContext() == _eglContext)
 		{
-			_pendingDisposal.Enqueue((_program, _texture, _buffer));
+			DeleteGLObjects(_program, _texture);
 		}
 
+		_buffer?.Dispose();
+
+		_eglContext = 0;
 		_program = 0;
 		_texture = 0;
 		_glInitialized = false;
