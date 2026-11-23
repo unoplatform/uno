@@ -114,7 +114,9 @@ public class Given_TabView
 #if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
-	public async Task When_Tab_Dragged_Then_Item_Tracks_Drag()
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_Tab_Dragged_Then_Item_Tracks_Drag(bool reapplyTemplate)
 	{
 		var firstItem = new TabViewItem { Header = "Tab 1" };
 		var thirdItem = new TabViewItem { Header = "Tab 3" };
@@ -128,6 +130,22 @@ public class Given_TabView
 		try
 		{
 			await UITestHelper.Load(SUT);
+
+			if (reapplyTemplate)
+			{
+				var template = firstItem.Template;
+				var oldCloseButton = firstItem.GetTemplateChild("CloseButton");
+
+				firstItem.Template = null;
+				await WindowHelper.WaitForIdle();
+				firstItem.Template = template;
+				firstItem.ApplyTemplate();
+				await WindowHelper.WaitForIdle();
+
+				var newCloseButton = firstItem.GetTemplateChild("CloseButton");
+				Assert.IsNotNull(newCloseButton, "The template was not re-applied.");
+				Assert.AreNotSame(oldCloseButton, newCloseButton, "The template was not re-applied.");
+			}
 
 			var dragStarted = false;
 			var dragCompleted = false;
@@ -229,13 +247,67 @@ public class Given_TabView
 		var SUT = new TabView();
 		SUT.TabItems.Add(new TabViewItem { Header = "Tab 2" });
 
-		await UITestHelper.Load(SUT);
+		try
+		{
+			await UITestHelper.Load(SUT);
 
-		var itemRef = await AddAndRemoveTab(SUT);
-		await LeakTestHelper.CollectAsync([itemRef]);
+			var itemRef = await AddAndRemoveTab(SUT);
+			await LeakTestHelper.CollectAsync([itemRef]);
 
-		Assert.IsFalse(itemRef.IsAlive, "The removed TabViewItem is still alive.");
-		Assert.HasCount(1, SUT.TabItems);
+			Assert.IsFalse(itemRef.IsAlive, "The removed TabViewItem is still alive.");
+			Assert.HasCount(1, SUT.TabItems);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	public async Task When_TabItemsSource_Item_Removed_Then_Collected()
+	{
+		var source = new ObservableCollection<TabLeakData> { new() { Header = "Tab 2" } };
+		var SUT = new TabView { TabItemsSource = source };
+
+		try
+		{
+			await UITestHelper.Load(SUT);
+
+			var dataRef = await AddAndRemoveSourceItem(SUT, source);
+			await LeakTestHelper.CollectAsync([dataRef]);
+
+			Assert.IsFalse(dataRef.IsAlive, "The removed data item is still alive.");
+			Assert.HasCount(1, source);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+	private static async Task<WeakReference> AddAndRemoveSourceItem(TabView tabView, ObservableCollection<TabLeakData> source)
+	{
+		var data = new TabLeakData { Header = "Tab 1" };
+		source.Insert(0, data);
+		await WindowHelper.WaitForIdle();
+
+		var container = (TabViewItem)tabView.ContainerFromItem(data);
+		Assert.IsNotNull(container, "No container was generated for the data item.");
+		await UITestHelper.WaitForLoaded(container);
+		container = null;
+
+		source.Remove(data);
+		await WindowHelper.WaitForIdle();
+
+		return new WeakReference(data);
+	}
+
+	private sealed class TabLeakData
+	{
+		public string Header { get; set; }
+
+		public override string ToString() => Header;
 	}
 
 	[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
@@ -260,16 +332,23 @@ public class Given_TabView
 		var SUT = new TabView { DataContext = viewModel };
 		SUT.TabItems.Add(new TabViewItem { Header = "Tab 2" });
 
-		await UITestHelper.Load(SUT);
+		try
+		{
+			await UITestHelper.Load(SUT);
 
-		var refs = await AddAndRemoveRichTab(SUT, isSelected);
-		await LeakTestHelper.CollectAsync(refs);
+			var refs = await AddAndRemoveRichTab(SUT, isSelected);
+			await LeakTestHelper.CollectAsync(refs);
 
-		Assert.IsFalse(refs[0].IsAlive, "The removed TabViewItem is still alive.");
-		Assert.IsFalse(refs[1].IsAlive, "The removed TabViewItem's Header is still alive.");
-		Assert.IsFalse(refs[2].IsAlive, "The removed TabViewItem's Content is still alive.");
-		Assert.HasCount(1, SUT.TabItems);
-		GC.KeepAlive(viewModel);
+			Assert.IsFalse(refs[0].IsAlive, "The removed TabViewItem is still alive.");
+			Assert.IsFalse(refs[1].IsAlive, "The removed TabViewItem's Header is still alive.");
+			Assert.IsFalse(refs[2].IsAlive, "The removed TabViewItem's Content is still alive.");
+			Assert.HasCount(1, SUT.TabItems);
+			GC.KeepAlive(viewModel);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
 	}
 
 	[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
@@ -280,7 +359,7 @@ public class Given_TabView
 			Orientation = Orientation.Horizontal,
 			Children =
 			{
-				new FontIcon { Glyph = "" },
+				new FontIcon { Glyph = "\uE8A5" },
 				new TextBlock(),
 			}
 		};
