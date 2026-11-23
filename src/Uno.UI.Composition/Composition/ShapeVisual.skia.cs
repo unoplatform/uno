@@ -135,58 +135,138 @@ public partial class ShapeVisual
 	{
 		localBounds = default;
 
-		if (_shapes is not { Count: > 0 } shapes)
+		if (_shapes is not { Count: > 0 })
 		{
 			return ShadowState is null;
 		}
 
-		var any = false;
-		var acc = default(Rect);
-		for (var i = 0; i < shapes.Count; i++)
-		{
-			// A shape this doesn't know how to bound leaves the whole visual unbounded.
-			if (shapes[i] is not CompositionSpriteShape sprite)
-			{
-				return false;
-			}
+		return base.TryGetLocalContentBounds(out localBounds);
+	}
 
-			if (sprite.TryGetRenderBounds(out var shapeBounds))
-			{
-				if (any)
-				{
-					acc.Union(shapeBounds);
-				}
-				else
-				{
-					acc = shapeBounds;
-					any = true;
-				}
-			}
-		}
-
-		if (!any)
+	// The union of each shape's bounds: unioning the geometries themselves costs more with every shape, which a
+	// visual of thousands of shapes repaints every frame can't afford just for its damage bounds.
+	private protected override bool TryBuildPaintedBounds(out Rect bounds)
+	{
+		bounds = default;
+		if (_shapes is not { Count: > 0 } shapes)
 		{
 			return true;
 		}
 
-		// Paint applies the ViewBox as a translate-then-scale (see Paint); the bounds follow it.
+		float left = float.PositiveInfinity, top = float.PositiveInfinity, right = float.NegativeInfinity, bottom = float.NegativeInfinity;
+		foreach (var shape in shapes)
+		{
+			if (!shape.CanPaint())
+			{
+				continue;
+			}
+
+			// Only sprite shapes describe what they paint; anything else leaves the visual unbounded.
+			if (shape is not CompositionSpriteShape sprite)
+			{
+				return false;
+			}
+
+			using var shapeGeometry = sprite.BuildRenderGeometry();
+			if (shapeGeometry is null || shapeGeometry.IsEmpty)
+			{
+				continue;
+			}
+
+			var shapeBounds = shapeGeometry.Bounds;
+			if (sprite.GetRenderTransform() is { IsIdentity: false } shapeTransform
+				&& !shapeBounds.TryTransformBounds(new Matrix4x4(shapeTransform), out shapeBounds))
+			{
+				return false;
+			}
+
+			left = MathF.Min(left, (float)shapeBounds.Left);
+			top = MathF.Min(top, (float)shapeBounds.Top);
+			right = MathF.Max(right, (float)shapeBounds.Right);
+			bottom = MathF.Max(bottom, (float)shapeBounds.Bottom);
+		}
+
+		if (left > right || top > bottom)
+		{
+			return true;
+		}
+
+		var painted = new Rect(left, top, right - left, bottom - top);
+		// Paint applies the ViewBox as a translate-then-scale before the shapes.
 		if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
 		{
-			var sx = Size.X / viewBox.Size.X;
-			var sy = Size.Y / viewBox.Size.Y;
-			acc = new Rect(
-				sx * (acc.X - viewBox.Offset.X),
-				sy * (acc.Y - viewBox.Offset.Y),
-				sx * acc.Width,
-				sy * acc.Height);
+			var m = Matrix3x2.CreateTranslation(-viewBox.Offset.X, -viewBox.Offset.Y)
+				* Matrix3x2.CreateScale(Size.X / viewBox.Size.X, Size.Y / viewBox.Size.Y);
+			if (!painted.TryTransformBounds(new Matrix4x4(m), out painted))
+			{
+				return false;
+			}
 		}
 
-		if (ShadowState is not null)
+		bounds = painted;
+		return true;
+	}
+
+	private protected override bool TryBuildPaintedGeometry(out IGeometry? geometry)
+	{
+		geometry = null;
+
+		if (_shapes is not { Count: > 0 } shapes)
 		{
-			return TryGetShadowSilhouetteBounds(acc, out localBounds);
+			return true;
 		}
 
-		localBounds = acc;
+		IGeometry? painted = null;
+		foreach (var shape in shapes)
+		{
+			if (!shape.CanPaint())
+			{
+				continue;
+			}
+
+			// Only sprite shapes describe what they paint; anything else leaves the visual unbounded.
+			if (shape is not CompositionSpriteShape sprite)
+			{
+				painted?.Dispose();
+				return false;
+			}
+
+			if (sprite.BuildRenderGeometry() is not { } shapeGeometry)
+			{
+				continue;
+			}
+
+			if (sprite.GetRenderTransform() is { IsIdentity: false } shapeTransform)
+			{
+				var untransformed = shapeGeometry;
+				shapeGeometry = shapeGeometry.Transform(shapeTransform);
+				untransformed.Dispose();
+			}
+
+			if (painted is null)
+			{
+				painted = shapeGeometry;
+			}
+			else
+			{
+				var union = painted.Combine(shapeGeometry, GeometryCombineMode.Union);
+				painted.Dispose();
+				shapeGeometry.Dispose();
+				painted = union;
+			}
+		}
+
+		// Paint applies the ViewBox as a translate-then-scale before the shapes.
+		if (painted is not null && ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
+		{
+			var m = Matrix3x2.CreateTranslation(-viewBox.Offset.X, -viewBox.Offset.Y)
+				* Matrix3x2.CreateScale(Size.X / viewBox.Size.X, Size.Y / viewBox.Size.Y);
+			var untransformed = painted;
+			painted = painted.Transform(m);
+			untransformed.Dispose();
+		}
+
+		geometry = painted;
 		return true;
 	}
 
