@@ -807,6 +807,7 @@ internal sealed partial class TextBoxCore
 
 		if (_host.RaiseBeforeValueChanging(baseString))
 		{
+			_textInputRefused = true;
 #if __SKIA__
 			// On WinUI, when a selection is canceled, the TextBox invokes a bunch of weird
 			// SelectionChanging events followed by a bunch of matching SelectionChanged.
@@ -884,6 +885,7 @@ internal sealed partial class TextBoxCore
 	{
 		OnIsReadonlyChangedPartial();
 		UpdateButtonStates();
+		TextBoxView?.UpdateProperties();
 	}
 
 	internal void OnHeaderChanged()
