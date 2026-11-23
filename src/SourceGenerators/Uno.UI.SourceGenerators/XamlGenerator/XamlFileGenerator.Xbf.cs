@@ -92,6 +92,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		/// <summary>
+		/// The metadata provider of the file. For a top-level dictionary it is nested in GlobalStaticResources,
+		/// which the class of a dictionary with an x:Class is not part of.
+		/// </summary>
+		private string XbfProviderAccess => _isTopLevelDictionary
+			? $"{GlobalPrefix}{_defaultNamespace}.GlobalStaticResources.{_xbf!.ClassName}.Instance"
+			: $"{_xbf!.ClassName}.Instance";
+
 		private const string XbfInterfacesToken = "/*__xbf_interfaces__*/";
 
 		/// <summary>
@@ -170,7 +178,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				writer.AppendLineIndented(
-					$"{XbfLoaderType}.LoadComponent(this, {_xbf.ClassName}.Instance, {offset.ToString(CultureInfo.InvariantCulture)}, __nameScope, {ParseContextPropertyAccess}, __baseUri_{_fileUniqueId});");
+					$"{XbfLoaderType}.LoadComponent(this, {XbfProviderAccess}, {offset.ToString(CultureInfo.InvariantCulture)}, __nameScope, {ParseContextPropertyAccess}, __baseUri_{_fileUniqueId});");
 				writer.AppendLineIndented("OnInitializeCompleted();");
 
 				CurrentScope.RegisterMethod("__XbfConnect", (_, connectWriter) => BuildXbfConnect(connectWriter));
@@ -312,7 +320,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				writer.AppendLineIndented(
 					$"(({knownType.GetFullyQualifiedTypeIncludingGlobal()}){XbfLoaderType}.Load(" +
-					$"{_xbf.ClassName}.Instance, {offset.ToString(CultureInfo.InvariantCulture)}, {CurrentResourceOwnerName}, {ParseContextPropertyAccess}, __baseUri_{_fileUniqueId}))");
+					$"{XbfProviderAccess}, {offset.ToString(CultureInfo.InvariantCulture)}, {CurrentResourceOwnerName}, {ParseContextPropertyAccess}, __baseUri_{_fileUniqueId}))");
 
 				return true;
 			}
