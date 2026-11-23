@@ -30,6 +30,6 @@
 		<ProjectReference Include="..\Uno.UI.Composition.WebGpu.Init\Uno.UI.Composition.WebGpu.Init.csproj" />
 		<PackageReference Include="Silk.NET.WebGPU" />
 		<PackageReference Include="Silk.NET.WebGPU.Extensions.WGPU" />
-		<PackageReference Include="Uno.WinUI.Composition.WebGpu.Dawn" />
+		<PackageReference Include="Uno.Dawn" />
 	</ItemGroup>
 </Project>

@@ -35,21 +35,16 @@ internal static class WebGpuLoader
 	// first use, not at module initialization: Android sets UNO_* variables from the launch intent in OnCreate.
 	private static readonly Lazy<string?> _override = new(() => OperatingSystem.IsBrowser() ? null : Environment.GetEnvironmentVariable("UNO_WEBGPU_LIBRARY") is { Length: > 0 } path ? path : null);
 
+	/// <summary>The native WebGPU library, loaded if no "webgpu" [DllImport] has bound it yet. Not for the browser.</summary>
+	internal static IntPtr Library => Resolved != IntPtr.Zero ? Resolved : NativeLibrary.Load("webgpu", typeof(WGPU).Assembly, null);
+
 	/// <summary>
-	/// Whether the native library is Dawn rather than wgpu-native. Both implement webgpu.h, but only wgpu-native has its
-	/// own extensions (wgpuDevicePoll among them), which the binding stands in for on Dawn. Loads the library to tell.
+	/// Whether the native library is Dawn rather than wgpu-native, whose extensions the binding then takes from the
+	/// Uno.Dawn package. Loads the library to tell.
 	/// </summary>
 	internal static bool IsDawn => _isDawn.Value;
 
-	private static readonly Lazy<bool> _isDawn = new(() =>
-	{
-		if (OperatingSystem.IsBrowser())
-		{
-			return false;
-		}
-		var library = Resolved != IntPtr.Zero ? Resolved : NativeLibrary.Load("webgpu", typeof(WGPU).Assembly, null);
-		return !NativeLibrary.TryGetExport(library, "wgpuDevicePoll", out _);
-	});
+	private static readonly Lazy<bool> _isDawn = new(() => !OperatingSystem.IsBrowser() && Uno.Dawn.DawnLibrary.IsDawn(Library));
 
 	private static IntPtr Resolve(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
 	{
@@ -110,9 +105,10 @@ internal static class WebGpuLoader
 
 	private static IntPtr TryLoadDesktop()
 	{
-		var (dawn, wgpu) = OperatingSystem.IsWindows() ? ("webgpu.dll", "wgpu_native.dll")
-			: OperatingSystem.IsMacOS() ? ("libwebgpu.dylib", "libwgpu_native.dylib")
-			: ("libwebgpu.so", "libwgpu_native.so");
+		var dawn = Uno.Dawn.DawnLibrary.FileName;
+		var wgpu = OperatingSystem.IsWindows() ? "wgpu_native.dll"
+			: OperatingSystem.IsMacOS() ? "libwgpu_native.dylib"
+			: "libwgpu_native.so";
 		var ridFolder = System.IO.Path.Combine(AppContext.BaseDirectory, "runtimes", RuntimeInformation.RuntimeIdentifier, "native");
 		foreach (var file in new[] { dawn, wgpu })
 		{

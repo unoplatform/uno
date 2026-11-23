@@ -122,8 +122,8 @@
 		<PackageVersion Include="Silk.NET.OpenGL" Version="2.23.0" />
 		<PackageVersion Include="Silk.NET.WebGPU" Version="2.23.0" />
 		<PackageVersion Include="Silk.NET.WebGPU.Extensions.WGPU" Version="2.23.0" />
-		<!-- Built by build/dawn from the Dawn release in build/dawn/version.json; the version is that release's tag. -->
-		<PackageVersion Include="Uno.WinUI.Composition.WebGpu.Dawn" Version="0.20260624.223603" />
+		<!-- Dawn's native libraries and managed glue, built in https://github.com/unoplatform/uno.dawn. -->
+		<PackageVersion Include="Uno.Dawn" Version="0.1.0-dev.2" />
 		<PackageVersion Include="SkiaSharp" Version="$(SkiaSharpVersion)" />
 		<PackageVersion Include="SkiaSharp.NativeAssets.Android" Version="$(SkiaSharpVersion)" />
 		<PackageVersion Include="SkiaSharp.NativeAssets.iOS" Version="$(SkiaSharpVersion)" />

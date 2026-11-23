@@ -29,6 +29,9 @@
 	<ItemGroup>
 		<PackageReference Include="Silk.NET.WebGPU" />
 		<PackageReference Include="Silk.NET.WebGPU.Extensions.WGPU" />
+		<!-- Dawn's managed half only (DawnLibrary). Every host references this assembly, so the native libraries come with
+		     the renderer (Uno.UI.Composition.WebGpu) instead, for apps that use WebGPU. -->
+		<PackageReference Include="Uno.Dawn" ExcludeAssets="native;build;buildTransitive" PrivateAssets="native;build;buildTransitive" />
 		<!-- The tool that generates SilkCompat.Generated.cs, a project of its own. -->
 		<Compile Remove="SilkCompat\Generator\**" />
 		<None Remove="SilkCompat\Generator\**" />

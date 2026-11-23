@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using Uno.Dawn;
 using SW = Silk.NET.WebGPU;
 using SX = Silk.NET.WebGPU.Extensions.WGPU;
 
@@ -123,15 +124,10 @@ internal static unsafe partial class Xlate
 				*o = default;
 			}
 			o->BackendType = DawnBackend;
-			if (OperatingSystem.IsWindows())
+			if (DawnLibrary.AdapterTogglesSize is > 0 and var size)
 			{
-				var toggles = (WGPUDawnTogglesDescriptor*)a.Alloc(sizeof(WGPUDawnTogglesDescriptor));
-				*toggles = new WGPUDawnTogglesDescriptor
-				{
-					Chain = new WGPUChainedStruct { Next = (IntPtr)o->NextInChain, SType = DawnTogglesDescriptorSType },
-					DisabledToggleCount = 1,
-					DisabledToggles = _dawnDisabledToggles,
-				};
+				var toggles = a.Alloc(size);
+				DawnLibrary.WriteAdapterToggles((nint)toggles, (nint)o->NextInChain);
 				o->NextInChain = (WGPUChainedStruct*)toggles;
 			}
 		}
@@ -203,7 +199,7 @@ internal static unsafe partial class Xlate
 			{
 				features[i] = d->RequiredFeatures[i];
 			}
-			features[count] = (WGPUFeatureName)DawnImplicitDeviceSynchronization;
+			features[count] = (WGPUFeatureName)DawnLibrary.ImplicitDeviceSynchronizationFeature;
 			d->RequiredFeatures = features;
 			d->RequiredFeatureCount = (nuint)(count + 1);
 		}

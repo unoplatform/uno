@@ -11,7 +11,7 @@
 	Consumer-side native wiring for the WebGpu backend.
 
 	wgpu-native is the opt-in engine (UnoWebGpuNative=WgpuNative); Dawn, the default, comes with the
-	Uno.WinUI.Composition.WebGpu.Dawn package and its own targets.
+	Uno.Dawn package and its own targets.
 
 	Every other platform resolves its native through runtimes/<rid>/native at load time, so it needs nothing here.
 	iOS is the exception: Apple apps cannot dlopen a library from outside the bundle, so wgpu-native is linked

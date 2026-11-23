@@ -1,6 +1,6 @@
 <Project>
 	<!-- Fetches the pinned wgpu-native (modern webgpu.h ABI) release and provisions it for an app head that selects it
-	     with UnoWebGpuNative=WgpuNative; Dawn, the default, comes from the Uno.WinUI.Composition.WebGpu.Dawn package.
+	     with UnoWebGpuNative=WgpuNative; Dawn, the default, comes from the Uno.Dawn package.
 	     On desktop it keeps its own name (wgpu_native.dll / libwgpu_native.so / libwgpu_native.dylib), since Dawn ships
 	     under the DllImport's ("webgpu"), and WebGpuLoader looks for both. Import this from the WebGpu backend project and
 	     from any app head that renders with the WebGPU backend. Cached under obj/. -->

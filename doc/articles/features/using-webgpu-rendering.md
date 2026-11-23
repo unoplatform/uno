@@ -47,7 +47,7 @@ The same two calls apply to the host builder of each target, for example before 
 
 ## Choosing the WebGPU library
 
-On native targets the backend uses Dawn, which comes with the `WebGpu` feature (the `Uno.WinUI.Composition.WebGpu.Dawn` package). To use [wgpu-native](https://github.com/gfx-rs/wgpu-native) instead, set `UnoWebGpuNative` in the app project:
+On native targets the backend uses Dawn, which comes with the `WebGpu` feature (the `Uno.Dawn` package). To use [wgpu-native](https://github.com/gfx-rs/wgpu-native) instead, set `UnoWebGpuNative` in the app project:
 
 ```xml
 <PropertyGroup>

@@ -8,21 +8,21 @@
 		<readme>README.md</readme>
 		<projectUrl>https://github.com/unoplatform/uno</projectUrl>
 		<license type="expression">Apache-2.0</license>
-		<description>The WebGPU drawing backend for Uno Platform (implements the neutral IRenderBackend seam over the managed geometry engine). Referenced by the 'WebGpu' UnoFeature; opt-in. Renders with Dawn (Uno.WinUI.Composition.WebGpu.Dawn) by default; UnoWebGpuNative=WgpuNative selects the wgpu-native runtime it also carries.</description>
+		<description>The WebGPU drawing backend for Uno Platform (implements the neutral IRenderBackend seam over the managed geometry engine). Referenced by the 'WebGpu' UnoFeature; opt-in. Renders with Dawn (Uno.Dawn) by default; UnoWebGpuNative=WgpuNative selects the wgpu-native runtime it also carries.</description>
 		<copyright>Copyright (C) 2015-$year$ Uno Platform Inc. - all rights reserved</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 		<dependencies>
 			<group targetFramework="net10.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Uno.WinUI.Composition.WebGpu.Init" version="to-be-set-by-ci" />
-				<!-- KEEP IN STEP with Uno.WinUI.Composition.WebGpu.Dawn in src/Directory.Packages.props. -->
-				<dependency id="Uno.WinUI.Composition.WebGpu.Dawn" version="0.20260624.223603" />
+				<!-- KEEP IN STEP with Uno.Dawn in src/Directory.Packages.props. -->
+				<dependency id="Uno.Dawn" version="0.1.0-dev.2" />
 			</group>
 			<group targetFramework="net11.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Uno.WinUI.Composition.WebGpu.Init" version="to-be-set-by-ci" />
-				<!-- KEEP IN STEP with Uno.WinUI.Composition.WebGpu.Dawn in src/Directory.Packages.props. -->
-				<dependency id="Uno.WinUI.Composition.WebGpu.Dawn" version="0.20260624.223603" />
+				<!-- KEEP IN STEP with Uno.Dawn in src/Directory.Packages.props. -->
+				<dependency id="Uno.Dawn" version="0.1.0-dev.2" />
 			</group>
 		</dependencies>
 	</metadata>
