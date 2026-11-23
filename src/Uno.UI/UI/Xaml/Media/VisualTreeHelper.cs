@@ -265,19 +265,6 @@ namespace Microsoft.UI.Xaml.Media
 			}
 		}
 
-		internal static void CloseLightDismissPopups(XamlRoot xamlRoot)
-		{
-			if (xamlRoot is null)
-			{
-				throw new ArgumentNullException(nameof(xamlRoot));
-			}
-
-			foreach (var popup in GetOpenPopups(xamlRoot.VisualTree).Where(p => p.IsLightDismissEnabled))
-			{
-				popup.IsOpen = false;
-			}
-		}
-
 		internal static void CloseAllFlyouts(XamlRoot xamlRoot)
 		{
 			foreach (var popup in GetOpenFlyoutPopups(xamlRoot))
