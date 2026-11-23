@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 
 using Private.Infrastructure;
@@ -189,6 +191,92 @@ public class Given_TabView
 		await WindowHelper.WaitForIdle();
 
 		return new WeakReference(item);
+	}
+
+	[TestMethod]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_TabViewItem_With_Bound_Content_Removed_Then_Collected(bool isSelected)
+	{
+		var viewModel = new TabLeakViewModel();
+		var SUT = new TabView { DataContext = viewModel };
+		SUT.TabItems.Add(new TabViewItem { Header = "Tab 2" });
+
+		await UITestHelper.Load(SUT);
+
+		var refs = await AddAndRemoveRichTab(SUT, isSelected);
+		await LeakTestHelper.CollectAsync(refs);
+
+		Assert.IsFalse(refs[0].IsAlive, "The removed TabViewItem is still alive.");
+		Assert.IsFalse(refs[1].IsAlive, "The removed TabViewItem's Header is still alive.");
+		Assert.IsFalse(refs[2].IsAlive, "The removed TabViewItem's Content is still alive.");
+		Assert.HasCount(1, SUT.TabItems);
+		GC.KeepAlive(viewModel);
+	}
+
+	[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+	private static async Task<List<WeakReference>> AddAndRemoveRichTab(TabView tabView, bool isSelected)
+	{
+		var header = new StackPanel
+		{
+			Orientation = Orientation.Horizontal,
+			Children =
+			{
+				new FontIcon { Glyph = "" },
+				new TextBlock(),
+			}
+		};
+		((TextBlock)header.Children[1]).SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath(nameof(TabLeakViewModel.Title)) });
+
+		var textBox = new TextBox();
+		textBox.SetBinding(TextBox.TextProperty, new Binding { Path = new PropertyPath(nameof(TabLeakViewModel.Text)), Mode = BindingMode.TwoWay });
+		var content = new StackPanel
+		{
+			Children =
+			{
+				textBox,
+				new Button { Content = "Button" },
+				new ListView { ItemsSource = new[] { "A", "B", "C" } },
+			}
+		};
+
+		var item = new TabViewItem
+		{
+			Header = header,
+			IconSource = new SymbolIconSource { Symbol = Symbol.Document },
+			Content = content,
+		};
+		tabView.TabItems.Insert(0, item);
+		await UITestHelper.WaitForLoaded(item);
+
+		if (isSelected)
+		{
+			tabView.SelectedItem = item;
+			await UITestHelper.WaitForLoaded(content);
+		}
+
+		tabView.TabItems.Remove(item);
+		await WindowHelper.WaitForIdle();
+
+		return [new WeakReference(item), new WeakReference(header), new WeakReference(content)];
+	}
+
+	private class TabLeakViewModel : ViewModelBase
+	{
+		private string _title = "Bound title";
+		private string _text = "Bound text";
+
+		public string Title
+		{
+			get => _title;
+			set => SetAndRaiseIfChanged(ref _title, value);
+		}
+
+		public string Text
+		{
+			get => _text;
+			set => SetAndRaiseIfChanged(ref _text, value);
+		}
 	}
 
 	[TestMethod]
