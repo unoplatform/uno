@@ -363,6 +363,91 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26384")]
+		public async Task When_Checked_Button_Joins_Group_Then_Other_Checked_Button_Is_Unchecked()
+		{
+			var a = new RadioButton { GroupName = "Given_RadioButton_Join_g" };
+			var b = new RadioButton { GroupName = "Given_RadioButton_Join_h" };
+			var c = new RadioButton { GroupName = "Given_RadioButton_Join_g" };
+			var container = new StackPanel { Children = { a, b, c } };
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+
+			a.IsChecked = true;
+			b.IsChecked = true;
+
+			b.GroupName = "Given_RadioButton_Join_g";
+
+			Assert.IsFalse(a.IsChecked);
+			Assert.IsTrue(b.IsChecked);
+			Assert.IsFalse(c.IsChecked);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26384")]
+		public async Task When_Unchecked_Button_Joins_Group_Then_Checked_Button_Stays_Checked()
+		{
+			var a = new RadioButton { GroupName = "Given_RadioButton_Unchecked_g" };
+			var b = new RadioButton { GroupName = "Given_RadioButton_Unchecked_h" };
+			var container = new StackPanel { Children = { a, b } };
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+
+			a.IsChecked = true;
+
+			b.GroupName = "Given_RadioButton_Unchecked_g";
+
+			Assert.IsTrue(a.IsChecked);
+			Assert.IsFalse(b.IsChecked);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26384")]
+		public async Task When_Indeterminate_Button_Joins_Group_Then_Other_Checked_Button_Is_Unchecked()
+		{
+			// WinUI only skips the group update when the button is explicitly unchecked.
+			var a = new RadioButton { GroupName = "Given_RadioButton_Indeterminate_g" };
+			var b = new RadioButton { GroupName = "Given_RadioButton_Indeterminate_h", IsThreeState = true };
+			var container = new StackPanel { Children = { a, b } };
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+
+			a.IsChecked = true;
+			b.IsChecked = null;
+
+			b.GroupName = "Given_RadioButton_Indeterminate_g";
+
+			Assert.IsFalse(a.IsChecked);
+			Assert.IsNull(b.IsChecked);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26384")]
+		public async Task When_Buttons_Checked_While_Detached_Then_One_Stays_Checked_When_Loaded()
+		{
+			// The group update is skipped while a button has no parent for its group, WinUI
+			// reconciles the group when the button enters the live tree (RadioButton::EnterImpl).
+			var a = new RadioButton { GroupName = "Given_RadioButton_Detached_g" };
+			var b = new RadioButton { GroupName = "Given_RadioButton_Detached_g" };
+			var container = new StackPanel { Children = { a, b } };
+
+			a.IsChecked = true;
+			b.IsChecked = true;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+
+			Assert.AreEqual(1, (a.IsChecked == true ? 1 : 0) + (b.IsChecked == true ? 1 : 0));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_RadioButtons_Unload_SelectedIndex()
 		{
 			var vm = new When_RadioButtons_Unload_VM
