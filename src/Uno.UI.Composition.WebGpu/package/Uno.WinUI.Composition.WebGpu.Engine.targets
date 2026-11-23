@@ -1,0 +1,20 @@
+<Project>
+
+	<!--
+	The native WebGPU engine the app ships: Dawn (the Uno.Dawn package) or WgpuNative (wgpu-native, carried by
+	Uno.WinUI.Composition.WebGpu). Only the selected engine's libraries reach the app. The targets that act on it, in
+	this package and in Uno.Dawn, read it when they run, after this default is set.
+
+	Imported by the package's targets and by the repository's wgpu-native.targets, so in-repo heads get the same default.
+	-->
+	<PropertyGroup Condition="'$(_UnoWebGpuEngineImported)' != 'true'">
+		<_UnoWebGpuEngineImported>true</_UnoWebGpuEngineImported>
+		<UnoWebGpuNative Condition="'$(UnoWebGpuNative)' == ''">Dawn</UnoWebGpuNative>
+	</PropertyGroup>
+
+	<Target Name="_UnoWebGpuValidateNative" BeforeTargets="ResolveReferences;BeforeBuild"
+			Condition="'$(UnoWebGpuNative)' != 'Dawn' And '$(UnoWebGpuNative)' != 'WgpuNative'">
+		<Error Code="UNOB0037" Text="UnoWebGpuNative is '$(UnoWebGpuNative)'. Set it to Dawn (the default) or WgpuNative." />
+	</Target>
+
+</Project>

@@ -16,13 +16,13 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Uno.WinUI.Composition.WebGpu.Init" version="to-be-set-by-ci" />
 				<!-- KEEP IN STEP with Uno.Dawn in src/Directory.Packages.props. -->
-				<dependency id="Uno.Dawn" version="0.1.0-dev.2" />
+				<dependency id="Uno.Dawn" version="0.1.0-dev.4" />
 			</group>
 			<group targetFramework="net11.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Uno.WinUI.Composition.WebGpu.Init" version="to-be-set-by-ci" />
 				<!-- KEEP IN STEP with Uno.Dawn in src/Directory.Packages.props. -->
-				<dependency id="Uno.Dawn" version="0.1.0-dev.2" />
+				<dependency id="Uno.Dawn" version="0.1.0-dev.4" />
 			</group>
 		</dependencies>
 	</metadata>
@@ -56,6 +56,8 @@
 		     Exists(), so leaving the second file out disables the trimming with no error at all. -->
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\package\Uno.WinUI.Composition.WebGpu.targets" target="buildTransitive\Uno.WinUI.Composition.WebGpu.targets" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\package\Uno.WinUI.Composition.WebGpu.NativeTrim.targets" target="buildTransitive\Uno.WinUI.Composition.WebGpu.NativeTrim.targets" />
+		<!-- Imported unconditionally by the targets above: without it UnoWebGpuNative has no default. -->
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\package\Uno.WinUI.Composition.WebGpu.Engine.targets" target="buildTransitive\Uno.WinUI.Composition.WebGpu.Engine.targets" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\package\wgpu-native-ios.symbols" target="buildTransitive\wgpu-native-ios.symbols" />
 
 		<!-- iOS links the static archive into the app image, so it cannot come from runtimes/; the targets above

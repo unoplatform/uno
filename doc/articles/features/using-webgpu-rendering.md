@@ -47,7 +47,14 @@ The same two calls apply to the host builder of each target, for example before 
 
 ## Choosing the WebGPU library
 
-On native targets the backend uses Dawn, which comes with the `WebGpu` feature (the `Uno.Dawn` package). To use [wgpu-native](https://github.com/gfx-rs/wgpu-native) instead, set `UnoWebGpuNative` in the app project:
+On native targets the `WebGpu` feature comes with two WebGPU libraries, and the `UnoWebGpuNative` property of the app project selects one:
+
+| `UnoWebGpuNative` | Library |
+|---|---|
+| `Dawn` (the default) | Google's Dawn, from the `Uno.Dawn` package |
+| `WgpuNative` | [wgpu-native](https://github.com/gfx-rs/wgpu-native) |
+
+For example, to use wgpu-native:
 
 ```xml
 <PropertyGroup>
@@ -55,7 +62,9 @@ On native targets the backend uses Dawn, which comes with the `WebGpu` feature (
 </PropertyGroup>
 ```
 
-Only the selected library ships with the app. With Dawn:
+Only the selected library ships with the app. Any other value fails the build with [UNOB0037](xref:Build.Solution.error-codes#unob0037-unowebgpunative-has-an-unknown-value). The property has no effect on WebAssembly, which uses the browser's WebGPU.
+
+With Dawn:
 
 - Linux needs glibc 2.34 or later (Ubuntu 22.04, Debian 12, RHEL 9 and later).
 - macOS needs macOS 12 or later.

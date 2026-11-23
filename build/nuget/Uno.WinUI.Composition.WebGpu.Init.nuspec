@@ -17,14 +17,14 @@
 				<dependency id="Silk.NET.WebGPU" version="2.23.0" />
 				<dependency id="Silk.NET.WebGPU.Extensions.WGPU" version="2.23.0" />
 				<!-- Managed API only: the native libraries come with Uno.WinUI.Composition.WebGpu. KEEP IN STEP with Uno.Dawn in src/Directory.Packages.props. -->
-				<dependency id="Uno.Dawn" version="0.1.0-dev.2" exclude="Build,BuildTransitive,Native" />
+				<dependency id="Uno.Dawn" version="0.1.0-dev.4" exclude="Build,BuildTransitive,Native" />
 			</group>
 			<group targetFramework="net11.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Silk.NET.WebGPU" version="2.23.0" />
 				<dependency id="Silk.NET.WebGPU.Extensions.WGPU" version="2.23.0" />
 				<!-- Managed API only: the native libraries come with Uno.WinUI.Composition.WebGpu. KEEP IN STEP with Uno.Dawn in src/Directory.Packages.props. -->
-				<dependency id="Uno.Dawn" version="0.1.0-dev.2" exclude="Build,BuildTransitive,Native" />
+				<dependency id="Uno.Dawn" version="0.1.0-dev.4" exclude="Build,BuildTransitive,Native" />
 			</group>
 		</dependencies>
 	</metadata>

@@ -413,6 +413,12 @@ The `MauiEmbedding` Uno Feature used to select the native embedding of MAUI cont
 
 To fix this, if the project relies on the native embedding of Uno.Extensions, replace `MauiEmbedding` with `MauiNativeEmbedding` in `UnoFeatures`. If it intends to use `Uno.Maui.Embedding`, remove the `Uno.Extensions.Maui` package references. On the Android, iOS, Mac Catalyst and Windows App SDK targets, an app that keeps these targets but does not need MAUI views on them can add `UNOB0036` to `NoWarn`.
 
+### UNOB0037: UnoWebGpuNative has an unknown value
+
+The `UnoWebGpuNative` property selects the WebGPU library that an app using the `WebGpu` Uno Feature ships on native targets: `Dawn`, the default, or `WgpuNative`. The build reports this error when the property is set to any other value, rather than silently falling back to one of them.
+
+To fix this, set `UnoWebGpuNative` to `Dawn` or `WgpuNative`, or remove it to use Dawn. See [Choosing the WebGPU library](xref:uno.features.renderer.webgpu#choosing-the-webgpu-library).
+
 ## Compiler Errors
 
 ### UNO0001

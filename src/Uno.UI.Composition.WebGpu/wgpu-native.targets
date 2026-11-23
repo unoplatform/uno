@@ -4,6 +4,10 @@
 	     On desktop it keeps its own name (wgpu_native.dll / libwgpu_native.so / libwgpu_native.dylib), since Dawn ships
 	     under the DllImport's ("webgpu"), and WebGpuLoader looks for both. Import this from the WebGpu backend project and
 	     from any app head that renders with the WebGPU backend. Cached under obj/. -->
+
+	<!-- UnoWebGpuNative: Dawn (the default) or WgpuNative, set the same way as for package consumers. -->
+	<Import Project="package\Uno.WinUI.Composition.WebGpu.Engine.targets" />
+
 	<PropertyGroup>
 		<WgpuNativeVersion>v29.0.1.1</WgpuNativeVersion>
 		<WgpuNativeCacheDir>$(MSBuildThisFileDirectory)obj\wgpu-native\$(WgpuNativeVersion)\</WgpuNativeCacheDir>
