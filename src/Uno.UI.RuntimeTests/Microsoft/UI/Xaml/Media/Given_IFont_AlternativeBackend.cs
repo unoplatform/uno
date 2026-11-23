@@ -35,7 +35,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			using (typeface)
 			{
 				using var skFont = new SKFont(typeface, size) { Hinting = SKFontHinting.None };
-				var skiaFont = new SkiaFont(skFont);
+				var skiaFont = new SkiaFont(skFont, new SkiaFontFace(skFont.Typeface));
 
 				var matched = 0;
 				var compositeMatched = 0;

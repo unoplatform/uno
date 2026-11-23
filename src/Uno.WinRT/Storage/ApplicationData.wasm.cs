@@ -3,18 +3,17 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Uno.Foundation;
-using Uno.Foundation.Interop;
 using Uno.Foundation.Logging;
 
 namespace Windows.Storage;
 
 partial class ApplicationData
 {
-	internal async Task EnablePersistenceAsync()
+	internal Task EnablePersistenceAsync()
 	{
 		try
 		{
-			await StorageFolder.MakePersistentAsync(
+			StorageFolder.MakePersistent(
 				LocalFolder,
 				RoamingFolder,
 				// TemporaryFolder.Path: No needs to persist it!
@@ -25,6 +24,8 @@ partial class ApplicationData
 		{
 			this.LogError()?.LogError("Failed to initialize ApplicationData folders", ex);
 		}
+
+		return Task.CompletedTask;
 	}
 
 	private static string GetLocalCacheFolder()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -169,6 +170,86 @@ public class Given_ProgressRing
 		{
 			SUT.IsActive = false;
 		}
+	}
+
+	[TestMethod]
+	public void When_ProgressRing_Collapsed()
+	{
+		var SUT = new ProgressRing
+		{
+			Visibility = Visibility.Collapsed
+		};
+
+		var spacerBorder = new Border
+		{
+			Width = 10,
+			Height = 10,
+			Margin = new Thickness(5)
+		};
+
+		var root = new Grid
+		{
+			Children =
+			{
+				spacerBorder,
+				SUT
+			}
+		};
+
+		root.Measure(new Size(1000, 1000));
+		Assert.AreEqual(10d + 5d + 5d, root.DesiredSize.Height);
+	}
+
+	[TestMethod]
+	[DataRow(32d)]
+	[DataRow(60d)]
+	public async Task When_Sized_TemplateSettings_Follow_Width(double size)
+	{
+		var SUT = new ProgressRing { Width = size, Height = size };
+
+		await UITestHelper.Load(SUT);
+
+		var diameterAdditive = size <= 40.0f ? 1.0f : 0.0f;
+		var diameter = ((float)size * 0.1f) + diameterAdditive;
+		var anchorPoint = ((float)size * 0.5f) - diameter;
+
+		Assert.AreEqual((double)diameter, SUT.TemplateSettings.EllipseDiameter);
+		Assert.AreEqual(new Thickness(0, anchorPoint, 0, 0), SUT.TemplateSettings.EllipseOffset);
+		Assert.AreEqual(size, SUT.TemplateSettings.MaxSideLength);
+	}
+
+	[TestMethod]
+	public void When_Peer_ClassName_Is_Fully_Qualified()
+	{
+		var peer = new Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer(new ProgressRing());
+
+		Assert.AreEqual("Microsoft.UI.Xaml.Controls.ProgressRing", peer.GetClassName());
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // IndeterminateSource and the LottieGen source are Uno-only
+	public async Task When_Custom_Source_Keeps_Its_Colours()
+	{
+#if HAS_UNO
+		var source = new global::Microsoft.UI.Xaml.Controls.AnimatedVisuals.ProgressRingIndeterminate
+		{
+			Foreground = Microsoft.UI.Colors.Red,
+			Background = Microsoft.UI.Colors.Blue,
+		};
+		var SUT = new ProgressRing
+		{
+			IndeterminateSource = source,
+			Foreground = new SolidColorBrush(Microsoft.UI.Colors.Lime),
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Yellow),
+		};
+
+		await UITestHelper.Load(SUT);
+
+		Assert.AreEqual(Microsoft.UI.Colors.Red, source.Foreground);
+		Assert.AreEqual(Microsoft.UI.Colors.Blue, source.Background);
+#else
+		await Task.CompletedTask;
+#endif
 	}
 
 	private static ProgressRing CreateDeterminateRing(Brush foreground, Brush background) => new ProgressRing

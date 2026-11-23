@@ -3,11 +3,13 @@
 //
 
 #import "UNOApplication.h"
+#import "UNOWindow.h"
 
 static UNOApplicationDelegate *ad;
 static system_theme_change_fn_ptr system_theme_change;
 static high_contrast_change_fn_ptr high_contrast_change;
 static text_scale_factor_change_fn_ptr text_scale_factor_change;
+static accent_color_change_fn_ptr accent_color_change;
 static id<MTLDevice> device;
 
 // KVO context pointers (values are not read — only compared for identity).
@@ -22,6 +24,40 @@ inline system_theme_change_fn_ptr uno_get_system_theme_change_callback(void)
 void uno_set_system_theme_change_callback(system_theme_change_fn_ptr p)
 {
     system_theme_change = p;
+}
+
+void uno_set_accent_color_change_callback(accent_color_change_fn_ptr p)
+{
+    accent_color_change = p;
+    // observe NSColor.controlAccentColor changes via the official AppKit notification.
+    // NSSystemColorsDidChangeNotification is posted AFTER AppKit has updated its
+    // color values, so controlAccentColor returns the new value when the callback fires.
+    [[NSNotificationCenter defaultCenter]
+        addObserverForName:NSSystemColorsDidChangeNotification
+                    object:nil
+                     queue:[NSOperationQueue mainQueue]
+                usingBlock:^(NSNotification * _Nonnull note) {
+        if (accent_color_change) {
+            // Defer to next run loop iteration so NSColor.controlAccentColor
+            // returns the updated value (same pattern as theme change callback).
+            dispatch_async(dispatch_get_main_queue(), ^{
+                accent_color_change();
+            });
+        }
+    }];
+}
+
+void uno_get_accent_color(uint8_t *r, uint8_t *g, uint8_t *b)
+{
+    NSColor *accent = [[NSColor controlAccentColor] colorUsingColorSpace:[NSColorSpace sRGBColorSpace]];
+    if (accent) {
+        *r = (uint8_t)(accent.redComponent * 255.0);
+        *g = (uint8_t)(accent.greenComponent * 255.0);
+        *b = (uint8_t)(accent.blueComponent * 255.0);
+    } else {
+        // fallback to default blue
+        *r = 0; *g = 0x78; *b = 0xD7;
+    }
 }
 
 uint32 /* Uno.Helpers.Theming.SystemTheme */ uno_get_system_theme(void)
@@ -274,11 +310,37 @@ bool uno_application_is_bundled(void)
     return NSRunningApplication.currentApplication.bundleIdentifier != nil;
 }
 
+static bool application_exit_requested;
+
+static bool is_session_ending(void)
+{
+    NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
+    if (event.eventClass != kCoreEventClass || event.eventID != kAEQuitApplication) {
+        return false;
+    }
+    OSType reason = [event attributeDescriptorForKeyword:kAEQuitReason].typeCodeValue;
+#if DEBUG
+    NSLog(@"is_session_ending quit reason: '%@'", NSFileTypeForHFSTypeCode(reason));
+#endif
+    switch (reason) {
+        case kAELogOut:
+        case kAEReallyLogOut:
+        case kAEShowRestartDialog:
+        case kAERestart:
+        case kAEShowShutdownDialog:
+        case kAEShutDown:
+            return true;
+        default:
+            return false;
+    }
+}
+
 void uno_application_quit(void)
 {
 #if DEBUG
     NSLog(@"uno_application_quit");
 #endif
+    application_exit_requested = true;
     NSApplication *app = [NSApplication sharedApplication];
     [app terminate:app];
 }
@@ -301,7 +363,24 @@ void uno_application_quit(void)
     NSLog(@"UNOApplicationDelegate.applicationShouldTerminate %@", sender);
 #endif
     // Check if the application can exit (ICoreApplicationExtension.CanExit)
-    return uno_get_application_can_exit_callback()() ? NSTerminateNow : NSTerminateCancel;
+    if (!uno_get_application_can_exit_callback()()) {
+        return NSTerminateCancel;
+    }
+
+    // `Application.Exit()` closed the windows itself, raising `Closed` but not `AppWindow.Closing`, as on WinUI
+    if (application_exit_requested) {
+        return NSTerminateNow;
+    }
+
+    // The end of a session (logout, restart, shutdown) is not refused, as on Windows: it ends the application without
+    // `AppWindow.Closing` or `Closed`
+    if (is_session_ending()) {
+        return NSTerminateNow;
+    }
+
+    // Any other quit (Cmd+Q, the application menu, the Dock) closes the windows as the user would, so `AppWindow.Closing`
+    // can cancel it; once they are closed the application exits, as a quit is not a window close for `DispatcherShutdownMode`
+    return uno_windows_close_for_quit() ? NSTerminateNow : NSTerminateCancel;
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender {

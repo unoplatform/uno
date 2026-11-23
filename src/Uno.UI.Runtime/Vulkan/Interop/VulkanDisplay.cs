@@ -37,6 +37,11 @@ internal class VulkanDisplay : IDisposable
 		CreateSwapchainImages();
 	}
 
+	/// <summary>
+	/// Whether a failed <see cref="RecreateSurface"/> left no swapchain to acquire from.
+	/// </summary>
+	public bool IsSwapchainMissing => _swapchain.Handle == 0;
+
 	internal VkSurfaceFormatKHR SurfaceFormat
 	{
 		get
@@ -206,12 +211,15 @@ internal class VulkanDisplay : IDisposable
 		CreateSwapchainImages();
 	}
 
-	private void RecreateSurface()
+	public void RecreateSurface()
 	{
+		// A surface can only be destroyed after the swapchain created from it.
+		_context.DeviceApi.DeviceWaitIdle(_context.DeviceHandle);
+		DestroyCurrentImageViews();
+		DestroySwapchain();
 		_surface?.Dispose();
 		_surface = null;
 		_surface = new VulkanKhrSurface(_context, _platformSurface);
-		DestroySwapchain();
 		RecreateSwapchain();
 	}
 

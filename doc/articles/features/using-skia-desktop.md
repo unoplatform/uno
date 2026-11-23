@@ -67,33 +67,43 @@ YourAppNamespace.App.ConfigureFilters(); // Enable tracing of the Skia host
 
 ## Upgrading to a later version of SkiaSharp
 
-By default, the [Uno.Sdk](xref:Uno.Features.Uno.Sdk) brings a tested set of **SkiaSharp** dependencies that match the native libraries it ships. To move to a different SkiaSharp version, override the `SkiaSharpVersion` MSBuild property in your project. This retargets the SkiaSharp packages the Uno.Sdk manages, including the platform native-asset packages, to the same version in one place:
+By default, the [Uno.Sdk](xref:Uno.Features.Uno.Sdk) brings a tested set of **SkiaSharp** and **HarfBuzzSharp** packages. To move to a different version, change the native and the managed packages together, to the same version:
+
+- The `SkiaSharpVersion` and `HarfBuzzSharpVersion` properties retarget the native-asset packages the Uno.Sdk references for each platform.
+- The managed `SkiaSharp`, `SkiaSharp.Skottie` and `HarfBuzzSharp` packages come through the Uno Platform packages, so reference them directly at the same version.
+
+In your project file:
 
 ```xml
 <PropertyGroup>
-   <SkiaSharpVersion>4.148.0</SkiaSharpVersion>
+   <SkiaSharpVersion>4.156.1</SkiaSharpVersion>
+   <HarfBuzzSharpVersion>14.4.0.101</HarfBuzzSharpVersion>
 </PropertyGroup>
+<ItemGroup>
+   <PackageReference Include="SkiaSharp" />
+   <PackageReference Include="SkiaSharp.Skottie" />
+   <PackageReference Include="HarfBuzzSharp" />
+</ItemGroup>
 ```
 
-> [!NOTE]
-> A SkiaSharp version mismatch between the managed packages and the bundled native libraries surfaces at runtime, not at build time. Prefer the `SkiaSharpVersion` property so every managed and native SkiaSharp package stays aligned. For the versions the Uno.Sdk manages, see [Using the Uno.Sdk](xref:Uno.Features.Uno.Sdk).
-
-### SkiaSharp 4
-
-SkiaSharp 4.0 reached general availability as `4.148.0`, and Uno Platform is a co-maintainer of SkiaSharp. **Since Uno Platform 7.0, SkiaSharp 4 is the default** — the Uno.Sdk resolves the SkiaSharp package group at a `4.x` version, and you only need to set `SkiaSharpVersion` to move off it. SkiaSharp 4 turns several long-deprecated APIs into compile errors (for example, text APIs that moved from `SKPaint` to `SKFont`), so a project carrying its own SkiaSharp code from `3.x` may need small changes before it builds.
-
-### Pinning packages individually
-
-If you need to control individual packages instead of using the `SkiaSharpVersion` property, reference every **SkiaSharp** and **HarfBuzzSharp** package, including the native-asset packages for each target you build, at the same version. Use `Update` so you retarget the references the Uno.Sdk already provides:
+And in `Directory.Packages.props`:
 
 ```xml
 <ItemGroup>
-   <PackageReference Update="SkiaSharp" Version="4.148.0" />
-   <PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="4.148.0" />
-   <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="4.148.0" />
-   <PackageReference Update="HarfBuzzSharp" Version="14.2.0" />
+   <PackageVersion Include="SkiaSharp" Version="4.156.1" />
+   <PackageVersion Include="SkiaSharp.Skottie" Version="4.156.1" />
+   <PackageVersion Include="HarfBuzzSharp" Version="14.4.0.101" />
 </ItemGroup>
 ```
+
+If your project doesn't use Central Package Management, set the `Version` on the `PackageReference` items instead.
+
+> [!IMPORTANT]
+> SkiaSharp checks its native library when the app starts. If the managed `SkiaSharp` package and the native `libSkiaSharp` library have different versions, the app fails at startup with "The version of the native libSkiaSharp library (…) is incompatible with this version of SkiaSharp". Setting only `SkiaSharpVersion` moves the native packages but not the managed one, so always reference the managed packages too. For the versions the Uno.Sdk manages, see [Using the Uno.Sdk](xref:Uno.Features.Uno.Sdk).
+
+### SkiaSharp 4
+
+SkiaSharp 4.0 reached general availability as `4.148.0`, and Uno Platform is a co-maintainer of SkiaSharp. **Since Uno Platform 7.0, SkiaSharp 4 is the default** — the Uno.Sdk resolves the SkiaSharp package group at a `4.x` version, and the steps above move it to another version. SkiaSharp 4 turns several long-deprecated APIs into compile errors (for example, text APIs that moved from `SKPaint` to `SKFont`), so a project carrying its own SkiaSharp code from `3.x` may need small changes before it builds.
 
 ## Rendering Backend Selection
 
@@ -117,6 +127,8 @@ Alternatively, you can use `FeatureConfiguration.Rendering` flags for backwards 
 When running using X11 Wayland compatibility (e.g. recent Ubuntu releases), DPI scaling cannot be determined in a reliable way. In order to specify the scaling to be used by Uno Platform, set the `UNO_DISPLAY_SCALE_OVERRIDE` environment variable. The default value is `1.0`.
 
 The X11 support uses DBus for various interactions with the system, such as file selection. Make sure that dbus is installed.
+
+System appearance settings are read from the [XDG desktop portal](https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.Settings.html) (`org.freedesktop.portal.Settings`) over the session bus: the light or dark theme, the high contrast mode, the text scaling factor and the [system accent color](windows-ui-viewmanagement.md#system-accent-color). The portal is normally installed and started by the desktop environment (`xdg-desktop-portal` plus a backend such as `xdg-desktop-portal-gnome` or `xdg-desktop-portal-kde`). Each setting needs a backend that exposes it; the accent color requires version 2 of the Settings portal with the `accent-color` key, available on GNOME 47+ and KDE Plasma 6. When the session bus, the portal or the backend is not available, Uno Platform logs the failure and falls back to the defaults (light theme, default blue accent).
 
 ## .NET Native AOT support
 

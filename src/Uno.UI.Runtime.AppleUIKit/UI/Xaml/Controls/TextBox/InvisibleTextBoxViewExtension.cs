@@ -57,7 +57,8 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 		// with two different `FocusState`s (e.g, Programmatic and Keyboard/Pointer)
 		if (_textBoxView is not null)
 		{
-			if (!suppressSoftwareKeyboard && !_textBoxView.IsFirstResponder)
+			_textBoxView.SetSoftwareKeyboardSuppressed(suppressSoftwareKeyboard);
+			if (!_textBoxView.IsFirstResponder)
 			{
 				_textBoxView.BecomeFirstResponder();
 			}
@@ -75,11 +76,11 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 
 		AddViewToTextInputLayer(host.XamlRoot);
 
-		if (!suppressSoftwareKeyboard)
-		{
-			// change FirstResponder's View before removing the previous view to avoid flickering
-			_textBoxView.BecomeFirstResponder();
-		}
+		// A suppressed keyboard still needs the first responder: it is what hardware keyboards type into.
+		_textBoxView.SetSoftwareKeyboardSuppressed(suppressSoftwareKeyboard);
+
+		// change FirstResponder's View before removing the previous view to avoid flickering
+		_textBoxView.BecomeFirstResponder();
 
 		RemovePreviousViewFromTextInputLayer();
 

@@ -76,7 +76,7 @@ namespace Uno.UI.Runtime {
 			if (focusableHandles.length > 0) {
 				const firstElement = document.getElementById(`uno-semantics-${focusableHandles[0]}`);
 				if (firstElement) {
-					firstElement.focus();
+					Accessibility.focusNode(firstElement, false);
 				}
 			}
 		}
@@ -126,11 +126,11 @@ namespace Uno.UI.Runtime {
 			if (trap.triggerHandle) {
 				const triggerElement = document.getElementById(`uno-semantics-${trap.triggerHandle}`);
 				if (triggerElement) {
-					triggerElement.focus();
+					Accessibility.focusNode(triggerElement, false);
 				} else if (trap.parentState && trap.parentState.focusableHandles.length > 0) {
 					const fallback = document.getElementById(`uno-semantics-${trap.parentState.focusableHandles[0]}`);
 					if (fallback) {
-						fallback.focus();
+						Accessibility.focusNode(fallback, false);
 					}
 				}
 			}
@@ -155,7 +155,11 @@ namespace Uno.UI.Runtime {
 				return false;
 			}
 
-			const activeElement = document.activeElement;
+			// Focus on a part of a split button is focus on its node.
+			const focused = document.activeElement;
+			const activeElement = focused instanceof HTMLElement && focused.dataset.unoSplitPart
+				? focused.parentElement
+				: focused;
 			const handles = trap.focusableHandles;
 
 			// Find current position in focusable list
@@ -172,7 +176,7 @@ namespace Uno.UI.Runtime {
 				if (currentIndex <= 0) {
 					const lastElement = document.getElementById(`uno-semantics-${handles[handles.length - 1]}`);
 					if (lastElement) {
-						lastElement.focus();
+						Accessibility.focusNode(lastElement, false);
 						return true;
 					}
 				}
@@ -181,7 +185,7 @@ namespace Uno.UI.Runtime {
 				if (currentIndex >= handles.length - 1) {
 					const firstElement = document.getElementById(`uno-semantics-${handles[0]}`);
 					if (firstElement) {
-						firstElement.focus();
+						Accessibility.focusNode(firstElement, false);
 						return true;
 					}
 				}

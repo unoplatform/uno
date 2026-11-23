@@ -30,7 +30,13 @@ internal static class FontDetailsCache
 		FontStyle Style,
 		float FontSize);
 
-	private static readonly Dictionary<FontEntry, Task<IFont?>> _fontCache = new();
+	// FontSize is continuous, so an animation requests an unbounded number of entries. Two generations keep the cache
+	// O(1) and bounded: a full generation becomes the previous one, and whatever is still in use moves back on its next
+	// lookup. Dropped fonts are only re-created; the typefaces behind them stay with the font provider.
+	private const int MaxFontsPerGeneration = 512;
+
+	private static Dictionary<FontEntry, (FontDetails details, Task<FontDetails> loadedTask)> _fonts = new();
+	private static Dictionary<FontEntry, (FontDetails details, Task<FontDetails> loadedTask)> _previousFonts = new();
 	private static readonly object _fontCacheGate = new();
 
 	// Loaded URI font files, keyed by the manifest-resolved uri (which is the source uri when there is no
@@ -167,29 +173,9 @@ internal static class FontDetailsCache
 		return await manager.MatchFamilyAsync(name, weight, stretch, style, fontSize);
 	}
 
-	private static readonly Func<string?, float, FontWeight, FontStretch, FontStyle, (FontDetails details, Task<FontDetails> loadedTask)> _getFont = FuncMemoizeExtensions.AsLockedMemoized((
-		string? name,
-		float fontSize,
-		FontWeight weight,
-		FontStretch stretch,
-		FontStyle style) =>
+	private static (FontDetails details, Task<FontDetails> loadedTask) CreateFont(FontEntry key, FontWeight weight, FontStretch stretch, FontStyle style)
 	{
-		if (name == null || string.Equals(name, "XamlAutoFontFamily", StringComparison.OrdinalIgnoreCase))
-		{
-			name = FeatureConfiguration.Font.DefaultTextFontFamily;
-		}
-
-		var key = new FontEntry(name, weight.Weight, stretch, style, fontSize);
-
-		Task<IFont?> fontTask;
-		lock (_fontCacheGate)
-		{
-			if (!_fontCache.TryGetValue(key, out var nullableTask))
-			{
-				_fontCache[key] = nullableTask = GetFontInternal(name, weight, stretch, style, fontSize);
-			}
-			fontTask = nullableTask;
-		}
+		var fontTask = GetFontInternal(key.Name, weight, stretch, style, key.FontSize);
 
 		var canChange = !fontTask.IsCompleted; // don't read from task.IsCompleted again, it could've changed
 		var font = !canChange ? fontTask.Result : null;
@@ -203,14 +189,13 @@ internal static class FontDetailsCache
 					: $"{key} could not be found, using system default");
 			}
 
-			font = FontProvider.MatchFamily(FeatureConfiguration.Font.DefaultTextFontFamily, weight, stretch, style, fontSize)
-				?? FontProvider.GetDefaultFont(weight, stretch, style, fontSize);
+			font = FontProvider.MatchFamily(FeatureConfiguration.Font.DefaultTextFontFamily, weight, stretch, style, key.FontSize)
+				?? FontProvider.GetDefaultFont(weight, stretch, style, key.FontSize);
 		}
 
-		var details = FontDetails.Create(font, fontSize);
-		var detailsTask = AwaitDetails(fontTask, details, key, fontSize);
-		return (details, detailsTask);
-	});
+		var details = FontDetails.Create(font, key.FontSize);
+		return (details, AwaitDetails(fontTask, details, key, key.FontSize));
+	}
 
 	private static async Task<FontDetails> AwaitDetails(Task<IFont?> task, FontDetails fallback, FontEntry key, float fontSize)
 	{
@@ -244,7 +229,37 @@ internal static class FontDetailsCache
 		float fontSize,
 		FontWeight weight,
 		FontStretch stretch,
-		FontStyle style) => _getFont(name, fontSize, weight, stretch, style);
+		FontStyle style)
+	{
+		if (name == null || string.Equals(name, "XamlAutoFontFamily", StringComparison.OrdinalIgnoreCase))
+		{
+			name = FeatureConfiguration.Font.DefaultTextFontFamily;
+		}
+
+		var key = new FontEntry(name, weight.Weight, stretch, style, fontSize);
+
+		lock (_fontCacheGate)
+		{
+			if (_fonts.TryGetValue(key, out var font))
+			{
+				return font;
+			}
+
+			if (!_previousFonts.Remove(key, out font))
+			{
+				font = CreateFont(key, weight, stretch, style);
+			}
+
+			if (_fonts.Count >= MaxFontsPerGeneration)
+			{
+				_previousFonts = _fonts;
+				_fonts = new();
+			}
+
+			_fonts[key] = font;
+			return font;
+		}
+	}
 
 	public static Task<FontDetails?> GetFontForCodepoint(
 		int codepoint,

@@ -8,14 +8,12 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class StackPanel
 {
-#if HAS_UNO // WinUI automatically syncs the backing field, we need to do it manually.
+	// WinUI syncs the core backing field and calls OnAreScrollSnapPointsRegularChanged from CStackPanel::SetValue.
 	private void OnAreScrollSnapPointsRegularChanged(bool oldValue, bool newValue)
 	{
 		m_bAreScrollSnapPointsRegular = newValue;
-		// Called from SetValue in WinUI
 		OnAreScrollSnapPointsRegularChanged();
 	}
-#endif
 
 	private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 	{

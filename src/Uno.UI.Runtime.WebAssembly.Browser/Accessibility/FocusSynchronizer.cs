@@ -94,6 +94,13 @@ internal sealed partial class FocusSynchronizer
 				return;
 			}
 
+			if (Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(focusedElement)?.IsNativeElementFocusOwner(focusedElement) == true)
+			{
+				// A hosted native element inside it holds browser focus: don't pull focus back to the semantic DOM.
+				TrackFocusedElement(focusedElement);
+				return;
+			}
+
 			var semanticHandle = _accessibility.ResolveToSemanticHandle(focusedElement);
 			if (semanticHandle == IntPtr.Zero)
 			{
@@ -143,12 +150,21 @@ internal sealed partial class FocusSynchronizer
 			return;
 		}
 
+		if (Uno.UI.Xaml.Core.VisualTree.GetFocusManagerForElement(element)?.IsNativeElementFocusOwner(element) == true)
+		{
+			// A hosted native element inside it holds browser focus: don't pull focus back to the semantic DOM.
+			TrackFocusedElement(element);
+			return;
+		}
+
 		try
 		{
 			// Resolve to the nearest element that exists in the semantic DOM tree.
 			// Many UIElements (Grid, Border, SplitView, etc.) are pruned from the
 			// semantic tree and don't have corresponding DOM nodes.
-			var semanticHandle = _accessibility.ResolveToSemanticHandle(element);
+			var semanticHandle = _accessibility.TryActivateDropDownItem(element, out var comboBoxHandle)
+				? comboBoxHandle
+				: _accessibility.ResolveToSemanticHandle(element);
 			if (semanticHandle == IntPtr.Zero)
 			{
 				// No semantic element found — still track the focused element
@@ -214,6 +230,13 @@ internal sealed partial class FocusSynchronizer
 		}
 
 		if (owner is not Control control || !control.IsFocusable)
+		{
+			return;
+		}
+
+		// The head keeps DOM focus for its open dropdown: XAML focus is already where it belongs,
+		// on the item. Moving it to the ComboBox would stop Enter from committing that item.
+		if (WebAssemblyAccessibility.IsDropDownItemFocused(owner))
 		{
 			return;
 		}

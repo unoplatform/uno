@@ -42,8 +42,17 @@ public partial class X11ApplicationHost : UnoPlatformHost, IApplicationHost, IDi
 	// Must be a static field to prevent GC collection while the native callback is active.
 	private static readonly XErrorHandler s_x11ErrorHandler = OnX11Error;
 
+	private static int s_x11ErrorCount;
+
+	/// <summary>
+	/// The number of X protocol errors reported so far. Compare it across an XSync to tell whether a request was rejected.
+	/// </summary>
+	internal static int X11ErrorCount => Volatile.Read(ref s_x11ErrorCount);
+
 	private static int OnX11Error(IntPtr display, ref XErrorEvent error_event)
 	{
+		Interlocked.Increment(ref s_x11ErrorCount);
+
 		if (typeof(X11ApplicationHost).Log().IsEnabled(LogLevel.Warning))
 		{
 			typeof(X11ApplicationHost).Log().LogWarning(
@@ -114,6 +123,7 @@ public partial class X11ApplicationHost : UnoPlatformHost, IApplicationHost, IDi
 		ApiExtensibility.Register<XamlRoot>(typeof(Uno.Graphics.INativeOpenGLWrapper), xamlRoot => new X11NativeOpenGLWrapper(xamlRoot));
 
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => LinuxSystemThemeHelper.Instance);
+		ApiExtensibility.Register(typeof(IAccentColorExtension), _ => LinuxAccentColorExtension.Instance);
 		ApiExtensibility.Register(typeof(ITextScaleFactorExtension), _ => X11TextScaleFactorExtension.Instance);
 
 		if (Type.GetType("Uno.UI.MediaPlayer.X11.X11MediaPlayerPresenterExtension, Uno.UI.MediaPlayer.X11") is { } mediaPresenterExtensionType

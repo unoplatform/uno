@@ -8,6 +8,7 @@ DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2
 E_NOINTERFACE
 E_POINTER
 E_UNEXPECTED
+EVENT_OBJECT_FOCUS
 GDI_REGION_TYPE
 HKEY_CURRENT_USER
 HTBOTTOM
@@ -61,6 +62,7 @@ TOUCH_MASK_CONTACTAREA
 TOUCH_MASK_ORIENTATION
 TOUCH_MASK_PRESSURE
 USER_DEFAULT_SCREEN_DPI
+WINEVENT_OUTOFCONTEXT
 WA_ACTIVE
 WA_CLICKACTIVE
 WA_INACTIVE
@@ -70,6 +72,7 @@ WM_CLIPBOARDUPDATE
 WM_CLOSE
 WM_DESTROY
 WM_DPICHANGED
+WM_DISPLAYCHANGE
 WM_ERASEBKGND
 WM_GETMINMAXINFO
 WM_KEYDOWN
@@ -122,6 +125,7 @@ IGlobalInterfaceTable
 ITaskbarList3
 MINMAXINFO
 MONITORINFOEXW
+DISPLAYCONFIG_SOURCE_DEVICE_NAME
 PIXELFORMATDESCRIPTOR
 RECT
 MARGINS
@@ -176,6 +180,9 @@ DwmIsCompositionEnabled
 DwmExtendFrameIntoClientArea
 DwmSetWindowAttribute
 DwmDefWindowProc
+DisplayConfigGetDeviceInfo
+GetDisplayConfigBufferSizes
+QueryDisplayConfig
 DWM_SYSTEMBACKDROP_TYPE
 DwmFlush
 EmptyClipboard
@@ -206,6 +213,7 @@ GetDeviceCaps
 GetDpiForWindow
 GetDpiForMonitor
 GetIconInfo
+GetGUIThreadInfo
 GetKeyState
 GetObject
 GetMessage
@@ -247,6 +255,7 @@ OleInitialize
 OpenClipboard
 PeekMessage
 PostMessage
+RegCloseKey
 RegGetValue
 RegisterClassEx
 RegisterClipboardFormat
@@ -277,12 +286,14 @@ SetWindowLong
 SetWindowPos
 SetWindowRgn
 SetWindowText
+SetWinEventHook
 SHCreateItemFromParsingName
 SHCreateItemInKnownFolder
 ShowWindow
 StgCreateStorageEx
 SwapBuffers
 TranslateMessage
+UnhookWinEvent
 wglCreateContext
 wglDeleteContext
 wglGetCurrentContext

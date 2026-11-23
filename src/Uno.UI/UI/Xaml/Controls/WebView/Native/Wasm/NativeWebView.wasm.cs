@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
+using Uno.UI;
 using Uno.UI.Xaml.Controls;
 using Windows.Storage;
 using Windows.Storage.Helpers;
@@ -38,6 +39,11 @@ internal partial class NativeWebView : ICleanableNativeWebView
 		_coreWebView = coreWebView;
 		_elementId = elementId;
 
+		if (FeatureConfiguration.WebView2.Credentialless)
+		{
+			NativeMethods.EnableCredentialless(elementId);
+		}
+
 		NativeMethods.InitializeStyling(elementId);
 		NativeMethods.SetupEvents(elementId);
 	}
@@ -65,6 +71,10 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	}
 
 	[JSExport]
+	internal static Task<bool> DispatchNewWindowRequestedAsync(ElementId elementId, string targetUrl, string refererUrl)
+		=> Task.FromResult(DispatchNewWindowRequested(elementId, targetUrl, refererUrl));
+
+	[JSExport]
 	internal static void DispatchLoadEvent(ElementId elementId, string? absoluteUrl)
 	{
 		if (_elementIdToNativeWebView.TryGetValue(elementId, out var nativeWebView))
@@ -74,12 +84,11 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	}
 
 	[JSExport]
-	internal static void DispatchWebMessage(ElementId elementId, string message)
+	internal static Task DispatchLoadEventAsync(ElementId elementId, string? absoluteUrl)
 	{
-		if (_elementIdToNativeWebView.TryGetValue(elementId, out var nativeWebView))
-		{
-			nativeWebView._coreWebView.RaiseWebMessageReceived(message);
-		}
+		DispatchLoadEvent(elementId, absoluteUrl);
+
+		return Task.CompletedTask;
 	}
 
 	public string DocumentTitle => NativeMethods.GetDocumentTitle(_elementId) ?? "";
@@ -93,7 +102,9 @@ internal partial class NativeWebView : ICleanableNativeWebView
 
 		var uriString = string.IsNullOrEmpty(absoluteUrl) ? NativeMethods.GetAttribute(_elementId, "src") : absoluteUrl;
 		Uri uri = CoreWebView2.BlankUri;
-		if (!string.IsNullOrEmpty(uriString))
+
+		// As in WinUI, a NavigateToString page is reported as about:blank, rather than as the iframe's about:srcdoc.
+		if (!string.IsNullOrEmpty(uriString) && uriString != "about:srcdoc")
 		{
 			uri = new Uri(uriString);
 		}
@@ -160,7 +171,7 @@ internal partial class NativeWebView : ICleanableNativeWebView
 
 	public void ProcessNavigation(string html)
 	{
-		ScheduleNavigationStarting(null, () => NativeMethods.SetAttribute(_elementId, "srcdoc", html));
+		ScheduleNavigationStarting(null, () => NativeMethods.NavigateToString(_elementId, html));
 		OnNavigationCompleted(this, null);
 	}
 
@@ -188,7 +199,9 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	{
 		_elementIdToNativeWebView.TryAdd(_elementId, this);
 		NativeMethods.SetupEvents(_elementId);
-		DispatchLoadEvent(_elementId, null);
+
+		// The frame may already show a document, as after a reparent, so report its URL rather than the src attribute's.
+		DispatchLoadEvent(_elementId, NativeMethods.GetCurrentUrl(_elementId));
 	}
 
 	public void OnUnloaded()

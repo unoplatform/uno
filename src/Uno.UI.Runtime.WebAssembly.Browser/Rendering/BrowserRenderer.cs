@@ -4,6 +4,7 @@ using Uno.UI.Composition.Drawing;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using Microsoft.UI.Xaml.Media;
+using Uno.Foundation;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 
@@ -81,11 +82,13 @@ internal partial class BrowserRenderer
 	{
 		switch (kind)
 		{
+			case GraphicsContextKind.WebGL when WebAssemblyThreading.IsThreadingEnabled && !forceSoftwareRendering:
+				return await RenderWorker.StartAsync(_host, WebAssemblyWindowWrapper.Instance.CanvasId);
 			case GraphicsContextKind.WebGL when !forceSoftwareRendering:
 				return WebGlBrowserRenderer.TryCreate(out var gl) ? new WasmGLGraphicsContext(gl) : null;
-			case GraphicsContextKind.Software:
+			case GraphicsContextKind.Software when !WebAssemblyThreading.IsThreadingEnabled:
 				return SoftwareBrowserRenderer.TryCreate(out var sw) ? new WasmSoftwareGraphicsContext(sw) : null;
-			case GraphicsContextKind.WebGpu when !forceSoftwareRendering:
+			case GraphicsContextKind.WebGpu when !forceSoftwareRendering && !WebAssemblyThreading.IsThreadingEnabled:
 				// WebGpuContext is a lightweight renderer-agnostic assembly whose emdawnwebgpu link is always
 				// present for WASM via WebGpu.Init's targets, so no reflection or opt-in-link is needed.
 				return await global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateWasmAsync(WebAssemblyWindowWrapper.Instance.CanvasId);
@@ -102,8 +105,23 @@ internal partial class BrowserRenderer
 		}
 
 		_pendingInvalidate = true;
-		_nativeInstance ??= NativeMethods.CreateInstance(this, WebAssemblyWindowWrapper.Instance.CanvasId);
-		NativeMethods.Invalidate(_nativeInstance);
+		ScheduleFrame();
+	}
+
+	// _pendingInvalidate holds back every later request until a frame clears it, so a frame that could not be scheduled
+	// must release it, or rendering stops for good.
+	private void ScheduleFrame()
+	{
+		try
+		{
+			_nativeInstance ??= NativeMethods.CreateInstance(this, WebAssemblyWindowWrapper.Instance.CanvasId);
+			NativeMethods.Invalidate(_nativeInstance);
+		}
+		catch
+		{
+			_pendingInvalidate = false;
+			throw;
+		}
 	}
 
 	[JSExport]
@@ -121,6 +139,14 @@ internal partial class BrowserRenderer
 		}
 	}
 
+	[JSExport]
+	internal static Task RenderFrameAsync([JSMarshalAs<JSType.Any>] object instance)
+	{
+		RenderFrame(instance);
+
+		return Task.CompletedTask;
+	}
+
 	private void RenderFrame()
 	{
 		// The RootElement may not be set yet during startup because the JavaScript
@@ -129,15 +155,13 @@ internal partial class BrowserRenderer
 		// the render pump stalls and the splash screen is never removed (#23586).
 		if (_host.RootElement is not { Visual.CompositionTarget: CompositionTarget compositionTarget })
 		{
-			if (_pendingInvalidate && _nativeInstance is not null)
+			if (_pendingInvalidate)
 			{
-				NativeMethods.Invalidate(_nativeInstance);
+				ScheduleFrame();
 			}
 
 			return;
 		}
-
-		_pendingInvalidate = false;
 
 		_renderStopwatch.Restart();
 
@@ -149,7 +173,18 @@ internal partial class BrowserRenderer
 		if (_context is null)
 		{
 			// Async context init not finished yet — re-arm so we render as soon as it's ready (unless it failed).
-			if (!_initFailed && _nativeInstance is not null) { NativeMethods.Invalidate(_nativeInstance); }
+			if (!_initFailed)
+			{
+				_pendingInvalidate = true;
+				ScheduleFrame();
+			}
+			return;
+		}
+
+		if (WebAssemblyThreading.IsThreadingEnabled)
+		{
+			_pendingInvalidate = false;
+			RenderWorker.SignalFrameAvailable();
 			return;
 		}
 
@@ -157,9 +192,12 @@ internal partial class BrowserRenderer
 		{
 			// The GPU is still behind on earlier frames: keep the request and try again on the next frame callback.
 			_pendingInvalidate = true;
-			NativeMethods.Invalidate(_nativeInstance!);
+			ScheduleFrame();
 			return;
 		}
+
+		// Cleared only now, as the frame is delivered: a request made from here on schedules the next one.
+		_pendingInvalidate = false;
 
 		// The context owns the surface/present; the backend (whichever won negotiation) wraps the acquired target.
 		// The renderer is per-window (bound to this window's context), installed on its CompositionTarget each frame.
@@ -174,19 +212,14 @@ internal partial class BrowserRenderer
 
 	private static void ApplyNativeElementClip(IGeometry currentClipPath)
 	{
-		string path, fillType;
-		if (!currentClipPath.IsEmpty)
-		{
-			path = currentClipPath.ToSvgPathData();
-			fillType = currentClipPath.FillRule == GeometryFillRule.EvenOdd ? "evenodd" : "nonzero";
-		}
-		else
-		{
-			path = "";
-			fillType = "nonzero";
-		}
+		var (path, fillType) = GetSvgClipPath(currentClipPath);
 		BrowserNativeElementHostingExtension.SetSvgClipPathForNativeElementHost(path, fillType);
 	}
+
+	internal static (string Path, string FillType) GetSvgClipPath(IGeometry clipPath)
+		=> !clipPath.IsEmpty
+			? (clipPath.ToSvgPathData(), clipPath.FillRule == GeometryFillRule.EvenOdd ? "evenodd" : "nonzero")
+			: ("", "nonzero");
 
 
 	internal static partial class NativeMethods

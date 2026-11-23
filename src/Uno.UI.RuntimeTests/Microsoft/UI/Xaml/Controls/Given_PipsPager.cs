@@ -4,6 +4,7 @@ using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
@@ -180,5 +181,113 @@ public partial class Given_PipsPager
 
 		var scrolledScreenshot = await UITestHelper.ScreenShot(SUT);
 		ImageAssert.HasColorAt(scrolledScreenshot, scrolledScreenshot.Width / 2, scrolledScreenshot.Height - 5, color);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // IsVirtualizationEnabled is MUX_PREVIEW, not public on WinAppSDK
+	public async Task When_WrapMode_Changes_Virtualization_Follows()
+	{
+#if HAS_UNO
+		var SUT = new PipsPager { NumberOfPages = 10 };
+
+		await UITestHelper.Load(SUT);
+
+		if (SUT.FindFirstDescendant<ItemsRepeater>("PipsPagerItemsRepeater")?.Layout is not StackLayout stackLayout)
+		{
+			Assert.Fail("Inner StackLayout not found");
+			return;
+		}
+		Assert.IsTrue(stackLayout.IsVirtualizationEnabled);
+
+		SUT.WrapMode = PipsPagerWrapMode.Wrap;
+		Assert.IsFalse(stackLayout.IsVirtualizationEnabled);
+
+		SUT.WrapMode = PipsPagerWrapMode.None;
+		Assert.IsTrue(stackLayout.IsVirtualizationEnabled);
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Pip_Is_Recycled_Click_Selects_Once()
+	{
+		var SUT = new PipsPager { NumberOfPages = 5 };
+
+		await UITestHelper.Load(SUT);
+
+		if (SUT.FindFirstDescendant<ItemsRepeater>("PipsPagerItemsRepeater") is not { } repeater)
+		{
+			Assert.Fail("Inner ItemsRepeater not found");
+			return;
+		}
+
+		var originalPips = Enumerable.Range(0, 5).Select(repeater.TryGetElement).ToArray();
+
+		// Shrinking and growing again recycles the trailing pips and prepares them anew.
+		SUT.NumberOfPages = 2;
+		await TestServices.WindowHelper.WaitForIdle();
+		SUT.NumberOfPages = 5;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		if (repeater.TryGetElement(2) is not Button pip)
+		{
+			Assert.Fail("Pip 2 was not realized");
+			return;
+		}
+		CollectionAssert.Contains(originalPips, pip, "The pip must be recycled for this test to exercise re-preparation");
+
+		// Resetting from the handler makes every click handler still attached to the pip select it again.
+		var selections = 0;
+		SUT.SelectedIndexChanged += (s, e) =>
+		{
+			if (SUT.SelectedPageIndex == 2)
+			{
+				selections++;
+				SUT.SelectedPageIndex = 0;
+			}
+		};
+
+		new ButtonAutomationPeer(pip).Invoke();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(1, selections);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_WrapMode_Changes_On_First_Page_Previous_Button_Shows()
+	{
+		var SUT = new PipsPager
+		{
+			NumberOfPages = 5,
+			PreviousButtonVisibility = PipsPagerButtonVisibility.Visible,
+		};
+
+		await UITestHelper.Load(SUT);
+
+		var previousButton = SUT.FindFirstDescendant<Button>("PreviousPageButton");
+		Assert.IsNotNull(previousButton, "PreviousPageButton not found");
+		Assert.AreEqual(0, previousButton.Opacity, "Previous button is hidden on the first page");
+
+		SUT.WrapMode = PipsPagerWrapMode.Wrap;
+		await UITestHelper.WaitForIdle();
+
+		Assert.AreEqual(1, previousButton.Opacity, "Wrapping makes the first page's previous button usable");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_NumberOfPages_Decreases_Items_Are_Removed_From_End()
+	{
+		var SUT = new PipsPager { NumberOfPages = 5 };
+
+		await UITestHelper.Load(SUT);
+
+		SUT.NumberOfPages = 3;
+
+		CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SUT.TemplateSettings.PipsPagerItems.ToArray());
 	}
 }

@@ -4,6 +4,9 @@ namespace Microsoft.UI.Xaml.Controls {
         private static unoExports: any;
         private static cachedPackageBase: string | null = null;
 
+        // The last URL known for each frame, because the location of a cross-origin document can't be read.
+        private static readonly lastKnownUrls = new WeakMap<HTMLIFrameElement, string>();
+
         public static buildImports(assembly: string) {
             if (!WebView.unoExports) {
                 (<any>window.Module).getAssemblyExports(assembly)
@@ -34,7 +37,8 @@ namespace Microsoft.UI.Xaml.Controls {
         }
 
         static getDocumentTitle(htmlId: string): string {
-            return (<HTMLIFrameElement>document.getElementById(htmlId)).contentDocument.title;
+            // A cross-origin document has no contentDocument.
+            return (<HTMLIFrameElement>document.getElementById(htmlId)).contentDocument?.title ?? "";
         }
 
         static setAttribute(htmlId: string, name: string, value: string) {
@@ -48,14 +52,55 @@ namespace Microsoft.UI.Xaml.Controls {
         static navigate(htmlId: string, url: string) {
             const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
             if (iframe) {
+                WebView.lastKnownUrls.set(iframe, WebView.toAbsoluteUrl(url));
                 try {
                     if (iframe.contentWindow) {
                         iframe.contentWindow.location.href = url;
                     }
-                } catch (e) {
+                } catch {
                     // Fall back to setAttribute if contentWindow access fails (cross-origin)
                     iframe.setAttribute("src", url);
                 }
+            }
+        }
+
+        static navigateToString(htmlId: string, html: string) {
+            const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
+            if (iframe) {
+                // The URL of a srcdoc document, which the browser hides in a sandboxed frame. It's recorded before srcdoc is set,
+                // so a load that follows right away finds it.
+                WebView.lastKnownUrls.set(iframe, "about:srcdoc");
+                iframe.setAttribute("srcdoc", html);
+            }
+        }
+
+        // The URL of the frame's document or, when the browser hides it, the last URL known for the frame. Reading it doesn't
+        // change that last URL, so a navigation that hasn't loaded yet keeps the URL it recorded.
+        static getCurrentUrl(htmlId: string): string | null {
+            const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
+            return iframe?.contentWindow ? WebView.readUrl(iframe).url : null;
+        }
+
+        private static readUrl(iframe: HTMLIFrameElement): { url: string | null, isCrossOrigin: boolean } {
+            try {
+                return { url: iframe.contentWindow.location.href, isCrossOrigin: false };
+            } catch (e) {
+                if ((e as DOMException)?.name !== "SecurityError") {
+                    throw e;
+                }
+
+                // The browser hides the location of a cross-origin document (another site, a data: URL, a sandboxed page).
+                return { url: WebView.lastKnownUrls.get(iframe) ?? null, isCrossOrigin: true };
+            }
+        }
+
+        // Resolves a URL as navigating the frame does, since a virtual host mapping navigates to a path relative to the app.
+        private static toAbsoluteUrl(url: string): string {
+            try {
+                return new URL(url, document.baseURI).href;
+            } catch {
+                // The browser can't navigate to it either.
+                return url;
             }
         }
 
@@ -63,6 +108,19 @@ namespace Microsoft.UI.Xaml.Controls {
             const iframe = document.getElementById(htmlId) as HTMLIFrameElement;
             iframe.style.backgroundColor = "transparent";
             iframe.style.border = "0";
+        }
+
+        static enableCredentialless(htmlId: string) {
+            // Only useful under COEP, where cross-origin frames are otherwise blocked; elsewhere it would only drop credentials.
+            if (!(<any>globalThis).crossOriginIsolated) {
+                return;
+            }
+
+            if (!("credentialless" in HTMLIFrameElement.prototype)) {
+                console.warn("Credentialless iframes are not supported by this browser, cross-origin WebView2 content may be blocked.");
+            }
+
+            (<HTMLIFrameElement>document.getElementById(htmlId)).setAttribute("credentialless", "");
         }
 
         static getPackageBase(): string {
@@ -99,11 +157,26 @@ namespace Microsoft.UI.Xaml.Controls {
 
         private static onLoad(event: Event) {
             const iframe = event.currentTarget as HTMLIFrameElement;
-            const absoluteUrl = iframe.contentWindow.location.href;
-            WebView.unoExports.DispatchLoadEvent(iframe.id, absoluteUrl);
+            const { url, isCrossOrigin } = WebView.readUrl(iframe);
+            if (!isCrossOrigin && url !== null) {
+                WebView.lastKnownUrls.set(iframe, url);
+            }
+
+			const isMultithreaded = (<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled();
+
+			if (isMultithreaded) {
+				WebView.unoExports.DispatchLoadEventAsync(iframe.id, url);
+			} else {
+				WebView.unoExports.DispatchLoadEvent(iframe.id, url);
+			}
+
+            if (isCrossOrigin) {
+                // Such a document can't be hooked for NewWindowRequested either.
+                return;
+            }
 
             try {
-                if (iframe.contentWindow && WebView.unoExports.DispatchNewWindowRequested) {
+                if (iframe.contentWindow) {
                     
                     const unoExports = WebView.unoExports;
                     
@@ -114,17 +187,28 @@ namespace Microsoft.UI.Xaml.Controls {
                         iframe.contentWindow.open = function(url?: string, target?: string, features?: string) {
                             const referer = iframe.contentWindow.location.href;
 
-                            const handled = unoExports.DispatchNewWindowRequested(
-                                iframe.id,
-                                url || '',
-                                referer
-                            );
+							if (isMultithreaded) {
+								unoExports.DispatchNewWindowRequestedAsync(iframe.id, url || '', referer)
+									.then((handled: boolean) => {
+										if (!handled) {
+											(iframe.contentWindow as any).__unoOriginalOpen.call(this, url, target, features);
+										}
+									});
+							} else {
+								const handled = unoExports.DispatchNewWindowRequested(
+									iframe.id,
+									url || '',
+									referer
+								);
 
-                            if (!handled) {
-                                return (iframe.contentWindow as any).__unoOriginalOpen.call(this, url, target, features);
-                            }
+								if (!handled) {
+									return (iframe.contentWindow as any).__unoOriginalOpen.call(this, url, target, features);
+								}
+							}
                             
-                            return null;
+							// In MT, we always return null since we cannot know whether DispatchNewWindowRequested
+							// was handled or not before this call returns.
+							return null;
                         };
                         (iframe.contentWindow as any).__unoOpenOverridden = true;
                     }
@@ -135,7 +219,22 @@ namespace Microsoft.UI.Xaml.Controls {
                         if (link) {
                             const targetUrl = link.href;
                             const referer = iframe.contentWindow.location.href;
-                            
+
+							if (isMultithreaded) {
+								// In MT, we always preventDefault()/stopPropagation(), if the click wasn't handled we play it back.
+								e.preventDefault();
+								e.stopPropagation();
+
+								unoExports.DispatchNewWindowRequestedAsync(iframe.id, targetUrl, referer)
+									.then((handled: boolean) => {
+										if (!handled) {
+											(iframe.contentWindow as any).__unoOriginalOpen.call(iframe.contentWindow, targetUrl, '_blank');
+										}
+									});
+
+								return;
+							}
+
                             const handled = unoExports.DispatchNewWindowRequested(
                                 iframe.id,
                                 targetUrl,
@@ -150,10 +249,8 @@ namespace Microsoft.UI.Xaml.Controls {
                     });
                 }
             } catch (e) {
-                // This can fail if the iframe content is cross-origin.
-                // We log this as a warning, as it's a known browser security feature.
-                // https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy
-                console.warn("Uno.WebView: Could not attach NewWindowRequested handlers. This is expected if the iframe content is cross-origin.", e);
+                // Cross-origin documents were skipped above, so a failure here is unexpected.
+                console.warn("Uno.WebView: Could not attach NewWindowRequested handlers.", e);
             }
         }
     }

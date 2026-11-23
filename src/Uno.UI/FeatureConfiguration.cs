@@ -95,6 +95,30 @@ namespace Uno.UI
 			public static bool AutoEnableAccessibility { get; set; }
 		}
 
+		public static class AccentColor
+		{
+			/// <summary>
+			/// Override the system accent color. Shade variants are derived using the Windows algorithm.
+			/// Set to null to revert to the OS accent color (or default blue if unavailable).
+			/// </summary>
+			public static Windows.UI.Color? OverrideAccentColor
+			{
+				get => Uno.Helpers.Theming.AccentColorHelper.OverrideAccentColor;
+				set => Uno.Helpers.Theming.AccentColorHelper.SetOverrideAccentColor(value);
+			}
+
+			/// <summary>
+			/// When deriving shades from a single accent color (<see cref="OverrideAccentColor"/>, or the OS accent on
+			/// platforms that only expose one color), also adjust the accent's lightness the way Windows does for a
+			/// color picked in its Settings. Defaults to false, which keeps the accent exactly as provided.
+			/// </summary>
+			public static bool NormalizeAccentColor
+			{
+				get => Uno.Helpers.Theming.AccentColorHelper.NormalizeAccentColor;
+				set => Uno.Helpers.Theming.AccentColorHelper.SetNormalizeAccentColor(value);
+			}
+		}
+
 		public static class ComboBox
 		{
 			/// <summary>
@@ -407,7 +431,7 @@ namespace Uno.UI
 			/// Enables the platform-native developer tools for the <see cref="WebView2"/> control.
 			/// </summary>
 			/// <remarks>
-			/// <para>Defaults to <c>true</c> in DEBUG builds and <c>false</c> in RELEASE builds.</para>
+			/// <para>Defaults to <c>false</c>.</para>
 			/// <para>Per-platform behavior:</para>
 			/// <list type="bullet">
 			///   <item><description>Windows / Linux (Skia): toggles Chromium DevTools (right-click "Inspect" / F12).</description></item>
@@ -452,6 +476,17 @@ namespace Uno.UI
 			/// </remarks>
 			public static string AdditionalBrowserArguments { get; set; }
 
+			/// <summary>
+			/// Loads the content of the <see cref="Microsoft.UI.Xaml.Controls.WebView2"/> in a credentialless iframe, so
+			/// cross-origin pages can be embedded when the application is cross-origin isolated (for example when
+			/// WebAssembly threading is enabled), without requiring those pages to opt in through CORP/COEP headers.
+			/// </summary>
+			/// <remarks>
+			/// <para><b>WebAssembly only.</b> The embedded content runs in an ephemeral context without cookies, storage
+			/// or credentials, so it behaves as a logged-out session. The attribute is only applied when the application
+			/// is cross-origin isolated, and is ignored by browsers that do not support it.</para>
+			/// </remarks>
+			public static bool Credentialless { get; set; }
 		}
 
 		public static class Xaml

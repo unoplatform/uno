@@ -15,10 +15,10 @@
 
 		public static networkStatusChanged() {
 			if (NetworkInformation.dispatchStatusChanged == null) {
-				if ((<any>globalThis).DotnetExports !== undefined) {
-					NetworkInformation.dispatchStatusChanged = (<any>globalThis).DotnetExports.Uno.Windows.Networking.Connectivity.NetworkInformation.DispatchStatusChanged;
+				if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
+					NetworkInformation.dispatchStatusChanged = (<any>globalThis).DotnetExports.Uno.Windows.Networking.Connectivity.NetworkInformation.DispatchStatusChangedAsync;
 				} else {
-					throw `NetworkInformation: Unable to find dotnet exports`;
+					NetworkInformation.dispatchStatusChanged = (<any>globalThis).DotnetExports.Uno.Windows.Networking.Connectivity.NetworkInformation.DispatchStatusChanged;
 				}
 			}
 			NetworkInformation.dispatchStatusChanged();

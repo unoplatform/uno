@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices.JavaScript;
 using System.Text;
+using System.Threading.Tasks;
 using Uno;
 using Uno.Foundation;
 using Uno.UI.Dispatching;
@@ -40,6 +41,14 @@ namespace Windows.UI.Core
 			{
 				return GetForCurrentView().RequestBack();
 			}
+		}
+
+		[JSExport]
+		internal static Task DispatchBackRequestAsync()
+		{
+			DispatchBackRequest();
+
+			return Task.CompletedTask;
 		}
 	}
 }

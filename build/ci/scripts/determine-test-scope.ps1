@@ -5,9 +5,9 @@ and, for iOS/tvOS, the changed lines.
 
 .DESCRIPTION
 This script inspects the diff between the PR head and its target branch to figure out which
-optional test stages or lanes (template tests, the screenshot comparison, iOS runtime-test
-groups 1-3 and tvOS) should execute. It sets Azure DevOps variables (both standard and task
-output) for each scope so subsequent stages can conditionally run.
+optional test stages or lanes (template tests, the screenshot comparison, WebGPU, WebAssembly
+threads, iOS runtime-test groups 1-3 and tvOS) should execute. It sets Azure DevOps variables (both
+standard and task output) for each scope so subsequent stages can conditionally run.
 
 When the script cannot determine scope (e.g., non-PR build or git fetch failure) it enables
 every scope to stay safe.
@@ -26,6 +26,7 @@ $scopeVariables = [ordered]@{
     TemplateTestsRequired = $false
     ScreenshotsRequired   = $false
     WebGpuTestsRequired   = $false
+    WasmMTTestsRequired   = $false
     UIKitTestsRequired    = $false
 }
 
@@ -36,6 +37,12 @@ $scopeVariables = [ordered]@{
 #                           that could affect rendered output.
 #   WebGpuTestsRequired   - the WebGPU backend, its native packaging and loaders, or the runtime-test
 #                           infrastructure. Gates every WebGPU lane but Linux's, which always runs.
+#   WasmMTTestsRequired   - WebAssembly-specific code (wasm/WebAssembly paths, TypeScript and
+#                           JavaScript under src), the dispatcher (Uno.UI.Dispatching), the
+#                           runtime-test infrastructure, the files that gate the threads stage, and
+#                           the build inputs of its SamplesApp publish (Directory.Build/Packages
+#                           files, the net11 SDK pin, and .vsts-ci.yml and the uno-check install
+#                           template for uno-check updates).
 #   UIKitTestsRequired    - "Run the full Apple lanes": iOS Skia runtime-test groups 1-3 (every PR
 #                           builds the iOS app and runs group 0) and the tvOS stage, all on
 #                           per-minute Mac agents. Set by iOS/tvOS paths (including PascalCase names
@@ -43,9 +50,10 @@ $scopeVariables = [ordered]@{
 #                           these lanes; by iOS/tvOS code in shared files ($uikitContentPattern);
 #                           by any target branch other than master; and by the ci/run-ios label.
 $patterns = @{
-    TemplateTestsRequired = [regex]'(?i)(?:^build/|\.csproj$|\.props$|\.targets$|^src/uno\.sdk/|^src/sourcegenerators/uno\.ui\.tasks/|^src/.*devserver.*|^src/.*remotecontrol.*)'
+    TemplateTestsRequired = [regex]'(?i)(?:^build/(?!winui-sync/)|\.csproj$|\.props$|\.targets$|^src/uno\.sdk/|^src/sourcegenerators/uno\.ui\.tasks/|^src/.*devserver.*|^src/.*remotecontrol.*)'
     ScreenshotsRequired   = [regex]'(?i)^src/(uno\.ui|addins).*\.cs$'
     WebGpuTestsRequired   = [regex]'(?i)(?:webgpu|wgpu|^build/ci/tests/|^build/test-scripts/)'
+    WasmMTTestsRequired   = [regex]'(?i)(?:wasm|webassembly|^src/uno\.ui\.dispatching/|^src/.*\.(?:ts|js)$|^build/ci/tests/|^build/test-scripts/|^build/ci/\.azure-devops-stages\.yml$|^build/ci/scripts/determine-test-scope\.ps1$|^(?:src/(?:(?!solutiontemplate/)[^/]+/)?)?directory\.(?:build|packages)\.(?:props|targets)$|^build/ci/net11/_global\.json$|^\.vsts-ci\.yml$|^build/ci/templates/dotnet-mobile-install-windows\.yml$)'
     UIKitTestsRequired    = [regex]'(?i)(?:^|[/._-])(?:tvos|ios|uikit|appleuikit|apple)(?:[/._-]|$)|(?:^|[/._-])(?-i:iOS|tvOS|UIKit|Apple)(?-i:[A-Z])|^\.vsts-ci\.yml$|(?:^|/)_?global\.json$|^build/ci/templates/(?:dotnet-mobile-install-mac|ios-build-select-version)\.yml$|^build/ci/\.azure-devops-stages\.yml$|^build/ci/tests/\.azure-devops-tests-runtime-stages\.yml$|^build/ci/scripts/determine-test-scope\.ps1$'
 }
 

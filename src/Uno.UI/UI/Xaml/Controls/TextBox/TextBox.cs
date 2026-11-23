@@ -481,6 +481,23 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
+		#region PreventKeyboardDisplayOnProgrammaticFocus DependencyProperty
+
+		public bool PreventKeyboardDisplayOnProgrammaticFocus
+		{
+			get => (bool)GetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty);
+			set => SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, value);
+		}
+
+		public static DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } =
+			DependencyProperty.Register(
+				nameof(PreventKeyboardDisplayOnProgrammaticFocus),
+				typeof(bool),
+				typeof(TextBox),
+				new FrameworkPropertyMetadata(defaultValue: BoolBoxes.False));
+
+		#endregion
+
 		#region IsSpellCheckEnabled DependencyProperty
 
 		public bool IsSpellCheckEnabled
@@ -650,6 +667,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnTapped(e);
 
+			_core.OnTapped(e);
 			OnTappedPartial();
 		}
 

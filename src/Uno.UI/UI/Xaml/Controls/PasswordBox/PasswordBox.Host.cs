@@ -42,6 +42,8 @@ partial class PasswordBox : ITextBoxHost
 
 	bool ITextBoxHost.IsSpellCheckEnabled => false;
 
+	bool ITextBoxHost.PreventKeyboardDisplayOnProgrammaticFocus => PreventKeyboardDisplayOnProgrammaticFocus;
+
 	bool ITextBoxHost.IsTextPredictionEnabled => false;
 
 	CharacterCasing ITextBoxHost.CharacterCasing => CharacterCasing.Normal;

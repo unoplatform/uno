@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TitleBar.h, commit fc2f82117
+// MUX Reference TitleBar.h
 
 using System.Collections.Generic;
 using Microsoft.UI.Input;
@@ -13,7 +13,6 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class TitleBar
 {
 	private readonly SerialDisposable m_inputActivationChangedToken = new();
-	private readonly SerialDisposable m_insetsChangedRevoker = new();
 	private readonly SerialDisposable m_windowRectChangedToken = new();
 	private string m_defaultAppWindowTitle;
 	private readonly SerialDisposable m_backButtonClickRevoker = new();
@@ -21,7 +20,6 @@ partial class TitleBar
 	private readonly SerialDisposable m_sizeChangedRevoker = new();
 	private readonly SerialDisposable m_iconLayoutUpdatedRevoker = new();
 	private readonly SerialDisposable m_contentLayoutUpdatedRevoker = new();
-	private readonly SerialDisposable m_paddingLayoutUpdatedRevoker = new();
 	// Add a cached AppWindow field to avoid repeated GetFromWindowId calls
 	private AppWindow m_appWindow;
 	private readonly SerialDisposable m_flowDirectionChangedRevoker = new();
@@ -48,6 +46,9 @@ partial class TitleBar
 
 	private const string s_leftPaddingColumnName = "LeftPaddingColumn";
 	private const string s_rightPaddingColumnName = "RightPaddingColumn";
+#pragma warning disable IDE0051 // Declared but unused upstream too.
+	private const string s_layoutRootPartName = "PART_LayoutRoot";
+#pragma warning restore IDE0051
 	private const string s_backButtonPartName = "PART_BackButton";
 	private const string s_paneToggleButtonPartName = "PART_PaneToggleButton";
 	private const string s_iconViewboxPartName = "PART_Icon";
@@ -86,4 +87,8 @@ partial class TitleBar
 	private const string s_rightHeaderVisibleVisualStateName = "RightHeaderVisible";
 	private const string s_rightHeaderCollapsedVisualStateName = "RightHeaderCollapsed";
 	private const string s_rightHeaderDeactivatedVisualStateName = "RightHeaderDeactivated";
+
+	// Uno specific: revokers for the inset and padding-layout listeners, see TitleBar.mux.cs.
+	private readonly SerialDisposable m_insetsChangedRevoker = new();
+	private readonly SerialDisposable m_paddingLayoutUpdatedRevoker = new();
 }

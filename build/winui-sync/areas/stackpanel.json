@@ -1,0 +1,23 @@
+{
+  "id": "stackpanel",
+  "title": "StackPanel",
+  "baseline": "1b5b1a0ccc05ce5c8b5931dc303666975b57f498",
+  "upstream": {
+    "sources": [
+      "dxaml/xcp/core/core/elements/StackPanel.cpp",
+      "dxaml/xcp/core/inc/StackPanel.h",
+      "dxaml/xcp/dxaml/lib/StackPanel_Partial.cpp",
+      "dxaml/xcp/dxaml/lib/StackPanel_Partial.h",
+      "dxaml/xcp/dxaml/lib/winrtgeneratedclasses/StackPanel.g.cpp",
+      "dxaml/xcp/dxaml/lib/winrtgeneratedclasses/StackPanel.g.h"
+    ]
+  },
+  "uno": {
+    "sources": [
+      "src/Uno.UI/UI/Xaml/Controls/StackPanel"
+    ],
+    "tests": [
+      "src/Uno.UI.RuntimeTests/IntegrationTests/dxaml/controls/stackpanel"
+    ]
+  }
+}

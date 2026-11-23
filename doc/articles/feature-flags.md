@@ -37,6 +37,32 @@ A decoded image that nothing displays anymore (its `Image` was unloaded or given
 
 Uno decodes an image at its full size unless `DecodePixelWidth` or `DecodePixelHeight` is set, where WinUI decodes it at its rendered size by default, so the same images can hold far more memory than on WinUI. Set the limit to the app's memory budget: a higher one keeps more recently shown images ready to show again, a lower one (down to `0`) frees them sooner. A decode size reduces what each image holds in the first place.
 
+## Accent color
+
+### Overriding the system accent color
+
+By default, the `SystemAccentColor` theme resources and `UISettings.GetColorValue(UIColorType.Accent)` follow the accent color of the operating system, see [View Management](xref:Uno.Features.WinUIViewManagement). To force a specific accent regardless of the OS, for example to enforce a brand color or to get deterministic screenshots in tests, set `Uno.UI.FeatureConfiguration.AccentColor.OverrideAccentColor` before the UI is created, typically in the `App` constructor:
+
+```csharp
+#if HAS_UNO
+Uno.UI.FeatureConfiguration.AccentColor.OverrideAccentColor = Windows.UI.Color.FromArgb(0xFF, 0x10, 0x7C, 0x10);
+#endif
+```
+
+The lighter and darker shades are derived from the color you provide, using the same algorithm as Windows. Set the property back to `null` to follow the operating system again. Changing the override at runtime raises `UISettings.ColorValuesChanged` and updates `{ThemeResource}` references to the accent resources.
+
+### Normalizing the accent color
+
+When a color is picked as the accent in Windows Settings, Windows may adjust its lightness before deriving the shades, for example very light or very dark colors are moved toward a medium lightness. By default, Uno Platform keeps the accent exactly as provided, both for `OverrideAccentColor` and for the accent reported by platforms that expose a single color (macOS, Linux, Android). Set `Uno.UI.FeatureConfiguration.AccentColor.NormalizeAccentColor` to `true` to apply the same adjustment as Windows:
+
+```csharp
+#if HAS_UNO
+Uno.UI.FeatureConfiguration.AccentColor.NormalizeAccentColor = true;
+#endif
+```
+
+Changing this setting at runtime re-derives the palette and raises `UISettings.ColorValuesChanged`. It does not affect the palette read from Windows, which the operating system already provides in full. Default: `false`.
+
 ## ComboBox
 
 ### Default preferred placement
@@ -117,10 +143,10 @@ Uno.UI.FeatureConfiguration.TextBox.UseManagedTextLoupe = false;
 
 ## ToolTips
 
-By default, `ToolTips` are disabled on all platforms except for WebAssembly and Skia (see [#10791](https://github.com/unoplatform/uno/issues/10791)). To enable them on a specific platform, set the `UseToolTips` configuration flag to `true`. You can add the following in the end of the `App` constructor:
+Starting with Uno Platform 7.0, `ToolTips` are enabled by default on every Uno Platform target. To disable them, set the `UseToolTips` configuration flag to `false`. You can add the following in the end of the `App` constructor:
 
 ```csharp
-Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
+Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = false;
 ```
 
 It is also possible to adjust the delay in milliseconds (`Uno.UI.FeatureConfiguration.ToolTip.ShowDelay` - defaults to `1000`) and show duration in milliseconds (`Uno.UI.FeatureConfiguration.ToolTip.ShowDuration` - defaults to `5000`). This configuration only applies to Uno Platform targets. Windows App SDK (WinUI) will not adhere to this configuration.
@@ -129,7 +155,7 @@ It is also possible to adjust the delay in milliseconds (`Uno.UI.FeatureConfigur
 
 ### EnableDevTools
 
-Toggles the platform-native developer tools for the underlying web engine of `WebView2` (Chromium DevTools on Windows / Linux Skia, Chrome DevTools remote debugging on Android, Safari Web Inspector on iOS / macOS). Defaults to `true` in `DEBUG` builds and `false` in `RELEASE` builds. Set it during application startup before any `WebView2` is materialized:
+Toggles the platform-native developer tools for the underlying web engine of `WebView2` (Chromium DevTools on Windows / Linux Skia, Chrome DevTools remote debugging on Android, Safari Web Inspector on iOS / macOS). Defaults to `false`, in both `DEBUG` and `RELEASE` builds of an app. Set it during application startup before any `WebView2` is materialized:
 
 ```csharp
 public App()

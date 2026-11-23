@@ -6,6 +6,8 @@ uid: Uno.Workshop.Counter.XAML.MVUX
 
 [Download the complete XAML + MVUX sample](https://github.com/unoplatform/Uno.Samples/tree/master/reference/Counter/XAML-MVUX)  
 
+[!INCLUDE [Sample version](includes/include-sample-version.md)]
+
 [!INCLUDE [Intro](includes/include-intro.md)]
 
 In this tutorial you will learn how to:

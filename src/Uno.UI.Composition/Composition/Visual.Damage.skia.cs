@@ -37,6 +37,20 @@ public partial class Visual
 			_hasLastRenderBounds = false;
 		}
 
+		// A subtree replayed from its cached picture under a moved ancestor (a scrolled page) is not walked, so its
+		// descendants' last-rendered bounds are where they were before the move. These rects follow every replay.
+		if (_hasChildrenContentDamageRect)
+		{
+			target.AddDamage(_childrenContentDamageRect);
+			_hasChildrenContentDamageRect = false;
+		}
+
+		if (_hasShadowFallbackDamageRect)
+		{
+			target.AddDamage(_shadowFallbackDamageRect);
+			_hasShadowFallbackDamageRect = false;
+		}
+
 		foreach (var child in GetChildrenInRenderOrder())
 		{
 			child.ContributeRemovalDamage(target);
@@ -187,18 +201,8 @@ public partial class Visual
 	{
 		localBounds = default;
 
-		// What this visual paints itself, in local coordinates: nothing for non-painting visuals (containers),
-		// its Size when it paints within Size, otherwise it can't be bounded here and we fall back to the clip.
-		Rect ownContent;
-		if (!CanPaint())
-		{
-			ownContent = default;
-		}
-		else if (PaintsWithinOwnSize)
-		{
-			ownContent = new Rect(0, 0, Math.Max(0f, Size.X), Math.Max(0f, Size.Y));
-		}
-		else
+		// What this visual paints itself, in local coordinates; when it can't be bounded we fall back to the clip.
+		if (!TryGetPaintedBounds(out var ownContent))
 		{
 			return false;
 		}

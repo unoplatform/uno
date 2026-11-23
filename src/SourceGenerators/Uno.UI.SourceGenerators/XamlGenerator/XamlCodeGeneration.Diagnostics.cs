@@ -92,5 +92,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			isEnabledByDefault: true,
 			description: "The conditional XAML prefix was removed in Uno Platform 7.0 and no longer selects a platform. Use the target-framework prefix that replaces it."
 		);
+
+		public static readonly DiagnosticDescriptor InaccessibleApiExtensionRule = new DiagnosticDescriptor(
+#pragma warning disable RS2008 // Enable analyzer release tracking
+			"UXAML0008",
+#pragma warning restore RS2008 // Enable analyzer release tracking
+			"Inaccessible ApiExtension registration",
+			"The [assembly: ApiExtension] registration of '{0}' in '{1}' was skipped because '{2}' is not accessible from this project",
+			XamlCategory,
+			DiagnosticSeverity.Warning,
+			isEnabledByDefault: true,
+			description: "The application registers every [assembly: ApiExtension] of its references in its generated code, so the types an ApiExtension names must be public."
+		);
+
+		public static readonly DiagnosticDescriptor RemovedToolkitNamespaceRule = new DiagnosticDescriptor(
+#pragma warning disable RS2008 // Enable analyzer release tracking
+			"UXAML0009",
+#pragma warning restore RS2008 // Enable analyzer release tracking
+			"Removed Uno.UI.Toolkit XAML Namespace",
+			"{0}",
+			XamlCategory,
+			DiagnosticSeverity.Warning,
+			isEnabledByDefault: true,
+			description: "The Uno.UI.Toolkit namespace was removed in Uno Platform 7.0 and its types moved to the Uno.UI.* namespaces. Point the xmlns at the namespace of the types the markup uses."
+		);
 	}
 }

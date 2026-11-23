@@ -96,7 +96,10 @@ jobs:
         run: cp "$(ls -d build/ci/net* | sort -V | tail -1)/_global.json" global.json
 
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v5.3.0
+        uses: actions/setup-dotnet@v6.1.0
+        env:
+          # Keeps workload installs file-based; in MSI mode the image's SDK drops the net10 tvOS packs
+          DOTNET_INSTALL_DIR: ${{ runner.temp }}/dotnet
         with:
           global-json-file: global.json
 

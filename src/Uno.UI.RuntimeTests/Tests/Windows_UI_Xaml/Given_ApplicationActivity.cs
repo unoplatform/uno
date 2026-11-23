@@ -231,6 +231,459 @@ public class Given_ApplicationActivity
 		Assert.IsFalse(firstPresent!.Value.Partial, "The first frame on the recreated render image repainted only its damage region, leaving the rest of the window blank.");
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("Finishes and reopens the activity through reflection, which NativeAOT trims away.")]
+#endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26212")]
+	public async Task When_Finished_And_Reopened_Then_Window_Keeps_Its_Host_And_Presents()
+	{
+		var border = new Microsoft.UI.Xaml.Controls.Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red),
+		};
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(border);
+		var host = GetWindowHost();
+		Assert.IsNotNull(host);
+
+		await FinishAndReopen();
+
+		Assert.AreSame(host, GetWindowHost(), "The window outlives its activity, so it must keep its host.");
+
+		var target = (Microsoft.UI.Xaml.Media.CompositionTarget)border.Visual.CompositionTarget!;
+		var presented = 0;
+		EventHandler<Microsoft.UI.Xaml.Media.FramePresentedInfo> onPresented = (_, _) => Interlocked.Increment(ref presented);
+		target.FramePresented += onPresented;
+		try
+		{
+			border.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Blue);
+			await TestServices.WindowHelper.WaitFor(() => Volatile.Read(ref presented) > 0, timeoutMS: 5000, message: "no frame was presented after the app was reopened");
+		}
+		finally
+		{
+			target.FramePresented -= onPresented;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("Finishes and reopens the activity through reflection, which NativeAOT trims away.")]
+#endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26212")]
+	public async Task When_Finished_And_Reopened_Then_Frame_Drivers_Tick()
+	{
+		var border = new Microsoft.UI.Xaml.Controls.Border { Width = 100, Height = 100 };
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(border);
+
+		await FinishAndReopen();
+
+		// What a touch fling or a ScrollView's inertia subscribes to: a dropped driver leaves them frozen.
+		var target = (Microsoft.UI.Xaml.Media.CompositionTarget)border.Visual.CompositionTarget!;
+		var ticks = 0;
+		EventHandler<long> driver = (_, _) => ticks++;
+		target.FrameStarting += driver;
+		try
+		{
+			await TestServices.WindowHelper.WaitFor(() => ticks > 1, timeoutMS: 5000, message: "a frame driver subscribed after the app was reopened never ticked");
+		}
+		finally
+		{
+			target.FrameStarting -= driver;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("Finishes and reopens the activity through reflection, which NativeAOT trims away.")]
+#endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26212")]
+	public async Task When_Finished_And_Reopened_Then_Running_Animation_Continues()
+	{
+		var border = new Microsoft.UI.Xaml.Controls.Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red),
+		};
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(border);
+
+		var visual = border.Visual;
+		var animation = visual.Compositor.CreateScalarKeyFrameAnimation();
+		animation.InsertKeyFrame(0, 1);
+		animation.InsertKeyFrame(1, 0.1f);
+		animation.Duration = TimeSpan.FromSeconds(1);
+		animation.IterationBehavior = Microsoft.UI.Composition.AnimationIterationBehavior.Forever;
+		visual.StartAnimation(nameof(Microsoft.UI.Composition.Visual.Opacity), animation);
+		try
+		{
+			await FinishAndReopen();
+
+			var opacity = visual.Opacity;
+			await TestServices.WindowHelper.WaitFor(() => visual.Opacity != opacity, timeoutMS: 5000, message: "an animation running when the activity finished did not continue after the app was reopened");
+		}
+		finally
+		{
+			visual.StopAnimation(nameof(Microsoft.UI.Composition.Visual.Opacity));
+		}
+	}
+
+	/// <summary>
+	/// Finishes the activity while the process and the window live on, as Back does on any Android below 12 and on a
+	/// root activity that isn't the launcher one, then opens the app again.
+	/// </summary>
+	[DynamicDependency("GetHostForRoot", "Uno.UI.Hosting.XamlRootMap", "Uno.UI")]
+	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("get_Wrapper", "Uno.UI.Runtime.Android.ApplicationActivity", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("get_CurrentActivity", "Uno.UI.Xaml.Controls.NativeWindowWrapper", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("_awaitingFirstFrame", "Uno.UI.Xaml.Controls.NativeWindowWrapper", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("Finish", "Android.App.Activity", "Mono.Android")]
+	[DynamicDependency("get_IsDestroyed", "Android.App.Activity", "Mono.Android")]
+	[DynamicDependency("get_ApplicationContext", "Android.Content.ContextWrapper", "Mono.Android")]
+	[DynamicDependency("get_PackageManager", "Android.Content.ContextWrapper", "Mono.Android")]
+	[DynamicDependency("get_PackageName", "Android.Content.ContextWrapper", "Mono.Android")]
+	[DynamicDependency("StartActivity(Android.Content.Intent)", "Android.Content.ContextWrapper", "Mono.Android")]
+	[DynamicDependency("GetLaunchIntentForPackage", "Android.Content.PM.PackageManager", "Mono.Android")]
+	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "These assemblies only exist on Android, the only platform this helper runs on.")]
+	private static async Task FinishAndReopen()
+	{
+		var original = GetWindowActivity();
+		Assert.IsNotNull(original);
+		var wrapper = GetMember(original, "Wrapper");
+		var context = GetMember(original, "ApplicationContext");
+		var packageManager = GetMember(original, "PackageManager");
+		var launchIntent = packageManager.GetType()
+			.GetMethod("GetLaunchIntentForPackage", new[] { typeof(string) })!
+			.Invoke(packageManager, new[] { GetMember(original, "PackageName") });
+		Assert.IsNotNull(launchIntent);
+
+		original.GetType().GetMethod("Finish", Type.EmptyTypes)!.Invoke(original, null);
+
+		// A successor started before this completes would take the window over instead of finding it without an activity.
+		await TestServices.WindowHelper.WaitFor(() => GetMember(original, "IsDestroyed") is true, timeoutMS: 15000, message: "the activity should be destroyed");
+
+		context.GetType().GetMethod("StartActivity", new[] { launchIntent.GetType() })!.Invoke(context, new[] { launchIntent });
+
+		await TestServices.WindowHelper.WaitFor(() => !ReferenceEquals(GetMember(wrapper, "CurrentActivity"), original), timeoutMS: 15000, message: "the app should reopen");
+		await TestServices.WindowHelper.WaitFor(() => GetField(wrapper, "_awaitingFirstFrame") is 0, timeoutMS: 15000, message: "the reopened window should present its first frame");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("Reads internal activity state through reflection, which NativeAOT trims away.")]
+#endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24862")]
+	[DynamicDependency("GetHostForRoot", "Uno.UI.Hosting.XamlRootMap", "Uno.UI")]
+	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("get_DrivesWindow", "Uno.UI.Runtime.Android.ApplicationActivity", "Uno.UI.Runtime.Android")]
+	[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, "Android.Content.Intent", "Mono.Android")]
+	[DynamicDependency("StartActivity", "Android.Content.ContextWrapper", "Mono.Android")]
+	[DynamicDependency("Finish", "Android.App.Activity", "Mono.Android")]
+	[DynamicDependency("get_IsFinishing", "Android.App.Activity", "Mono.Android")]
+	[DynamicDependency("get_IsDestroyed", "Android.App.Activity", "Mono.Android")]
+	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "Both assemblies only exist on Android, the only platform this test runs on.")]
+	public async Task When_Stacked_Activity_Finishes_Then_Window_Returns_To_Original()
+	{
+		// An intent delivered in the standard launch mode stacks a second instance of the activity, which takes the
+		// window over. When it finishes, the window must go back to the one still running rather than close with it.
+		var stackedType = Type.GetType("SamplesApp.Droid.StackedWindowActivity, SamplesApp");
+		if (stackedType is null)
+		{
+			Assert.Inconclusive("The app hosting the tests declares no stacked test activity.");
+		}
+
+		var border = new Microsoft.UI.Xaml.Controls.Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red),
+		};
+		await UITestHelper.Load(border);
+
+		var window = TestServices.WindowHelper.CurrentTestWindow;
+		Assert.IsNotNull(window);
+		var closed = false;
+		void OnClosed(object sender, Microsoft.UI.Xaml.WindowEventArgs args) => closed = true;
+		window.Closed += OnClosed;
+
+		var original = GetWindowActivity();
+		Assert.IsNotNull(original);
+		object stacked = null;
+
+		try
+		{
+			StartActivity(original, stackedType);
+
+			await TestServices.WindowHelper.WaitFor(
+				() => (stacked = GetWindowActivity()) is { } current && !ReferenceEquals(current, original),
+				timeoutMS: 10000,
+				message: "The stacked activity never took the window over.");
+			Assert.AreEqual(false, GetMember(original, "DrivesWindow"), "The covered activity must stop presenting the window.");
+			await TestServices.WindowHelper.WaitForIdle();
+
+			stacked.GetType().GetMethod("Finish", Type.EmptyTypes)!.Invoke(stacked, null);
+
+			await TestServices.WindowHelper.WaitFor(
+				() => ReferenceEquals(GetWindowActivity(), original),
+				timeoutMS: 10000,
+				message: "The window was not handed back to the activity still running.");
+
+			// The window can only close in the stacked activity's OnDestroy, which comes after the original resumed.
+			await WaitForDestroyed(stacked);
+			Assert.IsFalse(closed, "The window closed with the stacked activity.");
+			Assert.AreEqual(true, GetMember(original, "DrivesWindow"));
+
+			// A request latched while the window changed hands must not keep the original from presenting again.
+			var target = (Microsoft.UI.Xaml.Media.CompositionTarget)border.Visual.CompositionTarget!;
+			var presented = false;
+			EventHandler<Microsoft.UI.Xaml.Media.FramePresentedInfo> onPresented = (_, _) => Volatile.Write(ref presented, true);
+			target.FramePresented += onPresented;
+			try
+			{
+				border.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Blue);
+				await TestServices.WindowHelper.WaitFor(() => Volatile.Read(ref presented), timeoutMS: 5000, message: "No frame was presented after the window was handed back.");
+			}
+			finally
+			{
+				target.FramePresented -= onPresented;
+			}
+		}
+		finally
+		{
+			window.Closed -= OnClosed;
+
+			if (stacked is not null && !ReferenceEquals(stacked, original) && GetMember(stacked, "IsFinishing") is false)
+			{
+				stacked.GetType().GetMethod("Finish", Type.EmptyTypes)!.Invoke(stacked, null);
+			}
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("Reads internal activity state through reflection, which NativeAOT trims away.")]
+#endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24862")]
+	[DynamicDependency("GetHostForRoot", "Uno.UI.Hosting.XamlRootMap", "Uno.UI")]
+	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("get_DrivesWindow", "Uno.UI.Runtime.Android.ApplicationActivity", "Uno.UI.Runtime.Android")]
+	[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, "Android.Content.Intent", "Mono.Android")]
+	[DynamicDependency("AddFlags", "Android.Content.Intent", "Mono.Android")]
+	[DynamicDependency("StartActivity", "Android.Content.ContextWrapper", "Mono.Android")]
+	[DynamicDependency("Finish", "Android.App.Activity", "Mono.Android")]
+	[DynamicDependency("get_IsFinishing", "Android.App.Activity", "Mono.Android")]
+	[DynamicDependency("get_IsDestroyed", "Android.App.Activity", "Mono.Android")]
+	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "Both assemblies only exist on Android, the only platform this test runs on.")]
+	public async Task When_Stacked_Activity_Destroyed_Before_Original_Returns_Then_Original_Keeps_Window()
+	{
+		// The stacked copy opens in a second task, over a plain activity. When it finishes, that activity comes back
+		// rather than the original, which stays stopped: the copy is destroyed while it still owns the window.
+		var hostType = Type.GetType("SamplesApp.Droid.TaskHostActivity, SamplesApp");
+		if (hostType is null)
+		{
+			Assert.Inconclusive("The app hosting the tests declares no task host activity.");
+		}
+
+		var border = new Microsoft.UI.Xaml.Controls.Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red),
+		};
+		await UITestHelper.Load(border);
+
+		var window = TestServices.WindowHelper.CurrentTestWindow;
+		Assert.IsNotNull(window);
+		var closed = false;
+		void OnClosed(object sender, Microsoft.UI.Xaml.WindowEventArgs args) => closed = true;
+		window.Closed += OnClosed;
+
+		var original = GetWindowActivity();
+		Assert.IsNotNull(original);
+		object stacked = null;
+
+		try
+		{
+			StartActivity(original, hostType, ActivityFlagNewTask | ActivityFlagMultipleTask);
+
+			await TestServices.WindowHelper.WaitFor(
+				() => (stacked = GetWindowActivity()) is { } current && !ReferenceEquals(current, original),
+				timeoutMS: 10000,
+				message: "The stacked activity never took the window over.");
+			await TestServices.WindowHelper.WaitForIdle();
+
+			stacked.GetType().GetMethod("Finish", Type.EmptyTypes)!.Invoke(stacked, null);
+			await WaitForDestroyed(stacked);
+
+			Assert.IsFalse(closed, "The window closed with the stacked activity while the original was still alive.");
+			Assert.AreSame(original, GetWindowActivity(), "The window was not handed to the original activity.");
+
+			// Finishing the host brings the original's task back, which must present the window again.
+			FinishTaskHost(hostType);
+			await AssertPresents(border);
+		}
+		finally
+		{
+			window.Closed -= OnClosed;
+			FinishIfAlive(stacked, original);
+			FinishTaskHost(hostType);
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+#if RUNTIME_NATIVE_AOT
+	[Ignore("Reads internal activity state through reflection, which NativeAOT trims away.")]
+#endif
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24862")]
+	[DynamicDependency("GetHostForRoot", "Uno.UI.Hosting.XamlRootMap", "Uno.UI")]
+	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("get_DrivesWindow", "Uno.UI.Runtime.Android.ApplicationActivity", "Uno.UI.Runtime.Android")]
+	[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, "Android.Content.Intent", "Mono.Android")]
+	[DynamicDependency("AddFlags", "Android.Content.Intent", "Mono.Android")]
+	[DynamicDependency("StartActivity", "Android.Content.ContextWrapper", "Mono.Android")]
+	[DynamicDependency("Finish", "Android.App.Activity", "Mono.Android")]
+	[DynamicDependency("get_IsFinishing", "Android.App.Activity", "Mono.Android")]
+	[DynamicDependency("get_IsDestroyed", "Android.App.Activity", "Mono.Android")]
+	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "Both assemblies only exist on Android, the only platform this test runs on.")]
+	public async Task When_Original_Resumes_While_Stacked_Activity_Lives_Then_Original_Takes_Window()
+	{
+		// As switching back through Recents does: the stacked copy stays alive in its own task while the original's
+		// task comes back to the front. The copy isn't finishing, so only the original's resume can take the window.
+		var stackedType = Type.GetType("SamplesApp.Droid.StackedWindowActivity, SamplesApp");
+		if (stackedType is null)
+		{
+			Assert.Inconclusive("The app hosting the tests declares no stacked test activity.");
+		}
+
+		var border = new Microsoft.UI.Xaml.Controls.Border
+		{
+			Width = 100,
+			Height = 100,
+			Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red),
+		};
+		await UITestHelper.Load(border);
+
+		var window = TestServices.WindowHelper.CurrentTestWindow;
+		Assert.IsNotNull(window);
+		var closed = false;
+		void OnClosed(object sender, Microsoft.UI.Xaml.WindowEventArgs args) => closed = true;
+		window.Closed += OnClosed;
+
+		var original = GetWindowActivity();
+		Assert.IsNotNull(original);
+		object stacked = null;
+
+		try
+		{
+			StartActivity(original, stackedType, ActivityFlagNewTask | ActivityFlagMultipleTask);
+
+			await TestServices.WindowHelper.WaitFor(
+				() => (stacked = GetWindowActivity()) is { } current && !ReferenceEquals(current, original),
+				timeoutMS: 10000,
+				message: "The stacked activity never took the window over.");
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// The host app's main activity is SingleTask, so this brings the original's task back instead of stacking.
+			StartActivity(stacked, original.GetType(), ActivityFlagNewTask);
+
+			await TestServices.WindowHelper.WaitFor(
+				() => !ReferenceEquals(GetWindowActivity(), stacked),
+				timeoutMS: 10000,
+				message: "The original activity never took the window back.");
+			if (!ReferenceEquals(GetWindowActivity(), original))
+			{
+				Assert.Inconclusive("The host app's main activity is not SingleTask: the intent created a new activity.");
+			}
+
+			Assert.AreEqual(true, GetMember(original, "DrivesWindow"));
+			await AssertPresents(border);
+
+			stacked.GetType().GetMethod("Finish", Type.EmptyTypes)!.Invoke(stacked, null);
+			await WaitForDestroyed(stacked);
+			Assert.IsFalse(closed, "The window closed with the stacked activity.");
+			Assert.AreSame(original, GetWindowActivity());
+		}
+		finally
+		{
+			window.Closed -= OnClosed;
+			FinishIfAlive(stacked, original);
+		}
+	}
+
+	private const int ActivityFlagMultipleTask = 0x08000000;
+	private const int ActivityFlagNewTask = 0x10000000;
+
+	private static void StartActivity(object from, Type activityType, int flags = 0)
+	{
+		var intentType = Type.GetType("Android.Content.Intent, Mono.Android")!;
+		var contextType = Type.GetType("Android.Content.Context, Mono.Android")!;
+		var intent = intentType.GetConstructor(new[] { contextType, typeof(Type) })!.Invoke(new object[] { from, activityType });
+		if (flags != 0)
+		{
+			var flagsType = Type.GetType("Android.Content.ActivityFlags, Mono.Android")!;
+			intentType.GetMethod("AddFlags", new[] { flagsType })!.Invoke(intent, new[] { Enum.ToObject(flagsType, flags) });
+		}
+
+		from.GetType().GetMethod("StartActivity", new[] { intentType })!.Invoke(from, new[] { intent });
+	}
+
+	private static Task WaitForDestroyed(object activity)
+		=> TestServices.WindowHelper.WaitFor(
+			() => GetMember(activity, "IsDestroyed") is true,
+			timeoutMS: 10000,
+			message: "The stacked activity was never destroyed.");
+
+	private static void FinishIfAlive(object activity, object original)
+	{
+		if (activity is not null && !ReferenceEquals(activity, original) && GetMember(activity, "IsFinishing") is false)
+		{
+			activity.GetType().GetMethod("Finish", Type.EmptyTypes)!.Invoke(activity, null);
+		}
+	}
+
+	private static void FinishTaskHost(Type hostType)
+	{
+		if (hostType.GetProperty("Current", BindingFlags.Static | BindingFlags.Public)?.GetValue(null) is { } host
+			&& GetMember(host, "IsFinishing") is false)
+		{
+			host.GetType().GetMethod("Finish", Type.EmptyTypes)!.Invoke(host, null);
+		}
+	}
+
+	// A request latched while the window changed hands must not keep the new owner from presenting.
+	private static async Task AssertPresents(Microsoft.UI.Xaml.Controls.Border border)
+	{
+		var target = (Microsoft.UI.Xaml.Media.CompositionTarget)border.Visual.CompositionTarget!;
+		var presented = false;
+		EventHandler<Microsoft.UI.Xaml.Media.FramePresentedInfo> onPresented = (_, _) => Volatile.Write(ref presented, true);
+		target.FramePresented += onPresented;
+		try
+		{
+			border.Background = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Green);
+			await TestServices.WindowHelper.WaitFor(() => Volatile.Read(ref presented), timeoutMS: 5000, message: "No frame was presented after the window changed hands.");
+		}
+		finally
+		{
+			target.FramePresented -= onPresented;
+		}
+	}
+
 	private static object GetMember(object instance, string name)
 		=> instance.GetType()
 			.GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
@@ -245,18 +698,18 @@ public class Given_ApplicationActivity
 	// The runtime tests don't reference Mono.Android or the Android host, hence the reflection.
 	private static object GetWindowActivity()
 	{
-		if (TestServices.WindowHelper.XamlRoot is not { } xamlRoot)
-		{
-			return null;
-		}
-
-		var host = typeof(Microsoft.UI.Xaml.XamlRoot).Assembly.GetType("Uno.UI.Hosting.XamlRootMap")
-			?.GetMethod("GetHostForRoot", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public)
-			?.Invoke(null, new object[] { xamlRoot });
+		var host = GetWindowHost();
 
 		return host?.GetType()
 			.GetProperty("Activity", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public)
 			?.GetValue(host);
 	}
+
+	private static object GetWindowHost()
+		=> TestServices.WindowHelper.XamlRoot is { } xamlRoot
+			? typeof(Microsoft.UI.Xaml.XamlRoot).Assembly.GetType("Uno.UI.Hosting.XamlRootMap")
+				?.GetMethod("GetHostForRoot", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public)
+				?.Invoke(null, new object[] { xamlRoot })
+			: null;
 }
 #endif

@@ -213,15 +213,36 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 
 	public void SetKeyboardAccessoryView(UIView? accessoryView)
 	{
-		if (InputAccessoryView == accessoryView)
+		_keyboardAccessoryView = accessoryView;
+		ApplyInputViews();
+	}
+
+	public void SetSoftwareKeyboardSuppressed(bool suppressed)
+	{
+		_isSoftwareKeyboardSuppressed = suppressed;
+		ApplyInputViews();
+	}
+
+	private UIView? _keyboardAccessoryView;
+	private bool _isSoftwareKeyboardSuppressed;
+	private UIView? _emptyInputView;
+
+	// Suppressed, an empty view stands in for the keyboard (without the accessory bar): the view can still be the first
+	// responder, which is what hardware keyboards type into.
+	private void ApplyInputViews()
+	{
+		var inputView = _isSoftwareKeyboardSuppressed ? _emptyInputView ??= new UIView(CGRect.Empty) : null;
+		var accessoryView = _isSoftwareKeyboardSuppressed ? null : _keyboardAccessoryView;
+		if (InputView == inputView && InputAccessoryView == accessoryView)
 		{
 			return;
 		}
 
+		InputView = inputView;
 		InputAccessoryView = accessoryView;
 
-		// Setting it before the view becomes first responder is enough for the keyboard to come up
-		// with the accessory; changing it during an editing session needs the input views reloaded.
+		// Setting them before the view becomes first responder is enough for the keyboard to come up
+		// with them; changing them during an editing session needs the input views reloaded.
 		if (IsFirstResponder)
 		{
 			ReloadInputViews();

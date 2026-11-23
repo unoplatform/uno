@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ExpanderAutomationPeer.cpp, tag winui3/release/1.8.4
+// MUX Reference ExpanderAutomationPeer.cpp
 
 #nullable enable
 
@@ -42,6 +42,7 @@ public partial class ExpanderAutomationPeer : FrameworkElementAutomationPeer, IE
 
 	protected override string GetClassNameCore()
 	{
+		// WPF uses "Expander" as its class name
 		return typeof(Expander).FullName!;
 	}
 
@@ -61,6 +62,7 @@ public partial class ExpanderAutomationPeer : FrameworkElementAutomationPeer, IE
 		// We are not going to call the overriden one because that one doesn't have the toggle button.
 		var childrenPeers = base.GetChildrenCore();
 
+		// Uno specific: the C# base can return null.
 		if (childrenPeers == null)
 		{
 			return null;
@@ -109,12 +111,10 @@ public partial class ExpanderAutomationPeer : FrameworkElementAutomationPeer, IE
 	{
 		if (GetExpanderToggleButtonPeer() is { } toggleButtonPeer)
 		{
-			if (toggleButtonPeer is FrameworkElementAutomationPeer frameworkElementPeer &&
-				frameworkElementPeer.Owner is ToggleButton toggleButton)
-			{
-				toggleButton.Focus(FocusState.Programmatic);
-				return toggleButtonPeer;
-			}
+			var frameworkElementPeer = (FrameworkElementAutomationPeer)toggleButtonPeer;
+			var toggleButton = (ToggleButton)frameworkElementPeer.Owner;
+			toggleButton.Focus(FocusState.Programmatic);
+			return toggleButtonPeer;
 		}
 
 		return base.GetPeerFromPointCore(point);
@@ -126,6 +126,7 @@ public partial class ExpanderAutomationPeer : FrameworkElementAutomationPeer, IE
 	protected override IList<AutomationPeer>? GetChildrenCore()
 	{
 		var childrenPeers = base.GetChildrenCore();
+		// Uno specific: the C# base can return null, and an empty list would make the capacity below negative.
 		if (childrenPeers == null || childrenPeers.Count == 0)
 		{
 			return childrenPeers;
@@ -141,6 +142,7 @@ public partial class ExpanderAutomationPeer : FrameworkElementAutomationPeer, IE
 			else
 			{
 				// If it is ExpanderToggleButton, we want to exclude it but add its children into the peer
+				// Uno specific: GetChildrenCore is protected in C#; GetChildren forwards to it and also sets the children's parent.
 				var expanderToggleButtonChildrenPeers = peer.GetChildren();
 				if (expanderToggleButtonChildrenPeers != null)
 				{

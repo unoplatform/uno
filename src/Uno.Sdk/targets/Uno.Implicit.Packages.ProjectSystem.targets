@@ -103,6 +103,17 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Graphics2DSK" ProjectSystem="true" />
 	</ItemGroup>
 
+	<!-- Uno.Maui.Embedding brings Uno.Maui.Handlers at the same version. It does not depend on Uno.Extensions, unlike mauinativeembedding. -->
+	<ItemGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.Maui.Embedding" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Controls" ProjectSystem="true" Condition="!$(UnoFeatures.Contains(';mauinativeembedding;'))" />
+	</ItemGroup>
+
+	<!-- Uno.WinUI.Retarget rewrites the Windows builds of Windows App SDK packages for Uno; it is also what MauiEmbedding builds on. -->
+	<ItemGroup Condition="$(UnoFeatures.Contains(';retarget;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.WinUI.Retarget" ProjectSystem="true" />
+	</ItemGroup>
+
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Extensions.Implicit.Packages.ProjectSystem.targets" />
 	<Import Project="$(MSBuildThisFileDirectory)Uno.Implicit.Packages.ProjectSystem.Android.targets"
 		Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'" />

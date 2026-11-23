@@ -53,6 +53,9 @@
 		<!-- WinUI keeps the old head's name, which is deliberately absent from the Uno.UI.Extras /
 		     Uno.Foundation IVT lists — that is what avoids the duplicate-type collision there. -->
 		<AssemblyName Condition="'$(_Platform)' == 'windows'">SamplesApp.Windows</AssemblyName>
+		<!-- WinUI runtime tests are the parity oracle, so they must run on the referenced Windows App SDK.
+		     A framework-dependent MSIX binds to the newest runtime on the machine instead. -->
+		<WindowsAppSDKSelfContained Condition="'$(_Platform)' == 'windows'">true</WindowsAppSDKSelfContained>
 
 		<!--
 		Every non-WinUI TFM renders with Skia, so the runtime variant is Generic on all of them, and this
@@ -107,6 +110,8 @@
 		<UnoDrawingBackendSkia Condition="'$(UnoDrawingBackendSkia)'==''">true</UnoDrawingBackendSkia>
 		<!-- wgpu-native publishes no tvOS slice, so the backend's P/Invokes have nothing to link against there. -->
 		<UnoDrawingBackendWebGpu Condition="'$(UnoDrawingBackendWebGpu)'=='' and '$(_Platform)' == 'tvos'">false</UnoDrawingBackendWebGpu>
+		<!-- WinUI renders natively, so its head has no use for the wgpu-native download or webgpu.dll. -->
+		<UnoDrawingBackendWebGpu Condition="'$(_Platform)' == 'windows'">false</UnoDrawingBackendWebGpu>
 		<UnoDrawingBackendWebGpu Condition="'$(UnoDrawingBackendWebGpu)'==''">true</UnoDrawingBackendWebGpu>
 		<DefineConstants Condition="'$(UnoDrawingBackendSkia)'=='true'">$(DefineConstants);UNO_DRAWING_SKIA</DefineConstants>
 		<DefineConstants Condition="'$(UnoDrawingBackendWebGpu)'=='true'">$(DefineConstants);UNO_DRAWING_WEBGPU</DefineConstants>

@@ -5,7 +5,6 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.Foundation;
-using Uno.Foundation.Interop;
 using Uno.Extensions;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
@@ -17,8 +16,8 @@ namespace Windows.Storage
 	{
 		private static TaskCompletionSource<bool> _storageInitialized = new TaskCompletionSource<bool>();
 
-		internal async Task MakePersistentAsync()
-			=> await MakePersistentAsync(this);
+		internal void MakePersistent()
+			=> MakePersistent(this);
 
 		private static async Task TryInitializeStorage()
 		{
@@ -35,8 +34,8 @@ namespace Windows.Storage
 			}
 		}
 
-		internal static async Task MakePersistentAsync(params StorageFolder[] folders)
-			=> await NativeMethods.MakePersistentAsync(folders.SelectToArray(f => f.Path));
+		internal static void MakePersistent(params StorageFolder[] folders)
+			=> NativeMethods.MakePersistent(folders.SelectToArray(f => f.Path));
 
 		[JSExport]
 		internal static void DispatchStorageInitialized()
@@ -49,5 +48,12 @@ namespace Windows.Storage
 			_storageInitialized.TrySetResult(true);
 		}
 
+		[JSExport]
+		internal static Task DispatchStorageInitializedAsync()
+		{
+			DispatchStorageInitialized();
+
+			return Task.CompletedTask;
+		}
 	}
 }
