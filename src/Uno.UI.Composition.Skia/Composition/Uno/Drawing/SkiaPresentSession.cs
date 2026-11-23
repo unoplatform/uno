@@ -54,21 +54,25 @@ internal sealed class SkiaPresentSession : SkiaDrawingSession, IPresentSession
 			return;
 		}
 
+		// Snapped outward to whole pixels and clipped hard: an antialiased edge would blend the cleared and redrawn
+		// pixels with the retained ones, and a hard rect clip is a plain scissor on the GPU.
 		if (damage.Length == 1)
 		{
-			Canvas.ClipRect(damage[0].ToSKRect(), SKClipOperation.Intersect, antialias: true);
+			Canvas.ClipRect(ToPixelRect(damage[0]), SKClipOperation.Intersect, antialias: false);
 			return;
 		}
 
-		using var builder = new SKPathBuilder();
-		foreach (var region in damage)
+		using var region = new SKRegion();
+		foreach (var rect in damage)
 		{
-			builder.AddRect(region.ToSKRect());
+			region.Op(ToPixelRect(rect), SKRegionOperation.Union);
 		}
 
-		using var regions = builder.Detach();
-		Canvas.ClipPath(regions, SKClipOperation.Intersect, antialias: true);
+		Canvas.ClipRegion(region, SKClipOperation.Intersect);
 	}
+
+	private static SKRectI ToPixelRect(global::Windows.Foundation.Rect rect)
+		=> SKRectI.Ceiling(rect.ToSKRect(), outwards: true);
 
 	// Restore any state the composition (frame replay + overlay) left behind, flush the composition surface, then
 	// submit the GPU.
