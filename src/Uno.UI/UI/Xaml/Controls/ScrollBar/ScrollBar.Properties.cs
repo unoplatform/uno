@@ -1,4 +1,8 @@
-﻿namespace Microsoft.UI.Xaml.Controls.Primitives;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference dxaml\xcp\dxaml\lib\winrtgeneratedclasses\ScrollBar.g.cpp
+
+namespace Microsoft.UI.Xaml.Controls.Primitives;
 
 public partial class ScrollBar
 {
@@ -38,7 +42,7 @@ public partial class ScrollBar
 			nameof(Orientation),
 			typeof(Orientation),
 			typeof(ScrollBar),
-			new FrameworkPropertyMetadata(Orientation.Vertical)); // TODO:MZ: Default value should be Horizontal according to docs?
+			new FrameworkPropertyMetadata(Orientation.Vertical));
 
 	/// <summary>
 	/// Gets or sets the amount of the scrollable content that is currently visible.

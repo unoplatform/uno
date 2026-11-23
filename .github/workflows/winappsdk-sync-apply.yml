@@ -97,6 +97,9 @@ jobs:
 
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v6.1.0
+        env:
+          # Keeps workload installs file-based; in MSI mode the image's SDK drops the net10 tvOS packs
+          DOTNET_INSTALL_DIR: ${{ runner.temp }}/dotnet
         with:
           global-json-file: global.json
 

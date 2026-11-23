@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference PipsPager.properties.cpp, tag winui3/release/1.8-stable
+// MUX reference PipsPager.properties.cpp
 
 using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
@@ -219,7 +219,7 @@ public partial class PipsPager
 	/// </summary>
 	public PipsPagerWrapMode WrapMode
 	{
-		get => (PipsPagerWrapMode)this.GetValue(WrapModeProperty);
+		get => (PipsPagerWrapMode)GetValue(WrapModeProperty);
 		set => SetValue(WrapModeProperty, value);
 	}
 
@@ -228,9 +228,10 @@ public partial class PipsPager
 	/// </summary>
 	public static DependencyProperty WrapModeProperty { get; } =
 		DependencyProperty.Register(
-			nameof(WrapMode), typeof(PipsPagerWrapMode),
+			nameof(WrapMode),
+			typeof(PipsPagerWrapMode),
 			typeof(PipsPager),
-			new FrameworkPropertyMetadata(default(PipsPagerWrapMode)));
+			new FrameworkPropertyMetadata(PipsPagerWrapMode.None, OnPropertyChanged));
 
 	private static void OnPropertyChanged(
 		DependencyObject sender,

@@ -644,6 +644,10 @@ namespace Uno.UI.Runtime.Android
 			//ViewHelper.RefreshFontScale();
 			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
 			SystemThemeHelper.RefreshSystemTheme();
+
+			// Android has no accent change notification; a Material You palette change recreates or
+			// resumes the activity, so re-read the accent here.
+			AccentColorHelper.RefreshAccentColor();
 		}
 
 #pragma warning disable CS0618 // deprecated members
@@ -763,6 +767,17 @@ namespace Uno.UI.Runtime.Android
 			{
 				base.OnDraw(canvas);
 				canvas.ClipPath(_androidPath);
+			}
+
+			// The touch that focused a hosted view went straight to it and never reached XAML.
+			public override void RequestChildFocus(View? child, View? focused)
+			{
+				base.RequestChildFocus(child, focused);
+
+				if (child is not null)
+				{
+					AndroidSkiaNativeElementHostingExtension.OnNativeElementFocused(child);
+				}
 			}
 		}
 	}

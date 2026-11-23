@@ -1,0 +1,27 @@
+{
+  "id": "selectorbar",
+  "title": "SelectorBar",
+  "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
+  "upstream": {
+    "sources": [
+      "controls/dev/SelectorBar"
+    ],
+    "tests": [
+      "controls/dev/SelectorBar/APITests",
+      "controls/dev/SelectorBar/TestUI"
+    ],
+    "strings": "controls/dev/SelectorBar/Strings"
+  },
+  "uno": {
+    "sources": [
+      "src/Uno.UI/UI/Xaml/Controls/SelectorBar",
+      "src/Uno.UI.FluentTheme/Resources/PriorityDefault/SelectorBar_themeresources.xaml",
+      "src/Uno.UI.FluentTheme/Resources/PriorityDefault/SelectorBar.xaml"
+    ],
+    "tests": [
+      "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/SelectorBar",
+      "src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/SelectorBarTests"
+    ],
+    "strings": "src/Uno.UI/UI/Xaml/Controls/SelectorBar/Strings"
+  }
+}

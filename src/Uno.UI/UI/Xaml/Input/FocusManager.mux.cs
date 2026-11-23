@@ -1883,7 +1883,7 @@ namespace Microsoft.UI.Xaml.Input
 
 			// TODO Uno specific: We need to do a full redraw, as render loop does not yet check for focus visuals rendering.
 			UpdateFocusRect(focusNavigationDirection, false);
-			FocusNative(_focusedElement as UIElement);
+			UpdateNativeFocus(); // Uno specific: moves platform focus, unless a hosted native element already holds it
 			_contentRoot.InputManager.Pointers.NotifyFocusChanged(); // Note: This sounds like a duplicate of the NotifyFocusChanged done a few lines below (1944). We need to evaluate if this is still relevant or if we can just remove that uno-specific call.
 
 			// At this point the focused pointer has been switched.  So success is true
@@ -2006,7 +2006,14 @@ namespace Microsoft.UI.Xaml.Input
 				// Use GetOrCreateAutomationPeer() (cached) instead of OnCreateAutomationPeerInternal() (uncached)
 				// so that the peer identity is stable. HasKeyboardFocusImpl() compares the peer with
 				// GetFocusedAutomationPeer() by reference, which only works when the same object is used.
-				pAP = (_focusedElement as UIElement)?.GetOrCreateAutomationPeer();
+				// WinUI calls the CDependencyObject::OnCreateAutomationPeer virtual, which CHyperlink overrides.
+				// In Uno that virtual is split between UIElement and TextElement.
+				pAP = _focusedElement switch
+				{
+					UIElement focusedUIElement => focusedUIElement.GetOrCreateAutomationPeer(),
+					TextElement focusedTextElement => focusedTextElement.GetOrCreateAutomationPeer(),
+					_ => null,
+				};
 
 				// There's one specific circumstance that we want to handle: attempting to focus a ContentControl inside a popup.
 				// The ContentControl is able to be keyboard focused, but because ContentControlAutomationPeer doesn't exist,

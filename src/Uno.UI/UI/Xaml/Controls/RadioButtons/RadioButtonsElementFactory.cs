@@ -1,42 +1,51 @@
-﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference RadioButtonsElementFactory.cpp
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	internal class RadioButtonsElementFactory : ElementFactory
 	{
-		private IElementFactoryShim m_itemTemplateWrapper = null;
+		private IElementFactory m_itemTemplateWrapper;
 
 		internal void UserElementFactory(object newValue)
 		{
-			m_itemTemplateWrapper = newValue as IElementFactoryShim;
-			if (m_itemTemplateWrapper == null)
+			if (newValue is DataTemplate dataTemplate)
 			{
-				// ItemTemplate set does not implement IElementFactoryShim. We also want to support DataTemplate.
-				var dataTemplate = newValue as DataTemplate;
-				if (dataTemplate != null)
-				{
-					m_itemTemplateWrapper = new ItemTemplateWrapper(dataTemplate);
-				}
+				m_itemTemplateWrapper = new ItemTemplateWrapper(dataTemplate);
 			}
+			else if (newValue is DataTemplateSelector selector)
+			{
+				m_itemTemplateWrapper = new ItemTemplateWrapper(selector);
+			}
+			else if (newValue is IElementFactory customElementFactory)
+			{
+				m_itemTemplateWrapper = customElementFactory;
+			}
+#if HAS_UNO
+			// TODO Uno: remove with IElementFactoryShim.
+			else if (newValue is IElementFactoryShim shim)
+			{
+				m_itemTemplateWrapper = new ElementFactoryShimAdapter(shim);
+			}
+#endif
 		}
 
-		protected override UIElement GetElementCore(ElementFactoryGetArgs args)
+		private protected override UIElement GetElementCore(global::Microsoft.UI.Xaml.ElementFactoryGetArgs args)
 		{
-			object GetContent(IElementFactoryShim itemTemplateWrapper)
+			object GetNewContent(IElementFactory itemTemplateWrapper)
 			{
-				if (itemTemplateWrapper != null)
+				if (itemTemplateWrapper is not null)
 				{
 					return itemTemplateWrapper.GetElement(args);
 				}
 				return args.Data;
 			}
-
-			var newContent = GetContent(m_itemTemplateWrapper);
+			var newContent = GetNewContent(m_itemTemplateWrapper);
 
 			// Element is already a RadioButton, so we just return it.
-			var radioButton = newContent as RadioButton;
-			if (radioButton != null)
+			if (newContent is RadioButton radioButton)
 			{
 				return radioButton;
 			}
@@ -46,8 +55,7 @@ namespace Microsoft.UI.Xaml.Controls
 			newRadioButton.Content = args.Data;
 
 			// If a user provided item template exists, we pass the template down to the ContentPresenter of the RadioButton.
-			var itemTemplateWrapper = m_itemTemplateWrapper as ItemTemplateWrapper;
-			if (itemTemplateWrapper != null)
+			if (m_itemTemplateWrapper is ItemTemplateWrapper itemTemplateWrapper)
 			{
 				newRadioButton.ContentTemplate = itemTemplateWrapper.Template;
 			}
@@ -55,9 +63,8 @@ namespace Microsoft.UI.Xaml.Controls
 			return newRadioButton;
 		}
 
-		protected override void RecycleElementCore(ElementFactoryRecycleArgs args)
+		private protected override void RecycleElementCore(global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs args)
 		{
-
 		}
 	}
 }

@@ -3,8 +3,10 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime;
@@ -106,6 +108,87 @@ internal partial class WebAssemblyAccessibility
 		}
 	}
 
+	/// <summary>
+	/// WinUI moves keyboard focus onto the items of an open dropdown. The WAI-ARIA combobox pattern
+	/// keeps DOM focus on the head instead, which points at the focused option through
+	/// aria-activedescendant. Returns the head to keep focused when <paramref name="element"/> is such an item.
+	/// </summary>
+	internal bool TryActivateDropDownItem(UIElement element, out IntPtr comboBoxHandle)
+	{
+		comboBoxHandle = IntPtr.Zero;
+
+		if (element is not ComboBoxItem item ||
+			ItemsControl.ItemsControlFromItemContainer(item) is not ComboBox { IsDropDownOpen: true } comboBox ||
+			!HasSemanticElement(comboBox.Visual.Handle))
+		{
+			return false;
+		}
+
+		// Focus can reach the item before the tree walk has emitted its option.
+		if (!_comboBoxListBoxes.TryGetValue(comboBox, out var region) ||
+			!region.ContainsRealizedHandle(item.Visual.Handle))
+		{
+			TryRealizeComboBoxItem(item);
+		}
+
+		comboBoxHandle = comboBox.Visual.Handle;
+		NativeMethods.UpdateActiveDescendant(comboBoxHandle, item.Visual.Handle);
+		return true;
+	}
+
+	/// <summary>
+	/// True when <paramref name="element"/> is a ComboBox whose open dropdown holds the XAML focus.
+	/// </summary>
+	internal static bool IsDropDownItemFocused(UIElement element)
+		=> element is ComboBox { IsDropDownOpen: true, XamlRoot: { } xamlRoot } comboBox &&
+			FocusManager.GetFocusedElement(xamlRoot) is ComboBoxItem focusedItem &&
+			ReferenceEquals(ItemsControl.ItemsControlFromItemContainer(focusedItem), comboBox);
+
+	/// <summary>
+	/// WinUI exposes the selection pattern of a dropdown item on its item peer, whose Select also
+	/// collapses the ComboBox. The container peer cannot lead to it: the item lives in the popup,
+	/// outside of the ComboBox subtree.
+	/// </summary>
+	private static AutomationPeer? GetDropDownItemPeer(UIElement element)
+		=> element is ComboBoxItem container &&
+			ItemsControl.ItemsControlFromItemContainer(container) is ComboBox comboBox &&
+			comboBox.GetOrCreateAutomationPeer() is ComboBoxAutomationPeer comboBoxPeer &&
+			comboBox.ItemFromContainer(container) is { } item
+				? comboBoxPeer.CreateItemAutomationPeer(item)
+				: null;
+
+	/// <summary>
+	/// The text of the selected item, which a non-editable combobox exposes as its value.
+	/// </summary>
+	internal static string? GetComboBoxValue(ComboBox comboBox)
+	{
+		// The text box of an editable ComboBox carries the value.
+		if (comboBox.IsEditable || comboBox.SelectedItem is not { } selectedItem)
+		{
+			return null;
+		}
+
+		// Same text as the option, when its container exists.
+		var container = selectedItem as ComboBoxItem ?? comboBox.ContainerFromItem(selectedItem) as ComboBoxItem;
+		if (container?.GetOrCreateAutomationPeer()?.GetName() is { Length: > 0 } name)
+		{
+			return name;
+		}
+
+		// The containers are only created once the dropdown opens. Until then, name the item
+		// the way WinUI names an item peer without a container.
+		var text = FrameworkElement.GetStringFromObject(selectedItem);
+		return string.IsNullOrEmpty(text) ? null : text;
+	}
+
+	private void UpdateComboBoxValue(ComboBox comboBox)
+	{
+		if (HasSemanticElement(comboBox.Visual.Handle))
+		{
+			NativeMethods.UpdateComboBoxValue(comboBox.Visual.Handle, GetComboBoxValue(comboBox));
+		}
+	}
+
 	private void DisposeComboBoxListBox(ComboBox comboBox)
 	{
 		if (_comboBoxListBoxes.TryGetValue(comboBox, out var region))
@@ -166,13 +249,7 @@ internal partial class WebAssemblyAccessibility
 			item.Visual.Size.X, item.Visual.Size.Y,
 			"option",
 			label);
-
-		// Point aria-activedescendant at the selected option so the combobox head
-		// announces the active item without moving DOM focus off the head.
-		if (item.IsSelected)
-		{
-			NativeMethods.UpdateActiveDescendant(comboBox.Visual.Handle, item.Visual.Handle);
-		}
+		NativeMethods.UpdateSelectionState(item.Visual.Handle, item.IsSelected);
 	}
 
 	/// <summary>

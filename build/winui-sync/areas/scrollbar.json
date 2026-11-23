@@ -1,0 +1,34 @@
+{
+  "id": "scrollbar",
+  "title": "ScrollBar",
+  "baseline": "1b5b1a0ccc05ce5c8b5931dc303666975b57f498",
+  "upstream": {
+    "sources": [
+      "dxaml/xcp/dxaml/lib/ScrollBar_Partial.cpp",
+      "dxaml/xcp/dxaml/lib/ScrollBar_Partial.h",
+      "dxaml/xcp/dxaml/lib/ScrollBarAutomationPeer_Partial.cpp",
+      "dxaml/xcp/dxaml/lib/ScrollBarAutomationPeer_Partial.h",
+      "dxaml/xcp/dxaml/lib/winrtgeneratedclasses/ScrollBar.g.cpp",
+      "dxaml/xcp/dxaml/lib/winrtgeneratedclasses/ScrollBar.g.h"
+    ],
+    "tests": [
+      "controls/dev/CommonStyles/TestUI/ScrollBarPage.xaml",
+      "controls/dev/CommonStyles/TestUI/ScrollBarPage.xaml.cs"
+    ]
+  },
+  "uno": {
+    "sources": [
+      "src/Uno.UI/UI/Xaml/Controls/ScrollBar",
+      "src/Uno.UI/UI/Xaml/Automation/Peers/ScrollBarAutomationPeer.cs"
+    ],
+    "tests": [
+      "src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/ScrollBarTests"
+    ]
+  },
+  "mirror": [
+    {
+      "upstream": "controls/dev/CommonStyles/ScrollBar_themeresources.xaml",
+      "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/ScrollBar_themeresources.xaml"
+    }
+  ]
+}
