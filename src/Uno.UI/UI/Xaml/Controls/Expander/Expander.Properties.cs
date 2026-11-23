@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference Expander.properties.cpp, commit 8d20a91
+// MUX Reference Expander.properties.cpp
 
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
@@ -90,7 +90,7 @@ public partial class Expander
 			new FrameworkPropertyMetadata(null));
 
 	/// <summary>
-	/// Identifies the HeaderTemplateSelector dependency property.
+	/// Gets or sets a value that indicates whether the content area of the Expander is shown.
 	/// </summary>
 	public bool IsExpanded
 	{
