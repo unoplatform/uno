@@ -38,6 +38,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
+			__nameScope.Owner = this;
 			var __that = this;
 			base.IsParsing = true;
 			// Source Grid_Uses_Common_Syntax.xaml (Line 1:2)
@@ -165,6 +166,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 			}
 			))
 			;
+			__nameScope.MarkOwnerAsPossiblyHavingDefinitionName();
 			OnInitializeCompleted();
 
 		}

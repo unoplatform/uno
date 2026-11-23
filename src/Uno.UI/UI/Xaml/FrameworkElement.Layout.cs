@@ -2,20 +2,19 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
-
 using Uno.UI;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml;
-using static System.Math;
-using static Uno.UI.LayoutHelper;
-using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Core.Scaling;
-using Uno.UI.Extensions;
+using Windows.Foundation;
+using static System.Math;
+using static Uno.UI.LayoutHelper;
 
 namespace Microsoft.UI.Xaml
 {
@@ -1032,7 +1031,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-		internal override void EnterImpl(EnterParams @params, int depth)
+		internal override void EnterImpl(DependencyObject? namescopeOwner, EnterParams @params)
 		{
 			var core = this.GetContext();
 
@@ -1051,7 +1050,7 @@ namespace Microsoft.UI.Xaml
 			//    }
 			//}
 
-			base.EnterImpl(@params, depth);
+			base.EnterImpl(namescopeOwner, @params);
 
 			////Check for focus chrome property.
 			//if (@params.IsLive)
@@ -1109,7 +1108,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		// UNO TODO: Not yet ported
-		internal override void LeaveImpl(LeaveParams @params)
+		internal override void LeaveImpl(DependencyObject? namescopeOwner, LeaveParams @params)
 		{
 			// The way this works on WinUI is that when an element enters the visual tree, all values
 			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
@@ -1122,12 +1121,12 @@ namespace Microsoft.UI.Xaml
 				{
 					if (resource is FrameworkElement resourceAsUIElement)
 					{
-						resourceAsUIElement.LeaveImpl(@params);
+						resourceAsUIElement.LeaveImpl(namescopeOwner, @params);
 					}
 				}
 			}
 
-			base.LeaveImpl(@params);
+			base.LeaveImpl(namescopeOwner, @params);
 
 			ReconfigureViewportPropagation(isLeavingTree: true);
 		}
