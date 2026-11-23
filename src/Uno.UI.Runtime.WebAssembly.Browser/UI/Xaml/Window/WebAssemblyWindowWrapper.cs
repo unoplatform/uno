@@ -108,6 +108,14 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		}
 	}
 
+	[JSExport]
+	private static Task OnResizeAsync([JSMarshalAs<JSType.Any>] object instance, double width, double height, float scale)
+	{
+		OnResize(instance, width, height, scale);
+
+		return Task.CompletedTask;
+	}
+
 	// Fed from a visualViewport listener on the JS side. occludedHeight is the height (in the
 	// same logical/CSS pixels as the window bounds) the on-screen keyboard covers at the bottom
 	// of the viewport, already gated on the invisible text input being focused, so browser-chrome
@@ -138,6 +146,14 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		}
 	}
 
+	[JSExport]
+	private static Task OnViewportOcclusionChangedAsync([JSMarshalAs<JSType.Any>] object instance, double viewportWidth, double viewportHeight, double occludedHeight)
+	{
+		OnViewportOcclusionChanged(instance, viewportWidth, viewportHeight, occludedHeight);
+
+		return Task.CompletedTask;
+	}
+
 	// The browser reports focus and page visibility instead of window activation, so map them onto the
 	// shared activation path. Beyond raising Window.Activated and Window.VisibilityChanged, which never
 	// fired on this target, this is what lets a key released while the browser holds focus - opening
@@ -164,6 +180,14 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 	}
 
 	[JSExport]
+	private static Task OnWindowFocusChangedAsync([JSMarshalAs<JSType.Any>] object instance, bool focused)
+	{
+		OnWindowFocusChanged(instance, focused);
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	private static void OnDocumentVisibilityChanged([JSMarshalAs<JSType.Any>] object instance, bool visible)
 	{
 		try
@@ -180,6 +204,14 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 			// A managed exception must not cross back into the JS DOM-event callback.
 			Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, typeof(WebAssemblyWindowWrapper));
 		}
+	}
+
+	[JSExport]
+	private static Task OnDocumentVisibilityChangedAsync([JSMarshalAs<JSType.Any>] object instance, bool visible)
+	{
+		OnDocumentVisibilityChanged(instance, visible);
+
+		return Task.CompletedTask;
 	}
 
 	protected override void ShowCore()

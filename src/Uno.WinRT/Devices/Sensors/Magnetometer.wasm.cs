@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
 using Uno;
 using Uno.Devices.Sensors.Helpers;
 
@@ -43,9 +44,8 @@ namespace Windows.Devices.Sensors
 		/// <param name="x">Magnetic field X</param>
 		/// <param name="y">Magnetic field Y</param>
 		/// <param name="z">Magnetic field Z</param>
-		/// <returns>0 - needed to bind method from WASM</returns>
 		[JSExport]
-		internal static int DispatchReading(float x, float y, float z)
+		internal static void DispatchReading(float x, float y, float z)
 		{
 			if (_instance.Value == null)
 			{
@@ -63,7 +63,14 @@ namespace Windows.Devices.Sensors
 						MagnetometerAccuracy.Unknown,
 						now));
 			}
-			return 0;
+		}
+
+		[JSExport]
+		internal static Task DispatchReadingAsync(float x, float y, float z)
+		{
+			DispatchReading(x, y, z);
+
+			return Task.CompletedTask;
 		}
 	}
 }
