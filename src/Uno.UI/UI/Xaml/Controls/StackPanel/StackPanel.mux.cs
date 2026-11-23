@@ -28,12 +28,7 @@ partial class StackPanel
 			UIElement currentChild = children[childIndex];
 			MUX_ASSERT(currentChild != null);
 
-#if UNO_REFERENCE_API
 			currentChild.Measure(childConstraint);
-#else
-			// For native targets, we need to use this approach.
-			this.MeasureElement(currentChild, childConstraint);
-#endif
 			currentChild.EnsureLayoutStorage();
 
 			if (Orientation == Orientation.Vertical)
@@ -100,12 +95,7 @@ partial class StackPanel
 				arrangeRect.Height = Math.Max(arrangeRect.Height, currentChild.DesiredSize.Height);//currentChild.GetLayoutStorage().m_desiredSize.Height);
 			}
 
-#if UNO_REFERENCE_API
 			currentChild.Arrange(arrangeRect);
-#else
-			// For native targets, we need to use this approach.
-			this.ArrangeElement(currentChild, arrangeRect);
-#endif
 
 			// Offset the rect for the next child.
 			if (currentChild.IsVisible())
