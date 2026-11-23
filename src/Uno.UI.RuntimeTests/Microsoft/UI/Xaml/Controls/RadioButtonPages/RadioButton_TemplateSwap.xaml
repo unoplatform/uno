@@ -1,0 +1,36 @@
+<UserControl x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.RadioButtonPages.RadioButton_TemplateSwap"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.RadioButtonPages">
+
+	<UserControl.Resources>
+		<local:PickerTemplateSelector x:Key="PickerTemplateSelector">
+			<local:PickerTemplateSelector.RadioTemplate>
+				<DataTemplate x:DataType="local:PickerModel">
+					<ItemsControl ItemsSource="{x:Bind Options}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate x:DataType="local:PickerOption">
+								<RadioButton Content="{x:Bind Label}" IsChecked="{x:Bind IsSelected, Mode=TwoWay}" GroupName="SharedGroup" />
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</DataTemplate>
+			</local:PickerTemplateSelector.RadioTemplate>
+			<local:PickerTemplateSelector.CheckBoxTemplate>
+				<DataTemplate x:DataType="local:PickerModel">
+					<ItemsControl ItemsSource="{x:Bind Options}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate x:DataType="local:PickerOption">
+								<CheckBox Content="{x:Bind Label}" IsChecked="{x:Bind IsSelected, Mode=TwoWay}" />
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</DataTemplate>
+			</local:PickerTemplateSelector.CheckBoxTemplate>
+		</local:PickerTemplateSelector>
+	</UserControl.Resources>
+
+	<StackPanel>
+		<ContentPresenter x:Name="Presenter" x:FieldModifier="public" ContentTemplateSelector="{StaticResource PickerTemplateSelector}" />
+	</StackPanel>
+</UserControl>
