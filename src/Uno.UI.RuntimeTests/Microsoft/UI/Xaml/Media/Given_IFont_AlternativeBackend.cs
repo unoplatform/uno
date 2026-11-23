@@ -105,7 +105,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				using (candidate)
 				{
 					using var skFont = new SKFont(candidate, size);
-					var skiaRun = new SkiaFont(skFont).Shape(text, TextDirection.LeftToRight);
+					var skiaRun = new SkiaFont(skFont, new SkiaFontFace(skFont.Typeface)).Shape(text, TextDirection.LeftToRight);
 
 					// Only fonts whose GPOS moves the mark vertically exercise the conversion.
 					if (skiaRun.Count != 2 || skiaRun.Offsets[1].Y == 0)
