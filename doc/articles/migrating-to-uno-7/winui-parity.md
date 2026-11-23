@@ -395,11 +395,12 @@ See also: [Collection initializers](xref:Uno.Development.MigratingToUno7.Removed
 Derive from them instead (a bare `class MyControl : Control { }` behaves like the old
 `new Control()`).
 
-### `Timeline` and `ObjectKeyFrame` have `protected` constructors
+### `Timeline`, `ObjectKeyFrame` and `AutomationPeer` have `protected` constructors
 
-`Timeline` and `ObjectKeyFrame` have `protected` constructors, as in WinUI, so
-`new Timeline()` and `new ObjectKeyFrame()` no longer compile. Construct a concrete animation or
-key frame (`DoubleAnimation`, `DiscreteObjectKeyFrame`, …) instead.
+`Timeline`, `ObjectKeyFrame` and `AutomationPeer` have `protected` constructors, as in WinUI, so
+`new Timeline()`, `new ObjectKeyFrame()` and `new AutomationPeer()` no longer compile. Construct a
+concrete animation, key frame or peer (`DoubleAnimation`, `DiscreteObjectKeyFrame`,
+`FrameworkElementAutomationPeer`, …) instead.
 
 ### Templates can no longer be built from a factory delegate
 
@@ -455,10 +456,19 @@ members, or get the instance from the framework.
 
 `ObjectKeyFrameCollection` has a public constructor, as in WinUI.
 
+### `ColorPickerSliderAutomationPeer` has a public constructor
+
+`ColorPickerSliderAutomationPeer` has a public constructor, as in WinUI.
+
 ### `XamlLight.CompositionLight` is `protected`
 
 `XamlLight.CompositionLight` is `protected`, as in WinUI. Set it from your `XamlLight`
 subclass.
+
+### `NonVirtualizingLayoutContext.ChildrenCore` is `protected`
+
+`NonVirtualizingLayoutContext.ChildrenCore` is `protected`, as in WinUI, so it is only reachable
+from a context subclass. Read the public `Children` property instead.
 
 ## Related pages
 
