@@ -101,6 +101,8 @@
 		<CompilerVisibleProperty Include="UnoEnableImplicitXamlNamespaces" />
 		<CompilerVisibleProperty Include="UnoGlobalXamlNamespaceUri" />
 		<CompilerVisibleProperty Include="UnoXamlResourcesTrimming"/>
+		<CompilerVisibleProperty Include="UnoXamlBinaryFormat"/>
+		<CompilerVisibleProperty Include="UnoXamlBinaryFormatReportPath"/>
 		<CompilerVisibleProperty Include="UnoEnableAlcAppSupport"/>
 		<CompilerVisibleProperty Include="AssemblyName"/>
 

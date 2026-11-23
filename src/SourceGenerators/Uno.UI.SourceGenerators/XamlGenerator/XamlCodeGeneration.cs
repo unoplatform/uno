@@ -109,6 +109,46 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private readonly GeneratorExecutionContext _generatorContext;
 
+		private readonly string? _xbfReportPath;
+		private readonly ConcurrentDictionary<string, (int Objects, Dictionary<string, int> Fallbacks)> _xbfReport = new();
+
+		/// <summary>
+		/// Whether the XAML objects are built as XBF node streams (the <c>UnoXamlBinaryFormat</c> property) rather than as C#.
+		/// </summary>
+		internal bool IsXbfEnabled { get; }
+
+		internal void ReportXbf(string file, int objects, Dictionary<string, int> fallbacks)
+			=> _xbfReport[file] = (objects, new(fallbacks));
+
+		/// <summary>
+		/// Writes what was built as XBF and what was not, for the files of the project.
+		/// </summary>
+		private void WriteXbfReport()
+		{
+			if (string.IsNullOrEmpty(_xbfReportPath) || _xbfReport.IsEmpty)
+			{
+				return;
+			}
+
+			try
+			{
+				var report = new StringBuilder();
+				foreach (var file in _xbfReport.OrderBy(f => f.Key, StringComparer.Ordinal))
+				{
+					report.AppendLine($"{file.Key}: {file.Value.Objects} objects as XBF, {file.Value.Fallbacks.Values.Sum()} attempts built as C#");
+					foreach (var fallback in file.Value.Fallbacks.OrderByDescending(f => f.Value).ThenBy(f => f.Key, StringComparer.Ordinal))
+					{
+						report.AppendLine($"\t{fallback.Value,6} {fallback.Key}");
+					}
+				}
+
+				File.WriteAllText(_xbfReportPath, report.ToString());
+			}
+			catch (IOException)
+			{
+			}
+		}
+
 		private bool IsUnoAssembly
 			=> _defaultNamespace == "Uno.UI";
 
@@ -267,6 +307,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				_enableImplicitXamlNamespaces = false;
 			}
+
+			if (bool.TryParse(context.GetMSBuildPropertyValue("UnoXamlBinaryFormat"), out var isXbfEnabled))
+			{
+				IsXbfEnabled = isXbfEnabled;
+			}
+
+			_xbfReportPath = context.GetMSBuildPropertyValue("UnoXamlBinaryFormatReportPath");
 
 			_globalXamlNamespaceUri = context.GetMSBuildPropertyValue("UnoGlobalXamlNamespaceUri");
 			if (string.IsNullOrEmpty(_globalXamlNamespaceUri))
@@ -577,6 +624,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					ProcessException(error);
 				}
+
+				WriteXbfReport();
 
 				TrackGenerationDone(stopwatch.Elapsed);
 			}

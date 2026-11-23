@@ -259,6 +259,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_allXmlnsDefinitions = allXmlnsDefinitions;
 
 			InitCaches();
+			InitializeXbf();
 
 			_relativePath = PathHelper.GetRelativePath(targetPath, _fileDefinition.FilePath);
 			ShouldWriteErrorOnInvalidXaml = shouldWriteErrorOnInvalidXaml;
@@ -1632,6 +1633,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 
 						BuildXBindTryGetDeclarations(writer);
+
+						BuildXbfProvider(writer);
 					}
 				}
 
@@ -6524,6 +6527,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				// Override the using with the type that was found in the list of loaded assemblies
 				fullTypeName = knownType.GetFullyQualifiedTypeExcludingGlobal();
+			}
+
+			if (TryBuildChildAsXbf(writer, owner, xamlObjectDefinition))
+			{
+				return;
 			}
 
 			IDisposable? endPreservePropertiesIndent = null;
