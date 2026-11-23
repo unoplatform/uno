@@ -349,6 +349,18 @@ internal ref struct BinaryFormatObjectWriter
 					m_context.GetElementNameSubject(m_provider.GetString(reader.ReadUInt()), isRuntimeBound: false).ElementInstance = CurrentInstance;
 					break;
 
+				case ObjectWriterNodeType.BeginConditionalScope:
+					{
+						var isIncluded = (bool)m_provider.Constant(reader.ReadUInt())!;
+						var contentLength = reader.ReadUInt();
+
+						if (!isIncluded)
+						{
+							reader.NextIndex += contentLength;
+						}
+					}
+					break;
+
 				case ObjectWriterNodeType.UnoSetDeferredBuilder:
 					{
 						var contentLength = reader.ReadUInt();

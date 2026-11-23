@@ -17,6 +17,9 @@
 
 		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
 
+		<!-- The theme is built as XBF node streams rather than as C# -->
+		<UnoXamlBinaryFormat Condition="'$(UnoXamlBinaryFormat)'==''">true</UnoXamlBinaryFormat>
+
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
 	</PropertyGroup>

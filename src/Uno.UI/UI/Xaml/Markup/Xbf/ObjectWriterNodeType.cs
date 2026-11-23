@@ -64,6 +64,8 @@ internal enum ObjectWriterNodeType : byte
 	EndOfStream = 37,
 
 	// Conditional XAML nodes
+	// TODO Uno: conditional namespaces are resolved by the XAML generator. The node stands for a linker hint instead:
+	// [ConstantId][ContentLength][Content nodes...], the content being skipped when the constant is false.
 	BeginConditionalScope = 38,
 	EndConditionalScope = 39,
 

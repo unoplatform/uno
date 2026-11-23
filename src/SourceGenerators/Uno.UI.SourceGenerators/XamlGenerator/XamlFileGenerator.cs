@@ -1565,13 +1565,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							writer.AppendLine();
 
-							// Build initializer methods for resource retrieval
-							var initializers = BuildTopLevelResourceDictionaryInitializers(writer, topLevelControl);
+							var xbfDictionaryOffset = TryBuildTopLevelDictionaryAsXbf(topLevelControl);
 
-							var themeDictionaryMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
-							foreach (var dict in (themeDictionaryMember?.Objects).Safe())
+							// Build initializer methods for resource retrieval
+							IDictionary<XamlObjectDefinition, string> initializers = new Dictionary<XamlObjectDefinition, string>();
+							if (xbfDictionaryOffset is null)
 							{
-								initializers.AddRange(BuildTopLevelResourceDictionaryInitializers(writer, dict));
+								initializers = BuildTopLevelResourceDictionaryInitializers(writer, topLevelControl);
+
+								var themeDictionaryMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
+								foreach (var dict in (themeDictionaryMember?.Objects).Safe())
+								{
+									initializers.AddRange(BuildTopLevelResourceDictionaryInitializers(writer, dict));
+								}
 							}
 
 							TryAnnotateWithGeneratorSource(writer, suffix: "DictionaryProperty");
@@ -1590,11 +1596,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										var dictVarId = $"_{_fileUniqueId}_ResourceDictionary";
 										var url = _globalStaticResourcesMap.GetSourceLink(_fileDefinition);
 
+										if (xbfDictionaryOffset is { } xbfOffset)
+										{
+											// The node stream builds the whole dictionary, its Source and CreationComplete included.
+											writer.AppendLineInvariantIndented(
+												"{0} = (global::Microsoft.UI.Xaml.ResourceDictionary){1}.Load({2}, {3}, this, {4}, __baseUri_{5});",
+												dictVarId,
+												XbfLoaderType,
+												XbfProviderAccess,
+												xbfOffset,
+												ParseContextPropertyAccess,
+												_fileUniqueId);
+										}
 										// The CreateWithCapacity fast path always instantiates the base ResourceDictionary type,
 										// so it must not be used when the top-level element is a typed ResourceDictionary subclass —
 										// those still need to go through InitializeAndBuildResourceDictionary -> BuildTypedResourceDictionary
 										// to instantiate the correct derived type and apply its literal properties.
-										if (resourceCount > 0 && !IsResourceDictionarySubclass(topLevelControl.Type))
+										else if (resourceCount > 0 && !IsResourceDictionarySubclass(topLevelControl.Type))
 										{
 											// Use the factory method to pre-size the backing dictionary, avoiding resize operations
 											// as the item count is statically known at code generation time.
@@ -1619,8 +1637,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											writer.AppendLineIndented(";");
 										}
 
-										writer.AppendLineInvariantIndented("{0}.Source = new global::System.Uri(\"{1}{2}\");", dictVarId, XamlFilePathHelper.MsResourceFilesPrefix, url);
-										writer.AppendLineInvariantIndented("{0}.CreationComplete();", dictVarId);
+										if (xbfDictionaryOffset is null)
+										{
+											writer.AppendLineInvariantIndented("{0}.Source = new global::System.Uri(\"{1}{2}\");", dictVarId, XamlFilePathHelper.MsResourceFilesPrefix, url);
+											writer.AppendLineInvariantIndented("{0}.CreationComplete();", dictVarId);
+										}
 									}
 
 									writer.AppendLineInvariantIndented("return _{0}_ResourceDictionary;", _fileUniqueId);

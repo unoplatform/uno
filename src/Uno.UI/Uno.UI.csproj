@@ -21,6 +21,9 @@
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 
 		<UnoXamlResourcesTrimming>true</UnoXamlResourcesTrimming>
+
+		<!-- Generic.xaml and the merged styles are built as XBF node streams rather than as C# -->
+		<UnoXamlBinaryFormat Condition="'$(UnoXamlBinaryFormat)'==''">true</UnoXamlBinaryFormat>
 		<UnoXamlResourcesUpriTrimming>true</UnoXamlResourcesUpriTrimming>
 
 		<PackageId>Uno.WinUI</PackageId>
