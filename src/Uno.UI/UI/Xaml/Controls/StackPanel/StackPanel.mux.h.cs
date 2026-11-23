@@ -17,5 +17,5 @@ partial class StackPanel
 	private bool m_bNotifiedVerticalSnapPointsChanges;      // True when NotifySnapPointsChanged was already called once and vertical snap points have not been accessed since
 	private bool m_bAreSnapPointsKeysHorizontal;            // True when the snap point keys are for horizontal snap points
 	internal bool m_bAreScrollSnapPointsRegular;                 // Backing field for the AreScrollSnapPointsRegular dependency property.
-	private int m_cIrregularSnapPointKeys = -1;
+	private byte m_cIrregularSnapPointKeys = byte.MaxValue;      // Number of irregular snap point keys
 }

@@ -131,6 +131,8 @@ partial class StackPanel
 	{
 		_horizontalSnapPointsChanged -= value;
 
+		// TODO Uno specific: WinUI checks HasHandlers() here (inverted vs. other panels), which stops
+		// notifications while handlers remain. Uno disables them only once the last handler is gone.
 		if (_horizontalSnapPointsChanged is null)
 		{
 			SetSnapPointsChangeNotificationsRequirement(true, false);
@@ -157,6 +159,7 @@ partial class StackPanel
 	{
 		_verticalSnapPointsChanged -= value;
 
+		// TODO Uno specific: see RemoveHorizontalSnapPointsChanged.
 		if (_verticalSnapPointsChanged is null)
 		{
 			SetSnapPointsChangeNotificationsRequirement(false, false);
@@ -366,6 +369,7 @@ partial class StackPanel
 		}
 	}
 
+	// TODO Uno: NOT PORTED - IPaginatedPanel is not implemented in Uno (GetLastItemIndexInViewport, GetItemsPerPage).
 	////------------------------------------------------------------------------
 	////
 	////  Synopsis:

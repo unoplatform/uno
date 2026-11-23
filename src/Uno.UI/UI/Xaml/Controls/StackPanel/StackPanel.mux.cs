@@ -148,7 +148,7 @@ partial class StackPanel
 		double childDim = 0.0;
 		double cumulatedDim = 0.0;
 		snapPointsCounter = 0;
-		int snapPointKeysCounter = 0;
+		byte snapPointKeysCounter = 0;
 
 		snapPoints = null;
 		float[] snapPointKeys = null;
@@ -169,8 +169,8 @@ partial class StackPanel
 
 			var children = GetUnsortedChildren();
 			var count = children.Count;
-			MUX_ASSERT(count <= int.MaxValue - 1);
-			count = Math.Min(count, int.MaxValue - 1);
+			MUX_ASSERT(count <= byte.MaxValue - 1);
+			count = Math.Min(count, byte.MaxValue - 1);
 
 			if (count > 0)
 			{
@@ -183,7 +183,7 @@ partial class StackPanel
 					UIElement child = children[childIndex];
 					if (child is not null)
 					{
-						// pChild.EnsureLayoutStorage();
+						child.EnsureLayoutStorage();
 
 						if (nearAligned)
 						{
@@ -291,7 +291,7 @@ partial class StackPanel
 				UIElement child = children[childIndex];
 				if (child is not null)
 				{
-					//child.EnsureLayoutStorage();
+					child.EnsureLayoutStorage();
 
 					if (Orientation == Orientation.Vertical)
 					{
@@ -373,7 +373,7 @@ partial class StackPanel
 				pChild = children[childIndex];
 				if (pChild is not null)
 				{
-					//pChild.EnsureLayoutStorage();
+					pChild.EnsureLayoutStorage();
 
 					if (Orientation == Orientation.Vertical)
 					{
@@ -417,7 +417,7 @@ partial class StackPanel
 			var child = children[childIndex];
 			if (child is not null)
 			{
-				//pChild.EnsureLayoutStorage();
+				child.EnsureLayoutStorage();
 
 				if (Orientation == Orientation.Vertical)
 				{
@@ -516,7 +516,7 @@ partial class StackPanel
 
 		if (Orientation == Orientation.Vertical)
 		{
-			if (((m_regularSnapPointKey != -1.0) || (m_cIrregularSnapPointKeys != int.MaxValue)) &&
+			if (((m_regularSnapPointKey != -1.0) || (m_cIrregularSnapPointKeys != byte.MaxValue)) &&
 				m_bAreSnapPointsKeysHorizontal && m_bNotifyHorizontalSnapPointsChanges)
 			{
 				// Last computed snap point keys were for horizontal orientation.
@@ -527,7 +527,7 @@ partial class StackPanel
 		}
 		else
 		{
-			if (((m_regularSnapPointKey != -1.0) || (m_cIrregularSnapPointKeys != int.MaxValue)) &&
+			if (((m_regularSnapPointKey != -1.0) || (m_cIrregularSnapPointKeys != byte.MaxValue)) &&
 				!m_bAreSnapPointsKeysHorizontal && m_bNotifyVerticalSnapPointsChanges)
 			{
 				// Last computed snap point keys were for vertical orientation.
@@ -573,7 +573,7 @@ partial class StackPanel
 					}
 				}
 			}
-			else if (m_cIrregularSnapPointKeys != int.MaxValue)
+			else if (m_cIrregularSnapPointKeys != byte.MaxValue)
 			{
 				if (!m_bAreScrollSnapPointsRegular)
 				{
@@ -669,8 +669,8 @@ partial class StackPanel
 			out upperMarginSnapPointKey);
 
 		m_pIrregularSnapPointKeys = pSnapPointKeys;
-		MUX_ASSERT(cSnapPointKeys <= int.MaxValue - 1);
-		m_cIrregularSnapPointKeys = cSnapPointKeys;
+		MUX_ASSERT(cSnapPointKeys <= byte.MaxValue - 1);
+		m_cIrregularSnapPointKeys = unchecked((byte)cSnapPointKeys);
 		m_lowerMarginSnapPointKey = lowerMarginSnapPointKey;
 		m_upperMarginSnapPointKey = upperMarginSnapPointKey;
 		m_bAreSnapPointsKeysHorizontal = (Orientation == Orientation.Horizontal);
@@ -710,7 +710,7 @@ partial class StackPanel
 	private void ResetSnapPointKeys()
 	{
 		m_pIrregularSnapPointKeys = null;
-		m_cIrregularSnapPointKeys = int.MaxValue;
+		m_cIrregularSnapPointKeys = byte.MaxValue;
 		m_regularSnapPointKey = -1.0;
 		m_lowerMarginSnapPointKey = 0;
 		m_upperMarginSnapPointKey = 0;
@@ -760,7 +760,8 @@ partial class StackPanel
 		}
 	}
 
-#if HAS_UNO // We don't support SetValue, this is called in OnAreScrollSnapPointsRegularChanged instead.
+	// TODO Uno specific: Uno has no CStackPanel::SetValue override; the AreScrollSnapPointsRegular
+	// changed callback (StackPanel.uno.cs) calls OnAreScrollSnapPointsRegularChanged instead.
 	////-------------------------------------------------------------------------
 	////
 	////  Function:   CStackPanel.SetValue
@@ -788,5 +789,4 @@ partial class StackPanel
 	//Cleanup:
 	//	return hr;
 	//}
-#endif
 }
