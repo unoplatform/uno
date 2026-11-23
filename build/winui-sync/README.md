@@ -5,7 +5,7 @@ Keeps code ported from WinUI C++ in step with the latest **stable** WinUI releas
 Every Monday the `WinUI Port Sync` workflow (`.github/workflows/winui-port-sync.yml`):
 
 1. finds the newest `winui3/release/X.Y.Z` tag (suffixed tags such as `-experimental` are ignored);
-2. for each area in `areas.json`, compares the area's upstream folders at its recorded `baseline`
+2. for each area in `areas/`, compares the area's upstream folders at its recorded `baseline`
    commit with the same folders at that tag — plain git, no agent, no cost when nothing changed;
 3. for each changed area, has an agent port the changes and build `Uno.UI`;
 4. replaces the area's `Strings` folder content with upstream's, and its mirrored files (verbatim
@@ -53,6 +53,12 @@ large to catch up in one session, the skill has a track-only mode that records t
 current baseline and leaves the catch-up to the workflow.
 
 To write an entry by hand:
+
+The manifest is the `areas/` folder, one `<id>.json` file per area. The file name must match the
+area's `id` (lower case letters and digits; it also names the `sync/winui/<id>` branch). Onboarding a
+new area only adds a file, and a sync PR only edits its own area's file, so PRs for different areas
+never conflict over the manifest. (Sync branches opened before the folder existed carry a single
+`areas.json`; detection still reads an area's baseline from it there.)
 
 An area is a control or a feature area: one or more upstream folders and the Uno folders they were
 ported to. Paths are written without a leading `src/`; the tooling finds them at each commit.
@@ -120,7 +126,7 @@ Locally, with a WinUI clone:
 
 - Secret `ANTHROPIC_CODEREVIEW_KEY`: the API key the port agent uses. It is the same key as the Claude review workflow, so sync and review spend share one budget.
 - The port agent runs on Sonnet (`claude-sonnet-5-5`). An area can name another model with a
-  `model` field in its `areas.json` entry.
+  `model` field in its `areas/<id>.json` file.
 - Each port may spend at most 3 USD (`--max-budget-usd` in the workflow).
 - Label `winui-sync`: created by the workflow if missing; issues and PRs are found by it plus a
   hidden `<!-- winui-sync:<id> -->` marker, so do not remove either.

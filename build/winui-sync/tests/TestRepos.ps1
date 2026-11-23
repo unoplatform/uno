@@ -59,11 +59,17 @@ function Add-TestCommit {
 	(Invoke-TestGit $Repo rev-parse HEAD)
 }
 
+# Writes a manifest folder, one <id>.json per area, as-is (no validation), and returns the folder.
 function Write-TestManifest {
 	param([Parameter(Mandatory)][string]$Path, [Parameter(Mandatory)][AllowEmptyCollection()][object[]]$Areas)
-	New-Item -ItemType Directory -Force -Path (Split-Path $Path) | Out-Null
-	[System.IO.File]::WriteAllText($Path, ((@{ areas = @($Areas) } | ConvertTo-Json -Depth 6) + "`n"))
+	New-Item -ItemType Directory -Force -Path $Path | Out-Null
+	foreach ($area in $Areas) { [System.IO.File]::WriteAllText((Join-Path $Path "$($area.id).json"), (ConvertTo-TestAreaJson $area)) }
 	$Path
+}
+
+function ConvertTo-TestAreaJson {
+	param([Parameter(Mandatory, Position = 0)]$Area)
+	($Area | ConvertTo-Json -Depth 6) + "`n"
 }
 
 function New-TestArea {

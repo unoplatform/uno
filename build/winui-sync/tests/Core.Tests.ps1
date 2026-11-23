@@ -35,25 +35,42 @@ Describe 'Get-LatestStableTag' {
 }
 
 Describe 'Get-SyncAreas' {
-	It 'rejects duplicate ids' {
-		$m = Write-TestManifest (Join-Path $TestDrive 'dup.json') @((New-TestArea), (New-TestArea))
-		{ Get-SyncAreas -ManifestPath $m } | Should -Throw '*duplicate*'
+	It 'rejects a file whose id does not match its name' {
+		$m = Write-TestManifest (Join-Path $TestDrive 'misnamed') @((New-TestArea -Id 'one'))
+		Move-Item (Join-Path $m 'one.json') (Join-Path $m 'two.json')
+		{ Get-SyncAreas -ManifestPath $m } | Should -Throw "*two.json*'one'*"
+	}
+
+	It 'throws when the manifest folder is missing' {
+		{ Get-SyncAreas -ManifestPath (Join-Path $TestDrive 'nowhere') } | Should -Throw '*manifest folder not found*'
+	}
+
+	It 'reads one area, or nothing when it has no file' {
+		$m = Write-TestManifest (Join-Path $TestDrive 'single') @((New-TestArea -Id 'one'), (New-TestArea -Id 'two'))
+		(Get-SyncArea -ManifestPath $m -Id 'two').id | Should -Be 'two'
+		Get-SyncArea -ManifestPath $m -Id 'nope' | Should -BeNullOrEmpty
+	}
+
+	It 'writes an area id only as a safe file name' {
+		$area = Get-SyncArea -ManifestPath (Write-TestManifest (Join-Path $TestDrive 'badid') @((New-TestArea -Id 'one'))) -Id 'one'
+		$area.id = '../evil'
+		{ Write-SyncArea -ManifestPath (Join-Path $TestDrive 'badid') -Area $area } | Should -Throw '*lower case*'
 	}
 
 	It 'rejects abbreviated baseline' {
-		$m = Write-TestManifest (Join-Path $TestDrive 'short.json') @((New-TestArea -Baseline 'abc1234'))
+		$m = Write-TestManifest (Join-Path $TestDrive 'short') @((New-TestArea -Baseline 'abc1234'))
 		{ Get-SyncAreas -ManifestPath $m } | Should -Throw '*baseline*'
 	}
 
 	It 'rejects an area without upstream sources' {
 		$area = New-TestArea
 		$area.upstream = [ordered]@{ sources = @() }
-		$m = Write-TestManifest (Join-Path $TestDrive 'nosrc.json') @($area)
+		$m = Write-TestManifest (Join-Path $TestDrive 'nosrc') @($area)
 		{ Get-SyncAreas -ManifestPath $m } | Should -Throw '*upstream.sources*'
 	}
 
 	It 'defaults optional fields' {
-		$m = Write-TestManifest (Join-Path $TestDrive 'min.json') @((New-TestArea))
+		$m = Write-TestManifest (Join-Path $TestDrive 'min') @((New-TestArea))
 		$areas = @(Get-SyncAreas -ManifestPath $m)
 
 		$areas.Count | Should -Be 1
@@ -65,7 +82,7 @@ Describe 'Get-SyncAreas' {
 	}
 
 	It 'returns an empty list for an empty manifest' {
-		$m = Write-TestManifest (Join-Path $TestDrive 'none.json') @()
+		$m = Write-TestManifest (Join-Path $TestDrive 'none') @()
 		@(Get-SyncAreas -ManifestPath $m).Count | Should -Be 0
 	}
 
@@ -75,7 +92,7 @@ Describe 'Get-SyncAreas' {
 			uno      = [ordered]@{ sources = @('src/Overlay.xaml') }
 			mirror   = @([ordered]@{ upstream = 'dxaml/themes/generic.xaml'; uno = 'src/Generic.xaml' })
 		}
-		$m = Write-TestManifest (Join-Path $TestDrive 'mirror.json') @($area)
+		$m = Write-TestManifest (Join-Path $TestDrive 'mirror') @($area)
 
 		$read = @(Get-SyncAreas -ManifestPath $m)[0]
 		$read.mirror.Count | Should -Be 1
@@ -86,40 +103,42 @@ Describe 'Get-SyncAreas' {
 		Write-SyncAreas -ManifestPath $m -Areas @($read)
 		$again = @(Get-SyncAreas -ManifestPath $m)[0]
 		$again.mirror[0].uno | Should -Be 'src/Generic.xaml'
-		(Get-Content -Raw $m) | Should -Match '"mirror"'
+		(Get-Content -Raw (Join-Path $m 'gen.json')) | Should -Match '"mirror"'
 	}
 
 	It 'leaves mirror out of entries that have none' {
-		$m = Write-TestManifest (Join-Path $TestDrive 'nomirror.json') @((New-TestArea))
+		$m = Write-TestManifest (Join-Path $TestDrive 'nomirror') @((New-TestArea))
 		Write-SyncAreas -ManifestPath $m -Areas @(Get-SyncAreas -ManifestPath $m)
-		(Get-Content -Raw $m) | Should -Not -Match '"mirror"'
+		(Get-Content -Raw (Join-Path $m 'tabview.json')) | Should -Not -Match '"mirror"'
 		@(Get-SyncAreas -ManifestPath $m)[0].mirror | Should -BeNullOrEmpty
 	}
 }
 
 Describe 'Set-AreaBaseline' {
 	It 'changes only the named entry' {
-		$m = Write-TestManifest (Join-Path $TestDrive 'two.json') @(
+		$m = Write-TestManifest (Join-Path $TestDrive 'two') @(
 			(New-TestArea -Id 'one' -Baseline ('a' * 40)),
 			(New-TestArea -Id 'two' -Baseline ('b' * 40)))
 
+		$oneBefore = Get-Content -Raw (Join-Path $m 'one.json')
 		Set-AreaBaseline -ManifestPath $m -Id 'two' -Sha ('c' * 40)
 
+		Get-Content -Raw (Join-Path $m 'one.json') | Should -Be $oneBefore
 		$areas = @(Get-SyncAreas -ManifestPath $m)
 		($areas | Where-Object id -EQ 'one').baseline | Should -Be ('a' * 40)
 		($areas | Where-Object id -EQ 'two').baseline | Should -Be ('c' * 40)
 	}
 
 	It 'is stable when the baseline is unchanged' {
-		$m = Write-TestManifest (Join-Path $TestDrive 'stable.json') @((New-TestArea -Id 'one' -Baseline ('a' * 40)))
+		$m = Write-TestManifest (Join-Path $TestDrive 'stable') @((New-TestArea -Id 'one' -Baseline ('a' * 40)))
 		Set-AreaBaseline -ManifestPath $m -Id 'one' -Sha ('a' * 40)
-		$before = Get-Content $m -Raw
+		$before = Get-Content (Join-Path $m 'one.json') -Raw
 		Set-AreaBaseline -ManifestPath $m -Id 'one' -Sha ('a' * 40)
-		Get-Content $m -Raw | Should -Be $before
+		Get-Content (Join-Path $m 'one.json') -Raw | Should -Be $before
 	}
 
 	It 'throws for an unknown id' {
-		$m = Write-TestManifest (Join-Path $TestDrive 'unk.json') @((New-TestArea -Id 'one'))
+		$m = Write-TestManifest (Join-Path $TestDrive 'unk') @((New-TestArea -Id 'one'))
 		{ Set-AreaBaseline -ManifestPath $m -Id 'nope' -Sha ('c' * 40) } | Should -Throw '*nope*'
 	}
 }
@@ -134,7 +153,7 @@ Describe 'Expand-SyncPrompt' {
 			'src/controls/dev/Foo/Foo.cpp'                      = 'v2'
 			'src/controls/dev/Foo/Strings/en-us/Resources.resw' = 'en'
 		} -Tag 'winui3/release/1.1.0'
-		$m = Write-TestManifest (Join-Path $TestDrive 'prompt.json') @(
+		$m = Write-TestManifest (Join-Path $TestDrive 'prompt') @(
 			(New-TestArea -Id 'foo' -Baseline $base -Extra @{
 				title    = 'Foo'
 				upstream = [ordered]@{ sources = @('controls/dev/Foo'); strings = 'controls/dev/Foo/Strings' }
@@ -163,7 +182,7 @@ Describe 'Expand-SyncPrompt' {
 		$mirrorUp = New-TestUpstream -Path (Join-Path $TestDrive 'prompt-mirror')
 		$b = Add-TestCommit $mirrorUp @{ 'controls/dev/Foo/Foo.cpp' = 'v1'; 'controls/dev/Foo/Foo.xaml' = 'x1'; 'controls/dev/Foo/Strings/en-us/Resources.resw' = 'en' }
 		$t = Add-TestCommit $mirrorUp @{ 'controls/dev/Foo/Foo.cpp' = 'v2'; 'controls/dev/Foo/Foo.xaml' = 'x2' }
-		$m = Write-TestManifest (Join-Path $TestDrive 'prompt-mirror.json') @(
+		$m = Write-TestManifest (Join-Path $TestDrive 'prompt-mirror') @(
 			(New-TestArea -Id 'foo' -Baseline $b -Extra @{
 				upstream = [ordered]@{ sources = @('controls/dev/Foo'); strings = 'controls/dev/Foo/Strings' }
 				mirror   = @([ordered]@{ upstream = 'controls/dev/Foo/Foo.xaml'; uno = 'src/Foo.xaml' })
@@ -184,7 +203,7 @@ Describe 'Expand-SyncPrompt' {
 			'src/dxaml/lib/Button.cpp' = 'v2'
 			'src/dxaml/lib/New.cpp'    = 'n'
 		}
-		$m = Write-TestManifest (Join-Path $TestDrive 'prompt-files.json') @(
+		$m = Write-TestManifest (Join-Path $TestDrive 'prompt-files') @(
 			(New-TestArea -Id 'button' -Baseline $b -Extra @{
 				upstream = [ordered]@{ sources = @('dxaml/lib/Button.cpp', 'dxaml/lib/Gone.cpp', 'dxaml/lib/New.cpp') }
 			}))

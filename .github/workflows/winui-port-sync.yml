@@ -39,7 +39,7 @@ on:
   workflow_dispatch:
     inputs:
       area:
-        description: 'Only this area id (empty = all areas in build/winui-sync/areas.json)'
+        description: 'Only this area id (empty = all areas in build/winui-sync/areas)'
         required: false
         type: string
       target_tag:
@@ -157,7 +157,7 @@ jobs:
         shell: pwsh
         run: |
           Import-Module "$env:RUNNER_TEMP/tools/WinUISync.psm1"
-          $area = Get-SyncAreas "$env:RUNNER_TEMP/tools/areas.json" | Where-Object id -EQ $env:AREA_ID
+          $area = Get-SyncArea -ManifestPath "$env:RUNNER_TEMP/tools/areas" -Id $env:AREA_ID
           # Continue from the sync branch's baseline when a PR is already open.
           $area.baseline = $env:AREA_BASELINE
           $prompt = Expand-SyncPrompt -TemplatePath "$env:RUNNER_TEMP/tools/prompt.md" -Area $area `

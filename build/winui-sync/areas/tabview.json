@@ -1,0 +1,27 @@
+{
+  "id": "tabview",
+  "title": "TabView",
+  "baseline": "65718e2813a90fc900e8775d2ddc580b268fcc2f",
+  "upstream": {
+    "sources": [
+      "controls/dev/TabView"
+    ],
+    "tests": [
+      "controls/dev/TabView/APITests",
+      "controls/dev/TabView/TestUI"
+    ],
+    "strings": "controls/dev/TabView/Strings"
+  },
+  "uno": {
+    "sources": [
+      "src/Uno.UI/UI/Xaml/Controls/TabView",
+      "src/Uno.UI.FluentTheme/Resources/PriorityDefault/TabView_themeresources.xaml",
+      "src/Uno.UI.FluentTheme/Resources/PriorityDefault/TabView.xaml"
+    ],
+    "tests": [
+      "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/TabView",
+      "src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/TabViewTests"
+    ],
+    "strings": "src/Uno.UI/UI/Xaml/Controls/TabView/Strings"
+  }
+}
