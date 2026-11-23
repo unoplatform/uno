@@ -61,6 +61,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public IImmutableList<Action<IIndentedStringBuilder>> Methods => _methods.Values.ToImmutableList();
 
 		/// <summary>
+		/// Adds what was registered on another scope of the same class, once it is known to be kept.
+		/// </summary>
+		public void MergeFrom(NameScope other)
+		{
+			BackingFields.AddRange(other.BackingFields);
+			xBindEventsHandlers.AddRange(other.xBindEventsHandlers);
+			SubclassBuilders.AddRange(other.SubclassBuilders);
+			Components.AddRange(other.Components);
+			XBindExpressions.AddRange(other.XBindExpressions);
+			XBindTryGetMethodDeclarations.AddRange(other.XBindTryGetMethodDeclarations);
+
+			foreach (var subclass in other.Subclasses)
+			{
+				Subclasses[subclass.Key] = subclass.Value;
+			}
+
+			foreach (var method in other._methods)
+			{
+				_methods[method.Key] = method.Value;
+			}
+		}
+
+		/// <summary>
 		/// Registers a method to be generated in the current scope.
 		/// </summary>
 		/// <param name="name">The suggested method name.</param>

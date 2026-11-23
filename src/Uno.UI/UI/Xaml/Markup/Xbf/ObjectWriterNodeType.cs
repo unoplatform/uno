@@ -113,6 +113,8 @@ internal enum ObjectWriterNodeType : byte
 	UnoAddStaticResourceAliasToDictionary = 80,
 	// [PropertyNameStringId][IsOwnerDependencyObject] : the last instance is a Binding, set on a property that is not a DependencyProperty
 	UnoSetBindingByName = 81,
+	// [ObjectId] : an object the class of the file creates in C#, a template for instance
+	UnoPushConnectedObject = 82,
 
 	///////////////////////// temporary states during optimization
 	CreateType = 128,

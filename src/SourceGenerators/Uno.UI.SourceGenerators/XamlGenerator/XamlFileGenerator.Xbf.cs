@@ -35,7 +35,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private XbfFileBuilder? _xbf;
 		private bool _isBuildingXbf;
-		private readonly HashSet<XamlObjectDefinition> _xbfUnsupportedObjects = new();
+		private readonly HashSet<XamlObjectDefinition> _xbfUnsupportedObjects = new(XbfReferenceComparer.Instance);
 		private readonly Dictionary<string, int> _xbfFallbackReasons = new(StringComparer.Ordinal);
 		private int _xbfObjectCount;
 
@@ -81,8 +81,30 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public List<string> Statements = new();
 		}
 
-		private Dictionary<XamlObjectDefinition, XbfConnection> _xbfConnections = new();
+		private Dictionary<XamlObjectDefinition, XbfConnection> _xbfConnections = new(XbfReferenceComparer.Instance);
 		private List<BackingFieldDefinition> _xbfBackingFields = new();
+
+		/// <summary>
+		/// Compares the definitions by identity: they are records, whose hash code changes once their key is computed.
+		/// </summary>
+		private sealed class XbfReferenceComparer : IEqualityComparer<XamlObjectDefinition>
+		{
+			public static readonly XbfReferenceComparer Instance = new();
+
+			public bool Equals(XamlObjectDefinition? x, XamlObjectDefinition? y) => ReferenceEquals(x, y);
+
+			public int GetHashCode(XamlObjectDefinition obj) => System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(obj);
+		}
+
+		/// <summary>
+		/// The objects the class of the file creates in C#, for the node stream to pick up by id.
+		/// </summary>
+		private List<string> _xbfConnectedObjects = new();
+
+		/// <summary>
+		/// The scope of the class whose content is being built as XBF, which the C# parts of it register on.
+		/// </summary>
+		private NameScope? _xbfComponentScope;
 
 		private void InitializeXbf()
 		{
@@ -149,9 +171,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var declaredNames = new HashSet<string>(FindNamesIn(topLevelControl), StringComparer.Ordinal);
 				var scope = new XbfScope(isTemplate: false, isComponent: true, declaredNames);
 
-				using (Scope(null, "__xbf"))
+				// What the C# parts of the content register (compiled bindings, templates) is kept if the content is.
+				EnsureXClassName();
+				using (Scope(_xClassName.Namespace, _xClassName.ClassName))
 				using (TrySetDefaultBindMode(topLevelControl))
 				{
+					_xbfComponentScope = CurrentScope;
+
 					// Mirrors BuildGenericControlInitializerBody
 					XbfEmitResources(nodes, topLevelControl, scope);
 					XbfEmitProperties(nodes, topLevelControl, topLevelControlType, scope);
@@ -173,6 +199,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// OnInitializeCompleted() seems to be used by some older code as a substitute for the constructor for UserControls, which are optimized out of the visual tree.
 				RegisterPartial("void OnInitializeCompleted()");
 
+				CurrentScope.MergeFrom(_xbfComponentScope!);
+
 				foreach (var backingField in _xbfBackingFields)
 				{
 					CurrentScope.BackingFields.Add(backingField);
@@ -192,8 +220,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				_xbf.Rollback(checkpoint);
 				_errors.RemoveRange(errorCount, _errors.Count - errorCount);
-				_xbfConnections = new();
+				_xbfConnections = new(XbfReferenceComparer.Instance);
 				_xbfBackingFields = new();
+				_xbfConnectedObjects = new();
 				_currentStyleTargetTypeStack.Clear();
 				_xbfFallbackReasons[reason] = _xbfFallbackReasons.TryGetValue(reason, out var count) ? count + 1 : 1;
 
@@ -202,6 +231,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			finally
 			{
 				_isBuildingXbf = false;
+				_xbfComponentScope = null;
 			}
 		}
 
@@ -215,6 +245,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				if (_xbfConnections.Count != 0)
 				{
+					// What the C# generation writes for an element refers to the class through this name.
+					writer.AppendLineIndented("var __that = this;");
+
 					using (writer.BlockInvariant("switch (connectionId)"))
 					{
 						foreach (var connection in _xbfConnections.Values.OrderBy(c => c.Id))
@@ -222,7 +255,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							writer.AppendLineIndented($"case {connection.Id.ToString(CultureInfo.InvariantCulture)}:");
 							using (writer.Block())
 							{
-								writer.AppendLineIndented($"var e = ({connection.Type})target;");
+								writer.AppendLineIndented($"var __p1 = ({connection.Type})target;");
 								foreach (var statement in connection.Statements)
 								{
 									writer.AppendLineIndented(statement);
@@ -233,12 +266,29 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 			}
+
+			writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+			AnalyzerSuppressionsGenerator.GenerateTrimExclusions(writer);
+			using (writer.BlockInvariant("object global::Uno.UI.Xaml.Xbf.IXbfComponentConnector.CreateObject(int objectId)"))
+			{
+				for (var i = 0; i < _xbfConnectedObjects.Count; i++)
+				{
+					using (writer.BlockInvariant($"if (objectId == {(i + 1).ToString(CultureInfo.InvariantCulture)})"))
+					{
+						writer.AppendLineIndented("return");
+						writer.AppendMultiLineIndented(_xbfConnectedObjects[i]);
+						writer.AppendLineIndented(";");
+					}
+				}
+
+				writer.AppendLineIndented("return null;");
+			}
 		}
 
 		/// <summary>
 		/// Has the class of the file do something with the object, which the nodes being written are creating.
 		/// </summary>
-		/// <param name="statement">A C# statement of the class, the object being <c>e</c>.</param>
+		/// <param name="statement">A C# statement of the class, the object being <c>__p1</c>.</param>
 		private void XbfConnect(XbfNodeWriter nodes, XamlObjectDefinition objectDefinition, INamedTypeSymbol objectType, string statement)
 		{
 			if (_isTopLevelDictionary)
@@ -451,13 +501,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_generatorContext.CancellationToken.ThrowIfCancellationRequested();
 
 			using var scopeAutoDisposable = LogicalScope(xamlObjectDefinition);
+			using var defaultBindMode = TrySetDefaultBindMode(xamlObjectDefinition);
 
 			var typeName = xamlObjectDefinition.Type.Name;
 			var knownType = FindType(xamlObjectDefinition.Type);
 
 			if (IsNewScope(xamlObjectDefinition))
 			{
-				XbfEmitTemplate(nodes, xamlObjectDefinition);
+				XbfEmitTemplate(nodes, owner, xamlObjectDefinition);
 			}
 			else if (typeName == "NullExtension")
 			{
@@ -662,7 +713,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var load = new XamlMemberDefinition(new XamlMember("Load", _elementStubXamlType, false), 0, 0, definition);
 				load.Objects.AddRange(loadMember!.Objects);
 
-				XbfEmitComplexPropertyValue(nodes, load, elementStubType, scope);
+				XbfEmitComplexPropertyValue(nodes, definition, load, elementStubType, scope);
 			}
 
 			if (HasXBindMarkupExtension(definition))
@@ -680,7 +731,68 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			nodes.WriteNodeType(ObjectWriterNodeType.PopScope);
 		}
 
-		private void XbfEmitTemplate(XbfNodeWriter nodes, XamlObjectDefinition xamlObjectDefinition)
+		private void XbfEmitTemplate(XbfNodeWriter nodes, XamlMemberDefinition? owner, XamlObjectDefinition xamlObjectDefinition)
+		{
+			if (_xbfComponentScope is null)
+			{
+				XbfEmitTemplateCore(nodes, xamlObjectDefinition);
+				return;
+			}
+
+			// In an x:Class, a template that cannot be built as XBF (compiled bindings to its DataContext, for
+			// instance) is built in C# by the class, which the node stream asks for it.
+			var checkpoint = _xbf!.CreateCheckpoint();
+			var connections = new Dictionary<XamlObjectDefinition, XbfConnection>(_xbfConnections, XbfReferenceComparer.Instance);
+			var errorCount = _errors.Count;
+			var styleTargetTypes = _currentStyleTargetTypeStack.ToArray();
+			var template = new XbfNodeWriter();
+
+			try
+			{
+				XbfEmitTemplateCore(template, xamlObjectDefinition);
+
+				if (_errors.Count != errorCount)
+				{
+					throw new XbfNotSupportedException("XAML error: " + _errors[errorCount].Message);
+				}
+
+				nodes.Append(template);
+			}
+			catch (XbfNotSupportedException e)
+			{
+				_xbf.Rollback(checkpoint);
+				_xbfConnections = connections;
+				_errors.RemoveRange(errorCount, _errors.Count - errorCount);
+				_currentStyleTargetTypeStack.Clear();
+				foreach (var styleTargetType in styleTargetTypes.Reverse())
+				{
+					_currentStyleTargetTypeStack.Push(styleTargetType);
+				}
+
+				var reason = "template built in C#: " + e.Reason;
+				_xbfFallbackReasons[reason] = _xbfFallbackReasons.TryGetValue(reason, out var count) ? count + 1 : 1;
+
+				var expression = new IndentedStringBuilder();
+
+				// The class the C# generation builds for the template belongs to the class of the file.
+				_scopeStack.Push(_xbfComponentScope);
+				try
+				{
+					BuildChild(expression, owner, xamlObjectDefinition);
+				}
+				finally
+				{
+					_scopeStack.Pop();
+				}
+
+				_xbfConnectedObjects.Add(expression.ToString());
+
+				nodes.WriteNodeType(ObjectWriterNodeType.UnoPushConnectedObject);
+				nodes.WriteUInt(_xbfConnectedObjects.Count);
+			}
+		}
+
+		private void XbfEmitTemplateCore(XbfNodeWriter nodes, XamlObjectDefinition xamlObjectDefinition)
 		{
 			var templateKind = xamlObjectDefinition.Type.Name switch
 			{
@@ -1388,12 +1500,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				throw XbfNotSupported("x:Phase");
 			}
 
-			if (HasXBindMarkupExtension(objectDefinition))
+			var hasCompiledBindings = HasXBindMarkupExtension(objectDefinition);
+			if (hasCompiledBindings)
 			{
-				throw XbfNotSupported("x:Bind");
-			}
+				if (!scope.IsComponent || _xbfComponentScope != CurrentScope)
+				{
+					throw XbfNotSupported("x:Bind in a template or a dictionary");
+				}
 
-			if (HasMarkupExtensionNeedingComponent(objectDefinition) && IsDependencyObject(objectDefinition))
+				// As with WinUI, the compiled bindings are code of the class: the node stream only hands it the element.
+				// The class updates the bindings and the resources of its components when it loads.
+				var component = GetOrAddComponentForCurrentScope(objectDefinition);
+				XbfConnect(nodes, objectDefinition, objectDefinitionType, $"__that.{component.MemberName} = __p1;");
+			}
+			else if (HasMarkupExtensionNeedingComponent(objectDefinition) && IsDependencyObject(objectDefinition))
 			{
 				if (scope.HasNames)
 				{
@@ -1419,7 +1539,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					if (!IsXLoadMember(member))
 					{
-						XbfEmitComplexPropertyValue(nodes, member, objectDefinitionType, scope);
+						XbfEmitComplexPropertyValue(nodes, objectDefinition, member, objectDefinitionType, scope);
 					}
 
 					// Otherwise, the x:Load attribute is already applied to the ElementStub
@@ -1525,7 +1645,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (scope.IsComponent && member.Member.Name == "Name" && !IsAttachedProperty(member))
 							{
 								// The element is a field of the class
-								XbfConnect(nodes, objectDefinition, objectDefinitionType, $"this.{value} = e;");
+								XbfConnect(nodes, objectDefinition, objectDefinitionType, $"this.{value} = __p1;");
 								_xbfBackingFields.Add(new BackingFieldDefinition(objectDefinitionType.GetFullyQualifiedTypeIncludingGlobal(), value!, FindObjectFieldAccessibility(objectDefinition)));
 							}
 						}
@@ -1633,7 +1753,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 
 								// WinUI connects the handlers the same way, from the Connect method of the class.
-								XbfConnect(nodes, objectDefinition, objectDefinitionType, $"e.{eventSymbol.Name} += this.{handler};");
+								XbfConnect(nodes, objectDefinition, objectDefinitionType, $"__p1.{eventSymbol.Name} += this.{handler};");
 							}
 							else
 							{
@@ -1674,7 +1794,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		// Mirrors BuildComplexPropertyValue
-		private void XbfEmitComplexPropertyValue(XbfNodeWriter nodes, XamlMemberDefinition member, INamedTypeSymbol objectDefinitionType, XbfScope scope)
+		private void XbfEmitComplexPropertyValue(XbfNodeWriter nodes, XamlObjectDefinition objectDefinition, XamlMemberDefinition member, INamedTypeSymbol objectDefinitionType, XbfScope scope)
 		{
 			var bindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Binding");
 			var bindNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Bind");
@@ -1683,7 +1803,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (bindNode is not null)
 			{
-				throw XbfNotSupported("x:Bind");
+				if (!scope.IsComponent || _xbfComponentScope != CurrentScope)
+				{
+					throw XbfNotSupported("x:Bind in a template or a dictionary");
+				}
+
+				// The binding, or the event handler, is set by the Connect method of the class.
+				// Note: the owner of the member is not always the instance the element was reached through.
+				var statements = new IndentedStringBuilder();
+				BuildComplexPropertyValue(statements, member, "__p1.", "__p1", componentDefinition: GetOrAddComponentForCurrentScope(objectDefinition));
+				XbfConnect(nodes, objectDefinition, objectDefinitionType, statements.ToString().Trim());
+				return;
 			}
 
 			if (_metadataHelper.FindEventType(declaringType, member.Member.Name) is not null)

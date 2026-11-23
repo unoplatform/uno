@@ -87,6 +87,11 @@ internal sealed class XbfNodeWriter
 		content._stream.WriteTo(_stream);
 	}
 
+	/// <summary>
+	/// Writes the nodes of another writer as they are.
+	/// </summary>
+	public void Append(XbfNodeWriter nodes) => nodes._stream.WriteTo(_stream);
+
 	public void WriteTo(Stream target) => _stream.WriteTo(target);
 }
 

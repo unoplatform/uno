@@ -283,6 +283,10 @@ internal ref struct BinaryFormatObjectWriter
 					}
 					break;
 
+				case ObjectWriterNodeType.UnoPushConnectedObject:
+					m_qoLastInstance = (m_context.Owner as IXbfComponentConnector)?.CreateObject(reader.ReadUInt());
+					break;
+
 				case ObjectWriterNodeType.SetName:
 					SetNameOnCurrentInstance(m_provider.GetString(reader.ReadUInt()));
 					break;

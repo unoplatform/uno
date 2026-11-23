@@ -78,7 +78,15 @@ public static class XbfLoader
 [EditorBrowsable(EditorBrowsableState.Never)]
 public interface IXbfComponentConnector
 {
+	/// <summary>
+	/// Hands the class an object of its node stream: one it has a field, an event handler or a compiled binding for.
+	/// </summary>
 	void Connect(int connectionId, object target);
+
+	/// <summary>
+	/// Creates an object the class builds in code, for its node stream to use.
+	/// </summary>
+	object? CreateObject(int objectId);
 }
 
 /// <summary>
