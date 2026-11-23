@@ -45,22 +45,30 @@ namespace TestRepro
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		void global::Uno.UI.Xaml.Xbf.IXbfComponentConnector.Connect(int connectionId, object target)
 		{
+			var __that = this;
 			switch (connectionId)
 			{
 				case 1:
 				{
-					var e = (global::Microsoft.UI.Xaml.Controls.Button)target;
-					this.Action = e;
-					e.Click += this.OnClick;
+					var __p1 = (global::Microsoft.UI.Xaml.Controls.Button)target;
+					this.Action = __p1;
+					__p1.Click += this.OnClick;
 				}
 				break;
 				case 2:
 				{
-					var e = (global::Microsoft.UI.Xaml.Controls.Grid)target;
-					this.Root = e;
+					var __p1 = (global::Microsoft.UI.Xaml.Controls.Grid)target;
+					this.Root = __p1;
 				}
 				break;
 			}
+		}
+		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
+		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
+		object global::Uno.UI.Xaml.Xbf.IXbfComponentConnector.CreateObject(int objectId)
+		{
+			return null;
 		}
 
 		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _ActionSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "Action");

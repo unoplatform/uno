@@ -26,6 +26,13 @@ public class Given_Xbf
 			}
 
 			private void OnClick(object sender, RoutedEventArgs e) { }
+
+			private void OnBoundClick() { }
+		}
+
+		public sealed class Item
+		{
+			public string Name { get; set; } = "";
 		}
 		""";
 
@@ -100,17 +107,52 @@ public class Given_Xbf
 	}
 
 	/// <summary>
+	/// As with WinUI, the compiled bindings stay code of the class, which the node stream hands the elements to.
+	/// A template whose content binds to its DataContext is built in C#, and created by the class.
+	/// </summary>
+	[TestMethod]
+	public async Task When_Page_With_xBind()
+	{
+		var pageFile = new XamlFile("MainPage.xaml", """
+			<Page
+				x:Class="TestRepro.MainPage"
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:local="using:TestRepro">
+				<StackPanel>
+					<TextBlock Text="{x:Bind Tag}" Margin="4" />
+					<Button Content="Go" Click="{x:Bind OnBoundClick}" />
+					<ListView>
+						<ListView.ItemTemplate>
+							<DataTemplate x:DataType="local:Item">
+								<TextBlock Text="{x:Bind Name}" />
+							</DataTemplate>
+						</ListView.ItemTemplate>
+					</ListView>
+				</StackPanel>
+			</Page>
+			""");
+
+		await new Verify.Test(pageFile)
+		{
+			TestState = { Sources = { MainPageCodeBehind } },
+			GlobalConfigOverride = _xbfEnabled,
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
+		}.AddGeneratedSources().RunAsync();
+	}
+
+	/// <summary>
 	/// What the node stream cannot express yet is still built in C#, for the whole file of an x:Class.
 	/// </summary>
 	[TestMethod]
-	public async Task When_Page_With_xBind_Falls_Back()
+	public async Task When_Page_With_xUid_Falls_Back()
 	{
 		var pageFile = new XamlFile("MainPage.xaml", """
 			<Page
 				x:Class="TestRepro.MainPage"
 				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-				<TextBlock Text="{x:Bind Tag}" />
+				<TextBlock x:Uid="Title" Text="Fallback" />
 			</Page>
 			""");
 

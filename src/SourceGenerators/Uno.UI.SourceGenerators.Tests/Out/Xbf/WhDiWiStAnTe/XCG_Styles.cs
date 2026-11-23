@@ -60,20 +60,6 @@ namespace MyProject
 				__ParseContext_ = global::MyProject.GlobalStaticResources.__ParseContext_;
 			}
 
-			// Method for resource AccentBrush 
-			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
-			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-			private object Get_1(object __ResourceOwner_1) =>
-				((global::Microsoft.UI.Xaml.Media.SolidColorBrush)global::Uno.UI.Xaml.Xbf.XbfLoader.Load(global::MyProject.GlobalStaticResources.__Xbf_Styles_a1cdca789374d961a4a08f60956e1f4c.Instance, 0, __ResourceOwner_1, this.__ParseContext_, __baseUri_Styles_a1cdca789374d961a4a08f60956e1f4c))
-				;
-
-			// Method for resource CardButton 
-			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
-			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-			private object Get_2(object __ResourceOwner_1) =>
-				((global::Microsoft.UI.Xaml.Style)global::Uno.UI.Xaml.Xbf.XbfLoader.Load(global::MyProject.GlobalStaticResources.__Xbf_Styles_a1cdca789374d961a4a08f60956e1f4c.Instance, 11, __ResourceOwner_1, this.__ParseContext_, __baseUri_Styles_a1cdca789374d961a4a08f60956e1f4c))
-				;
-
 			private global::Microsoft.UI.Xaml.ResourceDictionary _Styles_a1cdca789374d961a4a08f60956e1f4c_ResourceDictionary;
 
 			internal global::Microsoft.UI.Xaml.ResourceDictionary Styles_a1cdca789374d961a4a08f60956e1f4c_ResourceDictionary
@@ -82,16 +68,7 @@ namespace MyProject
 				{
 					if (_Styles_a1cdca789374d961a4a08f60956e1f4c_ResourceDictionary == null)
 					{
-						_Styles_a1cdca789374d961a4a08f60956e1f4c_ResourceDictionary = global::Microsoft.UI.Xaml.ResourceDictionary.CreateWithCapacity(2);
-						_Styles_a1cdca789374d961a4a08f60956e1f4c_ResourceDictionary.IsParsing = true;
-						_Styles_a1cdca789374d961a4a08f60956e1f4c_ResourceDictionary["AccentBrush"] = 
-						new global::Uno.UI.Xaml.WeakResourceInitializer(this, Get_1)
-						;
-						_Styles_a1cdca789374d961a4a08f60956e1f4c_ResourceDictionary["CardButton"] = 
-						new global::Uno.UI.Xaml.WeakResourceInitializer(this, Get_2)
-						;
-						_Styles_a1cdca789374d961a4a08f60956e1f4c_ResourceDictionary.Source = new global::System.Uri("ms-resource:///Files/0/Styles.xaml");
-						_Styles_a1cdca789374d961a4a08f60956e1f4c_ResourceDictionary.CreationComplete();
+						_Styles_a1cdca789374d961a4a08f60956e1f4c_ResourceDictionary = (global::Microsoft.UI.Xaml.ResourceDictionary)global::Uno.UI.Xaml.Xbf.XbfLoader.Load(global::MyProject.GlobalStaticResources.__Xbf_Styles_a1cdca789374d961a4a08f60956e1f4c.Instance, 0, this, this.__ParseContext_, __baseUri_Styles_a1cdca789374d961a4a08f60956e1f4c);
 					}
 					return _Styles_a1cdca789374d961a4a08f60956e1f4c_ResourceDictionary;
 				}
@@ -105,39 +82,42 @@ namespace MyProject
 		internal sealed class __Xbf_Styles_a1cdca789374d961a4a08f60956e1f4c : global::Uno.UI.Xaml.Xbf.XbfMetadataProvider
 		{
 			internal static readonly __Xbf_Styles_a1cdca789374d961a4a08f60956e1f4c Instance = new();
-			// XBF: 317 bytes, 2 objects, 10 strings, 10 types, 14 properties, 3 constants
+			// XBF: 346 bytes, 1 objects, 11 strings, 11 types, 15 properties, 4 constants
 			protected override global::System.ReadOnlySpan<byte> Data => new byte[] {
-88,66,70,0,124,0,0,0,169,0,0,0,2,0,0,0,1,0,0,0,10,0,0,0,0,0,0,0,11,0,0,0,17,0,0,0,24,0,0,0,31,0,0,0,41,0,0,0,47,0,0,0,58,0,0,0,65,0,0,0,68,0,0,0,
-80,0,0,0,65,99,99,101,110,116,66,114,117,115,104,67,104,114,111,109,101,67,111,110,116,101,110,116,80,97,100,100,105,110,103,66,97,99,107,103,114,111,117,110,100,78,111,114,109,97,108,80,111,105,110,116,101,114,79,118,101,114,79,112,
-97,99,105,116,121,48,46,56,67,111,109,109,111,110,83,116,97,116,101,115,20,0,26,1,8,153,102,51,255,33,37,20,1,26,2,66,2,19,2,20,3,26,6,67,0,26,8,6,0,0,0,65,0,0,0,65,0,0,0,65,0,0,0,65,
-33,69,0,20,3,26,6,67,1,75,0,1,72,8,0,4,33,69,0,20,3,26,6,67,2,64,0,88,20,5,26,11,5,1,26,13,65,0,0,128,64,0,0,128,64,0,0,128,64,0,0,128,64,20,6,31,15,2,31,17,3,33,7,18,
-13,1,31,21,4,20,7,20,8,19,11,20,9,13,5,33,69,2,20,9,13,6,65,15,19,12,20,3,67,1,7,26,8,5,8,33,69,0,2,33,69,2,2,13,9,33,69,1,33,7,27,33,33,7,8,33,69,0,2,33,37,
+88,66,70,0,138,0,0,0,184,0,0,0,2,0,0,0,1,0,0,0,11,0,0,0,0,0,0,0,11,0,0,0,17,0,0,0,24,0,0,0,31,0,0,0,41,0,0,0,47,0,0,0,58,0,0,0,65,0,0,0,68,0,0,0,
+80,0,0,0,90,0,0,0,65,99,99,101,110,116,66,114,117,115,104,67,104,114,111,109,101,67,111,110,116,101,110,116,80,97,100,100,105,110,103,66,97,99,107,103,114,111,117,110,100,78,111,114,109,97,108,80,111,105,110,116,101,114,79,118,
+101,114,79,112,97,99,105,116,121,48,46,56,67,111,109,109,111,110,83,116,97,116,101,115,67,97,114,100,66,117,116,116,111,110,20,0,77,5,0,10,20,1,26,1,8,153,102,51,255,33,77,5,10,157,1,20,2,26,2,66,3,19,2,20,
+4,26,6,67,0,26,8,6,0,0,0,65,0,0,0,65,0,0,0,65,0,0,0,65,33,69,0,20,4,26,6,67,1,75,0,1,72,8,0,5,33,69,0,20,4,26,6,67,2,64,0,88,20,6,26,11,5,1,26,13,65,0,0,128,
+64,0,0,128,64,0,0,128,64,0,0,128,64,20,7,31,15,2,31,17,3,33,7,18,13,1,31,21,4,20,8,20,9,19,11,20,10,13,5,33,69,2,20,10,13,6,65,15,19,12,20,4,67,1,7,26,8,5,8,33,69,0,2,33,
+69,2,2,13,9,33,69,1,33,7,27,33,33,7,8,33,69,0,2,33,26,28,67,3,33,37,
 };
-			protected override int TypeCount => 10;
-			protected override int PropertyCount => 14;
+			protected override int TypeCount => 11;
+			protected override int PropertyCount => 15;
 			protected override object CreateInstance(int i)
 			{
 				switch (i)
 				{
 					case 0: return C0();
 					case 1: return C1();
-					case 3: return C3();
-					case 5: return C5();
+					case 2: return C2();
+					case 4: return C4();
 					case 6: return C6();
 					case 7: return C7();
 					case 8: return C8();
 					case 9: return C9();
+					case 10: return C10();
 				}
 				throw new global::System.InvalidOperationException();
 			}
-			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object C0() => new global::Microsoft.UI.Xaml.Media.SolidColorBrush();
-			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object C1() => new global::Microsoft.UI.Xaml.Style();
-			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object C3() => new global::Microsoft.UI.Xaml.Setter();
-			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object C5() => new global::Microsoft.UI.Xaml.Controls.Border();
-			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object C6() => new global::Microsoft.UI.Xaml.Controls.ContentPresenter();
-			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object C7() => new global::System.Collections.Generic.List<global::Microsoft.UI.Xaml.VisualStateGroup>();
-			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object C8() => new global::Microsoft.UI.Xaml.VisualStateGroup();
-			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object C9() => new global::Microsoft.UI.Xaml.VisualState();
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object C0() => new global::Microsoft.UI.Xaml.ResourceDictionary();
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object C1() => new global::Microsoft.UI.Xaml.Media.SolidColorBrush();
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object C2() => new global::Microsoft.UI.Xaml.Style();
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object C4() => new global::Microsoft.UI.Xaml.Setter();
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object C6() => new global::Microsoft.UI.Xaml.Controls.Border();
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object C7() => new global::Microsoft.UI.Xaml.Controls.ContentPresenter();
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object C8() => new global::System.Collections.Generic.List<global::Microsoft.UI.Xaml.VisualStateGroup>();
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object C9() => new global::Microsoft.UI.Xaml.VisualStateGroup();
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object C10() => new global::Microsoft.UI.Xaml.VisualState();
 			protected override global::System.Type GetTypeCore(int i)
 			{
 				switch (i)
@@ -152,19 +132,21 @@ namespace MyProject
 					case 7: return T7();
 					case 8: return T8();
 					case 9: return T9();
+					case 10: return T10();
 				}
 				throw new global::System.InvalidOperationException();
 			}
-			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T0() => typeof(global::Microsoft.UI.Xaml.Media.SolidColorBrush);
-			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T1() => typeof(global::Microsoft.UI.Xaml.Style);
-			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T2() => typeof(global::Microsoft.UI.Xaml.Controls.Button);
-			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T3() => typeof(global::Microsoft.UI.Xaml.Setter);
-			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T4() => typeof(object);
-			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T5() => typeof(global::Microsoft.UI.Xaml.Controls.Border);
-			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T6() => typeof(global::Microsoft.UI.Xaml.Controls.ContentPresenter);
-			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T7() => typeof(global::System.Collections.Generic.List<global::Microsoft.UI.Xaml.VisualStateGroup>);
-			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T8() => typeof(global::Microsoft.UI.Xaml.VisualStateGroup);
-			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T9() => typeof(global::Microsoft.UI.Xaml.VisualState);
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T0() => typeof(global::Microsoft.UI.Xaml.ResourceDictionary);
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T1() => typeof(global::Microsoft.UI.Xaml.Media.SolidColorBrush);
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T2() => typeof(global::Microsoft.UI.Xaml.Style);
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T3() => typeof(global::Microsoft.UI.Xaml.Controls.Button);
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T4() => typeof(global::Microsoft.UI.Xaml.Setter);
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T5() => typeof(object);
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T6() => typeof(global::Microsoft.UI.Xaml.Controls.Border);
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T7() => typeof(global::Microsoft.UI.Xaml.Controls.ContentPresenter);
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T8() => typeof(global::System.Collections.Generic.List<global::Microsoft.UI.Xaml.VisualStateGroup>);
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T9() => typeof(global::Microsoft.UI.Xaml.VisualStateGroup);
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static global::System.Type T10() => typeof(global::Microsoft.UI.Xaml.VisualState);
 			protected override global::Microsoft.UI.Xaml.DependencyProperty GetDependencyPropertyCore(int i)
 			{
 				switch (i)
@@ -194,6 +176,7 @@ namespace MyProject
 					case 3: S3(t, v); return;
 					case 4: S4(t, v); return;
 					case 9: S9(t, v); return;
+					case 14: S14(t, v); return;
 				}
 				throw new global::System.InvalidOperationException();
 			}
@@ -201,6 +184,7 @@ namespace MyProject
 			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static void S3(object t, object v) => ((global::Microsoft.UI.Xaml.Setter)t).Property = (global::Microsoft.UI.Xaml.DependencyProperty)v;
 			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static void S4(object t, object v) => ((global::Microsoft.UI.Xaml.Setter)t).Value = (object)v;
 			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static void S9(object t, object v) => ((global::Microsoft.UI.Xaml.Controls.Border)t).Child = (global::Microsoft.UI.Xaml.UIElement)v;
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static void S14(object t, object v) => ((global::Microsoft.UI.Xaml.ResourceDictionary)t).Source = (global::System.Uri)v;
 			protected override object GetPropertyValue(int i, object t)
 			{
 				switch (i)
@@ -234,12 +218,14 @@ namespace MyProject
 					case 0: return K0();
 					case 1: return K1();
 					case 2: return K2();
+					case 3: return K3();
 				}
 				throw new global::System.InvalidOperationException();
 			}
 			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object K0() => (global::Microsoft.UI.Xaml.DependencyProperty)(global::Microsoft.UI.Xaml.Controls.Button.PaddingProperty);
 			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object K1() => (global::Microsoft.UI.Xaml.DependencyProperty)(global::Microsoft.UI.Xaml.Controls.Button.BackgroundProperty);
 			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object K2() => (global::Microsoft.UI.Xaml.DependencyProperty)(global::Microsoft.UI.Xaml.Controls.Button.TemplateProperty);
+			[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.NoInlining)] private static object K3() => new global::System.Uri("ms-resource:///Files/0/Styles.xaml");
 		}
 	}
 }
