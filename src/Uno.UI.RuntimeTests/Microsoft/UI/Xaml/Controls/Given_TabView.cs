@@ -109,6 +109,64 @@ public class Given_TabView
 			WindowHelper.WindowContent = null;
 		}
 	}
+
+	[TestMethod]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#endif
+	public async Task When_Tab_Dragged_Then_Item_Tracks_Drag()
+	{
+		var firstItem = new TabViewItem { Header = "Tab 1" };
+		var thirdItem = new TabViewItem { Header = "Tab 3" };
+		var SUT = new TabView
+		{
+			CanDragTabs = true,
+			CanReorderTabs = true,
+			TabItems = { firstItem, new TabViewItem { Header = "Tab 2" }, thirdItem }
+		};
+
+		try
+		{
+			await UITestHelper.Load(SUT);
+
+			var dragStarted = false;
+			var dragCompleted = false;
+			SUT.TabDragStarting += (_, _) => dragStarted = true;
+			SUT.TabDragCompleted += (_, _) => dragCompleted = true;
+
+			var start = firstItem.GetAbsoluteBounds().GetCenter();
+			var end = thirdItem.GetAbsoluteBounds().GetCenter();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(start);
+			await WindowHelper.WaitForIdle();
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			const int steps = 12;
+			for (var i = 1; i <= steps; i++)
+			{
+				var t = (double)i / steps;
+				mouse.MoveTo(new global::Windows.Foundation.Point(start.X + (end.X - start.X) * t, start.Y + (end.Y - start.Y) * t));
+				await WindowHelper.WaitForIdle();
+			}
+
+			Assert.IsTrue(dragStarted, "The tab drag never started.");
+			Assert.IsTrue(firstItem.IsBeingDragged, "The dragged TabViewItem did not receive TabDragStarting.");
+
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(dragCompleted, "The tab drag never completed.");
+			Assert.IsFalse(firstItem.IsBeingDragged, "The dragged TabViewItem did not receive TabDragCompleted.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
 #endif
 
 	[TestMethod]
