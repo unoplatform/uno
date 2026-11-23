@@ -314,7 +314,8 @@ namespace Uno.WinAppSDKSyncGenerator
 					"IWeakReference" or
 					"IWeakReferenceSource" or
 					"IActivationFactory" or
-					"IAgileObject" ||
+					"IAgileObject" or
+					"ProjectionIID" ||
 					namedTypeSymbol.Name[0] == '_';
 			}
 
