@@ -95,7 +95,9 @@
 							if (restoresSelection) {
 								input.setSelectionRange(BrowserInvisibleTextBoxViewExtension.nextSelectionStart, BrowserInvisibleTextBoxViewExtension.nextSelectionEnd, BrowserInvisibleTextBoxViewExtension.nextSelectionDirection);
 							}
-							else {
+							// While the TextBox keeps other text than the composition's (MaxLength), the input's selection doesn't index
+							// the TextBox's text: the TextBox keeps its caret until the composition ends and is reconciled.
+							else if (!BrowserInvisibleTextBoxViewExtension.isCompositionReported || BrowserInvisibleTextBoxViewExtension.pendingText === null) {
 								if (input.selectionDirection == "backward") {
 									BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionEnd, input.selectionStart - input.selectionEnd);
 								} else {
@@ -174,7 +176,7 @@
 			document.addEventListener("click", swallow, { capture: true });
 		}
 
-		private static createInput(isPasswordBox: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string) {
+		private static createInput(isPasswordBox: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string, isReadOnly: boolean) {
 			BrowserInvisibleTextBoxViewExtension.acceptsReturn = acceptsReturn;
 			// A previous input may have been removed mid-composition without a compositionend;
 			// never carry that state over to a fresh element.
@@ -211,6 +213,7 @@
 			input.style.top = BrowserInvisibleTextBoxViewExtension.keepsInputOffscreen ? BrowserInvisibleTextBoxViewExtension.offscreenTop : "0px";
 			input.style.left = "0px";
 			input.value = text;
+			input.readOnly = isReadOnly;
 
 			input.setAttribute("inputmode", inputMode);
 			input.setAttribute("enterkeyhint", enterKeyHint);
@@ -299,6 +302,7 @@
 					return;
 				}
 				BrowserInvisibleTextBoxViewExtension.runSyncingFromNative(() => {
+					const generation = BrowserInvisibleTextBoxViewExtension.compositionGeneration;
 					// Firefox dispatches the commit's input event after compositionend. The committed value still belongs
 					// to the composition: the TextBox ends it with its final text, and RichEditBox keeps one undo step.
 					if (input.value !== BrowserInvisibleTextBoxViewExtension.syncedValue) {
@@ -309,13 +313,16 @@
 					const textDiffers = BrowserInvisibleTextBoxViewExtension.pendingText !== null;
 					BrowserInvisibleTextBoxViewExtension.resetComposition();
 					if (wasReported) {
-						if (ev.data.length > 0) {
+						if (textDiffers) {
+							// The TextBox holds other text than the commit: the composition ends with its range in that text.
+							BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
+						} else if (ev.data.length > 0) {
 							BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(ev.data);
 						} else {
 							BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCanceled();
 						}
 					}
-					if (textDiffers) {
+					if (textDiffers && BrowserInvisibleTextBoxViewExtension.isSyncTarget(input, generation)) {
 						// The TextBox re-applies its edits (a TextChanging filter, MaxLength) to the committed value and
 						// pushes the result to the input.
 						BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
@@ -368,9 +375,18 @@
 		}
 
 		private static syncCompositionFromInput(input: HTMLInputElement | HTMLTextAreaElement) {
+			const generation = BrowserInvisibleTextBoxViewExtension.compositionGeneration;
 			// Before the text sync, so the TextBox knows the change belongs to the composition.
 			BrowserInvisibleTextBoxViewExtension.reportComposition(input);
-			BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
+			if (BrowserInvisibleTextBoxViewExtension.isSyncTarget(input, generation)) {
+				BrowserInvisibleTextBoxViewExtension.syncTextFromInput(input);
+			}
+		}
+
+		// A handler of a composition event (TextCompositionStarted, TextCompositionEnded) may have moved focus, replacing the
+		// input or handing it to another TextBox, which ends the composition: the input's value isn't that TextBox's.
+		private static isSyncTarget(input: HTMLInputElement | HTMLTextAreaElement, generation: number) {
+			return input === BrowserInvisibleTextBoxViewExtension.inputElement && generation === BrowserInvisibleTextBoxViewExtension.compositionGeneration;
 		}
 
 		private static syncTextFromInput(input: HTMLInputElement | HTMLTextAreaElement) {
@@ -495,6 +511,15 @@
 			}
 		}
 
+		// A read-only input still takes focus, a caret, a selection, key events and copy, which the TextBox needs; it
+		// only refuses edits, so mobile browsers don't open the soft keyboard for it.
+		public static setReadOnly(isReadOnly: boolean) {
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (input) {
+				input.readOnly = isReadOnly;
+			}
+		}
+
 		public static setInputMode(inputMode: string) {
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			if (input) {
@@ -528,7 +553,7 @@
 			}
 		}
 
-		public static focus(handle: number, isPassword: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string): boolean {
+		public static focus(handle: number, isPassword: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string, isReadOnly: boolean): boolean {
 			// Supersede any detach a preceding managed blur scheduled: focus is moving between
 			// TextBoxes, and detaching in between would dismiss the soft keyboard (see blur).
 			BrowserInvisibleTextBoxViewExtension.detachGeneration++;
@@ -540,7 +565,8 @@
 			}
 
 			const existingInput = BrowserInvisibleTextBoxViewExtension.inputElement;
-			if (existingInput != null && BrowserInvisibleTextBoxViewExtension.canRetarget(existingInput, isPassword, acceptsReturn)) {
+			const wasComposing = BrowserInvisibleTextBoxViewExtension.isCompositionReported;
+			if (existingInput != null && BrowserInvisibleTextBoxViewExtension.canRetarget(existingInput, isPassword, acceptsReturn, isReadOnly)) {
 				// Reuse the shared input in place: mobile browsers keep the soft keyboard up across
 				// a TextBox-to-TextBox move only while an editable element stays focused throughout.
 				BrowserInvisibleTextBoxViewExtension.acceptsReturn = acceptsReturn;
@@ -562,7 +588,7 @@
 				// would dismiss the soft keyboard. The implicit blur of the old element is
 				// managed-initiated, so suppress its notification.
 				existingInput?.removeAttribute("id");
-				this.createInput(isPassword, text, acceptsReturn, inputMode, enterKeyHint);
+				this.createInput(isPassword, text, acceptsReturn, inputMode, enterKeyHint, isReadOnly);
 				BrowserInvisibleTextBoxViewExtension.runSuppressingBlur(() => {
 					BrowserInvisibleTextBoxViewExtension.inputElement.focus(BrowserInvisibleTextBoxViewExtension.focusOptions);
 					existingInput?.remove();
@@ -570,6 +596,12 @@
 			}
 
 			BrowserInvisibleTextBoxViewExtension.currentHandle = Number(handle);
+
+			// The replaced input's compositionend is ignored (see isActiveComposition), so a composition still open on it
+			// ends here: the same TextBox re-entered (a tap changing its focus state mid-word) would otherwise stay composing.
+			if (wasComposing) {
+				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
+			}
 
 			// Set for whichever element ends up live: the shared input is reused across TextBoxes, so tagging
 			// it only on creation leaves the policy unreported for every retargeted entry session. Inspectable
@@ -588,8 +620,10 @@
 
 		// The shared input can be handed to another TextBox without being recreated only when the
 		// element kind it was created with still matches the target TextBox.
-		private static canRetarget(input: HTMLInputElement | HTMLTextAreaElement, isPassword: boolean, acceptsReturn: boolean): boolean {
-			if (BrowserInvisibleTextBoxViewExtension.isComposing) {
+		private static canRetarget(input: HTMLInputElement | HTMLTextAreaElement, isPassword: boolean, acceptsReturn: boolean, isReadOnly: boolean): boolean {
+			// Mobile browsers show or hide the soft keyboard when an element takes focus, not when readOnly flips on the
+			// focused one: moving between a read-only and an editable TextBox focuses a new input.
+			if (BrowserInvisibleTextBoxViewExtension.isComposing || input.readOnly !== isReadOnly) {
 				return false;
 			}
 			const needsTextArea = acceptsReturn && !isPassword;
@@ -618,12 +652,19 @@
 		private static detachCore() {
 			BrowserInvisibleTextBoxViewExtension.detachGeneration++;
 			BrowserInvisibleTextBoxViewExtension.currentHandle = 0;
+			const wasComposing = BrowserInvisibleTextBoxViewExtension.isCompositionReported;
 			// Blur explicitly before removing: the .blur() method dispatches synchronously, so it
 			// lands inside the suppression window. WebKit can otherwise defer the implicit blur that
 			// fires on element removal past that window, which would clear the wrong TextBox's focus.
 			BrowserInvisibleTextBoxViewExtension.inputElement?.blur();
 			BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
 			BrowserInvisibleTextBoxViewExtension.inputElement = null;
+			// The removed input's compositionend is ignored, so a composition still open on it ends here: when the TextBox
+			// keeps focus (accessibility handing it over to its semantic element), nothing else would end it.
+			if (wasComposing) {
+				BrowserInvisibleTextBoxViewExtension.resetComposition();
+				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
+			}
 		}
 
 		public static blur(handle: number) {
@@ -661,7 +702,8 @@
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			if (input != null) {
 				// While a composition edits the text, the browser owns the value: overwriting it would destroy the
-				// composition. A TextBox text that differs from it (an app edit, MaxLength) is reconciled once it ends.
+				// composition. A TextBox text that differs from it (an app edit, MaxLength) is reconciled once it ends,
+				// unless the TextBox refused the edit or cut its text before the composition: it then ends the composition first.
 				if (BrowserInvisibleTextBoxViewExtension.isCompositionReported) {
 					BrowserInvisibleTextBoxViewExtension.pendingText = BrowserInvisibleTextBoxViewExtension.asInputValue(input, text) === input.value ? null : text;
 					return;

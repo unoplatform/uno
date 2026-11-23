@@ -35,10 +35,16 @@ internal class ObservableEditingState : SpannableStringBuilder
 	private string? _toStringCache;
 
 	private string? _textWhenBeginBatchEdit;
+
+	/// <summary>The text when the last outermost batch edit began.</summary>
+	internal string? TextWhenBeginBatchEdit => _textWhenBeginBatchEdit;
 	private int _selectionStartWhenBeginBatchEdit;
 	private int _selectionEndWhenBeginBatchEdit;
 	private int _composingStartWhenBeginBatchEdit;
 	private int _composingEndWhenBeginBatchEdit;
+
+	/// <summary>Where the composing region started when the last outermost batch edit began, or -1.</summary>
+	internal int ComposingStartWhenBeginBatchEdit => _composingStartWhenBeginBatchEdit;
 
 	private BaseInputConnection _dummyConnection;
 

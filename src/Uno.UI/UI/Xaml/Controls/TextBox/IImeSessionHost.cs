@@ -48,6 +48,9 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>The plain text mirrored into the platform input connection.</summary>
 		string Text { get; }
 
+		/// <summary>The length of <see cref="Text"/>, without reading the text.</summary>
+		int TextLength { get; }
+
 		/// <summary>Whether the platform input connection should accept line breaks.</summary>
 		bool AcceptsReturn { get; }
 
@@ -67,7 +70,12 @@ namespace Microsoft.UI.Xaml.Controls
 		CharacterCasing CharacterCasing { get; }
 
 		/// <summary>Applies text and selection produced by a platform input connection.</summary>
-		void UpdateTextFromNative(string text, int selectionStart, int selectionLength);
+		/// <returns>
+		/// False when the host refused the text change (BeforeTextChanging, a read-only RichEditBox), so the input must take the
+		/// host's text back; true when it took the change, even if a limit or a handler then kept other text (MaxLength,
+		/// TextChanging). A read-only TextBox doesn't refuse here; the browser path refuses for it before (ApplyNativeInput).
+		/// </returns>
+		bool UpdateTextFromNative(string text, int selectionStart, int selectionLength);
 
 		/// <summary>Applies a selection-only update produced by a platform input connection.</summary>
 		void SelectFromNative(int selectionStart, int selectionLength);

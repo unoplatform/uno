@@ -439,6 +439,7 @@ public class Given_ImeSessionCoordinator_RootOwnership
 		public bool IsTextPredictionEnabled => true;
 		public CandidateWindowAlignment DesiredCandidateWindowAlignment => CandidateWindowAlignment.Default;
 		public string Text => string.Empty;
+		public int TextLength => 0;
 		public bool AcceptsReturn => true;
 		public bool IsSpellCheckEnabled => true;
 		public bool CanAcceptTextInput => true;
@@ -447,9 +448,7 @@ public class Given_ImeSessionCoordinator_RootOwnership
 		public CharacterCasing CharacterCasing => CharacterCasing.Normal;
 		public List<string> Callbacks { get; } = new();
 
-		public void UpdateTextFromNative(string text, int selectionStart, int selectionLength)
-		{
-		}
+		public bool UpdateTextFromNative(string text, int selectionStart, int selectionLength) => true;
 
 		public void SelectFromNative(int selectionStart, int selectionLength)
 		{

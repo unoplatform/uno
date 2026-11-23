@@ -34,6 +34,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// composition events and should NOT be swallowed by the IsComposing check.
 		private bool _compositionAppliedByPlatform;
 		private bool _platformTextApplyInProgress;
+		// A TextCompositionChanged held back until the platform's text sync lands (see OnPlatformTextSynced), with what its
+		// automation events need: the preedit and the conversion target before the update.
+		private (string Text, bool HadConversionTarget, int PreviousStart, int PreviousEnd)? _pendingCompositionChange;
 		private int _compositionStartIndex;
 		private int _compositionLength;
 		private int _compositionResolvedLength;
@@ -102,6 +105,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		string IImeSessionHost.Text => GetPlainTextContent();
 
+		int IImeSessionHost.TextLength => GetPlainTextLength();
+
 		bool IImeSessionHost.AcceptsReturn => AcceptsReturn;
 
 		bool IImeSessionHost.IsSpellCheckEnabled => IsSpellCheckEnabled;
@@ -114,8 +119,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		CharacterCasing IImeSessionHost.CharacterCasing => CharacterCasing;
 
-		void IImeSessionHost.UpdateTextFromNative(string text, int selectionStart, int selectionLength)
-			=> UpdateTextFromNative(text, selectionStart, selectionLength);
+		bool IImeSessionHost.UpdateTextFromNative(string text, int selectionStart, int selectionLength)
+			=> TryUpdateTextFromNative(text, selectionStart, selectionLength);
 
 		void IImeSessionHost.SelectFromNative(int selectionStart, int selectionLength)
 			=> SelectFromNative(selectionStart, selectionLength);
@@ -161,6 +166,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// fire, so subsequent key events aren't swallowed at the IsComposing check in OnPostKeyDown.
 			_compositionAppliedByPlatform = false;
 			_platformTextApplyInProgress = false;
+			_pendingCompositionChange = null;
 			if (_isComposing)
 			{
 				var compositionText = GetCurrentCompositionText();
@@ -182,8 +188,7 @@ namespace Microsoft.UI.Xaml.Controls
 					hadConversionTarget,
 					previousConversionStart,
 					previousConversionEnd);
-				InvokeCompositionEvent(
-					() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length)));
+				RaiseTextCompositionEnded(startIndex, length);
 			}
 			else
 			{
@@ -201,6 +206,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_isComposing = true;
 			_compositionAppliedByPlatform = false;
 			_platformTextApplyInProgress = false;
+			_pendingCompositionChange = null;
 			_compositionHasCommittedText = false;
 			_compositionStartIndex = _selection.start;
 			// Initialize from the current selection length so the first ReplaceCompositionText replaces
@@ -246,13 +252,60 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			_compositionResolvedLength = Math.Clamp(resolvedLength, 0, _compositionLength);
 
+			if (textAlreadyApplied)
+			{
+				// The platform syncs the text it applied right after this call (Android's EndBatchEdit, the browser's
+				// input event): handlers and automation clients get the update once that text is in the document.
+				_pendingCompositionChange = (compositionText, hadConversionTarget, previousConversionStart, previousConversionEnd);
+				return;
+			}
+
+			_pendingCompositionChange = null;
+			RaiseCompositionChanged(compositionText, hadConversionTarget, previousConversionStart, previousConversionEnd);
+		}
+
+		private void RaiseCompositionChanged(string compositionText, bool hadConversionTarget, int previousConversionStart, int previousConversionEnd)
+		{
 			RaiseTextEditCompositionEvent(AutomationTextEditChangeType.Composition, compositionText);
 			RaiseConversionTargetChangedIfNeeded(
 				hadConversionTarget,
 				previousConversionStart,
 				previousConversionEnd);
-			var args = new TextCompositionChangedEventArgs(_compositionStartIndex, _compositionLength);
+			var (start, length) = ClampToDocument(_compositionStartIndex, _compositionLength);
+			var args = new TextCompositionChangedEventArgs(start, length);
 			InvokeCompositionEvent(() => TextCompositionChanged?.Invoke(this, args));
+		}
+
+		// The platform's text sync has landed: raises the TextCompositionChanged it was holding, unless the document
+		// refused that text, which isn't in the document then.
+		private void OnPlatformTextSynced(bool refused)
+		{
+			if (_pendingCompositionChange is not { } pending)
+			{
+				return;
+			}
+
+			_pendingCompositionChange = null;
+			if (_isComposing && !refused)
+			{
+				RaiseCompositionChanged(pending.Text, pending.HadConversionTarget, pending.PreviousStart, pending.PreviousEnd);
+			}
+		}
+
+		// The composition's range can outlast its text (a coercion or a deletion during the composition), so handlers get
+		// the part of it that is in the document.
+		private (int Start, int Length) ClampToDocument(int startIndex, int length)
+		{
+			var textLength = GetPlainTextLength();
+			var start = Math.Clamp(startIndex, 0, textLength);
+			return (start, Math.Clamp(length, 0, textLength - start));
+		}
+
+		private void RaiseTextCompositionEnded(int startIndex, int length)
+		{
+			var (start, clampedLength) = ClampToDocument(startIndex, length);
+			InvokeCompositionEvent(
+				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(start, clampedLength)));
 		}
 
 		void IImeSessionHost.OnImeCompositionPartiallyCommitted(
@@ -298,13 +351,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				RaiseTextEditCompositionEvent(AutomationTextEditChangeType.CompositionFinalized, committedText);
 			}
-			RaiseTextEditCompositionEvent(AutomationTextEditChangeType.Composition, compositionText);
-			RaiseConversionTargetChangedIfNeeded(
-				hadConversionTarget,
-				previousConversionStart,
-				previousConversionEnd);
-			var args = new TextCompositionChangedEventArgs(_compositionStartIndex, _compositionLength);
-			InvokeCompositionEvent(() => TextCompositionChanged?.Invoke(this, args));
+			_pendingCompositionChange = null;
+			RaiseCompositionChanged(compositionText, hadConversionTarget, previousConversionStart, previousConversionEnd);
 		}
 
 		void IImeSessionHost.OnImeCompositionCompleted(string committedText, bool textAlreadyApplied)
@@ -334,6 +382,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_isComposing = false;
 				_compositionAppliedByPlatform = false;
 				_platformTextApplyInProgress = false;
+				_pendingCompositionChange = null;
 				_compositionLength = 0;
 				_compositionStartIndex = 0;
 				_compositionResolvedLength = 0;
@@ -349,6 +398,7 @@ namespace Microsoft.UI.Xaml.Controls
 				hadConversionTarget,
 				previousConversionStart,
 				previousConversionEnd);
+			// The committed text's own range, not clamped: Skia Android raises this before syncing that text.
 			InvokeCompositionEvent(
 				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, committedLength)));
 		}
@@ -359,6 +409,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_compositionAppliedByPlatform = false;
 				_platformTextApplyInProgress = false;
+				_pendingCompositionChange = null;
 				return;
 			}
 
@@ -381,6 +432,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_isComposing = false;
 				_compositionAppliedByPlatform = false;
 				_platformTextApplyInProgress = false;
+				_pendingCompositionChange = null;
 				_compositionLength = 0;
 				_compositionStartIndex = 0;
 				_compositionResolvedLength = 0;
@@ -404,8 +456,7 @@ namespace Microsoft.UI.Xaml.Controls
 				hadConversionTarget,
 				previousConversionStart,
 				previousConversionEnd);
-			InvokeCompositionEvent(
-				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, 0)));
+			RaiseTextCompositionEnded(startIndex, 0);
 		}
 
 		void IImeSessionHost.OnImeCompositionEnded()
@@ -414,6 +465,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_compositionAppliedByPlatform = false;
 				_platformTextApplyInProgress = false;
+				_pendingCompositionChange = null;
 				CloseCompositionUndoGroup();
 				return;
 			}
@@ -429,6 +481,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_isComposing = false;
 			_compositionAppliedByPlatform = false;
 			_platformTextApplyInProgress = false;
+			_pendingCompositionChange = null;
 			_compositionLength = 0;
 			_compositionStartIndex = 0;
 			_compositionResolvedLength = 0;
@@ -440,8 +493,7 @@ namespace Microsoft.UI.Xaml.Controls
 				hadConversionTarget,
 				previousConversionStart,
 				previousConversionEnd);
-			InvokeCompositionEvent(
-				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length)));
+			RaiseTextCompositionEnded(startIndex, length);
 		}
 
 		void IImeSessionHost.OnCandidateWindowBoundsChanged(Rect bounds)
@@ -603,6 +655,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_isComposing = false;
 			_compositionAppliedByPlatform = false;
 			_platformTextApplyInProgress = false;
+			_pendingCompositionChange = null;
 			_compositionLength = 0;
 			_compositionStartIndex = 0;
 			_compositionResolvedLength = 0;
@@ -617,8 +670,7 @@ namespace Microsoft.UI.Xaml.Controls
 				hadConversionTarget,
 				previousConversionStart,
 				previousConversionEnd);
-			InvokeCompositionEvent(
-				() => TextCompositionEnded?.Invoke(this, new TextCompositionEndedEventArgs(startIndex, length)));
+			RaiseTextCompositionEnded(startIndex, length);
 		}
 
 		private void InvokeCompositionEvent(Action invoke)

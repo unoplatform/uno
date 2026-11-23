@@ -37,6 +37,52 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
+		/// <summary>
+		/// Whether a platform's text input must take the host's text back at once after the host processed an edit the input
+		/// applied, which ends the input's composition: the host refused the edit (BeforeTextChanging, read-only), or kept text
+		/// that no longer reaches where the composition starts. The keyboard then builds its next keystrokes and suggestions on
+		/// the text the host kept. Any other difference (MaxLength, a TextChanging limit or filter) waits for the composition
+		/// to end, as a conversion IME's reading (pinyin, kana) can be longer than the text it converts to; outside a
+		/// composition it goes back too. Line breaks match whether written as '\r' (the host) or '\n' (the platform).
+		/// </summary>
+		/// <param name="keptText">The host's text after it processed the edit.</param>
+		/// <param name="nativeText">The input's text with the edit.</param>
+		/// <param name="refused">Whether the host refused the edit (see <see cref="IImeSessionHost.UpdateTextFromNative"/>).</param>
+		/// <param name="compositionStart">Where the input's composition starts, or -1 when it has none.</param>
+		internal static bool MustReturnTextToNative(string keptText, string nativeText, bool refused, int compositionStart)
+			=> (refused || compositionStart < 0 || keptText.Length < compositionStart) && !IsSameText(keptText, nativeText);
+
+		/// <summary>
+		/// <see cref="MustReturnTextToNative(string, string, bool, int)"/> with the host's text, read only after a refusal or
+		/// outside a composition: reading a RichEditBox's text costs the document. Otherwise only the kept text's length counts,
+		/// as the input's text reaches where its composition starts, so a kept text shorter than that differs from it.
+		/// </summary>
+		internal static bool MustReturnTextToNative(IImeSessionHost host, string nativeText, bool refused, int compositionStart)
+			=> refused || compositionStart < 0
+				? !IsSameText(host.Text, nativeText)
+				: host.TextLength < compositionStart;
+
+		// Compares without allocating a normalized copy, as this runs for every edit the platform applies.
+		private static bool IsSameText(string first, string second)
+		{
+			if (first.Length != second.Length)
+			{
+				return false;
+			}
+
+			for (var i = 0; i < first.Length; i++)
+			{
+				var a = first[i] == '\r' ? '\n' : first[i];
+				var b = second[i] == '\r' ? '\n' : second[i];
+				if (a != b)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 		private ImeSessionCoordinator(IHostScopedImeTextBoxExtension extension, XamlRoot? xamlRoot)
 		{
 			_isHostScoped = true;

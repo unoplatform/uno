@@ -69,6 +69,12 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	private bool _currentlyTyping;
 	private bool _suppressCurrentlyTyping;
 	private bool _isApplyingNativeInput;
+	// Whether IsReadOnly or a BeforeTextChanging handler refused the text input being processed, as opposed to a limit
+	// (MaxLength) or a TextChanging handler keeping other text.
+	private bool _textInputRefused;
+
+	internal bool IsApplyingNativeInput => _isApplyingNativeInput;
+
 	private SelectionDetails _selectionWhenTypingStarted;
 	private string _textWhenTypingStarted;
 
@@ -123,20 +129,39 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 	// An edit the platform's input field already applied, with the caret it left there. Like a key the TextBox handles,
 	// it extends the current typing run: its own caret move doesn't end the run, so undo takes back the whole of it.
-	internal void ApplyNativeInput(string text, int selectionStart, int selectionLength)
+	// Returns false when the TextBox refused the edit (BeforeTextChanging, IsReadOnly).
+	internal bool ApplyNativeInput(string text, int selectionStart, int selectionLength)
 	{
+		var textBefore = Text;
+		var (selectionStartBefore, selectionLengthBefore) = (SelectionStart, SelectionLength);
+		bool refused;
 		_isApplyingNativeInput = true;
+		_textInputRefused = false;
 		try
 		{
 			// Pending so the text change itself lands the caret here instead of passing through 0.
 			SetPendingSelection(selectionStart, selectionLength);
 			TextBoxView.UpdateTextFromNative(text);
-			SelectInternal(selectionStart, selectionLength);
+			refused = Text == textBefore && text != textBefore;
+			if (refused)
+			{
+				// Back where the edit started right away: the next key the browser applies lands at the input's caret. The
+				// input got the TextBox's text back, which moved its caret, so it gets the selection even when unchanged.
+				SelectInternal(selectionStartBefore, selectionLengthBefore);
+				TextBoxView.Select(SelectionStart, SelectionLength);
+			}
+			else
+			{
+				SelectInternal(selectionStart, selectionLength);
+			}
 		}
 		finally
 		{
 			_isApplyingNativeInput = false;
 		}
+
+		OnPlatformTextSynced(refused);
+		return !(refused && _textInputRefused);
 	}
 
 	// The platform's input field already applied this edit. It is typing, undoable like a key the TextBox handles, and a
@@ -145,6 +170,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 	{
 		if (IsReadOnly)
 		{
+			_textInputRefused = true;
 			return Text;
 		}
 
