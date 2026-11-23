@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 using MenuBar = Microsoft.UI.Xaml.Controls.MenuBar;
 using MenuBarItem = Microsoft.UI.Xaml.Controls.MenuBarItem;
@@ -18,7 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_MenuBar
 {
 	[TestCleanup]
-	public void Cleanup() => VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot);
+	public void Cleanup() => UITestHelper.CloseAllPopups();
 
 	[TestMethod]
 	// KeyboardHelper is a no-op on WinAppSDK
@@ -44,15 +45,15 @@ public class Given_MenuBar
 		var (_, items) = await Load(("File", true, 1), ("Edit", false, 1), ("Help", true, 1));
 
 		Invoke(items[0]);
-		await WindowHelper.WaitFor(() => items[0].IsFlyoutOpen());
+		await WindowHelper.WaitFor(() => IsFlyoutOpen(items[0]));
 		await WindowHelper.WaitForIdle();
 
 		await KeyboardHelper.Right();
 		await WindowHelper.WaitForIdle();
 
 		Assert.AreEqual(items[2], FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
-		Assert.IsFalse(items[0].IsFlyoutOpen());
-		Assert.IsFalse(items[1].IsFlyoutOpen());
+		Assert.IsFalse(IsFlyoutOpen(items[0]));
+		Assert.IsFalse(IsFlyoutOpen(items[1]));
 	}
 
 	[TestMethod]
@@ -64,14 +65,14 @@ public class Given_MenuBar
 		var (_, items) = await Load(("File", true, 1), ("Edit", true, 1));
 
 		Invoke(items[0]);
-		await WindowHelper.WaitFor(() => items[0].IsFlyoutOpen());
+		await WindowHelper.WaitFor(() => IsFlyoutOpen(items[0]));
 		await WindowHelper.WaitForIdle();
 
 		await KeyboardHelper.Right();
 		await WindowHelper.WaitForIdle();
 
-		Assert.IsFalse(items[0].IsFlyoutOpen());
-		Assert.IsTrue(items[1].IsFlyoutOpen(), "The next item's flyout should open and stay open.");
+		Assert.IsFalse(IsFlyoutOpen(items[0]));
+		Assert.IsTrue(IsFlyoutOpen(items[1]), "The next item's flyout should open and stay open.");
 	}
 
 	[TestMethod]
@@ -129,6 +130,14 @@ public class Given_MenuBar
 
 		return (menuBar, menuBar.Items.ToArray());
 	}
+
+	// MenuBarItem.IsFlyoutOpen() is public on Uno only; WinUI keeps it internal.
+	private static bool IsFlyoutOpen(MenuBarItem item)
+#if HAS_UNO
+		=> item.IsFlyoutOpen();
+#else
+		=> FindChild<Button>(item, "ContentButton").ContextFlyout.IsOpen;
+#endif
 
 	private static void Invoke(MenuBarItem item)
 		=> ((IInvokeProvider)FrameworkElementAutomationPeer.CreatePeerForElement(item).GetPattern(PatternInterface.Invoke)).Invoke();
