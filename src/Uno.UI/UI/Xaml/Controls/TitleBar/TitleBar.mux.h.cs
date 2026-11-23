@@ -46,7 +46,9 @@ partial class TitleBar
 
 	private const string s_leftPaddingColumnName = "LeftPaddingColumn";
 	private const string s_rightPaddingColumnName = "RightPaddingColumn";
+#pragma warning disable IDE0051 // Declared but unused upstream too.
 	private const string s_layoutRootPartName = "PART_LayoutRoot";
+#pragma warning restore IDE0051
 	private const string s_backButtonPartName = "PART_BackButton";
 	private const string s_paneToggleButtonPartName = "PART_PaneToggleButton";
 	private const string s_iconViewboxPartName = "PART_Icon";
