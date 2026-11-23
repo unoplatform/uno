@@ -83,12 +83,16 @@ typedef void (*accessibility_focus_fn_ptr)(intptr_t handle);
 typedef void (*accessibility_increment_fn_ptr)(intptr_t handle);
 typedef void (*accessibility_decrement_fn_ptr)(intptr_t handle);
 typedef void (*accessibility_expand_collapse_fn_ptr)(intptr_t handle);
+// The bits of the set-text callback's flags. A value set replaces the whole value, as UI Automation's SetValue does;
+// without it, the text comes from an edit such as a selected-text replacement.
+#define UNO_ACCESSIBILITY_SET_TEXT_SELECTION_IS_BACKWARD 1
+#define UNO_ACCESSIBILITY_SET_TEXT_IS_VALUE_SET 2
 typedef void (*accessibility_set_text_fn_ptr)(
 	intptr_t handle,
 	const char* _Nonnull value,
 	int32_t selectionStart,
 	int32_t selectionEnd,
-	int32_t selectionIsBackward);
+	int32_t flags);
 typedef void (*accessibility_set_selection_fn_ptr)(
 	intptr_t handle,
 	int32_t selectionStart,

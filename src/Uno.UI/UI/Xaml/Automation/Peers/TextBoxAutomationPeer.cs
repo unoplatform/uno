@@ -65,7 +65,14 @@ public partial class TextBoxAutomationPeer : FrameworkElementAutomationPeer, Pro
 			throw new InvalidOperationException("Cannot set value on a read-only TextBox.");
 		}
 
-		((TextBox)Owner).Text = value;
+		// Like WinUI's UI Automation Value pattern, refuse a value longer than MaxLength instead of cutting it.
+		var textBox = (TextBox)Owner;
+		if (textBox.MaxLength > 0 && (value?.Length ?? 0) > textBox.MaxLength)
+		{
+			throw new InvalidOperationException("Cannot set a value longer than the TextBox's MaxLength.");
+		}
+
+		textBox.Text = value;
 	}
 
 	/// <summary>
