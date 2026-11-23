@@ -336,12 +336,12 @@ internal sealed class XbfFileBuilder
 			{
 				if ((i & 0x3F) == 0)
 				{
-					data.Append('\n');
+					data.Append(Environment.NewLine);
 				}
 				data.Append(document[i].ToString(CultureInfo.InvariantCulture));
 				data.Append(',');
 			}
-			data.Append("\n};");
+			data.Append(Environment.NewLine).Append("};");
 			writer.AppendLineIndented(data.ToString());
 
 			writer.AppendLineIndented($"protected override int TypeCount => {_types.Count};");
