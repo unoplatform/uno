@@ -9,23 +9,26 @@ namespace __Windows.ApplicationModel.DataTransfer
 		{
 			private const string JsType = "globalThis.Uno.Utils.Clipboard";
 
-			[JSImport($"{JsType}.getText")]
-			internal static partial Task<string> GetTextAsync();
+			[JSImport($"{JsType}.getSnapshot")]
+			internal static partial string GetSnapshot();
 
-			[JSImport($"{JsType}.setText")]
-			internal static partial void SetText(string text);
+			[JSImport($"{JsType}.getContentAsync")]
+			internal static partial Task<string> GetContentAsync(double pasteShortcutTime);
 
-			[JSImport($"{JsType}.getHtml")]
-			internal static partial Task<string> GetHtmlAsync();
+			[JSImport($"{JsType}.releaseHandles")]
+			internal static partial void ReleaseHandles(string ids);
 
-			[JSImport($"{JsType}.setHtml")]
-			internal static partial Task SetHtmlAsync(string html, string text);
+			[JSImport($"{JsType}.beginWrite")]
+			internal static partial void BeginWrite(int generation, string formatsJson);
 
-			[JSImport($"{JsType}.getImage")]
-			internal static partial Task<string> GetImageAsync();
+			[JSImport($"{JsType}.resolveWriteAsync")]
+			internal static partial Task ResolveWriteAsync(int generation, string entriesJson, byte[] imageBytes, string imageMimeType);
 
-			[JSImport($"{JsType}.setImage")]
-			internal static partial Task SetImageAsync(string base64, string mimeType);
+			[JSImport($"{JsType}.abortWrite")]
+			internal static partial void AbortWrite(int generation);
+
+			[JSImport($"{JsType}.clearAsync")]
+			internal static partial Task ClearAsync(int generation);
 
 			[JSImport($"{JsType}.startContentChanged")]
 			internal static partial void StartContentChanged();
