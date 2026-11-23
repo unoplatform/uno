@@ -67,6 +67,10 @@ internal ref struct BinaryFormatObjectWriter
 					}
 					break;
 
+				case ObjectWriterNodeType.PushScopeCreateType:
+					PushScope(m_provider.Create(reader.ReadUInt()));
+					break;
+
 				case ObjectWriterNodeType.EndInitPopScope:
 					{
 						var instance = CurrentInstance;
@@ -190,6 +194,28 @@ internal ref struct BinaryFormatObjectWriter
 						{
 							SetValueOnCurrentInstance(propertyId, m_qoLastInstance);
 						}
+					}
+					break;
+
+				case ObjectWriterNodeType.UnoSetBindingByName:
+					{
+						var propertyName = m_provider.GetString(reader.ReadUInt());
+						var isOwnerDependencyObject = reader.ReadByte() != 0;
+						var instance = CurrentInstance!;
+
+						Uno.UI.Xaml.BindingHelper.SetBinding(
+							isOwnerDependencyObject ? (DependencyObject)instance : Uno.UI.Xaml.BindingHelper.GetDependencyObjectForXBind(instance),
+							propertyName,
+							(BindingBase)m_qoLastInstance!);
+					}
+					break;
+
+				case ObjectWriterNodeType.UnoAddStaticResourceAliasToDictionary:
+					{
+						var key = ReadConstant(ref reader);
+						var resourceKey = m_provider.GetString(reader.ReadUInt());
+
+						((ResourceDictionary)CurrentInstance!)[key!] = ResourceResolver.ResolveStaticResourceAlias(resourceKey, m_context.ParseContext!);
 					}
 					break;
 

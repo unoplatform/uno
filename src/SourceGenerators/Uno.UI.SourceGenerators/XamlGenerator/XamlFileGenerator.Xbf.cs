@@ -416,9 +416,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				nodes.WriteNodeType(ObjectWriterNodeType.PushConstant);
 				XbfWriteConstant(nodes, initializer.ToString().Trim(), knownType, knownType);
 			}
+			else if (knownType.GetFullyQualifiedTypeExcludingGlobal() == XamlConstants.Types.ResourceDictionary)
+			{
+				XbfEmitResourceDictionary(nodes, xamlObjectDefinition, scope, setIsParsing: true);
+			}
 			else if (IsType(knownType, Generation.ResourceDictionarySymbol.Value))
 			{
-				throw XbfNotSupported("nested ResourceDictionary");
+				throw XbfNotSupported("typed ResourceDictionary");
 			}
 			else if (HasCustomInitializer(knownType))
 			{
@@ -642,12 +646,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return;
 			}
 
-			if (!resources.PopulatesOwnDictionary
-				|| resources.MergedDictionaries is not null
-				|| resources.ThemeDictionaries is not null
-				|| resources.Root is null)
+			if (!resources.PopulatesOwnDictionary)
 			{
-				throw XbfNotSupported("Resources with dictionaries");
+				throw XbfNotSupported("Resources from a Source or a typed dictionary");
 			}
 
 			var resourcesProperty = FindType(xamlObjectDefinition.Type).GetPropertyWithName("Resources")
@@ -656,7 +657,104 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			nodes.WriteNodeType(ObjectWriterNodeType.PushScopeGetValue);
 			nodes.WriteUInt(XbfGetGetterId(resourcesProperty));
 
-			foreach (var resource in resources.Root.Objects)
+			XbfEmitResourceDictionaryMembers(nodes, resources.MergedDictionaries, resources.ThemeDictionaries, resources.Root, scope);
+
+			nodes.WriteNodeType(ObjectWriterNodeType.PopScope);
+		}
+
+		// Mirrors InitializeAndBuildResourceDictionary
+		private void XbfEmitResourceDictionary(XbfNodeWriter nodes, XamlObjectDefinition dictionary, XbfScope scope, bool setIsParsing)
+		{
+			if (dictionary.Members.Any(m => m.Member.Name == "Source"))
+			{
+				throw XbfNotSupported("ResourceDictionary.Source");
+			}
+
+			var dictionaryType = Generation.ResourceDictionarySymbol.Value;
+
+			// A dictionary that is being parsed is part of the scope its resources are resolved in.
+			nodes.WriteNodeType(setIsParsing ? ObjectWriterNodeType.PushScopeCreateTypeBeginInit : ObjectWriterNodeType.PushScopeCreateType);
+			nodes.WriteUInt(XbfGetTypeId(dictionaryType, needsActivator: true));
+
+			if (_isUnoAssembly)
+			{
+				nodes.WriteNodeType(ObjectWriterNodeType.SetValueConstant);
+				nodes.WriteUInt(XbfGetSetterId(dictionaryType, dictionaryType.GetPropertyWithName("IsSystemDictionary")!));
+				nodes.WriteByte((byte)PersistedConstantType.IsBoolTrue);
+			}
+
+			XbfEmitResourceDictionaryMembers(
+				nodes,
+				dictionary.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"),
+				dictionary.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"),
+				FindImplicitContentMember(dictionary),
+				scope);
+
+			nodes.WriteNodeType(setIsParsing ? ObjectWriterNodeType.EndInitPopScope : ObjectWriterNodeType.PopScope);
+		}
+
+		// Mirrors BuildMergedDictionaries, BuildThemeDictionaries and BuildResourceDictionary
+		private void XbfEmitResourceDictionaryMembers(
+			XbfNodeWriter nodes,
+			XamlMemberDefinition? mergedDictionaries,
+			XamlMemberDefinition? themeDictionaries,
+			XamlMemberDefinition? resourcesRoot,
+			XbfScope scope)
+		{
+			var dictionaryType = Generation.ResourceDictionarySymbol.Value;
+
+			if (mergedDictionaries is not null)
+			{
+				var mergedProperty = dictionaryType.GetPropertyWithName("MergedDictionaries")!;
+				var dictionaryTypeName = dictionaryType.GetFullyQualifiedTypeIncludingGlobal();
+				var adderId = _xbf!.GetAdderId($"(({mergedProperty.Type.GetFullyQualifiedTypeIncludingGlobal()})c).Add(({dictionaryTypeName})v)");
+
+				nodes.WriteNodeType(ObjectWriterNodeType.PushScopeGetValue);
+				nodes.WriteUInt(XbfGetGetterId(mergedProperty));
+
+				foreach (var dictionary in mergedDictionaries.Objects)
+				{
+					XbfEmitResourceDictionary(nodes, dictionary, scope, setIsParsing: false);
+
+					nodes.WriteNodeType(ObjectWriterNodeType.UnoAddToCollectionTyped);
+					nodes.WriteUInt(adderId);
+				}
+
+				nodes.WriteNodeType(ObjectWriterNodeType.PopScope);
+			}
+
+			if (themeDictionaries is not null)
+			{
+				nodes.WriteNodeType(ObjectWriterNodeType.PushScopeGetValue);
+				nodes.WriteUInt(XbfGetGetterId(dictionaryType.GetPropertyWithName("ThemeDictionaries")!));
+
+				foreach (var dictionary in themeDictionaries.Objects)
+				{
+					var themeKey = GetDictionaryResourceKey(dictionary)
+						?? throw new XamlGenerationException("Each dictionary entry must have a 'Key'", dictionary);
+
+					// The dictionary of a theme is only created for the theme that is used.
+					var content = new XbfNodeWriter();
+					var former = _themeDictionaryCurrentlyBuilding;
+					_themeDictionaryCurrentlyBuilding = themeKey;
+					try
+					{
+						XbfEmitResourceDictionary(content, dictionary, scope, setIsParsing: false);
+					}
+					finally
+					{
+						_themeDictionaryCurrentlyBuilding = former;
+					}
+
+					nodes.WriteNodeType(ObjectWriterNodeType.UnoAddDeferredToDictionary);
+					XbfWriteResourceKey(nodes, themeKey);
+					nodes.WriteBlock(content);
+				}
+
+				nodes.WriteNodeType(ObjectWriterNodeType.PopScope);
+			}
+
+			foreach (var resource in (resourcesRoot?.Objects).Safe())
 			{
 				var key = GetDictionaryResourceKey(resource, out _);
 				if (key is null)
@@ -666,10 +764,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (resource.Type.Name == "StaticResource")
 				{
-					throw XbfNotSupported("StaticResource alias");
+					// BuildStaticResourceResourceKeyReference
+					nodes.WriteNodeType(ObjectWriterNodeType.UnoAddStaticResourceAliasToDictionary);
+					XbfWriteResourceKey(nodes, key);
+					nodes.WriteUInt(_xbf!.GetStringId(resource.Members.FirstOrDefault(m => m.Member.Name == "ResourceKey")?.Value as string ?? ""));
 				}
-
-				if (ShouldLazyInitializeResource(resource))
+				else if (ShouldLazyInitializeResource(resource))
 				{
 					var content = new XbfNodeWriter();
 					XbfEmitObject(content, null, resource, scope);
@@ -686,8 +786,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					XbfWriteResourceKey(nodes, key);
 				}
 			}
-
-			nodes.WriteNodeType(ObjectWriterNodeType.PopScope);
 		}
 
 		private void XbfWriteResourceKey(XbfNodeWriter nodes, string key)
@@ -1453,7 +1551,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				else
 				{
-					throw XbfNotSupported($"binding on a property that is not a DependencyProperty: {declaringType.Name}.{member.Member.Name}");
+					// The binding is set by name, on the object itself or on what stands for it.
+					propertyId = -1;
 				}
 
 				var isTemplateBindingAttachedProperty = templateBindingNode is not null && IsAttachedProperty(declaringType, member.Member.Name);
@@ -1533,8 +1632,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						nodes.WriteBool(!scope.DeclaredNames.Contains(elementName));
 					}
 
-					nodes.WriteNodeType(ObjectWriterNodeType.SetValueFromMarkupExtension);
-					nodes.WriteUInt(propertyId);
+					if (propertyId == -1)
+					{
+						var isOwnerDependencyObject = member.Owner != null && GetType(member.Owner.Type) is { } ownerType &&
+							(
+								(_xamlTypeToXamlTypeBaseMap.TryGetValue(ownerType, out var baseTypeSymbol) && IsType(FindType(baseTypeSymbol), Generation.DependencyObjectSymbol.Value)) ||
+								IsType(ownerType, Generation.DependencyObjectSymbol.Value)
+							);
+
+						nodes.WriteNodeType(ObjectWriterNodeType.UnoSetBindingByName);
+						nodes.WriteUInt(_xbf.GetStringId(member.Member.Name));
+						nodes.WriteBool(isOwnerDependencyObject);
+					}
+					else
+					{
+						nodes.WriteNodeType(ObjectWriterNodeType.SetValueFromMarkupExtension);
+						nodes.WriteUInt(propertyId);
+					}
 				}
 			}
 

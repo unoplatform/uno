@@ -107,6 +107,10 @@ internal enum ObjectWriterNodeType : byte
 	UnoPushScopeCreateElementStub = 78,
 	// [NameStringId] : the current instance stands for the named element until it gets created
 	UnoSetElementNameSubjectInstance = 79,
+	// [Key constant][ResourceKeyStringId] : <StaticResource x:Key ResourceKey /> in a dictionary
+	UnoAddStaticResourceAliasToDictionary = 80,
+	// [PropertyNameStringId][IsOwnerDependencyObject] : the last instance is a Binding, set on a property that is not a DependencyProperty
+	UnoSetBindingByName = 81,
 
 	///////////////////////// temporary states during optimization
 	CreateType = 128,
