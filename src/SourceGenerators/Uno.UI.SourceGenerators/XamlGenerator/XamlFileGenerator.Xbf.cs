@@ -43,25 +43,213 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private sealed class XbfScope
 		{
-			public static readonly XbfScope Root = new(isTemplate: false, declaredNames: new());
+			public static readonly XbfScope Root = new(isTemplate: false, isComponent: false, declaredNames: new());
 
-			public XbfScope(bool isTemplate, HashSet<string> declaredNames)
+			public XbfScope(bool isTemplate, bool isComponent, HashSet<string> declaredNames)
 			{
 				IsTemplate = isTemplate;
+				IsComponent = isComponent;
 				DeclaredNames = declaredNames;
 			}
 
+			/// <summary>
+			/// The content of a template.
+			/// </summary>
 			public bool IsTemplate { get; }
+
+			/// <summary>
+			/// The content of an x:Class, whose named elements are fields of the class.
+			/// </summary>
+			public bool IsComponent { get; }
+
+			/// <summary>
+			/// Whether the elements can be named, and referred to by their name.
+			/// </summary>
+			public bool HasNames => IsTemplate || IsComponent;
 
 			public HashSet<string> DeclaredNames { get; }
 		}
 
+		/// <summary>
+		/// What the Connect method of the class does for an object of the node stream.
+		/// </summary>
+		private sealed class XbfConnection
+		{
+			public int Id;
+			public string Type = "";
+			public List<string> Statements = new();
+		}
+
+		private Dictionary<XamlObjectDefinition, XbfConnection> _xbfConnections = new();
+		private List<BackingFieldDefinition> _xbfBackingFields = new();
+
 		private void InitializeXbf()
 		{
-			if (Generation.IsXbfEnabled)
+			// Hot Reload updates the generated C#, which the XBF takes the place of.
+			if (Generation.IsXbfEnabled && !_isHotReloadEnabled)
 			{
 				_xbf = new XbfFileBuilder($"__Xbf_{_fileUniqueId}");
 			}
+		}
+
+		private const string XbfInterfacesToken = "/*__xbf_interfaces__*/";
+
+		/// <summary>
+		/// The placeholder of the interfaces the XBF adds to the class of the file, once known.
+		/// </summary>
+		private string XbfClassInterfaces => _xbf is null ? "" : XbfInterfacesToken;
+
+		private void XbfResolveClassInterfaces(StringBuilder builder)
+		{
+			if (_xbf is not null)
+			{
+				builder.Replace(XbfInterfacesToken, _xbfConnections.Count != 0 || _xbfIsComponent ? ", global::Uno.UI.Xaml.Xbf.IXbfComponentConnector" : "");
+			}
+		}
+
+		private bool _xbfIsComponent;
+
+		/// <summary>
+		/// Builds the content of an x:Class as an XBF node stream, and writes the body of InitializeComponent that loads it.
+		/// </summary>
+		/// <returns>False when the file has to be built in C#.</returns>
+		private bool TryBuildComponentAsXbf(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
+		{
+			if (_xbf is null || _isTopLevelDictionary || FindType(topLevelControl.Type) is not { } topLevelControlType)
+			{
+				return false;
+			}
+
+			var checkpoint = _xbf.CreateCheckpoint();
+			var errorCount = _errors.Count;
+
+			_isBuildingXbf = true;
+			try
+			{
+				if (FindMember(topLevelControl, "Load") is not null)
+				{
+					throw XbfNotSupported("XAML error: invalid x:Load");
+				}
+
+				if (GetObjectUid(topLevelControl) is not null)
+				{
+					throw XbfNotSupported("x:Uid");
+				}
+
+				var nodes = new XbfNodeWriter();
+				var declaredNames = new HashSet<string>(FindNamesIn(topLevelControl), StringComparer.Ordinal);
+				var scope = new XbfScope(isTemplate: false, isComponent: true, declaredNames);
+
+				using (Scope(null, "__xbf"))
+				using (TrySetDefaultBindMode(topLevelControl))
+				{
+					// Mirrors BuildGenericControlInitializerBody
+					XbfEmitResources(nodes, topLevelControl, scope);
+					XbfEmitProperties(nodes, topLevelControl, topLevelControlType, scope);
+					XbfEmitLiteralProperties(nodes, topLevelControl, scope, lazyProperties: false);
+					XbfEmitExtendedProperties(nodes, topLevelControl, topLevelControlType, scope);
+				}
+
+				if (_errors.Count != errorCount)
+				{
+					throw new XbfNotSupportedException("XAML error: " + _errors[errorCount].Message);
+				}
+
+				nodes.WriteNodeType(ObjectWriterNodeType.EndOfStream);
+
+				var offset = _xbf.AppendRoot(nodes);
+				_xbfObjectCount++;
+				_xbfIsComponent = true;
+
+				// OnInitializeCompleted() seems to be used by some older code as a substitute for the constructor for UserControls, which are optimized out of the visual tree.
+				RegisterPartial("void OnInitializeCompleted()");
+
+				foreach (var backingField in _xbfBackingFields)
+				{
+					CurrentScope.BackingFields.Add(backingField);
+				}
+
+				writer.AppendLineIndented(
+					$"{XbfLoaderType}.LoadComponent(this, {_xbf.ClassName}.Instance, {offset.ToString(CultureInfo.InvariantCulture)}, __nameScope, {ParseContextPropertyAccess}, __baseUri_{_fileUniqueId});");
+				writer.AppendLineIndented("OnInitializeCompleted();");
+
+				CurrentScope.RegisterMethod("__XbfConnect", (_, connectWriter) => BuildXbfConnect(connectWriter));
+
+				return true;
+			}
+			catch (Exception e) when (e is XbfNotSupportedException or XamlGenerationException)
+			{
+				var reason = e is XbfNotSupportedException notSupported ? notSupported.Reason : "XAML error: " + e.Message;
+
+				_xbf.Rollback(checkpoint);
+				_errors.RemoveRange(errorCount, _errors.Count - errorCount);
+				_xbfConnections = new();
+				_xbfBackingFields = new();
+				_currentStyleTargetTypeStack.Clear();
+				_xbfFallbackReasons[reason] = _xbfFallbackReasons.TryGetValue(reason, out var count) ? count + 1 : 1;
+
+				return false;
+			}
+			finally
+			{
+				_isBuildingXbf = false;
+			}
+		}
+
+		/// <summary>
+		/// Builds the method the node stream calls for the objects the class has a field or an event handler for.
+		/// </summary>
+		private void BuildXbfConnect(IIndentedStringBuilder writer)
+		{
+			writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+			using (writer.BlockInvariant("void global::Uno.UI.Xaml.Xbf.IXbfComponentConnector.Connect(int connectionId, object target)"))
+			{
+				if (_xbfConnections.Count != 0)
+				{
+					using (writer.BlockInvariant("switch (connectionId)"))
+					{
+						foreach (var connection in _xbfConnections.Values.OrderBy(c => c.Id))
+						{
+							writer.AppendLineIndented($"case {connection.Id.ToString(CultureInfo.InvariantCulture)}:");
+							using (writer.Block())
+							{
+								writer.AppendLineIndented($"var e = ({connection.Type})target;");
+								foreach (var statement in connection.Statements)
+								{
+									writer.AppendLineIndented(statement);
+								}
+							}
+							writer.AppendLineIndented("break;");
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Has the class of the file do something with the object, which the nodes being written are creating.
+		/// </summary>
+		/// <param name="statement">A C# statement of the class, the object being <c>e</c>.</param>
+		private void XbfConnect(XbfNodeWriter nodes, XamlObjectDefinition objectDefinition, INamedTypeSymbol objectType, string statement)
+		{
+			if (_isTopLevelDictionary)
+			{
+				throw XbfNotSupported("event handler or field without an x:Class");
+			}
+
+			if (!_xbfConnections.TryGetValue(objectDefinition, out var connection))
+			{
+				_xbfConnections[objectDefinition] = connection = new XbfConnection
+				{
+					Id = _xbfConnections.Count + 1,
+					Type = objectType.GetFullyQualifiedTypeIncludingGlobal(),
+				};
+
+				nodes.WriteNodeType(ObjectWriterNodeType.SetConnectionId);
+				nodes.WriteUInt(connection.Id);
+			}
+
+			connection.Statements.Add(statement);
 		}
 
 		/// <summary>
@@ -344,6 +532,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (!scope.IsTemplate)
 			{
+				// The class of a page tracks the elements it loads on demand, to update their bindings.
 				throw XbfNotSupported("x:Load outside of a template");
 			}
 
@@ -430,7 +619,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				using (Scope(null, "__xbf"))
 				using (TrySetDefaultBindMode(contentDefinition.Owner))
 				{
-					XbfEmitObject(content, contentDefinition, contentRoot, new XbfScope(isTemplate: true, declaredNames));
+					XbfEmitObject(content, contentDefinition, contentRoot, new XbfScope(isTemplate: true, isComponent: false, declaredNames));
 				}
 
 				foreach (var styleTargetType in styleTargetTypes.Reverse())
@@ -699,9 +888,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		// Mirrors BuildTargetPropertyPath, for a Setter of a VisualState
 		private void XbfEmitTargetPropertyPath(XbfNodeWriter nodes, XamlMemberDefinition member, XbfScope scope)
 		{
-			if (member.Value is not string target || !scope.IsTemplate)
+			if (member.Value is not string target || !scope.HasNames)
 			{
-				throw XbfNotSupported("Setter.Target outside of a template");
+				throw XbfNotSupported("Setter.Target outside of a name scope");
 			}
 
 			var ownerControl = GetControlOwner(member.Owner);
@@ -940,12 +1129,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (HasMarkupExtensionNeedingComponent(objectDefinition) && IsDependencyObject(objectDefinition))
 			{
-				if (scope.IsTemplate)
+				if (scope.HasNames)
 				{
 					nodes.WriteNodeType(ObjectWriterNodeType.UnoTrackResourceBindings);
 					// Ensure that the namescope is property propagated to instances
 					// that are not UIElements in order for ElementName to resolve properly
-					nodes.WriteBool(!IsUIElement(objectDefinitionType));
+					nodes.WriteBool(scope.IsTemplate && !IsUIElement(objectDefinitionType));
 				}
 				else if (isFrameworkElement)
 				{
@@ -1057,15 +1246,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						if (!isMemberInsideResourceDictionary.isInside)
 						{
-							if (!scope.IsTemplate)
+							if (!scope.HasNames)
 							{
-								throw XbfNotSupported("x:Name outside of a template");
+								throw XbfNotSupported("x:Name outside of a name scope");
 							}
 
 							ValidateName(value, member);
 
 							nodes.WriteNodeType(ObjectWriterNodeType.SetName);
 							nodes.WriteUInt(_xbf!.GetStringId(value!));
+
+							if (scope.IsComponent && member.Member.Name == "Name" && !IsAttachedProperty(member))
+							{
+								// The element is a field of the class
+								XbfConnect(nodes, objectDefinition, objectDefinitionType, $"this.{value} = e;");
+								_xbfBackingFields.Add(new BackingFieldDefinition(objectDefinitionType.GetFullyQualifiedTypeIncludingGlobal(), value!, FindObjectFieldAccessibility(objectDefinition)));
+							}
 						}
 						else if (IsXNameMember(member, objectDefinition.Type) && IsXNameProvider(objectDefinition.Type))
 						{
@@ -1088,9 +1284,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						member.Member.DeclaringType?.Name == "Storyboard"
 					)
 					{
-						if (value is null || !scope.IsTemplate)
+						if (value is null || !scope.HasNames)
 						{
-							throw XbfNotSupported("Storyboard.TargetName outside of a template");
+							throw XbfNotSupported("Storyboard.TargetName outside of a name scope");
 						}
 
 						nodes.WriteNodeType(ObjectWriterNodeType.UnoSetStoryboardTargetName);
@@ -1104,9 +1300,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						(member.Member.DeclaringType?.Name.EndsWith("ThemeAnimation", StringComparison.Ordinal) ?? false)
 					)
 					{
-						if (!scope.IsTemplate)
+						if (!scope.HasNames)
 						{
-							throw XbfNotSupported("ThemeAnimation outside of a template");
+							throw XbfNotSupported("ThemeAnimation outside of a name scope");
 						}
 
 						// Those special animations (xxxThemeAnimation) needs to resolve their target at runtime.
@@ -1134,9 +1330,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						IsRelativePanelSiblingProperty(member.Member.Name)
 					)
 					{
-						if (value is null || !scope.IsTemplate)
+						if (value is null || !scope.HasNames)
 						{
-							throw XbfNotSupported("RelativePanel sibling outside of a template");
+							throw XbfNotSupported("RelativePanel sibling outside of a name scope");
 						}
 
 						nodes.WriteNodeType(ObjectWriterNodeType.UnoSetValueElementNameSubject);
@@ -1165,7 +1361,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else if (eventSymbol != null)
 							{
-								throw XbfNotSupported("event handler");
+								if (member.Value is not string { Length: > 0 } handler || !SyntaxFacts.IsValidIdentifier(handler))
+								{
+									throw XbfNotSupported("event handler that is not a method name");
+								}
+
+								// WinUI connects the handlers the same way, from the Connect method of the class.
+								XbfConnect(nodes, objectDefinition, objectDefinitionType, $"e.{eventSymbol.Name} += this.{handler};");
 							}
 							else
 							{
@@ -1280,9 +1482,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						if (option.Member.Name == "ElementName")
 						{
-							if (!scope.IsTemplate)
+							if (!scope.HasNames)
 							{
-								throw XbfNotSupported("ElementName outside of a template");
+								throw XbfNotSupported("ElementName outside of a name scope");
 							}
 
 							// The subject is provided by the scope the node stream is run in.

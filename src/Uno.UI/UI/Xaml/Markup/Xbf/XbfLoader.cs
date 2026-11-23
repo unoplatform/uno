@@ -24,11 +24,61 @@ public static class XbfLoader
 	/// <param name="baseUri">The URI of the XAML file.</param>
 	public static object? Load(XbfMetadataProvider provider, int offset, object? owner, object? parseContext, string? baseUri)
 	{
-		var context = new XbfLoadContext(provider, owner, parseContext, baseUri, settings: null, isTemplate: false);
+		var context = new XbfLoadContext(provider, owner, parseContext, baseUri, settings: null, nameScope: null);
 		var writer = new BinaryFormatObjectWriter(context);
 
 		return writer.WriteNodes(offset, int.MaxValue);
 	}
+
+	/// <summary>
+	/// Applies the nodes found at <paramref name="offset"/> to <paramref name="component"/>: the content of its XAML file.
+	/// </summary>
+	/// <param name="component">The instance of the x:Class being initialized.</param>
+	/// <param name="provider">The XBF of the XAML file.</param>
+	/// <param name="offset">The offset of the content in the node stream.</param>
+	/// <param name="nameScope">The name scope of the component.</param>
+	/// <param name="parseContext">The context resources are resolved with.</param>
+	/// <param name="baseUri">The URI of the XAML file.</param>
+	public static void LoadComponent(object component, XbfMetadataProvider provider, int offset, NameScope nameScope, object? parseContext, string? baseUri)
+	{
+		var context = new XbfLoadContext(provider, owner: component, parseContext, baseUri, settings: null, nameScope);
+		var writer = new BinaryFormatObjectWriter(context);
+
+		// Window is not a DependencyObject
+		if (component is DependencyObject dependencyObject)
+		{
+			NameScope.SetNameScope(dependencyObject, nameScope);
+		}
+
+		writer.WriteComponentNodes(offset, component);
+
+		if (component is Window { Content: { } content })
+		{
+			NameScope.SetNameScope(content, nameScope);
+		}
+
+		if (context.HasResourceBindings)
+		{
+			if (component is FrameworkElement frameworkElement)
+			{
+				frameworkElement.Loading += context.OnRootLoading;
+			}
+			else if (component is Window window)
+			{
+				window.Activated += context.OnWindowActivated;
+			}
+		}
+	}
+}
+
+/// <summary>
+/// Implemented by the class of a XAML file, for the node stream to hand it the objects it has a field
+/// or an event handler for. Used by generated code only.
+/// </summary>
+[EditorBrowsable(EditorBrowsableState.Never)]
+public interface IXbfComponentConnector
+{
+	void Connect(int connectionId, object target);
 }
 
 /// <summary>
@@ -40,19 +90,14 @@ internal sealed class XbfLoadContext
 	private List<(DependencyObject Target, FrameworkElement? ResourceContext)>? _resourceBindings;
 	private bool _isLoading;
 
-	public XbfLoadContext(XbfMetadataProvider provider, object? owner, object? parseContext, string? baseUri, TemplateMaterializationSettings? settings, bool isTemplate)
+	public XbfLoadContext(XbfMetadataProvider provider, object? owner, object? parseContext, string? baseUri, TemplateMaterializationSettings? settings, NameScope? nameScope)
 	{
 		Provider = provider;
 		Owner = owner;
 		ParseContext = parseContext;
 		BaseUri = baseUri;
 		Settings = settings;
-		IsTemplate = isTemplate;
-
-		if (isTemplate)
-		{
-			NameScope = new NameScope();
-		}
+		NameScope = nameScope;
 	}
 
 	public XbfMetadataProvider Provider { get; }
@@ -65,8 +110,9 @@ internal sealed class XbfLoadContext
 
 	public TemplateMaterializationSettings? Settings { get; }
 
-	public bool IsTemplate { get; }
-
+	/// <summary>
+	/// The name scope of the template or of the component being built, if the nodes are part of one.
+	/// </summary>
 	public NameScope? NameScope { get; }
 
 	public bool HasResourceBindings => _resourceBindings is { Count: > 0 };
@@ -94,7 +140,9 @@ internal sealed class XbfLoadContext
 		(_resourceBindings ??= new()).Add((target, resourceContext));
 	}
 
-	public void OnRootLoading(FrameworkElement sender, object args)
+	public void OnWindowActivated(object sender, WindowActivatedEventArgs args) => OnRootLoading(null, args);
+
+	public void OnRootLoading(FrameworkElement? sender, object args)
 	{
 		_isLoading = true;
 
@@ -136,7 +184,7 @@ internal sealed class XbfTemplateContent
 
 	private UIElement? Build(object? owner, TemplateMaterializationSettings settings)
 	{
-		var context = new XbfLoadContext(_provider, owner, _parseContext, _baseUri, settings, isTemplate: true);
+		var context = new XbfLoadContext(_provider, owner, _parseContext, _baseUri, settings, new NameScope());
 		var writer = new BinaryFormatObjectWriter(context);
 
 		var rootInstance = writer.WriteNodes(_start, _start + _length) as UIElement;

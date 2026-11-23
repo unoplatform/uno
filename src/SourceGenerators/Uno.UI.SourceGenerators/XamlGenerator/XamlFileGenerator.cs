@@ -377,7 +377,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						var controlBaseType = GetType(topLevelControl.Type);
 
-						using (writer.BlockInvariant("partial class {0} : {1}", _xClassName.ClassName, controlBaseType.GetFullyQualifiedTypeIncludingGlobal()))
+						using (writer.BlockInvariant("partial class {0} : {1}{2}", _xClassName.ClassName, controlBaseType.GetFullyQualifiedTypeIncludingGlobal(), XbfClassInterfaces))
 						{
 							BuildBaseUri(writer);
 
@@ -400,6 +400,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								Safely(BuildCompiledBindings, writer);
 
 								Safely(BuildXBindTryGetDeclarations, writer);
+
+								Safely(BuildXbfProvider, writer);
 							}
 						}
 
@@ -426,6 +428,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				Safely(BuildXamlApplyBlocks, writer);
+
+				XbfResolveClassInterfaces(writer.Builder);
 
 				// var formattedCode = ReformatCode(writer.ToString());
 				return (new StringBuilderBasedSourceText(writer.Builder), _errors.ToList());
@@ -843,6 +847,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (FindMember(topLevelControl, "Load") is { } xLoadMember)
 			{
 				AddError("x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary, and can only be used on elements of type UIElement or FlyoutBase", xLoadMember);
+			}
+
+			if (TryBuildComponentAsXbf(writer, topLevelControl))
+			{
+				return;
 			}
 
 			// OnInitializeCompleted() seems to be used by some older code as a substitute for the constructor for UserControls, which are optimized out of the visual tree.

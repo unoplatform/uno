@@ -248,6 +248,15 @@ internal ref struct BinaryFormatObjectWriter
 					}
 					break;
 
+				case ObjectWriterNodeType.SetConnectionId:
+					{
+						var connectionId = reader.ReadUInt();
+
+						// The owner is the instance of the x:Class, including for the content of its templates.
+						(m_context.Owner as IXbfComponentConnector)?.Connect(connectionId, CurrentInstance!);
+					}
+					break;
+
 				case ObjectWriterNodeType.SetName:
 					SetNameOnCurrentInstance(m_provider.GetString(reader.ReadUInt()));
 					break;
@@ -333,6 +342,18 @@ internal ref struct BinaryFormatObjectWriter
 		}
 
 		return m_qoLastInstance;
+	}
+
+	/// <summary>
+	/// Runs the nodes of the content of an x:Class against its instance.
+	/// </summary>
+	public void WriteComponentNodes(int startOffset, object component)
+	{
+		BeginInitOnCurrentInstance(component);
+
+		WriteNodes(startOffset, int.MaxValue, component);
+
+		EndInitOnCurrentInstance(component);
 	}
 
 	private readonly object? CurrentInstance => m_stack[m_depth - 1];
@@ -442,7 +463,7 @@ internal ref struct BinaryFormatObjectWriter
 			NameScope.SetNameScope(instance, nameScope);
 		}
 
-		if (!m_context.IsTemplate)
+		if (m_context.NameScope is null)
 		{
 			// Register directly for binding updates on the resource referencer itself, since we're inside a top-level ResourceDictionary
 			if (instance is FrameworkElement frameworkElement)
