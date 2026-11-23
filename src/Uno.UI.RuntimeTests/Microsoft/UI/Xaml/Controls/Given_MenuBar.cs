@@ -59,7 +59,8 @@ public class Given_MenuBar
 	[TestMethod]
 	// KeyboardHelper is a no-op on WinAppSDK
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-	[Ignore("The next flyout closes right after opening: the deferred Closed callback in FlyoutBase.RemoveFromOpenFlyouts hides _openFlyouts[0], which is by then the new flyout.")]
+	[Ignore("https://github.com/unoplatform/uno/issues/26654: the deferred Closed callback in FlyoutBase.RemoveFromOpenFlyouts hides the newly opened flyout.")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26654")]
 	public async Task When_Flyout_Open_And_Right_Arrow_Then_Next_Flyout_Opens()
 	{
 		var (_, items) = await Load(("File", true, 1), ("Edit", true, 1));
