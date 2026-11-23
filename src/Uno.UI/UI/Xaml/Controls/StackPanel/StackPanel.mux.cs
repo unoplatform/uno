@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference StackPanel.cpp, commit 9d6fb15c0
+// MUX Reference StackPanel.cpp
 
 using System;
 using Windows.Foundation;
