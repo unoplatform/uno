@@ -177,6 +177,8 @@ namespace SamplesApp
 				AssertIssue12937();
 
 				AssertIssue15521();
+
+				AssertIssue26617();
 			}
 
 			var sw = Stopwatch.StartNew();
