@@ -274,6 +274,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.IsFalse(unselected.IsSelected, "An unselected item's peer must not report IsSelected.");
 		}
 
+		// MUX reference: ItemAutomationPeer::GetNameCore falls back to the item itself when the
+		// container is unrealized or has no name. This applies to every items control, not only ComboBox.
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Item_Container_Unrealized_Then_Item_Peer_Named_After_Item()
+		{
+			var items = new List<NamedItem>();
+			for (var i = 0; i < 200; i++)
+			{
+				items.Add(new NamedItem($"Item {i:000}"));
+			}
+
+			var listView = new ListView { ItemsSource = items, Height = 100 };
+			await UITestHelper.Load(listView);
+
+			var unrealized = items[150];
+			Assert.IsNull(listView.ContainerFromItem(unrealized), "The test needs an item without a container.");
+
+			var peer = (ItemsControlAutomationPeer)FrameworkElementAutomationPeer.CreatePeerForElement(listView);
+			Assert.AreEqual("Item 150", peer.CreateItemAutomationPeer(unrealized).GetName());
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Item_Container_Has_Name_Then_Item_Peer_Uses_Container_Name()
+		{
+			var listView = new ListView { ItemsSource = new List<string> { "Alpha", "Beta" } };
+			await UITestHelper.Load(listView);
+
+			var container = (ListViewItem)listView.ContainerFromItem("Beta");
+			Assert.IsNotNull(container);
+			AutomationProperties.SetName(container, "Custom name");
+
+			var peer = (ItemsControlAutomationPeer)FrameworkElementAutomationPeer.CreatePeerForElement(listView);
+			Assert.AreEqual("Custom name", peer.CreateItemAutomationPeer("Beta").GetName());
+		}
+
+		private sealed class NamedItem
+		{
+			private readonly string _name;
+
+			public NamedItem(string name) => _name = name;
+
+			public override string ToString() => _name;
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24628")]

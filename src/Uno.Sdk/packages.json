@@ -79,7 +79,7 @@
 	},
 	{
 		"group": "settings",
-		"version": "2.0.1",
+		"version": "2.0.6",
 		"packages": [
 			"Uno.Settings.DevServer"
 		]
@@ -93,7 +93,7 @@
 	},
 	{
 		"group": "SkiaSharp",
-		"version": "4.156.0",
+		"version": "4.156.1",
 		"packages": [
 			"SkiaSharp.Skottie",
 			"SkiaSharp.Views.WinUI",
@@ -108,7 +108,7 @@
 	},
 	{
 		"group": "HarfBuzzSharp",
-		"version": "14.4.0.100",
+		"version": "14.4.0.101",
 		"packages": [
 			"HarfBuzzSharp.NativeAssets.Android",
 			"HarfBuzzSharp.NativeAssets.iOS",

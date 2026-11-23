@@ -29,7 +29,7 @@ BeforeAll {
 			uno      = [ordered]@{ sources = @('src/Foo'); tests = @('src/Tests/Foo'); strings = 'src/Foo/Strings' }
 		}
 		$master = Add-TestCommit $seed @{
-			'build/winui-sync/areas.json'          = (@{ areas = @($area) } | ConvertTo-Json -Depth 6)
+			'build/winui-sync/areas/foo.json'      = (ConvertTo-TestAreaJson $area)
 			'src/Foo/Foo.cs'                       = "// MUX Reference Foo.cpp, commit $($base.Substring(0, 9))`nclass Foo { /* v1 */ }`n"
 			'src/Tests/Foo/FooTests.cs'            = "class FooTests { }`n"
 			'src/Foo/Strings/en-US/Resources.resw' = 'en v1'
@@ -55,7 +55,7 @@ BeforeAll {
 
 		@{
 			Root = $root; Upstream = $up; Base = $base; Target = $target; Origin = "$root/origin.git"; Work = $work
-			Master = $master; Patch = $patch; Report = $report; Manifest = "$work/build/winui-sync/areas.json"
+			Master = $master; Patch = $patch; Report = $report; Manifest = "$work/build/winui-sync/areas"
 		}
 	}
 
@@ -193,8 +193,8 @@ Describe 'New-SyncPr' {
 
 Describe 'Get-CommitGroups' {
 	It 'splits logic, tests, strings, manifest in that order and omits empty groups' {
-		$files = @('build/winui-sync/areas.json', 'src/Foo/Strings/en-US/Resources.resw', 'tests/Foo/FooTests.cs', 'src/Foo/Foo.cs', 'src/Other/Dep.cs')
-		$g = @(Get-CommitGroups -Area $Area -TargetTag 'winui3/release/2.6.5' -ChangedFiles $files -ManifestRelativePath 'build/winui-sync/areas.json')
+		$files = @('build/winui-sync/areas/foo.json', 'build/winui-sync/reports/foo.md', 'src/Foo/Strings/en-US/Resources.resw', 'tests/Foo/FooTests.cs', 'src/Foo/Foo.cs', 'src/Other/Dep.cs')
+		$g = @(Get-CommitGroups -Area $Area -TargetTag 'winui3/release/2.6.5' -ChangedFiles $files -ManifestRelativePath 'build/winui-sync/areas')
 
 		$g.Message | Should -Be @(
 			'fix(foo): Sync Foo with WinUI 2.6.5',
@@ -204,7 +204,9 @@ Describe 'Get-CommitGroups' {
 		$g[0].Files | Should -Be @('src/Foo/Foo.cs', 'src/Other/Dep.cs')
 		$g[1].Files | Should -Be @('tests/Foo/FooTests.cs')
 
-		$only = @(Get-CommitGroups -Area $Area -TargetTag 'winui3/release/2.6.5' -ChangedFiles @('build/winui-sync/areas.json') -ManifestRelativePath 'build/winui-sync/areas.json')
+		$g[3].Files | Should -Be @('build/winui-sync/areas/foo.json', 'build/winui-sync/reports/foo.md')
+
+		$only = @(Get-CommitGroups -Area $Area -TargetTag 'winui3/release/2.6.5' -ChangedFiles @('build/winui-sync/areas/foo.json') -ManifestRelativePath 'build/winui-sync/areas')
 		$only.Count | Should -Be 1
 	}
 }
@@ -288,8 +290,8 @@ Describe 'Publish-SyncArea' {
 			'test(foo): Sync Foo tests with WinUI 1.1.0',
 			'chore(foo): Update Foo strings from WinUI 1.1.0',
 			'chore(foo): Bump WinUI sync baseline to 1.1.0')
-		$manifest = (git -C $fx.Origin show 'refs/heads/sync/winui/foo:build/winui-sync/areas.json') -join "`n"
-		@(Get-SyncAreasFromJson -Json $manifest)[0].baseline | Should -Be $fx.Target
+		$manifest = (git -C $fx.Origin show 'refs/heads/sync/winui/foo:build/winui-sync/areas/foo.json') -join "`n"
+		(ConvertFrom-SyncAreaJson -Json $manifest).baseline | Should -Be $fx.Target
 		(git -C $fx.Origin show 'refs/heads/sync/winui/foo:src/Foo/Strings/en-US/Resources.resw') | Should -Be 'en v2'
 
 		Should -Invoke -ModuleName WinUISync New-GitHubIssue -Times 1 -Exactly -ParameterFilter {
@@ -309,8 +311,8 @@ Describe 'Publish-SyncArea' {
 		$r = Invoke-Publish $fx @{ StringsChanged = $false }
 
 		$r.Outcome | Should -Be 'published'
-		$manifest = (git -C $fx.Origin show 'refs/heads/sync/winui/foo:build/winui-sync/areas.json') -join "`n"
-		@(Get-SyncAreasFromJson -Json $manifest)[0].baseline | Should -Be $fx.Target
+		$manifest = (git -C $fx.Origin show 'refs/heads/sync/winui/foo:build/winui-sync/areas/foo.json') -join "`n"
+		(ConvertFrom-SyncAreaJson -Json $manifest).baseline | Should -Be $fx.Target
 		Should -Invoke -ModuleName WinUISync New-GitHubIssue -Times 1 -Exactly
 		Should -Invoke -ModuleName WinUISync New-GitHubPr -Times 1 -Exactly
 	}
@@ -418,7 +420,7 @@ Describe 'Publish-SyncArea' {
 			mirror   = @([ordered]@{ upstream = 'dxaml/themes/generic.xaml'; uno = 'src/Generic.xaml' })
 		}
 		$master = Add-TestCommit $seed @{
-			'build/winui-sync/areas.json' = (@{ areas = @($area) } | ConvertTo-Json -Depth 6)
+			'build/winui-sync/areas/foo.json' = (ConvertTo-TestAreaJson $area)
 			'src/Generic.xaml'            = "<!-- Copyright -->`n<!-- MUX Reference dxaml\themes\generic.xaml -->`n<Root>v1</Root>`n"
 			'src/Overlay.xaml'            = "<Overlay />`n"
 		}
@@ -432,13 +434,13 @@ Describe 'Publish-SyncArea' {
 		}
 		Mock-GitHub
 
-		$r = Publish-SyncArea -RepoRoot $work -ManifestPath "$work/build/winui-sync/areas.json" -Id 'foo' -TargetTag 'winui3/release/1.1.0' -TargetSha $target `
+		$r = Publish-SyncArea -RepoRoot $work -ManifestPath "$work/build/winui-sync/areas" -Id 'foo' -TargetTag 'winui3/release/1.1.0' -TargetSha $target `
 			-MasterSha $master -UpstreamRepo $up -CodeChanged $false -StringsChanged $false -PortStatus 'missing' -BaseBranch 'main' -DryRun $true
 
 		$r.Outcome | Should -Be 'dry-run'
 		@(Invoke-TestGit $work log --format=%s "$master..HEAD") | Should -Be @('chore(foo): Bump WinUI sync baseline to 1.1.0', 'chore(foo): Copy Foo from WinUI 1.1.0')
 		[System.IO.File]::ReadAllText("$work/src/Generic.xaml") | Should -Be "<!-- Copyright -->`n<!-- MUX Reference dxaml\themes\generic.xaml -->`n<Root>v2</Root>`n"
-		@(Get-SyncAreas -ManifestPath "$work/build/winui-sync/areas.json")[0].baseline | Should -Be $target
+		(Get-SyncArea -ManifestPath "$work/build/winui-sync/areas" -Id 'foo').baseline | Should -Be $target
 		$r.PrBody | Should -Match ([regex]::Escape('src/Generic.xaml'))
 		$r.PrBody | Should -Match ([regex]::Escape('src/Overlay.xaml'))
 	}
@@ -520,8 +522,8 @@ Describe 'Publish-SyncArea' {
 
 		$r.Outcome | Should -Be 'published incomplete'
 		(git -C $fx.Origin show 'refs/heads/sync/winui/foo:src/Foo/Foo.cs') -join "`n" | Should -Match 'v2'
-		$manifest = (git -C $fx.Origin show 'refs/heads/sync/winui/foo:build/winui-sync/areas.json') -join "`n"
-		@(Get-SyncAreasFromJson -Json $manifest)[0].baseline | Should -Be $fx.Base
+		$manifest = (git -C $fx.Origin show 'refs/heads/sync/winui/foo:build/winui-sync/areas/foo.json') -join "`n"
+		(ConvertFrom-SyncAreaJson -Json $manifest).baseline | Should -Be $fx.Base
 		Should -Invoke -ModuleName WinUISync New-GitHubPr -Times 1 -Exactly -ParameterFilter {
 			$Title.StartsWith('[port incomplete] ') -and $Body.StartsWith('**GitHub Issue:** related to #7') -and $Body -match 'did not finish' -and $Body -match 'Do not merge'
 		}
@@ -537,8 +539,8 @@ Describe 'Publish-SyncArea' {
 		$r = Invoke-Publish $fx @{ PrNumber = 99; PatchPath = $empty }
 
 		$r.Outcome | Should -Be 'published'
-		$manifest = (git -C $fx.Origin show 'refs/heads/sync/winui/foo:build/winui-sync/areas.json') -join "`n"
-		@(Get-SyncAreasFromJson -Json $manifest)[0].baseline | Should -Be $fx.Target
+		$manifest = (git -C $fx.Origin show 'refs/heads/sync/winui/foo:build/winui-sync/areas/foo.json') -join "`n"
+		(ConvertFrom-SyncAreaJson -Json $manifest).baseline | Should -Be $fx.Target
 		Should -Invoke -ModuleName WinUISync Update-GitHubPr -Times 1 -Exactly -ParameterFilter {
 			$Title -eq 'fix(foo): Sync Foo with WinUI 1.1.0' -and $Body.StartsWith('**GitHub Issue:** closes #7')
 		}
@@ -573,7 +575,7 @@ Describe 'Publish-SyncArea' {
 	It 'refuses a patch that touches files a port may not change' {
 		$fx = New-PublishFixture
 		Mock-GitHub
-		[System.IO.File]::WriteAllText("$($fx.Work)/build/winui-sync/areas.json", '{ "areas": [] }')
+		[System.IO.File]::WriteAllText("$($fx.Work)/build/winui-sync/areas/foo.json", '{}')
 		New-Item -ItemType Directory -Force "$($fx.Work)/.github/workflows" | Out-Null
 		Set-Content "$($fx.Work)/.github/workflows/evil.yml" 'on: push'
 		Invoke-TestGit $fx.Work add -A | Out-Null
@@ -595,14 +597,14 @@ Describe 'Test-SyncPatchPaths' {
 			'src/Uno.UI/UI/Xaml/Controls/Foo/Foo.cs',
 			'src/Uno.UI.RuntimeTests/Tests/FooTests.cs',
 			'src/Uno.UI/UI/Xaml/Controls/Foo/Strings/en-US/Resources.resw',
-			'build/winui-sync/areas.json',
+			'build/winui-sync/areas/foo.json',
 			'.github/workflows/x.yml',
 			'.claude/rules/code-style.md',
 			'AGENTS.md',
 			'global.json')
 		$bad | Should -Be @(
 			'src/Uno.UI/UI/Xaml/Controls/Foo/Strings/en-US/Resources.resw',
-			'build/winui-sync/areas.json',
+			'build/winui-sync/areas/foo.json',
 			'.github/workflows/x.yml',
 			'.claude/rules/code-style.md',
 			'AGENTS.md',

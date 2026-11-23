@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItemAutomationPeer.cpp, commit bac7a9c33
+// MUX reference NavigationViewItemAutomationPeer.cpp
 
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Helpers.WinUI;
@@ -65,7 +65,7 @@ public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomati
 
 	protected override string GetClassNameCore()
 	{
-		return nameof(NavigationViewItem);
+		return typeof(NavigationViewItem).FullName!;
 	}
 
 	protected override AutomationControlType GetAutomationControlTypeCore()

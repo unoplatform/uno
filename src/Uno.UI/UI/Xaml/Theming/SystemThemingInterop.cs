@@ -19,8 +19,8 @@ namespace Uno.UI.Xaml.Core;
 // OverrideHighContrast, OverrideAccentColor, RemoveThemingOverrides —
 // SystemThemingInterop.cpp:305-328; SystemThemingInterop.h:18-23 additionally declares an
 // unimplemented OverrideVariantAccentColor) map onto SystemThemeHelper.SystemThemeOverride and
-// WinRTFeatureConfiguration.Accessibility.HighContrast respectively; an accent-color override
-// hook is not available in Uno.
+// WinRTFeatureConfiguration.Accessibility.HighContrast respectively. The accent override is
+// FeatureConfiguration.AccentColor.OverrideAccentColor, which reaches this class through UISettings.
 internal sealed class SystemThemingInterop : IThemingInterop
 {
 	// C++ light/dark detection (based on text color), SystemThemingInterop.cpp:25-31:
@@ -149,7 +149,8 @@ internal sealed class SystemThemingInterop : IThemingInterop
 
 	public uint GetSystemAccentColor()
 	{
-		// WinUI first honors the test override (s_accentColorOverride) before delegating.
+		// WinUI first honors the test override (s_accentColorOverride) before delegating. Uno's override
+		// is served by UISettings (AccentColorHelper), with shades derived from it instead of hard-coded.
 		return GetSystemVariantAccentColor(IThemingInterop.VariantAccentColors.SystemAccentColor);
 	}
 

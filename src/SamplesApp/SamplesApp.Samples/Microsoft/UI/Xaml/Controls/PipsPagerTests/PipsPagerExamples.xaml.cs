@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference PipsPagerExamples.xaml.cs, commit 3a84856
+// MUX reference PipsPagerExamples.xaml.cs
 
 using System;
 using System.Collections.Generic;
@@ -51,6 +51,7 @@ namespace MUXControlsTestApp
 			ButtonListPager.NumberOfPages = (int)Math.Ceiling(ButtonListScrollViewer.ExtentHeight / ButtonListScrollViewer.ViewportHeight);
 			SetButtonListRepeaterSize();
 			PersonInfoListScrollViewer = FindInnerScrollViewer(PersonInfoList);
+			// Uno specific: guard against a ListView template without an inner ScrollViewer.
 			if (PersonInfoListScrollViewer != null)
 			{
 				PersonInfoListScrollViewer.ViewChanged += PersonInfoList_ViewChanged;

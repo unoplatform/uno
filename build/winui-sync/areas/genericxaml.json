@@ -1,0 +1,19 @@
+{
+  "id": "genericxaml",
+  "title": "Generic.xaml",
+  "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
+  "upstream": {
+    "sources": []
+  },
+  "uno": {
+    "sources": [
+      "src/Uno.UI/UI/Xaml/Style/Generic/UnoGenericOverlay.xaml"
+    ]
+  },
+  "mirror": [
+    {
+      "upstream": "dxaml/xcp/dxaml/themes/generic.xaml",
+      "uno": "src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml"
+    }
+  ]
+}

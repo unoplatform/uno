@@ -5,7 +5,7 @@
 // This file is a C# translation of the SplitDataSourceBase.h file from WinUI controls.
 //
 
-// MUX Reference SplitDataSourceBase.h, commit bac7a9c33
+// MUX Reference SplitDataSourceBase.h
 
 using System;
 using System.Collections.Generic;

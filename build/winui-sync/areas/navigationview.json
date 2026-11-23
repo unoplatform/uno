@@ -1,0 +1,31 @@
+{
+  "id": "navigationview",
+  "title": "NavigationView",
+  "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
+  "upstream": {
+    "sources": [
+      "controls/dev/NavigationView"
+    ],
+    "tests": [
+      "controls/dev/NavigationView/NavigationView_ApiTests",
+      "controls/dev/NavigationView/TestUI"
+    ],
+    "strings": "controls/dev/NavigationView/Strings"
+  },
+  "uno": {
+    "sources": [
+      "src/Uno.UI/UI/Xaml/Controls/NavigationView",
+      "src/Uno.UI/Helpers/WinUI/SplitDataSourceBase.cs",
+      "src/Uno.UI/Helpers/WinUI/SplitVector.cs",
+      "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationBackButton_themeresources.xaml",
+      "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationBackButton.xaml",
+      "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationView_themeresources.xaml",
+      "src/Uno.UI.FluentTheme/Resources/PriorityDefault/NavigationView.xaml"
+    ],
+    "tests": [
+      "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/NavigationView",
+      "src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/NavigationViewTests"
+    ],
+    "strings": "src/Uno.UI/UI/Xaml/Controls/NavigationView/Strings"
+  }
+}

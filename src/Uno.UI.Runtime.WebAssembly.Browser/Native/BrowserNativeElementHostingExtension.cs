@@ -36,7 +36,7 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 	{
 		Debug.Assert(content is BrowserHtmlElement);
 		var element = (BrowserHtmlElement)content;
-		NativeMethods.AttachNativeElement(element.ElementId);
+		NativeMethods.AttachNativeElement(element.ElementId, element.UnoElementId);
 
 		// An element collected without a matching DetachNativeElement would leave its registration
 		// behind forever, so drop the dead ones whenever the map grows.
@@ -134,6 +134,49 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 		}
 	}
 
+	[JSExport]
+	internal static void OnNativeElementFocused([JSMarshalAs<JSType.Number>] nint unoElementId)
+		=> OnNativeElementFocusChanged(unoElementId, gotFocus: true);
+
+	[JSExport]
+	internal static void OnNativeElementBlurred([JSMarshalAs<JSType.Number>] nint unoElementId)
+		=> OnNativeElementFocusChanged(unoElementId, gotFocus: false);
+
+	private static void OnNativeElementFocusChanged(nint unoElementId, bool gotFocus)
+	{
+		try
+		{
+			// Focus events are raised from outside the dispatcher.
+			using var syncContextScope = Uno.UI.Dispatching.NativeDispatcher.Main.SynchronizationContext.Apply();
+
+			if (TryGetHost(unoElementId)?._presenter is not { } presenter)
+			{
+				if (_log.IsEnabled(LogLevel.Debug))
+				{
+					_log.Debug($"Ignored a focus change of an unknown or collected native element ({unoElementId}).");
+				}
+
+				return;
+			}
+
+			if (gotFocus)
+			{
+				presenter.OnNativeElementGotFocus();
+			}
+			else
+			{
+				presenter.OnNativeElementLostFocus();
+			}
+		}
+		catch (Exception error)
+		{
+			if (_log.IsEnabled(LogLevel.Error))
+			{
+				_log.Error($"Failed to sync XAML focus with a native element focus change: {error}");
+			}
+		}
+	}
+
 	public void ArrangeNativeElement(object content, Windows.Foundation.Rect arrangeRect)
 	{
 		Debug.Assert(content is BrowserHtmlElement);
@@ -178,7 +221,7 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 		internal static partial bool IsNativeElement(string content);
 
 		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.attachNativeElement")]
-		internal static partial void AttachNativeElement(string content);
+		internal static partial void AttachNativeElement(string content, [JSMarshalAs<JSType.Number>] nint unoElementId);
 
 		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.detachNativeElement")]
 		internal static partial void DetachNativeElement(string content);

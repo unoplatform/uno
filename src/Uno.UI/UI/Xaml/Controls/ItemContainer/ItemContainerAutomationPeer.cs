@@ -87,7 +87,7 @@ partial class ItemContainerAutomationPeer : FrameworkElementAutomationPeer, ISel
 
 	protected override string GetClassNameCore()
 	{
-		return nameof(ItemContainer);
+		return typeof(ItemContainer).FullName!;
 	}
 
 	// IInvokeProvider
