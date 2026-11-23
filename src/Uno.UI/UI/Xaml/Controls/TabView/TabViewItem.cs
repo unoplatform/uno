@@ -62,8 +62,8 @@ public partial class TabViewItem : ListViewItem
 	{
 		base.OnApplyTemplate();
 
-		m_selectedBackgroundPathSizeChangedRevoker.Dispose();
-		m_closeButtonClickRevoker.Dispose();
+		m_selectedBackgroundPathSizeChangedRevoker.Disposable = null;
+		m_closeButtonClickRevoker.Disposable = null;
 		m_tabDragStartingRevoker.Disposable = null;
 		m_tabDragCompletedRevoker.Disposable = null;
 
@@ -102,6 +102,7 @@ public partial class TabViewItem : ListViewItem
 				}
 
 				closeButton.Click += OnCloseButtonClick;
+				m_closeButtonClickRevoker.Disposable = Disposable.Create(() => closeButton.Click -= OnCloseButtonClick);
 			}
 			return closeButton;
 		}
