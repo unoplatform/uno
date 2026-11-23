@@ -70,23 +70,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var bytes = ReadContractBytes(stream);
 			Assert.AreEqual(3ul, stream.Position);
 			Assert.AreEqual(@"{\rtf", Encoding.ASCII.GetString(bytes, 0, 5));
-			Assert.IsTrue(bytes.AsSpan().EndsWith("\r\n"u8));
-			Assert.AreNotEqual(0, bytes[^1]);
+			AssertRtfStreamTrailer(bytes);
 		}
 
 		[TestMethod]
-		public void When_Empty_Document_Rtf_Stream_Has_Native_Null_Terminator()
+		[DataRow("")]
+		[DataRow("text")]
+		[DataRow("A\ré")]
+		public void When_Rtf_Stream_Save_Is_Nul_Padded_To_Even_Length(string text)
+			=> AssertRtfStreamTrailer(SaveDocumentRtf(text));
+
+		[TestMethod]
+		public void When_Rtf_Stream_Save_Pads_Only_Odd_Length_Output()
+		{
+			var shorter = SaveDocumentRtf("text");
+			var longer = SaveDocumentRtf("texts");
+
+			Assert.AreNotEqual(shorter[^1] == 0, longer[^1] == 0);
+		}
+
+		[TestMethod]
+		public void When_Range_Rtf_Stream_Pads_Only_Odd_Length_Output()
 		{
 			var document = new RichEditBox().Document;
-			var stream = CreateContractStream(Encoding.ASCII.GetBytes("prefix"));
-			stream.Seek(3);
+			document.SetText(TextSetOptions.None, "text");
 
-			document.SaveToStream(TextGetOptions.FormatRtf, stream);
+			var shorter = SaveRangeRtf(document.GetRange(0, 3));
+			var longer = SaveRangeRtf(document.GetRange(0, 4));
 
-			var bytes = ReadContractBytes(stream);
-			Assert.AreEqual(3ul, stream.Position);
-			Assert.IsTrue(bytes.AsSpan(0, bytes.Length - 1).EndsWith("\r\n"u8));
-			Assert.AreEqual(0, bytes[^1]);
+			AssertRtfStreamTrailer(shorter);
+			AssertRtfStreamTrailer(longer);
+			Assert.AreNotEqual(shorter[^1] == 0, longer[^1] == 0);
 		}
 
 		[TestMethod]
@@ -293,6 +307,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private static string ReadContractHex(IRandomAccessStream stream)
 			=> Convert.ToHexString(ReadContractBytes(stream));
+
+		private static byte[] SaveDocumentRtf(string text)
+		{
+			var document = new RichEditBox().Document;
+			document.SetText(TextSetOptions.None, text);
+			var stream = new InMemoryRandomAccessStream();
+			document.SaveToStream(TextGetOptions.FormatRtf, stream);
+			return ReadContractBytes(stream);
+		}
+
+		private static byte[] SaveRangeRtf(ITextRange range)
+		{
+			var stream = new InMemoryRandomAccessStream();
+			range.GetTextViaStream(TextGetOptions.FormatRtf, stream);
+			return ReadContractBytes(stream);
+		}
+
+		private static void AssertRtfStreamTrailer(byte[] bytes)
+		{
+			Assert.AreEqual(0, bytes.Length % 2, "RTF stream output is NUL-padded to an even length.");
+			var content = bytes[^1] == 0 ? bytes.AsSpan(0, bytes.Length - 1) : bytes.AsSpan();
+			Assert.IsTrue(content.EndsWith("}\r\n"u8));
+		}
 
 		private static byte[] CombineContractBytes(byte[] first, byte[] second)
 		{
