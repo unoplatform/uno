@@ -164,6 +164,34 @@ public class Given_TabView
 	}
 
 	[TestMethod]
+	public async Task When_TabViewItem_Removed_Then_Collected()
+	{
+		var SUT = new TabView();
+		SUT.TabItems.Add(new TabViewItem { Header = "Tab 2" });
+
+		await UITestHelper.Load(SUT);
+
+		var itemRef = await AddAndRemoveTab(SUT);
+		await LeakTestHelper.CollectAsync([itemRef]);
+
+		Assert.IsFalse(itemRef.IsAlive, "The removed TabViewItem is still alive.");
+		Assert.HasCount(1, SUT.TabItems);
+	}
+
+	[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]
+	private static async Task<WeakReference> AddAndRemoveTab(TabView tabView)
+	{
+		var item = new TabViewItem { Header = "Tab 1", Content = "Content 1" };
+		tabView.TabItems.Insert(0, item);
+		await UITestHelper.WaitForLoaded(item);
+
+		tabView.TabItems.Remove(item);
+		await WindowHelper.WaitForIdle();
+
+		return new WeakReference(item);
+	}
+
+	[TestMethod]
 	public async Task When_SelectedItem_Changed()
 	{
 		var SUT = new TabView
