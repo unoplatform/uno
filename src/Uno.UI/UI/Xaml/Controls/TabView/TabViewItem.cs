@@ -114,15 +114,19 @@ public partial class TabViewItem : ListViewItem
 		if (tabView != null)
 		{
 			// TODO Uno specific: WinUI subscribes with a non-owning delegate; a plain += would let the TabView keep removed items alive.
+			var weakThis = new WeakReference<TabViewItem>(this);
+
 			var onTabDragStarting = CreateWeakTabViewHandler<TabViewTabDragStartingEventArgs>(
+				weakThis,
 				static (item, sender, args) => item.OnTabDragStarting(sender, args),
-				static (tabView, handler) => tabView.TabDragStarting -= handler);
+				static (source, handler) => source.TabDragStarting -= handler);
 			tabView.TabDragStarting += onTabDragStarting;
 			m_tabDragStartingRevoker.Disposable = Disposable.Create(() => tabView.TabDragStarting -= onTabDragStarting);
 
 			var onTabDragCompleted = CreateWeakTabViewHandler<TabViewTabDragCompletedEventArgs>(
+				weakThis,
 				static (item, sender, args) => item.OnTabDragCompleted(sender, args),
-				static (tabView, handler) => tabView.TabDragCompleted -= handler);
+				static (source, handler) => source.TabDragCompleted -= handler);
 			tabView.TabDragCompleted += onTabDragCompleted;
 			m_tabDragCompletedRevoker.Disposable = Disposable.Create(() => tabView.TabDragCompleted -= onTabDragCompleted);
 		}
@@ -249,11 +253,11 @@ public partial class TabViewItem : ListViewItem
 	}
 
 	// TODO Uno specific: stands in for C++/WinRT's non-owning { this, &TabViewItem::Method } delegate.
-	private TypedEventHandler<TabView, TArgs> CreateWeakTabViewHandler<TArgs>(
+	private static TypedEventHandler<TabView, TArgs> CreateWeakTabViewHandler<TArgs>(
+		WeakReference<TabViewItem> weakThis,
 		Action<TabViewItem, TabView, TArgs> handler,
 		Action<TabView, TypedEventHandler<TabView, TArgs>> unsubscribe)
 	{
-		var weakThis = new WeakReference<TabViewItem>(this);
 		TypedEventHandler<TabView, TArgs> weakHandler = null;
 		weakHandler = (sender, args) =>
 		{
