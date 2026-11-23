@@ -33,6 +33,7 @@ namespace Uno.UI.Runtime {
 		private static managedOnFocus: any;
 		private static managedOnBlur: any;
 		private static managedOnSentinelFocus: any;
+		private static isFocusingFromManaged = false;
 
 		private static managedIsAutoEnableAccessibility: any;
 
@@ -92,7 +93,8 @@ namespace Uno.UI.Runtime {
 				this.managedOnTextSelectionChanged = accessibilityExports.OnTextSelectionChangedAsync;
 				this.managedOnExpandCollapse = accessibilityExports.OnExpandCollapseAsync;
 				this.managedOnSelection = accessibilityExports.OnSelectionAsync;
-				this.managedOnFocus = accessibilityExports.OnFocusAsync;
+				// The notification is applied later: one raised by a managed focus change would be stale and make managed focus chase itself.
+				this.managedOnFocus = (handle: number) => Accessibility.isFocusingFromManaged ? undefined : accessibilityExports.OnFocusAsync(handle);
 				this.managedOnBlur = accessibilityExports.OnBlurAsync;
 				this.managedOnSentinelFocus = accessibilityExports.OnFocusSentinelAsync;
 			} else {
@@ -380,18 +382,27 @@ namespace Uno.UI.Runtime {
 			// into the ScrollViewer through the scroll listener.
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				Accessibility.focusNode(element);
+				Accessibility.focusNodeFromManaged(element);
 			} else {
 				// Element might not be in DOM yet due to batched/deferred mutations.
 				// Retry once after the next animation frame.
 				requestAnimationFrame(() => {
 					const retryElement = Accessibility.getSemanticElementByHandle(handle);
 					if (retryElement) {
-						Accessibility.focusNode(retryElement);
+						Accessibility.focusNodeFromManaged(retryElement);
 					} else {
 						Accessibility.debugWarn(`[A11y] TS focusSemanticElement: element NOT FOUND handle=${handle} (after retry)`);
 					}
 				});
+			}
+		}
+
+		private static focusNodeFromManaged(element: HTMLElement) {
+			Accessibility.isFocusingFromManaged = true;
+			try {
+				Accessibility.focusNode(element);
+			} finally {
+				Accessibility.isFocusingFromManaged = false;
 			}
 		}
 
