@@ -24,7 +24,7 @@ if (-not (Get-Module WinUISync)) { Import-Module "$PSScriptRoot/WinUISync.psm1" 
 
 $portStatus = Get-PortStatus -ArtifactDir $ArtifactDir -CodeChanged ($CodeChanged -eq 'true')
 
-$result = Publish-SyncArea -RepoRoot $RepoRoot -ManifestPath (Join-Path $RepoRoot 'build/winui-sync/areas.json') `
+$result = Publish-SyncArea -RepoRoot $RepoRoot -ManifestPath (Join-Path $RepoRoot 'build/winui-sync/areas') `
 	-Id $Id -TargetTag $TargetTag -TargetSha $TargetSha -MasterSha $MasterSha -UpstreamRepo $UpstreamRepo `
 	-PatchPath $(if ($ArtifactDir) { Join-Path $ArtifactDir 'sync.patch' }) `
 	-ReportPath $(if ($ArtifactDir) { Join-Path $ArtifactDir 'sync-report.md' }) `
