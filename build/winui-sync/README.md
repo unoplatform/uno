@@ -5,10 +5,11 @@ Keeps code ported from WinUI C++ in step with the latest **stable** WinUI releas
 Every Monday the `WinUI Port Sync` workflow (`.github/workflows/winui-port-sync.yml`):
 
 1. finds the newest `winui3/release/X.Y.Z` tag (suffixed tags such as `-experimental` are ignored);
-2. for each area in `areas.json`, compares the area's upstream folders at its recorded `baseline`
+2. for each area in `areas/`, compares the area's upstream folders at its recorded `baseline`
    commit with the same folders at that tag — plain git, no agent, no cost when nothing changed;
 3. for each changed area, has an agent port the changes and build `Uno.UI`;
-4. replaces the area's `Strings` folder content with upstream's (no agent involved);
+4. replaces the area's `Strings` folder content with upstream's, and its mirrored files (verbatim
+   copies such as `Generic.xaml`) with upstream's versions (no agent involved for either);
 5. opens or updates **one issue and one draft PR per area** (`sync/winui/<id>` branch).
 
 Nothing merges on its own.
@@ -34,13 +35,30 @@ Nothing merges on its own.
   files count as "other"). The run summary says
   why, and the next run redoes the port.
 - Tests are not run by the workflow. PR CI does that.
+- A PR that only changes files under `build/winui-sync/` (baseline and report, nothing ported)
+  does not start the Azure pipelines; their triggers exclude this folder.
 - Review fixes can be pushed straight to the sync branch. Later runs merge the default branch
   into it and never force-push while the PR is open.
 - Closing a PR without merging rejects that attempt; the next run starts a fresh branch and PR.
 
 ## Onboarding an area
 
-The `/winui-sync-onboard` skill walks through this, including how to judge the baseline. By hand:
+Use the `/winui-sync-onboard` skill. It maps the paths, works out where the port stands from its
+`MUX Reference` headers, then **ports everything up to the latest stable release locally**. It also
+reviews the whole port line by line against that release (so code that was never ported is caught
+too, not just the diff since the baseline) and re-justifies or removes every Uno workaround. It runs
+the control's tests and records the area at that release in the same PR. The workflow then only ports
+what later releases change, which suits its cost cap and its lack of a test run. For an area too
+large to catch up in one session, the skill has a track-only mode that records the area at its
+current baseline and leaves the catch-up to the workflow.
+
+To write an entry by hand:
+
+The manifest is the `areas/` folder, one `<id>.json` file per area. The file name must match the
+area's `id` (lower case letters and digits; it also names the `sync/winui/<id>` branch). Onboarding a
+new area only adds a file, and a sync PR only edits its own area's file, so PRs for different areas
+never conflict over the manifest. (Sync branches opened before the folder existed carry a single
+`areas.json`; detection still reads an area's baseline from it there.)
 
 An area is a control or a feature area: one or more upstream folders and the Uno folders they were
 ported to. Paths are written without a leading `src/`; the tooling finds them at each commit.
@@ -50,24 +68,44 @@ a folder shared with many others, such as `dxaml/xcp/dxaml/lib`: list the contro
 (`dxaml/xcp/dxaml/lib/Button_Partial.cpp`, ...) and only those are compared. A new upstream file
 is not picked up until it is added to the list. Strings paths are always folders.
 
+A file Uno keeps as a **verbatim copy** of an upstream file (Uno.UI's `Generic.xaml` is WinUI's
+`generic.xaml`) is listed under `mirror` as `{ "upstream": …, "uno": … }` (`seed-area.ps1 -Mirror
+'upstream path=uno path'`). The sync replaces it with upstream's version: no agent, no port. The Uno
+file keeps its `MUX Reference` line, BOM and line endings; everything else is upstream's. A mirrored
+file may sit inside an upstream source folder (a MUX control's verbatim theme XAML in
+`controls/dev/<Name>`): detection and the agent's diff leave it out, so it is never ported twice. An area made
+only of mirrors needs no `upstream.sources`. Its other Uno files (for `Generic.xaml`, the overlay that
+holds Uno's deltas) stay in `uno.sources`; the sync PR names them so a person checks they still fit.
+
 ```pwsh
 ./build/winui-sync/seed-area.ps1 -Id teachingtip -Title TeachingTip `
     -UpstreamRepo <path to a full microsoft-ui-xaml clone> `
     -UpstreamSources controls/dev/TeachingTip `
-    -UpstreamTests controls/dev/TeachingTip/APITests, controls/dev/TeachingTip/InteractionTests `
+    -UpstreamTests controls/dev/TeachingTip/APITests, controls/dev/TeachingTip/TestUI `
     -UpstreamStrings controls/dev/TeachingTip/Strings `
     -UnoSources src/Uno.UI/UI/Xaml/Controls/TeachingTip `
-    -UnoTests src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/TeachingTip `
+    -UnoTests src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/TeachingTip, src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/TeachingTipTests `
     -UnoStrings src/Uno.UI/UI/Xaml/Controls/TeachingTip/Strings
 ```
 
-It reads the `MUX Reference` headers under the Uno paths, resolves the commits and tags they name,
-and proposes the oldest one as the baseline. **Check the proposal before adding `-Write`:**
+It also adds the control's theme XAML to the mapping: Uno's copies under
+`src/Uno.UI.FluentTheme/Resources` and, for core controls, the upstream
+`controls/dev/CommonStyles/<Name>_themeresources.xaml` they come from (`-NoThemeXaml` leaves them
+out). It reads the `MUX Reference` headers under the Uno paths (`.cs` and `.xaml`), resolves the
+commits and tags they name, and proposes the oldest one as the baseline. Because theme XAML headers
+count too, an old tag on a style file lowers the proposal like any other stale header. **Check the proposal before adding `-Write`:**
 
 - a baseline that is too new silently drops upstream changes;
 - a baseline that is much older than most files (one stale header) makes the first run re-check
   years of changes — pick the commit most files agree on and pass it with `-Baseline <commit>`;
 - files listed as having no recorded commit are yours to judge.
+
+Record an area at the latest stable tag only together with the port that brings it there; otherwise
+the changes in between are never synced.
+
+Once an area is tracked, its `MUX Reference` headers name only the upstream file(s), with no tag or
+commit: the area's `baseline` is the one record of the version, and syncs keep it current.
+`Remove-MuxReferenceVersion` drops the versions; the port agent is told not to add them back.
 
 ## Running it by hand
 
@@ -88,7 +126,7 @@ Locally, with a WinUI clone:
 
 - Secret `ANTHROPIC_CODEREVIEW_KEY`: the API key the port agent uses. It is the same key as the Claude review workflow, so sync and review spend share one budget.
 - The port agent runs on Sonnet (`claude-sonnet-5-5`). An area can name another model with a
-  `model` field in its `areas.json` entry.
+  `model` field in its `areas/<id>.json` file.
 - Each port may spend at most 3 USD (`--max-budget-usd` in the workflow).
 - Label `winui-sync`: created by the workflow if missing; issues and PRs are found by it plus a
   hidden `<!-- winui-sync:<id> -->` marker, so do not remove either.

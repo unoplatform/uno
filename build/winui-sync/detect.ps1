@@ -5,7 +5,7 @@ Works out which tracked areas changed upstream and emits the job matrix. Uses gi
 param(
 	[Parameter(Mandatory)][string]$UpstreamRepo,
 	[string]$UnoRoot = (Resolve-Path "$PSScriptRoot/../..").Path,
-	[string]$ManifestPath = "$PSScriptRoot/areas.json",
+	[string]$ManifestPath = "$PSScriptRoot/areas",
 	[string]$AreaFilter,
 	[string]$TargetTag,
 	[int]$MaxAreas = 10)

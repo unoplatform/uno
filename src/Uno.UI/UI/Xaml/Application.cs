@@ -450,6 +450,7 @@ namespace Microsoft.UI.Xaml
 #if __SKIA__
 			SystemThemeHelper.HighContrastChanged += OnHighContrastChanged;
 #endif
+			AccentColorHelper.AccentColorChanged += OnAccentColorChanged;
 
 			InitializeTextScaling();
 
@@ -485,8 +486,23 @@ namespace Microsoft.UI.Xaml
 			// walking all roots) when the effective theme actually changed. When the app theme is
 			// explicit (m_requestedTheme != None), GetTheme() is unchanged by an OS flip and the change
 			// is suppressed — the FrameworkTheming-native form of the old IsThemeSetExplicitly guard.
-			WinUICoreServices.Instance.Theming.OnThemeChanged();
+			//
+			// Some platforms piggyback accent color changes on theme change events. Refresh the cached accent
+			// first so OnThemeChanged reads the new one; when it changed, OnAccentColorChanged does the update.
+			if (!AccentColorHelper.RefreshAccentColor())
+			{
+				WinUICoreServices.Instance.Theming.OnThemeChanged();
+				UISettings.OnColorValuesChanged();
+			}
+		}
 
+		private void OnAccentColorChanged(object sender, EventArgs e)
+		{
+			// MUX: CJupiterWindow's UISettings.ColorValuesChanged handler runs CJupiterControl::OnThemeChanged,
+			// which reaches FrameworkTheming::OnThemeChanged and rebuilds the accent color resources.
+			// Forced like DefaultStyles::RefreshImmersiveColors, as Uno's accent override can change the
+			// shades while the accent itself stays the same.
+			WinUICoreServices.Instance.Theming.OnThemeChanged(forceUpdate: true);
 			UISettings.OnColorValuesChanged();
 		}
 

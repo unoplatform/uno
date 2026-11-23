@@ -6,7 +6,7 @@ paths:
 
 # C# code style (Uno)
 
-Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_open_brace = all` (Allman). These are enforced by analyzers on CI — `UnoFastDevBuild=true` skips them locally but they still gate the PR.
+Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_open_brace = all` (Allman). These are enforced by analyzers on CI — `UnoFastDevBuild=true` skips them locally but they still gate the PR. A clean local build therefore doesn't prove IDE0055 (formatting) is clean: Debug also lists it in `WarningsNotAsErrors`, so only `-c Release` without `UnoFastDevBuild` fails on it.
 
 ## File headers
 - **Ported WinUI/MUX code** carries, in this order:
@@ -17,6 +17,7 @@ Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_o
   // MUX Reference AnimatedIcon.properties.cpp, tag winui3/release/1.7.1, commit f4d781d
   ```
   Keep the `// MUX Reference <file>, tag <tag>, commit <hash>` line accurate — it pins the upstream source. **Uno-native** code omits both the MS copyright and the MUX line.
+  **Exception:** in an area tracked by the WinUI port sync (`build/winui-sync/areas/`), the header names only the upstream file (`// MUX Reference AnimatedIcon.properties.cpp`), with no tag or commit: the area's `baseline` records the version.
 - Don't add a `_Mux` suffix to ported members — use the natural WinUI name. (See the `/winui-port` skill for the full porting rules.)
 
 ## Idioms
@@ -34,9 +35,10 @@ Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_o
 - **Don't narrate code removal or change history** — no "removed X", "used to do Y", "no longer needed". A comment states the present reason a line exists; git carries the history. (Rare exception: a genuinely useful note about why something is intentionally *absent*.)
 - **Longer comments are allowed only when:** the user explicitly asks for them; you're **porting from WinUI/MUX** and the upstream source carries explanatory comments (keep those verbatim — fidelity to the original is the point, see the `/winui-port` skill); or a genuinely subtle invariant/algorithm can't be conveyed in a line or two. When in doubt, shorter.
 - A `// MUX Reference …` attribution line (above) is not a history comment — keep it.
+- A `// TODO Uno:` (or `// UNO TODO`) marker, and the `#if HAS_UNO` gate around it, records a deliberate, un-ported divergence from WinUI — not a history comment, so the rule above never justifies deleting one. When touching the surrounding code, check upstream: if it's now genuinely 1:1 with WinUI, drop the marker and match verbatim; if the gap is real, leave it.
 
 ## Conditional symbols
-`#if IS_UNIT_TESTS` is defined by three projects only — `Uno.UI.UnitTests`, `Uno.UI.Tests.ViewLibrary` and `Uno.UI.Tests.ViewLibraryProps` — and is **absent from `Uno.UI`'s define set**: those projects consume `Uno.UI` through a `ProjectReference`, so the symbol only reaches files they *Compile-link* (chiefly from `Uno.UI.RuntimeTests`). Never use it in `Uno.UI` source. Platform symbols are covered in `platform-targeting.md`. Global usings (`GlobalUsings.cs`) only define **Android** aliases (e.g. `AView`) and only under `__ANDROID__` — don't assume other platforms have global aliases. In the repository `UNO_REFERENCE_API` equals `__CROSSRUNTIME__` (Skia, WebAssembly and Reference flavors); only consumers get it as a legacy synonym of **`__UNO__`**. Outside the WinRT layer, prefer `__UNO__` in new code (`HAS_UNO` is identical) — see `doc/articles/uno-development/preprocessor-symbols.md`.
+`#if IS_UNIT_TESTS` is defined by three projects only — `Uno.UI.UnitTests`, `Uno.UI.Tests.ViewLibrary` and `Uno.UI.Tests.ViewLibraryProps` — and is **absent from `Uno.UI`'s define set**: those projects consume `Uno.UI` through a `ProjectReference`, so the symbol only reaches files they *Compile-link* (chiefly from `Uno.UI.RuntimeTests`). Never use it in `Uno.UI` source. Platform symbols are covered in `platform-targeting.md`. `src/Uno.UI/GlobalUsings.cs` only holds **Android** aliases (e.g. `AView`) under `#if __ANDROID__`, which `Uno.UI` never defines — no global aliases are in effect there. In the repository `UNO_REFERENCE_API` equals `__CROSSRUNTIME__` (Skia, WebAssembly and Reference flavors); only consumers get it as a legacy synonym of **`__UNO__`**. Outside the WinRT layer, prefer `__UNO__` in new code (`HAS_UNO` is identical) — see `doc/articles/uno-development/preprocessor-symbols.md`.
 
 **A symbol being undefined does not make it deletable.** Before removing any `#if`, place it in one of these categories — the first four are deliberate and must be left alone:
 
@@ -49,3 +51,14 @@ Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_o
 | **Genuinely dead** | a platform Uno no longer targets, or a renderer removed in 7.0 | Safe to remove *only* after checking the code behind it isn't reachable by another route |
 
 The last row is the trap: `SUPPORTS_NATIVE_DATEPICKER` looked dead but guarded a live Skia-Android path, so the undefined symbol was the bug, not the code. Symbols emitted by generators (`UNO_MIXIN_GENERATION`) or consumed via `[Conditional("X")]` (`IS_CI_OR_DEBUG`) are invisible to a plain `#if` search — grep for the string, not just the directive.
+
+## Events
+**Never declare `event Action` or `event Action<T>`.** Use `EventHandler` or `EventHandler<TEventArgs>`: raw `Action`/`Func` delegates as event fields bypass the standard `add`/`remove` contract and can't be reliably subscribed across assembly boundaries.
+
+```csharp
+public event EventHandler<MyEventArgs>? SomethingHappened; // correct
+public event Action<MyData>? SomethingHappened;            // NEVER
+```
+
+## Public API surface changes
+Renaming, moving or narrowing (`public` → `internal`, removing a member) anything shipped in a NuGet package must update `build/PackageDiffIgnore.xml` in the **same commit** — add the entry to the current release's `IgnoreSet` (see `doc/articles/contributing/guidelines/breaking-changes.md`). Don't leave it for a red `PackageDiff` check to find. If the release has a migration guide under `doc/articles/`, add the change there too.

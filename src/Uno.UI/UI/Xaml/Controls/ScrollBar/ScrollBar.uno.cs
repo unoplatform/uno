@@ -28,7 +28,7 @@ partial class ScrollBar
 				_isTouchThumbDragEnabled = value;
 
 				// AttachEvents is what applies IgnoreTouchInput to the parts, and it is safe to re-run: its
-				// subscriptions are held by SerialDisposables, which is how OnLoaded already re-attaches them.
+				// subscriptions are held by SerialDisposables, so re-attaching replaces them.
 				AttachEvents();
 
 				// The indicator states are picked in ChangeVisualState, which this re-runs.
@@ -36,8 +36,4 @@ partial class ScrollBar
 			}
 		}
 	}
-
-	private static void DetachEvents(object snd, RoutedEventArgs args) // OnUnloaded
-		=> (snd as ScrollBar)?.DetachEvents();
-
 }

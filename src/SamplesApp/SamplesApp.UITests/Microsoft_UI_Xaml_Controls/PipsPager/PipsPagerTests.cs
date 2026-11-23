@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference InteractionTests/PipsPagerTests.cs
 
 using Common;
 using NUnit.Framework;
@@ -14,7 +15,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 	public partial class PipsPagerTests : PipsPagerTestBase
 	{
 		// TODO Uno: The following tests are not ported yet due to missing test framework features:
-		// - KeyboardPageSelectTest
+		// - VerifyAxeScanPasses (no Axe scanning infrastructure)
+		// - FirstFocusedPageTest, KeyboardPageSelectTest (no keyboard input helpers)
+		// - PipsPagerRTLDoesNotCrash (no TestSetupHelper.SetInnerFrameFlowDirection)
 		[SetUp]
 		public void TestSetup()
 		{
@@ -246,9 +249,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 				var verticalOrientationPipsPagerButtonHeight = elements.GetVerticalOrientationPipsPagerButtonHeightTextBlock();
 
 				Verify.AreEqual("12", horizontalOrientationPipsPagerButtonWidth.FirstResult().Text);
-				Verify.AreEqual("20", horizontalOrientationPipsPagerButtonHeight.FirstResult().Text);
+				Verify.AreEqual("24", horizontalOrientationPipsPagerButtonHeight.FirstResult().Text);
 				//TODO Uno: Removed vertical pips pager to be able to properly query elements (was not possible due to Uno.UITest limitations
-				//Verify.AreEqual("20", verticalOrientationPipsPagerButtonWidth.FirstResult().Text);
+				//Verify.AreEqual("24", verticalOrientationPipsPagerButtonWidth.FirstResult().Text);
 				//Verify.AreEqual("12", verticalOrientationPipsPagerButtonHeight.FirstResult().Text);
 			}
 		}
@@ -265,15 +268,87 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 				var horizontalOrientationPipsPagerButtonWidth = elements.GetHorizontalOrientationPipsPagerButtonWidthTextBlock();
 				var horizontalOrientationPipsPagerButtonHeight = elements.GetHorizontalOrientationPipsPagerButtonHeightTextBlock();
 				Verify.AreEqual("12", horizontalOrientationPipsPagerButtonWidth.FirstResult().Text);
-				Verify.AreEqual("20", horizontalOrientationPipsPagerButtonHeight.FirstResult().Text);
+				Verify.AreEqual("24", horizontalOrientationPipsPagerButtonHeight.FirstResult().Text);
 
 				SetOrientation(Orientation.Vertical);
 				VerifyOrientationChanged("Vertical");
 
 				InputHelperLeftClick(getButtonSizesButton);
 
-				Verify.AreEqual("20", horizontalOrientationPipsPagerButtonWidth.FirstResult().Text);
+				Verify.AreEqual("24", horizontalOrientationPipsPagerButtonWidth.FirstResult().Text);
 				Verify.AreEqual("12", horizontalOrientationPipsPagerButtonHeight.FirstResult().Text);
+			}
+		}
+
+		[Test]
+		[AutoRetry]
+		public void PipsPagerWrapModeNavigation()
+		{
+			{
+				elements = new PipsPagerElements(this._app);
+				SetPreviousPageButtonVisibilityMode(ButtonVisibilityMode.Visible);
+				SetNextPageButtonVisibilityMode(ButtonVisibilityMode.Visible);
+
+				ChangeNumberOfPages(NumberOfPagesOptions.Twenty);
+				VerifyNumberOfPages("20");
+
+				SetWrapMode(WrapMode.Wrap);
+
+				VerifySelectedPageIndex(0);
+
+				InputHelperLeftClick(elements.GetPreviousPageButton());
+
+				VerifySelectedPageIndex(19);
+
+				InputHelperLeftClick(elements.GetNextPageButton());
+
+				VerifySelectedPageIndex(0);
+			}
+		}
+
+		[Test]
+		[AutoRetry]
+		public void PipsPagerWrapModeNavigationInfinitePages()
+		{
+			{
+				elements = new PipsPagerElements(this._app);
+				SetPreviousPageButtonVisibilityMode(ButtonVisibilityMode.Visible);
+				SetNextPageButtonVisibilityMode(ButtonVisibilityMode.Visible);
+
+				SetWrapMode(WrapMode.Wrap);
+
+				ChangeNumberOfPages(NumberOfPagesOptions.Infinite);
+				VerifyNumberOfPages("Infinite");
+
+				InputHelperLeftClick(elements.GetNextPageButton());
+				InputHelperLeftClick(elements.GetPreviousPageButton());
+
+				VerifySelectedPageIndex(0);
+
+				VerifyPageButtonWithVisibilityModeSet(ButtonType.Previous, ButtonVisibilityMode.Collapsed);
+				VerifyPageButtonWithVisibilityModeSet(ButtonType.Next, ButtonVisibilityMode.Visible);
+			}
+		}
+
+		[Test]
+		[AutoRetry]
+		public void PipsPagerWrapModeNavigationButtonsHiddenInOnePageScenario()
+		{
+			{
+				elements = new PipsPagerElements(this._app);
+
+				SetWrapMode(WrapMode.Wrap);
+
+				ChangeNumberOfPages(NumberOfPagesOptions.One);
+				VerifyNumberOfPages("1");
+
+				SetPreviousPageButtonVisibilityMode(ButtonVisibilityMode.Visible);
+				SetNextPageButtonVisibilityMode(ButtonVisibilityMode.Visible);
+
+				VerifySelectedPageIndex(0);
+
+				VerifyPageButtonWithVisibilityModeSet(ButtonType.Previous, ButtonVisibilityMode.Collapsed);
+				VerifyPageButtonWithVisibilityModeSet(ButtonType.Next, ButtonVisibilityMode.Collapsed);
 			}
 		}
 

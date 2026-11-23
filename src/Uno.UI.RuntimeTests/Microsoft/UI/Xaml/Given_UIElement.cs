@@ -31,10 +31,6 @@ using KeyEventArgs = Windows.UI.Core.KeyEventArgs;
 using Combinatorial.MSTest;
 using Uno.UI.DevTools.Input;
 
-#if !HAS_UNO_WINUI
-using Windows.UI.Input;
-#endif
-
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
 	[TestClass]
@@ -125,6 +121,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			redBounds = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 5);
 			Assert.AreEqual(new Size(Math.Min(100, newClipValue) - 1, Math.Min(75, newClipValue) - 1), new Size(redBounds.Width, redBounds.Height));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_RightToLeft_Then_RenderTransform_Set()
+		{
+			var sut = new Border
+			{
+				Width = 50,
+				Height = 50,
+				FlowDirection = FlowDirection.RightToLeft,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			};
+			await UITestHelper.Load(new Grid { Children = { sut } });
+
+			var transform = new TranslateTransform { X = 10 };
+			sut.RenderTransform = transform;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreSame(transform, sut.RenderTransform);
 		}
 
 		[TestMethod]
@@ -1821,6 +1837,45 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(2, holdingCount); // Started and Completed
 			Assert.AreEqual(0, tappedCount);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Touch_Hold_With_Nested_Holding_Listeners_Then_Raised_Once()
+		{
+			var inner = new Border
+			{
+				Width = 100,
+				Height = 100,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Red)
+			};
+			var outer = new Border
+			{
+				Width = 200,
+				Height = 200,
+				Background = new SolidColorBrush(Microsoft.UI.Colors.Green),
+				Child = inner
+			};
+
+			var innerStates = new System.Collections.Generic.List<Microsoft.UI.Input.HoldingState>();
+			var outerStates = new System.Collections.Generic.List<Microsoft.UI.Input.HoldingState>();
+			inner.Holding += (_, e) => innerStates.Add(e.HoldingState);
+			outer.Holding += (_, e) => outerStates.Add(e.HoldingState);
+
+			await UITestHelper.Load(outer);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Both holding timers elapse: the hold must still be raised once, from the inner element, and bubble.
+			await finger.Hold(inner.GetAbsoluteCenter(), timerOnlyHoldingSource: outer);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			CollectionAssert.AreEqual(new[] { Microsoft.UI.Input.HoldingState.Started, Microsoft.UI.Input.HoldingState.Completed }, innerStates, "Inner: " + string.Join(", ", innerStates));
+			CollectionAssert.AreEqual(new[] { Microsoft.UI.Input.HoldingState.Started, Microsoft.UI.Input.HoldingState.Completed }, outerStates, "Outer: " + string.Join(", ", outerStates));
 		}
 
 #if HAS_UNO

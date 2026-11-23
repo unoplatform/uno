@@ -19,6 +19,37 @@ BeforeAll {
 	}
 }
 
+Describe 'Sync-AreaMirror' {
+	It 'replaces the Uno copy with upstream''s file, keeping its header line, BOM and line endings' {
+		$up = New-TestUpstream -Path (Join-Path $TestDrive 'mirror-up')
+		$sha = Add-TestCommit $up @{ 'dxaml/themes/generic.xaml' = "<!-- Copyright -->`n<Root>v2</Root>`n<Tail />`n" } -Tag 'winui3/release/1.0.0'
+		$uno = Join-Path $TestDrive 'mirror-uno'
+		New-Item -ItemType Directory -Force -Path "$uno/src" | Out-Null
+		[System.IO.File]::WriteAllText("$uno/src/Generic.xaml", "<!-- Copyright -->`r`n<!-- MUX Reference dxaml\themes\generic.xaml -->`r`n<Root>v1</Root>`r`n", [System.Text.UTF8Encoding]::new($true))
+		$mirror = @([pscustomobject]@{ upstream = 'dxaml/themes/generic.xaml'; uno = 'src/Generic.xaml' })
+
+		$changed = @(Sync-AreaMirror -UpstreamRepo $up -Ref $sha -UnoRoot $uno -Mirror $mirror)
+
+		$changed | Should -Be @('src/Generic.xaml')
+		[System.IO.File]::ReadAllText("$uno/src/Generic.xaml") | Should -Be "<!-- Copyright -->`r`n<!-- MUX Reference dxaml\themes\generic.xaml -->`r`n<Root>v2</Root>`r`n<Tail />`r`n"
+		[System.IO.File]::ReadAllBytes("$uno/src/Generic.xaml")[0] | Should -Be 0xEF
+
+		@(Sync-AreaMirror -UpstreamRepo $up -Ref $sha -UnoRoot $uno -Mirror $mirror).Count | Should -Be 0
+	}
+
+	It 'throws when the upstream file is missing, leaving the Uno copy alone' {
+		$up = New-TestUpstream -Path (Join-Path $TestDrive 'mirror-up2')
+		$sha = Add-TestCommit $up @{ 'other.txt' = 'x' }
+		$uno = Join-Path $TestDrive 'mirror-uno2'
+		New-Item -ItemType Directory -Force -Path "$uno/src" | Out-Null
+		[System.IO.File]::WriteAllText("$uno/src/Generic.xaml", 'keep')
+		$mirror = @([pscustomobject]@{ upstream = 'dxaml/themes/generic.xaml'; uno = 'src/Generic.xaml' })
+
+		{ Sync-AreaMirror -UpstreamRepo $up -Ref $sha -UnoRoot $uno -Mirror $mirror } | Should -Throw '*dxaml/themes/generic.xaml*'
+		[System.IO.File]::ReadAllText("$uno/src/Generic.xaml") | Should -Be 'keep'
+	}
+}
+
 Describe 'Sync-AreaStrings' {
 	BeforeEach {
 		$script:up = New-TestUpstream -Path (Join-Path $TestDrive "up-$([guid]::NewGuid())")

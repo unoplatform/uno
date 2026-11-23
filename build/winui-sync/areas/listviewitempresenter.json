@@ -1,0 +1,50 @@
+{
+  "id": "listviewitempresenter",
+  "title": "ListViewItemPresenter",
+  "baseline": "ba3a8d59e6de4e2b86ca4f61c78bc26ccf129afd",
+  "upstream": {
+    "sources": [
+      "dxaml/xcp/core/core/elements/ListViewBaseItemChrome.cpp",
+      "dxaml/xcp/core/inc/ListViewBaseItemChrome.h",
+      "dxaml/xcp/core/core/elements/ListViewBaseItemSecondaryChrome.cpp",
+      "dxaml/xcp/core/inc/ListViewBaseItemSecondaryChrome.h",
+      "dxaml/xcp/dxaml/lib/ListViewBaseItemPresenter_Partial.cpp",
+      "dxaml/xcp/dxaml/lib/ListViewBaseItemPresenter_Partial.h",
+      "dxaml/xcp/dxaml/lib/ListViewBaseItemSecondaryChrome_Partial.h",
+      "dxaml/xcp/dxaml/lib/ListViewItemPresenter_Partial.cpp",
+      "dxaml/xcp/dxaml/lib/ListViewItemPresenter_Partial.h",
+      "dxaml/xcp/dxaml/lib/winrtgeneratedclasses/ListViewBaseItemTemplateSettings.g.cpp",
+      "dxaml/xcp/dxaml/lib/winrtgeneratedclasses/ListViewBaseItemTemplateSettings.g.h",
+      "dxaml/xcp/dxaml/lib/winrtgeneratedclasses/ListViewItemTemplateSettings.g.cpp",
+      "dxaml/xcp/dxaml/lib/winrtgeneratedclasses/ListViewItemTemplateSettings.g.h",
+      "dxaml/xcp/components/visualstateshelper/inc/VisualStatesHelper.h",
+      "dxaml/xcp/components/visualstateshelper/lib/VisualStatesHelper.cpp"
+    ]
+  },
+  "uno": {
+    "sources": [
+      "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemChrome.h.mux.cs",
+      "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemChrome.mux.cs",
+      "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemChrome.uno.cs",
+      "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemChromeVisual.cs",
+      "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemPresenter.cs",
+      "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemPresenter.h.mux.cs",
+      "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemPresenter.mux.cs",
+      "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemSecondaryChrome.h.mux.cs",
+      "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemSecondaryChrome.mux.cs",
+      "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewBaseItemTemplateSettings.cs",
+      "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewItemPresenter.Properties.cs",
+      "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewItemPresenter.cs",
+      "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewItemPresenter.mux.cs",
+      "src/Uno.UI/UI/Xaml/Controls/Primitives/ListViewItemTemplateSettings.cs",
+      "src/Uno.UI/UI/Xaml/Controls/Primitives/VisualStatesHelper.h.mux.cs",
+      "src/Uno.UI/UI/Xaml/Controls/Primitives/VisualStatesHelper.mux.cs"
+    ]
+  },
+  "mirror": [
+    {
+      "upstream": "controls/dev/CommonStyles/ListViewItem_themeresources.xaml",
+      "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/ListViewItem_themeresources.xaml"
+    }
+  ]
+}

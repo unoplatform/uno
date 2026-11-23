@@ -39,7 +39,7 @@ on:
   workflow_dispatch:
     inputs:
       area:
-        description: 'Only this area id (empty = all areas in build/winui-sync/areas.json)'
+        description: 'Only this area id (empty = all areas in build/winui-sync/areas)'
         required: false
         type: string
       target_tag:
@@ -157,7 +157,7 @@ jobs:
         shell: pwsh
         run: |
           Import-Module "$env:RUNNER_TEMP/tools/WinUISync.psm1"
-          $area = Get-SyncAreas "$env:RUNNER_TEMP/tools/areas.json" | Where-Object id -EQ $env:AREA_ID
+          $area = Get-SyncArea -ManifestPath "$env:RUNNER_TEMP/tools/areas" -Id $env:AREA_ID
           # Continue from the sync branch's baseline when a PR is already open.
           $area.baseline = $env:AREA_BASELINE
           $prompt = Expand-SyncPrompt -TemplatePath "$env:RUNNER_TEMP/tools/prompt.md" -Area $area `
@@ -188,7 +188,7 @@ jobs:
         id: agent
         if: steps.prompt.outcome == 'success'
         continue-on-error: true
-        uses: anthropics/claude-code-action@d535f5172dec02b204866b393d6b20b9b2aaf98d # v1.0.266
+        uses: anthropics/claude-code-action@f3b070c88125d33dbae5653df5f143101d4ea9dc # v1.0.276
         env:
           # Builds outlast the default 2-minute tool timeout.
           BASH_DEFAULT_TIMEOUT_MS: '2400000'

@@ -763,23 +763,27 @@ public
 			}
 			else
 			{
-				if (result is not null && NSJsonSerialization.IsValidJSONObject(result))
+				// Like WebView2, a string result is returned as a JSON string literal
+				if (result is NSString || (result is not null && NSJsonSerialization.IsValidJSONObject(result)))
 				{
-					var serializedData = NSJsonSerialization.Serialize(result, default, out var serializationError);
-					if (serializationError != null)
+					// Serialize can raise instead of returning an error, and nothing may throw out of WebKit's completion handler
+					try
 					{
-						tcs.TrySetException(new InvalidOperationException($"Failed to serialize javascript result {serializationError.LocalizedDescription}, {serializationError.LocalizedFailureReason}, {serializationError.LocalizedRecoverySuggestion}"));
+						using var serializedData = NSJsonSerialization.Serialize(result, NSJsonWritingOptions.FragmentsAllowed | NSJsonWritingOptions.WithoutEscapingSlashes, out var serializationError);
+						if (serializedData is null)
+						{
+							tcs.TrySetException(new InvalidOperationException($"Failed to serialize javascript result {serializationError?.LocalizedDescription}, {serializationError?.LocalizedFailureReason}, {serializationError?.LocalizedRecoverySuggestion}"));
+						}
+						else
+						{
+							using var json = NSString.FromData(serializedData, NSStringEncoding.UTF8);
+							tcs.TrySetResult(json?.ToString());
+						}
 					}
-					else
+					catch (Exception e)
 					{
-						tcs.TrySetResult(NSString.FromData(serializedData, NSStringEncoding.UTF8)?.ToString());
+						tcs.TrySetException(e);
 					}
-				}
-				else if (result is NSString resultString)
-				{
-					// String needs to be wrapped in quotes to match Windows behavior
-					var netString = resultString.ToString();
-					tcs.TrySetResult($"\"{netString.Replace("\"", "\\\"")}\"");
 				}
 				else
 				{

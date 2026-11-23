@@ -198,6 +198,91 @@ Describe 'Get-AreaSyncState with file paths' {
 	}
 }
 
+Describe 'Get-AreaSyncState with mirrored files' {
+	BeforeEach {
+		$script:up = New-TestUpstream -Path (Join-Path $TestDrive "mirror-$([guid]::NewGuid())")
+		$script:base = Add-TestCommit $up @{ 'dxaml/themes/generic.xaml' = "<!-- Copyright -->`n<Root>v1</Root>`n" } -Tag 'winui3/release/1.0.0'
+		$script:uno = Join-Path $TestDrive "mirror-uno-$([guid]::NewGuid())"
+		New-Item -ItemType Directory -Force -Path "$uno/src" | Out-Null
+		# The Uno copy: same content, a MUX Reference line added, CRLF line endings.
+		[System.IO.File]::WriteAllText("$uno/src/Generic.xaml", "<!-- Copyright -->`r`n<!-- MUX Reference dxaml\themes\generic.xaml -->`r`n<Root>v1</Root>`r`n", [System.Text.UTF8Encoding]::new($true))
+		$m = Write-TestManifest (Join-Path $TestDrive "$([guid]::NewGuid()).json") @(
+			(New-TestArea -Id 'gen' -Baseline $base -Extra @{
+				upstream = [ordered]@{ sources = @() }
+				uno      = [ordered]@{ sources = @('src/Overlay.xaml') }
+				mirror   = @([ordered]@{ upstream = 'dxaml/themes/generic.xaml'; uno = 'src/Generic.xaml' })
+			}))
+		$script:area = @(Get-SyncAreas -ManifestPath $m)[0]
+	}
+
+	It 'sees a copy that differs only by its header and line endings as unchanged' {
+		$s = Get-AreaSyncState -Area $area -UpstreamRepo $up -TargetSha $base -UnoRoot $uno
+		$s.mirrorChanged | Should -BeFalse
+		$s.codeChanged | Should -BeFalse
+	}
+
+	It 'flags an upstream change to a mirrored file as a mirror change, not a code change' {
+		$target = Add-TestCommit $up @{ 'dxaml/themes/generic.xaml' = "<!-- Copyright -->`n<Root>v2</Root>`n" }
+		$s = Get-AreaSyncState -Area $area -UpstreamRepo $up -TargetSha $target -UnoRoot $uno
+		$s.mirrorChanged | Should -BeTrue
+		$s.codeChanged | Should -BeFalse
+	}
+
+	It 'compares against the open sync branch''s copy when one is given' {
+		$target = Add-TestCommit $up @{ 'dxaml/themes/generic.xaml' = "<!-- Copyright -->`n<Root>v2</Root>`n" }
+		$branchDir = Join-Path $TestDrive "branch-$([guid]::NewGuid())"
+		New-Item -ItemType Directory -Force -Path "$branchDir/src" | Out-Null
+		[System.IO.File]::WriteAllText("$branchDir/src/Generic.xaml", "<!-- Copyright -->`n<!-- MUX Reference dxaml\themes\generic.xaml -->`n<Root>v2</Root>`n")
+		(Get-AreaSyncState -Area $area -UpstreamRepo $up -TargetSha $target -UnoRoot $uno -UnoMirrorRoot $branchDir).mirrorChanged | Should -BeFalse
+	}
+
+	It 'puts a mirror-only change in the matrix' {
+		$target = Add-TestCommit $up @{ 'dxaml/themes/generic.xaml' = "<!-- Copyright -->`n<Root>v2</Root>`n" }
+		$s = Get-AreaSyncState -Area $area -UpstreamRepo $up -TargetSha $target -UnoRoot $uno
+		(Select-SyncMatrix -States @($s) -Areas @($area) -UpstreamRepo $up).Selected | Should -Be @('gen')
+	}
+}
+
+Describe 'Get-AreaSyncState with a mirrored file inside a source folder' {
+	BeforeEach {
+		$script:up = New-TestUpstream -Path (Join-Path $TestDrive "nested-$([guid]::NewGuid())")
+		$script:base = Add-TestCommit $up @{
+			'controls/dev/Foo/Foo.cpp'  = 'v1'
+			'controls/dev/Foo/Foo.xaml' = "<Root>v1</Root>`n"
+		} -Tag 'winui3/release/1.0.0'
+		$script:uno = Join-Path $TestDrive "nested-uno-$([guid]::NewGuid())"
+		New-Item -ItemType Directory -Force -Path "$uno/src" | Out-Null
+		[System.IO.File]::WriteAllText("$uno/src/Foo.xaml", "<Root>v1</Root>`n")
+		$newArea = {
+			param([string[]]$Sources)
+			$m = Write-TestManifest (Join-Path $TestDrive "$([guid]::NewGuid()).json") @(
+				(New-TestArea -Id 'foo' -Baseline $base -Extra @{
+					upstream = [ordered]@{ sources = $Sources }
+					mirror   = @([ordered]@{ upstream = 'controls/dev/Foo/Foo.xaml'; uno = 'src/Foo.xaml' })
+				}))
+			@(Get-SyncAreas -ManifestPath $m)[0]
+		}
+		$script:area = & $newArea @('controls/dev/Foo')
+		$script:fileArea = & $newArea @('controls/dev/Foo/Foo.cpp', 'controls/dev/Foo/Foo.xaml')
+	}
+
+	It 'reports a change to the mirrored file as a mirror change only' {
+		$target = Add-TestCommit $up @{ 'controls/dev/Foo/Foo.xaml' = "<Root>v2</Root>`n" }
+		foreach ($a in $area, $fileArea) {
+			$s = Get-AreaSyncState -Area $a -UpstreamRepo $up -TargetSha $target -UnoRoot $uno
+			$s.mirrorChanged | Should -BeTrue
+			$s.codeChanged | Should -BeFalse
+		}
+	}
+
+	It 'still reports a change to the rest of the folder as a code change' {
+		$target = Add-TestCommit $up @{ 'controls/dev/Foo/Foo.cpp' = 'v2' }
+		$s = Get-AreaSyncState -Area $area -UpstreamRepo $up -TargetSha $target -UnoRoot $uno
+		$s.codeChanged | Should -BeTrue
+		$s.mirrorChanged | Should -BeFalse
+	}
+}
+
 Describe 'Select-SyncMatrix' {
 	It 'orders by oldest baseline and caps at MaxAreas, reporting the deferred ids' {
 		$up = New-TestUpstream -Path (Join-Path $TestDrive 'order')
@@ -229,15 +314,14 @@ Describe 'Get-SyncPlan' {
 
 		# Uno side is a real repo here: the plan reads the manifest and master sha from it.
 		$script:uno = New-TestRepo -Path (Join-Path $TestDrive "plan-uno-$([guid]::NewGuid())")
-		$script:manifestRel = 'build/winui-sync/areas.json'
+		$script:manifestRel = 'build/winui-sync/areas'
 		$area = New-TestArea -Id 'foo' -Baseline $fx.Base -Extra @{
 			upstream = [ordered]@{ sources = @('controls/dev/Foo'); strings = 'controls/dev/Foo/Strings' }
 			uno      = [ordered]@{ sources = @('src/Foo'); strings = 'src/Foo/Strings' }
 		}
 		$script:areaDef = $area
-		$json = (@{ areas = @($area) } | ConvertTo-Json -Depth 6)
 		$script:master = Add-TestCommit $uno @{
-			$manifestRel                             = $json
+			"$manifestRel/foo.json"                  = (ConvertTo-TestAreaJson $area)
 			'src/Foo/Strings/en-US/Resources.resw' = "<root>`n  en`n</root>"
 		}
 	}
@@ -265,7 +349,7 @@ Describe 'Get-SyncPlan' {
 		Mock -ModuleName WinUISync Get-OpenSyncPr { 42 }
 		$areaDef.baseline = $target
 		Invoke-TestGit $uno checkout -q -b work | Out-Null
-		$branchSha = Add-TestCommit $uno @{ $manifestRel = (@{ areas = @($areaDef) } | ConvertTo-Json -Depth 6) }
+		$branchSha = Add-TestCommit $uno @{ "$manifestRel/foo.json" = (ConvertTo-TestAreaJson $areaDef) }
 		Invoke-TestGit $uno update-ref refs/remotes/origin/sync/winui/foo $branchSha | Out-Null
 		Invoke-TestGit $uno checkout -q main | Out-Null
 
@@ -274,6 +358,40 @@ Describe 'Get-SyncPlan' {
 		$plan.Matrix.Count | Should -Be 0
 		$plan.Rows[0].status | Should -Be 'up to date'
 		$plan.Rows[0].prNumber | Should -Be 42
+	}
+
+	It 'reads the baseline from a sync branch that still has the single-file manifest' {
+		Mock -ModuleName WinUISync Get-OpenSyncPr { 42 }
+		$areaDef.baseline = $target
+		Invoke-TestGit $uno checkout -q -b legacy | Out-Null
+		$branchSha = Add-TestCommit $uno @{
+			'build/winui-sync/areas/foo.json' = $null
+			'build/winui-sync/areas.json'     = (@{ areas = @($areaDef) } | ConvertTo-Json -Depth 6)
+		}
+		Invoke-TestGit $uno update-ref refs/remotes/origin/sync/winui/foo $branchSha | Out-Null
+		Invoke-TestGit $uno checkout -q main | Out-Null
+
+		$plan = Get-SyncPlan -UpstreamRepo $fx.Repo -UnoRoot $uno -ManifestPath (Join-Path $uno $manifestRel)
+
+		$plan.Matrix.Count | Should -Be 0
+		$plan.Rows[0].status | Should -Be 'up to date'
+	}
+
+	It 'reads the open sync branch''s mirrored files byte for byte' {
+		Mock -ModuleName WinUISync Get-OpenSyncPr { 42 }
+		# No trailing newline on either side, as in several of Uno's theme XAML copies.
+		$upSha = Add-TestCommit $fx.Repo @{ 'controls/dev/CommonStyles/Foo_themeresources.xaml' = "<Root>v1</Root>" } -Tag 'winui3/release/1.2.0'
+		$areaDef.baseline = $upSha
+		$areaDef.mirror = @([ordered]@{ upstream = 'controls/dev/CommonStyles/Foo_themeresources.xaml'; uno = 'src/Foo_themeresources.xaml' })
+		Add-TestCommit $uno @{ "$manifestRel/foo.json" = (ConvertTo-TestAreaJson $areaDef); 'src/Foo_themeresources.xaml' = "<Root>v1</Root>" } | Out-Null
+		Invoke-TestGit $uno checkout -q -b work | Out-Null
+		$branchSha = Add-TestCommit $uno @{ 'src/Foo/branch.txt' = 'x' }
+		Invoke-TestGit $uno update-ref refs/remotes/origin/sync/winui/foo $branchSha | Out-Null
+		Invoke-TestGit $uno checkout -q main | Out-Null
+
+		$plan = Get-SyncPlan -UpstreamRepo $fx.Repo -UnoRoot $uno -ManifestPath (Join-Path $uno $manifestRel)
+
+		$plan.Rows[0].status | Should -Be 'up to date'
 	}
 
 	It 'returns an empty matrix when nothing changed' {
@@ -287,7 +405,7 @@ Describe 'Get-SyncPlan' {
 	It 'reports a broken area and still plans the others' {
 		Mock -ModuleName WinUISync Get-OpenSyncPr { $null }
 		$bad = New-TestArea -Id 'bad' -Baseline ('d' * 40) -Extra @{ upstream = [ordered]@{ sources = @('controls/dev/Foo') } }
-		Add-TestCommit $uno @{ $manifestRel = (@{ areas = @($bad, $areaDef) } | ConvertTo-Json -Depth 6) } | Out-Null
+		Add-TestCommit $uno @{ "$manifestRel/bad.json" = (ConvertTo-TestAreaJson $bad) } | Out-Null
 
 		$plan = Get-SyncPlan -UpstreamRepo $fx.Repo -UnoRoot $uno -ManifestPath (Join-Path $uno $manifestRel)
 
@@ -311,7 +429,7 @@ Describe 'detect.ps1' {
 		$fx = New-ControlUpstream 'detect-up'
 		$uno = New-TestRepo -Path (Join-Path $TestDrive 'detect-uno')
 		$area = New-TestArea -Id 'foo' -Baseline $fx.Base -Extra @{ upstream = [ordered]@{ sources = @('controls/dev/Foo') } }
-		Add-TestCommit $uno @{ 'build/winui-sync/areas.json' = (@{ areas = @($area) } | ConvertTo-Json -Depth 6) } | Out-Null
+		Add-TestCommit $uno @{ 'build/winui-sync/areas/foo.json' = (ConvertTo-TestAreaJson $area) } | Out-Null
 		$out = Join-Path $TestDrive 'gh-output.txt'
 		$summary = Join-Path $TestDrive 'gh-summary.md'
 
@@ -319,7 +437,7 @@ Describe 'detect.ps1' {
 		$env:GITHUB_STEP_SUMMARY = $summary
 		Mock -ModuleName WinUISync Get-OpenSyncPr { $null }
 		try {
-			& "$PSScriptRoot/../detect.ps1" -UpstreamRepo $fx.Repo -UnoRoot $uno -ManifestPath (Join-Path $uno 'build/winui-sync/areas.json') | Out-Null
+			& "$PSScriptRoot/../detect.ps1" -UpstreamRepo $fx.Repo -UnoRoot $uno -ManifestPath (Join-Path $uno 'build/winui-sync/areas') | Out-Null
 		}
 		finally {
 			Remove-Item Env:GITHUB_OUTPUT, Env:GITHUB_STEP_SUMMARY

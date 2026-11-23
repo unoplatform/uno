@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference APITests/InfoBadgeTests.cs, tag winui3/release/1.4.2
+// MUX Reference APITests/InfoBadgeTests.cs
 
 using System;
 using Common;
@@ -161,6 +161,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 
 			RunOnUIThread.Execute(() =>
 			{
+				// TODO Uno specific: Uno's Verify.Throws matches the exact type; WinUI's E_BOUNDS projects to ArgumentOutOfRangeException.
 				Verify.Throws<ArgumentOutOfRangeException>(() => { infoBadge.Value = -10; });
 			});
 		}
