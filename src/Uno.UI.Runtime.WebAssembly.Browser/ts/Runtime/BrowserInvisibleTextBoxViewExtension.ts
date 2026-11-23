@@ -21,7 +21,6 @@
 
 		// Issue-1 trailing-click guard state (see installTrailingClickGuard).
 		private static swallowNextCanvasClick: boolean;
-		private static lastPointerType: string;
 
 		// Set while a managed-initiated blur/detach is in progress so the input's own blur
 		// listener doesn't report it back to the FocusManager (that would be redundant and
@@ -137,11 +136,10 @@
 		// while it was focused.
 		private static installTrailingClickGuard() {
 			// Every new pointer gesture re-decides the flag, so only the mouse events synthesized from
-			// a tap the guard covers are ever swallowed. Also records the pointer
-			// type: the bug is exclusive to touch/pen, where the compat mousedown is deferred until
-			// after focus. With a mouse, mousedown precedes focus, so there is nothing to guard.
+			// a tap the guard covers are ever swallowed. The bug is exclusive to touch/pen, where the
+			// compat mousedown is deferred until after focus. With a mouse, mousedown precedes focus,
+			// so there is nothing to guard.
 			document.addEventListener("pointerdown", (ev: PointerEvent) => {
-				BrowserInvisibleTextBoxViewExtension.lastPointerType = ev.pointerType;
 				// A touch while the input already has focus (a tap that moves the caret in the focused TextBox)
 				// gets the same deferred compat mousedown, which blurs the input and dismisses the keyboard, so
 				// every other tap would close it. No focusin fires to arm the guard for that tap: arm it here.
@@ -156,8 +154,7 @@
 			document.addEventListener("focusin", (ev: FocusEvent) => {
 				const target = ev.target as HTMLElement;
 				if (target?.id === UnoDomIds.input
-					&& (BrowserInvisibleTextBoxViewExtension.lastPointerType === "touch"
-						|| BrowserInvisibleTextBoxViewExtension.lastPointerType === "pen")) {
+					&& WebAssemblyWindowWrapper.isTouchInput()) {
 					BrowserInvisibleTextBoxViewExtension.swallowNextCanvasClick = true;
 				}
 			}, { capture: true });
@@ -579,8 +576,7 @@
 
 			// The retarget path keeps the input focused, so no focusin fires and the trailing-click
 			// guard never arms; arm it here for both paths (see installTrailingClickGuard).
-			if (BrowserInvisibleTextBoxViewExtension.lastPointerType === "touch"
-				|| BrowserInvisibleTextBoxViewExtension.lastPointerType === "pen") {
+			if (WebAssemblyWindowWrapper.isTouchInput()) {
 				BrowserInvisibleTextBoxViewExtension.swallowNextCanvasClick = true;
 			}
 			return true;

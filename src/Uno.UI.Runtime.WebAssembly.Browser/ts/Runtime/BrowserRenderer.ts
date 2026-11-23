@@ -27,7 +27,8 @@ namespace Uno.UI.Runtime {
 
 		private setCanvasSize() {
 			var scale = window.devicePixelRatio || 1;
-			var rect = document.documentElement.getBoundingClientRect();
+			// The window wrapper listens to "resize" first, so this is the size it just reported.
+			var rect = WebAssemblyWindowWrapper.getWindowSize();
 			var width = rect.width;
 			var height = rect.height;
 			var w = width * scale
