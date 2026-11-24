@@ -875,6 +875,7 @@ namespace Uno.UI.Samples.Tests
 				async Task InvokeTestMethod(TestCase testCase)
 				{
 					var fullTestName = testName + testCase.ToString();
+					_diagLastTestName = $"{testClassInfo.TestClassName}.{fullTestName}";
 
 					_currentRun.Run++;
 					Interlocked.Increment(ref _progressCount);
@@ -1185,6 +1186,23 @@ namespace Uno.UI.Samples.Tests
 
 #if HAS_UNO
 				await WaitForInputPaneSettledAsync();
+
+				// Temporary diagnostics for #26579: which test leaves the root content offset from the window.
+				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
+				{
+					if (TestServices.WindowHelper.XamlRoot is not { Content: { } content } xamlRoot)
+					{
+						return;
+					}
+
+					var origin = content.TransformToVisual(null).TransformPoint(default);
+					if (origin.X != 0 || origin.Y != 0)
+					{
+						var pan = (xamlRoot.VisualTree.RootElement as Uno.UI.Xaml.Core.IRootElement)?.RootElementLogic?.InputPaneVerticalOffset;
+						var pane = InputPane.GetForCurrentView();
+						Console.WriteLine($"[ROOT-OFFSET] after {_diagLastTestName}: content at {origin.X},{origin.Y}, input pane pan {pan}, pane {pane.Visible}/{pane.OccludedRect}");
+					}
+				});
 #endif
 			}
 
@@ -1247,6 +1265,7 @@ namespace Uno.UI.Samples.Tests
 #if HAS_UNO
 		private static readonly Stopwatch _inputPaneClock = Stopwatch.StartNew();
 		private static long _lastInputPaneChangeTicks = -1; // Written from the UI thread, read by the cleanup.
+		private string _diagLastTestName;
 		private static bool _isTrackingInputPane;
 
 		private static void TrackInputPane()
