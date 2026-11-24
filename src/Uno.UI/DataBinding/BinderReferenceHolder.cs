@@ -11,7 +11,6 @@ using System.ComponentModel;
 using Microsoft.UI.Xaml;
 
 using _NativeReference = Microsoft.UI.Xaml.UIElement;
-using _NativeView = Microsoft.UI.Xaml.UIElement;
 
 namespace Uno.UI.DataBinding
 {
@@ -130,30 +129,9 @@ namespace Uno.UI.DataBinding
 		}
 
 		/// <summary>
-		/// Retrieves a list of binders that are native views that 
-		/// aren't attached to the window. These views may be part 
-		/// of a leaked control.
-		/// </summary>
-		public static BinderReferenceHolder[] GetInactiveChildViewBinders()
-		{
-			var q = from r in _holders.Concat(_nativeHolders.Values)
-					let holder = r.Target as BinderReferenceHolder
-					let view = holder?._target.Target as _NativeView
-					where view != null && !IsInactiveView(view) && IsInactiveView(view.GetTopLevelParent())
-					select holder;
-
-			return q.ToArray();
-		}
-
-		/// <summary>
 		/// Retrieves all inactive views of the specified type.
 		/// </summary>
 		public static T[] GetInactiveInstancesOfType<T>() => GetInactiveViewBinders().Select(h => h._target.Target).OfType<T>().ToArray();
-
-		/// <summary>
-		/// Retrieves all children of the specified type whose top-level parent is detached from the window.
-		/// </summary>
-		public static T[] GetInactiveChildInstancesOfType<T>() => GetInactiveChildViewBinders().Select(h => h._target.Target).OfType<T>().ToArray();
 
 		/// <summary>
 		/// Retreives statistics about the live instances.

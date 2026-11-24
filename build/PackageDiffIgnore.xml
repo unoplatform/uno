@@ -5710,6 +5710,7 @@
 		  <Member fullName="System.Void Uno.Foundation.WebAssemblyRuntime.DispatchAsyncError(System.Int64 handle, System.String error)" reason="Removed with InvokeAsync, its only caller (breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0)" reason="Removed legacy WASM unmarshalled interop; its JavaScript dispatcher is no longer shipped (breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1)" reason="Removed legacy WASM unmarshalled interop; its JavaScript dispatcher is no longer shipped (breaking changes for 7.0)" />
+		  <Member fullName="Uno\.UI\.DataBinding\.BinderReferenceHolder\.GetInactiveChild(ViewBinders|InstancesOfType)\(" reason="Removed: always threw NotImplementedException (through ViewExtensions.GetTopLevelParent) since the native renderers were removed" isRegex="true" />
 	  </Methods>
 	  <Types>
 		  <!-- Emulated LinearGradientBrush borders for the native renderers removed in 7.0; on Skia it rendered nothing. -->
