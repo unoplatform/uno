@@ -51,8 +51,20 @@ namespace Windows.UI.ViewManagement
 		/// </summary>
 		/// <remarks>
 		/// Raised when the effective platform or overridden high-contrast state changes.
+		/// Adding a handler starts observing the system theme, so the event is raised even when no
+		/// <c>Application</c> has been initialized.
 		/// </remarks>
-		public event TypedEventHandler<AccessibilitySettings, object> HighContrastChanged;
+		public event TypedEventHandler<AccessibilitySettings, object> HighContrastChanged
+		{
+			add
+			{
+				_highContrastChanged += value;
+				SystemThemeHelper.ObserveThemeChanges();
+			}
+			remove => _highContrastChanged -= value;
+		}
+
+		private TypedEventHandler<AccessibilitySettings, object> _highContrastChanged;
 
 		internal static void OnHighContrastChanged()
 		{
@@ -61,7 +73,7 @@ namespace Windows.UI.ViewManagement
 				var weakReference = instance.Key;
 				if (weakReference.TryGetTarget(out var accessibilitySettings))
 				{
-					accessibilitySettings.HighContrastChanged?.Invoke(accessibilitySettings, null);
+					accessibilitySettings._highContrastChanged?.Invoke(accessibilitySettings, null);
 				}
 			}
 		}
