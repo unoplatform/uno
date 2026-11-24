@@ -198,7 +198,7 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 
 		Q = Api.DeviceGetQueue(Dev);
 		CreatePresentSampler();
-		System.Console.WriteLine($"[webgpu] init device — engine={(WebGpuLoader.IsDawn ? "Dawn" : OperatingSystem.IsBrowser() ? "browser" : "wgpu-native")} {DescribeAdapter(Adapter, out var adapterType, out var backend)} colorFormat={ColorFormat}");
+		System.Console.WriteLine($"[webgpu] init device — engine={(WebGpuLoader.IsDawn ? "Dawn" : OperatingSystem.IsBrowser() ? "browser" : "wgpu-native")} library={WebGpuLoader.Source} {DescribeAdapter(Adapter, out var adapterType, out var backend)} colorFormat={ColorFormat}");
 		IsSoftwareVulkan = adapterType == AdapterType.Cpu && backend == BackendType.Vulkan;
 	}
 

@@ -31,6 +31,9 @@ internal static class WebGpuLoader
 	/// <summary>The library the "webgpu" [DllImport]s bound to, once one has been called.</summary>
 	internal static IntPtr Resolved { get; private set; }
 
+	/// <summary>Where that library came from (its path on desktop), for the device initialization log.</summary>
+	internal static string Source { get; private set; } = "default resolution";
+
 	// UNO_WEBGPU_LIBRARY: a path to the WebGPU library to load instead of the provisioned one, either engine. Read on
 	// first use, not at module initialization: Android sets UNO_* variables from the launch intent in OnCreate.
 	private static readonly Lazy<string?> _override = new(() => OperatingSystem.IsBrowser() ? null : Environment.GetEnvironmentVariable("UNO_WEBGPU_LIBRARY") is { Length: > 0 } path ? path : null);
@@ -65,6 +68,7 @@ internal static class WebGpuLoader
 
 		if (_override.Value is { } path)
 		{
+			Source = path;
 			return NativeLibrary.Load(path);
 		}
 
@@ -74,7 +78,12 @@ internal static class WebGpuLoader
 		// wgpu-native static lib with force-load; see wgpu-native.targets iOS provisioning.)
 		if (OperatingSystem.IsIOS() || OperatingSystem.IsTvOS() || OperatingSystem.IsMacCatalyst())
 		{
-			try { return NativeLibrary.GetMainProgramHandle(); }
+			try
+			{
+				var main = NativeLibrary.GetMainProgramHandle();
+				Source = "main program";
+				return main;
+			}
 			catch { /* fall through */ }
 		}
 
@@ -86,6 +95,7 @@ internal static class WebGpuLoader
 			{
 				if (NativeLibrary.TryLoad(candidate, out var handle))
 				{
+					Source = candidate;
 					return handle;
 				}
 			}
@@ -117,6 +127,7 @@ internal static class WebGpuLoader
 				var path = System.IO.Path.Combine(folder, file);
 				if (System.IO.File.Exists(path) && NativeLibrary.TryLoad(path, out var handle))
 				{
+					Source = path;
 					return handle;
 				}
 			}
