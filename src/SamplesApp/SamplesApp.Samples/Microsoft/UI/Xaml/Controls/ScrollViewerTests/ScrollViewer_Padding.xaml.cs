@@ -23,9 +23,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 		private async void OnLoaded(object sender, RoutedEventArgs e)
 		{
 			await Task.Delay(300);
-#if HAS_UNO && !__WASM__ && !__SKIA__
 			layout.Text = this.TreeGraph();
-#endif
 		}
 	}
 }

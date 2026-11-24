@@ -15,7 +15,6 @@ namespace UITests.Windows_UI_Xaml.Clipping
 		{
 			this.InitializeComponent();
 
-#if UNO_REFERENCE_API
 			DumpTree();
 
 			async void DumpTree()
@@ -24,7 +23,6 @@ namespace UITests.Windows_UI_Xaml.Clipping
 				var tree = this.TreeGraph();
 				System.Diagnostics.Debug.WriteLine(tree);
 			}
-#endif
 		}
 
 
