@@ -2834,6 +2834,8 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			TextAlignment.Center when alignmentWidth <= contentWidth => leftIndent + (contentWidth - alignmentWidth) / 2,
 			TextAlignment.Right when alignmentWidth <= contentWidth => leftIndent + contentWidth - alignmentWidth,
+			// An unstretched justified line (the last one) starts where its own text starts, whatever the FlowDirection.
+			TextAlignment.Justify when alignmentWidth <= contentWidth && IsLineRightToLeft(line) => leftIndent + contentWidth - alignmentWidth,
 			_ => leftIndent,
 		};
 
@@ -2849,13 +2851,13 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	// WinUI mirrors a RightToLeft text element, so its Left/Right mean start/end. Lines here are laid out
-	// unmirrored (see UIElement.GetFlowDirectionTransform), so map them to visual sides. Justify ends at the start.
+	// unmirrored (see UIElement.GetFlowDirectionTransform), so map them to visual sides.
 	// Paragraph alignments use the element's flow too, so uniform and mixed RichEditBox paragraphs agree.
 	private TextAlignment ToPhysicalAlignment(TextAlignment alignment)
 		=> _flowRightToLeft
 			? alignment switch
 			{
-				TextAlignment.Left or TextAlignment.Justify => TextAlignment.Right,
+				TextAlignment.Left => TextAlignment.Right,
 				TextAlignment.Right => TextAlignment.Left,
 				_ => alignment,
 			}
