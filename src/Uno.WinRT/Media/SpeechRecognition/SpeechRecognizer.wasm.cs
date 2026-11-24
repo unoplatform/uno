@@ -49,47 +49,31 @@ namespace Windows.Media.SpeechRecognition
 			{
 				// Web Speech reports benign terminations (no-speech, aborted, no-match) and genuine
 				// failures (network, not-allowed, …) through the same "error" channel. Mirror UWP and
-				// complete with a SpeechRecognitionResult carrying the mapped Status instead of throwing,
-				// so every outcome flows back to the caller exactly like a successful recognition.
-				speechRecognizer.OnStateChanged(SpeechRecognizerState.Idle);
-
+				// complete with a SpeechRecognitionResult carrying the mapped Status instead of throwing.
 				var completionSource = speechRecognizer._currentCompletionSource;
 				if (completionSource is null)
 				{
-					// Late or duplicate callback (after Dispose, or after the operation already completed).
-					if (typeof(SpeechRecognizer).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-					{
-						typeof(SpeechRecognizer).Log().LogDebug($"Speech recognition reported '{error}' while no operation is active, ignoring.");
-					}
-
-					return 0;
+					LogIgnoredCallback(error);
+					return;
 				}
 
-				var recognitionResult = new SpeechRecognitionResult()
+				speechRecognizer.OnStateChanged(SpeechRecognizerState.Idle);
+				completionSource.TrySetResult(new SpeechRecognitionResult()
 				{
 					Text = string.Empty,
-					Status = MapErrorToStatus(error)
-				};
-
-				// TrySetResult: ignore the report if the source was already completed or cancelled.
-				completionSource.TrySetResult(recognitionResult);
+					Status = WebSpeechErrorMapper.ToStatus(error)
+				});
 			}
 		}
 
-		private static SpeechRecognitionResultStatus MapErrorToStatus(string error) =>
-			error switch
+		private static void LogIgnoredCallback(string outcome)
+		{
+			// Late or duplicate callback (after Dispose, or after the operation already completed).
+			if (typeof(SpeechRecognizer).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				"no-speech" => SpeechRecognitionResultStatus.TimeoutExceeded,
-				"no-match" => SpeechRecognitionResultStatus.Success,
-				"aborted" => SpeechRecognitionResultStatus.UserCanceled,
-				"audio-capture" => SpeechRecognitionResultStatus.MicrophoneUnavailable,
-				"not-allowed" => SpeechRecognitionResultStatus.MicrophoneUnavailable,
-				"service-not-allowed" => SpeechRecognitionResultStatus.MicrophoneUnavailable,
-				"network" => SpeechRecognitionResultStatus.NetworkFailure,
-				"language-not-supported" => SpeechRecognitionResultStatus.TopicLanguageNotSupported,
-				"bad-grammar" => SpeechRecognitionResultStatus.GrammarCompilationFailure,
-				_ => SpeechRecognitionResultStatus.Unknown
-			};
+				typeof(SpeechRecognizer).Log().LogDebug($"Speech recognition reported '{outcome}' while no operation is active, ignoring.");
+			}
+		}
 
 		[JSExport]
 		internal static Task DispatchErrorAsync(string instanceId, string error)
@@ -121,16 +105,20 @@ namespace Windows.Media.SpeechRecognition
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
 			{
+				var completionSource = speechRecognizer._currentCompletionSource;
+				if (completionSource is null)
+				{
+					LogIgnoredCallback("result");
+					return;
+				}
+
 				speechRecognizer.OnStateChanged(SpeechRecognizerState.Idle);
-				var recognitionResult = new SpeechRecognitionResult()
+				completionSource.TrySetResult(new SpeechRecognitionResult()
 				{
 					Text = result,
 					RawConfidence = confidence,
 					Status = SpeechRecognitionResultStatus.Success
-				};
-
-				// TrySetResult: ignore a late/duplicate result if the source was already completed.
-				speechRecognizer._currentCompletionSource?.TrySetResult(recognitionResult);
+				});
 			}
 		}
 
@@ -177,13 +165,12 @@ namespace Windows.Media.SpeechRecognition
 
 		public void Dispose()
 		{
-			// TrySetCanceled (not SetCanceled): once recognition has completed via a result or error
-			// the source is already finalized, and SetCanceled would throw
-			// InvalidOperationException ("TaskT_TransitionToFinal_AlreadyCompleted") — which would also
-			// skip RemoveInstance below and leak the JS recognizer instance.
+			// TrySetCanceled: the source is already finalized when recognition ended via a result or
+			// error, and SetCanceled would throw before the instance is released below.
 			_currentCompletionSource?.TrySetCanceled();
 			_currentCompletionSource = null;
 
+			_instances.TryRemove(_instanceId.ToString(), out _);
 			NativeMethods.RemoveInstance(_instanceId.ToString());
 		}
 

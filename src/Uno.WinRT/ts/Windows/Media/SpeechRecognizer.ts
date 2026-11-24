@@ -8,6 +8,8 @@ namespace Windows.Media {
 
 		private static instanceMap: { [managedId: string]: SpeechRecognizer } = {};
 
+		private static dispatchers: any;
+
 		private managedId: string;
 		private culture: string;
 		private recognition: any;
@@ -15,6 +17,11 @@ namespace Windows.Media {
 		// Guards the single-shot completion so a trailing "end" event cannot double-dispatch
 		// after a final result, a no-match, or an error has already been reported.
 		private completed: boolean = false;
+
+		// Set by removeInstance. startAsync awaits the on-device probe before calling start(), so a
+		// Dispose() can land in between; without this the microphone would open on an orphaned,
+		// listener-less recognition that managed code can no longer stop.
+		private disposed: boolean = false;
 
 		private constructor(managedId: string, culture: string) {
 			this.managedId = managedId;
@@ -68,6 +75,9 @@ namespace Windows.Media {
 
 		public static removeInstance(managedId: string) {
 			const recognizer = SpeechRecognizer.instanceMap[managedId];
+			if (recognizer) {
+				recognizer.disposed = true;
+			}
 			if (recognizer && recognizer.recognition) {
 				recognizer.recognition.removeEventListener("result", recognizer.onResult);
 				recognizer.recognition.removeEventListener("speechstart", recognizer.onSpeechStart);
@@ -88,6 +98,11 @@ namespace Windows.Media {
 			this.completed = false;
 
 			await this.tryEnableOnDeviceRecognition();
+
+			if (this.disposed) {
+				// Disposed while probing: the managed operation was already cancelled by Dispose().
+				return;
+			}
 
 			try {
 				recognition.start();
@@ -133,8 +148,8 @@ namespace Windows.Media {
 			const result = event.results[0];
 			const alternative = result[0];
 			if (result.isFinal) {
-				this.completed = true;
 				SpeechRecognizer.getExports().DispatchResult(this.managedId, alternative.transcript, alternative.confidence);
+				this.completed = true;
 			} else {
 				SpeechRecognizer.getExports().DispatchHypothesis(this.managedId, alternative.transcript);
 			}
@@ -146,16 +161,16 @@ namespace Windows.Media {
 
 		private onNoMatch = () => {
 			// Speech was detected but not confidently recognized.
-			this.completed = true;
 			SpeechRecognizer.getExports().DispatchError(this.managedId, "no-match");
+			this.completed = true;
 		}
 
 		// Every Web Speech error code — benign (no-speech, aborted) or genuine (network, not-allowed,
 		// …) — is forwarded as-is. The managed side maps it to a SpeechRecognitionResultStatus and
 		// completes the operation; it never throws.
 		private onError = (event: any) => {
-			this.completed = true;
 			SpeechRecognizer.getExports().DispatchError(this.managedId, event.error);
+			this.completed = true;
 		}
 
 		private onEnd = () => {
@@ -165,8 +180,6 @@ namespace Windows.Media {
 				SpeechRecognizer.getExports().DispatchError(this.managedId, "no-speech");
 			}
 		}
-
-		private static dispatchers: any;
 
 		// Resolves the source-generated managed JSExports for the recognizer. With WebAssembly
 		// threading enabled, the Async variants marshal the call to the managed UI thread.
