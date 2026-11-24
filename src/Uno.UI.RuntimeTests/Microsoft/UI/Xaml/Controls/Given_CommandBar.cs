@@ -5,7 +5,9 @@ using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.RuntimeTests.MUX.Helpers;
 using static Private.Infrastructure.TestServices;
 using Uno.UI.DevTools.Input;
 
@@ -168,6 +170,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot);
 			Assert.HasCount(1, popups);
 		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24671")]
+		public async Task When_Reopened_From_Closed_Handler_Then_Settles_Open()
+		{
+			var SUT = new CommandBar
+			{
+				PrimaryCommands =
+				{
+					new AppBarButton { Label = "PrimaryCommand" }
+				}
+			};
+
+			var closedCount = 0;
+			void OnClosed(object sender, object e)
+			{
+				closedCount++;
+				SUT.IsOpen = true;
+			}
+
+			await UITestHelper.Load(SUT);
+
+			try
+			{
+				SUT.IsOpen = true;
+				await WindowHelper.WaitForIdle();
+
+				SUT.Closed += OnClosed;
+				SUT.IsOpen = false;
+
+				await WindowHelper.WaitFor(() => closedCount >= 1);
+
+				// Give a deferred close several dispatcher turns to show up as a second Closed.
+				for (var i = 0; i < 5; i++)
+				{
+					await WindowHelper.WaitForIdle();
+					await Task.Delay(50);
+				}
+
+				Assert.AreEqual(1, closedCount);
+				Assert.IsTrue(SUT.IsOpen);
+				Assert.IsTrue(GetOverflowPopup(SUT).IsOpen);
+			}
+			finally
+			{
+				SUT.Closed -= OnClosed;
+				SUT.IsOpen = false;
+				await WindowHelper.WaitForIdle();
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		private static Popup GetOverflowPopup(CommandBar commandBar)
+			=> (Popup)TreeHelper.GetVisualChildByName(commandBar, "OverflowPopup");
 	}
 
 }
