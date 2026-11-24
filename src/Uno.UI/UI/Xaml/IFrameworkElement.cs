@@ -141,10 +141,10 @@ namespace Microsoft.UI.Xaml
 			}
 
 			// The lambda is static to make sure it doesn't capture anything, for performance reasons.
-			var matchingChild = group.FindLastChild(name, static (c, name) => c is IFrameworkElement fe && string.Equals(fe.Name, name, StringComparison.Ordinal) ? fe : null, out var hasAnyChildren);
+			var matchingChild = FindLastChild(group, name, static (c, name) => c is IFrameworkElement fe && string.Equals(fe.Name, name, StringComparison.Ordinal) ? fe : null, out var hasAnyChildren);
 			if (hasAnyChildren)
 			{
-				matchingChild ??= group.FindLastChild(name, static (c, name) => (c as IFrameworkElement)?.FindName(name) as IFrameworkElement, out _);
+				matchingChild ??= FindLastChild(group, name, static (c, name) => (c as IFrameworkElement)?.FindName(name) as IFrameworkElement, out _);
 			}
 
 			if (matchingChild is not null)
@@ -220,6 +220,21 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return null;
+
+			static IFrameworkElement FindLastChild(ViewGroup group, string name, Func<UIElement, string, IFrameworkElement> selector, out bool hasAnyChildren)
+			{
+				var children = group.GetChildren();
+				hasAnyChildren = children.Count > 0;
+				for (var i = children.Count - 1; i >= 0; i--)
+				{
+					if (selector(children[i], name) is { } result)
+					{
+						return result;
+					}
+				}
+
+				return null;
+			}
 		}
 
 		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
