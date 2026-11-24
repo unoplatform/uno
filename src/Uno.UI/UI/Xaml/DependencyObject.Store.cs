@@ -652,6 +652,11 @@ namespace Microsoft.UI.Xaml
 
 				SetValueInternal(value, precedence, propertyDetails);
 
+				if (value == DependencyProperty.UnsetValue)
+				{
+					ReapplyKeptCoercion(actualInstanceAlias, propertyDetails);
+				}
+
 				if (!isPersistentResourceBinding && !_isSettingPersistentResourceBinding)
 				{
 					// If a non-theme value is being set, clear any theme binding so it's not overwritten if the theme changes.
@@ -887,6 +892,25 @@ namespace Microsoft.UI.Xaml
 				// The base value and the coerced value are the same. Remove any existing coercion.
 				SetValueInternal(DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Coercion, propertyDetails);
 			}
+		}
+
+		/// <summary>
+		/// Clearing a layer drops the coercion (see <see cref="ApplyCoercion"/>). A property marked
+		/// <see cref="FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals"/> (e.g. IsEnabled suppressed by a
+		/// command's CanExecute) is coerced again against the base value that remains.
+		/// </summary>
+		private void ReapplyKeptCoercion(DependencyObject actualInstanceAlias, DependencyPropertyDetails propertyDetails)
+		{
+			var property = propertyDetails.Property;
+			if (property.Metadata.CoerceValueCallback is null
+				|| property.Metadata is not FrameworkPropertyMetadata { Options: var options }
+				|| (options & FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals) == 0)
+			{
+				return;
+			}
+
+			var (baseValue, basePrecedence) = GetBaseValue(property);
+			ApplyCoercion(actualInstanceAlias, propertyDetails, GetValue(propertyDetails), baseValue, basePrecedence);
 		}
 
 		internal void CoerceValue(DependencyProperty property)

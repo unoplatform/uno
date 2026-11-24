@@ -577,6 +577,48 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public void When_Moved_Then_CanExecute_False_Button_Stays_Disabled(bool moveParentPanel)
+		{
+			var hostA = new UserControl { IsEnabled = true };
+			var button = new Button { Command = new NeverExecutableCommand() };
+			var panel = new Grid();
+			FrameworkElement moved = moveParentPanel ? panel : button;
+			if (moveParentPanel)
+			{
+				panel.Children.Add(button);
+			}
+
+			hostA.Content = moved;
+			Assert.IsFalse(button.IsEnabled, "Button whose command can't execute, before the move");
+
+			hostA.Content = null;
+			var hostB = new UserControl { Content = moved };
+			Assert.IsFalse(button.IsEnabled, "Button whose command can't execute, after the move");
+			GC.KeepAlive(hostB);
+		}
+
+		[TestMethod]
+		public void When_Local_IsEnabled_Cleared_Then_CanExecute_False_Button_Stays_Disabled()
+		{
+			var button = new Button { Command = new NeverExecutableCommand(), IsEnabled = true };
+			Assert.IsFalse(button.IsEnabled, "Button whose command can't execute, with a local IsEnabled");
+
+			button.ClearValue(Control.IsEnabledProperty);
+			Assert.IsFalse(button.IsEnabled, "Button whose command can't execute, after clearing IsEnabled");
+		}
+
+		private sealed class NeverExecutableCommand : System.Windows.Input.ICommand
+		{
+			public event EventHandler CanExecuteChanged { add { } remove { } }
+
+			public bool CanExecute(object parameter) => false;
+
+			public void Execute(object parameter) { }
+		}
+
+		[TestMethod]
 		public void When_Animating_And_Animation_Is_Done_Then_Returns_Local()
 		{
 			var SUT = new MockDependencyObject();
