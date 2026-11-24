@@ -155,25 +155,29 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 		{
 			elements = await RadioButtonsTestPage.Create();
 			_trail.Clear();
-			foreach (RadioButtonsSourceLocation location in Enum.GetValues(typeof(RadioButtonsSourceLocation)))
+			// Temporary: repeated so one CI run is likelier to hit the intermittent failure.
+			for (var round = 0; round < 6; round++)
 			{
-				await SetSource(location);
-				foreach (RadioButtonsSourceType type in Enum.GetValues(typeof(RadioButtonsSourceType)))
+				foreach (RadioButtonsSourceLocation location in Enum.GetValues(typeof(RadioButtonsSourceLocation)))
 				{
-					bool useBackup = type == RadioButtonsSourceType.String;
-					await SetItemType(type);
-					var p = $"{location}/{type}";
-					await DiagTap(p, 3, useBackup);
-					await DiagStep($"{p} Down", () => KeyboardHelper.Down(), 4);
-					await DiagStep($"{p} Up", () => KeyboardHelper.Up(), 3);
-					await DiagStep($"{p} Left", () => KeyboardHelper.Left(), 3);
-					await DiagStep($"{p} Right", () => KeyboardHelper.Right(), 3);
+					await SetSource(location);
+					foreach (RadioButtonsSourceType type in Enum.GetValues(typeof(RadioButtonsSourceType)))
+					{
+						bool useBackup = type == RadioButtonsSourceType.String;
+						await SetItemType(type);
+						var p = $"r{round} {location}/{type}";
+						await DiagTap(p, 3, useBackup);
+						await DiagStep($"{p} Down", () => KeyboardHelper.Down(), 4);
+						await DiagStep($"{p} Up", () => KeyboardHelper.Up(), 3);
+						await DiagStep($"{p} Left", () => KeyboardHelper.Left(), 3);
+						await DiagStep($"{p} Right", () => KeyboardHelper.Right(), 3);
 
-					await DiagTap(p, 0, useBackup);
-					await DiagStep($"{p} Up", () => KeyboardHelper.Up(), 0);
+						await DiagTap(p, 0, useBackup);
+						await DiagStep($"{p} Up", () => KeyboardHelper.Up(), 0);
 
-					await DiagTap(p, 9, useBackup);
-					await DiagStep($"{p} Down", () => KeyboardHelper.Down(), 9);
+						await DiagTap(p, 9, useBackup);
+						await DiagStep($"{p} Down", () => KeyboardHelper.Down(), 9);
+					}
 				}
 			}
 		}
