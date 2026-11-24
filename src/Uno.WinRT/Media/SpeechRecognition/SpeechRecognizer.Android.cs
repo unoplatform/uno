@@ -82,14 +82,17 @@ namespace Windows.Media.SpeechRecognition
 
 		public IAsyncAction StopRecognitionAsync()
 		{
+			// StopListening ends audio capture and still delivers the final results. Destroy is
+			// reserved for Dispose: calling it here left the instance unable to recognize again.
 			_speechRecognizer?.StopListening();
-			_speechRecognizer?.Destroy();
 			return Task.CompletedTask.AsAsyncAction();
 		}
 
 		public void Dispose()
 		{
+			_speechRecognizer?.Destroy();
 			_speechRecognizer?.Dispose();
+			_speechRecognizer = null;
 		}
 	}
 }
