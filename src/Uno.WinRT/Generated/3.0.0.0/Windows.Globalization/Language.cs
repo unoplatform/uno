@@ -7,8 +7,8 @@ namespace Windows.Globalization;
 #endif
 public partial class Language
 {
-#if false || false || false || false || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if false || false || false || false || false || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 	public static string CurrentInputMethodLanguageTag
 	{
 		get
@@ -59,8 +59,8 @@ public partial class Language
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "IsWellFormed(string languageTag)");
 	}
 #endif
-#if false || false || false || false || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if false || false || false || false || false || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 	public static bool TrySetInputMethodLanguageTag(string languageTag)
 	{
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.Language", "TrySetInputMethodLanguageTag(string languageTag)");
