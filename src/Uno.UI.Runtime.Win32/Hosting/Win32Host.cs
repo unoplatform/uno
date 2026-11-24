@@ -6,6 +6,7 @@ using Uno.Web.WebView2.Core;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Graphics.Display;
 using Windows.Media.Playback;
+using Windows.Media.SpeechRecognition;
 using Windows.Networking.Connectivity;
 using Windows.Storage.Pickers;
 using Windows.System.Profile.Internal;
@@ -115,6 +116,7 @@ public class Win32Host : UnoPlatformHost, IApplicationHost
 		ApiExtensibility.Register(typeof(ITextBoxNotificationsProviderSingleton), _ => Win32TextBoxNotificationsProviderSingleton.Instance);
 		ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => Win32ImeTextBoxExtension.Instance);
 		ApiExtensibility.Register<XamlRoot>(typeof(INativeOpenGLWrapper), xamlRoot => new Win32NativeOpenGLWrapper(xamlRoot));
+		ApiExtensibility.Register(typeof(ISpeechRecognizerExtension), _ => new Win32SpeechRecognizerExtension());
 
 		AccessibilityRouter.EnsureInitialized();
 		// A Win32 bridge is enabled as soon as its window exists.
