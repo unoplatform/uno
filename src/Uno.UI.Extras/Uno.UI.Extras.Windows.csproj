@@ -39,8 +39,6 @@
 		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Collections\EnumerableExtensions.cs" Link="Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Collections\EnumerableExtensions.cs" />
 		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Compatibility\Threading\AsyncLock.cs" Link="Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Compatibility\Threading\AsyncLock.cs" />
 
-		<Compile Include="..\Uno.UI\Extensions\PrettyPrint.cs" Link="Uno.UI\Extensions\PrettyPrint.cs" />
-		<Compile Include="..\Uno.UI\Extensions\ViewExtensions.visual-tree.cs" Link="Uno.UI\Extensions\ViewExtensions.visual-tree.cs" />
 		<Compile Include="..\Uno.UI\Extensions\UIElementExtensions.Debug.cs" Link="Uno.UI\Extensions\UIElementExtensions.Debug.cs" />
 
 		<Compile Include="..\Uno.UI\Helpers\XamlHelper.cs" Link="Uno.UI\Helpers\XamlHelper.cs" />
