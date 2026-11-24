@@ -45,17 +45,11 @@ For an Uno.WASM app you can simply use the layout inspection tools built into wh
 
 ![DOM tree in Chrome](assets/debugging-inspect-visual-tree/WASM-DOM-Elements.jpg)
 
-## Retrieving the visual tree through code or at a breakpoint (Android/iOS/WebAssembly/macOS)
+## Retrieving the visual tree through code or at a breakpoint
 
-It's common enough when debugging Uno to be at a breakpoint and want to quickly know exactly where the view is in the visual tree, that we added a helper method.  
+It's common enough when debugging to be at a breakpoint and want to quickly know exactly where the view is in the visual tree, that Uno provides a helper method: `TreeGraph`. It's an extension method of the `Uno.UI.Extensions.VisualTreeExtensions` class, which ships in `Uno.UI.Extras` and is public on every target, WinAppSDK included.
 
-If you're using a debug build of Uno, this is directly available on UIElement as the `public string ShowLocalVisualTree(int fromHeight)` method (for ease of use in the watch window). If you're using the release version of Uno, the same method is available as an extension in UIKit.UIViewExtensions for iOS or Uno.UI.ViewExtensions for Android.  
-
-The method returns the visual tree from a certain 'height' above the target element as an indented string. So if you call ShowLocalVisualTree(2), you'll get the visual subtree from the target element's grandparent down. If you call ShowLocalVisualTree(100), you'll almost certainly get the entire visual tree starting from the root element. The original target is picked out with an asterisk (*) so you can find it.  
-
-![ShowLocalVisualTree() on iOS](assets/debugging-inspect-visual-tree/iOS-ShowLocalVisualTree.jpg)
-
-Similarly to the `ShowLocalVisualTree` method, there is also the `TreeGraph` method that produces a tree with more details suited for troubleshooting visual/layout issue:
+`TreeGraph` returns the visual tree below an element as an indented string, with details suited for troubleshooting visual and layout issues:
 
 ```csharp
 using Uno.UI.Extensions;
@@ -69,13 +63,15 @@ private void DebugVT(object sender, RoutedEventArgs e)
 
 ![TreeGraph](assets/debugging-inspect-visual-tree/tree-graph.png)
 
-The advantage of this over `ShowLocalVisualTree` is the ability to customize the amount of details, as it has an overload that takes in a `Func<object, string>` to describe the visual tree node:
+To get the whole tree, call it on the root element, for example `XamlRoot.Content.TreeGraph()`. In the watch window, call it as a static method: `Uno.UI.Extensions.VisualTreeExtensions.TreeGraph(element)`.
+
+You can customize the amount of details, as `TreeGraph` has an overload that takes in a `Func<object, string>` to describe the visual tree node:
 
 > [!NOTE]
 > For more examples of control details, check out these source files:
 >
 > - [`DebugVTNode\GetDetails()` method in Toolkit](https://github.com/unoplatform/uno.toolkit.ui/blob/main/src/Uno.Toolkit.UI/Helpers/VisualTreeHelperEx.cs)
-> - [`DescribeVTNode\GetDetails()` method in Uno](https://github.com/unoplatform/uno/blob/master/src/Uno.UI/Extensions/ViewExtensions.visual-tree.cs)
+> - [`DescribeVTNode\GetDetails()` method in Uno](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.Extras/Extensions/VisualTreeExtensions.cs)
 
 ```csharp
 var tree = this.TreeGraph(Describe);
