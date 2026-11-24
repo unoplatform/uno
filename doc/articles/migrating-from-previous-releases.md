@@ -22,6 +22,22 @@ If your app used other Play Core APIs, such as in-app updates or Play Asset/Feat
 
 This change is tracked by [issue #24948](https://github.com/unoplatform/uno/issues/24948).
 
+### Visual tree helpers moved to `Uno.UI.Extras`
+
+The visual tree helpers in the `Uno.UI.Extensions` namespace (`TreeGraph`, `FindFirstAncestor`, `FindFirstDescendant`, `EnumerateDescendants`, ...) and `PrettyPrint` moved from `Uno.UI` to `Uno.UI.Extras`, which ships in the `Uno.WinUI` package. They are now public on every target, WinAppSDK included, and the `ViewExtensions` class is renamed `VisualTreeExtensions`. The namespace doesn't change, so calls written as extension methods, such as `element.TreeGraph()`, compile as before. Libraries that call them need to be recompiled, since the types moved to another assembly.
+
+The other changes are:
+
+- Calls that name the class: `ViewExtensions.TreeGraph(element)` becomes `VisualTreeExtensions.TreeGraph(element)`, and `using static Uno.UI.Extensions.ViewExtensions;` becomes `using static Uno.UI.Extensions.VisualTreeExtensions;`.
+- `Uno.UI.ViewExtensions.EnumerateAllChildren(maxDepth)` is now `VisualTreeExtensions.EnumerateRawDescendants(maxDepth)`, in the `Uno.UI.Extensions` namespace. It no longer stops at 20 levels by default; pass `maxDepth: 20` to keep that limit. The overload that takes a selector is removed; filter the result with LINQ instead. Unlike `EnumerateDescendants`, it also returns the placeholders that `x:Load` leaves for elements not loaded yet.
+- `GetVisualAncestry()` is removed. Use `EnumerateVisualTreeAncestors().OfType<UIElement>()`, which follows `VisualTreeHelper.GetParent`: from a list item, it also returns the list's panel and `ScrollViewer`.
+- `AsNativeView()` is removed. Use `element as DependencyObject`.
+- `TryGetDpValue` is now public. It returns `false` when the property's value isn't of the requested type, instead of throwing.
+- `UIElement.ShowLocalVisualTree()`, which only existed in Debug builds of Uno Platform, is removed. Use `TreeGraph()`.
+- `BinderReferenceHolder.GetInactiveChildViewBinders()` and `GetInactiveChildInstancesOfType<T>()` are removed. They threw `NotImplementedException` as soon as a tracked view was active.
+
+See [Inspecting the runtime visual tree](xref:Uno.Contributing.InspectVisualTree) for how to use `TreeGraph`.
+
 ## Uno Platform 7.0
 
 Uno Platform 7.0 is the Skia-unification major release: Skia is the rendering engine on every
