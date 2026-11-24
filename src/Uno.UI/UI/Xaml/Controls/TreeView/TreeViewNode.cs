@@ -269,15 +269,15 @@ public partial class TreeViewNode : DependencyObject, ICustomPropertyProvider, I
 				return resultStringable.ToString();
 			}
 
-			return content?.ToString() ?? GetType().Name;
+			return content.ToString() ?? GetType().FullName;
 		}
 
-		return GetType().Name;
+		return GetType().FullName;
 	}
 
 	#region ICustomPropertyProvider
 
-	Type ICustomPropertyProvider.Type => typeof(TreeViewNode);
+	Type ICustomPropertyProvider.Type => GetType();
 
 	ICustomProperty ICustomPropertyProvider.GetCustomProperty(string name) => null;
 

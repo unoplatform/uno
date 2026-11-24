@@ -39,5 +39,5 @@ public partial class TreeView
 	/// </summary>
 	public event TypedEventHandler<TreeView, TreeViewSelectionChangedEventArgs> SelectionChanged;
 
-	private event TypedEventHandler<TreeView, ContainerContentChangingEventArgs> ContainerContentChanged;
+	private event TypedEventHandler<ListViewBase, ContainerContentChangingEventArgs> ContainerContentChanged;
 }

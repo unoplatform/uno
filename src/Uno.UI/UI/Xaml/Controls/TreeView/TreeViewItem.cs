@@ -24,6 +24,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class TreeViewItem : ListViewItem
 {
+	// When dragging an item over a collapsed folder, we expand the folder after 1s hovering.
 	private const long c_dragOverInterval = 1000 * 10000;
 	private const string c_multiSelectCheckBoxName = "MultiSelectCheckBox";
 	private const string c_expandCollapseChevronName = "ExpandCollapseChevron";
@@ -186,7 +187,7 @@ public partial class TreeViewItem : ListViewItem
 						mutableTreeViewList.SetDraggedOverItem(draggedOverItem);
 					}
 
-					treeViewList.UpdateDropTargetDropEffect(false, false, null);
+					mutableTreeViewList.UpdateDropTargetDropEffect(false, false, null);
 				}
 			}
 		}
@@ -229,19 +230,18 @@ public partial class TreeViewItem : ListViewItem
 					{
 						if (m_expandContentTimer != null)
 						{
-							var expandContentTimer = m_expandContentTimer;
-							expandContentTimer.Stop();
-							expandContentTimer.Start();
+							m_expandContentTimer.Stop();
+							m_expandContentTimer.Start();
 						}
 						else
 						{
 							// Initialize timer.
 							TimeSpan interval = new TimeSpan(c_dragOverInterval);
-							var expandContentTimer = new DispatcherTimer();
-							m_expandContentTimer = expandContentTimer;
-							expandContentTimer.Interval = interval;
-							expandContentTimer.Tick += OnExpandContentTimerTick;
-							expandContentTimer.Start();
+
+							m_expandContentTimer = new DispatcherTimer();
+							m_expandContentTimer.Interval = interval;
+							m_expandContentTimer.Tick += OnExpandContentTimerTick;
+							m_expandContentTimer.Start();
 						}
 					}
 				}
@@ -258,8 +258,8 @@ public partial class TreeViewItem : ListViewItem
 			var treeView = AncestorTreeView;
 			if (treeView != null)
 			{
-				var treeViewList = treeView.ListControl;
-				treeViewList.SetDraggedOverItem(null);
+				var mutableTreeViewList = treeView.MutableListControl;
+				mutableTreeViewList.SetDraggedOverItem(null);
 			}
 
 			if (m_expandContentTimer != null)
@@ -279,6 +279,13 @@ public partial class TreeViewItem : ListViewItem
 	protected override void OnApplyTemplate()
 	{
 		RecycleEvents();
+
+		// Uno specific: stands in for m_checkedEventRevoker and m_uncheckedEventRevoker, without allocating per item.
+		if (m_selectionBox != null)
+		{
+			m_selectionBox.Checked -= OnCheckToggle;
+			m_selectionBox.Unchecked -= OnCheckToggle;
+		}
 
 		m_selectionBox = (CheckBox)GetTemplateChild(c_multiSelectCheckBoxName);
 		RegisterPropertyChangedCallback(SelectorItem.IsSelectedProperty, OnIsSelectedChanged);
@@ -504,20 +511,23 @@ public partial class TreeViewItem : ListViewItem
 		if (treeView != null)
 		{
 			var listControl = treeView.ListControl;
-			if (listControl.IsMultiselect)
+			if (listControl != null)
 			{
-				UpdateMultipleSelection(state);
-			}
-			else
-			{
-				var node = TreeNode;
-				if (node != null)
+				if (listControl.IsMultiselect)
 				{
-					var viewModel = listControl.ListViewModel;
-					var isNodeSelected = viewModel.IsNodeSelected(node);
-					if (isNodeSelected != IsSelected)
+					UpdateMultipleSelection(state);
+				}
+				else
+				{
+					var node = TreeNode;
+					if (node != null)
 					{
-						IsSelected = isNodeSelected;
+						var viewModel = listControl.ListViewModel;
+						var isNodeSelected = viewModel.IsNodeSelected(node);
+						if (isNodeSelected != IsSelected)
+						{
+							IsSelected = isNodeSelected;
+						}
 					}
 				}
 			}
@@ -640,7 +650,7 @@ public partial class TreeViewItem : ListViewItem
 		}
 		else
 		{
-			// Leaf node: toggle selection 
+			// Leaf node: toggle selection
 			ToggleSelection();
 		}
 	}
@@ -768,6 +778,7 @@ public partial class TreeViewItem : ListViewItem
 		var chevron = m_expandCollapseChevron;
 		if (chevron != null)
 		{
+			// Uno specific: WinUI revokes PointerCanceled with the PointerPressed token, which detaches nothing.
 			chevron.PointerPressed -= OnExpandCollapseChevronPointerPressed;
 		}
 	}

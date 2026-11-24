@@ -8,6 +8,7 @@ using System.Linq;
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -15,7 +16,6 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 {
 	private readonly SelectedTreeNodeVector m_selectedNodes;
 	private readonly SelectedItemsVector m_selectedItems;
-	private readonly Dictionary<object, TreeViewNode> m_itemToNodeMap;
 
 	private TreeViewNode m_originNode;
 	private TreeViewList m_TreeViewList;
@@ -39,8 +39,6 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 		var selectedItems = new SelectedItemsVector();
 		selectedItems.SetViewModel(this);
 		m_selectedItems = selectedItems;
-
-		m_itemToNodeMap = new Dictionary<object, TreeViewNode>();
 	}
 
 	~TreeViewViewModel()
@@ -406,10 +404,7 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 
 	private void RemoveNodesAndDescendentsWithFlatIndexRange(int lowIndex, int highIndex)
 	{
-		if (lowIndex > highIndex)
-		{
-			throw new ArgumentOutOfRangeException(nameof(lowIndex));
-		}
+		MUX_ASSERT(lowIndex <= highIndex);
 
 		for (int i = highIndex; i >= lowIndex; i--)
 		{
@@ -540,7 +535,7 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 			switch (selectionState)
 			{
 				case TreeNodeSelectionState.Selected:
-					selectedNodes.InsertAtCore(selectedNodes.Count, selectNode);
+					selectedNodes.InsertAtCore_NoContainsCheck(selectedNodes.Count, selectNode);
 					selectNode.ChildrenChanged += SelectedNodeChildrenChanged;
 					break;
 
@@ -575,11 +570,26 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 	{
 		if (selectionState == TreeNodeSelectionState.PartialSelected) { return; }
 
-		foreach (var childNode in targetNode.Children)
+		// For unselecting items, we process the list backwards. This prevents an item from being repeatedly shuffled
+		// towards the front of the list only to be removed at the end anyway.
+		if (selectionState == TreeNodeSelectionState.UnSelected)
 		{
-			UpdateNodeSelection(childNode, selectionState);
-			UpdateSelectionStateOfDescendants(childNode, selectionState);
-			NotifyContainerOfSelectionChange(childNode, selectionState);
+			for (int i = targetNode.Children.Count - 1; i >= 0; i--)
+			{
+				var childNode = targetNode.Children[i];
+				UpdateSelectionStateOfDescendants(childNode, selectionState);
+				UpdateNodeSelection(childNode, selectionState);
+				NotifyContainerOfSelectionChange(childNode, selectionState);
+			}
+		}
+		else
+		{
+			foreach (var childNode in targetNode.Children)
+			{
+				UpdateNodeSelection(childNode, selectionState);
+				UpdateSelectionStateOfDescendants(childNode, selectionState);
+				NotifyContainerOfSelectionChange(childNode, selectionState);
+			}
 		}
 	}
 
@@ -706,9 +716,10 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 
 	internal TreeViewNode GetAssociatedNode(object item)
 	{
-		if (m_itemToNodeMap.TryGetValue(item, out var result))
+		var treeView = m_TreeView;
+		if (treeView != null)
 		{
-			return result;
+			return treeView.GetAssociatedNode(item);
 		}
 
 		return null;
@@ -729,7 +740,7 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 		switch (collectionChange)
 		{
 			// Reset case, commonly seen when a TreeNode is cleared.
-			// removes all nodes that need removing then 
+			// removes all nodes that need removing then
 			// toggles a collapse / expand to ensure order.
 			case (CollectionChange.Reset):
 				{
@@ -746,14 +757,13 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 						ExpandNode(resetNode);
 					}
 
+#if HAS_UNO
 					if (IsContentMode)
 					{
-						// Uno-specific: a Reset (e.g. ItemsSource collection Clear) removes the nodes but
-						// left their item -> node mappings behind, retaining every cleared item (and, when
-						// items come from a collectible AssemblyLoadContext, pinning that ALC) for the
-						// TreeView's lifetime. Drop mappings whose node is no longer attached to the origin.
-						PruneDetachedNodesFromItemMap();
+						// Uno specific: WinUI keeps the selected nodes a Reset removed, which retains their items.
+						PruneDetachedSelectedNodes();
 					}
+#endif
 
 					break;
 				}
@@ -767,11 +777,6 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 			case (CollectionChange.ItemInserted):
 				{
 					var targetNode = sender.Children[index];
-
-					if (IsContentMode)
-					{
-						m_itemToNodeMap[targetNode.Content] = targetNode;
-					}
 
 					var parentNode = targetNode.Parent;
 					int nextNodeIndex = GetNextIndexInFlatTree(parentNode);
@@ -809,10 +814,6 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 					{
 						var removedNode = GetRemovedChildTreeViewNodeByIndex(removingNodeParent, index);
 						RemoveNodeAndDescendantsFromView(removedNode);
-						if (IsContentMode)
-						{
-							m_itemToNodeMap.Remove(removedNode.Content);
-						}
 					}
 
 					break;
@@ -828,19 +829,11 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 					{
 						var removedNode = GetRemovedChildTreeViewNodeByIndex(changingNodeParent, index);
 
-						if (!IndexOfNode(removedNode, out var removedNodeIndex))
-						{
-							throw new InvalidOperationException("Node does not exist");
-						}
+						var removedNodeFound = IndexOfNode(removedNode, out var removedNodeIndex);
+						MUX_ASSERT(removedNodeFound);
 
 						RemoveNodeAndDescendantsFromView(removedNode);
-						Insert(removedNodeIndex, targetNode);
-
-						if (IsContentMode)
-						{
-							m_itemToNodeMap.Remove(removedNode.Content);
-							m_itemToNodeMap.Add(targetNode.Content, targetNode);
-						}
+						InsertAt(removedNodeIndex, targetNode);
 					}
 
 					break;
@@ -848,39 +841,11 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 		}
 	}
 
-	/// <summary>
-	/// Uno-specific: removes <see cref="m_itemToNodeMap"/> entries whose node is no longer attached to
-	/// the origin node. The WinUI-derived collection-change handling only removes mappings on
-	/// <c>ItemRemoved</c> with an expanded parent; a <c>Reset</c> (collection Clear) or a removal under a
-	/// collapsed parent leaks the mapping — and with it the item — for the TreeView's lifetime.
-	/// </summary>
-	private void PruneDetachedNodesFromItemMap()
+#if HAS_UNO
+	// Uno specific: goes through RemoveAtCore so that SelectedItems stays in sync and the unselection is tracked,
+	// batched into a single SelectionChanged.
+	private void PruneDetachedSelectedNodes()
 	{
-		List<object> keysToRemove = null;
-		foreach (var pair in m_itemToNodeMap)
-		{
-			if (IsDetachedFromOrigin(pair.Value))
-			{
-				(keysToRemove ??= new List<object>()).Add(pair.Key);
-			}
-		}
-
-		if (keysToRemove is not null)
-		{
-			foreach (var key in keysToRemove)
-			{
-				m_itemToNodeMap.Remove(key);
-			}
-		}
-
-		// The selection vectors are a second retention path with the same defect: a selected node
-		// removed via Reset stays in m_selectedNodes / m_selectedItems indefinitely, keeping the node
-		// and its item alive. Prune detached selected nodes the same way the ItemRemoved/Reset cases
-		// above do — via SelectedTreeNodeVector.RemoveAtCore, which keeps m_selectedItems in sync and
-		// records the unselect (TrackItemUnselected). Removing from m_selectedItems directly would
-		// bypass that tracking (RemoveAtCore then can't correlate the already-removed item), so
-		// SelectionChanged would not be raised in multi-select mode. Batch the removals inside
-		// Begin/EndSelectionChanges so a single aggregate SelectionChanged is raised.
 		BeginSelectionChanges();
 		for (var i = m_selectedNodes.Count - 1; i >= 0; i--)
 		{
@@ -903,6 +868,7 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 
 		return node != m_originNode;
 	}
+#endif
 
 	private void SelectedNodeChildrenChanged(TreeViewNode sender, object args)
 	{
@@ -1028,7 +994,7 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 				RemoveNodeAndDescendantsFromView(childNode);
 			}
 
-			//Notife TreeView that a node is being collapsed
+			//Notify TreeView that a node is being collapsed
 			NodeCollapsed?.Invoke(targetNode, null);
 		}
 	}
@@ -1055,7 +1021,7 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 
 	private void ClearEventTokenVectors()
 	{
-		// Remove ChildrenChanged and ExpandedChanged events			
+		// Remove ChildrenChanged and ExpandedChanged events
 		for (var i = 0; i < Count; i++)
 		{
 			if (i < base.Count)

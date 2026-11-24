@@ -47,7 +47,53 @@ internal class ObservableVector<T> : IObservableVector<T>, IObservableVector, IL
 	public virtual IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
 
 	int IObservableVector.IndexOf(object item) => item is T t ? IndexOf(t) : -1;
-	public int IndexOf(T item) => _list.IndexOf(item);
+	public virtual int IndexOf(T item) => _list.IndexOf(item);
+
+	// MUX Reference Vector.h (VectorInnerImpl::IndexOf_OptimizedForRemove)
+	// Uno specific: the caller holds the search position, so vectors that never use this don't carry the field.
+	private protected bool IndexOf_OptimizedForRemove(T value, ref int startNextSearchAt, out int index)
+	{
+		index = 0;
+
+		if (startNextSearchAt >= _list.Count)
+		{
+			if (_list.Count == 0)
+			{
+				startNextSearchAt = 0;
+			}
+			else
+			{
+				startNextSearchAt = _list.Count - 1;
+			}
+		}
+
+		var it = _list.IndexOf(value, startNextSearchAt);
+		bool found = it != -1;
+		if (!found && startNextSearchAt > 0)
+		{
+			it = _list.IndexOf(value, 0, startNextSearchAt);
+			found = it != -1;
+		}
+
+		if (found)
+		{
+			index = it;
+			if (index > 0)
+			{
+				// Next time we search start near this index. We assume that the remove is being processed from the end
+				// of the vector towards index 0, so the next item being removed is probably at "index - 1". Start the
+				// next search there.
+				startNextSearchAt = index - 1;
+			}
+			else
+			{
+				startNextSearchAt = index;
+			}
+			return true;
+		}
+
+		return false;
+	}
 
 	void IObservableVector.Insert(int index, object item) => Insert(index, (T)item);
 	public virtual void Insert(int index, T item)

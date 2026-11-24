@@ -24,7 +24,7 @@ public partial class TreeViewList : ListView
 	private bool m_isMultiselectEnabled = false;
 	private bool m_itemsSourceAttached = false;
 	private string m_dropTargetDropEffectString;
-	private UIElement m_draggedOverItem;
+	private TreeViewItem m_draggedOverItem;
 	private int m_emptySlotIndex;
 	private TreeViewNode m_draggedTreeViewNode;
 
@@ -34,7 +34,10 @@ public partial class TreeViewList : ListView
 	public TreeViewList()
 	{
 		ListViewModel = new TreeViewViewModel();
+#if HAS_UNO
+		// Uno specific: TreeViewList moves the dragged nodes itself, ListViewBase must not reorder its items.
 		IsCustomReorder = true;
+#endif
 		DragItemsStarting += OnDragItemsStarting;
 		DragItemsCompleted += OnDragItemsCompleted;
 		ContainerContentChanging += OnContainerContentChanging;
@@ -144,7 +147,7 @@ public partial class TreeViewList : ListView
 
 				if (IsMutiSelectWithSelectedItems)
 				{
-					// Multiselect drag and drop. In the selected items, find all the selected subtrees 
+					// Multiselect drag and drop. In the selected items, find all the selected subtrees
 					// and move each of those subtrees.
 					var selectedRootNodes = GetRootsOfSelectedSubtrees();
 
@@ -167,7 +170,7 @@ public partial class TreeViewList : ListView
 		base.OnDrop(e);
 	}
 
-	// Required as OnDrop is protected and can't be accessed from outside
+	// Uno specific: OnDrop is protected, TreeViewItem calls it through this.
 	internal void OnDropInternal(Microsoft.UI.Xaml.DragEventArgs e) => OnDrop(e);
 
 	private void MoveNodeInto(TreeViewNode node, TreeViewNode insertAtNode)
@@ -365,12 +368,7 @@ public partial class TreeViewList : ListView
 			{
 				DispatcherQueue.TryEnqueue(() =>
 				{
-					// The "source of truth" for IsExpanded should come from the (likely recycled) container only if
-					// it has a binding on IsExpanded. Otherwise, the container doesn't know anything and we should
-					// use the IsExpanded value of the Node (which remembers the last value of IsExpanded before
-					// the container was recycled)
-					var bindingExists = itemContainer.GetBindingExpression(TreeViewItem.IsExpandedProperty) is { };
-					if (bindingExists)
+					if (itemContainer.GetBindingExpression(TreeViewItem.IsExpandedProperty) != null)
 					{
 						itemNode.IsExpanded = itemContainer.IsExpanded;
 					}
