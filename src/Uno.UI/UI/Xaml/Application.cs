@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices.JavaScript;
 using System.Runtime.Loader;
 using System.Text;
@@ -90,6 +91,7 @@ namespace Microsoft.UI.Xaml
 			ApiInformation.RegisterAssembly(typeof(Microsoft.UI.Composition.Compositor).Assembly);
 
 			Uno.Helpers.DispatcherTimerProxy.SetDispatcherTimerGetter(() => new DispatcherTimer());
+			Uno.UI.Dispatching.NativeDispatcher.UnhandledExceptionHandler = static e => Current?.TryHandleUnhandledException(e) == true;
 			Uno.Helpers.VisualTreeHelperProxy.SetCloseAllFlyoutsAction(() =>
 			{
 				var contentRoots = WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots;
@@ -467,6 +469,48 @@ namespace Microsoft.UI.Xaml
 
 		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
 
+		private const string UnhandledExceptionReportedKey = "Uno.UI.UnhandledExceptionReported";
+
+		/// <summary>
+		/// Raises <see cref="UnhandledException"/> for the given exception and returns whether a handler marked it
+		/// as handled, like WinUI's ErrorHelper::ProcessUnhandledError, which fails fast otherwise.
+		/// </summary>
+		/// <remarks>
+		/// An exception left unhandled is reported only once, so the outer catch sites it unwinds through
+		/// do not raise the event again.
+		/// </remarks>
+		internal bool TryHandleUnhandledException(Exception e)
+		{
+			if (IsUnhandledExceptionReported(e))
+			{
+				return false;
+			}
+
+			var args = new UnhandledExceptionEventArgs(e, fatal: true);
+			UnhandledException?.Invoke(this, args);
+			if (!args.Handled)
+			{
+				MarkUnhandledExceptionReported(e);
+			}
+
+			return args.Handled;
+		}
+
+		/// <summary>
+		/// Raises <see cref="UnhandledException"/> for the given exception. If no handler marks
+		/// the event as handled, the exception is re-thrown preserving the original stack trace.
+		/// </summary>
+		internal void RaiseUnhandledException(Exception e)
+		{
+			if (!TryHandleUnhandledException(e))
+			{
+				ExceptionDispatchInfo.Capture(e).Throw();
+			}
+		}
+
+		internal static bool IsUnhandledExceptionReported(Exception e) => e.Data.Contains(UnhandledExceptionReportedKey);
+
+		internal static void MarkUnhandledExceptionReported(Exception e) => e.Data[UnhandledExceptionReportedKey] = true;
 
 		private void InitializeTextScaling()
 		{
