@@ -979,6 +979,22 @@ internal static class BlockLayoutHelpers
 	// RichTextBlock / TextBlock / Block / TextElement cases that can act as the effective paragraph. Replace with a
 	// single resolved TextFormatting read once that is brought over.
 
+	/// <summary>
+	/// Resolves the default font of a paragraph, or of the layout owner when there is no paragraph,
+	/// the same way <see cref="GetParagraphProperties"/> does.
+	/// </summary>
+	internal static FontDetails GetDefaultFontDetails(DependencyObject? pParagraph, DependencyObject pLayoutOwner)
+	{
+		var pEffectiveParagraph = pParagraph ?? pLayoutOwner;
+
+		return FontDetailsCache.GetFont(
+			GetFontFamilySource(pEffectiveParagraph),
+			(float)GetFontSize(pEffectiveParagraph),
+			GetFontWeight(pEffectiveParagraph),
+			GetFontStretch(pEffectiveParagraph),
+			GetFontStyle(pEffectiveParagraph)).details;
+	}
+
 	private static string? GetFontFamilySource(DependencyObject element) => element switch
 	{
 		RichTextBlock rtb => rtb.FontFamily?.Source,

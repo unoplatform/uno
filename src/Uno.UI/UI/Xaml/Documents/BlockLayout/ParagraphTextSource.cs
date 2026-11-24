@@ -246,8 +246,10 @@ internal sealed class ParagraphTextSource : TextSource, ISkiaParagraphSource
 		return null;
 	}
 
+	// Like WinUI's LsTextLine::CalculateLineMetrics, a line with no content is as tall as a line of the
+	// paragraph's default font, not FontSize tall.
 	float ISkiaParagraphSource.DefaultLineHeight
-		=> (float)((m_pContentOwner as Microsoft.UI.Xaml.Controls.RichTextBlock)?.FontSize ?? 14.0);
+		=> BlockLayoutHelpers.GetDefaultFontDetails(m_pParagraph, m_pContentOwner).LineHeight;
 
 	float ISkiaParagraphSource.LineHeight
 	{
