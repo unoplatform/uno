@@ -68,7 +68,7 @@ public partial class SpeechRecognizer : IDisposable
 		}
 	}
 
-	private void OnExtensionHypothesisGenerated(string text) => OnHypothesisGenerated(text);
+	private void OnExtensionHypothesisGenerated(object sender, string text) => OnHypothesisGenerated(text);
 
-	private void OnExtensionStateChanged(SpeechRecognizerState state) => OnStateChanged(state);
+	private void OnExtensionStateChanged(object sender, SpeechRecognizerState state) => OnStateChanged(state);
 }
