@@ -437,7 +437,9 @@ public sealed partial class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRender
 	public ITexture CreateTexture(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
 		=> new WebGpuTexture(_device, pixelWidth, pixelHeight, bgraPremul);
 
-	unsafe WebGPU IWebGpuTextureInterop.Api => Api;
+	// Without the renderer's upload batching: canvas code expects a queue write to land as webgpu.h specifies.
+	unsafe WebGPU IWebGpuTextureInterop.Api
+		=> ReferenceEquals(Api, SilkCompat.SilkCompatContext.Api) ? SilkCompat.SilkCompatContext.PlainApi : Api;
 	unsafe Instance* IWebGpuTextureInterop.Instance => _device.Inst;
 	unsafe Adapter* IWebGpuTextureInterop.Adapter => _device.Adapter;
 	unsafe Device* IWebGpuTextureInterop.Device => _device.Dev;

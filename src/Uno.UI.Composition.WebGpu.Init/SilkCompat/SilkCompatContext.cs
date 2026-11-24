@@ -16,10 +16,33 @@ namespace Uno.UI.Composition.WebGpu.SilkCompat;
 /// <example><c>var wgpu = new WebGPU(SilkCompatContext.Instance);</c></example>
 internal sealed unsafe class SilkCompatContext : INativeContext
 {
-	public static SilkCompatContext Instance { get; } = new();
+	/// <summary>The renderer's table: its queue writes are batched into one upload per submit (see Xlate.AddUploads).</summary>
+	public static SilkCompatContext Instance { get; } = new(batchUploads: true);
 
-	/// <summary>Silk.NET.WebGPU's API, bound to this context.</summary>
+	/// <summary>Silk.NET.WebGPU's API, bound to the renderer's table.</summary>
 	public static WebGPU Api { get; } = new(Instance);
+
+	private static WebGPU? _plainApi;
+
+	/// <summary>
+	/// The same API without upload batching, for code outside the renderer (a <c>WebGpuCanvasElement</c>), which
+	/// expects a queue write to behave as webgpu.h specifies. Same library, so it shares the renderer's objects.
+	/// </summary>
+	public static WebGPU PlainApi
+	{
+		get
+		{
+			if (OperatingSystem.IsBrowser())
+			{
+				return Api;
+			}
+			if (_plainApi is null)
+			{
+				System.Threading.Interlocked.CompareExchange(ref _plainApi, new WebGPU(new SilkCompatContext(batchUploads: false)), null);
+			}
+			return _plainApi;
+		}
+	}
 
 	/// <summary>Silk.NET's wgpu-native extensions, bound to this context.</summary>
 	public static Wgpu Wgpu { get; } = new(Instance);
@@ -32,12 +55,12 @@ internal sealed unsafe class SilkCompatContext : INativeContext
 
 	private readonly Dictionary<string, nint> _table = new();
 
-	private SilkCompatContext()
+	private SilkCompatContext(bool batchUploads)
 	{
 		if (OperatingSystem.IsBrowser())
 		{
 			// The natives are linked into the module; every entry is a forwarder to their [DllImport].
-			Xlate.Populate(_table, _ => 0);
+			Xlate.Populate(_table, _ => 0, batchUploads: false);
 			return;
 		}
 
@@ -50,7 +73,7 @@ internal sealed unsafe class SilkCompatContext : INativeContext
 		var library = WebGpuLoader.Resolved != IntPtr.Zero ? WebGpuLoader.Resolved : NativeLibrary.Load("webgpu", typeof(WGPU).Assembly, null);
 		nint Export(string name) => NativeLibrary.TryGetExport(library, name, out var address) ? address : 0;
 		WGPU.BindExtras(Export);
-		Xlate.Populate(_table, Export);
+		Xlate.Populate(_table, Export, batchUploads);
 	}
 
 	public nint GetProcAddress(string proc, int? slot = default)
@@ -68,9 +91,13 @@ internal sealed unsafe class SilkCompatContext : INativeContext
 
 internal static partial class Xlate
 {
-	internal static void Populate(Dictionary<string, nint> table, Func<string, nint> native)
+	internal static void Populate(Dictionary<string, nint> table, Func<string, nint> native, bool batchUploads)
 	{
 		AddGenerated(table, native);
 		AddHand(table);
+		if (batchUploads)
+		{
+			AddUploads(table);
+		}
 	}
 }
