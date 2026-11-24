@@ -1031,16 +1031,22 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 	public string GetText(int maxLength)
 	{
 		string slice;
+		if (_owner is TextBlock textBlock)
+		{
+			slice = _start >= textBlock.TextForSelectionLength || _end <= _start
+				? string.Empty
+				: textBlock.GetSelectedText(_start, _end);
+		}
 #if __SKIA__
-		if (_useObjectText && _owner is RichEditBox richEditBox)
+		else if (_useObjectText && _owner is RichEditBox richEditBox)
 		{
 			slice = richEditBox.Document.GetTextInRange(
 				_start,
 				_end,
 				Microsoft.UI.Text.TextGetOptions.UseObjectText);
 		}
-		else
 #endif
+		else
 		{
 			var text = GetOwnerText();
 			if (_start >= text.Length || _end <= _start)

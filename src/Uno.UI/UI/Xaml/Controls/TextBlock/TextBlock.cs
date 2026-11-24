@@ -50,6 +50,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
+		private int _inlineLineBreakCount;
 		private IDisposable _foregroundBrushChangedSubscription;
 
 		// Used for text selection which is handled natively
@@ -186,6 +187,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (updateText)
 			{
+				_inlineLineBreakCount = 0;
 				if (knownText is not null)
 				{
 					_inlinesText = knownText;
@@ -196,7 +198,9 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					_inlinesText = string.Concat(Inlines.Select(InlineExtensions.GetText));
+					var inlines = Inlines.TraversedTree.leafTree;
+					_inlineLineBreakCount = inlines.Count(static inline => inline is LineBreak);
+					_inlinesText = string.Concat(inlines.Select(InlineExtensions.GetPlainText));
 				}
 
 				if (!_skipInlinesChangedTextSetter)
@@ -1983,13 +1987,23 @@ namespace Microsoft.UI.Xaml.Controls
 		void IBlock.Invalidate(bool updateText) => InvalidateInlineAndRequireRepaint();
 		string IBlock.GetText() => Text;
 
+		internal string TextForSelection => _inlineLineBreakCount == 0
+			? Text
+			: string.Concat(Inlines.TraversedTree.leafTree.Select(InlineExtensions.GetText));
+
+		internal int TextForSelectionLength => Text.Length - _inlineLineBreakCount;
+
+		internal string GetSelectedText(int start, int end) => _inlineLineBreakCount == 0
+			? Text[start..end]
+			: InlineExtensions.GetSelectedText([Inlines], start, end, includeParagraphBreaks: false);
+
 		partial void OnSelectionChanged()
 		{
 			InvalidateInlineAndRequireRepaint();
 
 			var start = Math.Min(Selection.start, Selection.end);
 			var end = Math.Max(Selection.start, Selection.end);
-			SelectedText = Text[start..end];
+			SelectedText = GetSelectedText(start, end);
 
 			if (start == end)
 			{
@@ -2053,7 +2067,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public void SelectAll() => Selection = new Range(0, Text.Length);
+		public void SelectAll() => Selection = new Range(0, TextForSelectionLength);
 
 		// TODO: move to TextBlock.cs when we implement SelectionHighlightColor for the other platforms
 		#region SelectionHighlightColor (DP)

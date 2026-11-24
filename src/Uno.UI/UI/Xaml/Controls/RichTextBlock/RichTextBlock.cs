@@ -180,23 +180,13 @@ namespace Microsoft.UI.Xaml.Controls
 			var parts = new List<string>();
 			foreach (var paragraph in Blocks.OfType<Paragraph>())
 			{
-				parts.Add(string.Concat(paragraph.Inlines.Select(GetPlainTextOf)));
+				parts.Add(string.Concat(paragraph.Inlines.Select(InlineExtensions.GetPlainText)));
 			}
 
 			// Every paragraph is terminated, the last one included: each Paragraph's reserved
 			// close position expands to a CRLF in the container's run model.
 			return parts.Count == 0 ? string.Empty : string.Join("\r\n", parts) + "\r\n";
 		}
-
-		// InlineExtensions.GetText yields a bare LF for a LineBreak because the layout path uses it
-		// as a flat character index space; the text a container reports uses CRLF.
-		private static string GetPlainTextOf(Inline inline) => inline switch
-		{
-			Run run => run.Text ?? string.Empty,
-			LineBreak => "\r\n",
-			Span span => string.Concat(span.Inlines.Select(GetPlainTextOf)),
-			_ => string.Empty,
-		};
 
 		#region Pointer events
 

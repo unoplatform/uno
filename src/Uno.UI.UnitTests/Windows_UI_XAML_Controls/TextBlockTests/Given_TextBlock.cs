@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Automation.Text;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Controls;
 using System.Drawing;
@@ -68,6 +71,39 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 			Assert.AreEqual(SolidColorBrushHelper.AliceBlue.Color, ((SolidColorBrush)tb.Foreground).Color);
 		}
 #endif
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26417")]
+		public void When_LineBreak_Is_Read_Through_Text()
+		{
+			var textBlock = new TextBlock();
+			textBlock.Inlines.Add(new Run { Text = "first\nsecond" });
+			var span = new Span();
+			span.Inlines.Add(new LineBreak());
+			span.Inlines.Add(new Run { Text = "third" });
+			textBlock.Inlines.Add(span);
+
+			Assert.AreEqual("first\nsecond\r\nthird", textBlock.Text);
+
+			textBlock.Selection = new(13, 18);
+			Assert.AreEqual("third", textBlock.SelectedText);
+
+			textBlock.SelectAll();
+			Assert.AreEqual(new TextBlock.Range(0, 18), textBlock.Selection);
+			Assert.AreEqual("first\nsecond\r\nthird", textBlock.SelectedText);
+
+			textBlock.Measure(new Windows.Foundation.Size(500, 500));
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBlock);
+			var textProvider = (ITextProvider)peer.GetPattern(PatternInterface.Text);
+			Assert.AreEqual("first\nsecond\r\nthird", textProvider.DocumentRange.GetText(-1));
+			var word = textProvider.DocumentRange.FindText("th", backward: false, ignoreCase: false);
+			word.ExpandToEnclosingUnit(TextUnit.Word);
+			Assert.AreEqual("third", word.GetText(-1));
+
+			textBlock.Text = "replacement";
+			textBlock.SelectAll();
+			Assert.AreEqual("replacement", textBlock.SelectedText);
+		}
 
 		[TestMethod]
 		public void When_LineBreak_SurroundingWhiteSpace()

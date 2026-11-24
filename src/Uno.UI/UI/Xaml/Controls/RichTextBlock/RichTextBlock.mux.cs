@@ -7,7 +7,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Numerics;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.System;
@@ -586,61 +585,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// The flat Selection counts a LineBreak as one character (RichTextBlockView.GetCharacterIndex), while the
 		// container text spells it, like every paragraph end, as CRLF.
 		private string GetSelectedText(int start, int end)
-		{
-			var builder = new StringBuilder();
-			var flatIndex = 0;
-
-			void AppendText(string text, int flatLength)
-			{
-				if (flatLength == text.Length)
-				{
-					var from = Math.Max(start, flatIndex) - flatIndex;
-					var to = Math.Min(end, flatIndex + flatLength) - flatIndex;
-					if (from < to)
-					{
-						builder.Append(text, from, to - from);
-					}
-				}
-				else if (start <= flatIndex && flatIndex < end)
-				{
-					builder.Append(text);
-				}
-
-				flatIndex += flatLength;
-			}
-
-			void AppendInline(Inline inline)
-			{
-				switch (inline)
-				{
-					case Run run:
-						var text = run.Text ?? string.Empty;
-						AppendText(text, text.Length);
-						break;
-					case LineBreak:
-						AppendText("\r\n", 1);
-						break;
-					case Span span:
-						foreach (var child in span.Inlines)
-						{
-							AppendInline(child);
-						}
-						break;
-				}
-			}
-
-			foreach (var paragraph in Blocks.OfType<Paragraph>())
-			{
-				foreach (var inline in paragraph.Inlines)
-				{
-					AppendInline(inline);
-				}
-
-				AppendText("\r\n", 2);
-			}
-
-			return builder.ToString();
-		}
+			=> InlineExtensions.GetSelectedText(Blocks.OfType<Paragraph>().Select(static paragraph => paragraph.Inlines), start, end, includeParagraphBreaks: true);
 
 		//------------------------------------------------------------------------
 		//
