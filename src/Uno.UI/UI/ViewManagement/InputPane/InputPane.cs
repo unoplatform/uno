@@ -145,7 +145,8 @@ public partial class InputPane
 
 	private bool TryHidePlatform() => _inputPaneExtension?.Value?.TryHide() ?? false;
 
-	private static XamlRoot? GetXamlRoot() => Window.InitialWindow?.Content?.XamlRoot;
+	// From the window's root, not its content: the window keeps its root while the app swaps or clears the content.
+	private static XamlRoot? GetXamlRoot() => Window.InitialWindow?.RootElement?.XamlRoot;
 
 	// Like WinUI's RootScrollViewer, the root viewport ends at the top of the input pane and the open flyouts are placed
 	// again, unless the app handled the occlusion itself. Like WinUI's InputPaneHandler, Hiding only undoes a Showing
