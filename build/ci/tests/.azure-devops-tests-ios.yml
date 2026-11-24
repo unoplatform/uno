@@ -14,16 +14,12 @@ parameters:
   condition: ''
 
   # Runtime Test Groups
-  IOS_RUNTIME_TEST_GROUP_COUNT: 4
+  IOS_RUNTIME_TEST_GROUP_COUNT: 2
   IOS_RUNTIME_TESTS_GROUPS:
   - key: '0'
     value: '01'
   - key: '1'
     value: '02'
-  - key: '2'
-    value: '03'
-  - key: '3'
-    value: '04'
 
 jobs:
 ##

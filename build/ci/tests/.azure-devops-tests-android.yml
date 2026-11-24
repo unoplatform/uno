@@ -14,6 +14,8 @@ parameters:
   # on one of them points at the renderer. Revision 7 of the API 36 image fixed its guest Vulkan driver, which
   # faulted once 16 MB was mapped (#25655); android-run-skia-runtime-tests.sh refuses an older one.
   apiLevel: 36
+  # One matrix job per group; the suite is split evenly across them.
+  testGroups: [0, 1, 2]
 
 jobs:
 ##
@@ -37,51 +39,15 @@ jobs:
 
   strategy:
     matrix:
-
-      'Runtime Tests 0':
-        ANDROID_SIMULATOR_APILEVEL: ${{ parameters.apiLevel }}
-        UITEST_TEST_MODE_NAME: RuntimeTests
-        UNO_UITEST_BUCKET_ID: RuntimeTests
-        UITEST_RUNTIME_TEST_GROUP: 0
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 5
-        TARGETPLATFORM_NAME: net9
-        UITEST_TEST_TIMEOUT: '2600s'
-
-      'Runtime Tests 1':
-        ANDROID_SIMULATOR_APILEVEL: ${{ parameters.apiLevel }}
-        UITEST_TEST_MODE_NAME: RuntimeTests
-        UNO_UITEST_BUCKET_ID: RuntimeTests
-        UITEST_RUNTIME_TEST_GROUP: 1
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 5
-        TARGETPLATFORM_NAME: net9
-        UITEST_TEST_TIMEOUT: '2600s'
-
-      'Runtime Tests 2':
-        ANDROID_SIMULATOR_APILEVEL: ${{ parameters.apiLevel }}
-        UITEST_TEST_MODE_NAME: RuntimeTests
-        UNO_UITEST_BUCKET_ID: RuntimeTests
-        UITEST_RUNTIME_TEST_GROUP: 2
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 5
-        TARGETPLATFORM_NAME: net9
-        UITEST_TEST_TIMEOUT: '2600s'
-
-      'Runtime Tests 3':
-        ANDROID_SIMULATOR_APILEVEL: ${{ parameters.apiLevel }}
-        UITEST_TEST_MODE_NAME: RuntimeTests
-        UNO_UITEST_BUCKET_ID: RuntimeTests
-        UITEST_RUNTIME_TEST_GROUP: 3
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 5
-        TARGETPLATFORM_NAME: net9
-        UITEST_TEST_TIMEOUT: '2600s'
-
-      'Runtime Tests 4':
-        ANDROID_SIMULATOR_APILEVEL: ${{ parameters.apiLevel }}
-        UITEST_TEST_MODE_NAME: RuntimeTests
-        UNO_UITEST_BUCKET_ID: RuntimeTests
-        UITEST_RUNTIME_TEST_GROUP: 4
-        UITEST_RUNTIME_TEST_GROUP_COUNT: 5
-        TARGETPLATFORM_NAME: net9
-        UITEST_TEST_TIMEOUT: '2600s'
+      ${{ each group in parameters.testGroups }}:
+        'Runtime Tests ${{ group }}':
+          ANDROID_SIMULATOR_APILEVEL: ${{ parameters.apiLevel }}
+          UITEST_TEST_MODE_NAME: RuntimeTests
+          UNO_UITEST_BUCKET_ID: RuntimeTests
+          UITEST_RUNTIME_TEST_GROUP: ${{ group }}
+          UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ length(parameters.testGroups) }}
+          TARGETPLATFORM_NAME: net9
+          UITEST_TEST_TIMEOUT: '2600s'
 
   steps:
   - template: ../templates/job-deadline.yml
