@@ -163,16 +163,16 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 					bool useBackup = type == RadioButtonsSourceType.String;
 					await SetItemType(type);
 					var p = $"{location}/{type}";
-					await DiagStep($"{p} Tap(3) {DescribeTapTarget(3, useBackup)}", () => TapOnItem(3, useBackup), 3);
+					await DiagTap(p, 3, useBackup);
 					await DiagStep($"{p} Down", () => KeyboardHelper.Down(), 4);
 					await DiagStep($"{p} Up", () => KeyboardHelper.Up(), 3);
 					await DiagStep($"{p} Left", () => KeyboardHelper.Left(), 3);
 					await DiagStep($"{p} Right", () => KeyboardHelper.Right(), 3);
 
-					await DiagStep($"{p} Tap(0) {DescribeTapTarget(0, useBackup)}", () => TapOnItem(0, useBackup), 0);
+					await DiagTap(p, 0, useBackup);
 					await DiagStep($"{p} Up", () => KeyboardHelper.Up(), 0);
 
-					await DiagStep($"{p} Tap(9) {DescribeTapTarget(9, useBackup)}", () => TapOnItem(9, useBackup), 9);
+					await DiagTap(p, 9, useBackup);
 					await DiagStep($"{p} Down", () => KeyboardHelper.Down(), 9);
 				}
 			}
@@ -181,11 +181,46 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 		// Temporary diagnostics for #26579: the failure only reproduces on the Android WebGPU CI lane.
 		private readonly List<string> _trail = new();
 
-		private async Task DiagStep(string label, Func<Task> action, int expected)
+		// Records where the injected press lands, what it hits, and where the target is at that moment and after.
+		private async Task DiagTap(string prefix, int index, bool useBackup)
+		{
+			var pressed = new List<string>();
+			var root = (UIElement)WindowHelper.XamlRoot.Content;
+			PointerEventHandler onPressed = (s, e) =>
+			{
+				var position = e.GetCurrentPoint(root).Position;
+				pressed.Add($"at {position.X:0.#},{position.Y:0.#} on {DescribeElement(OwningRadioButton(e.OriginalSource) ?? e.OriginalSource)} target then {DescribeTapTarget(index, useBackup)}");
+			};
+			root.AddHandler(UIElement.PointerPressedEvent, onPressed, true);
+			try
+			{
+				await DiagStep(
+					$"{prefix} Tap({index}) {DescribeTapTarget(index, useBackup)}",
+					() => TapOnItem(index, useBackup),
+					index,
+					() => $" pressed=[{string.Join("; ", pressed)}] target now {DescribeTapTarget(index, useBackup)}");
+			}
+			finally
+			{
+				root.RemoveHandler(UIElement.PointerPressedEvent, onPressed);
+			}
+		}
+
+		private static RadioButton OwningRadioButton(object element)
+		{
+			var current = element as DependencyObject;
+			while (current is not null and not RadioButton)
+			{
+				current = VisualTreeHelper.GetParent(current);
+			}
+			return current as RadioButton;
+		}
+
+		private async Task DiagStep(string label, Func<Task> action, int expected, Func<string> extra = null)
 		{
 			var before = DescribeFocused();
 			await action();
-			var after = DescribeState();
+			var after = DescribeState() + extra?.Invoke();
 			_trail.Add($"{label} | before: {before} | after: {after}");
 			Console.WriteLine($"[RB-DIAG] {_trail[^1]}");
 			if (elements.SelectedIndex != expected || elements.Focus.FocusedIndex != expected)
