@@ -2813,7 +2813,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	{
 		var (lineWidth, lineWidthWithoutTrailingSpaces) = line is null ? (0, 0) : (line.Value.width, line.Value.widthWithoutTrailingSpaces);
 		var totalWidth = (float)_availableSize.Width;
-		var textAlignment = line?.textAlignment ?? _endingParagraphAlignment ?? ToPhysicalAlignment(_textAlignment);
+		var textAlignment = ToPhysicalAlignment(line?.textAlignment ?? _endingParagraphAlignment ?? _textAlignment);
 
 		// Paragraph indent adjustments: left indent shifts the content area right,
 		// right indent narrows the content area from the right. First-line indent
@@ -2849,6 +2849,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	// WinUI mirrors a RightToLeft text element, so its Left/Right mean start/end. Lines here are laid out
 	// unmirrored (see UIElement.GetFlowDirectionTransform), so map them to visual sides. Justify ends at the start.
+	// Paragraph alignments use the element's flow too, so uniform and mixed RichEditBox paragraphs agree.
 	private TextAlignment ToPhysicalAlignment(TextAlignment alignment)
 		=> _flowRightToLeft
 			? alignment switch
