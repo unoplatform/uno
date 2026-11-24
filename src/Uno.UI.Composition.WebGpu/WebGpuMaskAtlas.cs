@@ -292,8 +292,9 @@ internal sealed unsafe class WebGpuMaskAtlas
 	/// <summary>
 	/// A page of its own, at least w x h, for entries too big to share one: a spare of the same format when one is close
 	/// enough in size, else a new texture rounded up so sizes recur. Its entries go on it with <see cref="Place"/>.
+	/// Null when no texture could be created (out of GPU memory, or the device was lost): the caller skips the mask.
 	/// </summary>
-	public Page StandalonePage(int w, int h, TextureFormat format, TextureUsage usage)
+	public Page? StandalonePage(int w, int h, TextureFormat format, TextureUsage usage)
 	{
 		int rw = Math.Max(w, Math.Min(4096, (w + 63) & ~63)), rh = Math.Max(h, Math.Min(4096, (h + 63) & ~63));
 		Page? best = null;
@@ -303,8 +304,7 @@ internal sealed unsafe class WebGpuMaskAtlas
 			if (best is null || (long)sp.W * sp.H < (long)best.W * best.H) { best = sp; }
 		}
 		if (best is not null) { _spares.Remove(best); }
-		var page = best ?? NewPage(rw, rh, format, usage)
-			?? throw new InvalidOperationException($"WebGPU could not create a {rw}x{rh} mask page (out of GPU memory, or the device was lost).");
+		if ((best ?? NewPage(rw, rh, format, usage)) is not { } page) { return null; }
 		page.Standalone = true;
 		page.EmptySince = -1;
 		page.Reset();
