@@ -39,6 +39,7 @@
 		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Collections\EnumerableExtensions.cs" Link="Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Collections\EnumerableExtensions.cs" />
 		<Compile Include="..\Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Compatibility\Threading\AsyncLock.cs" Link="Uno.Foundation\Uno.Core.Extensions\Uno.Core.Extensions.Compatibility\Threading\AsyncLock.cs" />
 
+		<!-- GetDebugName/GetDebugDepth are used by the *.HotReload.cs files linked below (ScrollViewer.HotReload.cs) and, through InternalsVisibleTo, by Uno.UI.RuntimeTests.Windows. -->
 		<Compile Include="..\Uno.UI\Extensions\UIElementExtensions.Debug.cs" Link="Uno.UI\Extensions\UIElementExtensions.Debug.cs" />
 
 		<Compile Include="..\Uno.UI\Helpers\ElementMetadataUpdateHandlerAttribute.cs" Link="Uno.UI\Helpers\ElementMetadataUpdateHandlerAttribute.cs" />
