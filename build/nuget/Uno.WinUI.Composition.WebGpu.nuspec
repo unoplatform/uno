@@ -16,13 +16,13 @@
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Uno.WinUI.Composition.WebGpu.Init" version="to-be-set-by-ci" />
 				<!-- KEEP IN STEP with Uno.Dawn in src/Directory.Packages.props. -->
-				<dependency id="Uno.Dawn" version="0.1.0-dev.4" />
+				<dependency id="Uno.Dawn" version="0.1.0-dev.12" />
 			</group>
 			<group targetFramework="net11.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Uno.WinUI.Composition.WebGpu.Init" version="to-be-set-by-ci" />
 				<!-- KEEP IN STEP with Uno.Dawn in src/Directory.Packages.props. -->
-				<dependency id="Uno.Dawn" version="0.1.0-dev.4" />
+				<dependency id="Uno.Dawn" version="0.1.0-dev.12" />
 			</group>
 		</dependencies>
 	</metadata>
