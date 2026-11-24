@@ -44,6 +44,16 @@ public partial class TreeViewItem : ListViewItem
 		SetValue(TreeViewItemTemplateSettingsProperty, new TreeViewItemTemplateSettings());
 	}
 
+#if HAS_UNO
+	// TODO Uno: Original C++ destructor cleanup. Uno does not support cleanup via finalizers.
+	// Original destructor logic (not executed):
+	// ~TreeViewItem()
+	// {
+	//     // We only need to use safe_get in the deconstruction loop
+	//     RecycleEvents(true /* useSafeGet */);
+	// }
+#endif
+
 	// IControlOverrides
 	protected override void OnKeyDown(KeyRoutedEventArgs e)
 	{
@@ -821,12 +831,6 @@ public partial class TreeViewItem : ListViewItem
 		}
 
 		return TreeNodeSelectionState.PartialSelected;
-	}
-
-	~TreeViewItem()
-	{
-		// We only need to use safe_get in the deconstruction loop
-		RecycleEvents(/* useSafeGet */);
 	}
 
 	// Uno specifc: Ensure the indentation and selection visual are set properly
