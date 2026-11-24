@@ -89,16 +89,27 @@ public partial class InputPane
 	{
 		var args = new InputPaneVisibilityEventArgs(OccludedRect);
 
-		if (Visible)
+		// Temporary diagnostics for #26579.
+		global::System.Console.WriteLine($"[IP-DIAG] rect {OccludedRect} visible {Visible}: raising {(Visible ? "Showing" : "Hiding")}");
+		try
 		{
-			Showing?.Invoke(this, args);
+			if (Visible)
+			{
+				Showing?.Invoke(this, args);
+			}
+			else
+			{
+				Hiding?.Invoke(this, args);
+			}
 		}
-		else
+		catch (Exception e)
 		{
-			Hiding?.Invoke(this, args);
+			global::System.Console.WriteLine($"[IP-DIAG] handler threw: {e}");
+			throw;
 		}
 
 		var ensureFocusedElementInView = !args.EnsuredFocusedElementInView;
+		global::System.Console.WriteLine($"[IP-DIAG] ensure {ensureFocusedElementInView} handled {_handledFocusedElementInView} root {(GetXamlRoot()?.VisualTree.RootElement is Uno.UI.Xaml.Core.IRootElement { RootElementLogic: not null } ? "yes" : "no")}");
 
 		UpdateRootViewport(ensureFocusedElementInView);
 

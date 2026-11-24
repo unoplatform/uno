@@ -84,6 +84,7 @@ internal class UnoRootElementLogic
 	/// </summary>
 	internal void SetInputPaneViewportHeight(double? viewportHeight)
 	{
+		global::System.Console.WriteLine($"[IP-DIAG] viewport {_inputPaneViewportHeight?.ToString() ?? "null"} -> {viewportHeight?.ToString() ?? "null"}, root height {_rootElement.ActualHeight}");
 		_inputPaneViewportHeight = viewportHeight;
 
 		SetInputPaneVerticalOffset(viewportHeight is { } height
@@ -128,6 +129,7 @@ internal class UnoRootElementLogic
 			return;
 		}
 
+		global::System.Console.WriteLine($"[IP-DIAG] pan {InputPaneVerticalOffset} -> {offset} (viewport {_inputPaneViewportHeight?.ToString() ?? "null"}, root height {_rootElement.ActualHeight}) from {string.Join(" < ", new global::System.Diagnostics.StackTrace(1, false).GetFrames().Take(8).Select(f => f.GetMethod()?.DeclaringType?.Name + "." + f.GetMethod()?.Name))}");
 		InputPaneVerticalOffset = offset;
 		_rootElement.InvalidateArrange();
 
