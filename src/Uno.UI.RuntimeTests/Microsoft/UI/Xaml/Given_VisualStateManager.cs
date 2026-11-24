@@ -141,6 +141,7 @@ public partial class Given_VisualStateManager
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26672")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI ends transitions at once when the system turns animations off, as on CI agents.
 	public async Task When_GoToState_Current_State_Without_Transitions_During_Transition()
 	{
 		var (control, bar) = await LoadStatesControl();
@@ -160,6 +161,7 @@ public partial class Given_VisualStateManager
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26672")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI ends transitions at once when the system turns animations off, as on CI agents.
 	public async Task When_GoToState_Current_State_Without_Transitions_Completes_Transition_Into_Another_State()
 	{
 		var (control, bar) = await LoadStatesControl();
