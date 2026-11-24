@@ -1190,17 +1190,18 @@ namespace Uno.UI.Samples.Tests
 				// Temporary diagnostics for #26579: which test leaves the root content offset from the window.
 				await TestServices.WindowHelper.RootElementDispatcher.RunAsync(() =>
 				{
-					if (TestServices.WindowHelper.XamlRoot is not { Content: { } content } xamlRoot)
+					if (TestServices.WindowHelper.XamlRoot?.VisualTree is not { PublicRootVisual: { } publicRoot } visualTree)
 					{
 						return;
 					}
 
-					var origin = content.TransformToVisual(null).TransformPoint(default);
-					if (origin.X != 0 || origin.Y != 0)
+					// The public root visual fills the window, so only the input pane pan or a root offset moves it.
+					var origin = publicRoot.TransformToVisual(null).TransformPoint(default);
+					var pan = (visualTree.RootElement as Uno.UI.Xaml.Core.IRootElement)?.RootElementLogic?.InputPaneVerticalOffset ?? 0;
+					if (origin.X != 0 || origin.Y != 0 || pan != 0)
 					{
-						var pan = (xamlRoot.VisualTree.RootElement as Uno.UI.Xaml.Core.IRootElement)?.RootElementLogic?.InputPaneVerticalOffset;
 						var pane = InputPane.GetForCurrentView();
-						Console.WriteLine($"[ROOT-OFFSET] after {_diagLastTestName}: content at {origin.X},{origin.Y}, input pane pan {pan}, pane {pane.Visible}/{pane.OccludedRect}");
+						Console.WriteLine($"[ROOT-OFFSET] after {_diagLastTestName}: root at {origin.X},{origin.Y}, input pane pan {pan}, pane {pane.Visible}/{pane.OccludedRect}");
 					}
 				});
 #endif
