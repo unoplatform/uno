@@ -2566,6 +2566,93 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24904")]
+		[DataRow(FlowDirection.LeftToRight, null, "abc", false)]
+		[DataRow(FlowDirection.LeftToRight, TextAlignment.Right, "abc", true)]
+		[DataRow(FlowDirection.LeftToRight, null, "مرحبا", false)]
+		[DataRow(FlowDirection.RightToLeft, null, "abc", true)]
+		[DataRow(FlowDirection.RightToLeft, null, "مرحبا", true)]
+		[DataRow(FlowDirection.RightToLeft, TextAlignment.Left, "abc", true)]
+		[DataRow(FlowDirection.RightToLeft, TextAlignment.Right, "abc", false)]
+		[DataRow(FlowDirection.RightToLeft, TextAlignment.Right, "مرحبا", false)]
+		[DataRow(FlowDirection.RightToLeft, TextAlignment.Justify, "abc", true)]
+		[DataRow(FlowDirection.LeftToRight, TextAlignment.DetectFromContent, "abc", false)]
+		[DataRow(FlowDirection.LeftToRight, TextAlignment.DetectFromContent, "مرحبا", true)]
+		[DataRow(FlowDirection.RightToLeft, TextAlignment.DetectFromContent, "abc", false)]
+		[DataRow(FlowDirection.RightToLeft, TextAlignment.DetectFromContent, "مرحبا", true)]
+		public async Task When_FlowDirection_Then_TextAlignment_Is_Relative_To_It(FlowDirection flowDirection, TextAlignment? alignment, string text, bool expectRightEdge)
+		{
+			var SUT = new TextBlock
+			{
+				Text = text,
+				Width = 300,
+				FontSize = 24,
+				FlowDirection = flowDirection,
+				Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			};
+			if (alignment is { } a)
+			{
+				SUT.TextAlignment = a;
+			}
+
+			await AssertInkEdge(SUT, expectRightEdge, $"{flowDirection} {alignment?.ToString() ?? "default"} '{text}'");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24904")]
+		[DataRow(FlowDirection.RightToLeft, null, "مرحبا", true)]
+		[DataRow(FlowDirection.LeftToRight, null, "abc", false)]
+		[DataRow(FlowDirection.RightToLeft, TextAlignment.Left, "abc", true)]
+		[DataRow(FlowDirection.RightToLeft, TextAlignment.Right, "abc", false)]
+		public async Task When_TextBox_FlowDirection_Then_TextAlignment_Is_Relative_To_It(FlowDirection flowDirection, TextAlignment? alignment, string text, bool expectRightEdge)
+		{
+			var SUT = new TextBox
+			{
+				Text = text,
+				Width = 300,
+				FlowDirection = flowDirection,
+				Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			};
+			if (alignment is { } a)
+			{
+				SUT.TextAlignment = a;
+			}
+
+			await UITestHelper.Load(SUT);
+			// The whole TextBox: the inner TextBlock alone would be captured without the TextBox's mirror.
+			await AssertInkEdge(SUT, expectRightEdge, $"TextBox {flowDirection} {alignment?.ToString() ?? "default"} '{text}'", load: false);
+		}
+
+		private static async Task AssertInkEdge(FrameworkElement element, bool expectRightEdge, string context, bool load = true)
+		{
+			if (load)
+			{
+				await UITestHelper.Load(new Border
+				{
+					Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+					Child = element,
+					HorizontalAlignment = HorizontalAlignment.Left,
+					VerticalAlignment = VerticalAlignment.Top,
+				});
+			}
+			await UITestHelper.WaitForIdle();
+
+			var screenshot = await UITestHelper.ScreenShot(element);
+			var ink = ImageAssert.GetColorBounds(screenshot, Microsoft.UI.Colors.Red, tolerance: 60);
+			var middle = screenshot.Width / 2.0;
+			var message = $"{context}: ink [{ink.Left}, {ink.Right}] of width {screenshot.Width}";
+			Assert.IsTrue(ink.Width > 0, "No ink found. " + message);
+			if (expectRightEdge)
+			{
+				Assert.IsTrue(ink.Left > middle, "Expected the text at the right edge. " + message);
+			}
+			else
+			{
+				Assert.IsTrue(ink.Right < middle, "Expected the text at the left edge. " + message);
+			}
+		}
+
+		[TestMethod]
 		[CombinatorialData]
 		public async Task When_Individual_Run_Has_FlowDirection_Set(FlowDirection flowDirection)
 		{
