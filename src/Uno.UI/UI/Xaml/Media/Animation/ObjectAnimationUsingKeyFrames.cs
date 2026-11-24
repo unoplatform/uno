@@ -320,9 +320,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		/// <summary>
 		/// Resolves all keyframe theme resources with the target element's effective theme.
-		/// Called once at Begin time to ensure keyframe values match the element-level theme.
+		/// Called before the key frame values are applied, so that they match the element-level theme.
 		/// </summary>
-		private void EnsureKeyFrameThemeResources()
+		internal void EnsureKeyFrameThemeResources()
 		{
 			if (PropertyInfo?.DataContext is not FrameworkElement targetElement)
 			{
