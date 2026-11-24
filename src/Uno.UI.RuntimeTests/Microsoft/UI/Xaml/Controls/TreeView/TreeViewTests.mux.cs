@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference TreeViewTests.cs
 
 using MUXControlsTestApp.Utilities;
 using System;
@@ -13,6 +14,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media.Animation;
 using System.Collections.ObjectModel;
+using Microsoft.UI;
 using MUXControlsTestApp;
 using Common;
 
@@ -550,8 +552,9 @@ namespace MUXControlsTestApp
 			});
 		}
 
-		//WINUI TODO:
+		// TODO Uno: NOT PORTED - VerifyVisualTree needs VisualTreeTestHelper and its verification files.
 		//[TestMethod]
+		//[TestProperty("TestPass:MaxOSVer", WindowsOSVersion._22H2)]    // This test is currently failing on 23h2.
 		//public void VerifyVisualTree()
 		//{
 		//	TreeView treeView = null;
@@ -636,7 +639,7 @@ namespace MUXControlsTestApp
 		}
 
 		[TestMethod]
-		[Ignore("Fails on iOS and WASM")]
+		[Ignore("Uno's ListView does not unselect the other items when ListViewItem.IsSelected is set in SelectionMode.None, so the selection of node 1 is kept when node 11 is selected.")]
 		public async Task TreeViewSelectionChangedMultipleMode()
 		{
 
@@ -788,6 +791,177 @@ namespace MUXControlsTestApp
 
 			treeViewNode1.Children.RemoveAt(0);
 			Verify.IsFalse(treeViewNode1.IsExpanded);
+		}
+
+		[TestMethod]
+		public void TreeViewBackgroundTest()
+		{
+			RunOnUIThread.Execute(() =>
+			{
+				var treeView = new TreeView();
+
+				Content = treeView;
+				Content.UpdateLayout();
+
+				var treeViewList = FindVisualChildByName(treeView, "ListControl") as TreeViewList;
+
+				// Make sure the TreeViewList does not already have the background color we are using for this test.
+				bool testCondition = treeViewList.Background is SolidColorBrush brush && brush.Color == Colors.Green;
+				Verify.IsFalse(testCondition, "The default TreeView background color should not match the test color used.");
+
+				// Check if the Background API affects the TreeView control.
+				treeView.Background = new SolidColorBrush(Colors.Green);
+				Content.UpdateLayout();
+
+				testCondition = treeViewList.Background is SolidColorBrush brush2 && brush2.Color == Colors.Green;
+				Verify.IsTrue(testCondition, "The TreeView background UI should have matched the specified test color.");
+			});
+		}
+
+		[TestMethod]
+		public void VerifySettingSelectionDoesNotCrash()
+		{
+			RunOnUIThread.Execute(() =>
+			{
+				var treeview = new TreeView();
+
+				var items = new ObservableCollection<string>() {
+					"Item0", "Item1", "Item2"
+				};
+
+				treeview.SelectedItem = items[0];
+				Verify.AreEqual(treeview.SelectedItem, items[0]);
+
+				treeview.ItemsSource = items;
+				treeview.SelectedItem = items[1];
+				Verify.AreEqual(treeview.SelectedItem, items[1]);
+			});
+		}
+
+		[TestMethod]
+		public async Task SelectedItemsTest()
+		{
+			ObservableCollection<TreeViewItemSource> data = null;
+			TreeView treeview = null;
+
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				data = CreateItems();
+
+				string treeViewXamlStr = @"
+                <TreeView
+                        xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
+                        xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
+                        Name=""DessertTree""
+                        SelectionMode=""Multiple""
+                        ItemsSource=""{Binding}"">
+                    <TreeView.ItemTemplate>
+                        <DataTemplate>
+                            <TreeViewItem
+                                IsExpanded=""True""
+                                ItemsSource=""{Binding Children}""
+                                Content=""{Binding Content}""/>
+                        </DataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>";
+
+				treeview = XamlReader.Load(treeViewXamlStr) as TreeView;
+				treeview.DataContext = data;
+
+				Content = treeview;
+				Content.UpdateLayout();
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await RunOnUIThread.ExecuteAsync(() =>
+			{
+				Log.Comment("Add 1.1 to SelectedItems");
+				treeview.SelectedItems.Add(data[1].Children[1]);
+				VerifySelectedNodesAndSelectedItems(treeview, new[] { "1.1", "1.1.0", "1.1.1", "1.1.2" });
+
+				Log.Comment("Add 1.2.1 to SelectedItems");
+				treeview.SelectedItems.Add(data[1].Children[2].Children[1]);
+				VerifySelectedNodesAndSelectedItems(treeview, new[] { "1.1", "1.1.0", "1.1.1", "1.1.2", "1.2.1" });
+
+				Log.Comment("Add 0.2 to SelectedNodes");
+				treeview.SelectedNodes.Add(treeview.RootNodes[0].Children[2]);
+				VerifySelectedNodesAndSelectedItems(treeview, new[] { "1.1", "1.1.0", "1.1.1", "1.1.2", "1.2.1", "0.2", "0.2.0", "0.2.1", "0.2.2" });
+
+				Log.Comment("Remove 0.2.1 from SelectedItems");
+				treeview.SelectedItems.Remove(data[0].Children[2].Children[1]);
+				VerifySelectedNodesAndSelectedItems(treeview, new[] { "1.1", "1.1.0", "1.1.1", "1.1.2", "1.2.1", "0.2.0", "0.2.2" });
+
+				Log.Comment("Remove 1.1 from SelectedNodes");
+				treeview.SelectedNodes.Remove(treeview.RootNodes[1].Children[1]);
+				VerifySelectedNodesAndSelectedItems(treeview, new[] { "1.2.1", "0.2.0", "0.2.2" });
+			});
+		}
+
+		private void VerifySelectedNodesAndSelectedItems(TreeView treeView, string[] expected)
+		{
+			var expectedStr = String.Join(", ", expected);
+			var actualNodesStr = String.Join(", ", treeView.SelectedNodes.Select(node => (node.Content as TreeViewItemSource)?.Content));
+			var actualItemsStr = String.Join(", ", treeView.SelectedItems.Select(item => (item as TreeViewItemSource)?.Content));
+
+			Log.Comment($"Verify SelectedItems and SelectedNodes of TreeView. Expected: [{expectedStr}], Actual Nodes: [{actualNodesStr}], ActualItems: [{actualItemsStr}]");
+
+			Log.Comment($"Verify TreeView.SelectedNodes");
+			Verify.AreEqual(expected.Length, treeView.SelectedNodes.Count, "Verify TreeView SelectedNodes count");
+			for (int i = 0; i < expected.Length; i++)
+			{
+				var nodeContent = treeView.SelectedNodes[i].Content as TreeViewItemSource;
+				Verify.IsNotNull(nodeContent);
+				Verify.AreEqual(expected[i], nodeContent.Content, $"Verify TreeView SelectedNodes[{i}]");
+			}
+
+			Log.Comment($"Verify TreeView.SelectedItems");
+			Verify.AreEqual(expected.Length, treeView.SelectedItems.Count, "Verify TreeView SelectedItems count");
+			for (int i = 0; i < expected.Length; i++)
+			{
+				var selectedItem = treeView.SelectedItems[i] as TreeViewItemSource;
+				Verify.IsNotNull(selectedItem);
+				Verify.AreEqual(expected[i], selectedItem.Content, $"Verify TreeView SelectedItems[{i}]");
+			}
+		}
+
+		private ObservableCollection<TreeViewItemSource> CreateItems(int itemsPerLevel = 3, int depth = 3)
+		{
+			ObservableCollection<TreeViewItemSource> items = new ObservableCollection<TreeViewItemSource>();
+			foreach (var item in CreateItemsImpl(itemsPerLevel, depth))
+			{
+				items.Add(item);
+			}
+			return items;
+		}
+
+		private IEnumerable<TreeViewItemSource> CreateItemsImpl(int numItems, int depth, string prefix = "")
+		{
+			List<TreeViewItemSource> items = new List<TreeViewItemSource>();
+			for (int i = 0; i < numItems; i++)
+			{
+				string name;
+				if (string.IsNullOrEmpty(prefix))
+				{
+					name = $"{i}";
+				}
+				else
+				{
+					name = $"{prefix}.{i}";
+				}
+				TreeViewItemSource item = new TreeViewItemSource();
+				item.Content = name;
+				if (depth > 1)
+				{
+					var children = CreateItemsImpl(numItems, depth - 1, name);
+					foreach (var child in children)
+					{
+						item.Children.Add(child);
+					}
+				}
+				items.Add(item);
+			}
+			return items;
 		}
 
 		private bool IsMultiSelectCheckBoxChecked(TreeView tree, TreeViewNode node)

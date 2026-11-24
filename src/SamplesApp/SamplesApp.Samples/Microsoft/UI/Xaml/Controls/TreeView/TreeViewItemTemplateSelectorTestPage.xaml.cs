@@ -21,7 +21,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 		}
 	}
 
-	public class TreeViewItemTemplateSelector : DataTemplateSelector
+	public partial class TreeViewItemTemplateSelector : DataTemplateSelector
 	{
 		public DataTemplate Template1 { get; set; }
 		public DataTemplate Template2 { get; set; }
@@ -35,7 +35,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 		}
 	}
 
-	public class TreeViewItemStyleSelector : StyleSelector
+	public partial class TreeViewItemStyleSelector : StyleSelector
 	{
 		public Style Style1 { get; set; }
 		public Style Style2 { get; set; }
