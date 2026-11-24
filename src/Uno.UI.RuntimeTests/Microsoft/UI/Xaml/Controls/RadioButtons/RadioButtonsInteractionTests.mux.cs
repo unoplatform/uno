@@ -261,7 +261,9 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 			var rootContent = WindowHelper.XamlRoot.Content;
 			var topLeft = item.TransformToVisual(rootContent).TransformPoint(new Point(0, 0));
 			var center = new Point(topLeft.X + item.RenderSize.Width / 2, topLeft.Y + item.RenderSize.Height / 2);
-			return $"[item@{topLeft.X:0.#},{topLeft.Y:0.#} {item.RenderSize.Width:0.#}x{item.RenderSize.Height:0.#} center={center.X:0.#},{center.Y:0.#}]";
+			var contentOrigin = rootContent.TransformToVisual(null).TransformPoint(new Point(0, 0));
+			var pane = global::Windows.UI.ViewManagement.InputPane.GetForCurrentView();
+			return $"[item@{topLeft.X:0.#},{topLeft.Y:0.#} {item.RenderSize.Width:0.#}x{item.RenderSize.Height:0.#} center={center.X:0.#},{center.Y:0.#} contentAt={contentOrigin.X:0.#},{contentOrigin.Y:0.#} pane={pane.Visible}/{pane.OccludedRect}]";
 		}
 
 		[TestMethod]
