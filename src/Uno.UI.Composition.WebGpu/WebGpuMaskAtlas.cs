@@ -29,12 +29,12 @@ internal sealed unsafe class WebGpuMaskAtlas
 	public const int MaxArea = 256 * 256;
 
 	/// <summary>
-	/// Shared pages beyond which a keyed entry is refused rather than opening another. Keyed entries are the cache: a
+	/// Keyed pages beyond which a keyed entry is refused rather than opening another. Keyed entries are the cache: a
 	/// transform that animates mints a fresh key every frame, so without a ceiling the cache grows without bound.
 	/// </summary>
 	public const int MaxPages = 8;
 
-	/// <summary>Shared pages beyond which a keyless mask takes a standalone page instead; its owner bounds it, not the cache.</summary>
+	/// <summary>Keyless pages beyond which a keyless mask takes a standalone page instead; its owner bounds it, not the cache.</summary>
 	public const int MaxSharedPages = 32;
 
 	/// <summary>Frames an empty shared page, or a spare standalone one, is kept before its texture is destroyed.</summary>
@@ -95,6 +95,9 @@ internal sealed unsafe class WebGpuMaskAtlas
 		public TextureUsage Usage;
 		// Sized to its entries and never shelf-packed (see StandalonePage).
 		public bool Standalone;
+		// A shared page holds keyless masks only, or keyed entries only: short-lived masks neither use up the cache's
+		// pages nor leave shelf space behind on pages its long-lived entries keep from ever emptying.
+		public bool Keyless;
 		public int ShelfY, ShelfH, CursorX;
 		public int Live;
 		// Frame the page last became empty (shared) or spare (standalone); -1 while it holds slots.
@@ -132,13 +135,22 @@ internal sealed unsafe class WebGpuMaskAtlas
 		}
 	}
 
+	private int SharedPages(bool keyless)
+	{
+		var n = 0;
+		for (var i = 0; i < _pages.Count; i++) { if (IsShared(_pages[i], keyless)) { n++; } }
+		return n;
+	}
+
+	private static bool IsShared(Page page, bool keyless) => !page.Standalone && page.Keyless == keyless;
+
 	public bool TryGet(in Key key, out Slot slot) => _slots.TryGetValue(key, out slot!);
 
 	/// <summary>Reserves a w x h region for a keyed entry, or null when every page is full and the cache is at its ceiling.</summary>
 	public Slot? Allocate(in Key key, int w, int h, float originX, float originY)
 	{
 		if (w <= 0 || h <= 0 || w > Size || h > Size) { return null; }
-		if (Reserve(w, h, MaxPages) is not { } slot) { return null; }
+		if (Reserve(w, h, keyless: false) is not { } slot) { return null; }
 		slot = slot with { OriginX = originX, OriginY = originY, Key = key, Keyed = true };
 		_slots[key] = slot;
 		return slot;
@@ -152,7 +164,7 @@ internal sealed unsafe class WebGpuMaskAtlas
 	{
 		int cw = SizeClass(w), ch = SizeClass(h);
 		if (cw > Size / 2 || ch > Size / 2) { return null; }
-		return Reserve(cw, ch, MaxSharedPages);
+		return Reserve(cw, ch, keyless: true);
 	}
 
 	/// <summary>
@@ -169,9 +181,9 @@ internal sealed unsafe class WebGpuMaskAtlas
 		{
 			for (var p = 0; p < _pages.Count; p++)
 			{
-				if (!_pages[p].Standalone && TryPlaceAll(_pages[p], sizes, slots)) { return true; }
+				if (IsShared(_pages[p], keyless: true) && TryPlaceAll(_pages[p], sizes, slots)) { return true; }
 			}
-			if (pass == 0 && (RegularPages >= MaxSharedPages || !AddSharedPage())) { return false; }
+			if (pass == 0 && (SharedPages(keyless: true) >= MaxSharedPages || !AddSharedPage(keyless: true))) { return false; }
 		}
 		return false;
 	}
@@ -202,20 +214,20 @@ internal sealed unsafe class WebGpuMaskAtlas
 		return false;
 	}
 
-	private Slot? Reserve(int w, int h, int pageCap)
+	private Slot? Reserve(int w, int h, bool keyless)
 	{
 		for (var pass = 0; pass < 2; pass++)
 		{
-			// A freed region of the same size first, on any page, before consuming new space.
+			// A freed region of the same size first, on any page of this kind, before consuming new space.
 			for (var i = 0; i < _pages.Count; i++)
 			{
-				if (!_pages[i].Standalone && TryReuse(_pages[i], w, h) is { } reused) { return reused; }
+				if (IsShared(_pages[i], keyless) && TryReuse(_pages[i], w, h) is { } reused) { return reused; }
 			}
 			for (var i = 0; i < _pages.Count; i++)
 			{
-				if (!_pages[i].Standalone && TryShelf(_pages[i], w, h) is { } fresh) { return fresh; }
+				if (IsShared(_pages[i], keyless) && TryShelf(_pages[i], w, h) is { } fresh) { return fresh; }
 			}
-			if (pass == 0 && (RegularPages >= pageCap || !AddSharedPage())) { return null; }
+			if (pass == 0 && (SharedPages(keyless) >= (keyless ? MaxSharedPages : MaxPages) || !AddSharedPage(keyless))) { return null; }
 		}
 		return null;
 	}
@@ -253,9 +265,10 @@ internal sealed unsafe class WebGpuMaskAtlas
 		bucket.Push(slot);
 	}
 
-	private bool AddSharedPage()
+	private bool AddSharedPage(bool keyless)
 	{
 		if (NewPage(Size, Size, _d.ColorFormat, SharedUsage) is not { } page) { return false; }
+		page.Keyless = keyless;
 		_pages.Add(page);
 		return true;
 	}
