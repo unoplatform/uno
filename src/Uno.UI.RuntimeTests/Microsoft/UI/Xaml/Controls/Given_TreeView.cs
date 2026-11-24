@@ -483,6 +483,154 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 #endif
 
+#if HAS_UNO
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_DragItemsStarting_Canceled_Drag_Does_Not_Start()
+		{
+			TreeViewNode node;
+			var treeView = new TreeView
+			{
+				RootNodes =
+				{
+					(node = new TreeViewNode { Content = "drag me" }),
+					new TreeViewNode { Content = "other" }
+				}
+			};
+			var starting = 0;
+			var completed = 0;
+			treeView.DragItemsStarting += (_, e) =>
+			{
+				starting++;
+				e.Cancel = true;
+			};
+			treeView.DragItemsCompleted += (_, _) => completed++;
+
+			await UITestHelper.Load(treeView);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = ((TreeViewItem)treeView.ContainerFromNode(node)).GetAbsoluteBoundsRect();
+			mouse.Press(bounds.GetMidX(), bounds.Bottom - 3);
+			await WindowHelper.WaitForIdle();
+			mouse.MoveBy(0, 16); // out of the item, which starts the drag
+			await WindowHelper.WaitForIdle();
+			mouse.MoveBy(0, 10);
+			await WindowHelper.WaitForIdle();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, starting);
+			Assert.AreEqual(0, completed);
+		}
+
+		[TestMethod]
+		public async Task When_ItemsSource_Cleared_MultiSelect_Selection_Is_Dropped()
+		{
+			var items = new ObservableCollection<string> { "a", "b", "c" };
+			var treeView = new TreeView
+			{
+				SelectionMode = TreeViewSelectionMode.Multiple,
+				ItemsSource = items
+			};
+
+			await UITestHelper.Load(treeView);
+
+			treeView.SelectedNodes.Add(treeView.RootNodes[1]);
+			Assert.AreEqual(1, treeView.SelectedItems.Count);
+
+			var raised = 0;
+			TreeViewSelectionChangedEventArgs args = null;
+			treeView.SelectionChanged += (_, e) =>
+			{
+				raised++;
+				args = e;
+			};
+
+			items.Clear();
+			await WindowHelper.WaitForIdle();
+
+			// WinUI keeps the nodes a reset removed in SelectedNodes. Uno drops them, so that their items are released.
+			Assert.AreEqual(0, treeView.SelectedNodes.Count);
+			Assert.AreEqual(0, treeView.SelectedItems.Count);
+			Assert.AreEqual(1, raised);
+			CollectionAssert.AreEqual(new[] { "b" }, args.RemovedItems.ToArray());
+		}
+#endif
+
+		[TestMethod]
+		public async Task When_MultiSelect_Recycled_Containers_Keep_Selection_And_Indentation()
+		{
+			var treeView = new TreeView
+			{
+				Width = 300,
+				Height = 200,
+				SelectionMode = TreeViewSelectionMode.Multiple
+			};
+			var root = new TreeViewNode { Content = "Root", IsExpanded = true };
+			for (var i = 0; i < 30; i++)
+			{
+				var child = new TreeViewNode { Content = $"Root.{i}", IsExpanded = true };
+				child.Children.Add(new TreeViewNode { Content = $"Root.{i}.0" });
+				child.Children.Add(new TreeViewNode { Content = $"Root.{i}.1" });
+				root.Children.Add(child);
+			}
+			treeView.RootNodes.Add(root);
+
+			await UITestHelper.Load(treeView);
+
+			// Root and Root.0 become partially selected, Root.29 is selected while it has no container.
+			treeView.SelectedNodes.Add(root.Children[0].Children[0]);
+			treeView.SelectedNodes.Add(root.Children[29]);
+			await WindowHelper.WaitForIdle();
+			AssertRealizedContainers(treeView, "selected");
+
+			var sv = treeView.FindFirstDescendant<ScrollViewer>();
+			sv.ScrollToVerticalOffset(9999);
+			await WindowHelper.WaitForIdle();
+			AssertRealizedContainers(treeView, "scrolled to the end");
+
+			sv.ScrollToVerticalOffset(0);
+			await WindowHelper.WaitForIdle();
+			AssertRealizedContainers(treeView, "scrolled back");
+
+			root.IsExpanded = false;
+			await WindowHelper.WaitForIdle();
+			root.IsExpanded = true;
+			await WindowHelper.WaitForIdle();
+			AssertRealizedContainers(treeView, "collapsed and expanded");
+
+			static void AssertRealizedContainers(TreeView treeView, string step)
+			{
+				var listControl = treeView.FindFirstDescendant<TreeViewList>();
+				var realized = 0;
+				for (var i = 0; i < listControl.Items.Count; i++)
+				{
+					if (listControl.ContainerFromIndex(i) is not TreeViewItem container)
+					{
+						continue;
+					}
+
+					realized++;
+					var node = treeView.NodeFromContainer(container);
+					bool? expected = treeView.SelectedNodes.Contains(node) ? true : HasSelectedDescendant(treeView, node) ? null : false;
+					var checkBox = container.FindFirstDescendant<CheckBox>(c => c.Name == "MultiSelectCheckBox");
+
+					Assert.IsNotNull(checkBox, $"[{step}] {node.Content} has no selection check box");
+					Assert.AreEqual(expected, checkBox.IsChecked, $"[{step}] {node.Content} check box");
+					Assert.AreEqual(node.Depth * 16, container.TreeViewItemTemplateSettings.Indentation.Left, $"[{step}] {node.Content} indentation");
+				}
+
+				Assert.IsTrue(realized > 0, $"[{step}] no container is realized");
+			}
+
+			static bool HasSelectedDescendant(TreeView treeView, TreeViewNode node)
+				=> node.Children.Any(child => treeView.SelectedNodes.Contains(child) || HasSelectedDescendant(treeView, child));
+		}
+
 		[TestMethod]
 		public async Task When_TreeViewItem_Collapsed_Children_Removed_From_Tree()
 		{
