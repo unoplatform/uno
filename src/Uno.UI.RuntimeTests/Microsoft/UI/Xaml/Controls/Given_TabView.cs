@@ -19,7 +19,7 @@ using Uno.UI.DevTools.Input;
 using TabView = Microsoft.UI.Xaml.Controls.TabView;
 using TabViewItem = Microsoft.UI.Xaml.Controls.TabViewItem;
 
-using static Uno.UI.Extensions.ViewExtensions;
+using static Uno.UI.Extensions.VisualTreeExtensions;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;

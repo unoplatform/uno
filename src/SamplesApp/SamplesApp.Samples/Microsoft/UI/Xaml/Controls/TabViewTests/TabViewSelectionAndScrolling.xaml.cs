@@ -25,7 +25,7 @@ using System.Numerics;
 using Microsoft.UI.Xaml.Media;
 
 #if !WINAPPSDK
-using static Uno.UI.Extensions.ViewExtensions;
+using static Uno.UI.Extensions.VisualTreeExtensions;
 using static Uno.UI.Extensions.PrettyPrint;
 #endif
 

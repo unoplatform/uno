@@ -148,7 +148,7 @@ namespace Uno.UI.Xaml
 					return;
 				}
 
-				foreach (var ancestor in originalSource.EnumerateAncestors())
+				foreach (var ancestor in originalSource.EnumerateVisualTreeAncestors())
 				{
 					if (ancestor is UIElement element && Mute(element))
 					{

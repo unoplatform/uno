@@ -1,15 +1,11 @@
 ﻿#nullable enable
 
-// note: This file is selectively included on windows build in: src\Uno.UI.Extras\Uno.UI.Extras.Windows.csproj
-// Any other source file that we depends here should also be made available there.
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -26,13 +22,7 @@ using static Uno.UI.Extensions.PrettyPrint;
 
 namespace Uno.UI.Extensions;
 
-#if !HAS_UNO
-internal
-#else
-public
-#endif
-
-static partial class ViewExtensions
+public static partial class VisualTreeExtensions
 {
 	/// <summary>
 	/// Produces a text representation of the visual tree.
@@ -189,13 +179,27 @@ static partial class ViewExtensions
 		}
 	}
 
-	internal static bool TryGetDpValue<T>(object owner, string property, [NotNullWhen(true)] out T? value)
+	/// <summary>
+	/// Gets the value of the dependency property named <paramref name="property"/> on <paramref name="owner"/>,
+	/// found by reflection through its static <c>{property}Property</c> member.
+	/// </summary>
+	/// <typeparam name="T">The expected type of the value.</typeparam>
+	/// <param name="owner">The object to read the property from.</param>
+	/// <param name="property">The name of the property, without the <c>Property</c> suffix.</param>
+	/// <param name="value">The value, when found.</param>
+	/// <returns>
+	/// <see langword="true"/> if <paramref name="owner"/> is a <see cref="DependencyObject"/> with such a property and its value is a non-null <typeparamref name="T"/>;
+	/// otherwise <see langword="false"/>.
+	/// </returns>
+	/// <remarks>Meant for diagnostics: in a trimmed app, the <c>{property}Property</c> member may have been removed, in which case this returns <see langword="false"/>.</remarks>
+	public static bool TryGetDpValue<T>(object owner, string property, [NotNullWhen(true)] out T? value)
 	{
 		if (owner is DependencyObject @do &&
 				GetProperty(owner.GetType(), $"{property}Property")
-				?.GetValue(null, null) is DependencyProperty dp)
+				?.GetValue(null, null) is DependencyProperty dp &&
+				@do.GetValue(dp) is T t)
 		{
-			value = (T)@do.GetValue(dp);
+			value = t;
 			return true;
 		}
 
@@ -214,7 +218,7 @@ static partial class ViewExtensions
 	/// <typeparam name="T">The type of ancestor to find.</typeparam>
 	/// <param name="reference">Any node of the visual tree</param>
 	/// <remarks>First Counting from the <paramref name="reference"/> and not from the root of tree.</remarks>
-	public static T? FindFirstAncestor<T>(this _View? reference) => EnumerateAncestors(reference)
+	public static T? FindFirstAncestor<T>(this _View? reference) => EnumerateVisualTreeAncestors(reference)
 		.OfType<T>()
 		.FirstOrDefault();
 
@@ -225,7 +229,7 @@ static partial class ViewExtensions
 	/// <param name="reference">Any node of the visual tree</param>
 	/// <remarks>First Counting from the <paramref name="reference"/> and not from the root of tree.</remarks>
 	/// <exception cref="Exception">If the specified node could not be found.</exception>
-	public static T? FindFirstAncestorOrThrow<T>(this _View? reference) => EnumerateAncestors(reference)
+	public static T? FindFirstAncestorOrThrow<T>(this _View? reference) => EnumerateVisualTreeAncestors(reference)
 		.OfType<T>()
 		.FirstOrDefault() ??
 		throw new Exception($"Unable to find element: {typeof(T).Name}");
@@ -238,7 +242,7 @@ static partial class ViewExtensions
 	/// <param name="reference">Any node of the visual tree</param>
 	/// <param name="predicate">A function to test each node for a condition.</param>
 	/// <remarks>First Counting from the <paramref name="reference"/> and not from the root of tree.</remarks>
-	public static T? FindFirstAncestor<T>(this _View? reference, Func<T, bool> predicate) => EnumerateAncestors(reference)
+	public static T? FindFirstAncestor<T>(this _View? reference, Func<T, bool> predicate) => EnumerateVisualTreeAncestors(reference)
 		.OfType<T>()
 		.FirstOrDefault(predicate);
 
@@ -316,6 +320,7 @@ static partial class ViewExtensions
 	/// Returns all the visual descendants of a node.
 	/// </summary>
 	/// <param name="reference">Any node of the visual tree</param>
+	/// <seealso cref="EnumerateRawDescendants(UIElement, int?)"/>
 	public static IEnumerable<_View> EnumerateDescendants(this _View? reference) => EnumerateDescendants(reference, x => true);
 
 	/// <summary>
@@ -324,6 +329,7 @@ static partial class ViewExtensions
 	/// <param name="reference">Any node of the visual tree</param>
 	/// <param name="hierarchyPredicate"></param>
 	/// <returns></returns>
+	/// <seealso cref="EnumerateRawDescendants(UIElement, int?)"/>
 	public static IEnumerable<_View> EnumerateDescendants(this _View? reference, Func<_View, bool> hierarchyPredicate)
 	{
 		foreach (var child in reference.EnumerateChildren().Where(hierarchyPredicate))
@@ -336,12 +342,46 @@ static partial class ViewExtensions
 		}
 	}
 
-	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static _View? AsNativeView(this object o) => o as _View;
+	/// <summary>
+	/// Returns the descendants of an element in depth-first order.
+	/// </summary>
+	/// <param name="view">The element to start from; it is not returned.</param>
+	/// <param name="maxDepth">How deep to go: 0 returns the direct children only, n returns n + 1 levels; <see langword="null"/> for no limit.</param>
+	/// <remarks>
+	/// Unlike <see cref="EnumerateDescendants(DependencyObject)"/>, this walks the element's raw child list,
+	/// so it also returns the placeholders that <c>x:Load</c> and <c>x:DeferLoadStrategy</c> leave for elements not loaded yet (<c>ElementStub</c>).
+	/// This only makes a difference on Uno Platform targets: on WinAppSDK both methods walk <see cref="VisualTreeHelper"/> and, without <paramref name="maxDepth"/>, return the same elements in the same order.
+	/// </remarks>
+	public static IEnumerable<UIElement> EnumerateRawDescendants(this UIElement view, int? maxDepth = null)
+	{
+#if HAS_UNO
+		return VisualTreeHelper.EnumerateRawDescendants(view, maxDepth);
+#else
+		return Walk(view, maxDepth);
 
-	// note: methods for retrieving children/ancestors exist with varying signatures.
-	// re-implementing them with unified & more inclusive signature for convenience.
-	internal static IEnumerable<_View> EnumerateAncestors(this _View? o)
+		static IEnumerable<UIElement> Walk(UIElement view, int? maxDepth)
+		{
+			foreach (var child in view.EnumerateChildren().OfType<UIElement>())
+			{
+				yield return child;
+
+				if (maxDepth is null or > 0)
+				{
+					foreach (var descendant in Walk(child, maxDepth - 1))
+					{
+						yield return descendant;
+					}
+				}
+			}
+		}
+#endif
+	}
+
+	/// <summary>
+	/// Returns the ancestors of a node, from its parent up to the root, following <see cref="VisualTreeHelper.GetParent"/>.
+	/// </summary>
+	/// <param name="o">Any node of the visual tree; it is not returned.</param>
+	public static IEnumerable<_View> EnumerateVisualTreeAncestors(this _View? o)
 	{
 		if (o is null) yield break;
 		while (VisualTreeHelper.GetParent(o) is { } parent)

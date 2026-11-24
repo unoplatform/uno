@@ -14,12 +14,7 @@ using Colors = Microsoft.UI.Colors;
 
 namespace Uno.UI.Extensions;
 
-
-#if !HAS_UNO
-internal static class PrettyPrint
-#else
 public static class PrettyPrint
-#endif
 {
 	private static readonly Lazy<Dictionary<Color, string>> _knownColors = new(() => typeof(Colors)
 		.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)

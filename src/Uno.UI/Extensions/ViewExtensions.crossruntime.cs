@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI
 {
-	public static partial class ViewExtensions
+	internal static partial class ViewExtensions
 	{
 		/// <summary>
 		/// Find the first child of a specific type.

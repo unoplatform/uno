@@ -443,7 +443,7 @@ public partial class TemplatedParentTests // TreeGraph helper methods
 
 	private static IEnumerable<object> TraverseChildrenAndVSG(object o)
 	{
-		return TraverseVSG(o, o.AsNativeView()?.EnumerateChildren());
+		return TraverseVSG(o, (o as DependencyObject)?.EnumerateChildren());
 	}
 	private static IEnumerable<object> TraverseVSG(object o, IEnumerable<object> children)
 	{
