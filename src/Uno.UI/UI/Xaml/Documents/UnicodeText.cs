@@ -264,8 +264,8 @@ internal readonly partial struct UnicodeText : IParsedText
 		float lineHeight,
 		LineStackingStrategy lineStackingStrategy,
 		TextLineBounds textLineBounds,
-		FlowDirection flowDirection,
-		TextAlignment? textAlignment, // null to determine from text.
+		FlowDirection flowDirection, // the caller must not be mirrored for it (see UIElement.GetFlowDirectionTransform)
+		TextAlignment? textAlignment, // relative to flowDirection; null to determine from text.
 		TextWrapping textWrapping,
 		TextTrimming textTrimming,
 		bool isSpellCheckEnabled,
@@ -442,7 +442,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				_endingLineContentTop + _endingNewLineLineHeight.Value + (endingParagraphLayout?.SpaceAfter ?? 0));
 			_availableSize = availableSize;
 			_layoutUsesAvailableWidth = _rtl // caret placement
-				|| ToPhysicalAlignment(_textAlignment) is TextAlignment.Center or TextAlignment.Right or TextAlignment.Justify
+				|| AlignmentDependsOnWidth(_textAlignment)
 				|| endingParagraphAlignment is not null
 				|| endingParagraphLayout is not null;
 			_xyTable = [];
@@ -1249,7 +1249,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		_layoutUsesAvailableWidth = textWrapping != TextWrapping.NoWrap
 			|| textTrimming != TextTrimming.None
 			|| _rtl
-			|| ToPhysicalAlignment(_textAlignment) is TextAlignment.Center or TextAlignment.Right or TextAlignment.Justify // see GetAlignmentOffsetForLine
+			|| AlignmentDependsOnWidth(_textAlignment)
 			|| paragraphAlignments is not null
 			|| paragraphLayouts is not null
 			|| endingParagraphAlignment is not null
@@ -2768,7 +2768,8 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	public bool IsBaseDirectionRightToLeft => _rtl;
 
-	// The alignment the layout used: a default-aligned TextBox gets one from its content's direction.
+	// The alignment the layout used, relative to the FlowDirection it was laid out with (Left = start):
+	// a default-aligned TextBox gets one from its content's direction.
 	internal TextAlignment TextAlignment => _textAlignment;
 
 	internal Size AvailableSize => _availableSize;
@@ -2859,6 +2860,10 @@ internal readonly partial struct UnicodeText : IParsedText
 				_ => alignment,
 			}
 			: alignment;
+
+	// See GetAlignmentOffsetForLine: only a left-aligned line ignores the available width.
+	private bool AlignmentDependsOnWidth(TextAlignment alignment)
+		=> ToPhysicalAlignment(alignment) is TextAlignment.Center or TextAlignment.Right or TextAlignment.Justify;
 
 	private bool IsLineRightToLeft(Line? line)
 		=> line?.paragraphLayout?.RightToLeft ?? _endingParagraphLayout?.RightToLeft ?? _rtl;
