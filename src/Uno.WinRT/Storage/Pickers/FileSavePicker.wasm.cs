@@ -96,9 +96,13 @@ namespace Windows.Storage.Pickers
 				}
 
 				var extension = FileTypeChoices.Count > 0 ? FileTypeChoices.First().Value[0] : "";
+				var hasChoiceExtension = FileTypeChoices.Values
+					.SelectMany(extensions => extensions)
+					.Any(choiceExtension => SuggestedFileName.EndsWith(choiceExtension, StringComparison.OrdinalIgnoreCase));
 
-				// The mime type is chosen by the extension, and we cannot reliably send multiple mime type in the browser
-				var fileName = SuggestedFileName + extension;
+				// The mime type is chosen by the extension, and we cannot reliably send multiple mime type in the browser.
+				// As in the native picker, a name that already ends with one of the choices' extensions is kept as is.
+				var fileName = hasChoiceExtension ? SuggestedFileName : SuggestedFileName + extension;
 
 				// The content is staged in a chunked JS-side buffer rather than a file in the
 				// in-memory filesystem, to keep large payloads off the tab's memory ceilings.
