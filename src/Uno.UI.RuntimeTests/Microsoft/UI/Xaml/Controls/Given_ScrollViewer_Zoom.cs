@@ -477,47 +477,51 @@ public class Given_ScrollViewer_Zoom
 	}
 
 	[TestMethod]
-	public async Task When_Zoomed_ExtentSize_Does_Not_Change()
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26426")]
+	[DataRow(2f)]
+	[DataRow(4f)]
+	[DataRow(0.5f)]
+	public async Task When_Zoomed_Extent_Scales_With_ZoomFactor(float zoomFactor)
 	{
-		// ExtentWidth/ExtentHeight represent the logical content size
-		// They should NOT change when zoom changes
-		var content = new Border
-		{
-			Width = 500,
-			Height = 500,
-			Background = new SolidColorBrush(Colors.Purple)
-		};
-
 		var sut = new ScrollViewer
 		{
-			Width = 200,
-			Height = 200,
+			Width = 300,
+			Height = 300,
 			ZoomMode = ZoomMode.Enabled,
-			MinZoomFactor = 0.25f,
+			MinZoomFactor = 0.5f,
 			MaxZoomFactor = 4.0f,
-			Content = content
+			HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+			VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+			Content = new Border
+			{
+				Width = 400,
+				Height = 400,
+				Background = new SolidColorBrush(Colors.Purple)
+			}
 		};
 
-		TestServices.WindowHelper.WindowContent = sut;
-		await TestServices.WindowHelper.WaitForLoaded(sut);
-		await TestServices.WindowHelper.WaitForIdle();
+		try
+		{
+			TestServices.WindowHelper.WindowContent = sut;
+			await TestServices.WindowHelper.WaitForLoaded(sut);
+			await TestServices.WindowHelper.WaitForIdle();
 
-		var initialExtentWidth = sut.ExtentWidth;
-		var initialExtentHeight = sut.ExtentHeight;
+			Assert.AreEqual(400, sut.ExtentWidth, 1, "ExtentWidth at zoom 1");
+			Assert.AreEqual(400, sut.ExtentHeight, 1, "ExtentHeight at zoom 1");
 
-		// Zoom to 2.0
-		sut.ChangeView(null, null, 2.0f, disableAnimation: true);
-		await TestServices.WindowHelper.WaitForIdle();
+			sut.ChangeView(null, null, zoomFactor, disableAnimation: true);
+			await TestServices.WindowHelper.WaitFor(() => Math.Abs(sut.ZoomFactor - zoomFactor) < 0.01f);
+			await TestServices.WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(initialExtentWidth, sut.ExtentWidth, 1, "ExtentWidth should not change with zoom");
-		Assert.AreEqual(initialExtentHeight, sut.ExtentHeight, 1, "ExtentHeight should not change with zoom");
-
-		// Zoom to 0.5
-		sut.ChangeView(null, null, 0.5f, disableAnimation: true);
-		await TestServices.WindowHelper.WaitForIdle();
-
-		Assert.AreEqual(initialExtentWidth, sut.ExtentWidth, 1, "ExtentWidth should not change with zoom");
-		Assert.AreEqual(initialExtentHeight, sut.ExtentHeight, 1, "ExtentHeight should not change with zoom");
+			Assert.AreEqual(400 * zoomFactor, sut.ExtentWidth, 1, "ExtentWidth should be the zoomed content width");
+			Assert.AreEqual(400 * zoomFactor, sut.ExtentHeight, 1, "ExtentHeight should be the zoomed content height");
+			Assert.AreEqual(Math.Max(0, sut.ExtentWidth - sut.ViewportWidth), sut.ScrollableWidth, 1, "ScrollableWidth should be ExtentWidth - ViewportWidth");
+			Assert.AreEqual(Math.Max(0, sut.ExtentHeight - sut.ViewportHeight), sut.ScrollableHeight, 1, "ScrollableHeight should be ExtentHeight - ViewportHeight");
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]
