@@ -219,6 +219,37 @@ public class Given_BitmapIcon
 		Assert.AreEqual(0, imageOpenedCount, "Image must not be reloaded when ShowAsMonochrome toggles from false to true");
 	}
 
+	[TestMethod]
+	public async Task When_Foreground_Not_Solid_Then_Monochrome_White()
+	{
+		var bitmapIcon = new BitmapIcon
+		{
+			Width = 50,
+			Height = 50,
+			ShowAsMonochrome = true,
+			UriSource = new System.Uri("ms-appx:///Assets/image.png"),
+			Foreground = new LinearGradientBrush
+			{
+				GradientStops =
+				{
+					new GradientStop { Color = Colors.Red, Offset = 0 },
+					new GradientStop { Color = Colors.Blue, Offset = 1 },
+				}
+			}
+		};
+		var host = new Border { Background = new SolidColorBrush(Colors.Black), Child = bitmapIcon };
+
+		await UITestHelper.Load(host);
+		var image = bitmapIcon.FindFirstDescendantOrThrow<Image>();
+		await TestServices.WindowHelper.WaitFor(() => image.Source is BitmapSource { PixelWidth: > 0 }, timeoutMS: 5000, message: "The BitmapIcon's image should open.");
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// WinUI tints with white when the Foreground isn't a SolidColorBrush.
+		var sc = await UITestHelper.ScreenShot(host);
+		ImageAssert.HasColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Colors.White);
+		ImageAssert.DoesNotHaveColorInRectangle(sc, new Rectangle(0, 0, sc.Width, sc.Height), Windows.UI.Color.FromArgb(255, 240, 28, 36));
+	}
+
 	// Load only waits for the icon's size, which it has before its image is decoded.
 	private static async Task<Image> LoadOpened(BitmapIcon bitmapIcon)
 	{

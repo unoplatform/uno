@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.UI.Xaml;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using MUXControlsTestApp.Utilities;
@@ -102,4 +103,48 @@ public class Given_FontIcon
 		using var _ = StyleHelper.UseUwpStyles();
 		await When_Themed_TextBlock();
 	}
+
+	[TestMethod]
+	public async Task When_Inside_Bold_Parent_Then_Glyph_Not_Bold()
+	{
+		var fontIcon = new FontIcon() { Glyph = "\uE890" };
+		var host = new ContentControl() { FontWeight = FontWeights.Bold, Content = fontIcon };
+
+		await UITestHelper.Load(host);
+
+		Assert.AreEqual(FontWeights.Normal.Weight, GetGlyphTextBlock(fontIcon).FontWeight.Weight);
+	}
+
+	[TestMethod]
+	public async Task When_Loaded_Then_Glyph_TextBlock_Layout()
+	{
+		var fontIcon = new FontIcon() { Glyph = "\uE890" };
+
+		await UITestHelper.Load(fontIcon);
+
+		var textBlock = GetGlyphTextBlock(fontIcon);
+		Assert.AreEqual(HorizontalAlignment.Stretch, textBlock.HorizontalAlignment);
+		Assert.IsFalse(textBlock.IsTextScaleFactorEnabled);
+	}
+
+	[TestMethod]
+	public async Task When_MirroredWhenRightToLeft_In_RightToLeft_Parent()
+	{
+		var fontIcon = new FontIcon() { Glyph = "\uE72B", MirroredWhenRightToLeft = true };
+		var host = new StackPanel() { FlowDirection = FlowDirection.RightToLeft, Children = { fontIcon } };
+
+		await UITestHelper.Load(host);
+
+		var scaleTransform = fontIcon.RenderTransform as ScaleTransform;
+		Assert.IsNotNull(scaleTransform);
+		Assert.AreEqual(-1.0, scaleTransform.ScaleX);
+
+		host.FlowDirection = FlowDirection.LeftToRight;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(1.0, scaleTransform.ScaleX);
+	}
+
+	private static TextBlock GetGlyphTextBlock(FontIcon fontIcon) =>
+		(TextBlock)VisualTreeHelper.GetChild(VisualTreeHelper.GetChild(fontIcon, 0), 0);
 }
