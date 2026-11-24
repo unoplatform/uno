@@ -23,7 +23,11 @@ public partial class TreeViewDragItemsStartingEventArgs
 	/// <summary>
 	/// Gets or sets a value that indicates whether the item drag action should be canceled.
 	/// </summary>
-	public bool Cancel { get; set; }
+	public bool Cancel
+	{
+		get => _dragItemsStartingEventArgs.Cancel;
+		set => _dragItemsStartingEventArgs.Cancel = value;
+	}
 
 	/// <summary>
 	/// Gets the data payload associated with an items drag action.
