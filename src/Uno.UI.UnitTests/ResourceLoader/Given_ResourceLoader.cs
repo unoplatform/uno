@@ -191,5 +191,58 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 
 			Assert.AreEqual("App70-en", SUT.GetString("ApplicationName"));
 		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26636")]
+		public void When_Concurrent_First_Lookups_After_Language_Change()
+		{
+			// The first lookup after a language change rebuilds the resource tables. Several threads
+			// making that first lookup at once must neither throw nor read a half-rebuilt table.
+			var threadCount = Math.Max(4, Environment.ProcessorCount);
+
+			for (var iteration = 0; iteration < 100; iteration++)
+			{
+				var language = iteration % 2 == 0 ? "fr" : "en";
+				// Only the override changes here: unlike setting DefaultLanguage, it doesn't reload the tables
+				// itself, so the reload happens on the first lookup, as in the issue.
+				ApplicationLanguages.PrimaryLanguageOverride = language;
+
+				var results = new string[threadCount];
+				var errors = new Exception[threadCount];
+
+				using var barrier = new Barrier(threadCount);
+				var threads = Enumerable
+					.Range(0, threadCount)
+					.Select(index => new Thread(() =>
+					{
+						CultureInfo.CurrentUICulture = new CultureInfo(language);
+						barrier.SignalAndWait();
+
+						try
+						{
+							results[index] = _ResourceLoader.GetForCurrentView(UITestResources).GetString("ApplicationName");
+						}
+						catch (Exception error)
+						{
+							errors[index] = error;
+						}
+					}))
+					.ToArray();
+
+				foreach (var thread in threads)
+				{
+					thread.Start();
+				}
+
+				foreach (var thread in threads)
+				{
+					thread.Join();
+				}
+
+				var firstError = errors.FirstOrDefault(error => error is not null);
+				Assert.IsNull(firstError, $"Iteration {iteration}: a concurrent lookup threw {firstError}");
+				CollectionAssert.AreEqual(Enumerable.Repeat($"App70-{language}", threadCount).ToArray(), results, $"Iteration {iteration}");
+			}
+		}
 	}
 }
