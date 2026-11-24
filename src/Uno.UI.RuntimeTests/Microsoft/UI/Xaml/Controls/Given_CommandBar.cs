@@ -222,6 +222,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24671")]
+		public async Task When_Unloaded_While_Open_Then_Reopens_On_Reload()
+		{
+			var SUT = new CommandBar
+			{
+				PrimaryCommands =
+				{
+					new AppBarButton { Label = "PrimaryCommand" }
+				}
+			};
+
+			var closedCount = 0;
+			void OnClosed(object sender, object e) => closedCount++;
+
+			await UITestHelper.Load(SUT);
+
+			try
+			{
+				SUT.IsOpen = true;
+				await WindowHelper.WaitForIdle();
+				SUT.Closed += OnClosed;
+
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(SUT.IsOpen);
+				Assert.IsFalse(GetOverflowPopup(SUT).IsOpen);
+
+				await UITestHelper.Load(SUT);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(SUT.IsOpen);
+				Assert.IsTrue(GetOverflowPopup(SUT).IsOpen);
+				Assert.AreEqual(0, closedCount);
+			}
+			finally
+			{
+				SUT.Closed -= OnClosed;
+				SUT.IsOpen = false;
+				await WindowHelper.WaitForIdle();
+				WindowHelper.WindowContent = null;
+			}
+		}
+
 		private static Popup GetOverflowPopup(CommandBar commandBar)
 			=> (Popup)TreeHelper.GetVisualChildByName(commandBar, "OverflowPopup");
 	}
