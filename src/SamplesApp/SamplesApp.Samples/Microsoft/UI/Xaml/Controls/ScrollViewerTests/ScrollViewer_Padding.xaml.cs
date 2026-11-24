@@ -6,6 +6,7 @@ using UIKit;
 #endif
 using Uno.UI;
 using Uno.UI.Samples.Controls;
+using Uno.UI.Extensions;
 
 namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 {
@@ -23,7 +24,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 		{
 			await Task.Delay(300);
 #if HAS_UNO && !__WASM__ && !__SKIA__
-			layout.Text = this.ShowLocalVisualTree();
+			layout.Text = this.TreeGraph();
 #endif
 		}
 	}

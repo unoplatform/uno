@@ -1950,9 +1950,5 @@ namespace Microsoft.UI.Xaml
 		}
 
 		Visual IVisualElement2.GetVisualInternal() => ElementCompositionPreview.GetElementVisual(this);
-
-#if DEBUG
-		public string ShowLocalVisualTree() => this.ShowLocalVisualTree(1000);
-#endif
 	}
 }

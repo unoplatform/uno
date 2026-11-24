@@ -1,16 +1,9 @@
 #nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-using Uno.Extensions;
-using Uno.UI.Extensions;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Uno.Disposables;
 
 namespace Uno.UI
 {
@@ -58,71 +51,6 @@ namespace Uno.UI
 			}
 
 			return (T?)VisualTreeHelper.EnumerateRawDescendants(view, childLevelLimit).FirstOrDefault(childSelector);
-		}
-
-		internal static string ShowDescendants(this UIElement view, StringBuilder? sb = null, string spacing = "", UIElement? viewOfInterest = null)
-		{
-			sb = sb ?? new StringBuilder();
-			AppendView(view);
-			spacing += "  ";
-			foreach (var child in view._children)
-			{
-				ShowDescendants(child, sb, spacing, viewOfInterest);
-			}
-
-			return sb.ToString();
-
-			StringBuilder AppendView(UIElement innerView)
-			{
-				var name = (innerView as IFrameworkElement)?.Name;
-				var namePart = string.IsNullOrEmpty(name) ? "" : $"-'{name}'";
-
-				var uiElement = innerView as UIElement;
-				var desiredSize = uiElement?.DesiredSize.ToString("F1") ?? "<native/unk>";
-				var fe = innerView as IFrameworkElement;
-				var layoutSlot = LayoutInformation.GetLayoutSlot(innerView);
-
-				return sb
-					.Append(spacing)
-					.Append(innerView == viewOfInterest ? "*>" : ">")
-					.Append(innerView + namePart)
-					.Append($"-({layoutSlot.Width:F1}x{layoutSlot.Height:F1})@({layoutSlot.X:F1},{layoutSlot.Y:F1})")
-					.Append($" d:{desiredSize}")
-					.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
-					.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")
-					.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
-					.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
-					.Append(fe != null && fe.Visibility != Visibility.Visible ? "Collapsed " : "")
-					.Append(fe != null && fe.Opacity != 1 ? $"Opacity={fe.Opacity} " : "")
-					.Append(uiElement?.Clip != null ? $" Clip={uiElement.Clip.Rect}" : "")
-					.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
-					.Append(uiElement?.GetElementSpecificDetails())
-					.Append(uiElement?.GetElementGridOrCanvasDetails())
-					.Append(uiElement?.RenderTransform.GetTransformDetails())
-					.Append(uiElement?.GetLayoutDetails())
-					.AppendLine();
-			}
-		}
-
-
-		internal static string ShowLocalVisualTree(this UIElement element, int fromHeight = 0)
-		{
-			var root = element;
-
-			for (int i = 0; i < fromHeight; i++)
-			{
-				var parent = root.GetParent() as UIElement;
-				if (parent != null)
-				{
-					root = parent;
-				}
-				else
-				{
-					break;
-				}
-			}
-
-			return ShowDescendants(root, viewOfInterest: element);
 		}
 	}
 }

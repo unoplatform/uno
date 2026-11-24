@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 using Uno.UI;
+using Uno.UI.Extensions;
 
 namespace UITests.Windows_UI_Xaml.Clipping
 {
@@ -20,7 +21,7 @@ namespace UITests.Windows_UI_Xaml.Clipping
 			async void DumpTree()
 			{
 				await Task.Delay(1200);
-				var tree = this.ShowLocalVisualTree();
+				var tree = this.TreeGraph();
 				System.Diagnostics.Debug.WriteLine(tree);
 			}
 #endif
