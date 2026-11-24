@@ -530,8 +530,7 @@ public partial class TreeViewItem : ListViewItem
 
 	private void UpdateMultipleSelection(TreeNodeSelectionState state)
 	{
-		// Uno specific - in case the OnApplyTemplate was not yet called
-		// the multiselect checkbox is not yet set - we must cache the selection and call this again
+		// Uno specific: a template without the MultiSelectCheckBox part is tolerated, WinUI fails on it.
 		if (m_selectionBox == null)
 		{
 			return;

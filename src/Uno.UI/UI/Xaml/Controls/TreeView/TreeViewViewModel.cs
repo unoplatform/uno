@@ -41,6 +41,7 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 		m_selectedItems = selectedItems;
 	}
 
+	// TODO Uno: finalizer standing in for the C++ destructor.
 	~TreeViewViewModel()
 	{
 		var origin = m_originNode;
@@ -192,6 +193,7 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 		return IsContentMode ? node.Content : node;
 	}
 
+	// TODO Uno: IVector.GetMany has no IList<T> counterpart.
 #if false
 	private object[] GetMany(int startIndex)
 	{
@@ -302,6 +304,7 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 		}
 	}
 
+	// TODO Uno: IVector.ReplaceAll has no IList<T> counterpart.
 #if false
 	private void ReplaceAll(object[] items)
 	{
@@ -660,7 +663,8 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 			}
 			else
 			{
-				// Uno specific: Workaround for TreeViewSelectRegressionTest (seems to be broken in WinUI too).
+				// Uno specific: without a container, the selection is pushed to the list so that TreeView.SelectedItem
+				// follows it. WinUI updates neither.
 				if (!m_TreeViewList.IsMultiselect)
 				{
 					// Only a node being selected is forced onto the list: assigning an unselected node re-selects it (#25796).
@@ -1052,11 +1056,9 @@ internal partial class TreeViewViewModel : ObservableVector<object>
 	#region Uno specific
 
 	/// <summary>
-	/// The custom enumerator is necessary to ensure that when IsContentMode
-	/// is set to true, the IndexFromItem method works properly (it must enumerate
-	/// actual items, not TreeViewNodes).
+	/// Stands in for Implement_IIterator: enumerates through the indexer, which returns the content
+	/// of the nodes in content mode. ItemsControl relies on it to find the index of an item.
 	/// </summary>
-	/// <returns></returns>
 	public override IEnumerator<object> GetEnumerator()
 	{
 		return new TreeViewViewModelEnumerator(this);

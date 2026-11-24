@@ -110,6 +110,7 @@ internal class TreeViewNodeVector : ObservableVector<TreeViewNode>
 	public void RemoveAtEnd(bool updateItemsSource = true)
 	{
 		var index = Count - 1;
+		// Uno specific: WinUI passes updateItemsSource as the index, which removes the wrong node.
 		RemoveAt(index, updateItemsSource);
 	}
 

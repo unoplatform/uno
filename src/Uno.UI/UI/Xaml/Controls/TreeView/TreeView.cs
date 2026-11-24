@@ -31,6 +31,7 @@ public partial class TreeView : Control
 	private readonly SerialDisposable m_selectionChangedRevoker = new();
 
 #if HAS_UNO
+	// Uno specific (#15214): the SelectedItem that could not be selected yet, see OnPropertyChanged.
 	internal object PendingSelectedItem { get; set; }
 #endif
 
@@ -283,12 +284,15 @@ public partial class TreeView : Control
 			var items = SelectedItems;
 			var selected = items?.Count > 0 ? items[0] : null;
 #if !HAS_UNO
+			// Checking if new value is different to the currently internally selected item
 			if (args.NewValue != selected)
 			{
 				ListControl?.ListViewModel?.SelectSingleItem(args.NewValue);
 			}
-#else // #15214: workaround for initial selection being lost
+#else
+			// Uno specific (#15214): WinUI drops a SelectedItem it cannot select yet, Uno keeps it pending.
 			PendingSelectedItem = null;
+			// Checking if new value is different to the currently internally selected item
 			if (args.NewValue != selected)
 			{
 				ListControl?.ListViewModel?.SelectSingleItem(args.NewValue);
@@ -296,7 +300,7 @@ public partial class TreeView : Control
 				// 1. OnApplyTemplate was not yet called
 				// 2. the item is a descendant of a collapsed node
 				// in these cases, we should mark the item pending for selection.
-				// so it can be later picked up by TreeViewList::OnContainerContentChanging when it becomes materialized
+				// so it can be later picked up by TreeViewList.PrepareContainerForItemOverride when it becomes materialized
 				if (items == null || (items is [var selected2] && args.NewValue != selected2))
 				{
 					PendingSelectedItem = args.NewValue;

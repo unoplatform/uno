@@ -341,8 +341,8 @@ public partial class TreeViewList : ListView
 		m_staleSelectionItem = ListViewModel.TryTakeStaleUnselection(NodeFromContainer(element)) ? item : null;
 		try
 		{
-			// Uno: we are moving PrepareContainerForItemOverride to the top, because otherwise
-			// the container will still be associated with the old item's state
+			// Uno specific: the base prepare runs first, a recycled container otherwise still carries
+			// the previous item's state while the node is applied to it.
 			base.PrepareContainerForItemOverride(element, item);
 		}
 		finally
@@ -398,7 +398,8 @@ public partial class TreeViewList : ListView
 			ListViewModel.UpdateSelection(itemNodeImplNoRef, selectionState);
 		}
 
-#if HAS_UNO // #15214: workaround for initial selection being lost
+#if HAS_UNO
+		// Uno specific (#15214): selects the item TreeView.SelectedItem kept pending, see TreeView.OnPropertyChanged.
 		// Done here rather than in OnContainerContentChanging: that is raised once the container has its
 		// template, and TreeViewItem.OnApplyTemplate would first reset IsSelected from the unselected node.
 		if (itemContainer.IsSelected || ListViewModel.TreeView.PendingSelectedItem == item)
@@ -430,7 +431,11 @@ public partial class TreeViewList : ListView
 
 	protected override DependencyObject GetContainerForItemOverride()
 	{
-		var targetItem = new TreeViewItem() { IsGeneratedContainer = true }; // Uno specific IsGeneratedContainer
+		var targetItem = new TreeViewItem();
+#if HAS_UNO
+		// Uno specific: ItemsControl only keeps the style of a container it generated when it clears it.
+		targetItem.IsGeneratedContainer = true;
+#endif
 		return targetItem;
 	}
 
@@ -496,6 +501,7 @@ public partial class TreeViewList : ListView
 			dragItemPeer = FrameworkElementAutomationPeer.FromElement(dragItem);
 			if (dragItemPeer != null)
 			{
+				// Uno specific: GetNameCore is protected, GetName is called instead (here and below).
 				dragItemString = dragItemPeer.GetName();
 			}
 
