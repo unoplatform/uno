@@ -4,7 +4,7 @@
 //     LottieGen version: 7.1.0+ge1fa92580f
 // </auto-generated>
 //------------------------------------------------------------------------------
-// MUX Reference AnimatedGlobalNavigationButtonVisualSource.cpp, commit 5f9e85113
+// MUX Reference AnimatedGlobalNavigationButtonVisualSource.cpp
 
 using System;
 using System.Collections.Generic;

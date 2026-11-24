@@ -18,7 +18,7 @@
 //     the code is regenerated.
 // </auto-generated>
 //------------------------------------------------------------------------------
-// MUX Reference AnimatedGlobalNavigationButtonVisualSource.cpp/.h, commit 5f9e85113
+// MUX Reference AnimatedGlobalNavigationButtonVisualSource.cpp/.h
 
 using System;
 using System.Collections.Generic;
