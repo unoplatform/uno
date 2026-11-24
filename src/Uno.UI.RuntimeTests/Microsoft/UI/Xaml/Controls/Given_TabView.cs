@@ -290,10 +290,9 @@ public class Given_TabView
 	{
 		var data = new TabLeakData { Header = "Tab 1" };
 		source.Insert(0, data);
-		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitFor(() => tabView.ContainerFromItem(data) is not null, timeoutMS: 5000, message: "No container was generated for the data item.");
 
 		var container = (TabViewItem)tabView.ContainerFromItem(data);
-		Assert.IsNotNull(container, "No container was generated for the data item.");
 		await UITestHelper.WaitForLoaded(container);
 		container = null;
 
