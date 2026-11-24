@@ -11,7 +11,6 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using TreeViewListAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.TreeViewListAutomationPeer;
 using DragEventArgs = Microsoft.UI.Xaml.DragEventArgs;
-using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -771,35 +770,4 @@ public partial class TreeViewList : ListView
 	}
 
 	internal bool IsContentMode => ListViewModel?.IsContentMode ?? false;
-
-
-	// Uno Specific
-
-	private TreeView m_ancestorTreeView;
-
-	private T GetAncestorView<T>()
-		where T : class
-	{
-		DependencyObject treeViewItemAncestor = this;
-		T ancestorview = null;
-		while (treeViewItemAncestor != null && ancestorview == null)
-		{
-			treeViewItemAncestor = VisualTreeHelper.GetParent(treeViewItemAncestor);
-			ancestorview = treeViewItemAncestor as T;
-		}
-		return ancestorview;
-	}
-
-	internal TreeView AncestorTreeView
-	{
-		get
-		{
-			if (m_ancestorTreeView == null)
-			{
-				m_ancestorTreeView = GetAncestorView<TreeView>();
-			}
-
-			return m_ancestorTreeView;
-		}
-	}
 }

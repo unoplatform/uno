@@ -319,13 +319,6 @@ public partial class TreeViewItem : ListViewItem
 			node.HasUnrealizedChildren = HasUnrealizedChildren;
 		}
 
-		// Uno specific - in case the OnApplyTemplate was not yet called
-		// the multiselect checkbox is not yet set - we must cache the selection and call this again
-		if (node != null)
-		{
-			UpdateSelectionVisual(node.SelectionState);
-		}
-
 		base.OnApplyTemplate();
 	}
 
@@ -349,20 +342,6 @@ public partial class TreeViewItem : ListViewItem
 			if (m_ancestorTreeView == null)
 			{
 				m_ancestorTreeView = GetAncestorView<TreeView>();
-			}
-			// TODO: Uno Specific - in case the container was generated, it is not yet part of the visual tree and we need to use
-			// the ItemsControlForItemContainerProperty to get the parent TreeViewList, and from there the TreeView
-			if (m_ancestorTreeView == null)
-			{
-				var weakReference = this.GetValue(ItemsControl.ItemsControlForItemContainerProperty) as WeakReference<ItemsControl>;
-				if (weakReference != null)
-				{
-					if (weakReference.TryGetTarget(out var target))
-					{
-						var list = target as TreeViewList;
-						m_ancestorTreeView = list.AncestorTreeView;
-					}
-				}
 			}
 			return m_ancestorTreeView;
 		}
@@ -831,20 +810,5 @@ public partial class TreeViewItem : ListViewItem
 		}
 
 		return TreeNodeSelectionState.PartialSelected;
-	}
-
-	// Uno specifc: Ensure the indentation and selection visual are set properly
-	// when the tree view item returns from recycling queue.
-	// Removing this would break the TreeViewPartialSelectionTest-based UI tests.
-
-	private protected override void OnLoaded()
-	{
-		base.OnLoaded();
-
-		if (TreeNode != null)
-		{
-			UpdateIndentation(TreeNode.Depth);
-			UpdateSelectionVisual(TreeNode.SelectionState);
-		}
 	}
 }
