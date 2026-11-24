@@ -4,7 +4,9 @@
 // MUX Reference InteractionTests/RadioButtonsTests.cs
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using Common;
 using Microsoft.UI.Private.Controls;
@@ -14,6 +16,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Windows.Foundation;
 using Windows.System;
 using static Private.Infrastructure.TestServices;
 
@@ -151,6 +154,7 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 		public async Task BasicKeyboardTest()
 		{
 			elements = await RadioButtonsTestPage.Create();
+			_trail.Clear();
 			foreach (RadioButtonsSourceLocation location in Enum.GetValues(typeof(RadioButtonsSourceLocation)))
 			{
 				await SetSource(location);
@@ -158,28 +162,67 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 				{
 					bool useBackup = type == RadioButtonsSourceType.String;
 					await SetItemType(type);
-					await TapOnItem(3, useBackup);
-					VerifySelectedFocusedIndex(3);
-					await KeyboardHelper.Down();
-					VerifySelectedFocusedIndex(4);
-					await KeyboardHelper.Up();
-					VerifySelectedFocusedIndex(3);
-					await KeyboardHelper.Left();
-					VerifySelectedFocusedIndex(3);
-					await KeyboardHelper.Right();
-					VerifySelectedFocusedIndex(3);
+					var p = $"{location}/{type}";
+					await DiagStep($"{p} Tap(3) {DescribeTapTarget(3, useBackup)}", () => TapOnItem(3, useBackup), 3);
+					await DiagStep($"{p} Down", () => KeyboardHelper.Down(), 4);
+					await DiagStep($"{p} Up", () => KeyboardHelper.Up(), 3);
+					await DiagStep($"{p} Left", () => KeyboardHelper.Left(), 3);
+					await DiagStep($"{p} Right", () => KeyboardHelper.Right(), 3);
 
-					await TapOnItem(0, useBackup);
-					VerifySelectedFocusedIndex(0);
-					await KeyboardHelper.Up();
-					VerifySelectedFocusedIndex(0);
+					await DiagStep($"{p} Tap(0) {DescribeTapTarget(0, useBackup)}", () => TapOnItem(0, useBackup), 0);
+					await DiagStep($"{p} Up", () => KeyboardHelper.Up(), 0);
 
-					await TapOnItem(9, useBackup);
-					VerifySelectedFocusedIndex(9);
-					await KeyboardHelper.Down();
-					VerifySelectedFocusedIndex(9);
+					await DiagStep($"{p} Tap(9) {DescribeTapTarget(9, useBackup)}", () => TapOnItem(9, useBackup), 9);
+					await DiagStep($"{p} Down", () => KeyboardHelper.Down(), 9);
 				}
 			}
+		}
+
+		// Temporary diagnostics for #26579: the failure only reproduces on the Android WebGPU CI lane.
+		private readonly List<string> _trail = new();
+
+		private async Task DiagStep(string label, Func<Task> action, int expected)
+		{
+			var before = DescribeFocused();
+			await action();
+			var after = DescribeState();
+			_trail.Add($"{label} | before: {before} | after: {after}");
+			Console.WriteLine($"[RB-DIAG] {_trail[^1]}");
+			if (elements.SelectedIndex != expected || elements.Focus.FocusedIndex != expected)
+			{
+				Assert.Fail($"[RB-DIAG] '{label}' expected {expected}: {after}\nTrail:\n{string.Join("\n", _trail.TakeLast(16))}");
+			}
+		}
+
+		private string DescribeState()
+		{
+			var root = WindowHelper.XamlRoot;
+			return $"sel={elements.SelectedIndex} rbSel={elements.TestRadioButtons.SelectedIndex} focusIdx={elements.Focus.FocusedIndex} hasFocus={elements.Focus.HasFocus} focused={DescribeFocused()} root={root.Size.Width:0.#}x{root.Size.Height:0.#}@{root.RasterizationScale:0.##}";
+		}
+
+		private static string DescribeFocused()
+			=> FocusManager.GetFocusedElement(WindowHelper.XamlRoot) is { } focused ? DescribeElement(focused) : "null";
+
+		private static string DescribeElement(object element)
+			=> element switch
+			{
+				ContentControl cc => $"{cc.GetType().Name}('{cc.Content}')",
+				FrameworkElement fe => $"{fe.GetType().Name}('{fe.Name}')",
+				_ => element.GetType().Name,
+			};
+
+		private string DescribeTapTarget(int index, bool useBackup)
+		{
+			if (useBackup)
+			{
+				return "[backup]";
+			}
+
+			var item = elements.FindItemByName("Radio Button " + index);
+			var rootContent = WindowHelper.XamlRoot.Content;
+			var topLeft = item.TransformToVisual(rootContent).TransformPoint(new Point(0, 0));
+			var center = new Point(topLeft.X + item.RenderSize.Width / 2, topLeft.Y + item.RenderSize.Height / 2);
+			return $"[item@{topLeft.X:0.#},{topLeft.Y:0.#} {item.RenderSize.Width:0.#}x{item.RenderSize.Height:0.#} center={center.X:0.#},{center.Y:0.#}]";
 		}
 
 		[TestMethod]

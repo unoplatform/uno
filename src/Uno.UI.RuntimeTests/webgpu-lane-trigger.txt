@@ -1,0 +1,2 @@
+Temporary: its path matches the WebGPU test scope (build/ci/scripts/determine-test-scope.ps1) so this
+diagnostics-only PR runs the WebGPU lanes. Remove before merging.
