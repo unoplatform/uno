@@ -1,10 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference AnimatedIconTestHooks.cpp, commit 2eba45b
+// MUX Reference AnimatedIconTestHooks.cpp
 
+using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Private.Controls
 {
 	internal class AnimatedIconTestHooks
 	{
@@ -72,6 +73,6 @@ namespace Microsoft.UI.Xaml.Controls
 			LastAnimationSegmentChanged?.Invoke(sender, null);
 		}
 
-		internal static TypedEventHandler<AnimatedIcon, object> LastAnimationSegmentChanged;
+		internal static event TypedEventHandler<AnimatedIcon, object> LastAnimationSegmentChanged;
 	}
 }
