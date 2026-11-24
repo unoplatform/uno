@@ -267,7 +267,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// Because Popup.Child is not part of the visual tree until Popup.IsOpen,
 				// some descendant Controls may never have loaded and materialized their templates.
 				// We force the materialization of all templates to ensure that Measure works properly.
-				foreach (var control in popupChild.EnumerateAllChildren().OfType<Control>())
+				foreach (var control in VisualTreeHelper.EnumerateRawDescendants(popupChild).OfType<Control>())
 				{
 					control.ApplyTemplate();
 				}

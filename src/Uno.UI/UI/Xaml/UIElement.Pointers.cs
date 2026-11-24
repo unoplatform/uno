@@ -29,6 +29,7 @@ using Uno.UI.Xaml.Core;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using MuxPointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using Microsoft.UI.Input;
+using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml
 {
@@ -781,7 +782,7 @@ namespace Microsoft.UI.Xaml
 		internal void CompleteGesturesOnTree()
 		{
 			this.CompleteGesture();
-			foreach (var element in this.EnumerateAncestors())
+			foreach (var element in VisualTreeHelper.EnumerateVisualTreeAncestors(this))
 			{
 				(element as UIElement)?.CompleteGesture();
 			}

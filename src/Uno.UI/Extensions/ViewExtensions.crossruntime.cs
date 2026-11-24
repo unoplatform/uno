@@ -75,9 +75,7 @@ namespace Uno.UI
 				return view as T;
 			}
 
-			var maxDepth = childLevelLimit ?? int.MaxValue;
-
-			return (T?)view.EnumerateAllChildren(childSelector, maxDepth).FirstOrDefault();
+			return (T?)VisualTreeHelper.EnumerateRawDescendants(view, childLevelLimit).FirstOrDefault(childSelector);
 		}
 
 		internal static string ShowDescendants(this UIElement view, StringBuilder? sb = null, string spacing = "", UIElement? viewOfInterest = null)
