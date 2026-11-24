@@ -72,5 +72,6 @@ internal static partial class Xlate
 	{
 		AddGenerated(table, native);
 		AddHand(table);
+		AddDeviceLossGuards(table);
 	}
 }
