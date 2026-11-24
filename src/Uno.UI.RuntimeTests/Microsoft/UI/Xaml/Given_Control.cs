@@ -472,6 +472,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			SUT.Template = CreateSizedTemplate("SecondTemplateRoot", 60);
 			await TestServices.WindowHelper.WaitForIdle();
+			// WinUI marks the control dirty but doesn't schedule a layout pass for this change.
+			// UpdateLayout only measures dirty elements, so this still fails if the change doesn't invalidate measure.
+			SUT.UpdateLayout();
 
 			Assert.IsNotNull(SUT.FindFirstDescendant<Border>("SecondTemplateRoot"), "The new template was not applied");
 			Assert.AreEqual(60, SUT.ActualWidth);
