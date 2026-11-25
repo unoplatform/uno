@@ -273,6 +273,91 @@ public class Given_UnicodeTextOptions
 	}
 
 	[TestMethod]
+	[DataRow(TextTrimming.CharacterEllipsis)]
+	[DataRow(TextTrimming.WordEllipsis)]
+	public async Task When_TrimmingWidth_Differs_From_WrappingWidth(TextTrimming trimming)
+	{
+		// The lines break at the wrapping width; each line wider than the trimming width ends with an ellipsis within it.
+		var inlines = new Inline[] { R(Latin) };
+		await WaitForFonts(inlines, 200);
+		const float TrimmingWidth = 120;
+
+		var baseLayout = Layout(inlines, 200, trimming: trimming);
+		var twin = Layout(inlines, 200, trimming: trimming, options: new() { TrimmingWidth = TrimmingWidth });
+
+		Assert.AreEqual(baseLayout.LineCount, twin.LineCount);
+		var trimmed = 0;
+		for (var i = 0; i < baseLayout.LineCount; i++)
+		{
+			var expected = baseLayout.GetLineForTests(i);
+			var actual = twin.GetLineForTests(i);
+			Assert.IsFalse(expected.HasEllipsis, $"Line {i} fits the wrapping width.");
+			if (expected.WidthWithoutTrailingSpaces > TrimmingWidth)
+			{
+				trimmed++;
+				Assert.IsTrue(actual.HasEllipsis, $"Line {i} ({expected.WidthWithoutTrailingSpaces}) is wider than {TrimmingWidth}.");
+				Assert.AreEqual(expected.Start, actual.Start, $"Line {i}: start");
+				Assert.AreEqual(expected.End, actual.End, $"Line {i}: end");
+				Assert.IsTrue(actual.Width <= TrimmingWidth, $"Line {i}: {actual.Width} should fit {TrimmingWidth}.");
+				Assert.IsTrue(actual.Width > TrimmingWidth / 2, $"Line {i}: {actual.Width} keeps what fits.");
+			}
+			else
+			{
+				AssertLinesEqual(expected, actual, $"Line {i}");
+			}
+		}
+		Assert.IsTrue(trimmed >= 2, $"Only {trimmed} lines were trimmed.");
+
+		// In a resumed layout, the unwrapped lines before the resume index are a previous layout's and are never trimmed.
+		var resumeIndex = baseLayout.GetLineForTests(2).Start;
+		var resumedTwin = Layout(inlines, 200, trimming: trimming, options: new() { TrimmingWidth = TrimmingWidth, ResumeIndex = resumeIndex });
+		Assert.AreEqual(1, resumedTwin.FirstResumedLine);
+		Assert.IsFalse(resumedTwin.GetLineForTests(0).HasEllipsis, "The line before the resume index");
+		for (var i = 2; i < twin.LineCount; i++)
+		{
+			AssertLinesEqual(twin.GetLineForTests(i), resumedTwin.GetLineForTests(i - 1), $"Resumed line {i}");
+		}
+	}
+
+	[TestMethod]
+	public async Task When_ForcedEllipsisLine()
+	{
+		// A paragraph ellipsis: the line fits, but text after it won't be shown, so it ends with an ellipsis and is the last line.
+		var inlines = new Inline[] { R(Latin) };
+		await WaitForFonts(inlines, 200);
+
+		var baseLayout = Layout(inlines, 200, trimming: TextTrimming.CharacterEllipsis);
+		var twin = Layout(inlines, 200, trimming: TextTrimming.CharacterEllipsis, options: new() { ForcedEllipsisLine = 1 });
+
+		Assert.IsTrue(baseLayout.LineCount >= 3);
+		Assert.IsFalse(baseLayout.GetLineForTests(1).HasEllipsis, "The line fits.");
+		Assert.AreEqual(2, twin.LineCount, "The lines after the forced one are dropped.");
+		AssertLinesEqual(baseLayout.GetLineForTests(0), twin.GetLineForTests(0), "Line 0");
+		var forced = twin.GetLineForTests(1);
+		Assert.IsTrue(forced.HasEllipsis);
+		Assert.AreEqual(baseLayout.GetLineForTests(1).Start, forced.Start);
+		Assert.AreEqual(Latin.Length, forced.End, "The ellipsis stands for the rest of the text.");
+		Assert.IsTrue(forced.Width <= 200, $"{forced.Width} should fit 200.");
+
+		// Without trimming there is no ellipsis to force.
+		var untrimmed = Layout(inlines, 200, options: new() { ForcedEllipsisLine = 1 });
+		Assert.IsFalse(untrimmed.GetLineForTests(1).HasEllipsis);
+
+		// In a resumed layout, the line counts from the start of the text, prefix lines included.
+		var resumeIndex = baseLayout.GetLineForTests(1).Start;
+		var fullTwin = Layout(inlines, 200, trimming: TextTrimming.CharacterEllipsis, options: new() { ForcedEllipsisLine = 2 });
+		var resumedTwin = Layout(inlines, 200, trimming: TextTrimming.CharacterEllipsis, options: new() { ResumeIndex = resumeIndex, ForcedEllipsisLine = 2 });
+		Assert.AreEqual(1, resumedTwin.FirstResumedLine);
+		Assert.AreEqual(3, resumedTwin.LineCount);
+		AssertLinesEqual(fullTwin.GetLineForTests(1), resumedTwin.GetLineForTests(1), "Resumed line 1");
+		AssertLinesEqual(fullTwin.GetLineForTests(2), resumedTwin.GetLineForTests(2), "Resumed forced line 2");
+		Assert.IsTrue(resumedTwin.GetLineForTests(2).HasEllipsis);
+
+		// A line before the resume index belongs to a previous layout: forcing it would drop every resumed line.
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Layout(inlines, 200, trimming: TextTrimming.CharacterEllipsis, options: new() { ResumeIndex = resumeIndex, ForcedEllipsisLine = 0 }));
+	}
+
+	[TestMethod]
 	public async Task When_Resumed_NoWrap_Line_Starts_At_Resume_Index()
 	{
 		// Without wrapping, the resume index still ends a line, and the rest stays on one line however wide.

@@ -289,6 +289,8 @@ internal readonly partial struct UnicodeText : IParsedText
 	{
 		CI.Assert(maxLines >= 0);
 		var resumeIndex = options.ResumeIndex;
+		var forcedEllipsisLine = options.ForcedEllipsisLine ?? -1;
+		var trimmingWidth = options.TrimmingWidth ?? (float)availableSize.Width;
 		_endingParagraphLayout = endingParagraphLayout;
 		_endingParagraphAlignment = endingParagraphAlignment;
 		_defaultForeground = defaultForeground;
@@ -963,6 +965,10 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			firstResumedLine++;
 		}
+		if (options.ForcedEllipsisLine is { } forcedLine && forcedLine < firstResumedLine)
+		{
+			ThrowForcedEllipsisLineBeforeResume(forcedLine, firstResumedLine);
+		}
 
 		var textEndsInLineBreak = IsLineBreak(_text, _text.Length);
 		// Lines that do not fit the available height are dropped below, so the height only matters past one line.
@@ -987,15 +993,17 @@ internal readonly partial struct UnicodeText : IParsedText
 					? terminalBlockHeight
 					: 0;
 			var actualLineCount = lines.Count + (textEndsInLineBreak ? 1 : 0);
-			var isEarlyLastLine = (maxLines > 0 && maxLines < actualLineCount && lineIndex == maxLines - 1) || (lineIndex < actualLineCount - 1 && nextLineHeight + totalHeight > availableSize.Height);
+			var isEarlyLastLine = (maxLines > 0 && maxLines < actualLineCount && lineIndex == maxLines - 1)
+				|| (lineIndex < actualLineCount - 1 && nextLineHeight + totalHeight > availableSize.Height)
+				|| lineIndex == forcedEllipsisLine;
 
 			var lineWidth = line.width;
 			LinkedListNode<Cluster> lastClusterIncludedInLine = line.clusterLast;
 			var trimAvailableWidth = line.paragraphLayout is { } trimPl
-				? Math.Max(0, (float)availableSize.Width
+				? Math.Max(0, trimmingWidth
 					- GetParagraphLeftInset(trimPl, line.isFirstLineOfParagraph)
 					- GetParagraphRightInset(trimPl, line.isFirstLineOfParagraph))
-				: (float)availableSize.Width;
+				: trimmingWidth;
 			if (textTrimming is TextTrimming.CharacterEllipsis or TextTrimming.WordEllipsis
 				&& lineIndex >= firstResumedLine // the unwrapped lines of a previous layout
 				&& (line.widthWithoutTrailingSpaces > trimAvailableWidth || isEarlyLastLine))
@@ -1332,6 +1340,9 @@ internal readonly partial struct UnicodeText : IParsedText
 			throw new ArgumentException($"{nameof(UnicodeTextOptions.ResumeIndex)} {resumeIndex} is inside a cluster or a line break; a layout resumes only where a line can start.", "options");
 		}
 	}
+
+	private static void ThrowForcedEllipsisLineBeforeResume(int forcedEllipsisLine, int firstResumedLine)
+		=> throw new ArgumentOutOfRangeException("options", $"{nameof(UnicodeTextOptions.ForcedEllipsisLine)} {forcedEllipsisLine} is before the first resumed line, {firstResumedLine}.");
 
 	private static bool IsClusterEnd(LinkedList<Cluster> clusters, int index)
 	{

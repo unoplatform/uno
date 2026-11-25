@@ -22,4 +22,18 @@ internal readonly record struct UnicodeTextOptions
 	/// metrics of the lines from <see cref="UnicodeText.FirstResumedLine"/> on, and leaves paging to its caller.
 	/// </remarks>
 	public int ResumeIndex { get; init; }
+
+	/// <summary>
+	/// The width a line must fit for trimming, when it differs from the width the text wraps at. Null trims at the
+	/// available width.
+	/// </summary>
+	public float? TrimmingWidth { get; init; }
+
+	/// <summary>
+	/// The index of a line that gets an ellipsis even if it fits, as the last line before text that won't be shown,
+	/// with the trimming set on the layout. The lines after it are dropped. It must not be before
+	/// <see cref="UnicodeText.FirstResumedLine"/>; the constructor throws otherwise. A line of a single cluster keeps
+	/// that cluster and gets no ellipsis, as with maxLines.
+	/// </summary>
+	public int? ForcedEllipsisLine { get; init; }
 }
