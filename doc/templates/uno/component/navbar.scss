@@ -175,8 +175,10 @@ $header-padding-x: 32px;
             vertical-align: top;
 
             @include media-breakpoint-up(lg) {
-              line-height: 21px;
               font: normal normal normal 15px/1 FontAwesome;
+              // Centres the chevron on the label's capitals (within ~0.7px at the 14-18px label
+              // sizes); `top` pinned it to the 14px line box, above the text.
+              vertical-align: 0.1em;
             }
           }
         }
