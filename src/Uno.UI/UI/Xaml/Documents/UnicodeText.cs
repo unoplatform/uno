@@ -41,6 +41,11 @@ internal readonly partial struct UnicodeText : IParsedText
 	private const int UBIDI_LTR = 0;
 	private const int UBIDI_RTL = 1;
 	private const string HorizontalEllipsis = "\u2026";
+
+	// Runs right after the paragraph BiDi pass, while ICU still points into the buffers it was given for the
+	// line reordering below. Tests use it to disturb the managed heap and the shared array pool in that window.
+	internal static Action<int>? ParagraphBidiResolvedForTests;
+
 	// Unicode rules P2-P3: the first strong character sets the paragraph level, otherwise the flow direction does.
 	internal static bool IsRightToLeftParagraph(string text, FlowDirection flowDirection)
 	{
@@ -49,8 +54,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			return flowDirection is FlowDirection.RightToLeft;
 		}
 
-		using var _ = ICU.CreateBiDiAndSetPara(text, 0, text.Length, flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR, out var bidi);
-		return ICU.GetMethod<ICU.ubidi_getParaLevel>()(bidi) is UBIDI_RTL;
+		return ICU.GetParaLevel(text, flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR) is UBIDI_RTL;
 	}
 
 	// Fallbacks for fonts that don't publish underline/strikeout metrics, as a fraction of the em
@@ -471,11 +475,11 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		_bidiBreaks = new List<(int end, FlowDirection direction)>();
 		var trivialLtr = allAscii && allRunsLtr && flowDirection is FlowDirection.LeftToRight && paragraphLayouts is null;
-		// The paragraph BiDi handle must outlive the per-line reordering below; boxed so the deferred close
-		// sees the handle assigned in the non-trivial branch (it stays default — no close — on the trivial path).
-		var bidiBox = new global::System.Runtime.CompilerServices.StrongBox<IntPtr>();
-		using var bidiDisposable = new DisposableStruct<global::System.Runtime.CompilerServices.StrongBox<IntPtr>>(
-			static box => { if (box.Value != default) { ICU.GetMethod<ICU.ubidi_close>()(box.Value); } },
+		// The paragraph BiDi object (and the buffers ICU points into) must outlive the per-line reordering below; boxed
+		// so the deferred close sees the object created in the non-trivial branch (it stays default — no close — on the trivial path).
+		var bidiBox = new global::System.Runtime.CompilerServices.StrongBox<ICU.ParagraphBiDi>();
+		using var bidiDisposable = new DisposableStruct<global::System.Runtime.CompilerServices.StrongBox<ICU.ParagraphBiDi>>(
+			static box => box.Value.Dispose(),
 			bidiBox);
 		IntPtr bidi = default;
 		if (trivialLtr)
@@ -500,8 +504,8 @@ internal readonly partial struct UnicodeText : IParsedText
 				Array.Fill(embeddingLevels, (byte)level, start, count);
 			}
 
-			ICU.CreateBiDiAndSetPara(_text, 0, _text.Length, flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR, out bidi, embeddingLevels);
-			bidiBox.Value = bidi;
+			bidiBox.Value = ICU.CreateBiDiAndSetPara(_text, flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR, embeddingLevels.AsSpan(0, _text.Length));
+			bidi = bidiBox.Value.Handle;
 			var runCount = ICU.GetMethod<ICU.ubidi_countRuns>()(bidi, out var countRunsErrorCode);
 			ICU.CheckErrorCode<ICU.ubidi_countRuns>(countRunsErrorCode);
 			_rtl = ICU.GetMethod<ICU.ubidi_getParaLevel>()(bidi) is UBIDI_RTL;
@@ -518,6 +522,8 @@ internal readonly partial struct UnicodeText : IParsedText
 				}
 			}
 		}
+
+		ParagraphBidiResolvedForTests?.Invoke(_text.Length);
 
 		_glyphs = new LinkedList<Glyph>();
 		var clusterBreaks = new LinkedList<Cluster>();

@@ -281,29 +281,77 @@ internal readonly partial struct UnicodeText
 			return (T)value;
 		}
 
-		public static unsafe DisposableStruct<IntPtr> CreateBiDiAndSetPara(string text, int start, int end, byte paraLevel, out IntPtr bidi, byte[]? embeddingLevels = null)
+		// ubidi_setPara stores the text and embedding-level pointers rather than copying them, writes the resolved
+		// levels into that array, and ubidi_setLine, ubidi_getLevels and the run functions read them again later.
+		// Both therefore live in native memory that neither moves nor goes back to a pool until ubidi_close.
+		public readonly unsafe struct ParagraphBiDi : IDisposable
 		{
-			bidi = GetMethod<ubidi_open>()();
-			fixed (char* textPtr = &text.GetPinnableReference())
+			private readonly void* _buffer;
+
+			public ParagraphBiDi(IntPtr handle, void* buffer)
 			{
-				int setParaErrorCode;
-				if (embeddingLevels is not null)
+				Handle = handle;
+				_buffer = buffer;
+			}
+
+			public IntPtr Handle { get; }
+
+			public void Dispose()
+			{
+				if (Handle != IntPtr.Zero)
 				{
-					fixed (byte* embeddingLevelsPtr = embeddingLevels)
+					GetMethod<ubidi_close>()(Handle);
+				}
+				NativeMemory.Free(_buffer);
+			}
+		}
+
+		// The level ICU resolves for a paragraph. Only that is read, before the object closes, so the text is pinned for
+		// every call that reads it rather than copied for an object that outlives this call (see CreateBiDiAndSetPara).
+		public static unsafe byte GetParaLevel(ReadOnlySpan<char> text, byte paraLevel)
+		{
+			fixed (char* textPtr = text)
+			{
+				var bidi = GetMethod<ubidi_open>()();
+				try
+				{
+					GetMethod<ubidi_setPara>()(bidi, (IntPtr)textPtr, text.Length, paraLevel, IntPtr.Zero, out var setParaErrorCode);
+					if (setParaErrorCode > 0)
 					{
-						GetMethod<ubidi_setPara>()(bidi, (IntPtr)(textPtr + start), end - start, paraLevel, (IntPtr)embeddingLevelsPtr, out setParaErrorCode);
+						throw new InvalidOperationException($"{nameof(ubidi_setPara)} failed with error code {setParaErrorCode}");
 					}
+
+					return GetMethod<ubidi_getParaLevel>()(bidi);
 				}
-				else
+				finally
 				{
-					GetMethod<ubidi_setPara>()(bidi, (IntPtr)(textPtr + start), end - start, paraLevel, IntPtr.Zero, out setParaErrorCode);
-				}
-				if (setParaErrorCode > 0)
-				{
-					throw new InvalidOperationException($"{nameof(ubidi_setPara)} failed with error code {setParaErrorCode}");
+					GetMethod<ubidi_close>()(bidi);
 				}
 			}
-			return new DisposableStruct<IntPtr>(static bidi => GetMethod<ubidi_close>()(bidi), bidi);
+		}
+
+		// embeddingLevels is either empty or as long as text.
+		public static unsafe ParagraphBiDi CreateBiDiAndSetPara(ReadOnlySpan<char> text, byte paraLevel, ReadOnlySpan<byte> embeddingLevels = default)
+		{
+			var textByteCount = (nuint)text.Length * sizeof(char);
+			var buffer = NativeMemory.Alloc(textByteCount + (nuint)embeddingLevels.Length);
+			var textCopy = (char*)buffer;
+			text.CopyTo(new Span<char>(textCopy, text.Length));
+			byte* levelsCopy = null;
+			if (!embeddingLevels.IsEmpty)
+			{
+				levelsCopy = (byte*)buffer + textByteCount;
+				embeddingLevels.CopyTo(new Span<byte>(levelsCopy, embeddingLevels.Length));
+			}
+
+			var bidi = new ParagraphBiDi(GetMethod<ubidi_open>()(), buffer);
+			GetMethod<ubidi_setPara>()(bidi.Handle, (IntPtr)textCopy, text.Length, paraLevel, (IntPtr)levelsCopy, out var setParaErrorCode);
+			if (setParaErrorCode > 0)
+			{
+				bidi.Dispose();
+				throw new InvalidOperationException($"{nameof(ubidi_setPara)} failed with error code {setParaErrorCode}");
+			}
+			return bidi;
 		}
 
 		private static ubrk_setText? _setText;
