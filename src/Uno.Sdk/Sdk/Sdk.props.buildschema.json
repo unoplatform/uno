@@ -229,6 +229,10 @@
 			"description": "Provides an explicit override for the version of Uno.HotDesign to use.",
 			"type": "nuget-version"
 		},
+		"UnoHotTestingVersion": {
+			"description": "Provides an explicit override for the version of Uno.HotTesting to use.",
+			"type": "nuget-version"
+		},
 		"UnoAppMcpVersion": {
 			"description": "Provides an explicit override for the version of Uno.UI.App.Mcp to use.",
 			"type": "nuget-version"
