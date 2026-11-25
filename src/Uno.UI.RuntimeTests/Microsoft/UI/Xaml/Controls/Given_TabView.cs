@@ -264,6 +264,8 @@ public class Given_TabView
 	}
 
 	[TestMethod]
+	// On WinUI the data item crosses into native XAML, whose reference tracking keeps it past a managed GC.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_TabItemsSource_Item_Removed_Then_Collected()
 	{
 		var source = new ObservableCollection<TabLeakData> { new() { Header = "Tab 2" } };
