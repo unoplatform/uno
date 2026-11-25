@@ -108,7 +108,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			button1.Measure(new Size(1000, 1000));
 
-			var text1 = button1.FindFirstDescendantOrSelf<TextBlock>();
+			var text1 = button1.FindFirstDescendant<TextBlock>();
 			Assert.IsNotNull(text1);
 			Assert.AreEqual("RadioButtonText1", text1.Text);
 
@@ -118,7 +118,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			button2.Measure(new Size(1000, 1000));
 
-			var text2 = button2.FindFirstDescendantOrSelf<TextBlock>();
+			var text2 = button2.FindFirstDescendant<TextBlock>();
 			Assert.IsNotNull(text2);
 			Assert.AreEqual("RadioButtonText2", text2.Text);
 
@@ -128,7 +128,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			button3.Measure(new Size(1000, 1000));
 
-			var text3 = button3.FindFirstDescendantOrSelf<TextBlock>();
+			var text3 = button3.FindFirstDescendant<TextBlock>();
 			Assert.IsNotNull(text3);
 			Assert.AreEqual("RadioButtonText3", text3.Text);
 		}

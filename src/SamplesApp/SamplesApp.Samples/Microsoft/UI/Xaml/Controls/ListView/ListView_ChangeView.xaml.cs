@@ -20,7 +20,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 
 		private void ChangeViewButtonClick(object sender, RoutedEventArgs e)
 		{
-			var scrollViewer = MyListView.FindFirstDescendantOrSelf<ScrollViewer>();
+			var scrollViewer = MyListView.FindFirstDescendant<ScrollViewer>();
 
 			scrollViewer.ChangeView(null, 1020, null);
 		}
@@ -29,7 +29,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 		{
 			MyListView.Style = Resources["MyStyle"] as Style;
 
-			var scrollViewer = MyListView.FindFirstDescendantOrSelf<ScrollViewer>();
+			var scrollViewer = MyListView.FindFirstDescendant<ScrollViewer>();
 
 			MyListView.ItemsSource = CreateItems();
 		}

@@ -205,7 +205,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			var nodes = Enumerable.Range(1, 100).Select(i => new TestTreeNodeModel("Node " + i, isExpanded: false)).ToList();
 			var treeView = new TreeView { Height = 300, Width = 300, ItemTemplate = TreeViewItemTemplate, ItemsSource = nodes };
 			await UITestHelper.Load(treeView);
-			var scrollViewer = treeView.FindFirstDescendantOrSelf<ScrollViewer>();
+			var scrollViewer = treeView.FindFirstDescendant<ScrollViewer>();
 			Assert.IsNotNull(scrollViewer);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
@@ -353,7 +353,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			}
 
 			await UITestHelper.Load(treeView);
-			var scrollViewer = treeView.FindFirstDescendantOrSelf<ScrollViewer>();
+			var scrollViewer = treeView.FindFirstDescendant<ScrollViewer>();
 			Assert.IsNotNull(scrollViewer);
 			return (treeView, scrollViewer);
 		}

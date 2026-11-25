@@ -29,8 +29,8 @@ namespace Uno.UI.Samples.Content.UITests.Animations
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{
-			_sut = _myControl.FindFirstDescendantOrSelf<Border>(b => b.Name == "StateTwoContent");
-			_output = _myControl.FindFirstDescendantOrSelf<TextBlock>(t => t.Name == "PullingOutput");
+			_sut = _myControl.FindFirstDescendant<Border>(b => b.Name == "StateTwoContent");
+			_output = _myControl.FindFirstDescendant<TextBlock>(t => t.Name == "PullingOutput");
 
 			var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
 			timer.Tick += (snd, args) =>

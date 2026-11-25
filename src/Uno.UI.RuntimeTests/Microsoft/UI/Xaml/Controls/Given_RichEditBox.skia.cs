@@ -111,7 +111,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = SUT;
 				await WindowHelper.WaitForLoaded(SUT);
 
-				var contentElement = SUT.FindFirstDescendantOrSelf<ScrollViewer>(sv => sv.Name == "ContentElement");
+				var contentElement = SUT.FindFirstDescendant<ScrollViewer>(sv => sv.Name == "ContentElement");
 				var displayBlock = contentElement?.Content as TextBlock;
 				Assert.IsNotNull(displayBlock);
 				Assert.AreEqual(TextWrapping.Wrap, displayBlock.TextWrapping);
@@ -160,7 +160,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Description = "Description";
 				await WindowHelper.WaitForIdle();
 
-				var presenter = SUT.FindFirstDescendantOrSelf<ContentPresenter>(x => x.Name == "DescriptionPresenter");
+				var presenter = SUT.FindFirstDescendant<ContentPresenter>(x => x.Name == "DescriptionPresenter");
 				Assert.IsNotNull(presenter);
 				Assert.AreEqual(Visibility.Visible, presenter.Visibility);
 
@@ -548,7 +548,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = SUT;
 				await WindowHelper.WaitForLoaded(SUT);
 
-				var contentElement = SUT.FindFirstDescendantOrSelf<ScrollViewer>(sv => sv.Name == "ContentElement");
+				var contentElement = SUT.FindFirstDescendant<ScrollViewer>(sv => sv.Name == "ContentElement");
 				var displayBlock = contentElement?.Content as TextBlock;
 				Assert.IsNotNull(displayBlock);
 
@@ -776,7 +776,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private static Windows.Foundation.Point GetTextPoint(RichEditBox editor, int index)
 		{
-			var displayBlock = editor.FindFirstDescendantOrSelf<ScrollViewer>(viewer => viewer.Name == "ContentElement")?.Content as TextBlock;
+			var displayBlock = editor.FindFirstDescendant<ScrollViewer>(viewer => viewer.Name == "ContentElement")?.Content as TextBlock;
 			Assert.IsNotNull(displayBlock);
 			var textLength = editor.GetPlainTextContent().Length;
 			index = Math.Clamp(index, 0, textLength);
@@ -1643,7 +1643,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private static TextBlock GetDisplayBlock(RichEditBox editor)
 		{
-			var block = editor.FindFirstDescendantOrSelf<ScrollViewer>(viewer => viewer.Name == "ContentElement")?.Content as TextBlock;
+			var block = editor.FindFirstDescendant<ScrollViewer>(viewer => viewer.Name == "ContentElement")?.Content as TextBlock;
 			Assert.IsNotNull(block);
 			return block;
 		}
@@ -1660,7 +1660,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Document.SetText(TextSetOptions.None, text);
 				await WindowHelper.WaitForIdle();
 
-				var scrollViewer = SUT.FindFirstDescendantOrSelf<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				var scrollViewer = SUT.FindFirstDescendant<ScrollViewer>(viewer => viewer.Name == "ContentElement");
 				Assert.IsNotNull(scrollViewer);
 				var lastLineStart = text.LastIndexOf("Line", StringComparison.Ordinal);
 				var range = SUT.Document.GetRange(0, text.Length);
@@ -1696,7 +1696,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Document.SetText(TextSetOptions.None, text);
 				await WindowHelper.WaitForIdle();
 
-				var scrollViewer = SUT.FindFirstDescendantOrSelf<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				var scrollViewer = SUT.FindFirstDescendant<ScrollViewer>(viewer => viewer.Name == "ContentElement");
 				var displayBlock = scrollViewer?.Content as TextBlock;
 				Assert.IsNotNull(scrollViewer);
 				Assert.IsNotNull(displayBlock);
@@ -1781,7 +1781,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Focus(FocusState.Programmatic);
 				await WindowHelper.WaitForIdle();
 
-				var scrollViewer = SUT.FindFirstDescendantOrSelf<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				var scrollViewer = SUT.FindFirstDescendant<ScrollViewer>(viewer => viewer.Name == "ContentElement");
 				Assert.IsNotNull(scrollViewer);
 				Assert.AreEqual(0, scrollViewer.VerticalOffset, 0.5);
 
@@ -1824,7 +1824,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Focus(FocusState.Programmatic);
 				await WindowHelper.WaitForIdle();
 
-				var scrollViewer = SUT.FindFirstDescendantOrSelf<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				var scrollViewer = SUT.FindFirstDescendant<ScrollViewer>(viewer => viewer.Name == "ContentElement");
 				Assert.IsNotNull(scrollViewer);
 				Assert.AreEqual(0, scrollViewer.HorizontalOffset, 0.5);
 
@@ -1924,7 +1924,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Document.SetText(TextSetOptions.None, text);
 				await WindowHelper.WaitForIdle();
 
-				var scrollViewer = SUT.FindFirstDescendantOrSelf<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				var scrollViewer = SUT.FindFirstDescendant<ScrollViewer>(viewer => viewer.Name == "ContentElement");
 				Assert.IsNotNull(scrollViewer);
 				SUT.Document.Selection.SetRange(text.Length, text.Length);
 				await WindowHelper.WaitFor(
@@ -2017,7 +2017,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				WindowHelper.WindowContent = SUT;
 				await WindowHelper.WaitForLoaded(SUT);
-				var scrollViewer = SUT.FindFirstDescendantOrSelf<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				var scrollViewer = SUT.FindFirstDescendant<ScrollViewer>(viewer => viewer.Name == "ContentElement");
 				Assert.IsNotNull(scrollViewer);
 				await WindowHelper.WaitFor(
 					() => scrollViewer.VerticalOffset > 0,
@@ -2045,7 +2045,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(SUT);
 				SUT.Document.SetText(TextSetOptions.None, "Initial");
 				await WindowHelper.WaitForIdle();
-				var scrollViewer = SUT.FindFirstDescendantOrSelf<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				var scrollViewer = SUT.FindFirstDescendant<ScrollViewer>(viewer => viewer.Name == "ContentElement");
 				Assert.IsNotNull(scrollViewer);
 
 				var text = string.Join('\r', Enumerable.Range(0, 40).Select(value => $"Batched line {value:D2}"));
@@ -2131,7 +2131,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				actual.Hidden = FormatEffect.Off;
 				await WindowHelper.WaitForIdle();
 
-				var contentElement = SUT.FindFirstDescendantOrSelf<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				var contentElement = SUT.FindFirstDescendant<ScrollViewer>(viewer => viewer.Name == "ContentElement");
 				var block = contentElement?.Content as TextBlock;
 				Assert.IsNotNull(block);
 				var run = block.Inlines.OfType<Run>().Single();
@@ -2173,7 +2173,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => first.CharacterFormat.Weight = 1000);
 
 			await WindowHelper.WaitForIdle();
-			var contentElement = source.FindFirstDescendantOrSelf<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+			var contentElement = source.FindFirstDescendant<ScrollViewer>(viewer => viewer.Name == "ContentElement");
 			var block = contentElement?.Content as TextBlock;
 			Assert.IsNotNull(block);
 			var runs = block.Inlines.OfType<Run>().ToArray();
@@ -2225,7 +2225,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Document.GetRange(0, 6).CharacterFormat.Weight = 400;
 				await WindowHelper.WaitForIdle();
 
-				var block = SUT.FindFirstDescendantOrSelf<ScrollViewer>(viewer => viewer.Name == "ContentElement")?.Content as TextBlock;
+				var block = SUT.FindFirstDescendant<ScrollViewer>(viewer => viewer.Name == "ContentElement")?.Content as TextBlock;
 				Assert.IsNotNull(block);
 				Assert.AreEqual((ushort)400, block.Inlines.OfType<Run>().Single().FontWeight.Weight);
 			}
@@ -2370,7 +2370,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Document.SetText(TextSetOptions.FormatRtf, rtf.ToString());
 				await WindowHelper.WaitForIdle();
 
-				var displayBlock = SUT.FindFirstDescendantOrSelf<ScrollViewer>(viewer => viewer.Name == "ContentElement")?.Content as TextBlock;
+				var displayBlock = SUT.FindFirstDescendant<ScrollViewer>(viewer => viewer.Name == "ContentElement")?.Content as TextBlock;
 				Assert.IsNotNull(displayBlock);
 				Assert.IsTrue(SUT.UsesBoundedRichLayout);
 				Assert.HasCount(0, displayBlock.Inlines);
@@ -2627,7 +2627,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				range.GetRect(PointOptions.ClientCoordinates, out var after, out _);
 				Assert.IsTrue(after.Width > before.Width + 20, $"Character spacing should widen the range, was {before.Width} then {after.Width}.");
 
-				var contentElement = SUT.FindFirstDescendantOrSelf<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				var contentElement = SUT.FindFirstDescendant<ScrollViewer>(viewer => viewer.Name == "ContentElement");
 				var block = contentElement?.Content as TextBlock;
 				Assert.IsNotNull(block);
 				Assert.IsTrue(block.Inlines.OfType<Run>().Single().CharacterSpacing > 0);
@@ -3252,7 +3252,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Document.GetRange(0, 4).Link = "\"https://contoso.example\"";
 			await WindowHelper.WaitForIdle();
 
-			var contentElement = SUT.FindFirstDescendantOrSelf<ScrollViewer>(sv => sv.Name == "ContentElement");
+			var contentElement = SUT.FindFirstDescendant<ScrollViewer>(sv => sv.Name == "ContentElement");
 			var displayBlock = contentElement?.Content as TextBlock;
 			Assert.IsNotNull(displayBlock);
 			Assert.IsInstanceOfType<Hyperlink>(displayBlock.Inlines[0]);
@@ -3271,7 +3271,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Document.SetText(TextSetOptions.FormatRtf, @"{\rtf1\fs24 size}");
 				await WindowHelper.WaitForIdle();
 
-				var block = SUT.FindFirstDescendantOrSelf<ScrollViewer>(viewer => viewer.Name == "ContentElement")?.Content as TextBlock;
+				var block = SUT.FindFirstDescendant<ScrollViewer>(viewer => viewer.Name == "ContentElement")?.Content as TextBlock;
 				var run = block?.Inlines.OfType<Run>().Single();
 				Assert.IsNotNull(run);
 				Assert.AreEqual(12f, SUT.Document.GetRange(0, 4).CharacterFormat.Size);
@@ -3350,7 +3350,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					Microsoft.UI.Colors.Red,
 					SUT.Document.GetRange(xAtom.Span.Start, xAtom.Span.End).CharacterFormat.ForegroundColor);
 
-				var contentElement = SUT.FindFirstDescendantOrSelf<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+				var contentElement = SUT.FindFirstDescendant<ScrollViewer>(viewer => viewer.Name == "ContentElement");
 				var block = contentElement?.Content as TextBlock;
 				Assert.IsNotNull(block);
 				Assert.AreEqual(RichEditTextDocument.MathRenderingFontFamilyName, block.FontFamily.Source);
@@ -3950,7 +3950,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					FlyoutShowMode.Standard);
 				await WindowHelper.WaitForIdle();
 
-				var contentElement = SUT.FindFirstDescendantOrSelf<ScrollViewer>(sv => sv.Name == "ContentElement");
+				var contentElement = SUT.FindFirstDescendant<ScrollViewer>(sv => sv.Name == "ContentElement");
 				var displayBlock = contentElement?.Content as TextBlock;
 				Assert.IsNotNull(displayBlock);
 				Assert.AreEqual(FocusState.Unfocused, SUT.FocusState);

@@ -29,7 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 
-			var thumb = slider.FindFirstDescendantOrSelf<Thumb>();
+			var thumb = slider.FindFirstDescendant<Thumb>();
 
 			Assert.IsNotNull(thumb);
 

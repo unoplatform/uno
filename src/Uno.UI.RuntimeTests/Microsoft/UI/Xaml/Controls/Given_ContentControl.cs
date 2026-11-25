@@ -103,7 +103,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await TestServices.WindowHelper.WaitForLoaded(grid);
 
-			var tb = grid.FindFirstDescendantOrSelf<TextBlock>();
+			var tb = grid.FindFirstDescendant<TextBlock>();
 
 			Assert.IsNotNull(tb);
 
@@ -132,15 +132,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = control;
 				await WindowHelper.WaitForLoaded(control);
 				control.Content = items[0];
-				var text1 = await WindowHelper.WaitForNonNull(() => control.FindFirstDescendantOrSelf<TextBlock>(tb => tb.Name == "TextBlockInTemplate"), message: $"Template selector not applied for {control.GetType()}");
+				var text1 = await WindowHelper.WaitForNonNull(() => control.FindFirstDescendant<TextBlock>(tb => tb.Name == "TextBlockInTemplate"), message: $"Template selector not applied for {control.GetType()}");
 				Assert.AreEqual("Selectable A", text1.Text, $"Template selector not applied for {control.GetType()}");
 
 				control.Content = items[1];
-				var text2 = await WindowHelper.WaitForNonNull(() => control.FindFirstDescendantOrSelf<TextBlock>(tb => tb.Name == "TextBlockInTemplate"));
+				var text2 = await WindowHelper.WaitForNonNull(() => control.FindFirstDescendant<TextBlock>(tb => tb.Name == "TextBlockInTemplate"));
 				Assert.AreEqual("Selectable B", text2.Text);
 
 				control.Content = items[2];
-				var text3 = await WindowHelper.WaitForNonNull(() => control.FindFirstDescendantOrSelf<TextBlock>(tb => tb.Name == "TextBlockInTemplate"));
+				var text3 = await WindowHelper.WaitForNonNull(() => control.FindFirstDescendant<TextBlock>(tb => tb.Name == "TextBlockInTemplate"));
 				Assert.AreEqual("Selectable C", text3.Text);
 			}
 		}
@@ -193,7 +193,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForLoaded(grid);
 
-			var comboBox = grid.FindFirstDescendantOrSelf<ComboBox>();
+			var comboBox = grid.FindFirstDescendant<ComboBox>();
 
 
 			Assert.IsNotNull(comboBox);

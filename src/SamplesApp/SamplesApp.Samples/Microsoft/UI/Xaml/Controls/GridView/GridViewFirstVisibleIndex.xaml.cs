@@ -28,7 +28,7 @@ namespace Uno.UI.Samples.Content.UITests.GridView
 
 		private void ListView_Loaded(object sender, RoutedEventArgs e)
 		{
-			var sv = (sender as ListViewBase).FindFirstDescendantOrSelf<global::Microsoft.UI.Xaml.Controls.ScrollViewer>();
+			var sv = (sender as ListViewBase).FindFirstDescendant<global::Microsoft.UI.Xaml.Controls.ScrollViewer>();
 			var panel = (sender as ListViewBase).ItemsPanelRoot as ItemsWrapGrid;
 			sv.ViewChanged += (_, __) =>
 			{

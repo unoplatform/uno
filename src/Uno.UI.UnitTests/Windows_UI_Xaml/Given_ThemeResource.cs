@@ -655,7 +655,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var app = UnitTestsApp.App.EnsureApplication();
 			app.HostView.Children.Add(page);
 
-			var tb = page.SubjectToggleButton.FindFirstDescendantOrSelf<TextBlock>();
+			var tb = page.SubjectToggleButton.FindFirstDescendant<TextBlock>();
 			AssertEx.AssertHasColor(tb.Foreground, Colors.Black);
 			Assert.AreEqual(DependencyPropertyValuePrecedences.Animations, tb.GetCurrentHighestValuePrecedence(TextBlock.ForegroundProperty));
 
@@ -685,7 +685,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var app = UnitTestsApp.App.EnsureApplication();
 			app.HostView.Children.Add(page);
 
-			var ellipse = page.SubjectToggleButton.FindFirstDescendantOrSelf<Ellipse>();
+			var ellipse = page.SubjectToggleButton.FindFirstDescendant<Ellipse>();
 
 			AssertEx.AssertHasColor(ellipse.Stroke, Colors.DarkGreen);
 

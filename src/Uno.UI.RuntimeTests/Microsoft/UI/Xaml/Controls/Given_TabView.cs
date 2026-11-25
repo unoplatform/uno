@@ -481,7 +481,7 @@ public class Given_TabView
 		var closeButton1 = (Button)tabviewItem1.GetTemplateChild("CloseButton");
 
 		var buttonLabel1 =
-		((ContentPresenter)closeButton1.GetTemplateChild("ContentPresenter")).FindFirstDescendantOrSelf<ImplicitTextBlock>();
+		((ContentPresenter)closeButton1.GetTemplateChild("ContentPresenter")).FindFirstDescendant<ImplicitTextBlock>();
 
 		Assert.IsGreaterThan(0, buttonLabel1.ActualWidth, "TabViewItem Button for index 0 should have a non-zero width.");
 		Assert.IsGreaterThan(0, buttonLabel1.ActualHeight, "TabViewItem Button  for index 0 should have a non-zero height.");

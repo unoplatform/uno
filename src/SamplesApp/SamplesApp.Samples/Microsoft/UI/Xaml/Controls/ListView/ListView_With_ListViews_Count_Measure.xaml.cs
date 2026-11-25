@@ -28,7 +28,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 		}
 		private void ChangeViewButton_Clicked(object sender, RoutedEventArgs args)
 		{
-			var sv = OuterListView.FindFirstDescendantOrSelf<ScrollViewer>();
+			var sv = OuterListView.FindFirstDescendant<ScrollViewer>();
 
 			sv.ViewChanged += (o, e) =>
 			{

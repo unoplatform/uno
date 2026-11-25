@@ -1202,7 +1202,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				textbox.Text = (int.TryParse(textbox.Text, out var v) ? v + 2 : 0).ToString();
 				await UITestHelper.WaitForIdle();
-				var tb1 = await UITestHelper.ScreenShot(textbox.FindFirstDescendantOrSelf<TextBlock>());
+				var tb1 = await UITestHelper.ScreenShot(textbox.FindFirstDescendant<TextBlock>());
 				var tb2 = await UITestHelper.ScreenShot(textblock);
 				for (int y = 0; y < 20; y++)
 				{

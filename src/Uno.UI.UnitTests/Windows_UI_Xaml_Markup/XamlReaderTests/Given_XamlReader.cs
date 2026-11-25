@@ -1264,7 +1264,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var app = UnitTestsApp.App.EnsureApplication();
 			app.HostView.Children.Add(r);
 
-			var SUT = r.FindFirstDescendantOrSelf<TextBlock>();
+			var SUT = r.FindFirstDescendant<TextBlock>();
 
 			Assert.AreEqual("Sprong", SUT.Text);
 		}
@@ -1279,7 +1279,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var app = UnitTestsApp.App.EnsureApplication();
 			app.HostView.Children.Add(r);
 
-			var SUT = r.FindFirstDescendantOrSelf<CheckBox>();
+			var SUT = r.FindFirstDescendant<CheckBox>();
 
 			Assert.IsFalse(SUT.IsChecked);
 
@@ -1297,7 +1297,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var app = UnitTestsApp.App.EnsureApplication();
 			app.HostView.Children.Add(r);
 
-			var SUT = r.FindFirstDescendantOrSelf<CheckBox>();
+			var SUT = r.FindFirstDescendant<CheckBox>();
 
 			Assert.IsFalse(SUT.IsChecked);
 
