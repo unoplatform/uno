@@ -724,7 +724,7 @@ public partial class Given_MediaPlayerElement
 			var fullWindowContent = sut.XamlRoot!.VisualTree.FullWindowMediaRoot.Child;
 			Assert.IsNotNull(fullWindowContent);
 
-			var presenter = fullWindowContent.FindFirstDescendantOrSelf<MediaPlayerPresenter>();
+			var presenter = fullWindowContent.FindFirstDescendant<MediaPlayerPresenter>();
 			Assert.IsNotNull(presenter);
 			Assert.IsTrue(presenter.IsFullWindow);
 		}

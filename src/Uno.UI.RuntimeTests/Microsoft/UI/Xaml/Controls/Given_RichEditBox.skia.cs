@@ -283,7 +283,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(FormatEffect.On, SUT.Document.GetRange(0, text.Length).CharacterFormat.Bold);
 				CollectionAssert.AreEqual(new[] { "changing", "changed" }, eventOrder);
 				Assert.AreEqual(text, view.DisplayBlock.Text);
-				var placeholder = SUT.FindFirstDescendantOrSelf<FrameworkElement>(element => element.Name == "PlaceholderTextContentPresenter");
+				var placeholder = SUT.FindFirstDescendant<FrameworkElement>(element => element.Name == "PlaceholderTextContentPresenter");
 				Assert.IsTrue(placeholder is null || placeholder.Visibility == Visibility.Collapsed);
 			}
 			finally
