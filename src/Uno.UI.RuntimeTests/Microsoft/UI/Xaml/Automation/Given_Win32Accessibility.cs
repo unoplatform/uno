@@ -3,10 +3,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
@@ -374,6 +377,314 @@ public class Given_Win32Accessibility
 		}
 	}
 
+	// Arranging an element with a peer but no UIA provider must not evaluate IsOffscreen: no client can
+	// receive the resulting events, and the evaluation intersects every ancestor clip path.
+	[TestMethod]
+	public async Task When_Element_Without_Provider_Moves_IsOffscreen_Is_Not_Evaluated()
+	{
+		var button = new OffscreenCountingButton
+		{
+			Content = "Subject",
+			Width = 120,
+			Height = 40,
+			HorizontalAlignment = HorizontalAlignment.Left,
+			VerticalAlignment = VerticalAlignment.Top,
+			Margin = new Thickness(10, 10, 0, 0),
+		};
+
+		try
+		{
+			await UITestHelper.Load(new Grid { Width = 300, Height = 200, Children = { button } });
+
+			Assert.IsNotNull(FrameworkElementAutomationPeer.CreatePeerForElement(button));
+			var accessibility = ResolveAccessibility(button)
+				?? throw new InvalidOperationException("Win32Accessibility instance not found.");
+			Assert.IsNull(TryGetExistingProvider(accessibility, button), "The test needs a peer without a provider.");
+
+			button.IsOffscreenCalls = 0;
+			button.Margin = new Thickness(70, 50, 0, 0);
+			await WindowHelper.WaitForIdle();
+
+			// A UIA client on the machine (Narrator, Inspect) may have asked for the button meanwhile.
+			Assert.IsNull(TryGetExistingProvider(accessibility, button), "A UIA client created a provider during the test; the count below is not meaningful.");
+			Assert.AreEqual(0, button.IsOffscreenCalls);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	// Once a provider exists, layout must keep raising IsOffscreen changes (WinUI's RaiseAutomaticPropertyChanges).
+	[TestMethod]
+	public async Task When_Element_With_Provider_Moves_Out_Of_View_IsOffscreen_Change_Is_Raised()
+	{
+		var (button, clipHost) = CreateButtonInClippedCanvas();
+		var recorder = new RecordingListener();
+
+		try
+		{
+			await UITestHelper.Load(clipHost);
+
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button)
+				?? throw new InvalidOperationException("Peer not created.");
+			var accessibility = ResolveAccessibility(button)
+				?? throw new InvalidOperationException("Win32Accessibility instance not found.");
+			_ = GetOrCreateProvider(accessibility, button)
+				?? throw new InvalidOperationException("Button provider not found.");
+			Assert.IsFalse(peer.IsOffscreen(), "The button starts in view.");
+
+			recorder.Attach();
+			button.IsOffscreenCalls = 0;
+			Canvas.SetTop(button, 400);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(button.IsOffscreenCalls > 0, "Layout must re-evaluate IsOffscreen for a peer that has a provider.");
+			Assert.IsTrue(peer.IsOffscreen(), "The button moved outside its ancestor's clip.");
+			CollectionAssert.AreEqual(new[] { (false, true) }, recorder.IsOffscreenChanges(peer), "Expected one IsOffscreen false -> true change.");
+		}
+		finally
+		{
+			recorder.Detach();
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	// A provider created while the element is out of view starts from what the client reads then, so moving
+	// back into view raises IsOffscreen true -> false. Without seeding, the baseline layout skipped while there
+	// was no provider still says "in view", and the change is never raised.
+	[TestMethod]
+	public async Task When_Provider_Created_While_Out_Of_View_Moving_Into_View_Raises_IsOffscreen_Change()
+	{
+		var (button, clipHost) = CreateButtonInClippedCanvas();
+		var recorder = new RecordingListener();
+
+		try
+		{
+			await UITestHelper.Load(clipHost);
+
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button)
+				?? throw new InvalidOperationException("Peer not created.");
+			var accessibility = ResolveAccessibility(button)
+				?? throw new InvalidOperationException("Win32Accessibility instance not found.");
+
+			Canvas.SetTop(button, 400);
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(TryGetExistingProvider(accessibility, button), "The button must have no provider while it moves out of view.");
+
+			_ = GetOrCreateProvider(accessibility, button)
+				?? throw new InvalidOperationException("Button provider not found.");
+			Assert.IsTrue(peer.IsOffscreen(), "A client creating the provider now reads IsOffscreen = true.");
+
+			recorder.Attach();
+			Canvas.SetTop(button, 10);
+			await WindowHelper.WaitForIdle();
+
+			CollectionAssert.AreEqual(new[] { (true, false) }, recorder.IsOffscreenChanges(peer), "Expected one IsOffscreen true -> false change.");
+		}
+		finally
+		{
+			recorder.Detach();
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	// The mirror case: after the provider is created out of view, a layout pass that leaves the element out of
+	// view must not raise IsOffscreen with a stale old value.
+	[TestMethod]
+	public async Task When_Provider_Created_While_Out_Of_View_Layout_Without_Change_Raises_Nothing()
+	{
+		var (button, clipHost) = CreateButtonInClippedCanvas();
+		var recorder = new RecordingListener();
+
+		try
+		{
+			await UITestHelper.Load(clipHost);
+
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button)
+				?? throw new InvalidOperationException("Peer not created.");
+			var accessibility = ResolveAccessibility(button)
+				?? throw new InvalidOperationException("Win32Accessibility instance not found.");
+
+			Canvas.SetTop(button, 400);
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(TryGetExistingProvider(accessibility, button), "The button must have no provider while it moves out of view.");
+
+			_ = GetOrCreateProvider(accessibility, button)
+				?? throw new InvalidOperationException("Button provider not found.");
+
+			recorder.Attach();
+			button.IsOffscreenCalls = 0;
+			Canvas.SetLeft(button, 20);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(button.IsOffscreenCalls > 0, "The move must re-evaluate IsOffscreen.");
+			Assert.AreEqual(0, recorder.IsOffscreenChanges(peer).Count, "No IsOffscreen change may be raised: the button stayed out of view.");
+		}
+		finally
+		{
+			recorder.Detach();
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	// A peer whose events go to another peer's provider (EventsSource) can't be seeded when that provider is
+	// created, so the gate keeps evaluating it, as before the gate existed.
+	[TestMethod]
+	public async Task When_Peer_Has_EventsSource_With_Provider_Gate_Lets_It_Raise()
+	{
+		var source = new Button { Content = "Source", Width = 100, Height = 40 };
+		var button = new OffscreenCountingButton { Content = "Subject", Width = 100, Height = 40 };
+
+		try
+		{
+			await UITestHelper.Load(new StackPanel { Children = { source, button } });
+
+			var sourcePeer = FrameworkElementAutomationPeer.CreatePeerForElement(source)
+				?? throw new InvalidOperationException("Source peer not created.");
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button)
+				?? throw new InvalidOperationException("Peer not created.");
+			peer.EventsSource = sourcePeer;
+
+			var accessibility = ResolveAccessibility(button)
+				?? throw new InvalidOperationException("Win32Accessibility instance not found.");
+			_ = GetOrCreateProvider(accessibility, source)
+				?? throw new InvalidOperationException("Source provider not found.");
+
+			Assert.IsTrue(CanReceiveAutomaticPropertyChanges(accessibility, peer), "Events of a peer with an EventsSource must keep being raised.");
+
+			button.IsOffscreenCalls = 0;
+			button.Margin = new Thickness(30, 0, 0, 0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(button.IsOffscreenCalls > 0, "Layout must evaluate IsOffscreen for a peer with an EventsSource.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	// A virtual (item) peer's provider is keyed by that peer. The ListViewItem's own peer has the item peer as
+	// its EventsSource, so its events go to that provider too. The gate must let both through.
+	[TestMethod]
+	public async Task When_Virtual_Item_Peer_Has_Provider_Gate_Lets_Its_Events_Through()
+	{
+		var list = new ListView { ItemsSource = new[] { "One", "Two", "Three" }, Width = 200, Height = 200 };
+
+		try
+		{
+			await UITestHelper.Load(list);
+
+			var container = list.ContainerFromIndex(0) as ListViewItem
+				?? throw new InvalidOperationException("Container not found.");
+			var containerPeer = FrameworkElementAutomationPeer.CreatePeerForElement(container)
+				?? throw new InvalidOperationException("Container peer not created.");
+			var listPeer = FrameworkElementAutomationPeer.CreatePeerForElement(list)
+				?? throw new InvalidOperationException("ListView peer not created.");
+			var itemPeer = listPeer.GetChildren()?.FirstOrDefault(p => p is ItemAutomationPeer)
+				?? throw new InvalidOperationException("Item peer not found.");
+
+			var accessibility = ResolveAccessibility(list)
+				?? throw new InvalidOperationException("Win32Accessibility instance not found.");
+
+			var itemProvider = GetProviderForPeer(accessibility, itemPeer)
+				?? throw new InvalidOperationException("Item provider not created.");
+
+			Assert.AreSame(itemProvider, FindExistingProviderForPeer(accessibility, itemPeer), "The item peer's provider is keyed by the peer.");
+			Assert.IsTrue(CanReceiveAutomaticPropertyChanges(accessibility, itemPeer), "The item peer has a provider.");
+			Assert.AreSame(itemProvider, FindExistingProviderForPeer(accessibility, containerPeer), "The container peer's events go to the item provider (EventsSource).");
+			Assert.IsTrue(CanReceiveAutomaticPropertyChanges(accessibility, containerPeer), "The gate must let the container peer's events through.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	private static (OffscreenCountingButton Button, Border ClipHost) CreateButtonInClippedCanvas()
+	{
+		var button = new OffscreenCountingButton
+		{
+			Content = "Subject",
+			Width = 120,
+			Height = 40,
+		};
+		Canvas.SetLeft(button, 10);
+		Canvas.SetTop(button, 10);
+		var clipHost = new Border
+		{
+			Width = 300,
+			Height = 200,
+			Clip = new RectangleGeometry { Rect = new Rect(0, 0, 300, 200) },
+			Child = new Canvas { Width = 300, Height = 200, Children = { button } },
+		};
+		return (button, clipHost);
+	}
+
+	// Records property-changed events, then forwards everything to the listener that was in place, so the
+	// Win32 bridge still delivers them to the provider.
+	private sealed class RecordingListener : IAutomationPeerListener
+	{
+		private readonly List<(AutomationPeer Peer, AutomationProperty Property, object OldValue, object NewValue)> _changes = new();
+		private IAutomationPeerListener? _inner;
+
+		public void Attach()
+		{
+			_inner = AutomationPeer.AutomationPeerListener;
+			AutomationPeer.TestAutomationPeerListener = this;
+		}
+
+		public void Detach() => AutomationPeer.TestAutomationPeerListener = null;
+
+		public List<(bool OldValue, bool NewValue)> IsOffscreenChanges(AutomationPeer peer)
+		{
+			var result = new List<(bool, bool)>();
+			foreach (var change in _changes)
+			{
+				if (ReferenceEquals(change.Peer, peer) && change.Property == AutomationElementIdentifiers.IsOffscreenProperty)
+				{
+					result.Add(((bool)change.OldValue, (bool)change.NewValue));
+				}
+			}
+
+			return result;
+		}
+
+		public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)
+		{
+			_changes.Add((peer, automationProperty, oldValue, newValue));
+			_inner?.NotifyPropertyChangedEvent(peer, automationProperty, oldValue, newValue);
+		}
+
+		public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId) => _inner?.NotifyAutomationEvent(peer, eventId);
+
+		public void NotifyInvalidatePeer(AutomationPeer peer) => _inner?.NotifyInvalidatePeer(peer);
+
+		public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
+			=> _inner?.NotifyNotificationEvent(peer, notificationKind, notificationProcessing, displayString, activityId);
+
+		public void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId) => _inner?.OnAutomationEvent(peer, eventId);
+
+		public bool ListenerExistsHelper(AutomationEvents eventId) => true;
+	}
+
+	private sealed partial class OffscreenCountingButton : Button
+	{
+		public int IsOffscreenCalls;
+
+		protected override AutomationPeer OnCreateAutomationPeer() => new CountingPeer(this);
+
+		private sealed partial class CountingPeer(OffscreenCountingButton owner) : ButtonAutomationPeer(owner)
+		{
+			protected override bool IsOffscreenCore()
+			{
+				owner.IsOffscreenCalls++;
+				return base.IsOffscreenCore();
+			}
+		}
+	}
+
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25279")]
 	public async Task When_ItemContainer_FindItemByProperty_Matches_WinUI()
@@ -523,6 +834,55 @@ public class Given_Win32Accessibility
 			modifiers: null)
 			?? throw new InvalidOperationException("Win32Accessibility.GetOrCreateProvider(UIElement) not found.");
 		return getOrCreateProvider.Invoke(accessibility, new object[] { element });
+	}
+
+	private static bool CanReceiveAutomaticPropertyChanges(object accessibility, AutomationPeer peer)
+	{
+		var method = accessibility.GetType().GetMethod(
+			"CanReceiveAutomaticPropertyChanges",
+			BindingFlags.Instance | BindingFlags.NonPublic,
+			binder: null,
+			types: new[] { typeof(AutomationPeer) },
+			modifiers: null)
+			?? throw new InvalidOperationException("Win32Accessibility.CanReceiveAutomaticPropertyChanges(AutomationPeer) not found.");
+		return (bool)method.Invoke(accessibility, new object[] { peer })!;
+	}
+
+	// The lookup NotifyPropertyChangedEvent uses to deliver a peer's events.
+	private static object? FindExistingProviderForPeer(object accessibility, AutomationPeer peer)
+	{
+		var method = accessibility.GetType().GetMethod(
+			"FindExistingProviderForPeer",
+			BindingFlags.Instance | BindingFlags.NonPublic,
+			binder: null,
+			types: new[] { typeof(AutomationPeer), typeof(bool) },
+			modifiers: null)
+			?? throw new InvalidOperationException("Win32Accessibility.FindExistingProviderForPeer(AutomationPeer, bool) not found.");
+		return method.Invoke(accessibility, new object[] { peer, true });
+	}
+
+	private static object? GetProviderForPeer(object accessibility, AutomationPeer peer)
+	{
+		var method = accessibility.GetType().GetMethod(
+			"GetProviderForPeer",
+			BindingFlags.Instance | BindingFlags.NonPublic,
+			binder: null,
+			types: new[] { typeof(AutomationPeer), typeof(bool) },
+			modifiers: null)
+			?? throw new InvalidOperationException("Win32Accessibility.GetProviderForPeer(AutomationPeer, bool) not found.");
+		return method.Invoke(accessibility, new object[] { peer, false });
+	}
+
+	private static object? TryGetExistingProvider(object accessibility, UIElement element)
+	{
+		var tryGetExistingProvider = accessibility.GetType().GetMethod(
+			"TryGetExistingProviderForElement",
+			BindingFlags.Instance | BindingFlags.NonPublic,
+			binder: null,
+			types: new[] { typeof(UIElement) },
+			modifiers: null)
+			?? throw new InvalidOperationException("Win32Accessibility.TryGetExistingProviderForElement(UIElement) not found.");
+		return tryGetExistingProvider.Invoke(accessibility, new object[] { element });
 	}
 
 	private static object? GetPropertyValue(object provider, int propertyId)

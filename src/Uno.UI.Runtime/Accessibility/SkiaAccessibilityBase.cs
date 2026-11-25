@@ -429,13 +429,41 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 			foreach (var owner in owners)
 			{
-				owner.CachedAutomationPeer?.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+				if (owner.CachedAutomationPeer is { } peer && ShouldRaiseAutomaticPropertyChanges(peer))
+				{
+					peer.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+				}
 			}
 		}
 		finally
 		{
 			owners.Clear();
 			_spareAutomaticPropertyOwners = owners;
+		}
+	}
+
+	// Lets a platform skip the per-arrange IsOffscreen clip work for peers whose events no client can receive.
+	// A platform that answers false must refresh the peer's baseline itself (RaiseAutomaticPropertyChanges
+	// with firePropertyChangedEvents: false) when it starts delivering that peer's events, or the first
+	// change after that is compared with a stale value.
+	protected virtual bool CanReceiveAutomaticPropertyChanges(AutomationPeer peer) => true;
+
+	// RaiseAutomaticPropertyChanges swallows failures of peer overrides so they never reach layout; the gate
+	// calls peer code too (EventsSource, GetParent), so it gets the same protection. On a failure, raise as before.
+	private bool ShouldRaiseAutomaticPropertyChanges(AutomationPeer peer)
+	{
+		try
+		{
+			return CanReceiveAutomaticPropertyChanges(peer);
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"[A11y] CanReceiveAutomaticPropertyChanges failed for {peer.GetType().Name}: {ex.Message}");
+			}
+
+			return true;
 		}
 	}
 
@@ -739,7 +767,10 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		// which re-evaluates IsEnabled/IsOffscreen/Name/ItemStatus and raises PropertyChanged
 		// for any that changed. Platform subclasses that maintain a provider-level children
 		// cache (Win32) additionally drop it; see Win32Accessibility.NotifyInvalidatePeer.
-		peer.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+		if (ShouldRaiseAutomaticPropertyChanges(peer))
+		{
+			peer.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+		}
 	}
 
 	public virtual bool ListenerExistsHelper(AutomationEvents eventId)

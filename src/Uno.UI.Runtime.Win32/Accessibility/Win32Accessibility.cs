@@ -373,6 +373,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			_liveProviders.TryAdd(provider, 0);
 			RegisterProviderOwner(element, provider);
 			_peerProviders.AddOrUpdate(canonicalPeer, provider);
+			SeedAutomaticPropertyBaseline(canonicalPeer);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -390,6 +391,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			var provider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this, resolvedPeer, isVirtualPeer: true);
 			_liveProviders.TryAdd(provider, 0);
 			_peerProviders.AddOrUpdate(resolvedPeer, provider);
+			SeedAutomaticPropertyBaseline(resolvedPeer);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -1038,6 +1040,42 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		}
 
 		return null;
+	}
+
+	// NotifyPropertyChangedEvent drops the events of a peer that has no provider (no UIA client has asked
+	// about it), so evaluating its automatic properties on every arrange is wasted work. Same lookup as there.
+	// The peer's baseline is refreshed when its provider is created (SeedAutomaticPropertyBaseline).
+	protected override bool CanReceiveAutomaticPropertyChanges(AutomationPeer peer)
+	{
+		if (!IsAccessibilityEnabled)
+		{
+			return false;
+		}
+
+		// A peer whose events go to another peer's provider (EventsSource) can't be seeded when that provider
+		// is created: nothing lists the peers that point at a source. Keep evaluating it on every arrange.
+		if (!ReferenceEquals(peer.ResolveProviderPeer(resolveEventsSource: true), peer))
+		{
+			return true;
+		}
+
+		return FindExistingProviderForPeer(peer) is not null;
+	}
+
+	// While a peer has no provider, CanReceiveAutomaticPropertyChanges stops layout from refreshing its
+	// IsOffscreen/IsEnabled/Name/ItemStatus baseline. Refresh it, raising nothing, as the provider is created,
+	// so a client that reads the provider now is notified of the next change, and only of a real one.
+	private void SeedAutomaticPropertyBaseline(AutomationPeer peer)
+	{
+		// UIA calls providers on the thread that created the root provider (UseComThreading), which is the
+		// UI thread, so this normally runs inline. IsOffscreen reads the visual tree, so never run it elsewhere.
+		if (!_dispatcherQueue.HasThreadAccess)
+		{
+			_dispatcherQueue.TryEnqueue(() => SeedAutomaticPropertyBaseline(peer));
+			return;
+		}
+
+		peer.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: false);
 	}
 
 	// ──────────────────────────────────────────────────────────────
