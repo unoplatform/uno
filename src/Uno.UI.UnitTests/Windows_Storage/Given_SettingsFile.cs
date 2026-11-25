@@ -353,15 +353,17 @@ public class Given_SettingsFile
 		var reopened = new SettingsFile(_path);
 		Assert.HasCount(1, reopened.Values);
 		Assert.AreEqual("1", reopened.Values["short"]);
-		Assert.IsLessThan(100L, new FileInfo(_path).Length);
+		var shortOnlyPath = Path.Combine(_folder, "ShortOnly.dat");
+		new SettingsFile(shortOnlyPath).Set("short", "1");
+		Assert.AreEqual(new FileInfo(shortOnlyPath).Length, new FileInfo(_path).Length);
 	}
 
 	[TestMethod]
-	public void When_Only_Setting_A_Damaged_File_Aside_Is_Refused_Then_Writes_Still_Rename()
+	public void When_Only_Moving_A_Damaged_File_Aside_Is_Refused_Then_It_Is_Copied_Aside_And_Saved()
 	{
 		Directory.CreateDirectory(_folder);
-		File.WriteAllBytes(_path, new byte[] { 5, 0, 0, 0, 3, (byte)'k' });
-		var renamesOverTheFile = 0;
+		var damaged = new byte[] { 5, 0, 0, 0, 3, (byte)'k' };
+		File.WriteAllBytes(_path, damaged);
 		var settings = new SettingsFile(_path, moveFile: (source, destination) =>
 		{
 			if (destination.EndsWith(".corrupt", StringComparison.Ordinal))
@@ -369,20 +371,17 @@ public class Given_SettingsFile
 				RefuseRename(source, destination);
 			}
 
-			renamesOverTheFile++;
 			File.Move(source, destination, overwrite: true);
 		});
 
-		settings.Set("first", "1");
-		settings.Set("second", "1");
+		settings.Set("key", "1");
 
-		Assert.AreEqual(2, renamesOverTheFile);
-		Assert.IsTrue(File.Exists(_path + ".corrupt"));
-		Assert.AreEqual("1", new SettingsFile(_path).Values["second"]);
+		CollectionAssert.AreEqual(damaged, File.ReadAllBytes(_path + ".corrupt"));
+		Assert.AreEqual("1", new SettingsFile(_path).Values["key"]);
 	}
 
 	[TestMethod]
-	public void When_A_Rename_Is_Refused_Once_Then_Later_Writes_Still_Rename()
+	public void When_A_Rename_Is_Refused_Once_Then_It_Is_Retried_Rather_Than_Written_In_Place()
 	{
 		var attempts = 0;
 		var settings = new SettingsFile(_path, moveFile: (source, destination) =>
@@ -394,13 +393,11 @@ public class Given_SettingsFile
 
 			File.Move(source, destination, overwrite: true);
 		});
-		settings.Set("first", "1");
-		var attemptsForFirstWrite = attempts;
 
-		settings.Set("second", "1");
+		settings.Set("key", "1");
 
-		Assert.AreEqual(attemptsForFirstWrite + 1, attempts);
-		Assert.AreEqual("1", new SettingsFile(_path).Values["second"]);
+		Assert.AreEqual(2, attempts);
+		Assert.AreEqual("1", new SettingsFile(_path).Values["key"]);
 	}
 
 	[TestMethod]

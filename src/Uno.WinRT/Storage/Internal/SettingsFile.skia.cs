@@ -295,9 +295,9 @@ internal sealed class SettingsFile
 		{
 			try
 			{
-				var refusedRename = ReplaceThroughTemporaryFile(content);
+				var renameRefusal = ReplaceThroughTemporaryFile(content);
 
-				if (refusedRename is null)
+				if (renameRefusal is null)
 				{
 					NoteRenamesWork();
 					return true;
@@ -305,15 +305,15 @@ internal sealed class SettingsFile
 
 				if (attempt >= attempts)
 				{
-					return TryWriteInPlace(content, refusedRename);
+					return TryWriteInPlace(content, renameRefusal);
 				}
 
-				LogWriteRetry(attempt, refusedRename);
+				// On Windows another program holding the file open (an indexer, antivirus, a sync client) makes the
+				// rename fail for a moment.
+				LogWriteRetry(attempt, renameRefusal);
 			}
 			catch (Exception e) when (e is IOException or UnauthorizedAccessException && attempt < attempts)
 			{
-				// On Windows another program holding the file open (an indexer, antivirus, a sync client) makes the
-				// replace fail for a moment.
 				LogWriteRetry(attempt, e);
 			}
 			catch (Exception e)
@@ -357,11 +357,27 @@ internal sealed class SettingsFile
 		}
 		finally
 		{
-			File.Delete(temporaryPath);
+			DeleteTemporaryFile(temporaryPath);
 		}
 	}
 
-	private bool TryWriteInPlace(byte[] content, UnauthorizedAccessException refusedRename)
+	// A failure here must not hide the outcome of the write; the sweep removes the file later.
+	private void DeleteTemporaryFile(string temporaryPath)
+	{
+		try
+		{
+			File.Delete(temporaryPath);
+		}
+		catch (Exception e)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Failed to remove the temporary settings file {temporaryPath}: {e.Message}");
+			}
+		}
+	}
+
+	private bool TryWriteInPlace(byte[] content, UnauthorizedAccessException renameRefusal)
 	{
 		try
 		{
@@ -371,13 +387,13 @@ internal sealed class SettingsFile
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-				this.Log().Error($"Failed to write settings to {_path} in place after the rename was refused; the change is kept in memory and saved on a later write", new AggregateException(refusedRename, e));
+				this.Log().Error($"Failed to write settings to {_path} in place after the rename was refused; the change is kept in memory and saved on a later write", new AggregateException(renameRefusal, e));
 			}
 
 			return false;
 		}
 
-		NoteRenamesRefused(refusedRename);
+		NoteRenamesRefused(renameRefusal);
 		return true;
 	}
 
@@ -428,7 +444,7 @@ internal sealed class SettingsFile
 		}
 	}
 
-	private void NoteRenamesRefused(UnauthorizedAccessException refusedRename)
+	private void NoteRenamesRefused(UnauthorizedAccessException renameRefusal)
 	{
 		if (_renamesRefused)
 		{
@@ -439,7 +455,7 @@ internal sealed class SettingsFile
 
 		if (this.Log().IsEnabled(LogLevel.Warning))
 		{
-			this.Log().Warn($"Replacing the settings file {_path} through a rename is refused ({refusedRename.GetType().Name} 0x{refusedRename.HResult:X8}: {refusedRename.Message}); it is written in place, without crash safety, until a rename works again");
+			this.Log().Warn($"Replacing the settings file {_path} through a rename is refused (0x{renameRefusal.HResult:X8}: {renameRefusal.Message}); it is written in place, without crash safety, until a rename works again");
 		}
 	}
 
