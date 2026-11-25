@@ -38,6 +38,63 @@ public class Given_TextBlock_Bidi
 	}
 
 	[TestMethod]
+	public async Task When_Rtl_TextBlock_Latin_Keeps_Period_At_End()
+	{
+		var sut = CreateTextBlock(FlowDirection.RightToLeft, R("Hello world", Colors.Blue), R(".", Colors.Red));
+		sut.Width = 300;
+
+		try
+		{
+			var (_, bitmap) = await Show(sut);
+			var text = InkX(bitmap, Colors.Blue);
+			var period = InkX(bitmap, Colors.Red);
+
+			// "Hello world." is left-to-right text, so the period stays at its end, as on WinUI.
+			Assert.IsTrue(period.Min > text.Max, $"The period ({period}) should be drawn right of \"Hello world\" ({text}).");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[DataRow(FlowDirection.RightToLeft)]
+	[DataRow(FlowDirection.LeftToRight)]
+	public async Task When_Run_FlowDirection_Differs_From_Control(FlowDirection controlDirection)
+	{
+		var runDirection = controlDirection is FlowDirection.RightToLeft ? FlowDirection.LeftToRight : FlowDirection.RightToLeft;
+		var sut = controlDirection is FlowDirection.RightToLeft
+			? CreateTextBlock(controlDirection, R("abc ", Colors.Red), R("def", Colors.Blue, runDirection), R(" jkl", Colors.Green), R(".", Colors.Magenta))
+			: CreateTextBlock(controlDirection, R("abc ", Colors.Red), R("def", Colors.Blue, runDirection), R("!!", Colors.Magenta, runDirection), R(" jkl", Colors.Green));
+
+		try
+		{
+			var (_, bitmap) = await Show(sut);
+			var red = InkX(bitmap, Colors.Red);
+			var blue = InkX(bitmap, Colors.Blue);
+			var green = InkX(bitmap, Colors.Green);
+			var magenta = InkX(bitmap, Colors.Magenta);
+			var description = $"red {red}, blue {blue}, green {green}, magenta {magenta}";
+
+			if (controlDirection is FlowDirection.RightToLeft)
+			{
+				// Left-to-right text with an explicitly left-to-right run reads naturally, period last.
+				Assert.IsTrue(red.Max < blue.Min && blue.Max < green.Min && green.Max < magenta.Min, $"Expected \"abc def jkl.\": {description}.");
+			}
+			else
+			{
+				// The right-to-left run is embedded: its trailing "!!" moves to its left.
+				Assert.IsTrue(red.Max < magenta.Min && magenta.Max < blue.Min && blue.Max < green.Min, $"Expected \"abc !!def jkl\": {description}.");
+			}
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Uno's text engine
 	public async Task When_Bidi_Buffers_Outlive_SetPara()
 	{

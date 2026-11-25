@@ -497,10 +497,12 @@ internal readonly partial struct UnicodeText : IParsedText
 			for (int i = 0; i < _runBreaks.Count; i++)
 			{
 				var (start, count) = i == 0 ? (0, _runBreaks[0].end) : (_runBreaks[i - 1].end, _runBreaks[i].end - _runBreaks[i - 1].end);
+				// As on WinUI, only a run whose direction differs from the control's is embedded. The others get ICU's
+				// wildcard level 0, the level of their paragraph, whose direction comes from its first strong character.
 				var direction = _runBreaks[i].direction;
-				var level = flowDirection is FlowDirection.LeftToRight
-					? (direction is FlowDirection.LeftToRight ? 0 : 1)
-					: (direction is FlowDirection.RightToLeft ? 1 : 2); // 2 and not 0 because embedding must increase nesting level when switching direction inside RTL paragraph
+				var level = direction == flowDirection ? 0
+					: direction is FlowDirection.RightToLeft ? 1
+					: 2; // the next even level above either paragraph level
 				Array.Fill(embeddingLevels, (byte)level, start, count);
 			}
 
