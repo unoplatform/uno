@@ -3,20 +3,14 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Shapes;
-using Windows.Foundation;
-using Uno.Extensions;
 
-using _View = Microsoft.UI.Xaml.DependencyObject;
-
+using static System.FormattableString;
 using static System.Reflection.BindingFlags;
 using static Uno.UI.Extensions.PrettyPrint;
 
@@ -25,14 +19,28 @@ namespace Uno.UI.Extensions;
 public static partial class VisualTreeExtensions
 {
 	/// <summary>
-	/// Produces a text representation of the visual tree.
+	/// Produces a text representation of the visual tree below <paramref name="reference"/>: one node per line, indented by depth,
+	/// with its type, x:Name and a default set of layout details.
 	/// </summary>
 	/// <param name="reference">Any node of the visual tree</param>
-	public static string TreeGraph(this _View reference) => TreeGraph(reference, DescribeVTNode);
+	public static string TreeGraph(this DependencyObject reference) => TreeGraph(reference, DescribeVTNode);
 
-	public static string TreeGraph(this _View reference, Func<object, IEnumerable<string>> describeProperties) =>
+	/// <summary>
+	/// Produces a text representation of the visual tree below <paramref name="reference"/>: one node per line, indented by depth,
+	/// with its type, x:Name and the details <paramref name="describeProperties"/> returns for it.
+	/// </summary>
+	/// <param name="reference">Any node of the visual tree</param>
+	/// <param name="describeProperties">A function returning the details to show for a node, e.g. <c>Margin=4</c>.</param>
+	public static string TreeGraph(this DependencyObject reference, Func<object, IEnumerable<string>> describeProperties) =>
 		TreeGraph(reference, x => DescribeVTNode(x, describeProperties));
 
+	/// <summary>
+	/// Produces a text representation of the tree below <paramref name="reference"/>: one node per line, indented by depth,
+	/// with its type, x:Name and the details <paramref name="describeProperties"/> returns for it.
+	/// </summary>
+	/// <param name="reference">The root node</param>
+	/// <param name="describeProperties">A function returning the details to show for a node, e.g. <c>Margin=4</c>.</param>
+	/// <param name="getMembers">A function returning the nodes to visit under a node, given its visual children; <see langword="null"/> to visit the visual children.</param>
 	public static string TreeGraph(
 		this object reference,
 		Func<object, IEnumerable<string>> describeProperties,
@@ -40,11 +48,12 @@ public static partial class VisualTreeExtensions
 	) => TreeGraph(reference, x => DescribeVTNode(x, describeProperties), getMembers);
 
 	/// <summary>
-	/// Produces a text representation of the visual tree, using the provided method of description.
+	/// Produces a text representation of the tree below <paramref name="reference"/>: one node per line, indented by depth,
+	/// using the provided method of description.
 	/// </summary>
-	/// <param name="reference">Any node of the visual tree</param>
+	/// <param name="reference">The root node</param>
 	/// <param name="describe">A function to describe a visual tree node in a single line.</param>
-	/// <returns></returns>
+	/// <param name="getMembers">A function returning the nodes to visit under a node, given its visual children; <see langword="null"/> to visit the visual children.</param>
 	public static string TreeGraph(
 		this object reference,
 		Func<object, string> describe,
@@ -59,7 +68,7 @@ public static partial class VisualTreeExtensions
 		{
 			Print(o, depth);
 
-			var children = (o as _View)?.EnumerateChildren().Cast<object>() ?? Array.Empty<object>();
+			var children = (o as DependencyObject)?.EnumerateChildren().Cast<object>() ?? Array.Empty<object>();
 			children = getMembers?.Invoke(o, children) ?? children;
 			foreach (var child in children)
 			{
@@ -115,8 +124,6 @@ public static partial class VisualTreeExtensions
 				yield return $"DC={FormatType(uie.DataContext)}";
 			}
 #endif
-#if false // native layout coordinates
-#endif
 #if true // framework layout properties
 			if (x is FrameworkElement fe)
 			{
@@ -134,7 +141,7 @@ public static partial class VisualTreeExtensions
 				//if ($"{(fe.IsMeasureDirty ? "M" : null)}{(fe.IsMeasureDirtyPath ? "m" : null)}{(fe.IsArrangeDirty ? "A" : null)}{(fe.IsArrangeDirtyPath ? "a" : null)}" is { Length: > 0 } dirty)
 				//	yield return $"Dirty={dirty}";
 #endif
-				yield return $"Constraints=[{fe.MinWidth:0.#},{fe.Width:0.#},{fe.MaxWidth:0.#}]x[{fe.MinHeight:0.#},{fe.Height:0.#},{fe.MaxHeight:0.#}]";
+				yield return Invariant($"Constraints=[{fe.MinWidth:0.#},{fe.Width:0.#},{fe.MaxWidth:0.#}]x[{fe.MinHeight:0.#},{fe.Height:0.#},{fe.MaxHeight:0.#}]");
 				yield return $"HV={fe.HorizontalAlignment}/{fe.VerticalAlignment}";
 			}
 			if (x is ScrollViewer sv)
@@ -148,7 +155,7 @@ public static partial class VisualTreeExtensions
 			if (TryGetDpValue<Thickness>(x, "Padding", out var padding)) yield return $"Padding={FormatThickness(padding)}";
 #endif
 
-			if (TryGetDpValue<double>(x, "Opacity", out var opacity)) yield return $"Opacity={opacity}";
+			if (TryGetDpValue<double>(x, "Opacity", out var opacity)) yield return Invariant($"Opacity={opacity}");
 			if (TryGetDpValue<Visibility>(x, "Visibility", out var visibility)) yield return $"Visibility={visibility}";
 		}
 	}
@@ -217,8 +224,8 @@ public static partial class VisualTreeExtensions
 	/// </summary>
 	/// <typeparam name="T">The type of ancestor to find.</typeparam>
 	/// <param name="reference">Any node of the visual tree</param>
-	/// <remarks>First Counting from the <paramref name="reference"/> and not from the root of tree.</remarks>
-	public static T? FindFirstAncestor<T>(this _View? reference) => EnumerateVisualTreeAncestors(reference)
+	/// <remarks>Searches upward from <paramref name="reference"/>, not down from the root.</remarks>
+	public static T? FindFirstAncestor<T>(this DependencyObject? reference) => EnumerateVisualTreeAncestors(reference)
 		.OfType<T>()
 		.FirstOrDefault();
 
@@ -227,13 +234,12 @@ public static partial class VisualTreeExtensions
 	/// </summary>
 	/// <typeparam name="T">The type of ancestor to find.</typeparam>
 	/// <param name="reference">Any node of the visual tree</param>
-	/// <remarks>First Counting from the <paramref name="reference"/> and not from the root of tree.</remarks>
-	/// <exception cref="Exception">If the specified node could not be found.</exception>
-	public static T? FindFirstAncestorOrThrow<T>(this _View? reference) => EnumerateVisualTreeAncestors(reference)
+	/// <remarks>Searches upward from <paramref name="reference"/>, not down from the root.</remarks>
+	/// <exception cref="InvalidOperationException">If no such ancestor exists.</exception>
+	public static T FindFirstAncestorOrThrow<T>(this DependencyObject? reference) where T : class => EnumerateVisualTreeAncestors(reference)
 		.OfType<T>()
 		.FirstOrDefault() ??
-		throw new Exception($"Unable to find element: {typeof(T).Name}");
-
+		throw new InvalidOperationException($"Unable to find element: {typeof(T).Name}");
 
 	/// <summary>
 	/// Returns the first ancestor of a specified type that satisfies the <paramref name="predicate"/>.
@@ -241,8 +247,8 @@ public static partial class VisualTreeExtensions
 	/// <typeparam name="T">The type of ancestor to find.</typeparam>
 	/// <param name="reference">Any node of the visual tree</param>
 	/// <param name="predicate">A function to test each node for a condition.</param>
-	/// <remarks>First Counting from the <paramref name="reference"/> and not from the root of tree.</remarks>
-	public static T? FindFirstAncestor<T>(this _View? reference, Func<T, bool> predicate) => EnumerateVisualTreeAncestors(reference)
+	/// <remarks>Searches upward from <paramref name="reference"/>, not down from the root.</remarks>
+	public static T? FindFirstAncestor<T>(this DependencyObject? reference, Func<T, bool> predicate) => EnumerateVisualTreeAncestors(reference)
 		.OfType<T>()
 		.FirstOrDefault(predicate);
 
@@ -252,7 +258,7 @@ public static partial class VisualTreeExtensions
 	/// <typeparam name="T">The type of descendant to find.</typeparam>
 	/// <param name="reference">Any node of the visual tree</param>
 	/// <remarks>The nodes are visited in depth-first order.</remarks>
-	public static T? FindFirstDescendant<T>(this _View? reference) => EnumerateDescendants(reference)
+	public static T? FindFirstDescendant<T>(this DependencyObject? reference) => EnumerateDescendants(reference)
 		.OfType<T>()
 		.FirstOrDefault();
 
@@ -263,7 +269,7 @@ public static partial class VisualTreeExtensions
 	/// <param name="reference">Any node of the visual tree</param>
 	/// <param name="predicate">A function to test each node for a condition.</param>
 	/// <remarks>The nodes are visited in depth-first order.</remarks>
-	public static T? FindFirstDescendant<T>(this _View? reference, Func<T, bool> predicate) => EnumerateDescendants(reference)
+	public static T? FindFirstDescendant<T>(this DependencyObject? reference, Func<T, bool> predicate) => EnumerateDescendants(reference)
 		.OfType<T>()
 		.FirstOrDefault(predicate);
 
@@ -274,7 +280,7 @@ public static partial class VisualTreeExtensions
 	/// <param name="reference">Any node of the visual tree</param>
 	/// <param name="name">x:Name of the node</param>
 	/// <remarks>The nodes are visited in depth-first order.</remarks>
-	public static T? FindFirstDescendant<T>(this _View? reference, string name) where T : FrameworkElement => EnumerateDescendants(reference)
+	public static T? FindFirstDescendant<T>(this DependencyObject? reference, string name) where T : FrameworkElement => EnumerateDescendants(reference)
 		.OfType<T>()
 		.FirstOrDefault(x => x.Name == name);
 
@@ -284,11 +290,11 @@ public static partial class VisualTreeExtensions
 	/// <typeparam name="T">The type of descendant to find.</typeparam>
 	/// <param name="reference">Any node of the visual tree</param>
 	/// <remarks>The nodes are visited in depth-first order.</remarks>
-	/// <exception cref="Exception">If the specified node could not be found.</exception>
-	public static T FindFirstDescendantOrThrow<T>(this _View? reference) where T : FrameworkElement => EnumerateDescendants(reference)
+	/// <exception cref="InvalidOperationException">If no such descendant exists.</exception>
+	public static T FindFirstDescendantOrThrow<T>(this DependencyObject? reference) where T : class => EnumerateDescendants(reference)
 		.OfType<T>()
 		.FirstOrDefault() ??
-		throw new Exception($"Unable to find element: {typeof(T).Name}");
+		throw new InvalidOperationException($"Unable to find element: {typeof(T).Name}");
 
 	/// <summary>
 	/// Returns the first descendant of a specified type.
@@ -297,12 +303,11 @@ public static partial class VisualTreeExtensions
 	/// <param name="reference">Any node of the visual tree</param>
 	/// <param name="name">x:Name of the node</param>
 	/// <remarks>The nodes are visited in depth-first order.</remarks>
-	/// <exception cref="Exception">If the specified node could not be found.</exception>
-	public static T FindFirstDescendantOrThrow<T>(this _View? reference, string name) where T : FrameworkElement => EnumerateDescendants(reference)
+	/// <exception cref="InvalidOperationException">If no such descendant exists.</exception>
+	public static T FindFirstDescendantOrThrow<T>(this DependencyObject? reference, string name) where T : FrameworkElement => EnumerateDescendants(reference)
 		.OfType<T>()
 		.FirstOrDefault(x => x.Name == name) ??
-		throw new Exception($"Unable to find element: {typeof(T).Name}#{name}");
-
+		throw new InvalidOperationException($"Unable to find element: {typeof(T).Name}#{name}");
 
 	/// <summary>
 	/// Returns the first descendant of a specified type that satisfies the <paramref name="predicate"/> whose ancestors (up to <paramref name="reference"/>) and itself satisfy the <paramref name="hierarchyPredicate"/>.
@@ -312,25 +317,24 @@ public static partial class VisualTreeExtensions
 	/// <param name="hierarchyPredicate">A function to test each ancestor for a condition.</param>
 	/// <param name="predicate">A function to test each descendant for a condition.</param>
 	/// <remarks>The nodes are visited in depth-first order.</remarks>
-	public static T? FindFirstDescendant<T>(this _View? reference, Func<_View, bool> hierarchyPredicate, Func<T, bool> predicate) => EnumerateDescendants(reference, hierarchyPredicate)
+	public static T? FindFirstDescendant<T>(this DependencyObject? reference, Func<DependencyObject, bool> hierarchyPredicate, Func<T, bool> predicate) => EnumerateDescendants(reference, hierarchyPredicate)
 		.OfType<T>()
 		.FirstOrDefault(predicate);
 
 	/// <summary>
-	/// Returns all the visual descendants of a node.
+	/// Returns all the visual descendants of a node, in depth-first order.
 	/// </summary>
 	/// <param name="reference">Any node of the visual tree</param>
 	/// <seealso cref="EnumerateRawDescendants(UIElement, int?)"/>
-	public static IEnumerable<_View> EnumerateDescendants(this _View? reference) => EnumerateDescendants(reference, x => true);
+	public static IEnumerable<DependencyObject> EnumerateDescendants(this DependencyObject? reference) => EnumerateDescendants(reference, x => true);
 
 	/// <summary>
-	/// Returns all the visual descendants of a node that satisfies the <paramref name="hierarchyPredicate"/>.
+	/// Returns the visual descendants of a node that satisfy the <paramref name="hierarchyPredicate"/>, in depth-first order.
 	/// </summary>
 	/// <param name="reference">Any node of the visual tree</param>
-	/// <param name="hierarchyPredicate"></param>
-	/// <returns></returns>
+	/// <param name="hierarchyPredicate">A function to test each descendant; one that fails it is skipped together with its own descendants.</param>
 	/// <seealso cref="EnumerateRawDescendants(UIElement, int?)"/>
-	public static IEnumerable<_View> EnumerateDescendants(this _View? reference, Func<_View, bool> hierarchyPredicate)
+	public static IEnumerable<DependencyObject> EnumerateDescendants(this DependencyObject? reference, Func<DependencyObject, bool> hierarchyPredicate)
 	{
 		foreach (var child in reference.EnumerateChildren().Where(hierarchyPredicate))
 		{
@@ -380,20 +384,27 @@ public static partial class VisualTreeExtensions
 	/// <summary>
 	/// Returns the ancestors of a node, from its parent up to the root, following <see cref="VisualTreeHelper.GetParent"/>.
 	/// </summary>
-	/// <param name="o">Any node of the visual tree; it is not returned.</param>
-	public static IEnumerable<_View> EnumerateVisualTreeAncestors(this _View? o)
+	/// <param name="reference">Any node of the visual tree; it is not returned.</param>
+	public static IEnumerable<DependencyObject> EnumerateVisualTreeAncestors(this DependencyObject? reference)
 	{
-		if (o is null) yield break;
-		while (VisualTreeHelper.GetParent(o) is { } parent)
+		if (reference is null) yield break;
+		while (VisualTreeHelper.GetParent(reference) is { } parent)
 		{
-			yield return o = parent;
+			yield return reference = parent;
 		}
 	}
 
-	internal static IEnumerable<_View> EnumerateChildren(this _View? reference)
+	internal static IEnumerable<DependencyObject> EnumerateChildren(this DependencyObject? reference)
 	{
-		return Enumerable
-			.Range(0, VisualTreeHelper.GetChildrenCount(reference))
-			.Select(x => VisualTreeHelper.GetChild(reference, x));
+		if (reference is null)
+		{
+			yield break;
+		}
+
+		var count = VisualTreeHelper.GetChildrenCount(reference);
+		for (var i = 0; i < count; i++)
+		{
+			yield return VisualTreeHelper.GetChild(reference, i);
+		}
 	}
 }
