@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Threading;
 using Uno.Foundation.Logging;
 
@@ -18,6 +17,8 @@ namespace Uno.Storage.Internal;
 /// Writers hold an exclusive lock on a sibling ".lock" file and readers a shared one (flock on Unix, sharing modes on
 /// Windows). The locks are advisory: they only exclude other instances going through this class, and they do nothing
 /// when an app turns off .NET file locking (System.IO.DisableFileLocking) or on a file system that ignores flock.
+/// The file is replaced through a rename, except while renames are refused (Win32 app isolation): then it is written
+/// in place, and a crash part-way through can leave it damaged.
 /// </remarks>
 internal sealed class SettingsFile
 {
@@ -29,9 +30,6 @@ internal sealed class SettingsFile
 
 	private static readonly TimeSpan _staleTemporaryFileAge = TimeSpan.FromMinutes(10);
 	private const int Attempts = 5;
-
-	// The encoding BinaryWriter uses by default.
-	private static readonly UTF8Encoding _encoding = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
 
 	private readonly object _gate = new();
 	private readonly TimeSpan _writeLockTimeout;
@@ -48,6 +46,8 @@ internal sealed class SettingsFile
 	private Stamp? _diskStamp;
 	private DateTime _diskReadAt;
 	private bool _temporaryFilesSwept;
+	// Set while replacing the file through a rename is refused, as Win32 app isolation does in a sandboxed package's
+	// data folder.
 	private bool _renamesRefused;
 
 	private readonly record struct Stamp(DateTime LastWrite, long Length);
@@ -205,7 +205,7 @@ internal sealed class SettingsFile
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error($"The settings file {_path} is damaged; it was moved aside and rebuilt from this process's last good copy", e);
+					this.Log().Error($"The settings file {_path} is damaged; it is set aside and rebuilt from this process's last good copy", e);
 				}
 
 				try
@@ -216,7 +216,7 @@ internal sealed class SettingsFile
 				{
 					if (this.Log().IsEnabled(LogLevel.Error))
 					{
-						this.Log().Error($"Failed to move the damaged settings file {_path} aside", moveError);
+						this.Log().Error($"Failed to set the damaged settings file {_path} aside", moveError);
 					}
 
 					values = null!;
@@ -286,64 +286,54 @@ internal sealed class SettingsFile
 
 	private bool TryWrite(Dictionary<string, string> values)
 	{
+		var content = Serialize(values);
+
+		// While renames are refused, one try per write is enough to notice that they work again.
+		var attempts = _renamesRefused ? 1 : Attempts;
+
 		for (var attempt = 1; ; attempt++)
 		{
 			try
 			{
-				Write(values);
-				return true;
+				var refusedRename = ReplaceThroughTemporaryFile(content);
+
+				if (refusedRename is null)
+				{
+					NoteRenamesWork();
+					return true;
+				}
+
+				if (attempt >= attempts)
+				{
+					return TryWriteInPlace(content, refusedRename);
+				}
+
+				LogWriteRetry(attempt, refusedRename);
 			}
-			catch (Exception e) when (e is IOException or UnauthorizedAccessException && attempt < Attempts)
+			catch (Exception e) when (e is IOException or UnauthorizedAccessException && attempt < attempts)
 			{
 				// On Windows another program holding the file open (an indexer, antivirus, a sync client) makes the
 				// replace fail for a moment.
-				Thread.Sleep(20 * attempt);
-			}
-			catch (UnauthorizedAccessException e) when (!_renamesRefused)
-			{
-				return TryWriteInPlace(values, e);
+				LogWriteRetry(attempt, e);
 			}
 			catch (Exception e)
 			{
-				LogWriteFailure(e);
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Failed to write settings to {_path}; the change is kept in memory and saved on a later write", e);
+				}
+
 				return false;
 			}
+
+			Thread.Sleep(20 * attempt);
 		}
 	}
 
-	/// <summary>Writes the file in place after a rename kept being refused, and keeps doing so if that works.</summary>
-	private bool TryWriteInPlace(Dictionary<string, string> values, UnauthorizedAccessException renameError)
+	/// <summary>Replaces the file by renaming a temporary copy over it.</summary>
+	/// <returns>The refusal when the rename was refused, or <c>null</c> when the file was replaced.</returns>
+	private UnauthorizedAccessException? ReplaceThroughTemporaryFile(byte[] content)
 	{
-		try
-		{
-			WriteInPlace(values);
-		}
-		catch (Exception e)
-		{
-			LogWriteFailure(new AggregateException(renameError, e));
-			return false;
-		}
-
-		NoteRenamesRefused(renameError);
-		return true;
-	}
-
-	private void LogWriteFailure(Exception e)
-	{
-		if (this.Log().IsEnabled(LogLevel.Error))
-		{
-			this.Log().Error($"Failed to write settings to {_path}; the change is kept in memory and saved on a later write", e);
-		}
-	}
-
-	private void Write(Dictionary<string, string> values)
-	{
-		if (_renamesRefused)
-		{
-			WriteInPlace(values);
-			return;
-		}
-
 		// A crash or a full disk part-way through leaves the previous file in place rather than a truncated one.
 		var temporaryPath = $"{_path}.{Environment.ProcessId}.{Guid.NewGuid():N}.tmp";
 
@@ -351,10 +341,19 @@ internal sealed class SettingsFile
 		{
 			using (var stream = new FileStream(temporaryPath, FileMode.CreateNew, FileAccess.Write, FileShare.None))
 			{
-				WriteValues(stream, values);
+				stream.Write(content);
+				stream.Flush(flushToDisk: true);
 			}
 
-			_moveFile(temporaryPath, _path);
+			try
+			{
+				_moveFile(temporaryPath, _path);
+				return null;
+			}
+			catch (UnauthorizedAccessException e)
+			{
+				return e;
+			}
 		}
 		finally
 		{
@@ -362,57 +361,108 @@ internal sealed class SettingsFile
 		}
 	}
 
-	// Not atomic: a crash part-way through leaves a damaged file, which the next write sets aside and rebuilds.
-	// The exclusive lock keeps the other instances from reading it meanwhile.
-	private void WriteInPlace(Dictionary<string, string> values)
+	private bool TryWriteInPlace(byte[] content, UnauthorizedAccessException refusedRename)
 	{
-		using var stream = new FileStream(_path, FileMode.Create, FileAccess.Write, FileShare.None);
-		WriteValues(stream, values);
-	}
-
-	private static void WriteValues(FileStream stream, Dictionary<string, string> values)
-	{
-		using var writer = new BinaryWriter(stream, _encoding, leaveOpen: true);
-		writer.Write(values.Count);
-
-		foreach (var pair in values)
+		try
 		{
-			writer.Write(pair.Key);
-			writer.Write(pair.Value);
+			WriteInPlace(content);
+		}
+		catch (Exception e)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Failed to write settings to {_path} in place after the rename was refused; the change is kept in memory and saved on a later write", new AggregateException(refusedRename, e));
+			}
+
+			return false;
 		}
 
-		writer.Flush();
+		NoteRenamesRefused(refusedRename);
+		return true;
+	}
+
+	// Not atomic. The new content goes down in a single write before the old tail is cut off, and a reader ignores
+	// trailing bytes, so only a torn write leaves a damaged file. The exclusive lock keeps other instances out meanwhile.
+	private void WriteInPlace(byte[] content)
+	{
+		using var stream = new FileStream(_path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None);
+		stream.Write(content);
+		stream.SetLength(content.Length);
 		stream.Flush(flushToDisk: true);
+	}
+
+	private static byte[] Serialize(Dictionary<string, string> values)
+	{
+		using var buffer = new MemoryStream();
+
+		using (var writer = new BinaryWriter(buffer))
+		{
+			writer.Write(values.Count);
+
+			foreach (var pair in values)
+			{
+				writer.Write(pair.Key);
+				writer.Write(pair.Value);
+			}
+		}
+
+		return buffer.ToArray();
 	}
 
 	private void SetDamagedFileAside()
 	{
 		var asidePath = _path + ".corrupt";
 
-		if (!_renamesRefused)
+		try
 		{
-			try
-			{
-				_moveFile(_path, asidePath);
-				return;
-			}
-			catch (UnauthorizedAccessException e)
-			{
-				NoteRenamesRefused(e);
-			}
+			_moveFile(_path, asidePath);
 		}
+		catch (UnauthorizedAccessException e)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Moving the damaged settings file {_path} aside was refused, copying it instead: {e.Message}");
+			}
 
-		File.Copy(_path, asidePath, overwrite: true);
+			File.Copy(_path, asidePath, overwrite: true);
+		}
 	}
 
-	// Win32 app isolation (a sandboxed MSIX package) refuses every rename in the package's data folder.
-	private void NoteRenamesRefused(UnauthorizedAccessException e)
+	private void NoteRenamesRefused(UnauthorizedAccessException refusedRename)
 	{
+		if (_renamesRefused)
+		{
+			return;
+		}
+
 		_renamesRefused = true;
+
+		if (this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn($"Replacing the settings file {_path} through a rename is refused ({refusedRename.GetType().Name} 0x{refusedRename.HResult:X8}: {refusedRename.Message}); it is written in place, without crash safety, until a rename works again");
+		}
+	}
+
+	private void NoteRenamesWork()
+	{
+		if (!_renamesRefused)
+		{
+			return;
+		}
+
+		_renamesRefused = false;
 
 		if (this.Log().IsEnabled(LogLevel.Information))
 		{
-			this.Log().Info($"Renaming next to the settings file {_path} is refused ({e.Message}); it is written in place from now on");
+			this.Log().Info($"Replacing the settings file {_path} through a rename works again");
+		}
+	}
+
+	private void LogWriteRetry(int attempt, Exception e)
+	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"Failed to write settings to {_path} (attempt {attempt}), retrying: {e.Message}");
 		}
 	}
 

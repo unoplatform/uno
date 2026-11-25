@@ -295,7 +295,7 @@ public class Given_SettingsFile
 	}
 
 	[TestMethod]
-	public void When_Renames_Are_Refused_Then_Later_Writes_Skip_The_Rename()
+	public void When_Renames_Are_Refused_Then_Later_Writes_Try_The_Rename_Only_Once()
 	{
 		var attempts = 0;
 		var settings = new SettingsFile(_path, moveFile: (source, destination) =>
@@ -308,10 +308,77 @@ public class Given_SettingsFile
 
 		settings.Set("second", "1");
 
-		Assert.AreEqual(attemptsForFirstWrite, attempts);
+		Assert.AreEqual(attemptsForFirstWrite + 1, attempts);
 		var reopened = new SettingsFile(_path);
 		Assert.AreEqual("1", reopened.Values["first"]);
 		Assert.AreEqual("1", reopened.Values["second"]);
+	}
+
+	[TestMethod]
+	public void When_Renames_Work_Again_Then_Writes_Retry_Them_Fully_Again()
+	{
+		var refusing = true;
+		var attempts = 0;
+		var settings = new SettingsFile(_path, moveFile: (source, destination) =>
+		{
+			attempts++;
+			if (refusing)
+			{
+				RefuseRename(source, destination);
+			}
+
+			File.Move(source, destination, overwrite: true);
+		});
+		settings.Set("first", "1");
+		refusing = false;
+		settings.Set("second", "1");
+		refusing = true;
+		var attemptsBefore = attempts;
+
+		settings.Set("third", "1");
+
+		Assert.IsGreaterThan(1, attempts - attemptsBefore);
+		Assert.AreEqual("1", new SettingsFile(_path).Values["third"]);
+	}
+
+	[TestMethod]
+	public void When_Renames_Are_Refused_And_The_Content_Shrinks_Then_No_Old_Bytes_Are_Read()
+	{
+		var settings = new SettingsFile(_path, moveFile: RefuseRename);
+		settings.Set("long", new string('x', 1000));
+		settings.Set("short", "1");
+
+		settings.Remove("long");
+
+		var reopened = new SettingsFile(_path);
+		Assert.HasCount(1, reopened.Values);
+		Assert.AreEqual("1", reopened.Values["short"]);
+		Assert.IsLessThan(100L, new FileInfo(_path).Length);
+	}
+
+	[TestMethod]
+	public void When_Only_Setting_A_Damaged_File_Aside_Is_Refused_Then_Writes_Still_Rename()
+	{
+		Directory.CreateDirectory(_folder);
+		File.WriteAllBytes(_path, new byte[] { 5, 0, 0, 0, 3, (byte)'k' });
+		var renamesOverTheFile = 0;
+		var settings = new SettingsFile(_path, moveFile: (source, destination) =>
+		{
+			if (destination.EndsWith(".corrupt", StringComparison.Ordinal))
+			{
+				RefuseRename(source, destination);
+			}
+
+			renamesOverTheFile++;
+			File.Move(source, destination, overwrite: true);
+		});
+
+		settings.Set("first", "1");
+		settings.Set("second", "1");
+
+		Assert.AreEqual(2, renamesOverTheFile);
+		Assert.IsTrue(File.Exists(_path + ".corrupt"));
+		Assert.AreEqual("1", new SettingsFile(_path).Values["second"]);
 	}
 
 	[TestMethod]
