@@ -65,13 +65,19 @@ private void DebugVT(object sender, RoutedEventArgs e)
 
 To get the whole tree, call it on the root element, for example `XamlRoot.Content.TreeGraph()`. In the watch window, call it as a static method: `Uno.UI.Extensions.VisualTreeExtensions.TreeGraph(element)`.
 
+By default, each node shows its layout details, as `VisualTreeExtensions.DescribeLayout` lists them: values that differ from their defaults, such as size constraints, alignment, margin and padding. To see borders, backgrounds and the current visual states instead, pass `VisualTreeExtensions.DescribeVisual`:
+
+```csharp
+var tree = this.TreeGraph(VisualTreeExtensions.DescribeVisual);
+```
+
 You can customize the amount of details, as `TreeGraph` has an overload that takes in a `Func<object, string>` to describe the visual tree node:
 
 > [!NOTE]
 > For more examples of control details, check out these source files:
 >
 > - [`DebugVTNode\GetDetails()` method in Toolkit](https://github.com/unoplatform/uno.toolkit.ui/blob/main/src/Uno.Toolkit.UI/Helpers/VisualTreeHelperEx.cs)
-> - [`DescribeVTNode\GetDetails()` method in Uno](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.Extras/Extensions/VisualTreeExtensions.cs)
+> - [`DescribeLayout()` and `DescribeVisual()` methods in Uno](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.Extras/Extensions/VisualTreeExtensions.TreeGraph.cs)
 
 ```csharp
 var tree = this.TreeGraph(Describe);
