@@ -1,5 +1,7 @@
 #nullable enable
 
+using System;
+
 namespace Microsoft.UI.Xaml.Documents;
 
 /// <summary>
@@ -36,4 +38,12 @@ internal readonly record struct UnicodeTextOptions
 	/// that cluster and gets no ellipsis, as with maxLines.
 	/// </summary>
 	public int? ForcedEllipsisLine { get; init; }
+
+	/// <summary>
+	/// Measures an <see cref="InlineUIContainer"/> found among the inlines. When set, each container takes one U+FFFC
+	/// character of the layout's text, sized by the result (null for an empty placeholder); a container before
+	/// <see cref="ResumeIndex"/> gets an empty placeholder without being measured. When null, containers take no
+	/// character, as before.
+	/// </summary>
+	public Func<InlineUIContainer, InlineObjectInfo?>? InlineContainers { get; init; }
 }

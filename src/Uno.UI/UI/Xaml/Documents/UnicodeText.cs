@@ -41,6 +41,8 @@ internal readonly partial struct UnicodeText : IParsedText
 	private const int UBIDI_LTR = 0;
 	private const int UBIDI_RTL = 1;
 	private const string HorizontalEllipsis = "\u2026";
+	private const string ObjectReplacementCharacter = "\uFFFC";
+	private static readonly InlineObjectInfo _emptyInlineObject = new(null, null, 0, 0, 0, global::Microsoft.UI.Text.VerticalCharacterAlignment.Baseline);
 
 	// Runs right after the paragraph BiDi pass, while ICU still points into the buffers it was given for the
 	// line reordering below. Tests use it to disturb the managed heap and the shared array pool in that window.
@@ -291,6 +293,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		var resumeIndex = options.ResumeIndex;
 		var forcedEllipsisLine = options.ForcedEllipsisLine ?? -1;
 		var trimmingWidth = options.TrimmingWidth ?? (float)availableSize.Width;
+		var inlineContainers = options.InlineContainers;
 		_endingParagraphLayout = endingParagraphLayout;
 		_endingParagraphAlignment = endingParagraphAlignment;
 		_defaultForeground = defaultForeground;
@@ -322,6 +325,14 @@ internal readonly partial struct UnicodeText : IParsedText
 			var inlineText = inline.GetText();
 			if (string.IsNullOrEmpty(inlineText))
 			{
+				// An InlineUIContainer has no text, so it is checked here, off the path every run of text takes.
+				if (inlineContainers is not null && inline is InlineUIContainer container)
+				{
+					singleInlineText = ++nonEmptyInlines == 1 ? ObjectReplacementCharacter : null;
+					allAscii = false;
+					allRunsLtr &= flowDirection is FlowDirection.LeftToRight;
+					inlineObjects = AppendInlineContainer(container, inlineContainers, resumeIndex, flowDirection, stringBuilder, inlineObjects, scriptBreaks, fontBreaks, _runBreaks);
+				}
 				continue;
 			}
 
@@ -1317,6 +1328,20 @@ internal readonly partial struct UnicodeText : IParsedText
 			|| paragraphLayouts is not null
 			|| endingParagraphAlignment is not null
 			|| endingParagraphLayout is not null;
+	}
+
+	// Appends a placeholder character the size of the hosted element. U+FFFC breaks on both sides (line break class CB).
+	private static Dictionary<int, InlineObjectInfo> AppendInlineContainer(InlineUIContainer container, Func<InlineUIContainer, InlineObjectInfo?> measure, int resumeIndex, FlowDirection flowDirection, StringBuilder text, Dictionary<int, InlineObjectInfo>? inlineObjects, List<int> scriptBreaks, List<(int end, FontDetails fontDetails)> fontBreaks, List<RunBreak> runBreaks)
+	{
+		var objectStart = text.Length;
+		text.Append(ObjectReplacementCharacter[0]);
+		inlineObjects ??= new();
+		// One before the resume index was laid out by a previous layout.
+		inlineObjects[objectStart] = (objectStart >= resumeIndex ? measure(container) : null) ?? _emptyInlineObject;
+		scriptBreaks.Add(objectStart + 1);
+		fontBreaks.Add((objectStart + 1, container.FontInfo));
+		runBreaks.Add(new RunBreak(objectStart + 1, container.Foreground, flowDirection, TextDecorations.None, 0, null));
+		return inlineObjects;
 	}
 
 	/// <summary>

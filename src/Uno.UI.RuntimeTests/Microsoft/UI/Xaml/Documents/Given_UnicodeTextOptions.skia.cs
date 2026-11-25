@@ -373,6 +373,55 @@ public class Given_UnicodeTextOptions
 	}
 
 	[TestMethod]
+	public async Task When_InlineContainer_Placeholder()
+	{
+		var first = new InlineUIContainer();
+		var second = new InlineUIContainer();
+		var measured = new List<InlineUIContainer>();
+		InlineObjectInfo? Measure(InlineUIContainer container)
+		{
+			measured.Add(container);
+			return new InlineObjectInfo(null, null, 90, 50, 40, Microsoft.UI.Text.VerticalCharacterAlignment.Baseline);
+		}
+		var options = new UnicodeTextOptions { InlineContainers = Measure };
+		await WaitForFonts(new Inline[] { R("ab cd") }, 1000);
+
+		// Without the option a container takes no character, as before.
+		var withoutOption = Layout(new Inline[] { R("ab "), first, R(" cd") }, 1000);
+		Assert.AreEqual(1, withoutOption.LineCount);
+		Assert.AreEqual(6, withoutOption.GetLineForTests(0).End);
+
+		// With it, a container is one U+FFFC character as wide as the element, and the line grows to hold it.
+		var textOnly = Layout(new Inline[] { R("ab "), R(" cd") }, 1000).GetLineForTests(0);
+		var line = Layout(new Inline[] { R("ab "), first, R(" cd") }, 1000, options: options).GetLineForTests(0);
+		CollectionAssert.AreEqual(new[] { first }, measured);
+		Assert.AreEqual(7, line.End);
+		var placeholder = line.Clusters.Single(c => c.Start == 3);
+		Assert.AreEqual(4, placeholder.End);
+		Assert.AreEqual(90, placeholder.Width, 0.001);
+		Assert.AreEqual(textOnly.Width + 90, line.Width, 0.001);
+		// Baseline-aligned 40 above and 10 below the baseline.
+		Assert.AreEqual(Math.Max(textOnly.Baseline, 40) + Math.Max(textOnly.Height - textOnly.Baseline, 10), line.Height, 0.001);
+		Assert.AreEqual(Math.Max(textOnly.Baseline, 40), line.Baseline, 0.001);
+
+		// U+FFFC breaks on both sides, even between letters, so the object and the text after it move down whole.
+		var wrapped = Layout(new Inline[] { R("ab"), first, R("cd") }, 100, options: options);
+		CollectionAssert.AreEqual(new[] { 0, 2, 3 }, Enumerable.Range(0, wrapped.LineCount).Select(i => wrapped.GetLineForTests(i).Start).ToArray());
+
+		// A null result is an empty placeholder.
+		var empty = Layout(new Inline[] { R("ab"), first, R("cd") }, 1000, options: new() { InlineContainers = _ => null }).GetLineForTests(0);
+		Assert.AreEqual(0, empty.Clusters.Single(c => c.Start == 2).Width, 0.001);
+
+		// A container before the resume index belongs to a previous layout: it gets an empty placeholder, unmeasured.
+		measured.Clear();
+		var resumed = Layout(new Inline[] { R("ab"), first, R("cd"), second, R("ef") }, 1000, options: options with { ResumeIndex = 5 });
+		CollectionAssert.AreEqual(new[] { second }, measured);
+		Assert.AreEqual(1, resumed.FirstResumedLine);
+		Assert.AreEqual(0, resumed.GetLineForTests(0).Clusters.Single(c => c.Start == 2).Width, 0.001);
+		Assert.AreEqual(90, resumed.GetLineForTests(1).Clusters.Single(c => c.Start == 5).Width, 0.001);
+	}
+
+	[TestMethod]
 	public void When_ResumeIndex_Outside_Text_Throws()
 	{
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => Layout(new Inline[] { R("abc") }, 100, options: new() { ResumeIndex = 4 }));
