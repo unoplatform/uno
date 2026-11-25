@@ -704,7 +704,7 @@ public partial class Given_MediaPlayerElement
 		await WindowHelper.WaitForLoaded(sut, static e => e.IsLoaded);
 		await WindowHelper.WaitForIdle();
 
-		var presenter = sut.FindFirstChild<MediaPlayerPresenter>();
+		var presenter = sut.FindFirstDescendantOrSelf<MediaPlayerPresenter>();
 		Assert.IsNotNull(presenter);
 		Assert.AreEqual(Visibility.Collapsed, presenter.Visibility);
 	}
@@ -724,7 +724,7 @@ public partial class Given_MediaPlayerElement
 			var fullWindowContent = sut.XamlRoot!.VisualTree.FullWindowMediaRoot.Child;
 			Assert.IsNotNull(fullWindowContent);
 
-			var presenter = fullWindowContent.FindFirstChild<MediaPlayerPresenter>();
+			var presenter = fullWindowContent.FindFirstDescendantOrSelf<MediaPlayerPresenter>();
 			Assert.IsNotNull(presenter);
 			Assert.IsTrue(presenter.IsFullWindow);
 		}
@@ -746,7 +746,7 @@ public partial class Given_MediaPlayerElement
 		{
 			WindowHelper.WindowContent = sut;
 			await WindowHelper.WaitForLoaded(sut, static e => e.IsLoaded);
-			await WindowHelper.WaitFor(() => sut.FindFirstChild<MediaPlayerPresenter>()?.Visibility == Visibility.Visible);
+			await WindowHelper.WaitFor(() => sut.FindFirstDescendantOrSelf<MediaPlayerPresenter>()?.Visibility == Visibility.Visible);
 
 			var template = sut.Template;
 			sut.Template = null;
@@ -754,7 +754,7 @@ public partial class Given_MediaPlayerElement
 			sut.ApplyTemplate();
 			await WindowHelper.WaitForIdle();
 
-			var presenter = sut.FindFirstChild<MediaPlayerPresenter>();
+			var presenter = sut.FindFirstDescendantOrSelf<MediaPlayerPresenter>();
 			Assert.IsNotNull(presenter);
 			Assert.AreEqual(Visibility.Visible, presenter.Visibility);
 		}

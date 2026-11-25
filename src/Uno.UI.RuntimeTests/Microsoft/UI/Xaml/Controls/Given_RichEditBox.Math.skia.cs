@@ -280,7 +280,7 @@ public partial class Given_RichEditBox
 
 	private static MathParsedText GetMathLayout(RichEditBox richEditBox, out TextBlock block)
 	{
-		var content = richEditBox.FindFirstChild<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+		var content = richEditBox.FindFirstDescendantOrSelf<ScrollViewer>(viewer => viewer.Name == "ContentElement");
 		block = content?.Content as TextBlock
 			?? throw new AssertFailedException("The RichEditBox DisplayBlock was not found.");
 		return block.ParsedText as MathParsedText

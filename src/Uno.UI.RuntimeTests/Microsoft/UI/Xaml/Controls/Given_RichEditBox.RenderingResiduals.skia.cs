@@ -155,7 +155,7 @@ public partial class Given_RichEditBox
 
 			editor.Document.GetRange(lastIndex, lastIndex + 1).ScrollIntoView(PointOptions.Start);
 			await WindowHelper.WaitForIdle();
-			var scrollViewer = editor.FindFirstChild<ScrollViewer>(static view => view.Name == "ContentElement");
+			var scrollViewer = editor.FindFirstDescendantOrSelf<ScrollViewer>(static view => view.Name == "ContentElement");
 			Assert.IsNotNull(scrollViewer);
 			Assert.IsGreaterThan(scrollViewer.ViewportHeight, scrollViewer.ExtentHeight);
 			Assert.IsGreaterThan(0, scrollViewer.VerticalOffset);

@@ -147,10 +147,10 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 				XamlRoot.Size.Height;
 
 			var applied = _mainListview.ApplyTemplate();
-			_mainScrollViewer = _mainListview.FindFirstChild<Microsoft.UI.Xaml.Controls.ScrollViewer>();
+			_mainScrollViewer = _mainListview.FindFirstDescendantOrSelf<Microsoft.UI.Xaml.Controls.ScrollViewer>();
 			var headerForegroundListView = this.GetTemplateChild(HeaderForegroundName) as Microsoft.UI.Xaml.Controls.ListView;
 			var applied2 = headerForegroundListView.ApplyTemplate();
-			_headerForeground = _headerForeground ?? headerForegroundListView.FindFirstChild<Microsoft.UI.Xaml.Controls.ScrollViewer>();
+			_headerForeground = _headerForeground ?? headerForegroundListView.FindFirstDescendantOrSelf<Microsoft.UI.Xaml.Controls.ScrollViewer>();
 
 			_mainScrollViewer.ViewChanged -= UpdateHeaderPosition;
 			_mainScrollViewer.ViewChanged += UpdateHeaderPosition;

@@ -337,7 +337,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var template = app.Resources["TemplateUsingStaticResourceAlias"] as ControlTemplate;
 			var button = new Button { Template = template };
 			button.Measure(new Size(1000, 1000));
-			var tb = button.FindFirstChild<TextBlock>();
+			var tb = button.FindFirstDescendantOrSelf<TextBlock>();
 			Assert.AreEqual(Colors.MediumSpringGreen, (tb.Foreground as SolidColorBrush).Color);
 		}
 
@@ -370,7 +370,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			app.HostView.Children.Add(page);
 			page.Measure(new Size(1000, 1000));
 
-			var tb = page.TestContentControl.FindFirstChild<TextBlock>();
+			var tb = page.TestContentControl.FindFirstDescendantOrSelf<TextBlock>();
 			Assert.AreEqual("Inner text", tb.Text);
 			AssertEx.AssertHasColor(tb.Foreground, Colors.Tomato);
 		}
@@ -387,7 +387,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			app.HostView.Children.Add(page);
 			page.Measure(new Size(1000, 1000));
 
-			var rb = page.SpiffyItemsControl.FindFirstChild<RadioButton>();
+			var rb = page.SpiffyItemsControl.FindFirstDescendantOrSelf<RadioButton>();
 			AssertEx.AssertHasColor(rb.Foreground, Colors.Plum);
 		}
 
@@ -463,7 +463,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			radioButton.Style = app.Resources["ExplicitRadioButtonStyle2"] as Style;
 			radioButton.ApplyTemplate();
 
-			var ctrl = radioButton.FindFirstChild<MyControl>();
+			var ctrl = radioButton.FindFirstDescendantOrSelf<MyControl>();
 
 			Assert.AreEqual(TimeSpan.FromMilliseconds(400), ctrl.MyInterval);
 		}

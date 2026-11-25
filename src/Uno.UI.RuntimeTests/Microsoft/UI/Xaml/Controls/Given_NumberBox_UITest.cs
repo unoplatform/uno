@@ -30,8 +30,8 @@ public class Given_NumberBox_UITest
 		using var _ = UITestHelper.ResetWindowContent();
 		await UITestHelper.Load(numberBox);
 
-		var upButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "UpSpinButton");
-		var downButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "DownSpinButton");
+		var upButton = numberBox.FindFirstDescendantOrSelf<RepeatButton>(x => x.Name == "UpSpinButton");
+		var downButton = numberBox.FindFirstDescendantOrSelf<RepeatButton>(x => x.Name == "DownSpinButton");
 		Assert.IsNotNull(upButton, "UpSpinButton part should exist when SpinButtonPlacementMode is Inline");
 		Assert.IsNotNull(downButton, "DownSpinButton part should exist when SpinButtonPlacementMode is Inline");
 
@@ -64,8 +64,8 @@ public class Given_NumberBox_UITest
 		using var _ = UITestHelper.ResetWindowContent();
 		await UITestHelper.Load(numberBox);
 
-		var upButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "UpSpinButton");
-		var downButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "DownSpinButton");
+		var upButton = numberBox.FindFirstDescendantOrSelf<RepeatButton>(x => x.Name == "UpSpinButton");
+		var downButton = numberBox.FindFirstDescendantOrSelf<RepeatButton>(x => x.Name == "DownSpinButton");
 		Assert.IsNotNull(upButton);
 		Assert.IsNotNull(downButton);
 
@@ -93,7 +93,7 @@ public class Given_NumberBox_UITest
 		using var _ = UITestHelper.ResetWindowContent();
 		await UITestHelper.Load(numberBox);
 
-		var upButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "UpSpinButton");
+		var upButton = numberBox.FindFirstDescendantOrSelf<RepeatButton>(x => x.Name == "UpSpinButton");
 		Assert.IsNotNull(upButton);
 
 		// Simulates the user having typed "50" without committing it (no Enter/LostFocus yet).
@@ -119,8 +119,8 @@ public class Given_NumberBox_UITest
 		using var _ = UITestHelper.ResetWindowContent();
 		await UITestHelper.Load(numberBox);
 
-		var upButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "UpSpinButton");
-		var downButton = numberBox.FindFirstChild<RepeatButton>(x => x.Name == "DownSpinButton");
+		var upButton = numberBox.FindFirstDescendantOrSelf<RepeatButton>(x => x.Name == "UpSpinButton");
+		var downButton = numberBox.FindFirstDescendantOrSelf<RepeatButton>(x => x.Name == "DownSpinButton");
 		Assert.IsNotNull(upButton);
 		Assert.IsNotNull(downButton);
 

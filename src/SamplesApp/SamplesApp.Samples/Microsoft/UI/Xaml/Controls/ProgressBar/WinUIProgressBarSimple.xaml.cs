@@ -15,7 +15,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.ProgressBar
 
 			Loaded += (snd, evt) =>
 			{
-				var root = Uno.UI.Extensions.DependencyObjectExtensions.FindFirstChild<Grid>(progressBar);
+				var root = Uno.UI.Extensions.DependencyObjectExtensions.FindFirstDescendantOrSelf<Grid>(progressBar);
 				var stateGroups = VisualStateManager.GetVisualStateGroups(root);
 				stateGroups
 					.First()

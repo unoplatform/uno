@@ -137,7 +137,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			TestServices.WindowHelper.WindowContent = parent;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var tb = parent.FindFirstChild<TextBlock>();
+			var tb = parent.FindFirstDescendantOrSelf<TextBlock>();
 
 			Assert.IsNotNull(tb);
 			Assert.AreEqual("Template loaded!", tb.Text);

@@ -635,7 +635,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await TestServices.WindowHelper.WaitForLoaded(presenter);
 
-				var content = presenter.FindFirstChild<ScrollViewer>();
+				var content = presenter.FindFirstDescendantOrSelf<ScrollViewer>();
 
 				VerifyRelativeContentPosition(horizontalPosition, verticalPosition, content, MarginValue, target);
 			}

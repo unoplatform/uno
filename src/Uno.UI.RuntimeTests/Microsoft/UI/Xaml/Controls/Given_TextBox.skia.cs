@@ -9877,10 +9877,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(textBox.Text.Length, textBox.SelectionLength);
 
 			// Wait for the caret popups to appear
-			await WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Where(p => p.Child.FindFirstChild<Microsoft.UI.Xaml.Shapes.Ellipse>() is not null).Any());
+			await WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Where(p => p.Child.FindFirstDescendantOrSelf<Microsoft.UI.Xaml.Shapes.Ellipse>() is not null).Any());
 
 			// Get the caret popups
-			var caretPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Where(p => p.Child.FindFirstChild<Microsoft.UI.Xaml.Shapes.Ellipse>() is not null).ToList();
+			var caretPopups = VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).Where(p => p.Child.FindFirstDescendantOrSelf<Microsoft.UI.Xaml.Shapes.Ellipse>() is not null).ToList();
 			// We should have two caret popups (start and end)
 			Assert.HasCount(2, caretPopups);
 
@@ -9891,7 +9891,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			foreach (var popup in caretPopups)
 			{
-				var ellipse = popup.Child.FindFirstChild<Microsoft.UI.Xaml.Shapes.Ellipse>()!;
+				var ellipse = popup.Child.FindFirstDescendantOrSelf<Microsoft.UI.Xaml.Shapes.Ellipse>()!;
 				Assert.IsNotNull(ellipse);
 
 				// center in local space

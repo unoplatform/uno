@@ -103,39 +103,26 @@ namespace Uno.UI.Extensions
 			=> new VisualTreeEnumerable(obj, childLevelLimit, includeCurrent, mode);
 
 		/// <summary>
-		/// **Recursively** search for the first child of the given type.
+		/// Returns <paramref name="element"/> itself if it is a <typeparamref name="T"/>, otherwise its first descendant of that type, in depth-first order.
 		/// </summary>
-		/// <typeparam name="T">The type of child we are looking for</typeparam>
+		/// <typeparam name="T">The type of element we are looking for</typeparam>
 		/// <param name="element">The element to search from</param>
-		/// <param name="childLevelLimit">The max sub-level to dig into. Cf. Remarks</param>
-		/// <param name="includeCurrent">Determines if the current <paramref name="element"/> should be tested or not.</param>
-		/// <returns>The first found child that is of the given type.</returns>
-		/// <remarks>
-		/// It's always preferable to specify a <paramref name="childLevelLimit"/> in order to not enumerate the full visual tree
-		/// while searching for an element. Note also that enumeration is achieve branch per branch, so no matter how the expected element
-		/// is close to the <paramref name="element"/>, the children branches before it are going to be enumerated.
-		/// </remarks>
-		public static T FindFirstChild<T>(this DependencyObject element, int? childLevelLimit = null, bool includeCurrent = true)
+		/// <returns>The first element found that is of the given type.</returns>
+		public static T FindFirstDescendantOrSelf<T>(this DependencyObject element)
 			where T : DependencyObject
-			=> element.GetAllChildren(childLevelLimit, includeCurrent).OfType<T>().FirstOrDefault();
+			=> element.GetAllChildren(includeCurrent: true).OfType<T>().FirstOrDefault();
 
 		/// <summary>
-		/// **Recursively** search for the first child of the given type that is matching the given predicate.
+		/// Returns <paramref name="element"/> itself if it is a <typeparamref name="T"/> matching <paramref name="predicate"/>,
+		/// otherwise its first descendant that is, in depth-first order.
 		/// </summary>
-		/// <typeparam name="T">The type of child we are looking for</typeparam>
+		/// <typeparam name="T">The type of element we are looking for</typeparam>
 		/// <param name="element">The element to search from</param>
-		/// <param name="predicate">The predicate to use to find the right expected child</param>
-		/// <param name="childLevelLimit">The max sub-level to dig into. Cf. Remarks</param>
-		/// <param name="includeCurrent">Determines if the current <paramref name="element"/> should be tested or not.</param>
-		/// <returns>The first found child that is of the given type.</returns>
-		/// <remarks>
-		/// It's always preferable to specify a <paramref name="childLevelLimit"/> in order to not enumerate the full visual tree
-		/// while searching for an element. Note also that enumeration is achieve branch per branch, so no matter how the expected element
-		/// is close to the <paramref name="element"/>, the children branches before it are going to be enumerated.
-		/// </remarks>
-		public static T FindFirstChild<T>(this DependencyObject element, Func<T, bool> predicate, int? childLevelLimit = null, bool includeCurrent = true)
+		/// <param name="predicate">The predicate the element must match</param>
+		/// <returns>The first element found that is of the given type and matches the predicate.</returns>
+		public static T FindFirstDescendantOrSelf<T>(this DependencyObject element, Func<T, bool> predicate)
 			where T : DependencyObject
-			=> element.GetAllChildren(childLevelLimit, includeCurrent).OfType<T>().FirstOrDefault(predicate);
+			=> element.GetAllChildren(includeCurrent: true).OfType<T>().FirstOrDefault(predicate);
 
 		private class VisualTreeEnumerable : IEnumerable<DependencyObject>
 		{

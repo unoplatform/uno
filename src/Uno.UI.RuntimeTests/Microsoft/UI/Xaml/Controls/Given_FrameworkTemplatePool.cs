@@ -186,9 +186,9 @@ public class Given_FrameworkTemplatePool
 
 		void AssertEditorContents()
 		{
-			var textBox = page.FindFirstChild<TextBox>();
-			var checkBox = page.FindFirstChild<CheckBox>();
-			var toggleSwitch = page.FindFirstChild<ToggleSwitch>();
+			var textBox = page.FindFirstDescendantOrSelf<TextBox>();
+			var checkBox = page.FindFirstDescendantOrSelf<CheckBox>();
+			var toggleSwitch = page.FindFirstDescendantOrSelf<ToggleSwitch>();
 			Assert.IsTrue(vm.Editors.All(e => !string.IsNullOrEmpty(e.Text)));
 			Assert.IsTrue(vm.Editors.All(e => e.IsChecked));
 			Assert.IsTrue(vm.Editors.All(e => e.IsOn));
@@ -211,9 +211,9 @@ public class Given_FrameworkTemplatePool
 			vm.SetNextEditor();
 
 			await WindowHelper.WaitForIdle();
-			await WindowHelper.WaitFor(() => (textBox = page.FindFirstChild<TextBox>()) is not null);
-			await WindowHelper.WaitFor(() => (checkBox = page.FindFirstChild<CheckBox>()) is not null);
-			await WindowHelper.WaitFor(() => (toggleSwitch = page.FindFirstChild<ToggleSwitch>()) is not null);
+			await WindowHelper.WaitFor(() => (textBox = page.FindFirstDescendantOrSelf<TextBox>()) is not null);
+			await WindowHelper.WaitFor(() => (checkBox = page.FindFirstDescendantOrSelf<CheckBox>()) is not null);
+			await WindowHelper.WaitFor(() => (toggleSwitch = page.FindFirstDescendantOrSelf<ToggleSwitch>()) is not null);
 			if (i > vm.Editors.Length - 1)
 			{
 				textBox.Focus(FocusState.Programmatic);

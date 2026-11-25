@@ -375,8 +375,8 @@ public class Given_XamlParseContext_AlcResolution
 
 			await LoadAsync(control, ownerApp);
 
-			var border = control.FindFirstChild<Border>();
-			var button = control.FindFirstChild<Button>();
+			var border = control.FindFirstDescendantOrSelf<Border>();
+			var button = control.FindFirstDescendantOrSelf<Button>();
 			Assert.IsNotNull(border, "Sanity: the template must have been applied.");
 			Assert.IsNotNull(button, "Sanity: the template must have been applied.");
 
