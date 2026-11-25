@@ -229,6 +229,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly TextAlignment _textAlignment;
 	private readonly FontDetails _defaultFontDetails;
 	private readonly List<Line> _lines;
+	private readonly int _firstResumedLine;
 	private readonly float? _endingNewLineLineHeight;
 	private readonly float _endingLineContentTop;
 	private readonly float _endingLineBaselineOffset;
@@ -283,9 +284,11 @@ internal readonly partial struct UnicodeText : IParsedText
 		bool ignoreTrailingCharacterSpacing,
 		out Size calculatedSize,
 		ShapingCache? shapingCache = null,
-		bool suppressEndingNewLineLine = false)
+		bool suppressEndingNewLineLine = false,
+		in UnicodeTextOptions options = default)
 	{
 		CI.Assert(maxLines >= 0);
+		var resumeIndex = options.ResumeIndex;
 		_endingParagraphLayout = endingParagraphLayout;
 		_endingParagraphAlignment = endingParagraphAlignment;
 		_defaultForeground = defaultForeground;
@@ -429,9 +432,14 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		_text = singleInlineText ?? stringBuilder.ToString();
+		if ((uint)resumeIndex > (uint)_text.Length)
+		{
+			ThrowResumeIndexOutsideText(resumeIndex, _text.Length);
+		}
 		if (_text.Length == 0)
 		{
 			_lines = [];
+			_firstResumedLine = 0;
 			_defaultFontDetails = defaultFontDetails;
 			_rtl = flowDirection is FlowDirection.RightToLeft;
 			_textAlignment = textAlignment ?? TextAlignment.Left;
@@ -471,6 +479,15 @@ internal readonly partial struct UnicodeText : IParsedText
 		else
 		{
 			AppendBoundaries(/* Line */ 2, _text, 0, lineOpportunityBreaks);
+		}
+		if (resumeIndex > 0)
+		{
+			// The line before the resume index ends there, as it did in the layout that broke there.
+			var resumeBreak = lineOpportunityBreaks.BinarySearch(resumeIndex);
+			if (resumeBreak < 0)
+			{
+				lineOpportunityBreaks.Insert(~resumeBreak, resumeIndex);
+			}
 		}
 
 		_bidiBreaks = new List<(int end, FlowDirection direction)>();
@@ -637,6 +654,11 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
+		if (resumeIndex > 0 && resumeIndex < _text.Length)
+		{
+			ValidateResumeIndex(_text, clusterBreaks, resumeIndex);
+		}
+
 		Dictionary<int, global::Microsoft.UI.Text.TabLeader>? tabLeaders = null;
 		var lines = new List<Line>();
 		{ // line breaking
@@ -765,7 +787,9 @@ internal readonly partial struct UnicodeText : IParsedText
 						maxHeightFontDetailsInChunkUnderTest = currentClusterBreak.Value.fontDetails;
 					}
 
-					if (textWrapping is TextWrapping.Wrap && chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth > effectiveAvailableWidth)
+					// The text before the resume index was laid out by a previous layout, so it never wraps here.
+					var lineAvailableWidth = resumeIndex > 0 && currentClusterBreak.Value.end <= resumeIndex ? float.PositiveInfinity : effectiveAvailableWidth;
+					if (textWrapping is TextWrapping.Wrap && chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth > lineAvailableWidth)
 					{
 						// The chunk being built can't fit on an empty line on its own — we have to break mid-chunk.
 						// If it can fit on a line, then it will be moved as a whole to the next line during the
@@ -836,7 +860,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					// WinUI can always break after tabs, even in scenarios where ICU doesn't consider it a line break opportunity, so we follow suit
 					if (currentClusterBreak.Value.end == lineOpportunityBreaks[lineOpportunityBreakIndex] || currentClusterBreak.Value.containsTab)
 					{
-						if (lineWidth + chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth > effectiveAvailableWidth)
+						if (lineWidth + chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth > lineAvailableWidth)
 						{
 							if (textWrapping is not TextWrapping.NoWrap && currentLineEnd != -1)
 							{
@@ -886,7 +910,9 @@ internal readonly partial struct UnicodeText : IParsedText
 							}
 						}
 
-						if (IsLineBreak(_text, currentClusterBreak.Value.end))
+						// The text end is flushed below, as the last line.
+						if (IsLineBreak(_text, currentClusterBreak.Value.end)
+							|| (currentClusterBreak.Value.end == resumeIndex && resumeIndex < _text.Length))
 						{
 							var (h, b) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine, lines.Count == 0, false);
 							lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast, lineWidth, lineWidthWithoutTrailingSpaces, h, b));
@@ -932,6 +958,12 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		ApplyParagraphJustification(lines, _text, (float)availableSize.Width, textAlignment!.Value);
 
+		var firstResumedLine = 0;
+		while (resumeIndex > 0 && firstResumedLine < lines.Count && lines[firstResumedLine].start < resumeIndex)
+		{
+			firstResumedLine++;
+		}
+
 		var textEndsInLineBreak = IsLineBreak(_text, _text.Length);
 		// Lines that do not fit the available height are dropped below, so the height only matters past one line.
 		_layoutUsesAvailableHeight = lines.Count + (textEndsInLineBreak ? 1 : 0) > 1;
@@ -964,7 +996,9 @@ internal readonly partial struct UnicodeText : IParsedText
 					- GetParagraphLeftInset(trimPl, line.isFirstLineOfParagraph)
 					- GetParagraphRightInset(trimPl, line.isFirstLineOfParagraph))
 				: (float)availableSize.Width;
-			if (textTrimming is TextTrimming.CharacterEllipsis or TextTrimming.WordEllipsis && (line.widthWithoutTrailingSpaces > trimAvailableWidth || isEarlyLastLine))
+			if (textTrimming is TextTrimming.CharacterEllipsis or TextTrimming.WordEllipsis
+				&& lineIndex >= firstResumedLine // the unwrapped lines of a previous layout
+				&& (line.widthWithoutTrailingSpaces > trimAvailableWidth || isEarlyLastLine))
 			{
 				IEnumerable<LinkedListNode<Cluster>> possibleTrimPoints;
 				if (textTrimming is TextTrimming.WordEllipsis)
@@ -1247,6 +1281,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		_lines = lines;
+		_firstResumedLine = Math.Min(firstResumedLine, lines.Count);
 		_markerShapes = markerShapes;
 		_inlineObjects = inlineObjects;
 		_tabLeaders = tabLeaders;
@@ -1283,6 +1318,32 @@ internal readonly partial struct UnicodeText : IParsedText
 	internal bool IsLayoutValidFor(Size availableSize)
 		=> (!_layoutUsesAvailableWidth || availableSize.Width == _availableSize.Width)
 		&& (!_layoutUsesAvailableHeight || availableSize.Height == _availableSize.Height);
+
+	// The option checks throw from these helpers, which keep the throws out of the constructor: as it grows, its loops
+	// get slower.
+	private static void ThrowResumeIndexOutsideText(int resumeIndex, int length)
+		=> throw new ArgumentOutOfRangeException("options", $"{nameof(UnicodeTextOptions.ResumeIndex)} {resumeIndex} is outside the text (length {length}).");
+
+	// A previous layout never starts a line inside a cluster, or between the two halves of a CRLF.
+	private static void ValidateResumeIndex(string text, LinkedList<Cluster> clusters, int resumeIndex)
+	{
+		if (!IsClusterEnd(clusters, resumeIndex) || (text[resumeIndex - 1] == '\r' && text[resumeIndex] == '\n'))
+		{
+			throw new ArgumentException($"{nameof(UnicodeTextOptions.ResumeIndex)} {resumeIndex} is inside a cluster or a line break; a layout resumes only where a line can start.", "options");
+		}
+	}
+
+	private static bool IsClusterEnd(LinkedList<Cluster> clusters, int index)
+	{
+		for (var node = clusters.First; node is not null && node.Value.start < index; node = node.Next)
+		{
+			if (node.Value.end == index)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
 	// Printable ASCII (plus tab) has no mandatory line breaks and needs no ICU break analysis for NoWrap text.
 	private static bool IsAsciiWithoutLineBreaks(string text)
@@ -2865,6 +2926,43 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	public bool IsBaseDirectionRightToLeft => _rtl;
+
+	/// <summary>The first line at or after <see cref="UnicodeTextOptions.ResumeIndex"/>; the line count when none is.</summary>
+	internal int FirstResumedLine => _firstResumedLine;
+
+	internal int LineCount => _lines.Count;
+
+	internal readonly record struct ClusterForTests(int Start, int End, bool RightToLeft, float X, float Width, ushort[] Glyphs);
+
+	internal readonly record struct LineForTests(int Start, int End, float Width, float WidthWithoutTrailingSpaces, float Height, float Baseline, bool HasEllipsis, ClusterForTests[] Clusters);
+
+	// A line's clusters in visual order, with their x in the layout's coordinates.
+	internal LineForTests GetLineForTests(int lineIndex)
+	{
+		var line = _lines[lineIndex];
+		var alignmentOffset = GetAlignmentOffsetForLine(line);
+		var clusters = new List<ClusterForTests>();
+		var x = alignmentOffset;
+		for (var node = line.clusterStart; ; node = node.Next!)
+		{
+			var glyphs = new List<ushort>();
+			for (var glyph = node.Value.glyphStart; ; glyph = glyph.Next!)
+			{
+				glyphs.Add(glyph.Value.GlyphId);
+				if (glyph == node.Value.glyphLast)
+				{
+					break;
+				}
+			}
+			clusters.Add(new(node.Value.start, node.Value.end, node.Value.rtl, x, node.Value.width, glyphs.ToArray()));
+			x += node.Value.width;
+			if (node == line.clusterLast)
+			{
+				break;
+			}
+		}
+		return new(line.start, line.end, line.width, line.widthWithoutTrailingSpaces, line.lineHeight, line.baselineOffset, line.hasEllipsis, clusters.ToArray());
+	}
 
 	// The alignment the layout used, relative to the FlowDirection it was laid out with (Left = start):
 	// a default-aligned TextBox gets one from its content's direction.
