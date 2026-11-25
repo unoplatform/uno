@@ -262,11 +262,11 @@
 			"type": "bool"
 		},
 		"UnoDisableHotTesting": {
-			"description": "When set to true, the Uno.Sdk will not implicitly reference Uno.HotTesting (HotTesting feature) or Uno.HotTesting.Reactive (MVUX feature) in non-optimized builds, and does not exclude the Hot Testing tests folder from optimized builds.",
+			"description": "When set to true, the Uno.Sdk will not implicitly reference Uno.HotTesting (HotTesting feature) or Uno.HotTesting.Reactive (MVUX feature) in non-optimized builds. The Hot Testing tests folder is then left out of every build.",
 			"type": "bool"
 		},
 		"HotTestingTestsFolder": {
-			"description": "The project folder that holds the app's Hot Testing tests. It is left out of optimized builds. Defaults to Tests when the HotTesting feature is enabled.",
+			"description": "The project folder that holds the app's Hot Testing tests. It is left out of optimized builds, and of every build when UnoDisableHotTesting is true. Defaults to Tests when the HotTesting feature is enabled.",
 			"type": "string"
 		},
 		"UnoCoreLoggingSingletonVersion": {
