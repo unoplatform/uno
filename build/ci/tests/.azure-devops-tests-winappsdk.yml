@@ -214,6 +214,15 @@ jobs:
       failTaskOnMissingResultsFile: true
 
   - task: PublishBuildArtifacts@1
+    condition: failed()
+    displayName: Publish crash dumps and app output
+    continueOnError: true
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/winui-crash-dumps
+      ArtifactName: runtime-tests-winappsdk-crash
+      ArtifactType: Container
+
+  - task: PublishBuildArtifacts@1
     condition: always()
     displayName: Publish Failed Tests Results
     retryCountOnTaskFailure: 3
