@@ -832,6 +832,25 @@ public class Given_BindingExpression
 	[TestMethod]
 	[RunsOnUIThread]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19420")]
+	public async Task When_ElementName_Code_Name_Changed_Before_Enter()
+	{
+		var renamed = new TextBlock { Name = "NameBeforeRename", Text = "renamed" };
+		var root = new StackPanel { Children = { renamed } };
+
+		// The parent isn't live yet, so nothing is registered; the current name is used once the tree is entered.
+		renamed.Name = "NameAfterRename";
+		await UITestHelper.Load(root, x => x.IsLoaded);
+
+		var newName = await AddElementNameTarget(root, "NameAfterRename");
+		var oldName = await AddElementNameTarget(root, "NameBeforeRename");
+
+		Assert.AreEqual("renamed", newName.Text);
+		Assert.AreEqual("", oldName.Text);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19420")]
 	public async Task When_ElementName_Targets_A_Template_Part_From_Outside()
 	{
 		var button = new Button { Content = "button" };
