@@ -352,6 +352,7 @@
 			"Uno.Extensions.Http.WinUI",
 			"Uno.Extensions.Http.Refit",
 			"Uno.Extensions.Http.Kiota",
+			"Uno.Extensions.Aspire",
 			"Uno.Extensions.Localization.WinUI",
 			"Uno.Extensions.Logging.WinUI",
 			"Uno.Extensions.Maui.WinUI",
