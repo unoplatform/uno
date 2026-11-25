@@ -19,8 +19,10 @@ public class Given_BrowserPointerInputSource
 	// enums in BrowserPointerInputSource, which themselves match the DOM PointerEvent contract.
 	private const int PointerDown = 1 << 2;
 	private const int PointerUp = 1 << 3;
+	private const int ButtonsLeft = 1; // left button or touch contact
 	private const int ButtonsX1 = 8; // back button held
 	private const int ButtonsX2 = 16; // forward button held
+	private const int UpdateLeft = 0; // left button or touch contact updated
 	private const int UpdateX1 = 3; // back button updated
 	private const int UpdateX2 = 4; // forward button updated
 
@@ -33,12 +35,29 @@ public class Given_BrowserPointerInputSource
 	[DataRow(PointerUp, 0, UpdateX1, PointerUpdateKind.XButton1Released, DisplayName = "Back button up => XButton1Released")]
 	public void When_XButton_Then_Reports_Matching_UpdateKind(int @event, int buttons, int buttonUpdate, PointerUpdateKind expected)
 	{
-		var actual = RaiseNativePointerEvent((byte)@event, buttons, buttonUpdate);
+		var args = RaiseNativePointerEvent((byte)@event, buttons, buttonUpdate, Windows.Devices.Input.PointerDeviceType.Mouse, pointerId: 1);
 
-		Assert.AreEqual(expected, actual);
+		Assert.AreEqual(expected, args.CurrentPoint.Properties.PointerUpdateKind);
 	}
 
-	private static PointerUpdateKind RaiseNativePointerEvent(byte @event, int buttons, int buttonUpdate)
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Wasm)]
+	public void When_Touch_PointerIds_Are_Negative_Then_Each_Touch_Is_A_Distinct_Pointer()
+	{
+		// Safari 27 on iPadOS gives each touch a large negative pointerId, one more than the previous touch.
+		const double firstTouch = -972113959;
+		const double secondTouch = -972113958;
+		const Windows.Devices.Input.PointerDeviceType touch = Windows.Devices.Input.PointerDeviceType.Touch;
+
+		var firstDown = RaiseNativePointerEvent(PointerDown, ButtonsLeft, UpdateLeft, touch, firstTouch);
+		var secondDown = RaiseNativePointerEvent(PointerDown, ButtonsLeft, UpdateLeft, touch, secondTouch);
+		var firstUp = RaiseNativePointerEvent(PointerUp, 0, UpdateLeft, touch, firstTouch);
+
+		Assert.AreNotEqual(firstDown.CurrentPoint.PointerId, secondDown.CurrentPoint.PointerId, "Both touches were reported as the same pointer.");
+		Assert.AreEqual(firstDown.CurrentPoint.PointerId, firstUp.CurrentPoint.PointerId, "The touch changed pointer between down and up.");
+	}
+
+	private static PointerEventArgs RaiseNativePointerEvent(byte @event, int buttons, int buttonUpdate, Windows.Devices.Input.PointerDeviceType deviceType, double pointerId)
 	{
 		var type =
 			Type.GetType("Uno.UI.Runtime.BrowserPointerInputSource, Uno.UI")
@@ -65,8 +84,8 @@ public class Given_BrowserPointerInputSource
 				source,
 				@event,
 				/* timestamp */ 0d,
-				/* deviceType */ (int)Windows.Devices.Input.PointerDeviceType.Mouse,
-				/* pointerId */ 1d,
+				(int)deviceType,
+				pointerId,
 				/* x */ 0d,
 				/* y */ 0d,
 				/* ctrl */ false,
@@ -87,6 +106,6 @@ public class Given_BrowserPointerInputSource
 
 		Assert.IsNotNull(captured, "BrowserPointerInputSource did not raise a pointer event.");
 
-		return captured!.CurrentPoint.Properties.PointerUpdateKind;
+		return captured!;
 	}
 }
