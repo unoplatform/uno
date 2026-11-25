@@ -15,9 +15,7 @@ using System.Runtime.InteropServices;
 using System.Diagnostics;
 using Windows.ApplicationModel.UserDataTasks.DataProvider;
 
-#if WINAPPSDK
 using Uno.UI.Extensions;
-#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 

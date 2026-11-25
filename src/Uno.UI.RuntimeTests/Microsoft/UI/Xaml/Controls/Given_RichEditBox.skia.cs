@@ -25,6 +25,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Streams;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
+using Uno.UI.Extensions;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls

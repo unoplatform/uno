@@ -10,9 +10,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.Globalization.NumberFormatting;
 using static Private.Infrastructure.TestServices;
 
-#if WINAPPSDK
 using Uno.UI.Extensions;
-#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 

@@ -2,6 +2,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 using Windows.UI.Core;
 using Uno.UI.Samples.Controls;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 {

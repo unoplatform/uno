@@ -15,6 +15,7 @@ using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.DevTools.Input;
+using Uno.UI.Extensions;
 
 using TabView = Microsoft.UI.Xaml.Controls.TabView;
 using TabViewItem = Microsoft.UI.Xaml.Controls.TabViewItem;

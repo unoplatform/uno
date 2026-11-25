@@ -33,6 +33,7 @@ using Windows.UI.ViewManagement;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Xaml.Controls.Extensions;
+using Uno.UI.Extensions;
 using static Private.Infrastructure.TestServices;
 using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper;
 using Color = Windows.UI.Color;

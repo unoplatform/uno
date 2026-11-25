@@ -21,6 +21,7 @@ using SwipeControl = Microsoft.UI.Xaml.Controls.SwipeControl;
 using SwipeMode = Microsoft.UI.Xaml.Controls.SwipeMode;
 using Uno.UI.Tests.Helpers;
 using System.Numerics;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {

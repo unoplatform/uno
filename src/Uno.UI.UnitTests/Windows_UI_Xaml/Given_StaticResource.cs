@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {

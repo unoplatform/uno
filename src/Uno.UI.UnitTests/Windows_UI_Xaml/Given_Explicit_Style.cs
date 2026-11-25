@@ -12,6 +12,7 @@ using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {

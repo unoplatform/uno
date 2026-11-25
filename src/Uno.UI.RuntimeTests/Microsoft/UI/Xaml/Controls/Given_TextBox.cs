@@ -27,9 +27,8 @@ using Combinatorial.MSTest;
 
 using Colors = Microsoft.UI.Colors;
 
-#if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __SKIA__
+#if __SKIA__
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
 #endif

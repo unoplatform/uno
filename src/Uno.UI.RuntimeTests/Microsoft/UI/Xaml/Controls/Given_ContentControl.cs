@@ -14,9 +14,7 @@ using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows_UI_Xaml_Controls;
 using static Private.Infrastructure.TestServices;
-#if WINAPPSDK
 using Uno.UI.Extensions;
-#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {

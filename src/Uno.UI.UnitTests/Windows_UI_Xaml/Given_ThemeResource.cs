@@ -15,6 +15,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using AwesomeAssertions.Execution;
 using Microsoft.UI.Xaml.Shapes;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
@@ -654,7 +655,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var app = UnitTestsApp.App.EnsureApplication();
 			app.HostView.Children.Add(page);
 
-			var tb = ViewExtensions.FindFirstChild<TextBlock>(page.SubjectToggleButton);
+			var tb = page.SubjectToggleButton.FindFirstChild<TextBlock>();
 			AssertEx.AssertHasColor(tb.Foreground, Colors.Black);
 			Assert.AreEqual(DependencyPropertyValuePrecedences.Animations, tb.GetCurrentHighestValuePrecedence(TextBlock.ForegroundProperty));
 
@@ -684,7 +685,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var app = UnitTestsApp.App.EnsureApplication();
 			app.HostView.Children.Add(page);
 
-			var ellipse = ViewExtensions.FindFirstChild<Ellipse>(page.SubjectToggleButton);
+			var ellipse = page.SubjectToggleButton.FindFirstChild<Ellipse>();
 
 			AssertEx.AssertHasColor(ellipse.Stroke, Colors.DarkGreen);
 

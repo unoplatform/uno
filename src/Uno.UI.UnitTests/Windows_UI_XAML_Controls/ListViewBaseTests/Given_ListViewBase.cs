@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Uno.UI.Helpers;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Tests.ListViewBaseTests
 {

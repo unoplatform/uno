@@ -12,11 +12,7 @@ using Microsoft.UI;
 using Windows.UI;
 using AwesomeAssertions.Execution;
 using Microsoft.UI.Xaml.Markup;
-#if WINAPPSDK
 using Uno.UI.Extensions;
-#else
-using Uno.UI;
-#endif
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
