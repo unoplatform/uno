@@ -421,6 +421,140 @@ public class Given_UnicodeTextOptions
 		Assert.AreEqual(90, resumed.GetLineForTests(1).Clusters.Single(c => c.Start == 5).Width, 0.001);
 	}
 
+	// Every cluster of every line, read back through the line API: hits on each half, caret x, caret stops, bounds.
+	private static void AssertLineApiRoundTrips(UnicodeText layout, string context)
+	{
+		for (var lineIndex = 0; lineIndex < layout.LineCount; lineIndex++)
+		{
+			var line = layout.GetLineForTests(lineIndex);
+			var info = layout.GetLineInfo(lineIndex);
+			var at = $"{context}, line {lineIndex}";
+			Assert.AreEqual(line.Start, info.Start, $"{at}: start");
+			Assert.AreEqual(line.End, info.End, $"{at}: end");
+			Assert.AreEqual(line.WidthWithoutTrailingSpaces, info.Width, 0.001, $"{at}: width");
+			Assert.AreEqual(line.Width, info.WidthIncludingTrailingWhitespace, 0.001, $"{at}: width with trailing whitespace");
+			Assert.AreEqual(line.Height, info.Height, 0.001, $"{at}: height");
+			Assert.AreEqual(line.Baseline, info.Baseline, 0.001, $"{at}: baseline");
+			Assert.AreEqual(line.Clusters[0].X, info.AlignmentOffset, 0.001, $"{at}: alignment offset");
+			// The content starts after the trailing whitespace, which is on the left of a right-to-left line.
+			var trailingWhitespaceWidth = line.Clusters.Where(c => c.Start >= line.End - info.NewlineLength - info.TrailingWhitespaceLength).Sum(c => c.Width);
+			Assert.AreEqual(info.AlignmentOffset + (info.RightToLeft ? trailingWhitespaceWidth : 0), info.X0, 0.01, $"{at}: x0");
+
+			var contentEnd = info.End - info.NewlineLength;
+			foreach (var cluster in line.Clusters)
+			{
+				if (cluster.Start >= contentEnd)
+				{
+					continue; // the line break
+				}
+
+				var c = $"{at}, cluster [{cluster.Start},{cluster.End})";
+				var leading = cluster.RightToLeft ? cluster.X + cluster.Width : cluster.X;
+				var trailing = cluster.RightToLeft ? cluster.X : cluster.X + cluster.Width;
+				Assert.AreEqual((cluster.Start, cluster.End), layout.GetCaretStop(cluster.Start), $"{c}: caret stop");
+				Assert.AreEqual(leading, layout.GetCaretX(lineIndex, cluster.Start), 0.01, $"{c}: caret x");
+				Assert.AreEqual((cluster.Start, 0), layout.HitTestLine(lineIndex, leading + (trailing - leading) / 4), $"{c}: hit on the leading half");
+				Assert.AreEqual((cluster.Start, cluster.End - cluster.Start), layout.HitTestLine(lineIndex, trailing - (trailing - leading) / 4), $"{c}: hit on the trailing half");
+				var span = layout.GetRangeBoundsInLine(lineIndex, cluster.Start, cluster.End).Single();
+				Assert.AreEqual(cluster.X, span.Left, 0.01, $"{c}: bounds left");
+				Assert.AreEqual(cluster.X + cluster.Width, span.Right, 0.01, $"{c}: bounds right");
+				Assert.AreEqual(cluster.RightToLeft, span.RightToLeft, $"{c}: bounds direction");
+			}
+
+			// The whole line: one span per direction run, in visual order.
+			var spans = layout.GetRangeBoundsInLine(lineIndex, info.Start, info.End);
+			var runs = 1 + Enumerable.Range(1, line.Clusters.Length - 1).Count(i => line.Clusters[i].RightToLeft != line.Clusters[i - 1].RightToLeft);
+			Assert.AreEqual(runs, spans.Count, $"{at}: spans");
+			Assert.AreEqual(line.Clusters[0].X, spans[0].Left, 0.01, $"{at}: first span");
+			Assert.AreEqual(line.Clusters[^1].X + line.Clusters[^1].Width, spans[^1].Right, 0.01, $"{at}: last span");
+
+			// Beside the line: its start on the side the text flows from, the end of its content on the other.
+			var last = line.Clusters.Single(c => c.Start < contentEnd && c.End >= contentEnd);
+			var startHit = (info.Start, 0);
+			var endHit = (last.Start, contentEnd - last.Start);
+			Assert.AreEqual(info.RightToLeft ? endHit : startHit, layout.HitTestLine(lineIndex, info.AlignmentOffset - 5), $"{at}: hit left of the line");
+			Assert.AreEqual(info.RightToLeft ? startHit : endHit, layout.HitTestLine(lineIndex, info.AlignmentOffset + info.WidthIncludingTrailingWhitespace + 5), $"{at}: hit right of the line");
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Line_API_Round_Trips()
+	{
+		var container = new InlineUIContainer();
+		var inlines = new Inline[] { R("The quick brown fox jumps "), container, R(" over the lazy dog\nand a second paragraph") };
+		var options = new UnicodeTextOptions
+		{
+			// Mostly below the baseline, so its top isn't the line's.
+			InlineContainers = _ => new InlineObjectInfo(null, null, 90, 50, 10, Microsoft.UI.Text.VerticalCharacterAlignment.Baseline),
+		};
+		await WaitForFonts(inlines, 160);
+
+		var layout = Layout(inlines, 160, options: options);
+		Assert.IsTrue(layout.LineCount >= 4);
+		AssertLineApiRoundTrips(layout, "LTR");
+
+		// The object: its bounds sit on the baseline, and a hit on its right half is past it (N9).
+		var objectIndex = 26;
+		var objectLine = Enumerable.Range(0, layout.LineCount).Single(i => layout.GetLineForTests(i).Clusters.Any(c => c.Start == objectIndex));
+		var objectCluster = layout.GetLineForTests(objectLine).Clusters.Single(c => c.Start == objectIndex);
+		var info = layout.GetLineInfo(objectLine);
+		var (index, bounds) = layout.GetInlineObjectsInLine(objectLine).Single();
+		Assert.AreEqual(objectIndex, index);
+		Assert.IsTrue(info.Baseline > 10);
+		Assert.AreEqual(new Rect(objectCluster.X, info.Top + info.Baseline - 10, 90, 50), bounds);
+		Assert.AreEqual((objectIndex, 1), layout.HitTestLine(objectLine, objectCluster.X + 60));
+		Assert.IsTrue(Enumerable.Range(0, layout.LineCount).All(i => i == objectLine || layout.GetInlineObjectsInLine(i).Count == 0), "Only one line has an object.");
+
+		// The ending line after a trailing line break.
+		var ending = Layout(new Inline[] { R("abc"), new LineBreak() }, 160);
+		var endingInfo = ending.GetLineInfo(1);
+		Assert.IsTrue(endingInfo.IsEndingLine);
+		Assert.AreEqual(4, endingInfo.Start);
+		Assert.AreEqual((4, 0), ending.HitTestLine(1, 50));
+		Assert.AreEqual(ending.GetVisualLine(1).Bounds.Top, endingInfo.Top, 0.001);
+	}
+
+	[TestMethod]
+	public async Task When_Line_Reports_Trailing_Whitespace_And_Line_Break()
+	{
+		// As TextLine reports them: the whitespace after the last other character, then the line break.
+		var inlines = new Inline[] { R("abc  "), new LineBreak(), R("de \r\nf ") };
+		await WaitForFonts(inlines, 500);
+		var layout = Layout(inlines, 500);
+		var lines = Enumerable.Range(0, layout.LineCount).Select(layout.GetLineInfo).ToArray();
+		Assert.AreEqual("0-6 2+1, 6-11 1+2, 11-13 1+0", string.Join(", ", lines.Select(l => $"{l.Start}-{l.End} {l.TrailingWhitespaceLength}+{l.NewlineLength}")));
+
+		// A wrapped line keeps the space it wrapped after, and has no line break.
+		var wrapped = Layout(new Inline[] { R("aaaa bbbbbbbbbbbbbbbbbbbb") }, 70).GetLineInfo(0);
+		Assert.AreEqual((5, 1, 0), (wrapped.End, wrapped.TrailingWhitespaceLength, wrapped.NewlineLength));
+
+		// An ellipsis ends what the line shows, so the trimmed-away spaces after it don't count.
+		var trimmed = Layout(new Inline[] { R("aaaa bbbb cccc dddd   ") }, 60, trimming: TextTrimming.CharacterEllipsis, wrapping: TextWrapping.NoWrap).GetLineInfo(0);
+		Assert.IsTrue(trimmed.HasEllipsis);
+		Assert.AreEqual(0, trimmed.TrailingWhitespaceLength);
+	}
+
+	[TestMethod]
+	[DataRow("RTL")]
+	[DataRow("Mixed")]
+	[DataRow("Differing run")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)] // Needs a Hebrew fallback font.
+	public async Task When_Line_API_Round_Trips_Bidi(string row)
+	{
+		var (inlines, flowDirection) = row switch
+		{
+			"RTL" => (new Inline[] { R(Hebrew + " 123 " + Hebrew + "  ") }, FlowDirection.RightToLeft),
+			"Mixed" => (new Inline[] { R("Uno Platform 7.0 \u05E9\u05DC\u05D5\u05DD 42 world, \u05E2\u05D5\u05DC\u05DD and 1234 more text \u05D0\u05D1\u05D2.") }, FlowDirection.LeftToRight),
+			"Differing run" => (new Inline[] { R("Start of the paragraph "), R("\u05E9\u05DC\u05D5\u05DD world 42, \u05E2\u05D5\u05DC\u05DD again", FlowDirection.RightToLeft), R(" and the end") }, FlowDirection.LeftToRight),
+			_ => throw new ArgumentOutOfRangeException(nameof(row)),
+		};
+		await WaitForFonts(inlines, 130, flowDirection);
+
+		var layout = Layout(inlines, 130, flowDirection);
+		Assert.IsTrue(layout.LineCount >= 3);
+		AssertLineApiRoundTrips(layout, row);
+	}
+
 	[TestMethod]
 	public void When_ResumeIndex_Outside_Text_Throws()
 	{
