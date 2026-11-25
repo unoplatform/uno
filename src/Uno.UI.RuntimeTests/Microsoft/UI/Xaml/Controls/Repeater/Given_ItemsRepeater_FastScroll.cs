@@ -210,6 +210,8 @@ public class Given_ItemsRepeater_FastScroll
 	}
 
 	[TestMethod]
+	// Intermittently kills the WinAppSDK app with an unhandled LayoutCycleException or COMException (Element not found).
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ScrolledThroughList_Then_ExtentAccommodatesRealContent()
 	{
 		// The pre-fix symptom: the clamp caused StackLayout to report an ExtentHeight smaller than
