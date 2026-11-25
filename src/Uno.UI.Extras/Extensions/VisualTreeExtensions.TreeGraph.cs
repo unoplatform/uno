@@ -212,7 +212,7 @@ public static partial class VisualTreeExtensions
 		foreach (var detail in DescribeSpacing(x)) yield return detail;
 		foreach (var detail in DescribeOpacityAndVisibility(x)) yield return detail;
 
-		if (x is Control control && GetCurrentVisualStates(control) is { } states) yield return $"VisualStates={states}";
+		if (GetCurrentVisualStates(x as Control) is { } states) yield return $"VisualStates={states}";
 	}
 
 	private static IEnumerable<string> DescribeSpacing(object x)
@@ -240,9 +240,10 @@ public static partial class VisualTreeExtensions
 	}
 
 	// "CommonStates=PointerOver|FocusStates=Unfocused", read from the visual state groups of the control's template root.
-	private static string? GetCurrentVisualStates(Control control)
+	private static string? GetCurrentVisualStates(Control? control)
 	{
-		return VisualTreeHelper.GetChildrenCount(control) > 0
+		return control is not null
+			&& VisualTreeHelper.GetChildrenCount(control) > 0
 			&& VisualTreeHelper.GetChild(control, 0) is FrameworkElement root
 			&& VisualStateManager.GetVisualStateGroups(root) is { Count: > 0 } groups
 			? string.Join("|", groups.Select(group => $"{group.Name}={group.CurrentState?.Name}"))
