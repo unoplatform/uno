@@ -98,21 +98,15 @@ The `Private.Infrastructure.TestServices.WindowHelper` class exposes several sta
 - `Task WindowHelper.WaitForIdle()`: returns a task that will complete when the idle dispatcher is raised, roughly indicating that the UI thread 'isn't doing anything'. Await this to wait for the UI thread to 'settle' without a specific condition.
 - `Task WindowHelper.WaitFor(Func<bool> condition)`: returns a task that will complete once `condition` is met, or throw an exception if it times out. Await this to wait for the UI to reach a specific expected state.
 
-#### Useful methods coming from `Uno.UI` itself
+#### Visual tree helpers
 
- The `FindFirstChild<T>` and `FindFirstParent<T>` extension methods are helpful in the common case that you want to retrieve a descendant or ancestor element by traversing the visual tree. They optionally take a condition to be met.
+The `FindFirstDescendant<T>` and `FindFirstAncestor<T>` extension methods are helpful in the common case that you want to retrieve a descendant or ancestor element by traversing the visual tree. They optionally take a condition to be met, and `FindFirstDescendantOrThrow<T>` and `FindFirstAncestorOrThrow<T>` fail the test when nothing matches. They're in the `Uno.UI.Extensions.VisualTreeExtensions` class, which ships in `Uno.UI.Extras` and is available on every target, WinAppSDK included:
 
- Note that for Android/iOS/macOS, the versions of the methods that allow native views to be traversed and retrieved are located in different namespaces. The complete set of usings to conditionally include is:
-
- ```csharp
- #if NETFX_CORE
+```csharp
 using Uno.UI.Extensions;
-#elif __APPLE_UIKIT__
-using UIKit;
-#else
-using Uno.UI;
-#endif
- ```
+```
+
+The same class has `TreeGraph()`, which dumps the visual tree below an element; it helps when a lookup doesn't find what you expect. See [Inspecting the runtime visual tree](xref:Uno.Contributing.InspectVisualTree).
 
 ### Other tips
 
@@ -130,7 +124,7 @@ We create a new items source, then create a `ListView` and assign its `ItemsSour
 
 We call `await WindowHelper.WaitForIdle()` to wait for the newly-added visual trees to be loaded, measured and arranged. (We could also have used the `WindowHelper.WaitForLoaded()` method here.)
 
-In this test we want to check that the item containers inside the list have been properly measured and arranged. We use the `ContainerFromItem()` method to get each container; we wrap it inside a `WaitFor()` check because, on some platforms, it takes a few UI loops for the list to materialize its items. Another way to get the containers would have been to use `FindFirstChild<ListViewItem>()` and an appropriate predicate.
+In this test we want to check that the item containers inside the list have been properly measured and arranged. We use the `ContainerFromItem()` method to get each container; we wrap it inside a `WaitFor()` check because, on some platforms, it takes a few UI loops for the list to materialize its items. Another way to get the containers would have been to use `FindFirstDescendant<ListViewItem>()` and an appropriate predicate.
 
 Finally we assert that the `ActualWidth` of each container is what we expect, and the `ActualWidth` of the list itself for good measure.
 
