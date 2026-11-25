@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Threading;
 using Uno.Foundation.Logging;
 
@@ -29,10 +30,14 @@ internal sealed class SettingsFile
 	private static readonly TimeSpan _staleTemporaryFileAge = TimeSpan.FromMinutes(10);
 	private const int Attempts = 5;
 
+	// The encoding BinaryWriter uses by default.
+	private static readonly UTF8Encoding _encoding = new(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
+
 	private readonly object _gate = new();
 	private readonly TimeSpan _writeLockTimeout;
 	private readonly string _path;
 	private readonly string _lockPath;
+	private readonly Action<string, string> _moveFile;
 
 	// What is on disk as of the last read or write, and the changes this process could not save yet. Values is the
 	// first with the second applied, so a change that could not be written stays visible here until it is.
@@ -43,17 +48,19 @@ internal sealed class SettingsFile
 	private Stamp? _diskStamp;
 	private DateTime _diskReadAt;
 	private bool _temporaryFilesSwept;
+	private bool _renamesRefused;
 
 	private readonly record struct Stamp(DateTime LastWrite, long Length);
 
 	/// <summary>A key set (Value not null), a key removed (Value null), or every key removed (Key null).</summary>
 	private readonly record struct Change(string? Key, string? Value);
 
-	internal SettingsFile(string path, TimeSpan? writeLockTimeout = null)
+	internal SettingsFile(string path, TimeSpan? writeLockTimeout = null, Action<string, string>? moveFile = null)
 	{
 		_path = path;
 		_writeLockTimeout = writeLockTimeout ?? TimeSpan.FromSeconds(5);
 		_lockPath = path + ".lock";
+		_moveFile = moveFile ?? ((source, destination) => File.Move(source, destination, overwrite: true));
 
 		lock (_gate)
 		{
@@ -203,7 +210,7 @@ internal sealed class SettingsFile
 
 				try
 				{
-					File.Move(_path, _path + ".corrupt", overwrite: true);
+					SetDamagedFileAside();
 				}
 				catch (Exception moveError)
 				{
@@ -292,45 +299,120 @@ internal sealed class SettingsFile
 				// replace fail for a moment.
 				Thread.Sleep(20 * attempt);
 			}
+			catch (UnauthorizedAccessException e) when (!_renamesRefused)
+			{
+				return TryWriteInPlace(values, e);
+			}
 			catch (Exception e)
 			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"Failed to write settings to {_path}; the change is kept in memory and saved on a later write", e);
-				}
-
+				LogWriteFailure(e);
 				return false;
 			}
 		}
 	}
 
+	/// <summary>Writes the file in place after a rename kept being refused, and keeps doing so if that works.</summary>
+	private bool TryWriteInPlace(Dictionary<string, string> values, UnauthorizedAccessException renameError)
+	{
+		try
+		{
+			WriteInPlace(values);
+		}
+		catch (Exception e)
+		{
+			LogWriteFailure(new AggregateException(renameError, e));
+			return false;
+		}
+
+		NoteRenamesRefused(renameError);
+		return true;
+	}
+
+	private void LogWriteFailure(Exception e)
+	{
+		if (this.Log().IsEnabled(LogLevel.Error))
+		{
+			this.Log().Error($"Failed to write settings to {_path}; the change is kept in memory and saved on a later write", e);
+		}
+	}
+
 	private void Write(Dictionary<string, string> values)
 	{
+		if (_renamesRefused)
+		{
+			WriteInPlace(values);
+			return;
+		}
+
 		// A crash or a full disk part-way through leaves the previous file in place rather than a truncated one.
 		var temporaryPath = $"{_path}.{Environment.ProcessId}.{Guid.NewGuid():N}.tmp";
 
 		try
 		{
 			using (var stream = new FileStream(temporaryPath, FileMode.CreateNew, FileAccess.Write, FileShare.None))
-			using (var writer = new BinaryWriter(stream))
 			{
-				writer.Write(values.Count);
-
-				foreach (var pair in values)
-				{
-					writer.Write(pair.Key);
-					writer.Write(pair.Value);
-				}
-
-				writer.Flush();
-				stream.Flush(flushToDisk: true);
+				WriteValues(stream, values);
 			}
 
-			File.Move(temporaryPath, _path, overwrite: true);
+			_moveFile(temporaryPath, _path);
 		}
 		finally
 		{
 			File.Delete(temporaryPath);
+		}
+	}
+
+	// Not atomic: a crash part-way through leaves a damaged file, which the next write sets aside and rebuilds.
+	// The exclusive lock keeps the other instances from reading it meanwhile.
+	private void WriteInPlace(Dictionary<string, string> values)
+	{
+		using var stream = new FileStream(_path, FileMode.Create, FileAccess.Write, FileShare.None);
+		WriteValues(stream, values);
+	}
+
+	private static void WriteValues(FileStream stream, Dictionary<string, string> values)
+	{
+		using var writer = new BinaryWriter(stream, _encoding, leaveOpen: true);
+		writer.Write(values.Count);
+
+		foreach (var pair in values)
+		{
+			writer.Write(pair.Key);
+			writer.Write(pair.Value);
+		}
+
+		writer.Flush();
+		stream.Flush(flushToDisk: true);
+	}
+
+	private void SetDamagedFileAside()
+	{
+		var asidePath = _path + ".corrupt";
+
+		if (!_renamesRefused)
+		{
+			try
+			{
+				_moveFile(_path, asidePath);
+				return;
+			}
+			catch (UnauthorizedAccessException e)
+			{
+				NoteRenamesRefused(e);
+			}
+		}
+
+		File.Copy(_path, asidePath, overwrite: true);
+	}
+
+	// Win32 app isolation (a sandboxed MSIX package) refuses every rename in the package's data folder.
+	private void NoteRenamesRefused(UnauthorizedAccessException e)
+	{
+		_renamesRefused = true;
+
+		if (this.Log().IsEnabled(LogLevel.Information))
+		{
+			this.Log().Info($"Renaming next to the settings file {_path} is refused ({e.Message}); it is written in place from now on");
 		}
 	}
 

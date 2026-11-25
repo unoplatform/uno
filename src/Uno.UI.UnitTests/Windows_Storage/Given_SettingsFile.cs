@@ -283,6 +283,88 @@ public class Given_SettingsFile
 		Assert.IsFalse(leftovers.Any());
 	}
 
+	[TestMethod]
+	public void When_Renames_Are_Refused_Then_The_Value_Is_Saved_In_Place()
+	{
+		var settings = new SettingsFile(_path, moveFile: RefuseRename);
+
+		settings.Set("key", "1");
+
+		Assert.AreEqual("1", new SettingsFile(_path).Values["key"]);
+		Assert.IsFalse(Directory.GetFiles(_folder, "*.tmp").Any());
+	}
+
+	[TestMethod]
+	public void When_Renames_Are_Refused_Then_Later_Writes_Skip_The_Rename()
+	{
+		var attempts = 0;
+		var settings = new SettingsFile(_path, moveFile: (source, destination) =>
+		{
+			attempts++;
+			RefuseRename(source, destination);
+		});
+		settings.Set("first", "1");
+		var attemptsForFirstWrite = attempts;
+
+		settings.Set("second", "1");
+
+		Assert.AreEqual(attemptsForFirstWrite, attempts);
+		var reopened = new SettingsFile(_path);
+		Assert.AreEqual("1", reopened.Values["first"]);
+		Assert.AreEqual("1", reopened.Values["second"]);
+	}
+
+	[TestMethod]
+	public void When_A_Rename_Is_Refused_Once_Then_Later_Writes_Still_Rename()
+	{
+		var attempts = 0;
+		var settings = new SettingsFile(_path, moveFile: (source, destination) =>
+		{
+			if (++attempts == 1)
+			{
+				RefuseRename(source, destination);
+			}
+
+			File.Move(source, destination, overwrite: true);
+		});
+		settings.Set("first", "1");
+		var attemptsForFirstWrite = attempts;
+
+		settings.Set("second", "1");
+
+		Assert.AreEqual(attemptsForFirstWrite + 1, attempts);
+		Assert.AreEqual("1", new SettingsFile(_path).Values["second"]);
+	}
+
+	[TestMethod]
+	public void When_A_Rename_Fails_For_Another_Reason_Then_The_File_Is_Not_Written_In_Place()
+	{
+		var settings = new SettingsFile(_path, moveFile: (_, _) => throw new IOException("The disk is full."));
+
+		settings.Set("key", "1");
+
+		Assert.IsFalse(File.Exists(_path));
+		Assert.AreEqual("1", settings.Values["key"]);
+	}
+
+	[TestMethod]
+	public void When_Renames_Are_Refused_And_The_File_Is_Damaged_Then_It_Is_Copied_Aside_And_Rebuilt()
+	{
+		Directory.CreateDirectory(_folder);
+		var damaged = new byte[] { 5, 0, 0, 0, 3, (byte)'k' };
+		File.WriteAllBytes(_path, damaged);
+		var settings = new SettingsFile(_path, moveFile: RefuseRename);
+
+		settings.Set("key", "1");
+
+		CollectionAssert.AreEqual(damaged, File.ReadAllBytes(_path + ".corrupt"));
+		Assert.AreEqual("1", new SettingsFile(_path).Values["key"]);
+	}
+
+	// What Win32 app isolation answers to any rename in the package's data folder.
+	private static void RefuseRename(string source, string destination)
+		=> throw new UnauthorizedAccessException($"Access to the path '{source}' is denied.");
+
 	private FileStream HoldLock(bool exclusive)
 	{
 		Directory.CreateDirectory(_folder);
