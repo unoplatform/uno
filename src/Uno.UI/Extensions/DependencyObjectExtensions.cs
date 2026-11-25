@@ -102,28 +102,6 @@ namespace Uno.UI.Extensions
 			TreeEnumerationMode mode = TreeEnumerationMode.Branch)
 			=> new VisualTreeEnumerable(obj, childLevelLimit, includeCurrent, mode);
 
-		/// <summary>
-		/// Returns <paramref name="element"/> itself if it is a <typeparamref name="T"/>, otherwise its first descendant of that type, in depth-first order.
-		/// </summary>
-		/// <typeparam name="T">The type of element we are looking for</typeparam>
-		/// <param name="element">The element to search from</param>
-		/// <returns>The first element found that is of the given type.</returns>
-		public static T FindFirstDescendantOrSelf<T>(this DependencyObject element)
-			where T : DependencyObject
-			=> element.GetAllChildren(includeCurrent: true).OfType<T>().FirstOrDefault();
-
-		/// <summary>
-		/// Returns <paramref name="element"/> itself if it is a <typeparamref name="T"/> matching <paramref name="predicate"/>,
-		/// otherwise its first descendant that is, in depth-first order.
-		/// </summary>
-		/// <typeparam name="T">The type of element we are looking for</typeparam>
-		/// <param name="element">The element to search from</param>
-		/// <param name="predicate">The predicate the element must match</param>
-		/// <returns>The first element found that is of the given type and matches the predicate.</returns>
-		public static T FindFirstDescendantOrSelf<T>(this DependencyObject element, Func<T, bool> predicate)
-			where T : DependencyObject
-			=> element.GetAllChildren(includeCurrent: true).OfType<T>().FirstOrDefault(predicate);
-
 		private class VisualTreeEnumerable : IEnumerable<DependencyObject>
 		{
 			private readonly DependencyObject _obj;
