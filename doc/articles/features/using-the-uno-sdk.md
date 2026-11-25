@@ -343,9 +343,11 @@ If you still need one of the stripped packages on Windows for a specific reason,
 When `UnoFeatures` includes `HotTesting`, the `Uno.Sdk` references [`Uno.HotTesting`](https://www.nuget.org/packages/Uno.HotTesting), and through it MSTest, in builds where `Optimize` is not `true` (Debug, by default). Its tests live inside the app, and only exist in those builds:
 
 - The tests go in the `Tests` folder of the project. Set `HotTestingTestsFolder` to use another folder.
-- In optimized (Release) builds, the package is not referenced and the tests folder is left out of the build, the same way the Hot Design previews folder is. A test outside that folder fails the Release build, since MSTest and `Uno.HotTesting` are not there.
-- It is referenced with `PrivateAssets="all"`, so it does not flow to projects that reference yours.
-- Its version follows the `Uno.Sdk`. Set `UnoHotTestingVersion` to override it.
+- In optimized (Release) builds, the package is not referenced and the tests folder is left out of the build, the same way the Hot Design previews folder is.
+- Everything in that folder is left out, not only tests. If the project already has a `Tests` folder for something else, set `HotTestingTestsFolder` to another name before enabling the feature.
+- Only files the project includes by default are left out. A file the project adds explicitly, with `<Compile Include="...">`, still compiles in Release.
+- It is referenced with `PrivateAssets="all"`, so it does not flow to projects that reference yours. An app that uses a library with Hot Testing tests also needs the `HotTesting` feature for those tests to run.
+- Each `Uno.Sdk` version pins a version of `Uno.HotTesting`. Set `UnoHotTestingVersion` to override it.
 - Debug and Release restore different packages. The `--no-restore` and lock file guidance of [MVUX feed mocks](#mvux-feed-mocks-in-non-optimized-builds) applies here too.
 
 ```xml
@@ -355,7 +357,9 @@ When `UnoFeatures` includes `HotTesting`, the `Uno.Sdk` references [`Uno.HotTest
 </UnoFeatures>
 ```
 
-`UnoDisableHotTesting` turns the feature off: the package is not referenced and the tests folder is not excluded.
+`UnoDisableHotTesting` turns the feature off: the package is not referenced, and the tests folder is left out of every build.
+
+A Release build that fails with `CS0246` or `CS0234` on `TestClass`, `TestContext` or `Microsoft.VisualStudio.TestTools` has a test outside the tests folder. Move it into the folder.
 
 ## MVUX feed mocks in non-optimized builds
 
