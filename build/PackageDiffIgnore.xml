@@ -5721,7 +5721,7 @@
 		  <Member fullName="Uno.UI.Controls.FauxGradientBorderPresenter" reason="Removed the no-op FauxGradientBorderPresenter; Skia draws gradient borders natively (#26572)" />
 		  <Member fullName="Uno.UI.Extensions.ViewExtensions" reason="Moved from Uno.UI to Uno.UI.Extras, renamed VisualTreeExtensions and made public on every target" />
 		  <Member fullName="Uno.UI.Extensions.PrettyPrint" reason="Moved from Uno.UI to Uno.UI.Extras (same namespace), public on every target" />
-		  <Member fullName="Uno.UI.ViewExtensions" reason="Made internal; EnumerateAllChildren moved to Uno.UI.Extras as VisualTreeExtensions.EnumerateRawDescendants" />
+		  <Member fullName="Uno.UI.ViewExtensions" reason="Removed; EnumerateAllChildren moved to Uno.UI.Extras as VisualTreeExtensions.EnumerateRawDescendants" />
 	  </Types>
 	</IgnoreSet>
 	<![CDATA[
