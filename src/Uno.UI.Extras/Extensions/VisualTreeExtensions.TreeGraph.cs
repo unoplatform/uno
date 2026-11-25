@@ -82,6 +82,34 @@ public static partial class VisualTreeExtensions
 	}
 
 	/// <summary>
+	/// Produces a text representation of the path from the root of the visual tree down to <paramref name="reference"/>:
+	/// one node per line, indented by depth, with its type, x:Name and layout details (<see cref="DescribeLayout(object)"/>).
+	/// </summary>
+	/// <param name="reference">Any node of the visual tree; it is the last line.</param>
+	public static string BeelineGraph(this DependencyObject reference) => BeelineGraph(reference, DescribeLayout);
+
+	/// <summary>
+	/// Produces a text representation of the path from the root of the visual tree down to <paramref name="reference"/>:
+	/// one node per line, indented by depth, with its type, x:Name and the details <paramref name="describeProperties"/> returns for it.
+	/// </summary>
+	/// <param name="reference">Any node of the visual tree; it is the last line.</param>
+	/// <param name="describeProperties">A function returning the details to show for a node, e.g. <c>Margin=4</c>; see <see cref="DescribeLayout(object)"/> and <see cref="DescribeVisual(object)"/>.</param>
+	public static string BeelineGraph(this DependencyObject reference, Func<object, IEnumerable<string>> describeProperties)
+	{
+		var buffer = new StringBuilder();
+		var depth = 0;
+		foreach (var node in reference.EnumerateVisualTreeAncestors().Reverse().Append(reference))
+		{
+			buffer
+				.Append(new string(' ', depth++ * 4))
+				.Append(DescribeVTNode(node, describeProperties))
+				.AppendLine();
+		}
+
+		return buffer.ToString();
+	}
+
+	/// <summary>
 	/// Describes a node's layout, for <c>TreeGraph</c>'s <c>describeProperties</c>: its grid cell, position in its parent and actual size;
 	/// its size constraints, alignment, margin and padding when set; its scroll state; its opacity and visibility when not the default.
 	/// </summary>

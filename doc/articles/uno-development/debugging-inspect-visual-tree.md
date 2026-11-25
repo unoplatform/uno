@@ -71,6 +71,12 @@ By default, each node shows its layout details, as `VisualTreeExtensions.Describ
 var tree = this.TreeGraph(VisualTreeExtensions.DescribeVisual);
 ```
 
+To see why an element is sized or placed the way it is, `BeelineGraph` prints the opposite direction: the path from the root of the visual tree down to the element, one ancestor per line, with the same details. It takes the same describers as `TreeGraph`:
+
+```csharp
+var path = element.BeelineGraph();
+```
+
 You can customize the amount of details, as `TreeGraph` has an overload that takes in a `Func<object, string>` to describe the visual tree node:
 
 > [!NOTE]
