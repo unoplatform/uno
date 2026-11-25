@@ -108,7 +108,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 			var evt = (HtmlPointerEvent)@event;
 			var pointerType = (PointerDeviceType)deviceType;
 			var pointerDevice = PointerDevice.For(pointerType);
-			var pointerIdentifier = _PointerIdentifierPool.RentManaged(new _PointerIdentifier((PointerDeviceType)deviceType, (uint)pointerId));
+			var pointerIdentifier = _PointerIdentifierPool.RentManaged(new _PointerIdentifier((PointerDeviceType)deviceType, ToNativePointerId(pointerId)));
 
 			var frameId = ToFrameId(timestamp);
 			var ts = that.ToTimestamp(timestamp);
@@ -227,7 +227,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_PointerIdentifierPool.TryGetNative(pointer, out var native))
 		{
-			SetPointerCaptureNative(native.Id);
+			SetPointerCaptureNative(ToBrowserPointerId(native.Id));
 		}
 		else if (this.Log().IsEnabled(LogLevel.Warning))
 		{
@@ -250,7 +250,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_PointerIdentifierPool.TryGetNative(pointer, out var native))
 		{
-			ReleasePointerCaptureNative(native.Id);
+			ReleasePointerCaptureNative(ToBrowserPointerId(native.Id));
 		}
 		else if (this.Log().IsEnabled(LogLevel.Warning))
 		{
@@ -344,6 +344,14 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 	internal static uint ToFrameId(double timestamp)
 		// Known limitation: After 49 days, we will overflow the uint and frame IDs will restart at 0.
 		=> (uint)(timestamp % uint.MaxValue);
+
+	private static uint ToNativePointerId(double pointerId)
+		// pointerId is a WebIDL long (signed 32-bit) and Safari for iOS reports negative values.
+		// A negative double cast to uint saturates to 0, which would merge all touches into a single pointer.
+		=> unchecked((uint)(int)pointerId);
+
+	private static double ToBrowserPointerId(uint nativeId)
+		=> unchecked((int)nativeId);
 
 	private ulong ToTimestamp(double timestamp)
 		=> _bootTime + (ulong)(timestamp * 1000);
