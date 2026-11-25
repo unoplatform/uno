@@ -252,6 +252,169 @@ public partial class Given_UnicodeTextOptions
 	}
 
 	[TestMethod]
+	[DataRow(FlowDirection.LeftToRight)]
+	[DataRow(FlowDirection.RightToLeft)]
+	public async Task When_Resumed_Around_Information_Separators(FlowDirection flowDirection)
+	{
+		// U+001C-U+001E end no line. A layout resumed right before or right after one starts its first resumed line there,
+		// and the lines before it end there, so neither crosses the separator. The "é" keeps the left-to-right layout off
+		// the ASCII shortcut.
+		const string Text = "Some words\u001Cthen more\u001D words\u001E to wrap é";
+		var inlines = new Inline[] { R(Text) };
+		await WaitForFonts(inlines, 80, flowDirection);
+
+		AssertEveryResumeMatches(inlines, 80, flowDirection);
+		for (var index = 0; index < Text.Length; index++)
+		{
+			if (Text[index] is not (>= '\u001C' and <= '\u001E'))
+			{
+				continue;
+			}
+			foreach (var resumeIndex in new[] { index, index + 1 })
+			{
+				var resumed = Layout(inlines, 80, flowDirection, options: new() { ResumeIndex = resumeIndex });
+				Assert.AreEqual(1, resumed.FirstResumedLine, $"Resumed at {resumeIndex}: the lines before it");
+				Assert.AreEqual(resumeIndex, resumed.GetLineForTests(0).End, $"Resumed at {resumeIndex}: the end of the line before it");
+				Assert.AreEqual(resumeIndex, resumed.GetLineForTests(1).Start, $"Resumed at {resumeIndex}: the first resumed line's start");
+			}
+		}
+	}
+
+	[TestMethod]
+	public void When_Separator_Or_Any_Bidi_Class_Between_Words()
+	{
+		// Every range of a line that ICU reorders lies within one of ICU's paragraphs: every character of bidi class B, S and
+		// WS, every hard line break, and one character of each other bidi class, the explicit formatting characters included.
+		var characters = new[]
+		{
+			0x0A, 0x0D, 0x1C, 0x1D, 0x1E, 0x85, 0x2029, // B
+			0x09, 0x0B, 0x1F, // S
+			0x0C, 0x20, 0x1680, 0x2000, 0x2001, 0x2002, 0x2003, 0x2004, 0x2005, 0x2006, 0x2007, 0x2008, 0x2009, 0x200A, 0x2028, 0x205F, 0x3000, // WS
+			'A', 0x05D0, 0x0627, '1', '+', '#', 0x0660, ',', 0x0301, 0x200B, '!', // L, R, AL, EN, ES, ET, AN, CS, NSM, BN, ON
+			0x202A, 0x202B, 0x202C, 0x202D, 0x202E, 0x2066, 0x2067, 0x2068, 0x2069, // LRE, RLE, PDF, LRO, RLO, LRI, RLI, FSI, PDI
+		};
+		foreach (var c in characters)
+		{
+			AssertLaysOutBetweenWords(c);
+		}
+	}
+
+	[TestMethod]
+	[Timeout(120_000)]
+	// About 127,000 layouts: 2 s on Skia Desktop (Win32), but 17 s on WASM and more on a phone.
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	public void When_Any_Character_Between_Words()
+	{
+		for (var c = 0; c <= 0xFFFF; c++)
+		{
+			if (c is < 0xD800 or > 0xDFFF)
+			{
+				AssertLaysOutBetweenWords(c);
+			}
+		}
+	}
+
+	private static void AssertLaysOutBetweenWords(int c)
+	{
+		var text = "ab" + (char)c + "cd";
+		try
+		{
+			Layout(new Inline[] { R(text) }, 1000, FlowDirection.RightToLeft);
+			Layout(new Inline[] { R("x "), R(text, FlowDirection.RightToLeft) }, 1000, FlowDirection.LeftToRight);
+		}
+		catch (Exception e)
+		{
+			Assert.Fail($"U+{c:X4}: {e.Message}");
+		}
+	}
+
+	[TestMethod]
+	[DataRow(new[] { 1, 4, 9 }, new[] { 2, 3, 10 }, new[] { 1, 2, 3, 4, 9, 10 })]
+	[DataRow(new[] { 1, 4, 9 }, new[] { 4, 9 }, new[] { 1, 4, 9 })]
+	[DataRow(new[] { 5, 6 }, new[] { 1, 2, 5 }, new[] { 1, 2, 5, 6 })]
+	[DataRow(new int[0], new[] { 3, 7 }, new[] { 3, 7 })]
+	[DataRow(new[] { 3, 7 }, new int[0], new[] { 3, 7 })]
+	public void When_Breaks_Merge(int[] breaks, int[] added, int[] expected)
+	{
+		// Two ascending lists of break positions merge into the first, in order, keeping each position once.
+		var merged = new List<int>(breaks);
+		typeof(UnicodeText).GetMethod("MergeSortedBreaks", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
+			.Invoke(null, [merged, new List<int>(added)]);
+		CollectionAssert.AreEqual(expected, merged);
+	}
+
+	[TestMethod]
+	public void When_Continuation_Follows_Hard_Break()
+	{
+		// HarfBuzz joins a combining mark, a variation selector, a joiner or a tag character to the character before it,
+		// even a line break; the line still ends right after the break, where ICU's paragraph ends.
+		var lineBreaks = new[] { "\n", "\r", "\r\n", "\u000B", "\u000C", "\u0085", char.ConvertFromUtf32(0x2028), char.ConvertFromUtf32(0x2029) };
+		var continuations = new[] { 0x0301, 0x20DD, 0xFE0F, 0x200D, 0x200C, 0xE0020, 0xE0041, 0xE007F, 0x1F3FB };
+		foreach (var lineBreak in lineBreaks)
+		{
+			foreach (var continuation in continuations)
+			{
+				foreach (var flowDirection in new[] { FlowDirection.LeftToRight, FlowDirection.RightToLeft })
+				{
+					var context = $"U+{(int)lineBreak[^1]:X4} then U+{continuation:X4}, {flowDirection}";
+					UnicodeText layout = default;
+					try
+					{
+						layout = Layout(new Inline[] { R("ab" + lineBreak + char.ConvertFromUtf32(continuation) + "cd") }, 1000, flowDirection);
+					}
+					catch (Exception e)
+					{
+						Assert.Fail($"{context}: {e.Message}");
+					}
+
+					Assert.AreEqual(2, layout.LineCount, $"{context}: lines");
+					Assert.AreEqual(2 + lineBreak.Length, layout.GetLineForTests(0).End, $"{context}: the end of the first line");
+				}
+			}
+		}
+	}
+
+	[TestMethod]
+	[DataRow(FlowDirection.LeftToRight)]
+	[DataRow(FlowDirection.RightToLeft)]
+	public void When_Continuation_Follows_Line_Break_Split_Across_Runs(FlowDirection flowDirection)
+	{
+		// The break is found in the whole text, not in a run, so a CRLF split across two runs is one break, and the line
+		// ends after its LF, before the tag character that starts the second run's text.
+		var tag = char.ConvertFromUtf32(0xE0041);
+		var layout = Layout(new Inline[] { R("ab\r"), R("\n" + tag + "cd") }, 1000, flowDirection);
+
+		Assert.AreEqual(2, layout.LineCount);
+		Assert.AreEqual(4, layout.GetLineForTests(0).End);
+	}
+
+	[TestMethod]
+	[DataRow(FlowDirection.LeftToRight)]
+	[DataRow(FlowDirection.RightToLeft)]
+	public async Task When_Resumed_After_Hard_Break_Before_Continuation(FlowDirection flowDirection)
+	{
+		// Resumed right after an LF and right after a CRLF, each followed by a tag character that would join the break.
+		var tag = char.ConvertFromUtf32(0xE0041);
+		var inlines = new Inline[] { R("ab\n" + tag + "cd\r\n" + tag + "ef é") };
+		await WaitForFonts(inlines, 1000, flowDirection);
+
+		AssertEveryResumeMatches(inlines, 1000, flowDirection);
+	}
+
+	[TestMethod]
+	[DataRow("\u001E" + "אבג", FlowDirection.LeftToRight, false)]
+	[DataRow("\u001C" + "אבג", FlowDirection.RightToLeft, true)]
+	[DataRow("\u001D" + "abc", FlowDirection.RightToLeft, true)]
+	[DataRow("אבג" + "\u001E" + "abc", FlowDirection.LeftToRight, true)]
+	[DataRow("abc" + "\u001E" + "אבג", FlowDirection.RightToLeft, false)]
+	public void When_Paragraph_Direction_With_Information_Separator(string text, FlowDirection flowDirection, bool rightToLeft)
+	{
+		// As on WinUI, the search for the paragraph's first strong character stops at the separator; with none before it,
+		// the paragraph takes the control's direction.
+		Assert.AreEqual(rightToLeft, UnicodeText.IsRightToLeftParagraph(text, flowDirection));
+	}
+
+	[TestMethod]
 	public async Task When_Resumed_At_Text_End()
 	{
 		// A previous layout fit "abc" and its line break, but not the empty line after it: the resumed layout starts on

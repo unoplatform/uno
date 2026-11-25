@@ -37,4 +37,72 @@ public partial class Given_TextBox
 			WindowHelper.WindowContent = null;
 		}
 	}
+
+	[TestMethod]
+	[DataRow(0x1C, FlowDirection.LeftToRight)]
+	[DataRow(0x1C, FlowDirection.RightToLeft)]
+	[DataRow(0x1D, FlowDirection.LeftToRight)]
+	[DataRow(0x1D, FlowDirection.RightToLeft)]
+	[DataRow(0x1E, FlowDirection.LeftToRight)]
+	[DataRow(0x1E, FlowDirection.RightToLeft)]
+	public async Task When_Information_Separator_In_Text(int separator, FlowDirection flowDirection)
+	{
+		// U+001C-U+001E are paragraph separators to the bidi algorithm, but, as on WinUI, the text stays on one line.
+		// The "é" keeps the left-to-right layout off the ASCII shortcut, so it goes through ICU too.
+		var text = "abc" + (char)separator + "déf";
+		var sut = new TextBox
+		{
+			Width = 300,
+			FontSize = 20,
+			FlowDirection = flowDirection,
+			Text = text,
+			Foreground = new SolidColorBrush(Colors.Red),
+			BorderThickness = new Thickness(0),
+		};
+
+		try
+		{
+			var (_, bitmap) = await Show(sut);
+			var (top, bottom) = InkY(bitmap, Colors.Red);
+
+			Assert.AreEqual(text, sut.Text);
+			Assert.IsTrue(bottom >= 0 && bottom - top < 30, $"The text should be drawn on one line: rows {top}..{bottom}.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[DataRow(FlowDirection.LeftToRight)]
+	[DataRow(FlowDirection.RightToLeft)]
+	public async Task When_Information_Separator_In_Revealed_Password(FlowDirection flowDirection)
+	{
+		// A masked password lays out bullets only; a revealed one lays out its characters.
+		var sut = new PasswordBox
+		{
+			Width = 300,
+			FontSize = 20,
+			FlowDirection = flowDirection,
+			PasswordRevealMode = PasswordRevealMode.Visible,
+			Password = "abc\u001Edéf",
+			Foreground = new SolidColorBrush(Colors.Red),
+			BorderThickness = new Thickness(0),
+		};
+
+		try
+		{
+			var (_, bitmap) = await Show(sut);
+			var (top, bottom) = InkY(bitmap, Colors.Red);
+
+			// Bullets are about half as tall as "déf" (8 rows to 14 here), whose accent and ascenders reach above them.
+			Assert.IsTrue(bottom - top > 11, $"The password's letters should be drawn, not bullets: rows {top}..{bottom}.");
+			Assert.IsTrue(bottom - top < 30, $"The password should be drawn on one line: rows {top}..{bottom}.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
 }

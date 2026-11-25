@@ -212,7 +212,19 @@ public class Given_TextBlock_Bidi
 	[DataRow(FlowDirection.RightToLeft, false)]
 	[DataRow(FlowDirection.LeftToRight, true)]
 	[DataRow(FlowDirection.RightToLeft, true)]
-	public async Task When_Differing_Run_Wraps(FlowDirection controlDirection, bool trimmed)
+	public Task When_Differing_Run_Wraps(FlowDirection controlDirection, bool trimmed)
+		=> AssertDifferingRunWraps(controlDirection, trimmed, "");
+
+	[TestMethod]
+	[DataRow(FlowDirection.LeftToRight, false)]
+	[DataRow(FlowDirection.RightToLeft, false)]
+	[DataRow(FlowDirection.LeftToRight, true)]
+	[DataRow(FlowDirection.RightToLeft, true)]
+	public Task When_Differing_Run_With_Information_Separators_Wraps(FlowDirection controlDirection, bool trimmed)
+		// Every number but the first ends with separators, which split the runs' embeddings (measured on WinUI).
+		=> AssertDifferingRunWraps(controlDirection, trimmed, "\u001C\u001D\u001E");
+
+	private static async Task AssertDifferingRunWraps(FlowDirection controlDirection, bool trimmed, string separators)
 	{
 		// One number per colour, each its own run in the direction opposite to the control's, so that lines break (or the
 		// line is trimmed) inside the embedding. Numbers, unlike Latin words, read right to left in a right-to-left
@@ -222,7 +234,7 @@ public class Given_TextBlock_Bidi
 		var sut = CreateTextBlock(controlDirection, R(controlDirection is FlowDirection.LeftToRight ? "x " : RLM + "x ", Colors.Black));
 		foreach (var (color, index) in colors.Select((color, index) => (color, index)))
 		{
-			sut.Inlines.Add(R(new string((char)('1' + index), 2) + " ", color, runDirection));
+			sut.Inlines.Add(R(new string((char)('1' + index), 2) + separators[..Math.Min(index, separators.Length)] + " ", color, runDirection));
 		}
 		sut.Width = trimmed ? 150 : 110;
 		sut.TextWrapping = trimmed ? TextWrapping.NoWrap : TextWrapping.Wrap;
@@ -262,8 +274,10 @@ public class Given_TextBlock_Bidi
 			{
 				for (var i = 1; i < line.Length; i++)
 				{
-					// Within a line, the embedded numbers read in the run's direction.
-					var inOrder = runDirection is FlowDirection.RightToLeft
+					// Within a line, the embedded numbers read in the run's direction, and those after a separator in the
+					// paragraph's (the control's, here).
+					var direction = separators.Length > 0 && line[i - 1].index > 0 ? controlDirection : runDirection;
+					var inOrder = direction is FlowDirection.RightToLeft
 						? line[i].x.Max < line[i - 1].x.Min
 						: line[i - 1].x.Max < line[i].x.Min;
 					Assert.IsTrue(inOrder, $"Words {line[i - 1].index} and {line[i].index} are out of order: {description}.");
@@ -353,6 +367,264 @@ public class Given_TextBlock_Bidi
 		{
 			WindowHelper.WindowContent = null;
 		}
+	}
+
+	// U+001C-U+001E are paragraph separators to the bidi algorithm (class B), but no line ends at them. As on WinUI, the
+	// text around one stays on one line and in one bidi paragraph, and the character itself draws nothing.
+	[TestMethod]
+	[DataRow(0x1C, FlowDirection.LeftToRight)]
+	[DataRow(0x1C, FlowDirection.RightToLeft)]
+	[DataRow(0x1D, FlowDirection.LeftToRight)]
+	[DataRow(0x1D, FlowDirection.RightToLeft)]
+	[DataRow(0x1E, FlowDirection.LeftToRight)]
+	[DataRow(0x1E, FlowDirection.RightToLeft)]
+	public async Task When_Information_Separator_Between_Latin_Words(int separator, FlowDirection flowDirection)
+	{
+		// The "é" keeps the left-to-right layout off the ASCII shortcut, so it goes through ICU too.
+		var sut = CreateTextBlock(flowDirection, R("abc", Colors.Red), R(((char)separator).ToString(), Colors.Green), R("déf", Colors.Blue));
+
+		try
+		{
+			var (_, bitmap) = await Show(sut);
+			var red = InkX(bitmap, Colors.Red);
+			var blue = InkX(bitmap, Colors.Blue);
+			var description = $"red {red}, blue {blue}";
+
+			Assert.IsTrue(red.Max < blue.Min, $"Expected \"abc déf\": {description}.");
+			AssertOneLine(bitmap, Colors.Red, Colors.Blue);
+			Assert.IsTrue(InkX(bitmap, Colors.Green).IsEmpty, "The separator should draw nothing.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[DataRow(0x1C, FlowDirection.LeftToRight)]
+	[DataRow(0x1C, FlowDirection.RightToLeft)]
+	[DataRow(0x1D, FlowDirection.LeftToRight)]
+	[DataRow(0x1D, FlowDirection.RightToLeft)]
+	[DataRow(0x1E, FlowDirection.LeftToRight)]
+	[DataRow(0x1E, FlowDirection.RightToLeft)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.NativeWinUI)] // Needs a Hebrew font.
+	public async Task When_Information_Separator_Between_Hebrew_Words(int separator, FlowDirection flowDirection)
+	{
+		var sut = CreateTextBlock(flowDirection, R("אבג", Colors.Red), R(((char)separator).ToString(), Colors.Green), R("דהו", Colors.Blue));
+
+		try
+		{
+			var (_, bitmap) = await Show(sut);
+			var red = InkX(bitmap, Colors.Red);
+			var blue = InkX(bitmap, Colors.Blue);
+
+			Assert.IsTrue(blue.Max < red.Min, $"The second word ({blue}) should be drawn left of the first ({red}).");
+			AssertOneLine(bitmap, Colors.Red, Colors.Blue);
+			Assert.IsTrue(InkX(bitmap, Colors.Green).IsEmpty, "The separator should draw nothing.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[DataRow(0x1C, FlowDirection.LeftToRight)]
+	[DataRow(0x1E, FlowDirection.LeftToRight)]
+	[DataRow(0x1E, FlowDirection.RightToLeft)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.NativeWinUI)] // Needs a Hebrew font.
+	public async Task When_Information_Separator_Before_Hebrew(int separator, FlowDirection flowDirection)
+	{
+		// One paragraph, whose first strong character is Latin, so "def" stays right of the Hebrew word. Had the separator
+		// started a right-to-left paragraph, "def" would be drawn left of it.
+		var sut = CreateTextBlock(flowDirection, R("abc", Colors.Red), R(((char)separator).ToString(), Colors.Green), R("אבג ", Colors.Blue), R("def", Colors.Magenta));
+
+		try
+		{
+			var (_, bitmap) = await Show(sut);
+			var red = InkX(bitmap, Colors.Red);
+			var blue = InkX(bitmap, Colors.Blue);
+			var magenta = InkX(bitmap, Colors.Magenta);
+			var description = $"red {red}, blue {blue}, magenta {magenta}";
+
+			Assert.IsTrue(red.Max < blue.Min && blue.Max < magenta.Min, $"Expected \"abc גבא def\": {description}.");
+			AssertOneLine(bitmap, Colors.Red, Colors.Magenta);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[DataRow(0x1C, FlowDirection.LeftToRight)]
+	[DataRow(0x1D, FlowDirection.LeftToRight)]
+	[DataRow(0x1E, FlowDirection.LeftToRight)]
+	[DataRow(0x1C, FlowDirection.RightToLeft)]
+	[DataRow(0x1D, FlowDirection.RightToLeft)]
+	[DataRow(0x1E, FlowDirection.RightToLeft)]
+	public async Task When_Information_Separator_In_Differing_Run(int separator, FlowDirection controlDirection)
+	{
+		// Measured on WinUI: the separator takes the paragraph's level, as a paragraph separator would, so the run's
+		// embedding is split there and "!!" no longer moves left of "ab" in a right-to-left run. The paragraph goes on: its
+		// first strong character, in "xy", sets the direction of all of it.
+		var runDirection = controlDirection is FlowDirection.LeftToRight ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
+		var sut = CreateTextBlock(controlDirection, R("xy ", Colors.Black), R("ab", Colors.Blue, runDirection), R((char)separator + "!!", Colors.Red, runDirection));
+
+		try
+		{
+			var (_, bitmap) = await Show(sut);
+			var blue = InkX(bitmap, Colors.Blue);
+			var red = InkX(bitmap, Colors.Red);
+			var description = $"blue {blue}, red {red}";
+
+			Assert.IsTrue(blue.Max < red.Min, $"Expected \"!!\" right of \"ab\": {description}.");
+			AssertOneLine(bitmap, Colors.Blue, Colors.Red);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[DataRow("LF", 0xE0041, FlowDirection.LeftToRight)]
+	[DataRow("LF", 0xE0041, FlowDirection.RightToLeft)]
+	[DataRow("CR", 0xE0041, FlowDirection.LeftToRight)]
+	[DataRow("CRLF", 0xE0041, FlowDirection.LeftToRight)]
+	[DataRow("NEL", 0xE0041, FlowDirection.LeftToRight)]
+	[DataRow("PS", 0xE0041, FlowDirection.LeftToRight)]
+	[DataRow("LF", 0x0301, FlowDirection.LeftToRight)]
+	[DataRow("LF", 0xFE0F, FlowDirection.RightToLeft)]
+	public async Task When_Continuation_Follows_Line_Break(string lineBreak, int continuation, FlowDirection flowDirection)
+	{
+		// A tag character (U+E0041) or a combining mark joins the character before it when shaped, even a line break.
+		// As on WinUI, the line still ends at the break.
+		var separator = lineBreak switch
+		{
+			"LF" => "\n",
+			"CR" => "\r",
+			"CRLF" => "\r\n",
+			"NEL" => "\u0085",
+			"PS" => ((char)0x2029).ToString(),
+			_ => throw new ArgumentOutOfRangeException(nameof(lineBreak)),
+		};
+		var sut = new TextBlock { FontSize = 24, FlowDirection = flowDirection, Foreground = new SolidColorBrush(Colors.Red), Text = "ab" + separator + char.ConvertFromUtf32(continuation) + "cd" };
+
+		try
+		{
+			var (_, bitmap) = await Show(sut);
+
+			Assert.AreEqual(2, InkLines(bitmap, Colors.Red), "Expected two lines.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[DataRow(0x1C, FlowDirection.LeftToRight)]
+	[DataRow(0x1E, FlowDirection.RightToLeft)]
+	public async Task When_Information_Separator_Starts_Line(int separator, FlowDirection flowDirection)
+	{
+		var sut = CreateTextBlock(flowDirection, R("abc\n" + (char)separator, Colors.Red), R("déf", Colors.Blue));
+
+		try
+		{
+			var (_, bitmap) = await Show(sut);
+			var (redTop, _) = InkY(bitmap, Colors.Red);
+			var (blueTop, _) = InkY(bitmap, Colors.Blue);
+
+			Assert.AreEqual(1, InkLines(bitmap, Colors.Red), "\"abc\" should take one line.");
+			Assert.AreEqual(1, InkLines(bitmap, Colors.Blue), "\"déf\" should take one line.");
+			Assert.IsTrue(blueTop > redTop + 20, $"\"déf\" (top {blueTop}) should be on the line after \"abc\" (top {redTop}).");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[DataRow(FlowDirection.LeftToRight)]
+	[DataRow(FlowDirection.RightToLeft)]
+	public async Task When_Information_Separators_With_MaxLines(FlowDirection flowDirection)
+	{
+		var sut = new TextBlock
+		{
+			FontSize = 24,
+			Width = 120,
+			FlowDirection = flowDirection,
+			TextWrapping = TextWrapping.Wrap,
+			MaxLines = 1,
+			Foreground = new SolidColorBrush(Colors.Red),
+			Text = "abc\u001Edéf ghi\u001Cjkl mno\u001Dpqr",
+		};
+
+		try
+		{
+			var (_, bitmap) = await Show(sut);
+
+			Assert.AreEqual(1, InkLines(bitmap, Colors.Red), "Expected one line.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	// WinUI ends the override at the separator, as at a paragraph separator, so "d!" is drawn right of "c" there. ICU reads
+	// the separator as a segment separator, which doesn't end it.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Override_Spans_Information_Separator()
+	{
+		var sut = CreateTextBlock(
+			FlowDirection.LeftToRight,
+			R(RLO + "a", Colors.Red), R("b", Colors.Blue), R("\u001C", Colors.Green), R("c", Colors.Magenta), R("d!" + PDF, Colors.Orange));
+
+		try
+		{
+			var (_, bitmap) = await Show(sut);
+			var c = InkX(bitmap, Colors.Magenta);
+			var d = InkX(bitmap, Colors.Orange);
+
+			Assert.IsTrue(d.Max < c.Min, $"The override should reverse \"cd!\": c {c}, d! {d}.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	// The number of lines one colour's ink takes: bands of rows with ink, apart by more than a few rows.
+	private static int InkLines(RawBitmap bitmap, Color color)
+	{
+		var lines = 0;
+		var lastRow = -100;
+		for (var y = 0; y < bitmap.Height; y++)
+		{
+			if (!InkX(bitmap, color, y, y).IsEmpty)
+			{
+				if (y - lastRow > 6)
+				{
+					lines++;
+				}
+				lastRow = y;
+			}
+		}
+		return lines;
+	}
+
+	// Text of the two colours sits on one line: their ink starts at the same height.
+	private static void AssertOneLine(RawBitmap bitmap, Color first, Color second)
+	{
+		var (firstTop, firstBottom) = InkY(bitmap, first);
+		var (secondTop, secondBottom) = InkY(bitmap, second);
+		Assert.IsTrue(
+			Math.Abs(firstBottom - secondBottom) < 6 && firstBottom - firstTop < 40 && secondBottom - secondTop < 40,
+			$"Expected one line: rows {firstTop}..{firstBottom} and {secondTop}..{secondBottom}.");
 	}
 
 	[TestMethod]

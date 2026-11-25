@@ -57,6 +57,29 @@ public partial class Given_RichEditBox
 	}
 
 	[TestMethod]
+	[DataRow(FlowDirection.LeftToRight)]
+	[DataRow(FlowDirection.RightToLeft)]
+	public async Task When_Information_Separator_In_Text(FlowDirection flowDirection)
+	{
+		// U+001E is a paragraph separator to the bidi algorithm, but, as on WinUI, the text stays on one line.
+		try
+		{
+			var (host, sut) = await ShowRichEditBox(flowDirection);
+			const string text = "abc\u001Edéf";
+			sut.Document.SetText(TextSetOptions.None, text);
+			sut.Document.GetRange(0, text.Length).CharacterFormat.ForegroundColor = Colors.Red;
+
+			var (top, bottom) = InkY(await Capture(host), Colors.Red);
+
+			Assert.IsTrue(bottom >= 0 && bottom - top < 30, $"The text should be drawn on one line: rows {top}..{bottom}.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	[DataRow(false)]
 	[DataRow(true)]
 	// Needs a font with Hebrew letters: Segoe UI has them, other platforms depend on their fallback fonts.

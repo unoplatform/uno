@@ -309,6 +309,8 @@ internal readonly partial struct UnicodeText
 
 		// The level ICU resolves for a paragraph. Only that is read, before the object closes, so the text is pinned for
 		// every call that reads it rather than copied for an object that outlives this call (see CreateBiDiAndSetPara).
+		// ICU reads the text as it is: U+001C-U+001E stay the paragraph separators they are, and the search for the first
+		// strong character stops at one, as WinUI's does.
 		public static unsafe byte GetParaLevel(ReadOnlySpan<char> text, byte paraLevel)
 		{
 			fixed (char* textPtr = text)
@@ -334,7 +336,12 @@ internal readonly partial struct UnicodeText
 		public static unsafe ParagraphBiDi CreateBiDiAndSetPara(ReadOnlySpan<char> text, byte paraLevel)
 		{
 			var textCopy = (char*)NativeMemory.Alloc((nuint)text.Length * sizeof(char));
-			text.CopyTo(new Span<char>(textCopy, text.Length));
+			var copy = new Span<char>(textCopy, text.Length);
+			text.CopyTo(copy);
+			if (copy.IndexOfAnyInRange('\u001C', '\u001E') is >= 0 and var first)
+			{
+				ReplaceInformationSeparators(copy, first);
+			}
 
 			var bidi = new ParagraphBiDi(GetMethod<ubidi_open>()(), textCopy);
 			GetMethod<ubidi_setPara>()(bidi.Handle, (IntPtr)textCopy, text.Length, paraLevel, IntPtr.Zero, out var setParaErrorCode);
@@ -344,6 +351,22 @@ internal readonly partial struct UnicodeText
 				throw new InvalidOperationException($"{nameof(ubidi_setPara)} failed with error code {setParaErrorCode}");
 			}
 			return bidi;
+		}
+
+		// ICU starts a new paragraph at every character of bidi class B, and ubidi_setLine rejects a line that crosses
+		// one. U+001C-U+001E are of that class but end no line, here or on WinUI, which keeps the paragraph's direction
+		// past them, but resets each to the paragraph's level, splitting the embedding around it. ICU reads them as
+		// U+001F, a segment separator (class S), which does the same, so every ICU paragraph ends at a hard line break.
+		// first is the index of the first of them.
+		private static void ReplaceInformationSeparators(Span<char> text, int first)
+		{
+			for (var i = first; i < text.Length; i++)
+			{
+				if (text[i] is >= '\u001C' and <= '\u001E')
+				{
+					text[i] = '\u001F';
+				}
+			}
 		}
 
 		private static ubrk_setText? _setText;

@@ -563,6 +563,8 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		ParagraphBidiResolvedForTests?.Invoke(_text.Length);
 
+		EndShapingRunsAtHardBreaks(_text, allAscii, scriptBreaks);
+
 		_glyphs = new LinkedList<Glyph>();
 		var clusterBreaks = new LinkedList<Cluster>();
 		foreach (var shapingRun in new ShapingRunEnumerator(_runBreaks, scriptBreaks, _bidiBreaks, fontBreaks))
@@ -1196,8 +1198,9 @@ internal readonly partial struct UnicodeText : IParsedText
 			var lineRtl = line.paragraphLayout?.RightToLeft ?? _rtl;
 			var ellipsisCluster = line.hasEllipsis ? line.clusterLast : null;
 			var limit = line.hasEllipsis ? line.clusterLast.Value.start : line.clusterLast.Value.end;
-			// In ICU's copy, the line ends right after its last character: an embedding character that follows may
-			// belong to the next paragraph, and ubidi_setLine rejects a line that crosses one.
+			// ubidi_setLine rejects a line that crosses an ICU paragraph. Each of those ends at a hard line break (see
+			// ICU.CreateBiDiAndSetPara), so a line lies in one, and in ICU's copy the line ends right after its last
+			// character: an embedding character that follows may belong to the next paragraph.
 			var bidiLineStart = ToBidiIndex(textToBidi, line.start);
 			var bidiLineLimit = limit > line.start ? ToBidiIndex(textToBidi, limit - 1) + 1 : bidiLineStart;
 			var lineBidi = ICU.GetMethod<ICU.ubidi_open>()();
@@ -1381,6 +1384,77 @@ internal readonly partial struct UnicodeText : IParsedText
 		return false;
 	}
 
+	private static readonly global::System.Buffers.SearchValues<char> _hardLineBreaks = global::System.Buffers.SearchValues.Create("\n\v\f\r\u0085\u2028\u2029");
+
+	// A line ends only at a cluster's end, and HarfBuzz joins a continuation character (a combining mark, a variation
+	// selector, a tag character) to the cluster before it, even a line break's; the line would then run past ICU's paragraph
+	// end. Continuations aren't ASCII, so a run is ended after a hard break wherever a non-ASCII character follows it
+	// (where that character's script differs from the break's, the run already ends there).
+	private static void EndShapingRunsAtHardBreaks(string text, bool allAscii, List<int> scriptBreaks)
+	{
+		if (allAscii)
+		{
+			return;
+		}
+
+		List<int>? runEnds = null;
+		var start = 0;
+		int index;
+		while (start < text.Length && (index = text.AsSpan(start).IndexOfAny(_hardLineBreaks)) >= 0)
+		{
+			var end = start + index + 1;
+			if (text[end - 1] == '\r' && end < text.Length && text[end] == '\n')
+			{
+				end++;
+			}
+			if (end < text.Length && text[end] >= 0x80 && !_hardLineBreaks.Contains(text[end]))
+			{
+				(runEnds ??= new()).Add(end);
+			}
+			start = end;
+		}
+
+		if (runEnds is not null)
+		{
+			MergeSortedBreaks(scriptBreaks, runEnds);
+		}
+	}
+
+	// Merges two ascending lists into the first one, in one pass, keeping each position once.
+	// In place, from the back: breaks grows by added's count and fills from its end, then closes the gap a shared
+	// position leaves.
+	private static void MergeSortedBreaks(List<int> breaks, List<int> added)
+	{
+		var i = breaks.Count - 1;
+		var j = added.Count - 1;
+		CollectionsMarshal.SetCount(breaks, breaks.Count + added.Count);
+		var merged = CollectionsMarshal.AsSpan(breaks);
+		var k = merged.Length;
+		while (j >= 0)
+		{
+			if (i >= 0 && merged[i] >= added[j])
+			{
+				if (merged[i] == added[j])
+				{
+					j--;
+				}
+				merged[--k] = merged[i--];
+			}
+			else
+			{
+				merged[--k] = added[j--];
+			}
+		}
+
+		// merged[0..i] were in place already; the rest starts at k.
+		var gap = k - (i + 1);
+		if (gap > 0)
+		{
+			merged[k..].CopyTo(merged[(i + 1)..]);
+			CollectionsMarshal.SetCount(breaks, breaks.Count - gap);
+		}
+	}
+
 	// Printable ASCII (plus tab) has no mandatory line breaks and needs no ICU break analysis for NoWrap text.
 	private static bool IsAsciiWithoutLineBreaks(string text)
 	{
@@ -1495,8 +1569,8 @@ internal readonly partial struct UnicodeText : IParsedText
 			ArrayPool<char>.Shared.Return(bidiText);
 		}
 
-		// The characters of bidi class B.
-		static bool IsParagraphSeparator(char c) => c is '\n' or '\r' or (>= '\u001C' and <= '\u001E') or '\u0085' or '\u2029';
+		// The characters that end an ICU paragraph: those of bidi class B, except U+001C-U+001E (see ICU.CreateBiDiAndSetPara).
+		static bool IsParagraphSeparator(char c) => c is '\n' or '\r' or '\u0085' or '\u2029';
 	}
 
 	private static int ToBidiIndex(int[]? textToBidi, int index) => textToBidi is null ? index : textToBidi[index];
