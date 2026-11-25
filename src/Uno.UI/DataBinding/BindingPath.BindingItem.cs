@@ -25,6 +25,9 @@ namespace Uno.UI.DataBinding
 
 			private Type? _dataContextType;
 
+			// Value handlers reused across DataContext changes, so each rents its weak reference only once.
+			private PropertyChangedValueHandler?[]? _valueHandlers;
+
 			[Flags]
 			private enum Flags
 			{
@@ -50,7 +53,8 @@ namespace Uno.UI.DataBinding
 
 			public object? DataContext
 			{
-				get => _dataContextWeakStorage?.Target;
+				// TargetOrNull: an INotifyPropertyChanged raised off the UI thread may read while the item is disposed.
+				get => _dataContextWeakStorage?.TargetOrNull;
 				set
 				{
 					if (!IsDisposed)
@@ -375,16 +379,38 @@ namespace Uno.UI.DataBinding
 					disposables.Add(notifyCollectionChangedDisposable);
 				}
 
+				var valueHandlers = _valueHandlers;
+				if (valueHandlers is null || valueHandlers.Length < _propertyChangedHandlers.Count)
+				{
+					Array.Resize(ref valueHandlers, _propertyChangedHandlers.Count);
+					_valueHandlers = valueHandlers;
+				}
+
+				// Captured once: GetSourceValue below runs user code, which may dispose this item (and clear the field).
+				var dataContextStorage = _dataContextWeakStorage;
+
 				for (var i = 0; i < _propertyChangedHandlers.Count; i++)
 				{
+					if (IsDisposed || dataContextStorage is null || dataContextStorage.IsDisposed)
+					{
+						// Disposed by user code during a previous registration: the caller's SerialDisposable is disposed
+						// too, so it disposes what was registered so far as soon as it's assigned.
+						break;
+					}
+
 					var handler = _propertyChangedHandlers[i];
 
-					var valueHandler = new PropertyChangedValueHandler(this);
+					// Free to reuse: OnDataContextChanged disposed the previous subscription first.
+					var valueHandler = valueHandlers[i] ?? new PropertyChangedValueHandler(this);
+					valueHandler.PreviousValue = null;
 
-					var handlerDisposable = handler.Register(_dataContextWeakStorage!, PropertyName, valueHandler);
+					var handlerDisposable = handler.Register(dataContextStorage, PropertyName, valueHandler);
 
 					if (handlerDisposable != null)
 					{
+						// Kept once its registration has applied, so a registration that never applies keeps nothing.
+						valueHandlers[i] = valueHandler;
+
 						// We need to keep the reference to the updatePropertyHandler
 						// in this disposable. The reference is attached to the source's
 						// object lifetime, to the target (bound) object.
@@ -395,7 +421,8 @@ namespace Uno.UI.DataBinding
 						{
 							var previousValue = valueHandler.PreviousValue;
 
-							valueHandler = null;
+							// The handler outlives the subscription: don't let it keep the last value alive.
+							valueHandler.PreviousValue = null;
 							handlerDisposable.Dispose();
 							OnPropertyChanged(previousValue, DependencyProperty.UnsetValue, shouldRaiseValueChanged: false);
 						});
@@ -409,6 +436,12 @@ namespace Uno.UI.DataBinding
 			{
 				IsDisposed = true;
 				_propertyChanged.Dispose();
+
+				// The subscriptions that used the reference are gone. Return it if this item rented it
+				// (the head item shares the reference of its BindingPath, which returns it instead).
+				var storage = _dataContextWeakStorage;
+				_dataContextWeakStorage = null;
+				WeakReferencePool.ReturnWeakReference(this, storage);
 			}
 
 			private bool IsDisposed
@@ -475,18 +508,18 @@ namespace Uno.UI.DataBinding
 			private class PropertyChangedValueHandler : IPropertyChangedValueHandler, IWeakReferenceProvider
 			{
 				private readonly BindingItem _owner;
-				private readonly ManagedWeakReference _self;
+				private ManagedWeakReference? _self;
 
 				public PropertyChangedValueHandler(BindingItem owner)
 				{
 					_owner = owner;
-					_self = WeakReferencePool.RentSelfWeakReference(this);
 				}
 
 				public object? PreviousValue { get; set; }
 
+				// Lazy: only the INotifyPropertyChanged registration needs it.
 				public ManagedWeakReference WeakReference
-					=> _self;
+					=> _self ??= WeakReferencePool.RentSelfWeakReference(this);
 
 				public void NewValue()
 				{

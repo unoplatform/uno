@@ -52,8 +52,20 @@ namespace Microsoft.UI.Xaml.Data
 
 		private object ExplicitSource
 		{
-			get => _explicitSourceStore?.Target;
-			set => _explicitSourceStore = WeakReferencePool.RentWeakReference(this, value);
+			get => _explicitSourceStore?.TargetOrNull;
+			set
+			{
+				// ElementName bindings set the same element again on every Loaded: keep the reference rather than
+				// renting a new one each time (the replaced one isn't returned, since a path may still hold it).
+				if (value is not null
+					&& _explicitSourceStore is { IsDisposed: false } current
+					&& ReferenceEquals(current.TargetOrNull, value))
+				{
+					return;
+				}
+
+				_explicitSourceStore = WeakReferencePool.RentWeakReference(this, value);
+			}
 		}
 
 		private BindingPath[] _updateSources;
@@ -73,7 +85,7 @@ namespace Microsoft.UI.Xaml.Data
 					return ExplicitSource;
 				}
 
-				return _dataContext?.Target;
+				return _dataContext?.TargetOrNull;
 			}
 			set
 			{
@@ -407,6 +419,12 @@ namespace Microsoft.UI.Xaml.Data
 
 		internal void ApplyElementName()
 		{
+			if (_disposed)
+			{
+				// Would rent a reference that nothing returns any more.
+				return;
+			}
+
 			if (_elementNameSubject is { } elementNameSubject)
 			{
 
@@ -616,6 +634,14 @@ namespace Microsoft.UI.Xaml.Data
 
 		private void ApplyBinding()
 		{
+			if (_disposed)
+			{
+				// A disposed expression stays in its store's binding list, which still resumes and re-themes it.
+				// Its references are returned, so applying it now would write the fallback (or the default) into a
+				// target that another binding or a local value owns.
+				return;
+			}
+
 			var weakDataContext = GetWeakDataContext();
 			if (weakDataContext?.IsAlive ?? false)
 			{
@@ -933,7 +959,24 @@ namespace Microsoft.UI.Xaml.Data
 		{
 			_subscription.Dispose();
 			_bindingPath.Dispose();
+			if (_updateSources is not null)
+			{
+				foreach (var updateSource in _updateSources)
+				{
+					updateSource.Dispose();
+				}
+			}
+
 			_disposed = true;
+
+			// The paths, which may have shared these references, have released them.
+			var dataContext = _dataContext;
+			_dataContext = null;
+			WeakReferencePool.ReturnWeakReference(this, dataContext);
+
+			var explicitSource = _explicitSourceStore;
+			_explicitSourceStore = null;
+			WeakReferencePool.ReturnWeakReference(this, explicitSource);
 		}
 	}
 }

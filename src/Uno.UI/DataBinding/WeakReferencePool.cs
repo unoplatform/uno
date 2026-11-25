@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using Uno.Foundation.Logging;
 
 namespace Uno.UI.DataBinding
 {
@@ -89,6 +90,17 @@ namespace Uno.UI.DataBinding
 		/// </remarks>
 		public static void ReturnWeakReference(object owner, ManagedWeakReference managedWeakReference)
 		{
+			if (managedWeakReference?.IsDisposed == true)
+			{
+				// Returned already: ignored, but worth knowing about, since the owner may still be using it.
+				if (typeof(WeakReferencePool).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(WeakReferencePool).Log().Debug($"A ManagedWeakReference was returned twice (owner: {owner?.GetType()}).");
+				}
+
+				return;
+			}
+
 			if (Enabled
 				&& managedWeakReference != null
 				&& managedWeakReference.Owner == owner
@@ -97,18 +109,20 @@ namespace Uno.UI.DataBinding
 			{
 				lock (_gate)
 				{
-					if (_weakReferencePool.Count < MaxReferences)
+					// Checked again under the lock: a concurrent return of the same reference may have won.
+					if (!managedWeakReference.IsDisposed && _weakReferencePool.Count < MaxReferences)
 					{
-						ReturnUnsafeWeakReference(managedWeakReference.GetUnsafeTargetHandle());
+						var targetHandle = managedWeakReference.GetUnsafeTargetHandle();
 
-						if (!(managedWeakReference.Owner is IWeakReferenceProvider))
-						{
-							// The owner's weak reference may have been borrowed from an IWeakReferenceProvider instance
-							// We're not release it if it's the case.
-							ReturnUnsafeWeakReference(managedWeakReference.GetUnsafeOwnerHandle());
-						}
+						// The owner's weak reference may have been borrowed from an IWeakReferenceProvider instance
+						// We're not release it if it's the case.
+						var ownerHandle = owner is IWeakReferenceProvider ? null : managedWeakReference.GetUnsafeOwnerHandle();
 
+						// Disposed before the handles can be rented again, so a concurrent reader sees it as disposed.
 						managedWeakReference.Dispose();
+
+						ReturnUnsafeWeakReference(targetHandle);
+						ReturnUnsafeWeakReference(ownerHandle);
 					}
 				}
 			}

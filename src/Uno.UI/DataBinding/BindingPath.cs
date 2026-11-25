@@ -265,7 +265,7 @@ namespace Uno.UI.DataBinding
 
 		public object? DataContext
 		{
-			get => _dataContextWeakStorage?.Target;
+			get => _dataContextWeakStorage?.TargetOrNull;
 			set => SetWeakDataContext(Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, value));
 		}
 
@@ -301,6 +301,15 @@ namespace Uno.UI.DataBinding
 		internal void OnValueChanged(object? o)
 		{
 			Expression?.OnValueChanged(o);
+		}
+
+		private static void DisposeItems(BindingItem? item)
+		{
+			if (item is not null)
+			{
+				DisposeItems(item.Next);
+				item.Dispose();
+			}
 		}
 
 		~BindingPath()
@@ -346,8 +355,14 @@ namespace Uno.UI.DataBinding
 
 			if (disposing)
 			{
-				_value.SafeDispose();
-				_chain.SafeDispose();
+				// Tail to head: disposing an item pushes UnsetValue to its Next, which must not re-subscribe.
+				DisposeItems(_chain);
+
+				// The items no longer use the reference. Return it if this path rented it
+				// (a BindingExpression may have provided its own, which it returns itself).
+				var storage = _dataContextWeakStorage;
+				_dataContextWeakStorage = null;
+				Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(this, storage);
 			}
 		}
 
@@ -513,7 +528,7 @@ namespace Uno.UI.DataBinding
 					{
 						if (typeof(BindingPath).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 						{
-							var target = dataContextReference.IsDisposed ? null : dataContextReference.Target;
+							var target = dataContextReference.TargetOrNull;
 							typeof(BindingPath).Log().Debug($"Property changed for {propertyName} on [{target?.GetType()}]");
 						}
 
