@@ -154,6 +154,48 @@ public static class PrettyPrint
 	public static string FormatPoint(double x, double y) => Invariant($"{x:0.#},{y:0.#}");
 
 	/// <summary>
+	/// Formats a transform by kind: <c>Translate(10,20)</c>, <c>Scale(2x,2x)</c>, <c>Rotate(45°)</c>, <c>Skew(10°,0°)</c>, <c>Matrix(...)</c>,
+	/// followed by <c>@{centerX},{centerY}</c> when it has a center; <c>Translate(identity)</c> and so on when it changes nothing.
+	/// A composite transform lists its non-identity parts; a transform group joins its children with <c>|</c>.
+	/// </summary>
+	public static string FormatTransform(Transform? x) => x switch
+	{
+		null => "null",
+		TranslateTransform t => t.X == 0 && t.Y == 0
+			? "Translate(identity)"
+			: Invariant($"Translate({t.X:0.#},{t.Y:0.#})"),
+		ScaleTransform s => s.ScaleX == 1 && s.ScaleY == 1
+			? "Scale(identity)"
+			: Invariant($"Scale({s.ScaleX:0.##}x,{s.ScaleY:0.##}x)") + FormatCenter(s.CenterX, s.CenterY),
+		RotateTransform r => r.Angle == 0
+			? "Rotate(identity)"
+			: Invariant($"Rotate({r.Angle:0.#}°)") + FormatCenter(r.CenterX, r.CenterY),
+		SkewTransform k => k.AngleX == 0 && k.AngleY == 0
+			? "Skew(identity)"
+			: Invariant($"Skew({k.AngleX:0.#}°,{k.AngleY:0.#}°)") + FormatCenter(k.CenterX, k.CenterY),
+		CompositeTransform c => FormatComposite(c),
+		MatrixTransform m => m.Matrix is { M11: 1, M12: 0, M21: 0, M22: 1, OffsetX: 0, OffsetY: 0 }
+			? "Matrix(identity)"
+			: Invariant($"Matrix({m.Matrix.M11:0.##},{m.Matrix.M12:0.##},{m.Matrix.M21:0.##},{m.Matrix.M22:0.##},{m.Matrix.OffsetX:0.#},{m.Matrix.OffsetY:0.#})"),
+		TransformGroup g => string.Join("|", g.Children.Select(FormatTransform)),
+		_ => x.GetType().Name,
+	};
+
+	private static string FormatComposite(CompositeTransform c)
+	{
+		var scale = c.ScaleX != 1 || c.ScaleY != 1 ? Invariant($"Scale({c.ScaleX:0.##}x,{c.ScaleY:0.##}x)") : null;
+		var skew = c.SkewX != 0 || c.SkewY != 0 ? Invariant($"Skew({c.SkewX:0.#}°,{c.SkewY:0.#}°)") : null;
+		var rotation = c.Rotation != 0 ? Invariant($"Rotate({c.Rotation:0.#}°)") : null;
+		var translate = c.TranslateX != 0 || c.TranslateY != 0 ? Invariant($"Translate({c.TranslateX:0.#},{c.TranslateY:0.#})") : null;
+
+		return scale is null && skew is null && rotation is null && translate is null
+			? "Composite(identity)"
+			: string.Concat(scale, skew, rotation, translate, FormatCenter(c.CenterX, c.CenterY));
+	}
+
+	private static string FormatCenter(double x, double y) => x != 0 || y != 0 ? Invariant($"@{x:0.#},{y:0.#}") : "";
+
+	/// <summary>
 	/// Formats a binding expression as its path, followed by its mode when it isn't one-way and its relative source: <c>[Path=Title, TwoWay]</c>.
 	/// </summary>
 	public static string FormatBinding(BindingExpression? be)
