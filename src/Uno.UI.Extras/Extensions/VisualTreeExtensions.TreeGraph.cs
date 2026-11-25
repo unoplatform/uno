@@ -165,6 +165,8 @@ public static partial class VisualTreeExtensions
 #endif
 			//yield return $"Desired={FormatSize(fe.DesiredSize)}";
 			//yield return $"Render={FormatSize(fe.RenderSize)}";
+			//yield return $"AbsRect={FormatRect(fe.TransformToVisual(null).TransformBounds(new(0, 0, fe.ActualWidth, fe.ActualHeight)))}";
+			//if (fe.RenderTransform is { } rt) yield return $"T={FormatTransform(rt)}";
 #if HAS_UNO
 			//if ($"{(fe.IsMeasureDirty ? "M" : null)}{(fe.IsMeasureDirtyPath ? "m" : null)}{(fe.IsArrangeDirty ? "A" : null)}{(fe.IsArrangeDirtyPath ? "a" : null)}" is { Length: > 0 } dirty)
 			//	yield return $"Dirty={dirty}";
