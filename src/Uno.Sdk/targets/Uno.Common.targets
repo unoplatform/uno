@@ -171,4 +171,9 @@
 	<PropertyGroup Condition="'$(UnoDisableHotDesign)' != 'true'">
 		<HotDesignPreviewsFolder Condition="'$(HotDesignPreviewsFolder)' == ''">HotDesignPreviews</HotDesignPreviewsFolder>
 	</PropertyGroup>
+
+	<!-- Define the default folder for Hot Testing tests, so they can be excluded in Release -->
+	<PropertyGroup Condition="$(UnoFeatures.Contains(';hottesting;')) AND '$(UnoDisableHotTesting)' != 'true'">
+		<HotTestingTestsFolder Condition="'$(HotTestingTestsFolder)' == ''">Tests</HotTestingTestsFolder>
+	</PropertyGroup>
 </Project>

@@ -7,6 +7,9 @@
 
 		<!-- Exclude the previews folder when in Optimize (aka Release) build configuration -->
 		<DefaultItemExcludes Condition=" '$(Optimize)' == 'true' AND '$(HotDesignPreviewsFolder)' != '' ">$(DefaultItemExcludes);$(HotDesignPreviewsFolder)/**</DefaultItemExcludes>
+
+		<!-- Exclude the Hot Testing tests folder when in Optimize (aka Release) build configuration -->
+		<DefaultItemExcludes Condition=" '$(Optimize)' == 'true' AND '$(HotTestingTestsFolder)' != '' ">$(DefaultItemExcludes);$(HotTestingTestsFolder)/**</DefaultItemExcludes>
 	</PropertyGroup>
 
 	<!-- Default Includes-->

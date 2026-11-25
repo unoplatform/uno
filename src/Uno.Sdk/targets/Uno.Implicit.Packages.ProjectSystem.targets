@@ -30,6 +30,11 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
 	</ItemGroup>
 
+	<!-- Absent from the Release graph like the packages above; the tests that use it are excluded from those builds (HotTestingTestsFolder). -->
+	<ItemGroup Condition=" $(UnoFeatures.Contains(';hottesting;')) AND '$(UnoDisableHotTesting)' != 'true' ">
+		<_UnoProjectSystemPackageReference Include="Uno.HotTesting" ProjectSystem="true" PrivateAssets="all" Condition="$(Optimize) != 'true'" />
+	</ItemGroup>
+
 	<Choose>
 		<When Condition="$(UnoSingleProject) == 'true'">
 			<ItemGroup Condition="$(IsUnoHead) == 'true'">
