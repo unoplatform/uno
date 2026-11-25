@@ -281,17 +281,18 @@ internal readonly partial struct UnicodeText
 			return (T)value;
 		}
 
-		// ubidi_setPara stores the text and embedding-level pointers rather than copying them, writes the resolved
-		// levels into that array, and ubidi_setLine, ubidi_getLevels and the run functions read them again later.
-		// Both therefore live in native memory that neither moves nor goes back to a pool until ubidi_close.
+		// ubidi_setPara stores the text pointer rather than copying the text, and later calls (ubidi_setLine and the
+		// functions on the line object) may read it again, so the text lives in native memory that doesn't move
+		// until ubidi_close. UnicodeText passes no embedding-levels array: ICU would keep that pointer too, and
+		// would ignore the bidi control characters in the text.
 		public readonly unsafe struct ParagraphBiDi : IDisposable
 		{
-			private readonly void* _buffer;
+			private readonly void* _text;
 
-			public ParagraphBiDi(IntPtr handle, void* buffer)
+			public ParagraphBiDi(IntPtr handle, void* text)
 			{
 				Handle = handle;
-				_buffer = buffer;
+				_text = text;
 			}
 
 			public IntPtr Handle { get; }
@@ -302,7 +303,7 @@ internal readonly partial struct UnicodeText
 				{
 					GetMethod<ubidi_close>()(Handle);
 				}
-				NativeMemory.Free(_buffer);
+				NativeMemory.Free(_text);
 			}
 		}
 
@@ -330,22 +331,13 @@ internal readonly partial struct UnicodeText
 			}
 		}
 
-		// embeddingLevels is either empty or as long as text.
-		public static unsafe ParagraphBiDi CreateBiDiAndSetPara(ReadOnlySpan<char> text, byte paraLevel, ReadOnlySpan<byte> embeddingLevels = default)
+		public static unsafe ParagraphBiDi CreateBiDiAndSetPara(ReadOnlySpan<char> text, byte paraLevel)
 		{
-			var textByteCount = (nuint)text.Length * sizeof(char);
-			var buffer = NativeMemory.Alloc(textByteCount + (nuint)embeddingLevels.Length);
-			var textCopy = (char*)buffer;
+			var textCopy = (char*)NativeMemory.Alloc((nuint)text.Length * sizeof(char));
 			text.CopyTo(new Span<char>(textCopy, text.Length));
-			byte* levelsCopy = null;
-			if (!embeddingLevels.IsEmpty)
-			{
-				levelsCopy = (byte*)buffer + textByteCount;
-				embeddingLevels.CopyTo(new Span<byte>(levelsCopy, embeddingLevels.Length));
-			}
 
-			var bidi = new ParagraphBiDi(GetMethod<ubidi_open>()(), buffer);
-			GetMethod<ubidi_setPara>()(bidi.Handle, (IntPtr)textCopy, text.Length, paraLevel, (IntPtr)levelsCopy, out var setParaErrorCode);
+			var bidi = new ParagraphBiDi(GetMethod<ubidi_open>()(), textCopy);
+			GetMethod<ubidi_setPara>()(bidi.Handle, (IntPtr)textCopy, text.Length, paraLevel, IntPtr.Zero, out var setParaErrorCode);
 			if (setParaErrorCode > 0)
 			{
 				bidi.Dispose();
