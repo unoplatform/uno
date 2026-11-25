@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -8,6 +9,7 @@ using Microsoft.UI.Xaml.Documents.RichTextServices;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Controls.Text.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
 
@@ -21,7 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 	{
 		// MarginCollapsingState is a float alias in the layout tree.
 		[TestMethod]
-		public async Task When_Measure_Single_Paragraph_Matches_ParsedText()
+		public async Task When_Measure_Single_Paragraph()
 		{
 			var run = new Run { Text = "The quick brown fox jumps over the lazy dog and keeps on running past the edge of the block" };
 			var paragraph = new Paragraph();
@@ -37,21 +39,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 
 				var width = SUT.ActualWidth;
 
-				// Oracle: a direct single-pass parse of the same inputs the engine feeds the formatter.
-				var inlines = paragraph.Inlines.TraversedTree.leafTree;
-				var (defaultFont, _) = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle);
-				var expected = ParsedText.ParseText(
-					new Size(width, double.PositiveInfinity),
-					inlines,
-					defaultFont.FontSize,
-					maxLines: 0,
-					lineHeight: 0,
-					LineStackingStrategy.MaxHeight,
-					SUT.TextLineBounds,
-					SUT.TextAlignment,
-					SUT.TextWrapping,
-					SUT.FlowDirection,
-					out var expectedSize);
+				// Expected lines: the paragraph formatted line by line through the formatter the engine uses.
+				BlockLayoutHelpers.GetTextFormatter(SUT, out var formatter);
+				BlockLayoutHelpers.GetParagraphProperties(paragraph, SUT, out var properties);
+				var source = new ParagraphTextSource(paragraph, SUT);
+				var lines = Given_TextFormatter.FormatAllLines(formatter, source, width, properties, out _);
+				var lineCount = lines.Count;
+				var expectedWidth = lines.Max(line => line.Width);
+				var expectedHeight = lines.Sum(line => line.Height);
 
 				// Drive the ported BlockLayout engine directly.
 				var engine = new BlockLayoutEngine(SUT);
@@ -71,20 +66,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 
 				var desired = page.GetDesiredSize();
 
-				Assert.IsTrue(expected.RenderLines.Count > 1, "Text should wrap onto multiple lines to exercise the loop");
+				Assert.IsTrue(lineCount > 1, "Text should wrap onto multiple lines to exercise the loop");
 				Assert.IsTrue(desired.Width > 0 && desired.Height > 0, $"Engine produced a degenerate size {desired}");
 
-				// Desired width is the widest line measured WITHOUT trailing whitespace, matching
-				// WinUI TextLine.Width semantics (SkiaTextLine.Width) rather than ParsedText's
-				// out-size, which includes trailing whitespace.
-				double expectedWidth = 0;
-				foreach (var line in expected.RenderLines)
-				{
-					expectedWidth = Math.Max(expectedWidth, line.WidthWithoutTrailingSpaces);
-				}
-
+				// Desired width is the widest line measured WITHOUT trailing whitespace (WinUI TextLine.Width).
 				Assert.AreEqual(expectedWidth, desired.Width, 1.0, "Engine width should match the widest line");
-				Assert.AreEqual(expectedSize.Height, desired.Height, 1.0, "Engine height should match ParsedText");
+				Assert.AreEqual(expectedHeight, desired.Height, 1.0, "Engine height should be the sum of the line heights");
 
 				// And it must agree with the live control's own measured size.
 				Assert.AreEqual(SUT.DesiredSize.Height, desired.Height, 1.0, "Engine height should match the managed RichTextBlock");
