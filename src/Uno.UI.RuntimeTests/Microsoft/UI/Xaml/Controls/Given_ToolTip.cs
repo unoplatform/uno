@@ -1,5 +1,7 @@
 ﻿using System;
 using Microsoft.UI;
+using System.Linq;
+using System.Reflection;
 using Windows.UI;
 using System.Threading.Tasks;
 using Windows.UI.Input.Preview.Injection;
@@ -23,6 +25,448 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_ToolTip
 	{
+#if HAS_UNO // ToolTipService.GetToolTipReference is internal
+		[TestMethod]
+		public async Task When_String_ToolTip_Changes_Then_Wrapper_Reused()
+		{
+			var owner = new Border { Width = 50, Height = 50 };
+			await UITestHelper.Load(owner);
+
+			ToolTipService.SetToolTip(owner, "first");
+			var wrapper = ToolTipService.GetToolTipReference(owner);
+			Assert.IsNotNull(wrapper);
+			Assert.AreEqual("first", wrapper.Content);
+			var subscriptions = wrapper.OwnerEventSubscriptions;
+			Assert.IsNotNull(subscriptions);
+
+			ToolTipService.SetToolTip(owner, "second");
+
+			Assert.AreSame(wrapper, ToolTipService.GetToolTipReference(owner), "The implicit wrapper should be reused");
+			Assert.AreEqual("second", wrapper.Content);
+			Assert.AreSame(subscriptions, wrapper.OwnerEventSubscriptions, "The owner subscriptions should be kept");
+
+			try
+			{
+				// A change of value closes an open tooltip, as replacing the wrapper did.
+				wrapper.IsOpen = true;
+				await UITestHelper.WaitForIdle();
+
+				ToolTipService.SetToolTip(owner, "third");
+
+				Assert.IsFalse(wrapper.IsOpen, "Changing the value should close the tooltip");
+				Assert.AreSame(wrapper, ToolTipService.GetActualToolTipObject(owner));
+				Assert.AreEqual("third", wrapper.Content);
+			}
+			finally
+			{
+				Microsoft.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_String_ToolTip_Replaced_By_ToolTip()
+		{
+			var owner = new Border { Width = 50, Height = 50 };
+			await UITestHelper.Load(owner);
+
+			ToolTipService.SetToolTip(owner, "text");
+			var wrapper = ToolTipService.GetToolTipReference(owner);
+			Assert.IsNotNull(wrapper);
+
+			var explicitToolTip = new ToolTip { Content = "explicit" };
+			ToolTipService.SetToolTip(owner, explicitToolTip);
+
+			Assert.AreSame(explicitToolTip, ToolTipService.GetToolTipReference(owner));
+			Assert.IsNull(wrapper.OwnerEventSubscriptions, "The discarded wrapper should be unsubscribed");
+			Assert.IsNotNull(explicitToolTip.OwnerEventSubscriptions);
+
+			// Going back to a string from an explicit ToolTip creates a new wrapper; the explicit one is not mutated.
+			ToolTipService.SetToolTip(owner, "text again");
+			var newWrapper = ToolTipService.GetToolTipReference(owner);
+			Assert.AreNotSame(explicitToolTip, newWrapper);
+			Assert.AreEqual("text again", newWrapper.Content);
+			Assert.AreEqual("explicit", explicitToolTip.Content);
+			Assert.IsNull(explicitToolTip.OwnerEventSubscriptions);
+		}
+
+		[TestMethod]
+		public async Task When_String_ToolTip_Set_To_Null()
+		{
+			var owner = new Border { Width = 50, Height = 50 };
+			await UITestHelper.Load(owner);
+
+			ToolTipService.SetToolTip(owner, "text");
+			var wrapper = ToolTipService.GetToolTipReference(owner);
+			Assert.IsNotNull(wrapper);
+
+			ToolTipService.SetToolTip(owner, null);
+
+			Assert.IsNull(ToolTipService.GetToolTipReference(owner));
+			Assert.IsNull(wrapper.OwnerEventSubscriptions);
+
+			// From null, a value gets a new wrapper.
+			ToolTipService.SetToolTip(owner, "back");
+			var newWrapper = ToolTipService.GetToolTipReference(owner);
+			Assert.IsNotNull(newWrapper);
+			Assert.AreEqual("back", newWrapper.Content);
+			Assert.IsNotNull(newWrapper.OwnerEventSubscriptions);
+		}
+
+		[TestMethod]
+		public async Task When_Element_ToolTip_Swapped_For_String_And_Back_Then_Wrapper_Reused()
+		{
+			var owner = new Border { Width = 50, Height = 50 };
+			await UITestHelper.Load(owner);
+
+			var element = new TextBlock { Text = "element" };
+			ToolTipService.SetToolTip(owner, element);
+			var wrapper = ToolTipService.GetToolTipReference(owner);
+			Assert.IsNotNull(wrapper);
+			Assert.AreSame(element, wrapper.Content);
+
+			ToolTipService.SetToolTip(owner, "text");
+			Assert.AreSame(wrapper, ToolTipService.GetToolTipReference(owner));
+			Assert.AreEqual("text", wrapper.Content);
+			Assert.AreNotSame(wrapper, element.GetParent(), "The element replaced in the wrapper should no longer be parented by it");
+
+			ToolTipService.SetToolTip(owner, element);
+			Assert.AreSame(wrapper, ToolTipService.GetToolTipReference(owner));
+			Assert.AreSame(element, wrapper.Content, "The element should be back in the tooltip");
+		}
+
+		[TestMethod]
+		public async Task When_Element_ToolTip_Shared_By_Two_Owners_Then_Change_On_One_Does_Not_Affect_The_Other()
+		{
+			var owner1 = new Border { Width = 50, Height = 50 };
+			var owner2 = new Border { Width = 50, Height = 50 };
+			await UITestHelper.Load(new StackPanel { Children = { owner1, owner2 } });
+
+			var element = new TextBlock { Text = "shared" };
+			ToolTipService.SetToolTip(owner1, element);
+			var shared = ToolTipService.GetToolTipReference(owner1);
+			Assert.IsNotNull(shared);
+
+			// ConvertToToolTip hands a second owner the ToolTip that is the element's parent (as in WinUI). In Uno the
+			// content's reported parent is the template's ContentPresenter (or null before the first open), so that
+			// branch is only reached when something sets the parent; set it here to exercise it.
+			element.SetParent(shared);
+			ToolTipService.SetToolTip(owner2, element);
+			Assert.AreSame(shared, ToolTipService.GetToolTipReference(owner2), "premise: the ToolTip is shared");
+			Assert.IsFalse(shared.IsImplicitToolTip, "A shared ToolTip must not be reused in place");
+
+			ToolTipService.SetToolTip(owner2, "own");
+
+			Assert.AreSame(shared, ToolTipService.GetToolTipReference(owner1));
+			Assert.AreSame(element, shared.Content, "owner1's tooltip should still show the element");
+			var owner2ToolTip = ToolTipService.GetToolTipReference(owner2);
+			Assert.AreNotSame(shared, owner2ToolTip);
+			Assert.AreEqual("own", owner2ToolTip.Content);
+		}
+
+		[TestMethod]
+		public async Task When_Element_Parented_By_Explicit_ToolTip_Then_That_ToolTip_Is_Used()
+		{
+			var owner = new Border { Width = 50, Height = 50 };
+			await UITestHelper.Load(owner);
+
+			var element = new TextBlock { Text = "inside" };
+			var explicitToolTip = new ToolTip { Content = element };
+			// See When_Element_ToolTip_Shared_By_Two_Owners_...: Uno does not report the ToolTip as the content's parent.
+			element.SetParent(explicitToolTip);
+
+			ToolTipService.SetToolTip(owner, "text");
+			var wrapper = ToolTipService.GetToolTipReference(owner);
+
+			ToolTipService.SetToolTip(owner, element);
+
+			Assert.AreSame(explicitToolTip, ToolTipService.GetToolTipReference(owner));
+			Assert.AreEqual("text", wrapper.Content, "The previous wrapper should not have taken the element");
+			Assert.IsNull(wrapper.OwnerEventSubscriptions);
+
+			ToolTipService.SetToolTip(owner, "again");
+			var newWrapper = ToolTipService.GetToolTipReference(owner);
+			Assert.AreNotSame(explicitToolTip, newWrapper);
+			Assert.AreSame(element, explicitToolTip.Content, "The explicit ToolTip must not be changed");
+		}
+
+		[TestMethod]
+		public async Task When_KeyboardAccelerator_ToolTip_Changes_Then_Wrapper_Reused_And_Public_ToolTip_Untouched()
+		{
+			var owner = new Button { Content = "Owner" };
+			await UITestHelper.Load(owner);
+
+			ToolTipService.SetToolTip(owner, "tip");
+			var publicToolTip = ToolTipService.GetToolTipReference(owner);
+
+			ToolTipService.SetKeyboardAcceleratorToolTip(owner, "Ctrl+A");
+			var acceleratorToolTip = ToolTipService.GetKeyboardAcceleratorToolTipObject(owner);
+			Assert.IsNotNull(acceleratorToolTip);
+			Assert.AreNotSame(publicToolTip, acceleratorToolTip);
+
+			ToolTipService.SetKeyboardAcceleratorToolTip(owner, "Ctrl+B");
+
+			Assert.AreSame(acceleratorToolTip, ToolTipService.GetKeyboardAcceleratorToolTipObject(owner));
+			Assert.AreEqual("Ctrl+B", acceleratorToolTip.Content);
+			Assert.AreSame(publicToolTip, ToolTipService.GetToolTipReference(owner));
+			Assert.AreEqual("tip", publicToolTip.Content);
+
+			ToolTipService.SetToolTip(owner, "tip 2");
+			Assert.AreSame(publicToolTip, ToolTipService.GetToolTipReference(owner));
+			Assert.AreSame(acceleratorToolTip, ToolTipService.GetKeyboardAcceleratorToolTipObject(owner));
+			Assert.AreEqual("Ctrl+B", acceleratorToolTip.Content);
+		}
+
+		[TestMethod]
+		public async Task When_PlacementTarget_Set_Between_Changes_Then_Reused_Wrapper_Takes_It()
+		{
+			var owner = new Border { Width = 50, Height = 50 };
+			var target = new Border { Width = 50, Height = 50 };
+			await UITestHelper.Load(new StackPanel { Children = { owner, target } });
+
+			ToolTipService.SetToolTip(owner, "a");
+			var wrapper = ToolTipService.GetToolTipReference(owner);
+			Assert.AreSame(owner, AnchorOf(wrapper));
+
+			ToolTipService.SetPlacementTarget(owner, target);
+			ToolTipService.SetToolTip(owner, "b");
+
+			Assert.AreSame(wrapper, ToolTipService.GetToolTipReference(owner));
+			Assert.AreSame(target, AnchorOf(wrapper), "The reused wrapper should be anchored to the new PlacementTarget");
+		}
+
+		[TestMethod]
+		public async Task When_Placement_Set_On_Owner_Then_It_Survives_A_Value_Change()
+		{
+			var owner = new Border { Width = 50, Height = 50 };
+			await UITestHelper.Load(owner);
+
+			ToolTipService.SetToolTip(owner, "a");
+			var wrapper = ToolTipService.GetToolTipReference(owner);
+			ToolTipService.SetPlacement(owner, PlacementMode.Bottom);
+			Assert.AreEqual(PlacementMode.Bottom, wrapper.Placement);
+
+			ToolTipService.SetToolTip(owner, "b");
+
+			// Replacing the wrapper reset this to Top; the reused wrapper keeps what the owner asked for.
+			Assert.AreEqual(PlacementMode.Bottom, wrapper.Placement);
+		}
+
+		[TestMethod]
+		public async Task When_Closed_Handler_Changes_Value_Then_Nested_Value_Wins()
+		{
+			var owner = new Border { Width = 50, Height = 50 };
+			await UITestHelper.Load(owner);
+
+			ToolTipService.SetToolTip(owner, "a");
+			var wrapper = ToolTipService.GetToolTipReference(owner);
+
+			var nestedDone = false;
+			wrapper.Closed += (_, _) =>
+			{
+				if (!nestedDone)
+				{
+					nestedDone = true;
+					ToolTipService.SetToolTip(owner, "nested");
+				}
+			};
+
+			try
+			{
+				wrapper.IsOpen = true;
+				await UITestHelper.WaitForIdle();
+
+				ToolTipService.SetToolTip(owner, "outer");
+
+				Assert.IsTrue(nestedDone, "premise: the Closed handler ran");
+				Assert.AreEqual("nested", ToolTipService.GetToolTip(owner));
+				Assert.AreEqual("nested", wrapper.Content, "The outer change must not overwrite the nested one");
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_UseToolTips_Turned_Off_Then_Value_Change_Unregisters()
+		{
+			var owner = new Border { Width = 50, Height = 50 };
+			await UITestHelper.Load(owner);
+
+			ToolTipService.SetToolTip(owner, "a");
+			var wrapper = ToolTipService.GetToolTipReference(owner);
+			Assert.IsNotNull(wrapper);
+
+			var previous = FeatureConfiguration.ToolTip.UseToolTips;
+			FeatureConfiguration.ToolTip.UseToolTips = false;
+			try
+			{
+				ToolTipService.SetToolTip(owner, "b");
+
+				Assert.IsNull(ToolTipService.GetToolTipReference(owner), "With tooltips off, a value change leaves no tooltip, as before");
+				Assert.IsNull(wrapper.OwnerEventSubscriptions);
+			}
+			finally
+			{
+				FeatureConfiguration.ToolTip.UseToolTips = previous;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Owner_Unloaded_And_Reloaded_Between_Changes_Then_Wrapper_Reused()
+		{
+			var host = new StackPanel();
+			var owner = new Border { Width = 50, Height = 50 };
+			host.Children.Add(owner);
+			await UITestHelper.Load(host);
+
+			ToolTipService.SetToolTip(owner, "a");
+			var wrapper = ToolTipService.GetToolTipReference(owner);
+			var subscriptions = wrapper.OwnerEventSubscriptions;
+
+			host.Children.Remove(owner);
+			await UITestHelper.WaitForIdle();
+			ToolTipService.SetToolTip(owner, "b");
+			host.Children.Add(owner);
+			await TestServices.WindowHelper.WaitForLoaded(owner);
+
+			Assert.AreSame(wrapper, ToolTipService.GetToolTipReference(owner));
+			Assert.AreSame(subscriptions, wrapper.OwnerEventSubscriptions);
+			Assert.AreEqual("b", wrapper.Content);
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Value_Changes_While_Open_Is_Pending_Then_ToolTip_Does_Not_Open()
+		{
+			var owner = new Button { Content = "Owner", Width = 120, Height = 40 };
+			ToolTipService.SetToolTip(owner, "a");
+			await UITestHelper.Load(owner);
+			var wrapper = ToolTipService.GetToolTipReference(owner);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			try
+			{
+				mouse.MoveTo(owner.GetAbsoluteBoundsRect().GetCenter());
+				await UITestHelper.WaitForIdle();
+				Assert.AreSame(wrapper, ToolTipService.CurrentToolTipForTesting, "premise: the open is pending");
+
+				ToolTipService.SetToolTip(owner, "b");
+
+				Assert.IsNull(ToolTipService.CurrentToolTipForTesting, "The pending open should be cancelled");
+				await Task.Delay(TimeSpan.FromMilliseconds(FeatureConfiguration.ToolTip.ShowDelay + 300));
+				Assert.IsFalse(wrapper.IsOpen, "The tooltip should not open after the value changed");
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+				mouse.MoveBy(0, 200);
+				await UITestHelper.WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Value_Changes_While_Open_Then_Closes_And_Reopens_Once_With_New_Content()
+		{
+			var owner = new Button { Content = "Owner", Width = 120, Height = 40, DataContext = "dc1" };
+			ToolTipService.SetToolTip(owner, "a");
+			await UITestHelper.Load(owner);
+			var wrapper = ToolTipService.GetToolTipReference(owner);
+
+			var opened = 0;
+			wrapper.Opened += (_, _) => opened++;
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+			var center = owner.GetAbsoluteBoundsRect().GetCenter();
+
+			try
+			{
+				mouse.MoveTo(center);
+				await UITestHelper.WaitFor(() => wrapper.IsOpen, timeoutMS: 5000, message: "premise: the tooltip opened on hover");
+
+				// Several changes, as a recycled row would get.
+				ToolTipService.SetToolTip(owner, "b");
+				ToolTipService.SetToolTip(owner, "c");
+				ToolTipService.SetToolTip(owner, "d");
+				Assert.IsFalse(wrapper.IsOpen, "A value change should close the open tooltip");
+				Assert.IsNull(ToolTipService.CurrentToolTipForTesting);
+
+				owner.DataContext = "dc2";
+				mouse.MoveBy(0, 200);
+				await UITestHelper.WaitForIdle();
+				opened = 0;
+				mouse.MoveTo(center);
+				await UITestHelper.WaitFor(() => wrapper.IsOpen, timeoutMS: 5000, message: "The tooltip did not open again on hover");
+				await Task.Delay(300);
+
+				Assert.AreEqual(1, opened, "The owner handlers should open the tooltip once, not once per value change");
+				Assert.AreEqual("d", wrapper.Content);
+				Assert.AreEqual("dc2", wrapper.DataContext);
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+				mouse.MoveBy(0, 200);
+				await UITestHelper.WaitForIdle();
+			}
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_String_ToolTip_Changes_Then_Same_ToolTip_Is_Shown()
+		{
+			// Public API only: the ToolTip shown in the popup is the same instance before and after a value change.
+			var owner = new Button { Content = "Owner", Width = 120, Height = 40 };
+			ToolTipService.SetToolTip(owner, "a");
+			await UITestHelper.Load(owner);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+			var center = owner.GetAbsoluteBoundsRect().GetCenter();
+
+			async Task<ToolTip> HoverAndGetShownToolTip()
+			{
+				mouse.MoveTo(center);
+				ToolTip shown = null;
+				await UITestHelper.WaitFor(
+					() => (shown = VisualTreeHelper.GetOpenPopupsForXamlRoot(owner.XamlRoot).Select(p => p.Child).OfType<ToolTip>().FirstOrDefault()) is not null,
+					timeoutMS: 5000,
+					message: "The tooltip did not open on hover");
+				mouse.MoveBy(0, 200);
+				await UITestHelper.WaitForIdle();
+				return shown;
+			}
+
+			try
+			{
+				var first = await HoverAndGetShownToolTip();
+				Assert.AreEqual("a", first.Content);
+
+				ToolTipService.SetToolTip(owner, "b");
+
+				var second = await HoverAndGetShownToolTip();
+				Assert.AreEqual("b", second.Content);
+				Assert.AreSame(first, second, "The value change should reuse the ToolTip rather than create a new one");
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+				mouse.MoveBy(0, 200);
+				await UITestHelper.WaitForIdle();
+			}
+		}
+#endif
+
 		[TestMethod]
 		public async Task When_DataContext_Set_On_ToolTip_Owner()
 		{
@@ -1287,6 +1731,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				popups[i].IsOpen = false;
 			}
 		}
+
+		/// <summary>The element a ToolTip is placed relative to (the owner, or its PlacementTarget): its private _owner field.</summary>
+		private static object AnchorOf(ToolTip toolTip)
+			=> (typeof(ToolTip).GetField("_owner", BindingFlags.Instance | BindingFlags.NonPublic) ?? throw new AssertFailedException("ToolTip has no _owner field."))
+				.GetValue(toolTip);
 	}
 
 	[Bindable]
