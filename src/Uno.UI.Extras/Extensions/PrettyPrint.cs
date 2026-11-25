@@ -30,14 +30,13 @@ public static class PrettyPrint
 
 		return o.GetType().Name;
 	}
-	public static string FormatObject(object o)
+	public static string FormatValue(object o)
 	{
 		if (o is null) return $"null";
-		if (o is FrameworkElement or DependencyObject) return o.GetType().Name;
+		if (o is DependencyObject) return o.GetType().Name;
 
 		return o.ToString();
 	}
-	public static string FormatData(object x) => x?.GetType().Name ?? "<null>";
 	public static string FormatCornerRadius(CornerRadius x)
 	{
 		// format: uniform, [left,top,right,bottom]

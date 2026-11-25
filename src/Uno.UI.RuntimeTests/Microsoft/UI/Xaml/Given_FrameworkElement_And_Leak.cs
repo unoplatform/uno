@@ -361,7 +361,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				{
 					if (x is FrameworkElement fe)
 					{
-						yield return $"TP={PrettyPrint.FormatType(fe.GetTemplatedParent())}, DC={PrettyPrint.FormatObject(fe.DataContext)}";
+						yield return $"TP={PrettyPrint.FormatType(fe.GetTemplatedParent())}, DC={PrettyPrint.FormatValue(fe.DataContext)}";
 					}
 				}
 #endif

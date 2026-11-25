@@ -33,6 +33,7 @@ The other changes are:
 - `GetVisualAncestry()` is removed. Use `EnumerateVisualTreeAncestors().OfType<UIElement>()`, which follows `VisualTreeHelper.GetParent`: from a list item, it also returns the list's panel and `ScrollViewer`.
 - `AsNativeView()` is removed. Use `element as DependencyObject`.
 - `TryGetDpValue` is now public. It returns `false` when the property's value isn't of the requested type, instead of throwing.
+- `PrettyPrint.FormatObject` is renamed `FormatValue`, and `PrettyPrint.FormatData` is removed. Use `o?.GetType().Name` instead.
 - `UIElement.ShowLocalVisualTree()`, which only existed in Debug builds of Uno Platform, is removed. Use `TreeGraph()`.
 - `BinderReferenceHolder.GetInactiveChildViewBinders()` and `GetInactiveChildInstancesOfType<T>()` are removed. They threw `NotImplementedException` as soon as a tracked view was active.
 
