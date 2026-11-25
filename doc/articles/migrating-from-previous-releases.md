@@ -32,6 +32,8 @@ The other changes are:
 - `Uno.UI.ViewExtensions.EnumerateAllChildren(maxDepth)` is now `VisualTreeExtensions.EnumerateRawDescendants(maxDepth)`, in the `Uno.UI.Extensions` namespace. It no longer stops at 20 levels by default; pass `maxDepth: 20` to keep that limit. The overload that takes a selector is removed; filter the result with LINQ instead. Unlike `EnumerateDescendants`, it also returns the placeholders that `x:Load` leaves for elements not loaded yet.
 - `GetVisualAncestry()` is removed. Use `EnumerateVisualTreeAncestors().OfType<UIElement>()`, which follows `VisualTreeHelper.GetParent`: from a list item, it also returns the list's panel and `ScrollViewer`.
 - `AsNativeView()` is removed. Use `element as DependencyObject`.
+- `FindFirstAncestorOrThrow` and `FindFirstDescendantOrThrow` throw `InvalidOperationException` instead of `Exception`, and `T` must be a reference type. Code that catches `Exception` still works.
+- `TreeGraph()` without a describer now lists only the values that differ from their defaults (`VisualTreeExtensions.DescribeLayout`). Pass `VisualTreeExtensions.DescribeVisual` for borders, backgrounds and visual states.
 - `TryGetDpValue` is now public. It returns `false` when the property's value isn't of the requested type, instead of throwing.
 - `PrettyPrint.FormatObject` is renamed `FormatValue`, and `PrettyPrint.FormatData` is removed. Use `o?.GetType().Name` instead.
 - `UIElement.ShowLocalVisualTree()`, which only existed in Debug builds of Uno Platform, is removed. Use `TreeGraph()`.
