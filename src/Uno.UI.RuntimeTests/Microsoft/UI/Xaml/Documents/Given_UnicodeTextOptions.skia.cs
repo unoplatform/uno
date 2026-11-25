@@ -17,7 +17,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents;
 // The UnicodeTextOptions inputs, which RichTextBlock's paragraph layout relies on, checked on the engine directly.
 [TestClass]
 [RunsOnUIThread]
-public class Given_UnicodeTextOptions
+public partial class Given_UnicodeTextOptions
 {
 	private const string Latin = "The quick brown fox jumps over the lazy dog while the five boxing wizards jump quickly";
 	private const string Hebrew = "אבג דהוז חטי כלמנ סעפ צקרש תאב גדהו";
@@ -48,7 +48,9 @@ public class Given_UnicodeTextOptions
 		FlowDirection flowDirection = FlowDirection.LeftToRight,
 		TextTrimming trimming = TextTrimming.None,
 		UnicodeTextOptions options = default,
-		TextWrapping wrapping = TextWrapping.Wrap)
+		TextWrapping wrapping = TextWrapping.Wrap,
+		bool spellCheck = false,
+		ParagraphLayoutInfo? endingParagraphLayout = null)
 	{
 		var list = inlines.ToList();
 		return new UnicodeText(
@@ -63,11 +65,11 @@ public class Given_UnicodeTextOptions
 			null,
 			wrapping,
 			trimming,
-			false,
+			spellCheck,
 			_listener,
 			false,
 			0,
-			null,
+			endingParagraphLayout,
 			null,
 			null,
 			false,

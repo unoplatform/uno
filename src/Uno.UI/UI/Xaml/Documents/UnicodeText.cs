@@ -1790,6 +1790,38 @@ internal readonly partial struct UnicodeText : IParsedText
 		(int startIndex, int length)? compositionRange,
 		bool suppressBackplate,
 		Color? foregroundOverride)
+		=> DrawLines(owner, session, null, caret, highlighters, compositionRange, suppressBackplate, foregroundOverride);
+
+	/// <summary>
+	/// How <see cref="DrawLines"/> draws a line. <see cref="GetLineDraw"/> gives the values that draw it where
+	/// <see cref="Draw"/> does.
+	/// </summary>
+	/// <param name="Line">The line, numbered as in <see cref="GetLineInfo"/>.</param>
+	/// <param name="Translation">How far the line's contents move from where the layout puts them (the
+	/// <see cref="UnicodeTextLineInfo"/> coordinates), on both axes. Zero draws the line where <see cref="Draw"/> does.</param>
+	/// <param name="BandTop">The top of the band that the line's character background, highlight, selection and
+	/// high-contrast fills and its caret cover, where it is drawn: <see cref="Translation"/> doesn't move it.</param>
+	/// <param name="BandHeight">The height of that band.</param>
+	internal readonly record struct LineDraw(int Line, Vector2 Translation, float BandTop, float BandHeight);
+
+	/// <summary>Draws a line where <see cref="Draw"/> does: no translation, and the line box as the band.</summary>
+	internal LineDraw GetLineDraw(int lineIndex)
+	{
+		var info = GetLineInfo(lineIndex);
+		return new LineDraw(lineIndex, Vector2.Zero, info.Top, info.Height);
+	}
+
+	/// <summary>
+	/// Draws the given lines, each at its own position. Null draws every line where the layout put it, as
+	/// <see cref="Draw"/> does.
+	/// </summary>
+	internal void DrawLines(UIElement owner, in Visual.PaintingSession session,
+		IReadOnlyList<LineDraw>? lines,
+		(int index, CompositionBrush brush, float thickness)? caret,
+		IEnumerable<TextHighlighter> highlighters,
+		(int startIndex, int length)? compositionRange,
+		bool suppressBackplate,
+		Color? foregroundOverride)
 	{
 		var useHighContrastAdjustment = owner.UseHighContrastAdjustment();
 		var effectiveOpacity = useHighContrastAdjustment && session.Opacity > 0
@@ -1834,8 +1866,38 @@ internal readonly partial struct UnicodeText : IParsedText
 		var highlighterSlices = highlighterSlicer.GetSegments();
 		var highlighterIndex = 0;
 		Rect? pendingHighContrastBackplate = null;
-		for (var clusterIndex = 0; clusterIndex < _clustersInLogicalOrder.Count; clusterIndex++)
+		// With explicit lines, the clusters of one line after another, each line at its own place.
+		var lineDrawIndex = -1;
+		var previousLineStart = -1;
+		var lineClustersEnd = lines is null ? _clustersInLogicalOrder.Count : 0;
+		LineDraw lineDraw = default;
+		LineDraw? endingLineDraw = null;
+		for (var clusterIndex = 0; ; clusterIndex++)
 		{
+			while (lines is not null && clusterIndex >= lineClustersEnd && ++lineDrawIndex < lines.Count)
+			{
+				lineDraw = lines[lineDrawIndex];
+				if (lineDraw.Line >= _lines.Count)
+				{
+					endingLineDraw = lineDraw;
+					continue;
+				}
+
+				(clusterIndex, lineClustersEnd) = (GetFirstClusterOfLine(lineDraw.Line), GetFirstClusterOfLine(lineDraw.Line + 1));
+				// The lines may come in any order. The indices only move forward, so lines in order continue where the
+				// previous one ended, and a line that starts at or before the previous one's start scans from the beginning.
+				if (clusterIndex <= previousLineStart)
+				{
+					(highlighterIndex, runBreakIndex, wordBoundariesIndex) = (0, 0, 0);
+				}
+
+				previousLineStart = clusterIndex;
+			}
+			if (clusterIndex >= lineClustersEnd)
+			{
+				break;
+			}
+
 			var cluster = _clustersInLogicalOrder[clusterIndex];
 			while (highlighterSlices[highlighterIndex].End <= cluster.Value.start)
 			{
@@ -1864,7 +1926,17 @@ internal readonly partial struct UnicodeText : IParsedText
 			var unalignedX = cluster.Value.indexInLine == 0
 				? 0
 				: _xyTable[lineIndex].prefixSummedWidths[cluster.Value.indexInLine - 1].sumUntilAfterCluster;
-			var alignmentOffset = GetAlignmentOffsetForLine(line);
+			// The x of the line's left edge, and the band its fills and caret cover.
+			float alignmentOffset, bandTop, bandHeight;
+			if (lines is null)
+			{
+				(alignmentOffset, bandTop, bandHeight) = (GetAlignmentOffsetForLine(line), y, line.lineHeight);
+			}
+			else
+			{
+				y += lineDraw.Translation.Y;
+				(alignmentOffset, bandTop, bandHeight) = (GetAlignmentOffsetForLine(line) + lineDraw.Translation.X, lineDraw.BandTop, lineDraw.BandHeight);
+			}
 			var positionAcc = new Vector2(unalignedX + alignmentOffset, y + line.baselineOffset);
 			var fontDetails = cluster.Value.fontDetails;
 			var clusterHidden = GetRunHidden(cluster.Value, _runBreaks);
@@ -1945,8 +2017,8 @@ internal readonly partial struct UnicodeText : IParsedText
 			// Floor every edge and +1 the trailing edges so adjacent background
 			// rects always overlap by 1 px, preventing antialiased-edge seams.
 			var backgroundRect = new Rect(
-				new Point(MathF.Floor(unalignedX + alignmentOffset), MathF.Floor(y)),
-				new Point(MathF.Floor(unalignedX + alignmentOffset + cluster.Value.width) + 1, MathF.Floor(y + line.lineHeight) + 1));
+				new Point(MathF.Floor(unalignedX + alignmentOffset), MathF.Floor(bandTop)),
+				new Point(MathF.Floor(unalignedX + alignmentOffset + cluster.Value.width) + 1, MathF.Floor(bandTop + bandHeight) + 1));
 			if (!clusterHidden && !useHighContrastAdjustment && _runBreaks[runBreakIndex].background is { } characterBackground)
 			{
 				session.Session.DrawRect(backgroundRect, WithOpacity(characterBackground, effectiveOpacity));
@@ -2122,14 +2194,14 @@ internal readonly partial struct UnicodeText : IParsedText
 				if (caretIndex >= cluster.Value.start && caretIndex < cluster.Value.end)
 				{
 					caretRect = cluster.Value.rtl
-						? new Rect(new Point(cluster.Value.width + alignmentOffset + unalignedX - caretThickness, y), new Point(cluster.Value.width + alignmentOffset + unalignedX, y + line.lineHeight))
-						: new Rect(new Point(alignmentOffset + unalignedX, y), new Point(alignmentOffset + unalignedX + caretThickness, y + line.lineHeight));
+						? new Rect(new Point(cluster.Value.width + alignmentOffset + unalignedX - caretThickness, bandTop), new Point(cluster.Value.width + alignmentOffset + unalignedX, bandTop + bandHeight))
+						: new Rect(new Point(alignmentOffset + unalignedX, bandTop), new Point(alignmentOffset + unalignedX + caretThickness, bandTop + bandHeight));
 				}
 				else if (_endingNewLineLineHeight is null && caretIndex >= cluster.Value.start && clusterIndex == _clustersInLogicalOrder.Count - 1)
 				{
 					caretRect = cluster.Value.rtl
-						? new Rect(new Point(alignmentOffset + unalignedX - caretThickness, y), new Point(alignmentOffset + unalignedX, y + line.lineHeight))
-						: new Rect(new Point(cluster.Value.width + alignmentOffset + unalignedX, y), new Point(cluster.Value.width + alignmentOffset + unalignedX + caretThickness, y + line.lineHeight));
+						? new Rect(new Point(alignmentOffset + unalignedX - caretThickness, bandTop), new Point(alignmentOffset + unalignedX, bandTop + bandHeight))
+						: new Rect(new Point(cluster.Value.width + alignmentOffset + unalignedX, bandTop), new Point(cluster.Value.width + alignmentOffset + unalignedX + caretThickness, bandTop + bandHeight));
 				}
 			}
 		}
@@ -2171,6 +2243,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		// Draw paragraph list markers on the first visual line of each paragraph
 		DrawParagraphMarkers(
 			session,
+			lines,
 			foregroundOverride ?? (useHighContrastAdjustment ? WithOpacity(highContrastForeground, effectiveOpacity) : null));
 
 		if (inlineObjectImages is not null)
@@ -2196,11 +2269,11 @@ internal readonly partial struct UnicodeText : IParsedText
 					color, 1);
 		}
 
-		if (caretRect is null && caret?.index == _text.Length) // ending new line or empty text
+		if (caretRect is null && caret?.index == _text.Length && (lines is null || endingLineDraw is not null)) // ending new line or empty text
 		{
-			var alignmentOffset = GetAlignmentOffsetForLine(null);
-			var top = _endingLineContentTop;
-			var height = _endingNewLineLineHeight ?? _defaultFontDetails.LineHeight;
+			var (alignmentOffset, top, height) = endingLineDraw is { } ending
+				? (GetAlignmentOffsetForLine(null) + ending.Translation.X, ending.BandTop, ending.BandHeight)
+				: (GetAlignmentOffsetForLine(null), _endingLineContentTop, _endingNewLineLineHeight ?? _defaultFontDetails.LineHeight);
 			caretRect = IsLineRightToLeft(null)
 				? new Rect(new Point(alignmentOffset - caret.Value.thickness, top), new Point(alignmentOffset, top + height))
 				: new Rect(new Point(alignmentOffset, top), new Point(alignmentOffset + caret.Value.thickness, top + height));
@@ -2212,11 +2285,32 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 	}
 
-	private void DrawParagraphMarkers(in Visual.PaintingSession session, Color? foregroundOverride)
+	// A marker moves with its line.
+	private void DrawParagraphMarkers(in Visual.PaintingSession session, IReadOnlyList<LineDraw>? lines, Color? foregroundOverride)
 	{
 		var runBreakIndex = 0;
-		for (var lineIndex = 0; lineIndex < _lines.Count; lineIndex++)
+		for (var i = 0; i < (lines?.Count ?? _lines.Count + 1); i++)
 		{
+			var lineIndex = lines?[i].Line ?? i;
+			var (dx, dy) = lines is null ? (0f, 0f) : (lines[i].Translation.X, lines[i].Translation.Y);
+			if (lineIndex >= _lines.Count)
+			{
+				if (_endingNewLineLineHeight is not null
+					&& _endingParagraphLayout is { MarkerText.Length: > 0 } endingLayout)
+				{
+					DrawParagraphMarker(
+						session,
+						endingLayout,
+						_defaultFontDetails.FontHandle,
+						(float)_availableSize.Width,
+						dx,
+						_endingLineContentTop + _endingLineBaselineOffset + dy,
+						_defaultForeground,
+						foregroundOverride);
+				}
+				continue;
+			}
+
 			var line = _lines[lineIndex];
 			if (!line.isFirstLineOfParagraph
 				|| line.paragraphLayout is not { MarkerText.Length: > 0 } layout)
@@ -2224,6 +2318,10 @@ internal readonly partial struct UnicodeText : IParsedText
 				continue;
 			}
 
+			if (lines is not null)
+			{
+				runBreakIndex = 0; // the lines may come in any order
+			}
 			while (runBreakIndex < _runBreaks.Count - 1 && _runBreaks[runBreakIndex].end <= line.start)
 			{
 				runBreakIndex++;
@@ -2235,23 +2333,30 @@ internal readonly partial struct UnicodeText : IParsedText
 				layout,
 				font,
 				(float)_availableSize.Width,
-				GetLineContentTop(lineIndex) + line.baselineOffset,
+				dx,
+				GetLineContentTop(lineIndex) + line.baselineOffset + dy,
 				_runBreaks[runBreakIndex].foreground,
 				foregroundOverride);
 		}
+	}
 
-		if (_endingNewLineLineHeight is not null
-			&& _endingParagraphLayout is { MarkerText.Length: > 0 } endingLayout)
+	// The index in _clustersInLogicalOrder of a line's first cluster, or of the end for the line after the last.
+	private int GetFirstClusterOfLine(int lineIndex)
+	{
+		var (low, high) = (0, _clustersInLogicalOrder.Count);
+		while (low < high)
 		{
-			DrawParagraphMarker(
-				session,
-				endingLayout,
-				_defaultFontDetails.FontHandle,
-				(float)_availableSize.Width,
-				_endingLineContentTop + _endingLineBaselineOffset,
-				_defaultForeground,
-				foregroundOverride);
+			var middle = (low + high) / 2;
+			if (_clustersInLogicalOrder[middle].Value.lineIndex < lineIndex)
+			{
+				low = middle + 1;
+			}
+			else
+			{
+				high = middle;
+			}
 		}
+		return low;
 	}
 
 	private sealed record MarkerShape(ushort[] Glyphs, Vector2[] Positions, Rect Ink);
@@ -2274,6 +2379,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		ParagraphLayoutInfo layout,
 		IFont font,
 		float totalWidth,
+		float dx,
 		float baseline,
 		Brush? foreground,
 		Color? foregroundOverride)
@@ -2288,7 +2394,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			_ => markerAnchor - markerBounds.Width,
 		};
 		session.Session.Save();
-		session.Session.Translate((float)(markerLeft - markerBounds.Left), 0);
+		session.Session.Translate((float)(markerLeft - markerBounds.Left) + dx, 0);
 		session.Session.DrawGlyphRun(font, glyphs, positions, baseline, foregroundOverride ?? BrushToColor(foreground, session.Opacity));
 		session.Session.Restore();
 	}
