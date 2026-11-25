@@ -19,7 +19,8 @@ public static class PrettyPrint
 	private static readonly Lazy<Dictionary<Color, string>> _knownColors = new(() => typeof(Colors)
 		.GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
 		.Where(x => x.PropertyType == typeof(Color))
-		.Where(x => !"Aqua=Cyan,Fuchsia=Magenta".Split(',').SelectMany(y => y.Split('=').Skip(1)).Contains(x.Name)) // skip duplicated colors
+		// Aqua/Cyan and Fuchsia/Magenta are the same color: keep the first name of each pair, as ToDictionary rejects duplicate keys.
+		.Where(x => x.Name is not ("Cyan" or "Magenta"))
 		.ToDictionary(x => (Color)x.GetValue(null)!, x => x.Name)
 	);
 
