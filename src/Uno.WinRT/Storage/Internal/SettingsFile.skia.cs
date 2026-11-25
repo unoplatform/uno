@@ -368,7 +368,7 @@ internal sealed class SettingsFile
 		{
 			File.Delete(temporaryPath);
 		}
-		catch (Exception e)
+		catch (Exception e) when (e is IOException or UnauthorizedAccessException)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -383,7 +383,7 @@ internal sealed class SettingsFile
 		{
 			WriteInPlace(content);
 		}
-		catch (Exception e)
+		catch (Exception e) when (e is IOException or UnauthorizedAccessException)
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
