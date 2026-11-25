@@ -110,7 +110,7 @@
       font-style: normal;
       line-height: 14px;
       letter-spacing: normal;
-      text-transform: uppercase;
+      text-transform: none;
       color: $black;
 
       &:hover,
@@ -291,16 +291,50 @@
        *            instead of a column (default). This makes it possible to have
        *            multiple columns side by side by add the row-menu class in wordpress.
        */
-      &.row-menu > ul {
-        flex-direction: row;
+      &.row-menu {
+        // Multi-column panels are too wide to hang off their item without leaving the window, so
+        // they are placed against the header instead, inside its right padding.
+        @include media-breakpoint-up(lg) {
+          position: static;
+        }
+
+        & > ul {
+          flex-direction: row;
+
+          @include media-breakpoint-up(lg) {
+            top: 100% !important;
+            left: auto !important;
+            right: 32px !important;
+
+            // Keeps the panel open while the pointer crosses the gap from the item to the panel.
+            &::before {
+              content: "";
+              position: absolute;
+              left: 0;
+              right: 0;
+              bottom: 100%;
+              height: 32px;
+            }
+          }
+        }
       }
     }
   }
 
+  // Download and Sign in share one box model so they line up: same display, line height and
+  // vertical padding, and a border on both (transparent on Download).
+  .get-started-btn a,
+  .custom-login-item a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    line-height: 24px;
+  }
+
   .get-started-btn {
     a {
-      display: block;
-      border: none;
+      border: 2px solid transparent;
       border-radius: 8px;
       margin-left: 0;
       line-height: 24px;
