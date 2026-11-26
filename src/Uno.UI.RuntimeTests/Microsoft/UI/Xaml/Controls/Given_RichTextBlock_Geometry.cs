@@ -256,6 +256,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// Measured on WinUI: a TextBlock too narrow for a character and the ellipsis still shows its first cluster and the
+		// ellipsis ("W…" from "WW…" at 47 px wide; " …" from " Hello world", whose first cluster is the space), and
+		// RichTextBlock trims the same way.
+		[TestMethod]
+		[RequiresScaling(1f)]
+		[DataRow("TextBlock", "W||||||||")]
+		[DataRow("TextBlock", " Hello world")]
+		public async Task When_Trimmed_Without_Room_Keeps_First_Cluster(string control, string text)
+		{
+			var probe = new TextBlock { Text = "W", FontSize = 40 };
+			await TextInkHelper.Show(probe, 400, 100);
+			var glyph = probe.ActualWidth;
+			probe.Text = "…";
+			await WindowHelper.WaitForIdle();
+			var ellipsis = probe.ActualWidth;
+			await Clear();
+
+			// Room for the first character and half the ellipsis, so not for a second character.
+			var width = glyph + ellipsis / 2;
+			FrameworkElement sut;
+			if (control == "TextBlock")
+			{
+				sut = new TextBlock { Text = text, FontSize = 40, Width = width, TextWrapping = TextWrapping.NoWrap, TextTrimming = TextTrimming.CharacterEllipsis, Foreground = new SolidColorBrush(Colors.Red) };
+			}
+			else
+			{
+				var rtb = new RichTextBlock { FontSize = 40, Width = width, TextWrapping = TextWrapping.NoWrap, TextTrimming = TextTrimming.CharacterEllipsis, Foreground = new SolidColorBrush(Colors.Red) };
+				rtb.Blocks.Add(CreateParagraph(new Run { Text = text }));
+				sut = rtb;
+			}
+
+			try
+			{
+				var (_, bitmap) = await TextInkHelper.Show(sut, 400, 100);
+				var (top, bottom) = TextInkHelper.DrawnY(bitmap, Colors.Red);
+				if (text.StartsWith(' '))
+				{
+					// The space and the ellipsis: only the dots are drawn.
+					Assert.IsTrue(bottom - top < 10, $"Only the ellipsis should be drawn (ink rows {top}..{bottom})");
+					return;
+				}
+
+				Assert.IsTrue(bottom - top > 15, $"A character should be drawn (ink rows {top}..{bottom})");
+				// "W…": no bar after the W, whose ink ends before the glyph's advance.
+				var ink = TextInkHelper.Letters(bitmap, Colors.Red);
+				Assert.IsTrue(ink.Letters.Max < glyph, $"Only the first character should be kept: letters {ink.Letters}, glyph {glyph:F1}");
+			}
+			finally
+			{
+				await Clear();
+			}
+		}
+
 		private static async Task AssertLineHeights(RichTextBlock rtb, double height, double baseline)
 		{
 			try

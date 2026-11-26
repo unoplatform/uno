@@ -7,6 +7,7 @@ using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI;
 using static Private.Infrastructure.TestServices;
 
@@ -67,6 +68,21 @@ internal static class TextInkHelper
 			}
 		}
 		return new InkSpan(min, max);
+	}
+
+	// The ink of a colour that must be drawn: an empty span would satisfy any assertion on its position or order.
+	public static InkSpan DrawnX(RawBitmap bitmap, Color color, int top = 0, int bottom = int.MaxValue)
+	{
+		var ink = InkX(bitmap, color, top, bottom);
+		Assert.IsFalse(ink.IsEmpty, $"{color} should be drawn between rows {top} and {bottom}");
+		return ink;
+	}
+
+	public static (int Top, int Bottom) DrawnY(RawBitmap bitmap, Color color)
+	{
+		var ink = InkY(bitmap, color);
+		Assert.IsTrue(ink.Bottom >= 0, $"{color} should be drawn");
+		return ink;
 	}
 
 	public static (int Top, int Bottom) InkY(RawBitmap bitmap, Color color)

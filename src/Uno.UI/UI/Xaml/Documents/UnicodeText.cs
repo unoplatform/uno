@@ -1069,6 +1069,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					}
 					if (lineWidth + ellipsisWidth <= trimAvailableWidth || !hasMore)
 					{
+						(trimPoint, lineWidth) = KeepOverflowingObject(inlineObjects, line, trimPoint, lineWidth);
 						var clusterEnd = line.clusterLast.Next;
 						for (var clusterNode = trimPoint.Next; clusterNode is not null && clusterNode != clusterEnd;)
 						{
@@ -1470,12 +1471,47 @@ internal readonly partial struct UnicodeText : IParsedText
 		return true;
 	}
 
+	// Line Services never breaks an object, so a collapsed line keeps the object it overflows at, and the ellipsis follows it.
+	// Returns the values rather than taking them by reference, so the constructor's locals stay out of memory.
+	private static (LinkedListNode<Cluster> trimPoint, float lineWidth) KeepOverflowingObject(Dictionary<int, InlineObjectInfo>? inlineObjects, Line line, LinkedListNode<Cluster> trimPoint, float lineWidth)
+	{
+		if (inlineObjects is null)
+		{
+			return (trimPoint, lineWidth);
+		}
+
+		// The whitespace the trim moved back over sits before the object, so the object is still where the line ran out.
+		var width = 0f;
+		for (var node = trimPoint; node != line.clusterLast && node.Next is { } next; node = next)
+		{
+			width += next.Value.width;
+			if (inlineObjects.ContainsKey(next.Value.start))
+			{
+				return (next, lineWidth + width);
+			}
+
+			if (!next.Value.containsOnlyWhitespace)
+			{
+				break;
+			}
+		}
+
+		return (trimPoint, lineWidth);
+	}
+
 	private static IEnumerable<LinkedListNode<Cluster>> EnumeratePossibleCharacterTrimmingBreaks(Line line)
 	{
 		for (var i = line.clusterLast; ; i = i.Previous!)
 		{
 			if (i == line.clusterStart)
 			{
+				// As in WinUI, a line never trims to nothing: with no room, it keeps its first cluster, a leading space
+				// too, and the ellipsis. A line of one cluster isn't trimmed.
+				if (i != line.clusterLast)
+				{
+					yield return i;
+				}
+
 				yield break;
 			}
 
@@ -1757,6 +1793,9 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	private readonly global::System.Runtime.CompilerServices.StrongBox<List<SpellCheckSquiggle>?> _spellCheckSquiggles = new();
 
+	// Shared by the draws without squiggles; never written.
+	private static readonly List<SpellCheckSquiggle> _noSquiggles = new();
+
 	// A long wave is drawn as repeats of one chunk this many periods wide: one small shape a backend can cache and
 	// cull per chunk, rather than a path as long as the word (a 100K-character word made one of 18M edges).
 	private const int SpellCheckSquiggleChunkPeriods = 40;
@@ -1891,6 +1930,137 @@ internal readonly partial struct UnicodeText : IParsedText
 		return new LineDraw(lineIndex, Vector2.Zero, info.Top, info.Height);
 	}
 
+	// The glyphs of one font in one color, drawn as one glyph run per chunk of lines: a recording replayed clipped can
+	// then skip the chunks outside the clip, while a renderer that pays per run (WebGPU) draws few of them.
+	private sealed class GlyphBatch
+	{
+		public const int LinesPerRun = 32;
+
+		public readonly List<ushort> Glyphs = new();
+		public readonly List<Vector2> Positions = new();
+		// Where each run's glyphs start.
+		public readonly List<int> RunStarts = new();
+		public int LastLine = -1;
+		public int RunFirstLine = -1;
+		public float FontSize;
+
+		// Called before the glyphs of a cluster on that line are added.
+		public void OnLine(int line)
+		{
+			if (line == LastLine)
+			{
+				return;
+			}
+
+			if (RunStarts.Count == 0 || line < RunFirstLine || line - RunFirstLine >= LinesPerRun)
+			{
+				RunStarts.Add(Glyphs.Count);
+				RunFirstLine = line;
+			}
+
+			LastLine = line;
+		}
+
+		public void Clear(bool trim)
+		{
+			DrawBuffers.Reset(Glyphs, trim);
+			DrawBuffers.Reset(Positions, trim);
+			DrawBuffers.Reset(RunStarts, trim);
+			LastLine = RunFirstLine = -1;
+		}
+	}
+
+	// The working collections of a draw. Painting runs on every invalidation, often once per paragraph, so the UI thread
+	// reuses one set instead of allocating it per call; a nested draw gets its own.
+	private sealed class DrawBuffers
+	{
+		public readonly RangeSlicer<(CompositionBrush? background, Brush foreground)> Highlights = new(0, 0);
+		// Keyed by the packed ARGB color: Color isn't IEquatable, so a Color key would box on every lookup.
+		public readonly Dictionary<(uint color, bool outline), Dictionary<IFont, GlyphBatch>> Glyphs = new();
+		public readonly List<TextDecorationDrawInfo> TextDecorations = new();
+		public readonly List<(float x1, float x2, float top, float thickness, Color color)> TextDecorationLines = new();
+		public readonly Dictionary<(int wordIndex, int lineIndex, float scale), (float left, float right, float y)> SpellCheckUnderlines = new();
+		public readonly List<(float x1, float x2, float y, Color color)> CompositionUnderlines = new();
+		private readonly Stack<Dictionary<IFont, GlyphBatch>> _freeFontMaps = new();
+		private readonly Stack<GlyphBatch> _freeBatches = new();
+		public bool InUse;
+
+		public Dictionary<IFont, GlyphBatch> RentFontMap() => _freeFontMaps.Count > 0 ? _freeFontMaps.Pop() : new();
+
+		public GlyphBatch RentBatch(float fontSize)
+		{
+			var batch = _freeBatches.Count > 0 ? _freeBatches.Pop() : new GlyphBatch();
+			batch.FontSize = fontSize;
+			return batch;
+		}
+
+		public void Clear()
+		{
+			// A draw that fits an ordinary page lets go of what a larger one grew the buffers to, the batches it didn't use
+			// included. A larger draw keeps them all: the batches it rents next time come back in another order.
+			var glyphCount = 0;
+			foreach (var fontMap in Glyphs.Values)
+			{
+				foreach (var batch in fontMap.Values)
+				{
+					glyphCount += batch.Glyphs.Count;
+				}
+			}
+
+			var trim = glyphCount <= MaxKeptCapacity;
+			if (trim)
+			{
+				foreach (var idle in _freeBatches)
+				{
+					idle.Clear(trim);
+				}
+			}
+
+			foreach (var fontMap in Glyphs.Values)
+			{
+				foreach (var batch in fontMap.Values)
+				{
+					batch.Clear(trim);
+					_freeBatches.Push(batch);
+				}
+
+				fontMap.Clear();
+				_freeFontMaps.Push(fontMap);
+			}
+
+			Glyphs.Clear();
+			Reset(TextDecorations, trim);
+			Reset(TextDecorationLines, trim);
+			Reset(CompositionUnderlines, trim);
+			SpellCheckUnderlines.Clear();
+			if (trim && SpellCheckUnderlines.EnsureCapacity(0) > MaxKeptCapacity)
+			{
+				SpellCheckUnderlines.TrimExcess();
+			}
+		}
+
+		// The buffers keep the capacity of an ordinary page of text, about 16K glyphs (32 KB of ids and 128 KB of
+		// positions). What a larger draw grew them to stays while draws keep needing it, as when a long text is repainted,
+		// and goes after the first draw that fits: regrowing it on every paint would allocate more.
+		private const int MaxKeptCapacity = 16 * 1024;
+
+		public static void Reset<T>(List<T> list, bool trim)
+		{
+			list.Clear();
+			if (trim && list.Capacity > MaxKeptCapacity)
+			{
+				list.Capacity = 0;
+			}
+		}
+	}
+
+	[ThreadStatic]
+	private static DrawBuffers? _drawBuffers;
+
+	private static uint PackColor(Color color) => (uint)color.A << 24 | (uint)color.R << 16 | (uint)color.G << 8 | color.B;
+
+	private static Color UnpackColor(uint color) => Color.FromArgb((byte)(color >> 24), (byte)(color >> 16), (byte)(color >> 8), (byte)color);
+
 	/// <summary>
 	/// Draws the given lines, each at its own position. Null draws every line where the layout put it, as
 	/// <see cref="Draw"/> does.
@@ -1902,6 +2072,33 @@ internal readonly partial struct UnicodeText : IParsedText
 		(int startIndex, int length)? compositionRange,
 		bool suppressBackplate,
 		Color? foregroundOverride)
+	{
+		var buffers = _drawBuffers ??= new DrawBuffers();
+		if (buffers.InUse)
+		{
+			buffers = new DrawBuffers();
+		}
+
+		buffers.InUse = true;
+		try
+		{
+			DrawLines(owner, session, lines, caret, highlighters, compositionRange, suppressBackplate, foregroundOverride, buffers);
+		}
+		finally
+		{
+			buffers.Clear();
+			buffers.InUse = false;
+		}
+	}
+
+	private void DrawLines(UIElement owner, in Visual.PaintingSession session,
+		IReadOnlyList<LineDraw>? lines,
+		(int index, CompositionBrush brush, float thickness)? caret,
+		IEnumerable<TextHighlighter> highlighters,
+		(int startIndex, int length)? compositionRange,
+		bool suppressBackplate,
+		Color? foregroundOverride,
+		DrawBuffers buffers)
 	{
 		var useHighContrastAdjustment = owner.UseHighContrastAdjustment();
 		var effectiveOpacity = useHighContrastAdjustment && session.Opacity > 0
@@ -1915,7 +2112,8 @@ internal readonly partial struct UnicodeText : IParsedText
 			? WithOpacity(highContrastBackground, effectiveOpacity)
 			: default;
 
-		var highlighterSlicer = new RangeSlicer<(CompositionBrush? background, Brush foreground)>(0, _text.Length);
+		var highlighterSlicer = buffers.Highlights;
+		highlighterSlicer.Reset(0, _text.Length);
 		SolidColorBrush? defaultHighlighterForeground = null;
 		SolidColorBrush? defaultHighlighterBackground = null;
 		var defaultHighlighterBrushesResolved = false;
@@ -1941,13 +2139,13 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		Dictionary<(Color color, bool outline), Dictionary<IFont, (List<ushort> glyphs, List<Vector2> positions, float fontSize)>> colorAndOutlineToFontToGlyphs = new();
-		List<TextDecorationDrawInfo> textDecorations = new();
+		var colorAndOutlineToFontToGlyphs = buffers.Glyphs;
+		var textDecorations = buffers.TextDecorations;
 		List<(float x1, float x2, float baseline, Color color, FontDetails font, global::Microsoft.UI.Text.TabLeader leader)>? tabLeaders = null;
-		Dictionary<(int wordIndex, int lineIndex, float scale), (float left, float right, float y)> spellCheckUnderlines = new();
-		List<(float x1, float x2, float y, Color color)> compositionUnderlines = new();
+		var spellCheckUnderlines = buffers.SpellCheckUnderlines;
+		var compositionUnderlines = buffers.CompositionUnderlines;
 		List<(IImage image, object key, Rect destination)>? inlineObjectImages = null;
-		List<(float x1, float x2, float top, float thickness, Color color)> textDecorationLines = new();
+		var textDecorationLines = buffers.TextDecorationLines;
 
 		Rect? caretRect = default;
 
@@ -1956,6 +2154,14 @@ internal readonly partial struct UnicodeText : IParsedText
 		var highlighterSlices = highlighterSlicer.GetSegments();
 		var highlighterIndex = 0;
 		Rect? pendingHighContrastBackplate = null;
+		// Most clusters take the batch of the one before them, and every cluster of a line its line's values.
+		GlyphBatch? lastBatch = null;
+		(uint color, bool outline, IFont? font) lastBatchKey = default;
+		var cachedLineIndex = -1;
+		float cachedLineTop = 0, cachedLineAlignment = 0;
+		// Selection and highlight fills of adjacent clusters, drawn as one rectangle.
+		Rect? pendingSelection = null;
+		CompositionBrush? pendingSelectionBrush = null;
 		// With explicit lines, the clusters of one line after another, each line at its own place.
 		var lineDrawIndex = -1;
 		var previousLineStart = -1;
@@ -2012,7 +2218,11 @@ internal readonly partial struct UnicodeText : IParsedText
 
 			var lineIndex = cluster.Value.lineIndex;
 			var line = _lines[lineIndex];
-			var y = GetLineContentTop(lineIndex);
+			if (lineIndex != cachedLineIndex)
+			{
+				(cachedLineIndex, cachedLineTop, cachedLineAlignment) = (lineIndex, GetLineContentTop(lineIndex), GetAlignmentOffsetForLine(line));
+			}
+			var y = cachedLineTop;
 			var unalignedX = cluster.Value.indexInLine == 0
 				? 0
 				: _xyTable[lineIndex].prefixSummedWidths[cluster.Value.indexInLine - 1].sumUntilAfterCluster;
@@ -2020,12 +2230,12 @@ internal readonly partial struct UnicodeText : IParsedText
 			float alignmentOffset, bandTop, bandHeight;
 			if (lines is null)
 			{
-				(alignmentOffset, bandTop, bandHeight) = (GetAlignmentOffsetForLine(line), y, line.lineHeight);
+				(alignmentOffset, bandTop, bandHeight) = (cachedLineAlignment, y, line.lineHeight);
 			}
 			else
 			{
 				y += lineDraw.Translation.Y;
-				(alignmentOffset, bandTop, bandHeight) = (GetAlignmentOffsetForLine(line) + lineDraw.Translation.X, lineDraw.BandTop, lineDraw.BandHeight);
+				(alignmentOffset, bandTop, bandHeight) = (cachedLineAlignment + lineDraw.Translation.X, lineDraw.BandTop, lineDraw.BandHeight);
 			}
 			var positionAcc = new Vector2(unalignedX + alignmentOffset, y + line.baselineOffset);
 			var fontDetails = cluster.Value.fontDetails;
@@ -2052,17 +2262,25 @@ internal readonly partial struct UnicodeText : IParsedText
 			else if (shouldRenderCluster)
 			{
 				var color = GetForegroundColor(_runBreaks[runBreakIndex].foreground);
-				var key = (color, GetRunOutline(cluster.Value, _runBreaks));
-				if (!colorAndOutlineToFontToGlyphs.TryGetValue(key, out var fontToGlyphs))
+				var key = (PackColor(color), GetRunOutline(cluster.Value, _runBreaks));
+				if (lastBatch is not { } batch
+					|| lastBatchKey.color != key.Item1
+					|| lastBatchKey.outline != key.Item2
+					|| !ReferenceEquals(lastBatchKey.font, fontDetails.FontHandle))
 				{
-					colorAndOutlineToFontToGlyphs[key] = fontToGlyphs = new Dictionary<IFont, (List<ushort> glyphs, List<Vector2> positions, float fontSize)>();
+					if (!colorAndOutlineToFontToGlyphs.TryGetValue(key, out var fontToGlyphs))
+					{
+						colorAndOutlineToFontToGlyphs[key] = fontToGlyphs = buffers.RentFontMap();
+					}
+					if (!fontToGlyphs.TryGetValue(fontDetails.FontHandle, out batch))
+					{
+						fontToGlyphs[fontDetails.FontHandle] = batch = buffers.RentBatch(fontDetails.FontSize);
+					}
+					(lastBatch, lastBatchKey) = (batch, (key.Item1, key.Item2, fontDetails.FontHandle));
 				}
-				if (!fontToGlyphs.TryGetValue(fontDetails.FontHandle, out var glyphsAndPositions))
-				{
-					fontToGlyphs[fontDetails.FontHandle] = glyphsAndPositions = (new List<ushort>(), new List<Vector2>(), fontDetails.FontSize);
-				}
-				var glyphs = glyphsAndPositions.glyphs;
-				var positions = glyphsAndPositions.positions;
+				batch.OnLine(lineIndex);
+				var glyphs = batch.Glyphs;
+				var positions = batch.Positions;
 
 				var characterSpacing = GetClusterCharacterSpacing(cluster.Value, _runBreaks, _text);
 				for (var glyphNode = cluster.Value.glyphStart; ; glyphNode = glyphNode.Next!)
@@ -2111,6 +2329,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				new Point(MathF.Floor(unalignedX + alignmentOffset + cluster.Value.width) + 1, MathF.Floor(bandTop + bandHeight) + 1));
 			if (!clusterHidden && !useHighContrastAdjustment && _runBreaks[runBreakIndex].background is { } characterBackground)
 			{
+				FlushSelection(session.Session, ref pendingSelection, pendingSelectionBrush, effectiveOpacity);
 				session.Session.DrawRect(backgroundRect, WithOpacity(characterBackground, effectiveOpacity));
 			}
 			if (useHighContrastAdjustment
@@ -2142,8 +2361,26 @@ internal readonly partial struct UnicodeText : IParsedText
 				{
 					session.Session.DrawRect(backgroundRect, WithOpacity(highContrastSelectionBackground, effectiveOpacity));
 				}
+				else if (effectiveOpacity >= 1 && selectionBackground is CompositionColorBrush { Color.A: 255 })
+				{
+					// Opaque, so one rectangle covers exactly the pixels of the clusters' overlapping ones.
+					if (pendingSelection is { } pending
+						&& ReferenceEquals(pendingSelectionBrush, selectionBackground)
+						&& AreAdjacent(pending, backgroundRect))
+					{
+						pendingSelection = new Rect(
+							new Point(Math.Min(pending.Left, backgroundRect.Left), pending.Top),
+							new Point(Math.Max(pending.Right, backgroundRect.Right), pending.Bottom));
+					}
+					else
+					{
+						FlushSelection(session.Session, ref pendingSelection, pendingSelectionBrush, effectiveOpacity);
+						(pendingSelection, pendingSelectionBrush) = (backgroundRect, selectionBackground);
+					}
+				}
 				else
 				{
+					FlushSelection(session.Session, ref pendingSelection, pendingSelectionBrush, effectiveOpacity);
 					selectionBackground.TryPaint(session.Session, effectiveOpacity, backgroundRect);
 				}
 			}
@@ -2298,6 +2535,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		var drawingSession = session.Session;
 
+		FlushSelection(drawingSession, ref pendingSelection, pendingSelectionBrush, effectiveOpacity);
 		FlushHighContrastBackplate(drawingSession, ref pendingHighContrastBackplate, highContrastBackplateColor);
 
 		// WinUI renders the decoration lines before the glyphs (D2DTextDrawingContext::HWRender calls
@@ -2311,19 +2549,26 @@ internal readonly partial struct UnicodeText : IParsedText
 		// Outline glyphs are assembled into a path (drawn neutrally); color glyphs (emoji) become images.
 		foreach (var ((color, outline), fontToGlyphs) in colorAndOutlineToFontToGlyphs)
 		{
-			var paintColor = color;
-			foreach (var (font, (glyphs, positions, fontSize)) in fontToGlyphs)
+			var paintColor = UnpackColor(color);
+			foreach (var (font, batch) in fontToGlyphs)
 			{
-				var glyphSpan = CollectionsMarshal.AsSpan(glyphs);
-				var positionSpan = CollectionsMarshal.AsSpan(positions);
+				var allGlyphs = CollectionsMarshal.AsSpan(batch.Glyphs);
+				var allPositions = CollectionsMarshal.AsSpan(batch.Positions);
+				for (var run = 0; run < batch.RunStarts.Count; run++)
+				{
+					var start = batch.RunStarts[run];
+					var end = run + 1 < batch.RunStarts.Count ? batch.RunStarts[run + 1] : allGlyphs.Length;
+					var glyphSpan = allGlyphs[start..end];
+					var positionSpan = allPositions[start..end];
 
-				if (outline)
-				{
-					drawingSession.StrokeGlyphRun(font, glyphSpan, positionSpan, 0, paintColor, Math.Max(1, fontSize / 24));
-				}
-				else
-				{
-					drawingSession.DrawGlyphRun(font, glyphSpan, positionSpan, 0, paintColor);
+					if (outline)
+					{
+						drawingSession.StrokeGlyphRun(font, glyphSpan, positionSpan, 0, paintColor, Math.Max(1, batch.FontSize / 24));
+					}
+					else
+					{
+						drawingSession.DrawGlyphRun(font, glyphSpan, positionSpan, 0, paintColor);
+					}
 				}
 			}
 		}
@@ -2344,12 +2589,12 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		var squiggles = new List<SpellCheckSquiggle>(spellCheckUnderlines.Count);
+		List<SpellCheckSquiggle>? squiggles = null;
 		foreach (var ((_, _, scale), (left, right, midY)) in spellCheckUnderlines)
 		{
-			squiggles.Add(new SpellCheckSquiggle(left, right, midY, scale));
+			(squiggles ??= new(spellCheckUnderlines.Count)).Add(new SpellCheckSquiggle(left, right, midY, scale));
 		}
-		_spellCheckSquiggles.Value = squiggles;
+		_spellCheckSquiggles.Value = squiggles ?? _noSquiggles;
 
 		foreach (var (x1, x2, underlineY, color) in compositionUnderlines)
 		{
@@ -2763,11 +3008,28 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static Color WithOpacity(Color color, float opacity) =>
 		Color.FromArgb((byte)(color.A * opacity), color.R, color.G, color.B);
 
+	// Selection fills merge only when they touch or overlap on the same band, so the merged rectangle covers exactly their
+	// pixels.
+	private static bool AreAdjacent(Rect current, Rect next) =>
+		next.Top == current.Top
+		&& next.Bottom == current.Bottom
+		&& next.Left <= current.Right
+		&& next.Right >= current.Left;
+
 	private static bool CanMergeHighContrastBackplates(Rect current, Rect next) =>
 		Math.Abs(current.Top - next.Top) <= 1f
 		&& Math.Abs(current.Bottom - next.Bottom) <= 1f
 		&& next.Left <= current.Right + 1
 		&& next.Right >= current.Left - 1;
+
+	private static void FlushSelection(IDrawingSession drawingSession, ref Rect? pendingSelection, CompositionBrush? brush, float opacity)
+	{
+		if (pendingSelection is { } selection)
+		{
+			brush?.TryPaint(drawingSession, opacity, selection);
+			pendingSelection = null;
+		}
+	}
 
 	private static void FlushHighContrastBackplate(IDrawingSession drawingSession, ref Rect? pendingBackplate, Color color)
 	{
@@ -3508,6 +3770,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			var line = lines[lineIndex];
 			var minTop = 0f;
 			var maxBottom = line.lineHeight;
+			var (objectsTop, objectsBottom, onlyObjects) = (float.MaxValue, float.MinValue, true);
 			for (var node = line.clusterStart; ; node = node.Next!)
 			{
 				if (GetInlineObject(node.Value, inlineObjects) is { } inlineObject)
@@ -3515,6 +3778,11 @@ internal readonly partial struct UnicodeText : IParsedText
 					var top = GetInlineObjectTop(inlineObject, line.lineHeight, line.baselineOffset);
 					minTop = Math.Min(minTop, top);
 					maxBottom = Math.Max(maxBottom, top + inlineObject.Height);
+					(objectsTop, objectsBottom) = (Math.Min(objectsTop, top), Math.Max(objectsBottom, top + inlineObject.Height));
+				}
+				else
+				{
+					onlyObjects = false;
 				}
 
 				if (node == line.clusterLast)
@@ -3523,7 +3791,13 @@ internal readonly partial struct UnicodeText : IParsedText
 				}
 			}
 
-			if (minTop < 0 || maxBottom > line.lineHeight)
+			if (onlyObjects)
+			{
+				// As in Line Services, a line of objects alone is as tall as they are: no text, so no font metrics.
+				(minTop, maxBottom) = (objectsTop, objectsBottom);
+			}
+
+			if (onlyObjects || minTop < 0 || maxBottom > line.lineHeight)
 			{
 				lines[lineIndex] = line with
 				{

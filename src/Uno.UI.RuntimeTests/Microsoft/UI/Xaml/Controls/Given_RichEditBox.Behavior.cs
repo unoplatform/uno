@@ -4584,6 +4584,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresScaling(1f)]
+		public async Task When_Image_Alone_On_Line_Is_As_Tall_As_Image()
+		{
+			// Measured on WinUI: an image that wraps onto a line with no text is as tall as the image, shorter than a line
+			// of the font (two 40 by 10 images in a 70 px box, then text: the image's line is 10 px tall).
+			var SUT = new RichEditBox { Width = 70, FontSize = 20, Padding = new Thickness(0), BorderThickness = new Thickness(0), MinHeight = 0 };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				SUT.Document.SetText(TextSetOptions.None, "x");
+				foreach (var (index, color) in new[] { (0, Microsoft.UI.Colors.Red), (1, Microsoft.UI.Colors.Blue) })
+				{
+					using var stream = new MemoryStream(Uno.UI.RuntimeTests.Helpers.TestPngEncoder.CreateSolidPng(2, 2, color)).AsRandomAccessStream();
+					SUT.Document.GetRange(index, index).InsertImage(40, 10, 8, VerticalCharacterAlignment.Baseline, "image", stream);
+				}
+				await WindowHelper.WaitForIdle();
+
+				SUT.Document.GetRange(0, 1).GetRect(PointOptions.ClientCoordinates, out var first, out _);
+				SUT.Document.GetRange(1, 2).GetRect(PointOptions.ClientCoordinates, out var second, out _);
+				Assert.AreEqual(10, first.Height, 1, $"The first image's line ({first}) should be as tall as the image");
+				Assert.AreEqual(10, second.Y, 1, $"The second image ({second}) should start the next line, 10 px down");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Image_FormattedText_And_RtfStream_Preserve_ObjectText()
 		{
