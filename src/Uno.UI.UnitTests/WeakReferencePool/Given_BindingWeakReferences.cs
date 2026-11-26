@@ -287,12 +287,6 @@ namespace Uno.UI.Tests
 		[TestMethod]
 		public void When_DataContext_Cleared_Then_Previous_Values_Collectable()
 		{
-			if (System.Diagnostics.Debugger.IsAttached)
-			{
-				// A debugger extends the lifetime of locals, so the GC can't be relied on here.
-				Assert.Inconclusive("Not reliable under a debugger.");
-			}
-
 			var sut = new Border();
 			sut.SetBinding(FrameworkElement.TagProperty, new Binding { Path = new PropertyPath("A.B") });
 
@@ -486,6 +480,49 @@ namespace Uno.UI.Tests
 
 			inner.B = "changed";
 			Assert.AreEqual("changed", sut.Tag);
+		}
+
+		[TestMethod]
+		public void When_Retargeted_From_Source_Callback_Then_Stale_Callback_Is_Ignored()
+		{
+			var first = new Border { Tag = "first" };
+			var second = new Border { Tag = "second" };
+			var sut = new Border();
+
+			// Registered before the binding's own callback, so it runs first and retargets while the dispatch is under way.
+			first.RegisterPropertyChangedCallback(FrameworkElement.TagProperty, (s, e) => sut.DataContext = second);
+
+			sut.SetBinding(FrameworkElement.TagProperty, new Binding { Path = new PropertyPath("Tag") });
+			sut.DataContext = first;
+			Assert.AreEqual("first", sut.Tag);
+
+			var seen = new System.Collections.Generic.List<object>();
+			sut.RegisterPropertyChangedCallback(FrameworkElement.TagProperty, (s, e) => seen.Add(sut.Tag));
+
+			first.Tag = "changed";
+
+			Assert.AreEqual("second", sut.Tag);
+			CollectionAssert.DoesNotContain(seen, "changed", "A callback of the replaced source must not reach the new subscription");
+
+			first.Tag = "again";
+			Assert.AreEqual("second", sut.Tag);
+
+			second.Tag = "live";
+			Assert.AreEqual("live", sut.Tag);
+		}
+
+		[TestMethod]
+		public void When_Binding_Disposed_During_Source_Callback_Then_Late_Callback_Is_Ignored()
+		{
+			var source = new Border { Tag = "a" };
+			var sut = new Border { DataContext = source };
+
+			source.RegisterPropertyChangedCallback(FrameworkElement.TagProperty, (s, e) => sut.ClearValue(FrameworkElement.TagProperty));
+			sut.SetBinding(FrameworkElement.TagProperty, new Binding { Path = new PropertyPath("Tag") });
+
+			source.Tag = "b";
+
+			Assert.IsNull(sut.Tag, "The cleared binding must not re-apply the late callback");
 		}
 
 		[TestMethod]

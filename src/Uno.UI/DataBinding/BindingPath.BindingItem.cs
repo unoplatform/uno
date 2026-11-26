@@ -403,10 +403,15 @@ namespace Uno.UI.DataBinding
 					// Free to reuse: OnDataContextChanged disposed the previous subscription first.
 					var valueHandler = valueHandlers[i] ?? new PropertyChangedValueHandler(this);
 					valueHandler.PreviousValue = null;
+					valueHandler.IsActive = true;
 
 					var handlerDisposable = handler.Register(dataContextStorage, PropertyName, valueHandler);
 
-					if (handlerDisposable != null)
+					if (handlerDisposable is null)
+					{
+						valueHandler.IsActive = false;
+					}
+					else
 					{
 						// Kept once its registration has applied, so a registration that never applies keeps nothing.
 						valueHandlers[i] = valueHandler;
@@ -421,7 +426,8 @@ namespace Uno.UI.DataBinding
 						{
 							var previousValue = valueHandler.PreviousValue;
 
-							// The handler outlives the subscription: don't let it keep the last value alive.
+							// The handler outlives the subscription: ignore late callbacks and don't keep the last value alive.
+							valueHandler.IsActive = false;
 							valueHandler.PreviousValue = null;
 							handlerDisposable.Dispose();
 							OnPropertyChanged(previousValue, DependencyProperty.UnsetValue, shouldRaiseValueChanged: false);
@@ -517,12 +523,20 @@ namespace Uno.UI.DataBinding
 
 				public object? PreviousValue { get; set; }
 
+				// False between subscriptions: a callback already dispatched by a disposed registration is ignored.
+				public bool IsActive { get; set; }
+
 				// Lazy: only the INotifyPropertyChanged registration needs it.
 				public ManagedWeakReference WeakReference
 					=> _self ??= WeakReferencePool.RentSelfWeakReference(this);
 
 				public void NewValue()
 				{
+					if (!IsActive)
+					{
+						return;
+					}
+
 					var newValue = _owner.GetSourceValue();
 
 					_owner.OnPropertyChanged(PreviousValue, newValue, shouldRaiseValueChanged: true);
