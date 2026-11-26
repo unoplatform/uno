@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Uno.Foundation.Logging;
 using Uno.Helpers;
 
 namespace Uno.UI.Runtime;
@@ -458,9 +459,9 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		}
 		catch (Exception ex)
 		{
-			if (this.Log().IsEnabled(LogLevel.Debug))
+			if (typeof(SkiaAccessibilityBase).Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Debug($"[A11y] CanReceiveAutomaticPropertyChanges failed for {peer.GetType().Name}: {ex.Message}");
+				typeof(SkiaAccessibilityBase).Log().Debug($"[A11y] CanReceiveAutomaticPropertyChanges failed for {peer.GetType().Name}: {ex.Message}");
 			}
 
 			return true;
