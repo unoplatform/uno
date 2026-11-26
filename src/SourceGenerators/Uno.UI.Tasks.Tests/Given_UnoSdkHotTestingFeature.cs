@@ -50,6 +50,14 @@ public class Given_UnoSdkHotTestingFeature
 	}
 
 	[TestMethod]
+	[DataRow("")]
+	[DataRow("Optimize=true")]
+	public void When_HotTesting_Is_Not_Listed_Then_A_Tests_Folder_It_Names_Is_Left_Alone(string property)
+	{
+		DefaultItemExcludes("", Desktop, property, "HotTestingTestsFolder=AppTests").Should().NotContain("AppTests/**");
+	}
+
+	[TestMethod]
 	public void When_A_Custom_Tests_Folder_Is_Set_Then_That_Folder_Is_Excluded()
 	{
 		var excludes = DefaultItemExcludes("HotTesting", Desktop, "Optimize=true", "HotTestingTestsFolder=AppTests");
