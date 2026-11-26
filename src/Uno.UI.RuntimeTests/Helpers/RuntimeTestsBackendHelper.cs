@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
 
 namespace Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -29,6 +31,14 @@ internal static class RuntimeTestsBackendHelper
 			return backend;
 		}
 	}
+
+	/// <summary>Whether the WebGPU library in use is Dawn rather than wgpu-native.</summary>
+	public static bool IsWebGpuDawn
+		=> AppDomain.CurrentDomain.GetAssemblies()
+			.FirstOrDefault(a => a.GetName().Name == "Uno.UI.Composition.WebGpu.Init")
+			?.GetType("Uno.UI.Composition.WebGpu.SilkCompat.WebGpuLoader")
+			?.GetProperty("IsDawn", BindingFlags.Static | BindingFlags.NonPublic)
+			?.GetValue(null) is true;
 
 	// The negotiated factory, not the environment variable that asked for it: a backend that fails to initialize
 	// falls back, and a test conditioned on WebGPU must follow what actually rendered.
