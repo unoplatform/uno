@@ -179,6 +179,45 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 		}
 
 		[TestMethod]
+		public void When_Selecting_Across_An_Explicit_LineBreak()
+		{
+			var textBlock = new TextBlock();
+			textBlock.Inlines.Add(new Run { Text = "a" });
+			textBlock.Inlines.Add(new LineBreak());
+			textBlock.Inlines.Add(new Run { Text = "b\r\nc" });
+
+			textBlock.Selection = new(1, 2);
+			Assert.AreEqual("\r\n", textBlock.SelectedText);
+
+			textBlock.Selection = new(0, 3);
+			Assert.AreEqual("a\r\nb", textBlock.SelectedText);
+
+			textBlock.Selection = new(3, 6);
+			Assert.AreEqual("\r\nc", textBlock.SelectedText);
+
+			textBlock.SelectAll();
+			Assert.AreEqual(textBlock.Text, textBlock.SelectedText);
+		}
+
+		[TestMethod]
+		public void When_Native_Accessibility_Steps_By_Word_After_An_Explicit_LineBreak()
+		{
+			var textBlock = new TextBlock();
+			textBlock.Inlines.Add(new Run { Text = "a" });
+			textBlock.Inlines.Add(new LineBreak());
+			textBlock.Inlines.Add(new Run { Text = "bc" });
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBlock);
+
+			Assert.IsTrue(Uno.UI.AccessibilityPeerHelper.TryGetText(peer, out var text, out _));
+			Assert.AreEqual("a\nbc", text);
+
+			Assert.IsTrue(Uno.UI.AccessibilityPeerHelper.TryGetTextSegment(peer, TextUnit.Word, 2, forward: true, out var start, out var end));
+			Assert.AreEqual((2, 4), (start, end));
+			Assert.IsTrue(Uno.UI.AccessibilityPeerHelper.TryGetTextSegment(peer, TextUnit.Word, 4, forward: false, out start, out end));
+			Assert.AreEqual((2, 4), (start, end));
+		}
+
+		[TestMethod]
 		public void When_LineBreak_SurroundingWhiteSpace()
 		{
 			var page = new LineBreak_Surrounding_WhiteSpace();

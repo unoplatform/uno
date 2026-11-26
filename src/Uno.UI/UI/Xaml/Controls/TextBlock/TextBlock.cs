@@ -2008,15 +2008,45 @@ namespace Microsoft.UI.Xaml.Controls
 		void IBlock.Invalidate(bool updateText) => InvalidateInlineAndRequireRepaint();
 		string IBlock.GetText() => Text;
 
-		internal string TextForSelection => _inlineLineBreakPositions.Length == 0
-			? Text
-			: string.Concat(Inlines.TraversedTree.leafTree.Select(InlineExtensions.GetText));
+		// Same as Text, but with each explicit LineBreak as a single "\n", so offsets match selection and layout.
+		internal string TextForSelection
+		{
+			get
+			{
+				var text = Text;
+				if (_inlineLineBreakPositions.Length == 0)
+				{
+					return text;
+				}
+
+				var builder = new StringBuilder(text.Length - _inlineLineBreakPositions.Length);
+				var copied = 0;
+				foreach (var lineBreak in _inlineLineBreakPositions)
+				{
+					// Skip the "\r" of the exported "\r\n".
+					builder.Append(text, copied, lineBreak - copied);
+					copied = lineBreak + 1;
+				}
+
+				builder.Append(text, copied, text.Length - copied);
+				return builder.ToString();
+			}
+		}
 
 		internal int TextForSelectionLength => Text.Length - _inlineLineBreakPositions.Length;
 
-		internal string GetSelectedText(int start, int end) => _inlineLineBreakPositions.Length == 0
-			? Text[start..end]
-			: InlineExtensions.GetSelectedText([Inlines], start, end, includeParagraphBreaks: false);
+		internal string GetSelectedText(int start, int end)
+		{
+			if (_inlineLineBreakPositions.Length == 0)
+			{
+				return Text[start..end];
+			}
+
+			var text = Text;
+			var exportedStart = Math.Min(GetExportedTextOffset(start), text.Length);
+			var exportedEnd = Math.Min(GetExportedTextOffset(end), text.Length);
+			return exportedStart < exportedEnd ? text[exportedStart..exportedEnd] : string.Empty;
+		}
 
 		internal int GetExportedTextOffset(int flatOffset)
 		{
