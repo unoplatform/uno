@@ -399,7 +399,7 @@ public class Given_Win32Accessibility
 			Assert.IsNotNull(FrameworkElementAutomationPeer.CreatePeerForElement(button));
 			var accessibility = ResolveAccessibility(button)
 				?? throw new InvalidOperationException("Win32Accessibility instance not found.");
-			Assert.IsNull(TryGetExistingProvider(accessibility, button), "The test needs a peer without a provider.");
+			RequireNoProvider(accessibility, button);
 
 			button.IsOffscreenCalls = 0;
 			button.Margin = new Thickness(70, 50, 0, 0);
@@ -470,7 +470,7 @@ public class Given_Win32Accessibility
 
 			Canvas.SetTop(button, 400);
 			await WindowHelper.WaitForIdle();
-			Assert.IsNull(TryGetExistingProvider(accessibility, button), "The button must have no provider while it moves out of view.");
+			RequireNoProvider(accessibility, button);
 
 			_ = GetOrCreateProvider(accessibility, button)
 				?? throw new InvalidOperationException("Button provider not found.");
@@ -508,7 +508,7 @@ public class Given_Win32Accessibility
 
 			Canvas.SetTop(button, 400);
 			await WindowHelper.WaitForIdle();
-			Assert.IsNull(TryGetExistingProvider(accessibility, button), "The button must have no provider while it moves out of view.");
+			RequireNoProvider(accessibility, button);
 
 			_ = GetOrCreateProvider(accessibility, button)
 				?? throw new InvalidOperationException("Button provider not found.");
@@ -602,6 +602,16 @@ public class Given_Win32Accessibility
 		}
 	}
 
+	// A listening UIA client (Narrator, Inspect) makes ChildAdded handling create providers for elements entering
+	// the tree, so these tests can only run when none is attached.
+	private static void RequireNoProvider(object accessibility, UIElement element)
+	{
+		if (TryGetExistingProvider(accessibility, element) is not null)
+		{
+			Assert.Inconclusive("A UIA client created a provider for the element; the test needs it to have none.");
+		}
+	}
+
 	private static (OffscreenCountingButton Button, Border ClipHost) CreateButtonInClippedCanvas()
 	{
 		var button = new OffscreenCountingButton
@@ -661,6 +671,12 @@ public class Given_Win32Accessibility
 
 		public void NotifyInvalidatePeer(AutomationPeer peer) => _inner?.NotifyInvalidatePeer(peer);
 
+		public void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer? child)
+			=> _inner?.NotifyStructureChangedEvent(peer, structureChangeType, child);
+
+		public void NotifyTextEditTextChangedEvent(AutomationPeer peer, AutomationTextEditChangeType changeType, IReadOnlyList<string> changedData)
+			=> _inner?.NotifyTextEditTextChangedEvent(peer, changeType, changedData);
+
 		public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
 			=> _inner?.NotifyNotificationEvent(peer, notificationKind, notificationProcessing, displayString, activityId);
 
@@ -672,6 +688,9 @@ public class Given_Win32Accessibility
 	private sealed partial class OffscreenCountingButton : Button
 	{
 		public int IsOffscreenCalls;
+
+		// Page.OnLoaded focuses the first tab stop, and the focus event creates its provider.
+		public OffscreenCountingButton() => IsTabStop = false;
 
 		protected override AutomationPeer OnCreateAutomationPeer() => new CountingPeer(this);
 
