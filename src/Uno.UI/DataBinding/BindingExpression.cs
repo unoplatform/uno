@@ -957,26 +957,32 @@ namespace Microsoft.UI.Xaml.Data
 
 		public void Dispose()
 		{
-			_subscription.Dispose();
-			_bindingPath.Dispose();
-			if (_updateSources is not null)
-			{
-				foreach (var updateSource in _updateSources)
-				{
-					updateSource.Dispose();
-				}
-			}
-
+			// First: callbacks raised while disposing must not re-apply this expression.
 			_disposed = true;
 
-			// The paths, which may have shared these references, have released them.
-			var dataContext = _dataContext;
-			_dataContext = null;
-			WeakReferencePool.ReturnWeakReference(this, dataContext);
+			try
+			{
+				_subscription.Dispose();
+				_bindingPath.Dispose();
+				if (_updateSources is not null)
+				{
+					foreach (var updateSource in _updateSources)
+					{
+						updateSource.Dispose();
+					}
+				}
+			}
+			finally
+			{
+				// The paths, which may have shared these references, have released them.
+				var dataContext = _dataContext;
+				_dataContext = null;
+				WeakReferencePool.ReturnWeakReference(this, dataContext);
 
-			var explicitSource = _explicitSourceStore;
-			_explicitSourceStore = null;
-			WeakReferencePool.ReturnWeakReference(this, explicitSource);
+				var explicitSource = _explicitSourceStore;
+				_explicitSourceStore = null;
+				WeakReferencePool.ReturnWeakReference(this, explicitSource);
+			}
 		}
 	}
 }

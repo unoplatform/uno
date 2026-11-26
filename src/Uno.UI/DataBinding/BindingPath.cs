@@ -269,6 +269,8 @@ namespace Uno.UI.DataBinding
 			set => SetWeakDataContext(Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, value));
 		}
 
+		// Ownership: whoever rented the reference returns it, after everything sharing it is disposed.
+		// This path and its head item only return the references they rented; one provided by a BindingExpression is returned by it.
 		internal void SetWeakDataContext(ManagedWeakReference weakDataContext)
 		{
 			if (!_disposed)
@@ -307,8 +309,14 @@ namespace Uno.UI.DataBinding
 		{
 			if (item is not null)
 			{
-				DisposeItems(item.Next);
-				item.Dispose();
+				try
+				{
+					DisposeItems(item.Next);
+				}
+				finally
+				{
+					item.Dispose();
+				}
 			}
 		}
 
@@ -355,14 +363,19 @@ namespace Uno.UI.DataBinding
 
 			if (disposing)
 			{
-				// Tail to head: disposing an item pushes UnsetValue to its Next, which must not re-subscribe.
-				DisposeItems(_chain);
-
-				// The items no longer use the reference. Return it if this path rented it
-				// (a BindingExpression may have provided its own, which it returns itself).
-				var storage = _dataContextWeakStorage;
-				_dataContextWeakStorage = null;
-				Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(this, storage);
+				try
+				{
+					// Tail to head: disposing an item pushes UnsetValue to its Next, which must not re-subscribe.
+					DisposeItems(_chain);
+				}
+				finally
+				{
+					// The items no longer use the reference. Return it if this path rented it
+					// (a BindingExpression may have provided its own, which it returns itself).
+					var storage = _dataContextWeakStorage;
+					_dataContextWeakStorage = null;
+					Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(this, storage);
+				}
 			}
 		}
 
@@ -532,8 +545,8 @@ namespace Uno.UI.DataBinding
 							typeof(BindingPath).Log().Debug($"Property changed for {propertyName} on [{target?.GetType()}]");
 						}
 
-						if (!newValueActionWeak.IsDisposed
-						&& newValueActionWeak.Target is IPropertyChangedValueHandler handler)
+						// TargetOrNull: this may run off the UI thread while the subscription is being disposed.
+						if (newValueActionWeak.TargetOrNull is IPropertyChangedValueHandler handler)
 						{
 							handler.NewValue();
 						}
