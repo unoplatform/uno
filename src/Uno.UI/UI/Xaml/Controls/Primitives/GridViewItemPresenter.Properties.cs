@@ -19,16 +19,10 @@ partial class GridViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: control whether selection check mark is shown or not.
 	/// </summary>
-	public bool SelectionCheckMarkVisualEnabled
-	{
-		get => GetSelectionCheckMarkVisualEnabledValue();
-		set => SetSelectionCheckMarkVisualEnabledValue(value);
-	}
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	public partial bool SelectionCheckMarkVisualEnabled { get; set; }
 
 	private static object GetSelectionCheckMarkVisualEnabledDefaultValue() => Boxer.Box(ListViewBaseItemPresenter.GetDefaultSelectionCheckMarkVisualEnabled());
-
-	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectionCheckMarkVisualEnabledProperty { get; } = CreateSelectionCheckMarkVisualEnabledProperty();
 
 	#endregion
 
@@ -37,14 +31,8 @@ partial class GridViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: checkmark behind the item, shown when haven't swiped far enough to select. Identical to below, only shown at 50% opacity.
 	/// </summary>
-	public Brush? CheckHintBrush
-	{
-		get => GetCheckHintBrushValue();
-		set => SetCheckHintBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckHintBrushProperty { get; } = CreateCheckHintBrushProperty();
+	public partial Brush? CheckHintBrush { get; set; }
 
 	#endregion
 
@@ -53,14 +41,8 @@ partial class GridViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: checkmark behind the item, shown when swiped far enough to select.
 	/// </summary>
-	public Brush? CheckSelectingBrush
-	{
-		get => GetCheckSelectingBrushValue();
-		set => SetCheckSelectingBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckSelectingBrushProperty { get; } = CreateCheckSelectingBrushProperty();
+	public partial Brush? CheckSelectingBrush { get; set; }
 
 	#endregion
 
@@ -69,14 +51,8 @@ partial class GridViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: checkmark above the item, shown when selected. Not same color as above 2 in Light Theme.
 	/// </summary>
-	public Brush? CheckBrush
-	{
-		get => GetCheckBrushValue();
-		set => SetCheckBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckBrushProperty { get; } = CreateCheckBrushProperty();
+	public partial Brush? CheckBrush { get; set; }
 
 	#endregion
 
@@ -87,14 +63,8 @@ partial class GridViewItemPresenter
 	/// </summary>
 	// TODO Uno: https://github.com/unoplatform/uno/issues/25922
 	[Uno.NotImplemented]
-	public Brush? DragBackground
-	{
-		get => GetDragBackgroundValue();
-		set => SetDragBackgroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty DragBackgroundProperty { get; } = CreateDragBackgroundProperty();
+	public partial Brush? DragBackground { get; set; }
 
 	#endregion
 
@@ -105,14 +75,8 @@ partial class GridViewItemPresenter
 	/// </summary>
 	// TODO Uno: https://github.com/unoplatform/uno/issues/25922
 	[Uno.NotImplemented]
-	public Brush? DragForeground
-	{
-		get => GetDragForegroundValue();
-		set => SetDragForegroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty DragForegroundProperty { get; } = CreateDragForegroundProperty();
+	public partial Brush? DragForeground { get; set; }
 
 	#endregion
 
@@ -123,14 +87,8 @@ partial class GridViewItemPresenter
 	/// </summary>
 	// TODO Uno: https://github.com/unoplatform/uno/issues/25923
 	[Uno.NotImplemented]
-	public Brush? FocusBorderBrush
-	{
-		get => GetFocusBorderBrushValue();
-		set => SetFocusBorderBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty FocusBorderBrushProperty { get; } = CreateFocusBorderBrushProperty();
+	public partial Brush? FocusBorderBrush { get; set; }
 
 	#endregion
 
@@ -139,14 +97,8 @@ partial class GridViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: background fill of placeholder item.
 	/// </summary>
-	public Brush? PlaceholderBackground
-	{
-		get => GetPlaceholderBackgroundValue();
-		set => SetPlaceholderBackgroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty PlaceholderBackgroundProperty { get; } = CreatePlaceholderBackgroundProperty();
+	public partial Brush? PlaceholderBackground { get; set; }
 
 	#endregion
 
@@ -155,14 +107,8 @@ partial class GridViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: background fill of pointer over. NOTE! Backgrounds can and do mix if, say, user mousing over placeholder.
 	/// </summary>
-	public Brush? PointerOverBackground
-	{
-		get => GetPointerOverBackgroundValue();
-		set => SetPointerOverBackgroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty PointerOverBackgroundProperty { get; } = CreatePointerOverBackgroundProperty();
+	public partial Brush? PointerOverBackground { get; set; }
 
 	#endregion
 
@@ -171,14 +117,8 @@ partial class GridViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: selection border color. When selected: Background of item.
 	/// </summary>
-	public Brush? SelectedBackground
-	{
-		get => GetSelectedBackgroundValue();
-		set => SetSelectedBackgroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectedBackgroundProperty { get; } = CreateSelectedBackgroundProperty();
+	public partial Brush? SelectedBackground { get; set; }
 
 	#endregion
 
@@ -187,14 +127,8 @@ partial class GridViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: foreground set on the ContentPresenter for: Pointer over, Selecting, Selected, SelectedSwiping, SelectedUnfocused.
 	/// </summary>
-	public Brush? SelectedForeground
-	{
-		get => GetSelectedForegroundValue();
-		set => SetSelectedForegroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectedForegroundProperty { get; } = CreateSelectedForegroundProperty();
+	public partial Brush? SelectedForeground { get; set; }
 
 	#endregion
 
@@ -203,14 +137,8 @@ partial class GridViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: only when selected: Selection background color becomes this on pointer over, pointer press.
 	/// </summary>
-	public Brush? SelectedPointerOverBackground
-	{
-		get => GetSelectedPointerOverBackgroundValue();
-		set => SetSelectedPointerOverBackgroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectedPointerOverBackgroundProperty { get; } = CreateSelectedPointerOverBackgroundProperty();
+	public partial Brush? SelectedPointerOverBackground { get; set; }
 
 	#endregion
 
@@ -219,14 +147,8 @@ partial class GridViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: in same visual states as above, except it's the selection border color. Identical to above.
 	/// </summary>
-	public Brush? SelectedPointerOverBorderBrush
-	{
-		get => GetSelectedPointerOverBorderBrushValue();
-		set => SetSelectedPointerOverBorderBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectedPointerOverBorderBrushProperty { get; } = CreateSelectedPointerOverBorderBrushProperty();
+	public partial Brush? SelectedPointerOverBorderBrush { get; set; }
 
 	#endregion
 
@@ -235,17 +157,11 @@ partial class GridViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: thickness of selection border.
 	/// </summary>
-	public Thickness SelectedBorderThickness
-	{
-		get => GetSelectedBorderThicknessValue();
-		set => SetSelectedBorderThicknessValue(value);
-	}
+	[GeneratedDependencyProperty(LocalCache = false, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	public partial Thickness SelectedBorderThickness { get; set; }
 
 	// Instances get the rounded/non-rounded default from ListViewBaseItemPresenter.GetDefaultValue2.
 	private static Thickness GetSelectedBorderThicknessDefaultValue() => new(0);
-
-	[GeneratedDependencyProperty(LocalCache = false, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectedBorderThicknessProperty { get; } = CreateSelectedBorderThicknessProperty();
 
 	#endregion
 
@@ -254,14 +170,8 @@ partial class GridViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: opacity of ContentPresenter (only) when disabled.
 	/// </summary>
-	public double DisabledOpacity
-	{
-		get => GetDisabledOpacityValue();
-		set => SetDisabledOpacityValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = 0.55, LocalCache = false, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty DisabledOpacityProperty { get; } = CreateDisabledOpacityProperty();
+	public partial double DisabledOpacity { get; set; }
 
 	#endregion
 
@@ -272,16 +182,10 @@ partial class GridViewItemPresenter
 	/// </summary>
 	// TODO Uno: https://github.com/unoplatform/uno/issues/25922
 	[Uno.NotImplemented]
-	public double DragOpacity
-	{
-		get => GetDragOpacityValue();
-		set => SetDragOpacityValue(value);
-	}
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	public partial double DragOpacity { get; set; }
 
 	private static object GetDragOpacityDefaultValue() => Boxer.Box(ListViewBaseItemPresenter.GetDefaultDragOpacity());
-
-	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty DragOpacityProperty { get; } = CreateDragOpacityProperty();
 
 	#endregion
 
@@ -290,16 +194,10 @@ partial class GridViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: amount containers move for reorder hints.
 	/// </summary>
-	public double ReorderHintOffset
-	{
-		get => GetReorderHintOffsetValue();
-		set => SetReorderHintOffsetValue(value);
-	}
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	public partial double ReorderHintOffset { get; set; }
 
 	private static object GetReorderHintOffsetDefaultValue() => Boxer.Box(ListViewBaseItemPresenter.GetDefaultGridViewItemReorderHintOffset());
-
-	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty ReorderHintOffsetProperty { get; } = CreateReorderHintOffsetProperty();
 
 	#endregion
 
@@ -380,16 +278,10 @@ partial class GridViewItemPresenter
 	/// <summary>
 	/// Gets or sets the pointer over background margin.
 	/// </summary>
-	public Thickness PointerOverBackgroundMargin
-	{
-		get => GetPointerOverBackgroundMarginValue();
-		set => SetPointerOverBackgroundMarginValue(value);
-	}
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	public partial Thickness PointerOverBackgroundMargin { get; set; }
 
 	private static Thickness GetPointerOverBackgroundMarginDefaultValue() => new(0);
-
-	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty PointerOverBackgroundMarginProperty { get; } = CreatePointerOverBackgroundMarginProperty();
 
 	#endregion
 
@@ -398,16 +290,10 @@ partial class GridViewItemPresenter
 	/// <summary>
 	/// Gets or sets the content margin.
 	/// </summary>
-	public Thickness ContentMargin
-	{
-		get => GetContentMarginValue();
-		set => SetContentMarginValue(value);
-	}
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	public partial Thickness ContentMargin { get; set; }
 
 	private static Thickness GetContentMarginDefaultValue() => new(0);
-
-	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty ContentMarginProperty { get; } = CreateContentMarginProperty();
 
 	#endregion
 }
