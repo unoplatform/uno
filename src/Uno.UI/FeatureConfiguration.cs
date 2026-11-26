@@ -335,8 +335,9 @@ namespace Uno.UI
 			/// <summary>
 			/// On Skia targets, determines if a TextBlock keeps the shaping of its text (fonts, bidi and glyphs) between
 			/// layouts, so that a layout at another size only breaks the lines again. Turn it off only to rule it out
-			/// when investigating a text layout issue.
+			/// when investigating a text layout issue; the text is then still shaped by the same code, once per layout.
 			/// </summary>
+			/// <remarks>Defaults to <see langword="true"/>. Set it at startup: a change applies at each block's next layout.</remarks>
 			public static bool EnableShapingCache { get; set; } = true;
 
 			/// <summary>
@@ -344,6 +345,7 @@ namespace Uno.UI
 			/// size that can't change how its lines break. Turn it off only to rule it out when investigating a text
 			/// layout issue.
 			/// </summary>
+			/// <remarks>Defaults to <see langword="true"/>. Set it at startup: a change applies at each block's next layout.</remarks>
 			public static bool EnableArrangeLayoutReuse { get; set; } = true;
 		}
 

@@ -37,6 +37,15 @@ A decoded image that nothing displays anymore (its `Image` was unloaded or given
 
 Uno decodes an image at its full size unless `DecodePixelWidth` or `DecodePixelHeight` is set, where WinUI decodes it at its rendered size by default, so the same images can hold far more memory than on WinUI. Set the limit to the app's memory budget: a higher one keeps more recently shown images ready to show again, a lower one (down to `0`) frees them sooner. A decode size reduces what each image holds in the first place.
 
+## TextBlock layout (Skia)
+
+A `TextBlock`, and the text of a `TextBox`, a `PasswordBox` or a small `RichEditBox` document, keeps the shaping of its text (fonts, bidi and glyphs) between layouts, so that a layout at another size only breaks the lines again. When it is arranged at a size that can't change how its lines break, it also keeps the layout built by measure. Two flags turn these off, to rule them out when investigating a text layout issue, such as text drawn with an old format or lines broken as for another width:
+
+- `Uno.UI.FeatureConfiguration.TextBlock.EnableShapingCache`: keeps the shaping between layouts. Default: `true`. With it off, the text is still shaped by the same code, once per layout.
+- `Uno.UI.FeatureConfiguration.TextBlock.EnableArrangeLayoutReuse`: keeps the measure layout in arrange. Default: `true`.
+
+Set them at startup, before the text is laid out: a change applies at each block's next layout, and doesn't lay out existing text again.
+
 ## Accent color
 
 ### Overriding the system accent color
