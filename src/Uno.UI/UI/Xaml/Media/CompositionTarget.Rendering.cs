@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -513,6 +513,8 @@ public partial class CompositionTarget
 			var target = swapChain.AcquireRenderTarget(
 				(int)Math.Round(xamlRootBounds.Width * rasterizationScale),
 				(int)Math.Round(xamlRootBounds.Height * rasterizationScale));
+			// A new swapchain at the same size (an Android surface re-created on resume) holds none of the previous
+			// frame's pixels, whatever its PreservesContents says, so it is repainted whole like a resize.
 			var swapChainRecreated = _lastSwapChain != swapChain;
 			_lastSwapChain = swapChain;
 			// Tolerance, not exact equality: DPI scales are floats, and a sub-epsilon difference is not a resize.

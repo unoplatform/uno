@@ -54,11 +54,11 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Software;
 
-	private bool _firstFramePresented;
+	private bool _bufferHasContent;
 
-	// Reuses one persistent CPU buffer across frames (reallocated only on resize), so the compositor can repaint
-	// only the damaged region once the first frame has been presented on this swapchain.
-	public bool PreservesContents => _firstFramePresented;
+	// Reuses one persistent CPU buffer across frames, so the compositor can repaint only the damaged region. A buffer
+	// just (re)allocated on resize is blank until a frame has been presented from it.
+	public bool PreservesContents => _bufferHasContent;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
@@ -73,6 +73,7 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 			_width = width;
 			_height = height;
 			_target = new AndroidSoftwareRenderTarget(_pixels, width * 4, width, height);
+			_bufferHasContent = false;
 		}
 
 		return _target!;
@@ -107,7 +108,7 @@ internal sealed class AndroidSoftwareGraphicsContext : ISwapChain
 
 		GLES20.GlDisableVertexAttribArray(_posLocation);
 		GLES20.GlDisableVertexAttribArray(_texLocation);
-		_firstFramePresented = true;
+		_bufferHasContent = true;
 	}
 
 	private static long CurrentEglContext() => EGL14.EglGetCurrentContext()?.NativeHandle ?? 0;

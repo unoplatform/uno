@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Android.App;
@@ -6,7 +6,6 @@ using Android.Content;
 using Android.Content.PM;
 using Android.Content.Res;
 using Android.Graphics;
-using Android.Opengl;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
@@ -628,9 +627,6 @@ namespace Uno.UI.Runtime.Android
 
 			base.OnResume();
 
-			(_renderView as GLSurfaceView)?.OnResume();
-			InvalidateRender();
-
 			RaiseConfigurationChanges();
 
 			// Activate accessibility routing for the foreground window.
@@ -650,8 +646,6 @@ namespace Uno.UI.Runtime.Android
 		{
 			_resumed = false;
 			base.OnPause();
-
-			(_renderView as GLSurfaceView)?.OnPause();
 
 			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #8341.
 			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
