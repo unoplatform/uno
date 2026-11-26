@@ -6303,6 +6303,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS)] // Flaky on 6.x: https://github.com/unoplatform/uno/issues/26221
 		public async Task When_Touch_Caret_Flyout_No_Select_Android()
 		{
 			using var _ = new DisposableAction(() =>
@@ -8157,7 +8158,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mobile conventions: run on Desktop (dev) + real Android only
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)] // mobile conventions: run on Desktop (dev); Android disabled as flaky on 6.x: https://github.com/unoplatform/uno/issues/26221
 		public Task When_Touch_Tap_Does_Not_Lock_ScrollViewer_Android()
 			=> AssertTouchCaretDoesNotLockScrollViewer(
 				"Some Text",
@@ -8169,7 +8170,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// The empty-field variant only started reaching the lock once an empty box stopped swallowing the tap: it
 		// now places the Android insertion handle like a filled one, which is what used to arm the clamp.
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)] // Android disabled as flaky on 6.x: https://github.com/unoplatform/uno/issues/26221
 		public Task When_Touch_Tap_Empty_Does_Not_Lock_ScrollViewer_Android()
 			=> AssertTouchCaretDoesNotLockScrollViewer(
 				"",
@@ -8249,6 +8250,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// still (fractionally) visible, but its thumb - a full thumb-height below the line - paints entirely outside.
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+#if RUNTIME_NATIVE_AOT
+		[Ignore("Flaky on 6.x Android NativeAOT: https://github.com/unoplatform/uno/issues/26221")]
+#endif
 		public async Task When_Caret_Line_Straddles_Viewport_Edge_Grippers_Are_Hidden()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
