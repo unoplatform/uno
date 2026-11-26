@@ -443,14 +443,13 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		}
 	}
 
-	// Lets a platform skip the per-arrange IsOffscreen clip work for peers whose events no client can receive.
-	// A platform that answers false must refresh the peer's baseline itself (RaiseAutomaticPropertyChanges
-	// with firePropertyChangedEvents: false) when it starts delivering that peer's events, or the first
-	// change after that is compared with a stale value.
+	// Lets a platform skip peers whose events no client can receive. An override that returns false must
+	// refresh the peer's baseline (RaiseAutomaticPropertyChanges with firePropertyChangedEvents: false)
+	// before it starts returning true, or the first change is compared with a stale value.
 	protected virtual bool CanReceiveAutomaticPropertyChanges(AutomationPeer peer) => true;
 
-	// RaiseAutomaticPropertyChanges swallows failures of peer overrides so they never reach layout; the gate
-	// calls peer code too (EventsSource, GetParent), so it gets the same protection. On a failure, raise as before.
+	// The gate calls peer code (EventsSource, GetParent), so like RaiseAutomaticPropertyChanges it must not
+	// throw into layout. On a failure, raise as before.
 	private bool ShouldRaiseAutomaticPropertyChanges(AutomationPeer peer)
 	{
 		try
@@ -459,9 +458,9 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		}
 		catch (Exception ex)
 		{
-			if (typeof(SkiaAccessibilityBase).Log().IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				typeof(SkiaAccessibilityBase).Log().Debug($"[A11y] CanReceiveAutomaticPropertyChanges failed for {peer.GetType().Name}: {ex.Message}");
+				this.Log().Debug($"CanReceiveAutomaticPropertyChanges failed for {peer.GetType().Name}: {ex}");
 			}
 
 			return true;

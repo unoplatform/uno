@@ -35,6 +35,8 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	private readonly Win32SyntheticPaneProvider _innerPane;
 	private readonly ConditionalWeakTable<UIElement, Win32RawElementProvider> _providers = new();
 	private readonly ConditionalWeakTable<AutomationPeer, Win32RawElementProvider> _peerProviders = new();
+	private static readonly object s_unseeded = new();
+	private readonly ConditionalWeakTable<AutomationPeer, object> _unseededPeers = new();
 	private readonly ConcurrentDictionary<Win32RawElementProvider, byte> _liveProviders = new(ReferenceEqualityComparer.Instance);
 	private int _providerCleanupDepth;
 	// Pending StructureChanged events, coalesced onto the dispatcher. We record the specific
@@ -1042,9 +1044,8 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		return null;
 	}
 
-	// NotifyPropertyChangedEvent drops the events of a peer that has no provider (no UIA client has asked
-	// about it), so evaluating its automatic properties on every arrange is wasted work. Same lookup as there.
-	// The peer's baseline is refreshed when its provider is created (SeedAutomaticPropertyBaseline).
+	// A peer with no provider can't deliver events (NotifyPropertyChangedEvent drops them), so layout skips it;
+	// its baseline is refreshed when the provider is created (SeedAutomaticPropertyBaseline).
 	protected override bool CanReceiveAutomaticPropertyChanges(AutomationPeer peer)
 	{
 		if (!IsAccessibilityEnabled)
@@ -1052,8 +1053,14 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			return false;
 		}
 
-		// A peer whose events go to another peer's provider (EventsSource) can't be seeded when that provider
-		// is created: nothing lists the peers that point at a source. Keep evaluating it on every arrange.
+		// An unseeded baseline is stale: wait for the seed instead of comparing against it.
+		if (_unseededPeers.TryGetValue(peer, out _))
+		{
+			return false;
+		}
+
+		// A peer that reports through another peer's provider (EventsSource) can't be seeded: nothing lists
+		// the peers pointing at a source. Keep evaluating it on every arrange.
 		if (!ReferenceEquals(peer.ResolveProviderPeer(resolveEventsSource: true), peer))
 		{
 			return true;
@@ -1062,20 +1069,43 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		return FindExistingProviderForPeer(peer) is not null;
 	}
 
-	// While a peer has no provider, CanReceiveAutomaticPropertyChanges stops layout from refreshing its
-	// IsOffscreen/IsEnabled/Name/ItemStatus baseline. Refresh it, raising nothing, as the provider is created,
-	// so a client that reads the provider now is notified of the next change, and only of a real one.
+	// Refreshes the baseline raising nothing, so a client reading the new provider is notified of the next
+	// change only. IsOffscreen reads the visual tree, so it runs on the UI thread; off it, the peer is held
+	// back from the gate until the queued seed has run.
 	private void SeedAutomaticPropertyBaseline(AutomationPeer peer)
 	{
-		// UIA calls providers on the thread that created the root provider (UseComThreading), which is the
-		// UI thread, so this normally runs inline. IsOffscreen reads the visual tree, so never run it elsewhere.
 		if (!_dispatcherQueue.HasThreadAccess)
 		{
-			_dispatcherQueue.TryEnqueue(() => SeedAutomaticPropertyBaseline(peer));
+			_unseededPeers.AddOrUpdate(peer, s_unseeded);
+			if (!_dispatcherQueue.TryEnqueue(() => SeedAutomaticPropertyBaseline(peer)))
+			{
+				_unseededPeers.Remove(peer);
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"[A11y] Baseline of {peer.GetType().Name} not seeded: the dispatcher is shut down.");
+				}
+			}
+
 			return;
 		}
 
-		peer.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: false);
+		_unseededPeers.Remove(peer);
+		if (IsDisposed)
+		{
+			return;
+		}
+
+		try
+		{
+			peer.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: false);
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"[A11y] Seeding the baseline of {peer.GetType().Name} failed: {ex}");
+			}
+		}
 	}
 
 	// ──────────────────────────────────────────────────────────────
