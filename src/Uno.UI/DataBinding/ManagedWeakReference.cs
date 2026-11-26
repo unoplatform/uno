@@ -28,7 +28,7 @@ namespace Uno.UI.DataBinding
 		/// <summary>
 		/// Provides the owner of the reference, which requested the current <see cref="WeakReference"/>
 		/// </summary>
-		public object Owner => _ownerHandle?.Target;
+		public object Owner => _disposed ? null : _ownerHandle?.Target;
 
 		/// <summary>
 		/// The managed weak reference
@@ -95,10 +95,8 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
-		// Null if disposed before or during the read: the pool may have recycled the handle. The barrier stops ARM64
-		// from completing the target read after the flag read (an off-thread INotifyPropertyChanged reader).
-		// Only load-load ordering is needed: Volatile.ReadBarrier is free on x64 and a "dmb ishld" on ARM64, where
-		// a full fence costs about 10 ns per read on x64. This runs on every Target, IsAlive and TryGetTarget.
+		// Null if disposed before or during the read (the pool may have recycled the handle). The load-load barrier
+		// keeps ARM64 from reading the target after the flag; a full fence would cost ~10 ns per read on x64.
 		private object ReadTarget()
 		{
 			var target = _targetHandle?.Target;
@@ -120,10 +118,8 @@ namespace Uno.UI.DataBinding
 		}
 
 #if NET10_0_OR_GREATER
-		// Volatile.ReadBarrier is a JIT intrinsic whose managed body calls itself. CoreCLR replaces it; the Mono
-		// interpreter (WebAssembly, and the interpreted code of the mobile heads) runs the body and overflows the stack
-		// on the first weak-reference read. These are the platforms where .NET runs on Mono, so they take the full fence
-		// instead (what .NET 9 uses). An Android head on CoreCLR also takes it, which is correct, only slower.
+		// Volatile.ReadBarrier's managed body calls itself and only CoreCLR replaces it: Mono overflows the stack.
+		// These OSes run on Mono, so they take the full fence. An Android head on CoreCLR takes it too (correct, slower).
 		private static readonly bool _runsOnMono =
 			OperatingSystem.IsBrowser()
 			|| OperatingSystem.IsWasi()

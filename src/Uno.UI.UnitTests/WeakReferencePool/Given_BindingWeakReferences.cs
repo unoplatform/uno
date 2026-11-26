@@ -177,6 +177,20 @@ namespace Uno.UI.Tests
 		}
 
 		[TestMethod]
+		public void When_DataContext_Set_After_Dispose_Then_Nothing_Rented()
+		{
+			var path = new BindingPath("A.B", null);
+			path.DataContext = new Outer { A = new Inner { B = "0" } };
+			path.Dispose();
+
+			var pooled = WeakReferencePool.PooledReferences;
+			path.DataContext = new Outer { A = new Inner { B = "1" } };
+
+			Assert.AreEqual(pooled, WeakReferencePool.PooledReferences, "A disposed path rents nothing");
+			Assert.IsNull(path.DataContext);
+		}
+
+		[TestMethod]
 		public void When_Binding_Path_Retargeted_Then_Shared_Reference_Returned_Once()
 		{
 			var sources = CreateSources();

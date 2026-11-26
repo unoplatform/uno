@@ -266,7 +266,14 @@ namespace Uno.UI.DataBinding
 		public object? DataContext
 		{
 			get => _dataContextWeakStorage?.TargetOrNull;
-			set => SetWeakDataContext(Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, value));
+			set
+			{
+				// Not rented once disposed: nothing would return it.
+				if (!_disposed)
+				{
+					SetWeakDataContext(Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, value));
+				}
+			}
 		}
 
 		// Ownership: whoever rented the reference returns it, after everything sharing it is disposed.

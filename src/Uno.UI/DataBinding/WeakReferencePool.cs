@@ -92,12 +92,7 @@ namespace Uno.UI.DataBinding
 		{
 			if (managedWeakReference?.IsDisposed == true)
 			{
-				// Returned already: ignored, but worth knowing about, since the owner may still be using it.
-				if (typeof(WeakReferencePool).Log().IsEnabled(LogLevel.Debug))
-				{
-					typeof(WeakReferencePool).Log().Debug($"A ManagedWeakReference was returned twice (owner: {owner?.GetType()}).");
-				}
-
+				// Returned already.
 				return;
 			}
 

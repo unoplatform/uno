@@ -393,8 +393,7 @@ namespace Uno.UI.DataBinding
 				{
 					if (IsDisposed || dataContextStorage is null || dataContextStorage.IsDisposed)
 					{
-						// Disposed by user code during a previous registration: the caller's SerialDisposable is disposed
-						// too, so it disposes what was registered so far as soon as it's assigned.
+						// Disposed by user code mid-loop: the caller disposes what was registered so far.
 						break;
 					}
 
@@ -443,8 +442,7 @@ namespace Uno.UI.DataBinding
 				IsDisposed = true;
 				_propertyChanged.Dispose();
 
-				// The subscriptions that used the reference are gone. Return it if this item rented it
-				// (the head item shares the reference of its BindingPath, which returns it instead).
+				// The head item shares its BindingPath's reference, which the path returns instead.
 				var storage = _dataContextWeakStorage;
 				_dataContextWeakStorage = null;
 				WeakReferencePool.ReturnWeakReference(this, storage);
