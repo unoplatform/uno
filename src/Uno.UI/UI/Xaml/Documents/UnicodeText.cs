@@ -1008,11 +1008,15 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	/// <summary>The same layout at another available size (see <see cref="TryReuseForSize"/>).</summary>
-	/// <remarks>Shares everything with <paramref name="layout"/>, including the boxes of the lazily computed state.</remarks>
+	/// <remarks>
+	/// Shares everything with <paramref name="layout"/>, including the boxes of the lazily computed state, except the
+	/// spell-check squiggles, which drawing computes at the available size.
+	/// </remarks>
 	private UnicodeText(in UnicodeText layout, Size availableSize)
 	{
 		this = layout;
 		_availableSize = availableSize;
+		_spellCheckSquiggles = new();
 	}
 
 	/// <summary>

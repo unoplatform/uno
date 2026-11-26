@@ -84,6 +84,27 @@ public class Given_TextBlock_ShapingCache
 	}
 
 	[TestMethod]
+	public async Task When_A_Custom_Layout_Is_Set_Shaping_Is_Dropped()
+	{
+		var SUT = new TextBlock { Text = Sentence };
+		try
+		{
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+			Assert.IsNotNull(SUT.CachedShapedText);
+
+			SUT.CustomTextLayout = new EmptyTextLayout();
+
+			Assert.IsNull(SUT.CachedShapedText);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	public async Task When_Text_Is_Long_No_Shaping_Is_Kept()
 	{
 		// Long text is mostly edited, which misses the cache anyway, so its shaping isn't kept; a new width still lays it out
@@ -970,6 +991,15 @@ public class Given_TextBlock_ShapingCache
 		for (var index = 0; index <= length; index++)
 		{
 			Assert.AreEqual(expected.ParsedText.GetRectForIndex(index), actual.ParsedText.GetRectForIndex(index), $"Rect of index {index} {context}");
+		}
+	}
+
+	private sealed class EmptyTextLayout : ICustomTextLayout
+	{
+		public IParsedText Create(Size availableSize, Inline[] inlines, FontDetails defaultFontDetails, UnicodeText.IFontCacheUpdateListener fontListener, Microsoft.UI.Xaml.Media.Brush defaultForeground, TextAlignment? textAlignment, out Size size)
+		{
+			size = default;
+			return ParsedText.Empty;
 		}
 	}
 
