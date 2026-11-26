@@ -353,6 +353,111 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			}
 		}
 
+		[TestMethod]
+		[DataRow(Orientation.Vertical)]
+		[DataRow(Orientation.Horizontal)]
+		public async Task When_Track_Shorter_Than_Panning_Thumb_MinSize_Then_Layout_Settles(Orientation orientation)
+		{
+			// The mouse thumb fits but the panning thumb does not, so UpdateIndicatorLengths shows the mouse thumb
+			// and then hides every thumb again. An auto-sized bar must not keep growing and shrinking over it.
+			var isVertical = orientation == Orientation.Vertical;
+			var SUT = new ScrollBar
+			{
+				Orientation = orientation,
+				IndicatorMode = ScrollingIndicatorMode.MouseIndicator,
+				Minimum = 0,
+				Maximum = 100,
+				ViewportSize = 10,
+			};
+			var host = new StackPanel
+			{
+				Orientation = isVertical ? Orientation.Horizontal : Orientation.Vertical,
+				Children = { SUT },
+			};
+
+			try
+			{
+				await UITestHelper.Load(host, _ => SUT.IsLoaded);
+
+				var panningThumb = FindTemplateChild<FrameworkElement>(SUT, isVertical ? "VerticalPanningThumb" : "HorizontalPanningThumb");
+				Assert.IsNotNull(panningThumb, "The panning thumb should be part of the ScrollBar template.");
+				if (isVertical)
+				{
+					panningThumb.MinHeight = 10000;
+				}
+				else
+				{
+					panningThumb.MinWidth = 10000;
+				}
+
+				var sizeChangedCount = 0;
+				SUT.SizeChanged += (_, _) => sizeChangedCount++;
+
+				SUT.Value = 50;
+				await TestServices.WindowHelper.WaitForIdle();
+				var settledCount = sizeChangedCount;
+
+				for (var i = 0; i < 5; i++)
+				{
+					await UITestHelper.WaitForRender();
+					await TestServices.WindowHelper.WaitForIdle();
+				}
+
+				Assert.AreEqual(settledCount, sizeChangedCount, "The ScrollBar should settle instead of resizing on every layout pass.");
+
+				var thumb = FindTemplateChild<Thumb>(SUT, isVertical ? "VerticalThumb" : "HorizontalThumb");
+				Assert.AreEqual(Visibility.Collapsed, thumb.Visibility, "Every thumb should be hidden when the panning thumb cannot fit.");
+				Assert.AreEqual(Visibility.Collapsed, panningThumb.Visibility, "Every thumb should be hidden when the panning thumb cannot fit.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Reloaded_Then_SmallIncrease_Raises_Scroll_Once()
+		{
+			var SUT = new ScrollBar
+			{
+				Orientation = Orientation.Vertical,
+				IndicatorMode = ScrollingIndicatorMode.MouseIndicator,
+				Minimum = 0,
+				Maximum = 100,
+				ViewportSize = 10,
+				SmallChange = 1,
+				Width = 24,
+				Height = 200,
+			};
+
+			var scrollEvents = new List<ScrollEventType>();
+			SUT.Scroll += (_, e) => scrollEvents.Add(e.ScrollEventType);
+
+			try
+			{
+				await UITestHelper.Load(SUT);
+
+				TestServices.WindowHelper.WindowContent = null;
+				await TestServices.WindowHelper.WaitForIdle();
+				await UITestHelper.Load(SUT);
+
+				var smallIncrease = FindTemplateChild<RepeatButton>(SUT, "VerticalSmallIncrease");
+				Assert.IsNotNull(smallIncrease, "The small increase button should be part of the ScrollBar template.");
+
+				var invokeProvider = (Microsoft.UI.Xaml.Automation.Provider.IInvokeProvider)
+					Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.CreatePeerForElement(smallIncrease);
+				invokeProvider.Invoke();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(1, SUT.Value, "One click on the small increase button should move the Value by one SmallChange.");
+				CollectionAssert.AreEqual(new[] { ScrollEventType.SmallIncrement }, scrollEvents, "One click should raise exactly one Scroll event.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
 		private static ScrollViewer CreateScrollViewer(ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.Visible)
 			=> new ScrollViewer
 			{

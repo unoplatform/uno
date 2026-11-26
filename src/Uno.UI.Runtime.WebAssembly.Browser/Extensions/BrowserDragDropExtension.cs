@@ -174,6 +174,46 @@ namespace Uno.UI.Runtime
 			}
 		}
 
+		// Keep in sync with ToNativeOperation()
+		private static readonly Task<string> _copyTask = Task.FromResult("copy");
+		private static readonly Task<string> _linkTask = Task.FromResult("link");
+		private static readonly Task<string> _moveTask = Task.FromResult("move");
+		private static readonly Task<string> _noneTask = Task.FromResult("none");
+
+		[JSExport]
+		public static Task<string> OnNativeDropEventAsync(
+			string eventName,
+			string allowedOperations,
+			string acceptedOperation,
+			string dataItems,
+			double timestamp,
+			double x,
+			double y,
+			int id,
+			int buttons,
+			bool shift,
+			bool ctrl,
+			bool alt) =>
+				OnNativeDropEvent(
+						eventName,
+						allowedOperations,
+						acceptedOperation,
+						dataItems,
+						timestamp,
+						x,
+						y,
+						id,
+						buttons,
+						shift,
+						ctrl,
+						alt) switch
+				{
+					"copy" => _copyTask,
+					"link" => _linkTask,
+					"move" => _moveTask,
+					_ => _noneTask
+				};
+
 		private static DataPackage CreateDataPackage(int id, string dataItems)
 		{
 			if (dataItems is null)
@@ -353,9 +393,17 @@ namespace Uno.UI.Runtime
 
 			/// <inheritdoc />
 			public Point GetPosition(object? relativeTo)
-				=> relativeTo == null
-					? new Point(x, y)
-					: ((UIElement)relativeTo).TransformToVisual(null).Inverse.TransformPoint(new Point(x, y));
+			{
+				if (relativeTo is null)
+				{
+					return new Point(x, y);
+				}
+
+				var absolutePosition = new Point(x, y);
+				return ((UIElement)relativeTo).TransformToVisual(null).TryTransformInverse(absolutePosition, out var position)
+					? position
+					: absolutePosition;
+			}
 		}
 
 		private struct DataEntry

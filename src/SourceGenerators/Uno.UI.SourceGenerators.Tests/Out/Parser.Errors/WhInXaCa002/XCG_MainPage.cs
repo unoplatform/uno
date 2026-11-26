@@ -29,9 +29,9 @@ namespace TestRepro
 	partial class MainPage : global::Microsoft.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_MainPage_6223b07b3d418584d0a26d35f5e25e2c = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a = "ms-appx:///TestProject/0/MainPage.xaml";
+		private const string __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c = "ms-appx:///TestProject/0/MainPage.xaml";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -116,11 +116,11 @@ namespace TestRepro
 											Source = @"ms-appx:///Assets/Icons/iconLogo.targetsize-32.png",
 											// Source MainPage.xaml (Line 5:2)
 										}
-										.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+										.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 										{
 										global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Image.Logo");
 										global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 0);
-										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 										__p1.CreationComplete();
 										}
 										))
@@ -134,14 +134,14 @@ namespace TestRepro
 											VerticalAlignment = global::Microsoft.UI.Xaml.VerticalAlignment.Center,
 											// Source MainPage.xaml (Line 6:6)
 										}
-										.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+										.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 										{
 										/* _isTopLevelDictionary:False */
 										__that._component_0 = __p1;
 										global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Label.Title");
 										global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "TitleTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
 										global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 1);
-										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 										__p1.CreationComplete();
 										}
 										))
@@ -165,7 +165,7 @@ namespace TestRepro
 														Content = "Sync",
 														// Source MainPage.xaml (Line 8:6)
 													}
-													.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
+													.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
 													{
 													/* _isTopLevelDictionary:False */
 													__that._component_1 = __p1;
@@ -178,7 +178,7 @@ namespace TestRepro
 															Path = "SyncCommand",
 														}
 													);
-													global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+													global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 													__p1.CreationComplete();
 													}
 													))
@@ -191,7 +191,7 @@ namespace TestRepro
 														Content = "Push sélection",
 														// Source MainPage.xaml (Line 9:10)
 													}
-													.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
+													.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
 													{
 													/* _isTopLevelDictionary:False */
 													__that._component_2 = __p1;
@@ -204,7 +204,7 @@ namespace TestRepro
 															Path = "PushToBambooCommand",
 														}
 													);
-													global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+													global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 													__p1.CreationComplete();
 													}
 													))
@@ -213,10 +213,10 @@ namespace TestRepro
 											}
 											,
 										}
-										.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
+										.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 										{
 										global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 2);
-										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 										__p1.CreationComplete();
 										}
 										))
@@ -225,10 +225,10 @@ namespace TestRepro
 								}
 								,
 							}
-							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
+							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
 							{
 							global::Microsoft.UI.Xaml.Controls.Grid.SetRow(__p1, 0);
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
 							}
 							))
@@ -257,7 +257,7 @@ namespace TestRepro
 											MaxWidth = 420f,
 											// Source MainPage.xaml (Line 69:6)
 										}
-										.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+										.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 										{
 										__nameScope.RegisterName("PreviewColumn", __p1);
 										__that.PreviewColumn = __p1;
@@ -281,7 +281,7 @@ namespace TestRepro
 											,
 											// Source MainPage.xaml (Line 18:2)
 										}
-										.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler7)(__p1 => 
+										.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler7)(__p1 => 
 										{
 										/* _isTopLevelDictionary:False */
 										__that._component_3 = __p1;
@@ -304,7 +304,7 @@ namespace TestRepro
 											}
 										);
 										global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 0);
-										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 										__p1.CreationComplete();
 										}
 										))
@@ -333,7 +333,7 @@ namespace TestRepro
 																IsParsing = true,
 																// Source MainPage.xaml (Line 57:2)
 															}
-															.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+															.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 															{
 															/* _isTopLevelDictionary:False */
 															__that._component_4 = __p1;
@@ -346,7 +346,7 @@ namespace TestRepro
 																}
 															);
 															global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "TitleTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-															global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+															global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 															__p1.CreationComplete();
 															}
 															))
@@ -360,7 +360,7 @@ namespace TestRepro
 																TextWrapping = global::Microsoft.UI.Xaml.TextWrapping.Wrap,
 																// Source MainPage.xaml (Line 58:6)
 															}
-															.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+															.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 															{
 															/* _isTopLevelDictionary:False */
 															__that._component_5 = __p1;
@@ -372,7 +372,7 @@ namespace TestRepro
 																}
 															);
 															global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "BodyTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-															global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+															global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 															__p1.CreationComplete();
 															}
 															))
@@ -386,12 +386,12 @@ namespace TestRepro
 																Text = "Durée",
 																// Source MainPage.xaml (Line 59:6)
 															}
-															.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+															.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 															{
 															/* _isTopLevelDictionary:False */
 															__that._component_6 = __p1;
 															global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "CaptionTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-															global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+															global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 															__p1.CreationComplete();
 															}
 															))
@@ -405,7 +405,7 @@ namespace TestRepro
 																Minimum = 0d,
 																// Source MainPage.xaml (Line 60:6)
 															}
-															.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler8)(__p1 => 
+															.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler8)(__p1 => 
 															{
 															global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Detail.Duration");
 															global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
@@ -415,7 +415,7 @@ namespace TestRepro
 																	Path = "SelectedActivity.DurationMinutes",
 																}
 															);
-															global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+															global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 															__p1.CreationComplete();
 															}
 															))
@@ -437,7 +437,7 @@ namespace TestRepro
 																			Content = "Approuver",
 																			// Source MainPage.xaml (Line 62:6)
 																		}
-																		.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
+																		.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
 																		{
 																		/* _isTopLevelDictionary:False */
 																		__that._component_7 = __p1;
@@ -457,7 +457,7 @@ namespace TestRepro
 																				Path = "ApproveCommand",
 																			}
 																		);
-																		global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+																		global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 																		__p1.CreationComplete();
 																		}
 																		))
@@ -471,7 +471,7 @@ namespace TestRepro
 																			Content = "Ignorer",
 																			// Source MainPage.xaml (Line 63:10)
 																		}
-																		.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
+																		.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
 																		{
 																		/* _isTopLevelDictionary:False */
 																		__that._component_8 = __p1;
@@ -491,7 +491,7 @@ namespace TestRepro
 																				Path = "SkipCommand",
 																			}
 																		);
-																		global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+																		global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 																		__p1.CreationComplete();
 																		}
 																		))
@@ -500,9 +500,9 @@ namespace TestRepro
 																}
 																,
 															}
-															.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
+															.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 															{
-															global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+															global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 															__p1.CreationComplete();
 															}
 															))
@@ -511,20 +511,20 @@ namespace TestRepro
 													}
 													,
 												}
-												.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
+												.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 												{
-												global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+												global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 												__p1.CreationComplete();
 												}
 												))
 											)
 										}
-										.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler9)(__p1 => 
+										.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler9)(__p1 => 
 										{
 										__nameScope.RegisterName("DetailPanel", __p1);
 										__that.DetailPanel = __p1;
 										global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 1);
-										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 										__p1.CreationComplete();
 										}
 										))
@@ -533,10 +533,10 @@ namespace TestRepro
 								}
 								,
 							}
-							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
+							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
 							{
 							global::Microsoft.UI.Xaml.Controls.Grid.SetRow(__p1, 1);
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
 							}
 							))
@@ -559,7 +559,7 @@ namespace TestRepro
 											Content = "Charger plus",
 											// Source MainPage.xaml (Line 73:6)
 										}
-										.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
+										.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
 										{
 										/* _isTopLevelDictionary:False */
 										__that._component_9 = __p1;
@@ -572,7 +572,7 @@ namespace TestRepro
 												Path = "LoadMoreCommand",
 											}
 										);
-										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+										global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 										__p1.CreationComplete();
 										}
 										))
@@ -581,10 +581,10 @@ namespace TestRepro
 								}
 								,
 							}
-							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
+							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 							{
 							global::Microsoft.UI.Xaml.Controls.Grid.SetRow(__p1, 1);
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
 							}
 							))
@@ -593,9 +593,9 @@ namespace TestRepro
 					}
 					,
 				}
-				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
+				.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
 				{
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 				__p1.CreationComplete();
 				}
 				))
@@ -603,20 +603,20 @@ namespace TestRepro
 			;
 			
 			this
-			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler10)(__p1 => 
+			.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler10)(__p1 => 
 			{
 			// Source MainPage.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
-			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler10)(__p1 => 
+			.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler10)(__p1 => 
 			{
 			/* _isTopLevelDictionary:False */
 			__that._component_10 = __p1;
 			// Class TestRepro.MainPage
 			global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "BackgroundColor", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 			__p1.CreationComplete();
 			}
 			))
@@ -630,7 +630,7 @@ namespace TestRepro
 		private static _View Build_PagΞ0_GriΞ1_GriΞ0_LisVie_IteTemΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			
-			return new __MainPage_0e3f323f9a22a3699cbcd4f0217eee4a.__PagΞ0_GriΞ1_GriΞ0_LisVie_IteTemΞ0_DatTem().Build(__owner, __settings);
+			return new __MainPage_6223b07b3d418584d0a26d35f5e25e2c.__PagΞ0_GriΞ1_GriΞ0_LisVie_IteTemΞ0_DatTem().Build(__owner, __settings);
 		}
 
 		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
@@ -658,7 +658,7 @@ namespace TestRepro
 		}
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		private class __MainPage_0e3f323f9a22a3699cbcd4f0217eee4a
+		private class __MainPage_6223b07b3d418584d0a26d35f5e25e2c
 		{
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -667,9 +667,9 @@ namespace TestRepro
 			public class __PagΞ0_GriΞ1_GriΞ0_LisVie_IteTemΞ0_DatTem
 			{
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-				private const string __baseUri_prefix_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a = "ms-appx:///TestProject/";
+				private const string __baseUri_prefix_MainPage_6223b07b3d418584d0a26d35f5e25e2c = "ms-appx:///TestProject/";
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-				private const string __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a = "ms-appx:///TestProject/0/MainPage.xaml";
+				private const string __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c = "ms-appx:///TestProject/0/MainPage.xaml";
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
@@ -707,7 +707,7 @@ namespace TestRepro
 												Width = new global::Microsoft.UI.Xaml.GridLength(48f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
 												// Source MainPage.xaml (Line 46:10)
 											}
-											.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+											.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 											{
 											global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 											}
@@ -720,7 +720,7 @@ namespace TestRepro
 												Width = new global::Microsoft.UI.Xaml.GridLength(1f, global::Microsoft.UI.Xaml.GridUnitType.Star),
 												// Source MainPage.xaml (Line 47:10)
 											}
-											.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+											.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 											{
 											global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 											}
@@ -733,7 +733,7 @@ namespace TestRepro
 												Width = new global::Microsoft.UI.Xaml.GridLength(120f, global::Microsoft.UI.Xaml.GridUnitType.Pixel),
 												// Source MainPage.xaml (Line 48:14)
 											}
-											.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+											.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 											{
 											global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 											}
@@ -764,7 +764,7 @@ namespace TestRepro
 														Stretch = global::Microsoft.UI.Xaml.Media.Stretch.Uniform,
 														// Source MainPage.xaml (Line 23:10)
 													}
-													.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+													.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 													{
 													global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 													global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
@@ -774,16 +774,16 @@ namespace TestRepro
 															Path = "SourceIconPath",
 														}
 													);
-													global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+													global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 													__p1.CreationComplete();
 													}
 													))
 												)
 											}
-											.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler9)(__p1 => 
+											.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler9)(__p1 => 
 											{
 											global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
-											global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+											global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 											__p1.CreationComplete();
 											}
 											))
@@ -817,7 +817,7 @@ namespace TestRepro
 																				{
 																					// Source MainPage.xaml (Line 27:10)
 																				}
-																				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler11)(__p1 => 
+																				.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler11)(__p1 => 
 																				{
 																				global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 																				global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
@@ -837,7 +837,7 @@ namespace TestRepro
 																					Text = " ",
 																					// Source MainPage.xaml (Line 28:14)
 																				}
-																				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler11)(__p1 => 
+																				.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler11)(__p1 => 
 																				{
 																				global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 																				}
@@ -850,7 +850,7 @@ namespace TestRepro
 																					Text = " · ",
 																					// Source MainPage.xaml (Line 28:14)
 																				}
-																				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler11)(__p1 => 
+																				.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler11)(__p1 => 
 																				{
 																				global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 																				}
@@ -863,7 +863,7 @@ namespace TestRepro
 																					Text = " ",
 																					// Source MainPage.xaml (Line 29:14)
 																				}
-																				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler11)(__p1 => 
+																				.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler11)(__p1 => 
 																				{
 																				global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 																				}
@@ -875,7 +875,7 @@ namespace TestRepro
 																				{
 																					// Source MainPage.xaml (Line 29:14)
 																				}
-																				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler11)(__p1 => 
+																				.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler11)(__p1 => 
 																				{
 																				global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 																				global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
@@ -891,13 +891,13 @@ namespace TestRepro
 																			,
 																		}
 																	}
-																	.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+																	.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 																	{
 																	global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 																	/* _isTopLevelDictionary:False */
 																	__that._component_0 = __p1;
 																	global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "BodyStrongTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-																	global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+																	global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 																	__p1.CreationComplete();
 																	}
 																	))
@@ -906,10 +906,10 @@ namespace TestRepro
 															}
 															,
 														}
-														.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
+														.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 														{
 														global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
-														global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+														global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 														__p1.CreationComplete();
 														}
 														))
@@ -923,7 +923,7 @@ namespace TestRepro
 															TextWrapping = global::Microsoft.UI.Xaml.TextWrapping.Wrap,
 															// Source MainPage.xaml (Line 32:10)
 														}
-														.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+														.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 														{
 														global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 														/* _isTopLevelDictionary:False */
@@ -936,7 +936,7 @@ namespace TestRepro
 															}
 														);
 														global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "BodyTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-														global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+														global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 														__p1.CreationComplete();
 														}
 														))
@@ -950,7 +950,7 @@ namespace TestRepro
 															TextWrapping = global::Microsoft.UI.Xaml.TextWrapping.Wrap,
 															// Source MainPage.xaml (Line 33:14)
 														}
-														.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+														.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 														{
 														global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 														/* _isTopLevelDictionary:False */
@@ -963,7 +963,7 @@ namespace TestRepro
 															}
 														);
 														global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "CaptionTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-														global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+														global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 														__p1.CreationComplete();
 														}
 														))
@@ -972,11 +972,11 @@ namespace TestRepro
 												}
 												,
 											}
-											.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
+											.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 											{
 											global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 											global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 1);
-											global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+											global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 											__p1.CreationComplete();
 											}
 											))
@@ -998,7 +998,7 @@ namespace TestRepro
 															HorizontalAlignment = global::Microsoft.UI.Xaml.HorizontalAlignment.Right,
 															// Source MainPage.xaml (Line 36:10)
 														}
-														.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+														.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 														{
 														global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 														/* _isTopLevelDictionary:False */
@@ -1011,7 +1011,7 @@ namespace TestRepro
 															}
 														);
 														global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.TextBlock.StyleProperty, "CaptionTextBlockStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-														global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+														global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 														__p1.CreationComplete();
 														}
 														))
@@ -1036,7 +1036,7 @@ namespace TestRepro
 																		Width = 72f,
 																		// Source MainPage.xaml (Line 38:14)
 																	}
-																	.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler8)(__p1 => 
+																	.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler8)(__p1 => 
 																	{
 																	global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 																	global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.NumberBox.Duration");
@@ -1047,7 +1047,7 @@ namespace TestRepro
 																			Path = "DurationMinutes",
 																		}
 																	);
-																	global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+																	global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 																	__p1.CreationComplete();
 																	}
 																	))
@@ -1061,7 +1061,7 @@ namespace TestRepro
 																		Content = "Edit",
 																		// Source MainPage.xaml (Line 39:18)
 																	}
-																	.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
+																	.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
 																	{
 																	global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 																	/* _isTopLevelDictionary:False */
@@ -1080,7 +1080,7 @@ namespace TestRepro
 																			ElementNameSubject = _ActivitiesListSubject,
 																		}
 																	);
-																	global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+																	global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 																	__p1.CreationComplete();
 																	}
 																	))
@@ -1089,10 +1089,10 @@ namespace TestRepro
 															}
 															,
 														}
-														.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
+														.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 														{
 														global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
-														global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+														global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 														__p1.CreationComplete();
 														}
 														))
@@ -1115,7 +1115,7 @@ namespace TestRepro
 																		Content = "Exporter",
 																		// Source MainPage.xaml (Line 42:18)
 																	}
-																	.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler12)(__p1 => 
+																	.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler12)(__p1 => 
 																	{
 																	global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 																	global::Uno.UI.Helpers.MarkupHelper.SetXUid(__p1, "MainPage.Check.Export");
@@ -1126,7 +1126,7 @@ namespace TestRepro
 																			Path = "MarkForExport",
 																		}
 																	);
-																	global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+																	global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 																	__p1.CreationComplete();
 																	}
 																	))
@@ -1135,10 +1135,10 @@ namespace TestRepro
 															}
 															,
 														}
-														.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
+														.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 														{
 														global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
-														global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+														global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 														__p1.CreationComplete();
 														}
 														))
@@ -1147,11 +1147,11 @@ namespace TestRepro
 												}
 												,
 											}
-											.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
+											.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 											{
 											global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 											global::Microsoft.UI.Xaml.Controls.Grid.SetColumn(__p1, 2);
-											global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+											global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 											__p1.CreationComplete();
 											}
 											))
@@ -1160,19 +1160,19 @@ namespace TestRepro
 									}
 									,
 								}
-								.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
+								.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
 								{
 								global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
-								global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+								global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 								__p1.CreationComplete();
 								}
 								))
 							)
 						}
-						.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler9)(__p1 => 
+						.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler9)(__p1 => 
 						{
 						global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
-						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 						__p1.CreationComplete();
 						}
 						))
@@ -1361,95 +1361,95 @@ namespace TestRepro
 }
 namespace MyProject
 {
-	static class MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions
+	static class MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions
 	{
 		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.RowDefinition instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.RowDefinition MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.RowDefinition instance, XamlApplyHandler0 handler)
+		public static global::Microsoft.UI.Xaml.Controls.RowDefinition MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.RowDefinition instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.ColumnDefinition instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.ColumnDefinition MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.ColumnDefinition instance, XamlApplyHandler1 handler)
+		public static global::Microsoft.UI.Xaml.Controls.ColumnDefinition MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.ColumnDefinition instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.Image instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Image MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Image instance, XamlApplyHandler2 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Image MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.Image instance, XamlApplyHandler2 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler3(global::Microsoft.UI.Xaml.Controls.TextBlock instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.TextBlock MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.TextBlock instance, XamlApplyHandler3 handler)
+		public static global::Microsoft.UI.Xaml.Controls.TextBlock MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.TextBlock instance, XamlApplyHandler3 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler4(global::Microsoft.UI.Xaml.Controls.Button instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Button MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Button instance, XamlApplyHandler4 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Button MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.Button instance, XamlApplyHandler4 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler5(global::Microsoft.UI.Xaml.Controls.StackPanel instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.StackPanel MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.StackPanel instance, XamlApplyHandler5 handler)
+		public static global::Microsoft.UI.Xaml.Controls.StackPanel MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.StackPanel instance, XamlApplyHandler5 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler6(global::Microsoft.UI.Xaml.Controls.Grid instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Grid MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Grid instance, XamlApplyHandler6 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Grid MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.Grid instance, XamlApplyHandler6 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler7(global::Microsoft.UI.Xaml.Controls.ListView instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.ListView MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.ListView instance, XamlApplyHandler7 handler)
+		public static global::Microsoft.UI.Xaml.Controls.ListView MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.ListView instance, XamlApplyHandler7 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler8(global::Microsoft.UI.Xaml.Controls.NumberBox instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.NumberBox MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.NumberBox instance, XamlApplyHandler8 handler)
+		public static global::Microsoft.UI.Xaml.Controls.NumberBox MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.NumberBox instance, XamlApplyHandler8 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler9(global::Microsoft.UI.Xaml.Controls.Border instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Border MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Border instance, XamlApplyHandler9 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Border MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.Border instance, XamlApplyHandler9 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler10(global::Microsoft.UI.Xaml.Controls.Page instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler10 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler10 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler11(global::Microsoft.UI.Xaml.Documents.Run instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Documents.Run MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Documents.Run instance, XamlApplyHandler11 handler)
+		public static global::Microsoft.UI.Xaml.Documents.Run MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Documents.Run instance, XamlApplyHandler11 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler12(global::Microsoft.UI.Xaml.Controls.CheckBox instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.CheckBox MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.CheckBox instance, XamlApplyHandler12 handler)
+		public static global::Microsoft.UI.Xaml.Controls.CheckBox MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.CheckBox instance, XamlApplyHandler12 handler)
 		{
 			handler(instance);
 			return instance;

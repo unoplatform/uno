@@ -160,7 +160,8 @@ public partial class DependencyObject
 			//m_checkForResourceOverrides = !!params.fCheckForResourceOverrides;
 		}
 
-		// TODO Uno: NOT PORTED — name registration (depends.cpp:986-1001):
+		// TODO Uno: NOT PORTED — name registration (depends.cpp:986-1001). The generated XAML code registers
+		// declared names; names set in code are registered by FrameworkElement.RegisterCodeName on a live enter.
 		//if (!params.fSkipNameRegistration)
 		//{
 		//	if (!IsTemplateNamescopeMember())
@@ -277,7 +278,14 @@ public partial class DependencyObject
 		else
 		{
 			// Update theme references to account for new ancestor theme dictionaries.
-			UpdateAllThemeReferences(owner, cache: null, ThemeResolution.ResolveOwnerTheme(owner));
+			// The theme-walk cache is threaded in so the pinned-dictionary refresh can reuse lookups made by
+			// the other elements entering the tree in the same layout pass — WinUI reads the same cache off
+			// the core from CThemeResource::RefreshValue (ThemeResource.cpp:81, 96). It only caches while a
+			// session is open (CoreServices.OnTick), so this is inert outside one.
+			UpdateAllThemeReferences(
+				owner,
+				cache: Uno.UI.Xaml.Core.CoreServices.Instance.ThemeWalkResourceCache,
+				ownerThemeOverride: ThemeResolution.ResolveOwnerTheme(owner));
 		}
 	}
 
@@ -363,7 +371,8 @@ public partial class DependencyObject
 
 		// Enumerate all the properties in its class
 
-		// TODO Uno: NOT PORTED — name unregistration (depends.cpp:1275-1280):
+		// TODO Uno: NOT PORTED — name unregistration (depends.cpp:1275-1280). Names set in code are
+		// unregistered by FrameworkElement.UnregisterCodeName on a live leave.
 		//if (!params.fSkipNameRegistration && !IsTemplateNamescopeMember())
 		//{
 		//	UnregisterName(pNamescopeOwner);

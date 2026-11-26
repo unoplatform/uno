@@ -52,6 +52,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private int _pictureCollapsingOptimizationVisualCountThreshold;
 
 	private CompositionClip? _clip;
+	private CompositionClip? _transitionClip;
 	private Vector2 _anchorPoint = Vector2.Zero; // Backing for scroll offsets
 	private int _zIndex;
 	private (Matrix4x4 matrix, Matrix4x4 localMatrix) _totalMatrix = (Matrix4x4.Identity, Matrix4x4.Identity);
@@ -361,6 +362,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		_content?.Dispose();
 		_content = null;
+		InvalidatePaintedArea();
 		_flags |= VisualFlags.PaintDirty;
 		InvalidateParentChildrenPicture(false);
 		// Own content feeds ancestor silhouettes; own caches are gated on PaintDirty directly.
@@ -415,6 +417,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		get => _clip;
 		set => SetProperty(ref _clip, value);
+	}
+
+	/// <summary>
+	/// The clip of the owning element's TransitionTarget, intersected with <see cref="Clip"/> in local coordinates.
+	/// </summary>
+	internal CompositionClip? TransitionClip
+	{
+		get => _transitionClip;
+		set => SetProperty(ref _transitionClip, value);
 	}
 
 	public Vector2 AnchorPoint
@@ -837,9 +848,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			localClip = clipFromParent;
 		}
 
-		if (IsNativeHostVisual || CanPaint())
+		if (IsNativeHostVisual)
 		{
-			clipPath = clipPath.Combine(localClip, IsNativeHostVisual ? GeometryCombineMode.Union : GeometryCombineMode.Difference);
+			clipPath = clipPath.Combine(localClip, GeometryCombineMode.Union);
+		}
+		else if (CanPaint())
+		{
+			clipPath = SubtractPaintedArea(clipPath, localClip, planar ? localMatrix : null);
 		}
 
 		if (IsNativeHostVisual && !localClip.IsEmpty)
@@ -868,6 +883,46 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		localClip.Release();
 		return clipPath;
+	}
+
+	/// <summary>
+	/// Cuts what this visual paints out of the native area: the exact painted area when known, otherwise its whole clip.
+	/// </summary>
+	private IGeometry SubtractPaintedArea(IGeometry clipPath, IGeometry localClip, Matrix3x2? localMatrix)
+	{
+		// No native area under this visual: nothing to cut, so no geometry worth building.
+		if (clipPath.IsEmpty || IsRectEmpty(Intersect(clipPath.Bounds, localClip.Bounds)))
+		{
+			return clipPath;
+		}
+
+		// A shadow paints around the visual's own content, anywhere inside its clip.
+		if (ShadowState is not null
+			|| localMatrix is not { } matrix
+			|| !TryGetNativeClipCut(GeometryFlatteningScale.From(matrix), out var cut))
+		{
+			return clipPath.Combine(localClip, GeometryCombineMode.Difference);
+		}
+
+		if (cut is null)
+		{
+			return clipPath;
+		}
+
+		var cutInParent = cut.Transform(matrix);
+		var covered = cutInParent.Combine(localClip, GeometryCombineMode.Intersect);
+		cutInParent.Release();
+
+		// A failed boolean also comes back empty, and cutting nothing would let the native element cover this visual.
+		if (covered.IsEmpty && IsRectEmpty(Intersect(cut.Bounds.Transform(matrix), localClip.Bounds)) is false)
+		{
+			covered.Release();
+			return clipPath.Combine(localClip, GeometryCombineMode.Difference);
+		}
+
+		var result = clipPath.Combine(covered, GeometryCombineMode.Difference);
+		covered.Release();
+		return result;
 	}
 
 	internal IGeometry GetTotalClipPath(bool skipPostPaintingClipping)
@@ -1225,9 +1280,19 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// or null when it has none. Release, not Dispose: the reference may be one taken on a cached geometry, whose
 	/// creator still holds the Dispose.</summary>
 	internal virtual IGeometry? GetPrePaintingClipping()
-		=> Clip is null
+	{
+		var clip = Clip is null
 			? null
 			: Clip.GetClipPath(this) ?? GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, 0, 0));
+
+		if (_transitionClip is null)
+		{
+			return clip;
+		}
+
+		var transitionClip = _transitionClip.GetClipPath(this) ?? GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, 0, 0));
+		return clip is null ? transitionClip : IntersectOwned(clip, transitionClip);
+	}
 
 	/// <summary>Intersects two owned clip references, releasing both in favour of the result.</summary>
 	private protected static IGeometry IntersectOwned(IGeometry a, IGeometry b)
@@ -1239,7 +1304,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 	/// <summary>Applies this visual's pre-painting clipping (its <see cref="Clip"/> and any layout/corner clip) to the drawing session.</summary>
-	internal virtual void ApplyPrePaintingClipping(IDrawingSession session) => Clip?.ApplyClip(this, session);
+	internal virtual void ApplyPrePaintingClipping(IDrawingSession session)
+	{
+		Clip?.ApplyClip(this, session);
+		_transitionClip?.ApplyClip(this, session);
+	}
 
 	/// <summary>
 	/// True when this visual renders nothing inside <paramref name="cullRect"/> (root-space AABB of the
@@ -1300,7 +1369,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	/// <summary>The local-space rect bounds of this visual's pre-painting clips when they are rect-shaped
 	/// (used only to narrow the culling rect), or <c>null</c> when unknown.</summary>
-	private protected virtual Rect? GetLocalCullClipBounds() => Clip?.GetBounds(this);
+	private protected virtual Rect? GetLocalCullClipBounds()
+	{
+		var bounds = Clip?.GetBounds(this);
+		if (_transitionClip?.GetBounds(this) is not { } transitionBounds)
+		{
+			return bounds;
+		}
+
+		return bounds is { } b ? Intersect(b, transitionBounds) : transitionBounds;
+	}
 
 	/// <summary>This clipping won't affect the visual itself, but its children.</summary>
 	/// <summary>Clipping that affects this visual's children but not itself, as a reference the caller owns and

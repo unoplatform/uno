@@ -76,8 +76,8 @@ In your project file:
 
 ```xml
 <PropertyGroup>
-   <SkiaSharpVersion>4.156.0</SkiaSharpVersion>
-   <HarfBuzzSharpVersion>14.4.0.100</HarfBuzzSharpVersion>
+   <SkiaSharpVersion>4.156.1</SkiaSharpVersion>
+   <HarfBuzzSharpVersion>14.4.0.101</HarfBuzzSharpVersion>
 </PropertyGroup>
 <ItemGroup>
    <PackageReference Include="SkiaSharp" />
@@ -90,9 +90,9 @@ And in `Directory.Packages.props`:
 
 ```xml
 <ItemGroup>
-   <PackageVersion Include="SkiaSharp" Version="4.156.0" />
-   <PackageVersion Include="SkiaSharp.Skottie" Version="4.156.0" />
-   <PackageVersion Include="HarfBuzzSharp" Version="14.4.0.100" />
+   <PackageVersion Include="SkiaSharp" Version="4.156.1" />
+   <PackageVersion Include="SkiaSharp.Skottie" Version="4.156.1" />
+   <PackageVersion Include="HarfBuzzSharp" Version="14.4.0.101" />
 </ItemGroup>
 ```
 
@@ -127,6 +127,8 @@ Alternatively, you can use `FeatureConfiguration.Rendering` flags for backwards 
 When running using X11 Wayland compatibility (e.g. recent Ubuntu releases), DPI scaling cannot be determined in a reliable way. In order to specify the scaling to be used by Uno Platform, set the `UNO_DISPLAY_SCALE_OVERRIDE` environment variable. The default value is `1.0`.
 
 The X11 support uses DBus for various interactions with the system, such as file selection. Make sure that dbus is installed.
+
+System appearance settings are read from the [XDG desktop portal](https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.Settings.html) (`org.freedesktop.portal.Settings`) over the session bus: the light or dark theme, the high contrast mode, the text scaling factor and the [system accent color](windows-ui-viewmanagement.md#system-accent-color). The portal is normally installed and started by the desktop environment (`xdg-desktop-portal` plus a backend such as `xdg-desktop-portal-gnome` or `xdg-desktop-portal-kde`). Each setting needs a backend that exposes it; the accent color requires version 2 of the Settings portal with the `accent-color` key, available on GNOME 47+ and KDE Plasma 6. When the session bus, the portal or the backend is not available, Uno Platform logs the failure and falls back to the defaults (light theme, default blue accent).
 
 ## .NET Native AOT support
 

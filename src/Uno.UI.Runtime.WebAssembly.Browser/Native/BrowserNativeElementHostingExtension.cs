@@ -3,11 +3,15 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Uno.Foundation.Logging;
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
+
 using Microsoft.UI.Xaml.Controls;
-using Uno.UI.NativeElementHosting;
+using Uno.Foundation;
+using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using Uno.UI.NativeElementHosting;
+
 using ContentPresenter = Microsoft.UI.Xaml.Controls.ContentPresenter;
 
 namespace Uno.UI.Runtime;
@@ -36,7 +40,7 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 	{
 		Debug.Assert(content is BrowserHtmlElement);
 		var element = (BrowserHtmlElement)content;
-		NativeMethods.AttachNativeElement(element.ElementId);
+		NativeMethods.AttachNativeElement(element.ElementId, element.UnoElementId);
 
 		// An element collected without a matching DetachNativeElement would leave its registration
 		// behind forever, so drop the dead ones whenever the map grows.
@@ -134,6 +138,65 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 		}
 	}
 
+	[JSExport]
+	internal static void OnNativeElementFocused([JSMarshalAs<JSType.Number>] nint unoElementId)
+		=> OnNativeElementFocusChanged(unoElementId, gotFocus: true);
+
+	[JSExport]
+	internal static Task OnNativeElementFocusedAsync([JSMarshalAs<JSType.Number>] nint unoElementId)
+	{
+		OnNativeElementFocused(unoElementId);
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
+	internal static void OnNativeElementBlurred([JSMarshalAs<JSType.Number>] nint unoElementId)
+		=> OnNativeElementFocusChanged(unoElementId, gotFocus: false);
+
+	[JSExport]
+	internal static Task OnNativeElementBlurredAsync([JSMarshalAs<JSType.Number>] nint unoElementId)
+	{
+		OnNativeElementBlurred(unoElementId);
+
+		return Task.CompletedTask;
+	}
+
+	private static void OnNativeElementFocusChanged(nint unoElementId, bool gotFocus)
+	{
+		try
+		{
+			// Focus events are raised from outside the dispatcher.
+			using var syncContextScope = Uno.UI.Dispatching.NativeDispatcher.Main.SynchronizationContext.Apply();
+
+			if (TryGetHost(unoElementId)?._presenter is not { } presenter)
+			{
+				if (_log.IsEnabled(LogLevel.Debug))
+				{
+					_log.Debug($"Ignored a focus change of an unknown or collected native element ({unoElementId}).");
+				}
+
+				return;
+			}
+
+			if (gotFocus)
+			{
+				presenter.OnNativeElementGotFocus();
+			}
+			else
+			{
+				presenter.OnNativeElementLostFocus();
+			}
+		}
+		catch (Exception error)
+		{
+			if (_log.IsEnabled(LogLevel.Error))
+			{
+				_log.Error($"Failed to sync XAML focus with a native element focus change: {error}");
+			}
+		}
+	}
+
 	public void ArrangeNativeElement(object content, Windows.Foundation.Rect arrangeRect)
 	{
 		Debug.Assert(content is BrowserHtmlElement);
@@ -163,6 +226,16 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 		}
 	}
 
+	public static void SetSvgClipPathForNativeElementHostAsync(string path, string fillType)
+	{
+		if (_lastSvgClipPath != (path, fillType))
+		{
+			_lastSvgClipPath = (path, fillType);
+
+			_ = NativeMethods.SetSvgClipPathForNativeElementHostAsync(path, fillType, WebAssemblyThreading.WindowObject);
+		}
+	}
+
 	public Windows.Foundation.Size MeasureNativeElement(object content, Windows.Foundation.Size childMeasuredSize, Windows.Foundation.Size availableSize) => availableSize;
 
 	public object CreateSampleComponent(string text)
@@ -178,7 +251,7 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 		internal static partial bool IsNativeElement(string content);
 
 		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.attachNativeElement")]
-		internal static partial void AttachNativeElement(string content);
+		internal static partial void AttachNativeElement(string content, [JSMarshalAs<JSType.Number>] nint unoElementId);
 
 		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.detachNativeElement")]
 		internal static partial void DetachNativeElement(string content);
@@ -194,6 +267,12 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 
 		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.setSvgClipPathForNativeElementHost")]
 		internal static partial void SetSvgClipPathForNativeElementHost(string path, string fillType);
+
+		// WASM-MT : We use an async variant here not to block the render thread.
+		// Using a Task returning call posts to the Main browser thread.
+		// No need to await the result.
+		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.setSvgClipPathForNativeElementHostAsync")]
+		internal static partial Task SetSvgClipPathForNativeElementHostAsync(string path, string fillType, JSObject window);
 
 		[JSImport($"globalThis.Uno.UI.NativeElementHosting.{nameof(BrowserHtmlElement)}.setZIndex")]
 		internal static partial void SetZIndex(string content, int zIndex);

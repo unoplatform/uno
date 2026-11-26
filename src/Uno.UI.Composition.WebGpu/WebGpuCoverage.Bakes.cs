@@ -1,6 +1,6 @@
-﻿// Coverage bakes are batched per target texture: every mask a frame bakes into one texture (an atlas page, a
-// standalone entry, the per-frame sheet holding masks nothing owns) goes through ONE accumulate pass and ONE resolve
-// pass, so a frame that bakes thousands of small shapes costs a pass pair per page, not per shape.
+﻿// Coverage bakes are batched per target texture: every mask a frame bakes into one texture (an atlas page or a
+// shadow sheet) goes through ONE accumulate pass and ONE resolve pass, so a frame that bakes thousands of small
+// shapes costs a pass pair per page, not per shape.
 #nullable disable
 using System;
 using System.Collections.Generic;
@@ -19,7 +19,7 @@ internal sealed unsafe partial class WebGpuCoverage
 	{
 		public TextureView* Target;                     // the texture the resolve writes; consumers bind it right away
 		public int TargetW, TargetH;
-		public bool Load;                              // an atlas page keeps its other entries; a fresh texture is cleared
+		public bool Load;                              // a shared page keeps its other entries; a standalone one is cleared
 		public int MinX = int.MaxValue, MinY = int.MaxValue, MaxX, MaxY;   // union of the slots: the accumulator's extent
 		public readonly List<float> Edges = new();     // x0,y0,x1,y1 per edge, in target pixels
 		public readonly List<float> Ext = new();       // per edge: the right bound of its slot, so its quad stops there
@@ -30,7 +30,6 @@ internal sealed unsafe partial class WebGpuCoverage
 
 	private readonly List<BakeBatch> _pendingBakes = new();
 	private readonly Dictionary<nint, BakeBatch> _bakeByTarget = new();
-	private BakeBatch _sheet;   // the frame sheet still taking slots
 
 	// The batch writing into a texture this frame, opened on first use. Atlas pages Load: the resolve touches only
 	// the new slots and everything else on the page must survive.
@@ -58,33 +57,11 @@ internal sealed unsafe partial class WebGpuCoverage
 		return true;
 	}
 
-	// Reserves slots for all the rects together on ONE frame sheet: the one still open when they fit there, else a
-	// fresh one. False when they do not fit a sheet even empty; such masks bake into a texture of their own.
-	private bool TryReserveSheetSlots((int Ox, int Oy, int W, int H)[] rects, (int X, int Y)[] pos, out BakeBatch sheet)
-	{
-		sheet = _sheet;
-		if (sheet is null || !TryPack(ref sheet.Shelf, rects, pos))
-		{
-			var fresh = new Shelf(SheetSize, SheetSize);
-			if (!TryPack(ref fresh, rects, pos)) { sheet = null; return false; }
-			var view = _d.Pool.Rent(SheetSize, SheetSize, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, _d.ColorFormat);
-			sheet = _sheet = BatchFor(view, SheetSize, SheetSize, load: false);
-			sheet.Shelf = fresh;
-		}
-		SheetSlotsBaked += rects.Length;
-		return true;
-	}
+	// An atlas page's batch. A standalone page may be a reused spare, so it is cleared rather than loaded.
+	internal BakeBatch BatchFor(WebGpuMaskAtlas.Page page) => BatchFor(page.View, page.W, page.H, load: !page.Standalone);
 
-	private bool TryReserveSheetSlot(int w, int h, out BakeBatch sheet, out int x, out int y)
-	{
-		var pos = new (int X, int Y)[1];
-		var ok = TryReserveSheetSlots(new[] { (0, 0, w, h) }, pos, out sheet);
-		(x, y) = pos[0];
-		return ok;
-	}
-
-	// Packs rects into a texture of their own: as wide as the widest, or the square root of their area rounded up to
-	// a power of two when that is wider, and as tall as the shelves come to.
+	// Packs rects onto a standalone page: as wide as the widest, or the square root of their area rounded up to a
+	// power of two when that is wider, and as tall as the shelves come to.
 	private static void PackOwn((int Ox, int Oy, int W, int H)[] rects, (int X, int Y)[] pos, out int w, out int h)
 	{
 		long area = 0; int maxW = 1;
@@ -118,8 +95,8 @@ internal sealed unsafe partial class WebGpuCoverage
 	// One atlas entry's bake, on the placement AppendAtlasQuad draws with: the fill's own origin, shifted a pixel so
 	// an edge sitting exactly on the bbox boundary still has the pixel it partly covers. The snap moves the outline
 	// from its own fraction onto the phase the entry is keyed at.
-	private void QueueEntryBake(PathCmd pf, WebGpuShapeCache.Shape shape, WebGpuPathAtlas.Slot slot, Vector2 scale, Vector2 snap = default)
-		=> AddBake(BatchFor(slot.Owner.View, slot.Owner.W, slot.Owner.H, load: true), slot.X, slot.Y, slot.W, slot.H, shape.Edges, new Vector2(slot.OriginX, slot.OriginY) - pf.Offset - snap / scale, scale, pf.EvenOdd);
+	private void QueueEntryBake(PathCmd pf, WebGpuShapeCache.Shape shape, WebGpuMaskAtlas.Slot slot, Vector2 scale, Vector2 snap = default)
+		=> AddBake(BatchFor(slot.Owner), slot.X, slot.Y, slot.W, slot.H, shape.Edges, new Vector2(slot.OriginX, slot.OriginY) - pf.Offset - snap / scale, scale, pf.EvenOdd);
 
 	// Bakes every pending batch: one accumulate pass over all its edges into a scratch accumulator covering the
 	// union of its slots, one resolve pass writing the slots into the target. Runs before a render pass begins, so
@@ -159,11 +136,12 @@ internal sealed unsafe partial class WebGpuCoverage
 			Api.QueueWriteBuffer(_d.Q, sizeBuf, 0, size, 16);
 
 			var accView = _d.Pool.Rent(aw, ah, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding, WebGpuDevice.CoverageFormat);
-			ae[0] = new BindGroupEntry { Binding = 0, Buffer = edgeBuf, Offset = 0, Size = (nuint)edgeBytes };
-			ae[1] = new BindGroupEntry { Binding = 1, Buffer = extBuf, Offset = 0, Size = (nuint)extBytes };
+			// Whole buffers, so the group depends only on which pooled buffers it names and can be reused (see WebGpuGroupCache).
+			ae[0] = new BindGroupEntry { Binding = 0, Buffer = edgeBuf, Offset = 0, Size = ulong.MaxValue };
+			ae[1] = new BindGroupEntry { Binding = 1, Buffer = extBuf, Offset = 0, Size = ulong.MaxValue };
 			ae[2] = new BindGroupEntry { Binding = 2, Buffer = sizeBuf, Offset = 0, Size = 16 };
 			var abgd = new BindGroupDescriptor { Layout = _d.CoverageSheetBgl, EntryCount = 3, Entries = ae };
-			var accumBg = _d.TrackBg(Api.DeviceCreateBindGroup(_d.Dev, &abgd));
+			var accumBg = _d.Groups.Get(&abgd);
 			var acc = new RenderPassColorAttachment { DepthSlice = uint.MaxValue, View = accView, LoadOp = LoadOp.Clear, StoreOp = StoreOp.Store, ClearValue = default };
 			var adesc = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &acc };
 			var apass = Api.CommandEncoderBeginRenderPass(_f.Encoder, &adesc);
@@ -190,7 +168,7 @@ internal sealed unsafe partial class WebGpuCoverage
 			}
 			var re = new BindGroupEntry { Binding = 0, TextureView = accView };
 			var rbgd = new BindGroupDescriptor { Layout = _d.CoverageResolveSheetBgl, EntryCount = 1, Entries = &re };
-			var resolveBg = _d.TrackBg(Api.DeviceCreateBindGroup(_d.Dev, &rbgd));
+			var resolveBg = _d.Groups.Get(&rbgd);
 			var quads = _f.MakeBuffer(verts);
 			var rca = new RenderPassColorAttachment { DepthSlice = uint.MaxValue, View = b.Target, LoadOp = b.Load ? LoadOp.Load : LoadOp.Clear, StoreOp = StoreOp.Store, ClearValue = default };
 			var rdesc = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &rca };
@@ -207,11 +185,11 @@ internal sealed unsafe partial class WebGpuCoverage
 		}
 		_pendingBakes.Clear();
 		_bakeByTarget.Clear();
-		_sheet = null;
+
 		_f.Effects.FlushPendingBlurs();
 	}
 
-	internal static int SheetSlotsBaked, BakeBatches;
+	internal static int BakeBatches;
 }
 
 /// <summary>

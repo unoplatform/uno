@@ -87,6 +87,9 @@ public partial class ComboBoxAutomationPeer : SelectorAutomationPeer, Provider.I
 
 	protected override string GetClassNameCore() => nameof(ComboBox);
 
+	protected override ItemAutomationPeer OnCreateItemAutomationPeer(object item)
+		=> new ComboBoxItemDataAutomationPeer(item, this);
+
 	protected override string GetNameCore()
 	{
 		var returnValue = base.GetNameCore();

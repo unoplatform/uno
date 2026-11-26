@@ -27,6 +27,18 @@
 		<WasmShellNativeCompile Include="$(MSBuildThisFileDirectory)native/uno_gl_shim.c" Visible="false" />
 	</ItemGroup>
 
+	<!--
+		See native/uno_os_thread_id.c. Static for the same reason as above, and because the nested publish
+		build that links the native runtime only runs WasmNestedPublishApp, never our targets.
+	-->
+	<ItemGroup Condition=" '$(IsUnoHead)' == 'true' AND ('$(WasmEnableThreads)' == 'true' OR '$(WasmShellEnableThreads)' == 'true') ">
+		<WasmShellNativeCompile Include="$(MSBuildThisFileDirectory)native/uno_os_thread_id.c" Visible="false" />
+	</ItemGroup>
+
+	<PropertyGroup Condition=" '$(IsUnoHead)' == 'true' AND ('$(WasmEnableThreads)' == 'true' OR '$(WasmShellEnableThreads)' == 'true') AND !$(EmccExtraLDFlags.Contains('SystemNative_TryGetUInt32OSThreadId')) ">
+		<EmccExtraLDFlags>$(EmccExtraLDFlags) -Wl,--wrap=SystemNative_TryGetUInt32OSThreadId</EmccExtraLDFlags>
+	</PropertyGroup>
+
 	<Target Name="_UnoValidateNoUnoWasmDOMRuntimeDependency"
 			AfterTargets="CopyFilesToOutputDirectory"
 			Condition=" '$(UnoDisableValidateNoUnoWasmDOMRuntimeDependency)' == '' ">
@@ -67,9 +79,28 @@
 
 		<PropertyGroup>
 			<EmccExtraLDFlags Condition="!$(EmccExtraLDFlags.Contains('USE_WEBGL2'))">$(EmccExtraLDFlags) -s USE_WEBGL2=1</EmccExtraLDFlags>
-			<!-- Enable GLCtx when threading is available -->
-			<EmccFlags Condition="'$(WasmShellEnableThreads)'=='True'">$(EmccFlags);-s OFFSCREEN_FRAMEBUFFER=1</EmccFlags>
 		</PropertyGroup>
+	</Target>
+
+	<Target Name="_UnoSetupWebAssemblyThreading"
+			BeforeTargets="GenerateUnoWasmAssets"
+			Condition="'$(WasmEnableThreads)' == 'true'">
+
+		<ItemGroup>
+			<_UnoWasmCopyToOutputAssets Include="$(MSBuildThisFileDirectory)js\mt\render-worker.js"
+										CopyToOutputDirectory="PreserveNewest"
+										TargetPath="render-worker.js"/>
+		</ItemGroup>
+
+		<!--
+			This is a workaround for .NET 10, the SSA optimizer has a bug and ends up in an infinite loop.
+			We need to test .NET 11 to see if this fix can be relaxed for .NET 11+.
+			See: https://github.com/dotnet/runtime/issues/122529
+		-->
+		<ItemGroup>
+			<WasmShellMonoEnvironment Include="MONO_INTERPRETER_OPTIONS" Value="-ssa" />
+		</ItemGroup>
+
 	</Target>
 
 </Project>

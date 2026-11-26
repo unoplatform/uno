@@ -25,6 +25,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 	// State set and used inside the class
 	private bool _borderPathValid;
 	private bool _backgroundPathValid;
+	private bool _isRebuildingPaths;
 	private CompositionSpriteShape? _backgroundShape; // Never null after _backgroundBrush is set
 	private CompositionSpriteShape? _borderShape; // Never null after _borderBrush is set
 	private CompositionClip? _backgroundClip;
@@ -74,6 +75,13 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 	{
+		// The paths are rebuilt lazily, often mid-render, from inputs whose change already invalidated this visual.
+		// Raising it again would drop the ancestors' cached children pictures and request a frame for nothing.
+		if (_isRebuildingPaths)
+		{
+			return;
+		}
+
 		// Call base implementation - Visual calls Compositor.InvalidateRender().
 		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
 
@@ -207,6 +215,19 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 			return;
 		}
 
+		_isRebuildingPaths = true;
+		try
+		{
+			RebuildPathsAndCornerClip();
+		}
+		finally
+		{
+			_isRebuildingPaths = false;
+		}
+	}
+
+	private void RebuildPathsAndCornerClip()
+	{
 		// clear old state
 		_childClipCausedByCornerRadius = null;
 		_backgroundClip = null;
@@ -388,6 +409,43 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		(BorderBrush?.CanPaint() ?? false) ||
 		base.CanPaint();
 
+	private protected override bool TryBuildPaintedGeometry(out IGeometry? geometry)
+	{
+		geometry = null;
+		UpdatePathsAndCornerClip();
+
+		// The shapes' paths are the ones Paint fills: the (rounded) background and the border ring.
+		if (PaintsBackground() && GetPath(_backgroundShape) is { } background)
+		{
+			geometry = background.Transform(Matrix3x2.CreateTranslation(_backgroundShape!.Offset));
+		}
+
+		if ((_borderBrush?.CanPaint() ?? false) && GetPath(_borderShape) is { } ring)
+		{
+			if (geometry is null)
+			{
+				ring.AddRef();
+				geometry = ring;
+			}
+			else
+			{
+				var union = geometry.Combine(ring, GeometryCombineMode.Union);
+				geometry.Release();
+				geometry = union;
+			}
+		}
+
+		return true;
+
+		static IGeometry? GetPath(CompositionSpriteShape? shape)
+			=> (shape?.Geometry as CompositionPathGeometry)?.Path?.GeometrySource as IGeometry;
+	}
+
+	// A brush transition still fills with colors the target brush doesn't have, e.g. while fading towards Transparent.
+	private bool PaintsBackground()
+		=> _backgroundBrush is not null
+			&& (_backgroundBrush.CanPaint() || (_backgroundShape is { } shape && Compositor.TryGetEffectiveBackgroundColor(shape, out _)));
+
 	// The background fill and border ring both live inside (0, 0, Size.X, Size.Y) by construction.
 	internal override bool PaintsWithinOwnSize => true;
 
@@ -498,7 +556,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 	// CompositionPath just holds the reference it is handed, so the geometry behind the outgoing path is this
 	// visual's to release — every rebuild would otherwise abandon one per shape.
-	private static void SetPath(CompositionPathGeometry target, IGeometry? geometry)
+	internal static void SetPath(CompositionPathGeometry target, IGeometry? geometry)
 	{
 		if (target.Path is { GeometrySource: IGeometry previous })
 		{
@@ -508,7 +566,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		target.Path = geometry is null ? null : new CompositionPath((IGeometrySource2D)geometry);
 	}
 
-	private static IGeometry BuildRoundRectPath(Rect rect, NonUniformCornerRadius radii)
+	internal static IGeometry BuildRoundRectPath(Rect rect, NonUniformCornerRadius radii)
 	{
 		var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
 		if (radii.IsEmpty)
@@ -522,7 +580,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		return builder.Build();
 	}
 
-	private static IGeometry BuildRoundRectRingPath(
+	internal static IGeometry BuildRoundRectRingPath(
 		Rect outerRect,
 		NonUniformCornerRadius outerRadii,
 		Rect innerRect,

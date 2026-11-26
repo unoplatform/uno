@@ -92,7 +92,7 @@ internal sealed unsafe partial class WebGpuCoverage
 	/// Resolves (baking on a miss) the atlas entry for one fill. <paramref name="big"/> admits fills too large for
 	/// a shared page as entries with a texture of their own -- the cached form of what used to be a per-frame mask.
 	/// </summary>
-	private bool TryAtlasSlot(PathCmd pf, WebGpuShapeCache.Shape shape, OwnedResources owned, Vector2 scale, out WebGpuPathAtlas.Slot slot, out float ox, out float oy, bool big = false, Vector2 place = default)
+	private bool TryAtlasSlot(PathCmd pf, WebGpuShapeCache.Shape shape, OwnedResources owned, Vector2 scale, out WebGpuMaskAtlas.Slot slot, out float ox, out float oy, bool big = false, Vector2 place = default)
 	{
 		slot = null; ox = oy = 0;
 		if (!AtlasEnabled) { return false; }
@@ -110,23 +110,21 @@ internal sealed unsafe partial class WebGpuCoverage
 		// overflow is not merely cropped - the winding it carries is lost and the fill comes out empty.
 		// A big fill is one mask of its own, so it keeps its exact phase; small fills (glyphs above all) share entries
 		// across the fractional positions text puts them at.
-		if (!WebGpuPathAtlas.TryKey(shape.Hash, Matrix4x4.Identity, shape.BbMin + pf.Offset, shape.BbMax + pf.Offset, scale, out var key, out var w, out var h, out ox, out oy, out var snap, allowBig: big, place: place, phases: big ? 0 : WebGpuPathAtlas.FillPhases)) { AtlasNoKey++; return false; }
+		if (!WebGpuMaskAtlas.TryKey(shape.Hash, Matrix4x4.Identity, shape.BbMin + pf.Offset, shape.BbMax + pf.Offset, scale, out var key, out var w, out var h, out ox, out oy, out var snap, allowBig: big, place: place, phases: big ? 0 : WebGpuMaskAtlas.FillPhases)) { AtlasNoKey++; return false; }
 
-
-		if (_d.PathAtlas.RegularPages == 0) { _d.AddPathAtlasPage(); }
-		if (_d.PathAtlas.TryGet(key, out slot))
+		if (_d.Atlas.TryGet(key, out slot))
 		{
 			// An entry baked through the big-fill route is a cached mask, not an atlas quad, whatever its size: it was
 			// baked at the transform's axis lengths and its quad rotates it, so the replay guards must compare its
 			// scale, not its axis alignment.
 			if (big) { FillMaskHits++; } else { AtlasHit++; }
-			_d.PathAtlas.NoteUse(slot, _d.FrameSeq);
+			_d.Atlas.NoteUse(slot, _d.FrameSeq);
 			// A REUSED entry needs its own reference for this recording. One slot backs a glyph everywhere it
 			// appears, so without this the recording that baked it releases the region out from under every other
 			// holder and they start sampling whatever took its place.
 			if (!hitOnly)
 			{
-				_d.PathAtlas.Retain(slot);
+				_d.Atlas.Retain(slot);
 				(owned.AtlasSlots ??= new()).Add(slot);
 			}
 		}
@@ -134,25 +132,19 @@ internal sealed unsafe partial class WebGpuCoverage
 		{
 			// A per-frame op enters the cache only once its key has held for two frames (see Recurring); until then
 			// it takes the per-frame bake, so moving content never accumulates entries.
-			if (owned is null && big && !_d.PathAtlas.Recurring(key, _d.FrameSeq)) { return false; }
-			if (WebGpuPathAtlas.IsBig(w, h))
+			if (owned is null && big && !_d.Atlas.Recurring(key, _d.FrameSeq)) { return false; }
+			if (WebGpuMaskAtlas.IsBig(w, h))
 			{
 				slot = AddStandaloneSlot(key, w, h, ox, oy, _d.ColorFormat);
 			}
 			else
 			{
-				slot = _d.PathAtlas.Allocate(key, w, h, ox, oy);
-				if (slot is null)
-				{
-					// Every page is exhausted: open another rather than falling back, which would leave this shape
-					// aliased at one sample while its neighbours stayed crisp.
-					_d.AddPathAtlasPage();
-					slot = _d.PathAtlas.Allocate(key, w, h, ox, oy);
-				}
+				// Opens another page when every one is exhausted, up to the cache's ceiling.
+				slot = _d.Atlas.Allocate(key, w, h, ox, oy);
 			}
 			if (slot is null) { AtlasNoRoom++; _d.AtlasStarved = true; return false; }
 			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
-			else { _d.PathAtlas.HoldForCache(slot, _d.FrameSeq); }
+			else { _d.Atlas.HoldForCache(slot, _d.FrameSeq); }
 			QueueEntryBake(pf, shape, slot, scale, snap);
 			if (big) { FillMasksBaked++; } else { AtlasBaked++; }
 		}
@@ -160,32 +152,19 @@ internal sealed unsafe partial class WebGpuCoverage
 		return true;
 	}
 
-	// A texture of the entry's own size, registered as its own atlas page so it shares the key, reference count and
-	// idle sweep of a shelf slot. Format follows what will be rendered into it.
-	internal WebGpuPathAtlas.Slot AddStandaloneSlot(in WebGpuPathAtlas.Key key, int w, int h, float ox, float oy, TextureFormat format)
-		=> AddStandaloneSlot(key, w, h, ox, oy, format, w, h, TextureUsage.RenderAttachment | TextureUsage.TextureBinding);
+	// A keyed entry on a standalone page, so it shares the key, reference count and idle sweep of a shelf slot.
+	internal WebGpuMaskAtlas.Slot AddStandaloneSlot(in WebGpuMaskAtlas.Key key, int w, int h, float ox, float oy, TextureFormat format)
+		=> AddStandaloneSlot(key, w, h, ox, oy, format, w, h, MaskUsage);
 
-	// The entry draws w x h, over a texture of texW x texH: a blurred shadow is stored at its pyramid's top level.
-	internal WebGpuPathAtlas.Slot AddStandaloneSlot(in WebGpuPathAtlas.Key key, int w, int h, float ox, float oy, TextureFormat format, int texW, int texH, TextureUsage usage)
-	{
-		var td = new TextureDescriptor
-		{
-			Size = new Extent3D { Width = (uint)texW, Height = (uint)texH, DepthOrArrayLayers = 1 },
-			Format = format,
-			MipLevelCount = 1,
-			SampleCount = 1,
-			Dimension = TextureDimension.Dimension2D,
-			Usage = usage,
-		};
-		var tex = Api.DeviceCreateTexture(_d.Dev, &td);
-		return _d.PathAtlas.AddStandalone(key, w, h, ox, oy, tex, Api.TextureCreateView(tex, null));
-	}
+	// The entry draws w x h from a page of at least texW x texH: a blurred shadow is stored at its pyramid's top level.
+	internal WebGpuMaskAtlas.Slot AddStandaloneSlot(in WebGpuMaskAtlas.Key key, int w, int h, float ox, float oy, TextureFormat format, int texW, int texH, TextureUsage usage)
+		=> _d.Atlas.Place(_d.Atlas.StandalonePage(texW, texH, format, usage), 0, 0, w, h, ox, oy, key);
 
 	/// <summary>
 	/// Appends one entry as 6 solid vertices (pos, colour, coverage uv), placed at the fill's OWN origin, and returns
 	/// the quad's rect in that space.
 	/// </summary>
-	private Vector4 AppendAtlasQuad(VertBuf dst, WebGpuPathAtlas.Slot slot, float ox, float oy, Vector2 scale, WColor color)
+	private Vector4 AppendAtlasQuad(VertBuf dst, WebGpuMaskAtlas.Slot slot, float ox, float oy, Vector2 scale, WColor color)
 	{
 		float cr = color.R / 255f, cg = color.G / 255f, cb = color.B / 255f, ca = color.A / 255f;
 		// The quad lives in the op's own space; one device pixel is 1/scale there, so a slot.W-wide mask needs a
@@ -225,7 +204,7 @@ internal sealed unsafe partial class WebGpuCoverage
 	}
 
 	/// <summary>One solid draw for a batch of quads sharing a page, a colour and a clip; the page is their coverage.</summary>
-	private DrawOp MakeAtlasOp(PathCmd pf, WebGpuPathAtlas.Page page, VertBuf quads, OwnedResources owned, Vector4 extent, bool filtered = false)
+	private DrawOp MakeAtlasOp(PathCmd pf, WebGpuMaskAtlas.Page page, VertBuf quads, OwnedResources owned, Vector4 extent, bool filtered = false)
 	{
 		var clip = WithCoverage(pf.Clip, page.View, filtered);
 		var op = DrawOp.Own(DrawKind.Solid, _f.Vbuf(quads, VertexStride.Solid, owned), (uint)(quads.Count / VertexStride.Solid), null, clip, _f.MakeClipBg(clip, owned));

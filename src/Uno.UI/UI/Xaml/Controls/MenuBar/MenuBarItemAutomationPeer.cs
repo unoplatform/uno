@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference MenuBarItemAutomationPeer.cpp, tag winui3/release/1.8.4
+// MUX Reference MenuBarItemAutomationPeer.cpp
 
 #nullable enable
 
@@ -34,36 +34,34 @@ public partial class MenuBarItemAutomationPeer : FrameworkElementAutomationPeer,
 
 	protected override string GetNameCore()
 	{
-		// Check to see if the item has a defined AutomationProperties.Name
+		//Check to see if the item has a defined AutomationProperties.Name
 		var name = base.GetNameCore();
 
 		if (string.IsNullOrEmpty(name))
 		{
-			var owner = Owner as MenuBarItem;
-			name = owner?.Title ?? string.Empty;
+			var owner = (MenuBarItem)Owner;
+			name = owner.Title;
 		}
 
 		return name;
 	}
 
 	protected override string GetClassNameCore()
-		=> nameof(MenuBarItem);
+		=> typeof(MenuBarItem).FullName!;
 
-	// IInvokeProvider
 	public void Invoke()
 	{
-		var owner = Owner as MenuBarItem;
-		owner?.Invoke();
+		var owner = (MenuBarItem)Owner;
+		owner.Invoke();
 	}
 
-	// IExpandCollapseProvider
 	public ExpandCollapseState ExpandCollapseState
 	{
 		get
 		{
-			var owner = Owner as MenuBarItem;
-			var menuBarItem = owner;
-			if (menuBarItem?.IsFlyoutOpen() == true)
+			UIElement owner = Owner;
+			var menuBarItem = (MenuBarItem)owner;
+			if (menuBarItem.IsFlyoutOpen())
 			{
 				return ExpandCollapseState.Expanded;
 			}
@@ -76,13 +74,13 @@ public partial class MenuBarItemAutomationPeer : FrameworkElementAutomationPeer,
 
 	public void Collapse()
 	{
-		var owner = Owner as MenuBarItem;
-		owner?.CloseMenuFlyout();
+		var owner = (MenuBarItem)Owner;
+		owner.CloseMenuFlyout();
 	}
 
 	public void Expand()
 	{
-		var owner = Owner as MenuBarItem;
-		owner?.ShowMenuFlyout();
+		var owner = (MenuBarItem)Owner;
+		owner.ShowMenuFlyout();
 	}
 }

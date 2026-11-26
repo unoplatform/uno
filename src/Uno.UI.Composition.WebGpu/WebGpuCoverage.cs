@@ -38,7 +38,7 @@ internal sealed unsafe partial class WebGpuCoverage
 	}
 
 	// A clip's path masks: one mask entry per path (its slot in View), so nesting has no limit and no product bake. All
-	// of one clip's masks live in ONE texture, the single mask binding a draw has.
+	// of one clip's masks live on ONE atlas page, the single mask binding a draw has.
 	internal struct MaskSet { public TextureView* View; public ClipEntry[] Entries; }
 
 	// Per frame. Keyed on the composed path list AND the owning bag: the list is shared by every command under
@@ -69,7 +69,7 @@ internal sealed unsafe partial class WebGpuCoverage
 
 	/// <summary>
 	/// The mask entries for a clip's path list, baking on first use this frame. One path: a cached entry when its key
-	/// is known or recurs, else a sheet slot. Several: slots reserved together on one texture. Runs during op BUILD.
+	/// is known or recurs, else a keyless slot. Several: slots reserved together on one page. Runs during op BUILD.
 	/// </summary>
 	internal MaskSet ResolveClipMasks(in ClipData cd, OwnedResources owned)
 	{
@@ -91,74 +91,83 @@ internal sealed unsafe partial class WebGpuCoverage
 		if (!AtlasEnabled) { return false; }
 		var shape = ShapeOf(p);
 		if (shape.Edges is null) { return false; }
-		if (!WebGpuPathAtlas.TryKey(shape.Hash, Matrix4x4.Identity, new Vector2(p.Bbox.X, p.Bbox.Y), new Vector2(p.Bbox.Z, p.Bbox.W), Vector2.One,
+		if (!WebGpuMaskAtlas.TryKey(shape.Hash, Matrix4x4.Identity, new Vector2(p.Bbox.X, p.Bbox.Y), new Vector2(p.Bbox.Z, p.Bbox.W), Vector2.One,
 			out var key, out var w, out var h, out var ox, out var oy, allowBig: true)) { return false; }
-		if (_d.PathAtlas.TryGet(key, out var slot))
+		if (_d.Atlas.TryGet(key, out var slot))
 		{
-			_d.PathAtlas.NoteUse(slot, _d.FrameSeq);
-			if (owned is not null) { _d.PathAtlas.Retain(slot); (owned.AtlasSlots ??= new()).Add(slot); }
+			_d.Atlas.NoteUse(slot, _d.FrameSeq);
+			if (owned is not null) { _d.Atlas.Retain(slot); (owned.AtlasSlots ??= new()).Add(slot); }
 		}
 		else
 		{
-			if (owned is null && !_d.PathAtlas.Recurring(key, _d.FrameSeq)) { return false; }
+			if (owned is null && !_d.Atlas.Recurring(key, _d.FrameSeq)) { return false; }
 			slot = AddStandaloneSlot(key, w, h, ox, oy, _d.ColorFormat);
 			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
-			else { _d.PathAtlas.HoldForCache(slot, _d.FrameSeq); }
-			AddBake(BatchFor(slot.Owner.View, slot.Owner.W, slot.Owner.H, load: true), slot.X, slot.Y, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - p.Offset, Vector2.One, p.EvenOdd);
+			else { _d.Atlas.HoldForCache(slot, _d.FrameSeq); }
+			AddBake(BatchFor(slot.Owner), slot.X, slot.Y, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - p.Offset, Vector2.One, p.EvenOdd);
 			ClipMasksBaked++;
 		}
 		set = new MaskSet { View = slot.Owner.View, Entries = new[] { MaskEntry((int)slot.OriginX, (int)slot.OriginY, slot.X, slot.Y, slot.W, slot.H, p.Exclude) } };
 		return true;
 	}
 
-	// Per-frame masks, one slot per path, all on one texture: the frame's sheet when they fit on it together, else a
-	// texture of their own packed the same way (a cached recording's masks always take their own, since they outlive
-	// the frame).
+	// Keyless masks, one slot per path, all on one page: a shared page when they fit together, else a standalone page
+	// packed with them.
 	private MaskSet BakeFrameClipMasks(PathClip[] paths, OwnedResources owned)
 	{
 		var n = paths.Length;
 		var rects = new (int Ox, int Oy, int W, int H)[n];
-		var pos = new (int X, int Y)[n];
-		for (var i = 0; i < n; i++) { MaskRect(paths[i], clampToSurface: owned is null, out var ox, out var oy, out var w, out var h); rects[i] = (ox, oy, w, h); }
-		if (!(owned is null && TryReserveSheetSlots(rects, pos, out var batch)))
+		var sizes = new (int W, int H)[n];
+		for (var i = 0; i < n; i++)
 		{
-			PackOwn(rects, pos, out var tw, out var th);
-			var view = NewMaskTexture(tw, th, out var tex);
-			if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }
-			else { _d.DeferTextureRelease(view, tex); }
-			batch = BatchFor(view, tw, th, load: false);
+			MaskRect(paths[i], clampToSurface: owned is null, out var ox, out var oy, out var w, out var h);
+			rects[i] = (ox, oy, w, h);
+			sizes[i] = (w, h);
 		}
+		var slots = new WebGpuMaskAtlas.Slot[n];
+		if (!_d.Atlas.AllocateKeylessGroup(sizes, slots))
+		{
+			var pos = new (int X, int Y)[n];
+			PackOwn(rects, pos, out var tw, out var th);
+			var page = _d.Atlas.StandalonePage(tw, th, _d.ColorFormat, MaskUsage);
+			for (var i = 0; i < n; i++) { slots[i] = _d.Atlas.Place(page, pos[i].X, pos[i].Y, rects[i].W, rects[i].H); }
+		}
+		var batch = BatchFor(slots[0].Owner);
 		var entries = new ClipEntry[n];
 		for (var i = 0; i < n; i++)
 		{
-			var (ox, oy, w, h) = rects[i]; var (x, y) = pos[i];
+			var (ox, oy, w, h) = rects[i];
+			var slot = slots[i];
+			HoldKeyless(slot, owned);
 			var shape = ShapeOf(paths[i]);
-			if (shape.Edges is not null) { AddBake(batch, x, y, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - paths[i].Offset, Vector2.One, paths[i].EvenOdd); }
-			entries[i] = MaskEntry(ox, oy, x, y, w, h, paths[i].Exclude);
+			if (shape.Edges is not null) { AddBake(batch, slot.X, slot.Y, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - paths[i].Offset, Vector2.One, paths[i].EvenOdd); }
+			entries[i] = MaskEntry(ox, oy, slot.X, slot.Y, w, h, paths[i].Exclude);
 		}
 		ClipMasksBaked += n;
 		return new MaskSet { View = batch.Target, Entries = entries };
 	}
 
-	// A w x h mask in the device's swapchain format, which is what the resolve pipelines target -- not DefaultColorFormat.
-	internal TextureView* NewMaskTexture(int w, int h, out Texture* tex)
+	// Masks are baked into and sampled from; in the device's swapchain format, which the resolve pipelines target.
+	internal const TextureUsage MaskUsage = TextureUsage.RenderAttachment | TextureUsage.TextureBinding;
+
+	// A slot for a mask nobody looks up: on a shared page when it fits, else a standalone one.
+	private WebGpuMaskAtlas.Slot KeylessSlot(int w, int h, OwnedResources owned)
 	{
-		var td = new TextureDescriptor
-		{
-			Size = new Extent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 },
-			Format = _d.ColorFormat,
-			MipLevelCount = 1,
-			SampleCount = 1,
-			Dimension = TextureDimension.Dimension2D,
-			Usage = TextureUsage.RenderAttachment | TextureUsage.TextureBinding,
-		};
-		tex = Api.DeviceCreateTexture(_d.Dev, &td);
-		return Api.TextureCreateView(tex, null);
+		var slot = _d.Atlas.AllocateKeyless(w, h) ?? _d.Atlas.Place(_d.Atlas.StandalonePage(w, h, _d.ColorFormat, MaskUsage), 0, 0, w, h);
+		HoldKeyless(slot, owned);
+		return slot;
+	}
+
+	// A keyless slot is freed with the recording that owns it, or at the next frame start.
+	private void HoldKeyless(WebGpuMaskAtlas.Slot slot, OwnedResources owned)
+	{
+		if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
+		else { _d.Atlas.FreeNextFrame(slot); }
 	}
 
 	internal static int FillMasksBaked, FillMaskHits;
 	// Of those bakes, the ones with no cache behind them at all: a fill the keyed route refused, which pays a
-	// texture and a bake on EVERY build. A high count next to a low hit count is the signal that the key is unstable.
+	// bake on EVERY build. A high count next to a low hit count is the signal that the key is unstable.
 	internal static int FillMaskUncached;
 
 	/// <summary>
@@ -186,22 +195,12 @@ internal sealed unsafe partial class WebGpuCoverage
 			w = (int)MathF.Ceiling(dx1) + 1 - ox; h = (int)MathF.Ceiling(dy1) + 1 - oy;
 		}
 
-		// A per-frame fill goes on the frame's sheet and samples its slot; a cached recording's gets a texture of its own.
-		TextureView* view; var uv = new Vector4(0f, 0f, 1f, 1f);
 		var origin = new Vector2((ox + 1) / scale.X, (oy + 1) / scale.Y) - pf.Offset;
-		if (owned is null && TryReserveSheetSlot(w, h, out var sheet, out var sx, out var sy))
-		{
-			AddBake(sheet, sx, sy, w, h, shape.Edges, origin, scale, pf.EvenOdd);
-			view = sheet.Target;
-			uv = new Vector4(sx, sy, sx + w, sy + h) / SheetSize;
-		}
-		else
-		{
-			view = NewMaskTexture(w, h, out var tex);
-			AddBake(BatchFor(view, w, h, load: false), 0, 0, w, h, shape.Edges, origin, scale, pf.EvenOdd);
-			if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }
-			else { _d.DeferTextureRelease(view, tex); }
-		}
+		var slot = KeylessSlot(w, h, owned);
+		var page = slot.Owner;
+		AddBake(BatchFor(page), slot.X, slot.Y, w, h, shape.Edges, origin, scale, pf.EvenOdd);
+		var view = page.View;
+		var uv = new Vector4(slot.X, slot.Y, slot.X + w, slot.Y + h) / new Vector4(page.W, page.H, page.W, page.H);
 		FillMasksBaked++; FillMaskUncached++;
 
 		// A solid quad with the mask as its coverage, 1:1 with device pixels once the GPU applies the scale -- the same

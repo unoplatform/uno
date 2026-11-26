@@ -31,7 +31,10 @@ are unchanged, and there is **no** forwarding shim: the old namespaces stop reso
 XAML declarations follow the same mapping, for example
 `xmlns:toolkit="using:Uno.UI.Toolkit"` becomes `xmlns:uuxc="using:Uno.UI.Xaml.Controls"` for
 `ElevatedView` and the `CommandBar`/`SplitView` extensions, or
-`xmlns:uub="using:Uno.UI.Behaviors"` for `VisibleBoundsPadding`.
+`xmlns:uub="using:Uno.UI.Behaviors"` for `VisibleBoundsPadding`. A page using both now needs both
+declarations. The build reports every remaining `using:Uno.UI.Toolkit` declaration as
+[UXAML0009](xref:Build.Solution.error-codes), which lists where each type went. Without it, the
+types the page uses are only reported as not found (`UXAML0001`).
 
 In C#, replace `using Uno.UI.Toolkit;` with the namespace from the table. Be careful with
 `using Uno.UI.Xaml.Controls;`: that namespace also contains the Uno-specific `ScrollViewer`,

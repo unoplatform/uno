@@ -47,6 +47,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 				SelectionSource = workspaceResolution.SelectionSource,
 				CandidateSolutions = workspaceResolution.CandidateSolutions,
 				DiscoveryDurationMs = discoveryStopwatch.ElapsedMilliseconds,
+				Warnings = workspaceResolution.Warnings,
 				Errors = workspaceResolution.ResolutionKind == WorkspaceResolutionKind.NoCandidates
 					? []
 					: ["Workspace could not be resolved."],
@@ -70,7 +71,7 @@ internal class UnoToolsLocator(ILogger<UnoToolsLocator> logger, TargetsAddInReso
 		string? dotNetTfm = null;
 		string? hostPath = null;
 		string? settingsPath = null;
-		var warnings = new List<string>();
+		var warnings = new List<string>(workspaceResolution.Warnings);
 		var errors = new List<string>();
 
 		var globalJsonResult = await GlobalJsonLocator.ParseGlobalJsonForUnoSdkAsync(workDirectory, _logger);

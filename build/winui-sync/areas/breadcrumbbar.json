@@ -1,0 +1,27 @@
+{
+  "id": "breadcrumbbar",
+  "title": "BreadcrumbBar",
+  "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
+  "upstream": {
+    "sources": [
+      "controls/dev/Breadcrumb"
+    ],
+    "tests": [
+      "controls/dev/Breadcrumb/APITests",
+      "controls/dev/Breadcrumb/TestUI"
+    ],
+    "strings": "controls/dev/Breadcrumb/Strings"
+  },
+  "uno": {
+    "sources": [
+      "src/Uno.UI/UI/Xaml/Controls/BreadcrumbBar",
+      "src/Uno.UI.FluentTheme/Resources/PriorityDefault/BreadcrumbBar_themeresources.xaml",
+      "src/Uno.UI.FluentTheme/Resources/PriorityDefault/BreadcrumbBar.xaml"
+    ],
+    "tests": [
+      "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/Breadcrumb",
+      "src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/BreadcrumbTests"
+    ],
+    "strings": "src/Uno.UI/UI/Xaml/Controls/BreadcrumbBar/Strings"
+  }
+}

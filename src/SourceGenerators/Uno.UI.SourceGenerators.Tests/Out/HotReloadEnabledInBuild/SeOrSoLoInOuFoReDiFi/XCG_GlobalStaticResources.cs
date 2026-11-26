@@ -46,8 +46,8 @@ namespace MyProject
 			if(!_stylesRegistered)
 			{
 				_stylesRegistered = true;
-				RegisterDefaultStyles_MyDictionary_b31577bd88a443cc7e422162f7097e83();
-				RegisterDefaultStyles_OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921();
+				RegisterDefaultStyles_MyDictionary_e86d74cc1fc7d970a463d17e1b414bcd();
+				RegisterDefaultStyles_OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05();
 			}
 		}
 		// Register ResourceDictionaries using ms-appx:/// syntax, this is called for external resources
@@ -56,20 +56,20 @@ namespace MyProject
 			if(!_dictionariesRegistered)
 			{
 				_dictionariesRegistered = true;
-				global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///TestProject/0/MyDictionary.xaml", context: __ParseContext_, dictionary: () => MyDictionary_b31577bd88a443cc7e422162f7097e83_ResourceDictionary);
-				global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///TestProject/0/OtherDictionary.xaml", context: __ParseContext_, dictionary: () => OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921_ResourceDictionary);
+				global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///TestProject/0/MyDictionary.xaml", context: __ParseContext_, dictionary: () => MyDictionary_e86d74cc1fc7d970a463d17e1b414bcd_ResourceDictionary);
+				global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///TestProject/0/OtherDictionary.xaml", context: __ParseContext_, dictionary: () => OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05_ResourceDictionary);
 			}
 		}
 		// Register ResourceDictionaries using ms-resource:/// syntax, this is called for local resources
 		internal static void RegisterResourceDictionariesBySourceLocal()
 		{
-			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-resource:///Files/0/MyDictionary.xaml", context: null, dictionary: () => MyDictionary_b31577bd88a443cc7e422162f7097e83_ResourceDictionary, null);
-			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///0/MyDictionary.xaml", context: null, dictionary: () => MyDictionary_b31577bd88a443cc7e422162f7097e83_ResourceDictionary);
-			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-resource:///Files/0/OtherDictionary.xaml", context: null, dictionary: () => OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921_ResourceDictionary, null);
-			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///0/OtherDictionary.xaml", context: null, dictionary: () => OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921_ResourceDictionary);
+			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-resource:///Files/0/MyDictionary.xaml", context: null, dictionary: () => MyDictionary_e86d74cc1fc7d970a463d17e1b414bcd_ResourceDictionary, null);
+			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///0/MyDictionary.xaml", context: null, dictionary: () => MyDictionary_e86d74cc1fc7d970a463d17e1b414bcd_ResourceDictionary);
+			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-resource:///Files/0/OtherDictionary.xaml", context: null, dictionary: () => OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05_ResourceDictionary, null);
+			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///0/OtherDictionary.xaml", context: null, dictionary: () => OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05_ResourceDictionary);
 		}
-		static partial void RegisterDefaultStyles_MyDictionary_b31577bd88a443cc7e422162f7097e83();
-		static partial void RegisterDefaultStyles_OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921();
+		static partial void RegisterDefaultStyles_MyDictionary_e86d74cc1fc7d970a463d17e1b414bcd();
+		static partial void RegisterDefaultStyles_OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05();
 		
 	}
 }

@@ -6,6 +6,22 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 To upgrade to the latest version of Uno Platform, [follow our guide](xref:Uno.Development.UpgradeUnoNuget).
 
+## Uno Platform 7.1
+
+### Removal of `StackLayout.DisableVirtualization`
+
+`StackLayout.DisableVirtualization` was an Uno Platform-only inverse of `IsVirtualizationEnabled`, and WinUI has no such property. It has been removed so `StackLayout` matches the WinUI API. Replace `layout.DisableVirtualization = value` with `layout.IsVirtualizationEnabled = !value`.
+
+This change is tracked by [issue #26577](https://github.com/unoplatform/uno/issues/26577).
+
+### `Uno.WinUI.GooglePlay` no longer references Play Core
+
+`Uno.WinUI.GooglePlay` (the `GooglePlay` Uno Feature) now depends on `Xamarin.Google.Android.Play.Review` instead of the deprecated `Xamarin.Google.Android.Play.Core`, which Google Play Console flags as incompatible with `targetSdkVersion` 34 and higher. No code change is needed for [in-app reviews](xref:Uno.Features.StoreContext).
+
+If your app used other Play Core APIs, such as in-app updates or Play Asset/Feature Delivery, and relied on `Uno.WinUI.GooglePlay` to bring in `Xamarin.Google.Android.Play.Core`, reference the matching split package instead (for example `Xamarin.Google.Android.Play.App.Update`). See [Google's migration guide](https://developer.android.com/guide/playcore#playcore-migration).
+
+This change is tracked by [issue #24948](https://github.com/unoplatform/uno/issues/24948).
+
 ## Uno Platform 7.0
 
 Uno Platform 7.0 is the Skia-unification major release: Skia is the rendering engine on every

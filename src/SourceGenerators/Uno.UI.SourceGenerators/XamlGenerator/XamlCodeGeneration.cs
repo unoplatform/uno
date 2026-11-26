@@ -462,7 +462,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// Parse XAML files
 				var xamlParser = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces, excludeXamlNamespaces, includeXamlNamespaces, _metadataHelper, _enableImplicitXamlNamespaces, implicitPrefixes);
 				var xamlFiles = xamlParser
-					.ParseFiles(_xamlSources, _projectDirectory, ct)
+					.ParseFiles(_xamlSources, _projectDirectory, _targetPath, ct)
 					.OrderBy(file => file.UniqueID)
 					.ToArray();
 

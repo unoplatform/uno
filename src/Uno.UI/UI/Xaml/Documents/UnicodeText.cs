@@ -235,6 +235,8 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly Brush? _defaultForeground;
 	private readonly bool _alignmentIncludesTrailingWhitespace;
 	private readonly bool _rtl;
+	// The element's FlowDirection, as opposed to _rtl, the base direction detected from the text.
+	private readonly bool _flowRightToLeft;
 	private readonly List<(int start, int end, Hyperlink hyperlink)> _hyperlinkRanges;
 	// Lazy: word boundaries feed selection/word-navigation/spell-check, never measure — computing them (an ICU
 	// break-iterator pass) on every Text change is pure waste for labels that are only ever rendered.
@@ -262,8 +264,8 @@ internal readonly partial struct UnicodeText : IParsedText
 		float lineHeight,
 		LineStackingStrategy lineStackingStrategy,
 		TextLineBounds textLineBounds,
-		FlowDirection flowDirection,
-		TextAlignment? textAlignment, // null to determine from text.
+		FlowDirection flowDirection, // the caller must not be mirrored for it (see UIElement.GetFlowDirectionTransform)
+		TextAlignment? textAlignment, // relative to flowDirection; null to determine from text.
 		TextWrapping textWrapping,
 		TextTrimming textTrimming,
 		bool isSpellCheckEnabled,
@@ -284,6 +286,11 @@ internal readonly partial struct UnicodeText : IParsedText
 		_endingParagraphAlignment = endingParagraphAlignment;
 		_defaultForeground = defaultForeground;
 		_alignmentIncludesTrailingWhitespace = alignmentIncludesTrailingWhitespace;
+		_flowRightToLeft = flowDirection is FlowDirection.RightToLeft;
+		if (textAlignment is TextAlignment.DetectFromContent)
+		{
+			textAlignment = null;
+		}
 		var tabStopWidth = defaultTabStop > 0 ? defaultTabStop : FallbackTabStopWidth;
 
 		var stringBuilder = new StringBuilder();
@@ -423,7 +430,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			_lines = [];
 			_defaultFontDetails = defaultFontDetails;
 			_rtl = flowDirection is FlowDirection.RightToLeft;
-			_textAlignment = textAlignment ?? (flowDirection is FlowDirection.RightToLeft ? TextAlignment.Right : TextAlignment.Left);
+			_textAlignment = textAlignment ?? TextAlignment.Left;
 			var (naturalHeight, naturalBaseline) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight, defaultFontDetails, false, true);
 			_endingNewLineLineHeight = endingParagraphLayout is null
 				? naturalHeight
@@ -435,7 +442,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				_endingLineContentTop + _endingNewLineLineHeight.Value + (endingParagraphLayout?.SpaceAfter ?? 0));
 			_availableSize = availableSize;
 			_layoutUsesAvailableWidth = _rtl // caret placement
-				|| _textAlignment is TextAlignment.Center or TextAlignment.Right or TextAlignment.Justify
+				|| AlignmentDependsOnWidth(_textAlignment)
 				|| endingParagraphAlignment is not null
 				|| endingParagraphLayout is not null;
 			_xyTable = [];
@@ -506,7 +513,8 @@ internal readonly partial struct UnicodeText : IParsedText
 
 				if (textAlignment is null && logicalStart == 0)
 				{
-					textAlignment = level is UBIDI_RTL ? TextAlignment.Right : TextAlignment.Left;
+					// The content's start edge, expressed relative to the element's flow direction.
+					textAlignment = (level is UBIDI_RTL) != _flowRightToLeft ? TextAlignment.Right : TextAlignment.Left;
 				}
 			}
 		}
@@ -1241,7 +1249,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		_layoutUsesAvailableWidth = textWrapping != TextWrapping.NoWrap
 			|| textTrimming != TextTrimming.None
 			|| _rtl
-			|| _textAlignment is TextAlignment.Center or TextAlignment.Right or TextAlignment.Justify // see GetAlignmentOffsetForLine
+			|| AlignmentDependsOnWidth(_textAlignment)
 			|| paragraphAlignments is not null
 			|| paragraphLayouts is not null
 			|| endingParagraphAlignment is not null
@@ -2760,7 +2768,8 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	public bool IsBaseDirectionRightToLeft => _rtl;
 
-	// The alignment the layout used: a default-aligned TextBox gets one from its content's direction.
+	// The alignment the layout used, relative to the FlowDirection it was laid out with (Left = start):
+	// a default-aligned TextBox gets one from its content's direction.
 	internal TextAlignment TextAlignment => _textAlignment;
 
 	internal Size AvailableSize => _availableSize;
@@ -2805,7 +2814,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	{
 		var (lineWidth, lineWidthWithoutTrailingSpaces) = line is null ? (0, 0) : (line.Value.width, line.Value.widthWithoutTrailingSpaces);
 		var totalWidth = (float)_availableSize.Width;
-		var textAlignment = line?.textAlignment ?? _endingParagraphAlignment ?? _textAlignment;
+		var textAlignment = ToPhysicalAlignment(line?.textAlignment ?? _endingParagraphAlignment ?? _textAlignment);
 
 		// Paragraph indent adjustments: left indent shifts the content area right,
 		// right indent narrows the content area from the right. First-line indent
@@ -2825,6 +2834,8 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			TextAlignment.Center when alignmentWidth <= contentWidth => leftIndent + (contentWidth - alignmentWidth) / 2,
 			TextAlignment.Right when alignmentWidth <= contentWidth => leftIndent + contentWidth - alignmentWidth,
+			// An unstretched justified line (the last one) starts where its own text starts, whatever the FlowDirection.
+			TextAlignment.Justify when alignmentWidth <= contentWidth && IsLineRightToLeft(line) => leftIndent + contentWidth - alignmentWidth,
 			_ => leftIndent,
 		};
 
@@ -2838,6 +2849,23 @@ internal readonly partial struct UnicodeText : IParsedText
 			? Math.Min(alignmentOffset, totalWidth - lineWidth)
 			: Math.Max(alignmentOffset, 0);
 	}
+
+	// WinUI mirrors a RightToLeft text element, so its Left/Right mean start/end. Lines here are laid out
+	// unmirrored (see UIElement.GetFlowDirectionTransform), so map them to visual sides.
+	// Paragraph alignments use the element's flow too, so uniform and mixed RichEditBox paragraphs agree.
+	private TextAlignment ToPhysicalAlignment(TextAlignment alignment)
+		=> _flowRightToLeft
+			? alignment switch
+			{
+				TextAlignment.Left => TextAlignment.Right,
+				TextAlignment.Right => TextAlignment.Left,
+				_ => alignment,
+			}
+			: alignment;
+
+	// See GetAlignmentOffsetForLine: only a left-aligned line ignores the available width.
+	private bool AlignmentDependsOnWidth(TextAlignment alignment)
+		=> ToPhysicalAlignment(alignment) is TextAlignment.Center or TextAlignment.Right or TextAlignment.Justify;
 
 	private bool IsLineRightToLeft(Line? line)
 		=> line?.paragraphLayout?.RightToLeft ?? _endingParagraphLayout?.RightToLeft ?? _rtl;
