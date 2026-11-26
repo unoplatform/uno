@@ -20,6 +20,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   docs-update:
+    if: github.repository == 'unoplatform/uno'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
