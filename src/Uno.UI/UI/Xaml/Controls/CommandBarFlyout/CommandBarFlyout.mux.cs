@@ -212,7 +212,11 @@ partial class CommandBarFlyout
 							// on the next tick.
 							DispatcherQueue.TryEnqueue(() =>
 							{
-								commandBar.IsOpen = true;
+								// The flyout can close before this tick; opening the bar then would leave it open for the next show.
+								if (IsOpen)
+								{
+									commandBar.IsOpen = true;
+								}
 							});
 #endif
 						}
