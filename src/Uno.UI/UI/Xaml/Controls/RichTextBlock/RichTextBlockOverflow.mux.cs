@@ -35,9 +35,6 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 	private PageNode? _pPageNode;
 	private RichTextBlockView? _pTextView;
 
-	// Render data rebuilt from the arranged page node (the master's content slice that fits this page).
-	private readonly List<RichTextBlock.ParagraphLayout> _paragraphLayouts = new();
-
 	internal RichTextBlock? GetMaster() => _pMaster;
 
 	internal PageNode? GetPageNode() => _pPageNode;
@@ -274,7 +271,9 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 		{
 			_pPageNode.Arrange(finalSize);
 			renderSize = _pPageNode.GetRenderSize();
-			PopulateLayoutsFromTree();
+
+			// The lines the page node records are painted by the visual.
+			_pPageNode.Draw(false);
 			UpdateIsTextTrimmed();
 		}
 
@@ -386,93 +385,13 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 		SetIsTextTrimmed(isTrimmed);
 	}
 
-	// Rebuilds _paragraphLayouts (render data) from the arranged page node. The overflow has no Blocks of
-	// its own; its page node measures a slice of the master's BlockCollection starting at GetFirstChildIndex().
-	// Mirrors RichTextBlock.PopulateLayoutsFromTree, mapping each ParagraphNode back to the master's Blocks slice.
-	private void PopulateLayoutsFromTree()
-	{
-		_paragraphLayouts.Clear();
-
-		if (_pMaster is null || _pPageNode is null)
-		{
-			return;
-		}
-
-		float accumHeight = 0;
-		int blockIndex = (int)_pPageNode.GetFirstChildIndex();
-		int blockCount = _pMaster.Blocks.Count;
-		int globalCharOffset = (int)_pPageNode.GetStartPosition();
-
-		for (var child = _pPageNode.GetFirstChild(); child is not null; child = child.GetNext())
-		{
-			var para = blockIndex < blockCount ? _pMaster.Blocks[blockIndex] as Paragraph : null;
-
-			if (child is ParagraphNode paragraphNode &&
-				para is not null &&
-				paragraphNode.GetParsedText() is { } parsed)
-			{
-				// Same geometry the master renders from: block margins collapse, so the node's own
-				// collapsed margin and arranged content box are the only sizes the lines were laid
-				// out against. Deriving them from the raw Margin misplaces and mis-clips the slice.
-				var margin = paragraphNode.GetCollapsedMargin();
-				var boxSize = paragraphNode.GetDesiredSize(); // content + collapsed margins
-				var contentSize = paragraphNode.GetContentRenderSize();
-
-				_paragraphLayouts.Add(new RichTextBlock.ParagraphLayout(
-					ParsedText: parsed,
-					YOffset: accumHeight + (float)margin.Top,
-					GlobalCharOffset: globalCharOffset,
-					Size: contentSize,
-					Margin: margin,
-					FirstLine: paragraphNode.FirstLineIndex,
-					LineCount: paragraphNode.LineCount,
-					BlockIndex: blockIndex));
-
-				accumHeight += (float)boxSize.Height;
-			}
-
-			if (para is not null)
-			{
-				globalCharOffset += string.Concat(para.Inlines.Select(InlineExtensions.GetText)).Length;
-				if (blockIndex < blockCount - 1)
-				{
-					globalCharOffset += 2; // paragraph separator
-				}
-			}
-
-			blockIndex++;
-		}
-	}
-
+	// The column shows the master's content, so it paints the master's highlighters and selection over its own slice.
 	internal void Draw(in Visual.PaintingSession session)
 	{
-		var drawingSession = session.Session;
-		drawingSession.Save();
-		drawingSession.Translate((float)Padding.Left, (float)Padding.Top);
-
-		foreach (var layout in _paragraphLayouts)
+		if (_pMaster is { } master)
 		{
-			drawingSession.Save();
-			drawingSession.Translate((float)layout.Margin.Left, layout.YOffset);
-
-			// ParsedText renders the whole paragraph, so clip to the slice this link arranged; otherwise
-			// the lines belonging to the previous or next link in the chain are overdrawn.
-			drawingSession.ClipRect(new Rect(0, 0, layout.Size.Width, layout.Size.Height));
-
-			// TODO Uno (Stage 9 overflow selection): apply selection/text-highlighters to the overflow's
-			// content slice (the master's TextSelectionManager owns selection across the whole chain).
-			// The column shows the master's content, so it paints the master's highlighters and
-			// selection over its own slice.
-			var highlighters = _pMaster is { } master
-				? master.GetParagraphHighlighters(layout, layout.BlockIndex)
-				: Enumerable.Empty<TextHighlighter>();
-
-			layout.ParsedText.Draw(this, session, null, highlighters, compositionRange: null, layout.FirstLine, layout.LineCount);
-
-			drawingSession.Restore();
+			RichTextPagePainter.Paint(this, _pPageNode, master, session);
 		}
-
-		drawingSession.Restore();
 	}
 
 	// the entire body of the overflow is considered hit-testable
@@ -628,7 +547,6 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 		_pPageNode?.Dispose();
 		_pPageNode = null;
 		_pTextView = null;
-		_paragraphLayouts.Clear();
 	}
 
 	// Static helpers: propagate invalidation/reset/selection through the full chain of overflow links,

@@ -44,8 +44,8 @@ partial class RichTextBlock : ITextSelectionManagerOwner, ITextViewHost
 		uint newSelectionStartOffset,
 		uint newSelectionEndOffset)
 	{
-		// The manager reports CONTAINER offsets; the public Selection (and the existing flat render
-		// path) is FLAT (ParsedText) space. Convert container -> flat via the view, then write through
+		// The manager reports CONTAINER offsets; the public Selection (and the flat render path)
+		// is FLAT space. Convert container -> flat via the view, then write through
 		// SetSelectionInternal so SelectedText / SelectionChanged stay in sync WITHOUT routing back to
 		// the manager (the public setter is reserved for programmatic callers).
 		int flatStart = _pTextView?.GetCharacterIndex((int)newSelectionStartOffset) ?? (int)newSelectionStartOffset;
@@ -117,7 +117,8 @@ partial class RichTextBlock : ITextSelectionManagerOwner, ITextViewHost
 
 	bool ITextSelectionManagerOwner.TryGetLastPointerPosition(out Point worldPosition)
 	{
-		worldPosition = _lastPointerPosition;
+		// The manager works in world space; the position is recorded relative to this element.
+		worldPosition = TransformToVisual(null).TransformPoint(_lastPointerPosition);
 		return true;
 	}
 

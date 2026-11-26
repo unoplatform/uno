@@ -78,19 +78,12 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 		return baselineOffset;
 	}
 
-	// The whole-paragraph ParsedText for this node (shared by all its lines), or null if
-	// not yet formatted. Used by the render paint-walk (RichTextVisual.Paint draws the
-	// paragraph once via ParsedText.Draw at the node's arranged offset).
-	internal ParsedText? GetParsedText()
-		=> (m_lines.Count > 0 && m_lines[0].Line is SkiaTextLine line) ? line.ParsedText : null;
-
 	// Number of formatted lines in this paragraph (after MaxLines limiting), used by the control
 	// to detect MaxLines clipping for IsTextTrimmed.
 	internal int LineCount => m_lines.Count;
 
-	// Index of this page's first line within the paragraph's ParsedText. A paragraph broken across a
-	// page starts partway in, so the renderer needs it to paint the continuation rather than line 0.
-	internal int FirstLineIndex => m_lines.Count > 0 && m_lines[0].Line is SkiaTextLine line ? line.LineIndex : 0;
+	// The paragraph this node lays out, null for an empty RichTextBlock.
+	internal Paragraph? GetParagraph() => m_pElement as Paragraph;
 
 	// Whether this paragraph has a trimmed (ellipsized) line. Mirrors ParagraphNode::GetHasTrimmedLine;
 	// the overflow's UpdateIsTextTrimmed walks the page's ParagraphNodes looking for one.
@@ -103,10 +96,17 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 	// reported as off-page. Used by PageNode to drop embedded elements whose content didn't fit.
 	internal bool ContainsInlineUIContainer(InlineUIContainer pContainer) => m_embeddedContainers.Contains(pContainer);
 
+	internal TextRunCache? TextRunCacheForTests => m_pTextRunCache;
+
+	internal TextSource TextSourceForTests => m_textSource;
+
+	// Called when the node is deleted: the run cache outlives it when the paragraph started on an earlier page.
+	internal void ReleaseLayouts() => (m_pTextRunCache as UnicodeTextRunCache)?.Release(m_textSource);
+
 	// Recorded as lines are accepted, because the TextLine objects are released once measure ends.
 	private void RecordEmbeddedContainers(TextLine? pTextLine)
 	{
-		if (pTextLine is SkiaTextLine line)
+		if (pTextLine is UnicodeTextLine line)
 		{
 			line.CollectInlineObjects(m_embeddedContainers);
 		}
@@ -738,13 +738,6 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 		// DrawingContext should be created and cleared in Arrange.
 		MUX_ASSERT(m_pDrawingContext != null);
 		pTextDrawingContext = ((ParagraphDrawingContext)m_pDrawingContext!).GetTextDrawingContext();
-		if (pTextDrawingContext is null)
-		{
-			// TODO Uno (Stage 6/8): the WinUI D2DTextDrawingContext line recorder is not ported yet, so
-			// GetTextDrawingContext() always returns null and rendering goes through ParsedText.Draw.
-			// Bail out instead of dereferencing it; drop this guard once the recorder lands.
-			return;
-		}
 
 		pTextDrawingContext.Clear();
 
@@ -785,9 +778,9 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 					lineMetrics.Line = pTextLine;
 				}
 
-				pTextDrawingContext.SetLineInfo(m_renderSize.Width, isRightToLeft, origin.Y, lineMetrics.VerticalAdvance);
-				// TODO Uno (integrate): rendering goes through ParsedText.Draw during RichTextVisual.Paint;
-				// this records line draw structurally only.
+				// NOTE (Uno): the recorded line's highlights fill its advance, which starts at lineOffset as in
+				// GetTextBounds; origin.Y adds the line stacking offset within it.
+				pTextDrawingContext.SetLineInfo(m_renderSize.Width, isRightToLeft, lineOffset, lineMetrics.VerticalAdvance);
 				pTextLine!.Draw(pTextDrawingContext, origin, m_renderSize.Width);
 
 				if (textTrimming != TextTrimming.None)
@@ -922,8 +915,8 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 			// If there is no run cache, create one.
 			if (m_pTextRunCache == null)
 			{
-				// TODO Uno (integrate): TextRunCache::Create — the concrete cache is created by the
-				// Skia text formatter bridge (the LineServices-backed cache is not ported).
+				// NOTE (Uno): the cache holds the paragraph's UnicodeText layouts (the LineServices-backed
+				// cache is not ported).
 				m_pTextRunCache = TextRunCache.Create();
 			}
 		}

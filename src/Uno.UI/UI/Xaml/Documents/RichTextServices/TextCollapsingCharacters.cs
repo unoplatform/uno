@@ -50,9 +50,9 @@ internal sealed class TextCollapsingCharacters : TextCollapsingSymbol
 
 	public float GetCharacterWidth(int index) => _characterWidths[index];
 
-	// The symbol is emitted onto the collapsed RenderLine and painted by ParsedText.Draw along with
-	// the rest of the paragraph, so there is no separate drawing-context recording pass.
+	// The engine shapes the ellipsis into the collapsed line and draws it with the line, so there is no
+	// separate drawing-context recording pass.
 	public override void Draw(TextDrawingContext drawingContext, Point origin, double viewportWidth, FlowDirection flowDirection)
 		=> throw new NotSupportedException(
-			"The collapsing symbol is drawn as part of the collapsed line by ParsedText.Draw.");
+			"The collapsing symbol is drawn as part of the collapsed line.");
 }

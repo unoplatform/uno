@@ -1350,6 +1350,33 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	/// <summary>
+	/// Takes the current foreground of the inlines this was laid out from, in the same order. Only drawing reads a
+	/// run's brush, so a brush change needs no layout. <paramref name="withContainers"/> says whether the layout was
+	/// given <see cref="UnicodeTextOptions.InlineContainers"/>, which give each container a run of its own.
+	/// </summary>
+	internal void UpdateForegrounds(IEnumerable<Inline> inlines, bool withContainers)
+	{
+		var i = 0;
+		foreach (var inline in inlines)
+		{
+			if (string.IsNullOrEmpty(inline.GetText()) && !(withContainers && inline is InlineUIContainer))
+			{
+				continue;
+			}
+
+			if (i == _runBreaks.Count)
+			{
+				break;
+			}
+
+			_runBreaks[i] = _runBreaks[i] with { foreground = inline.Foreground };
+			i++;
+		}
+
+		CI.Assert(i == _runBreaks.Count);
+	}
+
+	/// <summary>
 	/// Whether laying the same text out in <paramref name="availableSize"/> would give this exact result, because the
 	/// dimensions that differ from the size this was parsed with are not ones the layout depends on.
 	/// </summary>

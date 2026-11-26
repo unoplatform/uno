@@ -14,6 +14,7 @@ using Windows.System;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Documents.BlockLayout;
+using Microsoft.UI.Xaml.Documents.RichTextServices;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Input;
@@ -47,25 +48,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private PointerDeviceType _lastInputDeviceType;
 		private Point _lastPointerPosition;
 
-		/// <summary>
-		/// Layout data for a single paragraph within the RichTextBlock.
-		/// </summary>
-		internal record struct ParagraphLayout(
-			ParsedText ParsedText,
-			float YOffset,
-			int GlobalCharOffset,
-			Size Size,
-			Thickness Margin,
-			int FirstLine,
-			int LineCount,
-			int BlockIndex);
-
-		private readonly List<ParagraphLayout> _paragraphLayouts = new();
-		private Size _lastMeasuredContentSize;
-
-		// Stage 9: the ported BlockLayout engine drives measure/arrange; the node tree is the
-		// authoritative layout. _paragraphLayouts is rebuilt from the arranged tree and still
-		// backs the render/selection path (replaced by the view layer in a later step).
+		// Stage 9: the ported BlockLayout engine drives measure, arrange and drawing; the view answers
+		// hit-tests and text bounds.
 		private BlockLayoutEngine? _blockLayout;
 		private PageNode? _pageNode;
 		private RichTextBlockBreak? _break;
@@ -214,7 +198,9 @@ namespace Microsoft.UI.Xaml.Controls
 			if (_pageNode is not null && !_pageNode.IsMeasureDirty())
 			{
 				_pageNode.Arrange(finalSize);
-				PopulateLayoutsFromTree();
+
+				// CRichTextBlock renders the page node after arranging it; the lines it records are painted by the visual.
+				_pageNode.Draw(false);
 			}
 
 			var result = base.ArrangeOverride(finalSize);
@@ -283,71 +269,17 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		// Rebuilds _paragraphLayouts (render/selection data) from the arranged PageNode tree. The
-		// engine is the authoritative layout; each ParagraphNode shares one ParsedText with its lines,
-		// drawn once at the paragraph offset. Replaced by the view layer in a later step.
-		private void PopulateLayoutsFromTree()
-		{
-			_paragraphLayouts.Clear();
-
-			float accumHeight = 0;
-			float maxWidth = 0;
-			int globalCharOffset = 0;
-			int blockIndex = 0;
-			int blockCount = Blocks.Count;
-			int totalLines = 0;
-
-			for (var child = _pageNode?.GetFirstChild(); child is not null; child = child.GetNext())
-			{
-				var para = blockIndex < blockCount ? Blocks[blockIndex] as Paragraph : null;
-
-				if (child is ParagraphNode paragraphNode &&
-					para is not null &&
-					paragraphNode.GetParsedText() is { } parsed)
-				{
-					// Position and clip against the geometry the layout pass produced, never against
-					// the element's own Margin: block margins collapse (the node's bottom margin is
-					// always folded into the next sibling's top), and the arranged content box is
-					// what the lines were aligned to, which is wider than the measured width
-					// whenever the paragraph is right-aligned, centred or justified.
-					var margin = paragraphNode.GetCollapsedMargin();
-					var boxSize = paragraphNode.GetDesiredSize(); // content + collapsed margins
-					var contentSize = paragraphNode.GetContentRenderSize();
-
-					_paragraphLayouts.Add(new ParagraphLayout(
-						ParsedText: parsed,
-						YOffset: accumHeight + (float)margin.Top,
-						GlobalCharOffset: globalCharOffset,
-						Size: contentSize,
-						Margin: margin,
-						FirstLine: paragraphNode.FirstLineIndex,
-						LineCount: paragraphNode.LineCount,
-						BlockIndex: blockIndex));
-
-					accumHeight += (float)boxSize.Height;
-					maxWidth = Math.Max(maxWidth, (float)boxSize.Width);
-					totalLines += paragraphNode.LineCount;
-				}
-
-				if (para is not null)
-				{
-					globalCharOffset += GetParagraphTextLength(para);
-					if (blockIndex < blockCount - 1)
-					{
-						// "\r\n" separator, same flat char-index space the text view maps against.
-						globalCharOffset += Microsoft.UI.Xaml.Controls.Text.Core.RichTextBlockView.InterParagraphSeparatorLength;
-					}
-				}
-
-				blockIndex++;
-			}
-
-			_lastMeasuredContentSize = new Size(maxWidth, accumHeight);
-		}
-
+		// The length of the paragraph's text, summed over its leaf inlines rather than concatenated: painting and position
+		// mapping ask for it per paragraph.
 		internal static int GetParagraphTextLength(Paragraph paragraph)
 		{
-			return string.Concat(paragraph.Inlines.Select(InlineExtensions.GetText)).Length;
+			var length = 0;
+			foreach (var inline in paragraph.Inlines.TraversedTree.leafTree)
+			{
+				length += inline.GetText().Length;
+			}
+
+			return length;
 		}
 
 		private FontDetails GetDefaultFontDetails()
@@ -380,101 +312,55 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		internal void Draw(in Visual.PaintingSession session)
+			=> RichTextPagePainter.Paint(this, _pageNode, this, session);
+
+		// Whether painting needs the paragraph highlights: text highlighters or a visible selection.
+		internal bool HasParagraphHighlights => TextHighlighters.Count > 0 || (_renderSelection && Selection.start != Selection.end);
+
+		// The highlights of one paragraph, from the TextHighlighters and the selection, which are in the control's flat index
+		// space (a paragraph's characters, then "\r\n"). The engine ranges leave out an object at either end of a range.
+		internal IReadOnlyList<TextHighlighter> GetParagraphHighlighters(int paragraphStart, int paragraphLength, UnicodeParagraphLayout layout)
 		{
-			var drawingSession = session.Session;
-			drawingSession.Save();
-			drawingSession.Translate((float)Padding.Left, (float)Padding.Top);
+			// Allocated only for a paragraph that a range touches.
+			List<TextHighlighter>? result = null;
+			var paragraphEnd = paragraphStart + paragraphLength;
 
-			for (int p = 0; p < _paragraphLayouts.Count; p++)
+			void Add(int start, int end, Brush? background, Brush? foreground)
 			{
-				var layout = _paragraphLayouts[p];
-				drawingSession.Save();
-				drawingSession.Translate((float)layout.Margin.Left, layout.YOffset);
-
-				// The engine arranges only the lines that fit (MaxLines, or the slice handed to a linked
-				// overflow), but ParsedText renders the whole paragraph in one call. Clip to the arranged
-				// slice so the lines the page node left out are not overdrawn.
-				drawingSession.ClipRect(new Rect(0, 0, layout.Size.Width, layout.Size.Height));
-
-				// Build highlighters for this paragraph (including selection)
-				var paragraphHighlighters = GetParagraphHighlighters(layout, layout.BlockIndex);
-
-				layout.ParsedText.Draw(this, session, null, paragraphHighlighters, compositionRange: null, layout.FirstLine, layout.LineCount);
-
-				drawingSession.Restore();
-			}
-
-			drawingSession.Restore();
-		}
-
-		internal IEnumerable<TextHighlighter> GetParagraphHighlighters(ParagraphLayout layout, int paragraphIndex)
-		{
-			// Called once per paragraph on every paint: collect into a list instead of chaining
-			// Enumerable.Append iterators, which allocates one wrapper per highlighter per frame.
-			var result = new List<TextHighlighter>();
-
-			// Apply TextHighlighters (translated to paragraph-local coordinates)
-			foreach (var highlighter in TextHighlighters)
-			{
-				foreach (var range in highlighter.Ranges)
+				if (end > paragraphStart && start < paragraphEnd)
 				{
-					var globalStart = range.StartIndex;
-					var globalEnd = globalStart + range.Length;
-					var paraStart = layout.GlobalCharOffset;
-					var paraEnd = paraStart + GetParagraphTextLengthFromLayout(paragraphIndex);
-
-					if (globalEnd > paraStart && globalStart < paraEnd)
+					var engineStart = layout.ToEngineEnd(Math.Max(0, start - paragraphStart));
+					var engineEnd = layout.ToEngineStart(Math.Min(paragraphLength, end - paragraphStart));
+					if (engineEnd > engineStart)
 					{
-						var localStart = Math.Max(0, globalStart - paraStart);
-						var localEnd = Math.Min(paraEnd - paraStart, globalEnd - paraStart);
-						result.Add(new TextHighlighter
+						(result ??= new()).Add(new TextHighlighter
 						{
-							Background = highlighter.Background,
-							Foreground = highlighter.Foreground,
-							Ranges =
-							{
-								new TextRange { StartIndex = localStart, Length = localEnd - localStart }
-							}
+							Background = background,
+							Foreground = foreground,
+							Ranges = { new TextRange { StartIndex = engineStart, Length = engineEnd - engineStart } },
 						});
 					}
 				}
 			}
 
-			// Apply selection
-			if (_renderSelection)
+			foreach (var highlighter in TextHighlighters)
 			{
-				var selStart = Math.Min(Selection.start, Selection.end);
-				var selEnd = Math.Max(Selection.start, Selection.end);
-				var paraStart = layout.GlobalCharOffset;
-				var paraEnd = paraStart + GetParagraphTextLengthFromLayout(paragraphIndex);
-
-				if (selEnd > paraStart && selStart < paraEnd)
+				foreach (var range in highlighter.Ranges)
 				{
-					var localStart = Math.Max(0, selStart - paraStart);
-					var localEnd = Math.Min(paraEnd - paraStart, selEnd - paraStart);
-					result.Add(new TextHighlighter
-					{
-						Background = SelectionHighlightColor ?? DefaultBrushes.SelectionHighlightColor,
-						Foreground = DefaultBrushes.SelectedTextForegroundColor,
-						Ranges =
-						{
-							new TextRange { StartIndex = localStart, Length = localEnd - localStart }
-						}
-					});
+					Add(range.StartIndex, range.StartIndex + range.Length, highlighter.Background, highlighter.Foreground);
 				}
 			}
 
-			return result;
-		}
-
-		private int GetParagraphTextLengthFromLayout(int paragraphIndex)
-		{
-			if (paragraphIndex < Blocks.Count && Blocks[paragraphIndex] is Paragraph para)
+			if (_renderSelection)
 			{
-				return GetParagraphTextLength(para);
+				Add(
+					Math.Min(Selection.start, Selection.end),
+					Math.Max(Selection.start, Selection.end),
+					SelectionHighlightColor ?? DefaultBrushes.SelectionHighlightColor,
+					DefaultBrushes.SelectedTextForegroundColor);
 			}
 
-			return 0;
+			return result ?? (IReadOnlyList<TextHighlighter>)Array.Empty<TextHighlighter>();
 		}
 
 		// the entire body of the rich text block is considered hit-testable
@@ -574,7 +460,30 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		partial void OnForegroundChangedPartial() => InvalidateInlineAndRequireRepaint();
 
-		void UnicodeText.IFontCacheUpdateListener.Invalidate() => InvalidateMeasure();
+		// Bumped when a brush in the content changes; the cached layouts take the new brushes when they next draw.
+		internal int ForegroundVersion { get; private set; }
+
+		// A run's brush changed: repaint, without laying the content out again.
+		internal void InvalidateForeground()
+		{
+			ForegroundVersion++;
+			InvalidateInlineAndRequireRepaint();
+		}
+
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+
+			// The overflows lay out and mirror by this element's direction (an inherited Run.FlowDirection change
+			// doesn't reach them when there is no Run), and the cached layouts depend on it.
+			if (args.Property == FlowDirectionProperty)
+			{
+				InvalidateContent();
+			}
+		}
+
+		// A font the layout fell back from has loaded: the cached paragraph layouts are stale.
+		void UnicodeText.IFontCacheUpdateListener.Invalidate() => InvalidateContent();
 
 		partial void OnSelectionChanged()
 		{
@@ -669,52 +578,43 @@ namespace Microsoft.UI.Xaml.Controls
 			IsTextTrimmed = isTrimmed;
 		}
 
-		private int GetCharacterIndexAtPointSkia(Point point, bool extended)
+		// The flat index of the text position at a point, through the text view.
+		private int GetCharacterIndexAtPointCore(Point point)
 		{
-			// Adjust for padding
-			var adjustedPoint = new Point(point.X - Padding.Left, point.Y - Padding.Top);
-
-			for (int p = 0; p < _paragraphLayouts.Count; p++)
+			if (_pTextView is not { } view || _pageNode is null || _pageNode.IsMeasureDirty() || _pageNode.IsArrangeDirty())
 			{
-				var layout = _paragraphLayouts[p];
-				var paraTop = layout.YOffset;
-				var paraBottom = paraTop + layout.Size.Height;
-
-				if (adjustedPoint.Y >= paraTop && adjustedPoint.Y < paraBottom || (extended && p == _paragraphLayouts.Count - 1))
-				{
-					var localPoint = new Point(
-						adjustedPoint.X - layout.Margin.Left,
-						adjustedPoint.Y - layout.YOffset);
-					var localIndex = layout.ParsedText.GetIndexAt(localPoint, false, extended);
-					if (localIndex >= 0)
-					{
-						return layout.GlobalCharOffset + localIndex;
-					}
-				}
+				return -1;
 			}
 
-			return extended && _paragraphLayouts.Count > 0
-				? GetPlainText().Length
-				: -1;
+			var position = view.PixelPositionToTextPosition(point, false, out _);
+			return view.GetCharacterIndex((int)position);
 		}
 
-		private Hyperlink? FindHyperlinkAtSkia(PointerRoutedEventArgs e)
+		// CRichTextBlock::HitTestLink: the link that contains the text position at the point.
+		private Hyperlink? HitTestLink(Point point)
+			=> _pTextView is { } view && _pageNode is { } page
+				? HitTestLink(view, page, Blocks.GetTextContainer(), point)
+				: null;
+
+		internal static Hyperlink? HitTestLink(Microsoft.UI.Xaml.Controls.Text.Core.RichTextBlockView view, PageNode page, Microsoft.UI.Xaml.Documents.RichTextServices.ITextContainer? container, Point point)
 		{
-			var point = e.GetCurrentPoint(this).Position;
-			var adjustedPoint = new Point(point.X - Padding.Left, point.Y - Padding.Top);
-
-			for (int p = 0; p < _paragraphLayouts.Count; p++)
+			if (container is null || page.IsMeasureDirty() || page.IsArrangeDirty())
 			{
-				var layout = _paragraphLayouts[p];
-				var paraTop = layout.YOffset;
-				var paraBottom = paraTop + layout.Size.Height;
+				return null;
+			}
 
-				if (adjustedPoint.Y >= paraTop && adjustedPoint.Y < paraBottom)
+			var position = view.PixelPositionToTextPosition(point, false, out var gravity);
+			var textPosition = new Microsoft.UI.Xaml.Controls.Text.Core.PlainTextPosition(container, position, gravity);
+			if (!textPosition.GetLogicalParent(out var parent))
+			{
+				return null;
+			}
+
+			for (var element = parent; element is TextElement; element = element.GetParent() as DependencyObject)
+			{
+				if (element is Hyperlink hyperlink)
 				{
-					var localPoint = new Point(
-						adjustedPoint.X - layout.Margin.Left,
-						adjustedPoint.Y - layout.YOffset);
-					return layout.ParsedText.GetHyperlinkAt(localPoint);
+					return hyperlink;
 				}
 			}
 
@@ -763,32 +663,10 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
+			// CRichTextBlock::OnDoubleTapped: word selection belongs to the selection manager.
 			if (_pSelectionManager is { } manager && _pTextView is { } view)
 			{
 				manager.OnDoubleTapped(this, e, view);
-				return;
-			}
-
-			var index = GetCharacterIndexAtPoint(e.GetPosition(this), true);
-			if (index < 0)
-			{
-				return;
-			}
-
-			// Find which paragraph this index belongs to
-			for (int p = 0; p < _paragraphLayouts.Count; p++)
-			{
-				var layout = _paragraphLayouts[p];
-				var paraTextLen = GetParagraphTextLengthFromLayout(p);
-				if (index >= layout.GlobalCharOffset && index < layout.GlobalCharOffset + paraTextLen)
-				{
-					var localIndex = index - layout.GlobalCharOffset;
-					var chunk = layout.ParsedText.GetWordAt(localIndex, true);
-					Selection = new Range(
-						layout.GlobalCharOffset + chunk.start,
-						layout.GlobalCharOffset + chunk.start + chunk.length);
-					return;
-				}
 			}
 		}
 

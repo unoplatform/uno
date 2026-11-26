@@ -53,7 +53,7 @@ namespace Microsoft.UI.Xaml.Documents
 		protected override void OnForegroundChanged()
 		{
 			base.OnForegroundChanged();
-			InvalidateInlinesForFormatChange();
+			InvalidateInlinesForForegroundChange();
 		}
 
 		protected override void OnFontFamilyChanged()

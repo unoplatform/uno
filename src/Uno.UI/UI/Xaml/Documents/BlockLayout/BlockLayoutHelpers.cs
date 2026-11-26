@@ -36,16 +36,16 @@ internal static class BlockLayoutHelpers
 		MUX_ASSERT(pLayoutOwner != null);
 
 		// NOTE (Uno): WinUI vended a per-control TextFormatter (RichTextBlock/TextBlock::GetTextFormatter,
-		// LineServices-backed). On Uno the formatter wraps the Skia ParsedText engine and is a shared
+		// LineServices-backed). On Uno the formatter wraps the UnicodeText engine and is a shared
 		// stateless singleton, so the owner-type dispatch collapses to the single instance.
 		if (pLayoutOwner is RichTextBlock || pLayoutOwner is RichTextBlockOverflow || pLayoutOwner is TextBlock)
 		{
-			ppTextFormatter = SkiaTextFormatter.Instance;
+			ppTextFormatter = UnicodeTextFormatter.Instance;
 		}
 		else
 		{
 			MUX_ASSERT(false);
-			ppTextFormatter = SkiaTextFormatter.Instance;
+			ppTextFormatter = UnicodeTextFormatter.Instance;
 		}
 	}
 
@@ -121,7 +121,7 @@ internal static class BlockLayoutHelpers
 		var characterSpacing = GetCharacterSpacing(pEffectiveParagraph);
 
 		// TODO Uno (integrate): font context -> FontDetailsCache.GetFont(...).details (see note above).
-		pFontTypeface = FontDetailsCache.GetFont(fontFamilySource, (float)fontSize, fontWeight, fontStretch, fontStyle).details;
+		pFontTypeface = ResolveFont(fontFamilySource, fontSize, fontWeight, fontStretch, fontStyle);
 
 		pDefaultTextRunProperties = new TextRunProperties(
 			pFontTypeface,
@@ -197,7 +197,7 @@ internal static class BlockLayoutHelpers
 		var textDecorations = GetTextDecorations(pEffectiveParagraph);
 		var characterSpacing = GetCharacterSpacing(pEffectiveParagraph);
 
-		pFontTypeface = FontDetailsCache.GetFont(fontFamilySource, (float)fontSize, fontWeight, fontStretch, fontStyle).details;
+		pFontTypeface = ResolveFont(fontFamilySource, fontSize, fontWeight, fontStretch, fontStyle);
 
 		pDefaultTextRunProperties = new TextRunProperties(
 			pFontTypeface,
@@ -542,7 +542,7 @@ internal static class BlockLayoutHelpers
 			var fontStyle = GetFontStyle(pEffectiveParagraph);
 			var fontStretch = GetFontStretch(pEffectiveParagraph);
 
-			var details = FontDetailsCache.GetFont(fontFamilySource, (float)fontSize, fontWeight, fontStretch, fontStyle).details;
+			var details = ResolveFont(fontFamilySource, fontSize, fontWeight, fontStretch, fontStyle);
 
 			// CFontFamily::GetTextLineBoundsMetrics — default baseline / line advance for the resolved
 			// font, constrained by the owner's TextLineBounds.
@@ -934,9 +934,13 @@ internal static class BlockLayoutHelpers
 		MUX_ASSERT(pLayoutOwner != null);
 
 		// TODO Uno (integrate): TextReadingOrder — RichTextBlock/TextBlock expose TextReadingOrder in WinUI but there
-		// is no Uno DP for it yet. All branches currently return the WinUI default (Default). Wire to the DP once
-		// TextReadingOrder is ported.
-		if (pLayoutOwner is RichTextBlock || pLayoutOwner is TextBlock)
+		// is no Uno DP for it yet. RichTextBlock's engine detects the reading order from the content, which is WinUI's
+		// default for it; TextBlock doesn't lay out through this path.
+		if (pLayoutOwner is RichTextBlock)
+		{
+			textReadingOrder = TextReadingOrder.DetectFromContent;
+		}
+		else if (pLayoutOwner is TextBlock)
 		{
 			textReadingOrder = TextReadingOrder.Default;
 		}
@@ -973,6 +977,14 @@ internal static class BlockLayoutHelpers
 	public static bool IsCloseReal(double a, double b) => Math.Abs(a - b) < 0.0001;
 
 	#region Inherited-formatting resolution helpers (Uno)
+
+	// NOTE (Uno): the loaded font once its load completed, as Inline.FontInfo reads it; GetFont's details can stay the
+	// provisional font that stood in while it loaded (WebAssembly loads fonts asynchronously).
+	private static FontDetails ResolveFont(string? fontFamilySource, double fontSize, FontWeight fontWeight, FontStretch fontStretch, FontStyle fontStyle)
+	{
+		var (details, task) = FontDetailsCache.GetFont(fontFamilySource, (float)fontSize, fontWeight, fontStretch, fontStyle);
+		return task.IsCompletedSuccessfully ? task.Result : details;
+	}
 
 	// TODO Uno (integrate): inherited TextFormatting resolution. These read the individual inherited DPs off the
 	// "effective paragraph" element to stand in for the not-yet-ported GetFormatting(...) struct. They cover the

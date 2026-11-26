@@ -28,8 +28,8 @@ internal sealed class RichTextBlockView : ITextView
 	// already account for this adjustment.
 	private const int PlaceHolderPositionsForInlines = 2;
 
-	// Uno-specific: RichTextBlock's flat char-index space (Selection / GetPlainText /
-	// _paragraphLayouts.GlobalCharOffset) inserts a "\r\n" between paragraphs, unlike WinUI's
+	// Uno-specific: RichTextBlock's flat char-index space (Selection / GetPlainText / TextHighlighter
+	// ranges) inserts a "\r\n" between paragraphs, unlike WinUI's
 	// char-index space. The container<->flat conversion adjusts charCount by this between paragraphs.
 	internal const int InterParagraphSeparatorLength = 2;
 
@@ -327,8 +327,8 @@ internal sealed class RichTextBlockView : ITextView
 		RichTextBlock? owningRichTextBlock = GetOwningRichTextBlock();
 
 		// Save the starting and ending positions of the specific RTB or RTBO currently being highlighted.
-		// NOTE (Uno R3): WinUI uses m_pPageNode->GetContentLength() here because its page node measures in
-		// container space; Uno's node tree is flat (ParsedText), so use the view's container GetContentLength.
+		// NOTE (Uno R3): WinUI uses m_pPageNode->GetContentLength() here; Uno reads the view's
+		// GetContentLength, which converts the page node's length to container positions.
 		int blockStartPosition = (int)GetContentStartPosition();
 		int blockEndPosition = blockStartPosition + (int)GetContentLength();
 
@@ -534,6 +534,15 @@ internal sealed class RichTextBlockView : ITextView
 			{
 				int charCount = Math.Min(remaining, textLength);
 				int position = 0;
+				if (trailing && charCount > 0 && !EndsWithLineBreak(paragraph, charCount))
+				{
+					// A trailing hit is the position right after the character before it, inside that character's run,
+					// as WinUI's backward-gravity position is; the end of a nested inline would otherwise map past its run.
+					charCount--;
+					TextBlockViewHelpers.AdjustPositionByCharacterCount(paragraph.Inlines, ref charCount, ref position);
+					return (uint)(paragraphStart + position + 1);
+				}
+
 				TextBlockViewHelpers.AdjustPositionByCharacterCount(paragraph.Inlines, ref charCount, ref position);
 				return (uint)(paragraphStart + position);
 			}
@@ -544,6 +553,23 @@ internal sealed class RichTextBlockView : ITextView
 		}
 
 		return (uint)paragraphStart;
+	}
+
+	// Whether the character before a paragraph position is a LineBreak's.
+	private static bool EndsWithLineBreak(Paragraph paragraph, int charCount)
+	{
+		foreach (var inline in paragraph.Inlines.TraversedTree.leafTree)
+		{
+			var length = inline.GetText().Length;
+			if (charCount <= length)
+			{
+				return inline is LineBreak;
+			}
+
+			charCount -= length;
+		}
+
+		return false;
 	}
 
 	public static Rect[] GetBoundsCollectionForElement(

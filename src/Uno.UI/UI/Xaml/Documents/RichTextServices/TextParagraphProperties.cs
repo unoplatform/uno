@@ -68,9 +68,7 @@ internal sealed class TextParagraphProperties
 	// Gets default incremental tab value.
 	//
 	// Default incremental tab is set to the font size for default text run
-	// properties.
-	// TODO Uno: Reconcile against the Skia engine's Segment tab width (hard-coded
-	// to 48) so tab stops match between the two layout paths.
+	// properties. The UnicodeText adapter lays the paragraph's tabs out with it.
 	public double DefaultIncrementalTab => 4 * m_pDefaultTextRunProperties.FontSize;
 
 	// Gets paragraph's default run properties.

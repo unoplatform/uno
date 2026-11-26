@@ -9,9 +9,9 @@ using Windows.Foundation;
 namespace Microsoft.UI.Xaml.Documents.BlockLayout;
 
 // Base interface for drawing contexts. On Uno the WinUI D2D/HWRender pipeline
-// (HWRenderContent / D2DEnsureResources / D2DRenderContent) is dropped: glyphs are
-// emitted by the Skia ParsedText.Draw during the visual Paint walk rather than via
-// recorded render commands. What remains portable is the content transform (a
+// (HWRenderContent / D2DEnsureResources / D2DRenderContent) is dropped: a paragraph
+// records where its lines go, and RichTextPagePainter draws them with UnicodeText
+// during the visual Paint walk. What remains portable is the content transform (a
 // translation offset) and, later, the foreground-highlight-info distribution used for
 // high-contrast selection foreground (Stage 8).
 internal abstract class DrawingContext

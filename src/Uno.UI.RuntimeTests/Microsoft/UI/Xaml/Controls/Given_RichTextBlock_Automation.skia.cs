@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.UI;
+using Microsoft.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation;
 using Uno.UI.RuntimeTests.Helpers;
@@ -82,6 +85,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsTrue(rect.X > origin.X, $"The rectangle should start past the leading run (got {rect.X}, control origin {origin.X})");
 				Assert.IsTrue(rect.Right <= origin.X + SUT.ActualWidth + 1, $"The rectangle should stay inside the control (got {rect.Right}, origin {origin.X}, width {SUT.ActualWidth})");
 				Assert.IsTrue(rect.Height <= SUT.ActualHeight + 1, $"A single-line link should not be taller than the control (got {rect.Height}, control {SUT.ActualHeight})");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[DataRow(FlowDirection.LeftToRight)]
+		[DataRow(FlowDirection.RightToLeft)]
+		public async Task When_Hyperlink_Automation_Bounds_Cover_Ink(FlowDirection flowDirection)
+		{
+			// The link's bounding rectangle and clickable point are where it is drawn, also when the control is mirrored.
+			var SUT = new RichTextBlock { Width = 300, FontSize = 24, TextWrapping = TextWrapping.NoWrap, FlowDirection = flowDirection };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = "Leading " });
+			var hyperlink = new Hyperlink { Foreground = new SolidColorBrush(Colors.Red), UnderlineStyle = UnderlineStyle.None };
+			hyperlink.Inlines.Add(new Run { Text = "Word" });
+			paragraph.Inlines.Add(hyperlink);
+			SUT.Blocks.Add(paragraph);
+
+			try
+			{
+				var (host, bitmap) = await TextInkHelper.Show(SUT);
+				var ink = TextInkHelper.DrawnX(bitmap, Colors.Red);
+				var hostOrigin = host.TransformToVisual(null).TransformPoint(new Point(0, 0));
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(SUT);
+				var hyperlinkPeer = (peer.GetChildren() ?? new List<AutomationPeer>()).OfType<HyperlinkAutomationPeer>().Single();
+				var rect = hyperlinkPeer.GetBoundingRectangle();
+				var point = hyperlinkPeer.GetClickablePoint();
+
+				Assert.AreEqual(hostOrigin.X + ink.Min, rect.X, 4, $"The rectangle {rect} should start at the link's ink ({ink})");
+				Assert.AreEqual(hostOrigin.X + ink.Max + 1, rect.Right, 4, $"The rectangle {rect} should end at the link's ink ({ink})");
+				Assert.IsTrue(point.X >= rect.X - 1 && point.X <= rect.Right + 1, $"The clickable point {point} should be on the link ({rect})");
 			}
 			finally
 			{

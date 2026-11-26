@@ -265,7 +265,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if __SKIA__
 			var paragraphNode = SUT.GetPageNode()?.GetFirstChild() as Microsoft.UI.Xaml.Documents.BlockLayout.ParagraphNode;
-			Assert.IsNotNull(paragraphNode?.GetParsedText()?.RenderLines[0].CollapsingSymbol, "The overflowing line should be collapsed with an ellipsis");
+			Assert.IsTrue(paragraphNode?.GetHasTrimmedLine(), "The overflowing line should be collapsed");
 #endif
 		}
 	}
