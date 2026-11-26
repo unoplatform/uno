@@ -303,7 +303,8 @@ internal readonly partial struct UnicodeText : IParsedText
 		ShapedText.FreshShaping? fresh;
 		if (shapedText is not null && inlines is Inline[] inlineArray)
 		{
-			shaped = shapedText.Value = ShapedText.GetOrCreate(shapedText.Value, inlineArray, flowDirection, fontListener, shapingCache, out fresh);
+			shaped = ShapedText.GetOrCreate(shapedText.Value, inlineArray, flowDirection, fontListener, shapingCache, out fresh);
+			shapedText.Value = shaped.IsReusable ? shaped : null;
 		}
 		else
 		{

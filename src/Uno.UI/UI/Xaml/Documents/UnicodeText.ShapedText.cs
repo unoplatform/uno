@@ -23,6 +23,11 @@ internal readonly partial struct UnicodeText
 	/// <remarks>Read-only once created: each layout copies the clusters, and shares everything else.</remarks>
 	internal sealed class ShapedText
 	{
+		// Longer text is mostly edited (a long TextBox or RichEditBox document), and each edit misses anyway: copying its
+		// clusters for the next layout would only add a large allocation to every edit.
+		private const int MaxReusableClusters = 1024;
+		private const int MaxReusableInlines = 256;
+
 		// What Create read, compared on reuse: a false miss only shapes again, a false hit would draw stale glyphs.
 		// Null when the result can't be reused (the caller streams its inlines).
 		private readonly InlineState[]? _inlineStates;
@@ -51,6 +56,9 @@ internal readonly partial struct UnicodeText
 		internal readonly TextAlignment AlignmentFromText;
 		internal readonly LinkedList<Glyph> Glyphs;
 		internal readonly StrongBox<List<int>?> WordBoundaries = new();
+
+		/// <summary>Whether a later layout can reuse this; text shaped once, or too long to keep, can't.</summary>
+		internal bool IsReusable => _inlineStates is not null;
 
 		private ShapedText(
 			InlineState[]? inlineStates,
@@ -115,7 +123,7 @@ internal readonly partial struct UnicodeText
 				return previous;
 			}
 
-			return Create(inlines, inlines.Length, flowDirection, fontListener, shapingCache, out fresh);
+			return Create(inlines, inlines.Length <= MaxReusableInlines ? inlines.Length : -1, flowDirection, fontListener, shapingCache, out fresh);
 		}
 
 		/// <summary>Shapes text that won't be reused (the inlines may be streamed).</summary>
@@ -460,10 +468,14 @@ internal readonly partial struct UnicodeText
 				}
 
 				Cluster[]? reusableClusters = null;
-				if (inlineStates is not null)
+				if (inlineStates is not null && clusterBreaks.Count <= MaxReusableClusters)
 				{
 					reusableClusters = new Cluster[clusterBreaks.Count];
 					clusterBreaks.CopyTo(reusableClusters, 0);
+				}
+				else
+				{
+					inlineStates = null;
 				}
 
 				fresh = new FreshShaping(paragraphBiDi, clusterBreaks);

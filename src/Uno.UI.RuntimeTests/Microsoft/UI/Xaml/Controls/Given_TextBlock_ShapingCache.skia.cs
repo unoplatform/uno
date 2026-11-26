@@ -84,6 +84,40 @@ public class Given_TextBlock_ShapingCache
 	}
 
 	[TestMethod]
+	public async Task When_Text_Is_Long_No_Shaping_Is_Kept()
+	{
+		// Long text is mostly edited, which misses the cache anyway, so its shaping isn't kept; a new width still lays it out
+		// like a fresh block.
+		var text = string.Concat(Enumerable.Repeat(Sentence + " ", 16));
+		TextBlock Create(double width) => new() { Text = text, TextWrapping = TextWrapping.Wrap, Width = width, HorizontalAlignment = HorizontalAlignment.Left };
+		var SUT = Create(400);
+		var shortText = Create(400);
+		shortText.Text = Sentence;
+		var panel = new StackPanel { Children = { SUT, shortText } };
+		try
+		{
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(SUT.CachedShapedText, "Long text should not keep its shaping.");
+			Assert.IsNotNull(shortText.CachedShapedText, "Short text should keep its shaping.");
+
+			SUT.Width = 250;
+			var fresh = Create(250);
+			panel.Children.Add(fresh);
+			await WindowHelper.WaitForLoaded(fresh);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNull(SUT.CachedShapedText);
+			AssertSameCharacterRects(fresh, SUT, "after the width change");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	public async Task When_Arranged_Narrower_Than_Measured_Text_Is_Not_Shaped_Again()
 	{
 		// A Left-aligned TextBlock is measured with the parent's width and arranged with its own desired width,
