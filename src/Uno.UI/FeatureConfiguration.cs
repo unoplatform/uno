@@ -331,6 +331,13 @@ namespace Uno.UI
 			/// from rendering the font's "replacement character" symbol (e.g. �) instead of just a white space.
 			/// </summary>
 			public static bool RenderWhiteSpace { get; set; }
+
+			/// <summary>
+			/// On Skia targets, determines if a TextBlock keeps the shaping of its text (fonts, bidi and glyphs) between
+			/// layouts, so that a layout at another size only breaks the lines again. Turn it off only to rule it out
+			/// when investigating a text layout issue.
+			/// </summary>
+			public static bool EnableShapingCache { get; set; } = true;
 		}
 
 		public static class TextBox

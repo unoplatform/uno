@@ -6,7 +6,6 @@ using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using System.Text;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Text;
@@ -128,7 +127,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	// Per-run formatting shared by every cluster of the run. RichEditBox-only state sits behind one reference, null for
 	// plain TextBlock/TextBox runs.
-	private readonly record struct RunBreak(int end, Brush? foreground, FlowDirection direction, TextDecorations decorations, float characterSpacing, RichRunState? rich)
+	internal readonly record struct RunBreak(int end, Brush? foreground, FlowDirection direction, TextDecorations decorations, float characterSpacing, RichRunState? rich)
 	{
 		public global::Windows.UI.Color? background => rich?.Background;
 		public bool hidden => rich?.Hidden ?? false;
@@ -141,7 +140,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		public bool outline => rich?.Outline ?? false;
 	}
 
-	private sealed record RichRunState(
+	internal sealed record RichRunState(
 		global::Windows.UI.Color? Background,
 		bool Hidden,
 		global::Microsoft.UI.Text.UnderlineType? UnderlineType,
@@ -156,11 +155,11 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly record struct TextDecorationDrawInfo(float X1, float X2, float Y, float Thickness, float FontSize, Color Color, global::Microsoft.UI.Text.UnderlineType Style);
 
 	// Positioned glyph in pixel space (offsets/advance already scaled by IFont.Shape).
-	private record struct Glyph(ushort GlyphId, float XAdvance, float XOffset, float YOffset);
+	internal record struct Glyph(ushort GlyphId, float XAdvance, float XOffset, float YOffset);
 
 	// Run formatting (spacing, hidden, baseline offset, outline) is reached through runIndex rather than copied into
 	// every cluster, mirroring WinUI where an LsRun points at its shared TextRunProperties. -1 means no run (ellipsis).
-	private record struct Cluster(
+	internal record struct Cluster(
 		int start,
 		int end,
 		LinkedListNode<Glyph> glyphStart,
@@ -240,8 +239,8 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly List<(int start, int end, Hyperlink hyperlink)> _hyperlinkRanges;
 	// Lazy: word boundaries feed selection/word-navigation/spell-check, never measure — computing them (an ICU
 	// break-iterator pass) on every Text change is pure waste for labels that are only ever rendered.
-	// (Boxed because this is a readonly struct.)
-	private readonly global::System.Runtime.CompilerServices.StrongBox<List<int>?> _wordBoundaries = new();
+	// (Boxed because this is a readonly struct, and shared by the layouts of one ShapedText.)
+	private readonly global::System.Runtime.CompilerServices.StrongBox<List<int>?> _wordBoundaries;
 
 	private List<int> WordBoundaries => _wordBoundaries.Value ??= _text.Length == 0 ? [] : GetWords(_text);
 	private readonly List<LinkedListNode<Cluster>> _clustersInLogicalOrder;
@@ -279,7 +278,8 @@ internal readonly partial struct UnicodeText : IParsedText
 		bool ignoreTrailingCharacterSpacing,
 		out Size calculatedSize,
 		ShapingCache? shapingCache = null,
-		bool suppressEndingNewLineLine = false)
+		bool suppressEndingNewLineLine = false,
+		global::System.Runtime.CompilerServices.StrongBox<ShapedText?>? shapedText = null) // in: the last layout's shaping, reused if its inputs are unchanged; out: this layout's
 	{
 		CI.Assert(maxLines >= 0);
 		_endingParagraphLayout = endingParagraphLayout;
@@ -293,138 +293,25 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		var tabStopWidth = defaultTabStop > 0 ? defaultTabStop : FallbackTabStopWidth;
 
-		var stringBuilder = new StringBuilder();
-		_hyperlinkRanges = new List<(int start, int end, Hyperlink hyperlink)>();
-		_runBreaks = new List<RunBreak>();
-		var scriptBreaks = new List<int>();
-		var fontBreaks = new List<(int end, FontDetails fontDetails)>();
-		var lineOpportunityBreaks = new List<int>();
-		var allAscii = true;
-		var allRunsLtr = true;
-		string? singleInlineText = null;
-		var nonEmptyInlines = 0;
-		Dictionary<int, InlineObjectInfo>? inlineObjects = null;
-		List<(int end, TextAlignment alignment)>? paragraphAlignments = null;
-		List<(int end, ParagraphLayoutInfo layout)>? paragraphLayouts = null;
-		var hasBaselineOffsets = false;
-
-		foreach (var inline in inlines)
+		ShapedText shaped;
+		ShapedText.FreshShaping? fresh;
+		if (shapedText is not null && inlines is Inline[] inlineArray)
 		{
-			var inlineText = inline.GetText();
-			if (string.IsNullOrEmpty(inlineText))
-			{
-				continue;
-			}
-
-			singleInlineText = ++nonEmptyInlines == 1 ? inlineText : null;
-			var inlineStart = stringBuilder.Length;
-			stringBuilder.Append(inlineText);
-			if (inline is Run { InlineObject: { } inlineObject })
-			{
-				(inlineObjects ??= new())[inlineStart] = inlineObject;
-			}
-			if (inline is Run { ParagraphAlignment: { } paragraphAlignment })
-			{
-				(paragraphAlignments ??= new()).Add((inlineStart + inlineText.Length, paragraphAlignment));
-			}
-			if (inline is Run { ParagraphLayout: { } paragraphLayout })
-			{
-				(paragraphLayouts ??= new()).Add((inlineStart + inlineText.Length, paragraphLayout));
-			}
-
-			var currentFontDetails = inline.FontInfo;
-			int currentScript = 0;
-			for (int i = 0, codepointLength; i < inlineText.Length; i += codepointLength)
-			{
-				FontDetails newFontDetails;
-				var codepoint = ReadCodepoint(inlineText, i, out codepointLength);
-
-				// ASCII shortcut: the whole ASCII range is Latin letters (USCRIPT_LATIN=25) or Script=Common (0),
-				// so the per-character ICU P/Invoke — a dominant cost of re-laying-out short labels — is skippable.
-				int newScript;
-				if (codepoint < 0x80)
-				{
-					newScript = char.IsAsciiLetter((char)codepoint) ? 25 : 0;
-				}
-				else
-				{
-					allAscii = false;
-					newScript = ICU.GetMethod<ICU.uscript_getScript>()(codepoint, out var errorCode);
-					ICU.CheckErrorCode<ICU.uscript_getScript>(errorCode);
-				}
-
-				if (newScript != currentScript)
-				{
-					currentScript = newScript;
-					if (i != 0)
-					{
-						scriptBreaks.Add(inlineStart + i);
-					}
-				}
-
-				if (!inline.FontInfo.FontHandle.ContainsGlyph(codepoint))
-				{
-					// A character several scripts share (Common or Inherited, e.g. tatweel, the Arabic comma, combining
-					// marks) stays in the run's fallback font: a font change mid-word splits the shaping run and breaks
-					// joining. A letter of its own script still gets the fallback for that script.
-					newFontDetails = newScript is UScriptCommon or UScriptInherited
-						&& currentFontDetails != inline.FontInfo
-						&& currentFontDetails.FontHandle.ContainsGlyph(codepoint)
-						? currentFontDetails
-						: GetFallbackFont(codepoint, (float)inline.FontSize, inline.FontWeight, inline.FontStretch, inline.FontStyle, fontListener) ?? inline.FontInfo;
-				}
-				else
-				{
-					newFontDetails = inline.FontInfo;
-				}
-
-				if (newFontDetails != currentFontDetails)
-				{
-					if (i != 0)
-					{
-						fontBreaks.Add((inlineStart + i, currentFontDetails));
-					}
-					currentFontDetails = newFontDetails;
-				}
-			}
-
-			scriptBreaks.Add(inlineStart + inlineText.Length);
-			var characterSpacing = (float)inline.FontSize * inline.CharacterSpacing / 1000;
-			var run = inline as Run;
-			var runDirection = run?.FlowDirection ?? flowDirection;
-			allRunsLtr &= runDirection is FlowDirection.LeftToRight;
-			RichRunState? richState = null;
-			if (run is { HasRichFormat: true })
-			{
-				// Snapshot: a streamed RichEditBox layout reuses one Run across paragraphs.
-				richState = new RichRunState(
-					run.CharacterBackground,
-					run.IsHidden,
-					run.RichEditUnderlineType,
-					run.RichEditKerningThreshold,
-					run.RichEditLanguageTag,
-					run.RichEditTextScript,
-					run.RichEditSmallCaps,
-					run.RichEditBaselineOffset,
-					run.RichEditOutline);
-				hasBaselineOffsets |= run.RichEditBaselineOffset != 0;
-			}
-			_runBreaks.Add(new RunBreak(
-				inlineStart + inlineText.Length,
-				inline.Foreground,
-				runDirection,
-				inline.TextDecorations,
-				characterSpacing,
-				richState));
-			fontBreaks.Add((inlineStart + inlineText.Length, currentFontDetails));
-
-			if (TryGetHyperLink(inline) is { } hyperLink)
-			{
-				_hyperlinkRanges.Add((inlineStart, inlineStart + inlineText.Length, hyperLink));
-			}
+			shaped = shapedText.Value = ShapedText.GetOrCreate(shapedText.Value, inlineArray, flowDirection, fontListener, shapingCache, out fresh);
 		}
+		else
+		{
+			shaped = ShapedText.CreateOnce(inlines, flowDirection, fontListener, shapingCache, out fresh);
+		}
+		using var freshBiDi = fresh?.BiDi ?? default;
 
-		_text = singleInlineText ?? stringBuilder.ToString();
+		_text = shaped.Text;
+		_hyperlinkRanges = shaped.HyperlinkRanges;
+		_runBreaks = shaped.RunBreaks;
+		_wordBoundaries = shaped.WordBoundaries;
+		var inlineObjects = shaped.InlineObjects;
+		var paragraphAlignments = shaped.ParagraphAlignments;
+		var paragraphLayouts = shaped.ParagraphLayouts;
 		if (_text.Length == 0)
 		{
 			_lines = [];
@@ -455,173 +342,19 @@ internal readonly partial struct UnicodeText : IParsedText
 			return;
 		}
 
-		// Line breaking is a document-level operation. Computing boundaries per inline can split a
-		// CRLF pair when character formatting changes between its two code units.
-		// NoWrap ASCII text without mandatory breaks never consults intermediate line-break opportunities
-		// (no wrapping decisions, single line), so the ICU pass is skipped. Word trimming picks its ellipsis
-		// position from the same list, so it still needs the real boundaries.
-		if (allAscii && textWrapping is TextWrapping.NoWrap && textTrimming is not TextTrimming.WordEllipsis && IsAsciiWithoutLineBreaks(_text))
-		{
-			lineOpportunityBreaks.Add(_text.Length);
-		}
-		else
-		{
-			AppendBoundaries(/* Line */ 2, _text, 0, lineOpportunityBreaks);
-		}
+		var lineOpportunityBreaks = shaped.GetLineOpportunityBreaks(textWrapping, textTrimming);
+		_bidiBreaks = shaped.BidiBreaks;
+		var trivialLtr = shaped.TrivialLtr;
+		_rtl = shaped.Rtl;
+		textAlignment ??= shaped.AlignmentFromText;
+		// The per-line reordering below reads the paragraph bidi, which isn't kept with the shaping (it's native): a fresh
+		// shaping has just opened one, otherwise it is opened again here.
+		using var reusedShapingBiDi = trivialLtr || fresh is not null ? default : ParagraphBiDi.Create(_text, _runBreaks, flowDirection);
+		var bidi = fresh is not null ? freshBiDi.Handle : reusedShapingBiDi.Handle;
 
-		_bidiBreaks = new List<(int end, FlowDirection direction)>();
-		var trivialLtr = allAscii && allRunsLtr && flowDirection is FlowDirection.LeftToRight && paragraphLayouts is null;
-		// The paragraph BiDi handle must outlive the per-line reordering below; boxed so the deferred close
-		// sees the handle assigned in the non-trivial branch (it stays default — no close — on the trivial path).
-		var bidiBox = new global::System.Runtime.CompilerServices.StrongBox<IntPtr>();
-		using var bidiDisposable = new DisposableStruct<global::System.Runtime.CompilerServices.StrongBox<IntPtr>>(
-			static box => { if (box.Value != default) { ICU.GetMethod<ICU.ubidi_close>()(box.Value); } },
-			bidiBox);
-		IntPtr bidi = default;
-		if (trivialLtr)
-		{
-			// ASCII has no RTL characters, so with an LTR paragraph and LTR runs the BiDi outcome is a single
-			// LTR run — skip the ICU BiDi pass entirely (a real cost when short labels re-layout every frame).
-			_rtl = false;
-			_bidiBreaks.Add((_text.Length, FlowDirection.LeftToRight));
-			textAlignment ??= TextAlignment.Left;
-		}
-		else
-		{
-			var embeddingLevels = ArrayPool<byte>.Shared.Rent(_text.Length);
-			using var embeddingLevelsDisposable = new DisposableStruct<byte[]>(static embeddingLevels => ArrayPool<byte>.Shared.Return(embeddingLevels), embeddingLevels);
-			for (int i = 0; i < _runBreaks.Count; i++)
-			{
-				var (start, count) = i == 0 ? (0, _runBreaks[0].end) : (_runBreaks[i - 1].end, _runBreaks[i].end - _runBreaks[i - 1].end);
-				var direction = _runBreaks[i].direction;
-				var level = flowDirection is FlowDirection.LeftToRight
-					? (direction is FlowDirection.LeftToRight ? 0 : 1)
-					: (direction is FlowDirection.RightToLeft ? 1 : 2); // 2 and not 0 because embedding must increase nesting level when switching direction inside RTL paragraph
-				Array.Fill(embeddingLevels, (byte)level, start, count);
-			}
-
-			ICU.CreateBiDiAndSetPara(_text, 0, _text.Length, flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR, out bidi, embeddingLevels);
-			bidiBox.Value = bidi;
-			var runCount = ICU.GetMethod<ICU.ubidi_countRuns>()(bidi, out var countRunsErrorCode);
-			ICU.CheckErrorCode<ICU.ubidi_countRuns>(countRunsErrorCode);
-			_rtl = ICU.GetMethod<ICU.ubidi_getParaLevel>()(bidi) is UBIDI_RTL;
-			for (var bidiRunIndex = 0; bidiRunIndex < runCount; bidiRunIndex++)
-			{
-				var level = ICU.GetMethod<ICU.ubidi_getVisualRun>()(bidi, bidiRunIndex, out var logicalStart, out var length);
-				CI.Assert(level is UBIDI_LTR or UBIDI_RTL);
-				_bidiBreaks.Add((logicalStart + length, level is UBIDI_RTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight));
-
-				if (textAlignment is null && logicalStart == 0)
-				{
-					// The content's start edge, expressed relative to the element's flow direction.
-					textAlignment = (level is UBIDI_RTL) != _flowRightToLeft ? TextAlignment.Right : TextAlignment.Left;
-				}
-			}
-		}
-
-		_glyphs = new LinkedList<Glyph>();
-		var clusterBreaks = new LinkedList<Cluster>();
-		foreach (var shapingRun in new ShapingRunEnumerator(_runBreaks, scriptBreaks, _bidiBreaks, fontBreaks))
-		{
-			var direction = shapingRun.direction is FlowDirection.RightToLeft ? TextDirection.RightToLeft : TextDirection.LeftToRight;
-			var runText = _text.AsSpan(shapingRun.start, shapingRun.end - shapingRun.start);
-			ref readonly var run = ref CollectionsMarshal.AsSpan(_runBreaks)[shapingRun.runIndex];
-			var shapingOptions = GetShapingOptions(shapingRun.fontDetails, run.kerningThreshold, run.languageTag, run.textScript, run.smallCaps);
-			GlyphRun glyphRun;
-			if (shapingCache is null)
-			{
-				glyphRun = shapingRun.fontDetails.FontHandle.Shape(runText, direction, shapingOptions);
-			}
-			else
-			{
-				var cacheKey = new ShapingCacheKey(GetOrdinalHash(runText), runText.Length, shapingRun.fontDetails, direction, shapingOptions);
-				if (!shapingCache.TryGet(runText, cacheKey, out glyphRun))
-				{
-					glyphRun = shapingRun.fontDetails.FontHandle.Shape(runText, direction, shapingOptions);
-					shapingCache.RecordShapeOperation();
-					shapingCache.Add(runText, cacheKey, glyphRun);
-				}
-			}
-			var clusters = glyphRun.Clusters;
-			var count = glyphRun.Count;
-
-			if (count == 0)
-			{
-				// Even though textRun is nonempty and fontDetails contains a font that can shape all the characters in it,
-				// shaping may still decide to yield 0 glyphs.
-				_glyphs.AddLast(new Glyph(0, 0, 0, 0));
-			}
-			else
-			{
-				CI.Assert((direction is TextDirection.LeftToRight && clusters[0] == 0) || (direction is TextDirection.RightToLeft && clusters[^1] == 0));
-				if (direction is TextDirection.LeftToRight)
-				{
-					for (var index = 0; index < count; index++)
-					{
-						if (index > 0 && clusters[index] != clusters[index - 1])
-						{
-							clusterBreaks.AddLast(Cluster.Create(
-								_text,
-								clusterBreaks.Last?.Value.end ?? 0,
-								shapingRun.start + clusters[index],
-								clusterBreaks.Last?.Value.glyphLast?.Next ?? _glyphs.First!,
-								_glyphs.Last!,
-								shapingRun.fontDetails,
-								shapingRun.runIndex,
-								run.characterSpacing,
-								run.hidden));
-						}
-						_glyphs.AddLast(new Glyph(glyphRun.Glyphs[index], glyphRun.Advances[index], glyphRun.Offsets[index].X, glyphRun.Offsets[index].Y));
-					}
-				}
-				else
-				{
-					for (var index = count - 1; index >= 0; index--)
-					{
-						if (index < count - 1 && clusters[index] != clusters[index + 1])
-						{
-							clusterBreaks.AddLast(Cluster.Create(
-								_text,
-								clusterBreaks.Last?.Value.end ?? 0,
-								shapingRun.start + clusters[index],
-								clusterBreaks.Last?.Value.glyphLast?.Next ?? _glyphs.First!,
-								_glyphs.Last!,
-								shapingRun.fontDetails,
-								shapingRun.runIndex,
-								run.characterSpacing,
-								run.hidden));
-						}
-						_glyphs.AddLast(new Glyph(glyphRun.Glyphs[index], glyphRun.Advances[index], glyphRun.Offsets[index].X, glyphRun.Offsets[index].Y));
-					}
-				}
-
-				clusterBreaks.AddLast(Cluster.Create(
-					_text,
-					clusterBreaks.Last?.Value.end ?? 0,
-					shapingRun.end,
-					clusterBreaks.Last?.Value.glyphLast?.Next ?? _glyphs.First!,
-					_glyphs.Last!,
-					shapingRun.fontDetails,
-					shapingRun.runIndex,
-					run.characterSpacing,
-					run.hidden));
-			}
-		}
-
-		if (inlineObjects is not null)
-		{
-			for (var node = clusterBreaks.First; node is not null; node = node.Next)
-			{
-				if (node.Value.end == node.Value.start + 1 && inlineObjects.TryGetValue(node.Value.start, out var inlineObject))
-				{
-					node.Value = node.Value with
-					{
-						width = inlineObject.Width,
-						containsOnlyWhitespace = false,
-					};
-				}
-			}
-		}
+		_glyphs = shaped.Glyphs;
+		// Line breaking changes the clusters (tab widths, line indices, bidi order, ellipsis), so each layout has its own.
+		var clusterBreaks = fresh?.Clusters ?? shaped.CopyClusters();
 
 		Dictionary<int, global::Microsoft.UI.Text.TabLeader>? tabLeaders = null;
 		var lines = new List<Line>();
@@ -896,7 +629,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		if (hasBaselineOffsets)
+		if (shaped.HasBaselineOffsets)
 		{
 			AdjustLinesForBaselineOffsets(lines, _runBreaks);
 		}
