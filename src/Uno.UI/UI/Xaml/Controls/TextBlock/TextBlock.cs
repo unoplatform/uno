@@ -1630,7 +1630,21 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal ITextBoxViewHost? OwningTextBox { get; init; }
 
-		internal bool IsSpellCheckEnabled { get; set; }
+		private bool _isSpellCheckEnabled;
+
+		internal bool IsSpellCheckEnabled
+		{
+			get => _isSpellCheckEnabled;
+			set
+			{
+				if (_isSpellCheckEnabled != value)
+				{
+					_isSpellCheckEnabled = value;
+					// The corrections are computed with the layout.
+					InvalidateMeasure();
+				}
+			}
+		}
 
 		private float _defaultTabStop = 48;
 

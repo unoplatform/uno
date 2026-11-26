@@ -452,6 +452,73 @@ public class Given_TextBlock_ShapingCache
 	}
 
 	[TestMethod]
+	public async Task When_IsSpellCheckEnabled_Changes_The_Corrections_Follow()
+	{
+		// The spell-check corrections are computed with the layout. Turning spell check on or off must lay out again rather
+		// than keep a layout built with the other setting.
+		const string text = "One typo here";
+		var typoIndex = text.IndexOf("typo", StringComparison.Ordinal);
+		UnicodeText.SpellCheckingServiceOverrideForTesting = new TypoSpellCheckingService();
+		try
+		{
+			var SUT = new TextBlock { Text = text };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(((UnicodeText)SUT.ParsedText).GetCorrectionAtIndex(typoIndex), "Spell check is off.");
+
+			SUT.IsSpellCheckEnabled = true;
+			SUT.UpdateLayout();
+			Assert.IsNotNull(((UnicodeText)SUT.ParsedText).GetCorrectionAtIndex(typoIndex), "Turning spell check on should find the typo.");
+
+			var layoutVersion = SUT.TextLayoutVersion;
+			SUT.IsSpellCheckEnabled = true;
+			SUT.UpdateLayout();
+			Assert.AreEqual(layoutVersion, SUT.TextLayoutVersion, "Setting the same value should not lay out again.");
+
+			SUT.IsSpellCheckEnabled = false;
+			SUT.UpdateLayout();
+			Assert.IsNull(((UnicodeText)SUT.ParsedText).GetCorrectionAtIndex(typoIndex), "Turning spell check off should drop the correction.");
+		}
+		finally
+		{
+			UnicodeText.SpellCheckingServiceOverrideForTesting = null;
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	public async Task When_TextBox_IsSpellCheckEnabled_Changes_The_Corrections_Follow()
+	{
+		// The same through the public TextBox property, which hands the setting to its display block.
+		const string text = "One typo here";
+		var typoIndex = text.IndexOf("typo", StringComparison.Ordinal);
+		UnicodeText.SpellCheckingServiceOverrideForTesting = new TypoSpellCheckingService();
+		try
+		{
+			var SUT = new TextBox { Text = text, Width = 300, IsSpellCheckEnabled = true };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+			var displayBlock = SUT.TextBoxView!.DisplayBlock;
+			Assert.IsNotNull(((UnicodeText)displayBlock.ParsedText).GetCorrectionAtIndex(typoIndex), "Spell check is on.");
+
+			SUT.IsSpellCheckEnabled = false;
+			await WindowHelper.WaitForIdle();
+			Assert.IsNull(((UnicodeText)displayBlock.ParsedText).GetCorrectionAtIndex(typoIndex), "Turning spell check off should drop the correction.");
+
+			SUT.IsSpellCheckEnabled = true;
+			await WindowHelper.WaitForIdle();
+			Assert.IsNotNull(((UnicodeText)displayBlock.ParsedText).GetCorrectionAtIndex(typoIndex), "Turning spell check on again should find the typo.");
+		}
+		finally
+		{
+			UnicodeText.SpellCheckingServiceOverrideForTesting = null;
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	public async Task When_TextBox_Narrows_Layout_Matches_A_Fresh_TextBox()
 	{
 		// A TextBox's display block measures trailing spaces and adds the caret thickness to its size: check every caret
@@ -877,6 +944,37 @@ public class Given_TextBlock_ShapingCache
 		var block = editor.FindFirstChild<ScrollViewer>(viewer => viewer.Name == "ContentElement")?.Content as TextBlock;
 		Assert.IsNotNull(block);
 		return block;
+	}
+
+	/// <summary>Flags every word "typo".</summary>
+	private sealed class TypoSpellCheckingService : ISpellCheckingService
+	{
+		public System.Collections.Generic.List<(int correctionStart, int correctionEnd)?> SpellCheck(System.Collections.Generic.List<int> wordBoundaries, string text)
+		{
+			var corrections = new System.Collections.Generic.List<(int correctionStart, int correctionEnd)?>(wordBoundaries.Count);
+			var wordStart = 0;
+			foreach (var wordEnd in wordBoundaries)
+			{
+				var word = text.Substring(wordStart, wordEnd - wordStart);
+				var trimmed = word.Trim();
+				if (trimmed == "typo")
+				{
+					var offset = word.IndexOf(trimmed, StringComparison.Ordinal);
+					corrections.Add((offset, offset + trimmed.Length));
+				}
+				else
+				{
+					corrections.Add(null);
+				}
+
+				wordStart = wordEnd;
+			}
+
+			return corrections;
+		}
+
+		public (int replaceIndexStart, int replaceIndexEnd, System.Collections.Generic.List<string> suggestions)? GetSpellCheckSuggestions(string text, System.Collections.Generic.List<int> wordBoundaries, int correctionStart, int correctionEnd)
+			=> null;
 	}
 
 	// A fallback font (emoji, Hebrew, Arabic) may be fetched asynchronously, and its arrival legitimately shapes the text
