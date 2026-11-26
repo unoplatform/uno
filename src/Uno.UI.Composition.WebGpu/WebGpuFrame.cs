@@ -732,59 +732,60 @@ internal sealed unsafe partial class WebGpuFrame
 	internal nint Vbuf(float[] data, int stride, OwnedResources owned)
 		=> owned is null ? (nint)MakeBuffer(data) : PackVerts(owned, data, stride);
 
-	/// <summary>A bag's arena is split once it reaches this, so one recording's geometry can never ask for a
-	/// buffer larger than the device allows (wgpu's default maximum is 256 MB).</summary>
-	private const int MaxArenaBytes = 64 << 20;
+	/// <summary>A bag's arena goes to the GPU in chunks of this many floats (1 MB), so staging a long text's geometry
+	/// takes one pooled buffer of this size rather than a fresh one that doubles up to the whole geometry.</summary>
+	private const int ArenaChunkFloats = 1 << 18;
 
 	/// <summary>Appends an op's vertices to its bag's current arena chunk, aligned so the range starts on a vertex
 	/// boundary of its own stride, and returns a negative tag indexing <see cref="OwnedResources.PackedVertexRanges"/>:
 	/// <see cref="RealizeOwnedVertices"/> swaps it for that chunk's buffer. An index rather than the packed range
 	/// itself, because a pointer is only 32 bits on WebAssembly.</summary>
-	private static nint PackVerts(OwnedResources owned, ReadOnlySpan<float> data, int stride)
+	private nint PackVerts(OwnedResources owned, ReadOnlySpan<float> data, int stride)
 	{
-		var arenas = owned.VertexArenas ??= new List<VertBuf>();
-		if (arenas.Count == 0) { arenas.Add(new VertBuf()); }
-		var arena = arenas[arenas.Count - 1];
-		if (arena.Count > 0 && ((long)arena.Count + stride + data.Length) * sizeof(float) > MaxArenaBytes)
-		{
-			arena = new VertBuf();
-			arenas.Add(arena);
-		}
+		var arena = owned.Arena ??= _d.RentVerts();
+		// A full chunk is uploaded now and its staging reused: the queue copies the data on the write.
+		if (arena.Count > 0 && arena.Count + stride + data.Length > ArenaChunkFloats) { FlushArena(owned); }
 
 		var misaligned = arena.Count % stride;
 		if (misaligned != 0) { arena.Grow(stride - misaligned).Clear(); }
 		var first = arena.Count / stride;
 		data.CopyTo(arena.Grow(data.Length));
 		var ranges = owned.PackedVertexRanges ??= new List<(int Chunk, uint First)>();
-		ranges.Add((arenas.Count - 1, (uint)first));
+		ranges.Add((owned.ArenaChunks?.Count ?? 0, (uint)first));
 		return -ranges.Count;
 	}
 
-	/// <summary>Uploads a finished bag's arena chunks and points every op at the chunk it landed in.</summary>
+	private void FlushArena(OwnedResources owned)
+	{
+		var arena = owned.Arena;
+		var size = arena.Count * sizeof(float);
+		var buffer = _d.BufferPool.RentHeld(size, BufferUsage.Vertex | BufferUsage.CopyDst);
+		fixed (float* p = arena.A) { Api.QueueWriteBuffer(_d.Q, buffer, 0, p, (nuint)size); }
+		owned.Buffers.Add((nint)buffer);
+		(owned.ArenaChunks ??= new()).Add((nint)buffer);
+		arena.Clear();
+	}
+
+	/// <summary>Uploads a finished bag's last arena chunk and points every op at the chunk it landed in.</summary>
 	internal void RealizeOwnedVertices(List<DrawOp> ops, OwnedResources owned)
 	{
-		if (owned?.VertexArenas is not { Count: > 0 } arenas) { return; }
-		var buffers = new Buffer*[arenas.Count];
-		for (var c = 0; c < arenas.Count; c++)
-		{
-			var arena = arenas[c];
-			if (arena.Count == 0) { continue; }
-			var size = arena.Count * sizeof(float);
-			buffers[c] = _d.BufferPool.RentHeld(size, BufferUsage.Vertex | BufferUsage.CopyDst);
-			fixed (float* p = arena.A) { Api.QueueWriteBuffer(_d.Q, buffers[c], 0, p, (nuint)size); }
-			owned.Buffers.Add((nint)buffers[c]);
-		}
+		if (owned?.Arena is not { } arena) { return; }
+		if (arena.Count > 0) { FlushArena(owned); }
+		owned.Arena = null;
+		_d.ReturnVerts(arena);
 
-		var ranges = owned.PackedVertexRanges!;
-		owned.VertexArenas = null;
+		var chunks = owned.ArenaChunks;
+		var ranges = owned.PackedVertexRanges;
+		owned.ArenaChunks = null;
 		owned.PackedVertexRanges = null;
+		if (ranges is null) { return; }
 		for (var i = 0; i < ops.Count; i++)
 		{
 			var tag = ops[i].Verts;
 			if (tag >= 0) { continue; }
 			var (chunk, first) = ranges[(int)(-tag - 1)];
 			var op = ops[i];
-			op.Verts = (nint)buffers[chunk];
+			op.Verts = chunks![chunk];
 			op.FirstVertex = first;
 			ops[i] = op;
 		}

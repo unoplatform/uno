@@ -159,6 +159,10 @@ internal sealed unsafe partial class WebGpuFrame
 	private static bool SameAtlasScale(Vector2 a, Vector2 b)
 		=> MathF.Abs(a.X - b.X) < 1e-3f && MathF.Abs(a.Y - b.Y) < 1e-3f;
 
+	// Rects one coalesced op takes: its vertices fit one arena chunk, so neither the scratch buffer nor the arena grows
+	// past what their pools keep however many fills a recording has.
+	private const int MaxCoalescedRects = ArenaChunkFloats / (6 * VertexStride.RoundedRect);
+
 	// Builds a plain recording's ops in its own space, into resources it owns: runs of same-clip rects coalesce into
 	// one buffer and one draw, glyph runs into one atlas draw. The arena positions the result on the GPU.
 	private void BuildCoalesced(List<WebGpuCommand> cmds, List<DrawOp> ops, OwnedResources owned, Vector2? atlasScale = null, Vector2? maskScale = null, Vector2 place = default)
@@ -172,7 +176,7 @@ internal sealed unsafe partial class WebGpuFrame
 				// It still coalesces - the rounded-rect vertex carries its own shape, so a run is one draw either way.
 				Scratch.Clear();
 				int j = ci;
-				while (j < cmds.Count && cmds[j] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
+				while (j < cmds.Count && j - ci < MaxCoalescedRects && cmds[j] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
 				{
 					AppendAaRect(Scratch, rcj.Color, rcj.P0, rcj.P1, rcj.P2, rcj.P3);
 					j++;
