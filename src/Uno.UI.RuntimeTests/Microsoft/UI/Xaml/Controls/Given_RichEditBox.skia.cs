@@ -708,6 +708,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Mouse_Drags_In_A_Row_Each_Selects()
+		{
+			// A mouse selection opens the SelectionFlyout in a transient show mode. The next press, next to the flyout,
+			// closes it and must still reach the RichEditBox to start a new selection, as on WinUI.
+			var SUT = new RichEditBox { Width = 480, Height = 320, TextWrapping = TextWrapping.Wrap };
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, string.Join(" ", Enumerable.Repeat("lorem ipsum dolor sit amet", 40)));
+				await WindowHelper.WaitForIdle();
+				Assert.IsNotNull(SUT.SelectionFlyout);
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var mouse = injector.GetMouse();
+
+				// Each drag starts where the previous one ended, under the flyout that drag opened.
+				var drags = new[] { (from: 2, to: 30), (from: 30, to: 8), (from: 8, to: 40), (from: 40, to: 4) };
+				for (var i = 0; i < drags.Length; i++)
+				{
+					var (from, to) = drags[i];
+					if (i > 0)
+					{
+						Assert.IsTrue(SUT.SelectionFlyout.IsOpen, $"Drag {i}: the previous mouse selection should have opened the SelectionFlyout.");
+					}
+
+					mouse.MoveTo(GetTextPoint(SUT, from), steps: 1);
+					mouse.Press();
+					await WindowHelper.WaitForIdle();
+					mouse.MoveTo(GetTextPoint(SUT, to), steps: 10);
+					mouse.Release();
+					await WindowHelper.WaitForIdle();
+
+					var selection = SUT.Document.Selection;
+					var message = $"Drag {i} from {from} to {to} selected {selection.StartPosition}..{selection.EndPosition}.";
+					Assert.IsLessThanOrEqualTo(1, Math.Abs(selection.StartPosition - Math.Min(from, to)), message);
+					Assert.IsLessThanOrEqualTo(1, Math.Abs(selection.EndPosition - Math.Max(from, to)), message);
+
+					await WindowHelper.WaitFor(() => SUT.SelectionFlyout.IsOpen, message: $"Drag {i}: the SelectionFlyout should open.");
+				}
+			}
+			finally
+			{
+				SUT.SelectionFlyout?.Hide();
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Mouse_Triple_Click_Selects_Logical_Line()
 		{
 			var SUT = new RichEditBox { Width = 400 };

@@ -826,6 +826,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_isSelectionFlyoutUpdateQueued = false;
 
+			var selectionAtFlyoutClosingPress = _selectionAtFlyoutClosingPress;
+			_selectionAtFlyoutClosingPress = null;
+
 			if (SelectionFlyout is null || TextControlFlyoutHelper.IsOpen(ContextFlyout))
 			{
 				return;
@@ -833,7 +836,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var selectionLength = Math.Abs(Selection.end - Selection.start);
 
-			if (_lastInputDeviceType is PointerDeviceType.Pen or PointerDeviceType.Touch && selectionLength > 0)
+			if (_lastInputDeviceType is PointerDeviceType.Pen or PointerDeviceType.Touch
+				&& selectionLength > 0
+				&& selectionAtFlyoutClosingPress != Selection)
 			{
 				TextControlFlyoutHelper.ShowAt(SelectionFlyout, this, _lastPointerPosition, FlyoutShowMode.Transient);
 			}

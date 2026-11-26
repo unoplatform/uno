@@ -42,6 +42,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private IDisposable? _foregroundBrushChangedSubscription;
 
 		private bool _isPressed;
+
+		// The selection when a touch press found the selection flyout open, or closed it on its way in (a transient flyout
+		// passes that press on once closed, see FlyoutBase.WasDismissedBy). A tap that leaves the selection as it was
+		// just closes the flyout, rather than showing it again.
+		private Range? _selectionAtFlyoutClosingPress;
 		private Range _selectionOnPointerPressed;
 
 		private Hyperlink? _hyperlinkOver; // do not use: use HyperlinkOver instead
@@ -234,6 +239,13 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			that._isPressed = true;
+
+			if (e.Pointer.PointerDeviceType is PointerDeviceType.Touch or PointerDeviceType.Pen)
+			{
+				that._selectionAtFlyoutClosingPress = that.SelectionFlyout is { } selectionFlyout && (selectionFlyout.IsOpen || selectionFlyout.WasDismissedBy(e))
+					? that.Selection
+					: null;
+			}
 
 			if (that.FindHyperlinkAt(e) is Hyperlink hyperlink)
 			{

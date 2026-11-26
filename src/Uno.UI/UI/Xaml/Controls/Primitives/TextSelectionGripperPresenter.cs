@@ -61,7 +61,7 @@ internal interface ITextSelectionGripperHost
 	/// A gripper was pressed down. Dismiss any open transient selection UI (the selection flyout) so a
 	/// fresh interaction starts clean; the gesture result (hold -> context menu, release -> flyout) re-shows it.
 	/// </summary>
-	void OnGripperPressed();
+	void OnGripperPressed(PointerRoutedEventArgs args);
 
 	/// <summary>
 	/// A gripper lost its pointer: after a release, or when the system cancelled the touch mid-drag (which never
@@ -274,7 +274,7 @@ internal sealed class TextSelectionGripperPresenter
 		args.Handled = true;
 
 		// Dismiss the selection flyout on press; it re-appears on release (or yields to the context menu on hold).
-		_host.OnGripperPressed();
+		_host.OnGripperPressed(args);
 
 		var gripper = (CaretWithStemAndThumb)sender;
 		if (gripper.CapturePointer(args.Pointer))

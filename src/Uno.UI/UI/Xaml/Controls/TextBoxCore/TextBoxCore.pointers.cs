@@ -243,6 +243,11 @@ internal sealed partial class TextBoxCore
 		return at.Width == 0 ? index - 1 : index;
 	}
 
+	// A press on the TextBox closes its transient selection flyout and is passed on to the TextBox, which then receives it
+	// with the flyout already closed.
+	private bool IsSelectionFlyoutOpenAtPress(PointerRoutedEventArgs args)
+		=> SelectionFlyout is { } flyout && (flyout.IsOpen || flyout.WasDismissedBy(args));
+
 	partial void OnPointerPressedPartial(PointerRoutedEventArgs args)
 	{
 		_isPressed = true;
@@ -255,7 +260,7 @@ internal sealed partial class TextBoxCore
 			// mouse multi-tap path) so a touch double-tap can select a word on release.
 			var textPoint = ToTouchTextPoint(args.GetCurrentPoint(TextBoxView.DisplayBlock).Position);
 			CountTouchPress(currentPoint, textPoint, GetCharacterIndexAt(textPoint), onHandle: false);
-			_selectionFlyoutOpenAtPress = SelectionFlyout?.IsOpen == true;
+			_selectionFlyoutOpenAtPress = IsSelectionFlyoutOpenAtPress(args);
 			_iosHoldFired = false;
 			_touchPressPointer = args.Pointer;
 			if (TouchSelectionConvention == TouchTextSelectionConvention.iOS)

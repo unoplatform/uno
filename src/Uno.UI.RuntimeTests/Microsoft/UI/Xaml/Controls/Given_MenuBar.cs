@@ -112,6 +112,33 @@ public class Given_MenuBar
 		Assert.AreEqual(FindChild<Grid>(menuBar, "LayoutRoot"), flyout.OverlayInputPassThroughElement);
 	}
 
+	[TestMethod]
+	// Injects the mouse, which would take over the real pointer on WinUI.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Flyout_Open_And_Press_On_Other_Item_Then_Press_Reaches_It()
+	{
+		var (_, items) = await Load(("File", true, 1), ("Edit", true, 1));
+		var editButton = FindChild<Button>(items[1], "ContentButton");
+		var editPresses = 0;
+		editButton.AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler((_, _) => editPresses++), handledEventsToo: true);
+
+		var injector = Windows.UI.Input.Preview.Injection.InputInjector.TryCreate() ?? throw new System.InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = Uno.UI.DevTools.Input.InputInjectorExtensions.GetMouse(injector);
+
+		Invoke(items[0]);
+		await WindowHelper.WaitFor(() => IsFlyoutOpen(items[0]));
+		await WindowHelper.WaitForIdle();
+
+		// The flyout lets presses through to the menu bar (its OverlayInputPassThroughElement), as on WinUI.
+		var editBounds = editButton.GetAbsoluteBounds();
+		mouse.Press(new Windows.Foundation.Point(editBounds.X + editBounds.Width / 2, editBounds.Y + editBounds.Height / 2));
+		mouse.Release();
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsFalse(IsFlyoutOpen(items[0]), "The press outside the flyout should close it.");
+		Assert.AreEqual(1, editPresses, "The press on the other menu bar item should reach it.");
+	}
+
 	private static async Task<(MenuBar, MenuBarItem[])> Load(params (string title, bool isEnabled, int childCount)[] definitions)
 	{
 		var menuBar = new MenuBar();

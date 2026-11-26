@@ -39,26 +39,35 @@ internal partial class FlyoutBasePopupPanel : PopupPanel
 	{
 		if (this.Log().IsEnabled(LogLevel.Debug)) this.Log().Debug($"{this.GetDebugName()} Dismissing flyout (OverlayInputPassThroughElement:{Flyout.OverlayInputPassThroughElement.GetDebugIdentifier()}).");
 
-		if (Flyout.OverlayInputPassThroughElement is not UIElement passThroughElement)
+		if (Flyout.OverlayInputPassThroughElement is not UIElement passThroughElement
+			|| XamlRoot?.VisualTree is not { } visualTree)
 		{
 			return;
 		}
 
-		if (!Flyout.GetAllParents(includeCurrent: false).Contains(passThroughElement))
+		// What is under this popup: the main tree and the popups below this one, but not this one nor those opened
+		// above it. A flyout opened from a ContentDialog or another flyout then passes the press to that popup's
+		// content, not to the window behind it.
+		// Uno-specific: every light-dismiss popup's panel covers the window, so a press outside both this flyout and a
+		// Standard flyout under it lands on that flyout's panel, which eats it as a Standard flyout eats its dismissing
+		// press. In WinUI the popup root is the only overlay, and the press reaches the page.
+		var hitTestUnderThis = VisualTreeHelper.DefaultGetTestability.Except(this);
+		if (visualTree.PopupRoot is { } popupRoot)
 		{
-			// The element must be a parent of the Flyout (not 'this') to be able to receive the pointer events.
+			var isAbove = false;
+			foreach (var popupPanel in popupRoot.Children)
+			{
+				if (isAbove)
+				{
+					hitTestUnderThis = hitTestUnderThis.Except(popupPanel);
+				}
 
-			if (this.Log().IsEnabled(LogLevel.Debug))
-				this.Log().Debug(
-					$"{this.GetDebugName()} PassThroughElement ignored as element ({Flyout.OverlayInputPassThroughElement?.GetAllParents().Reverse().Select(elt => elt.GetDebugName()).JoinBy(">") ?? "--null--"})"
-					+ $" is not a parent of the Flyout ({Flyout.GetAllParents().Select(elt => elt.GetDebugName()).Reverse().JoinBy(">")}).");
-
-			return;
+				isAbove |= popupPanel == this;
+			}
 		}
 
 		var point = args.GetCurrentPoint(null);
-		var hitTestIgnoringThis = VisualTreeHelper.DefaultGetTestability.Except(XamlRoot?.VisualTree.PopupRoot as UIElement ?? this);
-		var (elementHitUnderOverlay, _) = VisualTreeHelper.HitTest(point.Position, passThroughElement.XamlRoot?.VisualTree.RootElement, hitTestIgnoringThis);
+		var (elementHitUnderOverlay, _) = VisualTreeHelper.HitTest(point.Position, visualTree.RootElement, hitTestUnderThis);
 
 		if (elementHitUnderOverlay is null)
 		{
@@ -68,17 +77,24 @@ internal partial class FlyoutBasePopupPanel : PopupPanel
 			return;
 		}
 
-		if (!VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Contains(passThroughElement))
+		// MUX Reference: PointerInputProcessor.cpp HitTestWithLightDismissAwareness. The root visual as pass-through element
+		// lets everything through, popups included, as they aren't under it. Uno's XamlRoot.Content is the content inside
+		// the window chrome, so it counts as the root too.
+		var passesEverything = passThroughElement == visualTree.PublicRootVisual || passThroughElement == XamlRoot.Content;
+
+		if (!passesEverything
+			&& elementHitUnderOverlay != passThroughElement
+			&& !VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Contains(passThroughElement))
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 				this.Log().Debug(
 					$"{this.GetDebugName()} PassThroughElement ({passThroughElement.GetDebugName()}) ignored as hit-tested element ({elementHitUnderOverlay.GetDebugIdentifier()})"
-					+ $" is not a child of the PassThroughElement ({VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Reverse().Select(elt => elt.GetDebugIdentifier()).JoinBy(">") ?? "--null--"}).");
+					+ $" is not in the PassThroughElement ({VisualTreeHelper.EnumerateAncestors(elementHitUnderOverlay).Reverse().Select(elt => elt.GetDebugIdentifier()).JoinBy(">") ?? "--null--"}).");
 
-			// The element found by the HitTest is not a child of the pass-through element.
 			return;
 		}
 
-		XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.ReRoute(args, from: this, to: elementHitUnderOverlay);
+		Flyout.OnDismissingPressPassedThrough(args);
+		visualTree.ContentRoot.InputManager.Pointers.ReRoute(args, from: this, to: elementHitUnderOverlay);
 	}
 }

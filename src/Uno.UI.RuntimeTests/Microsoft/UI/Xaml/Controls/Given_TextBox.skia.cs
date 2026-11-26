@@ -5840,7 +5840,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("Text", SUT.SelectedText);
 
 			// clicking inside the selected area keeps the selection
-			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Press(GetCaretPoint(SUT, 7));
 			finger.Release();
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
@@ -6184,6 +6184,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TapAsSeparateGesture(point);
 			await WindowHelper.WaitFor(IsMenuOpen, timeoutMS: 3000, message: "tapping the selection should open the edit menu");
 			Assert.AreEqual("Text", SUT.SelectedText, "tapping the selection must not collapse it");
+		}
+
+		// Native iOS: a selection handle sits over its selection, so tapping it toggles the edit menu like a tap on the
+		// selection. The tap that hides the menu reaches the handle once the transient menu has already closed.
+		[TestMethod]
+		public async Task When_Touch_Tap_On_Handle_Toggles_Flyout_iOS()
+		{
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var SUT = await LoadFocusedTextBox_iOS("Some Text");
+			bool IsMenuOpen() => (SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true;
+
+			var point = GetCaretPoint(SUT, 7);
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using (var finger = injector.GetFinger())
+			{
+				finger.Press(point);
+				finger.Release();
+				await WindowHelper.WaitForIdle();
+				finger.Press(point);
+				finger.Release();
+			}
+			await WindowHelper.WaitFor(IsMenuOpen, timeoutMS: 3000, message: "the double-tap should open the edit menu");
+			await UITestHelper.WaitForRender(frameCount: 2); // the handles are laid out per frame
+			Assert.AreEqual("Text", SUT.SelectedText);
+			Assert.IsNotNull(SUT.VisibleGrippersForTesting, "the selected word should show its handles");
+
+			// Tapping the end handle while the menu shows hides it, keeping the selection.
+			await Task.Delay(600); // past the multi-tap window
+			var handle = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			TapAsSeparateGesture(new Point(handle.GetCenter().X, handle.Bottom - 2));
+			await WindowHelper.WaitFor(() => !IsMenuOpen(), message: "tapping a handle while the menu shows should hide it");
+			await Task.Delay(600); // a reopen would come after the multi-tap window
+			Assert.IsFalse(IsMenuOpen(), "the menu must stay hidden");
+			Assert.AreEqual("Text", SUT.SelectedText, "the tap must not change the selection");
 		}
 
 		// A selection the app made in code (e.g. a select-all on focus) shows no handles; a tap in it places the caret,

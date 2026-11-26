@@ -1554,6 +1554,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		// Injects touch, which would take over the real pointer on WinUI.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_IsTextSelectionEnabled_Touch_Tap_On_Selection_Toggles_Flyout()
+		{
+			var flyout = new Flyout { Content = new Border { Width = 60, Height = 20 } };
+			var sut = new TextBlock
+			{
+				Text = "hello uno world",
+				IsTextSelectionEnabled = true,
+				SelectionFlyout = flyout,
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+			try
+			{
+				var point = new Point(bounds.X + 10, bounds.Y + bounds.Height / 2);
+
+				// Each tap with its own injector, so taps a moment apart don't count as a double-tap.
+				void Tap()
+				{
+					var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+					using var finger = injector.GetFinger();
+					finger.Press(point);
+					finger.Release();
+				}
+
+				Tap();
+				await WindowHelper.WaitFor(() => flyout.IsOpen, timeoutMS: 3000, message: "a touch tap on a word selects it and shows the flyout");
+				Assert.AreEqual("hello", sut.SelectedText.TrimEnd());
+
+				// The tap that closes the transient flyout reaches the TextBlock: it must not reopen it.
+				await Task.Delay(600);
+				Tap();
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(300);
+				await WindowHelper.WaitForIdle();
+				Assert.IsFalse(flyout.IsOpen, "a tap on the selection while the flyout shows should hide it");
+				Assert.AreEqual("hello", sut.SelectedText.TrimEnd(), "the tap must keep the selection");
+
+				await Task.Delay(600);
+				Tap();
+				await WindowHelper.WaitFor(() => flyout.IsOpen, timeoutMS: 3000, message: "tapping the selection again shows the flyout");
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+		}
+
+		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif

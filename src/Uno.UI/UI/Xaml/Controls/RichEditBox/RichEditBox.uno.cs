@@ -463,7 +463,7 @@ namespace Microsoft.UI.Xaml.Controls
 				? _selection.start + _selection.length
 				: _selection.start);
 
-		void ITextSelectionGripperHost.OnGripperPressed()
+		void ITextSelectionGripperHost.OnGripperPressed(PointerRoutedEventArgs args)
 			=> DismissSelectionFlyoutForPointerPress();
 
 		void ITextSelectionGripperHost.OnGripperPointerLost() { }
