@@ -108,6 +108,7 @@ internal sealed unsafe partial class WebGpuFrame
 				_d.ReturnVerts(_scratchBuf);
 				_scratchBuf = null;
 			}
+			Coverage.ReturnPooled();
 
 			// Same cadence as the stats line, so UNO_WEBGPU_STATS_EVERY=1 gives a per-FRAME phase breakdown rather
 			// than a 60-frame average - the only way to see a distribution instead of a mean.
