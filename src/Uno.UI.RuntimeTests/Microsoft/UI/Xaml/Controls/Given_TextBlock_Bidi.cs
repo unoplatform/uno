@@ -627,6 +627,186 @@ public class Given_TextBlock_Bidi
 			$"Expected one line: rows {firstTop}..{firstBottom} and {secondTop}..{secondBottom}.");
 	}
 
+	// Each right-to-left word in braces is drawn in its own colour, the rest in black.
+	private static readonly Color[] WordColors = [Colors.Red, Colors.Blue, Colors.Green];
+
+	private static (string Sample, FlowDirection ControlDirection, FlowDirection? RunDirection, double? Width) ShapingSample(string row) => row switch
+	{
+		// unoplatform/uno#25979's strings.
+		"Arabic ending in a number" => ("{نیا} {چاند} 1", FlowDirection.RightToLeft, null, null),
+		"Arabic ending in a digit" => ("{پیر} 9", FlowDirection.RightToLeft, null, null),
+		"Arabic date" => ("{منگل} 3 {نومبر} 2026 · 14:58", FlowDirection.RightToLeft, null, null),
+		// Shaped right to left before the fix too (its last run is right to left); kept as a check against WinUI.
+		"Arabic starting with a number" => ("10 {اکتوبر}", FlowDirection.RightToLeft, null, null),
+		"Arabic with several direction changes" => ("{نیا} 1 {چاند} abc {پیر} 9", FlowDirection.RightToLeft, null, null),
+		"Arabic wrapping before a number" => ("{نیا} {چاند} 1234567890123", FlowDirection.RightToLeft, null, 200),
+		// The runs are embedded in a copy of the text that only ICU reads.
+		"Right-to-left runs in a left-to-right control" => ("{نیا} {چاند} 1", FlowDirection.LeftToRight, FlowDirection.RightToLeft, null),
+		_ => throw new ArgumentOutOfRangeException(nameof(row)),
+	};
+
+	private static TextBlock CreateShapingTextBlock(string sample, FlowDirection controlDirection, FlowDirection? runDirection)
+	{
+		var textBlock = new TextBlock { FontSize = 32, FlowDirection = controlDirection };
+		var word = 0;
+		foreach (var (part, index) in sample.Split('{', '}').Select((part, index) => (part, index)))
+		{
+			if (part.Length > 0)
+			{
+				textBlock.Inlines.Add(R(part, index % 2 == 1 ? WordColors[word++] : Colors.Black, runDirection));
+			}
+		}
+		return textBlock;
+	}
+
+	// Fallback fonts, which Arabic and Hebrew need, load asynchronously in Uno, and a layout made before one arrives
+	// draws boxes. Where no font has the glyphs, the text and the reference it is compared with would both draw boxes,
+	// so the test is inconclusive. Windows, where WinUI runs, has the fonts.
+	internal static async Task<RawBitmap> ShowWithFonts(FrameworkElement element, double height = 120)
+	{
+		var (host, bitmap) = await Show(element, width: 600, height: height);
+#if __SKIA__
+		var inlines = element switch
+		{
+			TextBlock textBlock => textBlock.Inlines.ToArray(),
+			TextBox textBox => new Inline[] { new Run { Text = textBox.Text, FontSize = textBox.FontSize } },
+			_ => throw new ArgumentOutOfRangeException(nameof(element)),
+		};
+		if (!await Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents.Given_UnicodeTextOptions.WaitForGlyphs(inlines, 1000, element.FlowDirection))
+		{
+			Assert.Inconclusive("No font here has glyphs for all of the text.");
+		}
+		bitmap = await Capture(host);
+#endif
+		return bitmap;
+	}
+
+	// Two drawings of a word with the same glyphs agree within anti-aliasing; a letter in another form (an Arabic letter
+	// that doesn't join its neighbour) moves the extent or the mass of the ink by several pixels at this size.
+	internal static void AssertSameShape(InkProfile expected, InkProfile actual, string context)
+	{
+		Assert.IsFalse(actual.Span.IsEmpty, $"{context}: no ink.");
+		Assert.IsTrue(
+			Math.Abs(expected.Width - actual.Width) <= 3 && Math.Abs(expected.Center - actual.Center) <= 3.5,
+			$"{context} should be drawn as on its own: {actual}, alone {expected}.");
+	}
+
+	[TestMethod]
+	[DataRow("Arabic ending in a number")]
+	[DataRow("Arabic ending in a digit")]
+	[DataRow("Arabic date")]
+	[DataRow("Arabic starting with a number")]
+	[DataRow("Arabic with several direction changes")]
+	[DataRow("Arabic wrapping before a number")]
+	[DataRow("Right-to-left runs in a left-to-right control")]
+	public async Task When_Rtl_Words_Next_To_Ltr_Runs(string row)
+	{
+		// Each right-to-left word is shaped in its own direction whatever comes after it, so it is drawn as on its own
+		// (unoplatform/uno#25979: "نیا چاند 1" drew its first letter apart from the rest of its word).
+		var (sample, controlDirection, runDirection, width) = ShapingSample(row);
+		var words = sample.Split('{', '}').Where((_, index) => index % 2 == 1).ToArray();
+		var sut = CreateShapingTextBlock(sample, controlDirection, runDirection);
+		if (width is { } w)
+		{
+			sut.Width = w;
+			sut.TextWrapping = TextWrapping.Wrap;
+		}
+		var alone = CreateShapingTextBlock(string.Join(" ", words.Select(word => "{" + word + "}")), FlowDirection.RightToLeft, null);
+
+		try
+		{
+			var bitmap = await ShowWithFonts(sut, height: 200);
+			if (width is not null)
+			{
+				var (wordsTop, wordsBottom) = InkY(bitmap, WordColors[0]);
+				var (numberTop, _) = InkY(bitmap, Colors.Black);
+				Assert.IsTrue(numberTop > wordsBottom - 4, $"The number (top {numberTop}) should wrap below the words ({wordsTop}..{wordsBottom}).");
+			}
+			var actual = words.Select((_, index) => Profile(bitmap, WordColors[index])).ToArray();
+			var expectedBitmap = await ShowWithFonts(alone, height: 200);
+
+			for (var index = 0; index < words.Length; index++)
+			{
+				AssertSameShape(Profile(expectedBitmap, WordColors[index]), actual[index], $"Word {index + 1}");
+			}
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[DataRow("Latin in Arabic")]
+	[DataRow("Latin in Hebrew")]
+	[DataRow("Latin in right-to-left runs of a left-to-right control")]
+	[DataRow("Wrapping between the Latin and the Arabic")]
+	public async Task When_Ltr_Text_With_Brackets_In_Rtl_Text(string row)
+	{
+		// "a(b)" is left to right, inside right-to-left words, so it is shaped left to right and its brackets aren't
+		// mirrored, as on WinUI. It used to be shaped right to left with the whole paragraph, and drawn "a)b(".
+		var (before, after, controlDirection, runDirection, width) = row switch
+		{
+			"Latin in Arabic" => ("نیا ", " چاند", FlowDirection.RightToLeft, (FlowDirection?)null, (double?)null),
+			"Latin in Hebrew" => ("שלום ", " עולם", FlowDirection.RightToLeft, null, null),
+			// Each run is embedded on its own, in a copy of the text that only ICU reads.
+			"Latin in right-to-left runs of a left-to-right control" => ("نیا ", " چاند", FlowDirection.LeftToRight, FlowDirection.RightToLeft, null),
+			"Wrapping between the Latin and the Arabic" => ("نیا ", " چاند", FlowDirection.RightToLeft, null, 120),
+			_ => throw new ArgumentOutOfRangeException(nameof(row)),
+		};
+		var sut = CreateTextBlock(controlDirection, R(before, Colors.Black, runDirection), R("a(b)", Colors.Red, runDirection), R(after, Colors.Blue, runDirection));
+		sut.FontSize = 32;
+		if (width is { } w)
+		{
+			sut.Width = w;
+			sut.TextWrapping = TextWrapping.Wrap;
+		}
+
+		try
+		{
+			var bitmap = await ShowWithFonts(sut, height: 200);
+			if (width is not null)
+			{
+				var (latinTop, latinBottom) = InkY(bitmap, Colors.Red);
+				var (wordTop, _) = InkY(bitmap, Colors.Blue);
+				Assert.IsTrue(wordTop > latinBottom - 4, $"The last word (top {wordTop}) should wrap below \"a(b)\" ({latinTop}..{latinBottom}).");
+			}
+			var pieces = Pieces(bitmap, Colors.Red);
+			var description = string.Join(", ", pieces);
+
+			Assert.AreEqual(4, pieces.Count, $"Expected \"a\", \"(\", \"b\" and \")\" apart: {description}.");
+			Assert.IsFalse(BulgesRight(bitmap, Colors.Red, pieces[1]), $"The opening bracket ({pieces[1]}) should be drawn as \"(\": {description}.");
+			Assert.IsTrue(BulgesRight(bitmap, Colors.Red, pieces[3]), $"The closing bracket ({pieces[3]}) should be drawn as \")\": {description}.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Rtl_Bracket_Before_Number_Is_Mirrored()
+	{
+		// "(" resolves to the right-to-left paragraph's direction and "1" to left-to-right, so the bracket's run ends
+		// before the number's: it is shaped right to left and mirrored, as on WinUI. The font has the glyphs everywhere.
+		var sut = CreateTextBlock(FlowDirection.RightToLeft, R("(", Colors.Red), R("1", Colors.Blue));
+		sut.FontSize = 48;
+
+		try
+		{
+			var (_, bitmap) = await Show(sut);
+			var bracket = InkX(bitmap, Colors.Red);
+			var number = InkX(bitmap, Colors.Blue);
+
+			Assert.IsTrue(number.Max < bracket.Min, $"The bracket ({bracket}) should be drawn right of the number ({number}).");
+			Assert.IsTrue(BulgesRight(bitmap, Colors.Red, bracket), $"The bracket ({bracket}) should be drawn mirrored, as \")\".");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Uno's text engine
 	public async Task When_Bidi_Buffers_Outlive_SetPara()

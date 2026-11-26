@@ -559,6 +559,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					textAlignment = (level is UBIDI_RTL) != _flowRightToLeft ? TextAlignment.Right : TextAlignment.Left;
 				}
 			}
+			SortInTextOrder(_bidiBreaks);
 		}
 
 		ParagraphBidiResolvedForTests?.Invoke(_text.Length);
@@ -1581,6 +1582,11 @@ internal readonly partial struct UnicodeText : IParsedText
 		var index = Array.BinarySearch(textToBidi, 0, textLength + 1, bidiIndex);
 		return index >= 0 ? index : ~index;
 	}
+
+	// ICU lists the runs in visual order, but the shaping walks them with the other breaks in the order of the text.
+	// Sorted rather than read with ubidi_getLogicalRun, which searches the runs from the first on each call.
+	private static void SortInTextOrder(List<(int end, FlowDirection direction)> bidiBreaks)
+		=> CollectionsMarshal.AsSpan(bidiBreaks).Sort(static (x, y) => x.end.CompareTo(y.end));
 
 	// Walks the intersection of run, script, bidi and font breaks without materializing a list of shaping runs.
 	private struct ShapingRunEnumerator
@@ -3179,6 +3185,9 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		return new(line.start, line.end, line.width, line.widthWithoutTrailingSpaces, line.lineHeight, line.baselineOffset, line.hasEllipsis, clusters.ToArray());
 	}
+
+	// The paragraph's bidi runs as the shaping reads them: the end of each run in the text, and its direction.
+	internal IReadOnlyList<(int end, FlowDirection direction)> BidiRunsForTests => _bidiBreaks;
 
 	// The alignment the layout used, relative to the FlowDirection it was laid out with (Left = start):
 	// a default-aligned TextBox gets one from its content's direction.

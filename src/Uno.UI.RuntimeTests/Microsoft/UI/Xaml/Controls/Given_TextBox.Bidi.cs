@@ -105,4 +105,59 @@ public partial class Given_TextBox
 			WindowHelper.WindowContent = null;
 		}
 	}
+
+	private static TextBox CreateBidiTextBox(string text) => new()
+	{
+		Width = 300,
+		FontSize = 32,
+		FlowDirection = FlowDirection.RightToLeft,
+		Text = text,
+		Foreground = new SolidColorBrush(Colors.Red),
+		BorderThickness = new Thickness(0),
+	};
+
+	[TestMethod]
+	public async Task When_Rtl_TextBox_Arabic_Ends_With_Number()
+	{
+		// unoplatform/uno#25979 in a TextBox: the words are drawn as without the number after them.
+		var sut = CreateBidiTextBox("نیا چاند 1");
+		var alone = CreateBidiTextBox("نیا چاند");
+
+		try
+		{
+			var bitmap = await Given_TextBlock_Bidi.ShowWithFonts(sut);
+			// The number is drawn left of the words.
+			var pieces = Pieces(bitmap, Colors.Red);
+			Assert.IsTrue(pieces.Count >= 2, $"Expected the number and the words apart: {string.Join(", ", pieces)}.");
+			var words = Profile(bitmap, Colors.Red, left: pieces[1].Min);
+			var expectedBitmap = await Given_TextBlock_Bidi.ShowWithFonts(alone);
+
+			Given_TextBlock_Bidi.AssertSameShape(Profile(expectedBitmap, Colors.Red), words, "The words");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Rtl_TextBox_Bracket_Before_Number_Is_Mirrored()
+	{
+		var sut = CreateBidiTextBox("(1");
+		sut.FontSize = 48;
+
+		try
+		{
+			var (_, bitmap) = await Show(sut);
+			var pieces = Pieces(bitmap, Colors.Red);
+
+			// The bracket is drawn right of the number, shaped right to left and mirrored, as ")".
+			Assert.AreEqual(2, pieces.Count, $"Expected the number and the bracket: {string.Join(", ", pieces)}.");
+			Assert.IsTrue(BulgesRight(bitmap, Colors.Red, pieces[1]), $"The bracket ({pieces[1]}) should be drawn mirrored.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
 }
