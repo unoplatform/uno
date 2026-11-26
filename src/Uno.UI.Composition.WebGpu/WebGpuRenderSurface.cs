@@ -96,6 +96,10 @@ internal sealed unsafe class WebGpuRenderSurface
 
 internal sealed class OwnedResources
 {
+	private static long _lastId;
+
+	// Never 0, the value of a slot no bag has referenced yet.
+	public readonly long Id = System.Threading.Interlocked.Increment(ref _lastId);
 	public System.Collections.Generic.List<nint> Buffers = new();
 	// This bag's vertex data, packed into as few GPU buffers as possible when the build ends. A buffer per op
 	// costs a whole placed-resource slot on the GPU (64 KB on D3D12), so a few thousand small ops commit hundreds

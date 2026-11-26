@@ -122,8 +122,10 @@ internal sealed unsafe partial class WebGpuCoverage
 			// A REUSED entry needs its own reference for this recording. One slot backs a glyph everywhere it
 			// appears, so without this the recording that baked it releases the region out from under every other
 			// holder and they start sampling whatever took its place.
-			if (!hitOnly)
+			// Once per bag, not per occurrence: a glyph repeated through a long text is one reference, not thousands.
+			if (!hitOnly && slot.LastBag != owned.Id)
 			{
+				slot.LastBag = owned.Id;
 				_d.Atlas.Retain(slot);
 				(owned.AtlasSlots ??= new()).Add(slot);
 			}
@@ -143,7 +145,7 @@ internal sealed unsafe partial class WebGpuCoverage
 				slot = _d.Atlas.Allocate(key, w, h, ox, oy);
 			}
 			if (slot is null) { AtlasNoRoom++; _d.AtlasStarved = true; return false; }
-			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
+			if (owned is not null) { slot.LastBag = owned.Id; (owned.AtlasSlots ??= new()).Add(slot); }
 			else { _d.Atlas.HoldForCache(slot, _d.FrameSeq); }
 			QueueEntryBake(pf, shape, slot, scale, snap);
 			if (big) { FillMasksBaked++; } else { AtlasBaked++; }
