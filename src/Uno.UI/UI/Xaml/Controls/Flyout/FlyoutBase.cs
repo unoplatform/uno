@@ -74,11 +74,20 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private bool m_shouldTakeFocus = true;
 		private bool m_shouldOverlayPassThroughAllInput;
+		private bool m_shouldHideIfPointerMovesAway;
 		private bool m_ownsOverlayInputPassThroughElement;
 		private (uint PointerId, ulong Timestamp)? m_passedThroughDismissingPress;
 
 		// MUX Reference: FlyoutBase_partial.h m_wrRootVisual, the placement target's public root visual while open.
 		private WeakReference<UIElement> m_wrRootVisual;
+
+		// Uno-specific: stands in for WinUI's m_rootVisualPointerMovedToken.
+		private Input.PointerEventHandler m_rootVisualPointerMovedHandler;
+		private bool m_isRootVisualPointerMovedHandlerAttached;
+
+		// Uno-specific: until the presenter is laid out for this opening it keeps the previous opening's bounds (or none
+		// the first time), so the move-away check would measure against the wrong place.
+		private bool m_isPresenterLaidOutForOpening;
 
 		private InputDeviceType m_inputDeviceTypeUsedToOpen;
 
@@ -439,6 +448,13 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				m_openingCanceled = true;
 
+				RemoveRootVisualPointerMovedHandler();
+
+				if (_popup?.Child is FrameworkElement closingPresenter)
+				{
+					closingPresenter.LayoutUpdated -= OnPresenterLaidOutForOpening;
+				}
+
 				m_wrRootVisual = null;
 
 				// Uno-specific: WinUI keeps the root it set until the next Standard show. Letting go of it on close keeps a
@@ -659,6 +675,18 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				return;
 			}
 
+			if (m_shouldHideIfPointerMovesAway)
+			{
+				AddRootVisualPointerMovedHandler();
+			}
+
+			m_isPresenterLaidOutForOpening = false;
+			if (_popup.Child is FrameworkElement openingPresenter)
+			{
+				openingPresenter.LayoutUpdated -= OnPresenterLaidOutForOpening;
+				openingPresenter.LayoutUpdated += OnPresenterLaidOutForOpening;
+			}
+
 			Open();
 			IsOpen = true;
 
@@ -696,8 +724,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private void UpdateStateToShowMode(FlyoutShowMode showMode)
 		{
-			// TODO Uno: m_shouldHideIfPointerMovesAway not handled yet.
-
 			if (showMode == FlyoutShowMode.Auto)
 			{
 				showMode = FlyoutShowMode.Standard;
@@ -705,18 +731,23 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			ShowMode = showMode;
 
+			var oldShouldHideIfPointerMovesAway = m_shouldHideIfPointerMovesAway;
+
 			switch (showMode)
 			{
 				case FlyoutShowMode.Standard:
 					m_shouldTakeFocus = true;
+					m_shouldHideIfPointerMovesAway = false;
 					m_shouldOverlayPassThroughAllInput = false;
 					break;
 				case FlyoutShowMode.Transient:
 					m_shouldTakeFocus = false;
+					m_shouldHideIfPointerMovesAway = false;
 					m_shouldOverlayPassThroughAllInput = true;
 					break;
 				case FlyoutShowMode.TransientWithDismissOnPointerMoveAway:
 					m_shouldTakeFocus = false;
+					m_shouldHideIfPointerMovesAway = true;
 					m_shouldOverlayPassThroughAllInput = true;
 					break;
 			}
@@ -724,6 +755,129 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			if (_popup is { IsOpen: true })
 			{
 				SetPopupLightDismissBehavior();
+
+				if (m_shouldHideIfPointerMovesAway && !oldShouldHideIfPointerMovesAway)
+				{
+					AddRootVisualPointerMovedHandler();
+				}
+				else if (!m_shouldHideIfPointerMovesAway && oldShouldHideIfPointerMovesAway)
+				{
+					RemoveRootVisualPointerMovedHandler();
+				}
+			}
+		}
+
+		// MUX Reference: FlyoutBase_partial.cpp AddRootVisualPointerMovedHandler.
+		// Uno-specific: the handler also goes on the flyout's light-dismiss panel. It covers the window while the flyout is
+		// open and receives the moves, where WinUI's light-dismiss layer lets them through to the root visual.
+		private void AddRootVisualPointerMovedHandler()
+		{
+			if (!m_isRootVisualPointerMovedHandlerAttached)
+			{
+				m_rootVisualPointerMovedHandler ??= OnRootVisualPointerMoved;
+
+				if (m_wrRootVisual is not null && m_wrRootVisual.TryGetTarget(out var rootVisual))
+				{
+					rootVisual.PointerMoved += m_rootVisualPointerMovedHandler;
+				}
+
+				if (_popup?.PopupPanel is { } popupPanel)
+				{
+					popupPanel.PointerMoved += m_rootVisualPointerMovedHandler;
+				}
+
+				m_isRootVisualPointerMovedHandlerAttached = true;
+			}
+		}
+
+		// MUX Reference: FlyoutBase_partial.cpp RemoveRootVisualPointerMovedHandler.
+		private void RemoveRootVisualPointerMovedHandler()
+		{
+			if (m_isRootVisualPointerMovedHandlerAttached)
+			{
+				if (m_wrRootVisual is not null && m_wrRootVisual.TryGetTarget(out var rootVisual))
+				{
+					rootVisual.PointerMoved -= m_rootVisualPointerMovedHandler;
+				}
+
+				if (_popup?.PopupPanel is { } popupPanel)
+				{
+					popupPanel.PointerMoved -= m_rootVisualPointerMovedHandler;
+				}
+
+				m_isRootVisualPointerMovedHandlerAttached = false;
+			}
+		}
+
+		private void OnPresenterLaidOutForOpening(object sender, object args)
+		{
+			m_isPresenterLaidOutForOpening = true;
+
+			if (_popup?.Child is FrameworkElement presenter)
+			{
+				presenter.LayoutUpdated -= OnPresenterLaidOutForOpening;
+			}
+		}
+
+		// MUX Reference: FlyoutBase_partial.cpp OnRootVisualPointerMoved.
+		// Hides the flyout in TransientWithDismissOnPointerMoveAway mode when the pointer moves more than 80 pixels away.
+		private void OnRootVisualPointerMoved(object sender, Input.PointerRoutedEventArgs args)
+		{
+			// The flyout is hidden when the pointer is moved more than 80 pixels
+			// away from its bounds. This is the square of that threshold distance.
+			const double hidingThreshold = 6400;
+
+			if (_popup?.Child is not FrameworkElement presenter || !m_isPresenterLaidOutForOpening)
+			{
+				return;
+			}
+
+			// Uno-specific: moves of a pointer captured inside the flyout bubble up to its light-dismiss panel. In WinUI
+			// they reach the popup root, not the root visual, so they never hide the flyout.
+			if (PointerCapture.TryGet(args.Pointer, out var capture) && capture.ExplicitTarget is { } captureTarget)
+			{
+				for (DependencyObject element = captureTarget; element is not null; element = VisualTreeHelper.GetParent(element))
+				{
+					if (element == presenter)
+					{
+						return;
+					}
+				}
+			}
+
+			var pointerPosition = args.GetCurrentPoint(null).Position;
+
+			var presenterBounds = new Rect(0, 0, presenter.ActualWidth, presenter.ActualHeight);
+			var rootPresenterBounds = presenter.TransformToVisual(null).TransformBounds(presenterBounds);
+
+			var left = rootPresenterBounds.X;
+			var top = rootPresenterBounds.Y;
+			var right = left + rootPresenterBounds.Width;
+			var bottom = top + rootPresenterBounds.Height;
+			double xDistance = 0;
+			double yDistance = 0;
+
+			if (pointerPosition.X < left)
+			{
+				xDistance = left - pointerPosition.X;
+			}
+			else if (pointerPosition.X > right)
+			{
+				xDistance = pointerPosition.X - right;
+			}
+
+			if (pointerPosition.Y < top)
+			{
+				yDistance = top - pointerPosition.Y;
+			}
+			else if (pointerPosition.Y > bottom)
+			{
+				yDistance = pointerPosition.Y - bottom;
+			}
+
+			if (xDistance * xDistance + yDistance * yDistance > hidingThreshold)
+			{
+				Hide();
 			}
 		}
 

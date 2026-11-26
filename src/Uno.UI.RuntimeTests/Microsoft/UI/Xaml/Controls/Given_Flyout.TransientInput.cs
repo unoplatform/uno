@@ -212,6 +212,102 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[DataRow(FlyoutShowMode.TransientWithDismissOnPointerMoveAway, true)]
+		[DataRow(FlyoutShowMode.Transient, false)]
+		[DataRow(FlyoutShowMode.Standard, false)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_Pointer_Moves_Away_From_Flyout(FlyoutShowMode showMode, bool expectHidden)
+		{
+			var scene = await TransientInputScene.Create();
+			try
+			{
+				await scene.Show(showMode);
+
+				// WinUI hides the flyout once the pointer is more than 80 px from the presenter's bounds.
+				scene.MoveBelowFlyout(0);
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.IsTrue(scene.Flyout.IsOpen, "The pointer is over the flyout.");
+
+				scene.MoveBelowFlyout(60);
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.IsTrue(scene.Flyout.IsOpen, "The pointer is 60 px away, within the threshold.");
+
+				scene.MoveBelowFlyout(100);
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.AreEqual(!expectHidden, scene.Flyout.IsOpen, expectHidden
+					? "The pointer is 100 px away: the flyout should hide."
+					: "Only TransientWithDismissOnPointerMoveAway hides when the pointer moves away.");
+			}
+			finally
+			{
+				await scene.DisposeAsync();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(false)]
+		[DataRow(true)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_Pointer_Moves_Before_Flyout_Laid_Out(bool reopened)
+		{
+			var scene = await TransientInputScene.Create();
+			try
+			{
+				if (reopened)
+				{
+					await scene.Show(FlyoutShowMode.TransientWithDismissOnPointerMoveAway);
+					scene.Flyout.Hide();
+					await TestServices.WindowHelper.WaitForIdle();
+				}
+
+				// Open next to the other target, then move there before any layout pass: the presenter still has the
+				// previous opening's bounds (or none), far from the pointer.
+				scene.Flyout.ShowAt(scene.FarTarget, new FlyoutShowOptions { ShowMode = FlyoutShowMode.TransientWithDismissOnPointerMoveAway });
+				var farBounds = scene.FarTarget.GetAbsoluteBounds();
+				scene.Mouse.MoveTo(new Point(farBounds.X + farBounds.Width / 2, farBounds.Bottom + 10), steps: 1);
+
+				await TestServices.WindowHelper.WaitForLoaded(scene.FlyoutContent);
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.IsTrue(scene.Flyout.IsOpen, "A move next to where the flyout opens must not hide it.");
+			}
+			finally
+			{
+				await scene.DisposeAsync();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_Pointer_Captured_In_Flyout_Moves_Away()
+		{
+			var scene = await TransientInputScene.Create();
+			try
+			{
+				await scene.Show(FlyoutShowMode.TransientWithDismissOnPointerMoveAway);
+
+				// Press a button in the flyout and drag far away: the moves are the button's, as on WinUI.
+				var inner = scene.InnerButton.GetAbsoluteBounds();
+				scene.Mouse.MoveTo(new Point(inner.X + inner.Width / 2, inner.Y + inner.Height / 2), steps: 1);
+				scene.Mouse.Press();
+				scene.Mouse.MoveTo(new Point(inner.X + inner.Width / 2, inner.Bottom + 150), steps: 5);
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.IsTrue(scene.Flyout.IsOpen, "Moves of a pointer captured inside the flyout must not hide it.");
+
+				scene.Mouse.Release();
+				scene.Mouse.MoveBy(0, 5);
+				await TestServices.WindowHelper.WaitForIdle();
+				Assert.IsFalse(scene.Flyout.IsOpen, "Once released, a move that far away hides it.");
+			}
+			finally
+			{
+				await scene.DisposeAsync();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Transient_Flyout_Right_Click_Opens_Context_Menu_Under()
 		{
@@ -301,6 +397,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public Button Button { get; private set; }
 			public Button OtherButton { get; private set; }
 			public Border Target { get; private set; }
+			public Border FarTarget { get; private set; }
+			public Button InnerButton { get; private set; }
 			public Mouse Mouse => _mouse;
 			public Border FlyoutContent { get; private set; }
 			public Flyout Flyout { get; private set; }
@@ -329,14 +427,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					VerticalAlignment = VerticalAlignment.Top,
 				};
 				Grid.SetColumnSpan(scene.Target, 2);
+				scene.FarTarget = new Border
+				{
+					Width = 20,
+					Height = 20,
+					Background = new SolidColorBrush(Microsoft.UI.Colors.Blue),
+					HorizontalAlignment = HorizontalAlignment.Left,
+					VerticalAlignment = VerticalAlignment.Bottom,
+				};
 				scene.Root = new Grid
 				{
 					Width = 300,
 					Height = 200,
 					ColumnDefinitions = { new ColumnDefinition(), new ColumnDefinition() },
-					Children = { scene.ButtonHost, scene.OtherButton, scene.Target },
+					Children = { scene.ButtonHost, scene.OtherButton, scene.Target, scene.FarTarget },
 				};
-				scene.FlyoutContent = new Border { Width = 120, Height = 40 };
+				scene.InnerButton = new Button { HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Stretch };
+				scene.FlyoutContent = new Border { Width = 120, Height = 40, Child = scene.InnerButton };
 				scene.Flyout = new Flyout { Content = scene.FlyoutContent, Placement = FlyoutPlacementMode.Bottom };
 
 				if (host is null)
@@ -368,6 +475,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			public void PressAndReleaseOnOtherButtonNearFlyout()
 				=> PressAndRelease(FlyoutContent.GetAbsoluteBounds().Right - 10);
+
+			// Below the presenter (the flyout's content plus its padding and border), centered; 0 is just inside it.
+			public void MoveBelowFlyout(double distance)
+			{
+				DependencyObject presenter = FlyoutContent;
+				while (presenter is not FlyoutPresenter)
+				{
+					presenter = VisualTreeHelper.GetParent(presenter);
+				}
+
+				var presenterBounds = ((FlyoutPresenter)presenter).GetAbsoluteBounds();
+				var y = distance == 0 ? presenterBounds.Bottom - 1 : presenterBounds.Bottom + distance;
+				_mouse.MoveTo(new Point(presenterBounds.Left + presenterBounds.Width / 2, y), steps: 1);
+			}
 
 			private void PressAndRelease(double x)
 			{
