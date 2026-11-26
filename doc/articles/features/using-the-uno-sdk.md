@@ -96,8 +96,8 @@ Here are the supported features:
 | `Foldable`           | Adds a reference to [Uno.WinUI.Foldable](https://www.nuget.org/packages/Uno.WinUI.Foldable).                                                                                                                                               |
 | `GLCanvas`           | Adds support for the [OpenGL Canvas](xref:Uno.Controls.GLCanvasElement).                                                                                                                                                                   |
 | `GooglePlay`         | Adds support for [In App Reviews](xref:Uno.Features.StoreContext). For more information, see the [Store Context documentation](xref:Uno.Features.StoreContext).                                                                            |
-| `HotTesting`         | Adds [Uno.HotTesting](https://www.nuget.org/packages/Uno.HotTesting) in non-optimized builds, for tests written inside the app. The tests folder is left out of optimized builds; see [Hot Testing in non-optimized builds](#hot-testing-in-non-optimized-builds). |
 | `Hosting`            | Adds support for [Dependency Injection](xref:Uno.Extensions.DependencyInjection.Overview) using [Uno.Extensions.Hosting packages](https://www.nuget.org/packages?q=Uno.Extensions.Hosting).                                                |
+| `HotTesting`         | Adds [Uno.HotTesting](https://www.nuget.org/packages/Uno.HotTesting) in non-optimized builds, for tests written inside the app. The tests folder is left out of optimized builds; see [Hot Testing in non-optimized builds](#hot-testing-in-non-optimized-builds). |
 | `Http`               | Adds support for custom [Http Clients](xref:Uno.Extensions.Http.Overview) with [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                |
 | `HttpRefit`          | Adds support for strongly-typed REST API clients via [Refit](xref:Uno.Extensions.Http.Overview#refit)                                                                           |
 | `HttpKiota`          | Adds support for OpenAPI-generated clients via [Kiota](xref:Uno.Extensions.Http.Overview#kiota)                                                                           |
@@ -344,6 +344,7 @@ When `UnoFeatures` includes `HotTesting`, the `Uno.Sdk` references [`Uno.HotTest
 
 - The tests go in the `Tests` folder of the project. Set `HotTestingTestsFolder` to use another folder.
 - In optimized (Release) builds, the package is not referenced and the tests folder is left out of the build, the same way the Hot Design previews folder is.
+- The Windows (WinAppSDK) target doesn't get Hot Testing, in any build: `Uno.HotTesting` is built against the Uno Platform targets. The package is not referenced there, and the tests folder is left out.
 - Everything in that folder is left out, not only tests. If the project already has a `Tests` folder for something else, set `HotTestingTestsFolder` to another name before enabling the feature.
 - Only files the project includes by default are left out. A file the project adds explicitly, with `<Compile Include="...">`, still compiles in Release.
 - It is referenced with `PrivateAssets="all"`, so it does not flow to projects that reference yours. An app that uses a library with Hot Testing tests also needs the `HotTesting` feature for those tests to run.
@@ -370,7 +371,7 @@ When `UnoFeatures` includes `MVUX`, the `Uno.Sdk` also references [`Uno.HotTesti
 - It follows `UnoExtensionsVersion`, and is skipped (`UNOB0028`) when that version is older than the 7.4 builds that first ship it, or is a floating version or a range.
 - Debug and Release restore different packages. Restore the configuration you build before any `--no-restore` build, and if you use `RestoreLockedMode`, give each configuration its own lock file, e.g. `<NuGetLockFilePath>packages.$(Configuration).lock.json</NuGetLockFilePath>`.
 
-To turn the implicit reference off, along with the `HotTesting` feature's:
+To turn off this reference, and the one the `HotTesting` feature adds:
 
 ```xml
 <PropertyGroup>

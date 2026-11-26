@@ -266,7 +266,7 @@
 			"type": "bool"
 		},
 		"HotTestingTestsFolder": {
-			"description": "The project folder that holds the app's Hot Testing tests. It is left out of optimized builds, and of every build when UnoDisableHotTesting is true. Defaults to Tests when the HotTesting feature is enabled.",
+			"description": "The project folder that holds the app's Hot Testing tests. It is left out of optimized builds, of WinAppSDK targets, and of every build when UnoDisableHotTesting is true. Defaults to Tests when the HotTesting feature is enabled.",
 			"type": "string"
 		},
 		"UnoCoreLoggingSingletonVersion": {
@@ -633,7 +633,7 @@
 					"description": "Adds Microsoft.UI.Reactor, the declarative C# UI framework, through the Uno.Microsoft.UI.Reactor package. Uno Platform targets only: not supported on WinAppSDK."
 				},
 				"HotTesting": {
-					"description": "Adds Uno.HotTesting, for writing tests inside the app, in non-optimized builds. The tests folder (HotTestingTestsFolder, Tests by default) is left out of optimized builds."
+					"description": "Adds Uno.HotTesting, for writing tests inside the app, in non-optimized builds of the Uno Platform targets (not WinAppSDK). The tests folder (HotTestingTestsFolder, Tests by default) is left out of the builds without it."
 				},
 				"Skia": {
 					"description": "Adds support for SkiaSharp.",
