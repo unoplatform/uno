@@ -93,7 +93,7 @@
 	},
 	{
 		"group": "hottesting",
-		"version": "0.1.0-dev.182",
+		"version": "0.1.0-dev.193",
 		"packages": [
 			"Uno.HotTesting"
 		]
