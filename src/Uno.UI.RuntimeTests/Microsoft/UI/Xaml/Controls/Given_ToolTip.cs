@@ -327,7 +327,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Placement_Set_On_Owner_Then_It_Survives_A_Value_Change()
+		public async Task When_Placement_Set_On_Owner_Then_It_Is_Reset_By_A_Value_Change()
 		{
 			var owner = new Border { Width = 50, Height = 50 };
 			await UITestHelper.Load(owner);
@@ -339,8 +339,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			ToolTipService.SetToolTip(owner, "b");
 
-			// Replacing the wrapper reset this to Top; the reused wrapper keeps what the owner asked for.
-			Assert.AreEqual(PlacementMode.Bottom, wrapper.Placement);
+			// Same as WinUI, where the replacement wrapper starts from the default placement.
+			Assert.AreEqual(PlacementMode.Top, wrapper.Placement);
 		}
 
 		[TestMethod]

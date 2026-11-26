@@ -100,6 +100,7 @@ public partial class ToolTipService
 			if (ReferenceEquals(GetCurrent(), current) && Equals(owner.GetValue(property), newValue))
 			{
 				// PlacementTarget has no change callback, so it is picked up here.
+				current.Placement = GetPlacement(current);
 				current.SetAnchor(GetPlacementTarget(container) ?? container);
 				current.Content = newValue;
 			}
