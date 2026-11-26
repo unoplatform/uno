@@ -599,6 +599,14 @@ internal sealed unsafe partial class WebGpuFrame
 	// first use and handed back when the frame ends, so its array is not reallocated every frame.
 	private VertBuf _scratchBuf;
 	private VertBuf Scratch => _scratchBuf ??= _d.RentVerts();
+
+	// A recording's op staged before it is packed into the bag's arena, which copies it.
+	private VertBuf ClearedScratch()
+	{
+		Scratch.Clear();
+		return Scratch;
+	}
+
 	private readonly float[] _clipU = new float[ClipUFloats];   // the uniform: header + the first ClipUniformEntries entries
 	private float[] _clipMore = new float[4 * ClipEntryFloats];  // the entries past those, for the overflow buffer; grows
 
@@ -635,16 +643,19 @@ internal sealed unsafe partial class WebGpuFrame
 	// antialiasing a solid quad can have, and the SDF's local space comes from the device corners, so it is exact
 	// under any affine.
 	private int AppendAaRect(VertBuf rr, in WColor color, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
-		=> AppendRrect(rr, new RoundedRectCmd { Half = new Vector2((p1 - p0).Length() * 0.5f, (p3 - p0).Length() * 0.5f), Color = color }, p0, p1, p2, p3);
+		=> AppendRrect(rr, new Vector2((p1 - p0).Length() * 0.5f, (p3 - p0).Length() * 0.5f), default, color, 1f, new Vector2(-1f, -1f), default, default, p0, p1, p2, p3);
 
 	// Appends one rounded rect at the given corners: per-vertex SDF params in its own centred space (transform-invariant).
 	// The quad is grown a pixel past the shape on every side: coverage below 1 lies OUTSIDE the edge, and a quad that
 	// stops at the edge never rasterises it - which left a rotated rect hard and an offset one half a pixel thin.
 	// Returns how many vertices it appended.
 	private int AppendRrect(VertBuf rr, RoundedRectCmd rrc, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
+		=> AppendRrect(rr, rrc.Half, rrc.Radii, rrc.Color, rrc.Opacity, rrc.InnerHalf, rrc.InnerCenter, rrc.InnerRadii, p0, p1, p2, p3);
+
+	// The shape by value: a plain rect has no command of its own, and making one up cost an allocation per fill.
+	private int AppendRrect(VertBuf rr, Vector2 hf, Vector4 rad, WColor fill, float opacity, Vector2 ih, Vector2 ic, Vector4 ir, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
 	{
-		var hf = rrc.Half; var rad = rrc.Radii; var ih = rrc.InnerHalf; var ic = rrc.InnerCenter; var ir = rrc.InnerRadii;
-		float cr = rrc.Color.R / 255f, cg = rrc.Color.G / 255f, cb = rrc.Color.B / 255f, color = rrc.Color.A / 255f * rrc.Opacity;
+		float cr = fill.R / 255f, cg = fill.G / 255f, cb = fill.B / 255f, color = fill.A / 255f * opacity;
 		const float Pad = 1f;
 		var ax = p1 - p0; var ay = p3 - p0;
 		float dw = ax.Length(), dh = ay.Length();

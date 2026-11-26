@@ -265,7 +265,7 @@ internal sealed unsafe partial class WebGpuFrame
 	// One textured quad: into the pass's shared quad buffer per frame, else into a buffer the recording owns.
 	private void EmitImage(ImageCmd im, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, in ClipData cd, List<DrawOp> ops, OwnedResources owned = null)
 	{
-		var dst = owned is null ? _quadVerts : new VertBuf();
+		var dst = owned is null ? _quadVerts : ClearedScratch();
 		var first = (uint)(dst.Count / VertexStride.Quad);
 		AppendQuad(dst, p0, p1, p2, p3, im.U0, im.V0, im.U1, im.V1);
 		var iop = QuadOp(DrawKind.Image, dst, first, ImageBg(im, owned), cd, owned);
@@ -303,7 +303,7 @@ internal sealed unsafe partial class WebGpuFrame
 		var (p0, p1, p2, p3) = identity ? (gc.P0, gc.P1, gc.P2, gc.P3) : (Map(gc.P0, m), Map(gc.P1, m), Map(gc.P2, m), Map(gc.P3, m));
 		Span<Vector2> cover = stackalloc Vector2[OctSides * 3];
 		var count = (uint)GradientCover(p0, p1, p2, p3, cd, cover);
-		var dst = owned is null ? _gradVerts : new VertBuf();
+		var dst = owned is null ? _gradVerts : ClearedScratch();
 		var first = (uint)(dst.Count / VertexStride.Quad);
 		for (var t = 0; t < count; t++) { dst.Add(cover[t].X); dst.Add(cover[t].Y); dst.Add(0f); dst.Add(0f); }
 		ops.Add(owned is null
