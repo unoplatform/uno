@@ -631,22 +631,61 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 			return null;
 		}
 
-		var body = GetOwnerText();
-		if (_start >= body.Length || _end <= _start)
+		var textBlock = _owner as TextBlock;
+		ReadOnlySpan<char> span;
+		if (textBlock is not null)
 		{
-			return null;
+			span = GetText(-1).AsSpan();
+		}
+		else
+		{
+			var body = GetOwnerText();
+			if (_start >= body.Length || _end <= _start)
+			{
+				return null;
+			}
+
+			span = body.AsSpan(_start, _end - _start);
 		}
 
-		var span = body.Substring(_start, _end - _start);
+		var rangeStart = textBlock?.GetExportedTextOffset(_start) ?? _start;
 		var comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-		var index = backward ? span.LastIndexOf(text, comparison) : span.IndexOf(text, comparison);
-		if (index < 0)
+		var searchStart = 0;
+		var searchEnd = span.Length;
+		while (searchEnd - searchStart >= text.Length)
 		{
-			return null;
+			var search = span[searchStart..searchEnd];
+			var index = backward ? search.LastIndexOf(text, comparison) : search.IndexOf(text, comparison);
+			if (index < 0)
+			{
+				return null;
+			}
+
+			var matchStart = searchStart + index;
+			var matchEnd = matchStart + text.Length;
+			if (textBlock is null)
+			{
+				return new TextRangeAdapter(_ownerPeer, _owner, rangeStart + matchStart, rangeStart + matchEnd);
+			}
+
+			if (textBlock.GetFlatTextOffset(rangeStart + matchStart) is int start
+				&& textBlock.GetFlatTextOffset(rangeStart + matchEnd) is int end)
+			{
+				return new TextRangeAdapter(_ownerPeer, _owner, start, end);
+			}
+
+			// A flat range cannot split the CRLF of an explicit LineBreak.
+			if (backward)
+			{
+				searchEnd = matchEnd - 1;
+			}
+			else
+			{
+				searchStart = matchStart + 1;
+			}
 		}
 
-		var matchStart = _start + index;
-		return new TextRangeAdapter(_ownerPeer, _owner, matchStart, matchStart + text.Length);
+		return null;
 	}
 
 	public object GetAttributeValue(int attributeId)

@@ -106,6 +106,79 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.TextBlockTests
 		}
 
 		[TestMethod]
+		public void When_Finding_Text_Across_Explicit_And_Literal_LineBreaks()
+		{
+			var textBlock = new TextBlock();
+			textBlock.Inlines.Add(new Run { Text = "a\nb\r\nc" });
+			textBlock.Inlines.Add(new LineBreak());
+			textBlock.Inlines.Add(new Run { Text = "c" });
+			textBlock.Inlines.Add(new LineBreak());
+			textBlock.Inlines.Add(new Run { Text = "c" });
+
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBlock);
+			var document = ((ITextProvider)peer.GetPattern(PatternInterface.Text)).DocumentRange;
+			var exportedText = document.GetText(-1);
+			Assert.AreEqual("a\nb\r\nc\r\nc\r\nc", exportedText);
+			Assert.IsTrue(document.Compare(document.FindText(exportedText, backward: false, ignoreCase: false)));
+
+			Assert.IsNull(document.FindText("C\r\nC", backward: false, ignoreCase: false));
+			var first = document.FindText("C\r\nC", backward: false, ignoreCase: true);
+			var last = document.FindText("C\r\nC", backward: true, ignoreCase: true);
+			Assert.AreEqual("c\r\nc", first?.GetText(-1));
+			Assert.AreEqual("c\r\nc", last?.GetText(-1));
+			Assert.IsTrue(first.Compare(new DirectUI.TextRangeAdapter(peer, textBlock, 5, 8)));
+			Assert.IsTrue(last.Compare(new DirectUI.TextRangeAdapter(peer, textBlock, 7, 10)));
+
+			Assert.AreEqual("a\nb\r\nc", document.FindText("a\nb\r\nc", backward: false, ignoreCase: false)?.GetText(-1));
+			Assert.AreEqual("\n", document.FindText("\n", backward: true, ignoreCase: false)?.GetText(-1));
+
+			var tail = document.Clone();
+			tail.MoveEndpointByRange(TextPatternRangeEndpoint.Start, last, TextPatternRangeEndpoint.Start);
+			Assert.IsTrue(last.Compare(tail.FindText(tail.GetText(-1), backward: false, ignoreCase: false)));
+			var afterBreak = tail.FindText("c", backward: true, ignoreCase: false);
+			Assert.IsTrue(afterBreak.Compare(new DirectUI.TextRangeAdapter(peer, textBlock, 9, 10)));
+		}
+
+		[TestMethod]
+		[DataRow(false)]
+		[DataRow(true)]
+		public void When_Replacing_Literal_And_Explicit_LineBreaks(bool startsWithExplicitBreak)
+		{
+			const string text = "a\r\nb";
+			var run = new Run { Text = text };
+			var span = new Span { Inlines = { new Run { Text = "a" }, new LineBreak(), new Run { Text = "b" } } };
+			var textBlock = new TextBlock();
+			textBlock.Inlines.Add(startsWithExplicitBreak ? span : run);
+			textBlock.Selection = startsWithExplicitBreak ? new(2, 3) : new(3, 4);
+			Assert.AreEqual("b", textBlock.SelectedText);
+
+			textBlock.Inlines[0] = startsWithExplicitBreak ? run : span;
+
+			Assert.AreEqual(text, textBlock.Text);
+			Assert.AreEqual(new TextBlock.Range(0, 0), textBlock.Selection);
+			Assert.AreEqual(string.Empty, textBlock.SelectedText);
+		}
+
+		[TestMethod]
+		public void When_Editing_Inlines_With_The_Same_Number_Of_LineBreaks()
+		{
+			var textBlock = new TextBlock();
+			textBlock.Inlines.Add(new Span { Inlines = { new Run { Text = "a" }, new LineBreak(), new Run { Text = "b\r\nc" } } });
+			var selection = new TextBlock.Range(2, 3);
+			textBlock.Selection = selection;
+			Assert.AreEqual("b", textBlock.SelectedText);
+
+			textBlock.Inlines[0] = new Span { Inlines = { new Run { Text = "a" }, new LineBreak(), new Run { Text = "b" }, new Run { Text = "\r\nc" } } };
+			Assert.AreEqual(selection, textBlock.Selection);
+			Assert.AreEqual("b", textBlock.SelectedText);
+
+			textBlock.Inlines[0] = new Span { Inlines = { new Run { Text = "a\r\nb" }, new LineBreak(), new Run { Text = "c" } } };
+			Assert.AreEqual("a\r\nb\r\nc", textBlock.Text);
+			Assert.AreEqual(new TextBlock.Range(0, 0), textBlock.Selection);
+			Assert.AreEqual(string.Empty, textBlock.SelectedText);
+		}
+
+		[TestMethod]
 		public void When_LineBreak_SurroundingWhiteSpace()
 		{
 			var page = new LineBreak_Surrounding_WhiteSpace();

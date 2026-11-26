@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text;
 using Uno.Disposables;
 using Uno.Extensions;
 using Microsoft.UI.Xaml.Documents;
@@ -50,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
-		private int _inlineLineBreakCount;
+		private int[] _inlineLineBreakPositions = [];
 		private IDisposable _foregroundBrushChangedSubscription;
 
 		// Used for text selection which is handled natively
@@ -187,7 +188,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (updateText)
 			{
-				_inlineLineBreakCount = 0;
+				var previousLineBreakPositions = _inlineLineBreakPositions;
+				List<int> lineBreakPositions = null;
 				if (knownText is not null)
 				{
 					_inlinesText = knownText;
@@ -198,14 +200,29 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					var inlines = Inlines.TraversedTree.leafTree;
-					_inlineLineBreakCount = inlines.Count(static inline => inline is LineBreak);
-					_inlinesText = string.Concat(inlines.Select(InlineExtensions.GetPlainText));
+					var text = new StringBuilder();
+					foreach (var inline in Inlines.TraversedTree.leafTree)
+					{
+						if (inline is LineBreak)
+						{
+							(lineBreakPositions ??= []).Add(text.Length);
+						}
+
+						text.Append(InlineExtensions.GetPlainText(inline));
+					}
+
+					_inlinesText = text.ToString();
 				}
+				_inlineLineBreakPositions = lineBreakPositions?.ToArray() ?? [];
 
 				if (!_skipInlinesChangedTextSetter)
 				{
+					var textChanged = Text != _inlinesText;
 					Text = _inlinesText;
+					if (!textChanged && !previousLineBreakPositions.AsSpan().SequenceEqual(_inlineLineBreakPositions))
+					{
+						ResetSelection();
+					}
 				}
 
 				if (removed is null || inserted is null)
@@ -372,14 +389,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected virtual void OnTextChanged(string oldValue, string newValue)
 		{
 			UpdateInlines(newValue);
-
-#if __SKIA__
-			if (OwningTextBox is null)
-#endif
-			{
-				// On skia, we don't want to set the selection here in case TextBox is managing the selection.
-				Selection = new Range(0, 0);
-			}
+			ResetSelection();
 
 			OnTextChangedPartial();
 			InvalidateTextBlock();
@@ -397,6 +407,17 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void OnTextChangedPartial();
+
+		private void ResetSelection()
+		{
+#if __SKIA__
+			if (OwningTextBox is null)
+#endif
+			{
+				// On skia, we don't want to set the selection here in case TextBox is managing the selection.
+				Selection = new Range(0, 0);
+			}
+		}
 
 		/// <summary>
 		/// When the TextBlock's accessible name is derived from its <see cref="Text"/> (i.e. no
@@ -1987,15 +2008,45 @@ namespace Microsoft.UI.Xaml.Controls
 		void IBlock.Invalidate(bool updateText) => InvalidateInlineAndRequireRepaint();
 		string IBlock.GetText() => Text;
 
-		internal string TextForSelection => _inlineLineBreakCount == 0
+		internal string TextForSelection => _inlineLineBreakPositions.Length == 0
 			? Text
 			: string.Concat(Inlines.TraversedTree.leafTree.Select(InlineExtensions.GetText));
 
-		internal int TextForSelectionLength => Text.Length - _inlineLineBreakCount;
+		internal int TextForSelectionLength => Text.Length - _inlineLineBreakPositions.Length;
 
-		internal string GetSelectedText(int start, int end) => _inlineLineBreakCount == 0
+		internal string GetSelectedText(int start, int end) => _inlineLineBreakPositions.Length == 0
 			? Text[start..end]
 			: InlineExtensions.GetSelectedText([Inlines], start, end, includeParagraphBreaks: false);
+
+		internal int GetExportedTextOffset(int flatOffset)
+		{
+			var offset = flatOffset;
+			foreach (var lineBreak in _inlineLineBreakPositions)
+			{
+				if (offset <= lineBreak)
+				{
+					break;
+				}
+
+				offset++;
+			}
+
+			return offset;
+		}
+
+		internal int? GetFlatTextOffset(int exportedOffset)
+		{
+			var index = Array.BinarySearch(_inlineLineBreakPositions, exportedOffset);
+			if (index >= 0)
+			{
+				return exportedOffset - index;
+			}
+
+			var precedingBreaks = ~index;
+			return precedingBreaks > 0 && exportedOffset == _inlineLineBreakPositions[precedingBreaks - 1] + 1
+				? null
+				: exportedOffset - precedingBreaks;
+		}
 
 		partial void OnSelectionChanged()
 		{
