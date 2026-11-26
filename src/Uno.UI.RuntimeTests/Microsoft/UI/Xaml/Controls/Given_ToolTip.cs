@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.UI;
 using System.Linq;
-using System.Reflection;
 using Windows.UI;
 using System.Threading.Tasks;
 using Windows.UI.Input.Preview.Injection;
@@ -25,6 +24,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_ToolTip
 	{
+		[TestMethod]
+		public async Task When_String_ToolTip_Changes_Then_Latest_Value_Is_Used()
+		{
+			var owner = new Border { Width = 50, Height = 50 };
+			await UITestHelper.Load(owner);
+
+			ToolTipService.SetToolTip(owner, "a");
+			ToolTipService.SetToolTip(owner, "b");
+			ToolTipService.SetToolTip(owner, "c");
+			Assert.AreEqual("c", ToolTipService.GetToolTip(owner));
+
+			ToolTipService.SetToolTip(owner, null);
+			Assert.IsNull(ToolTipService.GetToolTip(owner));
+
+			ToolTipService.SetToolTip(owner, "d");
+			Assert.AreEqual("d", ToolTipService.GetToolTip(owner));
+		}
+
 #if HAS_UNO // ToolTipService.GetToolTipReference is internal
 		[TestMethod]
 		public async Task When_String_ToolTip_Changes_Then_Wrapper_Reused()
@@ -146,9 +163,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var shared = ToolTipService.GetToolTipReference(owner1);
 			Assert.IsNotNull(shared);
 
-			// ConvertToToolTip hands a second owner the ToolTip that is the element's parent (as in WinUI). In Uno the
-			// content's reported parent is the template's ContentPresenter (or null before the first open), so that
-			// branch is only reached when something sets the parent; set it here to exercise it.
+			// Uno reports the content's parent as the template's ContentPresenter (or null before the first open), so set the
+			// ToolTip parent by hand to reach the branch where ConvertToToolTip returns the parent ToolTip (as WinUI does).
 			element.SetParent(shared);
 			ToolTipService.SetToolTip(owner2, element);
 			Assert.AreSame(shared, ToolTipService.GetToolTipReference(owner2), "premise: the ToolTip is shared");
@@ -164,6 +180,82 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Implicit_ToolTip_Set_As_Explicit_On_Second_Owner_Then_Change_On_One_Does_Not_Affect_The_Other()
+		{
+			var owner1 = new Border { Width = 50, Height = 50 };
+			var owner2 = new Border { Width = 50, Height = 50 };
+			await UITestHelper.Load(new StackPanel { Children = { owner1, owner2 } });
+
+			ToolTipService.SetToolTip(owner1, "one");
+			var wrapper = ToolTipService.GetToolTipReference(owner1);
+			ToolTipService.SetToolTip(owner2, wrapper);
+			Assert.IsFalse(wrapper.IsImplicitToolTip, "A ToolTip handed out explicitly must not be reused in place");
+
+			ToolTipService.SetToolTip(owner1, "two");
+
+			Assert.AreEqual("one", wrapper.Content, "The ToolTip still used by owner2 must not change");
+			Assert.AreNotSame(wrapper, ToolTipService.GetToolTipReference(owner1));
+			Assert.AreSame(wrapper, ToolTipService.GetToolTipReference(owner2));
+		}
+
+		[TestMethod]
+		public async Task When_Closed_Handler_Clears_Value_Then_Wrapper_Is_Not_Updated()
+		{
+			var owner = new Border { Width = 50, Height = 50 };
+			await UITestHelper.Load(owner);
+
+			ToolTipService.SetToolTip(owner, "a");
+			var wrapper = ToolTipService.GetToolTipReference(owner);
+			wrapper.Closed += (_, _) => ToolTipService.SetToolTip(owner, null);
+
+			try
+			{
+				wrapper.IsOpen = true;
+				await UITestHelper.WaitForIdle();
+
+				ToolTipService.SetToolTip(owner, "outer");
+
+				Assert.IsNull(ToolTipService.GetToolTipReference(owner), "The nested change should have unregistered the wrapper");
+				Assert.AreEqual("a", wrapper.Content, "A discarded wrapper must not receive the outer value");
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Closed_Handler_Throws_Then_Wrapper_Still_Gets_New_Value()
+		{
+			var owner = new Border { Width = 50, Height = 50 };
+			await UITestHelper.Load(owner);
+
+			ToolTipService.SetToolTip(owner, "a");
+			var wrapper = ToolTipService.GetToolTipReference(owner);
+			wrapper.Closed += (_, _) => throw new InvalidOperationException("from Closed");
+
+			try
+			{
+				wrapper.IsOpen = true;
+				await UITestHelper.WaitForIdle();
+
+				try
+				{
+					ToolTipService.SetToolTip(owner, "b");
+				}
+				catch (InvalidOperationException)
+				{
+				}
+
+				Assert.AreEqual("b", wrapper.Content, "The wrapper should not be left with stale content");
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Element_Parented_By_Explicit_ToolTip_Then_That_ToolTip_Is_Used()
 		{
 			var owner = new Border { Width = 50, Height = 50 };
@@ -171,7 +263,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var element = new TextBlock { Text = "inside" };
 			var explicitToolTip = new ToolTip { Content = element };
-			// See When_Element_ToolTip_Shared_By_Two_Owners_...: Uno does not report the ToolTip as the content's parent.
+			// See the shared-ToolTip test above for why the parent is set by hand.
 			element.SetParent(explicitToolTip);
 
 			ToolTipService.SetToolTip(owner, "text");
@@ -225,13 +317,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			ToolTipService.SetToolTip(owner, "a");
 			var wrapper = ToolTipService.GetToolTipReference(owner);
-			Assert.AreSame(owner, AnchorOf(wrapper));
+			Assert.AreSame(owner, wrapper.AnchorForTesting);
 
 			ToolTipService.SetPlacementTarget(owner, target);
 			ToolTipService.SetToolTip(owner, "b");
 
 			Assert.AreSame(wrapper, ToolTipService.GetToolTipReference(owner));
-			Assert.AreSame(target, AnchorOf(wrapper), "The reused wrapper should be anchored to the new PlacementTarget");
+			Assert.AreSame(target, wrapper.AnchorForTesting, "The reused wrapper should be anchored to the new PlacementTarget");
 		}
 
 		[TestMethod]
@@ -1731,11 +1823,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				popups[i].IsOpen = false;
 			}
 		}
-
-		/// <summary>The element a ToolTip is placed relative to (the owner, or its PlacementTarget): its private _owner field.</summary>
-		private static object AnchorOf(ToolTip toolTip)
-			=> (typeof(ToolTip).GetField("_owner", BindingFlags.Instance | BindingFlags.NonPublic) ?? throw new AssertFailedException("ToolTip has no _owner field."))
-				.GetValue(toolTip);
 	}
 
 	[Bindable]
