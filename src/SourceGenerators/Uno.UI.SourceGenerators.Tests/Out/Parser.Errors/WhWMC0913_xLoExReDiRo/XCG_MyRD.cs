@@ -31,11 +31,11 @@ namespace MyProject
 	public sealed partial class GlobalStaticResources
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_MyRD_77da33433823c3123d21641a41765572 = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_MyRD_00877dfe3a13a8a0feda37bfe52fbb42 = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_MyRD_77da33433823c3123d21641a41765572 = "ms-appx:///TestProject/0/MyRD.xaml";
+		private const string __baseUri_MyRD_00877dfe3a13a8a0feda37bfe52fbb42 = "ms-appx:///TestProject/0/MyRD.xaml";
 		// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.
-		internal sealed class ResourceDictionarySingleton__MyRD_77da33433823c3123d21641a41765572 : global::Uno.UI.IXamlResourceDictionaryProvider
+		internal sealed class ResourceDictionarySingleton__MyRD_00877dfe3a13a8a0feda37bfe52fbb42 : global::Uno.UI.IXamlResourceDictionaryProvider
 		{
 			private static global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 			private static global::Uno.UI.IXamlResourceDictionaryProvider __that;
@@ -45,7 +45,7 @@ namespace MyProject
 				{
 					if (__that == null)
 					{
-						__that = new ResourceDictionarySingleton__MyRD_77da33433823c3123d21641a41765572();
+						__that = new ResourceDictionarySingleton__MyRD_00877dfe3a13a8a0feda37bfe52fbb42();
 					}
 
 					return __that;
@@ -53,25 +53,25 @@ namespace MyProject
 			}
 
 			private readonly global::Uno.UI.Xaml.XamlParseContext __ParseContext_;
-			internal static global::Uno.UI.Xaml.XamlParseContext GetParseContext() => ((ResourceDictionarySingleton__MyRD_77da33433823c3123d21641a41765572)Instance).__ParseContext_;
+			internal static global::Uno.UI.Xaml.XamlParseContext GetParseContext() => ((ResourceDictionarySingleton__MyRD_00877dfe3a13a8a0feda37bfe52fbb42)Instance).__ParseContext_;
 
-			public ResourceDictionarySingleton__MyRD_77da33433823c3123d21641a41765572()
+			public ResourceDictionarySingleton__MyRD_00877dfe3a13a8a0feda37bfe52fbb42()
 			{
 				__ParseContext_ = global::MyProject.GlobalStaticResources.__ParseContext_;
 			}
 
 			// Skipping initializer 1 for MyKey  - Literal declaration, will be eagerly materialized and added to the dictionary
-			private global::Microsoft.UI.Xaml.ResourceDictionary _MyRD_77da33433823c3123d21641a41765572_ResourceDictionary;
+			private global::Microsoft.UI.Xaml.ResourceDictionary _MyRD_00877dfe3a13a8a0feda37bfe52fbb42_ResourceDictionary;
 
-			internal global::Microsoft.UI.Xaml.ResourceDictionary MyRD_77da33433823c3123d21641a41765572_ResourceDictionary
+			internal global::Microsoft.UI.Xaml.ResourceDictionary MyRD_00877dfe3a13a8a0feda37bfe52fbb42_ResourceDictionary
 			{
 				get
 				{
-					if (_MyRD_77da33433823c3123d21641a41765572_ResourceDictionary == null)
+					if (_MyRD_00877dfe3a13a8a0feda37bfe52fbb42_ResourceDictionary == null)
 					{
-						_MyRD_77da33433823c3123d21641a41765572_ResourceDictionary = global::Microsoft.UI.Xaml.ResourceDictionary.CreateWithCapacity(1);
-						_MyRD_77da33433823c3123d21641a41765572_ResourceDictionary.IsParsing = true;
-						_MyRD_77da33433823c3123d21641a41765572_ResourceDictionary["MyKey"] = 
+						_MyRD_00877dfe3a13a8a0feda37bfe52fbb42_ResourceDictionary = global::Microsoft.UI.Xaml.ResourceDictionary.CreateWithCapacity(1);
+						_MyRD_00877dfe3a13a8a0feda37bfe52fbb42_ResourceDictionary.IsParsing = true;
+						_MyRD_00877dfe3a13a8a0feda37bfe52fbb42_ResourceDictionary["MyKey"] = 
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							new global::Microsoft.UI.Xaml.Controls.Border
 							{
@@ -79,27 +79,27 @@ namespace MyProject
 								Name = "MyName",
 								// Source MyRD.xaml (Line 5:4)
 							}
-							.MyRD_77da33433823c3123d21641a41765572_XamlApply((MyRD_77da33433823c3123d21641a41765572XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							.MyRD_00877dfe3a13a8a0feda37bfe52fbb42_XamlApply((MyRD_00877dfe3a13a8a0feda37bfe52fbb42XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 							{
 							// x:Name MyName
 							// Load False
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MyRD_77da33433823c3123d21641a41765572);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MyRD_00877dfe3a13a8a0feda37bfe52fbb42);
 							__p1.CreationComplete();
 							}
 							))
 						)
 						;
-						_MyRD_77da33433823c3123d21641a41765572_ResourceDictionary.Source = new global::System.Uri("ms-resource:///Files/0/MyRD.xaml");
-						_MyRD_77da33433823c3123d21641a41765572_ResourceDictionary.CreationComplete();
+						_MyRD_00877dfe3a13a8a0feda37bfe52fbb42_ResourceDictionary.Source = new global::System.Uri("ms-resource:///Files/0/MyRD.xaml");
+						_MyRD_00877dfe3a13a8a0feda37bfe52fbb42_ResourceDictionary.CreationComplete();
 					}
-					return _MyRD_77da33433823c3123d21641a41765572_ResourceDictionary;
+					return _MyRD_00877dfe3a13a8a0feda37bfe52fbb42_ResourceDictionary;
 				}
 			}
 
-			global::Microsoft.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => MyRD_77da33433823c3123d21641a41765572_ResourceDictionary;
+			global::Microsoft.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => MyRD_00877dfe3a13a8a0feda37bfe52fbb42_ResourceDictionary;
 		}
 
-		internal static global::Microsoft.UI.Xaml.ResourceDictionary MyRD_77da33433823c3123d21641a41765572_ResourceDictionary => ResourceDictionarySingleton__MyRD_77da33433823c3123d21641a41765572.Instance.GetResourceDictionary();
+		internal static global::Microsoft.UI.Xaml.ResourceDictionary MyRD_00877dfe3a13a8a0feda37bfe52fbb42_ResourceDictionary => ResourceDictionarySingleton__MyRD_00877dfe3a13a8a0feda37bfe52fbb42.Instance.GetResourceDictionary();
 	}
 }
 namespace MyProject.__Resources
@@ -107,11 +107,11 @@ namespace MyProject.__Resources
 }
 namespace MyProject
 {
-	static class MyRD_77da33433823c3123d21641a41765572XamlApplyExtensions
+	static class MyRD_00877dfe3a13a8a0feda37bfe52fbb42XamlApplyExtensions
 	{
 		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.Border instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Border MyRD_77da33433823c3123d21641a41765572_XamlApply(this global::Microsoft.UI.Xaml.Controls.Border instance, XamlApplyHandler0 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Border MyRD_00877dfe3a13a8a0feda37bfe52fbb42_XamlApply(this global::Microsoft.UI.Xaml.Controls.Border instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;

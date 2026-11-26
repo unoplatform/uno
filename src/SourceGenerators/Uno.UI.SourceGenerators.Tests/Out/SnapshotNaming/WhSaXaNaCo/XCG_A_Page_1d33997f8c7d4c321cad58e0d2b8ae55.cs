@@ -29,9 +29,9 @@ namespace TestRepro
 	partial class DottedPage : global::Microsoft.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_A_Page_fa3e34c92936dad7c57b0dc84f1649c9 = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_A_Page_1d33997f8c7d4c321cad58e0d2b8ae55 = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_A_Page_fa3e34c92936dad7c57b0dc84f1649c9 = "ms-appx:///TestProject/0/A.Page.xaml";
+		private const string __baseUri_A_Page_1d33997f8c7d4c321cad58e0d2b8ae55 = "ms-appx:///TestProject/0/A.Page.xaml";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -49,9 +49,9 @@ namespace TestRepro
 					Text = "Dotted",
 					// Source A.Page.xaml (Line 4:4)
 				}
-				.A_Page_fa3e34c92936dad7c57b0dc84f1649c9_XamlApply((A_Page_fa3e34c92936dad7c57b0dc84f1649c9XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+				.A_Page_1d33997f8c7d4c321cad58e0d2b8ae55_XamlApply((A_Page_1d33997f8c7d4c321cad58e0d2b8ae55XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 				{
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_A_Page_fa3e34c92936dad7c57b0dc84f1649c9);
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_A_Page_1d33997f8c7d4c321cad58e0d2b8ae55);
 				__p1.CreationComplete();
 				}
 				))
@@ -59,17 +59,17 @@ namespace TestRepro
 			;
 			
 			this
-			.A_Page_fa3e34c92936dad7c57b0dc84f1649c9_XamlApply((A_Page_fa3e34c92936dad7c57b0dc84f1649c9XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+			.A_Page_1d33997f8c7d4c321cad58e0d2b8ae55_XamlApply((A_Page_1d33997f8c7d4c321cad58e0d2b8ae55XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
 			// Source A.Page.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/A.Page.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
-			.A_Page_fa3e34c92936dad7c57b0dc84f1649c9_XamlApply((A_Page_fa3e34c92936dad7c57b0dc84f1649c9XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+			.A_Page_1d33997f8c7d4c321cad58e0d2b8ae55_XamlApply((A_Page_1d33997f8c7d4c321cad58e0d2b8ae55XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
 			// Class TestRepro.DottedPage
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_A_Page_fa3e34c92936dad7c57b0dc84f1649c9);
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_A_Page_1d33997f8c7d4c321cad58e0d2b8ae55);
 			__p1.CreationComplete();
 			}
 			))
@@ -82,18 +82,18 @@ namespace TestRepro
 }
 namespace MyProject
 {
-	static class A_Page_fa3e34c92936dad7c57b0dc84f1649c9XamlApplyExtensions
+	static class A_Page_1d33997f8c7d4c321cad58e0d2b8ae55XamlApplyExtensions
 	{
 		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.TextBlock instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.TextBlock A_Page_fa3e34c92936dad7c57b0dc84f1649c9_XamlApply(this global::Microsoft.UI.Xaml.Controls.TextBlock instance, XamlApplyHandler0 handler)
+		public static global::Microsoft.UI.Xaml.Controls.TextBlock A_Page_1d33997f8c7d4c321cad58e0d2b8ae55_XamlApply(this global::Microsoft.UI.Xaml.Controls.TextBlock instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.Page instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Page A_Page_fa3e34c92936dad7c57b0dc84f1649c9_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler1 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Page A_Page_1d33997f8c7d4c321cad58e0d2b8ae55_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;

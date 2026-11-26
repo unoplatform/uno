@@ -68,12 +68,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_implicitPrefixesKey = string.Join("|", _implicitPrefixes.Select(p => p.Prefix + ":" + p.Uri));
 		}
 
-		public ParallelQuery<XamlFileDefinition> ParseFiles(IEnumerable<XamlSource> xamlSourceFiles, string projectDirectory, CancellationToken ct)
+		public ParallelQuery<XamlFileDefinition> ParseFiles(IEnumerable<XamlSource> xamlSourceFiles, string projectDirectory, string? intermediateDirectory, CancellationToken ct)
 		{
 			return xamlSourceFiles
 				.AsParallel()
 				.WithCancellation(ct)
-				.Select(src => ParseFile(src, GetTargetFilePath(src.Item).Replace("\\", "/"), ct))
+				.Select(src => ParseFile(src, GetTargetFilePath(src.Item).Replace("\\", "/"), intermediateDirectory, ct))
 				.Where(fileResult => fileResult is not null)!;
 
 			string GetTargetFilePath(MSBuildItem fileItem)
@@ -103,7 +103,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_cachedFiles.Remove(kvp => now - kvp.Value.LastTimeUsed > _cacheEntryLifetime);
 		}
 
-		private XamlFileDefinition? ParseFile(XamlSource src, string targetFilePath, CancellationToken ct)
+		private XamlFileDefinition? ParseFile(XamlSource src, string targetFilePath, string? intermediateDirectory, CancellationToken ct)
 		{
 			try
 			{
@@ -139,7 +139,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				ct.ThrowIfCancellationRequested();
 
-				var xamlFileDefinition = new XamlFileDefinition(sourcePath, sourceLink, targetFilePath, sourceText.ToString(), sourceText.GetChecksum());
+				var xamlFileDefinition = new XamlFileDefinition(sourcePath, sourceLink, targetFilePath, sourceText.ToString(), sourceText.GetChecksum(), intermediateDirectory);
 				var ctx = new XamlFileParserContext(sourcePath);
 				try
 				{
