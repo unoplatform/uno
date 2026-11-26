@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -56,6 +57,7 @@ namespace Microsoft.UI.Xaml.Data
 		}
 
 		private BindingPath[] _updateSources;
+		private readonly BindingPath[] _staticUpdateSources;
 
 		public string TargetName => TargetPropertyDetails.Property.Name;
 
@@ -174,6 +176,26 @@ namespace Microsoft.UI.Xaml.Data
 					{
 					})
 					.ToArray();
+			}
+
+			if (ParentBinding.XBindStaticPropertyPaths != null)
+			{
+				var staticPaths = new List<BindingPath>();
+				foreach (var (source, paths) in ParentBinding.XBindStaticPropertyPaths)
+				{
+					foreach (var path in paths.Where(p => !string.IsNullOrEmpty(p)))
+					{
+						staticPaths.Add(new BindingPath(path: path, fallbackValue: null, forAnimations: false, allowPrivateMembers: true)
+						{
+							DataContext = source
+						});
+					}
+				}
+
+				if (staticPaths.Count > 0)
+				{
+					_staticUpdateSources = staticPaths.ToArray();
+				}
 			}
 
 			if (ParentBinding.ElementNameSubject != null)
@@ -388,6 +410,7 @@ namespace Microsoft.UI.Xaml.Data
 
 				// If this is not an x:Bind
 				&& _updateSources is null
+				&& _staticUpdateSources is null
 
 				// If there's a valid DataContext
 				&& GetWeakDataContext() is { IsAlive: true } weakDataContext)
@@ -642,22 +665,26 @@ namespace Microsoft.UI.Xaml.Data
 							bindingPath.SetWeakDataContext(weakDataContext);
 						}
 					}
-
-					_subscription.Disposable = new DisposableAction(() =>
-					{
-						foreach (var bindingPath in _updateSources)
-						{
-							bindingPath.Expression = null;
-						}
-					});
-
 				}
 				else
 				{
 					_bindingPath.Expression = this;
 					_bindingPath.SetWeakDataContext(weakDataContext);
-					_subscription.Disposable = new DisposableAction(() => _bindingPath.Expression = null);
 				}
+
+				// Static update sources have their DataContext pre-set to the static root objects.
+				// We only need to set their Expression to enable change notifications.
+				if (_staticUpdateSources != null)
+				{
+					foreach (var bindingPath in _staticUpdateSources)
+					{
+						bindingPath.Expression = this;
+					}
+				}
+
+				// A single subscription detaches every source, so that suspending or re-applying
+				// the binding stops the static-rooted sources as well.
+				_subscription.Disposable = new DisposableAction(ClearUpdateSourceExpressions);
 			}
 			else
 			{
@@ -686,6 +713,29 @@ namespace Microsoft.UI.Xaml.Data
 			}
 
 			_isBindingSuspended = false;
+		}
+
+		private void ClearUpdateSourceExpressions()
+		{
+			if (_updateSources != null)
+			{
+				foreach (var bindingPath in _updateSources)
+				{
+					bindingPath.Expression = null;
+				}
+			}
+			else
+			{
+				_bindingPath.Expression = null;
+			}
+
+			if (_staticUpdateSources != null)
+			{
+				foreach (var bindingPath in _staticUpdateSources)
+				{
+					bindingPath.Expression = null;
+				}
+			}
 		}
 
 		internal void OnValueChanged(object o)
@@ -937,6 +987,15 @@ namespace Microsoft.UI.Xaml.Data
 		{
 			_subscription.Dispose();
 			_bindingPath.Dispose();
+
+			if (_staticUpdateSources != null)
+			{
+				foreach (var bindingPath in _staticUpdateSources)
+				{
+					bindingPath.Dispose();
+				}
+			}
+
 			_disposed = true;
 		}
 	}
