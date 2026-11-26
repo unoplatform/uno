@@ -136,17 +136,28 @@ internal sealed unsafe partial class WebGpuFrame
 	}
 
 	/// <summary>
-	/// The replay scale to bake an arena recording's masks at, or false when the transform cannot be expressed as
-	/// one. Rotation and skew are refused HERE and only here: an arena mask is baked from identity-space geometry
-	/// and then mapped by the GPU transform, so a rotated replay would resample the coverage ramp.
+	/// The replay scale an arena recording's masks are baked for, signed, or false when the transform cannot be
+	/// expressed as one. Rotation and skew are refused HERE and only here: an arena mask is baked from identity-space
+	/// geometry and then mapped by the GPU transform, so a rotated replay would resample the coverage ramp. A mirror
+	/// is not refused: the mask is baked at the scale's magnitude and the GPU transform flips its quad, which still
+	/// lands every texel on a pixel (see <see cref="AtlasPlace"/>).
 	/// </summary>
 	private static bool TryAtlasScale(in Matrix3x2 t, out Vector2 scale)
 	{
 		scale = new Vector2(t.M11, t.M22);
-		var ok = MathF.Abs(t.M12) < 1e-4f && MathF.Abs(t.M21) < 1e-4f && t.M11 > 0f && t.M22 > 0f;
+		var ok = MathF.Abs(t.M12) < 1e-4f && MathF.Abs(t.M21) < 1e-4f && MathF.Abs(t.M11) > 0f && MathF.Abs(t.M22) > 0f;
 		if (!ok) { WebGpuCoverage.ScaleBlocked++; }
 		return ok;
 	}
+
+	/// <summary>
+	/// The replay translation in the masks' texel frame. On a mirrored axis the texels run against the device axis,
+	/// so the device grid, seen from the op's space, is the grid of the unmirrored scale placed at the negated
+	/// translation: keying and placing with that bakes the mask unmirrored, at the phase it is drawn at, and the
+	/// flipped quad samples it mirrored. A mask therefore never depends on the sign it is drawn under.
+	/// </summary>
+	private static Vector2 AtlasPlace(in Matrix3x2 t)
+		=> new(t.M11 < 0f ? -t.M31 : t.M31, t.M22 < 0f ? -t.M32 : t.M32);
 
 	/// <summary>
 	/// Device pixels per unit of the op's space for a mask bake: the transform's column lengths. Unlike the atlas
