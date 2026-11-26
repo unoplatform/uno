@@ -12,6 +12,8 @@ namespace Uno.UI.Runtime.Win32;
 internal partial class Win32WindowWrapper
 {
 	private RenderThread? _renderThread;
+	// Mirrors WinUI's DesktopWindowImpl::OnSizeChanged: a minimized window is not visible, so it renders nothing.
+	private volatile bool _isMinimized;
 
 	// The negotiated graphics context that drives the per-frame loop (AcquireRenderTarget → render → Present).
 	private ISwapChain _context = null!;
@@ -69,7 +71,8 @@ internal partial class Win32WindowWrapper
 				NativeDispatcher.Main.Enqueue(() =>
 					RenderingNegativePathReevaluated?.Invoke(this, clipPath),
 					NativeDispatcherPriority.Normal);
-			});
+			},
+			fps: _refreshRate);
 
 		// The window is registered, and can be asked for frames, before graphics negotiation creates this thread;
 		// those requests had nothing to signal and the target would wait for them forever.
@@ -99,6 +102,21 @@ internal partial class Win32WindowWrapper
 		// The context skips its present when no frame was acquired (nothing recorded yet, empty bounds) or drops
 		// one (a just-resized swapchain); reporting a present the synchronous show/resize path never got would let
 		// it show the window before the first frame is on screen.
-		return _context is IWin32PresentReporting { PresentedLastFrame: false } ? null : clipPath;
+		return _isMinimized || _context is IWin32PresentReporting { PresentedLastFrame: false } ? null : clipPath;
+	}
+
+	private void UpdateMinimizedState(WPARAM sizeType)
+	{
+		switch ((uint)sizeType.Value)
+		{
+			case PInvoke.SIZE_MINIMIZED:
+				_isMinimized = true;
+				break;
+			case PInvoke.SIZE_RESTORED or PInvoke.SIZE_MAXIMIZED when _isMinimized:
+				_isMinimized = false;
+				// Like WinUI's EnableRender(true): nothing else may ask for the frame that puts the content back.
+				_renderThread?.SignalNewFrame();
+				break;
+		}
 	}
 }
