@@ -2,13 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media;
 
@@ -739,6 +742,114 @@ public class Given_CompositionTarget
 		}
 
 		return (ticks, frames);
+	}
+
+	/// <summary>
+	/// A swapchain replaced by another of the same size (an Android surface re-created when the app resumes) must
+	/// be painted whole: the new one holds none of the previous frame's pixels, even when it otherwise preserves
+	/// its contents between frames, and an unchanged frame must not be skipped onto it.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_SwapChain_Replaced_At_Same_Size_Then_It_Is_Painted_Whole()
+	{
+		var border = new Border { Width = 50, Height = 50, Background = new SolidColorBrush(Colors.Red) };
+		await UITestHelper.Load(border);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var target = (CompositionTarget)border.Visual.CompositionTarget!;
+		if (target.Renderer is not IDrawingFactory<ISoftwareRenderTarget>)
+		{
+			Assert.Inconclusive("The negotiated backend cannot draw into a CPU framebuffer.");
+		}
+
+		var scale = border.XamlRoot!.RasterizationScale;
+		var center = border.TransformToVisual(null).TransformPoint(new Point(25, 25));
+		var (x, y) = ((int)(center.X * scale), (int)(center.Y * scale));
+
+		// The first present consumes the frame's damage; the second has nothing new to draw, which is what a
+		// re-created surface sees when the app resumes.
+		using var previous = new PreservingSoftwareSwapChain();
+		await PresentTo(target, previous);
+		Assert.AreEqual(Colors.Red, previous.GetPixel(x, y), "The first swapchain was not painted.");
+
+		using var replacement = new PreservingSoftwareSwapChain();
+		await PresentTo(target, replacement);
+		Assert.AreEqual(Colors.Red, replacement.GetPixel(x, y), "The replacement swapchain was left unpainted.");
+	}
+
+	private static async Task PresentTo(CompositionTarget target, PreservingSoftwareSwapChain swapChain)
+	{
+		// The host keeps presenting on its own thread, and a frame it is drawing cannot be drawn here: ask again
+		// until the frame reaches this swapchain.
+		await TestServices.WindowHelper.WaitFor(() =>
+		{
+			target.OnNativePlatformFrameRequested(swapChain);
+			return swapChain.Acquired;
+		}, timeoutMS: 5000, message: "The frame never reached the swapchain.");
+	}
+
+	private sealed class PreservingSoftwareSwapChain : ISwapChain
+	{
+		private SoftwareTarget _target;
+
+		public bool Acquired { get; private set; }
+
+		public GraphicsContextKind Kind => GraphicsContextKind.Software;
+
+		public bool PreservesContents => true;
+
+		public IRenderTarget AcquireRenderTarget(int width, int height)
+		{
+			if (_target is null || _target.Width != width || _target.Height != height)
+			{
+				_target?.Dispose();
+				_target = new SoftwareTarget(width, height);
+			}
+
+			Acquired = true;
+			return _target;
+		}
+
+		public void Present()
+		{
+		}
+
+		public Windows.UI.Color GetPixel(int x, int y)
+		{
+			var bgra = Marshal.ReadInt32(_target.Pixels, y * _target.RowBytes + x * 4);
+			return Windows.UI.Color.FromArgb((byte)(bgra >> 24), (byte)(bgra >> 16), (byte)(bgra >> 8), (byte)bgra);
+		}
+
+		public void Dispose() => _target?.Dispose();
+
+		private sealed class SoftwareTarget : ISoftwareRenderTarget
+		{
+			public SoftwareTarget(int width, int height)
+			{
+				Width = width;
+				Height = height;
+				RowBytes = width * 4;
+				Pixels = Marshal.AllocHGlobal(RowBytes * height);
+				Marshal.Copy(new byte[RowBytes * height], 0, Pixels, RowBytes * height);
+			}
+
+			public nint Pixels { get; private set; }
+
+			public int RowBytes { get; }
+
+			public int Width { get; }
+
+			public int Height { get; }
+
+			public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Bgra8888;
+
+			public void Dispose()
+			{
+				Marshal.FreeHGlobal(Pixels);
+				Pixels = 0;
+			}
+		}
 	}
 
 	[TestMethod]
