@@ -138,6 +138,11 @@ if ($diffExitCode -ne 0) {
 }
 
 if (-not $changedFiles) {
+    if (-not $scopeVariables['UIKitTestsRequired']) {
+        # Nothing changed, so the extra iOS groups have nothing to test; tag the build like any other group-0-only run.
+        Write-Host "##vso[build.addbuildtag]ios-group0-only"
+        Write-Host "The PR diff is empty: Tests - iOS runs only its app build and Skia group 0 on this PR (build tag ios-group0-only)."
+    }
     Publish-TestScopes -Values $scopeVariables
     return
 }
@@ -191,6 +196,12 @@ if (-not $scopeVariables['UIKitTestsRequired'] -and $env:SYSTEM_PULLREQUEST_PULL
         $labelsRead = $true
     } catch {
         $reason = (($_.Exception.Message -split "`r?`n") | Select-Object -First 1)
+        # GitHub's reason (for example the rate limit) is in the response body, not in the exception message.
+        if ($_.ErrorDetails -and $_.ErrorDetails.Message) {
+            $detail = ($_.ErrorDetails.Message -replace '\s+', ' ').Trim()
+            if ($detail.Length -gt 200) { $detail = $detail.Substring(0, 200) }
+            $reason = "$reason - $detail"
+        }
         Write-Host "##vso[task.logissue type=warning]Unable to read the PR's labels, so '$uikitLabel' is ignored: $reason"
     }
 }
@@ -201,7 +212,7 @@ if (-not $scopeVariables['UIKitTestsRequired']) {
     if ($labelsRead) {
         Write-Host "No iOS/tvOS paths, changed lines or '$uikitLabel' label: Tests - iOS runs only its app build and Skia group 0 on this PR (build tag ios-group0-only). To run every group, add the label and comment '/azp run' on the PR (rerunning failed jobs reuses this result)."
     } else {
-        Write-Host "No iOS/tvOS paths or changed lines, and the PR's labels couldn't be read: Tests - iOS runs only its app build and Skia group 0 on this PR (build tag ios-group0-only). If the PR has the '$uikitLabel' label, comment '/azp run' to try again."
+        Write-Host "No iOS/tvOS paths or changed lines, and the PR's labels couldn't be read: Tests - iOS runs only its app build and Skia group 0 on this PR (build tag ios-group0-only). If the PR has the '$uikitLabel' label, comment '/azp run' or push again to try again; the read can fail again while GitHub's anonymous rate limit is hit."
     }
 }
 
