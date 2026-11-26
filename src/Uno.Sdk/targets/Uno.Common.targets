@@ -175,5 +175,7 @@
 	<!-- Define the default folder for Hot Testing tests, so they can be excluded whenever Uno.HotTesting is not referenced -->
 	<PropertyGroup Condition="$(UnoFeatures.Contains(';hottesting;'))">
 		<HotTestingTestsFolder Condition="'$(HotTestingTestsFolder)' == ''">Tests</HotTestingTestsFolder>
+		<!-- Read by the reference (Uno.Implicit.Packages.ProjectSystem.targets) and the tests folder exclusion (Uno.DefaultItems.targets). Not on WinAppSDK targets: Uno.HotTesting is built against Uno.UI, which they don't have. -->
+		<_UnoHotTestingReferenced Condition="'$(Optimize)' != 'true' AND '$(UnoDisableHotTesting)' != 'true' AND !$(TargetFramework.Contains('windows10'))">true</_UnoHotTestingReferenced>
 	</PropertyGroup>
 </Project>
