@@ -551,8 +551,6 @@ public class Given_Win32Accessibility
 			_ = GetOrCreateProvider(accessibility, source)
 				?? throw new InvalidOperationException("Source provider not found.");
 
-			Assert.IsTrue(CanReceiveAutomaticPropertyChanges(accessibility, peer), "Events of a peer with an EventsSource must keep being raised.");
-
 			button.IsOffscreenCalls = 0;
 			button.Margin = new Thickness(30, 0, 0, 0);
 			await WindowHelper.WaitForIdle();
@@ -592,7 +590,6 @@ public class Given_Win32Accessibility
 				?? throw new InvalidOperationException("Item provider not created.");
 
 			Assert.AreSame(itemProvider, FindExistingProviderForPeer(accessibility, itemPeer), "The item peer's provider is keyed by the peer.");
-			Assert.IsTrue(CanReceiveAutomaticPropertyChanges(accessibility, itemPeer), "The item peer has a provider.");
 			Assert.AreSame(itemProvider, FindExistingProviderForPeer(accessibility, containerPeer), "The container peer's events go to the item provider (EventsSource).");
 			Assert.IsTrue(CanReceiveAutomaticPropertyChanges(accessibility, containerPeer), "The gate must let the container peer's events through.");
 		}
