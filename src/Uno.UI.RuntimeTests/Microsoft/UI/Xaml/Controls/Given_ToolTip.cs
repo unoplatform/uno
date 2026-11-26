@@ -180,6 +180,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Templated_Element_ToolTip_Moves_To_Second_Owner_Then_Change_On_First_Does_Not_Affect_Second()
+		{
+			var owner1 = new Border { Width = 50, Height = 50 };
+			var owner2 = new Border { Width = 50, Height = 50 };
+			await UITestHelper.Load(new StackPanel { Children = { owner1, owner2 } });
+
+			var element = new TextBlock { Text = "element" };
+			ToolTipService.SetToolTip(owner1, element);
+			var wrapper1 = ToolTipService.GetToolTipReference(owner1);
+
+			try
+			{
+				// Opening applies the template, so the element is now parented by the ContentPresenter.
+				wrapper1.IsOpen = true;
+				await UITestHelper.WaitForIdle();
+				wrapper1.IsOpen = false;
+				await UITestHelper.WaitForIdle();
+
+				ToolTipService.SetToolTip(owner2, element);
+				var wrapper2 = ToolTipService.GetToolTipReference(owner2);
+				Assert.AreSame(element, wrapper2.Content, "premise: owner2 shows the element");
+
+				ToolTipService.SetToolTip(owner1, "own");
+
+				Assert.AreSame(element, wrapper2.Content, "Changing owner1 must not take the element away from owner2");
+				Assert.AreEqual("own", ToolTipService.GetToolTipReference(owner1).Content);
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Implicit_ToolTip_Set_As_Explicit_On_Second_Owner_Then_Change_On_One_Does_Not_Affect_The_Other()
 		{
 			var owner1 = new Border { Width = 50, Height = 50 };
