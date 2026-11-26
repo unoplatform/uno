@@ -104,6 +104,7 @@
 	<ItemGroup>
 		<Compile Remove="Tests\Windows_UI_Xaml_Automation\Given_Accessible*.cs" />
 		<Compile Remove="Tests\Windows_UI_Xaml_Automation\WasmSemanticDomHelper.cs" />
+		<Compile Remove="Tests\Windows_UI_Xaml_Automation\Given_WasmAccessibilityLifecycle.cs" />
 	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
