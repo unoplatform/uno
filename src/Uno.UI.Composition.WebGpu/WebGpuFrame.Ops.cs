@@ -191,19 +191,37 @@ internal sealed unsafe partial class WebGpuFrame
 				ops.Add(rop);
 				ci = j - 1;
 			}
-			else if (WebGpuCoverage.AtlasEnabled && atlasScale is { } asc && Coverage.TryAtlasBatch(cmds, ref ci, owned, asc, out var aop, place))
+			else if (cmds[ci].Kind is CmdKind.Path or CmdKind.PathRun)
 			{
-				ops.Add(aop);
+				BuildFills(cmds, ref ci, ops, owned, atlasScale, maskScale, place);
 			}
-			else if (cmds[ci].Kind == CmdKind.Path && cmds[ci] is PathCmd pc)
+			else { BuildSimpleOp(cmds[ci], ops, owned, atlasScale, maskScale); }
+		}
+	}
+
+	// The fills of consecutive path commands, a run's instances one by one: glyphs batched from the atlas where they
+	// can be, each other fill on its own. Leaves ci on the last path command.
+	private void BuildFills(List<WebGpuCommand> cmds, ref int ci, List<DrawOp> ops, OwnedResources owned, Vector2? atlasScale, Vector2? maskScale, Vector2 place)
+	{
+		var at = new WebGpuCoverage.FillCursor(ci);
+		while (at.Valid(cmds))
+		{
+			if (WebGpuCoverage.AtlasEnabled && atlasScale is { } asc && Coverage.TryAtlasBatch(cmds, ref at, owned, asc, ops, place))
+			{
+				continue;
+			}
+
+			var pc = at.Current(cmds, Coverage.RunFill);
+			if (pc is not null)
 			{
 				var density = maskScale ?? atlasScale ?? Vector2.One;
 				var shape = Coverage.ShapeOf(pc, density);
 				if (shape.Tris is null) { TryBigFill(pc, shape, ops, owned, density, filtered: atlasScale is null, place: place); }
 				else { AddFan(pc, shape, ops, owned); }
 			}
-			else { BuildSimpleOp(cmds[ci], ops, owned, atlasScale, maskScale); }
+			at.Advance(cmds);
 		}
+		ci = at.Cmd - 1;
 	}
 
 	// The single-pass fill: the shape's own triangles as solid verts, the ring's per-vertex coverage carrying the

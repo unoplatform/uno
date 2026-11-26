@@ -285,6 +285,7 @@ internal sealed unsafe partial class WebGpuFrame
 				CmdKind.Image when cmd is ImageCmd im => QuadBounds(im.P0, im.P1, im.P2, im.P3, im.Clip),
 				CmdKind.Gradient when cmd is GradientCmd g => QuadBounds(g.P0, g.P1, g.P2, g.P3, g.Clip),
 				CmdKind.Path when cmd is PathCmd p => ClampToClip(new Vector4(p.BbMin.X, p.BbMin.Y, p.BbMax.X, p.BbMax.Y), p.Clip),
+				CmdKind.PathRun when cmd is PathRunCmd pr => ClampToClip(new Vector4(pr.BbMin.X, pr.BbMin.Y, pr.BbMax.X, pr.BbMax.Y), pr.Clip),
 				CmdKind.Shadow when cmd is ShadowCmd sh => ClampToClip(Inflate(new Vector4(sh.BbMin.X, sh.BbMin.Y, sh.BbMax.X, sh.BbMax.Y), MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f), sh.Clip),
 				CmdKind.Layer when cmd is LayerCmd l => ClampToClip(LayerBounds(l), l.Clip),
 				CmdKind.ReplayRef when cmd is ReplayRefCmd rr => ClampToClip(TransformBounds(rr.Data.IdentityBounds ??= CmdListBounds(rr.Commands), rr.Transform), rr.Clip),

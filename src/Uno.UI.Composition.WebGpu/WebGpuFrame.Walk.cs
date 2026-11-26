@@ -198,6 +198,19 @@ internal sealed unsafe partial class WebGpuFrame
 						BuildSimpleOp(direct ? pc : Under(pc, m, identity, cd), ops, null, atlasScale: Vector2.One);
 						break;
 					}
+				case CmdKind.PathRun:
+					{
+						var run = (PathRunCmd)cmd;
+						var cd = composer.Compose(outer, run.Clip, m, inv, direct);
+						var fill = Coverage.RunFill;
+						for (int gi = 0; gi < run.Instances.Length; gi++)
+						{
+							if (!run.Fill(gi, fill)) { continue; }
+							if (_emitStats) { StatWalkPaths++; }
+							BuildSimpleOp(direct ? fill : Under(fill, m, identity, cd), ops, null, atlasScale: Vector2.One);
+						}
+						break;
+					}
 				case CmdKind.Image:
 					{
 						var im = (ImageCmd)cmd;
@@ -639,7 +652,7 @@ internal sealed unsafe partial class WebGpuFrame
 			if (entry is not null) { ReleaseEntry(entry); }
 			var owned = new OwnedResources();
 			var built = new List<DrawOp>();
-			bool hasPath = false; foreach (var c in rr.Commands) { if (c is PathCmd) { hasPath = true; break; } }
+			bool hasPath = false; foreach (var c in rr.Commands) { if (c.Kind is CmdKind.Path or CmdKind.PathRun) { hasPath = true; break; } }
 			int atlasBefore = WebGpuCoverage.AtlasHit + WebGpuCoverage.AtlasBaked;
 			int maskBefore = WebGpuCoverage.ClipMasksBaked + WebGpuCoverage.FillMasksBaked + WebGpuCoverage.FillMaskHits;
 			int noRoomBefore = WebGpuCoverage.AtlasNoRoom;
