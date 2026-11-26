@@ -144,6 +144,16 @@ In `Multiple` mode only the first selection is brought into view. Call
 
 See also: [`ListViewBase.ItemClickCommand`](xref:Uno.Development.MigratingToUno7.RemovedApis#listviewbaseitemclickcommand-and-listviewbasecommand).
 
+### Right-to-left text alignment follows the flow direction
+
+Under `FlowDirection="RightToLeft"`, a
+`TextBlock`, `TextBox` or `RichEditBox` used to treat `TextAlignment.Left` and `Right` as the
+physical left and right edges, so a default-aligned right-to-left `TextBlock` drew its text on the
+left. Now, as on WinUI, `Left` (the default) aligns to the start edge, which is the right, and
+`Right` aligns to the left. The last line of `Justify` text, and `DetectFromContent`, now follow the
+direction of the text itself, so right-to-left script lines up on the right. If you set `TextAlignment="Right"` on right-to-left text
+only on Uno to work around the old behavior, remove it.
+
 ## `SystemBackdrop` no longer rewrites your content's backgrounds
 
 Setting `Window.SystemBackdrop` used to walk the whole visual tree and replace the
