@@ -254,6 +254,12 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly Size _availableSize;
 	private readonly bool _layoutUsesAvailableWidth;
 	private readonly bool _layoutUsesAvailableHeight;
+	// The available sizes for which every size comparison of this layout comes out the same (see TryReuseForSize).
+	// Widths are compared as floats, as the line breaking compares them.
+	private readonly float _minWidth;
+	private readonly float _maxWidthExclusive;
+	private readonly double _minHeight;
+	private readonly double _maxHeightExclusive;
 
 	internal unsafe UnicodeText(
 		Size availableSize,
@@ -339,6 +345,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			_clustersInLogicalOrder = [];
 			_glyphs = [];
 			_bidiBreaks = [];
+			(_minWidth, _maxWidthExclusive, _minHeight, _maxHeightExclusive) = (0, float.PositiveInfinity, 0, double.PositiveInfinity);
 			return;
 		}
 
@@ -357,6 +364,10 @@ internal readonly partial struct UnicodeText : IParsedText
 		var clusterBreaks = fresh?.Clusters ?? shaped.CopyClusters();
 
 		Dictionary<int, global::Microsoft.UI.Text.TabLeader>? tabLeaders = null;
+		// Narrowed by each size comparison below that can change the layout (see TryReuseForSize). Starting at 0, they never
+		// take a negative size (arranged with a Padding larger than the final size), which is laid out again.
+		float minWidth = 0, maxWidthExclusive = float.PositiveInfinity;
+		double minHeight = 0, maxHeightExclusive = double.PositiveInfinity;
 		var lines = new List<Line>();
 		{ // line breaking
 			float lineWidth = 0;
@@ -484,7 +495,7 @@ internal readonly partial struct UnicodeText : IParsedText
 						maxHeightFontDetailsInChunkUnderTest = currentClusterBreak.Value.fontDetails;
 					}
 
-					if (textWrapping is TextWrapping.Wrap && chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth > effectiveAvailableWidth)
+					if (textWrapping is TextWrapping.Wrap && IsGreater(chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth, effectiveAvailableWidth, ref minWidth, ref maxWidthExclusive))
 					{
 						// The chunk being built can't fit on an empty line on its own — we have to break mid-chunk.
 						// If it can fit on a line, then it will be moved as a whole to the next line during the
@@ -555,26 +566,26 @@ internal readonly partial struct UnicodeText : IParsedText
 					// WinUI can always break after tabs, even in scenarios where ICU doesn't consider it a line break opportunity, so we follow suit
 					if (currentClusterBreak.Value.end == lineOpportunityBreaks[lineOpportunityBreakIndex] || currentClusterBreak.Value.containsTab)
 					{
-						if (lineWidth + chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth > effectiveAvailableWidth)
+						// The width only matters, and so only narrows the reuse range, where the line can break.
+						if (textWrapping is not TextWrapping.NoWrap
+							&& currentLineEnd != -1
+							&& IsGreater(lineWidth + chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth, effectiveAvailableWidth, ref minWidth, ref maxWidthExclusive))
 						{
-							if (textWrapping is not TextWrapping.NoWrap && currentLineEnd != -1)
+							var (h, b) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine!, lines.Count == 0, false);
+							lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast!, lineWidth, lineWidthWithoutTrailingSpaces, h, b));
+							UpdateEffectiveWidthAfterLine(currentLineEnd);
+							lineWidth = 0;
+							lineWidthWithoutTrailingSpaces = 0;
+							maxHeightFontDetailsInCurrentLine = null;
+							currentLineEnd = -1;
+							currentLineClusterLast = null;
+							if (currentClusterBreak.Value.containsTab) // each "chunk" contains at most one tab, and always at the end
 							{
-								var (h, b) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine!, lines.Count == 0, false);
-								lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast!, lineWidth, lineWidthWithoutTrailingSpaces, h, b));
-								UpdateEffectiveWidthAfterLine(currentLineEnd);
-								lineWidth = 0;
-								lineWidthWithoutTrailingSpaces = 0;
-								maxHeightFontDetailsInCurrentLine = null;
-								currentLineEnd = -1;
-								currentLineClusterLast = null;
-								if (currentClusterBreak.Value.containsTab) // each "chunk" contains at most one tab, and always at the end
-								{
-									// recalculate the width of the tab
-									chunkUnderTestWidth -= clusterWidth;
-									tabMetrics = GetTabMetrics(chunkUnderTestWidth, currentClusterBreak);
-									clusterWidth = tabMetrics.width;
-									chunkUnderTestWidth += clusterWidth;
-								}
+								// recalculate the width of the tab
+								chunkUnderTestWidth -= clusterWidth;
+								tabMetrics = GetTabMetrics(chunkUnderTestWidth, currentClusterBreak);
+								clusterWidth = tabMetrics.width;
+								chunkUnderTestWidth += clusterWidth;
 							}
 						}
 
@@ -674,7 +685,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					? terminalBlockHeight
 					: 0;
 			var actualLineCount = lines.Count + (textEndsInLineBreak ? 1 : 0);
-			var isEarlyLastLine = (maxLines > 0 && maxLines < actualLineCount && lineIndex == maxLines - 1) || (lineIndex < actualLineCount - 1 && nextLineHeight + totalHeight > availableSize.Height);
+			var isEarlyLastLine = (maxLines > 0 && maxLines < actualLineCount && lineIndex == maxLines - 1) || (lineIndex < actualLineCount - 1 && IsGreater(nextLineHeight + totalHeight, availableSize.Height, ref minHeight, ref maxHeightExclusive));
 
 			var lineWidth = line.width;
 			LinkedListNode<Cluster> lastClusterIncludedInLine = line.clusterLast;
@@ -683,7 +694,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					- GetParagraphLeftInset(trimPl, line.isFirstLineOfParagraph)
 					- GetParagraphRightInset(trimPl, line.isFirstLineOfParagraph))
 				: (float)availableSize.Width;
-			if (textTrimming is TextTrimming.CharacterEllipsis or TextTrimming.WordEllipsis && (line.widthWithoutTrailingSpaces > trimAvailableWidth || isEarlyLastLine))
+			if (textTrimming is TextTrimming.CharacterEllipsis or TextTrimming.WordEllipsis && (isEarlyLastLine || IsGreater(line.widthWithoutTrailingSpaces, trimAvailableWidth, ref minWidth, ref maxWidthExclusive)))
 			{
 				IEnumerable<LinkedListNode<Cluster>> possibleTrimPoints;
 				if (textTrimming is TextTrimming.WordEllipsis)
@@ -730,7 +741,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					{
 						ellipsisWidth += trimGlyphRun.Advances[i];
 					}
-					if (lineWidth + ellipsisWidth <= trimAvailableWidth || !hasMore)
+					if (!hasMore || !IsGreater(lineWidth + ellipsisWidth, trimAvailableWidth, ref minWidth, ref maxWidthExclusive))
 					{
 						var clusterEnd = line.clusterLast.Next;
 						for (var clusterNode = trimPoint.Next; clusterNode is not null && clusterNode != clusterEnd;)
@@ -987,7 +998,76 @@ internal readonly partial struct UnicodeText : IParsedText
 			|| paragraphLayouts is not null
 			|| endingParagraphAlignment is not null
 			|| endingParagraphLayout is not null;
+		if (_textAlignment is TextAlignment.Justify || paragraphAlignments is not null || paragraphLayouts is not null || endingParagraphLayout is not null)
+		{
+			// Justification, paragraph insets and list markers read the width itself.
+			(minWidth, maxWidthExclusive) = ((float)availableSize.Width, MathF.BitIncrement((float)availableSize.Width));
+		}
+		(_minWidth, _maxWidthExclusive, _minHeight, _maxHeightExclusive) = (minWidth, maxWidthExclusive, minHeight, maxHeightExclusive);
 	}
+
+	/// <summary>The same layout at another available size (see <see cref="TryReuseForSize"/>).</summary>
+	/// <remarks>Shares everything with <paramref name="layout"/>, including the boxes of the lazily computed state.</remarks>
+	private UnicodeText(in UnicodeText layout, Size availableSize)
+	{
+		this = layout;
+		_availableSize = availableSize;
+	}
+
+	/// <summary>
+	/// This layout at another available size, if laying the text out at that size would break, trim and truncate the lines
+	/// exactly as this one did. Only the alignment, which reads the size when drawing and hit-testing, then changes.
+	/// </summary>
+	internal bool TryReuseForSize(Size availableSize, out UnicodeText layout)
+	{
+		if (IsInReuseRange((float)availableSize.Width, _minWidth, _maxWidthExclusive)
+			&& IsInReuseRange(availableSize.Height, _minHeight, _maxHeightExclusive))
+		{
+			layout = new UnicodeText(this, availableSize);
+			return true;
+		}
+
+		layout = default;
+		return false;
+	}
+
+	// No upper bound when no comparison overflowed: an infinite size then compares the same.
+	private static bool IsInReuseRange(double value, double min, double maxExclusive)
+		=> value >= min && (value < maxExclusive || double.IsPositiveInfinity(maxExclusive));
+
+	/// <summary>
+	/// <paramref name="value"/> &gt; <paramref name="limit"/>, narrowing [<paramref name="min"/>, <paramref name="maxExclusive"/>)
+	/// to the limits that give the same answer.
+	/// </summary>
+	private static bool IsGreater(float value, float limit, ref float min, ref float maxExclusive)
+	{
+		if (value > limit)
+		{
+			maxExclusive = Math.Min(maxExclusive, value);
+			return true;
+		}
+
+		min = Math.Max(min, value);
+		return false;
+	}
+
+	/// <inheritdoc cref="IsGreater(float, float, ref float, ref float)"/>
+	private static bool IsGreater(double value, double limit, ref double min, ref double maxExclusive)
+	{
+		if (value > limit)
+		{
+			maxExclusive = Math.Min(maxExclusive, value);
+			return true;
+		}
+
+		min = Math.Max(min, value);
+		return false;
+	}
+
+	// For tests: the widths TryReuseForSize accepts, and whether two layouts are one layout at different sizes.
+	internal (float Min, float MaxExclusive) ReusableWidths => (_minWidth, _maxWidthExclusive);
+
+	internal bool SharesLinesWith(in UnicodeText other) => ReferenceEquals(_lines, other._lines);
 
 	/// <summary>
 	/// Whether laying the same text out in <paramref name="availableSize"/> would give this exact result, because the

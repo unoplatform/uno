@@ -17,6 +17,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 /// <summary>
 /// A TextBlock keeps the part of its layout that doesn't depend on the available size (shaping, bidi, ICU boundaries) and
 /// reuses it while its text and formatting are unchanged, so a layout at a new size only breaks the lines again.
+/// Arrange also keeps the measure layout while the arrange size can't change how the lines break.
 /// </summary>
 [TestClass]
 [RunsOnUIThread]
@@ -495,6 +496,371 @@ public class Given_TextBlock_ShapingCache
 
 		Assert.AreEqual(TextAlignment.Right, ((UnicodeText)SUT.TextBoxView.DisplayBlock.ParsedText).TextAlignment);
 		AssertSameCharacterRects(fresh.TextBoxView!.DisplayBlock, SUT.TextBoxView.DisplayBlock, "after narrowing");
+	}
+
+	// Arrange reuses the layout built by measure when laying out again at the arrange size would break, trim and truncate the
+	// lines identically, and builds a new one otherwise. Either way the result must equal a layout made at the arrange size.
+	// NaN arrange width/height = the TextBlock's desired size. (An element is never arranged below its desired size, it is
+	// clipped, so a narrower or shorter arrange can only reach its desired size.)
+	[TestMethod]
+	[DataRow(Sentence, TextWrapping.Wrap, TextTrimming.None, FlowDirection.LeftToRight, 300, double.PositiveInfinity, double.NaN, double.NaN, true, DisplayName = "Centred wrapping label arranged at its desired width: reused")]
+	[DataRow(Sentence, TextWrapping.Wrap, TextTrimming.CharacterEllipsis, FlowDirection.LeftToRight, 200, 40, double.NaN, double.NaN, true, DisplayName = "Wrapping label cut by height, arranged at its desired size: reused")]
+	[DataRow("Hello שלום עולם world مرحبا بالعالم end", TextWrapping.Wrap, TextTrimming.None, FlowDirection.RightToLeft, 160, double.PositiveInfinity, double.NaN, double.NaN, true, DisplayName = "RTL wrapping label arranged at its desired width: reused")]
+	[DataRow(Sentence, TextWrapping.Wrap, TextTrimming.None, FlowDirection.LeftToRight, 150, double.PositiveInfinity, 400, 1000, false, DisplayName = "Arranged wider than measured, lines could join: rebuilt")]
+	[DataRow(Sentence, TextWrapping.NoWrap, TextTrimming.CharacterEllipsis, FlowDirection.LeftToRight, 120, double.PositiveInfinity, 300, double.NaN, false, DisplayName = "Trimmed, arranged wide enough to show more: rebuilt")]
+	[DataRow(Sentence, TextWrapping.Wrap, TextTrimming.CharacterEllipsis, FlowDirection.LeftToRight, 200, 40, double.NaN, 200, false, DisplayName = "Cut by height, arranged tall enough for more lines: rebuilt")]
+	public async Task When_Arranged_At_Another_Size_Than_Measured(string text, TextWrapping wrapping, TextTrimming trimming, FlowDirection flowDirection, double measureWidth, double measureHeight, double arrangeWidth, double arrangeHeight, bool expectReuse)
+	{
+		await ArrangeAndCompareWithFresh(
+			() => new TextBlock
+			{
+				Text = text,
+				TextWrapping = wrapping,
+				TextTrimming = trimming,
+				FlowDirection = flowDirection,
+				TextAlignment = TextAlignment.Center,
+			},
+			new Size(measureWidth, measureHeight), arrangeWidth, arrangeHeight, expectReuse);
+	}
+
+	[TestMethod]
+	[DataRow(double.NaN, double.NaN, true, DisplayName = "Cut by height with BlockLineHeight, arranged at its desired size: reused")]
+	[DataRow(double.NaN, 200, false, DisplayName = "Cut by height with BlockLineHeight, arranged taller: rebuilt")]
+	public async Task When_Arranged_With_BlockLineHeight(double arrangeWidth, double arrangeHeight, bool expectReuse)
+	{
+		// The height comparisons use LineHeight, not the font's line height, for each next line.
+		await ArrangeAndCompareWithFresh(
+			() => new TextBlock
+			{
+				Text = Sentence,
+				TextWrapping = TextWrapping.Wrap,
+				TextTrimming = TextTrimming.CharacterEllipsis,
+				LineStackingStrategy = LineStackingStrategy.BlockLineHeight,
+				LineHeight = 30,
+				TextAlignment = TextAlignment.Center,
+			},
+			new Size(200, 70), arrangeWidth, arrangeHeight, expectReuse);
+	}
+
+	[TestMethod]
+	[DataRow(300, double.NaN, double.NaN, true, DisplayName = "WrapWholeWords arranged at its desired width: reused")]
+	[DataRow(150, 400, 1000, false, DisplayName = "WrapWholeWords arranged wider, lines could join: rebuilt")]
+	public async Task When_Arranged_With_WrapWholeWords(double measureWidth, double arrangeWidth, double arrangeHeight, bool expectReuse)
+	{
+		// WrapWholeWords only breaks between chunks (no mid-chunk break), including after a word longer than the line.
+		await ArrangeAndCompareWithFresh(
+			() => new TextBlock
+			{
+				Text = Sentence + " Supercalifragilisticexpialidociously",
+				TextWrapping = TextWrapping.WrapWholeWords,
+				TextAlignment = TextAlignment.Right,
+			},
+			new Size(measureWidth, double.PositiveInfinity), arrangeWidth, arrangeHeight, expectReuse);
+	}
+
+	[TestMethod]
+	public async Task When_Justified_Arranged_Wider_Than_Measured()
+	{
+		// Justification spreads each line over the width itself, so a justified layout is only reused at that exact width,
+		// even where the lines would break the same.
+		await ArrangeAndCompareWithFresh(
+			() => new TextBlock
+			{
+				Text = Sentence,
+				TextWrapping = TextWrapping.Wrap,
+				TextAlignment = TextAlignment.Justify,
+			},
+			new Size(300, double.PositiveInfinity), 302, double.NaN, expectReuse: false);
+	}
+
+	[TestMethod]
+	[DataRow(true, DisplayName = "Justified paragraph")]
+	[DataRow(false, DisplayName = "Indented paragraph")]
+	public async Task When_Paragraph_Format_Reads_The_Width_Layout_Is_Only_Reused_At_That_Width(bool justified)
+	{
+		// RichEditBox paragraph formats: per-paragraph justification and indents read the width itself.
+		var (SUT, _) = await ArrangeAndCompareWithFresh(
+			() =>
+			{
+				var run = new Run { Text = Sentence };
+				if (justified)
+				{
+					run.ParagraphAlignment = TextAlignment.Justify;
+				}
+				else
+				{
+					run.ParagraphLayout = new ParagraphLayoutInfo { LeftIndent = 20, RightIndent = 30, FirstLineIndent = 10 };
+				}
+
+				var textBlock = new TextBlock { TextWrapping = TextWrapping.Wrap };
+				textBlock.Inlines.Add(run);
+				return textBlock;
+			},
+			new Size(300, double.PositiveInfinity), 302, double.NaN, expectReuse: false);
+
+		Assert.AreEqual((302f, MathF.BitIncrement(302f)), ((UnicodeText)SUT.ParsedText).ReusableWidths);
+	}
+
+	[TestMethod]
+	public async Task When_RichEditBox_Width_Changes_Layout_Matches_A_Fresh_Editor()
+	{
+		// A small document goes through the display block's own TextBlock path, so its paragraph formats (justification,
+		// indents, list markers) go through the shaping cache and the arrange reuse.
+		RichEditBox Create(double width) => new() { Width = width };
+		void Populate(RichEditBox editor)
+		{
+			editor.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, Sentence + "\r" + Sentence);
+			var first = editor.Document.GetRange(0, Sentence.Length).ParagraphFormat;
+			first.Alignment = Microsoft.UI.Text.ParagraphAlignment.Justify;
+			first.SetIndents(10, 20, 30);
+			editor.Document.GetRange(Sentence.Length + 1, Sentence.Length + 2).ParagraphFormat.ListType = Microsoft.UI.Text.MarkerType.Bullet;
+		}
+
+		var SUT = Create(320);
+		var panel = new StackPanel { Children = { SUT } };
+		try
+		{
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(SUT);
+			Populate(SUT);
+			await WindowHelper.WaitForIdle();
+			var displayBlock = GetDisplayBlock(SUT);
+			Assert.IsNull(displayBlock.CustomTextLayout, "The document should be laid out by the TextBlock itself.");
+
+			foreach (var width in new double[] { 280, 360, 300 })
+			{
+				SUT.Width = width;
+				var fresh = Create(width);
+				panel.Children.Add(fresh);
+				await WindowHelper.WaitForLoaded(fresh);
+				Populate(fresh);
+				await WindowHelper.WaitForIdle();
+
+				AssertSameCharacterRects(GetDisplayBlock(fresh), displayBlock, $"at width {width}");
+				panel.Children.Remove(fresh);
+			}
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Arrange_Layout_Reuse_Is_Disabled_Arrange_Lays_Out_Again()
+	{
+		try
+		{
+			FeatureConfiguration.TextBlock.EnableArrangeLayoutReuse = false;
+			await ArrangeAndCompareWithFresh(
+				() => new TextBlock { Text = Sentence, TextWrapping = TextWrapping.Wrap, TextAlignment = TextAlignment.Center },
+				new Size(300, double.PositiveInfinity), double.NaN, double.NaN, expectReuse: false);
+		}
+		finally
+		{
+			FeatureConfiguration.TextBlock.EnableArrangeLayoutReuse = true;
+		}
+	}
+
+	[TestMethod]
+	[DataRow(TextAlignment.Center, DisplayName = "Center")]
+	[DataRow(TextAlignment.Right, DisplayName = "Right")]
+	public async Task When_Arrange_Reuses_Layout_Hit_Testing_Matches_A_Fresh_Layout(TextAlignment alignment)
+	{
+		// Hit-testing reads the available size (for alignment) at call time, so it must follow the arrange size.
+		TextBlock Create()
+		{
+			var textBlock = new TextBlock { TextWrapping = TextWrapping.Wrap, TextAlignment = alignment };
+			textBlock.Inlines.Add(new Run { Text = "Read the " });
+			var hyperlink = new Hyperlink();
+			hyperlink.Inlines.Add(new Run { Text = "documentation" });
+			textBlock.Inlines.Add(hyperlink);
+			textBlock.Inlines.Add(new Run { Text = " for more about wrapping, trimming and alignment of text." });
+			return textBlock;
+		}
+
+		var (SUT, fresh) = await ArrangeAndCompareWithFresh(Create, new Size(400, double.PositiveInfinity), double.NaN, double.NaN, expectReuse: true);
+
+		var hyperlinkHits = 0;
+		for (var y = 1.0; y < SUT.DesiredSize.Height; y += 4)
+		{
+			for (var x = -5.0; x < SUT.DesiredSize.Width + 5; x += 3)
+			{
+				var point = new Point(x, y);
+				Assert.AreEqual(fresh.ParsedText.GetIndexAt(point, false, false), SUT.ParsedText.GetIndexAt(point, false, false), $"GetIndexAt {point}");
+				Assert.AreEqual(fresh.ParsedText.GetIndexAt(point, true, true), SUT.ParsedText.GetIndexAt(point, true, true), $"GetIndexAt (extended) {point}");
+				var hit = SUT.ParsedText.GetHyperlinkAt(point) is not null;
+				Assert.AreEqual(fresh.ParsedText.GetHyperlinkAt(point) is not null, hit, $"GetHyperlinkAt {point}");
+				hyperlinkHits += hit ? 1 : 0;
+			}
+		}
+
+		Assert.IsTrue(hyperlinkHits > 0, "No point hit the hyperlink.");
+	}
+
+	[TestMethod]
+	[DataRow(TextAlignment.Center, FlowDirection.LeftToRight, DisplayName = "Center")]
+	[DataRow(TextAlignment.Right, FlowDirection.LeftToRight, DisplayName = "Right")]
+	[DataRow(TextAlignment.Right, FlowDirection.RightToLeft, DisplayName = "RTL")]
+	public async Task When_Padding_Is_Larger_Than_The_Arrange_Size(TextAlignment alignment, FlowDirection flowDirection)
+	{
+		// Measure clamps the size without padding to zero; arrange doesn't. With Padding 10, an ArrangeOverride at 5x5 lays out
+		// at -15x-15, and that layout must not be reused from measure (at 0): it must be the one a fresh TextBlock builds there.
+		// Layout never arranges an element below its desired size, which includes the padding, so this calls ArrangeOverride
+		// directly, as a custom panel could.
+		const string text = "Hello world, again";
+		ArrangeOverrideTextBlock Create() => new()
+		{
+			Text = text,
+			Padding = new Thickness(10),
+			TextAlignment = alignment,
+			FlowDirection = flowDirection,
+			TextWrapping = TextWrapping.Wrap,
+		};
+
+		var SUT = Create();
+		var fresh = Create();
+		WindowHelper.WindowContent = new StackPanel { Children = { SUT, fresh } };
+		await WindowHelper.WaitForLoaded(SUT);
+		await WindowHelper.WaitForLoaded(fresh);
+		await WaitForFontsLoaded(SUT);
+
+		var measured = (UnicodeText)SUT.ParsedText;
+		SUT.CallArrangeOverride(new Size(5, 5));
+		Assert.IsFalse(measured.SharesLinesWith((UnicodeText)SUT.ParsedText), "Arrange should lay out again at the negative size.");
+		Assert.AreEqual(new Size(-15, -15), ((UnicodeText)SUT.ParsedText).AvailableSize);
+
+		fresh.CallArrangeOverride(new Size(5, 5));
+		Assert.AreEqual(new Size(-15, -15), ((UnicodeText)fresh.ParsedText).AvailableSize);
+
+		AssertSameCharacterRects(fresh, SUT, "at the negative size");
+	}
+
+	[TestMethod]
+	public async Task When_Arranged_At_The_Edges_Of_The_Reuse_Range()
+	{
+		// The layout is reusable for a width in [min, maxExclusive): min is the widest content a comparison kept on a line,
+		// maxExclusive the narrowest overflow that broke one. Check both edges exactly, and that a reused layout at each
+		// in-range edge equals a fresh one.
+		var SUT = new TextBlock { Text = Sentence, TextWrapping = TextWrapping.Wrap, TextAlignment = TextAlignment.Center };
+		var panel = new SizingPanel { MeasureSize = new Size(150, double.PositiveInfinity), Children = { SUT } };
+		WindowHelper.WindowContent = panel;
+		await WindowHelper.WaitForLoaded(SUT);
+		await WaitForFontsLoaded(SUT);
+
+		var measured = (UnicodeText)SUT.ParsedText;
+		var (min, maxExclusive) = measured.ReusableWidths;
+		Assert.IsTrue(min > 0 && min <= 150 && maxExclusive > 150 && !float.IsInfinity(maxExclusive), $"Unexpected range [{min}, {maxExclusive})");
+
+		const double height = 1000;
+		Assert.IsFalse(measured.TryReuseForSize(new Size(MathF.BitDecrement(min), height), out _), "Just below min");
+		Assert.IsFalse(measured.TryReuseForSize(new Size(maxExclusive, height), out _), "At maxExclusive");
+
+		WindowHelper.WindowContent = null;
+		foreach (var width in new double[] { min, MathF.BitDecrement(maxExclusive) })
+		{
+			Assert.IsTrue(measured.TryReuseForSize(new Size(width, height), out var reused), $"At {width}");
+
+			// No layout rounding, which would round the desired width up and arrange (and center) the reference wider.
+			var fresh = new TextBlock { Text = Sentence, TextWrapping = TextWrapping.Wrap, TextAlignment = TextAlignment.Center, UseLayoutRounding = false };
+			var freshPanel = new SizingPanel { MeasureSize = new Size(width, height), ArrangeSize = new Size(width, height), Children = { fresh }, UseLayoutRounding = false };
+			WindowHelper.WindowContent = freshPanel;
+			await WindowHelper.WaitForLoaded(fresh);
+			freshPanel.UpdateLayout();
+
+			for (var index = 0; index <= Sentence.Length; index++)
+			{
+				Assert.AreEqual(fresh.ParsedText.GetRectForIndex(index), reused.GetRectForIndex(index), $"Rect of index {index} at width {width}");
+			}
+		}
+	}
+
+	/// <summary>
+	/// Measures a TextBlock at <paramref name="measureSize"/> and arranges it at the given size (NaN = its desired size),
+	/// checks whether arrange reused the measure layout, and compares it with a TextBlock measured and arranged at that size.
+	/// </summary>
+	private static async Task<(TextBlock SUT, TextBlock fresh)> ArrangeAndCompareWithFresh(Func<TextBlock> create, Size measureSize, double arrangeWidth, double arrangeHeight, bool expectReuse)
+	{
+		TextBlock Create()
+		{
+			var textBlock = create();
+			textBlock.HorizontalAlignment = HorizontalAlignment.Stretch;
+			textBlock.VerticalAlignment = VerticalAlignment.Stretch;
+			return textBlock;
+		}
+
+		var SUT = Create();
+		var panel = new SizingPanel { MeasureSize = measureSize, Children = { SUT } };
+		var fresh = Create();
+		var freshPanel = new SizingPanel { Children = { fresh } };
+		WindowHelper.WindowContent = new StackPanel { Children = { panel, freshPanel } };
+		await WindowHelper.WaitForLoaded(SUT);
+		await WaitForFontsLoaded(SUT);
+
+		var arrangeSize = new Size(
+			double.IsNaN(arrangeWidth) ? SUT.DesiredSize.Width : arrangeWidth,
+			double.IsNaN(arrangeHeight) ? SUT.DesiredSize.Height : arrangeHeight);
+		panel.ArrangeSize = arrangeSize;
+		// Measure and arrange as the panel does, and check whether arrange kept the measure layout: a reused layout shares its
+		// lines with the measure layout, a new one has its own.
+		SUT.InvalidateMeasure();
+		SUT.Measure(panel.MeasureSize);
+		var measured = (UnicodeText)SUT.ParsedText;
+		SUT.InvalidateArrange();
+		SUT.Arrange(new Rect(new Point(0, 0), arrangeSize));
+		var reused = measured.SharesLinesWith((UnicodeText)SUT.ParsedText);
+
+		Assert.AreEqual(expectReuse, reused, expectReuse ? "Arrange should reuse the measure layout." : "Arrange should build a new layout.");
+
+		// The reference: a TextBlock measured and arranged at SUT's arrange size, so built once at that size.
+		freshPanel.MeasureSize = arrangeSize;
+		freshPanel.ArrangeSize = arrangeSize;
+		freshPanel.InvalidateMeasure();
+		freshPanel.InvalidateArrange();
+		freshPanel.UpdateLayout();
+		if (expectReuse)
+		{
+			// Not compared after a rebuild: IsTextTrimmed is computed in ArrangeOverride against the ActualWidth and
+			// ActualHeight of the previous arrange (they are updated after ArrangeOverride), so it lags a size change. That is
+			// unrelated to the layout reuse, which only takes the path where the layout, and so its size, is unchanged.
+			Assert.AreEqual(fresh.IsTextTrimmed, SUT.IsTextTrimmed, "IsTextTrimmed");
+		}
+
+		AssertSameCharacterRects(fresh, SUT, "at the arrange size");
+		return (SUT, fresh);
+	}
+
+	/// <summary>Measures its children at <see cref="MeasureSize"/> and arranges them at <see cref="ArrangeSize"/>.</summary>
+	private sealed class SizingPanel : Panel
+	{
+		public Size MeasureSize { get; set; } = new(double.PositiveInfinity, double.PositiveInfinity);
+
+		public Size? ArrangeSize { get; set; }
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			foreach (var child in Children)
+			{
+				child.Measure(MeasureSize);
+			}
+
+			return new Size(1000, 200);
+		}
+
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			foreach (var child in Children)
+			{
+				child.Arrange(new Rect(new Point(0, 0), ArrangeSize ?? child.DesiredSize));
+			}
+
+			return finalSize;
+		}
+	}
+
+	private sealed class ArrangeOverrideTextBlock : TextBlock
+	{
+		public Size CallArrangeOverride(Size finalSize) => ArrangeOverride(finalSize);
 	}
 
 	private static void AssertSameCharacterRects(TextBlock expected, TextBlock actual, string context)

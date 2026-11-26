@@ -338,6 +338,13 @@ namespace Uno.UI
 			/// when investigating a text layout issue.
 			/// </summary>
 			public static bool EnableShapingCache { get; set; } = true;
+
+			/// <summary>
+			/// On Skia targets, determines if a TextBlock keeps the layout built by measure when it is arranged at another
+			/// size that can't change how its lines break. Turn it off only to rule it out when investigating a text
+			/// layout issue.
+			/// </summary>
+			public static bool EnableArrangeLayoutReuse { get; set; } = true;
 		}
 
 		public static class TextBox

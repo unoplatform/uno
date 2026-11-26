@@ -1819,9 +1819,26 @@ namespace Microsoft.UI.Xaml.Controls
 			var arrangedSize = _lastParsedTextCreationValues.outSize;
 			var sizeChanged = _lastParsedTextCreationValues.availableSize != availableSizeWithoutPadding
 				&& !(ParsedText is UnicodeText parsed && parsed.IsLayoutValidFor(availableSizeWithoutPadding));
-			if (sizeChanged || _lastParsedTextCreationValues.alignment != GetAdjustedTextAlignment())
+			if (_lastParsedTextCreationValues.alignment != GetAdjustedTextAlignment())
 			{
 				ParsedText = ParseText(availableSizeWithoutPadding, out arrangedSize);
+			}
+			else if (sizeChanged)
+			{
+				if (FeatureConfiguration.TextBlock.EnableArrangeLayoutReuse
+					&& CustomTextLayout is null
+					&& ParsedText is UnicodeText measured
+					&& measured.TryReuseForSize(availableSizeWithoutPadding, out var reused))
+				{
+					// Typically a block arranged at its desired width, narrower than the width it was measured with: its lines
+					// break as they did in measure, so it keeps that layout and only takes the new size, for alignment.
+					ParsedText = reused;
+					_lastParsedTextCreationValues.availableSize = availableSizeWithoutPadding;
+				}
+				else
+				{
+					ParsedText = ParseText(availableSizeWithoutPadding, out arrangedSize);
+				}
 			}
 
 			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
