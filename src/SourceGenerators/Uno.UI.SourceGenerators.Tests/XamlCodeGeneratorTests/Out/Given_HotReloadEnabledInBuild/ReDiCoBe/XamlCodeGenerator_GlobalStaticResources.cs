@@ -46,7 +46,7 @@ namespace MyProject
 			if(!_stylesRegistered)
 			{
 				_stylesRegistered = true;
-				RegisterDefaultStyles_MyDictionary_b7707bcf1e73425b710b6a5d04177088();
+				RegisterDefaultStyles_MyDictionary_464cadc728b3c46b0be509d4bc4bb3db();
 			}
 		}
 		// Register ResourceDictionaries using ms-appx:/// syntax, this is called for external resources
@@ -55,16 +55,16 @@ namespace MyProject
 			if(!_dictionariesRegistered)
 			{
 				_dictionariesRegistered = true;
-				global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///TestProject/C:/Project/0/MyDictionary.xaml", context: __ParseContext_, dictionary: () => MyDictionary_b7707bcf1e73425b710b6a5d04177088_ResourceDictionary);
+				global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///TestProject/C:/Project/0/MyDictionary.xaml", context: __ParseContext_, dictionary: () => MyDictionary_464cadc728b3c46b0be509d4bc4bb3db_ResourceDictionary);
 			}
 		}
 		// Register ResourceDictionaries using ms-resource:/// syntax, this is called for local resources
 		internal static void RegisterResourceDictionariesBySourceLocal()
 		{
-			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-resource:///Files/C:/Project/0/MyDictionary.xaml", context: null, dictionary: () => MyDictionary_b7707bcf1e73425b710b6a5d04177088_ResourceDictionary, null);
-			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///C:/Project/0/MyDictionary.xaml", context: null, dictionary: () => MyDictionary_b7707bcf1e73425b710b6a5d04177088_ResourceDictionary);
+			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-resource:///Files/C:/Project/0/MyDictionary.xaml", context: null, dictionary: () => MyDictionary_464cadc728b3c46b0be509d4bc4bb3db_ResourceDictionary, null);
+			global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: "ms-appx:///C:/Project/0/MyDictionary.xaml", context: null, dictionary: () => MyDictionary_464cadc728b3c46b0be509d4bc4bb3db_ResourceDictionary);
 		}
-		static partial void RegisterDefaultStyles_MyDictionary_b7707bcf1e73425b710b6a5d04177088();
+		static partial void RegisterDefaultStyles_MyDictionary_464cadc728b3c46b0be509d4bc4bb3db();
 		
 	}
 }

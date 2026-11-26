@@ -42,8 +42,8 @@ internal static class EmbeddedXamlSourcesProvider
 			var xamlSources = new global::System.Collections.Generic.Dictionary<string, (string ActualPath, global::System.Func<(string Hash, string Payload)> Getter)>(2, global::System.StringComparer.OrdinalIgnoreCase);
 
 			// Use method groups to avoid closure allocation and ensure no lambda is created, to allow proper HR support
-			xamlSources[NormalizePath(@"C:/Project/0/MyDictionary.xaml")] = (NormalizePath(@"C:/Project/0/MyDictionary.xaml"), GetSources_MyDictionary_b7707bcf1e73425b710b6a5d04177088);
-			xamlSources[NormalizePath(@"C:/Project/0/OtherDictionary.xaml")] = (NormalizePath(@"C:/Project/0/OtherDictionary.xaml"), GetSources_OtherDictionary_40b4528e1043bb3b19ccfe0589e0adc9);
+			xamlSources[NormalizePath(@"C:/Project/0/MyDictionary.xaml")] = (NormalizePath(@"C:/Project/0/MyDictionary.xaml"), GetSources_MyDictionary_464cadc728b3c46b0be509d4bc4bb3db);
+			xamlSources[NormalizePath(@"C:/Project/0/OtherDictionary.xaml")] = (NormalizePath(@"C:/Project/0/OtherDictionary.xaml"), GetSources_OtherDictionary_1a4715d38b01952fe435b44aa1c44766);
 
 			if (global::System.Threading.Interlocked.CompareExchange(ref _XamlSources, xamlSources, previousHashList) == previousHashList)
 			{
@@ -95,7 +95,7 @@ internal static class EmbeddedXamlSourcesProvider
 	private static string NormalizePath(string path) => path.Replace('\\', '/');
 
 	#region Sources for C:/Project/0/MyDictionary.xaml
-	private static (string hash, string payload) GetSources_MyDictionary_b7707bcf1e73425b710b6a5d04177088()
+	private static (string hash, string payload) GetSources_MyDictionary_464cadc728b3c46b0be509d4bc4bb3db()
 	{
 		return (
 			"b0483d3ef45ab16765bb2e518219e90a4aa278b9", // hash
@@ -120,7 +120,7 @@ internal static class EmbeddedXamlSourcesProvider
 	#endregion
 
 	#region Sources for C:/Project/0/OtherDictionary.xaml
-	private static (string hash, string payload) GetSources_OtherDictionary_40b4528e1043bb3b19ccfe0589e0adc9()
+	private static (string hash, string payload) GetSources_OtherDictionary_1a4715d38b01952fe435b44aa1c44766()
 	{
 		return (
 			"919bd34189aecf48a28839cbb08b8da28a814a86", // hash

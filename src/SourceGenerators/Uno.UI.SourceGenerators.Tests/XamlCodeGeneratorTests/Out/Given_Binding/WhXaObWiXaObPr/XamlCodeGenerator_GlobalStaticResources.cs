@@ -42,7 +42,7 @@ namespace MyProject
 			if(!_stylesRegistered)
 			{
 				_stylesRegistered = true;
-				RegisterDefaultStyles_Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476f();
+				RegisterDefaultStyles_Binding_Xaml_Object_With_Xaml_Object_Properties_7504fe0b8c4234978277580e3705954b();
 			}
 		}
 		// Register ResourceDictionaries using ms-appx:/// syntax, this is called for external resources
@@ -57,7 +57,7 @@ namespace MyProject
 		internal static void RegisterResourceDictionariesBySourceLocal()
 		{
 		}
-		static partial void RegisterDefaultStyles_Binding_Xaml_Object_With_Xaml_Object_Properties_5147419e44d1bc3e3f86860ad528476f();
+		static partial void RegisterDefaultStyles_Binding_Xaml_Object_With_Xaml_Object_Properties_7504fe0b8c4234978277580e3705954b();
 		
 	}
 }
