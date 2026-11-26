@@ -64,6 +64,27 @@ partial class Given_Clipboard
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(Include, NativeIOS | NativeAndroid | SkiaAndroid | SkiaWin32)]
+	public async Task When_IsTextAvailable_Follows_Clipboard()
+	{
+		await DelayForClipboard();
+#if HAS_UNO
+		Assert.IsFalse(Clipboard.IsTextAvailable(), "The clipboard was cleared in Setup");
+
+		var package = new DataPackage();
+		package.SetText(TestString);
+		Clipboard.SetContent(package);
+		await DelayForClipboard();
+		Assert.IsTrue(Clipboard.IsTextAvailable(), "The clipboard holds text");
+
+		Clipboard.Clear();
+		await DelayForClipboard();
+		Assert.IsFalse(Clipboard.IsTextAvailable(), "The clipboard was cleared");
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	[PlatformCondition(Include, NativeAndroid)]
 	public async Task When_GetSet_Clipboard_Uri()
 	{

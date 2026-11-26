@@ -48,6 +48,8 @@ namespace Windows.ApplicationModel.DataTransfer
 			return dataPackage.GetView();
 		}
 
+		internal static bool IsTextAvailable() => UIPasteboard.General.HasStrings;
+
 		public static void Clear()
 		{
 			UIPasteboard.General.Items = Array.Empty<NSDictionary>();
