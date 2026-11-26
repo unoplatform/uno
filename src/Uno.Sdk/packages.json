@@ -92,6 +92,13 @@
 		]
 	},
 	{
+		"group": "hottesting",
+		"version": "0.1.0-dev.193",
+		"packages": [
+			"Uno.HotTesting"
+		]
+	},
+	{
 		"group": "SkiaSharp",
 		"version": "4.156.1",
 		"packages": [

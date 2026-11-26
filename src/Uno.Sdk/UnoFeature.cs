@@ -131,4 +131,6 @@ public enum UnoFeature
 
 	[UnoArea(UnoArea.Core)]
 	AndroidWear,
+
+	HotTesting,
 }

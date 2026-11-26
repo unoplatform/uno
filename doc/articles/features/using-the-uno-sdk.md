@@ -97,6 +97,7 @@ Here are the supported features:
 | `GLCanvas`           | Adds support for the [OpenGL Canvas](xref:Uno.Controls.GLCanvasElement).                                                                                                                                                                   |
 | `GooglePlay`         | Adds support for [In App Reviews](xref:Uno.Features.StoreContext). For more information, see the [Store Context documentation](xref:Uno.Features.StoreContext).                                                                            |
 | `Hosting`            | Adds support for [Dependency Injection](xref:Uno.Extensions.DependencyInjection.Overview) using [Uno.Extensions.Hosting packages](https://www.nuget.org/packages?q=Uno.Extensions.Hosting).                                                |
+| `HotTesting`         | Adds [Uno.HotTesting](https://www.nuget.org/packages/Uno.HotTesting) in non-optimized builds, for tests written inside the app. It runs on the Uno Platform targets only, not WinAppSDK. The tests folder is left out of optimized builds; see [Hot Testing in non-optimized builds](#hot-testing-in-non-optimized-builds). |
 | `Http`               | Adds support for custom [Http Clients](xref:Uno.Extensions.Http.Overview) with [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                |
 | `HttpRefit`          | Adds support for strongly-typed REST API clients via [Refit](xref:Uno.Extensions.Http.Overview#refit)                                                                           |
 | `HttpKiota`          | Adds support for OpenAPI-generated clients via [Kiota](xref:Uno.Extensions.Http.Overview#kiota)                                                                           |
@@ -143,6 +144,7 @@ Here are the supported properties:
 | `UnoExtensionsVersion`           | [Uno.Extensions.Storage.WinUI](https://www.nuget.org/packages/Uno.Extensions.Storage.WinUI) and similar packages | Extends the Uno Platform with additional methods and classes for more versatile application development.                            |
 | `UnoFontsVersion`                | [Uno.Fonts.OpenSans](https://www.nuget.org/packages/Uno.Fonts.OpenSans) and similar packages                     | Overrides the version of the bundled Uno.Fonts packages (OpenSans, Fluent, Roboto).                                                  |
 | `UnoHotDesignVersion`            | [Uno.UI.HotDesign](https://www.nuget.org/packages/Uno.UI.HotDesign)                                              | Overrides the version of the Hot Design add-in used by the DevServer.                                                                |
+| `UnoHotTestingVersion`           | [Uno.HotTesting](https://www.nuget.org/packages/Uno.HotTesting)                                                  | Overrides the version of Uno.HotTesting referenced by the `HotTesting` feature.                                                      |
 | `UnoLoggingVersion`              | [Uno.Extensions.Logging.OSLog](https://www.nuget.org/packages/Uno.Extensions.Logging.OSLog) and similar packages | Implements logging mechanisms to help with monitoring and debugging Uno Platform applications.                                      |
 | `UnoReactorVersion`              | [Uno.Microsoft.UI.Reactor](https://www.nuget.org/packages/Uno.Microsoft.UI.Reactor)                              | Overrides the version of Reactor used by the `Reactor` UnoFeature.                                                                  |
 | `UnoResizetizerVersion`          | [Uno.Resizetizer](https://www.nuget.org/packages/Uno.Resizetizer)                                                | Provides tools for automatically resizing and managing image assets in Uno Platform projects.                                       |
@@ -336,6 +338,30 @@ If you still need one of the stripped packages on Windows for a specific reason,
 > [!NOTE]
 > This property is aimed at libraries (`IsPackable=true`). Application heads typically need the implicit Uno packages on Windows to run, so setting this on a head project is not recommended.
 
+## Hot Testing in non-optimized builds
+
+When `UnoFeatures` includes `HotTesting`, the `Uno.Sdk` references [`Uno.HotTesting`](https://www.nuget.org/packages/Uno.HotTesting), and through it MSTest, in builds where `Optimize` is not `true` (Debug, by default). Its tests live inside the app, and only exist in those builds:
+
+- The tests go in the `Tests` folder of the project. Set `HotTestingTestsFolder` to use another folder.
+- In optimized (Release) builds, the package is not referenced and the tests folder is left out of the build, the same way the Hot Design previews folder is.
+- The Windows (WinAppSDK) target doesn't get Hot Testing, in any build: `Uno.HotTesting` is built against the Uno Platform targets. The package is not referenced there, and the tests folder is left out.
+- Everything in that folder is left out, not only tests. If the project already has a `Tests` folder for something else, set `HotTestingTestsFolder` to another name before enabling the feature.
+- Only files the project includes by default are left out. A file the project adds explicitly, with `<Compile Include="...">`, still compiles in Release.
+- It is referenced with `PrivateAssets="all"`, so it does not flow to projects that reference yours. An app that uses a library with Hot Testing tests also needs the `HotTesting` feature for those tests to run.
+- Each `Uno.Sdk` version pins a version of `Uno.HotTesting`. Set `UnoHotTestingVersion` to override it.
+- Debug and Release restore different packages. The `--no-restore` and lock file guidance of [MVUX feed mocks](#mvux-feed-mocks-in-non-optimized-builds) applies here too.
+
+```xml
+<UnoFeatures>
+  Material;
+  HotTesting;
+</UnoFeatures>
+```
+
+`UnoDisableHotTesting` turns the feature off: the package is not referenced, and the tests folder is left out of every build.
+
+A Release build that fails with `CS0246` or `CS0234` on `TestClass`, `TestContext` or `Microsoft.VisualStudio.TestTools` has a test outside the tests folder. Move it into the folder.
+
 ## MVUX feed mocks in non-optimized builds
 
 When `UnoFeatures` includes `MVUX`, the `Uno.Sdk` also references [`Uno.HotTesting.Reactive`](https://www.nuget.org/packages/Uno.HotTesting.Reactive) in builds where `Optimize` is not `true` (Debug, by default). The package provides MVUX feed mocks for previews and UI tests, and is meant to stay out of published apps:
@@ -345,7 +371,7 @@ When `UnoFeatures` includes `MVUX`, the `Uno.Sdk` also references [`Uno.HotTesti
 - It follows `UnoExtensionsVersion`, and is skipped (`UNOB0028`) when that version is older than the 7.4 builds that first ship it, or is a floating version or a range.
 - Debug and Release restore different packages. Restore the configuration you build before any `--no-restore` build, and if you use `RestoreLockedMode`, give each configuration its own lock file, e.g. `<NuGetLockFilePath>packages.$(Configuration).lock.json</NuGetLockFilePath>`.
 
-To turn the implicit reference off:
+To turn off this reference, and the one the `HotTesting` feature adds:
 
 ```xml
 <PropertyGroup>
