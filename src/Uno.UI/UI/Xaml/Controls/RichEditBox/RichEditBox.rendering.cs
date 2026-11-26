@@ -103,7 +103,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Uno-specific: a *uniform* paragraph alignment resolved from the TOM paragraph model and
 		// projected onto this RichEditBox's own DisplayBlock. Null when no uniform, non-default alignment
 		// applies, in which case the control-level TextAlignment DP drives the block. Read by
-		// ITextBoxViewHost.IsTextAlignmentSetToDefault so the shared TextBlock honors this override.
+		// ITextBoxViewHost.IsTextAlignmentDetectedFromContent so the shared TextBlock honors this override.
 		private global::Microsoft.UI.Xaml.TextAlignment? _paragraphAlignmentOverride;
 
 		internal global::Microsoft.UI.Xaml.TextAlignment? ParagraphAlignmentOverride => _paragraphAlignmentOverride;
@@ -248,7 +248,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Projects a uniform paragraph alignment onto the DisplayBlock's block-level fast path. Mixed
 		// alignments are carried by individual runs and resolved per visual line by UnicodeText. Setting
-		// _paragraphAlignmentOverride makes ITextBoxViewHost.IsTextAlignmentSetToDefault report false.
+		// _paragraphAlignmentOverride makes ITextBoxViewHost.IsTextAlignmentDetectedFromContent report false.
 		private void ApplyParagraphAlignment()
 		{
 			if (_textBoxView is null)

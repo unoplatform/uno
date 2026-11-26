@@ -424,11 +424,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		int ITextBoxViewHost.CompositionUnderlineLength => Math.Max(0, _compositionLength - _compositionResolvedLength);
 
-		// When the paragraph model projects a uniform alignment onto the DisplayBlock
-		// (see ApplyParagraphAlignment), report the alignment as explicitly set so the shared TextBlock
-		// uses DisplayBlock.TextAlignment instead of deferring to the default. Otherwise fall back to the
-		// control-level TextAlignment DP precedence.
-		bool ITextBoxViewHost.IsTextAlignmentSetToDefault =>
+		// The DisplayBlock detects the alignment from the content only while TextAlignment is at its default and
+		// no uniform paragraph alignment is projected onto the block (see ApplyParagraphAlignment); otherwise it
+		// uses DisplayBlock.TextAlignment.
+		// TODO Uno: this still decides from the precedence, not the value as TextBox does, so a TextAlignment set to
+		// DetectFromContent draws like Left. WinUI's RichEditBox doesn't detect from the content at all.
+		bool ITextBoxViewHost.IsTextAlignmentDetectedFromContent =>
 			_paragraphAlignmentOverride is null
 			&& ((DependencyObject)this)
 				.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue;

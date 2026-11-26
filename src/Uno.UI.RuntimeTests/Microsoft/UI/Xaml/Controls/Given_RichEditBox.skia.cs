@@ -3886,13 +3886,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var block = FindDisplayBlock(SUT);
 			Assert.IsNotNull(block, "The DisplayBlock hosting the text should be in the visual tree.");
 
-			// Baseline: no paragraph-alignment override is active, so IsTextAlignmentSetToDefault is true.
+			// Baseline: no paragraph-alignment override is active, so IsTextAlignmentDetectedFromContent is true.
 			// While it is true, the shared TextBlock renders with its own default alignment regardless of
 			// the block's TextAlignment property value (see GetAdjustedTextAlignment), which mirrors the
 			// control-level TextAlignment DP. Capture that default rather than hard-coding it: the DP's
 			// metadata default is default(TextAlignment) == Center, which is a framework-wide constant, not
 			// something this feature controls.
-			Assert.IsTrue(((ITextBoxViewHost)SUT).IsTextAlignmentSetToDefault);
+			Assert.IsTrue(((ITextBoxViewHost)SUT).IsTextAlignmentDetectedFromContent);
 			var controlDefaultAlignment = ((ITextBoxViewHost)SUT).TextAlignment;
 			Assert.AreEqual(controlDefaultAlignment, block.TextAlignment);
 
@@ -3905,7 +3905,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(TextAlignment.Right, SUT.ParagraphAlignmentOverride);
 			Assert.AreEqual(TextAlignment.Right, block.TextAlignment);
-			Assert.IsFalse(((ITextBoxViewHost)SUT).IsTextAlignmentSetToDefault);
+			Assert.IsFalse(((ITextBoxViewHost)SUT).IsTextAlignmentDetectedFromContent);
 
 			// Relinquishing the paragraph alignment (the model default is Left) clears the override and
 			// hands the block back to the control-level DP default.
@@ -3913,7 +3913,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsNull(SUT.ParagraphAlignmentOverride);
-			Assert.IsTrue(((ITextBoxViewHost)SUT).IsTextAlignmentSetToDefault);
+			Assert.IsTrue(((ITextBoxViewHost)SUT).IsTextAlignmentDetectedFromContent);
 			Assert.AreEqual(controlDefaultAlignment, block.TextAlignment);
 		}
 

@@ -101,13 +101,6 @@ internal interface ITextBoxHost
 
 	TextAlignment TextAlignment { get; }
 
-	/// <summary>
-	/// Whether <see cref="TextAlignment"/> was set rather than left at its default. The display block
-	/// only adjusts its own alignment when the host has an explicit one; a password box has no such
-	/// property, so it answers <c>false</c> and the adjustment is skipped by construction.
-	/// </summary>
-	bool IsTextAlignmentExplicitlySet { get; }
-
 	CharacterCasing CharacterCasing { get; }
 
 	bool IsTextPredictionEnabled { get; }

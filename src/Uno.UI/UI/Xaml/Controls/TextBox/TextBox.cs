@@ -560,7 +560,10 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextAlignment),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					TextAlignment.Left,
+					// WinUI registers Left, but a new TextBox reports DetectFromContent (TextBoxBase.h) and only
+					// reports Left after ClearValue. Uno draws Left on the physical left even in a RightToLeft TextBox,
+					// so a cleared box keeps DetectFromContent here: Left there would move right-to-left text.
+					TextAlignment.DetectFromContent,
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((TextBox)s)?._core.OnTextAlignmentChanged((TextAlignment)e.NewValue)));
 

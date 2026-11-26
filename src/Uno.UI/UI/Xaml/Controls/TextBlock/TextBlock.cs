@@ -1751,7 +1751,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private TextAlignment? GetAdjustedTextAlignment() =>
-			OwningTextBox is { IsTextAlignmentSetToDefault: true }
+			OwningTextBox is { IsTextAlignmentDetectedFromContent: true }
 				? null
 				: TextAlignment;
 
