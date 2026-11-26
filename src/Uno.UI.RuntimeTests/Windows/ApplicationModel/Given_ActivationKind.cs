@@ -10,15 +10,21 @@ public class Given_ActivationKind
 	[TestMethod]
 	public void When_ExtendedActivationKind_Values_Match()
 	{
-		foreach (var kind in Enum.GetValues(typeof(ActivationKind)))
+		// Neither enum is a superset: the Windows SDK and WinAppSDK each add kinds the other lacks,
+		// and the WinAppSDK head projects ActivationKind from an older SDK.
+		var sharedCount = 0;
+		foreach (var extendedKind in Enum.GetValues<ExtendedActivationKind>())
 		{
-			var extendedKind = (ExtendedActivationKind)(int)kind;
-			Assert.IsTrue(
-				Enum.IsDefined(typeof(ExtendedActivationKind), extendedKind),
-				$"ActivationKind.{kind} has no matching definition in ExtendedActivationKind");
-			var kindName = Enum.GetName(typeof(ActivationKind), kind);
-			var extendedKindName = Enum.GetName(typeof(ExtendedActivationKind), extendedKind);
-			Assert.AreEqual(kindName, extendedKindName, $"Mismatch for ActivationKind.{kindName} (ExtendedActivationKind.{extendedKind})");
+			var kind = (ActivationKind)(int)extendedKind;
+			if (!Enum.IsDefined(kind))
+			{
+				continue;
+			}
+
+			sharedCount++;
+			Assert.AreEqual(extendedKind.ToString(), kind.ToString(), $"Mismatch for ExtendedActivationKind.{extendedKind} (ActivationKind.{kind})");
 		}
+
+		Assert.IsGreaterThan(0, sharedCount);
 	}
 }
