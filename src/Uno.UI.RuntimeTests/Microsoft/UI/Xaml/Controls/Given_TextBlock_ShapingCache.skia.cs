@@ -31,7 +31,7 @@ public class Given_TextBlock_ShapingCache
 		var SUT = new TextBlock { Text = Sentence, TextWrapping = TextWrapping.Wrap, Width = 400 };
 		WindowHelper.WindowContent = new Border { Child = SUT };
 		await WindowHelper.WaitForLoaded(SUT);
-		await WindowHelper.WaitForIdle();
+		await WaitForFontsLoaded(SUT);
 
 		var shaped = SUT.CachedShapedText;
 		Assert.IsNotNull(shaped);
@@ -139,15 +139,15 @@ public class Given_TextBlock_ShapingCache
 	}
 
 	[TestMethod]
-	public async Task When_Arranged_Narrower_Than_Measured_Text_Is_Not_Shaped_Again()
+	public async Task When_Parent_Width_Changes_Text_Is_Not_Shaped_Again()
 	{
-		// A Left-aligned TextBlock is measured with the parent's width and arranged with its own desired width,
-		// so measure and arrange see different sizes.
+		// A Left-aligned TextBlock is measured with its parent's width: each new width lays it out again, from the same
+		// shaping.
 		var SUT = new TextBlock { Text = "Short", HorizontalAlignment = HorizontalAlignment.Left };
 		var host = new Border { Width = 300, Child = SUT };
 		WindowHelper.WindowContent = host;
 		await WindowHelper.WaitForLoaded(SUT);
-		await WindowHelper.WaitForIdle();
+		await WaitForFontsLoaded(SUT);
 
 		var shaped = SUT.CachedShapedText;
 		Assert.IsNotNull(shaped);
@@ -238,8 +238,7 @@ public class Given_TextBlock_ShapingCache
 	[TestMethod]
 	public async Task When_Foreground_Changes_The_Next_Layout_Uses_The_New_Brush()
 	{
-		// A Foreground change only repaints, so the shaping (which holds each run's brush) is still there for the next
-		// layout, which must not reuse it.
+		// The shaping holds each run's brush: the next layout must use the new one.
 		var SUT = new TextBlock { Text = Sentence, TextWrapping = TextWrapping.Wrap, Width = 300 };
 		WindowHelper.WindowContent = SUT;
 		await WindowHelper.WaitForLoaded(SUT);
@@ -261,7 +260,8 @@ public class Given_TextBlock_ShapingCache
 	public async Task When_Foreground_Changes_To_An_Equal_Brush_The_Old_Brush_Is_Not_Drawn(bool inherited)
 	{
 		// SolidColorBrush.Equals compares colors, but the text draws with the brush its layout keeps: once the TextBlock uses
-		// another brush, a change to the old one must not show.
+		// another brush, a change to the old one must not show. A Foreground change also drops the shaping
+		// (Run.OnForegroundChanged), so this guards the drawn result rather than the comparison alone.
 		var oldBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Black);
 		var newBrush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Black);
 		var SUT = new TextBlock { Text = Sentence, TextWrapping = TextWrapping.Wrap, Width = 300, FontSize = 24 };
@@ -304,10 +304,10 @@ public class Given_TextBlock_ShapingCache
 	}
 
 	[TestMethod]
-	public async Task When_RichEditBox_Run_Format_Changes_In_Place_Layout_Matches_A_Fresh_Editor()
+	public async Task When_RichEditBox_Format_Changes_Layout_Matches_A_Fresh_Editor()
 	{
-		// A small RichEditBox document is laid out by its display block's own TextBlock path, and a format change updates
-		// the existing Run in place: the next layout must not reuse the shaping of the old format.
+		// A small RichEditBox document is laid out by its display block's own TextBlock path: after a format change, its
+		// layout must match a fresh editor's, not keep the shaping of the old format.
 		const string text = "Mixed formatting in a paragraph long enough to wrap onto a few lines.";
 		var SUT = new RichEditBox { Width = 300 };
 		var fresh = new RichEditBox { Width = 300 };
@@ -328,13 +328,47 @@ public class Given_TextBlock_ShapingCache
 			var displayBlock = GetDisplayBlock(SUT);
 			Assert.IsNull(displayBlock.CustomTextLayout, "The document should be laid out by the TextBlock itself.");
 			Assert.IsNotNull(displayBlock.CachedShapedText);
+			var rectBefore = displayBlock.ParsedText.GetRectForIndex(text.Length);
 
 			ApplyFormat(SUT);
 			fresh.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, text);
 			ApplyFormat(fresh);
 			await WindowHelper.WaitForIdle();
 
+			Assert.AreNotEqual(rectBefore, displayBlock.ParsedText.GetRectForIndex(text.Length), "The format change should move the text.");
 			AssertSameCharacterRects(GetDisplayBlock(fresh), displayBlock, "after the format change");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	public async Task When_A_Run_Format_Changes_Without_Invalidation_Text_Is_Shaped_Again()
+	{
+		// Rich-format fields on a Run invalidate nothing, so only the comparison of what the shaping read notices them.
+		var hiddenRun = new Run { Text = "hidden words" };
+		var SUT = new TextBlock();
+		SUT.Inlines.Add(new Run { Text = "Visible " });
+		SUT.Inlines.Add(hiddenRun);
+		var fresh = new TextBlock();
+		fresh.Inlines.Add(new Run { Text = "Visible " });
+		fresh.Inlines.Add(new Run { Text = "hidden words", IsHidden = true });
+		try
+		{
+			WindowHelper.WindowContent = new StackPanel { Children = { SUT, fresh } };
+			await WindowHelper.WaitForLoaded(SUT);
+			await WaitForFontsLoaded(SUT);
+			var shaped = SUT.CachedShapedText;
+			Assert.IsNotNull(shaped);
+
+			hiddenRun.IsHidden = true;
+			SUT.InvalidateMeasure();
+			SUT.UpdateLayout();
+
+			Assert.AreNotSame(shaped, SUT.CachedShapedText);
+			AssertSameCharacterRects(fresh, SUT, "after hiding a run");
 		}
 		finally
 		{
@@ -345,23 +379,30 @@ public class Given_TextBlock_ShapingCache
 	[TestMethod]
 	public async Task When_Shaping_Cache_Is_Disabled_Nothing_Is_Kept()
 	{
-		var SUT = new TextBlock { Text = Sentence, TextWrapping = TextWrapping.Wrap, Width = 300 };
+		TextBlock Create(double width) => new() { Text = Sentence, TextWrapping = TextWrapping.Wrap, Width = width };
+		var SUT = Create(300);
+		var panel = new StackPanel { Children = { SUT } };
+		var original = FeatureConfiguration.TextBlock.EnableShapingCache;
 		try
 		{
-			WindowHelper.WindowContent = SUT;
+			FeatureConfiguration.TextBlock.EnableShapingCache = true;
+			WindowHelper.WindowContent = panel;
 			await WindowHelper.WaitForLoaded(SUT);
 			await WindowHelper.WaitForIdle();
 			Assert.IsNotNull(SUT.CachedShapedText);
 
 			FeatureConfiguration.TextBlock.EnableShapingCache = false;
 			SUT.Width = 200;
-			SUT.UpdateLayout();
+			var fresh = Create(200);
+			panel.Children.Add(fresh);
+			panel.UpdateLayout();
 
 			Assert.IsNull(SUT.CachedShapedText);
+			AssertSameCharacterRects(fresh, SUT, "with the cache off");
 		}
 		finally
 		{
-			FeatureConfiguration.TextBlock.EnableShapingCache = true;
+			FeatureConfiguration.TextBlock.EnableShapingCache = original;
 			WindowHelper.WindowContent = null;
 		}
 	}
@@ -412,6 +453,7 @@ public class Given_TextBlock_ShapingCache
 			AssertSameCharacterRects(fresh, SUT, $"at width {width}");
 
 			panel.Children.Remove(fresh);
+			await AssertReuseAtRangeEdgesMatchesFresh(panel, (UnicodeText)SUT.ParsedText, () => Create(double.NaN), $"measured at width {width}");
 		}
 	}
 
@@ -445,7 +487,9 @@ public class Given_TextBlock_ShapingCache
 			var SUT = new TextBlock { Text = Sentence };
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
+			await WaitForFontsLoaded(SUT);
 			var shaped = SUT.CachedShapedText;
+			Assert.IsNotNull(shaped);
 
 			CultureInfo.CurrentUICulture = new CultureInfo(original.Name == "fr-FR" ? "de-DE" : "fr-FR");
 			SUT.InvalidateMeasure();
@@ -470,6 +514,7 @@ public class Given_TextBlock_ShapingCache
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 			var shaped = SUT.CachedShapedText;
+			Assert.IsNotNull(shaped);
 			var width = SUT.ActualWidth;
 
 			FeatureConfiguration.Font.TextScaleFactor = 1.5;
@@ -720,14 +765,17 @@ public class Given_TextBlock_ShapingCache
 			},
 			new Size(300, double.PositiveInfinity), 302, double.NaN, expectReuse: false);
 
-		Assert.AreEqual((302f, MathF.BitIncrement(302f)), ((UnicodeText)SUT.ParsedText).ReusableWidths);
+		var layout = (UnicodeText)SUT.ParsedText;
+		Assert.IsTrue(layout.TryReuseForSize(new Size(302, 1000), out _), "At the arranged width");
+		Assert.IsFalse(layout.TryReuseForSize(new Size(MathF.BitDecrement(302f), 1000), out _), "Just below the arranged width");
+		Assert.IsFalse(layout.TryReuseForSize(new Size(MathF.BitIncrement(302f), 1000), out _), "Just above the arranged width");
 	}
 
 	[TestMethod]
 	public async Task When_RichEditBox_Width_Changes_Layout_Matches_A_Fresh_Editor()
 	{
-		// A small document goes through the display block's own TextBlock path, so its paragraph formats (justification,
-		// indents, list markers) go through the shaping cache and the arrange reuse.
+		// A small document goes through the display block's own TextBlock path: its shaping is reused across widths, and
+		// its paragraph formats (justification, indents, list markers) pin the arrange reuse to each width.
 		RichEditBox Create(double width) => new() { Width = width };
 		void Populate(RichEditBox editor)
 		{
@@ -748,6 +796,8 @@ public class Given_TextBlock_ShapingCache
 			await WindowHelper.WaitForIdle();
 			var displayBlock = GetDisplayBlock(SUT);
 			Assert.IsNull(displayBlock.CustomTextLayout, "The document should be laid out by the TextBlock itself.");
+			var shaped = displayBlock.CachedShapedText;
+			Assert.IsNotNull(shaped);
 
 			foreach (var width in new double[] { 280, 360, 300 })
 			{
@@ -758,6 +808,7 @@ public class Given_TextBlock_ShapingCache
 				Populate(fresh);
 				await WindowHelper.WaitForIdle();
 
+				Assert.AreSame(shaped, displayBlock.CachedShapedText, $"The shaping should be reused at width {width}.");
 				AssertSameCharacterRects(GetDisplayBlock(fresh), displayBlock, $"at width {width}");
 				panel.Children.Remove(fresh);
 			}
@@ -771,6 +822,7 @@ public class Given_TextBlock_ShapingCache
 	[TestMethod]
 	public async Task When_Arrange_Layout_Reuse_Is_Disabled_Arrange_Lays_Out_Again()
 	{
+		var original = FeatureConfiguration.TextBlock.EnableArrangeLayoutReuse;
 		try
 		{
 			FeatureConfiguration.TextBlock.EnableArrangeLayoutReuse = false;
@@ -780,7 +832,7 @@ public class Given_TextBlock_ShapingCache
 		}
 		finally
 		{
-			FeatureConfiguration.TextBlock.EnableArrangeLayoutReuse = true;
+			FeatureConfiguration.TextBlock.EnableArrangeLayoutReuse = original;
 		}
 	}
 
@@ -985,6 +1037,36 @@ public class Given_TextBlock_ShapingCache
 		public Size CallArrangeOverride(Size finalSize) => ArrangeOverride(finalSize);
 	}
 
+	// At both edges of a layout's reuse range, the reused layout must equal a block laid out fresh at that width.
+	private static async Task AssertReuseAtRangeEdgesMatchesFresh(Panel host, UnicodeText measured, Func<TextBlock> create, string context)
+	{
+		const double height = 2000;
+		var (min, maxExclusive) = measured.ReusableWidths;
+		var edges = float.IsPositiveInfinity(maxExclusive) ? new[] { min, min + 40 } : new[] { min, MathF.BitDecrement(maxExclusive) };
+		foreach (var width in edges)
+		{
+			Assert.IsTrue(measured.TryReuseForSize(new Size(width, height), out var reused), $"Reuse at {width}, {context}");
+
+			// The reference is the measure layout itself: arrange can't go below the desired size, which an ellipsis that
+			// doesn't fit makes wider than the width.
+			var fresh = create();
+			fresh.Width = double.NaN;
+			host.Children.Add(fresh);
+			await WindowHelper.WaitForIdle();
+			fresh.InvalidateMeasure();
+			fresh.Measure(new Size(width, height));
+			var expected = fresh.ParsedText;
+
+			var length = fresh.Inlines.TraversedTree.leafTree.Sum(inline => inline.GetText()?.Length ?? 0);
+			for (var index = 0; index <= length; index++)
+			{
+				Assert.AreEqual(expected.GetRectForIndex(index), reused.GetRectForIndex(index), $"Rect of index {index} reused at {width}, {context}");
+			}
+
+			host.Children.Remove(fresh);
+		}
+	}
+
 	private static void AssertSameCharacterRects(TextBlock expected, TextBlock actual, string context)
 	{
 		var length = actual.Inlines.TraversedTree.leafTree.Sum(inline => inline.GetText()?.Length ?? 0);
@@ -1068,6 +1150,7 @@ public class Given_TextBlock_ShapingCache
 			stablePasses = shaped is not null && ReferenceEquals(shaped, textBlock.CachedShapedText) ? stablePasses + 1 : 0;
 		}
 
+		Assert.IsNotNull(textBlock.CachedShapedText, "The block keeps no shaping (cache off, long text or a custom layout).");
 		Assert.AreEqual(3, stablePasses, "The text kept being shaped again after its fonts loaded.");
 
 		static async Task IgnoreFailure(Task task)
