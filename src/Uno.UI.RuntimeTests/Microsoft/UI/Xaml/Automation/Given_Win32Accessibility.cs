@@ -602,14 +602,71 @@ public class Given_Win32Accessibility
 		}
 	}
 
+	// A provider created off the UI thread is seeded by a queued callback. Until it has run the baseline is stale,
+	// so the gate must not let layout compare against it: no event may be raised for the change in between.
+	[TestMethod]
+	public async Task When_Provider_Created_Off_UI_Thread_Change_Before_Seed_Raises_Nothing()
+	{
+		var (button, clipHost) = CreateButtonInClippedCanvas();
+		var recorder = new RecordingListener();
+
+		try
+		{
+			await UITestHelper.Load(clipHost);
+
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(button)
+				?? throw new InvalidOperationException("Peer not created.");
+			var accessibility = ResolveAccessibility(button)
+				?? throw new InvalidOperationException("Win32Accessibility instance not found.");
+			RequireNoProvider(accessibility, button);
+
+			recorder.Attach();
+			Exception? failure = null;
+			var thread = new System.Threading.Thread(() =>
+			{
+				try
+				{
+					_ = GetOrCreateProvider(accessibility, button);
+				}
+				catch (Exception ex)
+				{
+					failure = ex;
+				}
+			});
+			thread.Start();
+			// Block (don't await): the UI thread must not run the queued seed yet.
+			thread.Join();
+			Assert.IsNull(failure);
+
+			Assert.IsFalse(CanReceiveAutomaticPropertyChanges(accessibility, peer), "The gate must hold the peer back until the queued seed has run.");
+
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(CanReceiveAutomaticPropertyChanges(accessibility, peer), "The peer has a provider and a seeded baseline.");
+
+			Canvas.SetTop(button, 400);
+			await WindowHelper.WaitForIdle();
+			CollectionAssert.AreEqual(new[] { (false, true) }, recorder.IsOffscreenChanges(peer), "Expected one IsOffscreen false -> true change.");
+		}
+		finally
+		{
+			recorder.Detach();
+			WindowHelper.WindowContent = null;
+		}
+	}
+
 	// A listening UIA client (Narrator, Inspect) makes ChildAdded handling create providers for elements entering
-	// the tree, so these tests can only run when none is attached.
+	// the tree, so the provider of the subject is dropped to start from the no-provider state.
 	private static void RequireNoProvider(object accessibility, UIElement element)
 	{
-		if (TryGetExistingProvider(accessibility, element) is not null)
+		var peer = element.GetOrCreateAutomationPeer();
+		foreach (var (field, key) in new (string, object?)[] { ("_providers", element), ("_peerProviders", peer) })
 		{
-			Assert.Inconclusive("A UIA client created a provider for the element; the test needs it to have none.");
+			var table = accessibility.GetType().GetField(field, BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(accessibility)
+				?? throw new InvalidOperationException($"Win32Accessibility.{field} not found.");
+			table.GetType().GetMethods().Single(m => m.Name == "Remove" && m.GetParameters().Length == 1).Invoke(table, new[] { key! });
 		}
+
+		Assert.IsNull(TryGetExistingProvider(accessibility, element), "The provider of the subject could not be dropped.");
 	}
 
 	private static (OffscreenCountingButton Button, Border ClipHost) CreateButtonInClippedCanvas()
