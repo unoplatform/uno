@@ -474,4 +474,34 @@ public class Given_ListView_Issues_Selection
 			WindowHelper.WindowContent = null;
 		}
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25458")]
+	public async Task When_ItemsStackPanel_In_ItemsControl_Creates_One_Container_Per_Item()
+	{
+		try
+		{
+			foreach (var orientation in new[] { Orientation.Horizontal, Orientation.Vertical })
+			{
+				var ic = await Host(CreateItemsControlWithItemsStackPanel(orientation, new[] { "A", "B", "C", "D", "E", "F" }));
+
+				var panel = (ItemsStackPanel)ic.ItemsPanelRoot;
+				Assert.AreEqual(6, panel.Children.Count, orientation.ToString());
+
+				double previous = -1;
+				foreach (FrameworkElement child in panel.Children)
+				{
+					var origin = child.TransformToVisual(panel).TransformPoint(default);
+					var offset = orientation == Orientation.Horizontal ? origin.X : origin.Y;
+					Assert.IsTrue(offset > previous, $"{orientation}: offset {offset} should advance past {previous}");
+					previous = offset;
+				}
+			}
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
 }
