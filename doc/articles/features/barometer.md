@@ -11,11 +11,11 @@ uid: Uno.Features.Barometer
 
 ## Supported features
 
-| Feature          | Windows | Android | iOS | Web (WASM) | macOS | Linux (Skia) | Win 7 (Skia) |
-|------------------|---------|---------|-----|------------|-------|--------------|--------------|
-| `GetDefault`     | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
-| `ReadingChanged` | ✔       | ✔       | ✔   | ✖          | ✖     | ✖            | ✖            |
-| `ReportInterval` | ✔       | ✔       | ✖   | ✖          | ✖     | ✖            | ✖            |
+| Feature          | Windows App SDK | Android (Skia) | iOS (Skia) | WebAssembly (Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
+|------------------|-----------------|-----------------------|-------------------|----------------------------|-----------------------|---------------------|------------------------------------|-------------------------|
+| `GetDefault`     | ✔               | ✔                     | ✔                 | ✔                          | ✔                     | ✔                   | ✔                                  | ✔                       |
+| `ReadingChanged` | ✔               | ✔                     | ✔                 | ✖                          | ✖                     | ✖                   | ✖                                  | ✖                       |
+| `ReportInterval` | ✔               | ✔                     | ✖                 | ✖                          | ✖                     | ✖                   | ✖                                  | ✖                       |
 
 ## Using Barometer with Uno
 

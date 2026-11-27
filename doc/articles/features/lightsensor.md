@@ -11,11 +11,11 @@ uid: Uno.Features.LightSensor
 
 ## Supported features
 
-| Feature          |Windows|Android|iOS|Wasm|macOS|Skia|
-|------------------|-------|-------|---|----|-----|----|
-| `GetDefault`     |   ✔   |   ✔   | ✖ | ✔ | ✖ | ✖ |
-| `ReadingChanged` |   ✔   |   ✔   | ✖ | ✔ | ✖ | ✖ |
-| `ReportInterval` |   ✔   |   ✔   | ✖ | ✖ | ✖ | ✖ |
+| Feature          | Windows App SDK | Android (Skia) | iOS (Skia) | WebAssembly (Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
+|------------------|-----------------|-----------------------|-------------------|----------------------------|-----------------------|---------------------|------------------------------------|-------------------------|
+| `GetDefault`     | ✔               | ✔                     | ✖                 | ✔                          | ✖                     | ✖                   | ✖                                  | ✖                       |
+| `ReadingChanged` | ✔               | ✔                     | ✖                 | ✔                          | ✖                     | ✖                   | ✖                                  | ✖                       |
+| `ReportInterval` | ✔               | ✔                     | ✖                 | ✖                          | ✖                     | ✖                   | ✖                                  | ✖                       |
 
 ## Using LightSensor with Uno
 

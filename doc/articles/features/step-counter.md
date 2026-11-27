@@ -11,11 +11,11 @@ uid: Uno.Features.StepCounter
 
 ## Supported features
 
-| Feature           | Windows | Android | iOS | Web (WASM) | macOS | Linux (Skia) | Win 7 (Skia) |
-|-------------------|---------|---------|-----|------------|-------|--------------|--------------|
-| `GetDefaultAsync` | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
-| `ReadingChanged`  | ✔       | ✔       | ✔   | ✖          | ✖     | ✖            | ✖            |
-| `ReportInterval`  | ✔       | ✔       | ✔   | ✖          | ✖     | ✖            | ✖            |
+| Feature           | Windows App SDK | Android (Skia) | iOS (Skia) | WebAssembly (Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
+|-------------------|-----------------|-----------------------|-------------------|----------------------------|-----------------------|---------------------|------------------------------------|-------------------------|
+| `GetDefaultAsync` | ✔               | ✔                     | ✔                 | ✔                          | ✔                     | ✔                   | ✔                                  | ✔                       |
+| `ReadingChanged`  | ✔               | ✔                     | ✔                 | ✖                          | ✖                     | ✖                   | ✖                                  | ✖                       |
+| `ReportInterval`  | ✔               | ✔                     | ✔                 | ✖                          | ✖                     | ✖                   | ✖                                  | ✖                       |
 
 ## Using Pedometer with Uno
 

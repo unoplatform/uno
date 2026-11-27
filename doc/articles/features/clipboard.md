@@ -11,13 +11,13 @@ uid: Uno.Features.Clipboard
 
 ## Supported features
 
-| Feature          | Windows | Android | iOS | Web (WASM) | macOS | Linux (Skia) | Win 7 (Skia) |
-|------------------|---------|---------|-----|------------|-------|--------------|--------------|
-| `SetContent`     | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
-| `GetContent`     | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
-| `Clear`          | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
-| `ContentChanged` | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
-| `Flush`          | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
+| Feature          | Windows App SDK | Android (Skia) | iOS (Skia) | WebAssembly (Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
+|------------------|-----------------|-----------------------|-------------------|----------------------------|-----------------------|---------------------|------------------------------------|-------------------------|
+| `SetContent`     | ✔               | ✔                     | ✔                 | ✔                          | ✔                     | ✔                   | ✔                                  | ✔                       |
+| `GetContent`     | ✔               | ✔                     | ✔                 | ✔                          | ✔                     | ✔                   | ✔                                  | ✔                       |
+| `Clear`          | ✔               | ✔                     | ✔                 | ✔                          | ✔                     | ✔                   | ✔                                  | ✔                       |
+| `ContentChanged` | ✔               | ✔                     | ✔                 | ✔                          | ✔                     | ✔                   | ✔                                  | ✔                       |
+| `Flush`          | ✔               | ✔                     | ✔                 | ✔                          | ✔                     | ✔                   | ✔                                  | ✔                       |
 
 <!-- Add any additional information on platform-specific limitations and constraints -->
 
