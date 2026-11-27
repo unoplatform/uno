@@ -1009,8 +1009,9 @@ internal readonly partial struct UnicodeText : IParsedText
 
 	/// <summary>The same layout at another available size (see <see cref="TryReuseForSize"/>).</summary>
 	/// <remarks>
-	/// Shares everything with <paramref name="layout"/>, including the boxes of the lazily computed state, except the
-	/// spell-check squiggles, which drawing computes at the available size.
+	/// Shares everything with <paramref name="layout"/> except the spell-check squiggles, which drawing computes at the
+	/// available size. Nothing else depends on it: the word boundaries come from the text, and drawing, hit-testing, the
+	/// caret and the selection compute their alignment offset from <see cref="_availableSize"/> when they run.
 	/// </remarks>
 	private UnicodeText(in UnicodeText layout, Size availableSize)
 	{
