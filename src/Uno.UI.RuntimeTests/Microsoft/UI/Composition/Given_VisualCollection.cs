@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI.RuntimeTests.Helpers;
 using Color = Windows.UI.Color;
 
@@ -22,6 +23,8 @@ public class Given_VisualCollection
 	[DataRow(0)]
 	[DataRow(1)]
 	[DataRow(2)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25281")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26745")]
 	public async Task When_InsertAbove_Then_Directly_Above_Sibling(int siblingIndex)
 	{
 		var (container, children) = await CreateContainer(3);
@@ -39,6 +42,8 @@ public class Given_VisualCollection
 	[DataRow(0)]
 	[DataRow(1)]
 	[DataRow(2)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25281")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26745")]
 	public async Task When_InsertBelow_Then_Directly_Below_Sibling(int siblingIndex)
 	{
 		var (container, children) = await CreateContainer(3);
@@ -137,8 +142,6 @@ public class Given_VisualCollection
 
 	// The item chrome inserts its backplate at index 0, under the content that is already there.
 	[TestMethod]
-	// NativeWinUI: the capture is white where this test expects the selected backplate. This guards Uno's own insert.
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ListViewItem_Selected_Then_Content_Drawn_Over_Backplate()
 	{
 		var content = new Border
@@ -156,6 +159,8 @@ public class Given_VisualCollection
 			Height = 100,
 			Background = new SolidColorBrush(Colors.White),
 			SelectionMode = ListViewSelectionMode.Single,
+			// No entrance transition: WinUI would capture its first, faded-out frame.
+			ItemContainerTransitions = new TransitionCollection(),
 		};
 		list.Items.Add(item);
 		await UITestHelper.Load(list);
