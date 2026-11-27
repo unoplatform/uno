@@ -617,4 +617,25 @@ public class Given_ListView_Issues_Layout
 		await WindowHelper.WaitForIdle();
 		Assert.AreEqual(0, sv.VerticalOffset, Tolerance, "Default alignment leaves a visible item alone");
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/5758")]
+	public async Task When_ItemContainer_MinHeight_Zero_Then_Container_Uses_Content_Height()
+	{
+		ListView list = new()
+		{
+			Width = 300,
+			Height = 400,
+			ItemsSource = Strings(5),
+			ItemTemplate = Template("<Border Height='10'><TextBlock Text='{Binding}' FontSize='6' /></Border>"),
+			ItemContainerStyle = (Style)XamlReader.Load(
+				"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TargetType='ListViewItem'><Setter Property='MinHeight' Value='0' /><Setter Property='Padding' Value='0' /></Style>"),
+		};
+		await Load(list);
+
+		for (int i = 0; i < 5; i++)
+		{
+			Assert.AreEqual(10, ((FrameworkElement)list.ContainerFromIndex(i)).ActualHeight, Tolerance, $"Container {i}");
+		}
+	}
 }
