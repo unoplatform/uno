@@ -71,11 +71,6 @@ internal enum DrawKind
 }
 
 /// <summary>
-/// One GPU draw of a pass: its pipeline (by kind), the vertices it draws (a range of a vertex buffer), the bind group
-/// of its texture or gradient, and the clip it draws under. Two consecutive ops merge into one draw when they differ
-/// only in their vertex range and that range is contiguous (see the encoder).
-/// </summary>
-/// <summary>
 /// A clip bind group and the dynamic offset of its uniform: one group serves every clip slot of a slab buffer, so a
 /// recording's clip is the shared group plus its slot's offset. A plain group binds at offset 0.
 /// </summary>
@@ -95,6 +90,11 @@ internal readonly unsafe struct ClipBinding : IEquatable<ClipBinding>
 	public static bool operator !=(ClipBinding a, ClipBinding b) => !a.Equals(b);
 }
 
+/// <summary>
+/// One GPU draw of a pass: its pipeline (by kind), the vertices it draws (a range of a vertex buffer), the bind group
+/// of its texture or gradient, and the clip it draws under. Two consecutive ops merge into one draw when they differ
+/// only in their vertex range and that range is contiguous (see the encoder).
+/// </summary>
 internal unsafe struct DrawOp
 {
 	public DrawKind Kind;

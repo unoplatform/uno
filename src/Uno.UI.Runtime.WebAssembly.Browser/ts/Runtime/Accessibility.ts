@@ -670,7 +670,9 @@ namespace Uno.UI.Runtime {
 					SemanticElements.composingHandle = 0;
 				}
 			}
+			SemanticElements.clearActiveDescendantTo(child);
 			child.remove();
+			SemanticElements.schedulePruneDetachedActiveDescendantOwners();
 		}
 
 		public static updateIsFocusable(handle: number, isFocusable: boolean): void {

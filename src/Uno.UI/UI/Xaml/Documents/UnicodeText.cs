@@ -1609,17 +1609,27 @@ internal readonly partial struct UnicodeText : IParsedText
 			: default;
 
 		var highlighterSlicer = new RangeSlicer<(CompositionBrush? background, Brush foreground)>(0, _text.Length);
+		SolidColorBrush? defaultHighlighterForeground = null;
+		SolidColorBrush? defaultHighlighterBackground = null;
+		var defaultHighlighterBrushesResolved = false;
 		foreach (var highlighter in highlighters)
 		{
 			foreach (var range in highlighter.Ranges)
 			{
 				if (range.Length != 0 && range.StartIndex < _text.Length && _text.Length > 0)
 				{
+					// Like WinUI, an unset brush takes the theme's TextControlHighlighter{Foreground,Background}.
+					if (!defaultHighlighterBrushesResolved && (highlighter.Background is null || highlighter.Foreground is null))
+					{
+						TextHighlightRenderer.GetDefaultHighlighterBrushes(out defaultHighlighterForeground, out defaultHighlighterBackground);
+						defaultHighlighterBrushesResolved = true;
+					}
+
 					highlighterSlicer.Mark(
 						Math.Min(range.StartIndex, _text.Length),
 						Math.Min(range.StartIndex + range.Length, _text.Length),
-						(highlighter.Background?.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()),
-							highlighter.Foreground ?? _blackBrush));
+						((highlighter.Background ?? defaultHighlighterBackground)?.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()),
+							highlighter.Foreground ?? defaultHighlighterForeground ?? _blackBrush));
 				}
 			}
 		}

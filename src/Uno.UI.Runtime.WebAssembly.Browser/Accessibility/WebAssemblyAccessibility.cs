@@ -58,6 +58,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// per-window lifecycle exercised by the Skia-Desktop router.
 		_relationshipPeers.Clear();
 		_reAddsAfterComposition.Clear();
+		_implicitAriaControls.Clear();
 	}
 
 	private bool _isAccessibilityEnabled;
@@ -194,14 +195,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// </summary>
 	private readonly HashSet<IntPtr> _genericPathHandles = new();
 	/// <summary>
-	/// Controls carrying AutomationProperties.LabeledBy whose aria-labelledby IDREF is resolved AFTER
-	/// the surrounding subtree exists (FR-019/FR-022). The inline create-time resolution is
-	/// order-dependent — the labeller's node may not be registered yet when the labelled control is
-	/// built (following sibling / Header child) — so it is re-resolved by a deferred drain once every
-	/// labeller is present: at the end of CreateAOM for the initial build, and at the end of the
-	/// outermost OnChildAdded call for panels loaded after accessibility is already enabled.
+	/// Semantic nodes that are the source of a relationship (aria-labelledby, aria-describedby,
+	/// aria-controls, aria-flowto). Their IDREFs are re-resolved whenever semantic nodes are added or
+	/// removed, so a target that appears later (following sibling, Header child, shown after being
+	/// Collapsed) is referenced, and one that leaves the tree is never left dangling (FR-019/FR-022).
 	/// </summary>
-	private readonly List<(IntPtr Handle, WeakReference<AutomationPeer> Peer)> _pendingLabelledBy = new();
 	private readonly Dictionary<IntPtr, RelationshipState> _relationshipPeers = new();
 	private bool _relationshipRefreshQueued;
 
@@ -233,15 +231,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		public WeakReference<AutomationPeer> Peer { get; }
 		public bool HasRelationships { get; set; }
+		public SemanticElementFactory.RelationshipIds WrittenIds { get; set; } = SemanticElementFactory.RelationshipIds.None;
 		public bool IsUpdating { get; set; }
 		public AutomationPeer? PendingPeer { get; set; }
 	}
 
 	/// <summary>
 	/// Reentrancy depth of <see cref="OnChildAdded"/>. OnChildAdded recurses through a whole subtree
-	/// synchronously, so the outermost call (depth returning to 0) is the point at which every labeller
-	/// in that subtree has been registered — the moment to drain <see cref="_pendingLabelledBy"/> so a
-	/// following-sibling labeller resolves order-independently on the dynamic path too.
+	/// synchronously, so the outermost call (depth returning to 0) is the point at which every node of
+	/// that subtree is registered — the moment to refresh relationships once for the whole batch.
 	/// </summary>
 	private int _onChildAddedDepth;
 
@@ -463,18 +461,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					if (AddSemanticElement(semanticParent, child, index))
 					{
 						_semanticParentMap[childHandle] = semanticParent;
-
-						// FR-019/FR-022: defer aria-labelledby resolution on the dynamic path too. The
-						// inline resolution inside AddSemanticElement is order-dependent — a following-
-						// sibling labeller has not registered yet when this control is added — so record
-						// it and re-resolve when the outermost OnChildAdded subtree completes (below).
-						// The HasSemanticElement gate in ResolveLabelledByIdRef still applies at drain
-						// time, so no dangling IDREF is emitted.
-						if (AutomationProperties.GetLabeledBy(child) is not null
-							&& child.GetOrCreateAutomationPeer() is { } labelledPeer)
-						{
-							_pendingLabelledBy.Add((childHandle, new WeakReference<AutomationPeer>(labelledPeer)));
-						}
 					}
 					else
 					{
@@ -513,12 +499,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 		finally
 		{
-			// Outermost call complete: the whole added subtree (and any following-sibling labellers
-			// within it) is now registered, so re-resolve the deferred aria-labelledby IDREFs. Mirrors
-			// the CreateAOM drain, making the dynamic path order-independent (FR-019/FR-022).
+			// Outermost call complete: the whole added subtree is registered, so relationship targets
+			// within it (e.g. a following-sibling labeller) can now be resolved (FR-019/FR-022).
 			if (--_onChildAddedDepth == 0)
 			{
-				DrainPendingLabelledBy();
 				QueueRelationshipRefresh();
 				if (IsInTrackedGrid(parent))
 				{
@@ -557,7 +541,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			var childHandle = child.Visual.Handle;
 			// Checked before the removal below so a removed grid still refreshes.
 			var refreshGrids = _grids.ContainsKey(childHandle) || IsInTrackedGrid(parent);
-			_pendingLabelledBy.RemoveAll(entry => entry.Handle == childHandle);
 			_relationshipPeers.Remove(childHandle);
 			_grids.Remove(childHandle);
 			_columnHeaders.Remove(childHandle);
@@ -624,7 +607,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			_virtualizedRegions.Add(region);
 
 			void OnElementPrepared(ItemsRepeater s, ItemsRepeaterElementPreparedEventArgs e)
-				=> EmitRealizedItem(region, repeater.Visual.Handle, e.Element, e.Index, repeater.ItemsSourceView?.Count ?? 0, "option");
+				=> EmitRealizedItem(region, repeater.Visual.Handle, e.Element, e.Index, repeater.ItemsSourceView?.Count ?? 0, GetVirtualizedItemRole(repeater));
 
 			void OnElementClearing(ItemsRepeater s, ItemsRepeaterElementClearingEventArgs e)
 			{
@@ -651,7 +634,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				var info = ItemsRepeater.GetVirtualizationInfo(itemElement);
 				if (info is not null && info.IsRealized)
 				{
-					EmitRealizedItem(region, repeater.Visual.Handle, itemElement, info.Index, totalCount, "option");
+					EmitRealizedItem(region, repeater.Visual.Handle, itemElement, info.Index, totalCount, GetVirtualizedItemRole(repeater));
 				}
 			}
 		}
@@ -666,7 +649,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				listView.SelectionMode == ListViewSelectionMode.Extended);
 			_virtualizedRegions.Add(region);
 
-			var itemRole = isGrid ? "row" : "option";
+			var itemRole = GetVirtualizedItemRole(listView);
 
 			void OnContainerContentChanging(ListViewBase s, ContainerContentChangingEventArgs e)
 			{
@@ -674,7 +657,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				{
 					if (e.ItemContainer is { } itemElement)
 					{
-						EmitRealizedItem(region, listView.Visual.Handle, itemElement, e.ItemIndex, listView.Items?.Count ?? 0, itemRole);
+						EmitRealizedItem(region, listView.Visual.Handle, itemElement, e.ItemIndex, listView.Items?.Count ?? 0, itemRole, listView);
 					}
 				}
 				else if (e.ItemContainer is { } itemElement)
@@ -693,17 +676,22 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				var index = listView.IndexFromContainer(container);
 				if (index >= 0)
 				{
-					EmitRealizedItem(region, listView.Visual.Handle, container, index, totalCount, itemRole);
+					EmitRealizedItem(region, listView.Visual.Handle, container, index, totalCount, itemRole, listView);
 				}
 			}
 		}
 	}
 
 	/// <summary>
+	/// The role of a realized item of a virtualized container, shared by its first emission and any re-emission.
+	/// </summary>
+	private static string GetVirtualizedItemRole(UIElement container) => container is GridView ? "row" : "option";
+
+	/// <summary>
 	/// Emits a single realized virtualized item into its region — shared by the live
 	/// ElementPrepared/ContainerContentChanging handlers and the build-time backfill.
 	/// </summary>
-	private void EmitRealizedItem(VirtualizedSemanticRegion region, IntPtr containerHandle, UIElement itemElement, int index, int totalCount, string role)
+	private void EmitRealizedItem(VirtualizedSemanticRegion region, IntPtr containerHandle, UIElement itemElement, int index, int totalCount, string role, ListViewBase? listView = null)
 	{
 		// FR-031: a realized container may be a decorative/non-semantic element rather than a real
 		// destination — e.g. NavigationView hosts NavigationViewItemSeparator and
@@ -716,46 +704,61 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		var label = itemElement.GetOrCreateAutomationPeer()?.GetName() ?? string.Empty;
+		var peer = itemElement.GetOrCreateAutomationPeer();
+		var label = peer?.GetName() ?? string.Empty;
 		var offset = GetOffsetRelativeToSemanticParent(itemElement, containerHandle);
+		var state = GetRealizedItemState(itemElement, peer, index, listView);
+
 		region.OnItemRealized(
 			itemElement.Visual.Handle,
 			index,
 			totalCount,
 			offset.X, offset.Y,
 			itemElement.Visual.Size.X, itemElement.Visual.Size.Y,
-			role, label);
+			role, label,
+			ownsSelection: listView is not null,
+			state.Selectable, state.Selected, state.Active);
 
-		ApplyRealizedItemState(itemElement);
+		if (state.Expanded is { } expanded)
+		{
+			NativeMethods.UpdateExpandCollapseState(itemElement.Visual.Handle, expanded);
+		}
 	}
 
 	/// <summary>
-	/// A realized item is created with a role, a label and its position only: seeds the state the
+	/// A realized item is created with a role, a label and its position only: reads the state the
 	/// factory path would have applied, which later reaches the element only through property changes.
 	/// </summary>
-	private void ApplyRealizedItemState(UIElement itemElement)
+	private (bool Selectable, bool Selected, bool Active, bool? Expanded) GetRealizedItemState(UIElement itemElement, AutomationPeer? peer, int index, ListViewBase? listView)
 	{
-		if (itemElement.GetOrCreateAutomationPeer() is not { } peer)
-		{
-			return;
-		}
-
-		var handle = itemElement.Visual.Handle;
+		bool selectable = false, selected = false, active = false;
+		bool? expanded = null;
 		try
 		{
-			if (peer.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider expandCollapseProvider)
+			if (listView is not null)
 			{
-				var state = expandCollapseProvider.ExpandCollapseState;
-				NativeMethods.UpdateExpandCollapseState(handle, state is ExpandCollapseState.Expanded or ExpandCollapseState.PartiallyExpanded);
+				// Read selection from the list's model by index, as SelectorItemAutomationPeer.IsSelected does:
+				// a recycled container can still carry its previous item's IsSelected at this point.
+				selectable = listView.SelectionMode != ListViewSelectionMode.None;
+				selected = selectable && listView.AutomationPeerIsSelected(index, listView.ItemFromIndex(index));
+				active = selected && listView.SelectedIndex == index;
 			}
-
-			if (peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
+			else if (peer?.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
 			{
-				NativeMethods.UpdateSelectionState(handle, selectionItemProvider.IsSelected);
+				// An ItemsRepeater has no selection model: a selectable element (e.g. a NavigationViewItem or an
+				// ItemContainer) carries its own state, which a node created here must not lose.
+				selected = selectionItemProvider.IsSelected;
+				selectable = true;
 			}
 			else if (itemElement is SelectorItem selectorItem)
 			{
-				NativeMethods.UpdateSelectionState(handle, selectorItem.IsSelected);
+				selected = selectorItem.IsSelected;
+				selectable = true;
+			}
+
+			if (peer?.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider expandCollapseProvider)
+			{
+				expanded = expandCollapseProvider.ExpandCollapseState is ExpandCollapseState.Expanded or ExpandCollapseState.PartiallyExpanded;
 			}
 		}
 		catch (Exception ex)
@@ -768,6 +771,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				this.Log().Warn($"[A11y] Initial state of {itemElement.GetType().Name} not applied: {ex.Message}", ex);
 			}
 		}
+
+		return (selectable, selected, active, expanded);
 	}
 
 	private void TryUnregisterVirtualizedContainer(UIElement element)
@@ -1241,7 +1246,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		@this._prunedHandles.Clear();
 		@this._scrollPortZoomFactors.Clear();
 		@this._genericPathHandles.Clear();
-		@this._pendingLabelledBy.Clear();
 		@this._relationshipPeers.Clear();
 		@this._reAddsAfterComposition.Clear();
 		@this._relationshipRefreshQueued = false;
@@ -1466,6 +1470,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					selectionStart,
 					selectionEnd,
 					selectionIsBackward);
+				@this.FlushReAddsAfterComposition();
 				return;
 			}
 
@@ -1788,10 +1793,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			BuildSemanticsTreeRecursive(rootHandle, child, depth: 1);
 		}
 
-		// FR-019/FR-022: now that the full AOM exists, every labeller with a semantic node is
-		// registered. Re-resolve the deferred aria-labelledby IDREFs so emission is order-independent
-		// (covers labellers built after the labelled control). HasSemanticElement still gates each one.
-		DrainPendingLabelledBy();
+		// FR-019/FR-022: now that the full AOM exists, every relationship target with a semantic node is
+		// registered, so sources built before their targets (e.g. a following-sibling labeller) resolve.
 		QueueRelationshipRefresh();
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
@@ -1800,44 +1803,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
-	/// <summary>
-	/// Re-resolves every deferred aria-labelledby IDREF now that more of the tree exists, then clears
-	/// the queue. Shared by the CreateAOM drain and the OnChildAdded drain so both paths are
-	/// order-independent (a labeller built after the labelled control still resolves). Each entry is
-	/// gated by <see cref="SemanticElementFactory.ResolveLabelledByIdRef"/>, which only emits when the
-	/// labeller actually has a semantic node — so a dangling IDREF is never written (FR-019/FR-022).
-	/// </summary>
-	private void DrainPendingLabelledBy()
-	{
-		if (_pendingLabelledBy.Count == 0)
-		{
-			return;
-		}
-
-		// Re-resolve each deferred entry; emit + drop the ones whose labeller now has a semantic node,
-		// and KEEP the rest. OnChildAdded fires per-element, so a following-sibling labeller may not be
-		// registered when its labelled control drains — keeping the entry lets it resolve on the
-		// labeller's own (later) drain. ResolveLabelledByIdRef's HasSemanticElement gate still applies.
-		for (var i = _pendingLabelledBy.Count - 1; i >= 0; i--)
-		{
-			var (labelledHandle, labelledPeerReference) = _pendingLabelledBy[i];
-			if (!HasSemanticElement(labelledHandle)
-				|| !labelledPeerReference.TryGetTarget(out var labelledPeer))
-			{
-				_pendingLabelledBy.RemoveAt(i);
-				continue;
-			}
-
-			var labelledById = SemanticElementFactory.ResolveLabelledByIdRef(labelledPeer);
-			if (labelledById is not null)
-			{
-				NativeMethods.UpdateAriaLabelledBy(labelledHandle, labelledById);
-				_pendingLabelledBy.RemoveAt(i);
-			}
-		}
-	}
-
-	internal void UpdateRelationships(AutomationPeer peer, IntPtr handle)
+	internal void UpdateRelationships(AutomationPeer peer, IntPtr handle, bool nodeCreated = false)
 	{
 		if (!_relationshipPeers.TryGetValue(handle, out var state))
 		{
@@ -1847,6 +1813,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		else
 		{
 			state.Peer.SetTarget(peer);
+
+			// A notification raised before the node existed cached IDs that were never written; a new node starts empty.
+			if (nodeCreated && !state.IsUpdating)
+			{
+				state.WrittenIds = SemanticElementFactory.RelationshipIds.None;
+			}
 		}
 
 		state.PendingPeer = peer;
@@ -1863,8 +1835,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			while (state.PendingPeer is { } currentPeer)
 			{
 				state.PendingPeer = null;
-				var hasRelationships = SemanticElementFactory.ResolveRelationshipAttributes(
-					currentPeer, out var describedByIds, out var controlledIds, out var flowsToIds);
+				var hasRelationships = SemanticElementFactory.ResolveRelationshipAttributes(currentPeer, out var ids);
+				ids = WithImplicitAriaControls(handle, ids);
 				if (!_relationshipPeers.TryGetValue(handle, out var current) || !ReferenceEquals(current, state))
 				{
 					return;
@@ -1872,9 +1844,20 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 				if (state.PendingPeer is null)
 				{
-					SemanticElementFactory.ApplyRelationshipAttributes(
-						handle, describedByIds, controlledIds, flowsToIds, clearMissing: state.HasRelationships);
-					state.HasRelationships = hasRelationships;
+					var previous = state.WrittenIds;
+					SemanticElementFactory.ApplyRelationshipAttributes(handle, previous, ids);
+					state.WrittenIds = ids;
+
+					// A custom peer can stop returning a relationship while its target is collapsed and
+					// return it again later, so a source stays tracked until its own node is removed.
+					state.HasRelationships |= hasRelationships;
+
+					// aria-labelledby replaced the flattened aria-label; once the labeller is gone, write the name
+					// resolved without it (a collapsed labeller contributes none, as in WinUI).
+					if (previous.LabelledBy.Length > 0 && ids.LabelledBy.Length == 0 && TryGetPeerOwner(currentPeer, out var owner))
+					{
+						OnAutomationNameChanged(owner, currentPeer, AriaMapper.ResolveLabel(currentPeer) ?? string.Empty);
+					}
 				}
 			}
 
@@ -2379,16 +2362,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			}
 		}
 
-		// FR-019/FR-022: defer aria-labelledby resolution. The labeller's semantic node may not be
-		// registered yet at this control's create time (a following sibling or a Header/template child
-		// registers after the labelled control), so record the control and re-resolve at the end of
-		// CreateAOM. The HasSemanticElement gate still applies there, so no dangling IDREF is emitted.
-		if (_isCreatingAOM && _semanticParentMap.ContainsKey(handle) && AutomationProperties.GetLabeledBy(child) is not null
-			&& child.GetOrCreateAutomationPeer() is { } labelledPeer)
-		{
-			_pendingLabelledBy.Add((handle, new WeakReference<AutomationPeer>(labelledPeer)));
-		}
-
 		// Register virtualized containers (and backfill their already-realized items) at AOM-build
 		// time. OnChildAdded is suppressed during the initial build (_isCreatingAOM guard), so without
 		// this a NavigationView/list already realized at Enable-Accessibility time would never emit its
@@ -2682,13 +2655,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					NativeMethods.SetAccessKey(handle, accessKey);
 				}
 
-				// aria-labelledby from AutomationProperties.LabeledBy, mirroring the factory path.
-				// Only emitted when the labeller has a semantic node (no dangling IDREF — FR-019/FR-022).
-				var labelledById = SemanticElementFactory.ResolveLabelledByIdRef(automationPeer);
-				if (labelledById is not null)
-				{
-					NativeMethods.UpdateAriaLabelledBy(handle, labelledById);
-				}
+				// Relationship attributes, mirroring the factory path (no dangling IDREF — FR-019/FR-022).
+				UpdateRelationships(automationPeer, handle, nodeCreated: true);
 			}
 
 			// Owner-scoped attributes sourced from AutomationProperties attached properties
@@ -2930,7 +2898,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				this.Log().Trace($"[A11y] PROP CHANGE: Name handle={element.Visual.Handle} element={element.GetType().Name} old='{oldValue}' new='{newValue}'");
 			}
-			OnAutomationNameChanged(element, peer, (string)newValue);
+			// Resolve the name as creation does: the peer name alone is empty for a control named by a
+			// LabeledBy element that has left the tree, and would drop the restored aria-label.
+			OnAutomationNameChanged(element, peer, AriaMapper.ResolveLabel(peer) ?? (string)newValue);
 
 			// A grid that rebinds its rows in place (e.g. after a sort) raises no structural change,
 			// but its cells' names change, so re-read the grid's counts and sort state.
@@ -3059,7 +3029,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 				// Update aria-activedescendant on the parent container (listbox)
 				// so screen readers announce the active option without moving DOM focus.
-				if (peer.GetParent() is FrameworkElementAutomationPeer { Owner: { } parentOwner })
+				if (ItemsControl.ItemsControlFromItemContainer(element) is Selector ownerSelector)
+				{
+					// The peer's parent is only known once the list's children were enumerated.
+					NativeMethods.UpdateActiveDescendant(ownerSelector.Visual.Handle, element.Visual.Handle);
+				}
+				else if (peer.GetParent() is FrameworkElementAutomationPeer { Owner: { } parentOwner })
 				{
 					NativeMethods.UpdateActiveDescendant(parentOwner.Visual.Handle, element.Visual.Handle);
 				}
@@ -3138,16 +3113,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			// ScrollPresenter is the scroll port itself.
 			UpdateNativeScrollOffsets(element is ScrollViewer { Presenter: { } presenter } ? presenter : element);
 		}
-		else if (automationProperty == AutomationElementIdentifiers.LabeledByProperty &&
-			TryGetPeerOwner(peer, out element))
-		{
-			// Dynamic aria-labelledby: when LabeledBy changes after creation. Resolve the new
-			// labeller → its semantic id (guarded on HasSemanticElement); clear the attribute when
-			// the labeller was removed or is not semantic, so no dangling IDREF survives.
-			var labelledById = SemanticElementFactory.ResolveLabelledByIdRef(peer);
-			NativeMethods.UpdateAriaLabelledBy(element.Visual.Handle, labelledById ?? string.Empty);
-		}
-		else if ((automationProperty == AutomationElementIdentifiers.DescribedByProperty ||
+		else if ((automationProperty == AutomationElementIdentifiers.LabeledByProperty ||
+			automationProperty == AutomationElementIdentifiers.DescribedByProperty ||
 			automationProperty == AutomationElementIdentifiers.ControlledPeersProperty ||
 			automationProperty == AutomationElementIdentifiers.FlowsToProperty) &&
 			TryGetPeerOwner(peer, out element))
@@ -3248,9 +3215,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			ReAddSemanticElement(element);
 		}
-		else
+
+		var handle = element.Visual.Handle;
+		if (IsRealizedVirtualizedItem(handle))
 		{
-			NativeMethods.UpdateAriaLive(element.Visual.Handle, ariaLive);
+			NativeMethods.UpdateVirtualizedAriaLive(handle, ariaLive);
+		}
+		else if (!changesNode)
+		{
+			NativeMethods.UpdateAriaLive(handle, ariaLive);
 		}
 	}
 
@@ -3417,13 +3390,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	private void ReAddSemanticElement(UIElement element)
 	{
-		// A detached element has no nodes yet; attaching it builds them from its current properties.
-		if (!element.IsActiveInVisualTree)
+		if (TryUpdateVirtualizedItemMembership(element))
 		{
 			return;
 		}
 
-		if (TryReEmitVirtualizedItem(element))
+		// A detached element has no nodes yet; attaching it builds them from its current properties.
+		if (!element.IsActiveInVisualTree)
 		{
 			return;
 		}
@@ -3498,40 +3471,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				ReAddSemanticElement(element);
 			}
 		}
-	}
-
-	// A realized ListView/ItemsRepeater container is owned by its region, not _semanticParentMap, so it is
-	// re-emitted there: the node is updated in place, keeping its position and focus.
-	private bool TryReEmitVirtualizedItem(UIElement element)
-	{
-		foreach (var region in _virtualizedRegions)
-		{
-			var (index, totalCount, role) = FindUIElementByHandle(element, region.ContainerHandle) switch
-			{
-				ListViewBase listView => (listView.IndexFromContainer(element), listView.Items?.Count ?? 0, listView is GridView ? "row" : "option"),
-				ItemsRepeater repeater when element.GetParent() == repeater && ItemsRepeater.GetVirtualizationInfo(element) is { IsRealized: true } info
-					=> (info.Index, repeater.ItemsSourceView?.Count ?? 0, "option"),
-				_ => (-1, 0, string.Empty),
-			};
-
-			if (index < 0)
-			{
-				continue;
-			}
-
-			if (IsSemanticElement(element))
-			{
-				EmitRealizedItem(region, region.ContainerHandle, element, index, totalCount, role);
-			}
-			else if (region.ContainsRealizedHandle(element.Visual.Handle))
-			{
-				region.RemoveRealizedItem(element.Visual.Handle, index);
-			}
-
-			return true;
-		}
-
-		return false;
 	}
 
 	private static UIElement? FindAncestorByHandle(UIElement start, IntPtr handle)
@@ -3622,6 +3561,40 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		return handles;
 	}
 
+	// A virtualized region owns its realized nodes. Update retained nodes in place to preserve focus.
+	private bool TryUpdateVirtualizedItemMembership(UIElement element)
+	{
+		var listView = ItemsControl.ItemsControlFromItemContainer(element) as ListViewBase;
+		var container = (UIElement?)listView ?? element.GetParent() as ItemsRepeater;
+		if (container is null ||
+			_virtualizedRegions.FirstOrDefault(region => region.ContainerHandle == container.Visual.Handle) is not { } region)
+		{
+			return false;
+		}
+
+		var (index, totalCount) = container switch
+		{
+			ListViewBase list => (list.IndexFromContainer(element), list.Items?.Count ?? 0),
+			ItemsRepeater repeater when ItemsRepeater.GetVirtualizationInfo(element) is { IsRealized: true } info
+				=> (info.Index, repeater.ItemsSourceView?.Count ?? 0),
+			_ => (-1, 0),
+		};
+
+		var handle = element.Visual.Handle;
+		var isSemantic = index >= 0 && IsSemanticElement(element);
+		if (region.TryGetRealizedIndex(handle, out var realizedIndex) && (!isSemantic || realizedIndex != index))
+		{
+			region.RemoveRealizedItem(handle, realizedIndex);
+		}
+
+		if (isSemantic)
+		{
+			EmitRealizedItem(region, container.Visual.Handle, element, index, totalCount, GetVirtualizedItemRole(container), listView);
+		}
+
+		return true;
+	}
+
 	private void RebuildSemanticTree(UIElement rootElement)
 	{
 		foreach (var child in rootElement.GetChildren().ToList())
@@ -3634,7 +3607,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		_prunedHandles.Clear();
 		_scrollPortZoomFactors.Clear();
 		_genericPathHandles.Clear();
-		_pendingLabelledBy.Clear();
 		_relationshipPeers.Clear();
 		_grids.Clear();
 		_columnHeaders.Clear();
@@ -3850,6 +3822,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.updateAriaLive")]
 		internal static partial void UpdateAriaLive(IntPtr handle, string ariaLive);
 
+		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.updateVirtualizedAriaLive")]
+		internal static partial void UpdateVirtualizedAriaLive(IntPtr handle, string ariaLive);
+
 		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.updateAriaBusy")]
 		internal static partial void UpdateAriaBusy(IntPtr handle, bool busy);
 
@@ -3878,11 +3853,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.updateAriaFlowTo")]
 		internal static partial void UpdateAriaFlowTo(IntPtr handle, string idList);
-
-		// ===== Relationship Updates =====
-
-		[JSImport("globalThis.Uno.UI.Runtime.Accessibility.updateAriaLabelledBy")]
-		internal static partial void UpdateAriaLabelledBy(IntPtr handle, string idList);
 
 		// ===== Roving Tabindex =====
 
