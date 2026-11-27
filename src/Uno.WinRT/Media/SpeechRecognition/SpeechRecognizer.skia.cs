@@ -35,6 +35,7 @@ public partial class SpeechRecognizer : IDisposable
 	private ConstraintPlan _activeConstraints = ConstraintPlan.Create(Array.Empty<ISpeechRecognitionConstraint>());
 
 	private SessionKind _session;
+	private int _sessionId;
 	private int _utteranceId;
 	private bool _isUtteranceActive;
 	private UtteranceEndReason _endReason;
@@ -104,6 +105,10 @@ public partial class SpeechRecognizer : IDisposable
 			if (_session == SessionKind.Single)
 			{
 				CompleteRecognitionLocked(null);
+			}
+			else if (_session == SessionKind.Continuous)
+			{
+				FinishContinuousRecognitionLocked(SpeechRecognitionResultStatus.UserCanceled);
 			}
 
 			_session = SessionKind.None;
@@ -205,6 +210,7 @@ public partial class SpeechRecognizer : IDisposable
 			}
 
 			_recognitionCompletion = completion;
+			StartSessionLocked();
 			BeginUtteranceLocked();
 		}
 
@@ -308,23 +314,42 @@ public partial class SpeechRecognizer : IDisposable
 		_isSoundActive = false;
 		_quietSince = null;
 		_utteranceStartTime = _timeProvider.GetUtcNow();
-		_audioLevels.Reset();
+		ResetAudioQualityLocked();
 
 		SetStateLocked(SpeechRecognizerState.Capturing);
 		_extension!.BeginUtterance(_activeConstraints.Options);
-		_initialSilenceTimer = StartTimerLocked(Timeouts.InitialSilenceTimeout, OnInitialSilenceTimeoutLocked);
+		if (_session == SessionKind.Single)
+		{
+			_initialSilenceTimer = StartTimerLocked(Timeouts.InitialSilenceTimeout, OnInitialSilenceTimeoutLocked);
+		}
+	}
+
+	private void StartSessionLocked()
+	{
+		_sessionId++;
+		_audioLevels.Reset();
 	}
 
 	// Asks the engine for the final result of the audio captured so far.
 	private void FinishUtteranceLocked()
 	{
+		if (_isSpeechDetected)
+		{
+			CheckSpeechLevelLocked();
+		}
+
 		if (_isSoundActive)
 		{
 			_isSoundActive = false;
 			SetStateLocked(SpeechRecognizerState.SoundEnded);
 		}
 
-		SetStateLocked(SpeechRecognizerState.Processing);
+		// A continuous session keeps capturing between phrases, so it is only Processing when it stops.
+		if (_session == SessionKind.Single || _pendingContinuousStop is not null)
+		{
+			SetStateLocked(SpeechRecognizerState.Processing);
+		}
+
 		_extension!.EndUtterance();
 	}
 
@@ -395,6 +420,7 @@ public partial class SpeechRecognizer : IDisposable
 		}
 
 		SetStateLocked(SpeechRecognizerState.SpeechDetected);
+		RestartAutoStopTimerLocked();
 		StopTimer(ref _initialSilenceTimer);
 		StopTimer(ref _babbleTimer);
 		RestartEndSilenceTimerLocked();
@@ -431,6 +457,7 @@ public partial class SpeechRecognizer : IDisposable
 			{
 				OnSpeechDetectedLocked();
 				RestartEndSilenceTimerLocked();
+				RestartAutoStopTimerLocked();
 			}
 
 			EnqueueEventLocked(() => OnHypothesisGenerated(text));
@@ -475,6 +502,7 @@ public partial class SpeechRecognizer : IDisposable
 				return;
 			}
 
+			TrackAudioQualityLocked(level);
 			if (_audioLevels.IsSound(level.RmsDecibels))
 			{
 				_quietSince = null;
@@ -482,7 +510,7 @@ public partial class SpeechRecognizer : IDisposable
 				{
 					_isSoundActive = true;
 					SetStateLocked(SpeechRecognizerState.SoundStarted);
-					if (!_isSpeechDetected && _babbleTimer is null)
+					if (_session == SessionKind.Single && !_isSpeechDetected && _babbleTimer is null)
 					{
 						_babbleTimer = StartTimerLocked(Timeouts.BabbleTimeout, OnBabbleTimeoutLocked);
 					}
@@ -523,6 +551,10 @@ public partial class SpeechRecognizer : IDisposable
 			if (_session == SessionKind.Single)
 			{
 				CompleteRecognitionLocked(reason == UtteranceEndReason.Aborted ? null : CreateResult(outcome, reason));
+			}
+			else if (_session == SessionKind.Continuous)
+			{
+				OnContinuousUtteranceCompletedLocked(outcome, reason);
 			}
 		}
 
@@ -729,6 +761,7 @@ public partial class SpeechRecognizer : IDisposable
 	{
 		None,
 		Single,
+		Continuous,
 	}
 
 	private enum UtteranceEndReason
@@ -756,6 +789,10 @@ public partial class SpeechRecognizer : IDisposable
 		private readonly float[] _window = new float[WindowLength];
 		private int _count;
 		private int _next;
+
+		public bool IsWarmedUp => _count >= WarmUpLength;
+
+		public float NoiseFloorDecibels => GetNoiseFloor();
 
 		public void Reset()
 		{
