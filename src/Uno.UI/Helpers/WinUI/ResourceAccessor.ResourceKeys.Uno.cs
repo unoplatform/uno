@@ -31,5 +31,6 @@
 		public const string SR_AccessibilityActionDockRight = "AccessibilityActionDockRight";
 		public const string SR_AccessibilityActionDockFill = "AccessibilityActionDockFill";
 		public const string SR_AccessibilityActionUndock = "AccessibilityActionUndock";
+		public const string SR_AutoSuggestBoxQueryButton = "AutoSuggestBoxQueryButton";
 	}
 }
