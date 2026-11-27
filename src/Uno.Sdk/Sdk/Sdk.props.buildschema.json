@@ -323,7 +323,7 @@
 			"type": "string"
 		},
 		"UnoSplashScreenColor": {
-			"description": "The background color of the splash screen.",
+			"description": "The background color of the splash screen. Defaults to '#FFFFFF'. On WebAssembly, 'transparent' makes the splash screen follow the browser theme.",
 			"type": "color"
 		},
 		"UnoSplashScreenScale": {
