@@ -83,7 +83,7 @@ Uno.Extensions.Localization expands [Microsoft.Extensions.Localization](https://
 
 This is included by default in the recommended preset, but not in the blank preset.
 
-Read the full [Localization documentation](xref:Overview.Localization) or learn more about [Globalization](https://learn.microsoft.com/dotnet/core/extensions/globalization).
+Read the full [Localization documentation](xref:Uno.Extensions.Localization.Overview) or learn more about [Globalization](https://learn.microsoft.com/dotnet/core/extensions/globalization).
 
 ```dotnetcli
 dotnet new unoapp -loc
@@ -100,7 +100,7 @@ dotnet new unoapp -loc
 
   This is the default navigation in the recommended preset.
 
-  Learn more about [Uno's Navigation library](xref:Overview.Navigation).
+  Learn more about [Uno's Navigation library](xref:Uno.Extensions.Navigation.Overview).
 
   ```dotnetcli
   dotnet new unoapp -nav regions
@@ -131,7 +131,7 @@ There are several Logging tools out there, with one of the most common of them b
 
 Uno Platform provides its Uno.Extensions.Logging to bring Logging to all platforms it supports.
 
-Uno.Extensions.Logging is covered in more detail in the [Logging documentation](xref:Overview.Logging).
+Uno.Extensions.Logging is covered in more detail in the [Logging documentation](xref:Uno.Extensions.Logging.Overview).
 
 - ##### Console
 
@@ -157,4 +157,4 @@ Uno.Extensions.Logging is covered in more detail in the [Logging documentation](
   dotnet new unoapp -log serilog
   ```
 
-Refer to the [Logging](xref:Overview.Logging) documentation for more information.
+Refer to the [Logging](xref:Uno.Extensions.Logging.Overview) documentation for more information.
