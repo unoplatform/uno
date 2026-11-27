@@ -142,6 +142,14 @@ public partial class Block : TextElement
 		}
 	}
 
+	internal void InvalidateForeground()
+	{
+		if (GetContainingFrameworkElement() is RichTextBlock richTextBlock)
+		{
+			richTextBlock.InvalidateForeground();
+		}
+	}
+
 	// contentChanged maps to CTextElementCollection::MarkDirty -> CRichTextBlock::OnContentChanged;
 	// otherwise this is CRichTextBlock::MarkInheritedPropertyDirty -> InvalidateContent, which leaves the
 	// selection and the cached focusable children alone.

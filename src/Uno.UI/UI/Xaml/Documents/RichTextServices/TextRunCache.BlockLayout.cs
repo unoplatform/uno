@@ -7,14 +7,7 @@ namespace Microsoft.UI.Xaml.Documents.RichTextServices;
 
 partial class TextRunCache
 {
-	// On Uno the LineServices-backed run cache is not ported; the Skia ParsedText engine owns run
-	// caching. Create() returns a minimal no-op cache so the block-layout port can hold one.
-	public static TextRunCache Create() => new SkiaTextRunCache();
-
-	private sealed class SkiaTextRunCache : TextRunCache
-	{
-		public override void Clear()
-		{
-		}
-	}
+	// On Uno the LineServices-backed run cache is not ported; the cache holds the paragraph's
+	// UnicodeText layouts instead.
+	public static TextRunCache Create() => new UnicodeTextRunCache();
 }

@@ -24,10 +24,9 @@ namespace Microsoft.UI.Xaml.Documents.BlockLayout;
 //
 //---------------------------------------------------------------------------
 // NOTE (Uno): ParagraphTextSource must implement BOTH the WinUI TextSource contract
-// AND the Uno-specific ISkiaParagraphSource bridge that feeds the Skia ParsedText
-// engine (SkiaTextFormatter reads GetLeafInlines/DefaultLineHeight/LineHeight/
-// LineStackingStrategy off this same object).
-internal sealed class ParagraphTextSource : TextSource, ISkiaParagraphSource
+// AND the Uno-specific IUnicodeParagraphSource bridge that feeds the UnicodeText
+// engine (UnicodeTextFormatter lays the paragraph out from its leaf inlines).
+internal sealed class ParagraphTextSource : TextSource, IUnicodeParagraphSource
 {
 #pragma warning disable IDE0051 // Unused here as well, kept for 1:1 parity with ParagraphTextSource.cpp
 	private const char UNICODE_CARRIAGE_RETURN = '\u000D';
@@ -62,10 +61,10 @@ internal sealed class ParagraphTextSource : TextSource, ISkiaParagraphSource
 	//
 	//---------------------------------------------------------------------------
 	public override TextRun GetTextRun(uint characterIndex)
-		// TODO Uno (Stage 4): WinUI backing-store run model. The Skia render path lays out
-		// the whole paragraph from ISkiaParagraphSource.GetLeafInlines, so GetTextRun is not
+		// TODO Uno (Stage 4): WinUI backing-store run model. The UnicodeText formatter lays out
+		// the whole paragraph from IUnicodeParagraphSource.GetLeafInlines, so GetTextRun is not
 		// exercised yet; the faithful port lands with the element model (ITextContainer/GetRun).
-		=> throw new NotSupportedException("ParagraphTextSource.GetTextRun is not yet ported; the Skia path uses ISkiaParagraphSource.");
+		=> throw new NotSupportedException("ParagraphTextSource.GetTextRun is not yet ported; the formatter uses IUnicodeParagraphSource.");
 
 	//---------------------------------------------------------------------------
 	//
@@ -202,24 +201,36 @@ internal sealed class ParagraphTextSource : TextSource, ISkiaParagraphSource
 	// TODO Uno (integrate): BlockLayoutHelpers::GetFontContext — returns the CFontContext for the owner.
 	// (removed) GetFontContext — run-model helper, Stage 4
 
-	#region ISkiaParagraphSource (Uno bridge to the Skia ParsedText engine)
+	#region IUnicodeParagraphSource (Uno bridge to the UnicodeText engine)
 
-	// TODO Uno (integrate): ISkiaParagraphSource feeds the Skia text formatter. These members
-	// project the same paragraph/inline content GetTextRun walks above into the whole-paragraph
-	// input ParsedText expects (leaf inlines + line metrics). Wire them to the leaf inline list of
-	// m_pParagraph (or the TextBlock inlines) and to BlockLayoutHelpers line-stacking info.
+	// NOTE (Uno): IUnicodeParagraphSource feeds the UnicodeText formatter. These members project
+	// the same paragraph/inline content GetTextRun walks above into the whole-paragraph input
+	// UnicodeText expects. Line stacking stays with ParagraphNode, as in WinUI.
 
-	Inline[] ISkiaParagraphSource.GetLeafInlines()
+	Inline[] IUnicodeParagraphSource.GetLeafInlines()
 		=> m_pParagraph?.Inlines.TraversedTree.leafTree ?? Array.Empty<Inline>();
+
+	// The content owner, also for an overflow's paragraph: it is the layout engine's owner.
+	UnicodeText.IFontCacheUpdateListener IUnicodeParagraphSource.FontListener
+		=> (UnicodeText.IFontCacheUpdateListener)m_pContentOwner;
+
+	Microsoft.UI.Xaml.Media.Brush? IUnicodeParagraphSource.DefaultForeground
+		=> (m_pContentOwner as Microsoft.UI.Xaml.Controls.RichTextBlock)?.Foreground;
+
+	int IUnicodeParagraphSource.ForegroundVersion
+		=> (m_pContentOwner as Microsoft.UI.Xaml.Controls.RichTextBlock)?.ForegroundVersion ?? 0;
+
+	// ParagraphNode::CanAddElement: elements are hosted only while the paragraph measures.
+	bool IUnicodeParagraphSource.CanHostElements => GetEmbeddedElementHost()?.CanAddElement() ?? false;
 
 	// Mirrors the InlineUIContainer branch of ParagraphTextSource::GetTextRun: an open-nesting
 	// InlineUIContainer yields a PageHostedObjectRun, whose Format measures the child against the
 	// embedded element host and caches its size and baseline on the container.
-	(ObjectRun Run, ObjectRunMetrics Metrics)? ISkiaParagraphSource.FormatInlineObject(InlineUIContainer pUIContainer, float paragraphWidth)
+	(ObjectRun Run, ObjectRunMetrics Metrics)? IUnicodeParagraphSource.FormatInlineObject(InlineUIContainer pUIContainer, float paragraphWidth)
 	{
 		uint characterIndex = 0;
 
-		foreach (var inline in ((ISkiaParagraphSource)this).GetLeafInlines())
+		foreach (var inline in ((IUnicodeParagraphSource)this).GetLeafInlines())
 		{
 			if (ReferenceEquals(inline, pUIContainer))
 			{
@@ -244,33 +255,6 @@ internal sealed class ParagraphTextSource : TextSource, ISkiaParagraphSource
 		}
 
 		return null;
-	}
-
-	float ISkiaParagraphSource.DefaultLineHeight
-		=> (float)((m_pContentOwner as Microsoft.UI.Xaml.Controls.RichTextBlock)?.FontSize ?? 14.0);
-
-	float ISkiaParagraphSource.LineHeight
-	{
-		get
-		{
-			if (m_pParagraph is { } paragraph && paragraph.IsDependencyPropertySet(Block.LineHeightProperty))
-			{
-				return (float)paragraph.LineHeight;
-			}
-			return (float)((m_pContentOwner as Microsoft.UI.Xaml.Controls.RichTextBlock)?.LineHeight ?? 0.0);
-		}
-	}
-
-	LineStackingStrategy ISkiaParagraphSource.LineStackingStrategy
-	{
-		get
-		{
-			if (m_pParagraph is { } paragraph && paragraph.IsDependencyPropertySet(Block.LineStackingStrategyProperty))
-			{
-				return paragraph.LineStackingStrategy;
-			}
-			return (m_pContentOwner as Microsoft.UI.Xaml.Controls.RichTextBlock)?.LineStackingStrategy ?? LineStackingStrategy.MaxHeight;
-		}
 	}
 
 	#endregion

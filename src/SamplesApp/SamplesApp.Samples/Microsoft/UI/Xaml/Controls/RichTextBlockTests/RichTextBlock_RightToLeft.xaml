@@ -1,0 +1,78 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.RichTextBlockTests.RichTextBlock_RightToLeft"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Padding="16" Spacing="8">
+            <TextBlock
+                FontWeight="SemiBold"
+                Text="RichTextBlock in right-to-left"
+                TextWrapping="Wrap" />
+            <TextBlock Text="Verify: Arabic and Hebrew read right to left with their numbers left to right, the Latin sentence keeps its period last, the first column of the hosted grid is on the start side, the link reacts where it is drawn, and the text flowing into the overflow keeps the master's direction. Switch the direction to compare." TextWrapping="Wrap" />
+            <ToggleSwitch
+                x:Name="DirectionSwitch"
+                Header="FlowDirection"
+                IsOn="True"
+                OffContent="LeftToRight"
+                OnContent="RightToLeft"
+                Toggled="OnDirectionToggled" />
+            <TextBlock x:Name="ClickStatus" Text="Link not clicked yet." />
+
+            <Border
+                Width="320"
+                HorizontalAlignment="Left"
+                BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                BorderThickness="1">
+                <RichTextBlock
+                    x:Name="Master"
+                    Height="110"
+                    Padding="8,4,8,4"
+                    FlowDirection="RightToLeft"
+                    FontSize="18"
+                    TextWrapping="Wrap">
+                    <Paragraph>
+                        <Run Text="سعر الكتاب 25 دولار في Uno Platform." />
+                    </Paragraph>
+                    <Paragraph>
+                        <Run Text="Hello world. " />
+                        <Hyperlink Click="OnLinkClicked">
+                            <Run Text="رابط" />
+                        </Hyperlink>
+                        <Run Text=" " />
+                        <InlineUIContainer>
+                            <Grid Width="40" Height="16">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Border Background="{ThemeResource SystemAccentColor}" />
+                                <Border Grid.Column="1" Background="{ThemeResource SystemControlForegroundBaseLowBrush}" />
+                            </Grid>
+                        </InlineUIContainer>
+                        <Run Text=" שלום עולם 123 וטקסט שממשיך לשורה הבאה ולגלישה." />
+                    </Paragraph>
+                    <Paragraph>
+                        <Run Text="المستشفيات العربية الكبيرة في المدينة تستقبل المرضى كل يوم." />
+                    </Paragraph>
+                </RichTextBlock>
+            </Border>
+
+            <TextBlock Text="Overflow" />
+            <Border
+                Width="320"
+                HorizontalAlignment="Left"
+                BorderBrush="{ThemeResource SystemControlForegroundBaseMediumBrush}"
+                BorderThickness="1">
+                <RichTextBlockOverflow
+                    x:Name="Overflow"
+                    Height="110"
+                    Padding="8,4,8,4" />
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

@@ -275,7 +275,9 @@ internal abstract class ContainerNode : BlockNode
 		while (pStart != null)
 		{
 			pChildNode = pStart.GetNext();
-			// NOTE (Uno): C++ `delete pStart` dropped under the GC.
+			// NOTE (Uno): C++ `delete pStart` dropped under the GC; a paragraph lets go of its cached layouts, which the
+			// run cache it may share with the other pages would keep.
+			(pStart as ParagraphNode)?.ReleaseLayouts();
 			pStart = pChildNode;
 		}
 	}

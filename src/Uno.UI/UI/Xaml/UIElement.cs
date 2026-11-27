@@ -110,12 +110,12 @@ namespace Microsoft.UI.Xaml
 		{
 			var inMirroredSubtree = ShouldMirrorVisual();
 
-			// Text surfaces lay their own content out for right-to-left: the engines emit glyphs in
-			// visual order and align the lines themselves, so the element-level flip would mirror
-			// output that is already correct. WinUI cancels the flip with a second mirror inside its
-			// text drawing context; here it is suppressed instead.
-			var isMirroredTextSurface = this is FrameworkElement { FlowDirection: FlowDirection.RightToLeft }
-				and (TextBlock or RichTextBlock or RichTextBlockOverflow);
+			// TextBlock lays its own content out for right-to-left: the engine emits glyphs in visual
+			// order and aligns the lines itself, so the element-level flip would mirror output that is
+			// already correct. WinUI cancels the flip with a second mirror inside its text drawing
+			// context; here it is suppressed instead. RichTextBlock and its overflows keep the flip and
+			// cancel it when painting (see RichTextPagePainter).
+			var isMirroredTextSurface = this is TextBlock { FlowDirection: FlowDirection.RightToLeft };
 
 			return inMirroredSubtree ^ isMirroredTextSurface
 				? new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)RenderSize.Width, 0.0f)
@@ -136,7 +136,7 @@ namespace Microsoft.UI.Xaml
 				{
 					// The popup panel covers the whole window and positions its child in absolute coordinates, so it never mirrors itself;
 					// popup content (whose flow direction is forwarded from the flyout's placement target) mirrors relative to the panel.
-					return fe is not PopupPanel && fe.FlowDirection != feParent.FlowDirection;
+					return fe is not PopupPanel && GetEffectiveFlowDirection(fe) != GetEffectiveFlowDirection(feParent);
 				}
 
 				parent = VisualTreeHelper.GetParent(parent);
@@ -144,6 +144,12 @@ namespace Microsoft.UI.Xaml
 
 			return false;
 		}
+
+		// The direction an element's content is laid out in. A linked RichTextBlockOverflow lays out its master's
+		// content in the master's direction and is mirrored by it, as in WinUI; the elements it hosts are compared with
+		// that direction, so each renders by its own FlowDirection.
+		internal static FlowDirection GetEffectiveFlowDirection(FrameworkElement element)
+			=> element is RichTextBlockOverflow overflow && overflow.GetMaster() is { } master ? master.FlowDirection : element.FlowDirection;
 #endif
 
 		private void SubscribeToOverridenRoutedEvents()

@@ -132,29 +132,9 @@ partial class RichTextBlockOverflow
 			? InputSystemCursor.Create(InputSystemCursorShape.Hand)
 			: null;
 
-	// CRichTextBlockOverflow::HitTestLink — the slice this column arranged, in its own coordinates.
+	// CRichTextBlockOverflow::HitTestLink, through this column's own view.
 	private Hyperlink? FindHyperlinkAt(PointerRoutedEventArgs e)
-	{
-		var point = e.GetCurrentPoint(this).Position;
-		var adjustedPoint = new Point(point.X - Padding.Left, point.Y - Padding.Top);
-
-		foreach (var layout in _paragraphLayouts)
-		{
-			var paraTop = layout.YOffset;
-			var paraBottom = paraTop + layout.Size.Height;
-
-			if (adjustedPoint.Y >= paraTop && adjustedPoint.Y < paraBottom)
-			{
-				// The column draws its first line at the top, so add back the lines it skipped to
-				// reach the paragraph's own coordinate space.
-				var localPoint = new Point(
-					adjustedPoint.X - layout.Margin.Left,
-					adjustedPoint.Y - layout.YOffset + layout.ParsedText.GetLineTop(layout.FirstLine));
-
-				return layout.ParsedText.GetHyperlinkAt(localPoint);
-			}
-		}
-
-		return null;
-	}
+		=> _pTextView is { } view && _pPageNode is { } page && _pMaster is { } master
+			? RichTextBlock.HitTestLink(view, page, master.Blocks.GetTextContainer(), e.GetCurrentPoint(this).Position)
+			: null;
 }

@@ -41,6 +41,24 @@ namespace Microsoft.UI.Xaml.Documents
 		// in OnPropertyChanged2, which knows where the value came from.
 		private protected void InvalidateInlinesForFormatChange() => InvalidateInlines(updateText: false, inherited: true);
 
+		// A brush only colors what is drawn: RichTextBlock repaints with the new brush and keeps its layouts, as WinUI's
+		// CRichTextBlock::OnContentChanged only re-renders for a Foreground change. TextBlock lays its inlines out again.
+		private protected void InvalidateInlinesForForegroundChange()
+		{
+			switch (this.GetParent())
+			{
+				case Span span:
+					span.InvalidateInlinesForForegroundChange();
+					break;
+				case Block block:
+					block.InvalidateForeground();
+					break;
+				default:
+					InvalidateInlinesForFormatChange();
+					break;
+			}
+		}
+
 		// CTextElement::SetValue -> MarkDirty: a value set on or cleared from this element, as opposed to one it only
 		// inherits, is a content change. ClearValue takes that path too, even when the element inherits a value again.
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)

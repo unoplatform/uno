@@ -253,7 +253,7 @@ namespace Microsoft.UI.Xaml.Controls
 			else if (that.IsTextSelectionEnabled && SupportsSelection(e))
 			{
 				var point = e.GetCurrentPoint(that);
-				var index = that.GetCharacterIndexAtPoint(point.Position, true);
+				var index = that.GetCharacterIndexAtPoint(point.Position);
 				that._selectionOnPointerPressed = that.Selection;
 				if (index >= 0)
 				{
@@ -347,7 +347,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (that._isPressed && that.IsTextSelectionEnabled && SupportsSelection(e))
 			{
 				var point = e.GetCurrentPoint(that);
-				var index = that.GetCharacterIndexAtPoint(point.Position, true);
+				var index = that.GetCharacterIndexAtPoint(point.Position);
 				if (index >= 0)
 				{
 					that.Selection = that.Selection with { end = index };
@@ -514,10 +514,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private Hyperlink? FindHyperlinkAt(PointerRoutedEventArgs e)
-		{
-			return FindHyperlinkAtSkia(e);
-		}
+		private Hyperlink? FindHyperlinkAt(PointerRoutedEventArgs e) => HitTestLink(e.GetCurrentPoint(this).Position);
 
 		#endregion
 
@@ -559,10 +556,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Gets the character index at the given point, searching across all paragraphs.
 		/// </summary>
-		private int GetCharacterIndexAtPoint(Point point, bool extended = false)
-		{
-			return GetCharacterIndexAtPointSkia(point, extended);
-		}
+		private int GetCharacterIndexAtPoint(Point point) => GetCharacterIndexAtPointCore(point);
 
 		/// <summary>
 		/// Copies the current selection to the clipboard.

@@ -23,7 +23,9 @@ namespace Microsoft.UI.Xaml.Documents.BlockLayout;
 internal sealed class PageNode : ContainerNode
 {
 	// Uno integration helpers replacing C++ idioms (delete / IFC).
-	private static void DeleteBlockNode(BlockNode? node) { /* GC; C++ 'delete pChildNode' */ }
+	// C++ 'delete pChildNode' under the GC: a paragraph lets go of its cached layouts, which the run cache it may share
+	// with the other pages would keep.
+	private static void DeleteBlockNode(BlockNode? node) => (node as ParagraphNode)?.ReleaseLayouts();
 	private static void ThrowOnRtsError(global::Microsoft.UI.Xaml.Documents.RichTextServices.Result rtsErr)
 	{
 		if (rtsErr != global::Microsoft.UI.Xaml.Documents.RichTextServices.Result.Success)
@@ -66,8 +68,15 @@ internal sealed class PageNode : ContainerNode
 		m_firstChildIndex = 0;
 	}
 
-	// ~PageNode - must be called when the page is dropped, or its embedded elements stay parented to the page owner.
-	public void Dispose() => ClearEmbeddedElements();
+	// ~PageNode - must be called when the page is dropped, or its embedded elements stay parented to the page owner. The
+	// C++ destructor chain then runs ~ContainerNode, which deletes the children (ClearChildren): a paragraph continued
+	// from the master lets go of its layouts in the master's run cache.
+	public void Dispose()
+	{
+		ClearEmbeddedElements();
+		ClearChildren(m_pFirstChild);
+		m_pFirstChild = null;
+	}
 
 	//---------------------------------------------------------------------------
 	//
@@ -539,7 +548,9 @@ internal sealed class PageNode : ContainerNode
 				// In ForceContent mode, a child will have non-0 content length if it is the only node on the page.
 				// But a child may have 0 content length if remaining size does not allow any content and there is already content on the page.
 				// In that case, we don't want to add the child to our children collection.
-				if (pChildNode.GetContentLength() > 0)
+				// NOTE (Uno): a paragraph continued from a previous page can fit lines that hold no position: objects, or the
+				// empty line after a trailing LineBreak. WinUI's lines always hold one, the last line its paragraph terminator.
+				if (pChildNode.GetContentLength() > 0 || pChildNode is ParagraphNode { LineCount: > 0 })
 				{
 					Size childDesiredSize = pChildNode.GetDesiredSize();
 					uint paragraphMeasuredLinesCount = pChildNode.GetMeasuredLinesCount();

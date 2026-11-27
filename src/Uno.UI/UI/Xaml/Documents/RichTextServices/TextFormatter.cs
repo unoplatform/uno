@@ -22,5 +22,5 @@ internal abstract class TextFormatter
 
 	// TODO Uno: The WinUI static Create(IFontAndScriptServices) factory built
 	// the LineServices-backed formatter. On Uno the concrete formatter wraps the
-	// Skia ParsedText engine and is created by that bridge (see SkiaTextFormatter).
+	// UnicodeText engine (see UnicodeTextFormatter).
 }

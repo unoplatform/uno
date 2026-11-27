@@ -11,9 +11,8 @@ namespace Microsoft.UI.Xaml.Documents.RichTextServices;
 /// </summary>
 internal abstract partial class TextRunCache
 {
-	// TODO Uno: The concrete instance is created by the Skia text formatter
-	// (the C++ static Create() produced the LineServices-backed cache, which
-	// is the Uno-specific low-level engine and is not ported).
+	// NOTE (Uno): The concrete instance holds UnicodeText layouts (see UnicodeTextRunCache);
+	// the C++ static Create() produced the LineServices-backed cache, which is not ported.
 
 	// Clears all runs in the cache.
 	// Should be called when content is invalidated.

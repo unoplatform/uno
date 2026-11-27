@@ -44,15 +44,21 @@ internal class RangeSlicer<TValue>
 		public override string ToString() => $"[{Start}, {End}) = {(HasValue ? Value?.ToString() : "Unset")}";
 	}
 
+	// Marking builds the new segments in a scratch list and merges them back, so a reused slicer allocates nothing.
 	private List<Segment> _segments = new();
-	private readonly long _initialStart;
-	private readonly long _initialEnd;
+	private List<Segment> _scratch = new();
+	private long _initialStart;
+	private long _initialEnd;
 
-	public RangeSlicer(long start, long end)
+	public RangeSlicer(long start, long end) => Reset(start, end);
+
+	/// <summary>Starts over with one unset segment covering the range, keeping the buffers.</summary>
+	public void Reset(long start, long end)
 	{
 		if (start > end) throw new ArgumentOutOfRangeException(nameof(start), "Start must be less than or equal to End.");
 		_initialStart = start;
 		_initialEnd = end;
+		_segments.Clear();
 		_segments.Add(new Segment(start, end, default, false));
 	}
 
@@ -78,7 +84,8 @@ internal class RangeSlicer<TValue>
 			throw new ArgumentOutOfRangeException(nameof(start), "Range is outside the initial bounds.");
 		}
 
-		var newSegments = new List<Segment>(_segments.Count + 2);
+		var newSegments = _scratch;
+		newSegments.Clear();
 		bool inserted = false;
 
 		foreach (var existing in _segments)
@@ -131,14 +138,16 @@ internal class RangeSlicer<TValue>
 			newSegments.Add(new Segment(start, end, value, true));
 		}
 
-		_segments = MergeSegments(newSegments);
+		// The old segments are read: merge into their list.
+		MergeSegments(newSegments, _segments);
 	}
 
-	private List<Segment> MergeSegments(List<Segment> segments)
+	// Merges adjacent segments with the same value from segments into merged.
+	private static void MergeSegments(List<Segment> segments, List<Segment> merged)
 	{
-		if (segments.Count == 0) return segments;
+		merged.Clear();
+		if (segments.Count == 0) return;
 
-		var merged = new List<Segment>(segments.Count);
 		var current = segments[0];
 
 		for (int i = 1; i < segments.Count; i++)
@@ -159,7 +168,6 @@ internal class RangeSlicer<TValue>
 			}
 		}
 		merged.Add(current);
-		return merged;
 	}
 
 	public List<Segment> GetSegments()

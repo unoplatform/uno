@@ -7,8 +7,8 @@
 namespace Microsoft.UI.Xaml.Documents.BlockLayout;
 
 // Proxy drawing context for a ContainerNode. On Uno it is a thin transform holder
-// (see DrawingContext) since rendering is performed by the Paint walk over the
-// children's ParsedText, not by recorded render commands.
+// (see DrawingContext): the page's paragraphs record their lines, which the page
+// painter draws.
 internal sealed class ContainerDrawingContext : DrawingContext
 {
 	private readonly ContainerNode m_pNode;
