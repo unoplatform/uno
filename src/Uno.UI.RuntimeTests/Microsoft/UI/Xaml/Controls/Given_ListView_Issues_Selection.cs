@@ -737,4 +737,33 @@ public class Given_ListView_Issues_Selection
 		}
 	}
 #endif
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25461")]
+	public async Task When_GridView_Multiple_Default_Style_Uses_Overlay_Check_Mode()
+	{
+		try
+		{
+			var gv = await Host(new GridView
+			{
+				Width = 400,
+				Height = 300,
+				SelectionMode = ListViewSelectionMode.Multiple,
+				ItemsSource = MakeItems(12),
+			});
+			gv.SelectedItems.Add(gv.Items[0]);
+			gv.SelectedItems.Add(gv.Items[3]);
+			await WindowHelper.WaitForIdle();
+
+			var container = (GridViewItem)gv.ContainerFromIndex(0);
+			var listPresenter = FindDescendantOrDefault<ListViewItemPresenter>(container);
+			Assert.IsNotNull(listPresenter, "default GridViewItem template should use a ListViewItemPresenter");
+			Assert.AreEqual(ListViewItemPresenterCheckMode.Overlay, listPresenter!.CheckMode);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
 }
