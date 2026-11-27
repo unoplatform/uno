@@ -375,4 +375,61 @@ public class Given_ListView_Issues_Selection
 			WindowHelper.WindowContent = null;
 		}
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/10786")]
+	public async Task When_ItemContainerStyle_Set_In_BasedOn_Style_After_Template()
+	{
+		try
+		{
+			var root = (StackPanel)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"""
+				<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<StackPanel.Resources>
+						<Style x:Key="ItemStyle" TargetType="ListBoxItem">
+							<Setter Property="Background" Value="Blue" />
+							<Setter Property="BorderThickness" Value="5" />
+							<Setter Property="Template">
+								<Setter.Value>
+									<ControlTemplate TargetType="ListBoxItem">
+										<Grid Background="{TemplateBinding Background}"><ContentPresenter Content="{TemplateBinding Content}" /></Grid>
+									</ControlTemplate>
+								</Setter.Value>
+							</Setter>
+						</Style>
+						<Style x:Key="BaseStyle" TargetType="ListBox">
+							<Setter Property="Template">
+								<Setter.Value>
+									<ControlTemplate TargetType="ListBox"><Grid><ItemsPresenter /></Grid></ControlTemplate>
+								</Setter.Value>
+							</Setter>
+						</Style>
+						<Style x:Key="DerivedStyle" TargetType="ListBox" BasedOn="{StaticResource BaseStyle}">
+							<Setter Property="ItemContainerStyle" Value="{StaticResource ItemStyle}" />
+						</Style>
+					</StackPanel.Resources>
+					<ListBox x:Name="Lb" Style="{StaticResource DerivedStyle}">
+						<ListBoxItem Content="One" />
+						<ListBoxItem Content="Two" />
+					</ListBox>
+				</StackPanel>
+				""");
+			await Host(root);
+			var lb = (ListBox)root.FindName("Lb");
+
+			for (var i = 0; i < 2; i++)
+			{
+				var item = (ListBoxItem)lb.ContainerFromIndex(i);
+				var brush = item.Background as SolidColorBrush;
+				Assert.IsNotNull(brush, $"item {i} background");
+				Assert.AreEqual(Microsoft.UI.Colors.Blue, brush!.Color, $"item {i}");
+				Assert.AreEqual(5d, item.BorderThickness.Left, $"item {i}");
+			}
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
 }
