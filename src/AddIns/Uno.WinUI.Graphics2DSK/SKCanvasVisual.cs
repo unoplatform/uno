@@ -48,7 +48,7 @@ internal sealed class SKCanvasVisual(SKCanvasElement owner, Compositor composito
 			owner.EnsureIslandFallback();
 			if (owner.UseSoftwareSurface)
 			{
-				owner.PaintSoftware(session.Session, Size);
+				owner.PaintSoftware(session.Session, Size, session.Opacity);
 			}
 		}
 	}

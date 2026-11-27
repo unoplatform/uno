@@ -57,9 +57,11 @@ public class Given_SKCanvasElement
 	}
 
 	[TestMethod]
-	[DataRow(false)]
-	[DataRow(true)]
-	public async Task When_Opacity(bool onAncestor)
+	[DataRow(false, false)]
+	[DataRow(true, false)]
+	[DataRow(false, true)]
+	[DataRow(true, true)]
+	public async Task When_Opacity(bool onAncestor, bool forceSoftwareFallback)
 	{
 		var SUT = new BlueFillSKCanvasElement
 		{
@@ -67,6 +69,11 @@ public class Given_SKCanvasElement
 			Width = 100,
 			Opacity = onAncestor ? 1 : 0.5
 		};
+
+		if (forceSoftwareFallback)
+		{
+			ForceSoftwareFallback(SUT);
+		}
 
 		var container = new Border
 		{
@@ -104,8 +111,7 @@ public class Given_SKCanvasElement
 		// The path a backend without an SKCanvas takes when no GL island is available: marked as already requested,
 		// or the next paint would still bring up an island and draw through both. Under Skia the element draws into
 		// the SKCanvas directly and none of this applies.
-		typeof(SKCanvasElement).GetField("_islandRequested", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(SUT, true);
-		typeof(SKCanvasElement).GetMethod("OnIslandUnavailable", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(SUT, null);
+		ForceSoftwareFallback(SUT);
 
 		await UITestHelper.Load(SUT);
 		await UITestHelper.WaitFor(() => SUT.Rendered, timeoutMS: 5000);
@@ -120,6 +126,12 @@ public class Given_SKCanvasElement
 		var row = string.Join(" ", Enumerable.Range(edge - 3, 6).Select(x => $"{x}:{bitmap.GetPixel(x, 20).A}"));
 		Assert.AreEqual(255, bitmap.GetPixel(edge - 1, 20).A, $"inside the fill, at scale {SUT.XamlRoot.RasterizationScale} ({row})");
 		Assert.AreEqual(0, bitmap.GetPixel(edge, 20).A, $"outside the fill, at scale {SUT.XamlRoot.RasterizationScale} ({row})");
+	}
+
+	private static void ForceSoftwareFallback(SKCanvasElement element)
+	{
+		typeof(SKCanvasElement).GetField("_islandRequested", BindingFlags.Instance | BindingFlags.NonPublic)!.SetValue(element, true);
+		typeof(SKCanvasElement).GetMethod("OnIslandUnavailable", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(element, null);
 	}
 
 	[TestMethod]
