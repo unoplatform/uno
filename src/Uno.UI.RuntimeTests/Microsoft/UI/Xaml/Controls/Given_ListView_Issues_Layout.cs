@@ -214,4 +214,29 @@ public class Given_ListView_Issues_Layout
 		Assert.AreEqual(panelBounds.Width - 30, itemBounds.Width, Tolerance, "Left + right padding shrink the items");
 		Assert.AreEqual(panelBounds.X + 10, itemBounds.X, Tolerance);
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2136")]
+	public async Task When_ItemsStackPanel_Then_Containers_Stretch_To_Panel_Width()
+	{
+		ListView list = new()
+		{
+			Width = 300,
+			Height = 400,
+			ItemsSource = Strings(5),
+			ItemTemplate = Template("<Border Height='40' HorizontalAlignment='Stretch'><TextBlock Text='{Binding}' VerticalAlignment='Center' /></Border>"),
+			ItemsPanel = PanelTemplate("<ItemsStackPanel />"),
+			HorizontalContentAlignment = HorizontalAlignment.Stretch,
+		};
+		await Load(list);
+
+		var panel = (FrameworkElement)list.ItemsPanelRoot;
+		for (int i = 0; i < 5; i++)
+		{
+			var container = (FrameworkElement)list.ContainerFromIndex(i);
+			Assert.AreEqual(panel.ActualWidth, container.ActualWidth, Tolerance, $"Container {i}");
+			var padding = ((ListViewItem)container).Padding;
+			Assert.AreEqual(panel.ActualWidth - padding.Left - padding.Right, BoundsIn(Descendants<Border>(container).First(b => b.Height == 40), list).Width, Tolerance, $"Border {i}");
+		}
+	}
 }
