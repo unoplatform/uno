@@ -60,14 +60,42 @@ The UI Update only walks materialized elements, so content assigned to a `Conten
 
 ## Pausing / Resuming UI Update
 
-Pausing and resuming UI Update is done by calling
+Pausing UI Update is done by calling `UIUpdate.Pause()`, which returns a `HotReloadUIPauseHandle`. UI Update resumes when the handle is disposed:
 
-`TypeMappings.Pause()` and `TypeMappings.Resume()`
+```csharp
+using (UIUpdate.Pause(reason: "Batch file changes"))
+{
+    // Hot Reload still processes changes, but the visual-tree update is deferred.
+}
+```
 
 Note that pausing UI Updates doesn't stop the Hot Reload process. It only prevents the UI Update from running until UI Updates are resumed.
 
-<!---
 ## Waiting for Hot Reload to be applied
 
-// TODO: Give an example of how to await UI Updates (eg https://github.com/unoplatform/uno/blob/0340cc1394994cdbd525d61de611a0531c38bcc7/src/Uno.UI.RuntimeTests/Tests/HotReload/Frame/HRApp/Tests/Given_Frame.cs#L9-L37)
--->
+To wait for the tracked Hot Reload cycle after a file change, use `ClientHotReloadProcessor.UpdateRequest` with `WaitForHotReload` set to `true` and await `UpdateFileAsync`. This waits for server processing and a local Hot Reload result; it does not unconditionally guarantee that the UI update has been applied. An active `UIUpdate.Pause` handle can defer the visual-tree update and report an ignored result, allowing the task to complete successfully while the UI update is still queued. Release the pause handle before relying on the deferred UI update.
+
+```csharp
+using System;
+using System.Linq;
+using System.Threading;
+using Uno.UI.RemoteControl;
+using Uno.UI.RemoteControl.HotReload;
+
+var hotReload = RemoteControlClient.Instance?.Processors
+    .OfType<ClientHotReloadProcessor>()
+    .SingleOrDefault()
+    ?? throw new InvalidOperationException("Hot Reload is unavailable.");
+
+var request = new ClientHotReloadProcessor.UpdateRequest(
+    "Pages/MainPage.xaml",
+    "Old text",
+    "New text",
+    WaitForHotReload: true);
+
+await hotReload.UpdateFileAsync(request, CancellationToken.None);
+```
+
+`FilePath` is relative to the solution root. The Hot Reload processor must have published its initial status before the request is sent.
+
+Hot Reload normally triggers the UI update automatically. When the updated types are already available and the UI must be reapplied explicitly, await `UIUpdate.ForceRefresh(updatedTypes, CancellationToken.None)`, where `updatedTypes` is the `Type[]` whose instances should be re-applied (an empty array is a no-op), for example the types reported by the `ReloadCompleted` handler above or `Type[] updatedTypes = [typeof(MainPage)];`. With an initialized Hot Reload client and an available application window, this path waits for the UI-thread update pass and bypasses active `UIUpdate.Pause` handles.
