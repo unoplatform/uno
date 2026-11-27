@@ -580,4 +580,41 @@ public class Given_ListView_Issues_Layout
 		Assert.IsNotNull(list.ContainerFromIndex(0));
 		Assert.IsLessThan(150, Descendants<SelectorItem>(list.ItemsPanelRoot).Count(), "Only about one viewport is realized");
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26402")]
+	public async Task When_ScrollIntoView_Leading_And_Item_Already_Visible_Then_Item_Aligned_To_Top()
+	{
+		ListView list = new()
+		{
+			Width = 300,
+			Height = 400,
+			ItemsSource = Strings(100),
+			ItemTemplate = Template("<Border Height='40'><TextBlock Text='{Binding}' /></Border>"),
+			ItemContainerStyle = (Style)XamlReader.Load(
+				"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TargetType='ListViewItem'><Setter Property='MinHeight' Value='0' /><Setter Property='Padding' Value='0' /></Style>"),
+		};
+		await Load(list);
+		var sv = GetScrollViewer(list);
+		var items = (IList<string>)list.ItemsSource;
+
+		async Task ScrollAndExpect(int index, ScrollIntoViewAlignment alignment, double expectedOffset)
+		{
+			list.ScrollIntoView(items[index], alignment);
+			await WindowHelper.WaitFor(() => Math.Abs(sv.VerticalOffset - expectedOffset) < Tolerance, timeoutMS: 3000, message: $"Offset {expectedOffset} for {alignment} {index}, got {sv.VerticalOffset}");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(expectedOffset, sv.VerticalOffset, Tolerance, $"{alignment} item {index}");
+		}
+
+		await ScrollAndExpect(3, ScrollIntoViewAlignment.Leading, 120);
+		await ScrollAndExpect(2, ScrollIntoViewAlignment.Leading, 80);
+		await ScrollAndExpect(30, ScrollIntoViewAlignment.Leading, 1200);
+		await ScrollAndExpect(32, ScrollIntoViewAlignment.Leading, 1280);
+
+		await ChangeViewAndWait(sv, 0);
+		list.ScrollIntoView(items[3], ScrollIntoViewAlignment.Default);
+		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual(0, sv.VerticalOffset, Tolerance, "Default alignment leaves a visible item alone");
+	}
 }
