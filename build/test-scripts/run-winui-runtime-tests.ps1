@@ -132,7 +132,20 @@ if (-not (Test-Path $TEST_RESULTS_FILE)) {
 
         $dumps = Get-ChildItem -Path $CRASH_DIR -Filter *.dmp -ErrorAction SilentlyContinue
         if ($dumps) {
-            Write-Host "Crash dumps: $($dumps.Name -join ', ') (artifact runtime-tests-winappsdk-crash)"
+            # Full dumps are large and compress well: zip them so the artifact upload stays small.
+            foreach ($dump in $dumps) {
+                try {
+                    $zip = "$($dump.FullName).zip"
+                    Compress-Archive -Path $dump.FullName -DestinationPath $zip -CompressionLevel Optimal -Force
+                    Write-Host "Zipped $($dump.Name): $([math]::Round($dump.Length / 1MB)) MB -> $([math]::Round((Get-Item $zip).Length / 1MB)) MB"
+                    Remove-Item $dump.FullName -Force
+                }
+                catch {
+                    Write-Host "Could not zip $($dump.Name), keeping it as is: $_"
+                }
+            }
+
+            Write-Host "Crash dumps: $((Get-ChildItem -Path $CRASH_DIR -Filter *.dmp*).Name -join ', ') (artifact runtime-tests-winappsdk-crash)"
         }
         else {
             Write-Host "No crash dump was written to $CRASH_DIR."
