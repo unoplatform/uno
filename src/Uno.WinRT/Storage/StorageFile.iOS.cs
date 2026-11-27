@@ -41,6 +41,8 @@ namespace Windows.Storage
 				Path = _document.FileUrl?.Path ?? string.Empty;
 			}
 
+			internal NSUrl NsUrl => _nsUrl;
+
 			public override StorageProvider Provider => StorageProviders.IosSecurityScoped;
 
 			public override DateTimeOffset DateCreated => _dateCreated ?? (_dateCreated = GetDateCreated()).Value;
