@@ -359,5 +359,67 @@ public class Given_ListView_Issues_Interaction
 		Assert.AreNotEqual(0, source.IndexOf("0"), "dragged item moved away from the front");
 		Assert.AreEqual("1", source[0]);
 	}
+
+	// https://github.com/unoplatform/uno/issues/25282
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25282")]
+	public async Task When_Reorder_Item_Content_AllowDrop_DropResult_Is_Move()
+	{
+		ObservableCollection<string> source = new(Enumerable.Range(0, 3).Select(i => i.ToString()));
+		ListView list = new()
+		{
+			Width = 300,
+			Height = 400,
+			AllowDrop = true,
+			CanDragItems = true,
+			CanReorderItems = true,
+			ItemTemplate = (DataTemplate)XamlReader.Load(
+				"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><TextBlock Text='{Binding}' Height='100' AllowDrop='True' /></DataTemplate>"),
+			ItemsSource = source,
+		};
+
+		DataPackageOperation? result = null;
+		list.DragItemsCompleted += (_, e) => result = e.DropResult;
+
+		await UITestHelper.Load(list, x => x.IsLoaded && list.ContainerFromIndex(2) is not null);
+		await WindowHelper.WaitForIdle();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		await Task.Delay(800); // let the entrance transitions settle
+		await WindowHelper.WaitForIdle();
+
+		Point from = CenterInWindow((FrameworkElement)list.ContainerFromIndex(0));
+		Point to = CenterInWindow((FrameworkElement)list.ContainerFromIndex(2));
+
+		mouse.MoveTo(from);
+		await WindowHelper.WaitForIdle();
+		mouse.Press();
+		await WindowHelper.WaitForIdle();
+		mouse.MoveTo(new Point(from.X, from.Y + 100));
+		await WindowHelper.WaitForIdle();
+		mouse.MoveTo(to);
+		await WindowHelper.WaitForIdle();
+		mouse.Release();
+		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitFor(() => result is not null, timeoutMS: 3000, message: "DragItemsCompleted raised");
+
+		Assert.AreEqual(DataPackageOperation.Move, result, "DropResult");
+		Assert.AreNotEqual("0", source[0], "order changed");
+	}
+#endif
+
+#if HAS_UNO
+	private sealed class FactoryTemplateSelector : DataTemplateSelector
+	{
+		protected override DataTemplate SelectTemplateCore(object item)
+		{
+			string text = (string)item;
+			UIElement view = new TextBlock { Text = text, Height = 30 };
+			return new DataTemplate(null, (_, _) => view);
+		}
+	}
 #endif
 }
