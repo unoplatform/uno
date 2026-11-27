@@ -106,7 +106,7 @@ On macOS, speech recognition follows the WinUI behavior described in the Microso
 * Calling `RecognizeAsync()` or `CompileConstraintsAsync()` while the recognizer is busy throws an `InvalidOperationException`.
 * `StopRecognitionAsync()` returns the words recognized so far, or a `UserCanceled` result if nothing was said yet.
 * `SpeechRecognitionResult` provides `Text`, `Status`, `Confidence`, `RawConfidence`, `PhraseStartTime`, `PhraseDuration` and `GetAlternates()`. `RawConfidence` is the average of Apple's per-word confidence; `Confidence` is `High` from 0.8, `Medium` from 0.5, and `Low` below.
-* Events are raised on the UI thread.
+* Events are raised on the UI thread when recognition is started from it.
 
 ## Limitation
 

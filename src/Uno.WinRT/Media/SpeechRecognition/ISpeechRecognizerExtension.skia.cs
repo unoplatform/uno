@@ -12,7 +12,8 @@ namespace Windows.Media.SpeechRecognition;
 /// </summary>
 /// <remarks>
 /// The extension only reports raw engine events; WinUI semantics (states, timeouts, statuses, constraints)
-/// are implemented by <see cref="SpeechRecognizer"/>. Methods must not raise events synchronously.
+/// are implemented by <see cref="SpeechRecognizer"/>, which calls these methods while holding its lock: they must
+/// return without blocking and must not raise events synchronously. Events should be raised on the UI thread.
 /// Each <see cref="BeginUtterance"/> is answered by exactly one <see cref="UtteranceCompleted"/>.
 /// </remarks>
 internal interface ISpeechRecognizerExtension : IDisposable

@@ -85,12 +85,14 @@ internal sealed class MacOSSpeechRecognizerExtension : ISpeechRecognizerExtensio
 
 	public Task<SpeechRecognizerAuthorization> RequestAuthorizationAsync()
 	{
-		var token = Interlocked.Increment(ref _nextAuthorizationToken);
+		var token = CreateAuthorizationToken();
 		var completion = new TaskCompletionSource<SpeechRecognizerAuthorization>(TaskCreationOptions.RunContinuationsAsynchronously);
 		_authorizationRequests[token] = completion;
 		NativeUno.uno_speech_request_authorization(token);
 		return completion.Task;
 	}
+
+	private static long CreateAuthorizationToken() => Interlocked.Increment(ref _nextAuthorizationToken);
 
 	public void BeginUtterance(SpeechUtteranceOptions options)
 	{

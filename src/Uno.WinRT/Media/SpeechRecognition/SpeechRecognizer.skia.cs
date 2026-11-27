@@ -24,11 +24,13 @@ public partial class SpeechRecognizer : IDisposable
 	private readonly object _gate = new();
 	private readonly Queue<Action> _pendingEvents = new();
 	private readonly AudioLevelTracker _audioLevels = new();
-	private TimeProvider _timeProvider = TimeProvider.System;
+	private readonly TimeProvider _timeProvider = TimeProvider.System;
 	private ISpeechRecognizerExtension? _extension;
 	private bool _isLanguageSupported;
 	private bool _isFlushingEvents;
 	private bool _isDisposed;
+	private SynchronizationContext? _eventContext;
+	private bool _isStopRequestedDuringStartup;
 
 	private SessionKind _session;
 	private int _utteranceId;
@@ -149,6 +151,8 @@ public partial class SpeechRecognizer : IDisposable
 			}
 
 			_session = SessionKind.Single;
+			_isStopRequestedDuringStartup = false;
+			_eventContext = SynchronizationContext.Current;
 		}
 
 		SpeechRecognitionResultStatus status;
@@ -170,6 +174,17 @@ public partial class SpeechRecognizer : IDisposable
 		lock (_gate)
 		{
 			ThrowIfDisposedLocked();
+			if (ct.IsCancellationRequested)
+			{
+				_session = SessionKind.None;
+				ct.ThrowIfCancellationRequested();
+			}
+
+			if (_isStopRequestedDuringStartup)
+			{
+				status = SpeechRecognitionResultStatus.UserCanceled;
+			}
+
 			if (status != SpeechRecognitionResultStatus.Success)
 			{
 				_session = SessionKind.None;
@@ -215,8 +230,15 @@ public partial class SpeechRecognizer : IDisposable
 		Task idle;
 		lock (_gate)
 		{
-			if (_session != SessionKind.Single || !_isUtteranceActive)
+			if (_session != SessionKind.Single)
 			{
+				return Task.CompletedTask;
+			}
+
+			if (!_isUtteranceActive)
+			{
+				// Still waiting for permission: the recognition won't start.
+				_isStopRequestedDuringStartup = true;
 				return Task.CompletedTask;
 			}
 
@@ -557,7 +579,7 @@ public partial class SpeechRecognizer : IDisposable
 
 		var utteranceId = _utteranceId;
 		return _timeProvider.CreateTimer(
-			_ =>
+			_ => RunOnEventContext(() =>
 			{
 				lock (_gate)
 				{
@@ -570,10 +592,24 @@ public partial class SpeechRecognizer : IDisposable
 				}
 
 				FlushEvents();
-			},
+			}),
 			null,
 			dueTime,
 			Timeout.InfiniteTimeSpan);
+	}
+
+	// Timers fire on the thread pool; raise their events where the engine raises its own, usually the UI thread.
+	private void RunOnEventContext(Action action)
+	{
+		var context = _eventContext;
+		if (context is null || SynchronizationContext.Current == context)
+		{
+			action();
+		}
+		else
+		{
+			context.Post(static state => ((Action)state!)(), action);
+		}
 	}
 
 	private static void StopTimer(ref ITimer? timer)

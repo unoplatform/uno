@@ -297,6 +297,67 @@ public class Given_SpeechRecognizer
 		Assert.AreEqual(TimeSpan.Zero, result.PhraseDuration);
 	}
 
+	[TestMethod]
+	public async Task When_Canceled_During_Permission_Prompt_Then_Recognition_Does_Not_Start()
+	{
+		var authorization = new TaskCompletionSource<SpeechRecognizerAuthorization>();
+		_engine.PendingAuthorization = authorization;
+		var operation = _sut.RecognizeAsync();
+
+		operation.Cancel();
+		authorization.SetResult(SpeechRecognizerAuthorization.Authorized);
+
+		await Assert.ThrowsAsync<OperationCanceledException>(() => operation.AsTask());
+		Assert.IsFalse(_engine.Calls.Contains("Begin"));
+		Assert.AreEqual(SpeechRecognizerState.Idle, _sut.State);
+	}
+
+	[TestMethod]
+	public async Task When_Stopped_During_Permission_Prompt_Then_UserCanceled()
+	{
+		var authorization = new TaskCompletionSource<SpeechRecognizerAuthorization>();
+		_engine.PendingAuthorization = authorization;
+		var recognition = _sut.RecognizeAsync().AsTask();
+
+		await _sut.StopRecognitionAsync().AsTask();
+		authorization.SetResult(SpeechRecognizerAuthorization.Authorized);
+
+		Assert.AreEqual(SpeechRecognitionResultStatus.UserCanceled, (await recognition).Status);
+		Assert.IsFalse(_engine.Calls.Contains("Begin"));
+	}
+
+	[TestMethod]
+	public async Task When_Timeout_Elapses_On_Another_Thread_Then_Events_Use_The_Starting_Context()
+	{
+		var context = new QueuedSynchronizationContext();
+		var original = SynchronizationContext.Current;
+		Task<SpeechRecognitionResult> recognition;
+		SynchronizationContext.SetSynchronizationContext(context);
+		try
+		{
+			recognition = _sut.RecognizeAsync().AsTask();
+		}
+		finally
+		{
+			SynchronizationContext.SetSynchronizationContext(original);
+		}
+
+		_time.Advance(TimeSpan.FromSeconds(5));
+		Assert.IsFalse(_engine.Calls.Contains("Cancel"), "The timeout must be handled on the context that started the recognition.");
+
+		context.RunPending();
+		Assert.IsTrue(_engine.Calls.Contains("Cancel"));
+
+		_engine.CompleteCanceled();
+		while (!recognition.IsCompleted)
+		{
+			context.RunPending();
+			await Task.Yield();
+		}
+
+		Assert.AreEqual(SpeechRecognitionResultStatus.TimeoutExceeded, (await recognition).Status);
+	}
+
 	private void CreateRecognizer(bool languageSupported = true)
 	{
 		_engine = new FakeSpeechRecognizerExtension { IsLanguageSupported = languageSupported };
@@ -349,7 +410,9 @@ internal sealed class FakeSpeechRecognizerExtension : ISpeechRecognizerExtension
 
 	public bool Initialize(Language language) => IsLanguageSupported;
 
-	public Task<SpeechRecognizerAuthorization> RequestAuthorizationAsync() => Task.FromResult(Authorization);
+	public TaskCompletionSource<SpeechRecognizerAuthorization>? PendingAuthorization { get; set; }
+
+	public Task<SpeechRecognizerAuthorization> RequestAuthorizationAsync() => PendingAuthorization?.Task ?? Task.FromResult(Authorization);
 
 	public void BeginUtterance(SpeechUtteranceOptions options)
 	{
@@ -389,6 +452,31 @@ internal sealed class FakeSpeechRecognizerExtension : ISpeechRecognizerExtension
 
 	public void CompleteError(SpeechRecognitionResultStatus status)
 		=> UtteranceCompleted?.Invoke(this, new SpeechUtteranceOutcome(SpeechUtteranceOutcomeKind.Error, Array.Empty<SpeechTranscription>(), ErrorStatus: status));
+}
+
+/// <summary>A synchronization context that only runs posted work when <see cref="RunPending"/> is called.</summary>
+internal sealed class QueuedSynchronizationContext : SynchronizationContext
+{
+	private readonly Queue<(SendOrPostCallback Callback, object? State)> _pending = new();
+
+	public override void Post(SendOrPostCallback d, object? state) => _pending.Enqueue((d, state));
+
+	public void RunPending()
+	{
+		var previous = Current;
+		SetSynchronizationContext(this);
+		try
+		{
+			while (_pending.TryDequeue(out var work))
+			{
+				work.Callback(work.State);
+			}
+		}
+		finally
+		{
+			SetSynchronizationContext(previous);
+		}
+	}
 }
 
 /// <summary>A <see cref="TimeProvider"/> whose timers only fire when <see cref="Advance"/> is called.</summary>
