@@ -490,6 +490,135 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26613")]
+		public void When_Panel_Forwarding_Inherited_Value_Is_Moved_Then_Descendants_Follow_New_Host()
+		{
+			var disabledHost = new UserControl { IsEnabled = false };
+			var panel = new Grid();
+			var button = new Button();
+			panel.Children.Add(button);
+
+			disabledHost.Content = panel;
+			Assert.IsFalse(button.IsEnabled, "Button under a disabled host");
+
+			disabledHost.Content = null;
+			var enabledHost = new UserControl { Content = panel };
+			Assert.IsTrue(button.IsEnabled, "Button moved to an enabled host");
+
+			enabledHost.Content = null;
+			var otherDisabledHost = new UserControl { IsEnabled = false, Content = panel };
+			Assert.IsFalse(button.IsEnabled, "Button moved back to a disabled host");
+			GC.KeepAlive(otherDisabledHost);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26613")]
+		public void When_Nested_Panels_Forwarding_Inherited_Value_Are_Moved_Then_Descendants_Follow_New_Host()
+		{
+			var disabledHost = new UserControl { IsEnabled = false };
+			var outerPanel = new Grid();
+			var innerBorder = new Border();
+			var button = new Button();
+			innerBorder.Child = button;
+			outerPanel.Children.Add(innerBorder);
+
+			disabledHost.Content = outerPanel;
+			Assert.IsFalse(button.IsEnabled, "Button under a disabled host");
+
+			disabledHost.Content = null;
+			var enabledHost = new UserControl { Content = outerPanel };
+			Assert.IsTrue(button.IsEnabled, "Outer panel moved to an enabled host");
+
+			enabledHost.Content = null;
+			disabledHost.Content = outerPanel;
+			outerPanel.Children.Remove(innerBorder);
+			var otherEnabledHost = new UserControl { Content = innerBorder };
+			Assert.IsTrue(button.IsEnabled, "Inner border moved out of the disabled subtree");
+			GC.KeepAlive(otherEnabledHost);
+		}
+
+		[TestMethod]
+		public void When_Panel_With_Own_Inherited_Attached_Value_Is_Detached_Then_Descendants_Keep_It()
+		{
+			var property = DependencyProperty.RegisterAttached(
+				nameof(When_Panel_With_Own_Inherited_Attached_Value_Is_Detached_Then_Descendants_Keep_It),
+				typeof(string),
+				typeof(Given_DependencyProperty),
+				new FrameworkPropertyMetadata("default", FrameworkPropertyMetadataOptions.Inherits));
+
+			var host = new UserControl();
+			var panel = new Grid();
+			var child = new Border();
+			panel.Children.Add(child);
+			panel.SetValue(property, "panel");
+			host.Content = panel;
+			Assert.AreEqual("panel", child.GetValue(property), "Child of the panel setting the value");
+
+			host.Content = null;
+			Assert.AreEqual("panel", child.GetValue(property), "Value set on the detached panel itself is not stale");
+		}
+
+		[TestMethod]
+		public void When_Panel_Forwarding_Foreground_Is_Moved_Then_Descendants_Follow_New_Host()
+		{
+			var hostBrush = new SolidColorBrush(Colors.Red);
+			var styledHost = new UserControl { Foreground = hostBrush };
+			var panel = new Grid();
+			var textBlock = new TextBlock();
+			panel.Children.Add(textBlock);
+
+			styledHost.Content = panel;
+			Assert.AreSame(hostBrush, textBlock.Foreground, "TextBlock under the styled host");
+
+			styledHost.Content = null;
+			var plainHost = new UserControl { Content = panel };
+			Assert.AreNotSame(hostBrush, textBlock.Foreground, "TextBlock moved to a host without Foreground");
+			GC.KeepAlive(plainHost);
+		}
+
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public void When_Moved_Then_CanExecute_False_Button_Stays_Disabled(bool moveParentPanel)
+		{
+			var hostA = new UserControl { IsEnabled = true };
+			var button = new Button { Command = new NeverExecutableCommand() };
+			var panel = new Grid();
+			FrameworkElement moved = moveParentPanel ? panel : button;
+			if (moveParentPanel)
+			{
+				panel.Children.Add(button);
+			}
+
+			hostA.Content = moved;
+			Assert.IsFalse(button.IsEnabled, "Button whose command can't execute, before the move");
+
+			hostA.Content = null;
+			var hostB = new UserControl { Content = moved };
+			Assert.IsFalse(button.IsEnabled, "Button whose command can't execute, after the move");
+			GC.KeepAlive(hostB);
+		}
+
+		[TestMethod]
+		public void When_Local_IsEnabled_Cleared_Then_CanExecute_False_Button_Stays_Disabled()
+		{
+			var button = new Button { Command = new NeverExecutableCommand(), IsEnabled = true };
+			Assert.IsFalse(button.IsEnabled, "Button whose command can't execute, with a local IsEnabled");
+
+			button.ClearValue(Control.IsEnabledProperty);
+			Assert.IsFalse(button.IsEnabled, "Button whose command can't execute, after clearing IsEnabled");
+		}
+
+		private sealed class NeverExecutableCommand : System.Windows.Input.ICommand
+		{
+			public event EventHandler CanExecuteChanged { add { } remove { } }
+
+			public bool CanExecute(object parameter) => false;
+
+			public void Execute(object parameter) { }
+		}
+
+		[TestMethod]
 		public void When_Animating_And_Animation_Is_Done_Then_Returns_Local()
 		{
 			var SUT = new MockDependencyObject();

@@ -432,6 +432,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			return (firstButton, secondButton);
 		}
 
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26613")]
+		public async Task When_Moved_Then_CanExecute_False_Button_Stays_Disabled(bool moveParentPanel)
+		{
+			var hostA = new UserControl { IsEnabled = true };
+			var hostB = new UserControl();
+			var button = new Button { Content = "cmd", Command = new DelegateCommand(canExecute: _ => false) };
+			var panel = new Grid();
+			FrameworkElement moved = moveParentPanel ? panel : button;
+			if (moveParentPanel)
+			{
+				panel.Children.Add(button);
+			}
+
+			hostA.Content = moved;
+			TestServices.WindowHelper.WindowContent = new StackPanel { Children = { hostA, hostB } };
+			await TestServices.WindowHelper.WaitForLoaded(button);
+			Assert.IsFalse(button.IsEnabled, "Button whose command can't execute, before the move");
+
+			hostA.Content = null;
+			hostB.Content = moved;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(button.IsEnabled, "Button whose command can't execute, after the move");
+		}
+
 		public class IsExecutingCommand : ICommand
 		{
 			private readonly bool _synchronousCompletion;
