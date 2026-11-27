@@ -1,5 +1,7 @@
 parameters:
   vmImage: ''
+  # Agent pool for vmImage; empty means the Azure Pipelines hosted pool.
+  vmPoolName: ''
   xCodeRoot: ''
   JobName: ''
   TestRunName: ''
@@ -23,6 +25,8 @@ jobs:
   dependsOn: ${{ parameters.dependsOn }}
   displayName: ${{ parameters.JobDisplayName }}
   pool:
+    ${{ if ne(parameters.vmPoolName, '') }}:
+      name: ${{ parameters.vmPoolName }}
     vmImage: ${{ parameters.vmImage }}
 
   variables:
