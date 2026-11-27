@@ -684,4 +684,57 @@ public class Given_ListView_Issues_Selection
 
 		return null;
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19134")]
+	public async Task When_Child_Of_ListViewItem_Focused_Programmatically_Keeps_Focus()
+	{
+		try
+		{
+			var lv = await HostListViewWithFocusableChildren();
+			var container = (ListViewItem)lv.ContainerFromIndex(0);
+			var button = FindDescendant<Button>(container);
+			var textBox = FindDescendant<TextBox>(container);
+
+			Assert.IsTrue(button.Focus(FocusState.Programmatic));
+			await WindowHelper.WaitForIdle();
+			Assert.AreSame(button, FocusManager.GetFocusedElement(lv.XamlRoot!));
+
+			Assert.IsTrue(textBox.Focus(FocusState.Programmatic));
+			await WindowHelper.WaitForIdle();
+			Assert.AreSame(textBox, FocusManager.GetFocusedElement(lv.XamlRoot!));
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+#if HAS_UNO
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19134")]
+	public async Task When_Child_Of_ListViewItem_Pressed_With_Pointer_Child_Gets_Focus()
+	{
+		try
+		{
+			var lv = await HostListViewWithFocusableChildren();
+			var container = (ListViewItem)lv.ContainerFromIndex(1);
+			var textBox = FindDescendant<TextBox>(container);
+
+			var injector = Windows.UI.Input.Preview.Injection.InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+			mouse.Press(textBox.GetAbsoluteCenter());
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreSame(textBox, FocusManager.GetFocusedElement(lv.XamlRoot!));
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+#endif
 }
