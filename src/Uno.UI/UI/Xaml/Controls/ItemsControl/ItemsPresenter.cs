@@ -21,71 +21,35 @@ public partial class ItemsPresenter : FrameworkElement, IScrollSnapPointsInfo
 
 	internal UIElement? Panel => _itemsPanel;
 
-	public object? Header
-	{
-		get => GetHeaderValue();
-		set => SetHeaderValue(value);
-	}
-
 	private static object? GetHeaderDefaultValue() => null;
 
 	[GeneratedDependencyProperty]
-	public static DependencyProperty HeaderProperty { get; } = CreateHeaderProperty();
-
-	public object? Footer
-	{
-		get => GetFooterValue();
-		set => SetFooterValue(value);
-	}
+	public partial object? Header { get; set; }
 
 	private static object? GetFooterDefaultValue() => null;
 
 	[GeneratedDependencyProperty]
-	public static DependencyProperty FooterProperty { get; } = CreateFooterProperty();
+	public partial object? Footer { get; set; }
 
 	private static DataTemplate? GetHeaderTemplateDefaultValue() => null;
 
-	public DataTemplate? HeaderTemplate
-	{
-		get => GetHeaderTemplateValue();
-		set => SetHeaderTemplateValue(value);
-	}
-
 	[GeneratedDependencyProperty]
-	public static DependencyProperty HeaderTemplateProperty { get; } = CreateHeaderTemplateProperty();
-
-	public DataTemplate? FooterTemplate
-	{
-		get => GetFooterTemplateValue();
-		set => SetFooterTemplateValue(value);
-	}
+	public partial DataTemplate? HeaderTemplate { get; set; }
 
 	private static DataTemplate? GetFooterTemplateDefaultValue() => null;
 
 	[GeneratedDependencyProperty]
-	public static DependencyProperty FooterTemplateProperty { get; } = CreateFooterTemplateProperty();
-
-	public TransitionCollection? HeaderTransitions
-	{
-		get => GetHeaderTransitionsValue();
-		set => SetHeaderTransitionsValue(value);
-	}
+	public partial DataTemplate? FooterTemplate { get; set; }
 
 	private static TransitionCollection GetHeaderTransitionsDefaultValue() => new TransitionCollection();
 
 	[GeneratedDependencyProperty]
-	public static DependencyProperty HeaderTransitionsProperty { get; } = CreateHeaderTransitionsProperty();
-
-	public TransitionCollection? FooterTransitions
-	{
-		get => GetFooterTransitionsValue();
-		set => SetFooterTransitionsValue(value);
-	}
+	public partial TransitionCollection? HeaderTransitions { get; set; }
 
 	private static TransitionCollection GetFooterTransitionsDefaultValue() => new TransitionCollection();
 
 	[GeneratedDependencyProperty]
-	public static DependencyProperty FooterTransitionsProperty { get; } = CreateFooterTransitionsProperty();
+	public partial TransitionCollection? FooterTransitions { get; set; }
 
 	public Thickness Padding
 	{
