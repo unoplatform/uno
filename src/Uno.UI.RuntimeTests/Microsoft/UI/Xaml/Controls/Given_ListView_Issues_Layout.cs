@@ -457,4 +457,79 @@ public class Given_ListView_Issues_Layout
 			}
 		}
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24332")]
+	public async Task When_ScrollIntoView_From_SelectionChanged_Before_First_Layout_Then_List_Stays_Consistent()
+	{
+		var items = Strings(100);
+		ListView list = new()
+		{
+			Width = 300,
+			Height = 400,
+			ItemTemplate = Template("<Border Height='40'><TextBlock Text='{Binding}' /></Border>"),
+		};
+		list.SelectionChanged += (_, _) =>
+		{
+			if (list.SelectedItem is { } selected)
+			{
+				list.ScrollIntoView(selected);
+			}
+		};
+		list.ItemsSource = items;
+		list.SelectedItem = items[60];
+		await Load(list);
+		var sv = GetScrollViewer(list);
+
+		void AssertConsistent(string when)
+		{
+			var panelTop = BoundsIn((FrameworkElement)list.ItemsPanelRoot, list).Y;
+			var realized = Descendants<ListViewItem>(list.ItemsPanelRoot).OrderBy(c => list.IndexFromContainer(c)).ToList();
+			Assert.IsNotEmpty(realized, when);
+			double? previousY = null;
+			int? previousIndex = null;
+			foreach (var c in realized)
+			{
+				int index = list.IndexFromContainer(c);
+				double y = BoundsIn(c, list).Y;
+				if (y - panelTop < -10000)
+				{
+					// WinUI parks the pinned first container far off-screen.
+					continue;
+				}
+
+				Assert.AreEqual(items[index], c.Content, $"{when}: content at {index}");
+				Assert.AreEqual(index * 40, y - panelTop, Tolerance, $"{when}: container {index} sits at its slot");
+				if (previousY is { } py && previousIndex is { } pi)
+				{
+					Assert.AreEqual((index - pi) * 40, y - py, Tolerance, $"{when}: container {index} follows {pi}");
+				}
+
+				previousY = y;
+				previousIndex = index;
+			}
+		}
+
+		AssertConsistent("after load");
+		if (list.ContainerFromIndex(60) is FrameworkElement selectedContainer)
+		{
+			var bounds = BoundsIn(selectedContainer, list);
+			Assert.IsGreaterThanOrEqualTo(-Tolerance, bounds.Y);
+			Assert.IsLessThanOrEqualTo(sv.ViewportHeight + Tolerance, bounds.Bottom);
+		}
+
+		await ChangeViewAndWait(sv, 0);
+		await WindowHelper.WaitForIdle();
+		AssertConsistent("scrolled to top");
+		for (int i = 0; i < 10; i++)
+		{
+			Assert.IsNotNull(list.ContainerFromIndex(i), $"Container {i} is realized");
+		}
+
+		list.SelectedItem = items[59];
+		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitForIdle();
+		Assert.IsNotNull(list.ContainerFromIndex(59));
+		AssertConsistent("after selecting the previous item");
+	}
 }
