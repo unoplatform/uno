@@ -18,7 +18,6 @@ internal sealed class Win32SpeechRecognizerExtension : ISpeechRecognizerExtensio
 	private const string SpeechRecognizerClassId = "Windows.Media.SpeechRecognition.SpeechRecognizer";
 	private const string LanguageClassId = "Windows.Globalization.Language";
 	private const uint MaxAlternates = 5;
-	private const int SPERR_SPEECH_PRIVACY_POLICY_NOT_ACCEPTED = unchecked((int)0x80045509);
 
 	private static readonly Guid IID_ILanguageFactory = new("9b0252ac-0c27-44f8-b792-9793fb66c63e");
 	private static readonly Guid IID_ISpeechRecognizerFactory = new("60c488dd-7fb8-4033-ac70-d046f64818e1");
@@ -96,7 +95,7 @@ internal sealed class Win32SpeechRecognizerExtension : ISpeechRecognizerExtensio
 
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().Warn($"Speech recognition is not available for '{languageTag}': {e.Message}");
+				this.Log().Warn($"Speech recognition is not available for '{languageTag}' (0x{e.HResult:X8}): {e.Message}");
 			}
 		}
 	}
@@ -150,12 +149,6 @@ internal sealed class Win32SpeechRecognizerExtension : ISpeechRecognizerExtensio
 			{
 				Release(result);
 			}
-		}
-		catch (Exception e) when (e.HResult == SPERR_SPEECH_PRIVACY_POLICY_NOT_ACCEPTED)
-		{
-			throw new UnauthorizedAccessException(
-				"Speech recognition requires 'Online speech recognition' to be turned on in Windows Settings > Privacy & security > Speech.",
-				e);
 		}
 		finally
 		{
@@ -323,6 +316,11 @@ internal sealed class Win32SpeechRecognizerExtension : ISpeechRecognizerExtensio
 	private static IReadOnlyList<string> ReadAlternates(nint result)
 	{
 		var alternates = GetPointer(result, Slot_ISpeechRecognitionResult_GetAlternates, MaxAlternates);
+		if (alternates == 0)
+		{
+			return Array.Empty<string>();
+		}
+
 		try
 		{
 			var count = (uint)GetInt32(alternates, Slot_IVectorView_get_Size);

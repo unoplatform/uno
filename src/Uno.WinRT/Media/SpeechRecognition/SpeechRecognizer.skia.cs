@@ -9,6 +9,7 @@ namespace Windows.Media.SpeechRecognition;
 public partial class SpeechRecognizer : IDisposable
 {
 	private ISpeechRecognizerExtension _extension;
+	private bool _disposed;
 
 	private void InitializeSpeechRecognizer()
 	{
@@ -31,6 +32,11 @@ public partial class SpeechRecognizer : IDisposable
 
 	public IAsyncOperation<SpeechRecognitionResult> RecognizeAsync()
 	{
+		if (_disposed)
+		{
+			throw new ObjectDisposedException(nameof(SpeechRecognizer), "The object has been closed.");
+		}
+
 		if (_extension is null)
 		{
 			throw new NotSupportedException("SpeechRecognizer is not available on this platform.");
@@ -59,6 +65,7 @@ public partial class SpeechRecognizer : IDisposable
 
 	public void Dispose()
 	{
+		_disposed = true;
 		if (_extension is not null)
 		{
 			_extension.HypothesisGenerated -= OnExtensionHypothesisGenerated;

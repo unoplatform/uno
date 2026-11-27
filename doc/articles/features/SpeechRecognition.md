@@ -88,7 +88,7 @@ The Win32 host uses the Windows speech engine (`Windows.Media.SpeechRecognition`
 
 * Windows 10 or later is required.
 * The speech language pack for the requested language must be installed (**Settings > Time & language > Speech**).
-* Dictation uses the online speech service: **Online speech recognition** must be turned on in **Settings > Privacy & security > Speech**. Otherwise `RecognizeAsync()` throws an `UnauthorizedAccessException`.
+* Dictation uses the online speech service: **Online speech recognition** must be turned on in **Settings > Privacy & security > Speech**. Otherwise `RecognizeAsync()` fails with HRESULT `0x80045509` (speech privacy policy not accepted), as it does on WinUI.
 * Desktop apps must be allowed to use the microphone (**Settings > Privacy & security > Microphone**).
 * As on WinUI, `HypothesisGenerated` and `StateChanged` are raised on a background thread.
 
