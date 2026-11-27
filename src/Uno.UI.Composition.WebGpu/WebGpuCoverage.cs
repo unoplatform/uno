@@ -101,7 +101,8 @@ internal sealed unsafe partial class WebGpuCoverage
 		else
 		{
 			if (owned is null && !_d.Atlas.Recurring(key, _d.FrameSeq)) { return false; }
-			slot = AddStandaloneSlot(key, w, h, ox, oy, _d.ColorFormat);
+			if (AddStandaloneSlot(key, w, h, ox, oy, _d.ColorFormat) is not { } added) { return false; }
+			slot = added;
 			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
 			else { _d.Atlas.HoldForCache(slot, _d.FrameSeq); }
 			AddBake(BatchFor(slot.Owner), slot.X, slot.Y, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - p.Offset, Vector2.One, p.EvenOdd);
@@ -129,7 +130,7 @@ internal sealed unsafe partial class WebGpuCoverage
 		{
 			var pos = new (int X, int Y)[n];
 			PackOwn(rects, pos, out var tw, out var th);
-			var page = _d.Atlas.StandalonePage(tw, th, _d.ColorFormat, MaskUsage);
+			if (_d.Atlas.StandalonePage(tw, th, _d.ColorFormat, MaskUsage) is not { } page) { return ClipEverything; }
 			for (var i = 0; i < n; i++) { slots[i] = _d.Atlas.Place(page, pos[i].X, pos[i].Y, rects[i].W, rects[i].H); }
 		}
 		var batch = BatchFor(slots[0].Owner);
@@ -147,14 +148,23 @@ internal sealed unsafe partial class WebGpuCoverage
 		return new MaskSet { View = batch.Target, Entries = entries };
 	}
 
+	// A clip whose masks have no texture to bake into (out of GPU memory, or the device was lost) hides what it clips,
+	// rather than drawing it unclipped: one entry keeping only what lies outside a rect larger than any target.
+	private static MaskSet ClipEverything => new()
+	{
+		Entries = new[] { new ClipEntry { M = Matrix3x2.Identity, Rect = new Vector4(-1e7f, -1e7f, 1e7f, 1e7f), Exclude = true } },
+	};
+
 	// Masks are baked into and sampled from; in the device's swapchain format, which the resolve pipelines target.
 	internal const TextureUsage MaskUsage = TextureUsage.RenderAttachment | TextureUsage.TextureBinding;
 
-	// A slot for a mask nobody looks up: on a shared page when it fits, else a standalone one.
+	// A slot for a mask nobody looks up: on a shared page when it fits, else a standalone one. Null when no page could
+	// be created.
 	private WebGpuMaskAtlas.Slot KeylessSlot(int w, int h, OwnedResources owned)
 	{
-		var slot = _d.Atlas.AllocateKeyless(w, h) ?? _d.Atlas.Place(_d.Atlas.StandalonePage(w, h, _d.ColorFormat, MaskUsage), 0, 0, w, h);
-		HoldKeyless(slot, owned);
+		var slot = _d.Atlas.AllocateKeyless(w, h)
+			?? (_d.Atlas.StandalonePage(w, h, _d.ColorFormat, MaskUsage) is { } page ? _d.Atlas.Place(page, 0, 0, w, h) : null);
+		if (slot is not null) { HoldKeyless(slot, owned); }
 		return slot;
 	}
 
@@ -196,7 +206,7 @@ internal sealed unsafe partial class WebGpuCoverage
 		}
 
 		var origin = new Vector2((ox + 1) / scale.X, (oy + 1) / scale.Y) - pf.Offset;
-		var slot = KeylessSlot(w, h, owned);
+		if (KeylessSlot(w, h, owned) is not { } slot) { return false; }
 		var page = slot.Owner;
 		AddBake(BatchFor(page), slot.X, slot.Y, w, h, shape.Edges, origin, scale, pf.EvenOdd);
 		var view = page.View;

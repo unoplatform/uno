@@ -68,15 +68,16 @@ internal sealed unsafe partial class WebGpuEffects
 		{
 			_cov.AddBake(sheet.Bake, sx, sy, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - sh.Offset, Vector2.One, sh.EvenOdd);
 			ShadowSlotsBaked++;
-			if (!(keyed && _d.Atlas.Recurring(key, _d.FrameSeq)))
+			// The slot's texels on the top level, plus the one a bilinear tap at its far edge reads (the slot's gutter).
+			int step = 1 << BlurLevels(sigma);
+			int tw = (w + step - 1) / step + 1, th = (h + step - 1) / step + 1;
+			// Drawn from the sheet unless it is static and gets an entry of its own (none when no page could be created).
+			if (!(keyed && _d.Atlas.Recurring(key, _d.FrameSeq))
+				|| _cov.AddStandaloneSlot(key, w, h, ox, oy, WebGpuDevice.DefaultColorFormat, tw, th, TextureUsage.TextureBinding | TextureUsage.CopyDst) is not { } slot)
 			{
 				uv = new Vector4(sx, sy, sx + w, sy + h) / WebGpuCoverage.SheetSize;
 				return sheet.Blurred;
 			}
-			// The slot's texels on the top level, plus the one a bilinear tap at its far edge reads (the slot's gutter).
-			int step = 1 << BlurLevels(sigma);
-			int tw = (w + step - 1) / step + 1, th = (h + step - 1) / step + 1;
-			var slot = _cov.AddStandaloneSlot(key, w, h, ox, oy, WebGpuDevice.DefaultColorFormat, tw, th, TextureUsage.TextureBinding | TextureUsage.CopyDst);
 			slot.Uv = new Vector4(0f, 0f, (float)w / step / slot.Owner.W, (float)h / step / slot.Owner.H);
 			_d.Atlas.HoldForCache(slot, _d.FrameSeq);
 			_pendingCopies.Add(((nint)sheet.Blurred, sx / step, sy / step, (nint)slot.Owner.Texture, tw, th));

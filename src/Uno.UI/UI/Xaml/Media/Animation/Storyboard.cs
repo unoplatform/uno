@@ -292,6 +292,75 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 
+		/// <summary>
+		/// Moves a storyboard that ends to its fill values, computing them again, and stops one that never ends.
+		/// </summary>
+		// MUX Reference: CStoryboard::Complete (storyboard.cpp)
+		internal void Complete()
+		{
+			if (HasFiniteExpiration(this))
+			{
+				EnsureKeyFrameThemeResources(this);
+				SkipToFill();
+			}
+			else
+			{
+				Stop();
+			}
+		}
+
+		// Like Begin, resolve the key frames for their target's theme before applying the end values. SkipToFill
+		// can't do it: it also refills the storyboard during a theme walk, when the key frames already hold the new theme.
+		private static void EnsureKeyFrameThemeResources(Storyboard storyboard)
+		{
+			var children = storyboard.Children;
+			for (var i = 0; i < children.Count; i++)
+			{
+				switch (children[i])
+				{
+					case ObjectAnimationUsingKeyFrames objectAnimation:
+						objectAnimation.EnsureKeyFrameThemeResources();
+						break;
+					case Storyboard child:
+						EnsureKeyFrameThemeResources(child);
+						break;
+				}
+			}
+		}
+
+		private static bool HasFiniteExpiration(Timeline timeline)
+		{
+			switch (timeline.RepeatBehavior.Type)
+			{
+				case RepeatBehaviorType.Forever:
+					return false;
+				case RepeatBehaviorType.Duration:
+					return true;
+			}
+
+			switch (timeline.Duration.Type)
+			{
+				case DurationType.Forever:
+					return false;
+				case DurationType.TimeSpan:
+					return true;
+			}
+
+			// An automatic duration ends with the last child.
+			if (timeline is Storyboard storyboard)
+			{
+				for (var i = 0; i < storyboard.Children.Count; i++)
+				{
+					if (!HasFiniteExpiration(storyboard.Children[i]))
+					{
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
 		internal void Deactivate()
 		{
 			State = TimelineState.Stopped;

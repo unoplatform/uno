@@ -2602,6 +2602,130 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+		// WinUI draws an unset highlighter brush with the theme's TextControlHighlighterBackground and
+		// TextControlHighlighterForeground: yellow and black in both the light and the dark theme.
+		[TestMethod]
+		public async Task When_TextHighlighter_Has_No_Brushes()
+		{
+			var (screenshot, highlighted, unhighlighted) = await RenderHighlighter(new TextHighlighter());
+
+			ImageAssert.HasColorInRectangle(screenshot, highlighted, Colors.Yellow, tolerance: 5);
+			ImageAssert.HasColorInRectangle(screenshot, highlighted, Colors.Black, tolerance: 5);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot, highlighted, Colors.Red, tolerance: 5);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot, unhighlighted, Colors.Yellow, tolerance: 5);
+			ImageAssert.HasColorInRectangle(screenshot, unhighlighted, Colors.Red, tolerance: 5);
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+		public async Task When_TextHighlighter_Has_No_Brushes_Dark_Theme()
+		{
+			using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+			var (screenshot, highlighted, unhighlighted) = await RenderHighlighter(new TextHighlighter());
+
+			ImageAssert.HasColorInRectangle(screenshot, highlighted, Colors.Yellow, tolerance: 5);
+			ImageAssert.HasColorInRectangle(screenshot, highlighted, Colors.Black, tolerance: 5);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot, highlighted, Colors.Red, tolerance: 5);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot, unhighlighted, Colors.Yellow, tolerance: 5);
+		}
+
+		[TestMethod]
+		public async Task When_TextHighlighter_Has_Only_Foreground()
+		{
+			var (screenshot, highlighted, unhighlighted) = await RenderHighlighter(new TextHighlighter { Foreground = new SolidColorBrush(Colors.Blue) });
+
+			ImageAssert.HasColorInRectangle(screenshot, highlighted, Colors.Yellow, tolerance: 5);
+			ImageAssert.HasColorInRectangle(screenshot, highlighted, Colors.Blue, tolerance: 5);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot, highlighted, Colors.Red, tolerance: 5);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot, unhighlighted, Colors.Yellow, tolerance: 5);
+		}
+
+		// The default foreground comes from the theme resource, not a fixed black: override it to see which is used.
+		[TestMethod]
+		public async Task When_TextHighlighter_Has_Only_Background()
+		{
+			var resources = Application.Current.Resources;
+			resources["TextControlHighlighterForeground"] = new SolidColorBrush(Colors.Blue);
+			try
+			{
+				var (screenshot, highlighted, unhighlighted) = await RenderHighlighter(new TextHighlighter { Background = new SolidColorBrush(Colors.Lime) });
+
+				ImageAssert.HasColorInRectangle(screenshot, highlighted, Colors.Lime, tolerance: 5);
+				ImageAssert.HasColorInRectangle(screenshot, highlighted, Colors.Blue, tolerance: 5);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot, highlighted, Colors.Red, tolerance: 5);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot, unhighlighted, Colors.Lime, tolerance: 5);
+			}
+			finally
+			{
+				resources.Remove("TextControlHighlighterForeground");
+			}
+		}
+
+		// A highlighter that only recolors text gets the default background; a transparent one opts out of it.
+		[TestMethod]
+		public async Task When_TextHighlighter_Has_Transparent_Background()
+		{
+			var (screenshot, highlighted, unhighlighted) = await RenderHighlighter(new TextHighlighter
+			{
+				Background = new SolidColorBrush(Colors.Transparent),
+				Foreground = new SolidColorBrush(Colors.Blue),
+			});
+
+			ImageAssert.HasColorInRectangle(screenshot, highlighted, Colors.Blue, tolerance: 5);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot, highlighted, Colors.Yellow, tolerance: 5);
+			ImageAssert.DoesNotHaveColorInRectangle(screenshot, highlighted, Colors.Red, tolerance: 5);
+			Assert.AreEqual(screenshot.GetPixel(unhighlighted.Right - 1, unhighlighted.Bottom - 1), screenshot.GetPixel(highlighted.Left, highlighted.Bottom - 1), "The highlighted range keeps the plain background.");
+		}
+
+		// WinUI looks the defaults up through the application's resources, so an app can restyle them.
+		[TestMethod]
+		public async Task When_TextHighlighter_Default_Brushes_Are_Overridden()
+		{
+			var resources = Application.Current.Resources;
+			resources["TextControlHighlighterBackground"] = new SolidColorBrush(Colors.Lime);
+			resources["TextControlHighlighterForeground"] = new SolidColorBrush(Colors.Blue);
+			try
+			{
+				var (screenshot, highlighted, unhighlighted) = await RenderHighlighter(new TextHighlighter());
+
+				ImageAssert.HasColorInRectangle(screenshot, highlighted, Colors.Lime, tolerance: 5);
+				ImageAssert.HasColorInRectangle(screenshot, highlighted, Colors.Blue, tolerance: 5);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot, highlighted, Colors.Yellow, tolerance: 5);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot, highlighted, Colors.Red, tolerance: 5);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot, unhighlighted, Colors.Lime, tolerance: 5);
+			}
+			finally
+			{
+				resources.Remove("TextControlHighlighterBackground");
+				resources.Remove("TextControlHighlighterForeground");
+			}
+		}
+
+		// "MMMMMMMMMM MMMMMMMMMM" in red with the first word highlighted. Returns the screenshot, a rectangle
+		// inside the highlighted word and one inside the other word.
+		private static async Task<(RawBitmap screenshot, Rectangle highlighted, Rectangle unhighlighted)> RenderHighlighter(TextHighlighter highlighter)
+		{
+			var SUT = new TextBlock
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				FontSize = 24,
+				Text = "MMMMMMMMMM MMMMMMMMMM",
+				Foreground = new SolidColorBrush(Colors.Red),
+			};
+			highlighter.Ranges.Add(new TextRange { StartIndex = 0, Length = 10 });
+			SUT.TextHighlighters.Add(highlighter);
+
+			await UITestHelper.Load(SUT);
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+
+			return (
+				screenshot,
+				new Rectangle(0, 0, screenshot.Width / 4, screenshot.Height),
+				new Rectangle(screenshot.Width * 3 / 4, 0, screenshot.Width / 4, screenshot.Height));
+		}
+
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24904")]
 		[DataRow(FlowDirection.LeftToRight, null, "abc", "L")]
@@ -2673,7 +2797,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.LineStackingStrategy = LineStackingStrategy.BlockLineHeight;
 
 			await LoadOnWhite(SUT);
-			var screenshot = await UITestHelper.ScreenShot(SUT);
+			var screenshot = await ScreenShotWithRedInk(SUT);
 			Assert.IsTrue(screenshot.Height >= 2 * lineHeight, $"Expected the text to wrap, height {screenshot.Height}");
 
 			var first = GetRedInk(screenshot, 0, lineHeight);
@@ -2766,14 +2890,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// expectedSide: "L" or "R" for the half the ink sits in, "C" for ink straddling the middle.
 		private static async Task AssertInkSide(FrameworkElement element, string expectedSide, string context)
 		{
-			await UITestHelper.WaitForIdle();
-			var screenshot = await UITestHelper.ScreenShot(element);
+			var screenshot = await ScreenShotWithRedInk(element);
 			var (left, right) = GetRedInk(screenshot);
 			var middle = screenshot.Width / 2.0;
 			var message = $"{context}: ink [{left}, {right}] in {screenshot.Width}x{screenshot.Height} ({element.ActualWidth}x{element.ActualHeight})";
 			Assert.IsTrue(right >= 0, "No red ink: missing font or blank render. " + message);
 			var actualSide = right < middle ? "L" : left > middle ? "R" : "C";
 			Assert.AreEqual(expectedSide, actualSide, message);
+		}
+
+		// On WebAssembly a fallback font (e.g. Arabic) is downloaded on first use, and the text draws nothing until it arrives.
+		private static async Task<RawBitmap> ScreenShotWithRedInk(FrameworkElement element)
+		{
+			await UITestHelper.WaitForIdle();
+			var screenshot = await UITestHelper.ScreenShot(element);
+			var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+			while (GetRedInk(screenshot).right < 0 && stopwatch.ElapsedMilliseconds < 5000)
+			{
+				await UITestHelper.WaitForRender();
+				screenshot = await UITestHelper.ScreenShot(element);
+			}
+			return screenshot;
 		}
 
 		private static (int left, int right) GetRedInk(RawBitmap bitmap, int top = 0, int bottom = int.MaxValue)

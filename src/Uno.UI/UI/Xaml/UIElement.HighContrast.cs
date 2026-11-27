@@ -14,20 +14,14 @@ public partial class UIElement
 
 	// WinUI default: Application. The property is inherited so subtree overrides match the
 	// UIElement metadata contract in the WinUI XamlOM model.
+	/// <summary>
+	/// Gets or sets a value that indicates whether the framework automatically adjusts the element's visual properties when high contrast themes are enabled.
+	/// </summary>
 	[GeneratedDependencyProperty(
 		DefaultValue = ElementHighContrastAdjustment.Application,
 		Options = FrameworkPropertyMetadataOptions.Inherits,
 		ChangedCallback = true)]
-	public static DependencyProperty HighContrastAdjustmentProperty { get; } = CreateHighContrastAdjustmentProperty();
-
-	/// <summary>
-	/// Gets or sets a value that indicates whether the framework automatically adjusts the element's visual properties when high contrast themes are enabled.
-	/// </summary>
-	public ElementHighContrastAdjustment HighContrastAdjustment
-	{
-		get => GetHighContrastAdjustmentValue();
-		set => SetHighContrastAdjustmentValue(value);
-	}
+	public partial ElementHighContrastAdjustment HighContrastAdjustment { get; set; }
 
 	internal bool IsHighContrastAdjustmentEnabled() =>
 		HighContrastAdjustment == ElementHighContrastAdjustment.Auto

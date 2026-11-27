@@ -976,4 +976,101 @@ public class Given_BindingExpression
 
 		return target;
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/7174")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21402")]
+	public async Task When_XBind_TwoWay_Enum_Converter_Receives_Declared_Types()
+	{
+		var root = new When_XBind_TwoWay_Enum_Converter();
+		await UITestHelper.Load(root);
+
+		Assert.AreEqual("Hello", root.tbEnum.Text);
+		Assert.AreEqual(typeof(string), root.EnumConverter.LastConvertTargetType);
+
+		await CommitTextOnLostFocus(root, root.tbEnum, "World");
+
+		Assert.AreEqual(typeof(XBindTestEnum), root.EnumConverter.LastConvertBackTargetType);
+		Assert.AreEqual(XBindTestEnum.World, root.EnumValue);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21402")]
+	public async Task When_XBind_TwoWay_Nullable_Enum_Converter_Receives_Declared_Types()
+	{
+		var root = new When_XBind_TwoWay_Enum_Converter();
+		await UITestHelper.Load(root);
+
+		Assert.AreEqual("Hello", root.tbNullableEnum.Text);
+		Assert.AreEqual(typeof(string), root.NullableEnumConverter.LastConvertTargetType);
+
+		await CommitTextOnLostFocus(root, root.tbNullableEnum, "World");
+
+		Assert.AreEqual(typeof(XBindTestEnum?), root.NullableEnumConverter.LastConvertBackTargetType);
+		Assert.AreEqual(XBindTestEnum.World, root.NullableEnumValue);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21402")]
+	public async Task When_XamlReader_Binding_TwoWay_Enum_Converter_RoundTrips()
+	{
+		// Only the round-trip is asserted: ConvertBack's targetType for classic {Binding} is Object on WinUI.
+		var xaml = """
+			<Page xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				  xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data">
+				<Page.Resources>
+					<local:XBindEnumToStringConverter x:Key="EnumConverter" />
+				</Page.Resources>
+				<TextBox x:Name="tbEnum"
+						 Text="{Binding EnumValue, Mode=TwoWay, Converter={StaticResource EnumConverter}}" />
+			</Page>
+			""";
+
+		var page = (Page)XamlReader.Load(xaml);
+		var vm = new XamlReaderEnumBindingTestViewModel();
+		page.DataContext = vm;
+		await UITestHelper.Load(page);
+
+		var tbEnum = (TextBox)page.FindName("tbEnum");
+		Assert.AreEqual("Hello", tbEnum.Text);
+
+		tbEnum.Text = "World";
+		tbEnum.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(XBindTestEnum.World, vm.EnumValue);
+	}
+
+	// x:Bind TwoWay on TextBox.Text commits on LostFocus; GetBindingExpression returns null for x:Bind on WinUI.
+	private static async Task CommitTextOnLostFocus(When_XBind_TwoWay_Enum_Converter root, TextBox textBox, string text)
+	{
+		textBox.Focus(FocusState.Programmatic);
+		textBox.Text = text;
+		root.dummyButton.Focus(FocusState.Programmatic);
+		await TestServices.WindowHelper.WaitForIdle();
+	}
+}
+
+public sealed class XamlReaderEnumBindingTestViewModel : System.ComponentModel.INotifyPropertyChanged
+{
+	private XBindTestEnum _enumValue = XBindTestEnum.Hello;
+
+	public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+
+	public XBindTestEnum EnumValue
+	{
+		get => _enumValue;
+		set
+		{
+			if (_enumValue != value)
+			{
+				_enumValue = value;
+				PropertyChanged?.Invoke(this, new(nameof(EnumValue)));
+			}
+		}
+	}
 }

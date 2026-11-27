@@ -330,6 +330,96 @@ public class Given_Binding
 	}
 
 	[TestMethod]
+	public async Task When_XBind_TwoWay_Converter_Passes_Source_Type()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml", """
+	<Page
+		x:Class="TestRepro.MainPage"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:local="using:TestRepro">
+
+		<Page.Resources>
+			<local:EnumConverter x:Key="EnumConverter" />
+		</Page.Resources>
+		<StackPanel>
+			<TextBox Text="{x:Bind ViewModel.Mode, Mode=TwoWay, Converter={StaticResource EnumConverter}}" />
+			<TextBox Text="{x:Bind ViewModel.NullableMode, Mode=TwoWay, Converter={StaticResource EnumConverter}}" />
+			<TextBox Text="{x:Bind ViewModel.Format(ViewModel.Mode), BindBack=ViewModel.SetMode, Mode=TwoWay, Converter={StaticResource EnumConverter}}" />
+			<TextBox Text="{x:Bind ViewModel.Mode, Mode=OneWay, Converter={StaticResource EnumConverter}}" />
+			<TextBox Text="{x:Bind ViewModel.Name, Mode=TwoWay}" />
+			<ContentControl>
+				<ContentControl.ContentTemplate>
+					<DataTemplate x:DataType="local:VM">
+						<TextBox Text="{x:Bind Mode, Mode=TwoWay, Converter={StaticResource EnumConverter}}" />
+					</DataTemplate>
+				</ContentControl.ContentTemplate>
+			</ContentControl>
+		</StackPanel>
+	</Page>
+	"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using System;
+					using Microsoft.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml.Data;
+
+					namespace TestRepro
+					{
+						public enum MyMode
+						{
+							First,
+							Second,
+						}
+
+						public class VM
+						{
+							public MyMode Mode { get; set; }
+
+							public MyMode? NullableMode { get; set; }
+
+							public string Name { get; set; }
+
+							public string Format(MyMode mode) => mode.ToString();
+
+							public void SetMode(MyMode mode) => Mode = mode;
+						}
+
+						public class EnumConverter : IValueConverter
+						{
+							public object Convert(object value, Type targetType, object parameter, string language) => value?.ToString();
+
+							public object ConvertBack(object value, Type targetType, object parameter, string language) => Enum.Parse(Nullable.GetUnderlyingType(targetType) ?? targetType, (string)value);
+						}
+
+						public sealed partial class MainPage : Page
+						{
+							public VM ViewModel { get; set; }
+
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
 	public async Task When_XBind_On_Non_DependencyObject_Property()
 	{
 		var xamlFiles = new[]

@@ -177,6 +177,56 @@ public class Given_SplitView
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26672")]
+	[DataRow(SplitViewPanePlacement.Left, false, false)]
+	[DataRow(SplitViewPanePlacement.Right, false, false)]
+	[DataRow(SplitViewPanePlacement.Left, true, false)]
+	[DataRow(SplitViewPanePlacement.Right, true, false)]
+	[DataRow(SplitViewPanePlacement.Left, false, true)]
+	[DataRow(SplitViewPanePlacement.Right, false, true)]
+	[DataRow(SplitViewPanePlacement.Left, true, true)]
+	[DataRow(SplitViewPanePlacement.Right, true, true)]
+	public async Task When_Pane_Length_Changes_While_Closed_Compact_Compact_Strip_Follows(SplitViewPanePlacement placement, bool changeCompactPaneLength, bool useControlsResourcesStyle)
+	{
+		var sut = CreateColoredSplitView(SplitViewDisplayMode.CompactOverlay, placement, useControlsResourcesStyle);
+		if (changeCompactPaneLength)
+		{
+			sut.CompactPaneLength = TestCompactPaneLength / 2;
+		}
+		else
+		{
+			// A NavigationView caps its open pane length to its width, so a narrow one can drop it to 0.
+			sut.OpenPaneLength = 0;
+		}
+
+		await UITestHelper.Load(sut);
+		await WaitForPaneAnimationsToSettle(sut);
+
+		sut.CompactPaneLength = TestCompactPaneLength;
+		sut.OpenPaneLength = TestOpenPaneLength;
+		await UITestHelper.WaitForIdle();
+
+		var paneClipTransform = (CompositeTransform)((RectangleGeometry)sut.GetPart("PaneClipRectangle")).Transform;
+		var expectedClipTranslateX = placement == SplitViewPanePlacement.Left
+			? TestCompactPaneLength - TestOpenPaneLength
+			: TestOpenPaneLength - TestCompactPaneLength;
+		await UITestHelper.WaitFor(() => paneClipTransform.TranslateX == expectedClipTranslateX, message: "The pane clip should follow the new pane lengths.");
+
+		var screenshot = await UITestHelper.ScreenShot(sut);
+		// Inside the compact strip, near its inner edge: the part a stale (narrower) strip leaves out.
+		var stripX = placement == SplitViewPanePlacement.Left
+			? TestCompactPaneLength - 5
+			: SplitViewWidth - TestCompactPaneLength + 5;
+		var contentX = placement == SplitViewPanePlacement.Left
+			? TestCompactPaneLength + 20
+			: SplitViewWidth - TestCompactPaneLength - 20;
+
+		ImageAssert.HasColorAt(screenshot, (float)stripX, (float)(SplitViewHeight / 2), Colors.Red, tolerance: 5);
+		ImageAssert.HasColorAt(screenshot, (float)contentX, (float)(SplitViewHeight / 2), Colors.Blue, tolerance: 5);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	[DataRow(false)]
 	[DataRow(true)]
 	public async Task When_Open_Overlay_Switches_To_Inline_Content_Moves_Beside_Pane(bool useControlsResourcesStyle)

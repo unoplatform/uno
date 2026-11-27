@@ -421,7 +421,7 @@ internal sealed unsafe partial class WebGpuFrame
 	/// page's and the control's, each an opaque fill of the whole window -- are the ordinary case, and each one of
 	/// them costs a whole surface of fill rate.
 	/// </summary>
-	private static void CullOccluded(List<DrawOp> ops, in Vector4 bound)
+	internal static void CullOccluded(List<DrawOp> ops, in Vector4 bound)
 	{
 		var cover = default(Vector4);
 		float coverArea = 0f;

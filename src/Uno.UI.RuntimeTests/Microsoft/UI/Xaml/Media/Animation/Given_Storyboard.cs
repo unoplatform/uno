@@ -50,6 +50,52 @@ public class Given_Storyboard
 	}
 
 	[TestMethod]
+	[DataRow(FillBehavior.HoldEnd)]
+	[DataRow(FillBehavior.Stop)]
+	public async Task When_SkipToFill_Running_Object_Animation_Completes(FillBehavior fillBehavior)
+	{
+		var red = new SolidColorBrush(Microsoft.UI.Colors.Red);
+		var target = new ContentControl { Content = "Target" };
+		await UITestHelper.Load(target);
+		var originalForeground = target.Foreground;
+
+		var animation = new ObjectAnimationUsingKeyFrames
+		{
+			FillBehavior = fillBehavior,
+			KeyFrames = { new DiscreteObjectKeyFrame { KeyTime = TimeSpan.FromSeconds(10), Value = red } },
+		};
+		Storyboard.SetTarget(animation, target);
+		Storyboard.SetTargetProperty(animation, "Foreground");
+		var storyboard = new Storyboard { Children = { animation } };
+		var completed = false;
+		storyboard.Completed += (s, e) => completed = true;
+
+		try
+		{
+			storyboard.Begin();
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsFalse(completed);
+
+			storyboard.SkipToFill();
+
+			await TestServices.WindowHelper.WaitFor(() => completed, message: "Skipping a running storyboard to its fill should complete it.");
+			if (fillBehavior == FillBehavior.HoldEnd)
+			{
+				Assert.AreSame(red, target.Foreground);
+				Assert.AreEqual(ClockState.Filling, storyboard.GetCurrentState());
+			}
+			else
+			{
+				Assert.AreSame(originalForeground, target.Foreground, "An animation that stops at its end should release its value.");
+			}
+		}
+		finally
+		{
+			storyboard.Stop();
+		}
+	}
+
+	[TestMethod]
 	public async Task When_Empty_Storyboard_Completes()
 	{
 		var storyboard = new Storyboard();
