@@ -121,10 +121,10 @@ namespace TestRepro
 								global::Microsoft.UI.Xaml.Controls.TextBox.TextProperty,
 								new Microsoft.UI.Xaml.Data.Binding()
 								{
-									Mode = global::Microsoft.UI.Xaml.Data.BindingMode.TwoWay,
+									Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
 									Converter = (global::Microsoft.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("EnumConverter", typeof(global::Microsoft.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
 								}
-									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.Format(ViewModel.Mode)*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_3(___tctx, out var bindResult3) ? (true, bindResult3) : (false, default)) : (false, default), (___tctx, __value) => ViewModel.SetMode((global::TestRepro.MyMode)__value), typeof(global::TestRepro.MyMode) , new [] {"ViewModel", "ViewModel.Mode"}))
+									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.Mode*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_3(___tctx, out var bindResult3) ? (true, bindResult3) : (false, default)) : (false, default), null , new [] {"ViewModel.Mode"}))
 							);
 							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
@@ -146,34 +146,9 @@ namespace TestRepro
 								global::Microsoft.UI.Xaml.Controls.TextBox.TextProperty,
 								new Microsoft.UI.Xaml.Data.Binding()
 								{
-									Mode = global::Microsoft.UI.Xaml.Data.BindingMode.OneWay,
-									Converter = (global::Microsoft.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("EnumConverter", typeof(global::Microsoft.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
-								}
-									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.Mode*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_4(___tctx, out var bindResult4) ? (true, bindResult4) : (false, default)) : (false, default), null , new [] {"ViewModel.Mode"}))
-							);
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
-							__p1.CreationComplete();
-							}
-							))
-						)
-						,
-						global::MyProject.GlobalStaticResources.__PreserveProperties(
-							new global::Microsoft.UI.Xaml.Controls.TextBox
-							{
-								IsParsing = true,
-								// Source MainPage.xaml (Line 15:4)
-							}
-							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
-							{
-							/* _isTopLevelDictionary:False */
-							__that._component_4 = __p1;
-							global::Microsoft.UI.Xaml.Data.BindingOperations.SetBinding(__p1,
-								global::Microsoft.UI.Xaml.Controls.TextBox.TextProperty,
-								new Microsoft.UI.Xaml.Data.Binding()
-								{
 									Mode = global::Microsoft.UI.Xaml.Data.BindingMode.TwoWay,
 								}
-									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.Name*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_5(___tctx, out var bindResult5) ? (true, bindResult5) : (false, default)) : (false, default), (___ctx, __value) => { if(___ctx is global::TestRepro.MainPage ___tctx) TrySetInstance_xBind_5(___tctx, __value); } , new [] {"ViewModel.Name"}))
+									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.Name*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_4(___tctx, out var bindResult4) ? (true, bindResult4) : (false, default)) : (false, default), (___ctx, __value) => { if(___ctx is global::TestRepro.MainPage ___tctx) TrySetInstance_xBind_4(___tctx, __value); } , new [] {"ViewModel.Name"}))
 							);
 							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
@@ -186,10 +161,10 @@ namespace TestRepro
 							{
 								IsParsing = true,
 								ContentTemplate = 								global::MyProject.GlobalStaticResources.__PreserveProperties(
-									global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(this, Build_PagΞ0_StaPanΞ5_ConCon_ConTemΞ0_DatTem)
+									global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(this, Build_PagΞ0_StaPanΞ4_ConCon_ConTemΞ0_DatTem)
 								)
 								,
-								// Source MainPage.xaml (Line 16:4)
+								// Source MainPage.xaml (Line 15:4)
 							}
 							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 							{
@@ -234,10 +209,10 @@ namespace TestRepro
 			((global::Microsoft.UI.Xaml.FrameworkElement)this).Unloaded += __StopTracking;
 		}
 		partial void OnInitializeCompleted();
-		private static _View Build_PagΞ0_StaPanΞ5_ConCon_ConTemΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
+		private static _View Build_PagΞ0_StaPanΞ4_ConCon_ConTemΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			
-			return new __MainPage_6223b07b3d418584d0a26d35f5e25e2c.__PagΞ0_StaPanΞ5_ConCon_ConTemΞ0_DatTem().Build(__owner, __settings);
+			return new __MainPage_6223b07b3d418584d0a26d35f5e25e2c.__PagΞ0_StaPanΞ4_ConCon_ConTemΞ0_DatTem().Build(__owner, __settings);
 		}
 
 		private void __UpdateBindingsAndResources(global::Microsoft.UI.Xaml.FrameworkElement s, object e)
@@ -259,7 +234,7 @@ namespace TestRepro
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-			public class __PagΞ0_StaPanΞ5_ConCon_ConTemΞ0_DatTem
+			public class __PagΞ0_StaPanΞ4_ConCon_ConTemΞ0_DatTem
 			{
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 				private const string __baseUri_prefix_MainPage_6223b07b3d418584d0a26d35f5e25e2c = "ms-appx:///TestProject/";
@@ -277,7 +252,7 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.Controls.TextBox
 						{
 							IsParsing = true,
-							// Source MainPage.xaml (Line 19:7)
+							// Source MainPage.xaml (Line 18:7)
 						}
 						.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 						{
@@ -291,7 +266,7 @@ namespace TestRepro
 								Mode = global::Microsoft.UI.Xaml.Data.BindingMode.TwoWay,
 								Converter = (global::Microsoft.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("EnumConverter", typeof(global::Microsoft.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
 							}
-								.BindingApply(___b => /*defaultBindModeOneTime*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is global::TestRepro.VM ___tctx ? (TryGetInstance_xBind_6(___tctx, out var bindResult6) ? (true, bindResult6) : (false, default)) : (false, default), (___ctx, __value) => { if(___ctx is global::TestRepro.VM ___tctx) { TrySetInstance_xBind_6(___tctx, __value); } }, typeof(global::TestRepro.MyMode) , new [] {"Mode"}))
+								.BindingApply(___b => /*defaultBindModeOneTime*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is global::TestRepro.VM ___tctx ? (TryGetInstance_xBind_5(___tctx, out var bindResult5) ? (true, bindResult5) : (false, default)) : (false, default), (___ctx, __value) => { if(___ctx is global::TestRepro.VM ___tctx) { TrySetInstance_xBind_5(___tctx, __value); } }, typeof(global::TestRepro.MyMode) , new [] {"Mode"}))
 						);
 						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 						__p1.CreationComplete();
@@ -332,13 +307,13 @@ namespace TestRepro
 					_component_0.SuspendXBind();
 				}
 
-				private static bool TryGetInstance_xBind_6(global::TestRepro.VM ___tctx, out object o)
+				private static bool TryGetInstance_xBind_5(global::TestRepro.VM ___tctx, out object o)
 				{
 					o = null;
 					o = ___tctx.Mode;
 					return true;
 				}
-				private static bool TrySetInstance_xBind_6(global::TestRepro.VM ___tctx, object __value)
+				private static bool TrySetInstance_xBind_5(global::TestRepro.VM ___tctx, object __value)
 				{
 					___tctx.Mode = (global::TestRepro.MyMode)global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(global::TestRepro.MyMode), __value);
 					return true;
@@ -368,12 +343,6 @@ namespace TestRepro
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.TextBox)_component_3_Holder.Instance;
 			set => _component_3_Holder.Instance = value;
-		}
-		private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_4_Holder = new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
-		private global::Microsoft.UI.Xaml.Controls.TextBox _component_4
-		{
-			get => (global::Microsoft.UI.Xaml.Controls.TextBox)_component_4_Holder.Instance;
-			set => _component_4_Holder.Instance = value;
 		}
 		private interface IMainPage_Bindings
 		{
@@ -409,7 +378,6 @@ namespace TestRepro
 				owner._component_1.ApplyXBind();
 				owner._component_2.ApplyXBind();
 				owner._component_3.ApplyXBind();
-				owner._component_4.ApplyXBind();
 			}
 			void IMainPage_Bindings.UpdateResources()
 			{
@@ -418,7 +386,6 @@ namespace TestRepro
 				owner._component_1.UpdateResourceBindings();
 				owner._component_2.UpdateResourceBindings();
 				owner._component_3.UpdateResourceBindings();
-				owner._component_4.UpdateResourceBindings();
 			}
 			void IMainPage_Bindings.StopTracking()
 			{
@@ -427,7 +394,6 @@ namespace TestRepro
 				owner._component_1.SuspendXBind();
 				owner._component_2.SuspendXBind();
 				owner._component_3.SuspendXBind();
-				owner._component_4.SuspendXBind();
 			}
 		}
 		private static bool TryGetInstance_xBind_1(global::TestRepro.MainPage ___tctx, out object o)
@@ -465,10 +431,7 @@ namespace TestRepro
 			o = null;
 			var sub1 = ___tctx.ViewModel;
 			if (sub1 == null) return false;
-			var arg0_sub = ___tctx.ViewModel;
-			if (arg0_sub == null) return false;
-			var arg0 = arg0_sub.Mode;
-			o = sub1.Format(arg0);
+			o = sub1.Mode;
 			return true;
 		}
 		private static bool TryGetInstance_xBind_4(global::TestRepro.MainPage ___tctx, out object o)
@@ -476,18 +439,10 @@ namespace TestRepro
 			o = null;
 			var sub1 = ___tctx.ViewModel;
 			if (sub1 == null) return false;
-			o = sub1.Mode;
-			return true;
-		}
-		private static bool TryGetInstance_xBind_5(global::TestRepro.MainPage ___tctx, out object o)
-		{
-			o = null;
-			var sub1 = ___tctx.ViewModel;
-			if (sub1 == null) return false;
 			o = sub1.Name;
 			return true;
 		}
-		private static bool TrySetInstance_xBind_5(global::TestRepro.MainPage ___tctx, object __value)
+		private static bool TrySetInstance_xBind_4(global::TestRepro.MainPage ___tctx, object __value)
 		{
 			var sub1 = ___tctx.ViewModel;
 			if (sub1 == null) return false;
