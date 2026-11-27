@@ -1410,7 +1410,7 @@ partial class AutoSuggestBox
 			{
 				if (m_tpSuggestionsPart is UIElement suggestionsElement)
 				{
-					var peer = FrameworkElementAutomationPeer.FromElement(suggestionsElement);
+					var peer = FrameworkElementAutomationPeer.CreatePeerForElement(suggestionsElement);
 					peer?.RaiseAutomationEvent(AutomationEvents.LayoutInvalidated);
 				}
 			}

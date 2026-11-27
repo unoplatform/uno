@@ -2,6 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference src\dxaml\xcp\dxaml\lib\AutoSuggestBox_Partial.h, tag winui3/release/1.7.1, commit 5f27a786
 
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -25,7 +26,7 @@ partial class AutoSuggestBox
 	public double MaxSuggestionListHeight
 	{
 		get => (double)GetValue(MaxSuggestionListHeightProperty);
-		set => SetValue(MaxSuggestionListHeightProperty, value);
+		set => SetValue(MaxSuggestionListHeightProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -36,7 +37,7 @@ partial class AutoSuggestBox
 		get => (bool)GetValue(IsSuggestionListOpenProperty);
 		set
 		{
-			SetValue(IsSuggestionListOpenProperty, value);
+			SetValue(IsSuggestionListOpenProperty, Boxer.Box(value));
 
 			// When we programmatically set IsSuggestionListOpen to true, we want to take focus.
 			if (value)
@@ -61,7 +62,7 @@ partial class AutoSuggestBox
 	public bool AutoMaximizeSuggestionArea
 	{
 		get => (bool)GetValue(AutoMaximizeSuggestionAreaProperty);
-		set => SetValue(AutoMaximizeSuggestionAreaProperty, value);
+		set => SetValue(AutoMaximizeSuggestionAreaProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -70,7 +71,7 @@ partial class AutoSuggestBox
 	public bool UpdateTextOnSelect
 	{
 		get => (bool)GetValue(UpdateTextOnSelectProperty);
-		set => SetValue(UpdateTextOnSelectProperty, value);
+		set => SetValue(UpdateTextOnSelectProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -185,7 +186,7 @@ partial class AutoSuggestBox
 			nameof(UpdateTextOnSelect),
 			typeof(bool),
 			typeof(AutoSuggestBox),
-			new FrameworkPropertyMetadata(true));
+			new FrameworkPropertyMetadata(BoolBoxes.True));
 
 	/// <summary>
 	/// Identifies the AutoMaximizeSuggestionArea dependency property.
@@ -195,7 +196,7 @@ partial class AutoSuggestBox
 			nameof(AutoMaximizeSuggestionArea),
 			typeof(bool),
 			typeof(AutoSuggestBox),
-			new FrameworkPropertyMetadata(false));
+			new FrameworkPropertyMetadata(BoolBoxes.True));
 
 	/// <summary>
 	/// Identifies the Header dependency property.
@@ -218,7 +219,7 @@ partial class AutoSuggestBox
 			typeof(bool),
 			typeof(AutoSuggestBox),
 			new FrameworkPropertyMetadata(
-				false,
+				BoolBoxes.False,
 				propertyChangedCallback: OnIsSuggestionListOpenChanged));
 
 	/// <summary>
