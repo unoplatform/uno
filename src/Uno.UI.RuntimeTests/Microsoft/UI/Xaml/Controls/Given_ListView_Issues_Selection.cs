@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 #if HAS_UNO
 using Uno.UI.DevTools.Input;
@@ -45,6 +46,16 @@ public class Given_ListView_Issues_Selection
 		await WindowHelper.WaitForIdle();
 		return control;
 	}
+
+	private static ItemsControl CreateItemsControlWithItemsStackPanel(Orientation orientation, IEnumerable<string> items, double size = 300)
+		=> new()
+		{
+			Width = size,
+			Height = size,
+			ItemsSource = items.ToList(),
+			ItemsPanel = (ItemsPanelTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				$"<ItemsPanelTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><ItemsStackPanel Orientation='{orientation}'/></ItemsPanelTemplate>"),
+		};
 
 	private static IEnumerable<Func<ObservableCollection<string>, ListViewBase>> ListViewBaseFactories(ListViewSelectionMode mode)
 	{
@@ -534,5 +545,143 @@ public class Given_ListView_Issues_Selection
 		{
 			WindowHelper.WindowContent = null;
 		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26342")]
+	public async Task When_Custom_ListViewItem_Style_BasedOn_Default_Selection_Is_Visible()
+	{
+		try
+		{
+			var root = (StackPanel)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"""
+				<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<StackPanel.Resources>
+						<Style x:Key="CompactListItemStyle" TargetType="ListViewItem" BasedOn="{StaticResource DefaultListViewItemStyle}">
+							<Setter Property="MinHeight" Value="26" />
+						</Style>
+					</StackPanel.Resources>
+					<ListView x:Name="Plain" Width="300" SelectionMode="Single">
+						<ListViewItem Content="Item 1" />
+						<ListViewItem Content="Item 2" />
+						<ListViewItem Content="Item 3" />
+					</ListView>
+					<ListView x:Name="Lv" Width="300" SelectionMode="Single" ItemContainerStyle="{StaticResource CompactListItemStyle}">
+						<ListViewItem Content="Item 1" />
+						<ListViewItem Content="Item 2" />
+						<ListViewItem Content="Item 3" />
+					</ListView>
+				</StackPanel>
+				""");
+			await Host(root);
+			var lv = (ListView)root.FindName("Lv");
+
+			var plain = (ListView)root.FindName("Plain");
+			plain.SelectedIndex = 1;
+			lv.SelectedIndex = 1;
+			await WindowHelper.WaitForIdle();
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+			Assert.IsTrue(await SelectionIsPainted(plain, 1, 2), "control: default style shows selection");
+			Assert.IsTrue(HasMinHeight(lv), "MinHeight should be applied");
+			Assert.IsTrue(await SelectionIsPainted(lv, 1, 2), "Selected item should have a different background than an unselected one");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	private static bool HasMinHeight(ListView lv) => ((FrameworkElement)lv.ContainerFromIndex(1)).ActualHeight >= 26;
+
+	private static async Task<bool> SelectionIsPainted(ListView lv, int selectedIndex, int unselectedIndex)
+	{
+		for (var attempt = 0; attempt < 40; attempt++)
+		{
+			var selected = await UITestHelper.ScreenShot((FrameworkElement)lv.ContainerFromIndex(selectedIndex), opaque: true);
+			var unselected = await UITestHelper.ScreenShot((FrameworkElement)lv.ContainerFromIndex(unselectedIndex), opaque: true);
+			if (DiffersInBackground(selected, unselected))
+			{
+				return true;
+			}
+
+			await Task.Delay(50);
+		}
+
+		return false;
+	}
+
+	private static bool DiffersInBackground(RawBitmap a, RawBitmap b)
+	{
+		for (var y = 0; y < Math.Min(a.Height, b.Height); y++)
+		{
+			for (var x = 0; x < a.Width; x++)
+			{
+				var textArea = x > 20 && x < 100;
+				if (!textArea && a.GetPixel(x, y) != b.GetPixel(x, y))
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	private static async Task<ListView> HostListViewWithFocusableChildren()
+	{
+		var template = (DataTemplate)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+			"""
+			<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+				<StackPanel Orientation="Horizontal">
+					<Button Content="Click me" Width="100" Height="32" />
+					<TextBox Width="100" Height="32" />
+				</StackPanel>
+			</DataTemplate>
+			""");
+		return await Host(new ListView { Width = 400, Height = 300, ItemTemplate = template, ItemsSource = MakeItems(3) });
+	}
+
+	private static T FindDescendant<T>(DependencyObject root) where T : DependencyObject
+	{
+		var count = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(root);
+		for (var i = 0; i < count; i++)
+		{
+			var child = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(root, i);
+			if (child is T match)
+			{
+				return match;
+			}
+
+			var nested = FindDescendantOrDefault<T>(child);
+			if (nested != null)
+			{
+				return nested;
+			}
+		}
+
+		throw new InvalidOperationException($"{typeof(T).Name} not found");
+	}
+
+	private static T? FindDescendantOrDefault<T>(DependencyObject root) where T : DependencyObject
+	{
+		var count = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChildrenCount(root);
+		for (var i = 0; i < count; i++)
+		{
+			var child = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(root, i);
+			if (child is T match)
+			{
+				return match;
+			}
+
+			var nested = FindDescendantOrDefault<T>(child);
+			if (nested != null)
+			{
+				return nested;
+			}
+		}
+
+		return null;
 	}
 }
