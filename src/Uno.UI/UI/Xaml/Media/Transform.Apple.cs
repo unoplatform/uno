@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Media
 			{
 				// We don't use the NotifyChanged() since it will filters out changes when IsAnimating
 				// Note: we also bypass the MatrixCore update which is actually irrelevant until animation completes.
-				Changed?.Invoke(this, EventArgs.Empty);
+				_changedHandlers?.Invoke(this, EventArgs.Empty);
 			}
 		}
 

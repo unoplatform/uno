@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Uno.Extensions;
 
 #if __ANDROID__
@@ -37,10 +38,19 @@ namespace Microsoft.UI.Xaml.Media
 			}
 		};
 
+		private WeakEventHelper.WeakEventCollection? _changedHandlers;
+
 		/// <summary>
-		/// Notifies that a value of this transform changed (usually this means that the <see cref="MatrixCore"/> has been updated).
+		/// Registers a handler notified when a value of this transform changes (usually this means that the
+		/// <see cref="MatrixCore"/> has been updated), without keeping the handler's target alive: a transform can be
+		/// shared (Style setter, resource) and outlive the elements, brushes, geometries and groups that use it.
 		/// </summary>
-		internal event EventHandler? Changed;
+		/// <returns>A disposable that keeps the registration alive; dispose it to unregister.</returns>
+		internal IDisposable RegisterChanged(EventHandler handler)
+			=> WeakEventHelper.RegisterEvent(
+				_changedHandlers ??= new(),
+				handler,
+				(h, s, e) => (h as EventHandler)?.Invoke(s, (EventArgs)e!));
 
 		protected void NotifyChanged()
 		{
@@ -55,7 +65,7 @@ namespace Microsoft.UI.Xaml.Media
 #endif
 
 			MatrixCore = ToMatrix(new Point(0, 0));
-			Changed?.Invoke(this, EventArgs.Empty);
+			_changedHandlers?.Invoke(this, EventArgs.Empty);
 		}
 
 		/// <summary>
@@ -84,7 +94,15 @@ namespace Microsoft.UI.Xaml.Media
 		// Currently we support only one view par transform.
 		// But we can declare a Transform as a static resource and use it on multiple views.
 		// Note: This is now used only for animations
-		internal virtual _View? View { get; set; }
+		// Held weakly: a transform shared through a Style setter or a resource outlives the views it's applied to.
+		// A new WeakReference each time: setting the Target of an existing one has been seen to return null (see ManagedGCHandle).
+		internal virtual _View? View
+		{
+			get => _view is not null && _view.TryGetTarget(out var view) ? view : null;
+			set => _view = value is null ? null : new WeakReference<_View>(value);
+		}
+
+		private WeakReference<_View>? _view;
 #endif
 
 		#region GeneralTransform overrides

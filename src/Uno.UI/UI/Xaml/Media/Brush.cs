@@ -86,19 +86,22 @@ namespace Microsoft.UI.Xaml.Media
 
 			OnInvalidateRender();
 
-			if (args.Property == TransformProperty || args.Property == RelativeTransformProperty)
+			// Weak registrations: a transform shared across brushes (e.g. a resource used in a template) must not
+			// root the discarded ones.
+			if (args.Property == TransformProperty)
 			{
-				if (args.NewValue is Transform newTransform)
-				{
-					newTransform.Changed += OnTransformChange;
-				}
-
-				if (args.OldValue is Transform oldTransform)
-				{
-					oldTransform.Changed -= OnTransformChange;
-				}
+				_transformChangedRegistration?.Dispose();
+				_transformChangedRegistration = (args.NewValue as Transform)?.RegisterChanged(OnTransformChange);
+			}
+			else if (args.Property == RelativeTransformProperty)
+			{
+				_relativeTransformChangedRegistration?.Dispose();
+				_relativeTransformChangedRegistration = (args.NewValue as Transform)?.RegisterChanged(OnTransformChange);
 			}
 		}
+
+		private IDisposable? _transformChangedRegistration;
+		private IDisposable? _relativeTransformChangedRegistration;
 
 		private void OnTransformChange(object? sender, EventArgs args) => OnInvalidateRender();
 

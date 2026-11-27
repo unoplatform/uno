@@ -218,7 +218,12 @@ namespace Microsoft.UI.Xaml
 			_originalObjectRef = WeakReferencePool.RentWeakReference(this, originalObject);
 			_originalObjectType = originalObject is AttachedDependencyObject a ? a.Owner.GetType() : originalObject.GetType();
 
-			_properties = new DependencyPropertyDetailsCollection(_originalObjectRef, dataContextProperty);
+			// An object that isn't a UIElement (a brush, transform, InputScope, transition, ...) only borrows the DataContext its
+			// element pushes into it, and can outlive that element when shared, so it must not keep that DataContext alive. WinUI has
+			// no DataContext on these objects: their bindings resolve through a non-owning inheritance-context mentor. A DataContext
+			// set on the object itself stays strong.
+			var hasWeakInheritedDataContext = originalObject is not UIElement;
+			_properties = new DependencyPropertyDetailsCollection(_originalObjectRef, dataContextProperty, hasWeakInheritedDataContext);
 
 			_dataContextProperty = dataContextProperty;
 
