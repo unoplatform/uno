@@ -504,4 +504,35 @@ public class Given_ListView_Issues_Selection
 			WindowHelper.WindowContent = null;
 		}
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4597")]
+	public async Task When_ItemsControl_Item_Content_DataContext_Is_Set_Only_To_Item()
+	{
+		try
+		{
+			DataContextProbe.Log.Clear();
+			var ic = (ItemsControl)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"""
+				<ItemsControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:l="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<l:DataContextProbe><TextBlock Text="{Binding}" /></l:DataContextProbe>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+				""");
+			ic.DataContext = "parent";
+			ic.ItemsSource = new[] { "item" };
+			await Host(ic);
+
+			CollectionAssert.AreEqual(new[] { "item" }, DataContextProbe.Log.Where(v => v != null).ToArray(), string.Join(" > ", DataContextProbe.Log.Select(v => v ?? "<null>")));
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
 }
