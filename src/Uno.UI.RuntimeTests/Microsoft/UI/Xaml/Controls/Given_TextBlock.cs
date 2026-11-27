@@ -2797,7 +2797,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.LineStackingStrategy = LineStackingStrategy.BlockLineHeight;
 
 			await LoadOnWhite(SUT);
-			var screenshot = await UITestHelper.ScreenShot(SUT);
+			var screenshot = await ScreenShotWithRedInk(SUT);
 			Assert.IsTrue(screenshot.Height >= 2 * lineHeight, $"Expected the text to wrap, height {screenshot.Height}");
 
 			var first = GetRedInk(screenshot, 0, lineHeight);
@@ -2890,14 +2890,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// expectedSide: "L" or "R" for the half the ink sits in, "C" for ink straddling the middle.
 		private static async Task AssertInkSide(FrameworkElement element, string expectedSide, string context)
 		{
-			await UITestHelper.WaitForIdle();
-			var screenshot = await UITestHelper.ScreenShot(element);
+			var screenshot = await ScreenShotWithRedInk(element);
 			var (left, right) = GetRedInk(screenshot);
 			var middle = screenshot.Width / 2.0;
 			var message = $"{context}: ink [{left}, {right}] in {screenshot.Width}x{screenshot.Height} ({element.ActualWidth}x{element.ActualHeight})";
 			Assert.IsTrue(right >= 0, "No red ink: missing font or blank render. " + message);
 			var actualSide = right < middle ? "L" : left > middle ? "R" : "C";
 			Assert.AreEqual(expectedSide, actualSide, message);
+		}
+
+		// On WebAssembly a fallback font (e.g. Arabic) is downloaded on first use, and the text draws nothing until it arrives.
+		private static async Task<RawBitmap> ScreenShotWithRedInk(FrameworkElement element)
+		{
+			await UITestHelper.WaitForIdle();
+			var screenshot = await UITestHelper.ScreenShot(element);
+			var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+			while (GetRedInk(screenshot).right < 0 && stopwatch.ElapsedMilliseconds < 5000)
+			{
+				await UITestHelper.WaitForRender();
+				screenshot = await UITestHelper.ScreenShot(element);
+			}
+			return screenshot;
 		}
 
 		private static (int left, int right) GetRedInk(RawBitmap bitmap, int top = 0, int bottom = int.MaxValue)
