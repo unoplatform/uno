@@ -342,4 +342,30 @@ public class Given_ListView_Issues_Layout
 			}
 		}
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19062")]
+	public async Task When_Grouped_Source_With_ItemsWrapGrid_Then_Items_Are_Shown()
+	{
+		Group[] groups = { new("A", 3), new("B", 2) };
+		_cvs = new CollectionViewSource { Source = groups, IsSourceGrouped = true };
+		ListView list = new()
+		{
+			Width = 400,
+			Height = 400,
+			ItemsSource = _cvs.View,
+			ItemTemplate = Template("<TextBlock Text='{Binding}' HorizontalAlignment='Center' />"),
+			ItemsPanel = PanelTemplate("<ItemsWrapGrid />"),
+		};
+		await Load(list);
+
+		var containers = Descendants<ListViewItem>(list).ToList();
+		Assert.HasCount(5, containers);
+		foreach (var c in containers)
+		{
+			Assert.IsGreaterThan(0, c.ActualWidth);
+			Assert.IsGreaterThan(0, c.ActualHeight);
+			Assert.IsNotNull(Descendants<TextBlock>(c).FirstOrDefault(t => !string.IsNullOrEmpty(t.Text)));
+		}
+	}
 }
