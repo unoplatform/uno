@@ -40,7 +40,13 @@ namespace Microsoft.UI.Composition
 
 		public SKImage? Image => FrameProvider?.CurrentImage;
 
-		internal SkiaCompositionSurface(SKImage image)
+		// Surfaces never animate, so they share the compositor: the parameterless CompositionObject constructor would
+		// create a Compositor, and report a not-implemented API, for every decoded image.
+		internal SkiaCompositionSurface() : base(Compositor.GetSharedCompositor())
+		{
+		}
+
+		internal SkiaCompositionSurface(SKImage image) : this()
 		{
 			FrameProvider = FrameProviderFactory.Create(image);
 		}

@@ -13,8 +13,10 @@ namespace Microsoft.UI.Composition
 {
 	internal partial class SkiaCompositionSurface : ICompositionSurface
 	{
+#if !__SKIA__
 		internal SkiaCompositionSurface()
 		{
 		}
+#endif
 	}
 }
