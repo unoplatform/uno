@@ -78,7 +78,7 @@ dotnet new unoapp -mpe
 Selects how the UI is drawn on all targets except **WinAppSDK**, including **Desktop (Windows, macOS, Linux)**, **WebAssembly (WASM)**, **Android**, and **iOS**. Starting with Uno Platform 7.0, the native renderer has been removed.
 
 - **Skia** is the default, in both the blank and recommended presets. It provides a **consistent, pixel-perfect rendering pipeline** by drawing the entire UI using the Skia graphics library (via SkiaSharp). Learn more about [Uno's Skia rendering](xref:uno.features.renderer.skia).
-- **WebGPU** is experimental. It draws the UI through WebGPU. Selected on its own, the app has no SkiaSharp and no fallback. Learn more about [Uno's WebGPU rendering](xref:uno.features.renderer.webgpu).
+- **WebGPU** is experimental. It draws the UI through WebGPU. Selected on its own, the app has no fallback, and its Release builds have no SkiaSharp. Learn more about [Uno's WebGPU rendering](xref:uno.features.renderer.webgpu).
 
 Selecting both uses WebGPU first, with Skia as the fallback.
 
