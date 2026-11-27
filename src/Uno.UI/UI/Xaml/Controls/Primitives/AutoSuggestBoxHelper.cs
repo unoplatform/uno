@@ -7,6 +7,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Uno.Disposables;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -29,7 +30,7 @@ public partial class AutoSuggestBoxHelper
 		"KeepInteriorCornersSquare",
 		typeof(bool),
 		typeof(AutoSuggestBoxHelper),
-		new FrameworkPropertyMetadata(default(bool)));
+		new FrameworkPropertyMetadata(BoolBoxes.False));
 
 	public static void SetKeepInteriorCornersSquare(AutoSuggestBox autoSuggestBox, bool value)
 		=> autoSuggestBox.SetValue(KeepInteriorCornersSquareProperty, value);
