@@ -155,4 +155,84 @@ public class Given_ListView_Issues_Interaction
 		Assert.IsGreaterThanOrEqualTo(-1.0, bounds.Top, "focused item scrolled into view (top)");
 		Assert.IsLessThanOrEqualTo(list.ActualHeight + 1.0, bounds.Bottom, "focused item scrolled into view (bottom)");
 	}
+
+	// https://github.com/unoplatform/uno/issues/24919
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24919")]
+	[DataRow("GamepadRightShoulder", true)]
+	[DataRow("GamepadRightTrigger", false)]
+	public async Task When_Gamepad_Paging_Key_Pressed_Focus_Moves_Forward(string key, bool horizontal)
+	{
+		// WinUI: triggers page vertical lists, shoulders page horizontal lists.
+		ListView list = new()
+		{
+			Width = horizontal ? 400 : 300,
+			Height = horizontal ? 100 : 400,
+			ItemTemplate = horizontal
+				? (DataTemplate)XamlReader.Load("<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><TextBlock Text='{Binding}' Width='100' /></DataTemplate>")
+				: TextTemplate(),
+			ItemsSource = Enumerable.Range(0, 100).Select(i => $"Item {i}").ToList(),
+		};
+		if (horizontal)
+		{
+			list.ItemsPanel = (ItemsPanelTemplate)XamlReader.Load(
+				"<ItemsPanelTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><ItemsStackPanel Orientation='Horizontal' /></ItemsPanelTemplate>");
+			ScrollViewer.SetHorizontalScrollMode(list, ScrollMode.Enabled);
+			ScrollViewer.SetHorizontalScrollBarVisibility(list, ScrollBarVisibility.Auto);
+			ScrollViewer.SetVerticalScrollMode(list, ScrollMode.Disabled);
+			ScrollViewer.SetVerticalScrollBarVisibility(list, ScrollBarVisibility.Disabled);
+		}
+
+		WindowHelper.WindowContent = list;
+		await WindowHelper.WaitForLoaded(list);
+		await WindowHelper.WaitForIdle();
+
+		var first = (ListViewItem)list.ContainerFromIndex(1);
+		list.SelectedIndex = 1;
+		Assert.IsTrue(first.Focus(FocusState.Keyboard));
+		await WindowHelper.WaitForIdle();
+
+		await KeyboardHelper.PressKeySequence($"$d$_{key}#$u$_{key}");
+		await WindowHelper.WaitForIdle();
+
+		var focused = FocusManager.GetFocusedElement(list.XamlRoot!) as ListViewItem;
+		Assert.IsNotNull(focused);
+		int index = list.IndexFromContainer(focused!);
+		Assert.IsGreaterThan(1, index, $"{key} should page focus forward");
+	}
+
+	private sealed class IncrementalSource : ObservableCollection<string>, ISupportIncrementalLoading
+	{
+		private readonly DispatcherQueue _queue = DispatcherQueue.GetForCurrentThread();
+
+		public IncrementalSource(int initial, int total)
+		{
+			Total = total;
+			for (int i = 0; i < initial; i++)
+			{
+				Add($"Item {i}");
+			}
+		}
+
+		public int Total { get; }
+
+		public bool HasMoreItems => Count < Total;
+
+		public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
+		{
+			TaskCompletionSource<LoadMoreItemsResult> tcs = new();
+			_queue.TryEnqueue(() =>
+			{
+				int toAdd = Math.Min((int)count, Total - Count);
+				for (int i = 0; i < toAdd; i++)
+				{
+					Add($"Item {Count}");
+				}
+
+				tcs.SetResult(new LoadMoreItemsResult { Count = (uint)toAdd });
+			});
+			return AsyncInfo.Run(_ => tcs.Task);
+		}
+	}
 }
