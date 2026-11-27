@@ -32,8 +32,8 @@ internal class MacOSLauncherExtension : ILauncherExtension
 
 	public Task<bool> LaunchFileAsync(IStorageFile file)
 	{
-		var fileUri = new Uri(file.Path, UriKind.Absolute).AbsoluteUri;
-		return Task.FromResult(NativeUno.uno_application_open_url(fileUri));
+		// null check is done by the caller
+		return Task.FromResult(NativeUno.uno_application_open_url(Launcher.GetFileUriString(file.Path)));
 	}
 
 	public Task<LaunchQuerySupportStatus> QueryUriSupportAsync(Uri uri, LaunchQuerySupportType launchQuerySupportType)

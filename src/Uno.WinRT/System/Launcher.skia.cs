@@ -34,10 +34,11 @@ namespace Windows.System
 
 		internal static async Task<bool> LaunchFilePlatformAsync(IStorageFile file)
 		{
-			if (_launcherExtension.Value is ILauncherExtension ext)
+			if (_launcherExtension.Value is { } extension)
 			{
-				return await ext.LaunchFileAsync(file);
+				return await extension.LaunchFileAsync(file);
 			}
+
 			return LaunchFileFallback(file);
 		}
 
@@ -69,21 +70,17 @@ namespace Windows.System
 		{
 			try
 			{
-				var processStartInfo = new ProcessStartInfo(file.Path)
-				{
-					UseShellExecute = true,
-				};
-
-				var process = new Process();
-				process.StartInfo = processStartInfo;
-				return process.Start();
+				// A null process only means the shell handed the file to an already running app.
+				using var process = Process.Start(new ProcessStartInfo(file.Path) { UseShellExecute = true });
+				return true;
 			}
 			catch (Exception ex)
 			{
 				if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
 				{
-					typeof(Launcher).Log().LogError($"Could not launch file - {ex}");
+					typeof(Launcher).Log().Error($"Could not launch file '{file.Path}'.", ex);
 				}
+
 				return false;
 			}
 		}

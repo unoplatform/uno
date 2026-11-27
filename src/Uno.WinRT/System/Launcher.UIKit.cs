@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Windows.Storage;
 #if __APPLE_UIKIT__
 using UIKit;
 #else
@@ -37,19 +36,6 @@ namespace Windows.System
 #endif
 		}
 
-		internal static
-#if __APPLE_UIKIT__
-			async
-#endif
-			Task<bool> LaunchFilePlatformAsync(IStorageFile file)
-		{
-			var fileUrl = AppleUrl.FromFilename(file.Path);
-#if __APPLE_UIKIT__
-			return await UIApplication.SharedApplication.OpenUrlAsync(fileUrl, new UIApplicationOpenUrlOptions());
-#else
-			return Task.FromResult(NSWorkspace.SharedWorkspace.OpenUrl(fileUrl));
-#endif
-		}
 
 		public static Task<LaunchQuerySupportStatus> QueryUriSupportPlatformAsync(
 			Uri uri,

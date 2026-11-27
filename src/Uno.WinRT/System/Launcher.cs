@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage;
@@ -90,8 +91,18 @@ namespace Windows.System
 
 		public static IAsyncOperation<bool> LaunchFileAsync(IStorageFile file, LauncherOptions options)
 		{
-			// LauncherOptions are not currently used, delegate to the main overload.
+			// LauncherOptions are not implemented yet, delegate to the main overload.
 			return LaunchFileAsync(file);
+		}
+
+		/// <summary>
+		/// Builds a <c>file://</c> URL for an absolute POSIX path, escaping every segment
+		/// so characters like <c>#</c>, <c>?</c> or <c>%</c> stay part of the path.
+		/// </summary>
+		internal static string GetFileUriString(string path)
+		{
+			var escapedPath = string.Join('/', path.Split('/').Select(Uri.EscapeDataString));
+			return "file://" + (escapedPath.StartsWith('/') ? escapedPath : "/" + escapedPath);
 		}
 
 #if __ANDROID__ || __IOS__ || __TVOS__ || __SKIA__
