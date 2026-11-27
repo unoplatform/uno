@@ -28,7 +28,7 @@ The following features of `Windows.Media.SpeechRecognition.SpeechRecognizer` are
 | SystemSpeechLanguage                       | -   | -       | -            | -           |                               |
 | Timeouts                                   | X   | X       | X            | X           |                               |
 | UIOptions                                  | X   | X       | X            | X           | Not used                      |
-| CompileConstraintsAsync()                  | X   | X       | X            | X           | Always return Success (implemented to meet WinUI constraint that requires `CompileConstraintsAsync()` to be called before `RecognizeAsync()`) |
+| CompileConstraintsAsync()                  | X   | X       | X            | X           | iOS, Android, WebAssembly: always returns Success (implemented to meet WinUI constraint that requires `CompileConstraintsAsync()` to be called before `RecognizeAsync()`). macOS: returns `TopicLanguageNotSupported` for unsupported languages |
 | Dispose()                                  | X   | X       | X            | X           |                               |
 | RecognizeAsync()                           | X   | X       | X            | X           |                               |
 | RecognizeWithUIAsync()                     | -   | -       | -            | -           |                               |
@@ -63,7 +63,6 @@ The following lines need to be added to your AndroidManifest.xml:
 
 ### macOS (Skia)
 
-* macOS 10.15 or later is required.
 * The following lines need to be added to your app bundle's `Info.plist`:
 
   ```xml
@@ -73,7 +72,7 @@ The following lines need to be added to your AndroidManifest.xml:
   <string>[SpeechRecognition usage description]</string>
   ```
 
-* The app must be packaged as an `.app` bundle when running speech recognition — macOS only displays the TCC authorization prompt for bundled apps. Launching the executable directly from a terminal (`dotnet run`) will result in `SFSpeechRecognizer` returning `Denied` without prompting.
+* The app must be packaged as an `.app` bundle when running speech recognition — macOS only displays the TCC authorization prompt for bundled apps. When the app runs without these `Info.plist` keys, for example when launched with `dotnet run`, `RecognizeAsync()` throws instead of requesting permission.
 
 > [!NOTE]
 > For contributors: The Uno Platform samples app (`SamplesApp`) ships a build target that automatically produces a minimal `.app` bundle next to the regular output on macOS. After `dotnet build`, launch it with:
@@ -96,9 +95,23 @@ Requirements and behavior notes:
 * Browsers typically require a secure context (`https://`), with `http://localhost` commonly allowed for local development.
 * Starting recognition may require user interaction (for example, a button click) depending on browser policies.
 
+## macOS behavior
+
+On macOS, speech recognition follows the WinUI behavior described in the Microsoft documentation, using Apple's Speech framework:
+
+* `State` goes through `Capturing`, `SoundStarted`, `SpeechDetected`, `SoundEnded`, `Processing` and back to `Idle`.
+* `Timeouts` default to 5 seconds of `InitialSilenceTimeout`, 150 milliseconds of `EndSilenceTimeout` and no `BabbleTimeout`. Set a timeout to `TimeSpan.Zero` to disable it.
+* Failures are reported through `SpeechRecognitionResult.Status` (for example `TimeoutExceeded`, `UserCanceled`, `MicrophoneUnavailable` or `NetworkFailure`) rather than as exceptions.
+* When the user denies speech recognition or microphone access, or the `Info.plist` keys are missing, `RecognizeAsync()` throws a `COMException` with `HResult` `0x80045509`, like WinUI when the speech privacy policy isn't accepted.
+* Calling `RecognizeAsync()` or `CompileConstraintsAsync()` while the recognizer is busy throws an `InvalidOperationException`.
+* `StopRecognitionAsync()` returns the words recognized so far, or a `UserCanceled` result if nothing was said yet.
+* `SpeechRecognitionResult` provides `Text`, `Status`, `Confidence`, `RawConfidence`, `PhraseStartTime`, `PhraseDuration` and `GetAlternates()`. `RawConfidence` is the average of Apple's per-word confidence; `Confidence` is `High` from 0.8, `Medium` from 0.5, and `Low` below.
+* Events are raised on the UI thread.
+
 ## Limitation
 
-In `Windows.Media.SpeechRecognition.SpeechRecognitionResult`, only `Text`, `Alternates`, and `GetAlternates(uint maxAlternates)` are implemented.
-In particular, `RawConfidence` and `Confidence` fields are not currently supported.
+On iOS, Android and WebAssembly, only `Text`, `Alternates`, and `GetAlternates(uint maxAlternates)` are implemented in `Windows.Media.SpeechRecognition.SpeechRecognitionResult`, and `RawConfidence` is only provided on WebAssembly.
+
+On macOS, `RecognizeWithUIAsync()`, `RulePath` and `SemanticInterpretation` aren't supported. Apple limits each recognition to about one minute of audio.
 
 On WebAssembly specifically, availability is browser-dependent. If speech recognition is not available in the current browser, `RecognizeAsync()` fails with an `InvalidOperationException`.
