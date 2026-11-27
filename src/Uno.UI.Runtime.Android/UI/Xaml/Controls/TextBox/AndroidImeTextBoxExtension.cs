@@ -258,7 +258,7 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"Ignoring passive composition (no text change): [{composingStart}..{composingEnd}] '{composingText}'");
+					this.Log().Trace($"Ignoring passive composition (no text change): [{composingStart}..{composingEnd}] length={composingText?.Length ?? 0}");
 				}
 				return;
 			}
@@ -278,7 +278,7 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"Composition started: [{composingStart}..{composingEnd}] '{composingText}'");
+				this.Log().Trace($"Composition started: [{composingStart}..{composingEnd}] length={composingText?.Length ?? 0}");
 			}
 		}
 		else if (wasComposing && isNowComposing)
@@ -295,7 +295,7 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"Composition updated: [{composingStart}..{composingEnd}] '{composingText}'");
+				this.Log().Trace($"Composition updated: [{composingStart}..{composingEnd}] length={composingText?.Length ?? 0}");
 			}
 		}
 		else if (wasComposing && !isNowComposing)
@@ -320,7 +320,7 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"Composition committed: '{committedText}' at {_lastComposingStart}");
+					this.Log().Trace($"Composition committed: length={committedText?.Length ?? 0} at {_lastComposingStart}");
 				}
 			}
 			else if (committedLength == 0)

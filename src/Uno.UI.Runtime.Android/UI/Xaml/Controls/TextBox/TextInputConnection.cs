@@ -106,7 +106,7 @@ class TextInputConnection : BaseInputConnection
 	{
 		if (_activeHost is not null && _editable is not null && !_endingBatch)
 		{
-			this.LogDebug()?.Debug($"OnActiveTextInputHostChanged: {_activeHost.Text}");
+			this.LogDebug()?.Debug($"OnActiveTextInputHostChanged: length={_activeHost.Text?.Length ?? 0}");
 
 			UpdateEditableStateFromHost();
 		}
@@ -192,7 +192,7 @@ class TextInputConnection : BaseInputConnection
 			var selectionStart = Selection.GetSelectionStart(_editable);
 			var selectionEnd = Selection.GetSelectionEnd(_editable);
 
-			this.LogDebug()?.Debug($"EndBatchEdit: {_editable?.ToString()} ({selectionStart}->{selectionEnd})");
+			this.LogDebug()?.Debug($"EndBatchEdit: length={_editable?.Length() ?? 0} ({selectionStart}->{selectionEnd})");
 
 			if (ActiveHost is not null && !_duringHostStateUpdate)
 			{
@@ -219,7 +219,7 @@ class TextInputConnection : BaseInputConnection
 			if (ActiveHost is not null
 				&& !_duringHostStateUpdate)
 			{
-				this.LogDebug()?.Debug($"SetSelection: {_editable?.ToString()} ({start}->{end})");
+				this.LogDebug()?.Debug($"SetSelection: length={_editable?.Length() ?? 0} ({start}->{end})");
 
 				var selectionStart = Selection.GetSelectionStart(_editable);
 				var selectionEnd = Selection.GetSelectionEnd(_editable);
@@ -577,13 +577,13 @@ class TextInputConnection : BaseInputConnection
 
 	public override bool CommitCorrection(CorrectionInfo? correctionInfo)
 	{
-		this.LogDebug()?.Debug($"CommitCorrection {correctionInfo?.NewText}");
+		this.LogDebug()?.Debug($"CommitCorrection length={correctionInfo?.NewText?.Length ?? 0}");
 		return base.CommitCorrection(correctionInfo);
 	}
 
 	public override bool CommitText(Java.Lang.ICharSequence? text, int newCursorPosition)
 	{
-		this.LogDebug()?.Debug($"CommitText {text}");
+		this.LogDebug()?.Debug($"CommitText length={text?.Length() ?? 0}");
 
 		return base.CommitText(text, newCursorPosition);
 	}
@@ -824,7 +824,7 @@ class TextInputConnection : BaseInputConnection
 
 	public override bool ReplaceText(int start, int end, Java.Lang.ICharSequence text, int newCursorPosition, TextAttribute? textAttribute)
 	{
-		this.LogDebug()?.Debug($"ReplaceText {start}->{end}, [{text}], {newCursorPosition}, {textAttribute}");
+		this.LogDebug()?.Debug($"ReplaceText {start}->{end}, length={text.Length()}, {newCursorPosition}, {textAttribute}");
 
 		return base.ReplaceText(start, end, text, newCursorPosition, textAttribute);
 	}
@@ -845,7 +845,7 @@ class TextInputConnection : BaseInputConnection
 
 	public override bool SetComposingText(Java.Lang.ICharSequence? text, int newCursorPosition)
 	{
-		this.LogDebug()?.Debug($"SetComposingText {text}, {newCursorPosition}");
+		this.LogDebug()?.Debug($"SetComposingText length={text?.Length() ?? 0}, {newCursorPosition}");
 
 		bool result;
 
