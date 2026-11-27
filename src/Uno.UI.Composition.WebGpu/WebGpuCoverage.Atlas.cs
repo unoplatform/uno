@@ -109,7 +109,8 @@ internal sealed unsafe partial class WebGpuCoverage
 		// across the fractional positions text puts them at.
 		if (!WebGpuMaskAtlas.TryKey(shape.Hash, Matrix4x4.Identity, shape.BbMin + pf.Offset, shape.BbMax + pf.Offset, scale, out var key, out var w, out var h, out ox, out oy, out var snap, allowBig: big, place: place, phases: big ? 0 : WebGpuMaskAtlas.FillPhases)) { AtlasNoKey++; return false; }
 
-		slot = _d.Atlas.Acquire(key, w, h, ox, oy, out var fresh);
+		if (_d.Atlas.Acquire(key, w, h, ox, oy, out var fresh) is not { } acquired) { return false; }
+		slot = acquired;
 		// A recording holds its own reference: one slot backs a glyph everywhere it appears, so the recording that
 		// baked it must not release the region out from under the others.
 		if (owned is not null)

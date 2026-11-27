@@ -68,15 +68,15 @@ internal sealed unsafe partial class WebGpuEffects
 		{
 			_cov.AddBake(sheet.Bake, sx, sy, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - sh.Offset, Vector2.One, sh.EvenOdd);
 			ShadowSlotsBaked++;
-			if (!keyed)
+			// The slot's texels on the top level, plus the one a bilinear tap at its far edge reads (the slot's gutter).
+			int step = 1 << BlurLevels(sigma);
+			int tw = (w + step - 1) / step + 1, th = (h + step - 1) / step + 1;
+			// Drawn from the sheet unless it is keyed and gets an entry of its own (none when no page could be created).
+			if (!keyed || _d.Atlas.AllocateShadow(key, w, h, tw, th, ox, oy) is not { } slot)
 			{
 				uv = new Vector4(sx, sy, sx + w, sy + h) / WebGpuCoverage.SheetSize;
 				return sheet.Blurred;
 			}
-			// The slot's texels on the top level, plus the one a bilinear tap at its far edge reads (the slot's gutter).
-			int step = 1 << BlurLevels(sigma);
-			int tw = (w + step - 1) / step + 1, th = (h + step - 1) / step + 1;
-			var slot = _d.Atlas.AllocateShadow(key, w, h, tw, th, ox, oy);
 			// The entry samples its blurred w x h, which at the top level is w/step x h/step of the tw x th it holds.
 			var page = slot.Owner;
 			slot.Uv = new Vector4((float)slot.X / page.W, (float)slot.Y / page.H, (slot.X + (float)w / step) / page.W, (slot.Y + (float)h / step) / page.H);

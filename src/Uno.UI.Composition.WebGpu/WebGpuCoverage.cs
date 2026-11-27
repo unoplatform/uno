@@ -90,8 +90,10 @@ internal sealed unsafe partial class WebGpuCoverage
 		}
 		var slots = new WebGpuMaskAtlas.Slot[n];
 		bool fresh;
-		if (n == 1) { slots[0] = _d.Atlas.Acquire(keys[0], sizes[0].W, sizes[0].H, origins[0].X, origins[0].Y, out fresh); }
-		else { _d.Atlas.AcquireGroup(keys, sizes, origins, slots, out fresh); }
+		var placed = n == 1
+			? (slots[0] = _d.Atlas.Acquire(keys[0], sizes[0].W, sizes[0].H, origins[0].X, origins[0].Y, out fresh)) is not null
+			: _d.Atlas.AcquireGroup(keys, sizes, origins, slots, out fresh);
+		if (!placed) { return ClipEverything; }
 
 		var entries = new ClipEntry[n];
 		for (var i = 0; i < n; i++)
@@ -112,6 +114,13 @@ internal sealed unsafe partial class WebGpuCoverage
 		_clipMasks[memo] = set;
 		return set;
 	}
+
+	// A clip whose masks have no texture to bake into (out of GPU memory, or the device was lost) hides what it clips,
+	// rather than drawing it unclipped: one entry keeping only what lies outside a rect larger than any target.
+	private static MaskSet ClipEverything => new()
+	{
+		Entries = new[] { new ClipEntry { M = Matrix3x2.Identity, Rect = new Vector4(-1e7f, -1e7f, 1e7f, 1e7f), Exclude = true } },
+	};
 
 	// A clip path's mask key and the clip-space pixel its texel (0,0) sits on: keyed by outline and transform, or, when
 	// too big for that, by exactly what its bake rasterizes (clamped to the surface when per-frame).
@@ -162,7 +171,7 @@ internal sealed unsafe partial class WebGpuCoverage
 
 		var origin = new Vector2((ox + 1) / scale.X, (oy + 1) / scale.Y) - pf.Offset;
 		var key = WebGpuMaskAtlas.ExactKey(shape.Hash, scale, pf.Offset * scale - new Vector2(ox, oy), w, h, pf.EvenOdd);
-		var slot = _d.Atlas.Acquire(key, w, h, ox, oy, out var fresh);
+		if (_d.Atlas.Acquire(key, w, h, ox, oy, out var fresh) is not { } slot) { return false; }
 		if (owned is not null) { _d.Atlas.Retain(slot); (owned.AtlasSlots ??= new()).Add(slot); }
 		var page = slot.Owner;
 		if (fresh)

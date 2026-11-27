@@ -149,18 +149,18 @@ internal sealed unsafe class WebGpuMaskAtlas
 	/// <summary>
 	/// The entry for <paramref name="key"/>: the cached one, or a fresh w x h slot the caller bakes into
 	/// (<paramref name="fresh"/>). The cache holds a reference either way; a recording that keeps the entry
-	/// <see cref="Retain"/>s its own.
+	/// <see cref="Retain"/>s its own. Null when no page could be created (out of GPU memory, or the device was lost):
+	/// the caller skips the mask.
 	/// </summary>
-	public Slot Acquire(in Key key, int w, int h, float originX, float originY, out bool fresh)
+	public Slot? Acquire(in Key key, int w, int h, float originX, float originY, out bool fresh)
 	{
+		fresh = false;
 		if (TryGet(key, out var hit))
 		{
 			Use(hit);
-			fresh = false;
 			return hit;
 		}
-		var slot = Reserve(PoolFor(_d.ColorFormat, MaskPageUsage, PageSizeFor(w, h)), w, h, w, h)
-			?? throw new InvalidOperationException($"WebGPU could not place a {w}x{h} mask (out of GPU memory, or the device was lost).");
+		if (Reserve(PoolFor(_d.ColorFormat, MaskPageUsage, PageSizeFor(w, h)), w, h, w, h) is not { } slot) { return null; }
 		fresh = true;
 		return Insert(slot with { OriginX = originX, OriginY = originY }, key);
 	}
@@ -168,10 +168,11 @@ internal sealed unsafe class WebGpuMaskAtlas
 	/// <summary>
 	/// Entries for all of <paramref name="keys"/> on ONE page, since a clip's masks bind as one texture: the cached ones
 	/// when they already share a page, else fresh slots for all of them (<paramref name="fresh"/>), on the smallest page
-	/// size that holds them together.
+	/// size that holds them together. False when no page could hold them (out of GPU memory, or the device was lost).
 	/// </summary>
-	public void AcquireGroup(Key[] keys, (int W, int H)[] sizes, Vector2[] origins, Slot[] slots, out bool fresh)
+	public bool AcquireGroup(Key[] keys, (int W, int H)[] sizes, Vector2[] origins, Slot[] slots, out bool fresh)
 	{
+		fresh = false;
 		Page? shared = null;
 		var hits = true;
 		for (var i = 0; i < keys.Length && hits; i++)
@@ -181,8 +182,7 @@ internal sealed unsafe class WebGpuMaskAtlas
 		if (hits)
 		{
 			foreach (var s in slots) { Use(s); }
-			fresh = false;
-			return;
+			return true;
 		}
 
 		long area = 0;
@@ -196,24 +196,22 @@ internal sealed unsafe class WebGpuMaskAtlas
 		for (var size = PageSizeFor(maxEdge, maxEdge); ; size *= 2)
 		{
 			if (area * 3 / 2 <= (long)size * size && TryReserveGroup(PoolFor(_d.ColorFormat, MaskPageUsage, size), sizes, slots)) { break; }
-			if (size >= MaxPageSize)
-			{
-				throw new InvalidOperationException($"WebGPU could not place {sizes.Length} clip masks on one {MaxPageSize}px page.");
-			}
+			if (size >= MaxPageSize) { return false; }
 		}
 		for (var i = 0; i < keys.Length; i++) { slots[i] = Insert(slots[i] with { OriginX = origins[i].X, OriginY = origins[i].Y }, keys[i]); }
 		fresh = true;
+		return true;
 	}
 
 	/// <summary>
 	/// Reserves a region for a keyed blurred shadow, stored reduced: the entry draws w x h but holds regionW x regionH
-	/// texels, copied in from the blur's output. The caller sets <see cref="Slot.Uv"/> to the part it samples.
+	/// texels, copied in from the blur's output. The caller sets <see cref="Slot.Uv"/> to the part it samples. Null when
+	/// no page could be created.
 	/// </summary>
-	public Slot AllocateShadow(in Key key, int w, int h, int regionW, int regionH, float originX, float originY)
+	public Slot? AllocateShadow(in Key key, int w, int h, int regionW, int regionH, float originX, float originY)
 	{
 		var pool = PoolFor(WebGpuDevice.DefaultColorFormat, ShadowPageUsage, PageSizeFor(regionW, regionH));
-		var slot = Reserve(pool, regionW, regionH, w, h)
-			?? throw new InvalidOperationException($"WebGPU could not place a {regionW}x{regionH} shadow (out of GPU memory, or the device was lost).");
+		if (Reserve(pool, regionW, regionH, w, h) is not { } slot) { return null; }
 		return Insert(slot with { OriginX = originX, OriginY = originY }, key);
 	}
 
