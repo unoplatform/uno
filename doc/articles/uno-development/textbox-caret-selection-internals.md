@@ -75,6 +75,8 @@ Where the platform needs a real native text input (for the virtual keyboard, aut
 | iOS | `InvisibleTextBoxViewExtension`, `SinglelineInvisibleTextBoxView` (a `UITextField`), `MultilineInvisibleTextBoxView` (a `UITextView`), their delegates, and `NativeTextSelection` (`Uno.UI.Runtime.AppleUIKit`) |
 | Android, desktop | No overlay proxy. Android talks to the soft keyboard through `TextInputConnection` (`Uno.UI.Runtime.Android`). |
 
+On iOS the proxy exists while its input has the focus. The two inputs of a login (a `PasswordBox` and the single-line `TextBox` before it in the tab order) keep theirs while they are loaded, because Password AutoFill makes each of them the first responder in turn. The one that isn't focused sits at its input's bounds, hidden from VoiceOver, since iOS only looks for those fields on screen.
+
 IME composition is a separate channel: each runtime provides an `IImeTextBoxExtension` (`AndroidImeTextBoxExtension`, `AppleUIKitImeTextBoxExtension`, `MacOSImeTextBoxExtension`, `WasmImeTextBoxExtension`, `Win32ImeTextBoxExtension`, `X11ImeTextBoxExtension`). While `IsComposing` is true, the native marked text owns the selection, so the core avoids pushing its own selection to the proxy.
 
 ## Caret drag gesture (iOS space-bar trackpad)
