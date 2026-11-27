@@ -36,6 +36,7 @@ public partial class SpeechRecognizer : IDisposable
 	private UtteranceEndReason _endReason;
 	private bool _isSpeechDetected;
 	private bool _isSoundActive;
+	private DateTimeOffset _utteranceStartTime;
 	private DateTimeOffset? _quietSince;
 	private ITimer? _initialSilenceTimer;
 	private ITimer? _endSilenceTimer;
@@ -262,6 +263,7 @@ public partial class SpeechRecognizer : IDisposable
 		_isSpeechDetected = false;
 		_isSoundActive = false;
 		_quietSince = null;
+		_utteranceStartTime = _timeProvider.GetUtcNow();
 		_audioLevels.Reset();
 
 		SetStateLocked(SpeechRecognizerState.Capturing);
@@ -510,13 +512,17 @@ public partial class SpeechRecognizer : IDisposable
 		};
 	}
 
-	private static SpeechRecognitionResult CreateRecognizedResult(SpeechUtteranceOutcome outcome)
+	private SpeechRecognitionResult CreateRecognizedResult(SpeechUtteranceOutcome outcome)
 	{
+		var audioStartTime = outcome.AudioStartTime ?? _utteranceStartTime;
 		var alternates = outcome.Transcriptions
 			.Select(transcription => new SpeechRecognitionResult
 			{
 				Text = transcription.Text,
 				RawConfidence = transcription.Confidence,
+				Confidence = SpeechRecognitionResult.GetConfidence(transcription.Confidence),
+				PhraseStartTime = audioStartTime + transcription.Start,
+				PhraseDuration = transcription.Duration,
 				Status = SpeechRecognitionResultStatus.Success,
 			})
 			.ToList();
@@ -529,12 +535,14 @@ public partial class SpeechRecognizer : IDisposable
 		return alternates[0];
 	}
 
-	private static SpeechRecognitionResult CreateEmptyResult(SpeechRecognitionResultStatus status)
+	private SpeechRecognitionResult CreateEmptyResult(SpeechRecognitionResultStatus status)
 	{
 		var result = new SpeechRecognitionResult
 		{
 			Text = string.Empty,
 			Status = status,
+			Confidence = SpeechRecognitionConfidence.Rejected,
+			PhraseStartTime = _utteranceStartTime,
 		};
 		result.Alternates = new[] { result };
 		return result;

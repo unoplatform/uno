@@ -249,6 +249,54 @@ public class Given_SpeechRecognizer
 		Assert.IsTrue(_engine.IsDisposed);
 	}
 
+	[TestMethod]
+	public async Task When_Recognized_Then_Confidence_And_Phrase_Timing_Are_Reported()
+	{
+		var recognition = _sut.RecognizeAsync().AsTask();
+		var audioStartTime = _time.GetUtcNow().AddMilliseconds(-200);
+		_engine.RaiseSpeechDetected();
+		_engine.Complete(
+			new[]
+			{
+				new SpeechTranscription("Turn on the lights", 0.92, TimeSpan.FromSeconds(0.4), TimeSpan.FromSeconds(1.3)),
+				new SpeechTranscription("Turn on the light", 0.55, TimeSpan.FromSeconds(0.4), TimeSpan.FromSeconds(1.2)),
+			},
+			audioStartTime);
+
+		var result = await recognition;
+
+		Assert.AreEqual(SpeechRecognitionConfidence.High, result.Confidence);
+		Assert.AreEqual(0.92, result.RawConfidence);
+		Assert.AreEqual(audioStartTime + TimeSpan.FromSeconds(0.4), result.PhraseStartTime);
+		Assert.AreEqual(TimeSpan.FromSeconds(1.3), result.PhraseDuration);
+		Assert.AreEqual(SpeechRecognitionConfidence.Medium, result.GetAlternates(2)[1].Confidence);
+	}
+
+	[TestMethod]
+	[DataRow(0.95, SpeechRecognitionConfidence.High)]
+	[DataRow(0.8, SpeechRecognitionConfidence.High)]
+	[DataRow(0.79, SpeechRecognitionConfidence.Medium)]
+	[DataRow(0.5, SpeechRecognitionConfidence.Medium)]
+	[DataRow(0.2, SpeechRecognitionConfidence.Low)]
+	[DataRow(0.0, SpeechRecognitionConfidence.Low)]
+	public void When_Raw_Confidence_Then_Confidence_Level(double rawConfidence, SpeechRecognitionConfidence expected)
+		=> Assert.AreEqual(expected, SpeechRecognitionResult.GetConfidence(rawConfidence));
+
+	[TestMethod]
+	public async Task When_Nothing_Recognized_Then_Confidence_Is_Rejected()
+	{
+		var start = _time.GetUtcNow();
+		var recognition = _sut.RecognizeAsync().AsTask();
+		_time.Advance(TimeSpan.FromSeconds(5));
+		_engine.CompleteCanceled();
+
+		var result = await recognition;
+
+		Assert.AreEqual(SpeechRecognitionConfidence.Rejected, result.Confidence);
+		Assert.AreEqual(start, result.PhraseStartTime);
+		Assert.AreEqual(TimeSpan.Zero, result.PhraseDuration);
+	}
+
 	private void CreateRecognizer(bool languageSupported = true)
 	{
 		_engine = new FakeSpeechRecognizerExtension { IsLanguageSupported = languageSupported };
