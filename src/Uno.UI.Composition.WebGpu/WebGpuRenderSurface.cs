@@ -29,12 +29,13 @@ internal sealed unsafe class WebGpuRenderSurface
 	// Only the dedicated offscreen owns its colour. A pooled surface's is reclaimed by the pool; the main pass's is the
 	// host's target view, which the host owns.
 	private readonly bool _ownsColor;
+	private readonly WebGpuDevice _device;
 	private readonly WebGPU _api;
 
 	public void Dispose()
 	{
 		if (!_ownsColor) { return; }
-		if (View != null) { _api.TextureViewRelease(View); View = null; }
+		if (View != null) { _device.Groups.NoteDestroyed((nint)View); _api.TextureViewRelease(View); View = null; }
 		if (Tex != null) { _api.TextureDestroy(Tex); _api.TextureRelease(Tex); Tex = null; }
 	}
 
@@ -42,6 +43,7 @@ internal sealed unsafe class WebGpuRenderSurface
 	// so it can be read back.
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, string what = "offscreen")
 	{
+		_device = device;
 		_api = device.Api;
 		Width = width; Height = height;
 		_ownsColor = true;
@@ -68,6 +70,7 @@ internal sealed unsafe class WebGpuRenderSurface
 	// The main pass: the colour is the host's target view, set by the factory; nothing is allocated here.
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, bool externalColor)
 	{
+		_device = device;
 		_api = device.Api;
 		Width = width; Height = height;
 	}
@@ -75,6 +78,7 @@ internal sealed unsafe class WebGpuRenderSurface
 	// A transient offscreen (a layer, a sheet) rented from the pool, so a steady-state frame allocates nothing.
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, WebGpuTexturePool pool)
 	{
+		_device = device;
 		_api = device.Api;
 		Width = width; Height = height;
 		View = pool.Rent(width, height, 1, TextureUsage.RenderAttachment | TextureUsage.TextureBinding | TextureUsage.CopySrc, device.ColorFormat);
@@ -103,19 +107,19 @@ internal sealed class OwnedResources
 	public System.Collections.Generic.List<nint> BindGroups = new();
 	// Clip-slab slot handles this bag's bind groups reference; freed with the bag (see WebGpuClipSlab).
 	public System.Collections.Generic.List<nint> ClipSlots;
-	// Coverage-atlas slots this bag's draw ops sample; freed with the bag, because those ops bake the slot's UVs
-	// and would sample another shape's mask if the region were reclaimed while they still existed.
-	public System.Collections.Generic.List<WebGpuPathAtlas.Slot> AtlasSlots;
-	// Path-clip coverage masks this bag's clip bind groups sample. They live exactly as long as the bag: a mask
-	// from the per-frame pool under a bind group that outlives the frame is a use-after-free.
-	public System.Collections.Generic.List<(nint view, nint tex)> Textures;
+	// The shared clip groups this bag's ops bind at their slots' offsets, pinned until the bag is freed.
+	public System.Collections.Generic.List<WebGpuGroupCache.Entry> ClipGroups;
+	// Mask-atlas slots this bag's draw ops and clip groups sample (cached entries it retained, and masks it owns);
+	// freed with the bag, because those ops bake the slot's UVs and would sample another shape's mask if the region
+	// were reclaimed while they still existed.
+	public System.Collections.Generic.List<WebGpuMaskAtlas.Slot> AtlasSlots;
 	// Release-once claim: a rebuild (render thread) and the recording's Dispose (UI thread) can both hand the
 	// same bag to DeferRelease — the rebuild reads the compiled entry before it stores the replacement, so a
 	// Dispose in that window re-defers the old bag. Double-releasing recycles wgpu ids under in-flight uses
 	// ("BindGroup[Id] does not exist" panic); the claim makes the second hand-off a no-op.
 	public int Released;
 
-	internal readonly record struct ClipMemoEntry(ClipData Clip, System.Numerics.Matrix3x2 Xform, System.Numerics.Matrix3x2 Finv, nint Bg, nint Slot, bool AabbInClipU);
+	internal readonly record struct ClipMemoEntry(ClipData Clip, System.Numerics.Matrix3x2 Xform, System.Numerics.Matrix3x2 Finv, ClipBinding Bg, nint Slot, bool AabbInClipU);
 	// The clip bind groups this bag has already made, for sharing between its ops while it is being built; dropped
 	// when the build ends, since nothing adds to a finished bag.
 	internal System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<ClipMemoEntry>> ClipMemo;

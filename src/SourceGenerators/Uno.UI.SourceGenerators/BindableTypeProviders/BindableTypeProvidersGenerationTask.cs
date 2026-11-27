@@ -326,11 +326,17 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 							writer.AppendLineInvariantIndented(@"MetadataBuilder_{0:000}.Build(bindableType); // {1}", baseTypeMapped.Index, ExpandType(baseType));
 						}
 
-						if (IsCreateable(ownerType))
+						if (GetActivatorConstructor(ownerType) is { } activatorConstructor)
 						{
 							using (writer.BlockInvariant("if(parent == null)"))
 							{
 								writer.AppendLineIndented(@"bindableType.AddActivator(CreateInstance);");
+
+								// [RequiresUnreferencedCode] on a type also covers its constructors.
+								if (HasRequiresUnreferencedCode(ownerType) || HasRequiresUnreferencedCode(activatorConstructor))
+								{
+									postWriter.AppendLineIndented("[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage(\"Trimming\", \"IL2026\", Justification = \"Generated for every referenced bindable type, used or not, and only called for Type-based activation.\")]");
+								}
 								postWriter.AppendLineIndented($@"private static object CreateInstance() => new {ownerTypeName}();");
 
 								RegisterHintMethod($"MetadataBuilder_{typeInfo.Index:000}", ownerType, "System.Object CreateInstance()");
@@ -495,11 +501,15 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				return (needsGlobal ? "global::" : "");
 			}
 
-			private bool IsCreateable(INamedTypeSymbol type)
-			{
-				return !type.IsAbstract
-					&& type.InstanceConstructors.Any(m => m.Parameters.Length == 0 && m.IsLocallyPublic(_currentModule!));
-			}
+			private IMethodSymbol? GetActivatorConstructor(INamedTypeSymbol type)
+				=> type.IsAbstract
+					? null
+					: type.InstanceConstructors.FirstOrDefault(m => m.Parameters.Length == 0 && m.IsLocallyPublic(_currentModule!));
+
+			// Matched by name, as the trim analyzer does, so polyfilled copies of the attribute count too.
+			private static bool HasRequiresUnreferencedCode(ISymbol symbol)
+				=> symbol.GetAttributes().Any(a => a.AttributeClass is { Name: "RequiresUnreferencedCodeAttribute" } attribute
+					&& attribute.ContainingNamespace.ToDisplayString() == "System.Diagnostics.CodeAnalysis");
 
 			// DependencyObject is a base class, so detection must walk the base-type chain.
 			private bool IsDependencyObject(ITypeSymbol? type)

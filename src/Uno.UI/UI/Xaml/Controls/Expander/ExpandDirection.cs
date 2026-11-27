@@ -1,4 +1,6 @@
-﻿namespace Microsoft.UI.Xaml.Controls;
+﻿// MUX Reference Expander.idl
+
+namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Defines constants that specify in which direction a control should expand.

@@ -7,6 +7,7 @@ using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
+using Uno.UI;
 using Uno.UI.Xaml.Controls;
 using Windows.Storage;
 using Windows.Storage.Helpers;
@@ -38,6 +39,11 @@ internal partial class NativeWebView : ICleanableNativeWebView
 		_coreWebView = coreWebView;
 		_elementId = elementId;
 
+		if (FeatureConfiguration.WebView2.Credentialless)
+		{
+			NativeMethods.EnableCredentialless(elementId);
+		}
+
 		NativeMethods.InitializeStyling(elementId);
 		NativeMethods.SetupEvents(elementId);
 	}
@@ -65,6 +71,10 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	}
 
 	[JSExport]
+	internal static Task<bool> DispatchNewWindowRequestedAsync(ElementId elementId, string targetUrl, string refererUrl)
+		=> Task.FromResult(DispatchNewWindowRequested(elementId, targetUrl, refererUrl));
+
+	[JSExport]
 	internal static void DispatchLoadEvent(ElementId elementId, string? absoluteUrl)
 	{
 		if (_elementIdToNativeWebView.TryGetValue(elementId, out var nativeWebView))
@@ -74,12 +84,11 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	}
 
 	[JSExport]
-	internal static void DispatchWebMessage(ElementId elementId, string message)
+	internal static Task DispatchLoadEventAsync(ElementId elementId, string? absoluteUrl)
 	{
-		if (_elementIdToNativeWebView.TryGetValue(elementId, out var nativeWebView))
-		{
-			nativeWebView._coreWebView.RaiseWebMessageReceived(message);
-		}
+		DispatchLoadEvent(elementId, absoluteUrl);
+
+		return Task.CompletedTask;
 	}
 
 	public string DocumentTitle => NativeMethods.GetDocumentTitle(_elementId) ?? "";

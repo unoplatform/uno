@@ -2603,6 +2603,198 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24904")]
+		[DataRow(FlowDirection.LeftToRight, null, "abc", "L")]
+		[DataRow(FlowDirection.LeftToRight, TextAlignment.Right, "abc", "R")]
+		[DataRow(FlowDirection.LeftToRight, null, "مرحبا", "L")]
+		[DataRow(FlowDirection.RightToLeft, null, "abc", "R")]
+		[DataRow(FlowDirection.RightToLeft, null, "مرحبا", "R")]
+		[DataRow(FlowDirection.RightToLeft, TextAlignment.Left, "abc", "R")]
+		[DataRow(FlowDirection.RightToLeft, TextAlignment.Right, "abc", "L")]
+		[DataRow(FlowDirection.RightToLeft, TextAlignment.Right, "مرحبا", "L")]
+		[DataRow(FlowDirection.RightToLeft, TextAlignment.Center, "abc", "C")]
+		[DataRow(FlowDirection.RightToLeft, TextAlignment.Justify, "abc", "L")]
+		[DataRow(FlowDirection.LeftToRight, TextAlignment.Justify, "abc", "L")]
+		[DataRow(FlowDirection.LeftToRight, TextAlignment.DetectFromContent, "abc", "L")]
+		[DataRow(FlowDirection.LeftToRight, TextAlignment.DetectFromContent, "مرحبا", "R")]
+		[DataRow(FlowDirection.RightToLeft, TextAlignment.DetectFromContent, "abc", "L")]
+		[DataRow(FlowDirection.RightToLeft, TextAlignment.DetectFromContent, "مرحبا", "R")]
+		public async Task When_FlowDirection_Then_TextAlignment_Is_Relative_To_It(FlowDirection flowDirection, TextAlignment? alignment, string text, string expectedSide)
+		{
+			var SUT = CreateRedTextBlock(flowDirection, alignment);
+			SUT.Text = text;
+
+			await LoadOnWhite(SUT);
+			await AssertInkSide(SUT, expectedSide, $"{flowDirection} {alignment?.ToString() ?? "default"} '{text}'");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24904")]
+		[DataRow("Link")]
+		[DataRow("رابط")]
+		public async Task When_FlowDirection_RightToLeft_Then_Hyperlink_Is_At_Start(string text)
+		{
+			var SUT = CreateRedTextBlock(FlowDirection.RightToLeft, alignment: null);
+			SUT.Inlines.Add(new Hyperlink
+			{
+				Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red),
+				Inlines = { new Run { Text = text } },
+			});
+
+			await LoadOnWhite(SUT);
+			await AssertInkSide(SUT, "R", $"Hyperlink '{text}'");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24904")]
+		public async Task When_FlowDirection_Changes_Then_Text_Moves_To_Start()
+		{
+			var SUT = CreateRedTextBlock(FlowDirection.LeftToRight, alignment: null);
+			SUT.Text = "abc";
+			await LoadOnWhite(SUT);
+			await AssertInkSide(SUT, "L", "LeftToRight");
+
+			SUT.FlowDirection = FlowDirection.RightToLeft;
+			await AssertInkSide(SUT, "R", "after switching to RightToLeft");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24904")]
+		[DataRow(FlowDirection.RightToLeft, "aa bb cc dd ee ff gg hh ii jj kk ll mm nn oo pp qq rr ss tt uu vv ww xx yy zz", "L")]
+		[DataRow(FlowDirection.RightToLeft, "مرحبا بكم في هذا المكان الجميل مرحبا بكم في هذا المكان الجميل مرحبا بكم", "R")]
+		[DataRow(FlowDirection.LeftToRight, "مرحبا بكم في هذا المكان الجميل مرحبا بكم في هذا المكان الجميل مرحبا بكم", "R")]
+		public async Task When_Justify_Then_Last_Line_Follows_Text_Direction(FlowDirection flowDirection, string text, string expectedLastLineSide)
+		{
+			const int lineHeight = 40;
+			var SUT = CreateRedTextBlock(flowDirection, TextAlignment.Justify);
+			SUT.Text = text;
+			SUT.TextWrapping = TextWrapping.Wrap;
+			SUT.LineHeight = lineHeight;
+			SUT.LineStackingStrategy = LineStackingStrategy.BlockLineHeight;
+
+			await LoadOnWhite(SUT);
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			Assert.IsTrue(screenshot.Height >= 2 * lineHeight, $"Expected the text to wrap, height {screenshot.Height}");
+
+			var first = GetRedInk(screenshot, 0, lineHeight);
+			var last = GetRedInk(screenshot, screenshot.Height - lineHeight, screenshot.Height);
+			var edge = screenshot.Width * 0.1;
+			Assert.IsTrue(first.left < edge && first.right > screenshot.Width - edge, $"Expected the first line justified: ink [{first.left}, {first.right}] of width {screenshot.Width}");
+			var lastLineAtExpectedEdge = expectedLastLineSide == "R" ? last.right > screenshot.Width - edge : last.left < edge;
+			Assert.IsTrue(lastLineAtExpectedEdge, $"Expected the last line at the {expectedLastLineSide} edge: ink [{last.left}, {last.right}] of width {screenshot.Width}");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24904")]
+		[DataRow(FlowDirection.RightToLeft, null, "مرحبا", "R")]
+		[DataRow(FlowDirection.RightToLeft, null, "abc", "L")]
+		[DataRow(FlowDirection.LeftToRight, null, "abc", "L")]
+		[DataRow(FlowDirection.RightToLeft, TextAlignment.Left, "abc", "R")]
+		[DataRow(FlowDirection.RightToLeft, TextAlignment.Right, "abc", "L")]
+		public async Task When_TextBox_FlowDirection_Then_TextAlignment_Is_Relative_To_It(FlowDirection flowDirection, TextAlignment? alignment, string text, string expectedSide)
+		{
+			var SUT = new TextBox
+			{
+				Text = text,
+				Width = 300,
+				FlowDirection = flowDirection,
+				IsTabStop = false,
+				Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			};
+			if (alignment is { } a)
+			{
+				SUT.TextAlignment = a;
+			}
+
+			await LoadOnWhite(SUT);
+			// The whole TextBox: its inner TextBlock alone would be captured without the TextBox's mirror.
+			await AssertInkSide(SUT, expectedSide, $"TextBox {flowDirection} {alignment?.ToString() ?? "default"} '{text}'");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24904")]
+		[DataRow(FlowDirection.LeftToRight)]
+		[DataRow(FlowDirection.RightToLeft)]
+		public async Task When_RichEditBox_Paragraph_Alignments_Become_Mixed_Then_Side_Is_Unchanged(FlowDirection flowDirection)
+		{
+			var SUT = new RichEditBox { Width = 300, FlowDirection = flowDirection, IsTabStop = false };
+			await LoadOnWhite(SUT);
+			SUT.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, "abc\rdef");
+			SUT.Document.GetRange(0, 3).CharacterFormat.ForegroundColor = Microsoft.UI.Colors.Red;
+			// The whole document, including its final paragraph mark, so every paragraph shares the alignment.
+			SUT.Document.GetRange(0, int.MaxValue).ParagraphFormat.Alignment = Microsoft.UI.Text.ParagraphAlignment.Right;
+			var second = SUT.Document.GetRange(4, 7);
+
+			await UITestHelper.WaitForIdle();
+			var uniform = GetRedInk(await UITestHelper.ScreenShot(SUT));
+
+			second.ParagraphFormat.Alignment = Microsoft.UI.Text.ParagraphAlignment.Center;
+			await UITestHelper.WaitForIdle();
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			var mixed = GetRedInk(screenshot);
+
+			Assert.IsTrue(uniform.right >= 0 && mixed.right >= 0, "No ink found");
+			Assert.IsTrue(Math.Abs(uniform.left - mixed.left) < screenshot.Width / 10,
+				$"The first paragraph moved when the second one's alignment changed: [{uniform.left}, {uniform.right}] → [{mixed.left}, {mixed.right}] of width {screenshot.Width}");
+		}
+
+		private static TextBlock CreateRedTextBlock(FlowDirection flowDirection, TextAlignment? alignment)
+		{
+			var textBlock = new TextBlock
+			{
+				Width = 300,
+				FontSize = 24,
+				FlowDirection = flowDirection,
+				Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			};
+			if (alignment is { } a)
+			{
+				textBlock.TextAlignment = a;
+			}
+			return textBlock;
+		}
+
+		private static async Task LoadOnWhite(FrameworkElement element)
+			=> await UITestHelper.Load(new Border
+			{
+				Background = new SolidColorBrush(Microsoft.UI.Colors.White),
+				Child = element,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			});
+
+		// expectedSide: "L" or "R" for the half the ink sits in, "C" for ink straddling the middle.
+		private static async Task AssertInkSide(FrameworkElement element, string expectedSide, string context)
+		{
+			await UITestHelper.WaitForIdle();
+			var screenshot = await UITestHelper.ScreenShot(element);
+			var (left, right) = GetRedInk(screenshot);
+			var middle = screenshot.Width / 2.0;
+			var message = $"{context}: ink [{left}, {right}] in {screenshot.Width}x{screenshot.Height} ({element.ActualWidth}x{element.ActualHeight})";
+			Assert.IsTrue(right >= 0, "No red ink: missing font or blank render. " + message);
+			var actualSide = right < middle ? "L" : left > middle ? "R" : "C";
+			Assert.AreEqual(expectedSide, actualSide, message);
+		}
+
+		private static (int left, int right) GetRedInk(RawBitmap bitmap, int top = 0, int bottom = int.MaxValue)
+		{
+			int left = int.MaxValue, right = -1;
+			for (var y = Math.Max(0, top); y < Math.Min(bitmap.Height, bottom); y++)
+			{
+				for (var x = 0; x < bitmap.Width; x++)
+				{
+					var c = bitmap.GetPixel(x, y);
+					if (c.R > 180 && c.G < 120 && c.B < 120)
+					{
+						left = Math.Min(left, x);
+						right = Math.Max(right, x);
+					}
+				}
+			}
+			return (left, right);
+		}
+
+		[TestMethod]
 		public async Task When_BaselineOffset_Reflects_First_Line()
 		{
 			var unpadded = new TextBlock { Text = "Baseline", FontSize = 24 };

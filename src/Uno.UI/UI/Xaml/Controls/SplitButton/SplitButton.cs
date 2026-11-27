@@ -175,9 +175,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void RegisterFlyoutEvents()
 		{
-			m_flyoutOpenedRevoker.Dispose();
-			m_flyoutClosedRevoker.Dispose();
-			m_flyoutPlacementChangedRevoker.Dispose();
+			m_flyoutOpenedRevoker.Disposable = null;
+			m_flyoutClosedRevoker.Disposable = null;
+			m_flyoutPlacementChangedRevoker.Disposable = null;
 
 			// Uno Specific: use a local variable instead of the property to capture the flyout reference even if Flyout changes
 			if (Flyout is { } flyout)
@@ -457,27 +457,27 @@ namespace Microsoft.UI.Xaml.Controls
 			// This explicitly unregisters all events related to the two buttons in OnApplyTemplate
 			// in case the new template doesn't have all the expected elements.
 
-			m_clickPrimaryRevoker.Dispose();
-			m_pressedPrimaryRevoker.Dispose();
-			m_pointerOverPrimaryRevoker.Dispose();
+			m_clickPrimaryRevoker.Disposable = null;
+			m_pressedPrimaryRevoker.Disposable = null;
+			m_pointerOverPrimaryRevoker.Disposable = null;
 
-			m_pointerEnteredPrimaryRevoker.Dispose();
-			m_pointerExitedPrimaryRevoker.Dispose();
-			m_pointerPressedPrimaryRevoker.Dispose();
-			m_pointerReleasedPrimaryRevoker.Dispose();
-			m_pointerCanceledPrimaryRevoker.Dispose();
-			m_pointerCaptureLostPrimaryRevoker.Dispose();
+			m_pointerEnteredPrimaryRevoker.Disposable = null;
+			m_pointerExitedPrimaryRevoker.Disposable = null;
+			m_pointerPressedPrimaryRevoker.Disposable = null;
+			m_pointerReleasedPrimaryRevoker.Disposable = null;
+			m_pointerCanceledPrimaryRevoker.Disposable = null;
+			m_pointerCaptureLostPrimaryRevoker.Disposable = null;
 
-			m_clickSecondaryRevoker.Dispose();
-			m_pressedSecondaryRevoker.Dispose();
-			m_pointerOverSecondaryRevoker.Dispose();
+			m_clickSecondaryRevoker.Disposable = null;
+			m_pressedSecondaryRevoker.Disposable = null;
+			m_pointerOverSecondaryRevoker.Disposable = null;
 
-			m_pointerEnteredSecondaryRevoker.Dispose();
-			m_pointerExitedSecondaryRevoker.Dispose();
-			m_pointerPressedSecondaryRevoker.Dispose();
-			m_pointerReleasedSecondaryRevoker.Dispose();
-			m_pointerCanceledSecondaryRevoker.Dispose();
-			m_pointerCaptureLostSecondaryRevoker.Dispose();
+			m_pointerEnteredSecondaryRevoker.Disposable = null;
+			m_pointerExitedSecondaryRevoker.Disposable = null;
+			m_pointerPressedSecondaryRevoker.Disposable = null;
+			m_pointerReleasedSecondaryRevoker.Disposable = null;
+			m_pointerCanceledSecondaryRevoker.Disposable = null;
+			m_pointerCaptureLostSecondaryRevoker.Disposable = null;
 		}
 
 		internal bool IsFlyoutOpen => m_isFlyoutOpen;

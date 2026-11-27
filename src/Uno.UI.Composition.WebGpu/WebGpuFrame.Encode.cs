@@ -98,7 +98,7 @@ internal sealed unsafe partial class WebGpuFrame
 		pst.Enc.Pipe(UseDepth ? _d.ImagePipeD : _d.ImagePipe);
 		Api.RenderPassEncoderSetBindGroup(pst.Pass, 0, pst.PassBg, 0, null);
 		Api.RenderPassEncoderSetBindGroup(pst.Pass, 1, imageBg, 0, null);
-		Api.RenderPassEncoderSetBindGroup(pst.Pass, 2, clipBg, 0, null);
+		PassEncoder.BindClip(Api, pst.Pass, 2, clipBg);
 		Api.RenderPassEncoderSetBindGroup(pst.Pass, 3, _d.IdentitySiteBg, 0, null);
 		Api.RenderPassEncoderSetVertexBuffer(pst.Pass, 0, verts, 0, (nuint)(24 * sizeof(float)));
 		pst.Enc.Reset();
@@ -174,8 +174,8 @@ internal sealed unsafe partial class WebGpuFrame
 			else { buf = (Buffer*)op.Verts; bytes = (nuint)((op.FirstVertex + count) * stride * sizeof(float)); }
 			pst.Enc.Pipe(pipe);
 			pst.Enc.Bg(0, pst.PassBg);
-			if (op.Group1 != null) { pst.Enc.Bg(1, op.Group1); pst.Enc.Bg(2, op.ClipBg); }
-			else { pst.Enc.Bg(1, op.ClipBg); }
+			if (op.Group1 != null) { pst.Enc.Bg(1, op.Group1); pst.Enc.ClipBg(2, op.ClipBg); }
+			else { pst.Enc.ClipBg(1, op.ClipBg); }
 			pst.Enc.Bg(3, op.SiteBg != null ? op.SiteBg : _d.IdentitySiteBg);
 			pst.Enc.Vb(buf, 0, bytes);
 			pst.Enc.Draw(count, op.FirstVertex);
@@ -207,9 +207,9 @@ internal sealed unsafe partial class WebGpuFrame
 		line.Append($" scissorChanges={pst.Scissors} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB");
 		line.Append($" arena={StatArenaHits} rebuilds={_statArenaRebuilds}(miss{_statArMiss}/masks{_statArMasks}) stamps={_statStamps} pool={StatPoolHits}/{StatPoolAdds} walked={StatWalkedRecords} walkPaths={StatWalkPaths} culled={StatCulled}/{StatSplit} clipCulled={StatClipCulled} ringBands={StatRingBands} prepass={StatPrepass} clearFolds={StatClearFolds} layers=shadow{StatLayerShadow}/matrix{StatLayerMatrix}/mask{StatLayerMask}/plain{StatLayerPlain}");
 		line.Append($" fan=refused{WebGpuShapeCache.StatFanRefused}/points{WebGpuShapeCache.StatTessPoints}/tri{WebGpuShapeCache.StatTessTri}/area{WebGpuShapeCache.StatTessArea}/fold{WebGpuShapeCache.StatTessFold}");
-		line.Append($" atlas=try{WebGpuCoverage.AtlasTried}/key-no{WebGpuCoverage.AtlasNoKey}/hit{WebGpuCoverage.AtlasHit}/baked{WebGpuCoverage.AtlasBaked} clipMasks={WebGpuCoverage.ClipMasksBaked} fillMasks={WebGpuCoverage.FillMaskHits}/{WebGpuCoverage.FillMasksBaked}/nocache{WebGpuCoverage.FillMaskUncached} sheet={WebGpuCoverage.SheetSlotsBaked} shadowSheet={WebGpuEffects.ShadowSlotsBaked} bakes={WebGpuCoverage.BakeBatches} layerSheet={WebGpuEffects.LayerSheetSlots}/{WebGpuEffects.LayerSheetPasses}");
-		line.Append($"/full{WebGpuCoverage.AtlasNoRoom}/noedges{WebGpuCoverage.AtlasNoEdges}/scaleblk{WebGpuCoverage.ScaleBlocked}/big{WebGpuPathAtlas.RejBig}");
-		line.Append($"/pages{_d.PathAtlas.Pages.Count}");
+		line.Append($" atlas=try{WebGpuCoverage.AtlasTried}/key-no{WebGpuCoverage.AtlasNoKey}/hit{WebGpuCoverage.AtlasHit}/baked{WebGpuCoverage.AtlasBaked} clipMasks={WebGpuCoverage.ClipMasksBaked} fillMasks={WebGpuCoverage.FillMaskHits}/{WebGpuCoverage.FillMasksBaked}/nocache{WebGpuCoverage.FillMaskUncached} shadowSheet={WebGpuEffects.ShadowSlotsBaked} bakes={WebGpuCoverage.BakeBatches} layerSheet={WebGpuEffects.LayerSheetSlots}/{WebGpuEffects.LayerSheetPasses}");
+		line.Append($"/full{WebGpuCoverage.AtlasNoRoom}/noedges{WebGpuCoverage.AtlasNoEdges}/scaleblk{WebGpuCoverage.ScaleBlocked}/big{WebGpuMaskAtlas.RejBig}");
+		line.Append($"/pages{_d.Atlas.Pages.Count}");
 		System.Console.WriteLine(line.ToString());
 		StatArenaHits = _statArenaRebuilds = _statArMiss = _statArMasks = _statStamps = StatWalkedRecords = StatWalkPaths = StatCulled = StatClipCulled = StatSplit = StatPrepass = StatClearFolds = StatLayerShadow = StatLayerMatrix = StatLayerMask = StatLayerPlain = 0;
 		StatPoolHits = StatPoolAdds = 0;

@@ -68,12 +68,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_implicitPrefixesKey = string.Join("|", _implicitPrefixes.Select(p => p.Prefix + ":" + p.Uri));
 		}
 
-		public ParallelQuery<XamlFileDefinition> ParseFiles(IEnumerable<XamlSource> xamlSourceFiles, string projectDirectory, CancellationToken ct)
+		public ParallelQuery<XamlFileDefinition> ParseFiles(IEnumerable<XamlSource> xamlSourceFiles, string projectDirectory, string? intermediateDirectory, CancellationToken ct)
 		{
 			return xamlSourceFiles
 				.AsParallel()
 				.WithCancellation(ct)
-				.Select(src => ParseFile(src, GetTargetFilePath(src.Item).Replace("\\", "/"), ct))
+				.Select(src => ParseFile(src, GetTargetFilePath(src.Item).Replace("\\", "/"), intermediateDirectory, ct))
 				.Where(fileResult => fileResult is not null)!;
 
 			string GetTargetFilePath(MSBuildItem fileItem)
@@ -103,7 +103,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_cachedFiles.Remove(kvp => now - kvp.Value.LastTimeUsed > _cacheEntryLifetime);
 		}
 
-		private XamlFileDefinition? ParseFile(XamlSource src, string targetFilePath, CancellationToken ct)
+		private XamlFileDefinition? ParseFile(XamlSource src, string targetFilePath, string? intermediateDirectory, CancellationToken ct)
 		{
 			try
 			{
@@ -139,7 +139,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				ct.ThrowIfCancellationRequested();
 
-				var xamlFileDefinition = new XamlFileDefinition(sourcePath, sourceLink, targetFilePath, sourceText.ToString(), sourceText.GetChecksum());
+				var xamlFileDefinition = new XamlFileDefinition(sourcePath, sourceLink, targetFilePath, sourceText.ToString(), sourceText.GetChecksum(), intermediateDirectory);
 				var ctx = new XamlFileParserContext(sourcePath);
 				try
 				{
@@ -464,7 +464,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
-		/// Records a <c>clr-namespace:</c> declaration, or one using a removed conditional prefix, for later
+		/// Records a <c>clr-namespace:</c> declaration, or one using a removed conditional prefix or namespace, for later
 		/// validation. Reporting is deferred because the reader yields namespace nodes before the element's
 		/// <c>mc:Ignorable</c> attribute is read.
 		/// </summary>
@@ -472,7 +472,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (reader.Namespace is { } declaration
 				&& (XamlNamespaceValidation.IsClrNamespace(declaration.Namespace)
-					|| XamlNamespaceValidation.IsRemovedConditionalPrefix(declaration.Prefix, declaration.Namespace)))
+					|| XamlNamespaceValidation.IsRemovedConditionalPrefix(declaration.Prefix, declaration.Namespace)
+					|| XamlNamespaceValidation.IsRemovedToolkitNamespace(declaration.Namespace)))
 			{
 				ctx.TrackNamespaceDeclaration(declaration.Prefix, declaration.Namespace, reader.LineNumber, reader.LinePosition);
 			}

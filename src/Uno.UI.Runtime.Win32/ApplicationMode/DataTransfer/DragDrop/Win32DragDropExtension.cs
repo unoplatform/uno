@@ -25,9 +25,6 @@ namespace Uno.UI.Runtime.Win32;
 /// This partial class is split across multiple files:
 /// - Win32DragDropExtension.cs (this file): Core class, constructor, and infrastructure
 /// - Win32DragDropExtension.DropTarget.cs: IDropTarget interface implementation
-/// - Win32DragDropExtension.DragUI.cs: DragUI creation for external drags
-/// - Win32DragDropExtension.ImageHelpers.cs: Image/icon extraction and conversion
-/// - Win32DragDropExtension.PngHelpers.cs: PNG encoding utilities
 /// - Win32DragDropExtension.DragEventSource.cs: DragEventSource struct
 /// </summary>
 internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.Interface
@@ -41,6 +38,12 @@ internal partial class Win32DragDropExtension : IDragDropExtension, IDropTarget.
 	private readonly ComScope<IDropTarget> _dropTarget;
 
 	private AsyncHDropHandler? _lastAsyncHDropHandler;
+
+	// From DragEnter to DragLeave or Drop. The manager is apartment-threaded, so it's only used on the UI thread, where OLE calls the drop target.
+	private unsafe IDropTargetHelper* _dropTargetHelper;
+	private unsafe IDataObject* _dropTargetHelperDataObject;
+	private bool _isDropTargetHelperUnavailable;
+	private bool _isDropTargetHelperEntered; // DragEnter was forwarded to the manager, and no DragLeave or Drop since.
 
 	private readonly uint CFSTR_FILEDESCRIPTOR;
 	private readonly uint CFSTR_FILECONTENTS;

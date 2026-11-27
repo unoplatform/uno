@@ -844,9 +844,13 @@ namespace Uno.UI.Runtime {
 
 			element.addEventListener('paste', (event: ClipboardEvent) => {
 				const source = event.clipboardData?.getData('text') ?? '';
-				const sourceLimit = BrowserInvisibleTextBoxViewExtension.getNativePasteSourceLimit();
-				BrowserInvisibleTextBoxViewExtension.onNativePaste(
-					source.length > sourceLimit ? source.substring(0, sourceLimit) : source);
+				if (WebAssemblyThreading.isThreadingEnabled()) {
+					BrowserInvisibleTextBoxViewExtension.onNativePasteAsync(source);
+				} else {
+					const sourceLimit = BrowserInvisibleTextBoxViewExtension.getNativePasteSourceLimit();
+					BrowserInvisibleTextBoxViewExtension.onNativePaste(
+						source.length > sourceLimit ? source.substring(0, sourceLimit) : source);
+				}
 				event.preventDefault();
 			});
 
@@ -932,29 +936,15 @@ namespace Uno.UI.Runtime {
 			// not hardcoded here (FR-028).
 			Accessibility.updateElementFocusability(element, isFocusable);
 
-			this.setAriaStringAttribute(element, 'aria-label', selectedValue);
+			SemanticElements.setComboBoxValue(element, selectedValue);
 
 			const callbacks = this.getCallbacks();
 
-			// Keyboard handlers for expand/collapse (WAI-ARIA combobox pattern)
-			element.addEventListener('keydown', (e) => {
-				if (e.key === 'Enter' || e.key === ' ' || (e.key === 'ArrowDown' && e.altKey)) {
-					e.preventDefault();
-					if (callbacks.onExpandCollapse) {
-						callbacks.onExpandCollapse(handle);
-					}
-				} else if (e.key === 'Escape') {
-					// Escape collapses an open popup (WAI-ARIA combobox pattern)
-					if (element.getAttribute('aria-expanded') === 'true') {
-						e.preventDefault();
-						if (callbacks.onExpandCollapse) {
-							callbacks.onExpandCollapse(handle);
-						}
-					}
-				}
-			});
+			// Keys are not handled here: they bubble to the document listener and reach the XAML ComboBox,
+			// which opens, navigates, commits and cancels by itself. A handler here would act on the same
+			// key press a second time.
 
-			// Click handler for expand/collapse
+			// Click handler for expand/collapse (assistive technology activation)
 			element.addEventListener('click', (e) => {
 				e.preventDefault();
 				if (callbacks.onExpandCollapse) {
@@ -1082,6 +1072,7 @@ namespace Uno.UI.Runtime {
 				// Skip no-op writes to avoid caret and IME churn when the DOM value already matches.
 				if (element.value !== value) {
 					element.value = value;
+					BrowserInvisibleTextBoxViewExtension.countFocusedInputWrite(element);
 				}
 
 				// Negative sentinel from C# means "do not touch selection".
@@ -1096,6 +1087,7 @@ namespace Uno.UI.Runtime {
 							start,
 							end,
 							selectionIsBackward ? 'backward' : 'forward');
+						BrowserInvisibleTextBoxViewExtension.countFocusedInputWrite(element);
 					} catch {
 						// Some input types (e.g., password in some browsers) don't support setSelectionRange
 					}
@@ -1144,14 +1136,13 @@ namespace Uno.UI.Runtime {
 		 * Updates the expanded/collapsed state of a combobox element.
 		 */
 		public static updateExpandCollapseState(handle: number, expanded: boolean): void {
-			const element = document.getElementById(`uno-semantics-${handle}`);
-			if (element) {
+			SemanticElements.applyItemStateWhenCreated(handle, 'expanded', element => {
 				(SemanticElements.getSplitButtonPart(element, 'secondary') ?? element).setAttribute('aria-expanded', String(expanded));
 				// Clear activedescendant when collapsing
 				if (!expanded) {
 					element.removeAttribute('aria-activedescendant');
 				}
-			}
+			});
 		}
 
 		/**
@@ -1160,13 +1151,33 @@ namespace Uno.UI.Runtime {
 		 */
 		public static updateActiveDescendant(containerHandle: number, activeItemHandle: number): void {
 			const container = document.getElementById(`uno-semantics-${containerHandle}`);
-			if (container) {
-				if (activeItemHandle !== 0) {
-					const activeId = `uno-semantics-${activeItemHandle}`;
+			if (!container) {
+				return;
+			}
+
+			if (activeItemHandle === 0) {
+				delete container.dataset.unoActiveDescendant;
+				container.removeAttribute('aria-activedescendant');
+				return;
+			}
+
+			const activeId = `uno-semantics-${activeItemHandle}`;
+			// The latest request wins: one that was deferred must not overwrite a newer one.
+			container.dataset.unoActiveDescendant = activeId;
+			const apply = () => {
+				// A reference to a missing option is ignored by the browser and never announced.
+				if (container.dataset.unoActiveDescendant === activeId &&
+					document.getElementById(activeId) &&
+					container.getAttribute('aria-expanded') !== 'false') {
 					container.setAttribute('aria-activedescendant', activeId);
-				} else {
-					container.removeAttribute('aria-activedescendant');
 				}
+			};
+
+			if (document.getElementById(activeId)) {
+				apply();
+			} else {
+				// The option is created by a batched mutation; point at it once it exists.
+				SemanticElements.scheduleVirtualizedMutation(apply);
 			}
 		}
 
@@ -1207,9 +1218,70 @@ namespace Uno.UI.Runtime {
 		 * Updates the selected state of a list item element.
 		 */
 		public static updateSelectionState(handle: number, selected: boolean): void {
+			SemanticElements.applyItemStateWhenCreated(handle, 'selected', element => {
+				element.setAttribute('aria-selected', String(selected));
+			});
+		}
+
+		/**
+		 * Applies a state to an item's semantic element now, or once a batched mutation has created it.
+		 * Only the latest request per element and state is kept, so a deferred one never overwrites a newer one.
+		 */
+		private static applyItemStateWhenCreated(handle: number, state: string, apply: (element: HTMLElement) => void): void {
+			const id = `uno-semantics-${handle}`;
+			const key = `${state}:${id}`;
+			const pending = SemanticElements.pendingItemStates;
+			const element = document.getElementById(id);
+			if (element) {
+				pending.delete(key);
+				apply(element);
+				return;
+			}
+
+			const alreadyScheduled = pending.has(key);
+			pending.set(key, apply);
+			if (!alreadyScheduled) {
+				SemanticElements.scheduleVirtualizedMutation(() => {
+					const latest = pending.get(key);
+					pending.delete(key);
+					const created = document.getElementById(id);
+					if (latest && created) {
+						latest(created);
+					}
+				});
+			}
+		}
+
+		/**
+		 * Updates the value of a combobox element: the text of its selected item.
+		 */
+		public static updateComboBoxValue(handle: number, value: string | null): void {
 			const element = document.getElementById(`uno-semantics-${handle}`);
 			if (element) {
-				element.setAttribute('aria-selected', String(selected));
+				SemanticElements.setComboBoxValue(element, value);
+			}
+		}
+
+		// A role="combobox" that is not an <input> takes its value from its text content. The value
+		// is kept in a text node so the element children (e.g. an editable text box) stay untouched.
+		private static setComboBoxValue(element: HTMLElement, value: string | null): void {
+			let textNode: Text | null = null;
+			for (let i = 0; i < element.childNodes.length; i++) {
+				const node = element.childNodes[i];
+				if (node.nodeType === Node.TEXT_NODE) {
+					textNode = node as Text;
+					break;
+				}
+			}
+
+			if (value) {
+				if (textNode) {
+					textNode.data = value;
+				} else {
+					element.insertBefore(document.createTextNode(value), element.firstChild);
+				}
+			} else if (textNode) {
+				textNode.remove();
 			}
 		}
 
@@ -1262,14 +1334,8 @@ namespace Uno.UI.Runtime {
 				}
 			});
 
-			element.addEventListener('keydown', (e) => {
-				if (e.key === 'Enter' || e.key === ' ') {
-					e.preventDefault();
-					if (callbacks.onInvoke) {
-						callbacks.onInvoke(handle);
-					}
-				}
-			});
+			// Enter/Space reach the XAML control through the document key listener, so no separate
+			// keydown handler is needed.
 
 			this.appendToParent(element, parentHandle, index);
 		}
@@ -1753,6 +1819,11 @@ namespace Uno.UI.Runtime {
 		public static composingHandle: number = 0;
 
 		/**
+		 * Latest item state still waiting for its element, keyed by state and element id.
+		 */
+		private static pendingItemStates = new Map<string, (element: HTMLElement) => void>();
+
+		/**
 		 * Schedules a virtualized mutation to be flushed in the next animation frame.
 		 */
 		private static scheduleVirtualizedMutation(mutation: () => void): void {
@@ -1773,6 +1844,7 @@ namespace Uno.UI.Runtime {
 				SemanticElements.virtualizedRafId = 0;
 			}
 			SemanticElements.virtualizedMutationQueue = [];
+			SemanticElements.pendingItemStates.clear();
 		}
 
 		/**

@@ -29,9 +29,9 @@ namespace TestRepro
 	partial class EmptyDataTemplatePage : global::Microsoft.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_EmptyDataTemplatePage_69a68cf94967d5a0a50b56025527d442 = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c = "ms-appx:///TestProject/0/EmptyDataTemplatePage.xaml";
+		private const string __baseUri_EmptyDataTemplatePage_69a68cf94967d5a0a50b56025527d442 = "ms-appx:///TestProject/0/EmptyDataTemplatePage.xaml";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -106,7 +106,7 @@ namespace TestRepro
 		private _View Build_Pag_ResΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			"57da9b656b835e38693ff13bc03602d0df7d40b5".ToString(); // Forces this method to be updated (and use updated sub class type) when the file is being updated through Hot Reload
-			return new __EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c.__Pag_ResΞ0_DatTem().Build(__owner, __settings);
+			return new __EmptyDataTemplatePage_69a68cf94967d5a0a50b56025527d442.__Pag_ResΞ0_DatTem().Build(__owner, __settings);
 		}
 
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
@@ -123,14 +123,14 @@ namespace TestRepro
 			/* _isTopLevelDictionary:False */
 			__that._component_0 = __p1;
 			global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.ListView.ItemTemplateProperty, "MyItemTemplate", isThemeResourceExtension: false, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c, "file://///Project/0/EmptyDataTemplatePage.xaml", 12, 4);
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_69a68cf94967d5a0a50b56025527d442, "file://///Project/0/EmptyDataTemplatePage.xaml", 12, 4);
 			__p1.CreationComplete();
 		}
 
 		private _View Build_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			"57da9b656b835e38693ff13bc03602d0df7d40b5".ToString(); // Forces this method to be updated (and use updated sub class type) when the file is being updated through Hot Reload
-			return new __EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c.__PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem().Build(__owner, __settings);
+			return new __EmptyDataTemplatePage_69a68cf94967d5a0a50b56025527d442.__PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem().Build(__owner, __settings);
 		}
 
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
@@ -146,7 +146,7 @@ namespace TestRepro
 		{
 			__nameScope.RegisterName("ButtonWithEmptyDataTemplate", __p1);
 			__that.ButtonWithEmptyDataTemplate = __p1;
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c, "file://///Project/0/EmptyDataTemplatePage.xaml", 13, 4);
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_69a68cf94967d5a0a50b56025527d442, "file://///Project/0/EmptyDataTemplatePage.xaml", 13, 4);
 			__p1.CreationComplete();
 		}
 
@@ -154,7 +154,7 @@ namespace TestRepro
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_PagΞ0_StaPan(global::Microsoft.UI.Xaml.Controls.StackPanel __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c, "file://///Project/0/EmptyDataTemplatePage.xaml", 11, 3);
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_69a68cf94967d5a0a50b56025527d442, "file://///Project/0/EmptyDataTemplatePage.xaml", 11, 3);
 			__p1.CreationComplete();
 		}
 
@@ -175,7 +175,7 @@ namespace TestRepro
 			__that._component_1 = __p1;
 			// Class TestRepro.EmptyDataTemplatePage
 			global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c, "file://///Project/0/EmptyDataTemplatePage.xaml", 1, 3);
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_EmptyDataTemplatePage_69a68cf94967d5a0a50b56025527d442, "file://///Project/0/EmptyDataTemplatePage.xaml", 1, 3);
 			__p1.CreationComplete();
 		}
 
@@ -201,7 +201,7 @@ namespace TestRepro
 		}
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		private class __EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c
+		private class __EmptyDataTemplatePage_69a68cf94967d5a0a50b56025527d442
 		{
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -210,9 +210,9 @@ namespace TestRepro
 			public class __Pag_ResΞ0_DatTem
 			{
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-				private const string __baseUri_prefix_EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c = "ms-appx:///TestProject/";
+				private const string __baseUri_prefix_EmptyDataTemplatePage_69a68cf94967d5a0a50b56025527d442 = "ms-appx:///TestProject/";
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-				private const string __baseUri_EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c = "ms-appx:///TestProject/0/EmptyDataTemplatePage.xaml";
+				private const string __baseUri_EmptyDataTemplatePage_69a68cf94967d5a0a50b56025527d442 = "ms-appx:///TestProject/0/EmptyDataTemplatePage.xaml";
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
@@ -241,9 +241,9 @@ namespace TestRepro
 			public class __PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem
 			{
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-				private const string __baseUri_prefix_EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c = "ms-appx:///TestProject/";
+				private const string __baseUri_prefix_EmptyDataTemplatePage_69a68cf94967d5a0a50b56025527d442 = "ms-appx:///TestProject/";
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-				private const string __baseUri_EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c = "ms-appx:///TestProject/0/EmptyDataTemplatePage.xaml";
+				private const string __baseUri_EmptyDataTemplatePage_69a68cf94967d5a0a50b56025527d442 = "ms-appx:///TestProject/0/EmptyDataTemplatePage.xaml";
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;

@@ -29,9 +29,9 @@ namespace TestRepro
 	partial class ThirdPage : global::Microsoft.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2 = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_ThirdPage_421fa96764a0dae83aeb3e317e849c3a = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2 = "ms-appx:///TestProject/0/ThirdPage.xaml";
+		private const string __baseUri_ThirdPage_421fa96764a0dae83aeb3e317e849c3a = "ms-appx:///TestProject/0/ThirdPage.xaml";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -48,9 +48,9 @@ namespace TestRepro
 					IsParsing = true,
 					// Source ThirdPage.xaml (Line 6:3)
 				}
-				.ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2_XamlApply((ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+				.ThirdPage_421fa96764a0dae83aeb3e317e849c3a_XamlApply((ThirdPage_421fa96764a0dae83aeb3e317e849c3aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 				{
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2);
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_ThirdPage_421fa96764a0dae83aeb3e317e849c3a);
 				__p1.CreationComplete();
 				}
 				))
@@ -58,17 +58,17 @@ namespace TestRepro
 			;
 			
 			this
-			.ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2_XamlApply((ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+			.ThirdPage_421fa96764a0dae83aeb3e317e849c3a_XamlApply((ThirdPage_421fa96764a0dae83aeb3e317e849c3aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
 			// Source ThirdPage.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/ThirdPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
-			.ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2_XamlApply((ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+			.ThirdPage_421fa96764a0dae83aeb3e317e849c3a_XamlApply((ThirdPage_421fa96764a0dae83aeb3e317e849c3aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
 			// Class TestRepro.ThirdPage
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2);
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_ThirdPage_421fa96764a0dae83aeb3e317e849c3a);
 			__p1.CreationComplete();
 			}
 			))
@@ -81,18 +81,18 @@ namespace TestRepro
 }
 namespace MyProject
 {
-	static class ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2XamlApplyExtensions
+	static class ThirdPage_421fa96764a0dae83aeb3e317e849c3aXamlApplyExtensions
 	{
 		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.Grid instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Grid ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2_XamlApply(this global::Microsoft.UI.Xaml.Controls.Grid instance, XamlApplyHandler0 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Grid ThirdPage_421fa96764a0dae83aeb3e317e849c3a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Grid instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.Page instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Page ThirdPage_475d8edc4495de5bdb45b5c730a5c2f2_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler1 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Page ThirdPage_421fa96764a0dae83aeb3e317e849c3a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;

@@ -90,6 +90,21 @@ namespace Microsoft.UI.Xaml.Controls
 			return;
 		}
 
+		// The automation peer falls back to this for its name when AutomationProperties.Name isn't set.
+		internal override string GetPlainText()
+		{
+			if (Header is not null)
+			{
+				var plainText = GetStringFromObject(Header);
+				if (!string.IsNullOrEmpty(plainText))
+				{
+					return plainText;
+				}
+			}
+
+			return string.Empty;
+		}
+
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			base.OnPropertyChanged2(args);

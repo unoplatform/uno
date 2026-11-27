@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
 using Uno;
 using Uno.Devices.Sensors.Helpers;
 
@@ -43,9 +44,8 @@ namespace Windows.Devices.Sensors
 		/// <param name="x">AngularVelocity X in radians/s</param>
 		/// <param name="y">AngularVelocity Y in radians/s</param>
 		/// <param name="z">AngularVelocity Z in radians/s</param>
-		/// <returns>0 - needed to bind method from WASM</returns>
 		[JSExport]
-		internal static int DispatchReading(float x, float y, float z)
+		internal static void DispatchReading(float x, float y, float z)
 		{
 			if (_instance.Value == null)
 			{
@@ -62,7 +62,14 @@ namespace Windows.Devices.Sensors
 						z * SensorConstants.RadToDeg,
 						now));
 			}
-			return 0;
+		}
+
+		[JSExport]
+		internal static Task DispatchReadingAsync(float x, float y, float z)
+		{
+			DispatchReading(x, y, z);
+
+			return Task.CompletedTask;
 		}
 	}
 }

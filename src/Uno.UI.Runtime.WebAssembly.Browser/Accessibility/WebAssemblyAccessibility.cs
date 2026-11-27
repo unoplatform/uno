@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -724,6 +725,49 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			offset.X, offset.Y,
 			itemElement.Visual.Size.X, itemElement.Visual.Size.Y,
 			role, label);
+
+		ApplyRealizedItemState(itemElement);
+	}
+
+	/// <summary>
+	/// A realized item is created with a role, a label and its position only: seeds the state the
+	/// factory path would have applied, which later reaches the element only through property changes.
+	/// </summary>
+	private void ApplyRealizedItemState(UIElement itemElement)
+	{
+		if (itemElement.GetOrCreateAutomationPeer() is not { } peer)
+		{
+			return;
+		}
+
+		var handle = itemElement.Visual.Handle;
+		try
+		{
+			if (peer.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider expandCollapseProvider)
+			{
+				var state = expandCollapseProvider.ExpandCollapseState;
+				NativeMethods.UpdateExpandCollapseState(handle, state is ExpandCollapseState.Expanded or ExpandCollapseState.PartiallyExpanded);
+			}
+
+			if (peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
+			{
+				NativeMethods.UpdateSelectionState(handle, selectionItemProvider.IsSelected);
+			}
+			else if (itemElement is SelectorItem selectorItem)
+			{
+				NativeMethods.UpdateSelectionState(handle, selectorItem.IsSelected);
+			}
+		}
+		catch (Exception ex)
+		{
+			// Pattern providers can be app-defined peers, which may throw anything. This runs from the
+			// list's container callbacks, so a failure must not break realization; the state then
+			// reaches the element through its later property changes.
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"[A11y] Initial state of {itemElement.GetType().Name} not applied: {ex.Message}", ex);
+			}
+		}
 	}
 
 	private void TryUnregisterVirtualizedContainer(UIElement element)
@@ -1002,15 +1046,20 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	public static bool IsAutoEnableAccessibility()
 		=> FeatureConfiguration.AutomationPeer.AutoEnableAccessibility;
 
+	[JSExport]
+	public static Task<bool> IsAutoEnableAccessibilityAsync()
+		=> Task.FromResult(IsAutoEnableAccessibility());
+
 	// Retry state for EnableAccessibility if Window isn't ready
 	private static int _enableAccessibilityRetryCount;
 	private static readonly int MaxEnableAccessibilityRetries = 20; // ~2 seconds with 100ms delay
 	private static readonly int EnableAccessibilityRetryDelayMs = 100;
 
 	[JSExport]
-	public static void EnableAccessibility()
+	public static async Task EnableAccessibilityAsync()
 	{
 		var @this = Instance;
+
 		if (@this.Log().IsEnabled(LogLevel.Debug))
 		{
 			@this.Log().Debug("[A11y] EnableAccessibility() called");
@@ -1026,56 +1075,47 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		var window = WebAssemblyWindowWrapper.Instance.Window;
-		var rootElement = window?.RootElement;
+		UIElement? rootElement;
 
-		if (rootElement is null)
+		do
 		{
-			// Window not yet attached is normal during early boot; retried below.
-			if (@this.Log().IsEnabled(LogLevel.Debug))
+			var window = WebAssemblyWindowWrapper.Instance.Window;
+
+			rootElement = window?.RootElement;
+
+			if (rootElement != null)
 			{
-				@this.Log().Debug($"[A11y] EnableAccessibility deferred: Window={window?.GetType().Name ?? "null"}, RootElement=null");
-			}
-
-			if (_enableAccessibilityRetryCount < MaxEnableAccessibilityRetries)
-			{
-				_enableAccessibilityRetryCount++;
-				if (@this.Log().IsEnabled(LogLevel.Trace))
-				{
-					@this.Log().Trace($"[A11y] EnableAccessibility() will retry in {EnableAccessibilityRetryDelayMs}ms (attempt {_enableAccessibilityRetryCount}/{MaxEnableAccessibilityRetries})");
-				}
-
-				var timer = new Timer(
-					_ =>
-					{
-						if (@this.Log().IsEnabled(LogLevel.Trace))
-						{
-							@this.Log().Trace($"[A11y] EnableAccessibility() retry attempt {_enableAccessibilityRetryCount}");
-						}
-						EnableAccessibility();
-					},
-					null,
-					EnableAccessibilityRetryDelayMs,
-					Timeout.Infinite);
-
-				return;
+				break;
 			}
 			else
 			{
-				if (@this.Log().IsEnabled(LogLevel.Error))
+				// Window not yet attached, normal during early boot, retry.
+				if (_enableAccessibilityRetryCount < MaxEnableAccessibilityRetries)
 				{
-					@this.Log().Error($"[A11y] EnableAccessibility: max retries ({MaxEnableAccessibilityRetries}) exceeded; Window still not ready.");
-				}
+					_enableAccessibilityRetryCount++;
 
-				// The enable button was removed when it was pressed: bring it back so the user can try again.
-				_enableAccessibilityRetryCount = 0;
-				NativeMethods.ResetSemanticsRoot();
-				return;
+					if (@this.Log().IsEnabled(LogLevel.Trace))
+					{
+						@this.Log().Trace($"[A11y] EnableAccessibility() will retry in {EnableAccessibilityRetryDelayMs}ms (attempt {_enableAccessibilityRetryCount}/{MaxEnableAccessibilityRetries})");
+					}
+
+					await Task.Delay(EnableAccessibilityRetryDelayMs);
+				}
+				else
+				{
+					// The enable button was removed when it was pressed: bring it back so the user can try again.
+					_enableAccessibilityRetryCount = 0;
+					NativeMethods.ResetSemanticsRoot();
+
+					throw new TimeoutException("EnableAccessibility() timeout exceeded.");
+				}
 			}
-		}
+
+		} while (true);
 
 		// Success! Window and RootElement are now available
 		_enableAccessibilityRetryCount = 0;
+
 		if (@this.Log().IsEnabled(LogLevel.Debug))
 		{
 			@this.Log().Debug($"[A11y] EnableAccessibility() SUCCESS: rootElement={rootElement.GetType().Name}, children={rootElement.GetChildren().Count}");
@@ -1130,7 +1170,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	}
 
 	/// <summary>
-	/// Undoes <see cref="EnableAccessibility"/>: removes the semantic DOM and unhooks every subsystem,
+	/// Undoes <see cref="EnableAccessibilityAsync"/>: removes the semantic DOM and unhooks every subsystem,
 	/// so the app is back to its non-accessible cost and focus behavior. It can be enabled again.
 	/// </summary>
 	[JSExport]
@@ -1217,6 +1257,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	}
 
 	[JSExport]
+	public static Task DisableAccessibilityAsync()
+	{
+		DisableAccessibility();
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	public static void OnScroll(IntPtr handle, double horizontalOffset, double verticalOffset)
 	{
 		var @this = Instance;
@@ -1255,6 +1303,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			UpdateNativeScrollOffsets(owner, port, clampedHorizontalOffset, clampedVerticalOffset);
 		}
+	}
+
+	[JSExport]
+	public static Task OnScrollAsync(IntPtr handle, double horizontalOffset, double verticalOffset)
+	{
+		OnScroll(handle, horizontalOffset, verticalOffset);
+
+		return Task.CompletedTask;
 	}
 
 	private static void UpdateNativeScrollOffsets(UIElement scrollPort)
@@ -1313,6 +1369,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	[JSExport]
+	public static Task OnInvokeAsync(IntPtr handle)
+	{
+		OnInvoke(handle);
+
+		return Task.CompletedTask;
+	}
+
 	/// <summary>
 	/// Called when a toggle element (checkbox, radio button) is toggled.
 	/// Routes to the IToggleProvider.Toggle() method on the automation peer.
@@ -1336,6 +1400,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	[JSExport]
+	public static Task OnToggleAsync(IntPtr handle)
+	{
+		OnToggle(handle);
+
+		return Task.CompletedTask;
+	}
+
 	/// <summary>
 	/// Called when a slider's value changes.
 	/// Routes to the IRangeValueProvider.SetValue() method on the automation peer.
@@ -1357,6 +1429,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				rangeValueProvider.SetValue(value);
 			}
 		}
+	}
+
+	[JSExport]
+	public static Task OnRangeValueChangeAsync(IntPtr handle, double value)
+	{
+		OnRangeValueChange(handle, value);
+
+		return Task.CompletedTask;
 	}
 
 	/// <summary>
@@ -1409,6 +1489,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	}
 
 	[JSExport]
+	public static Task OnTextInputAsync(IntPtr handle, string value, int selectionStart, int selectionEnd, bool selectionIsBackward)
+	{
+		OnTextInput(handle, value, selectionStart, selectionEnd, selectionIsBackward);
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	public static void OnTextSelectionChanged(
 		IntPtr handle,
 		int selectionStart,
@@ -1422,6 +1510,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				selectionEnd,
 				selectionIsBackward);
 		}
+	}
+
+	[JSExport]
+	public static Task OnTextSelectionChangedAsync(IntPtr handle, int selectionStart, int selectionEnd, bool selectionIsBackward)
+	{
+		OnTextSelectionChanged(handle, selectionStart, selectionEnd, selectionIsBackward);
+
+		return Task.CompletedTask;
 	}
 
 	/// <summary>
@@ -1455,6 +1551,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	[JSExport]
+	public static Task OnExpandCollapseAsync(IntPtr handle)
+	{
+		OnExpandCollapse(handle);
+
+		return Task.CompletedTask;
+	}
+
 	/// <summary>
 	/// Called when a list item is selected.
 	/// Routes to the ISelectionItemProvider.Select() method on the automation peer.
@@ -1470,12 +1574,20 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 		{
-			var peer = owner.GetOrCreateAutomationPeer();
+			var peer = GetDropDownItemPeer(owner) ?? owner.GetOrCreateAutomationPeer();
 			if (peer?.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
 			{
 				selectionItemProvider.Select();
 			}
 		}
+	}
+
+	[JSExport]
+	public static Task OnSelectionAsync(IntPtr handle)
+	{
+		OnSelection(handle);
+
+		return Task.CompletedTask;
 	}
 
 	/// <summary>
@@ -1510,6 +1622,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	[JSExport]
+	public static Task OnFocusAsync(IntPtr handle)
+	{
+		OnFocus(handle);
+
+		return Task.CompletedTask;
+	}
+
 	/// <summary>
 	/// Called when a semantic element loses focus in the browser.
 	/// Used to synchronize focus between the semantic DOM and the Uno visual tree.
@@ -1525,6 +1645,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		// Focus leaving the semantic element is handled by the browser focus system.
 		// No explicit action needed here - the Uno FocusManager handles focus transitions.
+	}
+
+	[JSExport]
+	public static Task OnBlurAsync(IntPtr handle)
+	{
+		OnBlur(handle);
+
+		return Task.CompletedTask;
 	}
 
 	[JSExport]
@@ -1567,6 +1695,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			@this._suppressDeparture = false;
 		}
+	}
+
+	[JSExport]
+	public static Task OnFocusSentinelAsync(bool isStart)
+	{
+		OnFocusSentinel(isStart);
+
+		return Task.CompletedTask;
 	}
 
 	// First/last descendant-or-self owning a focusable semantic element, skipping
@@ -1936,7 +2072,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// readers don't announce a contentless dialog.
 		// Matched via the ComboBox's GetPopup() — a Popup template part does not reliably carry
 		// TemplatedParent, so suppress by identity against tracked ComboBoxes (IsComboBoxDropdownPopup).
-		if (element is Popup comboBoxPopup && IsComboBoxDropdownPopup(comboBoxPopup))
+		// While open, the popup is hosted by its PopupPanel, which is the node carrying that role.
+		var dropDownPopup = element as Popup ?? (element as PopupPanel)?.Popup;
+		if (dropDownPopup is not null && IsComboBoxDropdownPopup(dropDownPopup))
 		{
 			return false;
 		}
@@ -2910,24 +3048,18 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				NativeMethods.UpdateSelectionState(element.Visual.Handle, selected);
 			}
 
-			// Update roving tabindex: the newly selected item gets tabindex=0,
-			// other group members get tabindex=-1 (for listbox options, radio groups, tabs)
-			if (selected)
+			// The options of a dropdown are never tab stops, and its head follows the focused option
+			// (TryActivateDropDownItem), which WinUI keeps apart from the selected one.
+			if (selected && element is not ComboBoxItem)
 			{
+				// Update roving tabindex: the newly selected item gets tabindex=0,
+				// other group members get tabindex=-1 (for listbox options, radio groups, tabs)
 				// Use groupHandle=0 to let TS infer the group from the element's context
 				NativeMethods.UpdateRovingTabindex(IntPtr.Zero, element.Visual.Handle);
 
-				// Update aria-activedescendant on the parent container (combobox/listbox)
+				// Update aria-activedescendant on the parent container (listbox)
 				// so screen readers announce the active option without moving DOM focus.
-				// A ComboBox option lives in a separate listbox subtree, so the relationship
-				// must be expressed on the combobox head (which carries the matching
-				// aria-controls), not on the option's automation parent.
-				if (element is ComboBoxItem comboBoxItem &&
-					ItemsControl.ItemsControlFromItemContainer(comboBoxItem) is ComboBox ownerComboBox)
-				{
-					NativeMethods.UpdateActiveDescendant(ownerComboBox.Visual.Handle, element.Visual.Handle);
-				}
-				else if (peer.GetParent() is FrameworkElementAutomationPeer { Owner: { } parentOwner })
+				if (peer.GetParent() is FrameworkElementAutomationPeer { Owner: { } parentOwner })
 				{
 					NativeMethods.UpdateActiveDescendant(parentOwner.Visual.Handle, element.Visual.Handle);
 				}
@@ -2936,18 +3068,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		else if (automationProperty == ValuePatternIdentifiers.ValueProperty &&
 			TryGetPeerOwner(peer, out element))
 		{
-			if (element is ComboBox)
+			if (element is ComboBox valueComboBox)
 			{
-				// Don't overwrite aria-label with the selected value -- that destroys the
-				// control's accessible name (FR-020). The selection itself is already announced
-				// via aria-activedescendant -> the ComboBoxItem option, whose own text the
-				// screen reader reads alongside the head's name. If we ever need to reflect
-				// the selected text on the head itself (editable-combobox UX), aria-valuetext
-				// is the right attribute; aria-label is not.
+				// The selected text is the value of the head, not its accessible name (FR-020):
+				// it goes to the head's text content and leaves aria-label alone.
 				if (this.Log().IsEnabled(LogLevel.Trace))
 				{
-					this.Log().Trace($"[A11y] PROP CHANGE: ComboBox Value handle={element.Visual.Handle} (no aria-label update; activedescendant carries selection)");
+					this.Log().Trace($"[A11y] PROP CHANGE: ComboBox Value handle={element.Visual.Handle}");
 				}
+				UpdateComboBoxValue(valueComboBox);
 			}
 			else if (peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
 			{
@@ -3680,6 +3809,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.updateActiveDescendant")]
 		internal static partial void UpdateActiveDescendant(IntPtr containerHandle, IntPtr activeItemHandle);
+
+		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.updateComboBoxValue")]
+		internal static partial void UpdateComboBoxValue(IntPtr handle, string? value);
 
 		// ===== VoiceOver Enhancement Methods =====
 

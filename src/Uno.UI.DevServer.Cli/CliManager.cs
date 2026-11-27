@@ -93,6 +93,7 @@ internal class CliManager
 				originalArgs.Any(a => string.Equals(a, "--json", StringComparison.OrdinalIgnoreCase));
 			var command = originalArgs.Length == 0 ? "start" : originalArgs[0];
 			var requiresWorkspaceResolution = RequiresWorkspaceResolution(command);
+			CommandWorkspace? commandWorkspace = null;
 			WorkspaceResolution? workspaceResolution = null;
 			string? workingDirectory = null;
 
@@ -103,8 +104,15 @@ internal class CliManager
 
 			if (requiresWorkspaceResolution)
 			{
-				workspaceResolution = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
+				commandWorkspace = await ResolveCommandWorkspaceAsync(originalArgs, requestedWorkingDirectory, hasExplicitWorkspaceOverride);
+				workspaceResolution = commandWorkspace.Resolution;
 				workingDirectory = workspaceResolution.EffectiveWorkspaceDirectory ?? requestedWorkingDirectory;
+
+				foreach (var warning in workspaceResolution.Warnings)
+				{
+					// disco and health report it in their output: below Error, logs go to stdout, where their JSON goes.
+					_logger.Log(isDisco || isHealth ? LogLevel.Debug : LogLevel.Warning, "{Warning}", warning);
+				}
 			}
 
 			if (isDisco && discoAddInsOnly)
@@ -156,10 +164,12 @@ internal class CliManager
 				// Launch in direct mode (no --command=start) so that ALL arguments
 				// reach the host via IConfiguration, even on older host binaries
 				// that don't forward --ideChannel in their two-process launcher.
+				// The host gets the full path of --solution, not the value as typed, which it would read from its own
+				// working directory: the workspace.
 				var startHandler = CreateStartCommandHandler();
 				return await startHandler.RunAsync(
-					hostPath, originalArgs, workingDirectory, resolvedAddIns,
-					workspaceResolution?.SelectedSolutionPath,
+					hostPath, commandWorkspace?.ArgsWithoutSolution ?? originalArgs, workingDirectory, resolvedAddIns,
+					commandWorkspace?.SolutionPath ?? workspaceResolution?.SelectedSolutionPath,
 					enableMajorRollForward: hostLaunchPlan.RequiresMajorRollForward);
 			}
 
@@ -201,7 +211,7 @@ internal class CliManager
 	/// </summary>
 	private async Task<int> RunMcpBridgeAsync(string[] bridgeArgs, string requestedWorkingDirectory, bool hasExplicitWorkspaceOverride)
 	{
-		var solutionArgument = ParseMcpSolutionArgument(bridgeArgs, Environment.CurrentDirectory);
+		var solutionArgument = ParseSolutionArgument(bridgeArgs, Environment.CurrentDirectory);
 		if (!solutionArgument.Success)
 		{
 			_logger.LogError("{Error}", solutionArgument.Error);
@@ -234,16 +244,17 @@ internal class CliManager
 	}
 
 	/// <summary>
-	/// Extracts the MCP bridge's <c>--solution &lt;path&gt;</c>, resolved against <paramref name="baseDirectory"/>, so it
-	/// is not forwarded to the DevServer host, which receives the bridge's own <c>--solution</c>. Every spelling the
-	/// host's command-line configuration would read as that key (<c>--solution=path</c>, <c>/solution path</c>,
-	/// <c>solution=path</c>, any casing) is consumed too: forwarded, it would replace the bridge's choice without these checks.
+	/// Extracts <c>--solution &lt;path&gt;</c>, resolved against <paramref name="baseDirectory"/>, and checks that it is an
+	/// existing local .sln or .slnx. Every spelling the host's command-line configuration would read as that key
+	/// (<c>--solution=path</c>, <c>/solution path</c>, <c>solution=path</c>, any casing) is removed from the returned
+	/// arguments, even when the check fails: callers give the host their own <c>--solution</c>, which a forwarded one would replace.
 	/// </summary>
-	internal static (bool Success, string[] FilteredArgs, string? SolutionPath, string? Error) ParseMcpSolutionArgument(
+	internal static (bool Success, string[] FilteredArgs, string? SolutionPath, string? Error) ParseSolutionArgument(
 		string[] args,
 		string baseDirectory)
 	{
 		string? rawSolutionPath = null;
+		var occurrences = 0;
 		var filteredArgs = new List<string>(args.Length);
 
 		for (var i = 0; i < args.Length; i++)
@@ -254,21 +265,24 @@ internal class CliManager
 				continue;
 			}
 
-			if (rawSolutionPath is not null)
-			{
-				return (false, [], null, "--solution was given more than once.");
-			}
-
-			rawSolutionPath = inlineValue ?? (i + 1 < args.Length ? args[++i] : null);
-			if (string.IsNullOrWhiteSpace(rawSolutionPath))
-			{
-				return (false, [], null, "Missing value for --solution: expected the path of a .sln or .slnx file.");
-			}
+			occurrences++;
+			var value = inlineValue ?? (i + 1 < args.Length ? args[++i] : null);
+			rawSolutionPath ??= value;
 		}
 
-		if (rawSolutionPath is null)
+		if (occurrences == 0)
 		{
 			return (true, filteredArgs.ToArray(), null, null);
+		}
+
+		if (occurrences > 1)
+		{
+			return (false, filteredArgs.ToArray(), null, "--solution was given more than once.");
+		}
+
+		if (string.IsNullOrWhiteSpace(rawSolutionPath))
+		{
+			return (false, filteredArgs.ToArray(), null, "Missing value for --solution: expected the path of a .sln or .slnx file.");
 		}
 
 		string solutionPath;
@@ -278,15 +292,15 @@ internal class CliManager
 		}
 		catch (Exception ex) when (ex is ArgumentException or NotSupportedException or PathTooLongException)
 		{
-			return (false, [], null, $"Invalid --solution path '{rawSolutionPath}': {ex.Message}");
+			return (false, filteredArgs.ToArray(), null, $"Invalid --solution path '{rawSolutionPath}': {ex.Message}");
 		}
 
 		return SolutionPathRules.Check(solutionPath) switch
 		{
 			SolutionPathRules.Problem.None => (true, filteredArgs.ToArray(), solutionPath, null),
-			SolutionPathRules.Problem.NotLocal => (false, [], null, $"--solution must be a local path; network (UNC) and device paths are refused: '{solutionPath}'."),
-			SolutionPathRules.Problem.NotSolutionFile => (false, [], null, $"--solution must point to a .sln or .slnx file: '{solutionPath}'."),
-			_ => (false, [], null, $"--solution file not found: '{solutionPath}'."),
+			SolutionPathRules.Problem.NotLocal => (false, filteredArgs.ToArray(), null, $"--solution must be a local path; network (UNC) and device paths are refused: '{solutionPath}'."),
+			SolutionPathRules.Problem.NotSolutionFile => (false, filteredArgs.ToArray(), null, $"--solution must point to a .sln or .slnx file: '{solutionPath}'."),
+			_ => (false, filteredArgs.ToArray(), null, $"--solution file not found: '{solutionPath}'."),
 		};
 	}
 
@@ -321,6 +335,40 @@ internal class CliManager
 		=> hasExplicitWorkspaceOverride
 			? _workspaceResolver.ResolveExplicitWorkspaceAsync(requestedWorkingDirectory)
 			: _workspaceResolver.ResolveAsync(requestedWorkingDirectory);
+
+	/// <summary>
+	/// Resolves the workspace of start, stop, disco and health from --solution, the solution an IDE opened, so a folder
+	/// holding several solutions is not ambiguous (#26122). When --solution cannot select it, discovery decides, with a warning.
+	/// </summary>
+	private async Task<CommandWorkspace> ResolveCommandWorkspaceAsync(string[] args, string requestedWorkingDirectory, bool hasExplicitWorkspaceOverride)
+	{
+		var solutionArgument = ParseSolutionArgument(args, Environment.CurrentDirectory);
+		var ignoredReason = solutionArgument.Error;
+		if (solutionArgument.SolutionPath is { } solutionPath)
+		{
+			var resolution = await _workspaceResolver.ResolveSolutionAsync(requestedWorkingDirectory, solutionPath);
+			if (resolution.IsResolved)
+			{
+				return new(resolution, solutionArgument.FilteredArgs, solutionPath);
+			}
+
+			ignoredReason = DiscoveryIssueMapper.MapUnresolvedSelection(solutionPath, selectionIsKept: false).Message;
+		}
+
+		var discovered = await ResolveWorkspaceAsync(requestedWorkingDirectory, hasExplicitWorkspaceOverride);
+		if (ignoredReason is not null)
+		{
+			discovered = discovered with { Warnings = [.. discovered.Warnings, $"{ignoredReason} {IgnoredSolutionOutcome}"] };
+		}
+
+		return new(discovered, solutionArgument.FilteredArgs, solutionArgument.SolutionPath);
+	}
+
+	internal const string IgnoredSolutionOutcome = "The workspace is discovered from the folder instead of from --solution.";
+
+	/// <param name="ArgsWithoutSolution">The arguments without --solution: start gives the host <paramref name="SolutionPath"/> instead.</param>
+	/// <param name="SolutionPath">The full path of a usable --solution, even one that did not select the workspace.</param>
+	private sealed record CommandWorkspace(WorkspaceResolution Resolution, string[] ArgsWithoutSolution, string? SolutionPath);
 
 	internal void LogVersionBanner()
 	{
@@ -445,7 +493,14 @@ internal class CliManager
 			connectionState: null,
 			discoveredSolutions: null,
 			hostProcessId: activeWorkspaceServer?.ProcessId,
-			hostEndpoint: activeWorkspaceServer?.McpEndpoint);
+			hostEndpoint: activeWorkspaceServer?.McpEndpoint,
+			workspaceWarnings: [.. workspaceResolution.Warnings.Select(warning => new ValidationIssue
+			{
+				Code = IssueCode.WorkspaceNotResolved,
+				Severity = ValidationSeverity.Warning,
+				Message = warning,
+				Remediation = "Pass the path of an existing local .sln or .slnx whose nearest global.json declares Uno.Sdk in msbuild-sdks, or leave --solution out.",
+			})]);
 
 		if (outputJson)
 		{

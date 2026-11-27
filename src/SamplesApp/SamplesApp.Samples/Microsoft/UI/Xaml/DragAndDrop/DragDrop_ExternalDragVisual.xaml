@@ -1,0 +1,101 @@
+﻿<UserControl
+    x:Class="UITests.Windows_UI_Xaml.DragAndDrop.DragDrop_ExternalDragVisual"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="400"
+    d:DesignWidth="600"
+    mc:Ignorable="d">
+
+    <Grid
+        Padding="12"
+        ColumnSpacing="12"
+        RowSpacing="12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.ColumnSpan="2"
+            Text="Drag an image, a file or text from another app (a browser, Explorer) over each area, then drop it."
+            TextWrapping="Wrap" />
+
+        <Border
+            x:Name="DefaultTarget"
+            Grid.Row="1"
+            AllowDrop="True"
+            Background="{ThemeResource SystemFillColorSuccessBackgroundBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1">
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="Default: the source's image, glyph and caption"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+        </Border>
+
+        <Border
+            x:Name="CaptionTarget"
+            Grid.Row="1"
+            Grid.Column="1"
+            AllowDrop="True"
+            Background="{ThemeResource AccentFillColorDefaultBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1">
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Foreground="{ThemeResource TextOnAccentFillColorPrimaryBrush}"
+                Text="Custom caption, no glyph"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+        </Border>
+
+        <Border
+            x:Name="ContentTarget"
+            Grid.Row="2"
+            AllowDrop="True"
+            Background="{ThemeResource SystemFillColorCautionBackgroundBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1">
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="Custom content: this app's image replaces the source's"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+        </Border>
+
+        <Border
+            x:Name="HiddenContentTarget"
+            Grid.Row="2"
+            Grid.Column="1"
+            AllowDrop="True"
+            Background="{ThemeResource SystemFillColorCriticalBackgroundBrush}"
+            BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+            BorderThickness="1">
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Text="Content hidden: no image, glyph and caption only"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+        </Border>
+
+        <TextBlock
+            x:Name="Output"
+            Grid.Row="3"
+            Grid.ColumnSpan="2"
+            Text="Nothing dropped yet."
+            TextWrapping="Wrap" />
+    </Grid>
+</UserControl>

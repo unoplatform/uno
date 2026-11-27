@@ -314,15 +314,14 @@ Describe 'Get-SyncPlan' {
 
 		# Uno side is a real repo here: the plan reads the manifest and master sha from it.
 		$script:uno = New-TestRepo -Path (Join-Path $TestDrive "plan-uno-$([guid]::NewGuid())")
-		$script:manifestRel = 'build/winui-sync/areas.json'
+		$script:manifestRel = 'build/winui-sync/areas'
 		$area = New-TestArea -Id 'foo' -Baseline $fx.Base -Extra @{
 			upstream = [ordered]@{ sources = @('controls/dev/Foo'); strings = 'controls/dev/Foo/Strings' }
 			uno      = [ordered]@{ sources = @('src/Foo'); strings = 'src/Foo/Strings' }
 		}
 		$script:areaDef = $area
-		$json = (@{ areas = @($area) } | ConvertTo-Json -Depth 6)
 		$script:master = Add-TestCommit $uno @{
-			$manifestRel                             = $json
+			"$manifestRel/foo.json"                  = (ConvertTo-TestAreaJson $area)
 			'src/Foo/Strings/en-US/Resources.resw' = "<root>`n  en`n</root>"
 		}
 	}
@@ -350,7 +349,7 @@ Describe 'Get-SyncPlan' {
 		Mock -ModuleName WinUISync Get-OpenSyncPr { 42 }
 		$areaDef.baseline = $target
 		Invoke-TestGit $uno checkout -q -b work | Out-Null
-		$branchSha = Add-TestCommit $uno @{ $manifestRel = (@{ areas = @($areaDef) } | ConvertTo-Json -Depth 6) }
+		$branchSha = Add-TestCommit $uno @{ "$manifestRel/foo.json" = (ConvertTo-TestAreaJson $areaDef) }
 		Invoke-TestGit $uno update-ref refs/remotes/origin/sync/winui/foo $branchSha | Out-Null
 		Invoke-TestGit $uno checkout -q main | Out-Null
 
@@ -361,14 +360,30 @@ Describe 'Get-SyncPlan' {
 		$plan.Rows[0].prNumber | Should -Be 42
 	}
 
+	It 'reads the baseline from a sync branch that still has the single-file manifest' {
+		Mock -ModuleName WinUISync Get-OpenSyncPr { 42 }
+		$areaDef.baseline = $target
+		Invoke-TestGit $uno checkout -q -b legacy | Out-Null
+		$branchSha = Add-TestCommit $uno @{
+			'build/winui-sync/areas/foo.json' = $null
+			'build/winui-sync/areas.json'     = (@{ areas = @($areaDef) } | ConvertTo-Json -Depth 6)
+		}
+		Invoke-TestGit $uno update-ref refs/remotes/origin/sync/winui/foo $branchSha | Out-Null
+		Invoke-TestGit $uno checkout -q main | Out-Null
+
+		$plan = Get-SyncPlan -UpstreamRepo $fx.Repo -UnoRoot $uno -ManifestPath (Join-Path $uno $manifestRel)
+
+		$plan.Matrix.Count | Should -Be 0
+		$plan.Rows[0].status | Should -Be 'up to date'
+	}
+
 	It 'reads the open sync branch''s mirrored files byte for byte' {
 		Mock -ModuleName WinUISync Get-OpenSyncPr { 42 }
 		# No trailing newline on either side, as in several of Uno's theme XAML copies.
 		$upSha = Add-TestCommit $fx.Repo @{ 'controls/dev/CommonStyles/Foo_themeresources.xaml' = "<Root>v1</Root>" } -Tag 'winui3/release/1.2.0'
 		$areaDef.baseline = $upSha
 		$areaDef.mirror = @([ordered]@{ upstream = 'controls/dev/CommonStyles/Foo_themeresources.xaml'; uno = 'src/Foo_themeresources.xaml' })
-		$json = @{ areas = @($areaDef) } | ConvertTo-Json -Depth 6
-		Add-TestCommit $uno @{ $manifestRel = $json; 'src/Foo_themeresources.xaml' = "<Root>v1</Root>" } | Out-Null
+		Add-TestCommit $uno @{ "$manifestRel/foo.json" = (ConvertTo-TestAreaJson $areaDef); 'src/Foo_themeresources.xaml' = "<Root>v1</Root>" } | Out-Null
 		Invoke-TestGit $uno checkout -q -b work | Out-Null
 		$branchSha = Add-TestCommit $uno @{ 'src/Foo/branch.txt' = 'x' }
 		Invoke-TestGit $uno update-ref refs/remotes/origin/sync/winui/foo $branchSha | Out-Null
@@ -390,7 +405,7 @@ Describe 'Get-SyncPlan' {
 	It 'reports a broken area and still plans the others' {
 		Mock -ModuleName WinUISync Get-OpenSyncPr { $null }
 		$bad = New-TestArea -Id 'bad' -Baseline ('d' * 40) -Extra @{ upstream = [ordered]@{ sources = @('controls/dev/Foo') } }
-		Add-TestCommit $uno @{ $manifestRel = (@{ areas = @($bad, $areaDef) } | ConvertTo-Json -Depth 6) } | Out-Null
+		Add-TestCommit $uno @{ "$manifestRel/bad.json" = (ConvertTo-TestAreaJson $bad) } | Out-Null
 
 		$plan = Get-SyncPlan -UpstreamRepo $fx.Repo -UnoRoot $uno -ManifestPath (Join-Path $uno $manifestRel)
 
@@ -414,7 +429,7 @@ Describe 'detect.ps1' {
 		$fx = New-ControlUpstream 'detect-up'
 		$uno = New-TestRepo -Path (Join-Path $TestDrive 'detect-uno')
 		$area = New-TestArea -Id 'foo' -Baseline $fx.Base -Extra @{ upstream = [ordered]@{ sources = @('controls/dev/Foo') } }
-		Add-TestCommit $uno @{ 'build/winui-sync/areas.json' = (@{ areas = @($area) } | ConvertTo-Json -Depth 6) } | Out-Null
+		Add-TestCommit $uno @{ 'build/winui-sync/areas/foo.json' = (ConvertTo-TestAreaJson $area) } | Out-Null
 		$out = Join-Path $TestDrive 'gh-output.txt'
 		$summary = Join-Path $TestDrive 'gh-summary.md'
 
@@ -422,7 +437,7 @@ Describe 'detect.ps1' {
 		$env:GITHUB_STEP_SUMMARY = $summary
 		Mock -ModuleName WinUISync Get-OpenSyncPr { $null }
 		try {
-			& "$PSScriptRoot/../detect.ps1" -UpstreamRepo $fx.Repo -UnoRoot $uno -ManifestPath (Join-Path $uno 'build/winui-sync/areas.json') | Out-Null
+			& "$PSScriptRoot/../detect.ps1" -UpstreamRepo $fx.Repo -UnoRoot $uno -ManifestPath (Join-Path $uno 'build/winui-sync/areas') | Out-Null
 		}
 		finally {
 			Remove-Item Env:GITHUB_OUTPUT, Env:GITHUB_STEP_SUMMARY

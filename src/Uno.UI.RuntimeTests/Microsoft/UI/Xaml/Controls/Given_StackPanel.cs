@@ -604,6 +604,74 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ValidateSpacingPositions(orientation, stackPanel, itemSpacing, itemSize);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Many_Children_IrregularSnapPoints_Capped()
+		{
+			var SUT = new StackPanel();
+			for (var i = 0; i < 300; i++)
+			{
+				SUT.Children.Add(new Border { Width = 10, Height = 10 });
+			}
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			// WinUI stores the snap point key count in a byte, so at most 254 snap points are returned.
+			var snapPoints = SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near);
+			Assert.AreEqual(254, snapPoints.Count);
+			Assert.AreEqual(2530f, snapPoints[253]);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Orientation_Changes_Before_SnapPoints_Queried()
+		{
+			var SUT = new StackPanel { Orientation = Orientation.Horizontal };
+			SUT.Children.Add(new Border { Width = 10, Height = 10 });
+			var raised = 0;
+			SUT.VerticalSnapPointsChanged += (s, e) => raised++;
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, raised);
+
+			SUT.Orientation = Orientation.Vertical;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, raised);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI stops notifying when one of two handlers is removed.
+		public async Task When_One_Of_Two_SnapPointsChanged_Handlers_Removed()
+		{
+			var child = new Border { Width = 10, Height = 10 };
+			var SUT = new StackPanel();
+			SUT.Children.Add(child);
+			var raised = 0;
+			EventHandler<object> other = (s, e) => { };
+			SUT.VerticalSnapPointsChanged += other;
+			SUT.VerticalSnapPointsChanged += (s, e) => raised++;
+			SUT.VerticalSnapPointsChanged -= other;
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			_ = SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near);
+			var before = raised;
+
+			child.Height = 20;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(before + 1, raised);
+		}
+
 		private static void ValidateSpacingPositions(Orientation orientation, StackPanel stackPanel, int itemSpacing, int itemSize)
 		{
 			var expectedPosition = 0;

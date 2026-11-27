@@ -75,6 +75,26 @@ internal enum DrawKind
 /// of its texture or gradient, and the clip it draws under. Two consecutive ops merge into one draw when they differ
 /// only in their vertex range and that range is contiguous (see the encoder).
 /// </summary>
+/// <summary>
+/// A clip bind group and the dynamic offset of its uniform: one group serves every clip slot of a slab buffer, so a
+/// recording's clip is the shared group plus its slot's offset. A plain group binds at offset 0.
+/// </summary>
+internal readonly unsafe struct ClipBinding : IEquatable<ClipBinding>
+{
+	public readonly BindGroup* Bg;
+	public readonly uint Offset;
+
+	public ClipBinding(BindGroup* bg, uint offset) { Bg = bg; Offset = offset; }
+
+	public static implicit operator ClipBinding(BindGroup* bg) => new(bg, 0);
+
+	public bool Equals(ClipBinding other) => Bg == other.Bg && Offset == other.Offset;
+	public override bool Equals(object obj) => obj is ClipBinding other && Equals(other);
+	public override int GetHashCode() => HashCode.Combine((nint)Bg, Offset);
+	public static bool operator ==(ClipBinding a, ClipBinding b) => a.Equals(b);
+	public static bool operator !=(ClipBinding a, ClipBinding b) => !a.Equals(b);
+}
+
 internal unsafe struct DrawOp
 {
 	public DrawKind Kind;
@@ -83,7 +103,7 @@ internal unsafe struct DrawOp
 	public uint Count;         // vertices; a BackdropSegment keeps its index into the pass's backdrops here
 	public BindGroup* Group1;  // the image / gradient bind group; Zero for a solid or rounded rect
 	public ClipData Clip;
-	public BindGroup* ClipBg;
+	public ClipBinding ClipBg;
 	/// <summary>Where the recording this op belongs to sits. Zero = it is already in device space.</summary>
 	public BindGroup* SiteBg;
 	/// <summary>Its site's slot, whose scissor box the encode reads. Zero = the op carries its own.</summary>
@@ -115,20 +135,20 @@ internal unsafe struct DrawOp
 	public Vector4 Extent;
 
 	/// <summary>An op drawing a range of the pass's shared buffer for its kind.</summary>
-	public static DrawOp Shared(DrawKind kind, uint firstVertex, uint count, BindGroup* group1, in ClipData clip, BindGroup* clipBg)
+	public static DrawOp Shared(DrawKind kind, uint firstVertex, uint count, BindGroup* group1, in ClipData clip, ClipBinding clipBg)
 		=> new() { Kind = kind, FirstVertex = firstVertex, Count = count, Group1 = group1, Clip = clip, ClipBg = clipBg };
 
 	/// <summary>An op drawing a vertex buffer of its own from its start.</summary>
-	public static DrawOp Own(DrawKind kind, nint verts, uint count, BindGroup* group1, in ClipData clip, BindGroup* clipBg)
+	public static DrawOp Own(DrawKind kind, nint verts, uint count, BindGroup* group1, in ClipData clip, ClipBinding clipBg)
 		=> new() { Kind = kind, Verts = verts, Count = count, Group1 = group1, Clip = clip, ClipBg = clipBg };
 
 	public static DrawOp Backdrop(int index, in ClipData clip)
 		=> new() { Kind = DrawKind.BackdropSegment, Count = (uint)index, Clip = clip };
 
 	/// <summary>The same draw under another clip: what a restamp of an arena op produces.</summary>
-	public DrawOp WithClip(in ClipData clip, BindGroup* clipBg) { var o = this; o.Clip = clip; o.ClipBg = clipBg; return o; }
+	public DrawOp WithClip(in ClipData clip, ClipBinding clipBg) { var o = this; o.Clip = clip; o.ClipBg = clipBg; return o; }
 
-	public DrawOp WithClipSite(in ClipData clip, BindGroup* clipBg, BindGroup* siteBg, nint siteSlot) { var o = this; o.Clip = clip; o.ClipBg = clipBg; o.SiteBg = siteBg; o.SiteSlot = siteSlot; return o; }
+	public DrawOp WithClipSite(in ClipData clip, ClipBinding clipBg, BindGroup* siteBg, nint siteSlot) { var o = this; o.Clip = clip; o.ClipBg = clipBg; o.SiteBg = siteBg; o.SiteSlot = siteSlot; return o; }
 
 	public bool SharesBuffer => Verts == 0;
 }
@@ -255,6 +275,7 @@ internal unsafe struct PassEncoder
 	private RenderPassEncoder* _pass;
 	private RenderPipeline* _pipe;
 	private BindGroup* _bg0, _bg1, _bg2, _bg3;
+	private uint _off1, _off2;
 	private Buffer* _vb;
 	private nuint _vbOffset, _vbSize;
 	private int _sx, _sy, _sw, _sh;
@@ -307,6 +328,20 @@ internal unsafe struct PassEncoder
 		else if (group == 2) { if (bg == _bg2) { return; } _bg2 = bg; }
 		else if (group == 3) { if (bg == _bg3) { return; } _bg3 = bg; }
 		_api.RenderPassEncoderSetBindGroup(_pass, group, bg, 0, null);
+	}
+
+	// The clip group: its layout takes a dynamic offset, so the same group at another offset is a new binding.
+	public void ClipBg(uint group, ClipBinding clip)
+	{
+		if (group == 1) { if (clip.Bg == _bg1 && clip.Offset == _off1) { return; } _bg1 = clip.Bg; _off1 = clip.Offset; }
+		else { if (clip.Bg == _bg2 && clip.Offset == _off2) { return; } _bg2 = clip.Bg; _off2 = clip.Offset; }
+		BindClip(_api, _pass, group, clip);
+	}
+
+	public static void BindClip(WebGPU api, RenderPassEncoder* pass, uint group, ClipBinding clip)
+	{
+		var offset = clip.Offset;
+		api.RenderPassEncoderSetBindGroup(pass, group, clip.Bg, 1, &offset);
 	}
 
 	public void Vb(Buffer* buf, nuint offset, nuint size)

@@ -24,8 +24,9 @@ namespace Microsoft.UI.Composition
 
 		public void InsertAbove(Visual newChild, Visual sibling)
 		{
-			var index = _visuals.IndexOf(sibling);
-			_visuals.Insert(index, newChild);
+			var index = IndexOfSibling(sibling);
+			// "Above" means later in the list (rendered after the sibling).
+			_visuals.Insert(index + 1, newChild);
 			newChild.Parent = _owner;
 			InsertAbovePartial(newChild, sibling);
 
@@ -56,14 +57,26 @@ namespace Microsoft.UI.Composition
 
 		public void InsertBelow(Visual newChild, Visual sibling)
 		{
-			var index = _visuals.IndexOf(sibling);
-			_visuals.Insert(index - 1, newChild);
+			var index = IndexOfSibling(sibling);
+			// "Below" means earlier in the list (rendered before the sibling).
+			_visuals.Insert(index, newChild);
 			newChild.Parent = _owner;
 			InsertBelowPartial(newChild, sibling);
 
 			CollectionChanged?.Invoke(this, new(NotifyCollectionChangedAction.Add, newChild));
 		}
 		partial void InsertBelowPartial(Visual newChild, Visual sibling);
+
+		private int IndexOfSibling(Visual sibling)
+		{
+			var index = _visuals.IndexOf(sibling);
+			if (index < 0)
+			{
+				throw new ArgumentException("The sibling is not in this collection.", nameof(sibling));
+			}
+
+			return index;
+		}
 
 		public void Remove(Visual child)
 		{

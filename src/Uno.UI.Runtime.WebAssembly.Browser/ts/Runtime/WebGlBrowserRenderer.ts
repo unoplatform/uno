@@ -36,6 +36,7 @@ namespace Uno.UI.Runtime {
 				return {
 					success: true,
 					instance: instance,
+					glCtxHandle: instance.glCtx,
 					fbo: currentGLctx.getParameter(currentGLctx.FRAMEBUFFER_BINDING),
 					stencil: currentGLctx.getParameter(currentGLctx.STENCIL_BITS),
 					sample: 0, // TODO: currentGLctx.getParameter(GLctx.SAMPLES)

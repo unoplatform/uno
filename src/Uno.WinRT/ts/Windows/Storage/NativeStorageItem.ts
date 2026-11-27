@@ -1,7 +1,6 @@
 ﻿namespace Uno.Storage {
 	export class NativeStorageItem {
 
-		private static generateGuidBinding: (count: number) => string;
 		private static _guidToItemMap: Map<string, FileSystemHandle|File> = new Map<string, FileSystemHandle|File>();
 		private static _itemToGuidMap: Map<FileSystemHandle|File, string> = new Map<FileSystemHandle|File, string>();
 
@@ -74,16 +73,19 @@
 		}
 
 		private static generateGuids(count: number): string[] {
-			if (!NativeStorageItem.generateGuidBinding) {
-				if ((<any>globalThis).DotnetExports !== undefined) {
-					NativeStorageItem.generateGuidBinding = (<any>globalThis).DotnetExports.Uno.Uno.Storage.NativeStorageItem.GenerateGuids;
-				} else {
-					throw `NativeStorageItem: Unable to find dotnet exports`;
-				}
-			}
+			return Array.from({ length: count}, () => NativeStorageItem.newGuid());
+		}
 
-			const guids = NativeStorageItem.generateGuidBinding(count);
-			return guids.split(";");
+		private static newGuid(): string {
+			const bytes = crypto.getRandomValues(new Uint8Array(16));
+			bytes[6] = (bytes[6] & 0x0f) | 0x40;
+			bytes[8] = (bytes[8] & 0x3f) | 0x80;
+
+			return [...bytes]
+				.map((b, i) =>
+					([4, 6, 8, 10].includes(i) ? "-" : "") + b.toString(16).padStart(2, "0")
+				)
+				.join("");
 		}
 	}
 }
