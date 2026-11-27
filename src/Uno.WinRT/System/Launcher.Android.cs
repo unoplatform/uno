@@ -8,6 +8,7 @@ using Android.Content.PM;
 using AndroidX.Core.Content.PM;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.Storage.Internal;
 using Windows.Storage;
 
 namespace Windows.System
@@ -47,27 +48,32 @@ namespace Windows.System
 		{
 			try
 			{
-				if (Uno.UI.ContextHelper.Current == null)
+				if (Uno.UI.ContextHelper.Current is not { } context)
 				{
 					throw new InvalidOperationException(
 						"LaunchFileAsync was called too early in application lifetime. " +
 						"App context needs to be initialized");
 				}
 
-				var javaFile = new Java.IO.File(file.Path);
-
-				// Note: On Android 7.0+ (API 24+), using file:// URIs with other apps
-				// may throw FileUriExposedException. For full support on API 24+, the app
-				// should configure an AndroidX FileProvider. The exception is caught below
-				// and the method returns false in that case.
-				var uri = Android.Net.Uri.FromFile(javaFile);
+				var uri = file is StorageFile { Implementation: StorageFile.SafFile safFile }
+					? safFile.Uri
+					: LauncherFileProvider.GetUri(context, file.Path);
 
 				var intent = new Intent(Intent.ActionView);
-				intent.SetDataAndType(uri, file.ContentType ?? "application/octet-stream");
+				intent.SetDataAndType(uri, LauncherFileProvider.GetMimeType(file.Name, file.ContentType));
 				intent.AddFlags(ActivityFlags.NewTask | ActivityFlags.GrantReadUriPermission);
 
 				StartActivity(intent);
 				return Task.FromResult(true);
+			}
+			catch (ActivityNotFoundException)
+			{
+				if (typeof(Launcher).Log().IsEnabled(LogLevel.Warning))
+				{
+					typeof(Launcher).Log().Warn($"No app can open '{file.Name}' ({file.ContentType}).");
+				}
+
+				return Task.FromResult(false);
 			}
 			catch (Exception exception)
 			{
