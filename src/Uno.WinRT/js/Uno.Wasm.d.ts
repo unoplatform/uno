@@ -598,12 +598,22 @@ declare namespace Windows.System.Display {
 }
 declare namespace Windows.System {
     class Launcher {
+        private static readonly fileUrlLifetimeMs;
         /**
         * Load the specified URL into a new tab or window
         * @param url URL to load
         * @returns "True" or "False", depending on whether a new window could be opened or not
         */
         static open(url: string): string;
+        /**
+        * Opens file content in a new tab, so the browser displays it (PDF, images, text, media)
+        * or downloads it. Falls back to a plain download when the new tab is blocked.
+        * @param content File content
+        * @param contentType MIME type of the content
+        * @param fileName Name used when the file is downloaded
+        * @returns "True" once the file has been handed to the browser
+        */
+        static openFile(content: ArrayLike<number>, contentType: string, fileName: string): string;
     }
 }
 declare class BatteryManager {

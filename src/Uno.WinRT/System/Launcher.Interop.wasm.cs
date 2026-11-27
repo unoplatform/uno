@@ -8,6 +8,9 @@ namespace __Windows.__System
 		{
 			[JSImport("globalThis.Windows.System.Launcher.open")]
 			internal static partial string Open(string url);
+
+			[JSImport("globalThis.Windows.System.Launcher.openFile")]
+			internal static partial string OpenFile(byte[] content, string contentType, string fileName);
 		}
 	}
 }
