@@ -262,4 +262,40 @@ public class Given_ListView_Issues_Layout
 		Assert.IsGreaterThan(0, bar.ViewportSize);
 		Assert.IsGreaterThan(0, bar.ActualHeight);
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/14080")]
+	public async Task When_Scrolled_Far_With_No_Cache_Then_First_Container_Stays_Realized()
+	{
+		var list = CreateNoCacheList(Strings(1000));
+		await Load(list);
+		var sv = GetScrollViewer(list);
+		await ChangeViewAndWait(sv, 500 * 40);
+		await WindowHelper.WaitFor(() => list.ContainerFromIndex(500) is not null, timeoutMS: 3000, message: "Middle realized");
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsNotNull(list.ContainerFromIndex(0), "WinUI never recycles the first container");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/14080")]
+	public async Task When_Focused_Item_Scrolled_Out_Of_View_Then_Container_Stays_Realized()
+	{
+		var list = CreateNoCacheList(Strings(1000));
+		await Load(list);
+		var sv = GetScrollViewer(list);
+		var focused = (ListViewItem)list.ContainerFromIndex(1);
+		Assert.IsTrue(focused.Focus(FocusState.Programmatic));
+		await WindowHelper.WaitForIdle();
+
+		await ChangeViewAndWait(sv, 500 * 40);
+		await WindowHelper.WaitFor(() => list.ContainerFromIndex(500) is not null, timeoutMS: 3000, message: "Middle realized");
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreSame(focused, list.ContainerFromIndex(1), "A focused container is not recycled");
+
+		await ChangeViewAndWait(sv, 0);
+		Assert.AreSame(focused, list.ContainerFromIndex(1));
+		Assert.AreNotEqual(FocusState.Unfocused, focused.FocusState);
+	}
 }
