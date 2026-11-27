@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference Expander/APITests/ExpanderTests.cpp, tag winui3/release/1.4.2
+// MUX Reference Expander/APITests/ExpanderTests.cs
 
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -9,9 +9,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Common;
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
 using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Helpers;
 
@@ -71,8 +68,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				var expanderContentContentPresenter = VisualTreeHelper.GetChild(expanderContentBorder, 0);
 				var button = VisualTreeHelper.GetChild(expanderContentContentPresenter, 0) as Button;
 
-				// https://github.com/unoplatform/uno/issues/14256
-				// Verify.AreEqual("ExpandedExpander", AutomationProperties.GetName(expander));
+				Verify.AreEqual("ExpandedExpander", AutomationProperties.GetName(expander));
 
 				// Verify ExpandedExpander header content are included in the accessibility tree
 				Verify.AreEqual(AutomationProperties.GetAccessibilityView(textBlock1), AccessibilityView.Content);

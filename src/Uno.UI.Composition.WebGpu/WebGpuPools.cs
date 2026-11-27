@@ -46,7 +46,7 @@ internal sealed unsafe class WebGpuTexturePool : IDisposable
 				var e = _entries[i];
 				if (!e.InUse && _frameNo - e.LastUsed > EvictAfterFrames)
 				{
-					if (e.View != null) { Api.TextureViewRelease(e.View); }
+					if (e.View != null) { _d.Groups.NoteDestroyed((nint)e.View); Api.TextureViewRelease(e.View); }
 					// Destroy frees the allocation now; Release drops the handle, which wgpu would otherwise
 					// keep registered (and its memory attributed) for the life of the device.
 					if (e.Tex != null) { Api.TextureDestroy(e.Tex); Api.TextureRelease(e.Tex); }
@@ -107,21 +107,24 @@ internal sealed unsafe class WebGpuTexturePool : IDisposable
 }
 
 
-// Transient GPU-buffer pool (vertex + uniform buffers). Like the texture pool: BeginFrame frees all; Rent
-// reuses a free buffer of the same usage with enough capacity or creates one, so a steady-state frame allocates
-// no buffers. Callers QueueWriteBuffer their data before use.
+// The device's one buffer store. A rental is either for the frame (back at the next BeginFrame) or held by an owner
+// (back when the owner calls Return, which a cached recording does through the device's deferred release). Capacities
+// come in size classes (see SizeClass), so a returned buffer serves the next request of its class whoever made it.
 internal sealed unsafe class WebGpuBufferPool : IDisposable
 {
 	private readonly WebGpuDevice _d;
 	private WebGPU Api => _d.Api;
-	private sealed class Entry { public Buffer* Buf; public int Cap; public BufferUsage Usage; public bool InUse; public int LastUsed; }
-	private readonly System.Collections.Generic.List<Entry> _entries = new();
-	// Shared per-device; guard against concurrent Add invalidating Rent's enumeration (see WebGpuTexturePool).
+	private sealed class Entry { public Buffer* Buf; public int Cap; public BufferUsage Usage; public int LastUsed; }
+	private readonly Dictionary<(BufferUsage Usage, int Cap), List<Entry>> _free = new();
+	private readonly List<Entry> _frame = new();
+	private readonly Dictionary<nint, Entry> _held = new();
+	// Shared per-device; an off-loop render (RenderTargetBitmap) can rent concurrently with the render loop.
 	private readonly object _gate = new();
 	private int _frameNo;
-	// Without eviction the pool keeps the whole session's high-water mark: one heavy frame (a flyout's clip and
-	// stamp buffers, thousands of them) is then held until process exit. Same horizon as the texture pool.
+	// Without eviction the pool keeps the session's high-water mark: one heavy frame (a flyout's clip and stamp
+	// buffers, thousands of them) would be held until process exit.
 	private const int EvictAfterFrames = 16;
+	private const int MinCap = 256;
 
 	public WebGpuBufferPool(WebGpuDevice d) => _d = d;
 
@@ -129,42 +132,100 @@ internal sealed unsafe class WebGpuBufferPool : IDisposable
 	{
 		lock (_gate)
 		{
-			for (var i = _entries.Count - 1; i >= 0; i--)
+			foreach (var e in _frame) { e.LastUsed = _frameNo; Push(e); }
+			_frame.Clear();
+			foreach (var list in _free.Values)
 			{
-				var e = _entries[i];
-				if (!e.InUse && _frameNo - e.LastUsed > EvictAfterFrames)
+				// Each list is in the order its entries came back, so the idle ones are a prefix.
+				var idle = 0;
+				while (idle < list.Count && _frameNo - list[idle].LastUsed > EvictAfterFrames) { idle++; }
+				for (var i = 0; i < idle; i++)
 				{
-					if (e.Buf != null) { Api.BufferDestroy(e.Buf); Api.BufferRelease(e.Buf); }
-					_entries.RemoveAt(i);
+					_d.Groups.NoteDestroyed((nint)list[i].Buf);
+					Api.BufferDestroy(list[i].Buf);
+					Api.BufferRelease(list[i].Buf);
 				}
-				else { e.InUse = false; }
+				list.RemoveRange(0, idle);
 			}
 			_frameNo++;
 		}
+	}
+
+	/// <summary>A buffer for this frame only.</summary>
+	public Buffer* Rent(int byteSize, BufferUsage usage)
+	{
+		lock (_gate)
+		{
+			var e = Take(byteSize, usage);
+			_frame.Add(e);
+			return e.Buf;
+		}
+	}
+
+	/// <summary>A buffer kept until <see cref="Return"/>.</summary>
+	public Buffer* RentHeld(int byteSize, BufferUsage usage)
+	{
+		lock (_gate)
+		{
+			var e = Take(byteSize, usage);
+			_held[(nint)e.Buf] = e;
+			return e.Buf;
+		}
+	}
+
+	/// <summary>Takes back a held buffer; false when the pool did not hand it out, so the caller releases it.</summary>
+	public bool Return(nint buf)
+	{
+		lock (_gate)
+		{
+			if (!_held.Remove(buf, out var e)) { return false; }
+			e.LastUsed = _frameNo;
+			Push(e);
+			return true;
+		}
+	}
+
+	// Powers of two up to 64 KB; above, four classes per doubling, so a held buffer (kept for a recording's lifetime)
+	// over-allocates by at most a quarter instead of almost double.
+	private const int PowerOfTwoClassesUpTo = 64 * 1024;
+
+	internal static int SizeClass(int byteSize)
+	{
+		var pow = (int)BitOperations.RoundUpToPowerOf2((uint)Math.Max(1, byteSize));
+		if (pow <= PowerOfTwoClassesUpTo) { return Math.Max(MinCap, pow); }
+		var step = pow / 8;
+		return (byteSize + step - 1) / step * step;
+	}
+
+	private Entry Take(int byteSize, BufferUsage usage)
+	{
+		var cap = SizeClass(byteSize);
+		if (_free.TryGetValue((usage, cap), out var list) && list.Count > 0)
+		{
+			var e = list[^1];
+			list.RemoveAt(list.Count - 1);
+			return e;
+		}
+		var bd = new BufferDescriptor { Size = (nuint)cap, Usage = usage };
+		return new Entry { Buf = Api.DeviceCreateBuffer(_d.Dev, &bd), Cap = cap, Usage = usage };
+	}
+
+	private void Push(Entry e)
+	{
+		if (!_free.TryGetValue((e.Usage, e.Cap), out var list)) { _free[(e.Usage, e.Cap)] = list = new(); }
+		list.Add(e);
 	}
 
 	public void Dispose()
 	{
 		lock (_gate)
 		{
-			foreach (var e in _entries) { if (e.Buf != null) { Api.BufferRelease(e.Buf); } }
-			_entries.Clear();
-		}
-	}
-
-	public Buffer* Rent(int byteSize, BufferUsage usage)
-	{
-		lock (_gate)
-		{
-			foreach (var e in _entries)
-			{
-				if (!e.InUse && e.Usage == usage && e.Cap >= byteSize) { e.InUse = true; e.LastUsed = _frameNo; return e.Buf; }
-			}
-			int cap = Math.Max(byteSize, 256);
-			var bd = new BufferDescriptor { Size = (nuint)cap, Usage = usage };
-			var buf = Api.DeviceCreateBuffer(_d.Dev, &bd);
-			_entries.Add(new Entry { Buf = buf, Cap = cap, Usage = usage, InUse = true, LastUsed = _frameNo });
-			return buf;
+			foreach (var list in _free.Values) { foreach (var e in list) { Api.BufferRelease(e.Buf); } }
+			foreach (var e in _frame) { Api.BufferRelease(e.Buf); }
+			foreach (var e in _held.Values) { Api.BufferRelease(e.Buf); }
+			_free.Clear();
+			_frame.Clear();
+			_held.Clear();
 		}
 	}
 }
@@ -178,6 +239,7 @@ internal sealed unsafe class WebGpuBufferPool : IDisposable
 internal sealed unsafe class WebGpuOffscreenPool : IDisposable
 {
 	private sealed class Entry { public Texture* Tex; public TextureView* View; public int W, H; public int LastUsed; }
+	private readonly WebGpuDevice _d;
 	private readonly WebGPU _api;
 	private readonly System.Collections.Generic.List<Entry> _free = new();
 	private readonly object _gate = new();
@@ -187,7 +249,7 @@ internal sealed unsafe class WebGpuOffscreenPool : IDisposable
 	private const int EvictAfterFrames = 240;
 	private const int MaxEntries = 48;
 
-	public WebGpuOffscreenPool(WebGPU api) => _api = api;
+	public WebGpuOffscreenPool(WebGpuDevice d) { _d = d; _api = d.Api; }
 
 	public void BeginFrame()
 	{
@@ -234,7 +296,7 @@ internal sealed unsafe class WebGpuOffscreenPool : IDisposable
 
 	private void Destroy(Entry e)
 	{
-		if (e.View != null) { _api.TextureViewRelease(e.View); }
+		if (e.View != null) { _d.Groups?.NoteDestroyed((nint)e.View); _api.TextureViewRelease(e.View); }
 		if (e.Tex != null) { _api.TextureDestroy(e.Tex); _api.TextureRelease(e.Tex); }
 	}
 

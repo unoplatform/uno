@@ -31,10 +31,6 @@ using KeyEventArgs = Windows.UI.Core.KeyEventArgs;
 using Combinatorial.MSTest;
 using Uno.UI.DevTools.Input;
 
-#if !HAS_UNO_WINUI
-using Windows.UI.Input;
-#endif
-
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
 	[TestClass]

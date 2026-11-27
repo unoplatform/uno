@@ -126,6 +126,11 @@ targets. These are the values the `Uno.Sdk` applies when a head does not set
 The Android Wear floor is unchanged at API 26, and no minimum OS version is enforced
 for the `net*-desktop` and `net*-browserwasm` targets.
 
+An Android head whose `AndroidManifest.xml` still sets `<uses-sdk android:minSdkVersion="21" />`
+now fails to build with `XA1036` (`minSdkVersion '21' does not match the $(SupportedOSPlatformVersion)
+value '24.0'`). Remove the `minSdkVersion` attribute, so the value comes from
+`SupportedOSPlatformVersion`, or raise it to 24.
+
 A head that sets these properties explicitly keeps its own value, so an app can still
 target lower versions where the underlying SDK allows it — but those combinations are no
 longer tested by Uno Platform.

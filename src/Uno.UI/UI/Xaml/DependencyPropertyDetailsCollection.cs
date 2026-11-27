@@ -48,49 +48,53 @@ namespace Microsoft.UI.Xaml
 
 		internal void CloneToForHotReload(DependencyPropertyDetailsCollection other, DependencyObject store, DependencyObject otherStore)
 		{
+			// Bindings are re-created only once every value is cloned: a binding reads its DataContext when it is set,
+			// and the cloned values are written without notifying it. Entries are in hash order, so a single pass
+			// would make that depend on the properties' UniqueIds.
 			for (int i = 0; i < _entries.Length; i++)
 			{
-				if (_entries[i] is { Property: { } oldDP } oldDetails)
+				if (_entries[i] is { } oldDetails && GetHotReloadTarget(other, oldDetails) is { } newDetails)
 				{
-					var newDP = DependencyProperty.GetProperty(oldDP.OwnerType, oldDP.Name);
-					if (newDP is null)
+					oldDetails.CloneToForHotReload(newDetails);
+				}
+			}
+
+			for (int i = 0; i < _entries.Length; i++)
+			{
+				// This may not work well for x:Bind, we will investigate proper support for x:Bind.
+				// Though, anything will be done now for x:Bind will need to be re-worked if we refactored
+				// x:Bind to be fully compiled, as in WinUI.
+				if (_entries[i] is { } oldDetails
+					&& oldDetails.GetBinding() is { ParentBinding: { } binding }
+					&& GetHotReloadTarget(other, oldDetails) is { } newDetails)
+				{
+					var newBinding = new Binding(binding.Path, binding.Converter, binding.ConverterParameter);
+					var newSource = binding.Source;
+					if (newSource is DependencyObject oldStore && oldStore == store)
 					{
-						continue;
+						newSource = otherStore.ActualInstance;
 					}
 
-					if (other.GetPropertyDetails(newDP) is { } newDetails)
+					newBinding.Source = newSource;
+					newBinding.Mode = binding.Mode;
+					newBinding.TargetNullValue = binding.TargetNullValue;
+					newBinding.ElementName = binding.ElementName;
+					newBinding.ElementNameSubject = binding.ElementNameSubject;
+					newBinding.FallbackValue = binding.FallbackValue;
+					if (binding.RelativeSource is { } relativeSource)
 					{
-						oldDetails.CloneToForHotReload(newDetails);
-
-						// This may not work well for x:Bind, we will investigate proper support for x:Bind.
-						// Though, anything will be done now for x:Bind will need to be re-worked if we refactored
-						// x:Bind to be fully compiled, as in WinUI.
-						if (oldDetails.GetBinding() is { ParentBinding: { } binding })
-						{
-							var newBinding = new Binding(binding.Path, binding.Converter, binding.ConverterParameter);
-							var newSource = binding.Source;
-							if (newSource is DependencyObject oldStore && oldStore == store)
-							{
-								newSource = otherStore.ActualInstance;
-							}
-
-							newBinding.Source = newSource;
-							newBinding.Mode = binding.Mode;
-							newBinding.TargetNullValue = binding.TargetNullValue;
-							newBinding.ElementName = binding.ElementName;
-							newBinding.ElementNameSubject = binding.ElementNameSubject;
-							newBinding.FallbackValue = binding.FallbackValue;
-							if (binding.RelativeSource is { } relativeSource)
-							{
-								newBinding.RelativeSource = new RelativeSource(relativeSource.Mode);
-							}
-
-							otherStore.SetBindingInternal(newDP, newBinding);
-						}
+						newBinding.RelativeSource = new RelativeSource(relativeSource.Mode);
 					}
+
+					otherStore.SetBindingInternal(newDetails.Property, newBinding);
 				}
 			}
 		}
+
+		private static DependencyPropertyDetails? GetHotReloadTarget(DependencyPropertyDetailsCollection other, DependencyPropertyDetails oldDetails)
+			=> DependencyProperty.GetProperty(oldDetails.Property.OwnerType, oldDetails.Property.Name) is { } newDP
+				? other.GetPropertyDetails(newDP)
+				: null;
 
 		public DependencyPropertyDetails? DataContextPropertyDetails
 			=> _dataContextProperty is { } dataContextProperty

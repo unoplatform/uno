@@ -26,8 +26,6 @@ To create Uno Platform applications you will need [**Visual Studio 2022 (17.9+) 
 
 > [!NOTE]
 > If you intend to do Linux development with WSL, make sure to select **.NET Debugging with WSL** in the **Individual components** section.
-> [!IMPORTANT]
-> Uno Platform 5.0 and later [does not support Xamarin projects anymore](xref:Uno.Development.MigratingToUno5). To build Xamarin-based projects in Visual Studio, in Visual Studio's installer `Individual components` tab, search for Xamarin and select `Xamarin` and `Xamarin Remoted Simulator`. See [this section on migrating Xamarin projects](migrating-from-xamarin-to-net6.md) to .NET 6.
 
 ## Check your environment
 
@@ -35,7 +33,7 @@ To create Uno Platform applications you will need [**Visual Studio 2022 (17.9+) 
 
 ## Install the Uno Platform Extension
 
-1. Launch Visual Studio 2022/2026, then click `Continue without code`. Click `Extensions` -> `Manage Extensions` from the Menu Bar.  
+1. Launch Visual Studio 2022/2026, then click `Continue without code` (usually hiding in the bottom right corner of Visual Studio). Click `Extensions` -> `Manage Extensions` from the Menu Bar.  
 
     ![Visual Studio - "Extensions" drop-down selecting "Manage Extensions"](Assets/tutorial01/manage-extensions.png)  
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Android.Views;
 using Android.Widget;
@@ -56,6 +57,25 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 				{
 					this.Log().Error($"Cannot attach native element because {nameof(ApplicationActivity.NativeLayerHost)} is null.");
 				}
+			}
+		}
+	}
+
+	internal static void OnNativeElementFocused(View view)
+	{
+		// Called from a Java callback: an exception (e.g. from a focus event handler) must not cross back into Java.
+		try
+		{
+			if (_attachedViews.TryGetValue(view, out var presenter))
+			{
+				presenter.OnNativeElementGotFocus();
+			}
+		}
+		catch (Exception error)
+		{
+			if (typeof(AndroidSkiaNativeElementHostingExtension).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(AndroidSkiaNativeElementHostingExtension).Log().Error($"Failed to sync XAML focus with a focused native view: {error}");
 			}
 		}
 	}

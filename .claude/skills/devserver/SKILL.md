@@ -44,7 +44,7 @@ The test project **links source files** from CLI/Host (rather than referencing o
 
 ## 4. CLI commands & flags
 Commands: `start`, `stop`, `list`, `disco` (discover env/SDK/active server), `login` (open Uno settings app), `--mcp-app` (MCP STDIO proxy mode).
-Flags: `-l trace`, `-fl <path>` (file logging, `{Date}` token), `--json` (disco output), `--addins-only`, `--mcp-wait-tools-list`, `--force-roots-fallback` (legacy override; auto-detected now), `--solution-dir <path>`, `--solution <path>` (MCP mode: explicit solution, kept like `uno_app_select_solution`).
+Flags: `-l trace`, `-fl <path>` (file logging, `{Date}` token), `--json` (disco output), `--addins-only`, `--mcp-wait-tools-list`, `--force-roots-fallback` (legacy override; auto-detected now), `--solution-dir <path>`, `--solution <path>` (MCP mode: explicit solution, kept like `uno_app_select_solution`; `start`/`stop`/`disco`/`health`: the workspace comes from this solution, and an unusable value falls back to discovery with a warning).
 
 ## 5. Add-in discovery — three paths
 1. **Manifest-first** (`devserver-addin.json`): `ManifestAddInResolver` resolves entry points directly, with `minHostVersion` gating.

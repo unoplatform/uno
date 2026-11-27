@@ -959,12 +959,14 @@ namespace Microsoft.UI.Xaml
 				// if we have difference between child and parent FlowDirection
 				// then we have to change origin of Clipping rectangle
 				// which allows us to visually keep it at the same place
-				// UNO TODO
-				//pParent = GetUIElementAdjustedParentInternal(FALSE /*fPublicParentsOnly*/);
-				//if (pParent && pParent->IsRightToLeft() != IsRightToLeft())
-				//{
-				//	clipRect.X = RenderSize.width - (clipRect.X + clipRect.Width);
-				//}
+#if SUPPORTS_RTL
+				// Uno: the visual's flow direction flip is the parent/child test, but text surfaces carry the flip in
+				// the opposite case (WinUI un-mirrors them in the text drawing context). Rect.Empty would turn into NaN.
+				if (!clipRect.IsEmpty && !GetFlowDirectionTransform().IsIdentity)
+				{
+					clipRect.X = RenderSize.Width - (clipRect.X + clipRect.Width);
+				}
+#endif
 
 				if (needToClipSlot || needToClipLocally)
 				{
@@ -1051,6 +1053,11 @@ namespace Microsoft.UI.Xaml
 
 			base.EnterImpl(@params, depth);
 
+			if (@params.IsLive)
+			{
+				RegisterCodeName();
+			}
+
 			////Check for focus chrome property.
 			//if (@params.IsLive)
 			//{
@@ -1109,6 +1116,11 @@ namespace Microsoft.UI.Xaml
 		// UNO TODO: Not yet ported
 		internal override void LeaveImpl(LeaveParams @params)
 		{
+			if (@params.IsLive)
+			{
+				UnregisterCodeName();
+			}
+
 			// The way this works on WinUI is that when an element enters the visual tree, all values
 			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
 			// are entered as well.

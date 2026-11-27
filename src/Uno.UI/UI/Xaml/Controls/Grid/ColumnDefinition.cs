@@ -29,33 +29,15 @@ namespace Microsoft.UI.Xaml.Controls
 		private static GridLength GetWidthDefaultValue() => GridLengthHelper.OneStar;
 
 		[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
-		public static DependencyProperty WidthProperty { get; } = CreateWidthProperty();
-
-		public GridLength Width
-		{
-			get => GetWidthValue();
-			set => SetWidthValue(value);
-		}
+		public partial GridLength Width { get; set; }
 
 		#endregion
 
 		[GeneratedDependencyProperty(DefaultValue = 0d, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
-		public static DependencyProperty MinWidthProperty { get; } = CreateMinWidthProperty();
-
-		public double MinWidth
-		{
-			get => GetMinWidthValue();
-			set => SetMinWidthValue(value);
-		}
+		public partial double MinWidth { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = double.PositiveInfinity, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
-		public static DependencyProperty MaxWidthProperty { get; } = CreateMaxWidthProperty();
-
-		public double MaxWidth
-		{
-			get => GetMaxWidthValue();
-			set => SetMaxWidthValue(value);
-		}
+		public partial double MaxWidth { get; set; }
 
 		public double ActualWidth
 		{

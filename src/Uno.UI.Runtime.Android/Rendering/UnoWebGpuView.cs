@@ -215,12 +215,25 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		// Effect brushes read this while recording, so it must be set as soon as the renderer is known.
 		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer =
 			init.Context.Kind == global::Uno.UI.Composition.Drawing.GraphicsContextKind.Software;
+		_activity.OnRendererAvailable();
 	}
 
 	private void RenderFrame(RenderSession session)
 	{
 		if (session.Context is not { } context)
 		{
+			return;
+		}
+
+		// The window is shared by every activity that has held it, but only the one driving it may present it:
+		// another view's frame would replay recordings made for the driving view's device into its own.
+		if (!_activity.DrivesWindow)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug("Skipping a frame for an activity that no longer drives the window.");
+			}
+
 			return;
 		}
 

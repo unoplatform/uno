@@ -16,7 +16,7 @@ param(
 	[string[]]$UnoTests = @(),
 	[string]$UnoStrings,
 	[string]$UnoRoot = (Resolve-Path "$PSScriptRoot/../..").Path,
-	[string]$ManifestPath = "$PSScriptRoot/areas.json",
+	[string]$ManifestPath = "$PSScriptRoot/areas",
 	# Use this commit or tag instead of the baseline derived from the headers.
 	[string]$Baseline,
 	# Do not add the control's theme XAML (FluentTheme copies, upstream CommonStyles) to the mapping.
@@ -101,7 +101,6 @@ if ($UpstreamStrings -and -not (Resolve-UpstreamPath -UpstreamRepo $UpstreamRepo
 }
 
 if ($Write) {
-	$areas = @(Get-SyncAreas -ManifestPath $ManifestPath | Where-Object id -NE $Id) + $area
-	Write-SyncAreas -ManifestPath $ManifestPath -Areas $areas
-	"Written to $ManifestPath"
+	Write-SyncArea -ManifestPath $ManifestPath -Area $area
+	"Written to $(Get-SyncAreaFile $ManifestPath $Id)"
 }

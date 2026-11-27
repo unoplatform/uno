@@ -1590,6 +1590,54 @@ internal class Win32RawElementProvider :
 		_ => Win32UIAutomationInterop.UIA_CustomControlTypeId,
 	};
 
+	// MUX Reference UIAWindow.cpp, CUIAWindow::ConvertIdToAPAutomationControlType
+	// Unknown ids (FlipView included, as in WinUI) map to (APAutomationControlType)0, which is Button.
+	internal static AutomationControlType MapControlTypeId(int controlTypeId) => controlTypeId switch
+	{
+		Win32UIAutomationInterop.UIA_ButtonControlTypeId => AutomationControlType.Button,
+		Win32UIAutomationInterop.UIA_CalendarControlTypeId => AutomationControlType.Calendar,
+		Win32UIAutomationInterop.UIA_CheckBoxControlTypeId => AutomationControlType.CheckBox,
+		Win32UIAutomationInterop.UIA_ComboBoxControlTypeId => AutomationControlType.ComboBox,
+		Win32UIAutomationInterop.UIA_EditControlTypeId => AutomationControlType.Edit,
+		Win32UIAutomationInterop.UIA_HyperlinkControlTypeId => AutomationControlType.Hyperlink,
+		Win32UIAutomationInterop.UIA_ImageControlTypeId => AutomationControlType.Image,
+		Win32UIAutomationInterop.UIA_ListItemControlTypeId => AutomationControlType.ListItem,
+		Win32UIAutomationInterop.UIA_ListControlTypeId => AutomationControlType.List,
+		Win32UIAutomationInterop.UIA_MenuControlTypeId => AutomationControlType.Menu,
+		Win32UIAutomationInterop.UIA_MenuBarControlTypeId => AutomationControlType.MenuBar,
+		Win32UIAutomationInterop.UIA_MenuItemControlTypeId => AutomationControlType.MenuItem,
+		Win32UIAutomationInterop.UIA_ProgressBarControlTypeId => AutomationControlType.ProgressBar,
+		Win32UIAutomationInterop.UIA_RadioButtonControlTypeId => AutomationControlType.RadioButton,
+		Win32UIAutomationInterop.UIA_ScrollBarControlTypeId => AutomationControlType.ScrollBar,
+		Win32UIAutomationInterop.UIA_SliderControlTypeId => AutomationControlType.Slider,
+		Win32UIAutomationInterop.UIA_SpinnerControlTypeId => AutomationControlType.Spinner,
+		Win32UIAutomationInterop.UIA_StatusBarControlTypeId => AutomationControlType.StatusBar,
+		Win32UIAutomationInterop.UIA_TabControlTypeId => AutomationControlType.Tab,
+		Win32UIAutomationInterop.UIA_TabItemControlTypeId => AutomationControlType.TabItem,
+		Win32UIAutomationInterop.UIA_TextControlTypeId => AutomationControlType.Text,
+		Win32UIAutomationInterop.UIA_ToolBarControlTypeId => AutomationControlType.ToolBar,
+		Win32UIAutomationInterop.UIA_ToolTipControlTypeId => AutomationControlType.ToolTip,
+		Win32UIAutomationInterop.UIA_TreeControlTypeId => AutomationControlType.Tree,
+		Win32UIAutomationInterop.UIA_TreeItemControlTypeId => AutomationControlType.TreeItem,
+		Win32UIAutomationInterop.UIA_CustomControlTypeId => AutomationControlType.Custom,
+		Win32UIAutomationInterop.UIA_GroupControlTypeId => AutomationControlType.Group,
+		Win32UIAutomationInterop.UIA_ThumbControlTypeId => AutomationControlType.Thumb,
+		Win32UIAutomationInterop.UIA_DataGridControlTypeId => AutomationControlType.DataGrid,
+		Win32UIAutomationInterop.UIA_DataItemControlTypeId => AutomationControlType.DataItem,
+		Win32UIAutomationInterop.UIA_DocumentControlTypeId => AutomationControlType.Document,
+		Win32UIAutomationInterop.UIA_SplitButtonControlTypeId => AutomationControlType.SplitButton,
+		Win32UIAutomationInterop.UIA_WindowControlTypeId => AutomationControlType.Window,
+		Win32UIAutomationInterop.UIA_PaneControlTypeId => AutomationControlType.Pane,
+		Win32UIAutomationInterop.UIA_HeaderControlTypeId => AutomationControlType.Header,
+		Win32UIAutomationInterop.UIA_HeaderItemControlTypeId => AutomationControlType.HeaderItem,
+		Win32UIAutomationInterop.UIA_TableControlTypeId => AutomationControlType.Table,
+		Win32UIAutomationInterop.UIA_TitleBarControlTypeId => AutomationControlType.TitleBar,
+		Win32UIAutomationInterop.UIA_SeparatorControlTypeId => AutomationControlType.Separator,
+		Win32UIAutomationInterop.UIA_SemanticZoomControlTypeId => AutomationControlType.SemanticZoom,
+		Win32UIAutomationInterop.UIA_AppBarControlTypeId => AutomationControlType.AppBar,
+		_ => (AutomationControlType)0,
+	};
+
 	// Diagnostic helpers
 
 	internal string DescribeElement()

@@ -118,6 +118,7 @@ public static class AriaMapper
 			AutomationControlType.Tree => SemanticElementType.Tree,
 			AutomationControlType.TreeItem => SemanticElementType.TreeItem,
 			AutomationControlType.DataGrid => SemanticElementType.Grid,
+			AutomationControlType.SplitButton => SemanticElementType.SplitButton,
 			AutomationControlType.DataItem => SemanticElementType.GridRow,
 			AutomationControlType.Menu => SemanticElementType.Menu,
 			AutomationControlType.MenuItem => SemanticElementType.MenuItem,
@@ -444,8 +445,9 @@ public static class AriaMapper
 			// 2. Explicit owner-side fallback for LabeledBy / Name.
 			// In most cases peer.GetName() already covers these, but some peers can still
 			// surface an empty name while the owner metadata is available.
+			// A Collapsed labeller gets no peer from GetOrCreateAutomationPeer, so as in WinUI it contributes no name.
 			var labeledBy = AutomationProperties.GetLabeledBy(owner);
-			if (labeledBy is TextBlock labelTextBlock && !string.IsNullOrEmpty(labelTextBlock.Text))
+			if (labeledBy is TextBlock { Visibility: Visibility.Visible } labelTextBlock && !string.IsNullOrEmpty(labelTextBlock.Text))
 			{
 				return labelTextBlock.Text;
 			}
@@ -668,7 +670,9 @@ public enum SemanticElementType
 	/// <summary>div with role="menu"</summary>
 	Menu,
 	/// <summary>div with role="menuitem"</summary>
-	MenuItem
+	MenuItem,
+	/// <summary>role="group" holding the primary and menu buttons of a split button</summary>
+	SplitButton
 }
 
 /// <summary>

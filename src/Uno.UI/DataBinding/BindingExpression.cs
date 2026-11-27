@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Controls;
@@ -27,6 +26,7 @@ namespace Microsoft.UI.Xaml.Data
 		private ManagedWeakReference _explicitSourceStore;
 		private readonly bool _isCompiledSource;
 		private readonly bool _isElementNameSource;
+		private readonly ElementNameSubject _elementNameSubject;
 		private bool _isBindingSuspended;
 		private ValueGetterHandler _valueGetter;
 		private ValueSetterHandler _valueSetter;
@@ -177,25 +177,13 @@ namespace Microsoft.UI.Xaml.Data
 					.ToArray();
 			}
 
-			if (ParentBinding.ElementNameSubject != null)
-			{
-				_isElementNameSource = true;
-			}
-			else if (ParentBinding.ElementName != null)
-			{
-				// ElementName is resolved through the ElementNameSubject set by the XAML code generator
-				// and the runtime reader. A Binding created in code with only the name set cannot be
-				// resolved yet, but it must still count as explicitly sourced so that it doesn't silently
-				// bind the name as a property path against the DataContext.
-				_isElementNameSource = true;
-
-				if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					this.Log().LogWarning(
-						$"The binding on {TargetName} sets ElementName '{ParentBinding.ElementName}' without an ElementNameSubject. " +
-						"ElementName bindings created in code are not supported yet, use the XAML syntax instead.");
-				}
-			}
+			// A Binding created in code only carries the name, so it is resolved like a name the XAML generator
+			// couldn't find in the file: through the namescopes, when the target loads. An explicit source wins, as on WinUI.
+			_elementNameSubject = ParentBinding.ElementNameSubject
+				?? (ParentBinding is { ElementName: { } elementName, Source: null, RelativeSource: null }
+					? new ElementNameSubject(isRuntimeBound: true, elementName)
+					: null);
+			_isElementNameSource = _elementNameSubject is not null;
 
 			if (!(GetWeakDataContext()?.IsAlive ?? false))
 			{
@@ -272,7 +260,7 @@ namespace Microsoft.UI.Xaml.Data
 						value,
 						_bindingPath.ValueType,
 						ParentBinding.ConverterParameter,
-						GetCurrentCulture()
+						ParentBinding.ConverterLanguage
 					);
 				}
 
@@ -419,13 +407,20 @@ namespace Microsoft.UI.Xaml.Data
 
 		internal void ApplyElementName()
 		{
-			if (ParentBinding.ElementNameSubject is { } elementNameSubject)
+			if (_elementNameSubject is { } elementNameSubject)
 			{
 
 				if (elementNameSubject.IsLoadTimeBound)
 				{
 					// ElementName references in outer scopes will be resolvable on loading
 					var target = NameScope.FindInNamescopes(_view?.Target as DependencyObject, elementNameSubject.Name);
+					if (target is null
+						&& _view?.Target is UIElement { IsActiveInVisualTree: true } bindingTarget
+						&& this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"ElementName [{elementNameSubject.Name}] was not found in the namescopes of [{bindingTarget}] for [{TargetPropertyDetails}].");
+					}
+
 					ExplicitSource = target;
 					ApplyExplicitSource();
 				}
@@ -906,13 +901,11 @@ namespace Microsoft.UI.Xaml.Data
 			}
 		}
 
-		private string GetCurrentCulture() => CultureInfo.CurrentCulture.ToString();
-
 		private object ConvertValue(object value)
 		{
 			if (ParentBinding.Converter != null)
 			{
-				return ParentBinding.Converter.Convert(value, _boundPropertyType, ParentBinding.ConverterParameter, GetCurrentCulture());
+				return ParentBinding.Converter.Convert(value, _boundPropertyType, ParentBinding.ConverterParameter, ParentBinding.ConverterLanguage);
 			}
 			else
 			{

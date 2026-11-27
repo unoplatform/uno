@@ -90,11 +90,40 @@ function ConvertTo-SyncArea {
 	}
 }
 
-function Get-SyncAreas {
-	param([Parameter(Mandatory, Position = 0)][string]$ManifestPath)
-	Get-SyncAreasFromJson -Json (Get-Content -Raw -LiteralPath $ManifestPath)
+# The manifest is a folder holding one <id>.json per area, so PRs for different areas never edit the same file.
+function Get-SyncAreaFile {
+	param([Parameter(Mandatory, Position = 0)][string]$ManifestPath, [Parameter(Mandatory, Position = 1)][string]$Id)
+	Join-Path $ManifestPath "$Id.json"
 }
 
+function ConvertFrom-SyncAreaJson {
+	param([Parameter(Mandatory)][string]$Json)
+	ConvertTo-SyncArea ($Json | ConvertFrom-Json)
+}
+
+function Get-SyncAreas {
+	param([Parameter(Mandatory, Position = 0)][string]$ManifestPath)
+	if (-not (Test-Path -LiteralPath $ManifestPath -PathType Container)) { throw "manifest folder not found: $ManifestPath" }
+	$areas = @(foreach ($file in Get-ChildItem -LiteralPath $ManifestPath -Filter '*.json' -File | Sort-Object Name) {
+			$area = try { ConvertFrom-SyncAreaJson -Json (Get-Content -Raw -LiteralPath $file.FullName) }
+			catch { throw "$($file.Name): $($_.Exception.Message)" }
+			if ($area.id -ne $file.BaseName) { throw "$($file.Name): area id '$($area.id)' does not match the file name" }
+			$area
+		})
+	$dupes = @($areas | Group-Object id | Where-Object Count -GT 1)
+	if ($dupes.Count -gt 0) { throw "duplicate area id: $($dupes.Name -join ', ')" }
+	$areas
+}
+
+# One area, or $null when the manifest has no file for it.
+function Get-SyncArea {
+	param([Parameter(Mandatory)][string]$ManifestPath, [Parameter(Mandatory)][string]$Id)
+	$file = Get-SyncAreaFile $ManifestPath $Id
+	if (-not (Test-Path -LiteralPath $file -PathType Leaf)) { return $null }
+	ConvertFrom-SyncAreaJson -Json (Get-Content -Raw -LiteralPath $file)
+}
+
+# The single-file manifest used before the folder. Sync branches opened before the split still carry it.
 function Get-SyncAreasFromJson {
 	param([Parameter(Mandatory)][string]$Json)
 	$doc = $Json | ConvertFrom-Json
@@ -104,33 +133,49 @@ function Get-SyncAreasFromJson {
 	$areas
 }
 
-# The manifest is always written in this one canonical shape, so diffs stay minimal.
+# An area's entry as committed at <Ref>, or $null. Falls back to the single-file manifest next to the folder.
+function Get-SyncAreaAtRef {
+	param([Parameter(Mandatory)][string]$Repo, [Parameter(Mandatory)][string]$Ref, [Parameter(Mandatory)][string]$ManifestRelativePath, [Parameter(Mandatory)][string]$Id)
+	$json = (Invoke-Git $Repo @('show', "${Ref}:$ManifestRelativePath/$Id.json") -AllowExitCodes 128) -join "`n"
+	if ((Get-LastGitExitCode) -eq 0 -and $json) { return ConvertFrom-SyncAreaJson -Json $json }
+	$legacy = "$(Split-Path $ManifestRelativePath)/areas.json".Replace('\', '/')
+	$json = (Invoke-Git $Repo @('show', "${Ref}:$legacy") -AllowExitCodes 128) -join "`n"
+	if ((Get-LastGitExitCode) -eq 0 -and $json) { return @(Get-SyncAreasFromJson -Json $json | Where-Object id -EQ $Id) | Select-Object -First 1 }
+	$null
+}
+
+# Each area file is always written in this one canonical shape, so diffs stay minimal.
+function Write-SyncArea {
+	param([Parameter(Mandatory)][string]$ManifestPath, [Parameter(Mandatory)]$Area)
+	if ("$($Area.id)" -notmatch '^[a-z0-9]+$') { throw "area id must be lower case letters and digits only, got '$($Area.id)'" }
+	$entry = [ordered]@{ id = $Area.id; title = $Area.title; baseline = $Area.baseline }
+	if ($Area.model) { $entry.model = $Area.model }
+	foreach ($side in 'upstream', 'uno') {
+		$s = [ordered]@{ sources = @($Area.$side.sources) }
+		if (@($Area.$side.tests).Count -gt 0) { $s.tests = @($Area.$side.tests) }
+		if ($Area.$side.strings) { $s.strings = $Area.$side.strings }
+		$entry[$side] = $s
+	}
+	if (@(Get-AreaMirror $Area).Count -gt 0) { $entry.mirror = @((Get-AreaMirror $Area) | ForEach-Object { [ordered]@{ upstream = $_.upstream; uno = $_.uno } }) }
+	$json = ($entry | ConvertTo-Json -Depth 6) -replace "`r`n", "`n"
+	# .NET resolves relative paths against the process directory, not the PowerShell location.
+	$folder = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($ManifestPath)
+	New-Item -ItemType Directory -Force -Path $folder | Out-Null
+	[System.IO.File]::WriteAllText((Get-SyncAreaFile $folder $Area.id), $json + "`n")
+}
+
 function Write-SyncAreas {
 	param([Parameter(Mandatory)][string]$ManifestPath, [object[]]$Areas)
-	$out = foreach ($a in @($Areas)) {
-		$entry = [ordered]@{ id = $a.id; title = $a.title; baseline = $a.baseline }
-		if ($a.model) { $entry.model = $a.model }
-		foreach ($side in 'upstream', 'uno') {
-			$s = [ordered]@{ sources = @($a.$side.sources) }
-			if (@($a.$side.tests).Count -gt 0) { $s.tests = @($a.$side.tests) }
-			if ($a.$side.strings) { $s.strings = $a.$side.strings }
-			$entry[$side] = $s
-		}
-		if (@(Get-AreaMirror $a).Count -gt 0) { $entry.mirror = @((Get-AreaMirror $a) | ForEach-Object { [ordered]@{ upstream = $_.upstream; uno = $_.uno } }) }
-		$entry
-	}
-	$json = ([ordered]@{ areas = @($out) } | ConvertTo-Json -Depth 6) -replace "`r`n", "`n"
-	[System.IO.File]::WriteAllText($ManifestPath, $json + "`n")
+	foreach ($a in @($Areas)) { Write-SyncArea -ManifestPath $ManifestPath -Area $a }
 }
 
 function Set-AreaBaseline {
 	param([Parameter(Mandatory)][string]$ManifestPath, [Parameter(Mandatory)][string]$Id, [Parameter(Mandatory)][string]$Sha)
 	if ($Sha -notmatch '^[0-9a-f]{40}$') { throw "baseline must be a full 40-character commit SHA, got '$Sha'" }
-	$areas = @(Get-SyncAreas -ManifestPath $ManifestPath)
-	$target = @($areas | Where-Object id -EQ $Id)
-	if ($target.Count -eq 0) { throw "area '$Id' not found in $ManifestPath" }
-	$target[0].baseline = $Sha
-	Write-SyncAreas -ManifestPath $ManifestPath -Areas $areas
+	$area = Get-SyncArea -ManifestPath $ManifestPath -Id $Id
+	if (-not $area) { throw "area '$Id' not found in $ManifestPath" }
+	$area.baseline = $Sha
+	Write-SyncArea -ManifestPath $ManifestPath -Area $area
 }
 
 #endregion
@@ -528,9 +573,8 @@ function Get-SyncPlan {
 				# An open sync PR already carries part of the work: continue from its baseline and strings.
 				$prs[$area.id] = $pr
 				$branchRef = "origin/$(Get-SyncBranchName $area.id)"
-				$branchJson = (Invoke-Git $UnoRoot @('show', "${branchRef}:$manifestRel")) -join "`n"
-				$onBranch = @(Get-SyncAreasFromJson -Json $branchJson | Where-Object id -EQ $area.id)
-				if ($onBranch.Count -eq 1) { $area.baseline = $onBranch[0].baseline }
+				$onBranch = Get-SyncAreaAtRef -Repo $UnoRoot -Ref $branchRef -ManifestRelativePath $manifestRel -Id $area.id
+				if ($onBranch) { $area.baseline = $onBranch.baseline }
 				if ($area.uno.strings) {
 					$tmp = New-TempDirectory
 					$stringsDir = try { Export-GitTree -Repo $UnoRoot -Ref $branchRef -Path $area.uno.strings -Destination $tmp } catch { Join-Path $tmp 'missing' }
@@ -539,11 +583,12 @@ function Get-SyncPlan {
 					if (-not $tmp) { $tmp = New-TempDirectory }
 					$mirrorRoot = Join-Path $tmp 'mirror'
 					foreach ($m in (Get-AreaMirror $area)) {
-						$copy = @(Invoke-Git $UnoRoot @('show', "${branchRef}:$($m.uno)") -AllowExitCodes 128)
-						if ((Get-LastGitExitCode) -ne 0) { continue }
+						$bytes = $null
+						try { $bytes = Get-UpstreamFileBytes -UpstreamRepo $UnoRoot -Ref $branchRef -Path $m.uno } catch { $bytes = $null }
+						if ($null -eq $bytes) { continue }
 						$dest = Join-Path $mirrorRoot $m.uno
 						New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null
-						[System.IO.File]::WriteAllText($dest, ($copy -join "`n") + "`n")
+						[System.IO.File]::WriteAllBytes($dest, $bytes)
 					}
 				}
 			}
@@ -964,7 +1009,7 @@ function Get-CommitGroups {
 	$buckets = [ordered]@{ logic = @(); tests = @(); strings = @(); mirror = @(); manifest = @() }
 	foreach ($file in @($ChangedFiles) | Where-Object { $_ } | Sort-Object) {
 		$reports = "$(Split-Path $ManifestRelativePath)/reports/".Replace('\', '/')
-		$kind = if ($file -eq $ManifestRelativePath -or $file.StartsWith($reports)) { 'manifest' }
+		$kind = if ($file -eq $ManifestRelativePath -or $file.StartsWith("$ManifestRelativePath/") -or $file.StartsWith($reports)) { 'manifest' }
 		elseif (@((Get-AreaMirror $Area) | ForEach-Object { $_.uno }) -contains $file) { 'mirror' }
 		elseif (& $under $file @($Area.uno.strings)) { 'strings' }
 		elseif (& $under $file @($Area.uno.tests)) { 'tests' }
@@ -1183,7 +1228,7 @@ function Publish-SyncArea {
 	if ((Initialize-SyncBranch -RepoRoot $RepoRoot -Id $Id -MasterSha $MasterSha -HasOpenPr:([bool]$PrNumber)) -eq 'conflict') {
 		return & $skip "merging the default branch into ``$branch`` conflicts. Resolve the conflict on the branch; the next run continues from there."
 	}
-	$area = @(Get-SyncAreas -ManifestPath $ManifestPath | Where-Object id -EQ $Id)[0]
+	$area = Get-SyncArea -ManifestPath $ManifestPath -Id $Id
 	if (-not $area) { return & $skip "area is not in the manifest on ``$branch``." }
 
 	$report = [pscustomobject]@{ Valid = $true; BuildPassed = $true; SkippedCount = 0; Body = 'No upstream code changes in this range; translations only.' }

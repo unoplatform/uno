@@ -15,10 +15,6 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 
-#if !HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-#endif
-
 #if USING_TAEF
 using WEX.TestExecution;
 using WEX.TestExecution.Markup;

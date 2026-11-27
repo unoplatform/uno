@@ -206,7 +206,7 @@ Describe 'seed-area.ps1' {
 		$c1 = Add-TestCommit $up @{ 'controls/dev/Foo/Foo.cpp' = '1'; 'controls/dev/Foo/Strings/en-us/Resources.resw' = 'en' } -Tag 'winui3/release/1.0.0'
 		$uno = Join-Path $TestDrive 'uno3'
 		New-CsFile "$uno/src/Foo/Foo.cs" "// MUX Reference Foo.cpp, commit $($c1.Substring(0, 10))"
-		$manifest = Write-TestManifest (Join-Path $uno 'areas.json') @()
+		$manifest = Write-TestManifest (Join-Path $uno 'areas') @()
 
 		& "$PSScriptRoot/../seed-area.ps1" -Id foo -Title Foo -UpstreamRepo $up -UnoRoot $uno -ManifestPath $manifest `
 			-UpstreamSources 'controls/dev/Foo' -UnoSources 'src/Foo' -UnoStrings 'src/Foo/Strings' -UpstreamStrings 'controls/dev/Foo/Strings' -Write | Out-Null
@@ -222,7 +222,7 @@ Describe 'seed-area.ps1' {
 		$c1 = Add-TestCommit $up @{ 'controls/dev/Foo/Foo.cpp' = '1'; 'controls/dev/Foo/APITests/T.cpp' = '1'; 'controls/dev/Foo/InteractionTests/T.cpp' = '1' } -Tag 'winui3/release/1.0.0'
 		$uno = Join-Path $TestDrive 'uno4'
 		New-CsFile "$uno/src/Foo/Foo.cs" "// MUX Reference Foo.cpp, commit $($c1.Substring(0, 10))"
-		$manifest = Write-TestManifest (Join-Path $uno 'areas.json') @()
+		$manifest = Write-TestManifest (Join-Path $uno 'areas') @()
 		$common = @{ Id = 'foo'; Title = 'Foo'; UpstreamRepo = $up; UnoRoot = $uno; ManifestPath = $manifest; UpstreamSources = 'controls/dev/Foo'; UnoSources = 'src/Foo'; Write = $true }
 
 		& "$PSScriptRoot/../seed-area.ps1" @common -UpstreamTests 'controls/dev/Foo/APITests,controls/dev/Foo/InteractionTests' | Out-Null
@@ -237,7 +237,7 @@ Describe 'seed-area.ps1' {
 		$uno = Join-Path $TestDrive 'uno6'
 		New-CsFile "$uno/src/Controls/Button.cs" "// MUX Reference Button.cpp, commit $($c1.Substring(0, 10))"
 		New-CsFile "$uno/src/Controls/Slider.cs" "// MUX Reference Slider.cpp, commit 1234567"
-		$manifest = Write-TestManifest (Join-Path $uno 'areas.json') @()
+		$manifest = Write-TestManifest (Join-Path $uno 'areas') @()
 		$common = @{ Id = 'button'; Title = 'Button'; UpstreamRepo = $up; UnoRoot = $uno; ManifestPath = $manifest; UnoSources = 'src/Controls/Button.cs'; Write = $true }
 
 		$out = & "$PSScriptRoot/../seed-area.ps1" @common -UpstreamSources 'dxaml/lib/Button.cpp'
@@ -258,7 +258,7 @@ Describe 'seed-area.ps1' {
 		$uno = Join-Path $TestDrive 'uno7'
 		New-CsFile "$uno/src/Controls/Bar.cs" "// MUX Reference Bar_Partial.cpp, commit $($c1.Substring(0, 10))"
 		New-CsFile "$uno/src/Uno.UI.FluentTheme/Resources/PriorityDefault/Bar_themeresources.xaml" "<!-- MUX Reference src\controls\dev\CommonStyles\Bar_themeresources.xaml, tag winui3/release/1.0.0 -->`n<ResourceDictionary />"
-		$manifest = Write-TestManifest (Join-Path $uno 'areas.json') @()
+		$manifest = Write-TestManifest (Join-Path $uno 'areas') @()
 		$common = @{ Id = 'bar'; Title = 'Bar'; UpstreamRepo = $up; UnoRoot = $uno; ManifestPath = $manifest; UpstreamSources = 'dxaml/lib/Bar_Partial.cpp'; UnoSources = 'src/Controls/Bar.cs'; Write = $true }
 
 		& "$PSScriptRoot/../seed-area.ps1" @common | Out-Null
@@ -278,7 +278,7 @@ Describe 'seed-area.ps1' {
 		$uno = Join-Path $TestDrive 'uno8'
 		New-CsFile "$uno/src/Generic.xaml" "<!-- MUX Reference dxaml\themes\generic.xaml, commit $($c1.Substring(0, 10)) -->`n<Root />"
 		New-CsFile "$uno/src/Overlay.xaml" '<Overlay />'
-		$manifest = Write-TestManifest (Join-Path $uno 'areas.json') @()
+		$manifest = Write-TestManifest (Join-Path $uno 'areas') @()
 		$common = @{ Id = 'gen'; Title = 'Generic.xaml'; UpstreamRepo = $up; UnoRoot = $uno; ManifestPath = $manifest; UnoSources = 'src/Overlay.xaml'; Write = $true }
 
 		& "$PSScriptRoot/../seed-area.ps1" @common -Mirror 'dxaml/themes/generic.xaml=src/Generic.xaml' | Out-Null
@@ -297,7 +297,7 @@ Describe 'seed-area.ps1' {
 		$uno = Join-Path $TestDrive 'uno9'
 		# A tracked area's XAML: its header names no version, so the scan finds no reference at all.
 		New-CsFile "$uno/src/Foo/Foo.xaml" '<!-- MUX Reference controls\dev\Foo\Foo.xaml -->'
-		$manifest = Write-TestManifest (Join-Path $uno 'areas.json') @()
+		$manifest = Write-TestManifest (Join-Path $uno 'areas') @()
 		$common = @{ Id = 'foo'; Title = 'Foo'; UpstreamRepo = $up; UnoRoot = $uno; ManifestPath = $manifest; UpstreamSources = 'controls/dev/Foo'; UnoSources = 'src/Foo/Foo.xaml'; Write = $true }
 
 		& "$PSScriptRoot/../seed-area.ps1" @common -Baseline $c1 | Out-Null
@@ -311,7 +311,7 @@ Describe 'seed-area.ps1' {
 		$uno = Join-Path $TestDrive 'uno5'
 		New-CsFile "$uno/src/Foo/Foo.cs" "// MUX Reference Foo.cpp, commit $($new.Substring(0, 10))"
 		New-CsFile "$uno/src/Foo/Stale.cs" "// MUX Reference Foo.cpp, commit $($old.Substring(0, 10))"
-		$manifest = Write-TestManifest (Join-Path $uno 'areas.json') @()
+		$manifest = Write-TestManifest (Join-Path $uno 'areas') @()
 		$common = @{ Id = 'foo'; Title = 'Foo'; UpstreamRepo = $up; UnoRoot = $uno; ManifestPath = $manifest; UpstreamSources = 'controls/dev/Foo'; UnoSources = 'src/Foo'; Write = $true }
 
 		& "$PSScriptRoot/../seed-area.ps1" @common -Baseline $new.Substring(0, 10) | Out-Null

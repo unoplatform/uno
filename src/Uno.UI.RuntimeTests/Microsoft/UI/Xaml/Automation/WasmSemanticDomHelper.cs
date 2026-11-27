@@ -135,6 +135,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		public static string GetSemanticInputType(UIElement element)
 			=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementId(element)}'); return e ? (e.getAttribute('type') || '') : ''; }})()");
 
+		/// <summary>Returns the id of the element that currently has DOM focus, or empty when none has.</summary>
+		public static string GetActiveElementId()
+			=> InvokeBrowserJs("(function(){return document.activeElement ? document.activeElement.id : '';})()");
+
+		/// <summary>
+		/// A key press as the browser delivers it: on the DOM-focused element, bubbling to the document
+		/// listener that feeds the XAML keyboard input.
+		/// </summary>
+		public static void PressKeyOnFocusedSemanticElement(string key)
+		{
+			var code = key == " " ? "Space" : key;
+			InvokeBrowserJs(
+				"(function(){" +
+				"const target = document.activeElement || document.body;" +
+				"['keydown','keyup'].forEach(function(type){" +
+				$"target.dispatchEvent(new KeyboardEvent(type, {{ key: '{key}', code: '{code}', bubbles: true, cancelable: true }}));" +
+				"});" +
+				"return 'ok';" +
+				"})()");
+		}
+
 		/// <summary>
 		/// Invokes <c>Uno.Foundation.WebAssemblyRuntime.InvokeJS</c> via reflection. The runtime
 		/// assembly isn't a direct reference of the runtime-tests project, so the lookup is kept

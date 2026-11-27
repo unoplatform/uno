@@ -29,9 +29,9 @@ namespace TestRepro
 	partial class MainPage : global::Microsoft.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_MainPage_6223b07b3d418584d0a26d35f5e25e2c = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a = "ms-appx:///TestProject/0/MainPage.xaml";
+		private const string __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c = "ms-appx:///TestProject/0/MainPage.xaml";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -55,7 +55,7 @@ namespace TestRepro
 								IsParsing = true,
 								// Source MainPage.xaml (Line 7:4)
 							}
-							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 							{
 							/* _isTopLevelDictionary:False */
 							__that._component_0 = __p1;
@@ -67,7 +67,7 @@ namespace TestRepro
 								}
 									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.Name.ToUpper()*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ViewModel.Name.ToUpper())) : (false, default), null ))
 							);
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
 							}
 							))
@@ -79,7 +79,7 @@ namespace TestRepro
 								IsParsing = true,
 								// Source MainPage.xaml (Line 8:4)
 							}
-							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 							{
 							/* _isTopLevelDictionary:False */
 							__that._component_1 = __p1;
@@ -91,7 +91,7 @@ namespace TestRepro
 								}
 									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.Name.ToUpper()*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ViewModel.Name.ToUpper())) : (false, default), null , new [] {"ViewModel.Name"}))
 							);
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
 							}
 							))
@@ -103,7 +103,7 @@ namespace TestRepro
 								IsParsing = true,
 								// Source MainPage.xaml (Line 9:4)
 							}
-							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 							{
 							/* _isTopLevelDictionary:False */
 							__that._component_2 = __p1;
@@ -115,7 +115,7 @@ namespace TestRepro
 								}
 									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.Name.ToUpper()*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ViewModel.Name.ToUpper())) : (false, default), (___tctx, __value) => ViewModel.MyBindBack((string)__value) , new [] {"ViewModel.Name"}))
 							);
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
 							}
 							))
@@ -124,9 +124,9 @@ namespace TestRepro
 					}
 					,
 				}
-				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+				.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 				{
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 				__p1.CreationComplete();
 				}
 				))
@@ -134,17 +134,17 @@ namespace TestRepro
 			;
 			
 			this
-			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+			.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
 			// Source MainPage.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
-			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+			.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
 			// Class TestRepro.MainPage
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 			__p1.CreationComplete();
 			}
 			))
@@ -238,25 +238,25 @@ namespace TestRepro
 }
 namespace MyProject
 {
-	static class MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions
+	static class MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions
 	{
 		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.TextBlock instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.TextBlock MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.TextBlock instance, XamlApplyHandler0 handler)
+		public static global::Microsoft.UI.Xaml.Controls.TextBlock MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.TextBlock instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.StackPanel instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.StackPanel MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.StackPanel instance, XamlApplyHandler1 handler)
+		public static global::Microsoft.UI.Xaml.Controls.StackPanel MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.StackPanel instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.Page instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler2 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler2 handler)
 		{
 			handler(instance);
 			return instance;

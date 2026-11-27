@@ -215,7 +215,7 @@ Rename the property in your `.csproj`:
 
 Packages such as `Uno.WinRT` and `Uno.Foundation` ship a platform-neutral compile surface under `lib/` and the assemblies that actually run under `uno-runtime/`. This diagnostic reports that one of them contributed no runtime assembly for the target framework being built, which means the reference assemblies would be deployed instead and every call into them would throw `NotImplementedException` at runtime.
 
-The most common cause is a package built for Uno Platform 6.x. Uno Platform 7.0 renamed the runtime folders from `uno-runtime/<tfm>/skia` and `uno-runtime/<tfm>/webassembly` to `uno-runtime/<tfm>/generic` and `uno-runtime/<tfm>/wasm`, and a package in the old layout is not binary compatible with 7.0 anyway, so it has to be updated to a version built for 7.0. `SkiaSharp.Views.Uno.WinUI` is one such package; applications drawing with Skia on Uno Platform can use [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement) instead.
+The most common cause is a package built for Uno Platform 6.x. Uno Platform 7.0 renamed the runtime folders from `uno-runtime/<tfm>/skia` and `uno-runtime/<tfm>/webassembly` to `uno-runtime/<tfm>/generic` and `uno-runtime/<tfm>/wasm`, and a package in the old layout is not binary compatible with 7.0 anyway, so it has to be updated to a version built for 7.0. `SkiaSharp.Views.Uno.WinUI` before 4.156.0 is one such package: update it to 4.156.0 or later, or draw with [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement) instead.
 
 Other causes are a partially restored package, a `PackageBasePath` pointing at a location that does not contain the expected `uno-runtime` folder, or a mismatched set of Uno Platform package versions. Verify that all `Uno.*` package versions match, then clear `obj/` and `bin/` and restore again.
 
@@ -530,6 +530,24 @@ The warning is raised in the application, but the fix belongs in the library tha
 ```
 
 Until the library is updated, the skipped extension is not registered, so `ApiExtensibility.CreateInstance` finds no implementation for it.
+
+### UXAML0009
+
+**The `Uno.UI.Toolkit` XAML namespace was removed in Uno Platform 7.0**
+
+The types of the `Uno.UI.Toolkit` namespace moved to the `Uno.UI.*` namespaces in Uno Platform 7.0, and there is no forwarding alias, so an `xmlns` declaration pointing at `using:Uno.UI.Toolkit` resolves nothing. Without this warning, each type the page uses is only reported as not found (`UXAML0001`). Point the declaration at the namespace of the types the markup uses:
+
+| Type | Namespace |
+|---|---|
+| `ElevatedView`, `CommandBarExtensions`, `SplitViewExtensions` | `using:Uno.UI.Xaml.Controls` |
+| `VisibleBoundsPadding` | `using:Uno.UI.Behaviors` |
+| `UIElementExtensions` | `using:Uno.UI.Xaml` |
+| `AutomationPropertiesExtensions` | `using:Uno.UI.Xaml.Automation` |
+| `ScrollBarExtensions` | `using:Uno.UI.Xaml.Controls.Primitives` |
+
+A page that uses types from more than one of these namespaces needs one declaration for each. `MenuFlyoutExtensions` and `MenuFlyoutItemExtensions` were removed, with no replacement.
+
+The diagnostic is raised on the `xmlns` declaration, and not for a prefix listed in `mc:Ignorable`. See [`Uno.UI.Toolkit` types move to the `Uno.UI.*` namespaces](xref:Uno.Development.MigratingToUno7#unouitoolkit-types-move-to-the-unoui-namespaces).
 
 ## VS Code Errors
 

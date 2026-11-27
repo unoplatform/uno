@@ -46,6 +46,8 @@ An app without a manifest gets the scene lifecycle from Uno Platform when it is 
 
 Setting it to `false` keeps the app lifecycle, which only SDKs older than 27 support. The key is ignored when the app declares a scene manifest, or when its value is neither a boolean nor a number.
 
+When an iOS app is built with a version 27 SDK, the .NET iOS SDK checks that its `Info.plist` declares a scene manifest, and fails the build with [MT7199](https://github.com/dotnet/macios/blob/main/docs/website/mtouch-errors.md#mt7199) otherwise. That check can't see the scene lifecycle Uno Platform adopts in code, so the Uno.Sdk turns it off by setting the `ValidateSceneManifest` MSBuild property to `false`, unless the project sets it. An app that sets `UnoUseSceneLifecycle` to `false` loses this check: built with a version 27 SDK, it builds, but iOS 27 refuses to launch it. tvOS apps aren't checked.
+
 At startup, Uno Platform logs which lifecycle the app runs and what decided it, at the `Information` level of the `Uno.UI.Runtime.AppleUIKit.AppleUIKitLifecycle` logger. The default [logging setup](xref:Uno.Development.Logging) only shows warnings from `Uno` loggers, so add a filter to see it:
 
 ```csharp

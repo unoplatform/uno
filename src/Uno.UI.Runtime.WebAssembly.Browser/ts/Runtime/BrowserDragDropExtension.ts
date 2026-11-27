@@ -4,12 +4,19 @@
 		// https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API
 
 		private static _dispatchDropEventMethod: any;
+		private static _lastAcceptedOperation: ("copy" | "link" | "move" | "none");
 		private static _nextDropId: number = 0;
 		private static _pendingDropId: number;
 		private static _idToContent: Map<number, Array<Promise<FileSystemHandle | File | string | null>>> = new Map<number, Array<Promise<FileSystemHandle | File | string | null>>>();
 
 		public static async init() {
-			BrowserDragDropExtension._dispatchDropEventMethod = (await (<any>window).Module.getAssemblyExports("Uno.UI.Runtime.WebAssembly.Browser")).Uno.UI.Runtime.BrowserDragDropExtension.OnNativeDropEvent;
+			const exports = await (<any>globalThis).Module.getAssemblyExports("Uno.UI.Runtime.WebAssembly.Browser");
+
+			if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
+				BrowserDragDropExtension._dispatchDropEventMethod = exports.Uno.UI.Runtime.BrowserDragDropExtension.OnNativeDropEventAsync;
+			} else {
+				BrowserDragDropExtension._dispatchDropEventMethod = exports.Uno.UI.Runtime.BrowserDragDropExtension.OnNativeDropEvent;
+			}
 
 			// Events fired on the drop target
 			// Note: dragenter and dragover events will enable drop on the app
@@ -70,13 +77,27 @@
 					evt.shiftKey,
 					evt.ctrlKey,
 					evt.altKey);
-				evt.dataTransfer.dropEffect = acceptedOperation;
+
+				if ((<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled()) {
+					evt.dataTransfer.dropEffect = BrowserDragDropExtension._lastAcceptedOperation ?? "none";
+
+					const dropId = BrowserDragDropExtension._pendingDropId;
+
+					(acceptedOperation as Promise<string>).then((operation: any) => {
+						if (BrowserDragDropExtension._pendingDropId === dropId) {
+							BrowserDragDropExtension._lastAcceptedOperation = operation;
+						}
+					});
+				} else {
+					evt.dataTransfer.dropEffect = acceptedOperation;
+				}
 			} finally {
 				// No matter if the managed code handled the event, we want to prevent the default behavior (like opening a drop link)
 				evt.preventDefault();
 
 				if (evt.type == "dragleave" || evt.type == "drop") {
 					BrowserDragDropExtension._pendingDropId = 0;
+					BrowserDragDropExtension._lastAcceptedOperation = undefined;
 				}
 			}
 		}

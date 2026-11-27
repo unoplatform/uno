@@ -17,6 +17,7 @@ using ToolTip = Microsoft.UI.Xaml.Controls.ToolTip;
 using Windows.Foundation;
 
 #if HAS_UNO
+using System.Runtime.InteropServices.JavaScript;
 using DirectUI;
 using Uno.UI.Xaml.Input;
 #endif
@@ -31,7 +32,7 @@ namespace Private.Infrastructure
 {
 	public partial class TestServices
 	{
-		public static class WindowHelper
+		public static partial class WindowHelper
 		{
 			private static UIElement _originalWindowContent;
 			private static Window _currentTestWindow;
@@ -168,6 +169,9 @@ namespace Private.Infrastructure
 
 				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
 				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+#if HAS_UNO
+				await WaitForBrowserInteropAsync();
+#endif
 
 				var elapsedMs = (long)Stopwatch.GetElapsedTime(start).TotalMilliseconds;
 				if (elapsedMs < SlowIdleMs)
@@ -185,6 +189,19 @@ namespace Private.Infrastructure
 				_lastSlowIdleLogTimestamp = Stopwatch.GetTimestamp();
 				typeof(WindowHelper).Log().Warn($"WaitForIdle took {elapsedMs}ms — the Idle queue is not being serviced promptly.");
 			}
+
+#if HAS_UNO
+			// With WebAssembly threading, the browser queues its text input and IME notifications for the UI thread and
+			// applies them over later event-loop turns: the idle queue alone does not say they have been applied.
+			private static Task WaitForBrowserInteropAsync()
+				=> Uno.Foundation.WebAssemblyThreading.IsThreadingEnabled ? NativeMethods.WhenTextInputInteropIdle() : Task.CompletedTask;
+
+			private static partial class NativeMethods
+			{
+				[JSImport("globalThis.Uno.UI.Runtime.BrowserInvisibleTextBoxViewExtension.whenInteropIdle")]
+				public static partial Task WhenTextInputInteropIdle();
+			}
+#endif
 
 			/// <summary>
 			/// Waits for <paramref name="element"/> to be loaded and measured in the visual tree.
