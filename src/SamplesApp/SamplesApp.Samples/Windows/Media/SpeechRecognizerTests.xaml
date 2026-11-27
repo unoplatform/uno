@@ -14,6 +14,14 @@
                 <Button Command="{x:Bind Model.RecognizeCommand}" Content="Recognize" />
                 <Button Command="{x:Bind Model.StopCommand}" Content="Stop" />
             </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Command="{x:Bind Model.StartContinuousCommand}" Content="Start continuous" />
+                <Button Command="{x:Bind Model.PauseContinuousCommand}" Content="Pause" />
+                <Button Command="{x:Bind Model.ResumeContinuousCommand}" Content="Resume" />
+                <Button Command="{x:Bind Model.StopContinuousCommand}" Content="Stop continuous" />
+                <Button Command="{x:Bind Model.CancelContinuousCommand}" Content="Cancel continuous" />
+            </StackPanel>
+            <CheckBox Content="Only accept &quot;yes&quot;, &quot;no&quot; or &quot;maybe later&quot; (list constraint)" IsChecked="{x:Bind Model.UseListConstraint, Mode=TwoWay}" />
 
             <TextBlock Text="{x:Bind Model.State, Mode=OneWay}" />
             <TextBlock
@@ -25,6 +33,7 @@
                 Text="{x:Bind Model.LastResult, Mode=OneWay}"
                 TextWrapping="WrapWholeWords" />
             <TextBlock Text="{x:Bind Model.LastResultDetails, Mode=OneWay}" TextWrapping="Wrap" />
+            <TextBlock Text="{x:Bind Model.Languages, Mode=OneWay}" TextWrapping="Wrap" />
             <TextBlock Style="{ThemeResource SubtitleTextBlockStyle}" Text="Events" />
             <TextBlock Text="{x:Bind Model.Log, Mode=OneWay}" TextWrapping="Wrap" />
         </StackPanel>
