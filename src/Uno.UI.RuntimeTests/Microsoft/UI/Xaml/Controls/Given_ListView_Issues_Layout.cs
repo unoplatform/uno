@@ -674,4 +674,36 @@ public class Given_ListView_Issues_Layout
 		Assert.IsLessThanOrEqualTo(400 + Tolerance, BoundsIn(button, root).Bottom, "Button stays inside the TwoPaneView");
 		Assert.IsGreaterThan(0, BoundsIn(button, root).Y);
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/12081")]
+	public async Task When_Expandable_Item_Toggled_Then_ListView_Is_Not_Remeasured_Repeatedly()
+	{
+		CountingListView list = new()
+		{
+			Width = 300,
+			Height = 400,
+			ItemsSource = Strings(5),
+			ItemTemplate = Template(
+				"""
+				<StackPanel xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'>
+					<CheckBox x:Name='Toggle' Content='{Binding}' />
+					<Border Height='60' Background='Gray' Visibility='{Binding IsChecked, ElementName=Toggle}' />
+				</StackPanel>
+				"""),
+		};
+		await Load(list);
+		await WindowHelper.WaitForIdle();
+
+		var check = Descendants<CheckBox>(list).First();
+		int measureBefore = list.MeasureCount;
+		int arrangeBefore = list.ArrangeCount;
+
+		check.IsChecked = true;
+		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsLessThanOrEqualTo(2, list.MeasureCount - measureBefore, "ListView measure passes for one toggle");
+		Assert.IsLessThanOrEqualTo(2, list.ArrangeCount - arrangeBefore, "ListView arrange passes for one toggle");
+	}
 }
