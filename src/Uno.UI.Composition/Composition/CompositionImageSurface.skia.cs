@@ -112,9 +112,15 @@ namespace Microsoft.UI.Composition
 			_textureFactory = null;
 		}
 
+		// Surfaces never animate, so they share the compositor: the parameterless CompositionObject constructor would
+		// create a Compositor, and report a not-implemented API, for every decoded image.
+		internal CompositionImageSurface() : base(Compositor.GetSharedCompositor())
+		{
+		}
+
 		/// <summary>Wraps a backend-produced image (e.g. a rendered SVG, an offscreen snapshot, or raw pixels
 		/// uploaded through the backend) as a surface.</summary>
-		internal CompositionImageSurface(IImage image)
+		internal CompositionImageSurface(IImage image) : this()
 		{
 			var frames = ImageEncoderDecoder.Current.CreateFrames(image);
 			FrameProvider = FrameProviderFactory.Create(frames, null);
@@ -123,7 +129,7 @@ namespace Microsoft.UI.Composition
 
 		/// <summary>Wraps a backend-resident texture (e.g. a rendered SVG) as a retained surface, with no CPU
 		/// IImage / decoder frame behind it. The surface owns the texture and disposes it deterministically.</summary>
-		internal CompositionImageSurface(ITexture texture)
+		internal CompositionImageSurface(ITexture texture) : this()
 		{
 			_texture = texture;
 			_retainedTexture = true;
