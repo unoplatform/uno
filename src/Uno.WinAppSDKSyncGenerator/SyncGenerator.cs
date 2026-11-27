@@ -43,6 +43,8 @@ namespace Uno.WinAppSDKSyncGenerator
 			}
 		}
 
+		// Generic constraints and nested types are not checked: WinRT metadata has neither.
+		// If a future SDK adds them, a stub can hit CS8305 again.
 		private static bool ReferencesExperimentalType(INamedTypeSymbol type)
 		{
 			var referenced = type.GetMembers()
