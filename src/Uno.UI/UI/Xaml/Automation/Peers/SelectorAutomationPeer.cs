@@ -65,10 +65,9 @@ public partial class SelectorAutomationPeer : ItemsControlAutomationPeer, ISelec
 
 	private IReadOnlyList<object> GetSelectedItems()
 	{
-		if (SelectorOwner is ListViewBase listViewBase)
+		if (SelectorOwner?.MultiSelectionItems is { } selectedItems)
 		{
-			var selectedItems = listViewBase.SelectedItems;
-			if (selectedItems != null && selectedItems.Count > 0)
+			if (selectedItems.Count > 0)
 			{
 				var copy = new object[selectedItems.Count];
 				for (var i = 0; i < selectedItems.Count; i++)
@@ -79,8 +78,8 @@ public partial class SelectorAutomationPeer : ItemsControlAutomationPeer, ISelec
 				return copy;
 			}
 
-			return listViewBase.SelectedItem != null
-				? new[] { listViewBase.SelectedItem }
+			return SelectorOwner.SelectedItem != null
+				? new[] { SelectorOwner.SelectedItem }
 				: Array.Empty<object>();
 		}
 

@@ -989,10 +989,13 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			return !isItemsHostInvalid && isInLiveTree && !m_skipScrollIntoView && !m_inCollectionChange;
 		}
 
+		// Uno specific: whether the selection is scrolled into view when it changes.
+		private protected virtual bool ScrollsSelectionIntoView => false;
+
 		private void ScrollIntoView(int index, bool animateIfBringIntoView, ScrollIntoViewAlignment alignment)
 		{
 			// Uno specific: FlipView positions its own viewport (SetOffsetToSelectedIndex).
-			if (this is ListViewBase or ComboBox)
+			if (ScrollsSelectionIntoView)
 			{
 				ScrollIntoViewInternal(ItemFromIndex(index), isHeader: false, isFooter: false, isFromPublicAPI: false, alignment, offset: 0, animateIfBringIntoView);
 			}
