@@ -36,7 +36,7 @@ Includes references to the [Uno.Extensions.Core.WinUI](https://www.nuget.org/pac
 dotnet new unoapp -theme-service
 ```
 
-#### Import Theme File (Uno.Dsp)
+#### Import Uno DSP
 
 Allows colors in the application to be overridden using a theme file (Material theme only). Neither preset includes it by default, since neither uses the Material theme. With `dotnet new`, picking the Material theme with the recommended preset (`-preset recommended -theme material`) turns it on.
 
