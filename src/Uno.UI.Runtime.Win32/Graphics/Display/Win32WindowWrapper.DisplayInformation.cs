@@ -19,14 +19,24 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 		DisplayOrientations CurrentOrientation,
 		uint ScreenHeightInRawPixels,
 		uint ScreenWidthInRawPixels,
-		uint LogicalDpi)
+		uint WindowDpi,
+		float LogicalDpi)
 	{
 		public static DisplayInfo Default => new DisplayInfo(
 			DisplayOrientations.Landscape,
 			0,
 			0,
+			96,
 			1);
 	}
+
+	/// <summary>
+	/// The window's real DPI as a scale, for what Windows measures in physical pixels (frame, caption, icons).
+	/// It only differs from <see cref="NativeWindowWrapperBase.RasterizationScale"/> under <c>UNO_DISPLAY_SCALE_OVERRIDE</c>.
+	/// </summary>
+	private float WindowDpiScale => Win32DisplayScale.Override is null
+		? RasterizationScale
+		: _displayInfo.WindowDpi / Win32DisplayScale.BaseDpi;
 
 	public void SetDisplayInformation(DisplayInformation displayInformation)
 	{
@@ -45,7 +55,7 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 		(_displayInfo, _refreshRate) = newInfo;
 		if (oldInfo.LogicalDpi != _displayInfo.LogicalDpi)
 		{
-			RasterizationScale = (float)_displayInfo.LogicalDpi / PInvoke.USER_DEFAULT_SCREEN_DPI;
+			RasterizationScale = _displayInfo.LogicalDpi / PInvoke.USER_DEFAULT_SCREEN_DPI;
 			_displayInformation?.NotifyDpiChanged();
 		}
 
@@ -115,7 +125,7 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 			dpi = 96;
 		}
 
-		return (new DisplayInfo(orientation, height, width, dpi), devMode.dmDisplayFrequency);
+		return (new DisplayInfo(orientation, height, width, dpi, Win32DisplayScale.GetLogicalDpi(dpi, Win32DisplayScale.Override)), devMode.dmDisplayFrequency);
 	}
 
 	public DisplayOrientations CurrentOrientation => _displayInfo.CurrentOrientation;
@@ -123,6 +133,6 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 	public uint ScreenWidthInRawPixels => _displayInfo.ScreenWidthInRawPixels;
 	public float LogicalDpi => _displayInfo.LogicalDpi;
 	public double RawPixelsPerViewPixel => _displayInfo.LogicalDpi * 1.0 / DisplayInformation.BaseDpi;
-	public ResolutionScale ResolutionScale => (ResolutionScale)(RawPixelsPerViewPixel * 100);
+	public ResolutionScale ResolutionScale => (ResolutionScale)Win32DisplayScale.GetResolutionScalePercent(Win32DisplayScale.Override, RawPixelsPerViewPixel);
 	public double? DiagonalSizeInInches => null;
 }

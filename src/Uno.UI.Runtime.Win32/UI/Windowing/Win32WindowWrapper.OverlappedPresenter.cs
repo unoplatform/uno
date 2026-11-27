@@ -156,8 +156,8 @@ internal partial class Win32WindowWrapper : INativeOverlappedPresenter
 	{
 		RECT borderCaptionThickness = new RECT();
 
-		var scaling = (uint)(RasterizationScale * PInvoke.USER_DEFAULT_SCREEN_DPI);
-		var relativeScaling = RasterizationScale / GetPrimaryMonitorScale();
+		var scaling = (uint)(WindowDpiScale * PInvoke.USER_DEFAULT_SCREEN_DPI);
+		var relativeScaling = WindowDpiScale / GetPrimaryMonitorScale();
 
 		if (Environment.OSVersion.Version < new Version(10, 0, 14393))
 		{
