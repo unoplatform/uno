@@ -27,7 +27,7 @@ WinUI 3 is also decoupled from the application model. The UWP XAML stack is only
 
 Uno Platform is only affected by the API change - the technical changes don't apply on non-Windows platforms.
 
-When you create a new Uno Platform application, you can choose to create a WinUI 3-compatible application (using the WinUI 3 API, and building with WinUI 3 on the Windows head project) instead of a UWP XAML-compatible application [using the `dotnet new` templates](get-started-dotnet-new.md#uno-platform-blank-application-for-winappsdk---winui-3).
+Uno Platform applications use the WinUI 3 API. New applications created with the [`dotnet new` templates](xref:Uno.GetStarted.dotnet-new) or the wizards build with the Windows App SDK (WinUI 3) for their Windows target.
 
 ### Do you plan to publish on Windows?
 

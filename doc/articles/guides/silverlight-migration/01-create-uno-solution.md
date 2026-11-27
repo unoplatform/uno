@@ -16,13 +16,13 @@ You can use the .NET CLI templates to create an Uno solution with just the proje
 1. To install the Uno dotnet cli templates, enter the following command:
 
     ```dotnetcli
-    dotnet new -i Uno.Templates
+    dotnet new install Uno.Templates
     ```
 
-1. To create the Uno solution with just UWP and WASM heads, enter the following command:
+1. To create the Uno solution targeting just Windows (Windows App SDK) and WebAssembly, enter the following command:
 
     ```dotnetcli
-    dotnet new unoapp -o TimeEntryUno -android=false -macos=false -ios=false --skia-wpf=false --skia-gtk=false --skia-tizen=false
+    dotnet new unoapp -o TimeEntryUno -platforms windows -platforms wasm
     ```
 
     > [!NOTE]

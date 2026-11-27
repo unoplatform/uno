@@ -109,7 +109,7 @@ dotnet --info
 Next we can add the Uno Platform Project Templates to our .NET Installation;
 
 ```dotnetcli
-dotnet new --install Uno.Templates
+dotnet new install Uno.Templates
 ```
 
 ![Install Uno Templates](images/05_install-uno-templates.png)
