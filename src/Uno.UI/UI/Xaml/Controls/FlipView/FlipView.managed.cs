@@ -777,9 +777,10 @@ namespace Microsoft.UI.Xaml.Controls
 			int previousSelectedIndex = 0;
 			bool savedSkipAnimationOnce = m_skipAnimationOnce;
 
-			previousSelectedIndex = SelectedIndex;
+			// Uno: the Selector already updated SelectedIndex for this change; WinUI does it in base.OnItemsChanged.
+			previousSelectedIndex = SelectedIndexBeforeItemsChange;
 
-			base.OnItemsChanged(e); // TODO: this currently will never modify SelectedIndex, because the base method doesn't do anything. As part of work to align selection handling better with WinUI, the logic to update SelectedIndex on collection changes should move to Selector.OnItemsChanged() (which currently doesn't exist).
+			base.OnItemsChanged(e);
 
 			currentSelectedIndex = SelectedIndex;
 			if (previousSelectedIndex < 0 ||

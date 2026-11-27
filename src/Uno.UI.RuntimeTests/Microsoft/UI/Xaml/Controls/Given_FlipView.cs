@@ -195,7 +195,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			itemsSource.RemoveAt(2);
 
-			await WindowHelper.WaitForResultEqual(0, () => flipView.SelectedIndex);
+			// The removed item was the last one, so the new last item is selected.
+			await WindowHelper.WaitForResultEqual(1, () => flipView.SelectedIndex);
 
 			itemsSource.Clear();
 

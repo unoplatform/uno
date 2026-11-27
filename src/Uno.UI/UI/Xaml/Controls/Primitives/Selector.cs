@@ -334,9 +334,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			});
 		}
 
+		// Uno updates the selection before raising OnItemsChanged, while WinUI does it inside base.OnItemsChanged,
+		// so overrides that compare against the previous selection read it from here.
+		private protected int SelectedIndexBeforeItemsChange { get; private set; } = -1;
+
 		// Stands in for the NotifyOfSourceChanged and OnItemsChanged calls that WinUI's ItemCollection makes for each change.
 		private void ProcessItemsChanges(List<IVectorChangedEventArgs> changes, Action notifyItemsHost)
 		{
+			SelectedIndexBeforeItemsChange = SelectedIndex;
+
 			foreach (var change in changes)
 			{
 				NotifyOfSourceChanged(change, notifyItemsHost);
