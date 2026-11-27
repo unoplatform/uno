@@ -184,4 +184,34 @@ public class Given_ListView_Issues_Layout
 		Assert.IsLessThanOrEqualTo(list.ActualHeight + Tolerance, lastBounds.Bottom);
 		Assert.IsGreaterThanOrEqualTo(-Tolerance, lastBounds.Y);
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/473")]
+	public async Task When_ItemsStackPanel_GroupPadding_Then_Gap_Between_Groups_And_Items_Narrowed()
+	{
+		Group[] groups = { new("G0", 2), new("G1", 2), new("G2", 2) };
+		_cvs = new CollectionViewSource { Source = groups, IsSourceGrouped = true };
+		ListView list = new()
+		{
+			Width = 300,
+			Height = 600,
+			ItemTemplate = Template("<Border Height='40'><TextBlock Text='{Binding}' /></Border>"),
+			ItemsPanel = PanelTemplate("<ItemsStackPanel GroupPadding='10,0,20,40' />"),
+			ItemsSource = _cvs.View,
+		};
+		list.GroupStyle.Add(new GroupStyle { HeaderTemplate = Template("<TextBlock Text='{Binding Key}' Height='30' />") });
+		await Load(list);
+
+		var lastOfG0 = (FrameworkElement)list.ContainerFromIndex(1);
+		var firstOfG0 = (FrameworkElement)list.ContainerFromIndex(0);
+		var header1 = Descendants<ListViewHeaderItem>(list).First(h => Descendants<TextBlock>(h).Any(t => t.Text == "G1"));
+
+		double gap = BoundsIn(header1, list).Y - BoundsIn(lastOfG0, list).Bottom;
+		Assert.AreEqual(40, gap, Tolerance, "GroupPadding.Bottom separates the groups");
+
+		var panelBounds = BoundsIn((FrameworkElement)list.ItemsPanelRoot, list);
+		var itemBounds = BoundsIn(firstOfG0, list);
+		Assert.AreEqual(panelBounds.Width - 30, itemBounds.Width, Tolerance, "Left + right padding shrink the items");
+		Assert.AreEqual(panelBounds.X + 10, itemBounds.X, Tolerance);
+	}
 }
