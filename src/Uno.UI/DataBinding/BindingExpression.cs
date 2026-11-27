@@ -258,7 +258,7 @@ namespace Microsoft.UI.Xaml.Data
 					[UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Owner and property types are kept by the generated BindableMetadata")]
 					object ConvertBack() => ParentBinding.Converter.ConvertBack(
 						value,
-						_bindingPath.ValueType,
+						ParentBinding.XBindSourceType ?? _bindingPath.ValueType,
 						ParentBinding.ConverterParameter,
 						ParentBinding.ConverterLanguage
 					);
