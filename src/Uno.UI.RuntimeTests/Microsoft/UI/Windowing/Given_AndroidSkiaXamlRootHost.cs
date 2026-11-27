@@ -9,9 +9,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Xaml.Controls;
 using Uno.UI.Hosting;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Windowing;
 
@@ -242,7 +241,7 @@ public class Given_AndroidSkiaXamlRootHost
 	public void When_Secondary_Window_Closed_Before_Activation_Then_Host_Is_Released()
 	{
 		var secondary = new Window();
-		var xamlRoot = ((NativeWindowWrapperBase)secondary.NativeWrapper!).XamlRoot!;
+		var xamlRoot = ((global::Uno.UI.Xaml.Controls.NativeWindowWrapperBase)secondary.NativeWrapper!).XamlRoot!;
 		Assert.IsNotNull(XamlRootMap.GetHostForRoot(xamlRoot));
 
 		secondary.Close();
