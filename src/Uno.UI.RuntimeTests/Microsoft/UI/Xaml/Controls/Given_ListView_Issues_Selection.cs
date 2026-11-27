@@ -266,4 +266,38 @@ public class Given_ListView_Issues_Selection
 		yield return ("ListBox", items => new ListBox { Width = 200, Height = 400, ItemsSource = items }, 3);
 		yield return ("FlipView", items => new FlipView { Width = 200, Height = 200, ItemsSource = items }, 2);
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26383")]
+	public async Task When_Item_Inserted_Or_Removed_Before_Selection_No_SelectionChanged()
+	{
+		try
+		{
+			foreach (var (name, create, index) in SelectorFactories())
+			{
+				var items = MakeItems(6);
+				var selector = await Host(create(items));
+				selector.SelectedIndex = index;
+				await WindowHelper.WaitForIdle();
+
+				List<string> log = new();
+				selector.SelectionChanged += (s, e) => log.Add(Format(e));
+
+				items.Insert(0, "I90");
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(0, log.Count, $"{name} insert: {string.Join(" | ", log)}");
+				Assert.AreEqual(index + 1, selector.SelectedIndex, $"{name} insert index");
+
+				items.RemoveAt(0);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(0, log.Count, $"{name} remove: {string.Join(" | ", log)}");
+				Assert.AreEqual(index, selector.SelectedIndex, $"{name} remove index");
+			}
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
 }
