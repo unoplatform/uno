@@ -58,6 +58,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Highlighter_Has_No_Brushes()
+		{
+			// Sized to its text, so both checked quarters lie over glyphs: the first inside the
+			// highlighted word, the last inside the other one.
+			var SUT = new RichTextBlock
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				FontSize = 24,
+				TextWrapping = TextWrapping.NoWrap,
+				Foreground = new SolidColorBrush(Colors.Black),
+			};
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = "AAAAAAAAAA BBBBBBBBBB" });
+			SUT.Blocks.Add(paragraph);
+
+			// WinUI paints an unset Background with the theme's TextControlHighlighterBackground.
+			var highlighter = new TextHighlighter();
+			highlighter.Ranges.Add(new TextRange { StartIndex = 0, Length = 10 });
+			SUT.TextHighlighters.Add(highlighter);
+
+			try
+			{
+				await UITestHelper.Load(SUT);
+				var screenshot = await UITestHelper.ScreenShot(SUT);
+
+				var leftQuarter = new System.Drawing.Rectangle(0, 0, screenshot.Width / 4, screenshot.Height);
+				var rightQuarter = new System.Drawing.Rectangle(screenshot.Width * 3 / 4, 0, screenshot.Width / 4, screenshot.Height);
+
+				ImageAssert.HasColorInRectangle(screenshot, leftQuarter, Colors.Yellow, tolerance: 5);
+				ImageAssert.HasColorInRectangle(screenshot, rightQuarter, Colors.Black, tolerance: 5);
+				ImageAssert.DoesNotHaveColorInRectangle(screenshot, rightQuarter, Colors.Yellow, tolerance: 5);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Cleared_Highlighter_Is_Mutated_And_ReAdded()
 		{
 			var SUT = new RichTextBlock
