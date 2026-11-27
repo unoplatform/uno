@@ -638,4 +638,40 @@ public class Given_ListView_Issues_Layout
 			Assert.AreEqual(10, ((FrameworkElement)list.ContainerFromIndex(i)).ActualHeight, Tolerance, $"Container {i}");
 		}
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/14133")]
+	public async Task When_ListView_In_TwoPaneView_Pane1_Then_Height_Is_Constrained()
+	{
+		var root = (Grid)XamlReader.Load(
+			"""
+			<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' Width='900' Height='400' VerticalAlignment='Top' HorizontalAlignment='Left'>
+				<TwoPaneView xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' Pane1Length='*' Pane2Length='*' MinWideModeWidth='100'>
+					<TwoPaneView.Pane1>
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height='*' />
+								<RowDefinition Height='Auto' />
+							</Grid.RowDefinitions>
+							<ListView />
+							<Button Grid.Row='1' Content='Always visible' />
+						</Grid>
+					</TwoPaneView.Pane1>
+					<TwoPaneView.Pane2>
+						<TextBlock Text='Pane 2' />
+					</TwoPaneView.Pane2>
+				</TwoPaneView>
+			</Grid>
+			""");
+		var panes = (TwoPaneView)root.Children[0];
+		var pane1 = (Grid)panes.Pane1;
+		var list = (ListView)pane1.Children[0];
+		list.ItemsSource = Enumerable.Range(0, 100).Select(i => $"Item {i}").ToList();
+		var button = (Button)pane1.Children[1];
+		await Load(root);
+
+		Assert.IsLessThanOrEqualTo(400 + Tolerance, list.ActualHeight, "ListView is constrained by the pane");
+		Assert.IsLessThanOrEqualTo(400 + Tolerance, BoundsIn(button, root).Bottom, "Button stays inside the TwoPaneView");
+		Assert.IsGreaterThan(0, BoundsIn(button, root).Y);
+	}
 }
