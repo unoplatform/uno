@@ -68,23 +68,34 @@ public class Given_DrawingBackend_Mirror
 
 		var expected = await Shoot(Frame(Placed(Label(centered: true), scale, tx, ty, false, false)));
 
-		AssertSameInk(expected, actual, mirrorX, mirrorY);
+		AssertSameInk(expected, actual, mirrorX, mirrorY, text: true);
 	}
 
 	[TestMethod]
 	[RequiresScaling(1f)]
-	[DataRow(false, 1f, 0f, 0f, true, false)]
-	[DataRow(false, 1.25f, 0f, 0f, true, false)]
-	[DataRow(false, 1.5f, 0f, 0f, true, false)]
-	[DataRow(false, 1.75f, 0f, 0f, true, false)]
-	[DataRow(false, 1f, 0.3f, 0.6f, true, false)]
-	[DataRow(false, 1f, 0f, 0f, false, true)]
-	[DataRow(false, 1f, 0f, 0f, true, true)]
-	[DataRow(false, 1.25f, 0.3f, 0.6f, true, true)]
-	[DataRow(true, 1f, 0f, 0f, true, false)]
-	[DataRow(true, 1f, 0.3f, 0.6f, true, false)]
-	[DataRow(true, 1.25f, 0.3f, 0.6f, true, true)]
-	public async Task When_Shape_Mirrored_Then_Matches_Flipped_Shape(bool big, float scale, float tx, float ty, bool mirrorX, bool mirrorY)
+	[DataRow(1f, 0f, 0f, true, false)]
+	[DataRow(1.25f, 0f, 0f, true, false)]
+	[DataRow(1.5f, 0f, 0f, true, false)]
+	[DataRow(1.75f, 0f, 0f, true, false)]
+	[DataRow(1f, 0.3f, 0.6f, true, false)]
+	[DataRow(1f, 0f, 0f, false, true)]
+	[DataRow(1f, 0f, 0f, true, true)]
+	[DataRow(1.25f, 0.3f, 0.6f, true, true)]
+	public Task When_Shape_Mirrored_Then_Matches_Flipped_Shape(float scale, float tx, float ty, bool mirrorX, bool mirrorY)
+		=> ShapeMirrored(big: false, scale, tx, ty, mirrorX, mirrorY);
+
+	// On native WinUI's CI run, a capture of the big frame came out blank below its first rows, so the big-fill rows,
+	// which exercise a WebGPU route WinUI doesn't have, are left out there.
+	[TestMethod]
+	[RequiresScaling(1f)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[DataRow(1f, 0f, 0f, true, false)]
+	[DataRow(1f, 0.3f, 0.6f, true, false)]
+	[DataRow(1.25f, 0.3f, 0.6f, true, true)]
+	public Task When_Big_Shape_Mirrored_Then_Matches_Flipped_Shape(float scale, float tx, float ty, bool mirrorX, bool mirrorY)
+		=> ShapeMirrored(big: true, scale, tx, ty, mirrorX, mirrorY);
+
+	private static async Task ShapeMirrored(bool big, float scale, float tx, float ty, bool mirrorX, bool mirrorY)
 	{
 		var star = Star(big);
 		var actual = await Shoot(Frame(Placed(star, scale, tx, ty, mirrorX, mirrorY), big));
@@ -92,20 +103,27 @@ public class Given_DrawingBackend_Mirror
 
 		var expected = await Shoot(Frame(Placed(Star(big), scale, tx, ty, false, false), big));
 
-		AssertSameInk(expected, actual, mirrorX, mirrorY);
+		AssertSameInk(expected, actual, mirrorX, mirrorY, text: false);
 	}
 
 	// A cached recording drawn under one sign, then under the other with the same translation, so the subpixel phase
 	// is unchanged and only the sign tells the masks placed for the first sign from what the second needs.
 	[TestMethod]
 	[RequiresScaling(1f)]
-	[DataRow("text", true)]
-	[DataRow("text", false)]
-	[DataRow("big", true)]
-	[DataRow("big", false)]
-	public async Task When_Mirror_Toggled_Then_Matches_Fresh_Content(string kind, bool startMirrored)
+	[DataRow(true)]
+	[DataRow(false)]
+	public Task When_Mirror_Toggled_Then_Matches_Fresh_Text(bool startMirrored) => MirrorToggled(big: false, startMirrored);
+
+	// Left out on native WinUI as When_Big_Shape_Mirrored_Then_Matches_Flipped_Shape is.
+	[TestMethod]
+	[RequiresScaling(1f)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[DataRow(true)]
+	[DataRow(false)]
+	public Task When_Mirror_Toggled_Then_Matches_Fresh_Big_Fill(bool startMirrored) => MirrorToggled(big: true, startMirrored);
+
+	private static async Task MirrorToggled(bool big, bool startMirrored)
 	{
-		var big = kind == "big";
 		FrameworkElement Content() => big ? Star(big: true) : Label(centered: true);
 		var transform = new CompositeTransform { ScaleX = startMirrored ? -1 : 1, TranslateX = 0.3, TranslateY = 0.6 };
 		var frame = Frame(new Grid { RenderTransformOrigin = new Point(0.5, 0.5), RenderTransform = transform, Children = { Content() } }, big);
@@ -117,7 +135,7 @@ public class Given_DrawingBackend_Mirror
 		// The unmirrored placement that the end state reflects about the centre line.
 		var expected = await Shoot(Frame(Placed(Content(), 1f, startMirrored ? 0.3f : -0.3f, 0.6f, false, false), big));
 
-		AssertSameInk(expected, actual, !startMirrored, false);
+		AssertSameInk(expected, actual, !startMirrored, false, text: !big);
 	}
 
 #if HAS_UNO && __SKIA__
@@ -133,7 +151,7 @@ public class Given_DrawingBackend_Mirror
 
 		var expected = await Shoot(Frame(CounterMirrored(mirrored: false).Element));
 
-		AssertSameInk(expected, actual, false, false, CounterMirroredTolerance);
+		AssertSameInk(expected, actual, false, false, text: true, CounterMirroredTolerance);
 	}
 
 	private static (FrameworkElement Element, Visual Visual) CounterMirrored(bool mirrored)
@@ -252,10 +270,33 @@ public class Given_DrawingBackend_Mirror
 		}
 		var bitmap = await UITestHelper.ScreenShot(frame, scaling: UITestHelper.ScreenShotScalingMode.UsePhysicalPixels);
 		await bitmap.Populate();
+		AssertComplete(bitmap);
 		return bitmap;
 	}
 
-	private static void AssertSameInk(RawBitmap expected, RawBitmap actual, bool flipX, bool flipY, int tolerance = MirroredTolerance)
+	// The frame has an opaque background, so every pixel of a complete capture is opaque. A short or blank capture would
+	// otherwise read as ink, and could match another blank one.
+	private static void AssertComplete(RawBitmap bitmap)
+	{
+		var transparent = 0;
+		(int X, int Y) first = (-1, -1);
+		for (var y = 0; y < bitmap.Height; y++)
+		{
+			for (var x = 0; x < bitmap.Width; x++)
+			{
+				if (bitmap.GetPixel(x, y).A != 255)
+				{
+					if (transparent++ == 0)
+					{
+						first = (x, y);
+					}
+				}
+			}
+		}
+		Assert.AreEqual(0, transparent, $"The {bitmap.Width}x{bitmap.Height} capture is incomplete: {transparent} pixels are not opaque, the first at ({first.X}, {first.Y}).");
+	}
+
+	private static void AssertSameInk(RawBitmap expected, RawBitmap actual, bool flipX, bool flipY, bool text, int tolerance = MirroredTolerance)
 	{
 		Assert.AreEqual(expected.Width, actual.Width);
 		Assert.AreEqual(expected.Height, actual.Height);
@@ -266,10 +307,21 @@ public class Given_DrawingBackend_Mirror
 		{
 			Assert.AreEqual(0, mismatches, $"{mismatches} of {ink} ink pixels differ from the reference by more than {tolerance} (largest difference {maxDiff}).");
 		}
+		else if (text)
+		{
+			// The Skia renderer rasterizes each glyph for its device transform with the platform's hinting, so a
+			// mirrored glyph is not the mirror image of the unmirrored one: a hinted edge can land a pixel off. Over a
+			// block of BlockSize pixels a side, an edge a pixel off along one axis moves the coverage by at most a
+			// quarter, and by a half if the stroke is also a pixel thicker; a corner off along both axes can reach
+			// three quarters. The limit is a half, which a glyph drawn in the wrong place exceeds by far (measured
+			// with grayscale and subpixel edging on Windows, macOS and in the browser: at most 0.13 against the
+			// flipped scene, 0.59 or more against the unmirrored one).
+			var (blocks, wrongBlocks, worst) = CompareBlocks(expected, actual, flipX, flipY);
+			Assert.AreEqual(0, wrongBlocks, $"{wrongBlocks} of {blocks} blocks of ink differ from the reference by more than {MaxBlockDifference} in coverage (largest difference {worst:0.00}).");
+		}
 		else
 		{
-			// Skia rasterizes glyphs for the device transform, with its own hinting and subpixel positioning, so a
-			// mirrored glyph is not the mirror image of the unmirrored one: edges differ by a pixel and by many levels.
+			// Fills are not hinted, but each one is rasterized for its own transform: an edge can land a pixel off.
 			Assert.IsTrue(mismatches <= ink * 6 / 100, $"{mismatches} of {ink} ink pixels have no match within a pixel.");
 		}
 
@@ -280,6 +332,51 @@ public class Given_DrawingBackend_Mirror
 			var (wrongInk, wrongMismatches, _) = CompareInk(expected, actual, false, false, exact: false, tolerance);
 			Assert.IsTrue(wrongMismatches > wrongInk * 25 / 100, $"The scene is too symmetric to tell a mirror apart ({wrongMismatches} of {wrongInk}).");
 		}
+	}
+
+	private const int BlockSize = 4;
+	private const double MaxBlockDifference = 0.5;
+
+	// Coverage per block of BlockSize pixels a side, each image against its reference flipped: how many blocks hold
+	// ink in either, and how many of those differ by more than MaxBlockDifference.
+	private static (int Blocks, int Wrong, double Worst) CompareBlocks(RawBitmap expected, RawBitmap actual, bool flipX, bool flipY)
+	{
+		int w = expected.Width, h = expected.Height;
+		// Red alone: the text is blue on white, so red and green carry the same coverage. No surface is given an LCD
+		// pixel geometry, so subpixel edging still draws grayscale (measured: red equal to green in every pixel).
+		static double Coverage(Color c) => (255 - c.R) / 255.0;
+
+		int blocks = 0, wrong = 0;
+		double worst = 0;
+		for (var by = 0; by + BlockSize <= h; by += BlockSize)
+		{
+			for (var bx = 0; bx + BlockSize <= w; bx += BlockSize)
+			{
+				double e = 0, a = 0;
+				for (var y = by; y < by + BlockSize; y++)
+				{
+					for (var x = bx; x < bx + BlockSize; x++)
+					{
+						e += Coverage(expected.GetPixel(flipX ? w - 1 - x : x, flipY ? h - 1 - y : y));
+						a += Coverage(actual.GetPixel(x, y));
+					}
+				}
+				e /= BlockSize * BlockSize;
+				a /= BlockSize * BlockSize;
+				if (e < 0.1 && a < 0.1)
+				{
+					continue;
+				}
+				blocks++;
+				var d = Math.Abs(e - a);
+				worst = Math.Max(worst, d);
+				if (d > MaxBlockDifference)
+				{
+					wrong++;
+				}
+			}
+		}
+		return (blocks, wrong, worst);
 	}
 
 	// Exact: each pixel against the reference pixel it maps to, within `tolerance`. Otherwise each pixel needs a pixel of the other
