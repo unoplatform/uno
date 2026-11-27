@@ -368,4 +368,33 @@ public class Given_ListView_Issues_Layout
 			Assert.IsNotNull(Descendants<TextBlock>(c).FirstOrDefault(t => !string.IsNullOrEmpty(t.Text)));
 		}
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21463")]
+	public async Task When_ItemsStackPanel_With_Narrow_Button_Items_Then_Container_Fills_Viewport()
+	{
+		ListView list = new()
+		{
+			Width = 300,
+			Height = 300,
+		};
+		ScrollViewer.SetHorizontalScrollMode(list, ScrollMode.Auto);
+		ScrollViewer.SetHorizontalScrollBarVisibility(list, ScrollBarVisibility.Auto);
+		for (int i = 0; i < 3; i++)
+		{
+			list.Items.Add(new Button { Width = 40, Content = "Click Me" });
+		}
+
+		await Load(list);
+		var sv = GetScrollViewer(list);
+
+		for (int i = 0; i < 3; i++)
+		{
+			var container = (FrameworkElement)list.ContainerFromIndex(i);
+			Assert.AreEqual(sv.ViewportWidth, container.ActualWidth, Tolerance, $"Container {i} fills the viewport");
+			Assert.AreEqual(40, ((FrameworkElement)list.Items[i]).ActualWidth, Tolerance, $"Button {i}");
+		}
+
+		Assert.AreEqual(0, sv.ScrollableWidth, Tolerance);
+	}
 }
