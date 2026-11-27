@@ -532,4 +532,52 @@ public class Given_ListView_Issues_Layout
 		Assert.IsNotNull(list.ContainerFromIndex(59));
 		AssertConsistent("after selecting the previous item");
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26381")]
+	[DataRow(false, 0)]
+	[DataRow(false, 1)]
+	[DataRow(false, 2)]
+	[DataRow(true, 0)]
+	public async Task When_ItemsSource_Replaced_While_Scrolled_Then_Offset_Resets(bool grid, int mode)
+	{
+		// mode 0: assign a new list, 1: Clear + refill, 2: null then a new list.
+		ObservableCollection<string> observable = new(Strings(2000));
+		ListViewBase list = grid ? new GridView() : new ListView();
+		list.Width = 400;
+		list.Height = 400;
+		list.ItemsSource = observable;
+		list.ItemTemplate = Template("<Border Width='100' Height='40'><TextBlock Text='{Binding}' /></Border>");
+		await Load(list);
+		var sv = GetScrollViewer(list);
+		await ChangeViewAndWait(sv, 4000);
+		Assert.AreEqual(4000, sv.VerticalOffset, Tolerance);
+
+		switch (mode)
+		{
+			case 0:
+				list.ItemsSource = Strings(2000);
+				break;
+			case 1:
+				observable.Clear();
+				foreach (var item in Strings(2000))
+				{
+					observable.Add(item);
+				}
+
+				break;
+			default:
+				list.ItemsSource = null;
+				await WindowHelper.WaitForIdle();
+				list.ItemsSource = Strings(2000);
+				break;
+		}
+
+		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(0, sv.VerticalOffset, Tolerance, "ScrollViewer returns to the top");
+		Assert.IsNotNull(list.ContainerFromIndex(0));
+		Assert.IsLessThan(150, Descendants<SelectorItem>(list.ItemsPanelRoot).Count(), "Only about one viewport is realized");
+	}
 }
