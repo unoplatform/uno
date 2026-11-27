@@ -766,4 +766,30 @@ public class Given_ListView_Issues_Selection
 			WindowHelper.WindowContent = null;
 		}
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26424")]
+	public async Task When_Item_Inserted_Or_Moved_Panel_Children_Follow_Item_Order()
+	{
+		try
+		{
+			var items = MakeItems(10);
+			var lv = await Host(new ListView { Width = 300, Height = 600, ItemsSource = items });
+
+			string Order() => string.Join(",", lv.ItemsPanelRoot.Children.Select(c => lv.IndexFromContainer(c)));
+
+			items.Insert(3, "new");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("0,1,2,3,4,5,6,7,8,9,10", Order(), "after Insert(3)");
+
+			items.Move(1, 8);
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual("0,1,2,3,4,5,6,7,8,9,10", Order(), "after Move(1, 8)");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
 }
