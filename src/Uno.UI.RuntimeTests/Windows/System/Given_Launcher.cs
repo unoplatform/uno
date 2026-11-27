@@ -22,8 +22,8 @@ public class Given_Launcher
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_LaunchFileAsync_Deleted_File()
 	{
-		var file = await ApplicationData.Current.TemporaryFolder.CreateFileAsync(
-			$"{nameof(When_LaunchFileAsync_Deleted_File)}-{Guid.NewGuid():N}.txt");
+		var file = await ApplicationData.Current.LocalFolder.CreateFileAsync(
+			$"{nameof(When_LaunchFileAsync_Deleted_File)}.txt", CreationCollisionOption.GenerateUniqueName);
 		await file.DeleteAsync();
 
 		Assert.IsFalse(await Launcher.LaunchFileAsync(file));
