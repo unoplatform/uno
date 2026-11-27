@@ -527,4 +527,40 @@ public class Given_ListView_Issues_Interaction
 		Assert.IsLessThan(40, combo.ItemsPanelRoot!.Children.Count, "only the visible window of containers is realized");
 		Assert.IsNotNull(combo.ContainerFromIndex(299), "selected container is realized");
 	}
+
+	// https://github.com/unoplatform/uno/issues/25835
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25835")]
+	public async Task When_ComboBox_Opened_Selected_Item_Is_Brought_Into_View()
+	{
+		ComboBox combo = await LoadComboBox(240);
+
+		combo.SelectedIndex = 237;
+		await WindowHelper.WaitForIdle();
+		await OpenDropDown(combo);
+
+		DependencyObject? p = combo.ItemsPanelRoot;
+		while (p is not null && p is not ScrollViewer)
+		{
+			p = VisualTreeHelper.GetParent(p);
+		}
+
+		var sv = (ScrollViewer)p!;
+
+		const double tolerance = 0.5;
+		bool Inside()
+		{
+			if (combo.ContainerFromIndex(237) is not FrameworkElement container)
+			{
+				return false;
+			}
+
+			double top = container.ActualOffset.Y;
+			double bottom = top + container.ActualHeight;
+			return top >= sv.VerticalOffset - tolerance && bottom <= sv.VerticalOffset + sv.ViewportHeight + tolerance;
+		}
+
+		await WindowHelper.WaitFor(Inside, timeoutMS: 3000, message: "selected container inside the dropdown viewport");
+	}
 }
