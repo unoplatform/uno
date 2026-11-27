@@ -704,7 +704,7 @@
 		// blur dispatch synchronously inside the window: detachCore blurs explicitly before
 		// removing, and the swap path in focus() focuses the successor (implicitly blurring the
 		// old input) before removing it.
-		private static runSuppressingBlur(action: () => void) {
+		public static runSuppressingBlur(action: () => void) {
 			BrowserInvisibleTextBoxViewExtension.suppressBlurNotification = true;
 			try {
 				action();

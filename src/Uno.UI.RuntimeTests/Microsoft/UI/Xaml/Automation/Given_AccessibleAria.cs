@@ -610,6 +610,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_TextBox_Focused_Then_Native_Input_Blur_Keeps_Xaml_Focus()
+		{
+			var textBox = new TextBox { Width = 200 };
+
+			await UITestHelper.Load(textBox);
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic tree.");
+
+			textBox.Focus(FocusState.Keyboard);
+			var inputId = GetSemanticElementId(textBox);
+			await UITestHelper.WaitFor(() => ActiveElementId() == inputId, timeoutMS: 5000, message: "DOM focus did not reach the semantic input.");
+			// With WebAssembly threading, the native input's blur is applied later: wait for it.
+			await UITestHelper.WaitForIdle();
+
+			Assert.AreSame(textBox, Microsoft.UI.Xaml.Input.FocusManager.GetFocusedElement(textBox.XamlRoot), "Moving browser focus to the TextBox's semantic input must not unfocus it.");
+			Assert.AreEqual(inputId, ActiveElementId());
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_TextBox_Is_Composing_Then_Container_ReAdd_Waits_For_CompositionEnd()
 		{
 			var textBox = new TextBox { Width = 200 };

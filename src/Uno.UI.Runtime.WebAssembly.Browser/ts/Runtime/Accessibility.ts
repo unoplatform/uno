@@ -400,7 +400,8 @@ namespace Uno.UI.Runtime {
 		private static focusNodeFromManaged(element: HTMLElement) {
 			Accessibility.isFocusingFromManaged = true;
 			try {
-				Accessibility.focusNode(element);
+				// Moving to a TextBox's semantic input blurs its native input; reported, that blur would unfocus the TextBox.
+				BrowserInvisibleTextBoxViewExtension.runSuppressingBlur(() => Accessibility.focusNode(element));
 			} finally {
 				Accessibility.isFocusingFromManaged = false;
 			}
