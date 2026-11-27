@@ -397,4 +397,30 @@ public class Given_ListView_Issues_Layout
 
 		Assert.AreEqual(0, sv.ScrollableWidth, Tolerance);
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21964")]
+	public async Task When_GridView_With_Huge_Source_Then_Realized_Count_Stays_Small()
+	{
+		GridView grid = new()
+		{
+			Width = 800,
+			Height = 600,
+			ItemsSource = Enumerable.Range(0, 50000).ToList(),
+			ItemTemplate = Template("<Border><TextBlock Text='{Binding}' /></Border>"),
+			ItemsPanel = PanelTemplate("<ItemsWrapGrid Orientation='Horizontal' ItemWidth='100' ItemHeight='100' />"),
+		};
+		await Load(grid);
+
+		int Realized() => Descendants<GridViewItem>(grid.ItemsPanelRoot).Count();
+		Assert.IsGreaterThan(0, Realized());
+		Assert.IsLessThan(500, Realized(), "Realized containers at the start");
+
+		var sv = GetScrollViewer(grid);
+		await ChangeViewAndWait(sv, sv.ScrollableHeight);
+		await WindowHelper.WaitFor(() => grid.ContainerFromIndex(49999) is not null, timeoutMS: 5000, message: "Last item realized");
+		await WindowHelper.WaitForIdle();
+		Assert.IsLessThan(500, Realized(), "Realized containers at the end");
+		Assert.IsNull(grid.ContainerFromIndex(0));
+	}
 }
