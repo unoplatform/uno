@@ -837,4 +837,33 @@ public class Given_ListView_Issues_Selection
 			WindowHelper.WindowContent = null;
 		}
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11738")]
+	public async Task When_GridView_Items_Placed_Directly_Bind_To_Parent_DataContext()
+	{
+		try
+		{
+			var root = (Grid)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"""
+				<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<GridView x:Name="Gv">
+						<TextBlock x:Name="First" Text="{Binding Title}" />
+						<TextBlock x:Name="Second" Text="{Binding Title}" />
+					</GridView>
+				</Grid>
+				""");
+			root.DataContext = new TitleViewModel();
+			await Host(root);
+
+			Assert.AreEqual("Hello from the VM", ((TextBlock)root.FindName("First")).Text);
+			Assert.AreEqual("Hello from the VM", ((TextBlock)root.FindName("Second")).Text);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
 }
