@@ -18,7 +18,6 @@ using Windows.UI.ViewManagement;
 using Size = Windows.Foundation.Size;
 using MUX = Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml;
-using Uno.UI.Hosting;
 using Uno.UI.Runtime.Android;
 
 namespace Uno.UI.Xaml.Controls;
@@ -249,8 +248,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		if (XamlRoot is { } xamlRoot)
 		{
 			AndroidSkiaNativeElementHostingExtension.ReleaseNativeElements(xamlRoot);
-			XamlRootMap.Unregister(xamlRoot);
 		}
+
+		// Also unregisters the XamlRoot and releases the window's accessibility adapter.
+		XamlRootHost?.Dispose();
 
 		RemovePreDrawListener();
 
