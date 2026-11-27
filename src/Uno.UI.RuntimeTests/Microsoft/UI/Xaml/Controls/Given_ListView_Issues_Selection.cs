@@ -339,4 +339,40 @@ public class Given_ListView_Issues_Selection
 		}
 	}
 #endif
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25514")]
+	public async Task When_ChoosingItemContainer_Container_Is_Used()
+	{
+		try
+		{
+			var items = Enumerable.Range(0, 10).ToList();
+			Dictionary<int, GridViewItem> supplied = new();
+			List<object?> chosenItems = new();
+			GridView gv = new() { Width = 400, Height = 400, ItemsSource = items };
+			gv.ChoosingItemContainer += (s, e) =>
+			{
+				chosenItems.Add(e.Item);
+				if (e.ItemContainer == null)
+				{
+					GridViewItem container = new();
+					supplied[e.ItemIndex] = container;
+					e.ItemContainer = container;
+				}
+			};
+			await Host(gv);
+
+			Assert.IsTrue(supplied.Count > 0, "ChoosingItemContainer should be raised");
+			Assert.IsTrue(chosenItems.Contains(items[0]));
+			foreach (var (index, container) in supplied)
+			{
+				Assert.AreSame(container, gv.ContainerFromIndex(index), $"index {index}");
+			}
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
 }
