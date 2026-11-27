@@ -31,14 +31,14 @@ namespace MyProject
 	public sealed partial class GlobalStaticResources
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921 = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05 = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921 = "ms-appx:///TestProject/0/OtherDictionary.xaml";
+		private const string __baseUri_OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05 = "ms-appx:///TestProject/0/OtherDictionary.xaml";
 		// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		internal string __OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921_checksum() => "87413f85bfe7702d0b326695f480cd59dd74d40a";
+		internal string __OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05_checksum() => "87413f85bfe7702d0b326695f480cd59dd74d40a";
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		internal sealed class ResourceDictionarySingleton__OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921 : global::Uno.UI.IXamlResourceDictionaryProvider
+		internal sealed class ResourceDictionarySingleton__OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05 : global::Uno.UI.IXamlResourceDictionaryProvider
 		{
 			private static global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 			private static global::Uno.UI.IXamlResourceDictionaryProvider __that;
@@ -48,7 +48,7 @@ namespace MyProject
 				{
 					if (__that == null)
 					{
-						__that = new ResourceDictionarySingleton__OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921();
+						__that = new ResourceDictionarySingleton__OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05();
 					}
 
 					return __that;
@@ -56,48 +56,48 @@ namespace MyProject
 			}
 
 			private readonly global::Uno.UI.Xaml.XamlParseContext __ParseContext_;
-			internal static global::Uno.UI.Xaml.XamlParseContext GetParseContext() => ((ResourceDictionarySingleton__OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921)Instance).__ParseContext_;
+			internal static global::Uno.UI.Xaml.XamlParseContext GetParseContext() => ((ResourceDictionarySingleton__OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05)Instance).__ParseContext_;
 
-			public ResourceDictionarySingleton__OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921()
+			public ResourceDictionarySingleton__OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05()
 			{
 				__ParseContext_ = global::MyProject.GlobalStaticResources.__ParseContext_;
 			}
 
 			// Skipping initializer 1 for OtherNumber  - Literal declaration, will be eagerly materialized and added to the dictionary
-			private global::Microsoft.UI.Xaml.ResourceDictionary _OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921_ResourceDictionary;
+			private global::Microsoft.UI.Xaml.ResourceDictionary _OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05_ResourceDictionary;
 
-			internal global::Microsoft.UI.Xaml.ResourceDictionary OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921_ResourceDictionary
+			internal global::Microsoft.UI.Xaml.ResourceDictionary OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05_ResourceDictionary
 			{
 				get
 				{
-					if (_OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921_ResourceDictionary == null)
+					if (_OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05_ResourceDictionary == null)
 					{
-						_OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921_ResourceDictionary = global::Microsoft.UI.Xaml.ResourceDictionary.CreateWithCapacity(1);
-						_OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921_ResourceDictionary.IsParsing = true;
-						global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(_OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921_ResourceDictionary, "OriginalSourceLocation", "file://///Project/0/OtherDictionary.xaml#L1:2");
-						_OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921_ResourceDictionary["OtherNumber"] = 
+						_OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05_ResourceDictionary = global::Microsoft.UI.Xaml.ResourceDictionary.CreateWithCapacity(1);
+						_OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05_ResourceDictionary.IsParsing = true;
+						global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(_OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05_ResourceDictionary, "OriginalSourceLocation", "file://///Project/0/OtherDictionary.xaml#L1:2");
+						_OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05_ResourceDictionary["OtherNumber"] = 
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							3d
 						)
 						;
-						_OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921_ResourceDictionary.Source = new global::System.Uri("ms-resource:///Files/0/OtherDictionary.xaml");
-						_OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921_ResourceDictionary.CreationComplete();
+						_OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05_ResourceDictionary.Source = new global::System.Uri("ms-resource:///Files/0/OtherDictionary.xaml");
+						_OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05_ResourceDictionary.CreationComplete();
 					}
-					return _OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921_ResourceDictionary;
+					return _OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05_ResourceDictionary;
 				}
 			}
 
-			global::Microsoft.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921_ResourceDictionary;
+			global::Microsoft.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05_ResourceDictionary;
 		}
 
-		internal static global::Microsoft.UI.Xaml.ResourceDictionary OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921_ResourceDictionary => ResourceDictionarySingleton__OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921.Instance.GetResourceDictionary();
+		internal static global::Microsoft.UI.Xaml.ResourceDictionary OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05_ResourceDictionary => ResourceDictionarySingleton__OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05.Instance.GetResourceDictionary();
 	}
 }
 namespace MyProject.__Resources
 {
 	[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 	[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-	internal class __OtherDictionary_218afd2e503a1577f4ce46cd7f3fc921
+	internal class __OtherDictionary_ad08f9869548624f6a84a5e3dfb5bd05
 	{
 	}
 }

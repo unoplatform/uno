@@ -9,13 +9,12 @@ using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Print;
+using Google.Android.Play.Core.Review;
+using Google.Android.Play.Core.Review.Testing;
 using Uno.Foundation.Logging;
 using Windows.Foundation.Metadata;
 using Windows.Services.Store;
 using Windows.Services.Store.Internal;
-using Xamarin.Google.Android.Play.Core.Review;
-using Xamarin.Google.Android.Play.Core.Review.Testing;
-using Xamarin.Google.Android.Play.Core.Tasks;
 
 namespace Uno.UI.GooglePlay;
 
@@ -46,12 +45,12 @@ public class StoreContextExtension : IStoreContextExtension
 		return await inAppRateTcs.Task;
 	}
 
-	private class InAppReviewListener : Java.Lang.Object, IOnCompleteListener
+	private class InAppReviewListener : Java.Lang.Object, Android.Gms.Tasks.IOnCompleteListener
 	{
 		private readonly StoreContext _storeContext;
 		private readonly IReviewManager _reviewManager;
 		private TaskCompletionSource<StoreRateAndReviewResult>? _inAppRateTcs;
-		private Xamarin.Google.Android.Play.Core.Tasks.Task? _launchTask;
+		private Android.Gms.Tasks.Task? _launchTask;
 		private bool _forceReturn;
 
 		public InAppReviewListener(StoreContext storeContext, IReviewManager reviewManager, TaskCompletionSource<StoreRateAndReviewResult>? inAppRateTcs)
@@ -61,7 +60,7 @@ public class StoreContextExtension : IStoreContextExtension
 			_inAppRateTcs = inAppRateTcs;
 		}
 
-		public void OnComplete(Xamarin.Google.Android.Play.Core.Tasks.Task task)
+		public void OnComplete(Android.Gms.Tasks.Task task)
 		{
 			if (!task.IsSuccessful || _forceReturn)
 			{

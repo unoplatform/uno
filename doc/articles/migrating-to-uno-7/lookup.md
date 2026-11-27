@@ -23,7 +23,7 @@ Look up the code or message you got, then follow the link for the fix.
 | `UNOB0017` | Reference to `Uno.WinUI.WebAssembly` or `Uno.WinUI.Runtime.WebAssembly` | [`Uno.WinUI.WebAssembly`](xref:Uno.Development.MigratingToUno7.Packages#unowinuiwebassembly-package-removed-and-the-older-unowinuiruntimewebassembly) |
 | `UNOB0020` | A multi-targeted library was built against 6.x | [Platform targeting](xref:Uno.Development.MigratingToUno7.Libraries#platform-targeting-in-multi-targeted-libraries) |
 | `UNOB0022` | The `SingleProject` property | [The `Uno.Sdk` is required](xref:Uno.Development.MigratingToUno7.ProjectSetup#the-unosdk-is-required-for-applications) |
-| `UNOB0023` | A runtime-enabled package provided no runtime assembly | [Runtime identifier properties](xref:Uno.Development.MigratingToUno7.Libraries#runtime-identifier-properties-removed), [Cross-runtime libraries](xref:Uno.Development.MigratingToUno7.Libraries#cross-runtime-libraries) |
+| `UNOB0023` | A runtime-enabled package provided no runtime assembly | [Runtime identifier properties](xref:Uno.Development.MigratingToUno7.Libraries#runtime-identifier-properties-removed), [Cross-runtime libraries](xref:Uno.Development.MigratingToUno7.Libraries#cross-runtime-libraries), [`SkiaSharp.Views.Uno.WinUI`](xref:Uno.Development.MigratingToUno7.Packages#skiasharpviewsunowinui-no-longer-referenced-implicitly) |
 | `UNOB0024` | `UnoRuntimeIdentifier` or a sibling property is set | [Runtime identifier properties](xref:Uno.Development.MigratingToUno7.Libraries#runtime-identifier-properties-removed) |
 | `UNOB0025` | Runtime-enabled packages without a runtime host | [Runtime identifier properties](xref:Uno.Development.MigratingToUno7.Libraries#runtime-identifier-properties-removed) |
 | `UNOB0026` | A referenced assembly was built for a native renderer | [Runtime identifier properties](xref:Uno.Development.MigratingToUno7.Libraries#runtime-identifier-properties-removed) |
@@ -37,6 +37,8 @@ Look up the code or message you got, then follow the link for the fix.
 | `UXAML0001` | Binding an attached property whose owner type can't be found | [Attached property owners](xref:Uno.Development.MigratingToUno7.Xaml#binding-an-attached-property-whose-owner-type-cannot-be-found-is-a-build-error) |
 | `UXAML0006` | A `clr-namespace:` declaration | [`clr-namespace:` xmlns form](xref:Uno.Development.MigratingToUno7.Xaml#the-wpf-style-clr-namespace-xmlns-form-is-no-longer-accepted) |
 | `UXAML0007` | A removed conditional XAML prefix such as `skia:` | [Removed XAML prefixes](xref:Uno.Development.MigratingToUno7.Libraries#removed-xaml-prefixes) |
+| `UXAML0009` | A `using:Uno.UI.Toolkit` declaration | [`Uno.UI.Toolkit` types](xref:Uno.Development.MigratingToUno7.Renames#unouitoolkit-types-move-to-the-unoui-namespaces) |
+| `XA1036` | `AndroidManifest.xml` sets a `minSdkVersion` below 24 | [Minimum OS versions raised](xref:Uno.Development.MigratingToUno7.ProjectSetup#minimum-os-versions-raised) |
 | `Uno0001` | A not-implemented API, which can fail builds that set `TreatWarningsAsErrors` | [`Uno0001`](xref:Uno.Development.MigratingToUno7.Libraries#the-not-implemented-warning-uno0001-follows-the-target-framework) |
 | `Property 'AreDimensionsConstrained' does not exist` | Layout-constraint members are removed | [Layout-constraint optimization](xref:Uno.Development.MigratingToUno7.RemovedApis#layout-constraint-optimization) |
 | XAML build failure on `IsNativeStyle` | The attribute is no longer recognized | [Native-style declaration](xref:Uno.Development.MigratingToUno7.RemovedApis#native-style-declaration) |
@@ -47,7 +49,7 @@ Look up the code or message you got, then follow the link for the fix.
 | Symptom | Cause | Details |
 |---|---|---|
 | *No drawing backend could be resolved* at startup | A head without the `Uno.Sdk` implicit packages got `Uno.WinUI.Composition.Skia` only through a library | [`Skia` on libraries](xref:Uno.Development.MigratingToUno7.Packages#skia-uno-feature-no-longer-implied-on-libraries) |
-| `FileNotFoundException` from `SkiaSharp.Views.Windows.GlobalStaticResources.Initialize()` | Explicit `SkiaSharp.Views.Uno.WinUI` reference | [`SkiaSharp.Views.Uno.WinUI`](xref:Uno.Development.MigratingToUno7.Packages#skiasharpviewsunowinui-no-longer-referenced-implicitly) |
+| `FileNotFoundException` from `SkiaSharp.Views.Windows.GlobalStaticResources.Initialize()` | `SkiaSharp.Views.Uno.WinUI` older than 4.156.0 | [`SkiaSharp.Views.Uno.WinUI`](xref:Uno.Development.MigratingToUno7.Packages#skiasharpviewsunowinui-no-longer-referenced-implicitly) |
 | `Could not load type … from assembly 'Uno.UI'` on an MRT Core type | A library or assembly-qualified name still targets 6.x | [MRT Core](xref:Uno.Development.MigratingToUno7.Renames#mrt-core-moves-to-the-unowinrt-package) |
 | Failures in code from a multi-targeted library | A stale `net*-ios` or `net*-android` asset built against 6.x is now deployed | [Platform targeting](xref:Uno.Development.MigratingToUno7.Libraries#platform-targeting-in-multi-targeted-libraries) |
 | `(MyEnum)GetValue(...)` throws | Custom value-type dependency properties now default to `null` | [Custom value types default to `null`](xref:Uno.Development.MigratingToUno7.Behavior#custom-value-types-default-to-null) |

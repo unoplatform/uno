@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference Theme.h, commit fc2f82117
+// MUX Reference Theme.h
 
 namespace Microsoft.UI.Xaml;
 
@@ -30,6 +30,7 @@ internal enum Theme : byte
 #if DEBUG
 	// For debugability purposes, add extra flags so we can make sense of the base and high contrast
 	// combinations. Only include in debug builds so that people don't use these in actual code.
+	// Uno-specific: upstream misspells LigthAndHighContrast* and DarkAndHighContastBlack.
 	LightAndHighContrastWhite = 0x09,
 	LightAndHighContrastBlack = 0x0D,
 	LightAndHighContrastCustom = 0x11,

@@ -1,0 +1,33 @@
+{
+  "id": "progressring",
+  "title": "ProgressRing",
+  "baseline": "c29edd64ae8b4412d772c5768d835ebfd19b438e",
+  "upstream": {
+    "sources": [
+      "controls/dev/ProgressRing"
+    ],
+    "tests": [
+      "controls/dev/ProgressRing/APITests"
+    ],
+    "strings": "controls/dev/ProgressRing/Strings"
+  },
+  "uno": {
+    "sources": [
+      "src/Uno.UI/UI/Xaml/Controls/ProgressRing"
+    ],
+    "tests": [
+      "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/ProgressRing"
+    ],
+    "strings": "src/Uno.UI/UI/Xaml/Controls/ProgressRing/Strings"
+  },
+  "mirror": [
+    {
+      "upstream": "controls/dev/ProgressRing/ProgressRing.xaml",
+      "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/ProgressRing.xaml"
+    },
+    {
+      "upstream": "controls/dev/ProgressRing/ProgressRing_themeresources.xaml",
+      "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/ProgressRing_themeresources.xaml"
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.Text;
+using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Testing;
@@ -102,6 +103,87 @@ public class Given_BindableTypeProvidersSourceGenerator
 		test.GeneratedCode.Should().Contain("bindableType.AddProperty(global::MyProject.Owner.PayloadProperty, typeof(global::MyProject.Payload));");
 		test.GeneratedCode.Should().Contain("bindableType.AddProperty(global::MyProject.Owner.ModeProperty, typeof(global::MyProject.Mode));");
 		test.GeneratedCode.Should().Contain("bindableType.AddProperty(global::MyProject.Owner.DataProperty);");
+	}
+
+	[TestMethod]
+	public async Task When_Constructor_Requires_Unreferenced_Code_Then_Activator_Suppresses_IL2026()
+	{
+		// Metadata is generated for referenced types the app never uses, so the warning isn't actionable.
+		var test = CreateTest("""
+			using System.Diagnostics.CodeAnalysis;
+			using Microsoft.UI.Xaml;
+
+			namespace MyProject;
+
+			[RequiresUnreferencedCode("Not trim-safe.")]
+			[Microsoft.UI.Xaml.Data.Bindable]
+			public class TypeRequires : DependencyObject { }
+
+			[Microsoft.UI.Xaml.Data.Bindable]
+			public class CtorRequires : DependencyObject
+			{
+				[RequiresUnreferencedCode("Not trim-safe.")]
+				public CtorRequires() { }
+			}
+
+			[Microsoft.UI.Xaml.Data.Bindable]
+			public class TrimSafe : DependencyObject { }
+			""");
+
+		await test.RunAsync();
+
+		const string Suppression = """[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated for every referenced bindable type, used or not, and only called for Type-based activation.")]""";
+		foreach (var type in new[] { "TypeRequires", "CtorRequires" })
+		{
+			test.GeneratedCode.Should().MatchRegex($@"{Regex.Escape(Suppression)}\s+private static object CreateInstance\(\) => new global::MyProject\.{Regex.Escape(type)}\(\);");
+		}
+
+		test.GeneratedCode.Should().Contain("private static object CreateInstance() => new global::MyProject.TrimSafe();");
+		test.GeneratedCode.Should().NotMatchRegex(@"\)\]\s+private static object CreateInstance\(\) => new global::MyProject\.TrimSafe\(\);");
+	}
+
+	[TestMethod]
+	public async Task When_RequiresUnreferencedCode_Is_Polyfilled_Then_Activator_Suppresses_IL2026()
+	{
+		// Libraries targeting older frameworks declare their own copy of the attribute; the trim analyzer matches it by name.
+		var test = CreateTest("""
+			using Microsoft.UI.Xaml;
+
+			namespace System.Diagnostics.CodeAnalysis
+			{
+				[System.AttributeUsage(System.AttributeTargets.Class | System.AttributeTargets.Constructor | System.AttributeTargets.Method)]
+				internal sealed class RequiresUnreferencedCodeAttribute(string message) : System.Attribute
+				{
+					public string Message { get; } = message;
+				}
+			}
+
+			namespace Other
+			{
+				[System.AttributeUsage(System.AttributeTargets.Class)]
+				internal sealed class RequiresUnreferencedCodeAttribute(string message) : System.Attribute
+				{
+					public string Message { get; } = message;
+				}
+			}
+
+			namespace MyProject
+			{
+				[System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("Not trim-safe.")]
+				[Microsoft.UI.Xaml.Data.Bindable]
+				public class PolyfillRequires : DependencyObject { }
+
+				[Other.RequiresUnreferencedCode("Not the trimming attribute.")]
+				[Microsoft.UI.Xaml.Data.Bindable]
+				public class OtherNamespaceAttribute : DependencyObject { }
+			}
+			""");
+
+		await test.RunAsync();
+
+		test.GeneratedCode.Should().MatchRegex(@"UnconditionalSuppressMessage\(""Trimming"", ""IL2026""[^\]]*\)\]\s+private static object CreateInstance\(\) => new global::MyProject\.PolyfillRequires\(\);");
+		test.GeneratedCode.Should().Contain("private static object CreateInstance() => new global::MyProject.OtherNamespaceAttribute();");
+		test.GeneratedCode.Should().NotMatchRegex(@"\)\]\s+private static object CreateInstance\(\) => new global::MyProject\.OtherNamespaceAttribute\(\);");
 	}
 
 	private static Test CreateTest(int typeCount, params string[] preprocessorSymbols)

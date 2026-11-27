@@ -1513,6 +1513,81 @@ namespace Uno.UI
 			}
 		}
 
+		private static readonly string[] _accentThemeKeys = ["Default", "Light", "HighContrast"];
+		private static ResourceDictionary _accentColorDictionary;
+
+		/// <summary>
+		/// Applies the accent entries of FrameworkTheming's color and brush list to the system resources.
+		/// </summary>
+		/// <remarks>
+		/// MUX's CCoreServices::UpdateColorAndBrushResources writes every entry into a dedicated system colors
+		/// dictionary. Uno's system resources are per-theme XAML values instead, and its Win32 system colors are
+		/// only live under high contrast (see <see cref="UpdateSystemColorAndBrushResources(IReadOnlyList{ColorAndBrushResourceInfo}, bool)"/>).
+		/// The accent entries, the only ones that keep their own alpha, apply in every theme. Must run after
+		/// the high contrast pass, which can restore stale accent values into the HighContrast dictionary.
+		/// </remarks>
+		internal static void UpdateSystemAccentColorAndBrushResources(IReadOnlyList<ColorAndBrushResourceInfo> resources)
+		{
+			if (FindAccentColorDictionary() is not { } accentDictionary)
+			{
+				return;
+			}
+
+			foreach (var themeKey in _accentThemeKeys)
+			{
+				if (!accentDictionary.TryGetThemeDictionary(themeKey, out var themeDictionary))
+				{
+					continue;
+				}
+
+				foreach (var resource in resources)
+				{
+					if (resource.OverrideAlpha)
+					{
+						continue;
+					}
+
+					var color = Color.FromArgb(
+						(byte)(resource.RgbValue >> 24),
+						(byte)(resource.RgbValue >> 16),
+						(byte)(resource.RgbValue >> 8),
+						(byte)resource.RgbValue);
+
+					themeDictionary[resource.ColorKey] = color;
+
+					// Like MUX, the brush is recreated rather than mutated: {ThemeResource} users re-resolve
+					// during the theme walk, {StaticResource} users keep the previous brush.
+					if (resource.BrushKey is { } brushKey)
+					{
+						themeDictionary[brushKey] = new SolidColorBrush(color);
+					}
+				}
+			}
+
+			accentDictionary.InvalidateNotFoundCache(true);
+		}
+
+		private static ResourceDictionary FindAccentColorDictionary()
+		{
+			if (_accentColorDictionary is not null)
+			{
+				return _accentColorDictionary;
+			}
+
+			for (var mergedIndex = 0; mergedIndex < MasterDictionary.MergedDictionaries.Count; mergedIndex++)
+			{
+				var merged = MasterDictionary.MergedDictionaries[mergedIndex];
+
+				if (merged.TryGetThemeDictionary("Default", out var themeDictionary)
+					&& themeDictionary.ContainsKeyLocal("SystemAccentColor"))
+				{
+					return _accentColorDictionary = merged;
+				}
+			}
+
+			return null;
+		}
+
 		private sealed class HighContrastResourceState
 		{
 			private readonly Dictionary<string, Color> _baselineColors = new(StringComparer.Ordinal);

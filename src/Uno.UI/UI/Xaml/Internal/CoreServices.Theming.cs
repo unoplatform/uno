@@ -114,9 +114,11 @@ internal partial class CoreServices
 	{
 		using var endOnExit = ThemeWalkResourceCache.BeginCachingThemeResources();
 
+		var colorAndBrushResources = Theming.GetColorAndBrushResourceInfoList();
 		ResourceResolver.UpdateSystemColorAndBrushResources(
-			Theming.GetColorAndBrushResourceInfoList(),
+			colorAndBrushResources,
 			restoreDefaults: !Theming.HasHighContrastTheme());
+		ResourceResolver.UpdateSystemAccentColorAndBrushResources(colorAndBrushResources);
 
 		// MUX UpdateColorAndBrushResources has a first-create short-circuit. Uno's system resources
 		// are generated before this path runs, so there is no first-create case.

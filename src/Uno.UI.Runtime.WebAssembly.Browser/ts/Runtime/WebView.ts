@@ -110,6 +110,19 @@ namespace Microsoft.UI.Xaml.Controls {
             iframe.style.border = "0";
         }
 
+        static enableCredentialless(htmlId: string) {
+            // Only useful under COEP, where cross-origin frames are otherwise blocked; elsewhere it would only drop credentials.
+            if (!(<any>globalThis).crossOriginIsolated) {
+                return;
+            }
+
+            if (!("credentialless" in HTMLIFrameElement.prototype)) {
+                console.warn("Credentialless iframes are not supported by this browser, cross-origin WebView2 content may be blocked.");
+            }
+
+            (<HTMLIFrameElement>document.getElementById(htmlId)).setAttribute("credentialless", "");
+        }
+
         static getPackageBase(): string {
             if (WebView.cachedPackageBase !== null) {
                 return WebView.cachedPackageBase;
@@ -149,7 +162,13 @@ namespace Microsoft.UI.Xaml.Controls {
                 WebView.lastKnownUrls.set(iframe, url);
             }
 
-            WebView.unoExports.DispatchLoadEvent(iframe.id, url);
+			const isMultithreaded = (<any>globalThis).Uno.UI.Runtime.WebAssemblyThreading.isThreadingEnabled();
+
+			if (isMultithreaded) {
+				WebView.unoExports.DispatchLoadEventAsync(iframe.id, url);
+			} else {
+				WebView.unoExports.DispatchLoadEvent(iframe.id, url);
+			}
 
             if (isCrossOrigin) {
                 // Such a document can't be hooked for NewWindowRequested either.
@@ -157,7 +176,7 @@ namespace Microsoft.UI.Xaml.Controls {
             }
 
             try {
-                if (iframe.contentWindow && WebView.unoExports.DispatchNewWindowRequested) {
+                if (iframe.contentWindow) {
                     
                     const unoExports = WebView.unoExports;
                     
@@ -168,17 +187,28 @@ namespace Microsoft.UI.Xaml.Controls {
                         iframe.contentWindow.open = function(url?: string, target?: string, features?: string) {
                             const referer = iframe.contentWindow.location.href;
 
-                            const handled = unoExports.DispatchNewWindowRequested(
-                                iframe.id,
-                                url || '',
-                                referer
-                            );
+							if (isMultithreaded) {
+								unoExports.DispatchNewWindowRequestedAsync(iframe.id, url || '', referer)
+									.then((handled: boolean) => {
+										if (!handled) {
+											(iframe.contentWindow as any).__unoOriginalOpen.call(this, url, target, features);
+										}
+									});
+							} else {
+								const handled = unoExports.DispatchNewWindowRequested(
+									iframe.id,
+									url || '',
+									referer
+								);
 
-                            if (!handled) {
-                                return (iframe.contentWindow as any).__unoOriginalOpen.call(this, url, target, features);
-                            }
+								if (!handled) {
+									return (iframe.contentWindow as any).__unoOriginalOpen.call(this, url, target, features);
+								}
+							}
                             
-                            return null;
+							// In MT, we always return null since we cannot know whether DispatchNewWindowRequested
+							// was handled or not before this call returns.
+							return null;
                         };
                         (iframe.contentWindow as any).__unoOpenOverridden = true;
                     }
@@ -189,7 +219,22 @@ namespace Microsoft.UI.Xaml.Controls {
                         if (link) {
                             const targetUrl = link.href;
                             const referer = iframe.contentWindow.location.href;
-                            
+
+							if (isMultithreaded) {
+								// In MT, we always preventDefault()/stopPropagation(), if the click wasn't handled we play it back.
+								e.preventDefault();
+								e.stopPropagation();
+
+								unoExports.DispatchNewWindowRequestedAsync(iframe.id, targetUrl, referer)
+									.then((handled: boolean) => {
+										if (!handled) {
+											(iframe.contentWindow as any).__unoOriginalOpen.call(iframe.contentWindow, targetUrl, '_blank');
+										}
+									});
+
+								return;
+							}
+
                             const handled = unoExports.DispatchNewWindowRequested(
                                 iframe.id,
                                 targetUrl,

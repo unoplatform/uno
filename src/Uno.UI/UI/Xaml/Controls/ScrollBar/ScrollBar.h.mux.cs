@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference dxaml\xcp\dxaml\lib\ScrollBar_Partial.h, tag winui3/release/1.6.5, commit 444ec52426
+// MUX Reference dxaml\xcp\dxaml\lib\ScrollBar_Partial.h
 
 using System;
 using System.Collections.Generic;
@@ -27,7 +27,7 @@ partial class ScrollBar
 
 	// Used to prevent GoToState(true /*bUseTransitions*/) calls while applying the template.
 	// We don't want to show the initial fade-out of the mouse/panning indicators.
-	private bool m_suspendVisualStateUpdates = true; // = true: Visual state update are disabled until the template has been applied at least once!
+	private bool m_suspendVisualStateUpdates;
 
 	// Value indicating how far the ScrollBar has beeen dragged.
 	private double m_dragValue;

@@ -658,11 +658,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual(expectedOrder, InvokeBrowserJs(order));
 			InvokeBrowserJs($"(function(){{document.getElementById('{GetSemanticElementId(first)}').dataset.marker='kept';return '';}})()");
 
-			AutomationProperties.SetAccessibilityView(first, AccessibilityView.Content);
-			await UITestHelper.WaitForIdle();
+			Assert.AreEqual(AccessibilityView.Content, AutomationProperties.GetAccessibilityView(first));
+			AutomationProperties.SetAccessibilityView(first, AccessibilityView.Control);
+			await UITestHelper.WaitForRender();
 
 			Assert.AreEqual("kept", GetSemanticAttribute(first, "data-marker"), "A realized item must be updated in place by its region.");
 			Assert.AreEqual(expectedOrder, InvokeBrowserJs(order), "The realized item must keep its reading-order position.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Realized_TextBlock_Toggles_LiveSetting_Then_AriaLive_Updates()
+		{
+			var textBlock = new TextBlock { Text = "Status" };
+			AutomationProperties.SetName(textBlock, "Status");
+			var repeater = new ItemsRepeater
+			{
+				ItemsSource = new[] { "Status" },
+				ItemTemplate = new DataTemplate(null, (_, _) => textBlock),
+			};
+			AutomationProperties.SetName(repeater, "Statuses");
+
+			await UITestHelper.Load(repeater);
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(textBlock, "aria-posinset") == "1", timeoutMS: 5000,
+				message: "Timed out waiting for the realized text item.");
+
+			AutomationProperties.SetLiveSetting(textBlock, AutomationLiveSetting.Polite);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(textBlock, "aria-live") == "polite", timeoutMS: 5000,
+				message: "The realized text item must gain aria-live.");
+
+			AutomationProperties.SetLiveSetting(textBlock, AutomationLiveSetting.Off);
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBlock) && !SemanticElementHasAttribute(textBlock, "aria-live"), timeoutMS: 5000,
+				message: "The realized text item must remain present and clear aria-live.");
 		}
 
 		private static string ActiveElementId()
@@ -739,6 +768,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			Assert.IsTrue(SemanticElementExists(home), "NavigationView item 'Home' must emit a semantic node when accessibility is enabled after load.");
 			Assert.IsTrue(SemanticElementExists(settings), "NavigationView item 'Settings' must emit a semantic node when accessibility is enabled after load.");
+		}
+
+		/// <summary>
+		/// A virtualized region without a selection model (NavigationView's menu ItemsRepeater) must keep
+		/// a selected item's aria-selected, both when it emits the item and when it re-emits it.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_NavigationView_Item_Is_Selected_Then_Its_Node_Keeps_Aria_Selected()
+		{
+			var home = new NavigationViewItem { Content = "Home" };
+			var settings = new NavigationViewItem { Content = "Settings" };
+			var nav = new NavigationView
+			{
+				PaneDisplayMode = NavigationViewPaneDisplayMode.Left,
+				IsPaneOpen = true,
+				IsSettingsVisible = false,
+				IsBackButtonVisible = NavigationViewBackButtonVisible.Collapsed,
+				Width = 400,
+				Height = 400,
+			};
+			nav.MenuItems.Add(home);
+			nav.MenuItems.Add(settings);
+			nav.SelectedItem = settings;
+
+			await UITestHelper.Load(nav);
+			await UITestHelper.WaitForIdle();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(settings), timeoutMS: 5000, message: "Timed out waiting for the NavigationView item semantic node.");
+			// Let the region's queued item updates run.
+			await UITestHelper.WaitForRender(frameCount: 5);
+
+			Assert.AreEqual("true", GetSemanticAttribute(settings, "aria-selected"), "The region must keep a selected item's aria-selected.");
+
+			AutomationProperties.SetAccessibilityView(settings, AccessibilityView.Raw);
+			AutomationProperties.SetAccessibilityView(settings, AccessibilityView.Content);
+			await UITestHelper.WaitForRender(frameCount: 5);
+
+			Assert.IsTrue(SemanticElementExists(settings), "The item must be emitted again once it is no longer Raw.");
+			Assert.AreEqual("true", GetSemanticAttribute(settings, "aria-selected"), "A re-emitted item must keep its aria-selected.");
 		}
 
 		/// <summary>

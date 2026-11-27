@@ -174,15 +174,15 @@ fn clipCovMapped(fc: vec2<f32>) -> f32 {
   return cov;
 }
 ";
-	// The two coverage passes over a sheet of slots. Accumulate: one quad per edge spanning the rows it crosses and
+	// The two coverage passes over a batch of slots. Accumulate: one quad per edge spanning the rows it crosses and
 	// everything to its right up to its slot's bound (ext), so an edge contributes the partial area of the pixel it
 	// passes through and a full +/-1 beyond, and additive blending sums the SIGNED covered area per pixel. Resolve:
 	// every slot in one draw, the fill rule and Difference flag riding the quad's vertices.
 	private const string CoverageSheetWgsl = @"
 struct CovU { size: vec4<f32> };
-@group(0) @binding(0) var<storage, read> edges: array<vec4<f32>>;   // x0,y0,x1,y1 in sheet pixels
+@group(0) @binding(0) var<storage, read> edges: array<vec4<f32>>;   // x0,y0,x1,y1 in accumulator pixels
 @group(0) @binding(1) var<storage, read> ext: array<f32>;           // per edge: its slot's right bound
-@group(0) @binding(2) var<uniform> cov: CovU;                       // size.xy = sheet size in px
+@group(0) @binding(2) var<uniform> cov: CovU;                       // size.xy = accumulator size in px
 struct CovOut { @builtin(position) p: vec4<f32>, @location(0) e: vec4<f32> };
 @vertex fn vs(@builtin(vertex_index) vi: u32) -> CovOut {
   let e = edges[vi / 6u];
@@ -467,12 +467,28 @@ fn Hash(p: vec2<f32>) -> f32 { return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * 
 	// One separable-gaussian pass over a texture. A fullscreen triangle (from vertex_index, no vertex buffer)
 	// samples the source along `dir` with per-tap gaussian weights; radius = ceil(3*sigma). Two passes
 	// (dir = (1,0) then (0,1)) give a full 2D blur. Single-sample, no blend (overwrite), no depth/stencil.
-	private const string BlurWgsl = @"
-// ctrl.x > 0.5 => downsample (single linear tap = box-average the 2x2 source block, one pyramid level). Otherwise a
-// separable FIXED 9-tap gaussian (radius 4, sigma~2) — the requested blur radius is achieved by the pyramid DEPTH
-// (sigma-scaled downsample levels), not by a sigma-scaled tap count, so cost is constant instead of O(sigma). The
-// FIRST (extract) pass remaps into a sub-rect of the source via srcOrigin/srcScale so only the region behind the
-// acrylic element is ever processed; gaussian passes run at identity (srcOrigin=0, srcScale=1) on region textures.
+	private static readonly string BlurWgsl = BlurWgslTemplate.Replace("/*FUSED2D*/", FusedBlurTaps());
+
+	// The 2D gaussian unrolled: as loops, wgpu's shader compiler bounds them, which stops drivers unrolling them.
+	private static string FusedBlurTaps()
+	{
+		ReadOnlySpan<float> w = [0.027631f, 0.066282f, 0.123832f, 0.180174f, 0.204164f, 0.180174f, 0.123832f, 0.066282f, 0.027631f];
+		var sb = new System.Text.StringBuilder();
+		for (var j = 0; j < 9; j++)
+		{
+			for (var k = 0; k < 9; k++)
+			{
+				sb.Append(System.FormattableString.Invariant($"    s2 = s2 + textureSampleLevel(src, smp, suv + vec2<f32>({k - 4}.0, {j - 4}.0) * b.texel, 0.0) * {w[k] * w[j]:R};\n"));
+			}
+		}
+		return sb.ToString();
+	}
+
+	private const string BlurWgslTemplate = @"
+// ctrl.x 0: one axis of a FIXED 9-tap gaussian (radius 4, sigma~2); 1: a single linear tap (a plain resample). The
+// requested blur radius comes from how far the source is downsampled first, not from a sigma-scaled tap count, so
+// cost is constant instead of O(sigma). The downsample remaps into a sub-rect of the source via srcOrigin/srcScale so
+// only the region behind the acrylic element is ever processed; later passes run at identity on region textures.
 struct BU { dir: vec2<f32>, texel: vec2<f32>, ctrl: vec2<f32>, srcOrigin: vec2<f32>, srcScale: vec2<f32> };
 @group(0) @binding(0) var src: texture_2d<f32>;
 @group(0) @binding(1) var smp: sampler;
@@ -485,6 +501,25 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 }
 @fragment fn fs(i: VO) -> @location(0) vec4<f32> {
   let suv = b.srcOrigin + i.uv * b.srcScale;
+  // ctrl.x 3: the whole downsample in one pass, ctrl.y linear taps per axis spread evenly over the output pixel's
+  // footprint (texel = tap spacing in source uv), each tap averaging a 2x2 block.
+  if (b.ctrl.x > 2.5) {
+    let n = i32(b.ctrl.y);
+    let first = suv - b.texel * (f32(n - 1) * 0.5);
+    var acc = vec4<f32>(0.0);
+    for (var y = 0; y < n; y++) {
+      for (var x = 0; x < n; x++) {
+        acc = acc + textureSampleLevel(src, smp, first + vec2<f32>(f32(x), f32(y)) * b.texel, 0.0);
+      }
+    }
+    return acc / f32(n * n);
+  }
+  // ctrl.x 2: the 9-tap gaussian in both axes at once (its product kernel, so the same result as the two passes).
+  if (b.ctrl.x > 1.5) {
+    var s2 = vec4<f32>(0.0);
+/*FUSED2D*/
+    return s2;
+  }
   if (b.ctrl.x > 0.5) { return textureSampleLevel(src, smp, suv, 0.0); }
   let o1 = b.dir * b.texel; let o2 = o1 * 2.0; let o3 = o1 * 3.0; let o4 = o1 * 4.0;
   var sum = textureSampleLevel(src, smp, suv, 0.0) * 0.204164;

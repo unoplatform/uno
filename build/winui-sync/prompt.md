@@ -27,7 +27,7 @@ line of history, so do not rely on it to find changes.
    Keep the structure of the existing port: same partial files, same member order as upstream.
 2. `.cs` files stay UTF-8 with BOM, CRLF line endings and tabs. Edit existing files in place rather
    than rewriting them, so encoding and line endings are preserved.
-3. Do not touch any `Strings` folder, `build/winui-sync/areas.json`, or anything under `.github/`.
+3. Do not touch any `Strings` folder, `build/winui-sync/areas/`, or anything under `.github/`.
    Translations and the baseline are handled outside this task. Files Uno keeps as verbatim copies
    of upstream ({{mirror_files}}) are replaced by the workflow: do not edit them either.
    Do not edit project, solution or MSBuild files (`.csproj`, `.props`, `.targets`, `.projitems`,
