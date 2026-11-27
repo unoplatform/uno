@@ -36,6 +36,10 @@ internal interface IParsedText
 
 	internal (int start, int length, bool firstLine, bool lastLine, int lineIndex) GetLineAt(int index);
 
+	// Whether laying the same text out at another available size would give this exact layout. A layout that can't
+	// tell is laid out again whenever the size differs.
+	bool IsLayoutValidFor(Size availableSize) => false;
+
 	bool IsBaseDirectionRightToLeft { get; }
 
 	// Distance from the top of the first line to its baseline. Used to surface RichTextBlock/

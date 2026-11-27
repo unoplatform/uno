@@ -855,7 +855,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow("ABC", TextAlignment.Left, TextWrapping.NoWrap, 200, 300, false, DisplayName = "Single left-aligned line, width differs")]
 		[DataRow("ABC", TextAlignment.Center, TextWrapping.NoWrap, 200, 300, true, DisplayName = "Centred, width differs")]
 		[DataRow("ABC", TextAlignment.Left, TextWrapping.Wrap, 200, 300, true, DisplayName = "Wrapping, width differs")]
-		[DataRow("A\nB", TextAlignment.Left, TextWrapping.NoWrap, 300, 100, true, DisplayName = "Two lines, height differs")]
+		[DataRow("A\nB", TextAlignment.Left, TextWrapping.NoWrap, 300, 100, false, DisplayName = "Two lines, a height that holds both")]
 		public void When_Arranged_At_Other_Size_Then_Reparses_Only_If_Layout_Depends_On_It(string text, TextAlignment alignment, TextWrapping wrapping, double arrangeWidth, double arrangeHeight, bool expectReparse)
 		{
 			var SUT = new TextBlock { Text = text, TextAlignment = alignment, TextWrapping = wrapping };
@@ -872,6 +872,205 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Assert.AreSame(measured, SUT.ParsedText);
 			}
+		}
+
+		[TestMethod]
+		public void When_Measured_At_A_Height_That_Drops_Lines_Then_Arranged_Taller_Reparses()
+		{
+			var SUT = new TextBlock { Text = "A\nB\nC" };
+
+			SUT.Measure(new Size(300, 25));
+			var measured = SUT.ParsedText;
+			Assert.IsLessThan(3, measured.VisualLineCount, "The measure's height drops lines.");
+
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 300, 300));
+
+			Assert.AreNotSame(measured, SUT.ParsedText);
+			Assert.AreEqual(3, SUT.ParsedText.VisualLineCount);
+		}
+
+		[TestMethod]
+		public void When_Trimmed_Text_Measured_Unbounded_Then_Arrange_Keeps_The_Layout()
+		{
+			var SUT = new TextBlock { Text = "A\nB", TextTrimming = TextTrimming.CharacterEllipsis };
+
+			SUT.Measure(new Size(300, double.PositiveInfinity));
+			var measured = SUT.ParsedText;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 300, 300));
+
+			Assert.AreSame(measured, SUT.ParsedText);
+			Assert.IsFalse(SUT.IsTextTrimmed);
+		}
+
+		[TestMethod]
+		public void When_Trimmed_Text_Cut_By_The_Measure_Height_Then_A_Taller_Arrange_Lays_Out_Again()
+		{
+			var SUT = new TextBlock { Text = "A\nB", TextTrimming = TextTrimming.CharacterEllipsis, VerticalAlignment = VerticalAlignment.Stretch };
+
+			SUT.Measure(new Size(300, 15));
+			var measured = SUT.ParsedText;
+			Assert.AreEqual(1, measured.VisualLineCount, "The measure's height cuts the second line.");
+
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 300, 300));
+
+			Assert.AreNotSame(measured, SUT.ParsedText);
+			Assert.AreEqual(2, SUT.ParsedText.VisualLineCount, "Both lines fit the arranged height.");
+		}
+
+		[TestMethod]
+		public void When_MaxLines_Drops_Lines_Then_Arrange_Keeps_The_Layout()
+		{
+			var SUT = new TextBlock { Text = "A\nB\nC", MaxLines = 2 };
+
+			SUT.Measure(new Size(300, double.PositiveInfinity));
+			var measured = SUT.ParsedText;
+			Assert.AreEqual(2, measured.VisualLineCount);
+
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 300, 300));
+
+			Assert.AreSame(measured, SUT.ParsedText, "MaxLines, not the height, dropped the third line.");
+		}
+
+		[TestMethod]
+		[DataRow(double.PositiveInfinity, false, DisplayName = "Measured unbounded")]
+		[DataRow(60d, true, DisplayName = "Measured at a height that holds one 40px line")]
+		public void When_LineHeight_Set_And_Arranged_Taller_Then_Lays_Out_Again_Only_If_A_Line_Was_Dropped(double measureHeight, bool expectReparse)
+		{
+			var SUT = new TextBlock { Text = "A\nB", LineHeight = 40, LineStackingStrategy = LineStackingStrategy.BlockLineHeight, VerticalAlignment = VerticalAlignment.Stretch };
+
+			SUT.Measure(new Size(300, measureHeight));
+			var measured = SUT.ParsedText;
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 300, 300));
+
+			if (expectReparse)
+			{
+				Assert.AreEqual(1, measured.VisualLineCount);
+				Assert.AreNotSame(measured, SUT.ParsedText);
+				Assert.AreEqual(2, SUT.ParsedText.VisualLineCount);
+			}
+			else
+			{
+				Assert.AreSame(measured, SUT.ParsedText);
+			}
+		}
+
+		[TestMethod]
+		[DataRow(true, DisplayName = "In a ScrollViewer")]
+		[DataRow(false, DisplayName = "In a StackPanel")]
+		public async Task When_Wrapped_Text_Laid_Out_Then_Arrange_Keeps_The_Measured_Layout(bool inScrollViewer)
+		{
+			var SUT = new TextBlock { TextWrapping = TextWrapping.Wrap, Text = string.Join(" ", Enumerable.Repeat("lorem ipsum dolor sit amet", 60)) };
+			FrameworkElement root = inScrollViewer
+				? new ScrollViewer { Width = 200, Height = 100, Content = SUT }
+				: new StackPanel { Width = 200, Children = { SUT } };
+
+			WindowHelper.WindowContent = root;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+			Assert.IsGreaterThan(1, SUT.ParsedText.VisualLineCount, "The text wraps.");
+			Assert.AreEqual(0, SUT.ArrangeTextLayoutCountForTesting, "Measured at an unbounded height, arranged at the measured one: arrange keeps the layout.");
+
+			root.Width = 250;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.ArrangeTextLayoutCountForTesting, "A new width is laid out by measure; arrange keeps it.");
+		}
+
+		// What these two pin is that the arrange after a keystroke doesn't lay the text out a second time: at most one
+		// layout per keystroke, made by measure. A display layout of another kind keeps it by answering IsLayoutValidFor.
+		[TestMethod]
+		public async Task When_Multiline_TextBox_Typed_Into_Then_Arrange_Lays_Nothing_Out_Again()
+		{
+			var SUT = new TextBox { Width = 300, Height = 100, AcceptsReturn = true, TextWrapping = TextWrapping.Wrap, IsSpellCheckEnabled = false, Text = string.Join("\r", Enumerable.Repeat("lorem ipsum dolor sit amet", 40)) };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+			var displayBlock = SUT.Core.TextBoxView.DisplayBlock;
+
+			for (var i = 0; i < 3; i++)
+			{
+				var before = displayBlock.ArrangeTextLayoutCountForTesting;
+				SUT.Select(10, i % 2);
+				SUT.SelectedText = i % 2 == 0 ? "a" : "";
+				SUT.UpdateLayout();
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(before, displayBlock.ArrangeTextLayoutCountForTesting, $"Keystroke {i}");
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_RichEditBox_Typed_Into_Then_Arrange_Lays_Nothing_Out_Again()
+		{
+			var SUT = new RichEditBox { Width = 300, Height = 100, TextWrapping = TextWrapping.Wrap, IsSpellCheckEnabled = false };
+			SUT.Document.SetText(Microsoft.UI.Text.TextSetOptions.None, string.Join("\r", Enumerable.Repeat("lorem ipsum dolor sit amet", 40)));
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+			var displayBlock = ((IImeSessionHost)SUT).TextBoxView!.DisplayBlock;
+
+			for (var i = 0; i < 3; i++)
+			{
+				var before = displayBlock.ArrangeTextLayoutCountForTesting;
+				SUT.Document.Selection.SetRange(10, 10 + i % 2);
+				SUT.Document.Selection.SetText(Microsoft.UI.Text.TextSetOptions.None, i % 2 == 0 ? "a" : "");
+				SUT.UpdateLayout();
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(before, displayBlock.ArrangeTextLayoutCountForTesting, $"Keystroke {i}");
+			}
+		}
+
+		[TestMethod]
+		[DataRow("A\nB", 0, DisplayName = "Two lines")]
+		[DataRow("A\nB\nC", 2, DisplayName = "Three lines, MaxLines 2")]
+		public void When_Layout_Kept_Its_Lines_Then_It_Is_Valid_Down_To_Their_Height_Only(string text, int maxLines)
+		{
+			var SUT = new TextBlock { Text = text, MaxLines = maxLines, UseLayoutRounding = false };
+			SUT.Measure(new Size(300, double.PositiveInfinity));
+			var layout = (UnicodeText)SUT.ParsedText;
+			// Without layout rounding the desired height is the kept lines' height.
+			var linesHeight = SUT.DesiredSize.Height;
+
+			Assert.IsTrue(layout.IsLayoutValidFor(new Size(300, linesHeight + 100)), "Taller.");
+			Assert.IsTrue(layout.IsLayoutValidFor(new Size(300, linesHeight)), "At the lines' height.");
+			Assert.IsTrue(layout.IsLayoutValidFor(new Size(300, linesHeight - 0.04)), "Within the 0.05 arrange tolerance.");
+			Assert.IsFalse(layout.IsLayoutValidFor(new Size(300, linesHeight - 0.5)), "Below it, the last line would be dropped.");
+			Assert.IsFalse(layout.IsLayoutValidFor(new Size(300, linesHeight / 2)), "Half the height.");
+		}
+
+		[TestMethod]
+		public void When_Arranged_Within_The_Tolerance_Below_The_Desired_Height_Then_Lines_Are_Kept()
+		{
+			var SUT = new TextBlock { Text = "A\nB", UseLayoutRounding = false };
+			SUT.Measure(new Size(300, double.PositiveInfinity));
+			var measured = SUT.ParsedText;
+
+			// FrameworkElement arranges up to 0.05 px below the desired size.
+			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 300, SUT.DesiredSize.Height - 0.04));
+
+			Assert.AreSame(measured, SUT.ParsedText);
+			Assert.AreEqual(2, SUT.ParsedText.VisualLineCount);
+		}
+
+		[TestMethod]
+		public void When_Arrange_Height_Cuts_A_Line_Measure_Kept_Then_It_Lays_Out_Again()
+		{
+			// FrameworkElement never arranges a block that much shorter than it measured: the override is called directly.
+			var SUT = new ArrangeOverrideProbe { Text = "A\nB", UseLayoutRounding = false };
+			SUT.Measure(new Size(300, double.PositiveInfinity));
+			var measured = SUT.ParsedText;
+			Assert.AreEqual(2, measured.VisualLineCount);
+
+			SUT.ArrangeAt(new Size(300, SUT.DesiredSize.Height / 2));
+
+			Assert.AreNotSame(measured, SUT.ParsedText);
+			Assert.AreEqual(1, SUT.ParsedText.VisualLineCount);
+			Assert.AreEqual(1, SUT.ArrangeTextLayoutCountForTesting);
+		}
+
+		private sealed partial class ArrangeOverrideProbe : TextBlock
+		{
+			public Size ArrangeAt(Size finalSize) => ArrangeOverride(finalSize);
 		}
 #endif
 

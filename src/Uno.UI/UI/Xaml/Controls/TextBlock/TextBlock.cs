@@ -1577,6 +1577,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal long TextLayoutVersion => _textLayoutVersion;
 
+		// The layouts arrange made again, when the size it got invalidated the measure's layout.
+		internal int ArrangeTextLayoutCountForTesting { get; private set; }
+
 		internal double TextLayoutWidth => _textLayoutWidth;
 
 		public TextBlock()
@@ -1807,9 +1810,10 @@ namespace Microsoft.UI.Xaml.Controls
 			// A size change only counts in a dimension the layout used: a single left-aligned line is arranged at any height.
 			var arrangedSize = _lastParsedTextCreationValues.outSize;
 			var sizeChanged = _lastParsedTextCreationValues.availableSize != availableSizeWithoutPadding
-				&& !(ParsedText is UnicodeText parsed && parsed.IsLayoutValidFor(availableSizeWithoutPadding));
+				&& !ParsedText.IsLayoutValidFor(availableSizeWithoutPadding);
 			if (sizeChanged || _lastParsedTextCreationValues.alignment != GetAdjustedTextAlignment())
 			{
+				ArrangeTextLayoutCountForTesting++;
 				ParsedText = ParseText(availableSizeWithoutPadding, out arrangedSize);
 			}
 
