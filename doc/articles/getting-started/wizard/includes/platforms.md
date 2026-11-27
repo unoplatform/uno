@@ -38,7 +38,7 @@ When Android is selected, these options add support for more Android form factor
 - **Android Auto**: adds Android Auto and Android Automotive OS support, through the AndroidX Car App Library. See [Support for Android Auto](xref:Uno.Features.AndroidAuto).
 - **Wear OS**: adds Wear OS support to the Android head. A single APK targets both phones and watches. See [Support for Wear OS](xref:Uno.Features.AndroidWear).
 
-On the command line, these options use their full names and take `true`. List `-platforms` last:
+On the command line, these options use their full names and take `true`:
 
 ```dotnetcli
 dotnet new unoapp --includeAndroidTV true --includeAndroidAuto true --includeAndroidWear true -platforms android
