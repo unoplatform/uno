@@ -1273,6 +1273,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private const string TrimmingLongText = "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore";
 		private const string TrimmingLongTextThenShort = TrimmingLongText + "\nHi";
+		private const string TrimmingLongTextThenBreak = TrimmingLongText + "\n";
 		private const string TrimmingShortTextThenLong = "Hi\n" + TrimmingLongText;
 		private const string TrimmingThreeShortLines = "a\nb\nc";
 		private const string TrimmingLongWord = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
@@ -1434,6 +1435,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(TrimmingLongWord, TextTrimming.CharacterEllipsis, TextWrapping.Wrap, 0, double.NaN, false, 0, false)]
 		[DataRow(TrimmingLongWord, TextTrimming.CharacterEllipsis, TextWrapping.WrapWholeWords, 0, double.NaN, false, 0, true)]
 		[DataRow(TrimmingThreeShortLines, TextTrimming.CharacterEllipsis, TextWrapping.NoWrap, 2, double.NaN, false, 0, true)]
+		// Plain text ending in a line break: the visible empty last line isn't trimmed
+		[DataRow(TrimmingLongTextThenBreak, TextTrimming.CharacterEllipsis, TextWrapping.NoWrap, 0, double.NaN, false, 0, false)]
+		[DataRow(TrimmingLongTextThenBreak, TextTrimming.CharacterEllipsis, TextWrapping.NoWrap, 1, double.NaN, false, 0, true)]
+		[DataRow(TrimmingLongTextThenBreak, TextTrimming.CharacterEllipsis, TextWrapping.NoWrap, 0, 25d, false, 0, true)]
+		[DataRow(TrimmingLongTextThenBreak, TextTrimming.CharacterEllipsis, TextWrapping.NoWrap, 0, double.NaN, false, 100, true)]
 		// Plain text, no trimming: only MaxLines trims
 		[DataRow(TrimmingLongText, TextTrimming.None, TextWrapping.NoWrap, 0, double.NaN, false, 0, false)]
 		[DataRow(TrimmingLongText, TextTrimming.None, TextWrapping.NoWrap, 1, double.NaN, false, 0, false)]
@@ -1486,6 +1492,132 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(expected, sut.IsTextTrimmed);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextTrimming_Owner_Font_Changes()
+		{
+			// The owner's formatting reaches the generated Run by inheritance, which doesn't make the content complex.
+			var (sut, _, states) = await LoadTrimmingSut(TrimmingLongTextThenShort, TextTrimming.CharacterEllipsis);
+			Assert.IsFalse(sut.IsTextTrimmed);
+
+			sut.FontSize = 20;
+			sut.FontFamily = new FontFamily("Segoe UI");
+			sut.UpdateLayout();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(sut.IsTextTrimmed);
+			Assert.IsEmpty(states);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextTrimming_Generated_Run_Formatted_Directly()
+		{
+			// CTextElement::SetValue marks the content dirty, so the TextBlock leaves the DWrite path.
+			var (sut, _, _) = await LoadTrimmingSut(TrimmingLongTextThenShort, TextTrimming.CharacterEllipsis);
+			Assert.IsFalse(sut.IsTextTrimmed);
+
+			((Run)sut.Inlines[0]).Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
+			sut.InvalidateMeasure();
+			sut.UpdateLayout();
+
+			Assert.IsTrue(sut.IsTextTrimmed);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextTrimming_Language_Needs_Number_Substitution()
+		{
+			// CTextBlock::ResolveTextMode: a language with digit substitution opts out of the DWrite path.
+			var sut = new TextBlock
+			{
+				Text = TrimmingLongTextThenShort,
+				TextTrimming = TextTrimming.CharacterEllipsis,
+				Language = "ar-SA",
+			};
+			var container = new Border { Width = 100, Child = sut };
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(sut.IsTextTrimmed);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextTrimming_Clip_Arranged_Wider_Than_Measured()
+		{
+			var sut = new TextBlock { Text = TrimmingLongText, TextTrimming = TextTrimming.Clip };
+			var panel = new TrimmingSizePanel { MeasureWidth = 100, ArrangeWidth = 2000, Children = { sut } };
+
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(panel);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(sut.IsTextTrimmed);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextTrimming_Clip_Arranged_Narrower_Than_Measured()
+		{
+			// FrameworkElement never arranges below the unclipped desired size, so the text is clipped by layout, not trimmed.
+			var sut = new TextBlock { Text = TrimmingLongText, TextTrimming = TextTrimming.Clip };
+			var panel = new TrimmingSizePanel { MeasureWidth = double.PositiveInfinity, ArrangeWidth = 100, Children = { sut } };
+
+			WindowHelper.WindowContent = panel;
+			await WindowHelper.WaitForLoaded(panel);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(sut.IsTextTrimmed);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextTrimming_Changed_Event_Is_Deferred()
+		{
+			var (sut, container, states) = await LoadTrimmingSut(TrimmingLongText, TextTrimming.CharacterEllipsis);
+			CollectionAssert.AreEqual(new[] { true }, states);
+
+			container.Width = 2000;
+			sut.UpdateLayout();
+
+			// The property changes during arrange, but CEventManager::Raise posts the event.
+			Assert.IsFalse(sut.IsTextTrimmed);
+			CollectionAssert.AreEqual(new[] { true }, states);
+
+			await WindowHelper.WaitFor(() => states.Count == 2);
+			CollectionAssert.AreEqual(new[] { true, false }, states);
+		}
+
+		private sealed partial class TrimmingSizePanel : Panel
+		{
+			public double MeasureWidth { get; set; }
+
+			public double ArrangeWidth { get; set; }
+
+			protected override Size MeasureOverride(Size availableSize)
+			{
+				foreach (var child in Children)
+				{
+					child.Measure(new Size(MeasureWidth, double.PositiveInfinity));
+				}
+
+				return new Size(ArrangeWidth, 100);
+			}
+
+			protected override Size ArrangeOverride(Size finalSize)
+			{
+				foreach (var child in Children)
+				{
+					child.Arrange(new Windows.Foundation.Rect(0, 0, ArrangeWidth, child.DesiredSize.Height));
+				}
+
+				return finalSize;
+			}
 		}
 
 		[TestMethod]
