@@ -50,4 +50,37 @@ public class Given_ListBox
 			WindowHelper.WindowContent = null;
 		}
 	}
+
+	[TestMethod]
+	public async Task When_SelectedIndex_Changed_Then_Container_IsSelected_Follows()
+	{
+		var items = new[] { new ListBoxItem { Content = "0" }, new ListBoxItem { Content = "1" }, new ListBoxItem { Content = "2" } };
+		var list = new ListBox
+		{
+			Width = 200,
+			Height = 200,
+			ItemsPanel = (ItemsPanelTemplate)XamlReader.Load(
+				"<ItemsPanelTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><StackPanel /></ItemsPanelTemplate>"),
+		};
+		foreach (var item in items)
+		{
+			list.Items.Add(item);
+		}
+		list.SelectedIndex = 1;
+
+		try
+		{
+			await UITestHelper.Load(list);
+			Assert.IsTrue(items[1].IsSelected);
+
+			list.SelectedIndex = 2;
+
+			Assert.IsFalse(items[1].IsSelected, "The previously selected container must be deselected.");
+			Assert.IsTrue(items[2].IsSelected, "The newly selected container must be selected.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
 }

@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Runtime;
 
@@ -550,6 +551,19 @@ internal static partial class SemanticElementFactory
 			positionInSet,
 			sizeOfSet,
 			isFocusable);
+
+		// A plain list (e.g. ListBox) only gets aria-activedescendant from selection change events,
+		// so an item selected before its node existed must claim it here. ComboBox options are
+		// handled by the ComboBox head when the dropdown opens.
+		if (selected
+			&& peer is FrameworkElementAutomationPeer { Owner: SelectorItem item }
+			&& item is not ComboBoxItem
+			&& ItemsControl.ItemsControlFromItemContainer(item) is Selector selector
+			&& selector.IndexFromContainer(item) == selector.SelectedIndex)
+		{
+			NativeMethods.UpdateActiveDescendant(selector.Visual.Handle, handle);
+		}
+
 		return true;
 	}
 
@@ -1432,6 +1446,9 @@ internal static partial class SemanticElementFactory
 
 	private static partial class NativeMethods
 	{
+		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.updateActiveDescendant")]
+		internal static partial void UpdateActiveDescendant(IntPtr containerHandle, IntPtr activeItemHandle);
+
 		[JSImport("globalThis.Uno.UI.Runtime.SemanticElements.updateSplitButtonLabels")]
 		internal static partial void UpdateSplitButtonLabels(IntPtr handle, string? label, string? primaryLabel, string? secondaryLabel);
 

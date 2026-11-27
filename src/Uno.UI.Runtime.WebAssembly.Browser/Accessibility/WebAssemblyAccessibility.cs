@@ -588,7 +588,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			_virtualizedRegions.Add(region);
 
 			void OnElementPrepared(ItemsRepeater s, ItemsRepeaterElementPreparedEventArgs e)
-				=> EmitRealizedItem(region, repeater.Visual.Handle, e.Element, e.Index, repeater.ItemsSourceView?.Count ?? 0, "option");
+				=> EmitRealizedItem(region, repeater.Visual.Handle, e.Element, e.Index, repeater.ItemsSourceView?.Count ?? 0, GetVirtualizedItemRole(repeater));
 
 			void OnElementClearing(ItemsRepeater s, ItemsRepeaterElementClearingEventArgs e)
 			{
@@ -615,7 +615,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				var info = ItemsRepeater.GetVirtualizationInfo(itemElement);
 				if (info is not null && info.IsRealized)
 				{
-					EmitRealizedItem(region, repeater.Visual.Handle, itemElement, info.Index, totalCount, "option");
+					EmitRealizedItem(region, repeater.Visual.Handle, itemElement, info.Index, totalCount, GetVirtualizedItemRole(repeater));
 				}
 			}
 		}
@@ -630,7 +630,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				listView.SelectionMode == ListViewSelectionMode.Extended);
 			_virtualizedRegions.Add(region);
 
-			var itemRole = isGrid ? "row" : "option";
+			var itemRole = GetVirtualizedItemRole(listView);
 
 			void OnContainerContentChanging(ListViewBase s, ContainerContentChangingEventArgs e)
 			{
@@ -638,7 +638,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				{
 					if (e.ItemContainer is { } itemElement)
 					{
-						EmitRealizedItem(region, listView.Visual.Handle, itemElement, e.ItemIndex, listView.Items?.Count ?? 0, itemRole);
+						EmitRealizedItem(region, listView.Visual.Handle, itemElement, e.ItemIndex, listView.Items?.Count ?? 0, itemRole, listView);
 					}
 				}
 				else if (e.ItemContainer is { } itemElement)
@@ -657,17 +657,22 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				var index = listView.IndexFromContainer(container);
 				if (index >= 0)
 				{
-					EmitRealizedItem(region, listView.Visual.Handle, container, index, totalCount, itemRole);
+					EmitRealizedItem(region, listView.Visual.Handle, container, index, totalCount, itemRole, listView);
 				}
 			}
 		}
 	}
 
 	/// <summary>
+	/// The role of a realized item of a virtualized container, shared by its first emission and any re-emission.
+	/// </summary>
+	private static string GetVirtualizedItemRole(UIElement container) => container is GridView ? "row" : "option";
+
+	/// <summary>
 	/// Emits a single realized virtualized item into its region — shared by the live
 	/// ElementPrepared/ContainerContentChanging handlers and the build-time backfill.
 	/// </summary>
-	private void EmitRealizedItem(VirtualizedSemanticRegion region, IntPtr containerHandle, UIElement itemElement, int index, int totalCount, string role)
+	private void EmitRealizedItem(VirtualizedSemanticRegion region, IntPtr containerHandle, UIElement itemElement, int index, int totalCount, string role, ListViewBase? listView = null)
 	{
 		// FR-031: a realized container may be a decorative/non-semantic element rather than a real
 		// destination — e.g. NavigationView hosts NavigationViewItemSeparator and
@@ -680,46 +685,61 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		var label = itemElement.GetOrCreateAutomationPeer()?.GetName() ?? string.Empty;
+		var peer = itemElement.GetOrCreateAutomationPeer();
+		var label = peer?.GetName() ?? string.Empty;
 		var offset = GetOffsetRelativeToSemanticParent(itemElement, containerHandle);
+		var state = GetRealizedItemState(itemElement, peer, index, listView);
+
 		region.OnItemRealized(
 			itemElement.Visual.Handle,
 			index,
 			totalCount,
 			offset.X, offset.Y,
 			itemElement.Visual.Size.X, itemElement.Visual.Size.Y,
-			role, label);
+			role, label,
+			ownsSelection: listView is not null,
+			state.Selectable, state.Selected, state.Active);
 
-		ApplyRealizedItemState(itemElement);
+		if (state.Expanded is { } expanded)
+		{
+			NativeMethods.UpdateExpandCollapseState(itemElement.Visual.Handle, expanded);
+		}
 	}
 
 	/// <summary>
-	/// A realized item is created with a role, a label and its position only: seeds the state the
+	/// A realized item is created with a role, a label and its position only: reads the state the
 	/// factory path would have applied, which later reaches the element only through property changes.
 	/// </summary>
-	private void ApplyRealizedItemState(UIElement itemElement)
+	private (bool Selectable, bool Selected, bool Active, bool? Expanded) GetRealizedItemState(UIElement itemElement, AutomationPeer? peer, int index, ListViewBase? listView)
 	{
-		if (itemElement.GetOrCreateAutomationPeer() is not { } peer)
-		{
-			return;
-		}
-
-		var handle = itemElement.Visual.Handle;
+		bool selectable = false, selected = false, active = false;
+		bool? expanded = null;
 		try
 		{
-			if (peer.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider expandCollapseProvider)
+			if (listView is not null)
 			{
-				var state = expandCollapseProvider.ExpandCollapseState;
-				NativeMethods.UpdateExpandCollapseState(handle, state is ExpandCollapseState.Expanded or ExpandCollapseState.PartiallyExpanded);
+				// Read selection from the list's model by index, as SelectorItemAutomationPeer.IsSelected does:
+				// a recycled container can still carry its previous item's IsSelected at this point.
+				selectable = listView.SelectionMode != ListViewSelectionMode.None;
+				selected = selectable && listView.AutomationPeerIsSelected(index, listView.ItemFromIndex(index));
+				active = selected && listView.SelectedIndex == index;
 			}
-
-			if (peer.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
+			else if (peer?.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
 			{
-				NativeMethods.UpdateSelectionState(handle, selectionItemProvider.IsSelected);
+				// An ItemsRepeater has no selection model: a selectable element (e.g. a NavigationViewItem or an
+				// ItemContainer) carries its own state, which a node created here must not lose.
+				selected = selectionItemProvider.IsSelected;
+				selectable = true;
 			}
 			else if (itemElement is SelectorItem selectorItem)
 			{
-				NativeMethods.UpdateSelectionState(handle, selectorItem.IsSelected);
+				selected = selectorItem.IsSelected;
+				selectable = true;
+			}
+
+			if (peer?.GetPattern(PatternInterface.ExpandCollapse) is IExpandCollapseProvider expandCollapseProvider)
+			{
+				expanded = expandCollapseProvider.ExpandCollapseState is ExpandCollapseState.Expanded or ExpandCollapseState.PartiallyExpanded;
 			}
 		}
 		catch (Exception ex)
@@ -732,6 +752,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				this.Log().Warn($"[A11y] Initial state of {itemElement.GetType().Name} not applied: {ex.Message}", ex);
 			}
 		}
+
+		return (selectable, selected, active, expanded);
 	}
 
 	private void TryUnregisterVirtualizedContainer(UIElement element)
@@ -2909,7 +2931,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 				// Update aria-activedescendant on the parent container (listbox)
 				// so screen readers announce the active option without moving DOM focus.
-				if (peer.GetParent() is FrameworkElementAutomationPeer { Owner: { } parentOwner })
+				if (ItemsControl.ItemsControlFromItemContainer(element) is Selector ownerSelector)
+				{
+					// The peer's parent is only known once the list's children were enumerated.
+					NativeMethods.UpdateActiveDescendant(ownerSelector.Visual.Handle, element.Visual.Handle);
+				}
+				else if (peer.GetParent() is FrameworkElementAutomationPeer { Owner: { } parentOwner })
 				{
 					NativeMethods.UpdateActiveDescendant(parentOwner.Visual.Handle, element.Visual.Handle);
 				}
@@ -3210,6 +3237,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		AccessibilityView oldValue,
 		AccessibilityView newValue)
 	{
+		if (TryUpdateVirtualizedItemMembership(element))
+		{
+			return;
+		}
+
 		var parent = element.GetParent() as UIElement
 			?? element.GetParentInternal(publicParentOnly: false) as UIElement;
 		if (parent is null)
@@ -3225,6 +3257,51 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		var index = children.IndexOf(element);
 		OnChildRemoved(parent, element);
 		OnChildAdded(parent, element, index >= 0 ? index : null);
+	}
+
+	/// <summary>
+	/// A realized item of a virtualized container is emitted by its region, not by the tree walk, so a
+	/// membership change (e.g. an app tagging a recycled container AccessibilityView=Raw while it is
+	/// prepared) is applied there: the item is removed and emitted again if it is still semantic.
+	/// </summary>
+	private bool TryUpdateVirtualizedItemMembership(UIElement element)
+	{
+		VirtualizedSemanticRegion? FindRegion(UIElement container)
+			=> _virtualizedRegions.FirstOrDefault(region => region.ContainerHandle == container.Visual.Handle);
+
+		var handle = element.Visual.Handle;
+		if (ItemsControl.ItemsControlFromItemContainer(element) is ListViewBase listView && FindRegion(listView) is { } listRegion)
+		{
+			if (listRegion.TryGetRealizedIndex(handle, out var realizedIndex))
+			{
+				listRegion.OnItemUnrealized(handle, realizedIndex);
+			}
+
+			var index = listView.IndexFromContainer(element);
+			if (index >= 0)
+			{
+				EmitRealizedItem(listRegion, listView.Visual.Handle, element, index, listView.Items?.Count ?? 0, GetVirtualizedItemRole(listView), listView);
+			}
+
+			return true;
+		}
+
+		if (element.GetParent() is ItemsRepeater repeater && FindRegion(repeater) is { } repeaterRegion)
+		{
+			if (repeaterRegion.TryGetRealizedIndex(handle, out var realizedIndex))
+			{
+				repeaterRegion.OnItemUnrealized(handle, realizedIndex);
+			}
+
+			if (ItemsRepeater.GetVirtualizationInfo(element) is { IsRealized: true } info)
+			{
+				EmitRealizedItem(repeaterRegion, repeater.Visual.Handle, element, info.Index, repeater.ItemsSourceView?.Count ?? 0, GetVirtualizedItemRole(repeater));
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private void RebuildSemanticTree(UIElement rootElement)

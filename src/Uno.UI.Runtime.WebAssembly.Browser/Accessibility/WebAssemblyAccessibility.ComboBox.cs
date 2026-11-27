@@ -240,7 +240,10 @@ internal partial class WebAssemblyAccessibility
 		var totalCount = comboBox.Items.Count;
 		var offset = GetOffsetRelativeToSemanticParent(item, region.ContainerHandle);
 		var label = item.GetOrCreateAutomationPeer()?.GetName() ?? string.Empty;
+		var selected = comboBox.AutomationPeerIsSelected(index, comboBox.ItemFromIndex(index));
 
+		// The head, not the listbox, carries this combobox's aria-activedescendant: it follows the
+		// focused option (TryActivateDropDownItem), not the selected one.
 		region.OnItemRealized(
 			item.Visual.Handle,
 			index,
@@ -248,8 +251,11 @@ internal partial class WebAssemblyAccessibility
 			offset.X, offset.Y,
 			item.Visual.Size.X, item.Visual.Size.Y,
 			"option",
-			label);
-		NativeMethods.UpdateSelectionState(item.Visual.Handle, item.IsSelected);
+			label,
+			ownsSelection: true,
+			selectable: true,
+			selected,
+			active: false);
 	}
 
 	/// <summary>
