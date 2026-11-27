@@ -152,13 +152,14 @@ internal sealed unsafe partial class WebGpuCoverage
 		return true;
 	}
 
-	// A keyed entry on a standalone page, so it shares the key, reference count and idle sweep of a shelf slot.
+	// A keyed entry on a standalone page, so it shares the key, reference count and idle sweep of a shelf slot. Null
+	// when no page could be created.
 	internal WebGpuMaskAtlas.Slot AddStandaloneSlot(in WebGpuMaskAtlas.Key key, int w, int h, float ox, float oy, TextureFormat format)
 		=> AddStandaloneSlot(key, w, h, ox, oy, format, w, h, MaskUsage);
 
 	// The entry draws w x h from a page of at least texW x texH: a blurred shadow is stored at its pyramid's top level.
 	internal WebGpuMaskAtlas.Slot AddStandaloneSlot(in WebGpuMaskAtlas.Key key, int w, int h, float ox, float oy, TextureFormat format, int texW, int texH, TextureUsage usage)
-		=> _d.Atlas.Place(_d.Atlas.StandalonePage(texW, texH, format, usage), 0, 0, w, h, ox, oy, key);
+		=> _d.Atlas.StandalonePage(texW, texH, format, usage) is { } page ? _d.Atlas.Place(page, 0, 0, w, h, ox, oy, key) : null;
 
 	/// <summary>
 	/// Appends one entry as 6 solid vertices (pos, colour, coverage uv), placed at the fill's OWN origin, and returns

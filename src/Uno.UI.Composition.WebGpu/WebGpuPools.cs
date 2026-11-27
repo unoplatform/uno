@@ -109,7 +109,7 @@ internal sealed unsafe class WebGpuTexturePool : IDisposable
 
 // The device's one buffer store. A rental is either for the frame (back at the next BeginFrame) or held by an owner
 // (back when the owner calls Return, which a cached recording does through the device's deferred release). Capacities
-// are powers of two, so a returned buffer serves the next request of its size class whoever made it.
+// come in size classes (see SizeClass), so a returned buffer serves the next request of its class whoever made it.
 internal sealed unsafe class WebGpuBufferPool : IDisposable
 {
 	private readonly WebGpuDevice _d;
@@ -185,9 +185,21 @@ internal sealed unsafe class WebGpuBufferPool : IDisposable
 		}
 	}
 
+	// Powers of two up to 64 KB; above, four classes per doubling, so a held buffer (kept for a recording's lifetime)
+	// over-allocates by at most a quarter instead of almost double.
+	private const int PowerOfTwoClassesUpTo = 64 * 1024;
+
+	internal static int SizeClass(int byteSize)
+	{
+		var pow = (int)BitOperations.RoundUpToPowerOf2((uint)Math.Max(1, byteSize));
+		if (pow <= PowerOfTwoClassesUpTo) { return Math.Max(MinCap, pow); }
+		var step = pow / 8;
+		return (byteSize + step - 1) / step * step;
+	}
+
 	private Entry Take(int byteSize, BufferUsage usage)
 	{
-		var cap = Math.Max(MinCap, (int)BitOperations.RoundUpToPowerOf2((uint)Math.Max(1, byteSize)));
+		var cap = SizeClass(byteSize);
 		if (_free.TryGetValue((usage, cap), out var list) && list.Count > 0)
 		{
 			var e = list[^1];
