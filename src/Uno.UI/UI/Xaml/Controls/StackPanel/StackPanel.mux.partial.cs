@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference StackPanel_Partial.cpp, commit 9d6fb15c0
+// MUX Reference StackPanel_Partial.cpp
 
 using System;
 using System.Collections.Generic;
@@ -131,6 +131,8 @@ partial class StackPanel
 	{
 		_horizontalSnapPointsChanged -= value;
 
+		// TODO Uno specific: WinUI checks HasHandlers() here (inverted vs. other panels), which stops
+		// notifications while handlers remain. Uno disables them only once the last handler is gone.
 		if (_horizontalSnapPointsChanged is null)
 		{
 			SetSnapPointsChangeNotificationsRequirement(true, false);
@@ -157,6 +159,7 @@ partial class StackPanel
 	{
 		_verticalSnapPointsChanged -= value;
 
+		// TODO Uno specific: see RemoveHorizontalSnapPointsChanged.
 		if (_verticalSnapPointsChanged is null)
 		{
 			SetSnapPointsChangeNotificationsRequirement(false, false);
@@ -366,6 +369,7 @@ partial class StackPanel
 		}
 	}
 
+	// TODO Uno: NOT PORTED - IPaginatedPanel is not implemented in Uno (GetLastItemIndexInViewport, GetItemsPerPage).
 	////------------------------------------------------------------------------
 	////
 	////  Synopsis:

@@ -45,10 +45,19 @@
 
 		private async build() {
 			WebAssemblyWindowWrapper.assemblyExports = await (<any>window).Module.getAssemblyExports("Uno.UI.Runtime.WebAssembly.Browser");
-			this.onResize = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.WebAssemblyWindowWrapper.OnResize;
-			this.onViewportOcclusionChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.WebAssemblyWindowWrapper.OnViewportOcclusionChanged;
-			this.onWindowFocusChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.WebAssemblyWindowWrapper.OnWindowFocusChanged;
-			this.onDocumentVisibilityChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.WebAssemblyWindowWrapper.OnDocumentVisibilityChanged;
+
+			if (WebAssemblyThreading.isThreadingEnabled()) {
+				this.onResize = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.WebAssemblyWindowWrapper.OnResizeAsync;
+				this.onViewportOcclusionChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.WebAssemblyWindowWrapper.OnViewportOcclusionChangedAsync;
+				this.onWindowFocusChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.WebAssemblyWindowWrapper.OnWindowFocusChangedAsync;
+				this.onDocumentVisibilityChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.WebAssemblyWindowWrapper.OnDocumentVisibilityChangedAsync;
+			}
+			else {
+				this.onResize = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.WebAssemblyWindowWrapper.OnResize;
+				this.onViewportOcclusionChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.WebAssemblyWindowWrapper.OnViewportOcclusionChanged;
+				this.onWindowFocusChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.WebAssemblyWindowWrapper.OnWindowFocusChanged;
+				this.onDocumentVisibilityChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.WebAssemblyWindowWrapper.OnDocumentVisibilityChanged;
+			}
 
 			this.containerElement = (document.getElementById("uno-body") as HTMLDivElement);
 
@@ -65,7 +74,7 @@
 			this.canvasElement.setAttribute("aria-hidden", "true");
 			this.containerElement.appendChild(this.canvasElement);
 
-			Accessibility.setup();
+			await Accessibility.setup();
 
 			window.addEventListener("resize", x => this.resize());
 			this.observeViewportSize();

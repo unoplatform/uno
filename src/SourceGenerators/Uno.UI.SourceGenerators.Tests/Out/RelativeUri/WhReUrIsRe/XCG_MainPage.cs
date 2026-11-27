@@ -29,9 +29,9 @@ namespace TestRepro
 	partial class MainPage : global::Microsoft.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_MainPage_6223b07b3d418584d0a26d35f5e25e2c = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a = "ms-appx:///TestProject/0/MainPage.xaml";
+		private const string __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c = "ms-appx:///TestProject/0/MainPage.xaml";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -56,9 +56,9 @@ namespace TestRepro
 								Uri = new System.Uri(@"ms-resource:///Files/Assets/asset.png", global::System.UriKind.RelativeOrAbsolute),
 								// Source MainPage.xaml (Line 6:4)
 							}
-							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 							{
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
 							}
 							))
@@ -71,9 +71,9 @@ namespace TestRepro
 								Uri = new System.Uri(@"ms-resource:///Files/Assets/asset.png", global::System.UriKind.RelativeOrAbsolute),
 								// Source MainPage.xaml (Line 7:4)
 							}
-							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 							{
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
 							}
 							))
@@ -86,9 +86,9 @@ namespace TestRepro
 								NavigateUri = new System.Uri(@"ms-resource:///Files/Assets/doc.pdf", global::System.UriKind.RelativeOrAbsolute),
 								// Source MainPage.xaml (Line 8:4)
 							}
-							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 							{
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
 							}
 							))
@@ -101,9 +101,9 @@ namespace TestRepro
 								UriSource = new System.Uri(@"ms-resource:///Files/Assets/asset.png", global::System.UriKind.RelativeOrAbsolute),
 								// Source MainPage.xaml (Line 9:4)
 							}
-							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 							{
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
 							}
 							))
@@ -113,12 +113,12 @@ namespace TestRepro
 							new global::Microsoft.UI.Xaml.Controls.Image
 							{
 								IsParsing = true,
-								Source = __baseUri_prefix_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a + @"Assets/asset.png",
+								Source = __baseUri_prefix_MainPage_6223b07b3d418584d0a26d35f5e25e2c + @"Assets/asset.png",
 								// Source MainPage.xaml (Line 11:4)
 							}
-							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 							{
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
 							}
 							))
@@ -131,9 +131,9 @@ namespace TestRepro
 								Source = "ms-appx:///" + @"Assets/asset.png",
 								// Source MainPage.xaml (Line 12:4)
 							}
-							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 							{
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
 							}
 							))
@@ -143,12 +143,12 @@ namespace TestRepro
 							new global::TestRepro.UriHolder
 							{
 								IsParsing = true,
-								ImageSource = __baseUri_prefix_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a + @"Assets/asset.png",
+								ImageSource = __baseUri_prefix_MainPage_6223b07b3d418584d0a26d35f5e25e2c + @"Assets/asset.png",
 								// Source MainPage.xaml (Line 13:4)
 							}
-							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 							{
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
 							}
 							))
@@ -158,12 +158,12 @@ namespace TestRepro
 							new global::TestRepro.UriHolder
 							{
 								IsParsing = true,
-								ImageSource = __baseUri_prefix_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a + @"Assets\asset.png",
+								ImageSource = __baseUri_prefix_MainPage_6223b07b3d418584d0a26d35f5e25e2c + @"Assets\asset.png",
 								// Source MainPage.xaml (Line 15:4)
 							}
-							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 							{
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
 							}
 							))
@@ -176,16 +176,16 @@ namespace TestRepro
 								Background = 								global::MyProject.GlobalStaticResources.__PreserveProperties(
 									new global::Microsoft.UI.Xaml.Media.ImageBrush
 									{
-										ImageSource = __baseUri_prefix_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a + @"Assets/asset.png",
+										ImageSource = __baseUri_prefix_MainPage_6223b07b3d418584d0a26d35f5e25e2c + @"Assets/asset.png",
 										// Source MainPage.xaml (Line 18:6)
 									}
 								)
 								,
 								// Source MainPage.xaml (Line 16:4)
 							}
-							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
+							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 							{
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
 							}
 							))
@@ -198,16 +198,16 @@ namespace TestRepro
 								Source = 								global::MyProject.GlobalStaticResources.__PreserveProperties(
 									new global::Microsoft.UI.Xaml.Media.Imaging.BitmapImage
 									{
-										UriSource = new System.Uri(__baseUri_prefix_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a + @"Assets/asset.png", global::System.UriKind.RelativeOrAbsolute),
+										UriSource = new System.Uri(__baseUri_prefix_MainPage_6223b07b3d418584d0a26d35f5e25e2c + @"Assets/asset.png", global::System.UriKind.RelativeOrAbsolute),
 										// Source MainPage.xaml (Line 23:6)
 									}
 								)
 								,
 								// Source MainPage.xaml (Line 21:4)
 							}
-							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 							{
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
 							}
 							))
@@ -220,16 +220,16 @@ namespace TestRepro
 								Source = 								global::MyProject.GlobalStaticResources.__PreserveProperties(
 									new global::Microsoft.UI.Xaml.Media.Imaging.SvgImageSource
 									{
-										UriSource = new System.Uri(__baseUri_prefix_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a + @"Assets/asset.svg", global::System.UriKind.RelativeOrAbsolute),
+										UriSource = new System.Uri(__baseUri_prefix_MainPage_6223b07b3d418584d0a26d35f5e25e2c + @"Assets/asset.svg", global::System.UriKind.RelativeOrAbsolute),
 										// Source MainPage.xaml (Line 28:6)
 									}
 								)
 								,
 								// Source MainPage.xaml (Line 26:4)
 							}
-							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+							.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 							{
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 							__p1.CreationComplete();
 							}
 							))
@@ -238,9 +238,9 @@ namespace TestRepro
 					}
 					,
 				}
-				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler8)(__p1 => 
+				.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler8)(__p1 => 
 				{
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 				__p1.CreationComplete();
 				}
 				))
@@ -248,17 +248,17 @@ namespace TestRepro
 			;
 			
 			this
-			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler9)(__p1 => 
+			.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler9)(__p1 => 
 			{
 			// Source MainPage.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
-			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler9)(__p1 => 
+			.MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply((MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions.XamlApplyHandler9)(__p1 => 
 			{
 			// Class TestRepro.MainPage
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_6223b07b3d418584d0a26d35f5e25e2c);
 			__p1.CreationComplete();
 			}
 			))
@@ -271,74 +271,74 @@ namespace TestRepro
 }
 namespace MyProject
 {
-	static class MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions
+	static class MainPage_6223b07b3d418584d0a26d35f5e25e2cXamlApplyExtensions
 	{
 		public delegate void XamlApplyHandler0(global::TestRepro.UriHolder instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::TestRepro.UriHolder MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::TestRepro.UriHolder instance, XamlApplyHandler0 handler)
+		public static global::TestRepro.UriHolder MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::TestRepro.UriHolder instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.HyperlinkButton instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.HyperlinkButton MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.HyperlinkButton instance, XamlApplyHandler1 handler)
+		public static global::Microsoft.UI.Xaml.Controls.HyperlinkButton MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.HyperlinkButton instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.BitmapIcon instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.BitmapIcon MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.BitmapIcon instance, XamlApplyHandler2 handler)
+		public static global::Microsoft.UI.Xaml.Controls.BitmapIcon MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.BitmapIcon instance, XamlApplyHandler2 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler3(global::Microsoft.UI.Xaml.Controls.Image instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Image MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Image instance, XamlApplyHandler3 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Image MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.Image instance, XamlApplyHandler3 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler4(global::Microsoft.UI.Xaml.Media.ImageBrush instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Media.ImageBrush MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Media.ImageBrush instance, XamlApplyHandler4 handler)
+		public static global::Microsoft.UI.Xaml.Media.ImageBrush MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Media.ImageBrush instance, XamlApplyHandler4 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler5(global::Microsoft.UI.Xaml.Controls.Border instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Border MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Border instance, XamlApplyHandler5 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Border MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.Border instance, XamlApplyHandler5 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler6(global::Microsoft.UI.Xaml.Media.Imaging.BitmapImage instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Media.Imaging.BitmapImage MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Media.Imaging.BitmapImage instance, XamlApplyHandler6 handler)
+		public static global::Microsoft.UI.Xaml.Media.Imaging.BitmapImage MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Media.Imaging.BitmapImage instance, XamlApplyHandler6 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler7(global::Microsoft.UI.Xaml.Media.Imaging.SvgImageSource instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Media.Imaging.SvgImageSource MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Media.Imaging.SvgImageSource instance, XamlApplyHandler7 handler)
+		public static global::Microsoft.UI.Xaml.Media.Imaging.SvgImageSource MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Media.Imaging.SvgImageSource instance, XamlApplyHandler7 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler8(global::Microsoft.UI.Xaml.Controls.StackPanel instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.StackPanel MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.StackPanel instance, XamlApplyHandler8 handler)
+		public static global::Microsoft.UI.Xaml.Controls.StackPanel MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.StackPanel instance, XamlApplyHandler8 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler9(global::Microsoft.UI.Xaml.Controls.Page instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler9 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_6223b07b3d418584d0a26d35f5e25e2c_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler9 handler)
 		{
 			handler(instance);
 			return instance;

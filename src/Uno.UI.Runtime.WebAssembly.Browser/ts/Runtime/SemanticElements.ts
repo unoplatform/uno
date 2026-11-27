@@ -204,6 +204,228 @@ namespace Uno.UI.Runtime {
 		}
 
 		/**
+		 * Creates a split button: a group of a primary button (or toggle button, when pressed is not null)
+		 * and a menu button. Both act on the split button's own peer, through its handle. As in WinUI, the
+		 * split button is a single tab stop (the primary button); Alt+Down / F4 opens the menu through the
+		 * managed keyboard handling, and assistive technology activates the menu button directly.
+		 */
+		public static createSplitButtonElement(
+			parentHandle: number,
+			handle: number,
+			index: number | null,
+			x: number,
+			y: number,
+			width: number,
+			height: number,
+			label: string | null,
+			primaryLabel: string | null,
+			secondaryLabel: string | null,
+			secondaryWidth: number,
+			expanded: boolean,
+			pressed: string | null,
+			primaryDisabled: boolean,
+			secondaryDisabled: boolean,
+			isFocusable: boolean
+		): void {
+			const group = document.createElement('div');
+			this.applyCommonStyles(group, x, y, width, height, handle);
+			group.setAttribute('role', 'group');
+			group.dataset.unoFocusDelegate = 'true';
+			group.dataset.unoFocusable = String(isFocusable);
+			group.dataset.unoSecondaryWidth = String(secondaryWidth);
+			group.tabIndex = -1;
+			this.setAriaStringAttribute(group, 'aria-label', label);
+
+			const callbacks = this.getCallbacks();
+
+			const primary = this.createSplitButtonPart(handle, 'primary', primaryLabel);
+			if (pressed !== null) {
+				primary.setAttribute('aria-pressed', pressed);
+			}
+			primary.addEventListener('click', (e) => {
+				e.preventDefault();
+				if (primary.hasAttribute('aria-pressed')) {
+					callbacks.onToggle?.(handle);
+				} else {
+					callbacks.onInvoke?.(handle);
+				}
+			});
+
+			const secondary = this.createSplitButtonPart(handle, 'secondary', secondaryLabel);
+			secondary.setAttribute('aria-haspopup', 'menu');
+			secondary.setAttribute('aria-expanded', String(expanded));
+			secondary.addEventListener('click', (e) => {
+				e.preventDefault();
+				callbacks.onExpandCollapse?.(handle);
+			});
+
+			group.appendChild(primary);
+			group.appendChild(secondary);
+			SemanticElements.layoutSplitButtonParts(group);
+			SemanticElements.applySplitButtonState(group, primaryDisabled, secondaryDisabled);
+			this.appendToParent(group, parentHandle, index);
+		}
+
+		private static createSplitButtonPart(handle: number, part: string, label: string | null): HTMLButtonElement {
+			const element = document.createElement('button');
+			element.id = `uno-semantics-${handle}-${part}`;
+			element.dataset.unoSplitPart = part;
+			element.style.position = 'absolute';
+			element.style.top = '0px';
+			element.style.bottom = '0px';
+			this.setAriaStringAttribute(element, 'aria-label', label);
+
+			const handleActivationKey = part === 'primary'
+				// The managed SplitButton handles Enter/Space as a primary click (Click, Command and, for a
+				// ToggleSplitButton, the toggle), so only the duplicate native click is suppressed.
+				? (e: KeyboardEvent) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.preventDefault();
+					}
+				}
+				// The menu part opens the menu through its native click; the managed SplitButton would run the
+				// primary action instead.
+				: (e: KeyboardEvent) => {
+					if (e.key === 'Enter' || e.key === ' ') {
+						e.stopPropagation();
+					}
+				};
+			element.addEventListener('keydown', handleActivationKey);
+			element.addEventListener('keyup', handleActivationKey);
+
+			// Focus on either part is focus on the split button.
+			const callbacks = this.getCallbacks();
+			element.addEventListener('focus', () => callbacks.onFocus?.(handle));
+			element.addEventListener('blur', () => callbacks.onBlur?.(handle));
+			return element;
+		}
+
+		/**
+		 * Lays the parts out against the group's current width and the menu part's measured width
+		 * (data-uno-secondary-width), falling back to a default menu width until it is measured.
+		 */
+		public static layoutSplitButtonParts(group: HTMLElement): void {
+			const primary = SemanticElements.getSplitButtonPart(group, 'primary');
+			const secondary = SemanticElements.getSplitButtonPart(group, 'secondary');
+			if (!primary || !secondary) {
+				return;
+			}
+
+			const width = parseFloat(group.style.width) || 0;
+			const secondaryWidth = Number(group.dataset.unoSecondaryWidth) || 0;
+			const menuWidth = secondaryWidth > 0 && secondaryWidth < width ? secondaryWidth : Math.min(width / 2, 32);
+			primary.style.left = '0px';
+			primary.style.right = `${menuWidth}px`;
+			secondary.style.right = '0px';
+			secondary.style.width = `${menuWidth}px`;
+		}
+
+		/**
+		 * Updates the menu part's measured width, unknown when the node was created before layout.
+		 */
+		public static updateSplitButtonGeometry(handle: number, secondaryWidth: number): void {
+			const group = document.getElementById(`uno-semantics-${handle}`);
+			if (group && group.dataset.unoFocusDelegate === 'true') {
+				group.dataset.unoSecondaryWidth = String(secondaryWidth);
+				SemanticElements.layoutSplitButtonParts(group);
+			}
+		}
+
+		/**
+		 * Updates the enabled state of each part; the primary part can be disabled alone (CanExecute == false).
+		 */
+		public static updateSplitButtonPartsDisabled(handle: number, primaryDisabled: boolean, secondaryDisabled: boolean): void {
+			const group = document.getElementById(`uno-semantics-${handle}`);
+			if (group && group.dataset.unoFocusDelegate === 'true') {
+				SemanticElements.applySplitButtonState(group, primaryDisabled, secondaryDisabled);
+			}
+		}
+
+		/**
+		 * Applies each part's enabled state. The split button is a single tab stop while it is focusable
+		 * (kept in data-uno-focusable, also while disabled): the primary part, or the menu part while only the
+		 * primary part is disabled.
+		 */
+		public static applySplitButtonState(group: HTMLElement, primaryDisabled: boolean, secondaryDisabled: boolean): void {
+			const focusable = group.dataset.unoFocusable === 'true';
+			const tabStop = primaryDisabled ? 'secondary' : 'primary';
+			for (const [part, disabled] of [['primary', primaryDisabled], ['secondary', secondaryDisabled]] as [string, boolean][]) {
+				const button = SemanticElements.getSplitButtonPart(group, part);
+				if (!button) {
+					continue;
+				}
+
+				button.disabled = disabled;
+				if (disabled) {
+					button.setAttribute('aria-disabled', 'true');
+				} else {
+					button.removeAttribute('aria-disabled');
+				}
+				Accessibility.updateElementFocusability(button, part === tabStop && focusable && !disabled);
+			}
+		}
+
+		/**
+		 * Re-applies the parts' current enabled state, e.g. after the split button's focusability changed.
+		 */
+		public static refreshSplitButtonState(group: HTMLElement): void {
+			SemanticElements.applySplitButtonState(
+				group,
+				SemanticElements.getSplitButtonPart(group, 'primary')?.disabled ?? false,
+				SemanticElements.getSplitButtonPart(group, 'secondary')?.disabled ?? false);
+		}
+
+		/**
+		 * Returns the part that takes focus for a split button node: the primary part, or the menu part while
+		 * only the primary part is disabled.
+		 */
+		public static getSplitButtonFocusTarget(group: HTMLElement): HTMLButtonElement | null {
+			const primary = SemanticElements.getSplitButtonPart(group, 'primary');
+			if (primary && !primary.disabled) {
+				return primary;
+			}
+			const secondary = SemanticElements.getSplitButtonPart(group, 'secondary');
+			return secondary && !secondary.disabled ? secondary : primary;
+		}
+
+		/**
+		 * Updates the names of a split button: the group's explicit name and its two parts.
+		 */
+		public static updateSplitButtonLabels(handle: number, label: string | null, primaryLabel: string | null, secondaryLabel: string | null): void {
+			const group = document.getElementById(`uno-semantics-${handle}`);
+			if (!group) {
+				return;
+			}
+
+			SemanticElements.setOrRemoveLabel(group, label);
+			const primary = SemanticElements.getSplitButtonPart(group, 'primary');
+			if (primary) {
+				SemanticElements.setOrRemoveLabel(primary, primaryLabel);
+			}
+			const secondary = SemanticElements.getSplitButtonPart(group, 'secondary');
+			if (secondary) {
+				SemanticElements.setOrRemoveLabel(secondary, secondaryLabel);
+			}
+		}
+
+		private static setOrRemoveLabel(element: HTMLElement, label: string | null): void {
+			if (label) {
+				element.setAttribute('aria-label', label);
+			} else {
+				element.removeAttribute('aria-label');
+			}
+		}
+
+		/**
+		 * Returns the named part of a split button node ("primary" or "secondary"), or null for other nodes.
+		 */
+		public static getSplitButtonPart(element: HTMLElement, part: string): HTMLButtonElement | null {
+			return element.dataset.unoFocusDelegate === 'true'
+				? element.querySelector<HTMLButtonElement>(`:scope > [data-uno-split-part="${part}"]`)
+				: null;
+		}
+
+		/**
 		 * Creates a toggle button semantic element (button with aria-pressed).
 		 * Used for ToggleButton, AppBarToggleButton, etc.
 		 * Called from C# via JSImport.
@@ -622,9 +844,13 @@ namespace Uno.UI.Runtime {
 
 			element.addEventListener('paste', (event: ClipboardEvent) => {
 				const source = event.clipboardData?.getData('text') ?? '';
-				const sourceLimit = BrowserInvisibleTextBoxViewExtension.getNativePasteSourceLimit();
-				BrowserInvisibleTextBoxViewExtension.onNativePaste(
-					source.length > sourceLimit ? source.substring(0, sourceLimit) : source);
+				if (WebAssemblyThreading.isThreadingEnabled()) {
+					BrowserInvisibleTextBoxViewExtension.onNativePasteAsync(source);
+				} else {
+					const sourceLimit = BrowserInvisibleTextBoxViewExtension.getNativePasteSourceLimit();
+					BrowserInvisibleTextBoxViewExtension.onNativePaste(
+						source.length > sourceLimit ? source.substring(0, sourceLimit) : source);
+				}
 				event.preventDefault();
 			});
 
@@ -698,29 +924,15 @@ namespace Uno.UI.Runtime {
 			// not hardcoded here (FR-028).
 			Accessibility.updateElementFocusability(element, isFocusable);
 
-			this.setAriaStringAttribute(element, 'aria-label', selectedValue);
+			SemanticElements.setComboBoxValue(element, selectedValue);
 
 			const callbacks = this.getCallbacks();
 
-			// Keyboard handlers for expand/collapse (WAI-ARIA combobox pattern)
-			element.addEventListener('keydown', (e) => {
-				if (e.key === 'Enter' || e.key === ' ' || (e.key === 'ArrowDown' && e.altKey)) {
-					e.preventDefault();
-					if (callbacks.onExpandCollapse) {
-						callbacks.onExpandCollapse(handle);
-					}
-				} else if (e.key === 'Escape') {
-					// Escape collapses an open popup (WAI-ARIA combobox pattern)
-					if (element.getAttribute('aria-expanded') === 'true') {
-						e.preventDefault();
-						if (callbacks.onExpandCollapse) {
-							callbacks.onExpandCollapse(handle);
-						}
-					}
-				}
-			});
+			// Keys are not handled here: they bubble to the document listener and reach the XAML ComboBox,
+			// which opens, navigates, commits and cancels by itself. A handler here would act on the same
+			// key press a second time.
 
-			// Click handler for expand/collapse
+			// Click handler for expand/collapse (assistive technology activation)
 			element.addEventListener('click', (e) => {
 				e.preventDefault();
 				if (callbacks.onExpandCollapse) {
@@ -848,6 +1060,7 @@ namespace Uno.UI.Runtime {
 				// Skip no-op writes to avoid caret and IME churn when the DOM value already matches.
 				if (element.value !== value) {
 					element.value = value;
+					BrowserInvisibleTextBoxViewExtension.countFocusedInputWrite(element);
 				}
 
 				// Negative sentinel from C# means "do not touch selection".
@@ -862,6 +1075,7 @@ namespace Uno.UI.Runtime {
 							start,
 							end,
 							selectionIsBackward ? 'backward' : 'forward');
+						BrowserInvisibleTextBoxViewExtension.countFocusedInputWrite(element);
 					} catch {
 						// Some input types (e.g., password in some browsers) don't support setSelectionRange
 					}
@@ -910,14 +1124,13 @@ namespace Uno.UI.Runtime {
 		 * Updates the expanded/collapsed state of a combobox element.
 		 */
 		public static updateExpandCollapseState(handle: number, expanded: boolean): void {
-			const element = document.getElementById(`uno-semantics-${handle}`);
-			if (element) {
-				element.setAttribute('aria-expanded', String(expanded));
+			SemanticElements.applyItemStateWhenCreated(`uno-semantics-${handle}`, 'expanded', element => {
+				(SemanticElements.getSplitButtonPart(element, 'secondary') ?? element).setAttribute('aria-expanded', String(expanded));
 				// Clear activedescendant when collapsing
 				if (!expanded) {
-					element.removeAttribute('aria-activedescendant');
+					SemanticElements.setActiveDescendant(element, null);
 				}
-			}
+			});
 		}
 
 		/**
@@ -925,24 +1138,90 @@ namespace Uno.UI.Runtime {
 		 * Screen readers use this to announce the currently focused option without moving DOM focus.
 		 */
 		public static updateActiveDescendant(containerHandle: number, activeItemHandle: number): void {
-			const container = document.getElementById(`uno-semantics-${containerHandle}`);
-			if (container) {
-				if (activeItemHandle !== 0) {
-					const activeId = `uno-semantics-${activeItemHandle}`;
-					container.setAttribute('aria-activedescendant', activeId);
-				} else {
-					container.removeAttribute('aria-activedescendant');
-				}
-			}
+			const activeId = activeItemHandle !== 0 ? `uno-semantics-${activeItemHandle}` : null;
+			SemanticElements.applyItemStateWhenCreated(
+				`uno-semantics-${containerHandle}`,
+				'activedescendant',
+				container => {
+					// A reference to a missing option is ignored by the browser and never announced.
+					if (activeId === null) {
+						SemanticElements.setActiveDescendant(container, null);
+					} else if (document.getElementById(activeId) && container.getAttribute('aria-expanded') !== 'false') {
+						SemanticElements.setActiveDescendant(container, activeId);
+					}
+				},
+				// The option may be created by a batched mutation; point at it once it exists.
+				activeId === null || document.getElementById(activeId) !== null);
 		}
 
 		/**
 		 * Updates the selected state of a list item element.
 		 */
 		public static updateSelectionState(handle: number, selected: boolean): void {
+			SemanticElements.applyItemStateWhenCreated(`uno-semantics-${handle}`, 'selected', element => {
+				element.setAttribute('aria-selected', String(selected));
+			});
+		}
+
+		/**
+		 * Applies a state to an element now, or after the virtualized mutations already queued: one of them may
+		 * create the element, or carry a realization snapshot taken earlier that must not overwrite this state.
+		 * Only the latest request per element and state runs, so a deferred one never overwrites a newer one.
+		 */
+		private static applyItemStateWhenCreated(id: string, state: string, apply: (element: HTMLElement) => void, canApplyNow: boolean = true): void {
+			const key = `${state}:${id}`;
+			const pending = SemanticElements.pendingItemStates;
+			const element = document.getElementById(id);
+			if (element && canApplyNow && SemanticElements.virtualizedMutationQueue.length === 0) {
+				pending.delete(key);
+				apply(element);
+				return;
+			}
+
+			pending.set(key, apply);
+			SemanticElements.scheduleVirtualizedMutation(() => {
+				if (pending.get(key) !== apply) {
+					return;
+				}
+
+				pending.delete(key);
+				const created = document.getElementById(id);
+				if (created) {
+					apply(created);
+				}
+			});
+		}
+
+		/**
+		 * Updates the value of a combobox element: the text of its selected item.
+		 */
+		public static updateComboBoxValue(handle: number, value: string | null): void {
 			const element = document.getElementById(`uno-semantics-${handle}`);
 			if (element) {
-				element.setAttribute('aria-selected', String(selected));
+				SemanticElements.setComboBoxValue(element, value);
+			}
+		}
+
+		// A role="combobox" that is not an <input> takes its value from its text content. The value
+		// is kept in a text node so the element children (e.g. an editable text box) stay untouched.
+		private static setComboBoxValue(element: HTMLElement, value: string | null): void {
+			let textNode: Text | null = null;
+			for (let i = 0; i < element.childNodes.length; i++) {
+				const node = element.childNodes[i];
+				if (node.nodeType === Node.TEXT_NODE) {
+					textNode = node as Text;
+					break;
+				}
+			}
+
+			if (value) {
+				if (textNode) {
+					textNode.data = value;
+				} else {
+					element.insertBefore(document.createTextNode(value), element.firstChild);
+				}
+			} else if (textNode) {
+				textNode.remove();
 			}
 		}
 
@@ -951,6 +1230,10 @@ namespace Uno.UI.Runtime {
 		 */
 		public static updateDisabledState(handle: number, disabled: boolean): void {
 			const element = document.getElementById(`uno-semantics-${handle}`) as HTMLButtonElement | HTMLInputElement;
+			if (element && element.dataset.unoFocusDelegate === 'true') {
+				SemanticElements.applySplitButtonState(element, disabled, disabled);
+				return;
+			}
 			if (element) {
 				if ('disabled' in element) {
 					element.disabled = disabled;
@@ -991,14 +1274,8 @@ namespace Uno.UI.Runtime {
 				}
 			});
 
-			element.addEventListener('keydown', (e) => {
-				if (e.key === 'Enter' || e.key === ' ') {
-					e.preventDefault();
-					if (callbacks.onInvoke) {
-						callbacks.onInvoke(handle);
-					}
-				}
-			});
+			// Enter/Space reach the XAML control through the document key listener, so no separate
+			// keydown handler is needed.
 
 			this.appendToParent(element, parentHandle, index);
 		}
@@ -1479,6 +1756,11 @@ namespace Uno.UI.Runtime {
 		private static virtualizedRafId: number = 0;
 
 		/**
+		 * Latest item state still waiting for its element, keyed by state and element id.
+		 */
+		private static pendingItemStates = new Map<string, (element: HTMLElement) => void>();
+
+		/**
 		 * Schedules a virtualized mutation to be flushed in the next animation frame.
 		 */
 		private static scheduleVirtualizedMutation(mutation: () => void): void {
@@ -1499,6 +1781,9 @@ namespace Uno.UI.Runtime {
 				SemanticElements.virtualizedRafId = 0;
 			}
 			SemanticElements.virtualizedMutationQueue = [];
+			SemanticElements.pendingItemStates.clear();
+			// The whole semantic DOM goes with it, without a per-item removal to unindex its owners.
+			SemanticElements.activeDescendantOwners.clear();
 		}
 
 		/**
@@ -1572,7 +1857,11 @@ namespace Uno.UI.Runtime {
 			width: number,
 			height: number,
 			role: string,
-			label: string
+			label: string,
+			ownsSelection: boolean,
+			selectable: boolean,
+			selected: boolean,
+			active: boolean
 		): void {
 			SemanticElements.scheduleVirtualizedMutation(() => {
 				const container = document.getElementById(`uno-semantics-${containerHandle}`);
@@ -1592,6 +1881,10 @@ namespace Uno.UI.Runtime {
 					// Ensure item is inside the correct container
 					if (existingItem.parentElement !== container) {
 						container.appendChild(existingItem);
+					}
+					// Without a selection model (an ItemsRepeater) the node's own peer already set its state.
+					if (ownsSelection) {
+						SemanticElements.applyVirtualizedSelection(container, existingItem, selectable, selected, active);
 					}
 					return;
 				}
@@ -1618,7 +1911,118 @@ namespace Uno.UI.Runtime {
 				});
 
 				container.appendChild(element);
+				if (ownsSelection) {
+					SemanticElements.applyVirtualizedSelection(container, element, selectable, selected, active);
+				} else if (selectable) {
+					element.setAttribute('aria-selected', String(selected));
+				}
 			});
+		}
+
+		/**
+		 * Applies a realized item's selection. The container's aria-activedescendant follows its active
+		 * item and is dropped when a recycled node now shows a different, inactive item.
+		 */
+		private static applyVirtualizedSelection(container: HTMLElement, item: HTMLElement, selectable: boolean, selected: boolean, active: boolean): void {
+			if (selectable) {
+				item.setAttribute('aria-selected', String(selected));
+			} else {
+				item.removeAttribute('aria-selected');
+			}
+
+			if (active) {
+				SemanticElements.setActiveDescendant(container, item.id);
+			} else if (container.getAttribute('aria-activedescendant') === item.id) {
+				SemanticElements.setActiveDescendant(container, null);
+			}
+		}
+
+		/**
+		 * Owners of aria-activedescendant keyed by the referenced item id, so removing an item doesn't need a
+		 * document-wide scan. An item can have two owners: its listbox and, for a ComboBox option, the head.
+		 */
+		private static activeDescendantOwners: Map<string, Set<HTMLElement>> = new Map();
+
+		/**
+		 * Sets or clears an owner's aria-activedescendant. Every write goes through here to keep the
+		 * owner index in sync.
+		 */
+		private static setActiveDescendant(owner: HTMLElement, itemId: string | null): void {
+			const previous = owner.getAttribute('aria-activedescendant');
+			if (previous === itemId) {
+				return;
+			}
+
+			if (previous) {
+				const owners = SemanticElements.activeDescendantOwners.get(previous);
+				if (owners) {
+					owners.delete(owner);
+					if (owners.size === 0) {
+						SemanticElements.activeDescendantOwners.delete(previous);
+					}
+				}
+			}
+
+			if (itemId) {
+				owner.setAttribute('aria-activedescendant', itemId);
+				let owners = SemanticElements.activeDescendantOwners.get(itemId);
+				if (!owners) {
+					owners = new Set();
+					SemanticElements.activeDescendantOwners.set(itemId, owners);
+				}
+				owners.add(owner);
+			} else {
+				owner.removeAttribute('aria-activedescendant');
+			}
+		}
+
+		/**
+		 * Removes every aria-activedescendant that references a node being removed: its container's, or for a
+		 * ComboBox option, the head's (outside the listbox subtree).
+		 */
+		public static clearActiveDescendantTo(element: HTMLElement): void {
+			const owners = element.id ? SemanticElements.activeDescendantOwners.get(element.id) : undefined;
+			if (!owners) {
+				return;
+			}
+
+			SemanticElements.activeDescendantOwners.delete(element.id);
+			for (const owner of owners) {
+				if (owner.getAttribute('aria-activedescendant') === element.id) {
+					owner.removeAttribute('aria-activedescendant');
+				}
+			}
+		}
+
+		private static ownerPruneScheduled = false;
+
+		/**
+		 * Drops index entries for owners removed with a whole subtree (no per-item removal ran for them).
+		 * Coalesced to one pass per synchronous batch, so a bulk teardown costs O(owners) once, not per node.
+		 */
+		public static schedulePruneDetachedActiveDescendantOwners(): void {
+			if (SemanticElements.ownerPruneScheduled || SemanticElements.activeDescendantOwners.size === 0) {
+				return;
+			}
+
+			SemanticElements.ownerPruneScheduled = true;
+			queueMicrotask(() => {
+				SemanticElements.ownerPruneScheduled = false;
+				SemanticElements.pruneDetachedActiveDescendantOwners();
+			});
+		}
+
+		private static pruneDetachedActiveDescendantOwners(): void {
+			for (const [itemId, owners] of SemanticElements.activeDescendantOwners) {
+				for (const owner of owners) {
+					if (!owner.isConnected) {
+						owners.delete(owner);
+					}
+				}
+				if (owners.size === 0) {
+					SemanticElements.activeDescendantOwners.delete(itemId);
+				}
+			}
 		}
 
 		/**
@@ -1629,6 +2033,7 @@ namespace Uno.UI.Runtime {
 			SemanticElements.scheduleVirtualizedMutation(() => {
 				const element = document.getElementById(`uno-semantics-${itemHandle}`);
 				if (element && element.parentElement) {
+					SemanticElements.clearActiveDescendantTo(element);
 					element.parentElement.removeChild(element);
 				}
 			});
@@ -1655,6 +2060,7 @@ namespace Uno.UI.Runtime {
 			const element = document.getElementById(`uno-semantics-${containerHandle}`);
 			if (element && element.parentElement) {
 				element.parentElement.removeChild(element);
+				SemanticElements.schedulePruneDetachedActiveDescendantOwners();
 			}
 		}
 	}

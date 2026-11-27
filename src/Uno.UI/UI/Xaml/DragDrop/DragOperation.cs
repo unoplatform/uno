@@ -58,6 +58,11 @@ namespace Microsoft.UI.Xaml
 
 		public CoreDragInfo Info { get; }
 
+		/// <summary>
+		/// Whether the drop target replaced the content of the drag visual (DragUIOverride.SetContentFromBitmapImage) or hid it (IsContentVisible).
+		/// </summary>
+		internal bool IsContentReplacedOrHidden => _viewOverride.Content is not null || !_viewOverride.IsContentVisible;
+
 		internal DataPackageOperation Moved(IDragEventSource src)
 		{
 			if (_state >= State.Completing || src.FrameId <= _lastFrameId)

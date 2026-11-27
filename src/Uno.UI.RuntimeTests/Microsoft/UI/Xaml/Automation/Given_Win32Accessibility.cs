@@ -375,6 +375,79 @@ public class Given_Win32Accessibility
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25279")]
+	public async Task When_ItemContainer_FindItemByProperty_Matches_WinUI()
+	{
+		const int UiaItemContainerPatternId = 10019;
+		const int UiaControlTypePropertyId = 30003;
+		const int UiaClassNamePropertyId = 30012;
+		const int UiaSelectionItemIsSelectedPropertyId = 30079;
+		const int UiaListItemControlTypeId = 50007;
+		const int UiaButtonControlTypeId = 50000;
+
+		var items = new List<string>();
+		for (var i = 0; i < 200; i++)
+		{
+			items.Add("Item " + i);
+		}
+
+		var list = new ListView { Height = 150, Width = 200, ItemsSource = items };
+
+		try
+		{
+			await UITestHelper.Load(list);
+
+			var accessibility = ResolveAccessibility(list)
+				?? throw new InvalidOperationException("Win32Accessibility instance not found.");
+			var provider = GetOrCreateProvider(accessibility, list)
+				?? throw new InvalidOperationException("ListView provider not found.");
+			var itemContainer = provider.GetType().GetMethod("GetPatternProvider", BindingFlags.Instance | BindingFlags.Public)
+				?.Invoke(provider, new object[] { UiaItemContainerPatternId })
+				?? throw new InvalidOperationException("ItemContainer pattern not found.");
+			var find = itemContainer.GetType().GetMethod("FindItemByProperty", BindingFlags.Instance | BindingFlags.Public)
+				?? throw new InvalidOperationException("FindItemByProperty not found.");
+			object? Find(object? startAfter, int propertyId, object? value)
+			{
+				try
+				{
+					return find.Invoke(itemContainer, new[] { startAfter, propertyId, value });
+				}
+				catch (TargetInvocationException e) when (e.InnerException is not null)
+				{
+					throw e.InnerException;
+				}
+			}
+
+			string? NameOf(object? itemProvider)
+				=> itemProvider is null ? null : GetPropertyValue(itemProvider, UiaNamePropertyId) as string;
+
+			// propertyId 0: no criterion, each call returns the item after startAfter.
+			var first = Find(null, 0, null);
+			Assert.AreEqual("Item 0", NameOf(first));
+			var second = Find(first, 0, null);
+			Assert.AreEqual("Item 1", NameOf(second));
+			Assert.AreEqual("Item 2", NameOf(Find(second, 0, null)));
+
+			// ControlType values are UIA control type ids.
+			Assert.AreEqual("Item 0", NameOf(Find(null, UiaControlTypePropertyId, UiaListItemControlTypeId)));
+			Assert.IsNull(Find(null, UiaControlTypePropertyId, UiaButtonControlTypeId));
+
+			// Virtualized items are found by their item's string.
+			Assert.AreEqual("Item 150", NameOf(Find(null, UiaNamePropertyId, "Item 150")));
+
+			// A null startAfter searches from the first item, not after the previous match.
+			Assert.AreEqual("Item 0", NameOf(Find(null, UiaSelectionItemIsSelectedPropertyId, false)));
+
+			// Properties WinUI doesn't support fail with UIA_E_INVALIDOPERATION.
+			Assert.ThrowsExactly<InvalidOperationException>(() => Find(null, UiaClassNamePropertyId, "ListViewItem"));
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	public void When_Traversing_Deep_Cyclic_Descendants()
 	{
 		var accessibilityType = FindType("Uno.UI.Runtime.Win32.Win32Accessibility")

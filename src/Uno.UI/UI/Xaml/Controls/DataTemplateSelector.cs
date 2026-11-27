@@ -59,5 +59,45 @@ public partial class DataTemplateSelector
 
 		return null;
 	}
+
+	// MUX Reference DataTemplateSelector_Partial.cpp (GetElementImpl, RecycleElementImpl)
+
+	/// <summary>
+	/// Creates or retrieves an existing instance of the UIElement object declared in the DataTemplate selected for the item.
+	/// </summary>
+	/// <param name="args">An instance of <see cref="global::Microsoft.UI.Xaml.ElementFactoryGetArgs"/>.</param>
+	/// <returns>The element returned by the selected template's <see cref="DataTemplate.GetElement"/>.</returns>
+	public UIElement GetElement(global::Microsoft.UI.Xaml.ElementFactoryGetArgs args)
+	{
+		var template = SelectTemplate(args.Data);
+		if (template is null)
+		{
+			// Fall back to the overload with a null container, as WinUI does. Its base implementation
+			// throws for a null container, which only means the selector didn't implement it (same as ItemTemplateWrapper).
+			try
+			{
+				template = SelectTemplate(args.Data, null);
+			}
+			catch (ArgumentException)
+			{
+			}
+		}
+
+		return template?.GetElement(args)
+			?? throw new InvalidOperationException($"{GetType()} selected no DataTemplate for '{args.Data}'.");
+	}
+
+	/// <summary>
+	/// Recycles a UIElement that was previously retrieved using <see cref="GetElement"/>.
+	/// </summary>
+	/// <param name="args">An instance of <see cref="global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs"/>.</param>
+	public void RecycleElement(global::Microsoft.UI.Xaml.ElementFactoryRecycleArgs args)
+	{
+		// Hand the element back to the template that produced it.
+		if (args.Element is { } element && RecyclePool.GetOriginTemplate(element) is { } template)
+		{
+			template.RecycleElement(args);
+		}
+	}
 }
 

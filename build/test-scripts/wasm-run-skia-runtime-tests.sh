@@ -24,7 +24,12 @@ rawurlencode() {
 # For Skia-WASM, SamplesApp is set up so that when saving files, it
 # sends a POST request at HOSTNAME:PORT+1 where HOSTNAME and PORT are
 # the hostname and port of the server that serves the SamplesApp
-python -m http.server 8000 -d "$SAMPLESAPPARTIFACTPATH" &
+# SharedArrayBuffer (WebAssembly threading) needs the app served with COOP/COEP headers.
+if [ "${UNO_TEST_CROSS_ORIGIN_ISOLATED:-}" = "true" ]; then
+    python $BUILD_SOURCESDIRECTORY/build/test-scripts/skia-browserwasm-isolated-server.py 8000 "$SAMPLESAPPARTIFACTPATH" &
+else
+    python -m http.server 8000 -d "$SAMPLESAPPARTIFACTPATH" &
+fi
 python $BUILD_SOURCESDIRECTORY/build/test-scripts/skia-browserwasm-file-creation-server.py 8001 &
 sleep 10
 

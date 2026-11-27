@@ -29,6 +29,7 @@ internal class Program
 			WriteOption("--log-level, -l <level>", "Set the log level (Trace, Debug, Information, Warning, Error, Critical, None). Default is Information.");
 			WriteOption("--file-log, -fl <path>", "Enable file logging to the provided file path (supports {Date} token). Required path argument.");
 			WriteOption("--solution-dir <path>", "Explicit solution root when priming tools without client-provided roots");
+			WriteOption("--solution <path>", "The .sln/.slnx to work with, wherever it is; takes precedence over --solution-dir. start, stop, disco and health use its workspace; MCP mode serves it (uno_app_select_solution can change it)");
 			Console.WriteLine();
 			Console.WriteLine("Disco options:");
 			WriteOption("--json", "Emit JSON output");
@@ -36,7 +37,6 @@ internal class Program
 			Console.WriteLine();
 			Console.WriteLine("MCP options:");
 			WriteOption("--mcp-app", "Start in App MCP STDIO mode");
-			WriteOption("--solution <path>", "Serve this .sln/.slnx, wherever it is (MCP mode only; uno_app_select_solution can change it)");
 			WriteOption("--mcp-wait-tools-list", "Wait for upstream server tools before responding to list_tools (MCP mode only)");
 			WriteOption("--force-roots-fallback", "This mode can be used when the MCP client does not support the roots feature");
 			WriteOption("--force-generate-tool-cache", "Deprecated (no-op). Kept for backward compatibility.");

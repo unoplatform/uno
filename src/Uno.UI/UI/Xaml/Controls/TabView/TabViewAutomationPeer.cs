@@ -26,7 +26,7 @@ public partial class TabViewAutomationPeer : FrameworkElementAutomationPeer, ISe
 	protected override object GetPatternCore(PatternInterface patternInterface) =>
 		patternInterface == PatternInterface.Selection ? this : base.GetPatternCore(patternInterface);
 
-	protected override string GetClassNameCore() => nameof(TabView);
+	protected override string GetClassNameCore() => typeof(TabView).FullName!;
 
 	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.Tab;
 

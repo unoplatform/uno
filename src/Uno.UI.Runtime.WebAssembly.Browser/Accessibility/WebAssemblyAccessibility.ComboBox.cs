@@ -2,9 +2,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime;
@@ -26,6 +29,9 @@ internal partial class WebAssemblyAccessibility
 	// (semantic tree walk consults it for every Popup it encounters). Populated lazily on
 	// DropDownOpened (the Popup may not exist at registration time) and cleared on close.
 	private readonly Dictionary<Popup, ComboBox> _comboBoxByPopup = new();
+	// aria-controls IDREF of an open dropdown's listbox, keyed by the combobox head handle. Merged into
+	// the authored ControlledPeers by UpdateRelationships, the single writer of aria-controls.
+	private readonly Dictionary<IntPtr, string> _implicitAriaControls = new();
 
 	/// <summary>
 	/// Subscribes to a ComboBox's dropdown lifecycle so its listbox region can be torn down
@@ -106,6 +112,87 @@ internal partial class WebAssemblyAccessibility
 		}
 	}
 
+	/// <summary>
+	/// WinUI moves keyboard focus onto the items of an open dropdown. The WAI-ARIA combobox pattern
+	/// keeps DOM focus on the head instead, which points at the focused option through
+	/// aria-activedescendant. Returns the head to keep focused when <paramref name="element"/> is such an item.
+	/// </summary>
+	internal bool TryActivateDropDownItem(UIElement element, out IntPtr comboBoxHandle)
+	{
+		comboBoxHandle = IntPtr.Zero;
+
+		if (element is not ComboBoxItem item ||
+			ItemsControl.ItemsControlFromItemContainer(item) is not ComboBox { IsDropDownOpen: true } comboBox ||
+			!HasSemanticElement(comboBox.Visual.Handle))
+		{
+			return false;
+		}
+
+		// Focus can reach the item before the tree walk has emitted its option.
+		if (!_comboBoxListBoxes.TryGetValue(comboBox, out var region) ||
+			!region.ContainsRealizedHandle(item.Visual.Handle))
+		{
+			TryRealizeComboBoxItem(item);
+		}
+
+		comboBoxHandle = comboBox.Visual.Handle;
+		NativeMethods.UpdateActiveDescendant(comboBoxHandle, item.Visual.Handle);
+		return true;
+	}
+
+	/// <summary>
+	/// True when <paramref name="element"/> is a ComboBox whose open dropdown holds the XAML focus.
+	/// </summary>
+	internal static bool IsDropDownItemFocused(UIElement element)
+		=> element is ComboBox { IsDropDownOpen: true, XamlRoot: { } xamlRoot } comboBox &&
+			FocusManager.GetFocusedElement(xamlRoot) is ComboBoxItem focusedItem &&
+			ReferenceEquals(ItemsControl.ItemsControlFromItemContainer(focusedItem), comboBox);
+
+	/// <summary>
+	/// WinUI exposes the selection pattern of a dropdown item on its item peer, whose Select also
+	/// collapses the ComboBox. The container peer cannot lead to it: the item lives in the popup,
+	/// outside of the ComboBox subtree.
+	/// </summary>
+	private static AutomationPeer? GetDropDownItemPeer(UIElement element)
+		=> element is ComboBoxItem container &&
+			ItemsControl.ItemsControlFromItemContainer(container) is ComboBox comboBox &&
+			comboBox.GetOrCreateAutomationPeer() is ComboBoxAutomationPeer comboBoxPeer &&
+			comboBox.ItemFromContainer(container) is { } item
+				? comboBoxPeer.CreateItemAutomationPeer(item)
+				: null;
+
+	/// <summary>
+	/// The text of the selected item, which a non-editable combobox exposes as its value.
+	/// </summary>
+	internal static string? GetComboBoxValue(ComboBox comboBox)
+	{
+		// The text box of an editable ComboBox carries the value.
+		if (comboBox.IsEditable || comboBox.SelectedItem is not { } selectedItem)
+		{
+			return null;
+		}
+
+		// Same text as the option, when its container exists.
+		var container = selectedItem as ComboBoxItem ?? comboBox.ContainerFromItem(selectedItem) as ComboBoxItem;
+		if (container?.GetOrCreateAutomationPeer()?.GetName() is { Length: > 0 } name)
+		{
+			return name;
+		}
+
+		// The containers are only created once the dropdown opens. Until then, name the item
+		// the way WinUI names an item peer without a container.
+		var text = FrameworkElement.GetStringFromObject(selectedItem);
+		return string.IsNullOrEmpty(text) ? null : text;
+	}
+
+	private void UpdateComboBoxValue(ComboBox comboBox)
+	{
+		if (HasSemanticElement(comboBox.Visual.Handle))
+		{
+			NativeMethods.UpdateComboBoxValue(comboBox.Visual.Handle, GetComboBoxValue(comboBox));
+		}
+	}
+
 	private void DisposeComboBoxListBox(ComboBox comboBox)
 	{
 		if (_comboBoxListBoxes.TryGetValue(comboBox, out var region))
@@ -113,8 +200,8 @@ internal partial class WebAssemblyAccessibility
 			region.Dispose();
 			_comboBoxListBoxes.Remove(comboBox);
 
-			// Drop the head's relationships to the now-removed listbox.
-			NativeMethods.UpdateAriaControls(comboBox.Visual.Handle, string.Empty);
+			// Drop the head's relationships to the now-removed listbox, keeping any authored ControlledPeers.
+			SetImplicitAriaControls(comboBox.Visual.Handle, null);
 			NativeMethods.UpdateActiveDescendant(comboBox.Visual.Handle, IntPtr.Zero);
 		}
 	}
@@ -157,7 +244,10 @@ internal partial class WebAssemblyAccessibility
 		var totalCount = comboBox.Items.Count;
 		var offset = GetOffsetRelativeToSemanticParent(item, region.ContainerHandle);
 		var label = item.GetOrCreateAutomationPeer()?.GetName() ?? string.Empty;
+		var selected = comboBox.AutomationPeerIsSelected(index, comboBox.ItemFromIndex(index));
 
+		// The head, not the listbox, carries this combobox's aria-activedescendant: it follows the
+		// focused option (TryActivateDropDownItem), not the selected one.
 		region.OnItemRealized(
 			item.Visual.Handle,
 			index,
@@ -165,14 +255,11 @@ internal partial class WebAssemblyAccessibility
 			offset.X, offset.Y,
 			item.Visual.Size.X, item.Visual.Size.Y,
 			"option",
-			label);
-
-		// Point aria-activedescendant at the selected option so the combobox head
-		// announces the active item without moving DOM focus off the head.
-		if (item.IsSelected)
-		{
-			NativeMethods.UpdateActiveDescendant(comboBox.Visual.Handle, item.Visual.Handle);
-		}
+			label,
+			ownsSelection: true,
+			selectable: true,
+			selected,
+			active: false);
 	}
 
 	/// <summary>
@@ -220,7 +307,7 @@ internal partial class WebAssemblyAccessibility
 		// WAI-ARIA combobox pattern: the head owns the popup listbox via aria-controls so
 		// screen readers associate the two separate DOM subtrees and aria-activedescendant
 		// can reference options that live outside the head's own subtree.
-		NativeMethods.UpdateAriaControls(comboBox.Visual.Handle, $"uno-semantics-{region.ContainerHandle}");
+		SetImplicitAriaControls(comboBox.Visual.Handle, $"uno-semantics-{region.ContainerHandle}");
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -228,5 +315,41 @@ internal partial class WebAssemblyAccessibility
 		}
 
 		return region;
+	}
+
+	private void SetImplicitAriaControls(IntPtr headHandle, string? listBoxId)
+	{
+		if (listBoxId is null)
+		{
+			if (!_implicitAriaControls.Remove(headHandle))
+			{
+				return;
+			}
+		}
+		else
+		{
+			_implicitAriaControls[headHandle] = listBoxId;
+		}
+
+		if (_relationshipPeers.TryGetValue(headHandle, out var state) && state.Peer.TryGetTarget(out var peer))
+		{
+			// Re-resolve the authored relations so the written IDREFs and their cache stay in sync.
+			UpdateRelationships(peer, headHandle);
+		}
+		else
+		{
+			NativeMethods.UpdateAriaControls(headHandle, listBoxId ?? string.Empty);
+		}
+	}
+
+	private SemanticElementFactory.RelationshipIds WithImplicitAriaControls(IntPtr handle, SemanticElementFactory.RelationshipIds ids)
+	{
+		if (!_implicitAriaControls.TryGetValue(handle, out var implicitId)
+			|| ids.Controls.Split(' ', StringSplitOptions.RemoveEmptyEntries).Contains(implicitId))
+		{
+			return ids;
+		}
+
+		return ids with { Controls = ids.Controls.Length == 0 ? implicitId : $"{ids.Controls} {implicitId}" };
 	}
 }

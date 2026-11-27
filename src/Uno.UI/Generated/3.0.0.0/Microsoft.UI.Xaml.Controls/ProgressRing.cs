@@ -16,16 +16,7 @@ public partial class ProgressRing : global::Microsoft.UI.Xaml.Controls.Control
 	// Skipping already declared property IsIndeterminate
 	// Skipping already declared property Maximum
 	// Skipping already declared property Minimum
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public global::Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings TemplateSettings
-	{
-		get
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ProgressRing", "TemplateSettings");
-		}
-	}
-#endif
+	// Skipping already declared property TemplateSettings
 	// Skipping already declared property Value
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.ProgressRing.ProgressRing()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.ProgressRing.ProgressRing()

@@ -62,10 +62,10 @@ public partial class TabViewItem : ListViewItem
 	{
 		base.OnApplyTemplate();
 
-		m_selectedBackgroundPathSizeChangedRevoker.Dispose();
-		m_closeButtonClickRevoker.Dispose();
-		m_tabDragStartingRevoker.Dispose();
-		m_tabDragCompletedRevoker.Dispose();
+		m_selectedBackgroundPathSizeChangedRevoker.Disposable = null;
+		m_closeButtonClickRevoker.Disposable = null;
+		m_tabDragStartingRevoker.Disposable = null;
+		m_tabDragCompletedRevoker.Disposable = null;
 
 		m_selectedBackgroundPath = GetTemplateChild<Path>(s_selectedBackgroundPathName);
 
@@ -102,6 +102,7 @@ public partial class TabViewItem : ListViewItem
 				}
 
 				closeButton.Click += OnCloseButtonClick;
+				m_closeButtonClickRevoker.Disposable = Disposable.Create(() => closeButton.Click -= OnCloseButtonClick);
 			}
 			return closeButton;
 		}
@@ -112,8 +113,22 @@ public partial class TabViewItem : ListViewItem
 
 		if (tabView != null)
 		{
-			tabView.TabDragStarting += OnTabDragStarting;
-			tabView.TabDragCompleted += OnTabDragCompleted;
+			// TODO Uno specific: WinUI subscribes with a non-owning delegate; a plain += would let the TabView keep removed items alive.
+			var weakThis = new WeakReference<TabViewItem>(this);
+
+			var onTabDragStarting = CreateWeakTabViewHandler<TabViewTabDragStartingEventArgs>(
+				weakThis,
+				static (item, sender, args) => item.OnTabDragStarting(sender, args),
+				static (source, handler) => source.TabDragStarting -= handler);
+			tabView.TabDragStarting += onTabDragStarting;
+			m_tabDragStartingRevoker.Disposable = Disposable.Create(() => tabView.TabDragStarting -= onTabDragStarting);
+
+			var onTabDragCompleted = CreateWeakTabViewHandler<TabViewTabDragCompletedEventArgs>(
+				weakThis,
+				static (item, sender, args) => item.OnTabDragCompleted(sender, args),
+				static (source, handler) => source.TabDragCompleted -= handler);
+			tabView.TabDragCompleted += onTabDragCompleted;
+			m_tabDragCompletedRevoker.Disposable = Disposable.Create(() => tabView.TabDragCompleted -= onTabDragCompleted);
 		}
 
 		UpdateCloseButton();
@@ -235,6 +250,27 @@ public partial class TabViewItem : ListViewItem
 				selectedBackgroundPath.RenderTransform = null;
 			}
 		}
+	}
+
+	// TODO Uno specific: stands in for C++/WinRT's non-owning { this, &TabViewItem::Method } delegate.
+	private static TypedEventHandler<TabView, TArgs> CreateWeakTabViewHandler<TArgs>(
+		WeakReference<TabViewItem> weakThis,
+		Action<TabViewItem, TabView, TArgs> handler,
+		Action<TabView, TypedEventHandler<TabView, TArgs>> unsubscribe)
+	{
+		TypedEventHandler<TabView, TArgs> weakHandler = null;
+		weakHandler = (sender, args) =>
+		{
+			if (weakThis.TryGetTarget(out var item))
+			{
+				handler(item, sender, args);
+			}
+			else
+			{
+				unsubscribe(sender, weakHandler);
+			}
+		};
+		return weakHandler;
 	}
 
 	private void OnTabDragStarting(object sender, TabViewTabDragStartingEventArgs args)

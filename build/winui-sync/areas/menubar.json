@@ -1,0 +1,36 @@
+{
+  "id": "menubar",
+  "title": "MenuBar",
+  "baseline": "1b5b1a0ccc05ce5c8b5931dc303666975b57f498",
+  "upstream": {
+    "sources": [
+      "controls/dev/MenuBar"
+    ],
+    "tests": [
+      "controls/dev/MenuBar/MenuBar_TestUI"
+    ]
+  },
+  "uno": {
+    "sources": [
+      "src/Uno.UI/UI/Xaml/Controls/MenuBar",
+      "src/Uno.UI/UI/Xaml/Automation/Peers/MenuBarAutomationPeer.cs"
+    ],
+    "tests": [
+      "src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/MenuBarTests"
+    ]
+  },
+  "mirror": [
+    {
+      "upstream": "controls/dev/MenuBar/MenuBar.xaml",
+      "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/MenuBar.xaml"
+    },
+    {
+      "upstream": "controls/dev/MenuBar/MenuBarItem.xaml",
+      "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/MenuBarItem.xaml"
+    },
+    {
+      "upstream": "controls/dev/MenuBar/MenuBar_themeresources.xaml",
+      "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/MenuBar_themeresources.xaml"
+    }
+  ]
+}

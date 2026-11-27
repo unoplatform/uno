@@ -137,8 +137,10 @@ internal partial class X11NativeElementHostingExtension : ContentPresenter.INati
 			host.UnregisterInputFromNativeSubwindow(nativeWindow.WindowId);
 			_ = XLib.XQueryTree(Display, nativeWindow.WindowId, out IntPtr root, out _, out var children, out _);
 			_ = XLib.XFree(children);
-			_ = X11Helper.XReparentWindow(Display, nativeWindow.WindowId, root, 0, 0);
+			// Unmapped first: reparenting a mapped window maps it again in the root, where a compositing WM picks it up
+			// as a top-level. Mutter then keeps a Composite redirect on it, and the re-attached window never shows.
 			_ = XLib.XUnmapWindow(Display, nativeWindow.WindowId);
+			_ = X11Helper.XReparentWindow(Display, nativeWindow.WindowId, root, 0, 0);
 			_ = XLib.XSync(Display, false);
 
 			_lastArrangeRect = null;

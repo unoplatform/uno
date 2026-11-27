@@ -23,6 +23,14 @@ internal partial class VisualTree : IWeakReferenceProvider
 
 	public Canvas? FocusVisualRoot { get; private set; }
 
+	/// <summary>
+	/// Holds the names set in code on elements that have no XAML namescope ancestor, standing in for
+	/// the public root visual's namescope that WinUI registers them into.
+	/// </summary>
+	internal NameScope CodeNameScope => _codeNameScope ??= new NameScope();
+
+	private NameScope? _codeNameScope;
+
 	public void EnsureFocusVisualRoot()
 	{
 		if (FocusVisualRoot == null)

@@ -30,6 +30,11 @@
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
 	</ItemGroup>
 
+	<!-- When to reference it: _UnoHotTestingReferenced (Uno.Common.targets). The tests that use it are excluded from the builds without it (Uno.DefaultItems.targets). -->
+	<ItemGroup Condition=" '$(_UnoHotTestingReferenced)' == 'true' ">
+		<_UnoProjectSystemPackageReference Include="Uno.HotTesting" ProjectSystem="true" PrivateAssets="all" />
+	</ItemGroup>
+
 	<Choose>
 		<When Condition="$(UnoSingleProject) == 'true'">
 			<ItemGroup Condition="$(IsUnoHead) == 'true'">

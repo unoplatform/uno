@@ -412,7 +412,17 @@ namespace Microsoft.UI.Xaml
 			// OnLaunched should execute only for full apps, not for individual islands.
 			if (CoreApplication.IsFullFledgedApp && !WasLaunched)
 			{
-				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetLaunchArguments(appInstance)));
+				try
+				{
+					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetLaunchArguments(appInstance)));
+				}
+				catch (Exception e)
+				{
+					if (!RaiseRecoverableUnhandledException(e))
+					{
+						throw;
+					}
+				}
 			}
 
 			WasLaunched = true;
@@ -450,6 +460,7 @@ namespace Microsoft.UI.Xaml
 #if __SKIA__
 			SystemThemeHelper.HighContrastChanged += OnHighContrastChanged;
 #endif
+			AccentColorHelper.AccentColorChanged += OnAccentColorChanged;
 
 			InitializeTextScaling();
 
@@ -464,8 +475,13 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
-
+		/// <returns>Whether a handler set <see cref="UnhandledExceptionEventArgs.Handled"/>.</returns>
+		internal bool RaiseRecoverableUnhandledException(Exception e)
+		{
+			var args = new UnhandledExceptionEventArgs(e, false);
+			UnhandledException?.Invoke(this, args);
+			return args.Handled;
+		}
 
 		private void InitializeTextScaling()
 		{
@@ -485,8 +501,23 @@ namespace Microsoft.UI.Xaml
 			// walking all roots) when the effective theme actually changed. When the app theme is
 			// explicit (m_requestedTheme != None), GetTheme() is unchanged by an OS flip and the change
 			// is suppressed — the FrameworkTheming-native form of the old IsThemeSetExplicitly guard.
-			WinUICoreServices.Instance.Theming.OnThemeChanged();
+			//
+			// Some platforms piggyback accent color changes on theme change events. Refresh the cached accent
+			// first so OnThemeChanged reads the new one; when it changed, OnAccentColorChanged does the update.
+			if (!AccentColorHelper.RefreshAccentColor())
+			{
+				WinUICoreServices.Instance.Theming.OnThemeChanged();
+				UISettings.OnColorValuesChanged();
+			}
+		}
 
+		private void OnAccentColorChanged(object sender, EventArgs e)
+		{
+			// MUX: CJupiterWindow's UISettings.ColorValuesChanged handler runs CJupiterControl::OnThemeChanged,
+			// which reaches FrameworkTheming::OnThemeChanged and rebuilds the accent color resources.
+			// Forced like DefaultStyles::RefreshImmersiveColors, as Uno's accent override can change the
+			// shades while the accent itself stays the same.
+			WinUICoreServices.Instance.Theming.OnThemeChanged(forceUpdate: true);
 			UISettings.OnColorValuesChanged();
 		}
 
@@ -871,22 +902,7 @@ namespace Microsoft.UI.Xaml
 					}
 				}
 
-				// Force a schedule to let the dotnet exports be initialized properly
-				var launch = new TaskCompletionSource();
-				currentApp.DeferredLaunch = launch.Task;
-				DispatcherQueue.Main.TryEnqueue(() =>
-				{
-					try
-					{
-						currentApp.PrepareOnLaunched();
-						launch.SetResult();
-					}
-					catch (Exception e)
-					{
-						typeof(Application).LogError()?.Error("OnLaunched failed", e);
-						launch.SetException(e);
-					}
-				});
+				currentApp.PrepareOnLaunched();
 			}
 			else
 			{
@@ -899,12 +915,6 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal Task FontPreloadTask { get; private set; }
-
-		/// <summary>
-		/// On the browser, where <see cref="OnLaunched"/> runs after <see cref="Start(Func{ApplicationInitializationCallbackParams, Application})"/>
-		/// returns: completes once it has run, or faults with what it threw, so the host can surface the failure.
-		/// </summary>
-		internal Task? DeferredLaunch { get; private set; }
 
 		private void PrepareOnLaunched()
 		{

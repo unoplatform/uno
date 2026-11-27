@@ -12,6 +12,13 @@ internal sealed class WebGpuCanvasVisual(WebGpuCanvasElement owner, Compositor c
 {
 	internal override bool CanPaint() => true;
 
+	// The canvas paints over the whole visual, which the inherited background and ring don't describe.
+	private protected override bool TryBuildPaintedGeometry(out Uno.UI.Composition.Drawing.IGeometry? geometry)
+	{
+		geometry = null;
+		return false;
+	}
+
 	internal override void Paint(in PaintingSession session)
 	{
 		base.Paint(in session);

@@ -19,10 +19,10 @@ one diff. No specific file paths from the change that triggered it.
 
 ---
 
-## 2026-06-24 — Generated DependencyProperty fields are expected public surface
+## 2026-06-24 — Generated DependencyProperty identifiers are expected public surface
 - **Lens:** contract
-- **Lesson:** `[GeneratedDependencyProperty]` emits `public static DependencyProperty …Property` fields and public CLR accessors by design; they mirror WinUI and are required by the property system.
-- **Apply:** Don't flag generated `…Property` fields or their accessors as gratuitous public surface or a contract-minimality issue. See `.claude/rules/dependency-properties.md`.
+- **Lesson:** `[GeneratedDependencyProperty]` emits the `static DependencyProperty …Property` identifiers (get-only properties, with the accessibility of the partial CLR property or `Get…` method) and implements the partial CLR accessors by design; they mirror WinUI and are required by the property system.
+- **Apply:** Don't flag generated `…Property` identifiers or their accessors as gratuitous public surface or a contract-minimality issue. See `.claude/rules/dependency-properties.md`.
 
 ## 2026-06-24 — A guard-only change is not a root-cause fix
 - **Lens:** skeptic
@@ -63,3 +63,8 @@ one diff. No specific file paths from the change that triggered it.
 - **Lens:** all
 - **Lesson:** For a GC-dependent runtime test that could flake under conservative GC (WASM, mobile), the panel proposed bailing out with `Assert.Inconclusive` when collection fails, citing existing tests that do it. Nothing in CI or triage watches inconclusive results: they are absent from the failure list and the console never prints them, so the test silently stops testing on that platform.
 - **Apply:** Never suggest `Assert.Inconclusive` (or an existing test that uses it) as the way to absorb a flaky precondition. Make the assert robust instead, e.g. derive the expected value from what was measured (count the surviving `WeakReference`s) with a floor that fails visibly, or gate the test explicitly with `[PlatformCondition]`.
+
+## 2026-11-23 — A disposed SerialDisposable disposes every later assignment
+- **Lens:** all
+- **Lesson:** Uno's `SerialDisposable` (`Uno.Disposables`) follows Rx semantics: after `Dispose()`, setting `.Disposable = x` disposes `x` immediately. Ported controls that call `revoker.Dispose()` at the top of `OnApplyTemplate` and then assign a new subscription end up with no subscription at all. All eight lenses reviewed a change that assigned such a revoker and passed it; the handlers it added were silently unsubscribed, and a leak test passed partly because nothing stayed subscribed. Only an end-to-end test of the handler firing caught it.
+- **Apply:** When a change subscribes through a `SerialDisposable`, check whether the same instance is ever `Dispose()`d before (or while) it is reused; a revoker that is reset to revoke the previous subscription must use `.Disposable = null`, not `Dispose()` (keep `Dispose()` for final teardown). Ask for a test that observes the handler running, not only one that observes the subscriber being released.

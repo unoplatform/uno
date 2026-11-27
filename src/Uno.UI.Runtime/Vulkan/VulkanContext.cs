@@ -268,8 +268,7 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	}
 
 	/// <summary>
-	/// Lightweight resize: only recreates the intermediate render image and cached SKSurface.
-	/// The swapchain handles its own resize via VK_ERROR_OUT_OF_DATE_KHR during presentation.
+	/// Lightweight resize: recreates the intermediate render image, and the swapchain when its size differs.
 	/// Use for window resize events where only the render target dimensions change.
 	/// Must be called while holding the device lock.
 	/// </summary>
@@ -282,6 +281,20 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 
 		_renderImage?.Dispose();
 		CreateRenderImage(width, height);
+
+		// Drivers aren't required to report a resized window's swapchain as out of date, and Mesa's Win32 one (Dozen,
+		// the only Vulkan driver on Windows on ARM) never does: the frame would be blitted into the old size for good.
+		if (!_display.IsSwapchainMissing && (_display.Size.Width != width || _display.Size.Height != height))
+		{
+			try
+			{
+				_display.RecreateSwapchainSafe();
+			}
+			catch (VulkanException)
+			{
+				// BlitAndPresent recovers a swapchain that couldn't be recreated here.
+			}
+		}
 	}
 
 	// TransitionLayout submits commands, so this needs the device lock.

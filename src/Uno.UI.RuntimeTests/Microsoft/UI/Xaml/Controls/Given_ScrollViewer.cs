@@ -1554,6 +1554,128 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(new Point(0, 0), rect.TransformToVisual(SUT).TransformPoint(new Point(0, 0)));
 		}
 
+#if HAS_UNO // uses internal ScrollContentPresenter.Set
+		[TestMethod]
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+		[Ignore("We're only testing managed scrollers.")]
+#endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24643")]
+		public async Task When_Viewport_Resized_During_Touch_Scroll_Then_Offset_Not_Reverted()
+		{
+			Border content;
+			var SUT = new ScrollViewer
+			{
+				Height = 300,
+				Width = 100,
+				Content = content = new Border { Height = 1000, Width = 100 }
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.ChangeView(null, 700, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+
+			var scp = SUT.FindVisualChildByType<ScrollContentPresenter>();
+
+			// A touch press drops the offset intent armed by the ChangeView above.
+			SUT.ClearOffsetIntents();
+
+			// Touch / inertia moves report intermediate offsets, which are pushed to the SV's VerticalOffset only asynchronously.
+			scp.Set(verticalOffset: 100, isIntermediate: true, isTouch: true);
+
+			// A layout pass (e.g. a collapsing header) happens before the deferred update: the content shrinks a bit and the viewport changes.
+			SUT.Height = 299;
+			content.Height = 998;
+			SUT.UpdateLayout();
+
+			Assert.AreEqual(100, scp.VerticalOffset, 0.5);
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(100, SUT.VerticalOffset, 0.5);
+		}
+
+		[TestMethod]
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+		[Ignore("We're only testing managed scrollers.")]
+#endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24643")]
+		public async Task When_Viewport_Resized_During_Touch_Scroll_Then_Overscroll_Trimmed_From_Presenter_Offset_Vertical()
+		{
+			Border content;
+			var SUT = new ScrollViewer
+			{
+				Height = 300,
+				Width = 100,
+				Content = content = new Border { Height = 1000, Width = 100 }
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.ChangeView(null, 600, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+
+			var scp = SUT.FindVisualChildByType<ScrollContentPresenter>();
+			SUT.ClearOffsetIntents();
+
+			// The touch move runs ahead of the (deferred) committed VerticalOffset of 600.
+			scp.Set(verticalOffset: 650, isIntermediate: true, isTouch: true);
+			Assert.AreEqual(600, SUT.VerticalOffset, 0.5);
+
+			// 650 + 299 overflows the new 939 extent by 10, so the trim must land on 640 (a trim from the committed 600 lands on 590).
+			SUT.Height = 299;
+			content.Height = 939;
+			SUT.UpdateLayout();
+
+			Assert.AreEqual(640, scp.VerticalOffset, 0.5);
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(640, SUT.VerticalOffset, 0.5);
+		}
+
+		[TestMethod]
+#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
+		[Ignore("We're only testing managed scrollers.")]
+#endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24643")]
+		public async Task When_Viewport_Resized_During_Touch_Scroll_Then_Overscroll_Trimmed_From_Presenter_Offset_Horizontal()
+		{
+			Border content;
+			var SUT = new ScrollViewer
+			{
+				Height = 100,
+				Width = 300,
+				HorizontalScrollMode = ScrollMode.Enabled,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+				VerticalScrollMode = ScrollMode.Disabled,
+				VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
+				Content = content = new Border { Height = 100, Width = 1000 }
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.ChangeView(600, null, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+
+			var scp = SUT.FindVisualChildByType<ScrollContentPresenter>();
+			SUT.ClearOffsetIntents();
+
+			scp.Set(horizontalOffset: 650, isIntermediate: true, isTouch: true);
+			Assert.AreEqual(600, SUT.HorizontalOffset, 0.5);
+
+			SUT.Width = 299;
+			content.Width = 939;
+			SUT.UpdateLayout();
+
+			Assert.AreEqual(640, scp.HorizontalOffset, 0.5);
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(640, SUT.HorizontalOffset, 0.5);
+		}
+#endif
+
 #if HAS_UNO // uses internal ToMatrix
 		[TestMethod]
 		public async Task When_SCP_TransformToVisual()
@@ -3319,6 +3441,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					}
 				};
 
+				// The frames between the input and the one the curve starts on are as long as the lane renders them:
+				// software-rendered lanes run well below 30Hz.
+				var frames = 0;
+				EventHandler<object> onRendering = (_, _) => frames++;
+
 				var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
 				using var mouse = input.GetMouse();
 				mouse.MoveTo(bounds.GetCenter());
@@ -3331,12 +3458,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				settledMs = null;
 				stopwatch.Start();
-				mouse.WheelDown();
+				Microsoft.UI.Xaml.Media.CompositionTarget.Rendering += onRendering;
+				try
+				{
+					mouse.WheelDown();
 
-				await WindowHelper.WaitFor(() => settledMs is not null, timeoutMS: 3000, message: "the wheel scroll never settled");
+					await WindowHelper.WaitFor(() => settledMs is not null, timeoutMS: 3000, message: "the wheel scroll never settled");
+				}
+				finally
+				{
+					Microsoft.UI.Xaml.Media.CompositionTarget.Rendering -= onRendering;
+				}
 
-				// 220ms of curve, plus a few frames (at as low as 30Hz) between the input and the frame it starts on.
-				Assert.IsTrue(settledMs <= 360, $"the scroll settled {settledMs:F0}ms after the last notch");
+				// 220ms of curve, plus a few frames (counted at no faster than 30Hz) between the input and the frame it
+				// starts on. Notches that stacked their curves instead would take about 880ms.
+				var frameMs = Math.Max(1000d / 30, settledMs!.Value / Math.Max(frames, 1));
+				var boundMs = 220 + 4 * frameMs;
+				Assert.IsTrue(settledMs <= boundMs, $"the scroll settled {settledMs:F0}ms after the last notch (bound {boundMs:F0}ms at {frameMs:F0}ms per frame over {frames} frames)");
 				Assert.AreEqual(4 * 30, SUT.VerticalOffset, 0.01, "four notches of 15% of the viewport");
 			}
 			finally

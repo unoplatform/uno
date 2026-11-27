@@ -48,7 +48,7 @@ Parse the intent and determine whether this is a **full control port** or a **sn
    - Associated types: `ControlNameTemplateSettings.h/.cpp`, `ControlNameAutomationPeer.h/.cpp`, `ControlNameEventArgs.h/.cpp` (auto-detect from the same directory)
    - Test files: Look for `*ControlName*Test*` files in nearby test directories
 
-3. **Determine the MUX reference tag/commit** (skip this for files in an area tracked by the WinUI port sync, `build/winui-sync/areas.json`: their headers name only the upstream file, because the area's baseline records the version):
+3. **Determine the MUX reference tag/commit** (skip this for files in an area tracked by the WinUI port sync, `build/winui-sync/areas/`: their headers name only the upstream file, because the area's baseline records the version):
    - Run `git -C <winui-source-dir> rev-parse --short HEAD` where `<winui-source-dir>` is the root of the WinUI git repository (the directory containing the `.git` folder). Use this single commit hash for all `// MUX Reference` headers in the ported files.
    - Run this command **before writing any files** so the correct hash is known up front.
    - If the directory is not a git repository or the command fails, fall back to any tag embedded in the path (e.g., `release/1.6-stable`), or leave the value as `unknown` with a `TODO Uno:` note.
@@ -204,7 +204,7 @@ Apply these conversions systematically:
 | `m_expandingEventSource(*this, nullptr)` | `Expanding?.Invoke(this, null)` |
 | `static constexpr auto c_name = L"Name"sv` | `private const string c_name = "Name"` |
 | `winrt::get_self<::Settings>(TemplateSettings())` | `TemplateSettings` (direct access) |
-| `MUX_ASSERT(expr)` | `MUX_ASSERT(expr)` (with `using static Microsoft.UI.Xaml.Controls._Tracing;`) |
+| `MUX_ASSERT(expr)` | `MUX_ASSERT(expr)` (with `using static Microsoft.UI.Xaml.Controls._Tracing;`) — it's `[Conditional("DEBUG")]`, so the whole call **and its arguments** vanish in Release; hoist side effects (`MUX_ASSERT(x.Focus(...))`) into a local first |
 | `auto_revoke` event subscription | `SerialDisposable` pattern (see section 2.5) |
 | C++ destructor (`~ControlName()`) | **No finalizer** — comment out with `TODO Uno:` (see section 2.6) |
 | `winrt::hstring` | `string` |
@@ -352,6 +352,8 @@ using ITextSelection = Windows.UI.Text.ITextSelection;
 
 #### 2.9. Dependency Properties (in `.Properties.cs`)
 
+Properties ported from WinUI (`ControlName.properties.cpp` or WinUI's generated property code) keep the 1:1 manual `DependencyProperty.Register` form: one registration per WinUI property, with the same name, type, default value, metadata and callback, so the port stays comparable with the C++ source property by property. Defaults and setters use the cached boxes from `Uno.UI.Helpers.Boxes`:
+
 ```csharp
 /// <summary>
 /// Gets or sets a value indicating whether the control is expanded.
@@ -359,7 +361,7 @@ using ITextSelection = Windows.UI.Text.ITextSelection;
 public bool IsExpanded
 {
     get => (bool)GetValue(IsExpandedProperty);
-    set => SetValue(IsExpandedProperty, value);
+    set => SetValue(IsExpandedProperty, Boxer.Box(value));
 }
 
 public static DependencyProperty IsExpandedProperty { get; } =
@@ -368,8 +370,23 @@ public static DependencyProperty IsExpandedProperty { get; } =
         typeof(bool),
         typeof(ControlName),
         new FrameworkPropertyMetadata(
-            false,
+            BoolBoxes.False,
             (s, e) => (s as ControlName)?.OnIsExpandedPropertyChanged(e)));
+```
+
+`[GeneratedDependencyProperty]` on a partial property is the recommended form for Uno-authored properties in `Uno.UI`, which have no WinUI source to mirror. Don't convert ported properties to it: it adds Uno-only behavior, such as a local value cache (on by default) and callbacks wired by name. The generator implements the property and declares and registers `IsExpandedProperty` (don't declare it yourself), and uses the cached boxes for defaults and setters. See `.claude/rules/dependency-properties.md` for attached properties, callback signatures and when to declare the identifier explicitly.
+
+```csharp
+/// <summary>
+/// Gets or sets a value indicating whether the control is expanded.
+/// </summary>
+[GeneratedDependencyProperty(DefaultValue = false, ChangedCallbackName = nameof(OnIsExpandedPropertyChanged))]
+public partial bool IsExpanded { get; set; }
+
+private void OnIsExpandedPropertyChanged(DependencyPropertyChangedEventArgs args)
+{
+    // ...
+}
 ```
 
 #### 2.10. TODO Comment Conventions

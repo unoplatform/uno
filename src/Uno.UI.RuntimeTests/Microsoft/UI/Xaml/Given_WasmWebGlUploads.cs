@@ -7,12 +7,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 [RunsOnUIThread]
 public class Given_WasmWebGlUploads
 {
+	// The fix lives in uno_gl_shim.c, which puts it on the page's global at startup.
 	// Skia uploads glyph atlas patches with UNPACK_ROW_LENGTH set, from a view covering only width * height bytes.
 	private const string StridedUploadScript = """
 		(function () {
 			const gl = document.createElement('canvas').getContext('webgl2');
 			if (!gl) { return 'no-webgl2'; }
-			globalThis.Uno.UI.Runtime.EmscriptenWebGL.fixStridedUploads(gl);
+			globalThis.unoGlFixStridedUploads(gl);
 
 			const texture = gl.createTexture();
 			gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -41,7 +42,7 @@ public class Given_WasmWebGlUploads
 				texImage2D() { sizes.push(arguments[8].byteLength); },
 				texSubImage2D() { sizes.push(arguments[8].byteLength); },
 			};
-			globalThis.Uno.UI.Runtime.EmscriptenWebGL.fixStridedUploads(gl);
+			globalThis.unoGlFixStridedUploads(gl);
 
 			const heap = new Uint8Array(64 * 64);
 			gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);

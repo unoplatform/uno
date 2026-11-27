@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Foundation;
-
 
 namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 {
@@ -40,7 +40,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		}
 
 		[JSExport]
-		public static int DispatchStateChanged(string id, string name, bool isInput, bool isConnected)
+		public static void DispatchStateChanged(string id, string name, bool isInput, bool isConnected)
 		{
 			if (isInput)
 			{
@@ -66,8 +66,14 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 					outputs.ForEach(provider => provider.OnDeviceRemoved(id));
 				}
 			}
+		}
 
-			return 0;
+		[JSExport]
+		public static Task DispatchStateChangedAsync(string id, string name, bool isInput, bool isConnected)
+		{
+			DispatchStateChanged(id, name, isInput, isConnected);
+
+			return Task.CompletedTask;
 		}
 
 		internal static partial class NativeMethods

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
@@ -229,12 +230,14 @@ public class Given_TextBlock_TextScaling
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+	[DynamicDependency("GetHostForRoot", "Uno.UI.Hosting.XamlRootMap", "Uno.UI")]
+	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("RaiseConfigurationChanges", "Uno.UI.Runtime.Android.ApplicationActivity", "Uno.UI.Runtime.Android")]
+	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "The Android runtime is only present on the platform this test runs on.")]
 	public async Task When_ConfigurationRefresh_Reevaluates_TextScale()
 	{
 		var activityType = GetApplicationActivityType();
-		var activity = activityType
-			.GetProperty("Instance", BindingFlags.NonPublic | BindingFlags.Static)
-			?.GetValue(null);
+		var activity = Windows_UI_Xaml.Given_ApplicationActivity.GetWindowActivity();
 		var raiseConfigurationChanges = activityType.GetMethod(
 			"RaiseConfigurationChanges",
 			BindingFlags.NonPublic | BindingFlags.Instance);

@@ -33,8 +33,12 @@ namespace Uno.UI.Runtime {
 		private static managedOnFocus: any;
 		private static managedOnBlur: any;
 		private static managedOnSentinelFocus: any;
+		private static isFocusingFromManaged = false;
 
-		private static managedIsAutoEnableAccessibility: () => boolean;
+		private static managedIsAutoEnableAccessibility: any;
+
+		// FeatureConfiguration.AutomationPeer.AutoEnableAccessibility, read once: in MT the managed read is asynchronous.
+		private static autoEnableAccessibility: boolean = false;
 
 		private static createLiveElement(kind: string) {
 			const element = document.createElement("div");
@@ -67,26 +71,47 @@ namespace Uno.UI.Runtime {
 			}
 		}
 
-		public static setup() {
+		public static async setup() {
 			Accessibility.debugLog('[A11y] Accessibility.setup() — initializing accessibility subsystem');
+
+			const isMultithreaded = WebAssemblyThreading.isThreadingEnabled();
+
 			const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
 
 			// Wire up managed callbacks from WebAssemblyAccessibility.cs
 			const accessibilityExports = browserExports.Uno.UI.Runtime.WebAssemblyAccessibility;
-			this.managedEnableAccessibility = accessibilityExports.EnableAccessibility;
-			this.managedDisableAccessibility = accessibilityExports.DisableAccessibility;
-			this.managedIsAutoEnableAccessibility = accessibilityExports.IsAutoEnableAccessibility;
-			this.managedOnScroll = accessibilityExports.OnScroll;
-			this.managedOnInvoke = accessibilityExports.OnInvoke;
-			this.managedOnToggle = accessibilityExports.OnToggle;
-			this.managedOnRangeValueChange = accessibilityExports.OnRangeValueChange;
-			this.managedOnTextInput = accessibilityExports.OnTextInput;
-			this.managedOnTextSelectionChanged = accessibilityExports.OnTextSelectionChanged;
-			this.managedOnExpandCollapse = accessibilityExports.OnExpandCollapse;
-			this.managedOnSelection = accessibilityExports.OnSelection;
-			this.managedOnFocus = accessibilityExports.OnFocus;
-			this.managedOnBlur = accessibilityExports.OnBlur;
-			this.managedOnSentinelFocus = accessibilityExports.OnFocusSentinel;
+			this.managedEnableAccessibility = accessibilityExports.EnableAccessibilityAsync;
+
+			if (isMultithreaded) {
+				this.managedDisableAccessibility = accessibilityExports.DisableAccessibilityAsync;
+				this.managedIsAutoEnableAccessibility = accessibilityExports.IsAutoEnableAccessibilityAsync;
+				this.managedOnScroll = accessibilityExports.OnScrollAsync;
+				this.managedOnInvoke = accessibilityExports.OnInvokeAsync;
+				this.managedOnToggle = accessibilityExports.OnToggleAsync;
+				this.managedOnRangeValueChange = accessibilityExports.OnRangeValueChangeAsync;
+				this.managedOnTextInput = accessibilityExports.OnTextInputAsync;
+				this.managedOnTextSelectionChanged = accessibilityExports.OnTextSelectionChangedAsync;
+				this.managedOnExpandCollapse = accessibilityExports.OnExpandCollapseAsync;
+				this.managedOnSelection = accessibilityExports.OnSelectionAsync;
+				// The notification is applied later: one raised by a managed focus change would be stale and make managed focus chase itself.
+				this.managedOnFocus = (handle: number) => Accessibility.isFocusingFromManaged ? undefined : accessibilityExports.OnFocusAsync(handle);
+				this.managedOnBlur = accessibilityExports.OnBlurAsync;
+				this.managedOnSentinelFocus = accessibilityExports.OnFocusSentinelAsync;
+			} else {
+				this.managedDisableAccessibility = accessibilityExports.DisableAccessibility;
+				this.managedIsAutoEnableAccessibility = accessibilityExports.IsAutoEnableAccessibility;
+				this.managedOnScroll = accessibilityExports.OnScroll;
+				this.managedOnInvoke = accessibilityExports.OnInvoke;
+				this.managedOnToggle = accessibilityExports.OnToggle;
+				this.managedOnRangeValueChange = accessibilityExports.OnRangeValueChange;
+				this.managedOnTextInput = accessibilityExports.OnTextInput;
+				this.managedOnTextSelectionChanged = accessibilityExports.OnTextSelectionChanged;
+				this.managedOnExpandCollapse = accessibilityExports.OnExpandCollapse;
+				this.managedOnSelection = accessibilityExports.OnSelection;
+				this.managedOnFocus = accessibilityExports.OnFocus;
+				this.managedOnBlur = accessibilityExports.OnBlur;
+				this.managedOnSentinelFocus = accessibilityExports.OnFocusSentinel;
+			}
 
 			this.containerElement = document.getElementById("uno-body");
 
@@ -96,7 +121,8 @@ namespace Uno.UI.Runtime {
 			this.containerElement.appendChild(this.politeElement);
 			this.containerElement.appendChild(this.assertiveElement);
 
-			const autoEnable = this.managedIsAutoEnableAccessibility();
+			const autoEnable: boolean = await this.managedIsAutoEnableAccessibility();
+			this.autoEnableAccessibility = autoEnable;
 
 			if (!autoEnable) {
 				Accessibility.addEnableAccessibilityButton();
@@ -124,8 +150,10 @@ namespace Uno.UI.Runtime {
 				// The C# EnableAccessibility() has retry logic for when
 				// Window/RootElement aren't ready yet.
 				Accessibility.debugLog('[A11y] Auto-enabling accessibility (FeatureConfiguration.AutomationPeer.AutoEnableAccessibility = true)');
-				this.managedEnableAccessibility();
+				// Set up first: a failed enable is rolled back through resetSemanticsRoot(), which removes them.
 				LiveRegion.initialize();
+				this.managedEnableAccessibility()
+					.catch(() => Accessibility.debugWarn("[A11y] Couldn't auto-enable accessibility"));
 			}
 		}
 
@@ -314,7 +342,7 @@ namespace Uno.UI.Runtime {
 			this.isDepartingFocus = false;
 			LiveRegion.teardown();
 
-			if (!this.managedIsAutoEnableAccessibility() && !Accessibility.isEnableAccessibilityButtonActive()) {
+			if (!this.autoEnableAccessibility && !Accessibility.isEnableAccessibilityButtonActive()) {
 				Accessibility.addEnableAccessibilityButton();
 			}
 		}
@@ -329,12 +357,18 @@ namespace Uno.UI.Runtime {
 
 		private static onEnableAccessibilityButtonClicked(evt: MouseEvent) {
 			this.containerElement.removeChild(this.enableAccessibilityButton);
-			this.managedEnableAccessibility();
 
-			// Initialize subsystem TypeScript modules
+			// In MT the managed side enables later; the live regions are set up now so the announcement is not lost.
+			// A failed enable is rolled back through resetSemanticsRoot(), which removes them and puts the button back.
 			LiveRegion.initialize();
 
-			this.announceAssertive("Accessibility enabled successfully.");
+			this.managedEnableAccessibility()
+				.then(() => {
+					if (!Accessibility.isEnableAccessibilityButtonActive()) {
+						this.announceAssertive("Accessibility enabled successfully.");
+					}
+				})
+				.catch(() => Accessibility.debugWarn("[A11y] Couldn't enable accessibility"));
 		}
 
 		/**
@@ -348,19 +382,42 @@ namespace Uno.UI.Runtime {
 			// into the ScrollViewer through the scroll listener.
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.focus({ preventScroll: true });
+				Accessibility.focusNodeFromManaged(element);
 			} else {
 				// Element might not be in DOM yet due to batched/deferred mutations.
 				// Retry once after the next animation frame.
 				requestAnimationFrame(() => {
 					const retryElement = Accessibility.getSemanticElementByHandle(handle);
 					if (retryElement) {
-						retryElement.focus({ preventScroll: true });
+						Accessibility.focusNodeFromManaged(retryElement);
 					} else {
 						Accessibility.debugWarn(`[A11y] TS focusSemanticElement: element NOT FOUND handle=${handle} (after retry)`);
 					}
 				});
 			}
+		}
+
+		private static focusNodeFromManaged(element: HTMLElement) {
+			Accessibility.isFocusingFromManaged = true;
+			try {
+				Accessibility.focusNode(element);
+			} finally {
+				Accessibility.isFocusingFromManaged = false;
+			}
+		}
+
+		/**
+		 * Focuses a semantic node. A node made of focusable parts (a split button) keeps focus on the part
+		 * that has it, or delegates it to its focus target part.
+		 */
+		public static focusNode(element: HTMLElement, preventScroll: boolean = true) {
+			if (element.dataset.unoFocusDelegate === 'true') {
+				if (!element.contains(document.activeElement)) {
+					SemanticElements.getSplitButtonFocusTarget(element)?.focus({ preventScroll });
+				}
+				return;
+			}
+			element.focus({ preventScroll });
 		}
 
 		/**
@@ -449,6 +506,11 @@ namespace Uno.UI.Runtime {
 		public static updateRovingTabindex(groupHandle: number, activeHandle: number) {
 			const activeElement = Accessibility.getSemanticElementByHandle(activeHandle);
 			if (!activeElement) {
+				return;
+			}
+
+			// A node made of focusable parts (a split button) is not a group member and never a tab stop itself.
+			if (activeElement.dataset.unoFocusDelegate === 'true') {
 				return;
 			}
 
@@ -601,14 +663,22 @@ namespace Uno.UI.Runtime {
 			// Use child.remove() instead of parent.removeChild(child) to handle
 			// cases where the child's actual DOM parent differs from the semantic parent
 			// (e.g., after re-parenting or when duplicate IDs existed previously).
+			SemanticElements.clearActiveDescendantTo(child);
 			child.remove();
+			SemanticElements.schedulePruneDetachedActiveDescendantOwners();
 		}
 
 		public static updateIsFocusable(handle: number, isFocusable: boolean): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
 				Accessibility.debugLog(`[A11y] TS updateIsFocusable: handle=${handle} focusable=${isFocusable}`);
-				Accessibility.updateElementFocusability(element, isFocusable);
+				if (element.dataset.unoFocusDelegate === 'true') {
+					// The group itself is never a tab stop; remember the request so re-enabling honors it.
+					element.dataset.unoFocusable = String(isFocusable);
+					SemanticElements.refreshSplitButtonState(element);
+				} else {
+					Accessibility.updateElementFocusability(element, isFocusable);
+				}
 			}
 			// Silently skip if element doesn't exist in the semantic DOM.
 			// Many controls get IsFocusable updates but aren't in the semantic
@@ -760,7 +830,7 @@ namespace Uno.UI.Runtime {
 		public static updateAriaPressed(handle: number, pressed: string): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.setAttribute("aria-pressed", pressed);
+				(SemanticElements.getSplitButtonPart(element, 'primary') ?? element).setAttribute("aria-pressed", pressed);
 			}
 		}
 
@@ -1035,6 +1105,9 @@ namespace Uno.UI.Runtime {
 				element.style.top = `${y}px`;
 				element.style.width = `${width}px`;
 				element.style.height = `${height}px`;
+				if (element.dataset.unoFocusDelegate === 'true') {
+					SemanticElements.layoutSplitButtonParts(element);
+				}
 			}
 		}
 

@@ -152,7 +152,7 @@ namespace Microsoft.UI.Xaml.Controls
 			name: "Orientation",
 			propertyType: typeof(Orientation),
 			ownerType: typeof(DatePicker),
-			typeMetadata: new FrameworkPropertyMetadata(default(Orientation)));
+			typeMetadata: new FrameworkPropertyMetadata(Orientation.Horizontal));
 
 		public string MonthFormat
 		{

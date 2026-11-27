@@ -229,6 +229,10 @@
 			"description": "Provides an explicit override for the version of Uno.HotDesign to use.",
 			"type": "nuget-version"
 		},
+		"UnoHotTestingVersion": {
+			"description": "Provides an explicit override for the version of Uno.HotTesting to use.",
+			"type": "nuget-version"
+		},
 		"UnoAppMcpVersion": {
 			"description": "Provides an explicit override for the version of Uno.UI.App.Mcp to use.",
 			"type": "nuget-version"
@@ -258,8 +262,12 @@
 			"type": "bool"
 		},
 		"UnoDisableHotTesting": {
-			"description": "When set to true, the Uno.Sdk will not implicitly reference Uno.HotTesting.Reactive in non-optimized builds of projects using the MVUX feature.",
+			"description": "When set to true, the Uno.Sdk will not implicitly reference Uno.HotTesting (HotTesting feature) or Uno.HotTesting.Reactive (MVUX feature) in non-optimized builds. The Hot Testing tests folder is then left out of every build.",
 			"type": "bool"
+		},
+		"HotTestingTestsFolder": {
+			"description": "The project folder that holds the app's Hot Testing tests. It is left out of optimized builds, of WinAppSDK targets, and of every build when UnoDisableHotTesting is true. Defaults to Tests when the HotTesting feature is enabled.",
+			"type": "string"
 		},
 		"UnoCoreLoggingSingletonVersion": {
 			"description": "Provides an explicit override for the version of Uno.Core.Logging.Singleton to use.",
@@ -623,6 +631,9 @@
 				},
 				"Reactor": {
 					"description": "Adds Microsoft.UI.Reactor, the declarative C# UI framework, through the Uno.Microsoft.UI.Reactor package. Uno Platform targets only: not supported on WinAppSDK."
+				},
+				"HotTesting": {
+					"description": "Adds Uno.HotTesting, for writing tests inside the app, in non-optimized builds of the Uno Platform targets (not WinAppSDK). The tests folder (HotTestingTestsFolder, Tests by default) is left out of the builds without it."
 				},
 				"Skia": {
 					"description": "Adds support for SkiaSharp.",

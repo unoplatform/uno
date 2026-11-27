@@ -554,6 +554,7 @@ public class StackPanelIntegrationTests
 		await TestServices.WindowHelper.WaitForIdle();
 	}
 
+	// TODO Uno: NOT PORTED - needs InputHelper.PressHoldAndPanFromCenter (press-and-hold drag injection).
 	//[TestMethod]
 	//public async Task ValidateReorderListViewWithStackPanel()
 	//{
@@ -677,6 +678,7 @@ public class StackPanelIntegrationTests
 		TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison);
 	}
 
+	// TODO Uno: NOT PORTED - ValidateBoundingRectangle* need a UIA client (IUIAutomation) and OneCoreTransforms.
 	//[TestMethod]
 	//public async Task ValidateBoundingRectangle()
 	//{

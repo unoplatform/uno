@@ -51,14 +51,6 @@ partial class StackLayout
 		typeof(StackLayout),
 		new FrameworkPropertyMetadata(DoubleBoxes.Zero, OnPropertyChanged));
 
-	// WinUI exposes DisableVirtualization as a plain property (no DP). Kept as the inverse of
-	// IsVirtualizationEnabled so existing consumers keep compiling.
-	public bool DisableVirtualization
-	{
-		get => !IsVirtualizationEnabled;
-		set => IsVirtualizationEnabled = !value;
-	}
-
 	// [MUX_PREVIEW] in StackLayout.idl — default true.
 	/// <summary>
 	/// Gets or sets a value that indicates whether the layout virtualizes items.

@@ -31,11 +31,11 @@ namespace MyProject
 	public sealed partial class GlobalStaticResources
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_MyResourceDictionary_147dbe765eba23608d8cd771f768c620 = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_MyResourceDictionary_147dbe765eba23608d8cd771f768c620 = "ms-appx:///TestProject/0/MyResourceDictionary.xaml";
+		private const string __baseUri_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df = "ms-appx:///TestProject/0/MyResourceDictionary.xaml";
 		// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.
-		internal sealed class ResourceDictionarySingleton__MyResourceDictionary_147dbe765eba23608d8cd771f768c620 : global::Uno.UI.IXamlResourceDictionaryProvider
+		internal sealed class ResourceDictionarySingleton__MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df : global::Uno.UI.IXamlResourceDictionaryProvider
 		{
 			private static global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 			private static global::Uno.UI.IXamlResourceDictionaryProvider __that;
@@ -45,7 +45,7 @@ namespace MyProject
 				{
 					if (__that == null)
 					{
-						__that = new ResourceDictionarySingleton__MyResourceDictionary_147dbe765eba23608d8cd771f768c620();
+						__that = new ResourceDictionarySingleton__MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df();
 					}
 
 					return __that;
@@ -53,22 +53,22 @@ namespace MyProject
 			}
 
 			private readonly global::Uno.UI.Xaml.XamlParseContext __ParseContext_;
-			internal static global::Uno.UI.Xaml.XamlParseContext GetParseContext() => ((ResourceDictionarySingleton__MyResourceDictionary_147dbe765eba23608d8cd771f768c620)Instance).__ParseContext_;
+			internal static global::Uno.UI.Xaml.XamlParseContext GetParseContext() => ((ResourceDictionarySingleton__MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df)Instance).__ParseContext_;
 
-			public ResourceDictionarySingleton__MyResourceDictionary_147dbe765eba23608d8cd771f768c620()
+			public ResourceDictionarySingleton__MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df()
 			{
 				__ParseContext_ = global::MyProject.GlobalStaticResources.__ParseContext_;
 			}
 
-			private global::Microsoft.UI.Xaml.ResourceDictionary _MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary;
+			private global::Microsoft.UI.Xaml.ResourceDictionary _MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary;
 
-			internal global::Microsoft.UI.Xaml.ResourceDictionary MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary
+			internal global::Microsoft.UI.Xaml.ResourceDictionary MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary
 			{
 				get
 				{
-					if (_MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary == null)
+					if (_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary == null)
 					{
-						_MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary = 
+						_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary = 
 						new global::Microsoft.UI.Xaml.ResourceDictionary
 						{
 							IsParsing = true,
@@ -87,17 +87,17 @@ namespace MyProject
 							},
 						}
 						;
-						_MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary.Source = new global::System.Uri("ms-resource:///Files/0/MyResourceDictionary.xaml");
-						_MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary.CreationComplete();
+						_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary.Source = new global::System.Uri("ms-resource:///Files/0/MyResourceDictionary.xaml");
+						_MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary.CreationComplete();
 					}
-					return _MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary;
+					return _MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary;
 				}
 			}
 
-			global::Microsoft.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary;
+			global::Microsoft.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary;
 		}
 
-		internal static global::Microsoft.UI.Xaml.ResourceDictionary MyResourceDictionary_147dbe765eba23608d8cd771f768c620_ResourceDictionary => ResourceDictionarySingleton__MyResourceDictionary_147dbe765eba23608d8cd771f768c620.Instance.GetResourceDictionary();
+		internal static global::Microsoft.UI.Xaml.ResourceDictionary MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df_ResourceDictionary => ResourceDictionarySingleton__MyResourceDictionary_7b2c1860cad238fddbad1631e88b57df.Instance.GetResourceDictionary();
 	}
 }
 namespace MyProject.__Resources
@@ -105,7 +105,7 @@ namespace MyProject.__Resources
 }
 namespace MyProject
 {
-	static class MyResourceDictionary_147dbe765eba23608d8cd771f768c620XamlApplyExtensions
+	static class MyResourceDictionary_7b2c1860cad238fddbad1631e88b57dfXamlApplyExtensions
 	{
 	}
 }
