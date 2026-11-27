@@ -1444,15 +1444,24 @@ namespace Microsoft.UI.Xaml.Controls
 
 					TryRepairContentConnection(containerAsContentControl, item);
 
-					// Set the datacontext first, then the binding.
-					// This avoids the inner content to go through a partial content being
-					// the result of the fallback value of the binding set below.
-					SetContent(containerAsContentControl, ContentControl.DataContextProperty);
-
-					if (!containerAsContentControl.IsContainerFromTemplateRoot && containerAsContentControl.GetBindingExpression(ContentControl.ContentProperty) == null)
+					if (item is UIElement && !containerAsContentControl.IsContainerFromTemplateRoot)
 					{
-						containerAsContentControl.SetBinding(ContentControl.ContentProperty, new Binding());
-						containerAsContentControl.SetValue(ItemHasManualBindingExpressionProperty, true);
+						// As on WinUI, a UIElement item inherits the ItemsControl's DataContext rather than being its own.
+						containerAsContentControl.ClearValue(DataContextProperty);
+						containerAsContentControl.Content = item;
+					}
+					else
+					{
+						// Set the datacontext first, then the binding.
+						// This avoids the inner content to go through a partial content being
+						// the result of the fallback value of the binding set below.
+						SetContent(containerAsContentControl, ContentControl.DataContextProperty);
+
+						if (!containerAsContentControl.IsContainerFromTemplateRoot && containerAsContentControl.GetBindingExpression(ContentControl.ContentProperty) == null)
+						{
+							containerAsContentControl.SetBinding(ContentControl.ContentProperty, new Binding());
+							containerAsContentControl.SetValue(ItemHasManualBindingExpressionProperty, true);
+						}
 					}
 				}
 			}
