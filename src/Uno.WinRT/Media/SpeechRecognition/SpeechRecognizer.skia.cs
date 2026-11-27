@@ -31,6 +31,8 @@ public partial class SpeechRecognizer : IDisposable
 	private bool _isDisposed;
 	private SynchronizationContext? _eventContext;
 	private bool _isStopRequestedDuringStartup;
+	private ConstraintPlan? _compiledConstraints;
+	private ConstraintPlan _activeConstraints = ConstraintPlan.Create(Array.Empty<ISpeechRecognitionConstraint>());
 
 	private SessionKind _session;
 	private int _utteranceId;
@@ -132,10 +134,21 @@ public partial class SpeechRecognizer : IDisposable
 				throw new InvalidOperationException("Constraints can only be compiled while the speech recognizer is idle or paused.");
 			}
 
-			return _extension is null || _isLanguageSupported
-				? SpeechRecognitionResultStatus.Success
-				: SpeechRecognitionResultStatus.TopicLanguageNotSupported;
+			_compiledConstraints = ConstraintPlan.Create(Constraints);
+			return GetCompilationStatus(_compiledConstraints);
 		}
+	}
+
+	private SpeechRecognitionResultStatus GetCompilationStatus(ConstraintPlan constraints)
+	{
+		if (constraints.HasUnsupportedConstraints)
+		{
+			return SpeechRecognitionResultStatus.GrammarCompilationFailure;
+		}
+
+		return _extension is null || _isLanguageSupported
+			? SpeechRecognitionResultStatus.Success
+			: SpeechRecognitionResultStatus.TopicLanguageNotSupported;
 	}
 
 	private async Task<SpeechRecognitionResult> RecognizeCoreAsync(CancellationToken ct)
@@ -203,9 +216,18 @@ public partial class SpeechRecognizer : IDisposable
 
 	private async Task<SpeechRecognitionResultStatus> PrepareRecognitionAsync(ISpeechRecognizerExtension extension)
 	{
-		if (!_isLanguageSupported)
+		ConstraintPlan constraints;
+		lock (_gate)
 		{
-			return SpeechRecognitionResultStatus.TopicLanguageNotSupported;
+			// WinUI requires CompileConstraintsAsync first; compile implicitly when it wasn't called.
+			constraints = _compiledConstraints ?? ConstraintPlan.Create(Constraints);
+			_activeConstraints = constraints;
+		}
+
+		var compilationStatus = GetCompilationStatus(constraints);
+		if (compilationStatus != SpeechRecognitionResultStatus.Success)
+		{
+			return compilationStatus;
 		}
 
 		switch (await extension.RequestAuthorizationAsync())
@@ -289,7 +311,7 @@ public partial class SpeechRecognizer : IDisposable
 		_audioLevels.Reset();
 
 		SetStateLocked(SpeechRecognizerState.Capturing);
-		_extension!.BeginUtterance(new SpeechUtteranceOptions(SpeechTaskHint.Dictation, Array.Empty<string>()));
+		_extension!.BeginUtterance(_activeConstraints.Options);
 		_initialSilenceTimer = StartTimerLocked(Timeouts.InitialSilenceTimeout, OnInitialSilenceTimeoutLocked);
 	}
 
@@ -537,6 +559,7 @@ public partial class SpeechRecognizer : IDisposable
 	private SpeechRecognitionResult CreateRecognizedResult(SpeechUtteranceOutcome outcome)
 	{
 		var audioStartTime = outcome.AudioStartTime ?? _utteranceStartTime;
+		var constraints = _activeConstraints;
 		var alternates = outcome.Transcriptions
 			.Select(transcription => new SpeechRecognitionResult
 			{
@@ -546,8 +569,32 @@ public partial class SpeechRecognizer : IDisposable
 				PhraseStartTime = audioStartTime + transcription.Start,
 				PhraseDuration = transcription.Duration,
 				Status = SpeechRecognitionResultStatus.Success,
+				Constraint = constraints.Topic,
 			})
 			.ToList();
+
+		if (constraints.Lists.Count > 0)
+		{
+			var matches = new List<SpeechRecognitionResult>();
+			foreach (var alternate in alternates)
+			{
+				if (constraints.Match(alternate.Text) is { } match)
+				{
+					alternate.Text = match.Command;
+					alternate.Constraint = match.Constraint;
+					matches.Add(alternate);
+				}
+			}
+
+			if (matches.Count > 0)
+			{
+				alternates = matches;
+			}
+			else if (constraints.Topic is null)
+			{
+				return CreateEmptyResult(SpeechRecognitionResultStatus.Success);
+			}
+		}
 
 		foreach (var alternate in alternates)
 		{

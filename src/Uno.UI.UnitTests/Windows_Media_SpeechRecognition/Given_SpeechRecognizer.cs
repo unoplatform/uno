@@ -327,6 +327,83 @@ public class Given_SpeechRecognizer
 	}
 
 	[TestMethod]
+	public async Task When_List_Constraint_Then_Matching_Command_Is_Returned()
+	{
+		var answers = new SpeechRecognitionListConstraint(new[] { "yes", "no", "maybe later" }, "answers");
+		_sut.Constraints.Add(answers);
+
+		Assert.AreEqual(SpeechRecognitionResultStatus.Success, (await _sut.CompileConstraintsAsync().AsTask()).Status);
+		var recognition = _sut.RecognizeAsync().AsTask();
+		_engine.RaiseSpeechDetected();
+		_engine.Complete("Mabel later", "Maybe later.");
+
+		var result = await recognition;
+
+		Assert.AreEqual(SpeechTaskHint.Unspecified, _engine.LastOptions!.TaskHint);
+		CollectionAssert.AreEqual(new[] { "yes", "no", "maybe later" }, _engine.LastOptions.ContextualStrings.ToArray());
+		Assert.AreEqual("maybe later", result.Text);
+		Assert.AreSame(answers, result.Constraint);
+		Assert.AreEqual(SpeechRecognitionConfidence.High, result.Confidence);
+		Assert.AreEqual(1, result.GetAlternates(5).Count);
+	}
+
+	[TestMethod]
+	public async Task When_List_Constraint_Not_Matched_Then_Rejected()
+	{
+		_sut.Constraints.Add(new SpeechRecognitionListConstraint(new[] { "yes", "no" }));
+		var recognition = _sut.RecognizeAsync().AsTask();
+		_engine.RaiseSpeechDetected();
+		_engine.Complete("Something else");
+
+		var result = await recognition;
+
+		Assert.AreEqual(SpeechRecognitionResultStatus.Success, result.Status);
+		Assert.AreEqual(SpeechRecognitionConfidence.Rejected, result.Confidence);
+		Assert.AreEqual(string.Empty, result.Text);
+	}
+
+	[TestMethod]
+	public async Task When_List_Constraint_Disabled_Then_Dictation_Is_Used()
+	{
+		_sut.Constraints.Add(new SpeechRecognitionListConstraint(new[] { "yes", "no" }) { IsEnabled = false });
+		var recognition = _sut.RecognizeAsync().AsTask();
+		_engine.RaiseSpeechDetected();
+		_engine.Complete("Something else");
+
+		Assert.AreEqual(SpeechTaskHint.Dictation, _engine.LastOptions!.TaskHint);
+		Assert.AreEqual("Something else", (await recognition).Text);
+	}
+
+	[TestMethod]
+	[DataRow(SpeechRecognitionScenario.Dictation, (int)SpeechTaskHint.Dictation)]
+	[DataRow(SpeechRecognitionScenario.WebSearch, (int)SpeechTaskHint.Search)]
+	[DataRow(SpeechRecognitionScenario.FormFilling, (int)SpeechTaskHint.Unspecified)]
+	public async Task When_Topic_Constraint_Then_Task_Hint_Matches(SpeechRecognitionScenario scenario, int expectedHint)
+	{
+		var topic = new SpeechRecognitionTopicConstraint(scenario, "hint");
+		_sut.Constraints.Add(topic);
+		var recognition = _sut.RecognizeAsync().AsTask();
+		_engine.RaiseSpeechDetected();
+		_engine.Complete("Weather in Prague");
+
+		var result = await recognition;
+
+		Assert.AreEqual((SpeechTaskHint)expectedHint, _engine.LastOptions!.TaskHint);
+		Assert.AreSame(topic, result.Constraint);
+		Assert.AreEqual(SpeechRecognitionConstraintType.Topic, topic.Type);
+	}
+
+	[TestMethod]
+	public async Task When_Unsupported_Constraint_Then_GrammarCompilationFailure()
+	{
+		_sut.Constraints.Add(new UnsupportedConstraint());
+
+		Assert.AreEqual(SpeechRecognitionResultStatus.GrammarCompilationFailure, (await _sut.CompileConstraintsAsync().AsTask()).Status);
+		Assert.AreEqual(SpeechRecognitionResultStatus.GrammarCompilationFailure, (await _sut.RecognizeAsync().AsTask()).Status);
+		Assert.IsFalse(_engine.Calls.Contains("Begin"));
+	}
+
+	[TestMethod]
 	public async Task When_Timeout_Elapses_On_Another_Thread_Then_Events_Use_The_Starting_Context()
 	{
 		var context = new QueuedSynchronizationContext();
@@ -358,6 +435,25 @@ public class Given_SpeechRecognizer
 		Assert.AreEqual(SpeechRecognitionResultStatus.TimeoutExceeded, (await recognition).Status);
 	}
 
+	[TestMethod]
+	public void When_Language_Tags_Then_Invalid_Tags_Are_Skipped()
+	{
+		var languages = SpeechRecognizer.GetSupportedLanguages(new[] { "en-US", "not a language!", "fr-FR" });
+
+		CollectionAssert.AreEqual(new[] { "en-US", "fr-FR" }, languages.Select(language => language.LanguageTag).ToArray());
+	}
+
+	[TestMethod]
+	public void When_No_System_Speech_Language_Then_Falls_Back_To_UI_Culture()
+	{
+		Assert.AreEqual("fr-FR", SpeechRecognizer.GetSystemSpeechLanguage("fr-FR").LanguageTag);
+		Assert.IsFalse(string.IsNullOrEmpty(SpeechRecognizer.GetSystemSpeechLanguage(null).LanguageTag));
+	}
+
+	[TestMethod]
+	public async Task When_Setting_System_Speech_Language_Then_Not_Supported()
+		=> Assert.IsFalse(await SpeechRecognizer.TrySetSystemSpeechLanguageAsync(new Language("fr-FR")).AsTask());
+
 	private void CreateRecognizer(bool languageSupported = true)
 	{
 		_engine = new FakeSpeechRecognizerExtension { IsLanguageSupported = languageSupported };
@@ -381,6 +477,17 @@ public class Given_SpeechRecognizer
 			_engine.RaiseAudioLevel(FakeSpeechRecognizerExtension.QuietDecibels);
 		}
 	}
+}
+
+internal sealed class UnsupportedConstraint : ISpeechRecognitionConstraint
+{
+	public bool IsEnabled { get; set; } = true;
+
+	public SpeechRecognitionConstraintProbability Probability { get; set; }
+
+	public string Tag { get; set; } = string.Empty;
+
+	public SpeechRecognitionConstraintType Type => SpeechRecognitionConstraintType.Grammar;
 }
 
 internal sealed class FakeSpeechRecognizerExtension : ISpeechRecognizerExtension
