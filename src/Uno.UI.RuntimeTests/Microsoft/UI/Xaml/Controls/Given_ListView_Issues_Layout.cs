@@ -298,4 +298,48 @@ public class Given_ListView_Issues_Layout
 		Assert.AreSame(focused, list.ContainerFromIndex(1));
 		Assert.AreNotEqual(FocusState.Unfocused, focused.FocusState);
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/16246")]
+	public async Task When_Variable_Heights_ScrollIntoView_Then_Item_Fully_In_Viewport()
+	{
+		Random random = new(42);
+		var heights = Enumerable.Range(0, 500).Select(_ => 20 + random.Next(0, 181)).ToList();
+		var rows = heights.Select((h, i) => new Row(i, h)).ToList();
+		ListView list = new()
+		{
+			Width = 300,
+			Height = 400,
+			ItemsSource = rows,
+			ItemTemplate = Template("<Border Height='{Binding Height}'><TextBlock Text='{Binding Index}' /></Border>"),
+		};
+		await Load(list);
+		var sv = GetScrollViewer(list);
+
+		foreach (int index in new[] { 10, 400, 3 })
+		{
+			list.ScrollIntoView(rows[index]);
+			await WindowHelper.WaitFor(() => list.ContainerFromIndex(index) is not null, timeoutMS: 3000, message: $"Container {index}");
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
+
+			var container = (FrameworkElement)list.ContainerFromIndex(index);
+			var bounds = BoundsIn(container, list);
+			var viewport = BoundsIn(sv, list);
+			Assert.IsGreaterThanOrEqualTo(viewport.Y - Tolerance, bounds.Y, $"Item {index} top");
+			Assert.IsLessThanOrEqualTo(viewport.Bottom + Tolerance, bounds.Bottom, $"Item {index} bottom");
+
+			double? previousY = null;
+			foreach (var c in Descendants<ListViewItem>(list.ItemsPanelRoot).OrderBy(i => list.IndexFromContainer(i)))
+			{
+				double y = BoundsIn(c, list).Y;
+				if (previousY is { } p)
+				{
+					Assert.IsGreaterThanOrEqualTo(p - Tolerance, y, $"Container order after scrolling to {index}");
+				}
+
+				previousY = y;
+			}
+		}
+	}
 }
