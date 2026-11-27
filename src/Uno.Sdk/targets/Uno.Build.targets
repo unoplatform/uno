@@ -182,7 +182,7 @@
 				'$(IsImplicitlyTriggeredBuild)' == 'true'
 				AND '$(BuildingInsideVisualStudio)'=='true'
 				AND ( '$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe' )
-				AND '$(UnoDisableVSCleanupOtherTFMsForHR)' != 'false'"
+				AND '$(UnoDisableVSCleanupOtherTFMsForHR)' != 'true'"
             BeforeTargets="BeforeBuild">
 
 		<!-- This workaround is required for https://github.com/dotnet/maui/issues/27612 in Visual Studio -->
