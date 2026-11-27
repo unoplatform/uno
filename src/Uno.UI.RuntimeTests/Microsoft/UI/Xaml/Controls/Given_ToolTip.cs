@@ -24,11 +24,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_ToolTip
 	{
-		[TestMethod]
-		public async Task When_String_ToolTip_Changes_Then_Latest_Value_Is_Used()
+		private static async Task<Border> LoadOwner()
 		{
 			var owner = new Border { Width = 50, Height = 50 };
 			await UITestHelper.Load(owner);
+			return owner;
+		}
+
+		[TestMethod]
+		public async Task When_String_ToolTip_Changes_Then_Latest_Value_Is_Used()
+		{
+			var owner = await LoadOwner();
 
 			ToolTipService.SetToolTip(owner, "a");
 			ToolTipService.SetToolTip(owner, "b");
@@ -43,11 +49,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if HAS_UNO // ToolTipService.GetToolTipReference is internal
+		private static async Task<(Border, Border)> LoadTwoOwners()
+		{
+			var owner1 = new Border { Width = 50, Height = 50 };
+			var owner2 = new Border { Width = 50, Height = 50 };
+			await UITestHelper.Load(new StackPanel { Children = { owner1, owner2 } });
+			return (owner1, owner2);
+		}
+
+		// Opens the ToolTip, runs the body, then makes sure no popup is left behind.
+		private static async Task WhileOpen(ToolTip toolTip, Action body)
+		{
+			try
+			{
+				toolTip.IsOpen = true;
+				await UITestHelper.WaitForIdle();
+				body();
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+			}
+		}
+
+		private static Mouse CreateMouse()
+			=> (InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector")).GetMouse();
+
+		private static async Task CloseToolTipsAndMoveAway(Mouse mouse)
+		{
+			VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+			mouse.MoveBy(0, 200);
+			await UITestHelper.WaitForIdle();
+		}
+
 		[TestMethod]
 		public async Task When_String_ToolTip_Changes_Then_Wrapper_Reused()
 		{
-			var owner = new Border { Width = 50, Height = 50 };
-			await UITestHelper.Load(owner);
+			var owner = await LoadOwner();
 
 			ToolTipService.SetToolTip(owner, "first");
 			var wrapper = ToolTipService.GetToolTipReference(owner);
@@ -62,29 +100,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("second", wrapper.Content);
 			Assert.AreSame(subscriptions, wrapper.OwnerEventSubscriptions, "The owner subscriptions should be kept");
 
-			try
+			// A change of value closes an open tooltip, as replacing the wrapper did.
+			await WhileOpen(wrapper, () =>
 			{
-				// A change of value closes an open tooltip, as replacing the wrapper did.
-				wrapper.IsOpen = true;
-				await UITestHelper.WaitForIdle();
-
 				ToolTipService.SetToolTip(owner, "third");
 
 				Assert.IsFalse(wrapper.IsOpen, "Changing the value should close the tooltip");
 				Assert.AreSame(wrapper, ToolTipService.GetActualToolTipObject(owner));
 				Assert.AreEqual("third", wrapper.Content);
-			}
-			finally
-			{
-				Microsoft.UI.Xaml.Media.VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
-			}
+			});
 		}
 
 		[TestMethod]
 		public async Task When_String_ToolTip_Replaced_By_ToolTip()
 		{
-			var owner = new Border { Width = 50, Height = 50 };
-			await UITestHelper.Load(owner);
+			var owner = await LoadOwner();
 
 			ToolTipService.SetToolTip(owner, "text");
 			var wrapper = ToolTipService.GetToolTipReference(owner);
@@ -109,8 +139,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_String_ToolTip_Set_To_Null()
 		{
-			var owner = new Border { Width = 50, Height = 50 };
-			await UITestHelper.Load(owner);
+			var owner = await LoadOwner();
 
 			ToolTipService.SetToolTip(owner, "text");
 			var wrapper = ToolTipService.GetToolTipReference(owner);
@@ -132,8 +161,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Element_ToolTip_Swapped_For_String_And_Back_Then_Wrapper_Reused()
 		{
-			var owner = new Border { Width = 50, Height = 50 };
-			await UITestHelper.Load(owner);
+			var owner = await LoadOwner();
 
 			var element = new TextBlock { Text = "element" };
 			ToolTipService.SetToolTip(owner, element);
@@ -154,9 +182,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Element_ToolTip_Shared_By_Two_Owners_Then_Change_On_One_Does_Not_Affect_The_Other()
 		{
-			var owner1 = new Border { Width = 50, Height = 50 };
-			var owner2 = new Border { Width = 50, Height = 50 };
-			await UITestHelper.Load(new StackPanel { Children = { owner1, owner2 } });
+			var (owner1, owner2) = await LoadTwoOwners();
 
 			var element = new TextBlock { Text = "shared" };
 			ToolTipService.SetToolTip(owner1, element);
@@ -182,9 +208,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Templated_Element_ToolTip_Moves_To_Second_Owner_Then_Change_On_First_Does_Not_Affect_Second()
 		{
-			var owner1 = new Border { Width = 50, Height = 50 };
-			var owner2 = new Border { Width = 50, Height = 50 };
-			await UITestHelper.Load(new StackPanel { Children = { owner1, owner2 } });
+			var (owner1, owner2) = await LoadTwoOwners();
 
 			var element = new TextBlock { Text = "element" };
 			ToolTipService.SetToolTip(owner1, element);
@@ -216,9 +240,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Implicit_ToolTip_Set_As_Explicit_On_Second_Owner_Then_Change_On_One_Does_Not_Affect_The_Other()
 		{
-			var owner1 = new Border { Width = 50, Height = 50 };
-			var owner2 = new Border { Width = 50, Height = 50 };
-			await UITestHelper.Load(new StackPanel { Children = { owner1, owner2 } });
+			var (owner1, owner2) = await LoadTwoOwners();
 
 			ToolTipService.SetToolTip(owner1, "one");
 			var wrapper = ToolTipService.GetToolTipReference(owner1);
@@ -235,65 +257,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Closed_Handler_Clears_Value_Then_Wrapper_Is_Not_Updated()
 		{
-			var owner = new Border { Width = 50, Height = 50 };
-			await UITestHelper.Load(owner);
+			var owner = await LoadOwner();
 
 			ToolTipService.SetToolTip(owner, "a");
 			var wrapper = ToolTipService.GetToolTipReference(owner);
 			wrapper.Closed += (_, _) => ToolTipService.SetToolTip(owner, null);
 
-			try
+			await WhileOpen(wrapper, () =>
 			{
-				wrapper.IsOpen = true;
-				await UITestHelper.WaitForIdle();
-
 				ToolTipService.SetToolTip(owner, "outer");
 
 				Assert.IsNull(ToolTipService.GetToolTipReference(owner), "The nested change should have unregistered the wrapper");
 				Assert.AreEqual("a", wrapper.Content, "A discarded wrapper must not receive the outer value");
-			}
-			finally
-			{
-				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
-			}
+			});
 		}
 
 		[TestMethod]
 		public async Task When_Closed_Handler_Throws_Then_Wrapper_Still_Gets_New_Value()
 		{
-			var owner = new Border { Width = 50, Height = 50 };
-			await UITestHelper.Load(owner);
+			var owner = await LoadOwner();
 
 			ToolTipService.SetToolTip(owner, "a");
 			var wrapper = ToolTipService.GetToolTipReference(owner);
 			wrapper.Closed += (_, _) => throw new InvalidOperationException("from Closed");
 
-			try
+			await WhileOpen(wrapper, () =>
 			{
-				wrapper.IsOpen = true;
-				await UITestHelper.WaitForIdle();
-
-				try
-				{
-					ToolTipService.SetToolTip(owner, "b");
-				}
-				catch (InvalidOperationException)
-				{
-				}
+				Assert.ThrowsExactly<InvalidOperationException>(() => ToolTipService.SetToolTip(owner, "b"));
 
 				Assert.AreEqual("b", wrapper.Content, "The wrapper should not be left with stale content");
-			}
-			finally
-			{
-				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
-			}
+			});
 		}
 
 		[TestMethod]
 		public async Task When_Element_Parented_By_Explicit_ToolTip_Then_That_ToolTip_Is_Used()
 		{
-			var owner = new Border { Width = 50, Height = 50 };
-			await UITestHelper.Load(owner);
+			var owner = await LoadOwner();
 
 			var element = new TextBlock { Text = "inside" };
 			var explicitToolTip = new ToolTip { Content = element };
@@ -363,8 +362,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Placement_Set_On_Owner_Then_It_Is_Reset_By_A_Value_Change()
 		{
-			var owner = new Border { Width = 50, Height = 50 };
-			await UITestHelper.Load(owner);
+			var owner = await LoadOwner();
 
 			ToolTipService.SetToolTip(owner, "a");
 			var wrapper = ToolTipService.GetToolTipReference(owner);
@@ -380,8 +378,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Closed_Handler_Changes_Value_Then_Nested_Value_Wins()
 		{
-			var owner = new Border { Width = 50, Height = 50 };
-			await UITestHelper.Load(owner);
+			var owner = await LoadOwner();
 
 			ToolTipService.SetToolTip(owner, "a");
 			var wrapper = ToolTipService.GetToolTipReference(owner);
@@ -396,28 +393,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			};
 
-			try
+			await WhileOpen(wrapper, () =>
 			{
-				wrapper.IsOpen = true;
-				await UITestHelper.WaitForIdle();
-
 				ToolTipService.SetToolTip(owner, "outer");
 
 				Assert.IsTrue(nestedDone, "premise: the Closed handler ran");
 				Assert.AreEqual("nested", ToolTipService.GetToolTip(owner));
 				Assert.AreEqual("nested", wrapper.Content, "The outer change must not overwrite the nested one");
-			}
-			finally
-			{
-				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
-			}
+			});
 		}
 
 		[TestMethod]
 		public async Task When_UseToolTips_Turned_Off_Then_Value_Change_Unregisters()
 		{
-			var owner = new Border { Width = 50, Height = 50 };
-			await UITestHelper.Load(owner);
+			var owner = await LoadOwner();
 
 			ToolTipService.SetToolTip(owner, "a");
 			var wrapper = ToolTipService.GetToolTipReference(owner);
@@ -472,8 +461,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(owner);
 			var wrapper = ToolTipService.GetToolTipReference(owner);
 
-			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
-			using var mouse = injector.GetMouse();
+			using var mouse = CreateMouse();
 
 			try
 			{
@@ -489,9 +477,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			finally
 			{
-				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
-				mouse.MoveBy(0, 200);
-				await UITestHelper.WaitForIdle();
+				await CloseToolTipsAndMoveAway(mouse);
 			}
 		}
 
@@ -509,8 +495,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var opened = 0;
 			wrapper.Opened += (_, _) => opened++;
 
-			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
-			using var mouse = injector.GetMouse();
+			using var mouse = CreateMouse();
 			var center = owner.GetAbsoluteBoundsRect().GetCenter();
 
 			try
@@ -539,9 +524,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			finally
 			{
-				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
-				mouse.MoveBy(0, 200);
-				await UITestHelper.WaitForIdle();
+				await CloseToolTipsAndMoveAway(mouse);
 			}
 		}
 
@@ -556,8 +539,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ToolTipService.SetToolTip(owner, "a");
 			await UITestHelper.Load(owner);
 
-			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
-			using var mouse = injector.GetMouse();
+			using var mouse = CreateMouse();
 			var center = owner.GetAbsoluteBoundsRect().GetCenter();
 
 			async Task<ToolTip> HoverAndGetShownToolTip()
@@ -586,9 +568,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			finally
 			{
-				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
-				mouse.MoveBy(0, 200);
-				await UITestHelper.WaitForIdle();
+				await CloseToolTipsAndMoveAway(mouse);
 			}
 		}
 #endif
