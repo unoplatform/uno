@@ -312,4 +312,52 @@ public class Given_ListView_Issues_Interaction
 		await WindowHelper.WaitForIdle();
 		Assert.AreEqual(withHeader, FirstItemY(), 1.0, "first item returns when header is restored");
 	}
+
+#if HAS_UNO
+	// https://github.com/unoplatform/uno/issues/11601
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11601")]
+	public async Task When_GridView_CanReorderItems_Mouse_Drag_Reorders()
+	{
+		ObservableCollection<string> source = new(Enumerable.Range(0, 8).Select(i => i.ToString()));
+		GridView grid = new()
+		{
+			Width = 440,
+			Height = 300,
+			AllowDrop = true,
+			CanDragItems = true,
+			CanReorderItems = true,
+			ItemTemplate = (DataTemplate)XamlReader.Load(
+				"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><Border Width='100' Height='100'><TextBlock Text='{Binding}' /></Border></DataTemplate>"),
+			ItemsSource = source,
+		};
+
+		await UITestHelper.Load(grid, x => x.IsLoaded && grid.ContainerFromIndex(3) is not null);
+		await WindowHelper.WaitForIdle();
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		using var mouse = injector.GetMouse();
+
+		await Task.Delay(800); // let the entrance transitions settle
+		await WindowHelper.WaitForIdle();
+
+		Point from = CenterInWindow((FrameworkElement)grid.ContainerFromIndex(0));
+		Point to = CenterInWindow((FrameworkElement)grid.ContainerFromIndex(3));
+
+		mouse.MoveTo(from);
+		await WindowHelper.WaitForIdle();
+		mouse.Press();
+		await WindowHelper.WaitForIdle();
+		mouse.MoveTo(new Point(from.X + (to.X - from.X) / 2, from.Y));
+		await WindowHelper.WaitForIdle();
+		mouse.MoveTo(to);
+		await WindowHelper.WaitForIdle();
+		mouse.Release();
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreNotEqual(0, source.IndexOf("0"), "dragged item moved away from the front");
+		Assert.AreEqual("1", source[0]);
+	}
+#endif
 }
