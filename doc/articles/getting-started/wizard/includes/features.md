@@ -1,3 +1,11 @@
+#### Sample content
+
+Adds sample pages that show basic usage patterns. With Uno.Extensions navigation, as in the recommended preset, the main page gets a text box and a button that navigates to a second page, which displays the entered text. This is not included in either the blank or recommended presets.
+
+```dotnetcli
+dotnet new unoapp -preset recommended --sample
+```
+
 #### Toolkit
 
 Installs the [Uno.Toolkit](https://github.com/unoplatform/uno.toolkit.ui) package in the project, this package adds a set of custom controls, behaviors, extensions and other utilities to Uno Platform projects that are not offered out-of-the-box by WinUI.  
@@ -18,6 +26,8 @@ dotnet new unoapp -toolkit
 
 Adds support for embedding .NET MAUI controls and third party libraries into an application. This is not included in either the blank or recommended presets.
 
+.NET MAUI doesn't support tvOS, so the wizard disables this option when tvOS is selected.
+
 ```dotnetcli
 dotnet new unoapp -maui
 ```
@@ -26,7 +36,7 @@ dotnet new unoapp -maui
 
 Adds an ASP.NET Core Server project to the solution, which hosts the WASM project, and can also be used to create an API and endpoints. It can also be used as the data server and you can also choose to implement the authentication server code in it.
 
-This is included by default in the recommended preset, but not in the blank preset.
+This is not included in either the blank or recommended presets.
 
 ```dotnetcli
 dotnet new unoapp -server
@@ -55,22 +65,27 @@ Enables Uno Platform debugging in Visual Studio Code. This is included by defaul
 dotnet new unoapp -vscode
 ```
 
-#### WASM Multi-Threading
+#### Media Player Element
 
-Enables multi-threading in the WASM project.  
-This option is only available if WASM is selected as one of the output target platforms. This is not enabled in either blank or recommended presets.
+Bundles the native assets that [`MediaPlayerElement`](xref:Uno.Controls.MediaPlayerElement) needs to play audio and video, through the `MediaPlayerElement` [Uno.Sdk feature](xref:Uno.Features.Uno.Sdk). This is not included in either the blank or recommended presets.
 
 ```dotnetcli
-dotnet new unoapp -wasm-multi-threading
+dotnet new unoapp -mpe
 ```
 
 #### Renderer
 
-Skia is the [rendering engine](xref:uno.features.renderer.skia) for Uno Platform across all targets except **WinAppSDK**, including **Desktop (Windows, macOS, Linux)**, **WebAssembly (WASM)**, **Android**, and **iOS**.
-It provides a **consistent, pixel-perfect rendering pipeline** by drawing the entire UI using the Skia graphics library (via SkiaSharp). Starting with Uno Platform 7.0, it is the only renderer: the native renderer has been removed.
+Selects how the UI is drawn on all targets except **WinAppSDK**, including **Desktop (Windows, macOS, Linux)**, **WebAssembly (WASM)**, **Android**, and **iOS**. Starting with Uno Platform 7.0, the native renderer has been removed.
 
-Learn more about [Uno's Skia rendering](xref:uno.features.renderer.skia).
+- **Skia** is the default, in both the blank and recommended presets. It provides a **consistent, pixel-perfect rendering pipeline** by drawing the entire UI using the Skia graphics library (via SkiaSharp). Learn more about [Uno's Skia rendering](xref:uno.features.renderer.skia).
+- **WebGPU** is experimental. It draws the UI through WebGPU. Selected on its own, the app has no SkiaSharp and no fallback. Learn more about [Uno's WebGPU rendering](xref:uno.features.renderer.webgpu).
+
+Selecting both uses WebGPU first, with Skia as the fallback.
 
 ```dotnetcli
 dotnet new unoapp -renderer skia
+```
+
+```dotnetcli
+dotnet new unoapp -renderer skia -renderer webgpu
 ```

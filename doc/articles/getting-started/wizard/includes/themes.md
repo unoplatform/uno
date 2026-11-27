@@ -33,12 +33,12 @@ The theme in the application can be further customized with the following option
 Includes references to the [Uno.Extensions.Core.WinUI](https://www.nuget.org/packages/Uno.Extensions.Core.WinUI/) package which includes the theme service that can be used to control the theme (Dark, Light or System) of the application. This is included by default in the recommended preset, but not in the blank preset.
 
 ```dotnetcli
-dotnet new unoapp -theme-Service
+dotnet new unoapp -theme-service
 ```
 
 #### Import Theme File (Uno.Dsp)
 
-Allows colors in the application to be overridden using a theme file (Material theme only). This is included by default in the recommended preset, but not in the blank preset.
+Allows colors in the application to be overridden using a theme file (Material theme only). Neither preset includes it by default, since neither uses the Material theme. With `dotnet new`, picking the Material theme with the recommended preset (`-preset recommended -theme material`) turns it on.
 
 ```dotnetcli
 dotnet new unoapp -dsp

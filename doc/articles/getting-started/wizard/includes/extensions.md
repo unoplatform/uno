@@ -38,10 +38,6 @@ For more documentation on HTTP requests, [read the documentation](xref:Uno.Exten
 
 Refer to the [documentation](xref:Uno.Extensions.Http.Overview#Refit) to learn how to use it in an Uno Platform app.
 
-```dotnetcli
-dotnet new unoapp -http
-```
-
 You have three levels of HTTP support to choose from:
 
 - **Basic**

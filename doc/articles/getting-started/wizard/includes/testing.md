@@ -4,7 +4,7 @@
 
     The project also comes with [FluentAssertions](https://fluentassertions.com) pre-installed.
 
-    This is included in the recommended preset, but not in the blank preset.
+    This is not included in either the blank or recommended presets.
 
     ```dotnetcli
     dotnet new unoapp -tests unit
@@ -16,7 +16,7 @@
 
     To learn more about UI Testing in Uno Platform apps, read [this](xref:Uno.UITest.GetStarted).
 
-    This is included in the recommended preset, but not in the blank preset.
+    This is not included in either the blank or recommended presets.
 
     ```dotnetcli
     dotnet new unoapp -tests ui
