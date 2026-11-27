@@ -563,4 +563,44 @@ public class Given_ListView_Issues_Interaction
 
 		await WindowHelper.WaitFor(Inside, timeoutMS: 3000, message: "selected container inside the dropdown viewport");
 	}
+
+	// https://github.com/unoplatform/uno/issues/23329
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23329")]
+	[DataRow(typeof(ListView))]
+	[DataRow(typeof(GridView))]
+	[DataRow(typeof(ItemsControl))]
+	public async Task When_DataTemplateSelector_Overrides_Only_Container_Overload(Type controlType)
+	{
+		var control = (ItemsControl)Activator.CreateInstance(controlType)!;
+		control.Width = 300;
+		control.Height = 300;
+		control.ItemTemplateSelector = new ContainerOnlyTemplateSelector
+		{
+			Template = (DataTemplate)XamlReader.Load(
+				"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><TextBlock Tag='selected' Text='{Binding}' Height='30' /></DataTemplate>"),
+		};
+		control.ItemsSource = Enumerable.Range(0, 5).Select(i => $"Item {i}").ToList();
+
+		WindowHelper.WindowContent = control;
+		await WindowHelper.WaitForLoaded(control);
+		await WindowHelper.WaitForIdle();
+
+		for (int i = 0; i < 5; i++)
+		{
+			var container = (DependencyObject)control.ContainerFromIndex(i);
+			Assert.IsNotNull(container, $"container {i}");
+			TextBlock? tb = Descendants<TextBlock>(container).FirstOrDefault(t => Equals(t.Tag, "selected"));
+			Assert.IsNotNull(tb, $"container {i} uses the selected template");
+			Assert.AreEqual($"Item {i}", tb!.Text);
+		}
+	}
+
+	private sealed partial class ContainerOnlyTemplateSelector : DataTemplateSelector
+	{
+		public DataTemplate? Template { get; set; }
+
+		protected override DataTemplate SelectTemplateCore(object item, DependencyObject container) => Template!;
+	}
 }
