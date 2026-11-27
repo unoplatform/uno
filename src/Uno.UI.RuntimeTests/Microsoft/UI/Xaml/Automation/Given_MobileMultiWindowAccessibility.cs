@@ -114,6 +114,11 @@ public class Given_MobileMultiWindowAccessibility
 			return;
 		}
 
+		if (OperatingSystem.IsAndroid())
+		{
+			Assert.Inconclusive("On Android a secondary window is a task of its own, which moves the test runner to the background.");
+		}
+
 		var secondary = new Window(WindowType.DesktopXamlSource);
 		try
 		{
