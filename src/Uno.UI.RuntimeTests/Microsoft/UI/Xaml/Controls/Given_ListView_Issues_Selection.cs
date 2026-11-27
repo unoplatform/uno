@@ -792,4 +792,49 @@ public class Given_ListView_Issues_Selection
 			WindowHelper.WindowContent = null;
 		}
 	}
+
+	// WinUI syncs single-select and None selectors with the view's current item; #11604 is by design.
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11604")]
+	[DataRow(ListViewSelectionMode.None, null, 0)]
+	[DataRow(ListViewSelectionMode.Single, null, 0)]
+	[DataRow(ListViewSelectionMode.Multiple, null, -1)]
+	[DataRow(ListViewSelectionMode.None, false, -1)]
+	public async Task When_CollectionViewSource_Selection_Follows_Current_Item(ListViewSelectionMode mode, bool? isSynchronized, int expectedIndex)
+	{
+		try
+		{
+			var items = Enumerable.Range(0, 200).Select(i => $"Item {i}").ToList();
+			CollectionViewSource cvs = new() { Source = items };
+			ListView lv = new() { Width = 200, Height = 300, SelectionMode = mode };
+			if (isSynchronized is { } sync)
+			{
+				lv.IsSynchronizedWithCurrentItem = sync;
+			}
+			lv.ItemsSource = cvs.View;
+			await Host(lv);
+
+			void AssertSelection(string stage)
+			{
+				lv.UpdateLayout();
+				Assert.AreEqual(expectedIndex, lv.SelectedIndex, $"SelectedIndex {stage}");
+				Assert.AreEqual(expectedIndex == 0, ((ListViewItem)lv.ContainerFromIndex(0)).IsSelected, $"container 0 IsSelected {stage}");
+			}
+
+			AssertSelection("initially");
+
+			lv.ScrollIntoView(items[150]);
+			await WindowHelper.WaitForIdle();
+			lv.ScrollIntoView(items[0]);
+			await WindowHelper.WaitFor(() => lv.ContainerFromIndex(0) is ListViewItem);
+			await WindowHelper.WaitForIdle();
+
+			AssertSelection("after scrolling away and back");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
 }
