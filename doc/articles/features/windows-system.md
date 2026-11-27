@@ -109,6 +109,21 @@ In case of macOS, Uno supports the following nested URIs, mapped to Preference P
 
 Exceptions are in line with WinUI.
 
+## `LaunchFileAsync`
+
+`LaunchFileAsync(IStorageFile)` opens a file with the app the platform associates with it. It is supported on all Uno Platform targets. The `LauncherOptions` overload is available too, but the options are not applied yet.
+
+| Platform | Behavior |
+|----------|----------|
+| Windows (Win32) | Opens the file through the shell, like double-clicking it in File Explorer. |
+| macOS | Opens the file with its default app through `NSWorkspace`. |
+| Linux (X11) | Runs `xdg-open` with the file. Returns `false` when `xdg-open` reports an error within a few seconds. |
+| Linux (framebuffer) | Opens the file through .NET shell execution (`xdg-open` when available). |
+| Android | Starts an `ACTION_VIEW` intent. Local files are shared through a read-only content provider that Uno Platform registers in the app manifest, so no `FileProvider` setup is needed. Files picked through the Storage Access Framework keep their `content://` URI. Returns `false` when no installed app can open the file type. |
+| iOS | Shows a Quick Look preview of the file, from which the user can share it or open it in another app. Files Quick Look can't preview open the "Open in" menu instead. |
+| tvOS | Not supported, returns `false`. |
+| WebAssembly | The browser has no access to OS file associations, so the content is opened in a new tab, where the browser displays it (PDF, images, text, media) or downloads it. When a popup blocker prevents the new tab, the file is downloaded. The whole file is read into memory first. |
+
 ## `QueryUriSupportAsync`
 
 This API is supported on iOS, Android, and macOS, and the implementation does not respect the `LaunchQuerySupportType` parameter yet. It also reports the aforementioned special `ms-settings` URIs on Android and iOS as supported.
