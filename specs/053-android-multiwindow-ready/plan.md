@@ -69,6 +69,10 @@ Known gaps of the live multi-window follow-up, each still process-wide or main-w
   `MutableContextWrapper` and repoint its base context on adoption.
 - Tests that activate a secondary window are skipped on the Android lane: the new task
   backgrounds the test runner.
+- After process death, a restored secondary task that is resumed before the main task hosts the
+  main window, as nothing else does yet. Returning to the main task later then adopts that same
+  window. Telling the real main task apart would need state persisted across process death;
+  until then the restored windows share one wrapper.
 
 The de-singletoning work keeps `SupportsMultipleWindows` **`false`**; the follow-up above flips
 it to `true`. Definition of done for the de-singletoning is **per-window instances everywhere,
