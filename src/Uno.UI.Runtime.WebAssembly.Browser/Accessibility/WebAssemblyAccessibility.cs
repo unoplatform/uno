@@ -3582,9 +3582,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		var handle = element.Visual.Handle;
 		var isSemantic = index >= 0 && IsSemanticElement(element);
-		if (region.TryGetRealizedIndex(handle, out var realizedIndex) && (!isSemantic || realizedIndex != index))
+		var isRealized = region.TryGetRealizedIndex(handle, out var realizedIndex);
+		if (isRealized && (!isSemantic || realizedIndex != index))
 		{
 			region.RemoveRealizedItem(handle, realizedIndex);
+		}
+		else if (!isRealized && !isSemantic && _semanticParentMap.ContainsKey(handle) && element.GetParent() is UIElement parent)
+		{
+			// A container added to the panel before it was prepared got its node from the tree walk, not the region.
+			OnChildRemoved(parent, element);
 		}
 
 		if (isSemantic)
