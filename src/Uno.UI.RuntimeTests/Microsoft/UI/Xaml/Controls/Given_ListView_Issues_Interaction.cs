@@ -280,4 +280,36 @@ public class Given_ListView_Issues_Interaction
 		Rect r = BoundsInWindow(element);
 		return new Point(r.X + r.Width / 2, r.Y + r.Height / 2);
 	}
+
+	// https://github.com/unoplatform/uno/issues/20966
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20966")]
+	public async Task When_Header_Reset_To_Null_Layout_Updates()
+	{
+		ListView list = new()
+		{
+			Width = 300,
+			Height = 400,
+			ItemTemplate = TextTemplate(),
+			ItemsSource = Enumerable.Range(0, 10).Select(i => $"Item {i}").ToList(),
+			Header = new Border { Height = 100 },
+		};
+
+		WindowHelper.WindowContent = list;
+		await WindowHelper.WaitForLoaded(list);
+		await WindowHelper.WaitForIdle();
+
+		double FirstItemY() => ((FrameworkElement)list.ContainerFromIndex(0)).TransformToVisual(list).TransformPoint(new Point(0, 0)).Y;
+
+		double withHeader = FirstItemY();
+
+		list.Header = null;
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual(withHeader - 100, FirstItemY(), 1.0, "first item moves up by the header height");
+
+		list.Header = new Border { Height = 100 };
+		await WindowHelper.WaitForIdle();
+		Assert.AreEqual(withHeader, FirstItemY(), 1.0, "first item returns when header is restored");
+	}
 }
