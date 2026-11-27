@@ -8,6 +8,10 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
+#if HAS_UNO
+using Uno.UI.DevTools.Input;
+#endif
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
@@ -300,4 +304,39 @@ public class Given_ListView_Issues_Selection
 			WindowHelper.WindowContent = null;
 		}
 	}
+
+#if HAS_UNO
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/10115")]
+	public async Task When_Touch_Long_Press_Item_Does_Not_Select_Or_Click()
+	{
+		try
+		{
+			var items = MakeItems(4);
+			var lv = await Host(new ListView { Width = 200, Height = 400, IsItemClickEnabled = true, ItemsSource = items });
+			var itemClicks = 0;
+			var holdings = 0;
+			lv.ItemClick += (s, e) => itemClicks++;
+			lv.Holding += (s, e) => holdings++;
+
+			var injector = Windows.UI.Input.Preview.Injection.InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var target = ((FrameworkElement)lv.ContainerFromIndex(1)).GetAbsoluteCenter();
+			finger.Press(target);
+			await WindowHelper.WaitFor(() => holdings > 0, timeoutMS: 5000);
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNull(lv.SelectedItem);
+			Assert.AreEqual(-1, lv.SelectedIndex);
+			Assert.AreEqual(0, itemClicks);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+#endif
 }
