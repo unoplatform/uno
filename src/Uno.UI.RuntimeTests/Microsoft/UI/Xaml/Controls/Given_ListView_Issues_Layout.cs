@@ -423,4 +423,38 @@ public class Given_ListView_Issues_Layout
 		Assert.IsLessThan(500, Realized(), "Realized containers at the end");
 		Assert.IsNull(grid.ContainerFromIndex(0));
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24110")]
+	public async Task When_Items_Moved_Beyond_Realized_Range_Then_Containers_Match_Source()
+	{
+		ObservableCollection<string> items = new(Enumerable.Range(0, 200).Select(i => $"Item {i}"));
+		ListView list = new()
+		{
+			Width = 300,
+			Height = 300,
+			ItemsSource = items,
+			ItemTemplate = Template("<Border Height='100'><TextBlock Text='{Binding}' /></Border>"),
+		};
+		await Load(list);
+
+		foreach (var (from, to) in new[] { (5, 150), (150, 3), (100, 190) })
+		{
+			items.Move(from, to);
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
+
+			double previousY = double.MinValue;
+			var realized = Descendants<ListViewItem>(list.ItemsPanelRoot).OrderBy(c => list.IndexFromContainer(c)).ToList();
+			Assert.IsNotEmpty(realized);
+			foreach (var c in realized)
+			{
+				int index = list.IndexFromContainer(c);
+				Assert.AreEqual(items[index], c.Content, $"Content at {index} after Move({from},{to})");
+				double y = BoundsIn(c, list).Y;
+				Assert.IsGreaterThan(previousY, y, $"Container {index} order after Move({from},{to})");
+				previousY = y;
+			}
+		}
+	}
 }
