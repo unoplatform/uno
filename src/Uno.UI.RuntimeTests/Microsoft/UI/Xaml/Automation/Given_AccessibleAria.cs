@@ -658,12 +658,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual(expectedOrder, InvokeBrowserJs(order));
 			InvokeBrowserJs($"(function(){{document.getElementById('{GetSemanticElementId(first)}').dataset.marker='kept';return '';}})()");
 
+			AutomationProperties.SetLiveSetting(first, AutomationLiveSetting.Polite);
+			await UITestHelper.WaitForRender();
+			Assert.AreEqual("polite", GetSemanticAttribute(first, "aria-live"));
+
 			Assert.AreEqual(AccessibilityView.Content, AutomationProperties.GetAccessibilityView(first));
 			AutomationProperties.SetAccessibilityView(first, AccessibilityView.Control);
 			await UITestHelper.WaitForRender();
 
 			Assert.AreEqual("kept", GetSemanticAttribute(first, "data-marker"), "A realized item must be updated in place by its region.");
 			Assert.AreEqual(expectedOrder, InvokeBrowserJs(order), "The realized item must keep its reading-order position.");
+			Assert.AreEqual("polite", GetSemanticAttribute(first, "aria-live"));
+
+			AutomationProperties.SetLiveSetting(first, AutomationLiveSetting.Off);
+			await UITestHelper.WaitForRender();
+			Assert.IsFalse(SemanticElementHasAttribute(first, "aria-live"));
 		}
 
 		[TestMethod]
@@ -673,23 +682,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var textBlock = new TextBlock { Text = "Status" };
 			AutomationProperties.SetName(textBlock, "Status");
-			var repeater = new ItemsRepeater
-			{
-				ItemsSource = new[] { "Status" },
-				ItemTemplate = new DataTemplate(null, (_, _) => textBlock),
-			};
+			var repeater = new ItemsRepeater { ItemsSource = new[] { textBlock } };
 			AutomationProperties.SetName(repeater, "Statuses");
+			AutomationProperties.SetAccessibilityView(repeater, AccessibilityView.Content);
 
-			await UITestHelper.Load(repeater);
+			await UITestHelper.Load(new ScrollViewer { Content = repeater, Height = 200 });
+			await UITestHelper.WaitForRender();
+			Assert.AreSame(textBlock, repeater.TryGetElement(0));
+
 			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitForRender(frameCount: 3);
 			await UITestHelper.WaitFor(() => GetSemanticAttribute(textBlock, "aria-posinset") == "1", timeoutMS: 5000,
 				message: "Timed out waiting for the realized text item.");
 
 			AutomationProperties.SetLiveSetting(textBlock, AutomationLiveSetting.Polite);
+			await UITestHelper.WaitForRender();
 			await UITestHelper.WaitFor(() => GetSemanticAttribute(textBlock, "aria-live") == "polite", timeoutMS: 5000,
 				message: "The realized text item must gain aria-live.");
 
 			AutomationProperties.SetLiveSetting(textBlock, AutomationLiveSetting.Off);
+			await UITestHelper.WaitForRender();
 			await UITestHelper.WaitFor(() => SemanticElementExists(textBlock) && !SemanticElementHasAttribute(textBlock, "aria-live"), timeoutMS: 5000,
 				message: "The realized text item must remain present and clear aria-live.");
 		}
