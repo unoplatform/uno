@@ -19,6 +19,16 @@ using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
+public partial class DataContextProbe : Microsoft.UI.Xaml.Controls.Border
+{
+	public static List<object?> Log { get; } = new();
+
+	public DataContextProbe()
+	{
+		DataContextChanged += (s, e) => Log.Add(e.NewValue);
+	}
+}
+
 [TestClass]
 public class Given_ListView_Issues_Selection
 {
@@ -425,6 +435,38 @@ public class Given_ListView_Issues_Selection
 				Assert.IsNotNull(brush, $"item {i} background");
 				Assert.AreEqual(Microsoft.UI.Colors.Blue, brush!.Color, $"item {i}");
 				Assert.AreEqual(5d, item.BorderThickness.Left, $"item {i}");
+			}
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	public class TitleViewModel
+	{
+		public string Title { get; set; } = "Hello from the VM";
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/16531")]
+	public async Task When_ItemsStackPanel_In_ItemsControl_Horizontal_Items_Are_Laid_Out_Left_To_Right()
+	{
+		try
+		{
+			var ic = await Host(CreateItemsControlWithItemsStackPanel(Orientation.Horizontal, new[] { "Item 1", "Item 2", "Item 3" }));
+
+			var panel = (ItemsStackPanel)ic.ItemsPanelRoot;
+			Assert.AreEqual(3, panel.Children.Count);
+			double previousRight = -1;
+			foreach (FrameworkElement child in panel.Children)
+			{
+				Assert.IsTrue(child.ActualWidth > 0, $"width {child.ActualWidth}");
+				Assert.IsTrue(child.ActualHeight > 0, $"height {child.ActualHeight}");
+				var x = child.TransformToVisual(panel).TransformPoint(default).X;
+				Assert.IsTrue(x >= previousRight - 0.5, $"child at {x} overlaps previous ending at {previousRight}");
+				previousRight = x + child.ActualWidth;
 			}
 		}
 		finally
