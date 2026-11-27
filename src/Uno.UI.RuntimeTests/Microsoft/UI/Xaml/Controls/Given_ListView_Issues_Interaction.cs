@@ -235,4 +235,49 @@ public class Given_ListView_Issues_Interaction
 			return AsyncInfo.Run(_ => tcs.Task);
 		}
 	}
+
+	// https://github.com/unoplatform/uno/issues/20784
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20784")]
+	public async Task When_GridView_Scrolled_To_End_Loads_More_Items()
+	{
+		IncrementalSource source = new(12, 1000);
+		GridView grid = new()
+		{
+			Width = 400,
+			Height = 300,
+			ItemTemplate = (DataTemplate)XamlReader.Load(
+				"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><Border Width='128' Height='128'><TextBlock Text='{Binding}' /></Border></DataTemplate>"),
+			ItemsSource = source,
+		};
+
+		WindowHelper.WindowContent = grid;
+		await WindowHelper.WaitForLoaded(grid);
+		await WindowHelper.WaitForIdle();
+
+		int last = -1;
+		int stable = 0;
+		for (int i = 0; i < 100 && stable < 5; i++)
+		{
+			await WindowHelper.WaitForIdle();
+			stable = source.Count == last ? stable + 1 : 0;
+			last = source.Count;
+		}
+
+		int before = source.Count;
+		ScrollViewer sv = GetScrollViewer(grid);
+		sv.ChangeView(null, sv.ScrollableHeight, null, true);
+		await WindowHelper.WaitForIdle();
+		await WindowHelper.WaitFor(() => source.Count > before, timeoutMS: 3000, message: "more items loaded after scrolling to the end");
+	}
+
+	private static Rect BoundsInWindow(FrameworkElement element)
+		=> element.TransformToVisual(null).TransformBounds(new Rect(0, 0, element.ActualWidth, element.ActualHeight));
+
+	private static Point CenterInWindow(FrameworkElement element)
+	{
+		Rect r = BoundsInWindow(element);
+		return new Point(r.X + r.Width / 2, r.Y + r.Height / 2);
+	}
 }
