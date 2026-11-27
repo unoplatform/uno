@@ -866,4 +866,29 @@ public class Given_ListView_Issues_Selection
 		}
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26385")]
+	[DataRow(5, 2, 2, "I3")]
+	[DataRow(4, 3, 2, "I2")]
+	public async Task When_FlipView_Selected_Item_Removed_Selects_Neighbour(int count, int removed, int expectedIndex, string expectedItem)
+	{
+		try
+		{
+			var src = MakeItems(count);
+			var fv = await Host(new FlipView { Width = 300, Height = 200, ItemsSource = src });
+
+			fv.SelectedIndex = removed;
+			await WindowHelper.WaitForIdle();
+			src.RemoveAt(removed);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(expectedIndex, fv.SelectedIndex);
+			Assert.AreEqual(expectedItem, fv.SelectedItem);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
 }
