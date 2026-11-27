@@ -19,22 +19,22 @@ The following table shows which file picker experiences are available across Uno
 * 💬 Partially supported (see below for more details)
 * ✖ Not supported
 
-| Picker         | Windows App SDK | Android (Native/Skia) | iOS (Native/Skia) | WebAssembly (Native/Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
+| Picker         | Windows App SDK | Android (Skia) | iOS (Skia) | WebAssembly (Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
 |----------------|-----------------|-----------------------|-------------------|----------------------------|-----------------------|---------------------|------------------------------------|-------------------------|
-| FileOpenPicker | ✔               | ✔                     | ✔                 | ✔ (1)                      | ✔                     | ✔                   | ✔                                  | ✔                       |
-| FileSavePicker | ✔               | ✔                     | 💬 (2)            | ✔ (1)                      | ✔                     | ✔                   | ✔                                  | ✔                       |
-| FolderPicker   | ✔               | ✔                     | ✔                 | ✔                          | ✔                     | ✔                   | ✔                                  | ✔                       |
+| FileOpenPicker | ✔               | ✔                     | ✔                 | ✔ (1)                      | ✔                     | ✔                   | ✖                                  | ✔                       |
+| FileSavePicker | ✔               | ✔                     | 💬 (2)            | ✔ (1)                      | ✔                     | ✔                   | ✖                                  | ✔                       |
+| FolderPicker   | ✔               | ✔                     | ✔                 | ✔                          | ✔                     | ✔                   | ✖                                  | ✔                       |
 
 *(1) - Multiple implementations supported - see WebAssembly section below*\
 *(2) - See iOS section below*
 
 On some platforms, you can further customize the file-picking experience by utilizing additional properties:
 
-| Feature                | Windows App SDK | Android (Native/Skia) | iOS (Native/Skia) | WebAssembly (Native/Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
+| Feature                | Windows App SDK | Android (Skia) | iOS (Skia) | WebAssembly (Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
 |------------------------|-----------------|-----------------------|-------------------|----------------------------|-----------------------|---------------------|------------------------------------|-------------------------|
-| SuggestedFileName      | ✔               | ✖                     | ✖                 | ✔                          | ✔                     | ✔                   | ✔                                  | ✔                       |
-| SuggestedStartLocation | ✔               | 💬 (4)                | ✔ (3)             | ✔ (1)                      | ✔                     | ✔                   | ✔                                  | ✔                       |
-| SettingsIdentifier     | ✔               | ✔                     | ✖                 | ✔ (1)                      | ✔                     | ✔                   | ✔                                  | ✔                       |
+| SuggestedFileName      | ✔               | ✖                     | ✖                 | ✔                          | ✔                     | ✔                   | ✖                                  | ✔                       |
+| SuggestedStartLocation | ✔               | 💬 (4)                | ✔ (3)             | ✔ (1)                      | ✔                     | ✔                   | ✖                                  | ✔                       |
+| SettingsIdentifier     | ✔               | ✔                     | ✖                 | ✔ (1)                      | ✔                     | ✔                   | ✖                                  | ✔                       |
 | SetMultipleFilesLimit  | ✖               | ✖                     | ✔                 | ✖                          | ✖                     | ✖                   | ✖                                  | ✖                       |
 
 *(1) - Only for the native file pickers - see WebAssembly section below*\
