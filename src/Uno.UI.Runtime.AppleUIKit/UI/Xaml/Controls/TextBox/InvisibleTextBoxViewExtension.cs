@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using UIKit;
+using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.AppleUIKit.Hosting;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
+using Uno.UI.Xaml.Core;
 using Uno.UI.Runtime.AppleUIKit.Controls;
 
 namespace Uno.UI.Runtime.AppleUIKit;
@@ -18,10 +19,13 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 {
 	private readonly TextBoxView _owner;
 	private readonly InvisibleTextBoxLoupe _loupe = new();
-	private UIView? _latestNativeView;
 	private IInvisibleTextBoxView? _textBoxView;
 	private XamlRoot? _textBoxViewRoot;
 	private UIView? _keyboardDismissAccessory;
+
+	// The other input of a username/password pair. iOS AutoFill fills a login form by making each of its fields the
+	// first responder in turn, so both keep their proxy in the hierarchy while they are loaded, not only the focused one.
+	private InvisibleTextBoxViewExtension? _autofillCompanion;
 
 	public InvisibleTextBoxViewExtension(TextBoxView view)
 	{
@@ -34,6 +38,11 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 	internal UIView? NativeView => _textBoxView as UIView;
 
 	private IImeSessionHost? ImeHost => _owner.Host as IImeSessionHost;
+
+	private bool IsKeptForAutofill => _autofillCompanion is not null;
+
+	// Reapplying the template of the input replaces its TextBoxView, and with it this extension.
+	private bool IsCurrent => ReferenceEquals(_owner.Core?.TextBoxView, _owner);
 
 	internal AppleUIKitImeTextBoxExtension? GetImeExtension(IInvisibleTextBoxView source)
 	{
@@ -55,13 +64,22 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 		// StartEntry can be called twice without any EndEntry.
 		// This happens when the managed TextBox receives Focus
 		// with two different `FocusState`s (e.g, Programmatic and Keyboard/Pointer)
+		// The proxy kept for autofill is also reused when its input gets the focus back.
 		if (_textBoxView is not null)
 		{
 			_textBoxView.SetSoftwareKeyboardSuppressed(suppressSoftwareKeyboard);
-			if (!_textBoxView.IsFirstResponder)
+			if (!_textBoxView.IsFirstResponder && ImeHost is { } focusedHost)
 			{
-				_textBoxView.BecomeFirstResponder();
+				if (focusedHost.XamlRoot is { } xamlRoot)
+				{
+					// A kept proxy can have lost its layer in the meantime.
+					AddViewToTextInputLayer(xamlRoot);
+				}
+
+				MakeFirstResponder(focusedHost);
 			}
+
+			CompleteTextInputLayerHandoff();
 			return;
 		}
 
@@ -71,6 +89,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 			return;
 		}
 
+		AttachAutofillCompanion();
 		EnsureTextBoxView(host);
 		SetSoftKeyboardTheme();
 
@@ -80,25 +99,42 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 		_textBoxView.SetSoftwareKeyboardSuppressed(suppressSoftwareKeyboard);
 
 		// change FirstResponder's View before removing the previous view to avoid flickering
-		_textBoxView.BecomeFirstResponder();
+		MakeFirstResponder(host);
 
-		RemovePreviousViewFromTextInputLayer();
+		CompleteTextInputLayerHandoff();
+	}
 
-		var start = host.SelectionStart;
-		var length = host.SelectionLength;
-		_textBoxView.Select(start, length);
+	// Selects once first responder: a secure text field re-inserts its text then, which moves the caret to the end.
+	private void MakeFirstResponder(IImeSessionHost host)
+	{
+		_textBoxView?.BecomeFirstResponder();
+		_textBoxView?.Select(host.SelectionStart, host.SelectionLength);
 	}
 
 	public void EndEntry()
 	{
 		_loupe.End();
 
-		if (_textBoxView is not null)
+		if (_textBoxView is null)
 		{
-			RemoveViewFromTextInputLayer();
-			_textBoxView = null;
-			_textBoxViewRoot = null;
+			return;
 		}
+
+		if (IsKeptForAutofill)
+		{
+			// The proxy stays for autofill: it only gives up the keyboard, unless another text input takes it over.
+			if (_textBoxView.IsFirstResponder && !IsTextInputFocusing())
+			{
+				_textBoxView.ResignFirstResponder();
+			}
+
+			InvalidateLayout();
+			return;
+		}
+
+		RemoveViewFromTextInputLayer();
+		_textBoxView = null;
+		_textBoxViewRoot = null;
 	}
 
 	public void UpdateSize() => InvalidateLayout();
@@ -225,11 +261,15 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 			_textBoxView.AutocapitalizationType = UITextAutocapitalizationType.Sentences;
 		}
 
-		_textBoxView.SecureTextEntry = host is TextBoxCore { IsPassword: true };
+		var isPassword = host is TextBoxCore { IsPassword: true };
+		_textBoxView.SecureTextEntry = isPassword;
 
 		// Lets iOS offer AutoFill (saved passwords, contact details) for the field. Only assigned when there is a
-		// type: the proxy is created per entry, so its native default (none) stands otherwise.
-		if (InputScopeHelper.ConvertInputScopeToTextContentType(host.InputScope, host is TextBoxCore { IsPassword: true }) is { } contentType)
+		// type, the native default being none.
+		var contentType = IsAutofillUsername(host)
+			? UITextContentType.Username
+			: InputScopeHelper.ConvertInputScopeToTextContentType(host.InputScope, isPassword);
+		if (contentType is not null)
 		{
 			_textBoxView.TextContentType = contentType;
 		}
@@ -243,6 +283,15 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 			UpdateNativeViewFrame(nativeView);
 		}
 	}
+
+	// Apple asks for the username type on a login's username, an e-mail address included (the keyboard still follows
+	// the InputScope). Other input scopes keep their own type.
+	private bool IsAutofillUsername(IImeSessionHost host)
+		=> IsKeptForAutofill
+			&& host is TextBoxCore { IsPassword: false }
+			&& host.InputScope.GetFirstInputScopeNameValue() is InputScopeNameValue.Default
+				or InputScopeNameValue.EmailSmtpAddress
+				or InputScopeNameValue.EmailNameOrAddress;
 
 	private void UpdateKeyboardAccessoryView(IImeSessionHost host)
 	{
@@ -319,13 +368,16 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 			UpdateProperties();
 			SetText(inputText ?? string.Empty);
 
-			if (wasFirstResponder && host.XamlRoot is { } xamlRoot)
+			// Replaces a proxy that is in the hierarchy: the focused one, or one kept for autofill.
+			if (previousView is UIView { Superview: not null } previousNativeView && host.XamlRoot is { } xamlRoot)
 			{
-				_latestNativeView = previousView as UIView;
 				AddViewToTextInputLayer(xamlRoot);
-				_textBoxView.BecomeFirstResponder();
-				RemovePreviousViewFromTextInputLayer();
-				_textBoxView.Select(host.SelectionStart, host.SelectionLength);
+				if (wasFirstResponder)
+				{
+					MakeFirstResponder(host);
+				}
+
+				previousNativeView.RemoveFromSuperview();
 			}
 		}
 	}
@@ -347,7 +399,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 
 	internal bool ProcessCaretDragGesture(TextBoxCore.CaretDragPhase phase, Windows.Foundation.Point cumulativeOffset)
 	{
-		// Re-resolved on every callback: EndEntry() clears _textBoxView without resigning first
+		// Re-resolved on every callback: EndEntry() can clear _textBoxView without resigning first
 		// responder, so a discarded proxy can still receive the gesture.
 		if (_textBoxView?.Owner?.Core is not { } core || _textBoxView.IsComposing)
 		{
@@ -363,6 +415,18 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 	{
 		if (!ReferenceEquals(_textBoxView, source))
 		{
+			return;
+		}
+
+		// A kept proxy that gives up the first responder can commit text (an autocorrection, marked text): it is dropped,
+		// as for the proxies that go away, so the input keeps what was typed. AutoFill types into a first responder.
+		if (IsKeptForAutofill && !source.IsFirstResponder)
+		{
+			if (ImeHost is { } keptHost)
+			{
+				SetText(keptHost.Text);
+			}
+
 			return;
 		}
 
@@ -399,29 +463,15 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 
 		if (GetOverlayLayer(xamlRoot) is { } layer && nativeView.Superview != layer)
 		{
-			var view = layer.Subviews.LastOrDefault();
+			layer.AddSubview(nativeView);
 
-			// prevents adding the same native view multiple times. This should not happen very often.
-			if (!ReferenceEquals(view, nativeView))
-			{
-				_latestNativeView = view;
-				layer.AddSubview(nativeView);
-
-				UpdateNativeViewFrame(nativeView);
-			}
+			UpdateNativeViewFrame(nativeView);
 		}
 	}
 
 	public void RemoveViewFromTextInputLayer()
 	{
-		var xamlRoot = ImeHost?.XamlRoot;
-		if (xamlRoot is null)
-		{
-			return;
-		}
-
-		var focusingView = FocusManager.GetFocusingElement(xamlRoot) as FrameworkElement;
-		if (CouldBecomeFirstResponder(focusingView))
+		if (ImeHost?.XamlRoot is null || IsTextInputFocusing())
 		{
 			return;
 		}
@@ -437,19 +487,154 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 		}
 	}
 
-	private void RemovePreviousViewFromTextInputLayer()
+	// Once this proxy is the first responder, removes the ones of the previously focused inputs (kept until then to avoid
+	// flickering the keyboard). The proxies kept for autofill stay, and go back to their input's bounds.
+	private void CompleteTextInputLayerHandoff()
 	{
-		if (_latestNativeView is not UIView nativeView)
+		if ((_textBoxView as UIView)?.Superview is not { } layer)
 		{
 			return;
 		}
 
-		if (nativeView.Superview is not null)
+		foreach (var view in layer.Subviews)
 		{
-			nativeView.RemoveFromSuperview();
-			_latestNativeView = null;
+			if (view is not IInvisibleTextBoxView proxy)
+			{
+				continue;
+			}
+
+			if (proxy.Owner?.Extension is InvisibleTextBoxViewExtension { IsKeptForAutofill: true } extension
+				&& ReferenceEquals(extension._textBoxView, proxy))
+			{
+				if (extension.IsCurrent)
+				{
+					extension.InvalidateLayout();
+					continue;
+				}
+
+				extension.ReleaseAutofillPair();
+			}
+
+			if (!ReferenceEquals(proxy, _textBoxView))
+			{
+				view.RemoveFromSuperview();
+			}
 		}
 	}
+
+	private void AttachAutofillCompanion()
+	{
+		if (IsKeptForAutofill
+			|| FindAutofillCompanion() is not { } companion
+			|| companion.ImeHost is not { XamlRoot: { } xamlRoot } companionHost)
+		{
+			return;
+		}
+
+		_autofillCompanion = companion;
+		companion._autofillCompanion = this;
+		SubscribeToUnloaded();
+		companion.SubscribeToUnloaded();
+
+		companion.EnsureTextBoxView(companionHost);
+		companion.AddViewToTextInputLayer(xamlRoot);
+
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"AutoFill login pair: {Describe(_owner.Core?.Owner)} and {Describe(companion._owner.Core?.Owner)}.");
+		}
+	}
+
+	// The username is the single-line text input right before the password one in the tab order.
+	private InvisibleTextBoxViewExtension? FindAutofillCompanion()
+	{
+		if (ImeHost is not TextBoxCore { AcceptsReturn: false } core
+			|| IsPin(core)
+			|| VisualTree.GetFocusManagerForElement(core.Owner) is not { } focusManager)
+		{
+			return null;
+		}
+
+		var candidate = core.IsPassword
+			? focusManager.GetPreviousTabStop(core.Owner)
+			: focusManager.GetNextTabStop(core.Owner);
+
+		if (candidate is not ITextBoxHost { Core: { AcceptsReturn: false } candidateCore }
+			|| candidateCore.IsPassword == core.IsPassword
+			|| IsPin(candidateCore)
+			|| candidateCore.TextBoxView.Extension is not InvisibleTextBoxViewExtension extension)
+		{
+			if (core.IsPassword && this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"No AutoFill username for {Describe(core.Owner)}: its previous tab stop is {Describe(candidate)}.");
+			}
+
+			return null;
+		}
+
+		if (extension._autofillCompanion is { IsCurrent: false } replaced)
+		{
+			replaced.ReleaseAutofillPair();
+		}
+
+		return extension._autofillCompanion is null ? extension : null;
+	}
+
+	// A PIN isn't the password of a login.
+	private static bool IsPin(TextBoxCore core)
+		=> core.IsPassword && core.InputScope.GetFirstInputScopeNameValue() == InputScopeNameValue.NumericPin;
+
+	private static string Describe(DependencyObject? element)
+		=> element switch
+		{
+			null => "none",
+			FrameworkElement { Name.Length: > 0 } named => $"{named.GetType().Name} '{named.Name}'",
+			_ => element.GetType().Name,
+		};
+
+	private void SubscribeToUnloaded()
+	{
+		if (_owner.Core?.Owner is { } control)
+		{
+			control.Unloaded += OnAutofillInputUnloaded;
+		}
+	}
+
+	// Removing the proxies with their text, once the login form goes away, is also when iOS can offer to save the password.
+	private void OnAutofillInputUnloaded(object sender, RoutedEventArgs e) => ReleaseAutofillPair();
+
+	private void ReleaseAutofillPair()
+	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"AutoFill login pair released: {Describe(_owner.Core?.Owner)} and {Describe(_autofillCompanion?._owner.Core?.Owner)}.");
+		}
+
+		var companion = _autofillCompanion;
+		ReleaseAutofillProxy();
+		companion?.ReleaseAutofillProxy();
+	}
+
+	private void ReleaseAutofillProxy()
+	{
+		if (_owner.Core?.Owner is { } control)
+		{
+			control.Unloaded -= OnAutofillInputUnloaded;
+		}
+
+		_autofillCompanion = null;
+
+		// The focused input keeps its proxy until EndEntry.
+		if (_textBoxView is { IsFirstResponder: false } view)
+		{
+			(view as UIView)?.RemoveFromSuperview();
+			_textBoxView = null;
+			_textBoxViewRoot = null;
+		}
+	}
+
+	private bool IsTextInputFocusing()
+		=> ImeHost?.XamlRoot is { } xamlRoot && CouldBecomeFirstResponder(FocusManager.GetFocusingElement(xamlRoot) as FrameworkElement);
 
 	private void UpdateNativeViewFrame(UIView nativeView)
 	{
@@ -463,11 +648,25 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension, INa
 		var width = rect?.Width ?? 10;
 		var height = rect?.Height ?? 10;
 
+		// While another input is focused, a proxy kept for autofill sits at its input's bounds, within the window: iOS only
+		// looks for the other fields of a login form on screen. VoiceOver reads the input from the accessibility tree instead.
+		var isParkedForAutofill = IsKeptForAutofill && _textBoxView is { IsFirstResponder: false };
+		if (IsKeptForAutofill)
+		{
+			nativeView.AccessibilityElementsHidden = isParkedForAutofill;
+		}
+
+		if (isParkedForAutofill && host?.XamlRoot?.Size is { } windowSize)
+		{
+			x = Math.Clamp(x, 0, Math.Max(0, windowSize.Width - width));
+			y = Math.Clamp(y, 0, Math.Max(0, windowSize.Height - height));
+		}
+
 		// Only iPad shows a floating numeric keypad that needs an anchor
 		// view. For all other cases we push the native view off-screen so
 		// that the iOS autocorrect/suggestion bubble does not leak over
 		// the Skia-rendered text.
-		if (ShouldAnchorToTextBox())
+		if (isParkedForAutofill || ShouldAnchorToTextBox())
 		{
 			nativeView.Frame = new CoreGraphics.CGRect(x, y, width, height);
 		}
