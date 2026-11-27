@@ -508,4 +508,23 @@ public class Given_ListView_Issues_Interaction
 		await WindowHelper.WaitFor(() => combo.ItemsPanelRoot is not null && combo.ItemsPanelRoot.IsLoaded, timeoutMS: 3000, message: "dropdown opened");
 		await WindowHelper.WaitForIdle();
 	}
+
+	// https://github.com/unoplatform/uno/issues/9775
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/9775")]
+	public async Task When_ComboBox_Reopened_With_Last_Item_Selected_Stays_Virtualized()
+	{
+		ComboBox combo = await LoadComboBox(300);
+
+		combo.SelectedIndex = 299;
+		await OpenDropDown(combo);
+		combo.IsDropDownOpen = false;
+		await WindowHelper.WaitForIdle();
+
+		await OpenDropDown(combo);
+
+		Assert.IsLessThan(40, combo.ItemsPanelRoot!.Children.Count, "only the visible window of containers is realized");
+		Assert.IsNotNull(combo.ContainerFromIndex(299), "selected container is realized");
+	}
 }
