@@ -466,4 +466,46 @@ public class Given_ListView_Issues_Interaction
 		}
 	}
 #endif
+
+	// https://github.com/unoplatform/uno/issues/22484
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22484")]
+	public async Task When_FindElementsInHostCoordinates_Over_ListViewItem_Includes_Container()
+	{
+		ListView list = new()
+		{
+			Width = 300,
+			Height = 400,
+			ItemTemplate = TextTemplate(),
+			ItemsSource = Enumerable.Range(0, 20).Select(i => $"Item {i}").ToList(),
+		};
+
+		WindowHelper.WindowContent = list;
+		await WindowHelper.WaitForLoaded(list);
+		await WindowHelper.WaitForIdle();
+
+		var container = (FrameworkElement)list.ContainerFromIndex(3);
+		Point center = CenterInWindow(container);
+
+		var hits = VisualTreeHelper.FindElementsInHostCoordinates(center, list.XamlRoot!.Content, true).ToList();
+
+		Assert.IsTrue(
+			hits.OfType<ListViewItem>().Any(i => list.IndexFromContainer(i) == 3),
+			"hit list should contain ListViewItem 3, got: " + string.Join(", ", hits.Select(h => h.GetType().Name)));
+	}
+
+	private static async Task<ComboBox> LoadComboBox(int count)
+	{
+		ComboBox combo = new() { ItemsSource = Enumerable.Range(0, count).Select(i => $"Item {i}").ToList() };
+		await UITestHelper.Load(combo, x => x.IsLoaded);
+		return combo;
+	}
+
+	private static async Task OpenDropDown(ComboBox combo)
+	{
+		combo.IsDropDownOpen = true;
+		await WindowHelper.WaitFor(() => combo.ItemsPanelRoot is not null && combo.ItemsPanelRoot.IsLoaded, timeoutMS: 3000, message: "dropdown opened");
+		await WindowHelper.WaitForIdle();
+	}
 }
