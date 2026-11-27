@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Documents.BlockLayout;
 using Microsoft.UI.Xaml.Documents.RichTextServices;
 using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
+using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core.Scaling;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
@@ -384,6 +385,24 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 		}
 
 		SetIsTextTrimmed(isTrimmed);
+	}
+
+	//------------------------------------------------------------------------
+	//
+	//  Method:   CRichTextBlockOverflow::RaiseIsTextTrimmedChangedEvent
+	//
+	//  Synopsis: Raises event for IsTextTrimmedChanged.
+	//
+	//------------------------------------------------------------------------
+	private void RaiseIsTextTrimmedChangedEvent()
+	{
+		// CEventManager::Raise skips senders without listeners, then posts the event (fRaiseSync is false).
+		if (_isTextTrimmedChanged is null)
+		{
+			return;
+		}
+
+		NativeDispatcher.Main.Enqueue(() => _isTextTrimmedChanged?.Invoke(this, new()), NativeDispatcherPriority.Normal);
 	}
 
 	// Rebuilds _paragraphLayouts (render data) from the arranged page node. The overflow has no Blocks of

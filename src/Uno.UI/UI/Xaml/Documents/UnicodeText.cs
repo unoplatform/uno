@@ -1051,15 +1051,16 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		IsLastLineTrimmed = textTrimming is TextTrimming.None
-			? maxLines > 0 && maxLines < actualLineCount
-			: lastTrimmedLineIndex == lines.Count - 1;
-		HasTrimmedLine = textTrimming is not TextTrimming.None && (endedEarly || lastTrimmedLineIndex >= 0);
-
 		var hasEndingParagraphLine = !suppressEndingNewLineLine
 			&& !endedEarly
 			&& lines[^1].end == _text.Length
 			&& textEndsInLineBreak;
+
+		// A visible empty line after a final line break is DWrite's last line, and it is never trimmed.
+		IsLastLineTrimmed = textTrimming is TextTrimming.None
+			? maxLines > 0 && maxLines < actualLineCount
+			: lastTrimmedLineIndex == lines.Count - 1 && !hasEndingParagraphLine;
+		HasTrimmedLine = textTrimming is not TextTrimming.None && (endedEarly || lastTrimmedLineIndex >= 0);
 		if (hasEndingParagraphLine)
 		{
 			_endingNewLineLineHeight = terminalEffectiveHeight;

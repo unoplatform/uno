@@ -145,8 +145,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (IsTextTrimmed != value)
 			{
+				RaiseIsTextTrimmedChangedEvent();
 				IsTextTrimmed = value;
-				_isTextTrimmedChanged?.Invoke(this, new IsTextTrimmedChangedEventArgs());
 			}
 		}
 #pragma warning restore IDE0051
