@@ -3,7 +3,7 @@
 namespace Windows.Media.SpeechRecognition;
 
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-[global::Uno.NotImplemented]
+[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 public partial class SpeechContinuousRecognitionSession
 {
