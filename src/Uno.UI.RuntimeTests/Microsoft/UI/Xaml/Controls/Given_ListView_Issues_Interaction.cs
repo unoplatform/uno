@@ -119,4 +119,40 @@ public class Given_ListView_Issues_Interaction
 			WindowHelper.WindowContent = null;
 		}
 	}
+
+	// https://github.com/unoplatform/uno/issues/9392
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/9392")]
+	public async Task When_Arrow_Down_Past_Viewport_Keeps_Navigating()
+	{
+		ListView list = new()
+		{
+			Width = 300,
+			Height = 400,
+			ItemTemplate = TextTemplate(),
+			ItemsSource = Enumerable.Range(0, 500).Select(i => $"Item {i}").ToList(),
+		};
+
+		WindowHelper.WindowContent = list;
+		await WindowHelper.WaitForLoaded(list);
+		await WindowHelper.WaitForIdle();
+
+		var first = (ListViewItem)list.ContainerFromIndex(0);
+		Assert.IsTrue(first.Focus(FocusState.Keyboard));
+
+		for (int i = 0; i < 200; i++)
+		{
+			await KeyboardHelper.Down();
+			await WindowHelper.WaitForIdle();
+		}
+
+		var focused = FocusManager.GetFocusedElement(list.XamlRoot!) as ListViewItem;
+		Assert.IsNotNull(focused, "a ListViewItem should keep the focus");
+		Assert.AreEqual(200, list.IndexFromContainer(focused!), "focused index after 200 Down presses");
+
+		Rect bounds = focused!.TransformToVisual(list).TransformBounds(new Rect(0, 0, focused.ActualWidth, focused.ActualHeight));
+		Assert.IsGreaterThanOrEqualTo(-1.0, bounds.Top, "focused item scrolled into view (top)");
+		Assert.IsLessThanOrEqualTo(list.ActualHeight + 1.0, bounds.Bottom, "focused item scrolled into view (bottom)");
+	}
 }
