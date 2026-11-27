@@ -421,5 +421,49 @@ public class Given_ListView_Issues_Interaction
 			return new DataTemplate(null, (_, _) => view);
 		}
 	}
+
+	// https://github.com/unoplatform/uno/issues/17461
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/17461")]
+	public async Task When_DataTemplateSelector_Returns_Factory_Template_Rows_Keep_Their_Data()
+	{
+		ListView list = new()
+		{
+			Width = 300,
+			Height = 300,
+			ItemTemplateSelector = new FactoryTemplateSelector(),
+			ItemsSource = Enumerable.Range(0, 200).Select(i => $"Item {i}").ToList(),
+		};
+
+		WindowHelper.WindowContent = list;
+		await WindowHelper.WaitForLoaded(list);
+		await WindowHelper.WaitForIdle();
+
+		var sv = GetScrollViewer(list);
+		foreach (double offset in new[] { 1500.0, 3000.0, 600.0, 0.0, 4500.0, 1200.0 })
+		{
+			sv.ChangeView(null, offset, null, true);
+			await WindowHelper.WaitFor(() => Math.Abs(sv.VerticalOffset - offset) < 1.0, timeoutMS: 3000, message: $"scrolled to {offset}");
+			await WindowHelper.WaitForIdle();
+
+			int checkedCount = 0;
+			foreach (ListViewItem container in Descendants<ListViewItem>(list))
+			{
+				int index = list.IndexFromContainer(container);
+				if (index < 0)
+				{
+					continue;
+				}
+
+				TextBlock? tb = Descendants<TextBlock>(container).FirstOrDefault();
+				Assert.IsNotNull(tb, $"container {index} has content");
+				Assert.AreEqual($"Item {index}", tb!.Text, $"container {index} at offset {offset}");
+				checkedCount++;
+			}
+
+			Assert.IsGreaterThan(0, checkedCount, $"containers realized at offset {offset}");
+		}
+	}
 #endif
 }
