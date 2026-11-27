@@ -34,6 +34,38 @@ public class Given_ListView_Issues_Layout
 		public override string ToString() => Key;
 	}
 
+	public sealed class Row
+	{
+		public Row(int index, double height)
+		{
+			Index = index;
+			Height = height;
+		}
+
+		public int Index { get; }
+
+		public double Height { get; }
+	}
+
+	private sealed class CountingListView : ListView
+	{
+		public int MeasureCount { get; private set; }
+
+		public int ArrangeCount { get; private set; }
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			MeasureCount++;
+			return base.MeasureOverride(availableSize);
+		}
+
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			ArrangeCount++;
+			return base.ArrangeOverride(finalSize);
+		}
+	}
+
 	private CollectionViewSource? _cvs;
 
 	[TestCleanup]
@@ -46,6 +78,15 @@ public class Given_ListView_Issues_Layout
 		$"<ItemsPanelTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>{panelXaml}</ItemsPanelTemplate>");
 
 	private static List<string> Strings(int count) => Enumerable.Range(0, count).Select(i => $"Item {i}").ToList();
+
+	private static ListView CreateNoCacheList(object source) => new()
+	{
+		Width = 300,
+		Height = 400,
+		ItemsSource = source,
+		ItemTemplate = Template("<Border Height='40'><TextBlock Text='{Binding}' /></Border>"),
+		ItemsPanel = PanelTemplate("<ItemsStackPanel CacheLength='0' />"),
+	};
 
 	private static async Task<T> Load<T>(T element)
 		where T : FrameworkElement
@@ -88,47 +129,6 @@ public class Given_ListView_Issues_Layout
 		await WindowHelper.WaitForIdle();
 	}
 
-	private static ListView CreateNoCacheList(object source) => new()
-	{
-		Width = 300,
-		Height = 400,
-		ItemsSource = source,
-		ItemTemplate = Template("<Border Height='40'><TextBlock Text='{Binding}' /></Border>"),
-		ItemsPanel = PanelTemplate("<ItemsStackPanel CacheLength='0' />"),
-	};
-
-	public sealed class Row
-	{
-		public Row(int index, double height)
-		{
-			Index = index;
-			Height = height;
-		}
-
-		public int Index { get; }
-
-		public double Height { get; }
-	}
-
-	private sealed class CountingListView : ListView
-	{
-		public int MeasureCount { get; private set; }
-
-		public int ArrangeCount { get; private set; }
-
-		protected override Size MeasureOverride(Size availableSize)
-		{
-			MeasureCount++;
-			return base.MeasureOverride(availableSize);
-		}
-
-		protected override Size ArrangeOverride(Size finalSize)
-		{
-			ArrangeCount++;
-			return base.ArrangeOverride(finalSize);
-		}
-	}
-
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/166")]
 	public async Task When_ItemsStackPanel_VerticalAlignment_Bottom_And_Few_Items_Then_Items_Hug_Bottom()
@@ -151,5 +151,37 @@ public class Given_ListView_Issues_Layout
 		Assert.AreEqual(panelBounds.Bottom, BoundsIn(last, list).Bottom, Tolerance, "Last item sits at the bottom of the panel");
 		Assert.IsGreaterThan(BoundsIn(first, list).Y, BoundsIn(last, list).Y);
 		Assert.IsGreaterThan(list.Height / 2, BoundsIn(first, list).Y, "Items are pushed down, not top aligned");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/4257")]
+	public async Task When_KeepLastItemInView_And_Item_Appended_At_End_Then_Last_Item_Is_In_View()
+	{
+		ObservableCollection<string> items = new(Strings(30));
+		ListView list = new()
+		{
+			Width = 300,
+			Height = 400,
+			ItemsSource = items,
+			ItemTemplate = Template("<Border Height='40'><TextBlock Text='{Binding}' /></Border>"),
+			ItemsPanel = PanelTemplate("<ItemsStackPanel VerticalAlignment='Bottom' ItemsUpdatingScrollMode='KeepLastItemInView' />"),
+		};
+		await Load(list);
+		var sv = GetScrollViewer(list);
+		await ChangeViewAndWait(sv, sv.ScrollableHeight);
+
+		for (int i = 0; i < 3; i++)
+		{
+			items.Add($"New {i}");
+			await WindowHelper.WaitForIdle();
+		}
+
+		await WindowHelper.WaitFor(() => list.ContainerFromIndex(items.Count - 1) is not null && Math.Abs(sv.VerticalOffset - sv.ScrollableHeight) < Tolerance, timeoutMS: 3000, message: "Scrolled to the newest item");
+
+		var last = (FrameworkElement)list.ContainerFromIndex(items.Count - 1);
+		var lastBounds = BoundsIn(last, list);
+		Assert.AreEqual("New 2", ((ListViewItem)last).Content);
+		Assert.IsLessThanOrEqualTo(list.ActualHeight + Tolerance, lastBounds.Bottom);
+		Assert.IsGreaterThanOrEqualTo(-Tolerance, lastBounds.Y);
 	}
 }
