@@ -96,6 +96,130 @@ public partial class Given_VisualStateManager
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26672")]
+	public async Task When_GoToState_Current_State_Without_Transitions_Setter_Binding_Is_Reevaluated()
+	{
+		var (control, bar) = await LoadStatesControl();
+		control.Tag = 30d;
+		VisualStateManager.GoToState(control, "BoundSetter", false);
+		await UITestHelper.WaitFor(() => bar.Width == 30);
+
+		control.Tag = 60d;
+		VisualStateManager.GoToState(control, "BoundSetter", false);
+
+		await UITestHelper.WaitFor(() => bar.Width == 60, message: "The setter should pick up the new bound value.");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26672")]
+	public async Task When_GoToState_Current_State_Without_Transitions_Storyboard_Completes_With_New_Values()
+	{
+		var (control, bar) = await LoadStatesControl();
+		control.Tag = 30d;
+		VisualStateManager.GoToState(control, "BoundAnimation", false);
+		await UITestHelper.WaitFor(() => bar.Width == 30);
+
+		control.Tag = 60d;
+		VisualStateManager.GoToState(control, "BoundAnimation", false);
+
+		await UITestHelper.WaitFor(() => bar.Width == 60, message: "The filling animation should be completed again with its new To value.");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26672")]
+	public async Task When_GoToState_Current_State_Without_Transitions_Animation_Keeps_Precedence_Over_Setter()
+	{
+		var (control, bar) = await LoadStatesControl();
+		VisualStateManager.GoToState(control, "SetterAndAnimation", false);
+		await UITestHelper.WaitFor(() => bar.Width == 40);
+
+		VisualStateManager.GoToState(control, "SetterAndAnimation", false);
+		await UITestHelper.WaitForIdle();
+
+		Assert.AreEqual(40, bar.Width, "The state's animation should keep precedence over its setter on the same property.");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26672")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI ends transitions at once when the system turns animations off, as on CI agents.
+	public async Task When_GoToState_Current_State_Without_Transitions_During_Transition()
+	{
+		var (control, bar) = await LoadStatesControl();
+		var group = VisualStateManager.GetVisualStateGroups((FrameworkElement)VisualTreeHelper.GetChild(control, 0))[0];
+		VisualStateManager.GoToState(control, "Idle", false);
+		var transitionCompleted = false;
+		group.CurrentStateChanged += (s, e) => transitionCompleted |= e.NewState?.Name == "AfterTransition";
+
+		VisualStateManager.GoToState(control, "AfterTransition", true);
+		await UITestHelper.WaitForIdle();
+		Assert.IsFalse(transitionCompleted, "The 10s transition should still be running.");
+
+		VisualStateManager.GoToState(control, "AfterTransition", false);
+
+		await UITestHelper.WaitFor(() => transitionCompleted && bar.Width == 40, message: "Going to the state without transitions should complete the running transition.");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26672")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // WinUI ends transitions at once when the system turns animations off, as on CI agents.
+	public async Task When_GoToState_Current_State_Without_Transitions_Completes_Transition_Into_Another_State()
+	{
+		var (control, bar) = await LoadStatesControl();
+		var group = VisualStateManager.GetVisualStateGroups((FrameworkElement)VisualTreeHelper.GetChild(control, 0))[0];
+		VisualStateManager.GoToState(control, "Idle", false);
+		group.CurrentStateChanged += (s, e) =>
+		{
+			if (e.NewState?.Name == "AfterTransition")
+			{
+				VisualStateManager.GoToState(control, "Idle", false);
+			}
+		};
+
+		VisualStateManager.GoToState(control, "AfterTransition", true);
+		await UITestHelper.WaitForIdle();
+		VisualStateManager.GoToState(control, "AfterTransition", false);
+
+		await UITestHelper.WaitFor(() => group.CurrentState?.Name == "Idle", message: "The handler should move on to the next state.");
+		await UITestHelper.WaitForIdle();
+		Assert.IsTrue(double.IsNaN(bar.Height), $"The setter of the state left from the handler should stay removed, but Height is {bar.Height}.");
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26672")]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_GoToState_Current_State_Forever_Storyboard(bool useTransitions)
+	{
+		var (control, bar) = await LoadStatesControl();
+		VisualStateManager.GoToState(control, "Forever", false);
+		await UITestHelper.WaitFor(() => bar.Width > 10);
+
+		VisualStateManager.GoToState(control, "Forever", useTransitions);
+		await UITestHelper.WaitForIdle();
+
+		if (useTransitions)
+		{
+			var width = bar.Width;
+			await UITestHelper.WaitFor(() => bar.Width != width, message: "Going to the current state with transitions should leave the animation running.");
+		}
+		else
+		{
+			// Like WinUI, completing a storyboard that never ends stops it.
+			await UITestHelper.WaitFor(() => bar.Width == 5, message: "The never-ending animation should be stopped.");
+			await Task.Delay(200);
+			Assert.AreEqual(5, bar.Width);
+		}
+	}
+
+	private static async Task<(Control control, FrameworkElement bar)> LoadStatesControl()
+	{
+		var root = new When_GoToState_Current_State();
+		await UITestHelper.Load(root);
+
+		return (root.Host, root.Host.FindFirstDescendant<Rectangle>());
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task SelectorItem_SelectedState()
 	{
