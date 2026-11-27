@@ -722,6 +722,69 @@ public class Given_SpeechRecognizer
 		await recognition;
 	}
 
+	[TestMethod]
+	[DataRow(false, SpeechRecognitionResultStatus.Success)]
+	[DataRow(true, SpeechRecognitionResultStatus.UserCanceled)]
+	public async Task When_Continuous_Stopped_During_Permission_Prompt_Then_Recognition_Does_Not_Start(bool cancel, SpeechRecognitionResultStatus expected)
+	{
+		var authorization = new TaskCompletionSource<SpeechRecognizerAuthorization>();
+		_engine.PendingAuthorization = authorization;
+		var session = _sut.ContinuousRecognitionSession;
+		var completions = new List<SpeechRecognitionResultStatus>();
+		session.Completed += (_, args) => completions.Add(args.Status);
+		var start = session.StartAsync().AsTask();
+
+		await (cancel ? session.CancelAsync() : session.StopAsync()).AsTask();
+		authorization.SetResult(SpeechRecognizerAuthorization.Authorized);
+		await start;
+
+		CollectionAssert.AreEqual(new[] { expected }, completions);
+		Assert.IsFalse(_engine.Calls.Contains("Begin"));
+		Assert.AreEqual(SpeechRecognizerState.Idle, _sut.State);
+
+		await session.StartAsync().AsTask();
+		Assert.AreEqual("Begin", _engine.Calls.Last(), "A new session can start after the stopped one.");
+	}
+
+	[TestMethod]
+	public async Task When_Continuous_Paused_During_Permission_Prompt_Then_Stays_Paused()
+	{
+		var authorization = new TaskCompletionSource<SpeechRecognizerAuthorization>();
+		_engine.PendingAuthorization = authorization;
+		var session = _sut.ContinuousRecognitionSession;
+		var start = session.StartAsync().AsTask();
+
+		await session.PauseAsync().AsTask();
+		authorization.SetResult(SpeechRecognizerAuthorization.Authorized);
+		await start;
+
+		Assert.AreEqual(SpeechRecognizerState.Paused, _sut.State);
+		Assert.IsFalse(_engine.Calls.Contains("Begin"));
+
+		session.Resume();
+		Assert.AreEqual("Begin", _engine.Calls.Last());
+		Assert.AreEqual(SpeechRecognizerState.Capturing, _sut.State);
+	}
+
+	[TestMethod]
+	public async Task When_Continuous_Resumed_During_Permission_Prompt_Then_Starts_Once_Allowed()
+	{
+		var authorization = new TaskCompletionSource<SpeechRecognizerAuthorization>();
+		_engine.PendingAuthorization = authorization;
+		var session = _sut.ContinuousRecognitionSession;
+		var start = session.StartAsync().AsTask();
+
+		await session.PauseAsync().AsTask();
+		session.Resume();
+		Assert.IsFalse(_engine.Calls.Contains("Begin"), "Recognition can't start before permission is granted.");
+
+		authorization.SetResult(SpeechRecognizerAuthorization.Authorized);
+		await start;
+
+		Assert.AreEqual(1, _engine.Calls.Count(call => call == "Begin"));
+		Assert.AreEqual(SpeechRecognizerState.Capturing, _sut.State);
+	}
+
 	private void CreateRecognizer(bool languageSupported = true)
 	{
 		_engine = new FakeSpeechRecognizerExtension { IsLanguageSupported = languageSupported };

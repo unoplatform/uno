@@ -23,6 +23,8 @@ public partial class SpeechRecognizer
 	private SpeechRecognitionResultStatus? _pendingContinuousStop;
 	private bool _isPauseRequested;
 	private bool _isPaused;
+	private bool _isContinuousStarting;
+	private int _continuousStartId;
 	private ITimer? _autoStopTimer;
 	private TaskCompletionSource? _continuousCompletion;
 	private TaskCompletionSource? _pauseCompletion;
@@ -47,6 +49,7 @@ public partial class SpeechRecognizer
 	{
 		var extension = _extension ?? throw new NotSupportedException("SpeechRecognizer is not available on this platform.");
 
+		int startId;
 		lock (_gate)
 		{
 			ThrowIfDisposedLocked();
@@ -56,6 +59,13 @@ public partial class SpeechRecognizer
 			}
 
 			_session = SessionKind.Continuous;
+			_continuousMode = mode;
+			_pendingContinuousStop = null;
+			_isPauseRequested = false;
+			_isPaused = false;
+			_isContinuousStarting = true;
+			_eventContext = SynchronizationContext.Current;
+			startId = ++_continuousStartId;
 		}
 
 		SpeechRecognitionResultStatus status;
@@ -67,7 +77,11 @@ public partial class SpeechRecognizer
 		{
 			lock (_gate)
 			{
-				_session = SessionKind.None;
+				if (IsStartingLocked(startId))
+				{
+					_isContinuousStarting = false;
+					_session = SessionKind.None;
+				}
 			}
 
 			throw;
@@ -75,21 +89,23 @@ public partial class SpeechRecognizer
 
 		lock (_gate)
 		{
-			ThrowIfDisposedLocked();
-			StartSessionLocked();
-			_continuousMode = mode;
-			_pendingContinuousStop = null;
-			_isPauseRequested = false;
-			_isPaused = false;
+			// The session may have been stopped, canceled or disposed while waiting for permission.
+			if (!IsStartingLocked(startId))
+			{
+				return;
+			}
 
-			if (status == SpeechRecognitionResultStatus.Success)
+			_isContinuousStarting = false;
+			StartSessionLocked();
+
+			if (status != SpeechRecognitionResultStatus.Success)
+			{
+				FinishContinuousRecognitionLocked(status);
+			}
+			else if (!_isPaused)
 			{
 				BeginUtteranceLocked();
 				RestartAutoStopTimerLocked();
-			}
-			else
-			{
-				FinishContinuousRecognitionLocked(status);
 			}
 		}
 
@@ -163,6 +179,14 @@ public partial class SpeechRecognizer
 		{
 			if (_session != SessionKind.Continuous || !_isPaused)
 			{
+				return;
+			}
+
+			if (_isContinuousStarting)
+			{
+				// Paused while waiting for permission: the startup begins recognizing.
+				_isPaused = false;
+				SetStateLocked(SpeechRecognizerState.Idle);
 				return;
 			}
 
@@ -261,6 +285,7 @@ public partial class SpeechRecognizer
 		_pendingContinuousStop = null;
 		_isPauseRequested = false;
 		_isPaused = false;
+		_isContinuousStarting = false;
 		StopTimer(ref _autoStopTimer);
 		_extension?.StopAudio();
 		SetStateLocked(SpeechRecognizerState.Idle);
@@ -294,7 +319,7 @@ public partial class SpeechRecognizer
 
 		var sessionId = _sessionId;
 		_autoStopTimer = _timeProvider.CreateTimer(
-			_ =>
+			_ => RunOnEventContext(() =>
 			{
 				lock (_gate)
 				{
@@ -315,11 +340,14 @@ public partial class SpeechRecognizer
 				}
 
 				FlushEvents();
-			},
+			}),
 			null,
 			timeout,
 			Timeout.InfiniteTimeSpan);
 	}
+
+	private bool IsStartingLocked(int startId)
+		=> _isContinuousStarting && _continuousStartId == startId && _session == SessionKind.Continuous;
 
 	private void ResetAudioQualityLocked()
 	{

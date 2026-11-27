@@ -14,6 +14,8 @@ namespace Windows.Media.SpeechRecognition;
 
 public partial class SpeechRecognizer
 {
+	private static IReadOnlyList<Language>? _supportedLanguages;
+
 	public static IReadOnlyList<Language> SupportedTopicLanguages => GetSupportedLanguages();
 
 	// List constraints are recognized by the same engine as topics.
@@ -36,8 +38,9 @@ public partial class SpeechRecognizer
 			?? TryCreateLanguage(CultureInfo.CurrentUICulture.Name)
 			?? new Language("en-US");
 
+	// The platform's supported languages don't change while the app runs.
 	private static IReadOnlyList<Language> GetSupportedLanguages()
-		=> UseStaticExtension(extension => GetSupportedLanguages(extension.GetSupportedLanguageTags())) ?? Array.Empty<Language>();
+		=> _supportedLanguages ??= UseStaticExtension(extension => GetSupportedLanguages(extension.GetSupportedLanguageTags())) ?? Array.Empty<Language>();
 
 	private static T? UseStaticExtension<T>(Func<ISpeechRecognizerExtension, T?> use)
 		where T : class
