@@ -7,6 +7,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 #endif
 public partial class AutoSuggestBoxHelper
 {
+#if __SKIA__
+	internal AutoSuggestBoxHelper()
+	{
+	}
+#endif
 	// Skipping already declared property KeepInteriorCornersSquareProperty
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper.SetKeepInteriorCornersSquare(Microsoft.UI.Xaml.Controls.AutoSuggestBox, bool)
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper.GetKeepInteriorCornersSquare(Microsoft.UI.Xaml.Controls.AutoSuggestBox)
