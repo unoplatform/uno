@@ -239,4 +239,27 @@ public class Given_ListView_Issues_Layout
 			Assert.AreEqual(panel.ActualWidth - padding.Left - padding.Right, BoundsIn(Descendants<Border>(container).First(b => b.Height == 40), list).Width, Tolerance, $"Border {i}");
 		}
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/8939")]
+	public async Task When_Many_Items_Then_Vertical_ScrollBar_Is_Shown_Initially()
+	{
+		ListView list = new()
+		{
+			Width = 300,
+			Height = 300,
+			ItemsSource = Strings(100),
+			ItemTemplate = Template("<Border Height='40'><TextBlock Text='{Binding}' /></Border>"),
+		};
+		await Load(list);
+
+		var sv = GetScrollViewer(list);
+		Assert.IsGreaterThan(0, sv.ScrollableHeight);
+		Assert.AreEqual(Visibility.Visible, sv.ComputedVerticalScrollBarVisibility);
+		var bar = Descendants<ScrollBar>(sv).First(b => b.Orientation == Orientation.Vertical);
+		Assert.AreEqual(Visibility.Visible, bar.Visibility);
+		Assert.IsGreaterThan(0, bar.Maximum);
+		Assert.IsGreaterThan(0, bar.ViewportSize);
+		Assert.IsGreaterThan(0, bar.ActualHeight);
+	}
 }
