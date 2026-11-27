@@ -6,6 +6,11 @@ namespace Windows.Media.SpeechRecognition
 	{
 		internal SpeechRecognizerTimeouts()
 		{
+#if __SKIA__
+			// WinRT doesn't document its defaults; these are the documented Windows Phone 8 values.
+			InitialSilenceTimeout = TimeSpan.FromSeconds(5);
+			EndSilenceTimeout = TimeSpan.FromMilliseconds(150);
+#endif
 		}
 
 		public TimeSpan InitialSilenceTimeout { get; set; }

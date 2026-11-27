@@ -8,34 +8,56 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// Must match Windows.Media.SpeechRecognition.SpeechRecognizerState.
-typedef NS_ENUM(int32_t, UNOSpeechRecognizerState) {
-    UNOSpeechRecognizerStateIdle = 0,
-    UNOSpeechRecognizerStateCapturing = 1,
-    UNOSpeechRecognizerStateProcessing = 2,
-    UNOSpeechRecognizerStateSoundStarted = 3,
-    UNOSpeechRecognizerStateSoundEnded = 4,
-    UNOSpeechRecognizerStateSpeechDetected = 5,
-    UNOSpeechRecognizerStatePaused = 6,
+// Must match Uno.UI.Runtime.MacOS.MacOSSpeechRecognizerExtension.
+typedef NS_ENUM(int32_t, UNOSpeechSignal) {
+    UNOSpeechSignalSpeechDetected = 0,
+    UNOSpeechSignalFinishedReadingAudio = 1,
 };
+
+typedef NS_ENUM(int32_t, UNOSpeechUtteranceOutcome) {
+    UNOSpeechUtteranceOutcomeSuccess = 0,
+    UNOSpeechUtteranceOutcomeError = 1,
+    UNOSpeechUtteranceOutcomeCanceled = 2,
+};
+
+// Error codes reported with the UNOSpeechErrorDomain domain.
+typedef NS_ENUM(int64_t, UNOSpeechErrorCode) {
+    UNOSpeechErrorCodeNoInputDevice = 1,
+    UNOSpeechErrorCodeAudioEngineFailed = 2,
+    UNOSpeechErrorCodeRecognizerUnavailable = 3,
+};
+
+extern NSString * const UNOSpeechErrorDomain;
+
+// Reported instead of an authorization status when the Info.plist usage description is missing,
+// because the system terminates the process when the permission is requested without it.
+#define UNO_SPEECH_AUTHORIZATION_MISSING_USAGE_DESCRIPTION (-1)
 
 @class UNOSpeechRecognizer;
 
 typedef void (*uno_speech_hypothesis_fn_ptr)(UNOSpeechRecognizer * /* handle */, const char * /* text */);
-typedef void (*uno_speech_state_fn_ptr)(UNOSpeechRecognizer * /* handle */, int32_t /* state */);
-// alternates: optional null-terminated UTF-8 string; entries separated by '\x1F' (Unit Separator). NULL when none.
-typedef void (*uno_speech_result_fn_ptr)(UNOSpeechRecognizer * /* handle */, const char * /* text */, const char * _Nullable /* alternates */);
-typedef void (*uno_speech_error_fn_ptr)(UNOSpeechRecognizer * /* handle */, const char * /* error */);
-
-uno_speech_hypothesis_fn_ptr uno_speech_get_hypothesis_callback(void);
-uno_speech_state_fn_ptr uno_speech_get_state_callback(void);
-uno_speech_result_fn_ptr uno_speech_get_result_callback(void);
-uno_speech_error_fn_ptr uno_speech_get_error_callback(void);
+typedef void (*uno_speech_signal_fn_ptr)(UNOSpeechRecognizer * /* handle */, int32_t /* UNOSpeechSignal */);
+typedef void (*uno_speech_audio_level_fn_ptr)(UNOSpeechRecognizer * /* handle */, float /* rmsDb */, float /* peakDb */);
+// resultJson is set for UNOSpeechUtteranceOutcomeSuccess, the error fields for UNOSpeechUtteranceOutcomeError.
+typedef void (*uno_speech_utterance_fn_ptr)(UNOSpeechRecognizer * /* handle */, int32_t /* UNOSpeechUtteranceOutcome */,
+                                            const char * _Nullable /* resultJson */,
+                                            const char * _Nullable /* errorDomain */, int64_t /* errorCode */,
+                                            const char * _Nullable /* errorMessage */);
+// Statuses are SFSpeechRecognizerAuthorizationStatus / AVAuthorizationStatus, or UNO_SPEECH_AUTHORIZATION_MISSING_USAGE_DESCRIPTION.
+typedef void (*uno_speech_authorization_fn_ptr)(int64_t /* token */, int32_t /* speechStatus */, int32_t /* microphoneStatus */);
 
 void uno_speech_set_callbacks(uno_speech_hypothesis_fn_ptr hypothesis,
-                              uno_speech_state_fn_ptr state,
-                              uno_speech_result_fn_ptr result,
-                              uno_speech_error_fn_ptr error);
+                              uno_speech_signal_fn_ptr signal,
+                              uno_speech_audio_level_fn_ptr audioLevel,
+                              uno_speech_utterance_fn_ptr utterance,
+                              uno_speech_authorization_fn_ptr authorization);
+
+void uno_speech_request_authorization(int64_t token);
+
+// Both return a malloc'ed UTF-8 string the caller must free(), or NULL.
+// Locales are BCP-47 tags separated by '\x1F' (Unit Separator).
+char * _Nullable uno_speech_copy_supported_locales(void);
+char * _Nullable uno_speech_copy_default_locale(void);
 
 @interface UNOSpeechRecognizer : NSObject
 
@@ -43,10 +65,13 @@ void uno_speech_set_callbacks(uno_speech_hypothesis_fn_ptr hypothesis,
 
 @end
 
+// All instance functions return immediately; the work runs on the main queue, where every callback is raised.
 UNOSpeechRecognizer * _Nullable uno_speech_recognizer_create(const char *locale);
 void uno_speech_recognizer_destroy(UNOSpeechRecognizer *recognizer);
-bool uno_speech_recognizer_start(UNOSpeechRecognizer *recognizer);
-void uno_speech_recognizer_stop(UNOSpeechRecognizer *recognizer);
-bool uno_speech_recognizer_is_available(UNOSpeechRecognizer *recognizer);
+// contextualStrings: optional '\x1F'-separated phrases. Starts audio capture if needed.
+void uno_speech_recognizer_begin_utterance(UNOSpeechRecognizer *recognizer, int32_t taskHint, const char * _Nullable contextualStrings);
+void uno_speech_recognizer_end_utterance(UNOSpeechRecognizer *recognizer);
+void uno_speech_recognizer_cancel_utterance(UNOSpeechRecognizer *recognizer);
+void uno_speech_recognizer_stop_audio(UNOSpeechRecognizer *recognizer);
 
 NS_ASSUME_NONNULL_END

@@ -686,9 +686,19 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial void uno_speech_set_callbacks(
 		delegate* unmanaged[Cdecl]<nint, byte*, void> hypothesis,
-		delegate* unmanaged[Cdecl]<nint, int, void> state,
-		delegate* unmanaged[Cdecl]<nint, byte*, byte*, void> result,
-		delegate* unmanaged[Cdecl]<nint, byte*, void> error);
+		delegate* unmanaged[Cdecl]<nint, int, void> signal,
+		delegate* unmanaged[Cdecl]<nint, float, float, void> audioLevel,
+		delegate* unmanaged[Cdecl]<nint, int, byte*, byte*, long, byte*, void> utterance,
+		delegate* unmanaged[Cdecl]<long, int, int, void> authorization);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_speech_request_authorization(long token);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial nint uno_speech_copy_supported_locales();
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial nint uno_speech_copy_default_locale();
 
 	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
 	internal static partial nint uno_speech_recognizer_create(string locale);
@@ -696,16 +706,17 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_speech_recognizer_destroy(nint recognizer);
 
-	[LibraryImport("libUnoNativeMac.dylib")]
-	[return: MarshalAs(UnmanagedType.I1)]
-	internal static partial bool uno_speech_recognizer_start(nint recognizer);
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial void uno_speech_recognizer_begin_utterance(nint recognizer, int taskHint, string? contextualStrings);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_speech_recognizer_stop(nint recognizer);
+	internal static partial void uno_speech_recognizer_end_utterance(nint recognizer);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	[return: MarshalAs(UnmanagedType.I1)]
-	internal static partial bool uno_speech_recognizer_is_available(nint recognizer);
+	internal static partial void uno_speech_recognizer_cancel_utterance(nint recognizer);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_speech_recognizer_stop_audio(nint recognizer);
 
 	// Accessibility — per-window context lifecycle
 
