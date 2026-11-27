@@ -1,3 +1,9 @@
 <linker>
   <assembly fullname="Uno.UI" />
+  <!-- Read by reflection in the runtime tests (NativeTextInputHelper); the runtime only sets it. -->
+  <assembly fullname="Microsoft.iOS">
+    <type fullname="UIKit.UITextField">
+      <property name="TextContentType" />
+    </type>
+  </assembly>
 </linker>
