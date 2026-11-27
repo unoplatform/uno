@@ -740,16 +740,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			using var svgStream = await (await CreateSvgFileAsync("red")).OpenReadAsync();
 			Task<SvgImageSourceLoadStatus> retry = null;
-			svgImageSource.OpenFailed += (_, _) => retry ??= svgImageSource.SetSourceAsync(svgStream).AsTask();
+			TypedEventHandler<SvgImageSource, SvgImageSourceFailedEventArgs> onOpenFailed = (_, _) => retry ??= svgImageSource.SetSourceAsync(svgStream).AsTask();
+			svgImageSource.OpenFailed += onOpenFailed;
 
-			using (var pngStream = await png.OpenReadAsync())
+			try
 			{
-				await Assert.ThrowsExactlyAsync<ArgumentException>(async () => await svgImageSource.SetSourceAsync(pngStream));
-			}
+				using (var pngStream = await png.OpenReadAsync())
+				{
+					await Assert.ThrowsExactlyAsync<ArgumentException>(async () => await svgImageSource.SetSourceAsync(pngStream));
+				}
 
-			Assert.IsNotNull(retry);
-			Assert.AreEqual(SvgImageSourceLoadStatus.Success, await retry);
-			await AssertCenterColor(border, Colors.Red);
+				// WinUI can raise OpenFailed after the failed operation has completed.
+				await WindowHelper.WaitFor(() => retry is not null, message: "SvgImageSource.OpenFailed was not raised.");
+				Assert.AreEqual(SvgImageSourceLoadStatus.Success, await retry);
+				await AssertCenterColor(border, Colors.Red);
+			}
+			finally
+			{
+				// A late OpenFailed must not reach svgStream once it's disposed: the exception would crash the test run.
+				svgImageSource.OpenFailed -= onOpenFailed;
+			}
 		}
 
 		[TestMethod]
