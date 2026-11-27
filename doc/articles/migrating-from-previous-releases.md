@@ -35,6 +35,13 @@ WinUI: added items fade in, removed items fade out, and their neighbors slide. A
 container stays in the panel until its animation ends. Set `ItemContainerTransitions` to an empty
 `TransitionCollection` to turn them off.
 
+### Selection follows a `CollectionViewSource`'s current item
+
+When `ItemsSource` is a `CollectionViewSource` view, `ListView` and `GridView` now
+keep the selection in sync with the view's current item, as on WinUI. The first item is selected on
+load, even with `SelectionMode="None"`; only the multi-select modes skip the sync. Set
+`IsSynchronizedWithCurrentItem="False"` to start with nothing selected.
+
 ### `ScrollViewer.ViewChanging` is raised
 
 `ScrollViewer.ViewChanging` is now raised before each `ViewChanged` while the view moves, as on
