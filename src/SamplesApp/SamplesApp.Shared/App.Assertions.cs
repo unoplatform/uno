@@ -132,6 +132,14 @@ partial class App
 	}
 
 	/// <summary>
+	/// Verifies the current platform is detected, so a new host can't silently report Unknown.
+	/// </summary>
+	public void AssertRuntimePlatformIsKnown()
+	{
+		Assert.AreNotEqual(UnoRuntimePlatform.Unknown, RuntimePlatformHelper.Current, "The runtime platform was not detected.");
+	}
+
+	/// <summary>
 	/// Verifies that ApplicationData are available immediately after the application class is created
 	/// and the data are stored in proper application specific lcoations.
 	/// </summary>

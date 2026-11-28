@@ -115,6 +115,7 @@ namespace SamplesApp
 
 			AssertIssue1790ApplicationSettingsUsable();
 			AssertApplicationData();
+			AssertRuntimePlatformIsKnown();
 
 			this.InitializeComponent();
 
