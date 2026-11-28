@@ -27,7 +27,12 @@ internal class BrowserWebViewProvider : INativeWebViewProvider
 			contentPresenter.Content = content;
 		}
 
-		var nativeWebView = new NativeWebView(_owner, content.ElementId);
+		var nativeWebView = new NativeWebView(_owner, content.ElementId, removeElement: () =>
+		{
+			// Detach the iframe from its presenter first, so the presenter no longer arranges it.
+			contentPresenter.Content = null;
+			content.Dispose();
+		});
 		return nativeWebView;
 	}
 }

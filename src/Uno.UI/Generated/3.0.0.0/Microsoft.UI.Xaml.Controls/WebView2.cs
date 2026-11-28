@@ -47,13 +47,7 @@ public partial class WebView2
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.GoForward()
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.GoBack()
 	// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.NavigateToString(string)
-#if __SKIA__
-	[global::Uno.NotImplemented("__SKIA__")]
-	public void Close()
-	{
-		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.WebView2", "Close()");
-	}
-#endif
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.Close()
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CoreProcessFailed.add
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CoreProcessFailed.remove
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.CoreWebView2Initialized.add
