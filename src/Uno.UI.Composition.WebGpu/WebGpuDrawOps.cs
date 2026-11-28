@@ -172,6 +172,8 @@ internal sealed class WebGpuGeometryCache
 	public bool HasPathClip;
 	// Built while the replay transform rotated or skewed, so its paths could not take the atlas; rebuilt once it settles.
 	public bool AtlasBlockedByScale;
+	// Its atlas quads or big-fill masks were placed in the texel frame of AtlasScale's signs; a replay under the other sign on either axis rebuilds.
+	public bool PlacedBySign;
 	public Vector2 AtlasScale;
 	// The subpixel placement phase the atlas masks were baked at; a replay at a different fraction rebakes.
 	public Vector2 AtlasPhase;

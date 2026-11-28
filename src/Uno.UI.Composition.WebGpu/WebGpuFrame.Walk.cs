@@ -642,9 +642,11 @@ internal sealed unsafe partial class WebGpuFrame
 			bool hasPath = false; foreach (var c in rr.Commands) { if (c is PathCmd) { hasPath = true; break; } }
 			int atlasBefore = WebGpuCoverage.AtlasHit + WebGpuCoverage.AtlasBaked;
 			int maskBefore = WebGpuCoverage.ClipMasksBaked + WebGpuCoverage.FillMasksBaked + WebGpuCoverage.FillMaskHits;
+			int fillBefore = WebGpuCoverage.FillMasksBaked + WebGpuCoverage.FillMaskHits;
 			int noRoomBefore = WebGpuCoverage.AtlasNoRoom;
 			bool atlasSafe = TryAtlasScale(rm, out var scale);
-			BuildCoalesced(rr.Commands, built, owned, atlasScale: atlasSafe ? scale : null, maskScale: atlasSafe ? scale : MaskScale(rm), place: new Vector2(rm.M31, rm.M32));
+			var bakeScale = Vector2.Abs(scale);
+			BuildCoalesced(rr.Commands, built, owned, atlasScale: atlasSafe ? bakeScale : null, maskScale: atlasSafe ? bakeScale : MaskScale(rm), place: atlasSafe ? AtlasPlace(rm) : new Vector2(rm.M31, rm.M32));
 			RealizeOwnedVertices(built, owned);
 			owned.ClipMemo = null;
 			bool hasPathClip = false; foreach (var o in built) { if (o.Clip.Paths is not null) { hasPathClip = true; break; } }
@@ -657,6 +659,8 @@ internal sealed unsafe partial class WebGpuFrame
 				HasClipMask = WebGpuCoverage.ClipMasksBaked + WebGpuCoverage.FillMasksBaked + WebGpuCoverage.FillMaskHits != maskBefore,
 				HasPathClip = hasPathClip,
 				AtlasBlockedByScale = !atlasSafe && hasPath && WebGpuCoverage.AtlasEnabled,
+				PlacedBySign = atlasSafe
+					&& ((WebGpuCoverage.AtlasHit + WebGpuCoverage.AtlasBaked) != atlasBefore || WebGpuCoverage.FillMasksBaked + WebGpuCoverage.FillMaskHits != fillBefore),
 				AtlasScale = scale,
 				AtlasPhase = AtlasPhase(rm),
 				MaskScale = MaskScale(rm),
@@ -951,15 +955,18 @@ internal sealed unsafe partial class WebGpuFrame
 	// held back one level so the shortened pyramid still has a tap to do. Capped so a small blur stays 1:1.
 	private static int ShadowDownsample(float sigma) => 1 << Math.Clamp(WebGpuEffects.BlurLevels(sigma) - 1, 0, 2);
 
-	// An atlas quad or mask is baked for one replay scale; a different one, or a transform that now allows the
-	// atlas where the build could not use it, rebuilds so the content is neither mis-sized nor left aliased.
 	// The subpixel phase the atlas masks were baked for: only the FRACTION of the placement matters, so a cached
 	// recording that moves by whole pixels still reuses its masks and only a fractional move rebakes them.
 	private static Vector2 AtlasPhase(in Matrix3x2 t)
 		=> new(t.M31 - MathF.Floor(t.M31), t.M32 - MathF.Floor(t.M32));
 
+	// An atlas quad or mask is baked for one replay scale; a different one, or a transform that now allows the
+	// atlas where the build could not use it, rebuilds so the content is neither mis-sized nor left aliased. Quads
+	// and big-fill masks placed in the texel frame (AtlasPlace) are placed for one sign per axis: a replay under the
+	// other sign would put their texels between pixels, so it rebuilds too.
 	private static bool AtlasNeedsRebuild(WebGpuGeometryCache entry, in Matrix3x2 transform)
-		=> (entry.HasAtlas && !(TryAtlasScale(transform, out var scale) && SameAtlasScale(scale, entry.AtlasScale)))
+		=> (entry.HasAtlas && !(TryAtlasScale(transform, out var scale) && SameAtlasScale(Vector2.Abs(scale), Vector2.Abs(entry.AtlasScale))))
+			|| (entry.PlacedBySign && ((transform.M11 < 0f) != (entry.AtlasScale.X < 0f) || (transform.M22 < 0f) != (entry.AtlasScale.Y < 0f)))
 			|| (entry.HasAtlas && AtlasPhase(transform) != entry.AtlasPhase)
 			|| (entry.HasClipMask && !SameAtlasScale(MaskScale(transform), entry.MaskScale))
 			|| (entry.AtlasBlockedByScale && TryAtlasScale(transform, out _));
