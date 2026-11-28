@@ -50,6 +50,163 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26398")]
+		public async Task When_Target_Removed_While_Open_Closes()
+		{
+			var target = new Button { Content = "target" };
+			var host = new Grid { Children = { target } };
+			var content = new Border { Width = 100, Height = 60 };
+			var flyout = new Flyout { Content = content };
+			var events = new List<string>();
+			flyout.Opened += (s, e) => events.Add("Opened");
+			flyout.Closing += (s, e) => events.Add("Closing");
+			flyout.Closed += (s, e) => events.Add("Closed");
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = host;
+				await TestServices.WindowHelper.WaitForLoaded(target);
+
+				flyout.ShowAt(target);
+				await TestServices.WindowHelper.WaitFor(() => content.IsLoaded);
+
+				host.Children.Remove(target);
+				await TestServices.WindowHelper.WaitFor(() => events.Contains("Closed"));
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var log = string.Join(" | ", events);
+				Assert.IsFalse(flyout.IsOpen, log);
+				Assert.IsFalse(content.IsLoaded, log);
+				Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(host.XamlRoot).Count, log);
+				CollectionAssert.AreEqual(new[] { "Opened", "Closing", "Closed" }, events, log);
+			}
+			finally
+			{
+				if (flyout.IsOpen)
+				{
+					flyout.Hide();
+				}
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26398")]
+		public async Task When_Target_Removed_During_Opening_Does_Not_Open()
+		{
+			var target = new Button { Content = "target" };
+			var host = new Grid { Children = { target } };
+			var content = new Border { Width = 100, Height = 60 };
+			var flyout = new Flyout { Content = content };
+			flyout.Opening += (s, e) => host.Children.Remove(target);
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = host;
+				await TestServices.WindowHelper.WaitForLoaded(target);
+
+				flyout.ShowAt(target);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.IsFalse(flyout.IsOpen);
+				Assert.IsFalse(content.IsLoaded);
+				Assert.AreEqual(0, VisualTreeHelper.GetOpenPopupsForXamlRoot(host.XamlRoot).Count);
+			}
+			finally
+			{
+				if (flyout.IsOpen)
+				{
+					flyout.Hide();
+				}
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26398")]
+		public async Task When_Target_Removed_After_Closed_No_Extra_Events()
+		{
+			var target = new Button { Content = "target" };
+			var host = new Grid { Children = { target } };
+			var content = new Border { Width = 100, Height = 60 };
+			var flyout = new Flyout { Content = content };
+			var events = new List<string>();
+			flyout.Closing += (s, e) => events.Add("Closing");
+			flyout.Closed += (s, e) => events.Add("Closed");
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = host;
+				await TestServices.WindowHelper.WaitForLoaded(target);
+
+				flyout.ShowAt(target);
+				await TestServices.WindowHelper.WaitFor(() => content.IsLoaded);
+				flyout.Hide();
+				await TestServices.WindowHelper.WaitFor(() => events.Contains("Closed"));
+
+				host.Children.Remove(target);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				CollectionAssert.AreEqual(new[] { "Closing", "Closed" }, events, string.Join(" | ", events));
+			}
+			finally
+			{
+				if (flyout.IsOpen)
+				{
+					flyout.Hide();
+				}
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26398")]
+		public async Task When_Previous_Target_Removed_After_Reshown_Stays_Open()
+		{
+			var oldTarget = new Button { Content = "old" };
+			var newTarget = new Button { Content = "new" };
+			var host = new StackPanel { Children = { oldTarget, newTarget } };
+			var content = new Border { Width = 100, Height = 60 };
+			var flyout = new Flyout { Content = content };
+			var closedCount = 0;
+			flyout.Closed += (s, e) => closedCount++;
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = host;
+				await TestServices.WindowHelper.WaitForLoaded(newTarget);
+
+				flyout.ShowAt(oldTarget);
+				await TestServices.WindowHelper.WaitFor(() => content.IsLoaded);
+				flyout.Hide();
+				await TestServices.WindowHelper.WaitFor(() => closedCount == 1);
+
+				flyout.ShowAt(newTarget);
+				await TestServices.WindowHelper.WaitFor(() => content.IsLoaded);
+
+				host.Children.Remove(oldTarget);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(flyout.IsOpen);
+				Assert.IsTrue(content.IsLoaded);
+				Assert.AreSame(newTarget, flyout.Target);
+				Assert.AreEqual(1, closedCount);
+			}
+			finally
+			{
+				if (flyout.IsOpen)
+				{
+					flyout.Hide();
+				}
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Unloaded_Before_Shown()
 		{
 			var button = new Button()

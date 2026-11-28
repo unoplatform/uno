@@ -373,10 +373,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			private set
 			{
 				// MUX Reference: FlyoutBase_Partial.cpp SetPlacementTarget (lines 2973-3008)
-				// Detach ActualThemeChanged from old target on reassignment
+				// Detach placement target handlers from old target on reassignment
 				if (_targetWeakRef?.IsAlive == true && _targetWeakRef.Target is FrameworkElement oldTarget)
 				{
-					oldTarget.ActualThemeChanged -= OnPlacementTargetActualThemeChanged;
+					DetachPlacementTargetHandlers(oldTarget);
 				}
 
 				WeakReferencePool.ReturnWeakReference(this, _targetWeakRef);
@@ -389,6 +389,22 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private void OnPlacementTargetActualThemeChanged(FrameworkElement sender, object args)
 		{
 			ForwardThemeToPresenter();
+		}
+
+		// Hook up an event handler that will dismiss the flyout if the placement target gets unloaded.
+		// MUX Reference: FlyoutBase_Partial.cpp SetPlacementTarget
+		private void OnPlacementTargetUnloaded(object sender, RoutedEventArgs args) => Hide();
+
+		private void AttachPlacementTargetHandlers(FrameworkElement target)
+		{
+			target.ActualThemeChanged += OnPlacementTargetActualThemeChanged;
+			target.Unloaded += OnPlacementTargetUnloaded;
+		}
+
+		private void DetachPlacementTargetHandlers(FrameworkElement target)
+		{
+			target.ActualThemeChanged -= OnPlacementTargetActualThemeChanged;
+			target.Unloaded -= OnPlacementTargetUnloaded;
 		}
 
 		/// <summary>
@@ -417,10 +433,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			if (!cancel)
 			{
-				// Detach ActualThemeChanged on close to avoid holding the flyout alive
+				// Detach placement target handlers on close to avoid holding the flyout alive
 				if (_targetWeakRef?.IsAlive == true && _targetWeakRef.Target is FrameworkElement closingTarget)
 				{
-					closingTarget.ActualThemeChanged -= OnPlacementTargetActualThemeChanged;
+					DetachPlacementTargetHandlers(closingTarget);
 				}
 
 				m_openingCanceled = true;
@@ -523,10 +539,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			Target = placementTarget;
 
-			// Attach ActualThemeChanged while open so flyout tracks target's theme
+			// Attached while open so the flyout tracks the target's theme and closes if the target is unloaded
 			if (placementTarget is not null)
 			{
-				placementTarget.ActualThemeChanged += OnPlacementTargetActualThemeChanged;
+				AttachPlacementTargetHandlers(placementTarget);
 			}
 
 			ForwardTargetPropertiesToPresenter();
