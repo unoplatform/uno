@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Runtime.Vulkan;
 
@@ -76,7 +77,13 @@ internal sealed class AndroidVulkanGraphicsContext : ISwapChain, IVulkanDeviceCo
 			return;
 		}
 
-		_vk.BlitAndPresent();
+		// A skipped present leaves the frame in the render image, which the next successful present blits in full,
+		// so the only thing to do here is report it.
+		if (!_vk.BlitAndPresent() && this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug("AndroidVulkanGraphicsContext: frame was not presented (swapchain acquire or present failed)");
+		}
+
 		_frameLock.Dispose();
 		_frameLock = null;
 	}
