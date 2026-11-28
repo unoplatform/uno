@@ -19,7 +19,7 @@ namespace Uno.UI.Composition.WebGpu;
 // One clip entry, reached from the space the clip is expressed in through M. Analytic: a rounded rect in its own
 // space, exact under any affine since the shape never leaves the space it was recorded in. Mask: M maps to the
 // mask's texels and Rect is its slot in the draw's mask texture (see WebGpuCoverage.ResolveClipMasks).
-internal struct ClipEntry
+internal struct ClipEntry : System.IEquatable<ClipEntry>
 {
 	public Matrix3x2 M;     // clip space -> this entry's space (a mask's texel space)
 	public Vector4 Rect;    // L,T,R,B in the entry's space; a mask's slot x,y,w,h
@@ -30,6 +30,14 @@ internal struct ClipEntry
 
 	// The same entry expressed in a space that reaches this one through `m` (p_here = Transform(p_new, m)).
 	public ClipEntry Under(in Matrix3x2 m) => new() { M = m * M, Rect = Rect, Radii = Radii, RadiiY = RadiiY, Exclude = Exclude, Mask = Mask };
+
+	public readonly bool Equals(ClipEntry other)
+		=> M.Equals(other.M) && Rect.Equals(other.Rect) && Radii.Equals(other.Radii) && RadiiY.Equals(other.RadiiY)
+			&& Exclude == other.Exclude && Mask == other.Mask;
+
+	public override readonly bool Equals(object obj) => obj is ClipEntry other && Equals(other);
+
+	public override readonly int GetHashCode() => System.HashCode.Combine(M, Rect, Radii, RadiiY, Exclude, Mask);
 }
 
 // One path clip as recorded: the geometry and the matrix that was current, its fill rule, and whether it keeps the
@@ -70,9 +78,10 @@ internal static class Geo
 internal unsafe struct ClipData
 {
 	public Vector4 Aabb;    // device L,T,R,B scissor
-							// Every analytic clip in force, all ANDed per-fragment (clipCov). null/empty = none. Copy-on-write: each push
-							// allocates a fresh array so Save/Restore snapshots and sibling commands keep their own reference.
-	public ClipEntry[] Entries;
+							// Every analytic clip in force, all ANDed per-fragment (clipCov); empty = none. In the native arena of
+							// the recording (or frame) that made them, and never written once built, so a push copies the prefix and
+							// Save/Restore snapshots and sibling commands keep their own run.
+	public ClipEntries Entries;
 	// Every path clip in force, innermost last; each becomes a mask entry at op build (see ResolveClipMasks), so
 	// nesting has no limit. Copy-on-write like Entries.
 	public PathClip[] Paths;
@@ -96,13 +105,10 @@ internal unsafe struct ClipData
 	// that could not fold the full rect constraint) — blocks the emit's derived-widening fallback.
 	public bool ScissorLoadBearing;
 
-	public static void PushEntry(ref ClipData clip, in ClipEntry e)
+	public static void PushEntry(ref ClipData clip, in ClipEntry e, NativeArena arena)
 	{
-		int n = clip.Entries?.Length ?? 0;
-		var arr = new ClipEntry[n + 1];
-		if (n > 0) { System.Array.Copy(clip.Entries, arr, n); }
-		arr[n] = e;
-		clip.Entries = arr;
+		clip.Entries = ClipEntries.Extend(arena, clip.Entries, 1, out var tail);
+		tail[0] = e;
 	}
 
 	public static PathClip[] PushPath(PathClip[] existing, PathClip pc)
@@ -245,11 +251,9 @@ internal sealed class ReplayRefCmd : WebGpuCommand
 
 	public WebGpuRenderRecord Data;
 	public System.Collections.Generic.List<WebGpuCommand> Commands;
-	public System.Numerics.Matrix4x4 Transform;
-
 	/// <summary>
-	/// <see cref="Transform"/>'s 2D part, built once with the command. An un-virtualised list hands the walk every
-	/// one of its records each frame, so converting the 4x4 per site per frame is thousands of needless copies.
+	/// The recorder's matrix at the replay site, in 2D: an un-virtualised list hands the walk every one of its records
+	/// each frame, so converting a 4x4 per site per frame is thousands of needless copies.
 	/// </summary>
 	public System.Numerics.Matrix3x2 Transform2;
 }

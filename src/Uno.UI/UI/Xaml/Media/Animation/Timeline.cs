@@ -457,12 +457,12 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		/// <returns><c>true</c>, Repeat needed, <c>false</c> otherwise.</returns>
 		private protected bool NeedsRepeat(Stopwatch duration, int replayCount)
 		{
-			var totalTime = duration.Elapsed;
+			var repeat = RepeatBehavior;
 
-			//3 types of repeat behavors,             
-			return ((RepeatBehavior.Type == RepeatBehaviorType.Forever) // Forever: Will always repeat the Timeline
-				|| (RepeatBehavior.HasCount && RepeatBehavior.Count > replayCount) // Count: Will repeat the Timeline x times
-				|| (RepeatBehavior.HasDuration && RepeatBehavior.Duration - totalTime > TimeSpan.Zero)) // Duration: Will repeat the Timeline for a given duration
+			//3 types of repeat behavors,
+			return (repeat.Type == RepeatBehaviorType.Forever // Forever: Will always repeat the Timeline
+				|| (repeat.HasCount && repeat.Count > replayCount) // Count: Will repeat the Timeline x times
+				|| (repeat.HasDuration && repeat.Duration - duration.Elapsed > TimeSpan.Zero)) // Duration: Will repeat the Timeline for a given duration
 				&& State != TimelineState.Stopped;
 		}
 		/// <summary>

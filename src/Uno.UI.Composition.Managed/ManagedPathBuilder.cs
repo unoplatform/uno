@@ -35,7 +35,7 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 		FlushContour(closed: false);
 		_start = point;
 		_current = point;
-		_segments = new List<ManagedPathSegment>();
+		_segments = RentSegments();
 		_closedPending = false;
 	}
 
@@ -126,7 +126,7 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 		Clamp(ref topRight, ref bottomRight, h, isHorizontalPair: false);
 
 		_start = new Vector2(l + topLeft.X, t);
-		_segments = new List<ManagedPathSegment>();
+		_segments = RentSegments();
 
 		// Top edge → TR corner
 		_segments.Add(ManagedPathSegment.Line(new Vector2(r - topRight.X, t)));
@@ -164,7 +164,7 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 		_pureRoundRect = null;
 		FlushContour(closed: false);
 		_start = new Vector2(center.X + radiusX, center.Y);
-		_segments = new List<ManagedPathSegment>();
+		_segments = RentSegments();
 
 		// Four cubic quarter-arcs, clockwise, via the kappa approximation.
 		var kx = radiusX * Kappa;
@@ -446,19 +446,36 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 		{
 			// A drawing verb after Close (or with no prior MoveTo) starts a fresh contour at the current point.
 			_start = _current;
-			_segments = new List<ManagedPathSegment>();
+			_segments = RentSegments();
 			_closedPending = false;
 		}
 	}
 
 	private void FlushContour(bool closed)
 	{
-		if (_segments is { Count: > 0 })
+		if (_segments is { } segments)
 		{
-			_contours.Add(new ManagedContour(_start, _segments.ToArray(), closed));
+			if (segments.Count > 0)
+			{
+				_contours.Add(new ManagedContour(_start, segments.ToArray(), closed));
+			}
+
+			segments.Clear();
+			t_spareSegments = segments;
 		}
 
 		_segments = null;
+	}
+
+	// A contour's segments are copied out when it ends, so its growing list is lent to the next contour built.
+	[ThreadStatic]
+	private static List<ManagedPathSegment>? t_spareSegments;
+
+	private static List<ManagedPathSegment> RentSegments()
+	{
+		var segments = t_spareSegments ?? new List<ManagedPathSegment>();
+		t_spareSegments = null;
+		return segments;
 	}
 
 	/// <summary>Appends one quarter-ellipse corner (kappa cubic) from <paramref name="from"/> to

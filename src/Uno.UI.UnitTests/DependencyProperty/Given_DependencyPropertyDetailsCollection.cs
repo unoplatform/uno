@@ -49,7 +49,7 @@ public partial class Given_DependencyPropertyDetailsCollection
 		// How many properties a bare Border sets in its ctor varies, so set one explicitly.
 		Border SUT = new() { Name = "b" };
 		var entries = GetEntries(SUT);
-		var count = entries.Count(e => e is not null);
+		var count = GetStoredCount(SUT);
 		var maxSlots = Math.Max(4, (int)BitOperations.RoundUpToPowerOf2((uint)(count * 2)));
 
 		Assert.IsTrue(count >= 1, "Name should be stored.");
@@ -116,7 +116,7 @@ public partial class Given_DependencyPropertyDetailsCollection
 			Assert.AreEqual(i + 1, SUT.GetValue(GetPaddedProperty(i)));
 		}
 
-		Assert.AreEqual(PaddedPropertyCount, GetEntries(SUT).Count(e => e is not null));
+		Assert.AreEqual(PaddedPropertyCount, GetStoredCount(SUT));
 	}
 
 	[TestMethod]
@@ -162,14 +162,23 @@ public partial class Given_DependencyPropertyDetailsCollection
 	}
 
 	private static object?[] GetEntries(DependencyObject o)
+		=> (object?[])GetStorageField(o, "_entries")!;
+
+	// The first two properties are stored inline, outside the table, until a third one moves them into it.
+	private static int GetStoredCount(DependencyObject o)
+		=> GetEntries(o).Count(e => e is not null)
+			+ (GetStorageField(o, "_slot0") is null ? 0 : 1)
+			+ (GetStorageField(o, "_slot1") is null ? 0 : 1);
+
+	private static object? GetStorageField(DependencyObject o, string name)
 	{
 		var properties = typeof(DependencyObject)
 			.GetField("_properties", BindingFlags.Instance | BindingFlags.NonPublic)!
 			.GetValue(o)!;
 
-		return (object?[])properties.GetType()
-			.GetField("_entries", BindingFlags.Instance | BindingFlags.NonPublic)!
-			.GetValue(properties)!;
+		return properties.GetType()
+			.GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)!
+			.GetValue(properties);
 	}
 }
 

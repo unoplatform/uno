@@ -29,7 +29,7 @@ internal sealed unsafe partial class WebGpuCoverage
 		return true;
 	}
 
-	internal static int AtlasTried, AtlasNoKey, AtlasHit, AtlasBaked, AtlasNoRoom, AtlasNoEdges, ScaleBlocked;
+	internal static int AtlasTried, AtlasNoKey, AtlasHit, AtlasBaked, AtlasNoEdges, ScaleBlocked;
 
 	/// <summary>
 	/// Keys and places on the op's own coordinate space, with <paramref name="scale"/> giving the extra scale the
@@ -47,7 +47,10 @@ internal sealed unsafe partial class WebGpuCoverage
 		return true;
 	}
 
-	private readonly VertBuf _atlasQuads = new();
+	// Scratch shared by the frames of a thread: a frame object, and so this coverage, is made per present.
+	[ThreadStatic]
+	private static VertBuf t_atlasQuads;
+	private VertBuf _atlasQuads => t_atlasQuads ??= new VertBuf();
 
 	// A batch ends after this many glyphs, so one long run (a 100K-glyph line) becomes ops compact enough for the
 	// replay to drop the ones its clip leaves out; a single op would rasterize every glyph against the scissor.
@@ -89,21 +92,15 @@ internal sealed unsafe partial class WebGpuCoverage
 	}
 
 	/// <summary>
-	/// Resolves (baking on a miss) the atlas entry for one fill. <paramref name="big"/> admits fills too large for
-	/// a shared page as entries with a texture of their own -- the cached form of what used to be a per-frame mask.
+	/// Resolves (baking on a miss) the atlas entry for one fill. <paramref name="big"/> admits fills too large for a
+	/// regular page, at their exact phase.
 	/// </summary>
 	private bool TryAtlasSlot(PathCmd pf, WebGpuShapeCache.Shape shape, OwnedResources owned, Vector2 scale, out WebGpuMaskAtlas.Slot slot, out float ox, out float oy, bool big = false, Vector2 place = default)
 	{
 		slot = null; ox = oy = 0;
 		if (!AtlasEnabled) { return false; }
 		AtlasTried++;
-		// A cached recording OWNS the entries it bakes and frees them when released. A per-frame op has no such
-		// owner, so the ATLAS holds the reference and drops it after the entry goes idle (HoldForCache/SweepCache).
-		// Per-frame ops must be able to BAKE, not only hit: restricting them to hits looks safer (nothing owns
-		// the entry) but renders identical content crisp through the retained path and tessellated through the
-		// command-list fallback.
-		bool hitOnly = owned is null;
-		if (shape.Edges is null) { AtlasNoEdges++; return false; }
+		if (shape.Edges.IsNull) { AtlasNoEdges++; return false; }
 		// The mask's footprint must come from the geometry the bake will rasterize, not from the command's bounds:
 		// those are the geometry's declared bounds mapped by the matrix, and a geometry whose outline reaches past
 		// them leaves the slot too small. The accumulate pass clamps every edge to the slot's right bound, so the
@@ -112,54 +109,27 @@ internal sealed unsafe partial class WebGpuCoverage
 		// across the fractional positions text puts them at.
 		if (!WebGpuMaskAtlas.TryKey(shape.Hash, Matrix4x4.Identity, shape.BbMin + pf.Offset, shape.BbMax + pf.Offset, scale, out var key, out var w, out var h, out ox, out oy, out var snap, allowBig: big, place: place, phases: big ? 0 : WebGpuMaskAtlas.FillPhases)) { AtlasNoKey++; return false; }
 
-		if (_d.Atlas.TryGet(key, out slot))
+		if (_d.Atlas.Acquire(key, w, h, ox, oy, out var fresh) is not { } acquired) { return false; }
+		slot = acquired;
+		// A recording holds its own reference: one slot backs a glyph everywhere it appears, so the recording that
+		// baked it must not release the region out from under the others.
+		if (owned is not null)
 		{
-			// An entry baked through the big-fill route is a cached mask, not an atlas quad, whatever its size: it was
-			// baked at the transform's axis lengths and its quad rotates it, so the replay guards must compare its
-			// scale, not its axis alignment.
-			if (big) { FillMaskHits++; } else { AtlasHit++; }
-			_d.Atlas.NoteUse(slot, _d.FrameSeq);
-			// A REUSED entry needs its own reference for this recording. One slot backs a glyph everywhere it
-			// appears, so without this the recording that baked it releases the region out from under every other
-			// holder and they start sampling whatever took its place.
-			if (!hitOnly)
-			{
-				_d.Atlas.Retain(slot);
-				(owned.AtlasSlots ??= new()).Add(slot);
-			}
+			_d.Atlas.Retain(slot);
+			(owned.AtlasSlots ??= new()).Add(slot);
 		}
-		else
+		// An entry baked through the big-fill route is a cached mask, not an atlas quad, whatever its size: it was baked
+		// at the transform's axis lengths and its quad rotates it, so the replay guards must compare its scale.
+		if (fresh)
 		{
-			// A per-frame op enters the cache only once its key has held for two frames (see Recurring); until then
-			// it takes the per-frame bake, so moving content never accumulates entries.
-			if (owned is null && big && !_d.Atlas.Recurring(key, _d.FrameSeq)) { return false; }
-			if (WebGpuMaskAtlas.IsBig(w, h))
-			{
-				slot = AddStandaloneSlot(key, w, h, ox, oy, _d.ColorFormat);
-			}
-			else
-			{
-				// Opens another page when every one is exhausted, up to the cache's ceiling.
-				slot = _d.Atlas.Allocate(key, w, h, ox, oy);
-			}
-			if (slot is null) { AtlasNoRoom++; _d.AtlasStarved = true; return false; }
-			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
-			else { _d.Atlas.HoldForCache(slot, _d.FrameSeq); }
 			QueueEntryBake(pf, shape, slot, scale, snap);
 			if (big) { FillMasksBaked++; } else { AtlasBaked++; }
 		}
+		else if (big) { FillMaskHits++; }
+		else { AtlasHit++; }
 
 		return true;
 	}
-
-	// A keyed entry on a standalone page, so it shares the key, reference count and idle sweep of a shelf slot. Null
-	// when no page could be created.
-	internal WebGpuMaskAtlas.Slot AddStandaloneSlot(in WebGpuMaskAtlas.Key key, int w, int h, float ox, float oy, TextureFormat format)
-		=> AddStandaloneSlot(key, w, h, ox, oy, format, w, h, MaskUsage);
-
-	// The entry draws w x h from a page of at least texW x texH: a blurred shadow is stored at its pyramid's top level.
-	internal WebGpuMaskAtlas.Slot AddStandaloneSlot(in WebGpuMaskAtlas.Key key, int w, int h, float ox, float oy, TextureFormat format, int texW, int texH, TextureUsage usage)
-		=> _d.Atlas.StandalonePage(texW, texH, format, usage) is { } page ? _d.Atlas.Place(page, 0, 0, w, h, ox, oy, key) : null;
 
 	/// <summary>
 	/// Appends one entry as 6 solid vertices (pos, colour, coverage uv), placed at the fill's OWN origin, and returns

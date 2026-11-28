@@ -79,6 +79,8 @@ public partial class CompositionTarget
 	private long _renderRequestTimestamp; // only set or read under _renderingStateGate
 	private long _lastStalledRenderLogTimestamp;
 	private int _stalledRenderReports;
+	// RequestNewFrame runs on every composition property change; the stall check behind it only needs to run now and then.
+	private long _nextStalledRenderCheckTick;
 
 	private const int StalledRenderReportMs = 2000;
 	private const int StalledRenderReportIntervalMs = 5000;
@@ -98,6 +100,16 @@ public partial class CompositionTarget
 
 	void ICompositionTarget.RequestNewFrame()
 	{
+		// Every composition property change lands here, thousands per frame while animating, and nearly always a frame
+		// is already on its way. The UI thread is the only one that clears these flags, so there it can tell without the
+		// lock; another thread, or any state that needs a change, takes the path below.
+		if (((_renderRequested && !_renderedAheadOfTime) || (_renderedAheadOfTime && _renderRequestedAfterAheadOfTimePaint))
+			&& NativeDispatcher.Main.HasThreadAccess)
+		{
+			ReportIfRenderRequestStalled();
+			return;
+		}
+
 		var shouldEnqueue = false;
 		lock (_renderingStateGate)
 		{
@@ -139,6 +151,13 @@ public partial class CompositionTarget
 	/// </summary>
 	private void ReportIfRenderRequestStalled()
 	{
+		var now = Environment.TickCount64;
+		if (_stalledRenderReports >= MaxStalledRenderReports || now < Volatile.Read(ref _nextStalledRenderCheckTick))
+		{
+			return;
+		}
+		Volatile.Write(ref _nextStalledRenderCheckTick, now + 100);
+
 		long requestTimestamp;
 		lock (_renderingStateGate)
 		{

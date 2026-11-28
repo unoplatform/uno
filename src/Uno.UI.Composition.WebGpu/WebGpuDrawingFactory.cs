@@ -75,7 +75,9 @@ public sealed unsafe class WebGpuRenderRecord : IRenderRecord
 	internal WColor? ClearColor;
 	// Memoised scans of the immutable command list: every command is a plain draw (the recording lives in the arena);
 	// some command, directly or through a nested recording, is a backdrop; the union of the commands' bounds.
-	internal bool? PlainMemo, HasBackdropMemo;
+	internal bool? PlainMemo, HasBackdropMemo, QuadsOnlyMemo;
+	// The frame this recording was first replayed in; it is compiled into the arena only if replayed on a later one.
+	internal long FirstSeenFrame;
 	// Memoised content key of the immutable command list: 0 once computed and found unpoolable.
 	internal long? ContentKeyMemo;
 	internal Vector4? IdentityBounds;
@@ -97,6 +99,9 @@ public sealed unsafe class WebGpuRenderRecord : IRenderRecord
 	// keeps its textures and geometries alive, so nesting costs one refcount rather than one per resource it
 	// transitively holds -- which a deep tree pays again at every level.
 	internal List<WebGpuRenderRecord> Nested;
+	// Native memory the commands point into (their clip entries); released with the last reference, after the arena
+	// entries built from these commands took their own.
+	internal NativeArena Arena;
 	// Guards the owner's Dispose against a second call, which would drop a reference it never took. Interlocked
 	// because Dispose (UI thread) can race the render thread's Compiled rebuild.
 	private int _disposed;
@@ -159,6 +164,7 @@ public sealed unsafe class WebGpuRenderRecord : IRenderRecord
 		}
 		if (Nested is { } nested) { foreach (var n in nested) { n.Release(); } }
 		Commands = null;
+		System.Threading.Interlocked.Exchange(ref Arena, null)?.Release();
 		GC.SuppressFinalize(this);
 	}
 

@@ -35,6 +35,26 @@ partial class RootScale
 		return 1.0f;
 	}
 
+	/// <summary>Changes whenever a scale changes or an element's visual tree is reassigned: a scale remembered for an
+	/// element is valid while this is unchanged.</summary>
+	internal static int ScaleEpoch => s_scaleEpoch;
+
+	private static int s_scaleEpoch;
+
+	internal static void BumpScaleEpoch() => s_scaleEpoch++;
+
+	internal static bool TryGetRasterizationScaleForElement(DependencyObject pDO, out float scale)
+	{
+		if (GetRootScaleForElement(pDO) is { } rootScale)
+		{
+			scale = rootScale.GetEffectiveRasterizationScale();
+			return true;
+		}
+
+		scale = 1.0f;
+		return false;
+	}
+
 	internal static float GetRasterizationScaleForElement(DependencyObject pDO)
 	{
 		if (GetRootScaleForElement(pDO) is { } rootScale)

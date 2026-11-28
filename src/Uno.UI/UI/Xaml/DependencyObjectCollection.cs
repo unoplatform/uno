@@ -39,8 +39,6 @@ namespace Microsoft.UI.Xaml
 	public partial class DependencyObjectCollection<T> : DependencyObjectCollectionBase, IList<T>, IEnumerable<T>, IEnumerable, IObservableVector<T>
 		where T : DependencyObject
 	{
-		private object _vectorChangedHandlersLock = new();
-
 		// Explicit handlers list to avoid the cost of generic multicast
 		// delegates handling on mono's AOT.
 		private List<VectorChangedEventHandler<T>> _vectorChangedHandlers;
@@ -49,7 +47,7 @@ namespace Microsoft.UI.Xaml
 		{
 			add
 			{
-				lock (_vectorChangedHandlersLock)
+				lock (_list)
 				{
 					(_vectorChangedHandlers ??= new()).Add(value);
 				}
@@ -57,7 +55,7 @@ namespace Microsoft.UI.Xaml
 
 			remove
 			{
-				lock (_vectorChangedHandlersLock)
+				lock (_list)
 				{
 					var list = _vectorChangedHandlers ??= new();
 
@@ -104,13 +102,9 @@ namespace Microsoft.UI.Xaml
 		private void Initialize()
 		{
 			IndexedItems = _list;
-
-			((DependencyObject)this).RegisterSelfParentChangedCallback(
-				(instance, k, handler) => UpdateParent(handler.NewParent)
-			);
-
-			VectorChanged += (s, e) => OnCollectionChanged();
 		}
+
+		private protected override void OnParentChangedCore(object parent) => UpdateParent(parent);
 
 		/// <summary>
 		/// An internal direct access to the internal list to be able to do allocation-free enumeration
@@ -320,10 +314,12 @@ namespace Microsoft.UI.Xaml
 
 		private void RaiseVectorChanged(CollectionChange change, int index)
 		{
+			OnCollectionChanged();
+
 			// Gets an executable list that does not need to be locked
 			int GetInvocationList(out VectorChangedEventHandler<T> single, out VectorChangedEventHandler<T>[] array)
 			{
-				lock (_vectorChangedHandlersLock)
+				lock (_list)
 				{
 					if (_vectorChangedHandlers is { Count: > 0 })
 					{

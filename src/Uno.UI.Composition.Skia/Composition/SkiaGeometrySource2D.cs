@@ -47,7 +47,23 @@ namespace Microsoft.UI.Composition
 
 		#region IGeometry (backend-neutral handle)
 
-		Rect IGeometry.Bounds => _geometry.TightBounds.ToRect();
+		Rect IGeometry.Bounds => TightBounds();
+
+		// The path never changes, and a shape asks for its bounds to measure, again to arrange, and again for damage.
+		// Written before the flag is published, so a reader on another thread never sees a torn rect.
+		private Rect _tightBounds;
+		private volatile bool _hasTightBounds;
+
+		private Rect TightBounds()
+		{
+			if (!_hasTightBounds)
+			{
+				_tightBounds = _geometry.TightBounds.ToRect();
+				_hasTightBounds = true;
+			}
+
+			return _tightBounds;
+		}
 
 		GeometryFillRule IGeometry.FillRule => _geometry.FillType == SKPathFillType.EvenOdd ? GeometryFillRule.EvenOdd : GeometryFillRule.NonZero;
 

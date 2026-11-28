@@ -1,4 +1,4 @@
-// The walk: one pass over a frame's command tree. Matrices and clips compose top-down, every draw lands in the pass's
+﻿// The walk: one pass over a frame's command tree. Matrices and clips compose top-down, every draw lands in the pass's
 // shared buffers as a device-space op, a replayed recording of plain draws comes from its arena entry, and a layer
 // pushes a target, walks its content there, and pops as one textured draw.
 #nullable disable
@@ -17,23 +17,23 @@ internal sealed unsafe partial class WebGpuFrame
 	// the recording's space through m. Consecutive commands share their clip arrays, so the last result is kept.
 	private struct ClipComposer
 	{
-		private Vector4 _aabb; private ClipEntry[] _entries; private PathClip[] _paths; private bool _inert, _has;
+		private Vector4 _aabb; private ClipEntries _entries; private PathClip[] _paths; private bool _inert, _has;
 		private ClipData _out;
 
-		public ClipData Compose(in ClipData outer, in ClipData c, in Matrix3x2 m, in Matrix3x2 inv, bool direct)
+		public ClipData Compose(WebGpuFrame frame, in ClipData outer, in ClipData c, in Matrix3x2 m, in Matrix3x2 inv, bool direct)
 		{
-			if (_has && c.Aabb == _aabb && ReferenceEquals(c.Entries, _entries) && ReferenceEquals(c.Paths, _paths) && c.ScissorInert == _inert) { return _out; }
+			if (_has && c.Aabb == _aabb && c.Entries.SameAs(_entries) && ReferenceEquals(c.Paths, _paths) && c.ScissorInert == _inert) { return _out; }
 			_aabb = c.Aabb; _entries = c.Entries; _paths = c.Paths; _inert = c.ScissorInert; _has = true;
-			_out = ComposeClip(outer, c, m, inv, direct);
+			_out = frame.ComposeClip(outer, c, m, inv, direct);
 			return _out;
 		}
 	}
 
 	// True when the clip constrains nothing: the root of a frame, or a replay site inside such a recording.
-	private static bool IsNone(in ClipData c) => c.Entries is null && c.Paths is null && !IsFiniteAabb(c.Aabb);
+	private static bool IsNone(in ClipData c) => c.Entries.IsEmpty && c.Paths is null && !IsFiniteAabb(c.Aabb);
 
 	// `direct` = the matrix is the identity and the outer clip is none, so the command's own clip is the answer.
-	private static ClipData ComposeClip(in ClipData outer, in ClipData c, in Matrix3x2 m, in Matrix3x2 inv, bool direct)
+	private ClipData ComposeClip(in ClipData outer, in ClipData c, in Matrix3x2 m, in Matrix3x2 inv, bool direct)
 	{
 		if (direct) { return c; }
 		bool identity = m.IsIdentity;
@@ -49,11 +49,8 @@ internal sealed unsafe partial class WebGpuFrame
 		// The command's entries keep their shape and gain the way back from device space into the recording's.
 		if (c.Entries is { Length: > 0 } es)
 		{
-			int n = outer.Entries?.Length ?? 0;
-			var arr = new ClipEntry[n + es.Length];
-			if (n > 0) { Array.Copy(outer.Entries, arr, n); }
-			for (int i = 0; i < es.Length; i++) { arr[n + i] = identity ? es[i] : es[i].Under(inv); }
-			r.Entries = arr;
+			r.Entries = ClipEntries.Extend(FrameArena, outer.Entries, es.Length, out var tail);
+			for (int i = 0; i < es.Length; i++) { tail[i] = identity ? es[i] : es[i].Under(inv); }
 		}
 		if (c.Paths is { Length: > 0 } ps)
 		{
@@ -144,7 +141,7 @@ internal sealed unsafe partial class WebGpuFrame
 						// A run of rects sharing a clip is one draw: their verts are contiguous in the pass buffer. One whose
 						// edges miss the pixel grid leaves the run - the solid pipeline writes binary coverage, so only the
 						// rounded-rect pipeline's SDF can antialias it.
-						var cd = composer.Compose(outer, rc0.Clip, m, inv, direct);
+						var cd = composer.Compose(this, outer, rc0.Clip, m, inv, direct);
 						int j = ci; uint start = (uint)(_solid.Count / VertexStride.Solid);
 						while (j < cmds.Count && cmds[j] is RectCommand rcj && (j == ci || ClipDataEquals(rcj.Clip, rc0.Clip)))
 						{
@@ -179,7 +176,7 @@ internal sealed unsafe partial class WebGpuFrame
 				case CmdKind.RoundedRect:
 					{
 						var rri = (RoundedRectCmd)cmd;
-						var cd = composer.Compose(outer, rri.Clip, m, inv, direct);
+						var cd = composer.Compose(this, outer, rri.Clip, m, inv, direct);
 						uint st = (uint)(_rrect.Count / VertexStride.RoundedRect);
 						var (r0, r1, r2, r3) = identity ? (rri.P0, rri.P1, rri.P2, rri.P3) : (Map(rri.P0, m), Map(rri.P1, m), Map(rri.P2, m), Map(rri.P3, m));
 						var rn = (uint)AppendRrect(_rrect, rri, r0, r1, r2, r3);
@@ -194,14 +191,14 @@ internal sealed unsafe partial class WebGpuFrame
 					{
 						var pc = (PathCmd)cmd;
 						if (_emitStats) { StatWalkPaths++; }
-						var cd = composer.Compose(outer, pc.Clip, m, inv, direct);
+						var cd = composer.Compose(this, outer, pc.Clip, m, inv, direct);
 						BuildSimpleOp(direct ? pc : Under(pc, m, identity, cd), ops, null, atlasScale: Vector2.One);
 						break;
 					}
 				case CmdKind.Image:
 					{
 						var im = (ImageCmd)cmd;
-						var cd = composer.Compose(outer, im.Clip, m, inv, direct);
+						var cd = composer.Compose(this, outer, im.Clip, m, inv, direct);
 						if (identity) { EmitImage(im, im.P0, im.P1, im.P2, im.P3, cd, ops); }
 						else { EmitImage(im, Map(im.P0, m), Map(im.P1, m), Map(im.P2, m), Map(im.P3, m), cd, ops); }
 						break;
@@ -209,21 +206,21 @@ internal sealed unsafe partial class WebGpuFrame
 				case CmdKind.Gradient:
 					{
 						var gc = (GradientCmd)cmd;
-						var cd = composer.Compose(outer, gc.Clip, m, inv, direct);
+						var cd = composer.Compose(this, outer, gc.Clip, m, inv, direct);
 						EmitGradient(gc, m, identity, cd, ops);
 						break;
 					}
 				case CmdKind.Shadow:
 					{
 						var sh = (ShadowCmd)cmd;
-						var cd = composer.Compose(outer, sh.Clip, m, inv, direct);
+						var cd = composer.Compose(this, outer, sh.Clip, m, inv, direct);
 						EmitShadow(direct ? sh : Under(sh, m, identity, cd), ops);
 						break;
 					}
 				case CmdKind.Layer:
 					{
 						var lyr = (LayerCmd)cmd;
-						var cd = composer.Compose(outer, lyr.Clip, m, inv, direct);
+						var cd = composer.Compose(this, outer, lyr.Clip, m, inv, direct);
 						EmitLayer(lyr, m, outer, cd, ops);
 						break;
 					}
@@ -231,7 +228,7 @@ internal sealed unsafe partial class WebGpuFrame
 					{
 						var bk = (BackdropCmd)cmd;
 						// A backdrop splits the pass here so it samples the framebuffer resolved so far (see EncodeBackdropSegment).
-						var cd = composer.Compose(outer, bk.Clip, m, inv, direct);
+						var cd = composer.Compose(this, outer, bk.Clip, m, inv, direct);
 						var view = direct ? bk : new BackdropCmd { Effect = bk.Effect, Opacity = bk.Opacity, Clip = cd };
 						int bi = _backdrops.Count; _backdrops.Add(view);
 						ops.Add(DrawOp.Backdrop(bi, cd));
@@ -265,7 +262,8 @@ internal sealed unsafe partial class WebGpuFrame
 	// One textured quad: into the pass's shared quad buffer per frame, else into a buffer the recording owns.
 	private void EmitImage(ImageCmd im, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, in ClipData cd, List<DrawOp> ops, OwnedResources owned = null)
 	{
-		var dst = owned is null ? _quadVerts : new VertBuf();
+		var dst = owned is null ? _quadVerts : Scratch;
+		if (owned is not null) { Scratch.Clear(); }
 		var first = (uint)(dst.Count / VertexStride.Quad);
 		AppendQuad(dst, p0, p1, p2, p3, im.U0, im.V0, im.U1, im.V1);
 		var iop = QuadOp(DrawKind.Image, dst, first, ImageBg(im, owned), cd, owned);
@@ -303,7 +301,8 @@ internal sealed unsafe partial class WebGpuFrame
 		var (p0, p1, p2, p3) = identity ? (gc.P0, gc.P1, gc.P2, gc.P3) : (Map(gc.P0, m), Map(gc.P1, m), Map(gc.P2, m), Map(gc.P3, m));
 		Span<Vector2> cover = stackalloc Vector2[OctSides * 3];
 		var count = (uint)GradientCover(p0, p1, p2, p3, cd, cover);
-		var dst = owned is null ? _gradVerts : new VertBuf();
+		var dst = owned is null ? _gradVerts : Scratch;
+		if (owned is not null) { Scratch.Clear(); }
 		var first = (uint)(dst.Count / VertexStride.Quad);
 		for (var t = 0; t < count; t++) { dst.Add(cover[t].X); dst.Add(cover[t].Y); dst.Add(0f); dst.Add(0f); }
 		ops.Add(owned is null
@@ -311,9 +310,13 @@ internal sealed unsafe partial class WebGpuFrame
 			: DrawOp.Own(DrawKind.Gradient, Vbuf(dst, VertexStride.Quad, owned), count, gbg, cd, MakeClipBg(cd, owned)));
 	}
 
-	private static float[] TransformedGradient(float[] src, in Matrix3x2 m)
+	// Rent and GradientBg copy the uniform out at once, so one scratch serves every transformed gradient.
+	private float[] _gradientScratch = [];
+
+	private float[] TransformedGradient(float[] src, in Matrix3x2 m)
 	{
-		var u = (float[])src.Clone();
+		var u = _gradientScratch.Length == src.Length ? _gradientScratch : _gradientScratch = new float[src.Length];
+		src.CopyTo(u, 0);
 		var a = Map(new Vector2(u[4], u[5]), m); u[4] = a.X; u[5] = a.Y;
 		float dt = m.M11 * m.M22 - m.M21 * m.M12;
 		if (MathF.Abs(dt) < 1e-12f) { dt = dt < 0 ? -1e-12f : 1e-12f; }
@@ -396,8 +399,42 @@ internal sealed unsafe partial class WebGpuFrame
 		}
 		var rc = ComposeClip(outer, rr.Clip, m, inv, direct);
 		if (Culled(ClampToClip(db, rc))) { return; }
-		if (IsPlain(rr)) { EmitArena(rr, rm, rc, ops); }
+		if (IsPlain(rr) && !CompileLater(rr, rm)) { EmitArena(rr, rm, rc, ops); }
 		else { if (_emitStats) { StatWalkedRecords++; } Walk(rr.Commands, rm, rc, ops); }
+	}
+
+	/// <summary>
+	/// Whether a recording of quads is drawn straight into this frame rather than compiled into the arena. A visual
+	/// resized every frame (a breathing layout, an animated bar) records anew each time, and compiling a recording
+	/// that is gone by the next frame costs far more than drawing its few quads directly. One still around on a later
+	/// frame is compiled then. Only axis-aligned sites: the two routes antialias a rotated edge a little differently.
+	/// </summary>
+	private bool CompileLater(ReplayRefCmd rr, in Matrix3x2 rm)
+	{
+		if (rm.M12 != 0 || rm.M21 != 0 || rr.Data is not { Compiled: null } data || !(data.QuadsOnlyMemo ??= QuadsOnly(rr.Commands)))
+		{
+			return false;
+		}
+
+		if (data.FirstSeenFrame == 0)
+		{
+			data.FirstSeenFrame = _d.FrameSeq;
+		}
+
+		return data.FirstSeenFrame == _d.FrameSeq;
+	}
+
+	private static bool QuadsOnly(List<WebGpuCommand> cmds)
+	{
+		foreach (var c in cmds)
+		{
+			if (c.Kind is not (CmdKind.Rect or CmdKind.RoundedRect or CmdKind.Gradient) || c.Clip.Paths is not null)
+			{
+				return false;
+			}
+		}
+
+		return cmds.Count > 0;
 	}
 
 	// How many stamps one recording keeps: enough for a template replayed at a handful of sites in a frame
@@ -423,40 +460,6 @@ internal sealed unsafe partial class WebGpuFrame
 		e.IdleSince = _d.FrameSeq;
 		if (e.ContentKey != 0) { return; }
 		e.ReleaseFinal(_d);
-	}
-
-	// Every entry that holds atlas slots, for EvictAtlasHolders. Weak: a recording that is collected takes its entry.
-	private static readonly List<WeakReference<WebGpuGeometryCache>> s_atlasHolders = new();
-
-	/// <summary>
-	/// Makes atlas room once an entry was refused for want of it. A slot's UVs are baked into its holder's ops, so
-	/// room is made by retiring whole entries: those not drawn this frame or the last hand back their bags (and with
-	/// them their slots) and rebuild on their next replay. The site slots stay with the entry's final release, the
-	/// one place they are freed. Called before the walk.
-	/// </summary>
-	internal void EvictAtlasHolders()
-	{
-		if (!_d.AtlasStarved) { return; }
-		_d.AtlasStarved = false;
-		_d.AtlasEvictions++;
-		for (var i = s_atlasHolders.Count - 1; i >= 0; i--)
-		{
-			if (!s_atlasHolders[i].TryGetTarget(out var e) || e.Evicted) { s_atlasHolders.RemoveAt(i); continue; }
-			if (!ReferenceEquals(e.Device, _d) || e.SitesFrame >= _d.FrameSeq - 1) { continue; }
-			s_atlasHolders.RemoveAt(i);
-			e.Evicted = true;
-			// Unpooled first, so a holder releasing concurrently takes the unpooled path and frees the site slots.
-			if (e.ContentKey != 0 && s_entryPool.TryGetValue(e.ContentKey, out var pooled) && ReferenceEquals(pooled, e)) { s_entryPool.Remove(e.ContentKey); }
-			e.ContentKey = 0;
-			if (e.Refs <= 0)
-			{
-				// No holder left: either only the pool held it and has let it go, or its last holder already freed it.
-				e.ReleaseFinal(_d);
-				continue;
-			}
-			_d.DeferRelease(e.Owned);
-			foreach (var st in e.Stamps) { _d.DeferRelease(st.Owned); }
-		}
 	}
 
 	/// <summary>
@@ -505,8 +508,8 @@ internal sealed unsafe partial class WebGpuFrame
 			if (!c.Clip.ScissorInert) { MixV4(c.Clip.Aabb); }
 			Mix((nint)c.Clip.Coverage);
 			Mix(c.Clip.CoverageFiltered ? 1 : 0);
-			Mix(c.Clip.Entries?.Length ?? 0);
-			if (c.Clip.Entries is { } ents)
+			Mix(c.Clip.Entries.Length);
+			if (c.Clip.Entries is { IsEmpty: false } ents)
 			{
 				foreach (var e in ents)
 				{
@@ -552,7 +555,7 @@ internal sealed unsafe partial class WebGpuFrame
 		if (!a.ScissorInert && !Same(a.Aabb, b.Aabb)) { return false; }
 		if (a.Coverage != b.Coverage || a.CoverageFiltered != b.CoverageFiltered) { return false; }
 		if (a.Paths is not null || b.Paths is not null) { return false; }
-		int an = a.Entries?.Length ?? 0, bn = b.Entries?.Length ?? 0;
+		int an = a.Entries.Length, bn = b.Entries.Length;
 		if (an != bn) { return false; }
 		for (int i = 0; i < an; i++)
 		{
@@ -632,7 +635,7 @@ internal sealed unsafe partial class WebGpuFrame
 			if (_emitStats) { StatPoolHits++; }
 		}
 		bool miss = entry is null;
-		if (miss || entry.Evicted || (entry.StarvedBeforeEviction >= 0 && _d.AtlasEvictions > entry.StarvedBeforeEviction) || AtlasNeedsRebuild(entry, rm))
+		if (miss || AtlasNeedsRebuild(entry, rm))
 		{
 			if (_emitStats) { _statArenaRebuilds++; if (miss) { _statArMiss++; } else { _statArMasks++; } }
 			// Shared entries are released by their last holder (or the pool sweep), never by whoever rebuilds first.
@@ -642,7 +645,6 @@ internal sealed unsafe partial class WebGpuFrame
 			bool hasPath = false; foreach (var c in rr.Commands) { if (c is PathCmd) { hasPath = true; break; } }
 			int atlasBefore = WebGpuCoverage.AtlasHit + WebGpuCoverage.AtlasBaked;
 			int maskBefore = WebGpuCoverage.ClipMasksBaked + WebGpuCoverage.FillMasksBaked + WebGpuCoverage.FillMaskHits;
-			int noRoomBefore = WebGpuCoverage.AtlasNoRoom;
 			bool atlasSafe = TryAtlasScale(rm, out var scale);
 			BuildCoalesced(rr.Commands, built, owned, atlasScale: atlasSafe ? scale : null, maskScale: atlasSafe ? scale : MaskScale(rm), place: new Vector2(rm.M31, rm.M32));
 			RealizeOwnedVertices(built, owned);
@@ -663,8 +665,8 @@ internal sealed unsafe partial class WebGpuFrame
 			};
 			entry.Refs = 1;
 			entry.ContentKey = key;
-			if (WebGpuCoverage.AtlasNoRoom != noRoomBefore) { entry.StarvedBeforeEviction = _d.AtlasEvictions; }
-			if (entry.HasAtlas || entry.HasClipMask) { s_atlasHolders.Add(new WeakReference<WebGpuGeometryCache>(entry)); }
+			// Its ops' clips point into the recording's native memory.
+			if (rr.Data.Arena is { } srcArena) { srcArena.AddRef(); entry.SrcArena = srcArena; }
 			if (key != 0)
 			{
 				if (s_entryPool.TryGetValue(key, out var displaced) && !ReferenceEquals(displaced, entry))
@@ -750,7 +752,7 @@ internal sealed unsafe partial class WebGpuFrame
 			{
 				// The slot now serves this site: a later site still matching the old placement would rewrite the
 				// uniform these ops read and draw this site there.
-				slot.Xform = rm; slot.Clip = session; slot.Basis = basis; slot.SessionEntries = sessionEntries;
+				slot.Xform = rm; slot.Clip = slot.Keep(session, _d); slot.Basis = basis; slot.SessionEntries = sessionEntries;
 				slot.Frame = _d.FrameSeq;
 				AppendSite(ops, slot.Ops, rm, session, siteDepth);
 				return;
@@ -771,8 +773,8 @@ internal sealed unsafe partial class WebGpuFrame
 				&& !(IsFiniteAabb(session.Aabb) && (finv.M12 != 0 || finv.M21 != 0))
 				&& SessionShapeUnchanged(slot.Clip, session);
 			Dictionary<PathClip[], PathClip[]> pathsMemo = null;
-			Dictionary<ClipEntry[], ClipEntry[]> entsMemo = null;
-			ClipEntry[] entsNoneFolded = null;
+			Dictionary<nint, ClipEntries> entsMemo = null;
+			ClipEntries entsNoneFolded = default;
 			for (int i = 0; i < entry.Ops.Count; i++)
 			{
 				var op = entry.Ops[i];
@@ -784,7 +786,7 @@ internal sealed unsafe partial class WebGpuFrame
 				scissorClip.ScissorInert = op.Clip.ScissorInert && session.ScissorInert;
 				// Overflow entries live in a storage buffer the patch does not hold, so those stay on the rebuild.
 				if (moved && op.Clip.Paths is null
-					&& (op.Clip.Entries?.Length ?? 0) + (session.Entries?.Length ?? 0) <= ClipUniformEntries)
+					&& (op.Clip.Entries.Length) + (session.Entries.Length) <= ClipUniformEntries)
 				{
 					scissorClip.AabbInClipU = PatchClipU(bufs[i], op.Clip, session, rm, finv);
 					scissorClip.ScissorLoadBearing = !scissorClip.AabbInClipU;
@@ -817,7 +819,7 @@ internal sealed unsafe partial class WebGpuFrame
 			}
 			stampOwned.ClipMemo = null;
 			slot.Owned = stampOwned; slot.Ops = stamped; slot.Bufs = bufs; slot.SiteOps = siteCarries;
-			slot.Xform = rm; slot.Clip = session; slot.Basis = basis; slot.SessionEntries = sessionEntries;
+			slot.Xform = rm; slot.Clip = slot.Keep(session, _d); slot.Basis = basis; slot.SessionEntries = sessionEntries;
 			if (_emitStats) { StampTicks += System.Diagnostics.Stopwatch.GetTimestamp() - t0; }
 		}
 		else
@@ -909,7 +911,7 @@ internal sealed unsafe partial class WebGpuFrame
 					var meet = Meet(box, ent[0].Rect);
 					if (Covers(meet, bounds)) { rect = meet; radii = ent[0].Radii; return true; }
 				}
-				else if (ent is null or { Length: 0 } && Covers(box, bounds))
+				else if (ent.IsEmpty && Covers(box, bounds))
 				{
 					rect = box; radii = Vector4.Zero; return true;
 				}
@@ -925,7 +927,7 @@ internal sealed unsafe partial class WebGpuFrame
 		if (cd.Paths is not null || cd.Coverage != null) { return false; }
 		if (!cd.ScissorInert && IsFiniteAabb(cd.Aabb)) { rect = Meet(rect, cd.Aabb); }
 		var ents = cd.Entries;
-		if (ents is null || ents.Length == 0) { return rect.Z > rect.X && rect.W > rect.Y; }
+		if (ents.IsEmpty) { return rect.Z > rect.X && rect.W > rect.Y; }
 		if (ents.Length != 1) { return false; }
 		ref readonly var e = ref ents[0];
 		// Axis-aligned only: a rotated clip does not leave a rounded RECT.

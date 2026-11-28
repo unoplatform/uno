@@ -29,6 +29,10 @@ internal sealed unsafe partial class WebGpuCoverage
 	}
 
 	private readonly List<BakeBatch> _pendingBakes = new();
+
+	[ThreadStatic]
+	private static VertBuf t_bakeVerts;
+
 	private readonly Dictionary<nint, BakeBatch> _bakeByTarget = new();
 
 	// The batch writing into a texture this frame, opened on first use. Atlas pages Load: the resolve touches only
@@ -44,38 +48,13 @@ internal sealed unsafe partial class WebGpuCoverage
 		return b;
 	}
 
-	// All the rects on the shelf, or none of them.
-	private static bool TryPack(ref Shelf shelf, (int Ox, int Oy, int W, int H)[] rects, (int X, int Y)[] pos)
-	{
-		var s = shelf;
-		for (var i = 0; i < rects.Length; i++)
-		{
-			if (!s.TryReserve(rects[i].W, rects[i].H, 1, out var x, out var y)) { return false; }
-			pos[i] = (x, y);
-		}
-		shelf = s;
-		return true;
-	}
-
-	// An atlas page's batch. A standalone page may be a reused spare, so it is cleared rather than loaded.
-	internal BakeBatch BatchFor(WebGpuMaskAtlas.Page page) => BatchFor(page.View, page.W, page.H, load: !page.Standalone);
-
-	// Packs rects onto a standalone page: as wide as the widest, or the square root of their area rounded up to a
-	// power of two when that is wider, and as tall as the shelves come to.
-	private static void PackOwn((int Ox, int Oy, int W, int H)[] rects, (int X, int Y)[] pos, out int w, out int h)
-	{
-		long area = 0; int maxW = 1;
-		foreach (var r in rects) { area += (long)r.W * r.H; maxW = Math.Max(maxW, r.W); }
-		w = Math.Max(maxW, (int)System.Numerics.BitOperations.RoundUpToPowerOf2((uint)Math.Ceiling(Math.Sqrt(area))));
-		var shelf = new Shelf(w, int.MaxValue);
-		TryPack(ref shelf, rects, pos);
-		h = Math.Max(1, shelf.Y + shelf.RowH);
-	}
+	// An atlas page's batch. Pages are shared, so the bake loads them: the resolve writes only its own slots.
+	internal BakeBatch BatchFor(WebGpuMaskAtlas.Page page) => BatchFor(page.View, page.W, page.H, load: true);
 
 	// Queues one outline into a slot of the batch. Edges are in the shape's space (the fill's, less its offset, which
 	// the caller folds into origin) and map to target pixels by (e - origin) * scale + 1 (the one-pixel skirt) + the
 	// slot corner.
-	internal void AddBake(BakeBatch b, int x, int y, int w, int h, float[] edges, Vector2 origin, Vector2 scale, bool evenOdd)
+	internal void AddBake(BakeBatch b, int x, int y, int w, int h, ReadOnlySpan<float> edges, Vector2 origin, Vector2 scale, bool evenOdd)
 	{
 		float right = x + w;
 		for (var i = 0; i < edges.Length; i += 4)
@@ -152,7 +131,11 @@ internal sealed unsafe partial class WebGpuCoverage
 			Api.RenderPassEncoderRelease(apass);
 
 			// Per slot, 6 verts of (ndc in the target, texel in the accumulator, evenOdd, exclude).
-			var verts = new float[b.Count * 36];
+			// Uploaded as soon as it is filled (QueueWriteBuffer copies), so one scratch serves every batch.
+			var scratch = t_bakeVerts ??= new VertBuf();
+			scratch.Clear();
+			scratch.Grow(b.Count * 36);
+			var verts = scratch.A;
 			var slots = CollectionsMarshal.AsSpan(b.Slots);
 			var vi = 0;
 			void V(float px, float py, float eo, float ex)
@@ -169,13 +152,13 @@ internal sealed unsafe partial class WebGpuCoverage
 			var re = new BindGroupEntry { Binding = 0, TextureView = accView };
 			var rbgd = new BindGroupDescriptor { Layout = _d.CoverageResolveSheetBgl, EntryCount = 1, Entries = &re };
 			var resolveBg = _d.Groups.Get(&rbgd);
-			var quads = _f.MakeBuffer(verts);
+			var quads = _f.MakeBuffer(scratch);
 			var rca = new RenderPassColorAttachment { DepthSlice = uint.MaxValue, View = b.Target, LoadOp = b.Load ? LoadOp.Load : LoadOp.Clear, StoreOp = StoreOp.Store, ClearValue = default };
 			var rdesc = new RenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &rca };
 			var rpass = Api.CommandEncoderBeginRenderPass(_f.Encoder, &rdesc);
 			Api.RenderPassEncoderSetPipeline(rpass, _d.CoverageResolveSheetPipe);
 			Api.RenderPassEncoderSetBindGroup(rpass, 0, resolveBg, 0, null);
-			Api.RenderPassEncoderSetVertexBuffer(rpass, 0, quads, 0, (nuint)(verts.Length * sizeof(float)));
+			Api.RenderPassEncoderSetVertexBuffer(rpass, 0, quads, 0, (nuint)(scratch.Count * sizeof(float)));
 			Api.RenderPassEncoderDraw(rpass, (uint)(b.Count * 6), 1, 0, 0);
 			Api.RenderPassEncoderEnd(rpass);
 			Api.RenderPassEncoderRelease(rpass);

@@ -82,8 +82,8 @@ namespace Microsoft.UI.Xaml
 		private DependencyPropertyDetails? DataContextPropertyDetails
 			=> _dataContextProperty is null ? null : Properties.DataContextPropertyDetails;
 
-		private DependencyPropertyDetails?[] AllPropertyDetails
-			=> _properties?.GetAllDetails() ?? Array.Empty<DependencyPropertyDetails?>();
+		private DependencyPropertyDetailsCollection.AllDetails AllPropertyDetails
+			=> _properties?.GetAllDetails() ?? new(null, null, Array.Empty<DependencyPropertyDetails?>());
 		private ResourceBindingCollection? _resourceBindings;
 		private ThemeResourceMap? _themeResources;
 
@@ -205,6 +205,9 @@ namespace Microsoft.UI.Xaml
 				_visualTreeCacheWeakReference = value is not null
 					? WeakReferencePool.RentWeakReference(this, value)
 					: null;
+
+				// The layout-rounding scale an element remembered came from its old tree.
+				global::Uno.UI.Xaml.Core.Scaling.RootScale.BumpScaleEpoch();
 			}
 		}
 
@@ -1204,16 +1207,6 @@ namespace Microsoft.UI.Xaml
 				// Delegates integrate a null check when removing new delegates.
 				that._childrenStores = that._childrenStores.Remove(childStore);
 			}
-		}
-
-		/// <summary>
-		/// Registers a parent changed callback for itself
-		/// </summary>
-		/// <param name="callback">A callback used to notified that the parent changed</param>
-		/// <remarks>The <see cref="ParentChangedCallback"/> key parameter will always be null</remarks>
-		internal void RegisterSelfParentChangedCallback(ParentChangedCallback callback)
-		{
-			_parentChangedCallbacks = _parentChangedCallbacks.Add(callback);
 		}
 
 		/// <summary>
@@ -2392,8 +2385,15 @@ namespace Microsoft.UI.Xaml
 			return hasLocalValue;
 		}
 
+		/// <summary>Called when the parent changes, before the registered parent-changed callbacks.</summary>
+		private protected virtual void OnParentChangedCore(object? parent)
+		{
+		}
+
 		private void OnParentChanged(object? previousParent, object? value)
 		{
+			OnParentChangedCore(value);
+
 			if (_parentChangedCallbacks.Data.Length != 0)
 			{
 				var actualInstanceAlias = ActualInstance;

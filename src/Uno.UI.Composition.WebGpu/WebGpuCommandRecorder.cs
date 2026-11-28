@@ -52,6 +52,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 
 	private Matrix4x4 _m = Matrix4x4.Identity;
 	private ClipData _clip = ClipData.None;
+
+	// Where this recording's clip entries live: freed with the recording.
+	private NativeArena Arena => _data.Arena ??= new NativeArena();
 	private float[] _pendingColorMatrix;   // active effect colour matrix, applied per DrawImage in the image shader
 	private readonly WebGpuRenderRecord _data = new();
 	private List<WebGpuCommand> _target;   // current emit target (root command list, or a layer's list)
@@ -213,7 +216,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 			Radii = radii,
 			RadiiY = radiiY,
 			Exclude = exclude,
-		});
+		}, Arena);
 	}
 
 	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect)
@@ -321,10 +324,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 		{
 			return clip;
 		}
-		if (clip.Entries is { Length: > 0 } entries)
+		if (clip.Entries is { Length: > 0 and <= 64 } entries)
 		{
-			ClipEntry[] kept = null;
-			int keptCount = 0;
+			// Which entries the op cannot be cut by; an array is built only when some, but not all, of them go.
+			ulong inertMask = 0;
 			for (int i = 0; i < entries.Length; i++)
 			{
 				var e = entries[i];
@@ -346,14 +349,21 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 					float ry = MathF.Max(MathF.Max(e.RadiiY.X, e.RadiiY.Y), MathF.Max(e.RadiiY.Z, e.RadiiY.W));
 					inert = lo.X >= e.Rect.X + rx && lo.Y >= e.Rect.Y + ry && hi.X <= e.Rect.Z - rx && hi.Y <= e.Rect.W - ry;
 				}
-				if (!inert)
+				if (inert)
 				{
-					kept ??= new ClipEntry[entries.Length];
-					kept[keptCount++] = e;
+					inertMask |= 1UL << i;
 				}
 			}
-			if (keptCount == 0) { clip.Entries = null; }
-			else if (keptCount < entries.Length) { System.Array.Resize(ref kept, keptCount); clip.Entries = kept; }
+			var keptCount = entries.Length - System.Numerics.BitOperations.PopCount(inertMask);
+			if (keptCount == 0) { clip.Entries = default; }
+			else if (keptCount < entries.Length)
+			{
+				clip.Entries = ClipEntries.Extend(Arena, default, keptCount, out var kept);
+				for (int i = 0, k = 0; i < entries.Length; i++)
+				{
+					if ((inertMask & (1UL << i)) == 0) { kept[k++] = entries[i]; }
+				}
+			}
 		}
 		clip.ScissorInert = true;
 		return clip;
@@ -783,7 +793,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 		// The nested list (with its raw image view handles) is captured by reference and may be drawn after the
 		// nested recording is disposed, so this recording holds a reference to it.
 		TrackNested(rec);
-		_target.Add(new ReplayRefCmd { Data = rec, Commands = rec.Commands, Transform = _m, Transform2 = new Matrix3x2(_m.M11, _m.M12, _m.M21, _m.M22, _m.M41, _m.M42), Clip = _clip });
+		_target.Add(new ReplayRefCmd { Data = rec, Commands = rec.Commands, Transform2 = new Matrix3x2(_m.M11, _m.M12, _m.M21, _m.M22, _m.M41, _m.M42), Clip = _clip });
 	}
 
 	// Take a ref to the nested recording, so an outer frame keeps it -- and with it every texture and geometry it

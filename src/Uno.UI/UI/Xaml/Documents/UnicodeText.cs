@@ -1264,6 +1264,75 @@ internal readonly partial struct UnicodeText : IParsedText
 		=> (!_layoutUsesAvailableWidth || availableSize.Width == _availableSize.Width)
 		&& (!_layoutUsesAvailableHeight || availableSize.Height == _availableSize.Height);
 
+	/// <summary>
+	/// Whether <paramref name="other"/>, parsed from the same block at another available size, draws and hit-tests
+	/// exactly like this one: same text, runs, glyphs, line breaks and line positions. Only left-to-right, left-aligned
+	/// plain text qualifies, because anything else reads the available width when drawn or when placing a caret.
+	/// </summary>
+	internal bool DrawsLike(in UnicodeText other)
+	{
+		if (_rtl || _flowRightToLeft || other._rtl || other._flowRightToLeft
+			|| _inlineObjects is { Count: > 0 } || other._inlineObjects is { Count: > 0 }
+			|| _tabLeaders is { Count: > 0 } || other._tabLeaders is { Count: > 0 }
+			|| _markerShapes is not null || other._markerShapes is not null
+			|| _corrections is not null || other._corrections is not null
+			|| _endingParagraphLayout is not null || other._endingParagraphLayout is not null
+			|| _endingParagraphAlignment is not null || other._endingParagraphAlignment is not null)
+		{
+			return false;
+		}
+
+		if (_text != other._text
+			|| _textAlignment != other._textAlignment
+			|| AlignmentDependsOnWidth(_textAlignment)
+			|| _alignmentIncludesTrailingWhitespace != other._alignmentIncludesTrailingWhitespace
+			|| _defaultFontDetails != other._defaultFontDetails
+			|| !ReferenceEquals(_defaultForeground, other._defaultForeground)
+			|| _endingNewLineLineHeight != other._endingNewLineLineHeight
+			|| _endingLineContentTop != other._endingLineContentTop
+			|| _endingLineBaselineOffset != other._endingLineBaselineOffset
+			|| !_runBreaks.SequenceEqual(other._runBreaks)
+			|| !_bidiBreaks.SequenceEqual(other._bidiBreaks)
+			|| !_hyperlinkRanges.SequenceEqual(other._hyperlinkRanges)
+			|| _lines.Count != other._lines.Count
+			|| _clustersInLogicalOrder.Count != other._clustersInLogicalOrder.Count
+			|| !_glyphs.SequenceEqual(other._glyphs))
+		{
+			return false;
+		}
+
+		for (var i = 0; i < _lines.Count; i++)
+		{
+			Line a = _lines[i], b = other._lines[i];
+			if (a.start != b.start || a.end != b.end
+				|| a.width != b.width || a.widthWithoutTrailingSpaces != b.widthWithoutTrailingSpaces
+				|| a.lineHeight != b.lineHeight || a.baselineOffset != b.baselineOffset
+				|| a.textAlignment != b.textAlignment || a.hasEllipsis != b.hasEllipsis
+				|| a.paragraphLayout is not null || b.paragraphLayout is not null
+				|| a.isFirstLineOfParagraph != b.isFirstLineOfParagraph || a.isLastLineOfParagraph != b.isLastLineOfParagraph
+				|| (a.textAlignment is { } alignment && AlignmentDependsOnWidth(alignment))
+				|| GetLineContentTop(i) != other.GetLineContentTop(i)
+				|| GetAlignmentOffsetForLine(a) != other.GetAlignmentOffsetForLine(b))
+			{
+				return false;
+			}
+		}
+
+		for (var i = 0; i < _clustersInLogicalOrder.Count; i++)
+		{
+			Cluster a = _clustersInLogicalOrder[i].Value, b = other._clustersInLogicalOrder[i].Value;
+			if (a.start != b.start || a.end != b.end || a.width != b.width || a.runIndex != b.runIndex
+				|| a.lineIndex != b.lineIndex || a.indexInLine != b.indexInLine || a.rtl != b.rtl
+				// By value: each parse wraps a fallback font in new FontDetails around the same cached font.
+				|| a.fontDetails != b.fontDetails)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	// Printable ASCII (plus tab) has no mandatory line breaks and needs no ICU break analysis for NoWrap text.
 	private static bool IsAsciiWithoutLineBreaks(string text)
 	{

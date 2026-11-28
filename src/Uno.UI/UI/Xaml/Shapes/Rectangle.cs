@@ -63,6 +63,7 @@ namespace Microsoft.UI.Xaml.Shapes
 				? GetGeometry(renderingArea)
 				: null;
 
+			RenderPathIsOwned = true;
 			Render(path);
 
 			return finalSize;

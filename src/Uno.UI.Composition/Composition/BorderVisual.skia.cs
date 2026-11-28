@@ -28,7 +28,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 	private bool _isRebuildingPaths;
 	private CompositionSpriteShape? _backgroundShape; // Never null after _backgroundBrush is set
 	private CompositionSpriteShape? _borderShape; // Never null after _borderBrush is set
-	private CompositionClip? _backgroundClip;
+	private RectangleClip? _backgroundClip;
 	private RoundRectangle? _borderPathOuterRect;
 	// The pre-painting round-rect geometry, keyed on the round rect it was built from.
 	private (RoundRectangle rect, IGeometry geometry)? _prePaintingRoundRect;
@@ -138,12 +138,21 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 		if (_backgroundShape is { } backgroundShape)
 		{
-			session.Session.Save();
-			// it's necessary to clip the background because not all backgrounds are simple rounded rectangles with a solid color.
-			// E.g. effect brushes will draw outside the intended area if they're not clipped.
-			_backgroundClip?.ApplyClip(this, session.Session);
+			// It's necessary to clip the background because not all backgrounds are simple rounded rectangles with a solid
+			// color: e.g. effect brushes would draw outside the intended area. A solid one filled as the very rounded
+			// rect it is clipped to can't, so it skips the clip.
+			var clipped = _backgroundClip is not null
+				&& !(backgroundShape.FillBrush is CompositionColorBrush && backgroundShape.RoundedRectFillHint is not null);
+			if (clipped)
+			{
+				session.Session.Save();
+				_backgroundClip!.ApplyClip(this, session.Session);
+			}
 			backgroundShape.Render(in session);
-			session.Session.Restore();
+			if (clipped)
+			{
+				session.Session.Restore();
+			}
 		}
 
 		base.Paint(in session);
@@ -228,10 +237,6 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 	private void RebuildPathsAndCornerClip()
 	{
-		// clear old state
-		_childClipCausedByCornerRadius = null;
-		_backgroundClip = null;
-
 		var borderLeft = (float)_borderThickness.Left;
 		var borderTop = (float)_borderThickness.Top;
 		var innerWidth = (float)Math.Max(0, Size.X - (_borderThickness.Left + _borderThickness.Right));
@@ -348,23 +353,33 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		//         a non-empty CornerRadius will clip the child(ren). This matches WinUI even though it's not intuitive.
 		if (!fullCornerRadius.IsEmpty)
 		{
-			_childClipCausedByCornerRadius = Compositor.CreateRectangleClip(
-				(float)innerArea.Left, (float)innerArea.Top, (float)innerArea.Right, (float)innerArea.Bottom,
-				fullCornerRadius.Inner.TopLeft, fullCornerRadius.Inner.TopRight, fullCornerRadius.Inner.BottomRight, fullCornerRadius.Inner.BottomLeft);
-
-			if (_useInnerBorderBoundsAsAreaForBackground)
-			{
-				_backgroundClip = Compositor.CreateRectangleClip(
-					(float)innerArea.Left, (float)innerArea.Top, (float)innerArea.Right, (float)innerArea.Bottom,
-					fullCornerRadius.Inner.TopLeft, fullCornerRadius.Inner.TopRight, fullCornerRadius.Inner.BottomRight, fullCornerRadius.Inner.BottomLeft);
-			}
-			else
-			{
-				_backgroundClip = Compositor.CreateRectangleClip(
-					(float)outerArea.Left, (float)outerArea.Top, (float)outerArea.Right, (float)outerArea.Bottom,
-					fullCornerRadius.Outer.TopLeft, fullCornerRadius.Outer.TopRight, fullCornerRadius.Outer.BottomRight, fullCornerRadius.Outer.BottomLeft);
-			}
+			_childClipCausedByCornerRadius = SetClip(_childClipCausedByCornerRadius, innerArea, fullCornerRadius.Inner);
+			_backgroundClip = _useInnerBorderBoundsAsAreaForBackground
+				? SetClip(_backgroundClip, innerArea, fullCornerRadius.Inner)
+				: SetClip(_backgroundClip, outerArea, fullCornerRadius.Outer);
 		}
+		else
+		{
+			_childClipCausedByCornerRadius?.Dispose();
+			_childClipCausedByCornerRadius = null;
+			_backgroundClip?.Dispose();
+			_backgroundClip = null;
+		}
+	}
+
+	// The clips are updated in place, so that a resize keeps them and the path each caches for an unchanged shape.
+	private RectangleClip SetClip(RectangleClip? clip, Rect area, NonUniformCornerRadius radii)
+	{
+		clip ??= Compositor.CreateRectangleClip();
+		clip.Left = (float)area.Left;
+		clip.Top = (float)area.Top;
+		clip.Right = (float)area.Right;
+		clip.Bottom = (float)area.Bottom;
+		clip.TopLeftRadius = radii.TopLeft;
+		clip.TopRightRadius = radii.TopRight;
+		clip.BottomRightRadius = radii.BottomRight;
+		clip.BottomLeftRadius = radii.BottomLeft;
+		return clip;
 	}
 
 	private static IGeometry BuildRoundRectGeometry(RoundRectangle roundRect)
@@ -392,6 +407,10 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 	{
 		_prePaintingRoundRect?.geometry.Release();
 		_prePaintingRoundRect = null;
+		_childClipCausedByCornerRadius?.Dispose();
+		_childClipCausedByCornerRadius = null;
+		_backgroundClip?.Dispose();
+		_backgroundClip = null;
 		base.DisposeInternal();
 	}
 
