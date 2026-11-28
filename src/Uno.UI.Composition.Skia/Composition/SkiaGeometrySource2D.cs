@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Numerics;
@@ -35,7 +35,11 @@ namespace Microsoft.UI.Composition
 
 		public bool Contains(float x, float y) => _geometry.Contains(x, y);
 
-		public SkiaGeometrySource2D Op(SkiaGeometrySource2D other, SKPathOp op) => new(_geometry.Op(other._geometry, op));
+		public SkiaGeometrySource2D Op(SkiaGeometrySource2D other, SKPathOp op)
+		{
+			SkiaPathOpCounter.Increment();
+			return new(_geometry.Op(other._geometry, op));
+		}
 
 		#endregion
 
@@ -73,6 +77,7 @@ namespace Microsoft.UI.Composition
 				_ => SKPathOp.Union,
 			};
 
+			SkiaPathOpCounter.Increment();
 			if (_geometry.Op(lease.Path, op) is { } combined)
 			{
 				return new SkiaGeometrySource2D(combined);
