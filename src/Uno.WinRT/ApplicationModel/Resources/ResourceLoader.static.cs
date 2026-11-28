@@ -44,7 +44,10 @@ partial class ResourceLoader
 			}
 #endif
 
-			EnsureLoadersCultures();
+			lock (_gate)
+			{
+				EnsureLoadersCultures();
+			}
 		}
 	}
 
@@ -59,6 +62,12 @@ partial class ResourceLoader
 	private static readonly Dictionary<string, ResourceLoader> _loaders = new(StringComparer.OrdinalIgnoreCase); // _loaders[RES_PACK ?? "Resources"]._resources[CULTURE][RES_KEY]
 	private static LoaderContext? _loaderContext;
 
+	// Guards the static resource tables above and every loader's _resources. GetString has no thread
+	// affinity, and the first lookup after a language change rebuilds the tables in place, so an
+	// unsynchronized concurrent lookup could observe (or corrupt) a half-rebuilt table.
+	private static readonly object _gate = new();
+
+	/// <remarks>Must be called while holding <see cref="_gate"/>.</remarks>
 	private static string[] EnsureLoadersCultures()
 	{
 		if (HasContextChangedSignificantly(out var context))
@@ -70,6 +79,14 @@ partial class ResourceLoader
 	}
 
 	public static void AddLookupAssembly(Assembly assembly)
+	{
+		lock (_gate)
+		{
+			AddLookupAssemblyCore(assembly);
+		}
+	}
+
+	private static void AddLookupAssemblyCore(Assembly assembly)
 	{
 		_lookupAssemblies.Add(assembly);
 
@@ -186,6 +203,14 @@ partial class ResourceLoader
 		=> ClearAlcAssembliesCore(assembly => global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(assembly) == alc, rebuildFromSurvivors: true);
 
 	private static void ClearAlcAssembliesCore(Predicate<Assembly> shouldRemove, bool rebuildFromSurvivors)
+	{
+		lock (_gate)
+		{
+			ClearAlcAssembliesCoreLocked(shouldRemove, rebuildFromSurvivors);
+		}
+	}
+
+	private static void ClearAlcAssembliesCoreLocked(Predicate<Assembly> shouldRemove, bool rebuildFromSurvivors)
 	{
 		// Identify the dying assemblies first, then drop their list entries (the ALC pins) and their
 		// (assembly, fileName) parsed markers, so a later AddLookupAssembly of the SAME logical app
@@ -324,7 +349,13 @@ partial class ResourceLoader
 	/// Lets the ALC sweep be verified without reflecting over the private
 	/// <see cref="_lookupAssemblies"/> field.
 	/// </summary>
-	internal static bool ContainsLookupAssembly(Assembly assembly) => _lookupAssemblies.Contains(assembly);
+	internal static bool ContainsLookupAssembly(Assembly assembly)
+	{
+		lock (_gate)
+		{
+			return _lookupAssemblies.Contains(assembly);
+		}
+	}
 
 	private static bool HasContextChangedSignificantly(out LoaderContext context)
 	{
@@ -439,8 +470,13 @@ partial class ResourceLoader
 		static void ThrowInvalidDataException(string filename) => throw new InvalidDataException($"The resource file {filename} is invalid.");
 	}
 
-	private static ResourceLoader GetOrCreateNamedResourceLoader(string name) =>
-		_loaders.FindOrCreate(name, () => new ResourceLoader(name, addLoader: false));
+	private static ResourceLoader GetOrCreateNamedResourceLoader(string name)
+	{
+		lock (_gate)
+		{
+			return _loaders.FindOrCreate(name, () => new ResourceLoader(name, addLoader: false));
+		}
+	}
 
 	private static Dictionary<string, Dictionary<string, string>> GetOrCreateNamedLoaderResources(string name) =>
 		GetOrCreateNamedResourceLoader(name)._resources;

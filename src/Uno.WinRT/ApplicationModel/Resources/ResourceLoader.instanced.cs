@@ -66,15 +66,18 @@ partial class ResourceLoader
 
 		LoaderName = name;
 
-		if (_loaders.TryGetValue(name, out var existingLoader))
+		lock (_gate)
 		{
-			// If there is already a loader with the same name,
-			// they should share the same resources.
-			_resources = existingLoader._resources;
-		}
-		else if (addLoader)
-		{
-			_loaders[name] = this;
+			if (_loaders.TryGetValue(name, out var existingLoader))
+			{
+				// If there is already a loader with the same name,
+				// they should share the same resources.
+				_resources = existingLoader._resources;
+			}
+			else if (addLoader)
+			{
+				_loaders[name] = this;
+			}
 		}
 	}
 
@@ -93,15 +96,19 @@ partial class ResourceLoader
 			return GetForCurrentView(resourceFile).GetString(resourceName);
 		}
 
-		// First make sure that resource cache matches the current culture
-		var cultures = EnsureLoadersCultures();
-
-		// Walk the culture hierarchy and the default
-		foreach (var culture in cultures)
+		// The lookup holds the gate so that it never reads tables that another thread is rebuilding.
+		lock (_gate)
 		{
-			if (FindForCulture(culture, resource, out var value))
+			// First make sure that resource cache matches the current culture
+			var cultures = EnsureLoadersCultures();
+
+			// Walk the culture hierarchy and the default
+			foreach (var culture in cultures)
 			{
-				return value;
+				if (FindForCulture(culture, resource, out var value))
+				{
+					return value;
+				}
 			}
 		}
 
