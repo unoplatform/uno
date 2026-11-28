@@ -121,6 +121,24 @@ internal static class SkiaImageDecoder
 		return true;
 	}
 
+	/// <summary>Reads the size <see cref="TryDecode"/> produces with no target size, from the image's header only.</summary>
+	public static bool TryGetSize(Stream stream, out int pixelWidth, out int pixelHeight)
+	{
+		using var managedStream = new SKManagedStream(stream);
+		using var codec = SKCodec.Create(managedStream);
+		if (codec is null)
+		{
+			pixelWidth = 0;
+			pixelHeight = 0;
+			return false;
+		}
+
+		var swaps = SwapsWidthHeight(codec.EncodedOrigin);
+		pixelWidth = swaps ? codec.Info.Height : codec.Info.Width;
+		pixelHeight = swaps ? codec.Info.Width : codec.Info.Height;
+		return true;
+	}
+
 	private static SKSizeI GetSupportedDecodeDimensions(SKCodec codec, SKEncodedOrigin origin, int? targetWidth, int? targetHeight)
 	{
 		if (targetWidth is <= 0) targetWidth = null;
