@@ -16,7 +16,7 @@ partial class TextBlock
 	// not know its owning control's formatting. Built from the TextBlock's own resolved (inherited) DPs.
 	internal void GetTextFormatting(out global::Microsoft.UI.Xaml.Documents.RichTextServices.TextFormatting? ppTextFormatting)
 	{
-		var resolvedLanguage = CultureInfo.CurrentCulture.Name;
+		var resolvedLanguage = CultureInfo.CurrentUICulture.Name;
 
 		ppTextFormatting = new global::Microsoft.UI.Xaml.Documents.RichTextServices.TextFormatting
 		{

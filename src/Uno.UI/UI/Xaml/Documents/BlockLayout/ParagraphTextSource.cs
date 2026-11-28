@@ -230,8 +230,8 @@ internal sealed class ParagraphTextSource : TextSource, ISkiaParagraphSource
 					(pUIContainer.TextDecorations & TextDecorations.Strikethrough) != 0,
 					pUIContainer.CharacterSpacing,
 					new WeakReference<DependencyObject>(pUIContainer),
-					CultureInfo.CurrentCulture,
-					CultureInfo.CurrentCulture);
+					CultureInfo.CurrentUICulture,
+					CultureInfo.CurrentUICulture);
 
 				PageHostedObjectRun pTextRun = new(pUIContainer, characterIndex, pTextProperties);
 				pTextRun.Format(this, paragraphWidth, default, out var metrics);

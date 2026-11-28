@@ -152,7 +152,7 @@ partial class TextElement
 
 	private RichTextServices.TextFormatting BuildTextFormatting()
 	{
-		var resolvedLanguage = CultureInfo.CurrentCulture.Name;
+		var resolvedLanguage = CultureInfo.CurrentUICulture.Name;
 
 		return new RichTextServices.TextFormatting
 		{
