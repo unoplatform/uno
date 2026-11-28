@@ -250,6 +250,13 @@ namespace Microsoft.UI.Xaml.Data
 			{
 				_IsCurrentlyPushingTwoWay = true;
 
+				if (ParentBinding.XBindBack is null
+					&& ParentBinding.TargetNullValue is { } targetNullValue
+					&& Equals(value, ConvertValue(targetNullValue)))
+				{
+					value = null;
+				}
+
 				// Convert if necessary
 				if (ParentBinding.Converter != null)
 				{
@@ -262,6 +269,11 @@ namespace Microsoft.UI.Xaml.Data
 						ParentBinding.ConverterParameter,
 						ParentBinding.ConverterLanguage
 					);
+
+					if (value == DependencyProperty.UnsetValue)
+					{
+						return;
+					}
 				}
 
 				if (ParentBinding.XBindBack != null)
