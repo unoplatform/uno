@@ -1579,6 +1579,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal double TextLayoutWidth => _textLayoutWidth;
 
+		private static Action<TextBlock, double>? _textLayoutObserverForTesting;
+
+		/// <summary>
+		/// Calls <paramref name="onLayout"/> with the block and the width each time a TextBlock lays its text out,
+		/// until the returned disposable restores the previous observer.
+		/// </summary>
+		internal static IDisposable ObserveTextLayoutForTesting(Action<TextBlock, double> onLayout)
+		{
+			var previous = _textLayoutObserverForTesting;
+			_textLayoutObserverForTesting = onLayout;
+			return Disposable.Create(() => _textLayoutObserverForTesting = previous);
+		}
+
 		public TextBlock()
 		{
 			UpdateLastUsedTheme();
@@ -1701,6 +1714,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private IParsedText ParseText(Size availableSizeWithoutPadding, out Size size)
 		{
+			_textLayoutObserverForTesting?.Invoke(this, availableSizeWithoutPadding.Width);
+
 			var isTextBoxOwned = OwningTextBox is not null;
 			var adjustedTextAlignment = GetAdjustedTextAlignment();
 			var inlines = Inlines.TraversedTree.leafTree;
