@@ -201,15 +201,15 @@ public App()
 
 On Skia Desktop targets, it is possible to override the default `ApplicationData` folder locations using `WinRTFeatureConfiguration.ApplicationData` properties. For more information, see [related docs here](/articles/features/applicationdata.md#data-location-on-skia-desktop)
 
-## Additional content folders (Skia Desktop)
+## Additional content folders (Skia)
 
-On Skia Desktop targets, a file of an `ms-appx:///` URI is read from the app's install folder. An app whose install folder is read-only, such as an MSIX package, and that shows content it only has at run time, can keep that content in a folder it can write to and name the folder at startup:
+On Skia targets that read the app's content from the file system, such as Skia Desktop, a file of an `ms-appx:///` URI is read from the app's install folder. An app whose install folder is read-only, such as an MSIX package, and that shows content it only has at run time, can keep that content in a folder it can write to and name the folder before that content is first requested:
 
 ```csharp
 Uno.WinRTFeatureConfiguration.Package.AdditionalContentRoots = [contentFolder];
 ```
 
-The install folder is searched first, then each of these folders in order. This applies to images, including their scaled variants, to `StorageFile.GetFileFromApplicationUriAsync` and to `RandomAccessStreamReference.CreateFromUri`. Default: no additional folder.
+The install folder is searched first, then each of these folders in order. This applies to images, including their scaled variants, to `StorageFile.GetFileFromApplicationUriAsync` and to `RandomAccessStreamReference.CreateFromUri`. The folders can gain files later: an image that is not found is looked for again the next time. A font that was requested before its file was there is not looked for again. Default: no additional folder.
 
 ## Android Settings
 
