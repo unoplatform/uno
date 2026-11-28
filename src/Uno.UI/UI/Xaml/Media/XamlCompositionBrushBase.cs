@@ -6,6 +6,8 @@ namespace Microsoft.UI.Xaml.Media;
 
 public partial class XamlCompositionBrushBase : Brush
 {
+	private CompositionColorBrush _fallbackBrush;
+
 	protected XamlCompositionBrushBase() : base()
 	{
 	}
@@ -65,7 +67,7 @@ public partial class XamlCompositionBrushBase : Brush
 			// Don't store CompositionBrush in a local variable. It has to be read again after the null check as OnConnectedInternal may set it.
 			// NOTE: We create a CompositionBrushWrapper here because the callers of GetOrCreateCompositionBrush assumes that this method will return
 			// the same instance every time. Whenever CompositionBrush changes, we will update CompositionBrushWrapper.WrappedBrush.
-			_compositionBrush = new CompositionBrushWrapper(CompositionBrush ?? compositor.CreateColorBrush(FallbackColorWithOpacity), compositor);
+			_compositionBrush = new CompositionBrushWrapper(CompositionBrush ?? GetOrCreateFallbackBrush(compositor), compositor);
 			SynchronizeCompositionBrush();
 		}
 
@@ -78,14 +80,21 @@ public partial class XamlCompositionBrushBase : Brush
 
 		if (args.Property == CompositionBrushProperty && _compositionBrush is CompositionBrushWrapper wrapper)
 		{
-			wrapper.WrappedBrush = (args.NewValue as CompositionBrush) ?? wrapper.Compositor.CreateColorBrush(FallbackColorWithOpacity);
+			wrapper.WrappedBrush = (args.NewValue as CompositionBrush) ?? GetOrCreateFallbackBrush(wrapper.Compositor);
 		}
 	}
+
+	private CompositionColorBrush GetOrCreateFallbackBrush(Compositor compositor)
+		=> _fallbackBrush ??= compositor.CreateColorBrush(FallbackColorWithOpacity);
 
 	internal override void SynchronizeCompositionBrush()
 	{
 		base.SynchronizeCompositionBrush();
 
-		_compositionBrush.TrySetColorFromBrush(this);
+		// Only the brush created for a null CompositionBrush follows FallbackColor; an app-supplied brush is used as-is.
+		if (_fallbackBrush is not null)
+		{
+			_fallbackBrush.Color = FallbackColorWithOpacity;
+		}
 	}
 }

@@ -199,20 +199,4 @@ namespace Microsoft.UI.Xaml.Media
 		}
 #nullable enable
 	}
-
-
-	internal static class BrushExtensions
-	{
-		internal static void TrySetColorFromBrush(this CompositionBrush brush, XamlCompositionBrushBase srcBrush)
-		{
-			if (brush is CompositionColorBrush colorBrush)
-			{
-				colorBrush.Color = srcBrush.FallbackColor;
-			}
-			else if (brush is CompositionBrushWrapper wrapper)
-			{
-				TrySetColorFromBrush(wrapper.WrappedBrush, srcBrush);
-			}
-		}
-	}
 }

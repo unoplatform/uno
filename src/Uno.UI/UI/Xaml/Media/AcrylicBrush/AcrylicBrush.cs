@@ -203,6 +203,7 @@ namespace Microsoft.UI.Xaml.Media
 				case nameof(TintOpacity):
 				case nameof(TintLuminosityOpacity):
 				case nameof(AlwaysUseFallback):
+				case nameof(FallbackColor):
 					UpdateAcrylicBrush();
 					break;
 				default:
