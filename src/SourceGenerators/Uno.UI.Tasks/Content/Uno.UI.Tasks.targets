@@ -33,6 +33,7 @@
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsValidator.RuntimeAssetsValidatorTask_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.HotReloadInfo.HotReloadInfoTask_v0" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="BatchMergeXaml" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'==''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.IcuData.IcuDataSplitTask_v0" />
 
 	<!--
 		Inside the Uno repo, run the remaining tasks out-of-proc as well so repeated local builds can
@@ -47,6 +48,7 @@
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.RuntimeAssetsValidator.RuntimeAssetsValidatorTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.HotReloadInfo.HotReloadInfoTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
 	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="BatchMergeXaml" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
+	<UsingTask Condition="'$(_IsUnoUISolution)'!=''" AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.IcuData.IcuDataSplitTask_v0" TaskFactory="TaskHostFactory" Runtime="CurrentRuntime" Architecture="CurrentArchitecture" />
 
 	<Target Name="_UnoLangSetup">
 		<!-- String resources -->
@@ -489,6 +491,53 @@
 			<FileWrites Include="$(_AttachedPropertiesLinkerDescriptorFile)" Condition="Exists('$(_AttachedPropertiesLinkerDescriptorFile)')" />
 		</ItemGroup>
 
+	</Target>
+
+	<!--
+		WebAssembly: the uno.icu data embedded in the app carries ~2 MB (compressed) of break dictionaries that only
+		Thai, Lao, Khmer, Myanmar and CJK text needs. Embed the rest and deploy the dictionaries as an app asset
+		that Uno.UI loads the first time such text is laid out. Opt out with UnoWasmIcuDictionariesOnDemand=false.
+	-->
+	<Target Name="_UnoSplitIcuDictionaries"
+			AfterTargets="AddUnoIcuEmbeddedResource"
+			BeforeTargets="AssignTargetPaths;PrepareResourceNames"
+			Condition="'$(IsUnoHead)'=='true'
+				and '$(UnoWasmIcuDictionariesOnDemand)'!='false'
+				and ('$(RuntimeIdentifier)'=='browser-wasm' or '$(TargetPlatformIdentifier)'=='browserwasm')">
+		<ItemGroup>
+			<_UnoIcuData Include="@(EmbeddedResource)" Condition="'%(Filename)%(Extension)'=='icudt.dat'" />
+		</ItemGroup>
+
+		<PropertyGroup>
+			<_UnoIcuOutputPath>$(IntermediateOutputPath)uno-icu\</_UnoIcuOutputPath>
+			<_UnoIcuDictionariesUri>ms-appx:///Uno.UI/icu/icudt-dict.dat</_UnoIcuDictionariesUri>
+		</PropertyGroup>
+
+		<IcuDataSplitTask_v0
+			Condition="'@(_UnoIcuData)'!=''"
+			SourcePath="@(_UnoIcuData->'%(FullPath)')"
+			StartupOutputPath="$(_UnoIcuOutputPath)icudt.dat"
+			DictionariesOutputPath="$(_UnoIcuOutputPath)icudt-dict.dat" />
+
+		<WriteLinesToFile
+			Condition="'@(_UnoIcuData)'!=''"
+			File="$(_UnoIcuOutputPath)icudt-dict.uri"
+			Lines="$(_UnoIcuDictionariesUri)"
+			Overwrite="true"
+			WriteOnlyWhenDifferent="true" />
+
+		<ItemGroup Condition="'@(_UnoIcuData)'!=''">
+			<EmbeddedResource Remove="@(_UnoIcuData)" />
+			<EmbeddedResource Include="$(_UnoIcuOutputPath)icudt.dat" LogicalName="icudt.dat" />
+			<EmbeddedResource Include="$(_UnoIcuOutputPath)icudt-dict.uri" LogicalName="icudt-dict.uri" />
+			<Content Include="$(_UnoIcuOutputPath)icudt-dict.dat" Link="Uno.UI\icu\icudt-dict.dat" Visible="false" />
+			<FileWrites Include="$(_UnoIcuOutputPath)icudt.dat;$(_UnoIcuOutputPath)icudt-dict.dat;$(_UnoIcuOutputPath)icudt-dict.uri" />
+		</ItemGroup>
+
+		<!-- Downloaded only when needed, so the PWA service worker must not fetch it eagerly on first visit either. -->
+		<PropertyGroup Condition="'@(_UnoIcuData)'!=''">
+			<WasmShellPWAPrecacheExclude>$(WasmShellPWAPrecacheExclude);Uno.UI/icu/icudt-dict.dat</WasmShellPWAPrecacheExclude>
+		</PropertyGroup>
 	</Target>
 
 </Project>
