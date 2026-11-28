@@ -17,6 +17,8 @@ namespace Uno.Storage.Internal;
 /// Writers hold an exclusive lock on a sibling ".lock" file and readers a shared one (flock on Unix, sharing modes on
 /// Windows). The locks are advisory: they only exclude other instances going through this class, and they do nothing
 /// when an app turns off .NET file locking (System.IO.DisableFileLocking) or on a file system that ignores flock.
+/// The file is replaced through a rename, except while renames are refused (Win32 app isolation): then it is written
+/// in place, and a crash part-way through can leave it damaged.
 /// </remarks>
 internal sealed class SettingsFile
 {
@@ -33,6 +35,7 @@ internal sealed class SettingsFile
 	private readonly TimeSpan _writeLockTimeout;
 	private readonly string _path;
 	private readonly string _lockPath;
+	private readonly Action<string, string> _moveFile;
 
 	// What is on disk as of the last read or write, and the changes this process could not save yet. Values is the
 	// first with the second applied, so a change that could not be written stays visible here until it is.
@@ -43,17 +46,21 @@ internal sealed class SettingsFile
 	private Stamp? _diskStamp;
 	private DateTime _diskReadAt;
 	private bool _temporaryFilesSwept;
+	// Set while replacing the file through a rename is refused, as Win32 app isolation does in a sandboxed package's
+	// data folder.
+	private bool _renamesRefused;
 
 	private readonly record struct Stamp(DateTime LastWrite, long Length);
 
 	/// <summary>A key set (Value not null), a key removed (Value null), or every key removed (Key null).</summary>
 	private readonly record struct Change(string? Key, string? Value);
 
-	internal SettingsFile(string path, TimeSpan? writeLockTimeout = null)
+	internal SettingsFile(string path, TimeSpan? writeLockTimeout = null, Action<string, string>? moveFile = null)
 	{
 		_path = path;
 		_writeLockTimeout = writeLockTimeout ?? TimeSpan.FromSeconds(5);
 		_lockPath = path + ".lock";
+		_moveFile = moveFile ?? ((source, destination) => File.Move(source, destination, overwrite: true));
 
 		lock (_gate)
 		{
@@ -198,18 +205,18 @@ internal sealed class SettingsFile
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error($"The settings file {_path} is damaged; it was moved aside and rebuilt from this process's last good copy", e);
+					this.Log().Error($"The settings file {_path} is damaged; it is set aside and rebuilt from this process's last good copy", e);
 				}
 
 				try
 				{
-					File.Move(_path, _path + ".corrupt", overwrite: true);
+					SetDamagedFileAside();
 				}
 				catch (Exception moveError)
 				{
 					if (this.Log().IsEnabled(LogLevel.Error))
 					{
-						this.Log().Error($"Failed to move the damaged settings file {_path} aside", moveError);
+						this.Log().Error($"Failed to set the damaged settings file {_path} aside", moveError);
 					}
 
 					values = null!;
@@ -279,18 +286,35 @@ internal sealed class SettingsFile
 
 	private bool TryWrite(Dictionary<string, string> values)
 	{
+		var content = Serialize(values);
+
+		// While renames are refused, one try per write is enough to notice that they work again.
+		var attempts = _renamesRefused ? 1 : Attempts;
+
 		for (var attempt = 1; ; attempt++)
 		{
 			try
 			{
-				Write(values);
-				return true;
-			}
-			catch (Exception e) when (e is IOException or UnauthorizedAccessException && attempt < Attempts)
-			{
+				var renameRefusal = ReplaceThroughTemporaryFile(content);
+
+				if (renameRefusal is null)
+				{
+					NoteRenamesWork();
+					return true;
+				}
+
+				if (attempt >= attempts)
+				{
+					return TryWriteInPlace(content, renameRefusal);
+				}
+
 				// On Windows another program holding the file open (an indexer, antivirus, a sync client) makes the
-				// replace fail for a moment.
-				Thread.Sleep(20 * attempt);
+				// rename fail for a moment.
+				LogWriteRetry(attempt, renameRefusal);
+			}
+			catch (Exception e) when (e is IOException or UnauthorizedAccessException && attempt < attempts)
+			{
+				LogWriteRetry(attempt, e);
 			}
 			catch (Exception e)
 			{
@@ -301,10 +325,14 @@ internal sealed class SettingsFile
 
 				return false;
 			}
+
+			Thread.Sleep(20 * attempt);
 		}
 	}
 
-	private void Write(Dictionary<string, string> values)
+	/// <summary>Replaces the file by renaming a temporary copy over it.</summary>
+	/// <returns>The refusal when the rename was refused, or <c>null</c> when the file was replaced.</returns>
+	private UnauthorizedAccessException? ReplaceThroughTemporaryFile(byte[] content)
 	{
 		// A crash or a full disk part-way through leaves the previous file in place rather than a truncated one.
 		var temporaryPath = $"{_path}.{Environment.ProcessId}.{Guid.NewGuid():N}.tmp";
@@ -312,25 +340,145 @@ internal sealed class SettingsFile
 		try
 		{
 			using (var stream = new FileStream(temporaryPath, FileMode.CreateNew, FileAccess.Write, FileShare.None))
-			using (var writer = new BinaryWriter(stream))
 			{
-				writer.Write(values.Count);
-
-				foreach (var pair in values)
-				{
-					writer.Write(pair.Key);
-					writer.Write(pair.Value);
-				}
-
-				writer.Flush();
+				stream.Write(content);
 				stream.Flush(flushToDisk: true);
 			}
 
-			File.Move(temporaryPath, _path, overwrite: true);
+			try
+			{
+				_moveFile(temporaryPath, _path);
+				return null;
+			}
+			catch (UnauthorizedAccessException e)
+			{
+				return e;
+			}
 		}
 		finally
 		{
+			DeleteTemporaryFile(temporaryPath);
+		}
+	}
+
+	// A failure here must not hide the outcome of the write; the sweep removes the file later.
+	private void DeleteTemporaryFile(string temporaryPath)
+	{
+		try
+		{
 			File.Delete(temporaryPath);
+		}
+		catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Failed to remove the temporary settings file {temporaryPath}: {e.Message}");
+			}
+		}
+	}
+
+	private bool TryWriteInPlace(byte[] content, UnauthorizedAccessException renameRefusal)
+	{
+		try
+		{
+			WriteInPlace(content);
+		}
+		catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error($"Failed to write settings to {_path} in place after the rename was refused; the change is kept in memory and saved on a later write", new AggregateException(renameRefusal, e));
+			}
+
+			return false;
+		}
+
+		NoteRenamesRefused(renameRefusal);
+		return true;
+	}
+
+	// Not atomic. The new content goes down in a single write before the old tail is cut off, and a reader ignores
+	// trailing bytes, so only a torn write leaves a damaged file. The exclusive lock keeps other instances out meanwhile.
+	private void WriteInPlace(byte[] content)
+	{
+		using var stream = new FileStream(_path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None);
+		stream.Write(content);
+		stream.SetLength(content.Length);
+		stream.Flush(flushToDisk: true);
+	}
+
+	private static byte[] Serialize(Dictionary<string, string> values)
+	{
+		using var buffer = new MemoryStream();
+
+		using (var writer = new BinaryWriter(buffer))
+		{
+			writer.Write(values.Count);
+
+			foreach (var pair in values)
+			{
+				writer.Write(pair.Key);
+				writer.Write(pair.Value);
+			}
+		}
+
+		return buffer.ToArray();
+	}
+
+	private void SetDamagedFileAside()
+	{
+		var asidePath = _path + ".corrupt";
+
+		try
+		{
+			_moveFile(_path, asidePath);
+		}
+		catch (UnauthorizedAccessException e)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Moving the damaged settings file {_path} aside was refused, copying it instead: {e.Message}");
+			}
+
+			File.Copy(_path, asidePath, overwrite: true);
+		}
+	}
+
+	private void NoteRenamesRefused(UnauthorizedAccessException renameRefusal)
+	{
+		if (_renamesRefused)
+		{
+			return;
+		}
+
+		_renamesRefused = true;
+
+		if (this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn($"Replacing the settings file {_path} through a rename is refused (0x{renameRefusal.HResult:X8}: {renameRefusal.Message}); it is written in place, without crash safety, until a rename works again");
+		}
+	}
+
+	private void NoteRenamesWork()
+	{
+		if (!_renamesRefused)
+		{
+			return;
+		}
+
+		_renamesRefused = false;
+
+		if (this.Log().IsEnabled(LogLevel.Information))
+		{
+			this.Log().Info($"Replacing the settings file {_path} through a rename works again");
+		}
+	}
+
+	private void LogWriteRetry(int attempt, Exception e)
+	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().Debug($"Failed to write settings to {_path} (attempt {attempt}), retrying: {e.Message}");
 		}
 	}
 
