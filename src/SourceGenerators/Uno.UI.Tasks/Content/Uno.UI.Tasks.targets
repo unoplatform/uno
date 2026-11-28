@@ -262,6 +262,17 @@
 
 	</Target>
 
+	<!-- Without an embedded Package.appxmanifest, Package never parses one: let trimming remove the XML parser. -->
+	<Target Name="_UnoLinkerPackageManifestFeature"
+		Condition="'$(IsUnoHead)'=='true'"
+		BeforeTargets="BuildDist;PrepareForILLink">
+
+		<ItemGroup>
+			<_UnoEmbeddedPackageManifest Include="@(EmbeddedResource)" Condition="'%(Filename)%(Extension)'=='Package.appxmanifest' or '%(EmbeddedResource.LogicalName)'=='Package.appxmanifest'" />
+			<RuntimeHostConfigurationOption Include="Uno.ApplicationModel.Package.IsManifestEmbedded" Value="false" Trim="true" Condition="'@(_UnoEmbeddedPackageManifest)'==''" />
+		</ItemGroup>
+	</Target>
+
 	<!--
 	  Linker Substitutions Merge
 	  -->
