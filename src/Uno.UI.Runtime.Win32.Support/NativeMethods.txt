@@ -185,6 +185,7 @@ EmptyClipboard
 EnableMouseInPointer
 EndPaint
 EnumClipboardFormats
+EnumDisplayDevices
 EnumDisplaySettingsEx
 EnumWindows
 ExtCreateRegion

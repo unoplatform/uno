@@ -76,6 +76,21 @@ Under the Fluent styles that resolves to `SolidBackgroundFillColorBase` — `#20
 contrast. As in WinUI, it follows the `ActualTheme` of the window's `Content` — not the
 application theme — and updates when that theme changes or the content is replaced.
 
+## When Windows can't show the material
+
+On Windows, DWM reads the material's transparency from what the app presents, so it needs to receive
+that from the GPU driving the window's display. The window paints the same regular background
+when it can't:
+
+- The app renders on another GPU, typically a laptop's discrete GPU selected in the Windows graphics
+  settings while the integrated GPU drives the panel. Without a preference, Uno uses the GPU Windows
+  lists first, as WinUI does.
+- The window moves to a display driven by another GPU, or its display is disconnected. The material
+  returns when the window is back on a display driven by the GPU the app renders on.
+- The app uses the WebGPU renderer on its Direct3D 12 backend.
+
+The Software renderer shows the material on any display.
+
 ## Limitations and recommendations
 
 - Appearance will differ between platforms — test on the real OS (Windows / macOS) to validate contrast and accessibility.
