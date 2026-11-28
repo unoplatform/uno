@@ -38,6 +38,22 @@ namespace Microsoft.UI.Xaml.Controls
 		internal override bool IsSingleSelection => SelectionMode == ListViewSelectionMode.Single;
 		internal bool IsSelectionMultiple => SelectionMode == ListViewSelectionMode.Multiple || SelectionMode == ListViewSelectionMode.Extended;
 		private bool _modifyingSelectionInternally;
+
+		// The automation peer falls back to this for its name when AutomationProperties.Name isn't set (WinUI's
+		// ListViewBase::GetPlainText returns the Header).
+		internal override string GetPlainText()
+		{
+			if (Header is not null)
+			{
+				var plainText = GetStringFromObject(Header);
+				if (!string.IsNullOrEmpty(plainText))
+				{
+					return plainText;
+				}
+			}
+
+			return string.Empty;
+		}
 		private readonly List<object> _oldSelectedItems = new List<object>();
 
 		/// <summary>
