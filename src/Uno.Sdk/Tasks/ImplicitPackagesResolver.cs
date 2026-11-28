@@ -391,7 +391,7 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			&& !IsAvailable(version, availableSince))
 		{
 			Log.LogMessage(subcategory: null,
-				code: "UNOB0028",
+				code: "UNOB0037",
 				helpKeyword: null,
 				file: null,
 				lineNumber: 0,

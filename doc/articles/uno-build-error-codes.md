@@ -313,14 +313,7 @@ If your project is an executable that merely links `Uno.WinUI` as a library — 
 
 <a name="unob0028"></a>
 
-### UNOB0028: The UnoSplashScreenColor property is no longer supported, or an optional implicit package was skipped
-
-This code is reported for two unrelated causes. The text of the diagnostic tells which one applies:
-
-- A warning that the `UnoSplashScreenColor` property is no longer supported: see [The UnoSplashScreenColor property is no longer supported](#unob0028-the-unosplashscreencolor-property-is-no-longer-supported).
-- A build message, shown at `normal` verbosity or higher, that the implicit reference to a package was skipped: see [An optional implicit package was skipped](#unob0028-an-optional-implicit-package-was-skipped).
-
-#### UNOB0028: The UnoSplashScreenColor property is no longer supported
+### UNOB0028: The UnoSplashScreenColor property is no longer supported
 
 Uno Platform 7.0 removed the `UnoSplashScreenColor` property. The Uno.SDK ignores it, so the splash screen background falls back to its default (`#FFFFFF`, or the browser theme on WebAssembly). Rename it:
 
@@ -331,17 +324,6 @@ Uno Platform 7.0 removed the `UnoSplashScreenColor` property. The Uno.SDK ignore
 ```
 
 The same applies to `UnoSplashScreen` items declared by hand: use `BackgroundColor="#FFFFFF"` instead of `Color="#FFFFFF"`. See [Splash screen](xref:Uno.Development.SplashScreen) for the related `UnoSplashScreenDarkBackgroundColor` and `UnoSplashScreenDarkFile` properties.
-
-#### UNOB0028: An optional implicit package was skipped
-
-Some packages the Uno.Sdk adds implicitly are optional and only exist from a given version of their package group. `Uno.HotTesting.Reactive`, added for the `MVUX` feature in non-optimized builds, first ships with the 7.4 builds of Uno.Extensions. This message means the Uno.Extensions version resolved for your project is older than that, is a floating version or a range, or is missing from the Uno.Sdk package manifest, so the package was left out instead of being restored at a mismatched version.
-
-The rest of the build is unaffected. If you need the package:
-
-- Use an `UnoExtensionsVersion` of 7.4 or later, as an exact version, or
-- Reference the package explicitly with a version that matches your Uno.Extensions packages.
-
-To stop the Uno.Sdk from adding it at all, set `UnoDisableHotTesting` to `true`.
 
 ### UNOB0030: The SkiaRenderer Uno Feature is ignored in a library
 
@@ -412,6 +394,17 @@ The `MauiEmbedding` Uno Feature used to select the native embedding of MAUI cont
 - the target framework is Android, iOS, Mac Catalyst or Windows App SDK. `Uno.Maui.Embedding` embeds MAUI views on the desktop and WebAssembly targets only, while the native embedding also ran on these targets. Apps created from a template that lists `MauiEmbedding` for all targets get the warning on these targets.
 
 To fix this, if the project relies on the native embedding of Uno.Extensions, replace `MauiEmbedding` with `MauiNativeEmbedding` in `UnoFeatures`. If it intends to use `Uno.Maui.Embedding`, remove the `Uno.Extensions.Maui` package references. On the Android, iOS, Mac Catalyst and Windows App SDK targets, an app that keeps these targets but does not need MAUI views on them can add `UNOB0036` to `NoWarn`.
+
+### UNOB0037: An optional implicit package was skipped
+
+Some packages the Uno.Sdk adds implicitly are optional and only exist from a given version of their package group. `Uno.HotTesting.Reactive`, added for the `MVUX` feature in non-optimized builds, first ships with the 7.4 builds of Uno.Extensions. This message means the Uno.Extensions version resolved for your project is older than that, is a floating version or a range, or is missing from the Uno.Sdk package manifest, so the package was left out instead of being restored at a mismatched version.
+
+The rest of the build is unaffected. If you need the package:
+
+- Use an `UnoExtensionsVersion` of 7.4 or later, as an exact version, or
+- Reference the package explicitly with a version that matches your Uno.Extensions packages.
+
+To stop the Uno.Sdk from adding it at all, set `UnoDisableHotTesting` to `true`.
 
 ## Compiler Errors
 
