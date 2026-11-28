@@ -7,8 +7,8 @@ namespace Windows.Media.SpeechRecognition;
 #endif
 public partial class SpeechRecognizer : global::System.IDisposable
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 	public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Globalization.Language> SupportedGrammarLanguages
 	{
 		get
@@ -17,8 +17,8 @@ public partial class SpeechRecognizer : global::System.IDisposable
 		}
 	}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 	public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Globalization.Language> SupportedTopicLanguages
 	{
 		get
@@ -27,8 +27,8 @@ public partial class SpeechRecognizer : global::System.IDisposable
 		}
 	}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 	public static global::Windows.Globalization.Language SystemSpeechLanguage
 	{
 		get
@@ -37,8 +37,8 @@ public partial class SpeechRecognizer : global::System.IDisposable
 		}
 	}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 	public global::System.Collections.Generic.IList<global::Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint> Constraints
 	{
 		get
@@ -47,8 +47,8 @@ public partial class SpeechRecognizer : global::System.IDisposable
 		}
 	}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Media.SpeechRecognition.SpeechContinuousRecognitionSession ContinuousRecognitionSession
 	{
 		get
@@ -113,8 +113,8 @@ public partial class SpeechRecognizer : global::System.IDisposable
 	}
 #endif
 	// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SpeechRecognizer(Windows.Globalization.Language)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 	public static global::Windows.Foundation.IAsyncOperation<bool> TrySetSystemSpeechLanguageAsync(global::Windows.Globalization.Language speechLanguage)
 	{
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Media.SpeechRecognition.SpeechRecognizer", "TrySetSystemSpeechLanguageAsync(Language speechLanguage)");
@@ -170,16 +170,16 @@ public partial class SpeechRecognizer : global::System.IDisposable
 	// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.State.get
 	// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.Timeouts.get
 	// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.UIOptions.get
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 	public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.SpeechRecognition.SpeechRecognizer, global::Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs> RecognitionQualityDegrading
 	{
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 		add
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "event RecognitionQualityDegrading");
 		}
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 		remove
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "event RecognitionQualityDegrading");

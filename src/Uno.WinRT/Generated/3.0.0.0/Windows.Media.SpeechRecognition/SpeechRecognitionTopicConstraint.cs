@@ -2,13 +2,13 @@
 #pragma warning disable 108, 114 // new keyword hiding
 namespace Windows.Media.SpeechRecognition;
 
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-[global::Uno.NotImplemented]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 public partial class SpeechRecognitionTopicConstraint : global::Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 	public bool IsEnabled
 	{
 		get
@@ -21,8 +21,8 @@ public partial class SpeechRecognitionTopicConstraint : global::Windows.Media.Sp
 		}
 	}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Media.SpeechRecognition.SpeechRecognitionConstraintProbability Probability
 	{
 		get
@@ -35,8 +35,8 @@ public partial class SpeechRecognitionTopicConstraint : global::Windows.Media.Sp
 		}
 	}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Media.SpeechRecognition.SpeechRecognitionScenario Scenario
 	{
 		get
@@ -45,8 +45,8 @@ public partial class SpeechRecognitionTopicConstraint : global::Windows.Media.Sp
 		}
 	}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 	public string Tag
 	{
 		get
@@ -59,8 +59,8 @@ public partial class SpeechRecognitionTopicConstraint : global::Windows.Media.Sp
 		}
 	}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 	public string TopicHint
 	{
 		get
@@ -69,8 +69,8 @@ public partial class SpeechRecognitionTopicConstraint : global::Windows.Media.Sp
 		}
 	}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Media.SpeechRecognition.SpeechRecognitionConstraintType Type
 	{
 		get
@@ -79,16 +79,16 @@ public partial class SpeechRecognitionTopicConstraint : global::Windows.Media.Sp
 		}
 	}
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 	public SpeechRecognitionTopicConstraint(global::Windows.Media.SpeechRecognition.SpeechRecognitionScenario scenario, string topicHint)
 	{
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "SpeechRecognitionTopicConstraint(SpeechRecognitionScenario scenario, string topicHint)");
 	}
 #endif
 	// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.SpeechRecognitionTopicConstraint(Windows.Media.SpeechRecognition.SpeechRecognitionScenario, string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
 	public SpeechRecognitionTopicConstraint(global::Windows.Media.SpeechRecognition.SpeechRecognitionScenario scenario, string topicHint, string tag)
 	{
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "SpeechRecognitionTopicConstraint(SpeechRecognitionScenario scenario, string topicHint, string tag)");

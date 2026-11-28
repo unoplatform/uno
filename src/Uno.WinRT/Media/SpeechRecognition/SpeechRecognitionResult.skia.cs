@@ -14,6 +14,8 @@ public partial class SpeechRecognitionResult
 
 	public TimeSpan PhraseDuration { get; internal set; }
 
+	public ISpeechRecognitionConstraint? Constraint { get; internal set; }
+
 	// WinRT doesn't define the RawConfidence ranges of each level.
 	internal static SpeechRecognitionConfidence GetConfidence(double rawConfidence)
 		=> rawConfidence switch

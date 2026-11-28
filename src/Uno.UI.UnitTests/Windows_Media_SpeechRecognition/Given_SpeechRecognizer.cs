@@ -327,6 +327,83 @@ public class Given_SpeechRecognizer
 	}
 
 	[TestMethod]
+	public async Task When_List_Constraint_Then_Matching_Command_Is_Returned()
+	{
+		var answers = new SpeechRecognitionListConstraint(new[] { "yes", "no", "maybe later" }, "answers");
+		_sut.Constraints.Add(answers);
+
+		Assert.AreEqual(SpeechRecognitionResultStatus.Success, (await _sut.CompileConstraintsAsync().AsTask()).Status);
+		var recognition = _sut.RecognizeAsync().AsTask();
+		_engine.RaiseSpeechDetected();
+		_engine.Complete("Mabel later", "Maybe later.");
+
+		var result = await recognition;
+
+		Assert.AreEqual(SpeechTaskHint.Unspecified, _engine.LastOptions!.TaskHint);
+		CollectionAssert.AreEqual(new[] { "yes", "no", "maybe later" }, _engine.LastOptions.ContextualStrings.ToArray());
+		Assert.AreEqual("maybe later", result.Text);
+		Assert.AreSame(answers, result.Constraint);
+		Assert.AreEqual(SpeechRecognitionConfidence.High, result.Confidence);
+		Assert.AreEqual(1, result.GetAlternates(5).Count);
+	}
+
+	[TestMethod]
+	public async Task When_List_Constraint_Not_Matched_Then_Rejected()
+	{
+		_sut.Constraints.Add(new SpeechRecognitionListConstraint(new[] { "yes", "no" }));
+		var recognition = _sut.RecognizeAsync().AsTask();
+		_engine.RaiseSpeechDetected();
+		_engine.Complete("Something else");
+
+		var result = await recognition;
+
+		Assert.AreEqual(SpeechRecognitionResultStatus.Success, result.Status);
+		Assert.AreEqual(SpeechRecognitionConfidence.Rejected, result.Confidence);
+		Assert.AreEqual(string.Empty, result.Text);
+	}
+
+	[TestMethod]
+	public async Task When_List_Constraint_Disabled_Then_Dictation_Is_Used()
+	{
+		_sut.Constraints.Add(new SpeechRecognitionListConstraint(new[] { "yes", "no" }) { IsEnabled = false });
+		var recognition = _sut.RecognizeAsync().AsTask();
+		_engine.RaiseSpeechDetected();
+		_engine.Complete("Something else");
+
+		Assert.AreEqual(SpeechTaskHint.Dictation, _engine.LastOptions!.TaskHint);
+		Assert.AreEqual("Something else", (await recognition).Text);
+	}
+
+	[TestMethod]
+	[DataRow(SpeechRecognitionScenario.Dictation, (int)SpeechTaskHint.Dictation)]
+	[DataRow(SpeechRecognitionScenario.WebSearch, (int)SpeechTaskHint.Search)]
+	[DataRow(SpeechRecognitionScenario.FormFilling, (int)SpeechTaskHint.Unspecified)]
+	public async Task When_Topic_Constraint_Then_Task_Hint_Matches(SpeechRecognitionScenario scenario, int expectedHint)
+	{
+		var topic = new SpeechRecognitionTopicConstraint(scenario, "hint");
+		_sut.Constraints.Add(topic);
+		var recognition = _sut.RecognizeAsync().AsTask();
+		_engine.RaiseSpeechDetected();
+		_engine.Complete("Weather in Prague");
+
+		var result = await recognition;
+
+		Assert.AreEqual((SpeechTaskHint)expectedHint, _engine.LastOptions!.TaskHint);
+		Assert.AreSame(topic, result.Constraint);
+		Assert.AreEqual(SpeechRecognitionConstraintType.Topic, topic.Type);
+	}
+
+	[TestMethod]
+	public async Task When_Unsupported_Constraint_Then_GrammarCompilationFailure()
+	{
+		_sut.Constraints.Add(new UnsupportedConstraint());
+
+		Assert.AreEqual(SpeechRecognitionResultStatus.GrammarCompilationFailure, (await _sut.CompileConstraintsAsync().AsTask()).Status);
+		Assert.AreEqual(SpeechRecognitionResultStatus.GrammarCompilationFailure, (await _sut.RecognizeAsync().AsTask()).Status);
+		Assert.IsFalse(_engine.Calls.Contains("Begin"));
+	}
+
+	[TestMethod]
 	public async Task When_Timeout_Elapses_On_Another_Thread_Then_Events_Use_The_Starting_Context()
 	{
 		var context = new QueuedSynchronizationContext();
@@ -358,6 +435,356 @@ public class Given_SpeechRecognizer
 		Assert.AreEqual(SpeechRecognitionResultStatus.TimeoutExceeded, (await recognition).Status);
 	}
 
+	[TestMethod]
+	public void When_Language_Tags_Then_Invalid_Tags_Are_Skipped()
+	{
+		var languages = SpeechRecognizer.GetSupportedLanguages(new[] { "en-US", "not a language!", "fr-FR" });
+
+		CollectionAssert.AreEqual(new[] { "en-US", "fr-FR" }, languages.Select(language => language.LanguageTag).ToArray());
+	}
+
+	[TestMethod]
+	public void When_No_System_Speech_Language_Then_Falls_Back_To_UI_Culture()
+	{
+		Assert.AreEqual("fr-FR", SpeechRecognizer.GetSystemSpeechLanguage("fr-FR").LanguageTag);
+		Assert.IsFalse(string.IsNullOrEmpty(SpeechRecognizer.GetSystemSpeechLanguage(null).LanguageTag));
+	}
+
+	[TestMethod]
+	public async Task When_Setting_System_Speech_Language_Then_Not_Supported()
+		=> Assert.IsFalse(await SpeechRecognizer.TrySetSystemSpeechLanguageAsync(new Language("fr-FR")).AsTask());
+
+	[TestMethod]
+	public async Task When_Continuous_Then_Each_Phrase_Raises_ResultGenerated()
+	{
+		var session = _sut.ContinuousRecognitionSession;
+		var results = new List<string>();
+		var completions = new List<SpeechRecognitionResultStatus>();
+		session.ResultGenerated += (_, args) => results.Add(args.Result.Text);
+		session.Completed += (_, args) => completions.Add(args.Status);
+
+		await session.StartAsync().AsTask();
+		Assert.AreEqual(SpeechRecognizerState.Capturing, _sut.State);
+
+		SpeakAndPause("first");
+		Assert.AreEqual(SpeechRecognizerState.SoundEnded, _sut.State);
+		_engine.Complete("First phrase");
+		CollectionAssert.AreEqual(new[] { "Begin", "End", "Begin" }, _engine.Calls);
+		Assert.AreEqual(SpeechRecognizerState.Capturing, _sut.State);
+
+		SpeakAndPause("second");
+		_engine.Complete("Second phrase");
+
+		CollectionAssert.AreEqual(new[] { "First phrase", "Second phrase" }, results);
+		Assert.AreEqual(0, completions.Count);
+		Assert.IsFalse(_engine.Calls.Contains("StopAudio"));
+		Assert.IsFalse(_states.Contains(SpeechRecognizerState.Processing));
+
+		var stop = session.StopAsync().AsTask();
+		Assert.AreEqual("Cancel", _engine.Calls.Last());
+		_engine.CompleteCanceled();
+		await stop;
+
+		CollectionAssert.AreEqual(new[] { SpeechRecognitionResultStatus.Success }, completions);
+		Assert.AreEqual(SpeechRecognizerState.Idle, _sut.State);
+		Assert.AreEqual("StopAudio", _engine.Calls.Last());
+	}
+
+	[TestMethod]
+	public async Task When_Continuous_Stopped_During_Phrase_Then_Phrase_Is_Delivered()
+	{
+		var session = _sut.ContinuousRecognitionSession;
+		var results = new List<string>();
+		session.ResultGenerated += (_, args) => results.Add(args.Result.Text);
+		await session.StartAsync().AsTask();
+		_engine.RaiseSpeechDetected();
+
+		var stop = session.StopAsync().AsTask();
+		Assert.AreEqual("End", _engine.Calls.Last());
+		Assert.AreEqual(SpeechRecognizerState.Processing, _sut.State);
+
+		_engine.Complete("Last words");
+		await stop;
+
+		CollectionAssert.AreEqual(new[] { "Last words" }, results);
+		Assert.AreEqual(SpeechRecognizerState.Idle, _sut.State);
+	}
+
+	[TestMethod]
+	public async Task When_Continuous_Canceled_Then_Pending_Phrase_Is_Discarded()
+	{
+		var session = _sut.ContinuousRecognitionSession;
+		var results = new List<string>();
+		var completions = new List<SpeechRecognitionResultStatus>();
+		session.ResultGenerated += (_, args) => results.Add(args.Result.Text);
+		session.Completed += (_, args) => completions.Add(args.Status);
+		await session.StartAsync().AsTask();
+		_engine.RaiseSpeechDetected();
+
+		var cancel = session.CancelAsync().AsTask();
+		Assert.AreEqual("Cancel", _engine.Calls.Last());
+		_engine.CompleteCanceled();
+		await cancel;
+
+		Assert.AreEqual(0, results.Count);
+		CollectionAssert.AreEqual(new[] { SpeechRecognitionResultStatus.UserCanceled }, completions);
+	}
+
+	[TestMethod]
+	public async Task When_Continuous_Then_Speech_Postpones_AutoStop_Instead_Of_Initial_Silence()
+	{
+		var session = _sut.ContinuousRecognitionSession;
+		Assert.AreEqual(TimeSpan.FromSeconds(20), session.AutoStopSilenceTimeout);
+		session.AutoStopSilenceTimeout = TimeSpan.FromSeconds(10);
+		await session.StartAsync().AsTask();
+
+		_time.Advance(TimeSpan.FromSeconds(6));
+		Assert.IsFalse(_engine.Calls.Contains("Cancel"), "The initial silence timeout doesn't apply to continuous recognition.");
+
+		var completions = new List<SpeechRecognitionResultStatus>();
+		session.Completed += (_, args) => completions.Add(args.Status);
+		_engine.RaiseHypothesis("still here");
+		_time.Advance(TimeSpan.FromSeconds(0.15));
+		Assert.AreEqual("End", _engine.Calls.Last());
+		_engine.Complete("Still here");
+
+		_time.Advance(TimeSpan.FromSeconds(9.75));
+		Assert.IsFalse(_engine.Calls.Contains("Cancel"));
+
+		_time.Advance(TimeSpan.FromSeconds(0.1));
+		Assert.AreEqual("Cancel", _engine.Calls.Last());
+		_engine.CompleteCanceled();
+
+		CollectionAssert.AreEqual(new[] { SpeechRecognitionResultStatus.TimeoutExceeded }, completions);
+	}
+
+	[TestMethod]
+	public async Task When_Continuous_Silent_Then_Session_Stops()
+	{
+		var session = _sut.ContinuousRecognitionSession;
+		var completions = new List<SpeechRecognitionResultStatus>();
+		session.Completed += (_, args) => completions.Add(args.Status);
+		session.AutoStopSilenceTimeout = TimeSpan.FromSeconds(2);
+		await session.StartAsync().AsTask();
+
+		_time.Advance(TimeSpan.FromSeconds(2));
+		Assert.AreEqual("Cancel", _engine.Calls.Last());
+		_engine.CompleteCanceled();
+
+		CollectionAssert.AreEqual(new[] { SpeechRecognitionResultStatus.TimeoutExceeded }, completions);
+		Assert.AreEqual(SpeechRecognizerState.Idle, _sut.State);
+	}
+
+	[TestMethod]
+	public async Task When_Continuous_Paused_Then_Resume_Starts_New_Phrase()
+	{
+		var session = _sut.ContinuousRecognitionSession;
+		var results = new List<string>();
+		session.ResultGenerated += (_, args) => results.Add(args.Result.Text);
+		await session.StartAsync().AsTask();
+		_engine.RaiseSpeechDetected();
+
+		var pause = session.PauseAsync().AsTask();
+		Assert.AreEqual("End", _engine.Calls.Last());
+		_engine.Complete("Before pause");
+		await pause;
+
+		Assert.AreEqual(SpeechRecognizerState.Paused, _sut.State);
+		CollectionAssert.AreEqual(new[] { "Before pause" }, results);
+		Assert.IsFalse(_engine.Calls.Contains("StopAudio"), "Audio keeps being captured while paused.");
+
+		_sut.Constraints.Add(new SpeechRecognitionListConstraint(new[] { "next" }));
+		session.Resume();
+
+		Assert.AreEqual(SpeechRecognizerState.Capturing, _sut.State);
+		Assert.AreEqual("Begin", _engine.Calls.Last());
+		CollectionAssert.AreEqual(new[] { "next" }, _engine.LastOptions!.ContextualStrings.ToArray());
+	}
+
+	[TestMethod]
+	public async Task When_PauseOnRecognition_Then_Pauses_After_Each_Phrase()
+	{
+		var session = _sut.ContinuousRecognitionSession;
+		await session.StartAsync(SpeechContinuousRecognitionMode.PauseOnRecognition).AsTask();
+
+		SpeakAndPause("phrase");
+		_engine.Complete("Phrase");
+
+		Assert.AreEqual(SpeechRecognizerState.Paused, _sut.State);
+		Assert.AreEqual(1, _engine.Calls.Count(call => call == "Begin"));
+	}
+
+	[TestMethod]
+	public async Task When_Continuous_Engine_Fails_Then_Completed_With_Status()
+	{
+		var session = _sut.ContinuousRecognitionSession;
+		var completions = new List<SpeechRecognitionResultStatus>();
+		session.Completed += (_, args) => completions.Add(args.Status);
+		await session.StartAsync().AsTask();
+
+		_engine.CompleteError(SpeechRecognitionResultStatus.MicrophoneUnavailable);
+
+		CollectionAssert.AreEqual(new[] { SpeechRecognitionResultStatus.MicrophoneUnavailable }, completions);
+		Assert.AreEqual(SpeechRecognizerState.Idle, _sut.State);
+	}
+
+	[TestMethod]
+	public async Task When_Continuous_Running_Then_RecognizeAsync_Throws()
+	{
+		await _sut.ContinuousRecognitionSession.StartAsync().AsTask();
+
+		await Assert.ThrowsExactlyAsync<InvalidOperationException>(() => _sut.RecognizeAsync().AsTask());
+	}
+
+	[TestMethod]
+	public async Task When_Audio_Clips_Then_TooLoud_Is_Reported_Once()
+	{
+		var problems = new List<SpeechRecognitionAudioProblem>();
+		_sut.RecognitionQualityDegrading += (_, args) => problems.Add(args.Problem);
+		var recognition = _sut.RecognizeAsync().AsTask();
+
+		for (var i = 0; i < 6; i++)
+		{
+			_engine.RaiseAudioLevel(-3f, peakDecibels: 0f);
+		}
+
+		CollectionAssert.AreEqual(new[] { SpeechRecognitionAudioProblem.TooLoud }, problems);
+		_engine.CompleteCanceled();
+		await recognition;
+	}
+
+	[TestMethod]
+	public async Task When_Microphone_Silent_Then_NoSignal_Is_Reported()
+	{
+		var problems = new List<SpeechRecognitionAudioProblem>();
+		_sut.RecognitionQualityDegrading += (_, args) => problems.Add(args.Problem);
+		var recognition = _sut.RecognizeAsync().AsTask();
+
+		for (var i = 0; i < 20; i++)
+		{
+			_engine.RaiseAudioLevel(-160f, peakDecibels: -160f);
+		}
+
+		CollectionAssert.AreEqual(new[] { SpeechRecognitionAudioProblem.NoSignal }, problems);
+		_engine.CompleteCanceled();
+		await recognition;
+	}
+
+	[TestMethod]
+	public async Task When_Speech_Is_Faint_Then_TooQuiet_Is_Reported()
+	{
+		var problems = new List<SpeechRecognitionAudioProblem>();
+		_sut.RecognitionQualityDegrading += (_, args) => problems.Add(args.Problem);
+		var recognition = _sut.RecognizeAsync().AsTask();
+
+		_engine.RaiseAudioLevel(-58f, peakDecibels: -50f);
+		_engine.RaiseSpeechDetected();
+		Assert.AreEqual(0, problems.Count);
+
+		_time.Advance(TimeSpan.FromMilliseconds(150));
+		CollectionAssert.AreEqual(new[] { SpeechRecognitionAudioProblem.TooQuiet }, problems);
+		_engine.CompleteCanceled();
+		await recognition;
+	}
+
+	[TestMethod]
+	public async Task When_Speech_Detected_At_Onset_Then_TooQuiet_Is_Not_Reported()
+	{
+		var problems = new List<SpeechRecognitionAudioProblem>();
+		_sut.RecognitionQualityDegrading += (_, args) => problems.Add(args.Problem);
+		var recognition = _sut.RecognizeAsync().AsTask();
+
+		_engine.RaiseAudioLevel(-58f, peakDecibels: -50f);
+		_engine.RaiseSpeechDetected();
+		_engine.RaiseAudioLevel(-25f, peakDecibels: -12f);
+		_time.Advance(TimeSpan.FromMilliseconds(150));
+
+		Assert.AreEqual("End", _engine.Calls.Last());
+		Assert.AreEqual(0, problems.Count);
+		_engine.Complete("Hello");
+		await recognition;
+	}
+
+	[TestMethod]
+	public async Task When_Background_Is_Loud_Then_TooNoisy_Is_Reported()
+	{
+		var problems = new List<SpeechRecognitionAudioProblem>();
+		_sut.RecognitionQualityDegrading += (_, args) => problems.Add(args.Problem);
+		var recognition = _sut.RecognizeAsync().AsTask();
+
+		for (var i = 0; i < 12; i++)
+		{
+			_engine.RaiseAudioLevel(-25f, peakDecibels: -15f);
+		}
+
+		CollectionAssert.AreEqual(new[] { SpeechRecognitionAudioProblem.TooNoisy }, problems);
+		_engine.CompleteCanceled();
+		await recognition;
+	}
+
+	[TestMethod]
+	[DataRow(false, SpeechRecognitionResultStatus.Success)]
+	[DataRow(true, SpeechRecognitionResultStatus.UserCanceled)]
+	public async Task When_Continuous_Stopped_During_Permission_Prompt_Then_Recognition_Does_Not_Start(bool cancel, SpeechRecognitionResultStatus expected)
+	{
+		var authorization = new TaskCompletionSource<SpeechRecognizerAuthorization>();
+		_engine.PendingAuthorization = authorization;
+		var session = _sut.ContinuousRecognitionSession;
+		var completions = new List<SpeechRecognitionResultStatus>();
+		session.Completed += (_, args) => completions.Add(args.Status);
+		var start = session.StartAsync().AsTask();
+
+		await (cancel ? session.CancelAsync() : session.StopAsync()).AsTask();
+		authorization.SetResult(SpeechRecognizerAuthorization.Authorized);
+		await start;
+
+		CollectionAssert.AreEqual(new[] { expected }, completions);
+		Assert.IsFalse(_engine.Calls.Contains("Begin"));
+		Assert.AreEqual(SpeechRecognizerState.Idle, _sut.State);
+
+		await session.StartAsync().AsTask();
+		Assert.AreEqual("Begin", _engine.Calls.Last(), "A new session can start after the stopped one.");
+	}
+
+	[TestMethod]
+	public async Task When_Continuous_Paused_During_Permission_Prompt_Then_Stays_Paused()
+	{
+		var authorization = new TaskCompletionSource<SpeechRecognizerAuthorization>();
+		_engine.PendingAuthorization = authorization;
+		var session = _sut.ContinuousRecognitionSession;
+		var start = session.StartAsync().AsTask();
+
+		await session.PauseAsync().AsTask();
+		authorization.SetResult(SpeechRecognizerAuthorization.Authorized);
+		await start;
+
+		Assert.AreEqual(SpeechRecognizerState.Paused, _sut.State);
+		Assert.IsFalse(_engine.Calls.Contains("Begin"));
+
+		session.Resume();
+		Assert.AreEqual("Begin", _engine.Calls.Last());
+		Assert.AreEqual(SpeechRecognizerState.Capturing, _sut.State);
+	}
+
+	[TestMethod]
+	public async Task When_Continuous_Resumed_During_Permission_Prompt_Then_Starts_Once_Allowed()
+	{
+		var authorization = new TaskCompletionSource<SpeechRecognizerAuthorization>();
+		_engine.PendingAuthorization = authorization;
+		var session = _sut.ContinuousRecognitionSession;
+		var start = session.StartAsync().AsTask();
+
+		await session.PauseAsync().AsTask();
+		session.Resume();
+		Assert.IsFalse(_engine.Calls.Contains("Begin"), "Recognition can't start before permission is granted.");
+
+		authorization.SetResult(SpeechRecognizerAuthorization.Authorized);
+		await start;
+
+		Assert.AreEqual(1, _engine.Calls.Count(call => call == "Begin"));
+		Assert.AreEqual(SpeechRecognizerState.Capturing, _sut.State);
+	}
+
 	private void CreateRecognizer(bool languageSupported = true)
 	{
 		_engine = new FakeSpeechRecognizerExtension { IsLanguageSupported = languageSupported };
@@ -381,6 +808,17 @@ public class Given_SpeechRecognizer
 			_engine.RaiseAudioLevel(FakeSpeechRecognizerExtension.QuietDecibels);
 		}
 	}
+}
+
+internal sealed class UnsupportedConstraint : ISpeechRecognitionConstraint
+{
+	public bool IsEnabled { get; set; } = true;
+
+	public SpeechRecognitionConstraintProbability Probability { get; set; }
+
+	public string Tag { get; set; } = string.Empty;
+
+	public SpeechRecognitionConstraintType Type => SpeechRecognitionConstraintType.Grammar;
 }
 
 internal sealed class FakeSpeechRecognizerExtension : ISpeechRecognizerExtension

@@ -12,7 +12,7 @@ using Private.Infrastructure;
 namespace UITests.Windows_Media
 {
 	[Sample("Windows.Media", Name = "SpeechRecognizer", ViewModelType = typeof(SpeechRecognizerTestsViewModel), IsManualTest = true,
-		Description = "Speak after pressing Recognize. On macOS, run the SamplesApp.app bundle so the permission prompts can be shown.")]
+		Description = "Speak after pressing Recognize or Start continuous. On macOS, run the SamplesApp.app bundle so the permission prompts can be shown.")]
 	public sealed partial class SpeechRecognizerTests : Page
 	{
 		public SpeechRecognizerTests()
@@ -32,12 +32,15 @@ namespace UITests.Windows_Media
 	internal class SpeechRecognizerTestsViewModel : ViewModelBase
 	{
 		private readonly SpeechRecognizer _speechRecognizer = new SpeechRecognizer(new Windows.Globalization.Language("en-US"));
+		private readonly SpeechRecognitionListConstraint _answers = new SpeechRecognitionListConstraint(new[] { "yes", "no", "maybe later" }, "answers");
 
 		private string _state = "";
 		private string _hypothesis = "";
 		private string _lastResult = "";
 		private string _lastResultDetails = "";
+		private string _languages = "";
 		private string _log = "";
+		private bool _useListConstraint;
 
 		public SpeechRecognizerTestsViewModel(UnitTestDispatcherCompat dispatcher)
 			: base(dispatcher)
@@ -50,11 +53,45 @@ namespace UITests.Windows_Media
 				_speechRecognizer.StateChanged -= OnStateChanged;
 				_speechRecognizer.Dispose();
 			});
+
+			// Not implemented on every platform; the recognizer owns these and is disposed with this view model.
+			Run(() =>
+			{
+				_speechRecognizer.RecognitionQualityDegrading += OnRecognitionQualityDegrading;
+				_speechRecognizer.ContinuousRecognitionSession.ResultGenerated += OnContinuousResultGenerated;
+				_speechRecognizer.ContinuousRecognitionSession.Completed += OnContinuousCompleted;
+			});
+
+			Run(() =>
+			{
+				var languages = SpeechRecognizer.SupportedTopicLanguages;
+				Languages = $"System speech language: {SpeechRecognizer.SystemSpeechLanguage.LanguageTag}, {languages.Count} supported languages";
+			});
 		}
 
 		public ICommand RecognizeCommand => GetOrCreateCommand(Recognize);
 
 		public ICommand StopCommand => GetOrCreateCommand(() => Run(async () => await _speechRecognizer.StopRecognitionAsync()));
+
+		public ICommand StartContinuousCommand => GetOrCreateCommand(StartContinuous);
+
+		public ICommand PauseContinuousCommand => GetOrCreateCommand(() => Run(async () => await _speechRecognizer.ContinuousRecognitionSession.PauseAsync()));
+
+		public ICommand ResumeContinuousCommand => GetOrCreateCommand(() => Run(() => _speechRecognizer.ContinuousRecognitionSession.Resume()));
+
+		public ICommand StopContinuousCommand => GetOrCreateCommand(() => Run(async () => await _speechRecognizer.ContinuousRecognitionSession.StopAsync()));
+
+		public ICommand CancelContinuousCommand => GetOrCreateCommand(() => Run(async () => await _speechRecognizer.ContinuousRecognitionSession.CancelAsync()));
+
+		public bool UseListConstraint
+		{
+			get => _useListConstraint;
+			set
+			{
+				_useListConstraint = value;
+				RaisePropertyChanged();
+			}
+		}
 
 		public string State
 		{
@@ -96,6 +133,16 @@ namespace UITests.Windows_Media
 			}
 		}
 
+		public string Languages
+		{
+			get => _languages;
+			set
+			{
+				_languages = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public string Log
 		{
 			get => _log;
@@ -108,17 +155,34 @@ namespace UITests.Windows_Media
 
 		private void Recognize() => Run(async () =>
 		{
-			var compilation = await _speechRecognizer.CompileConstraintsAsync();
-			AppendLog($"Constraints compiled: {compilation.Status}");
+			await CompileConstraintsAsync();
 			ShowResult(await _speechRecognizer.RecognizeAsync());
 		});
+
+		private void StartContinuous() => Run(async () =>
+		{
+			await CompileConstraintsAsync();
+			await _speechRecognizer.ContinuousRecognitionSession.StartAsync();
+		});
+
+		private async System.Threading.Tasks.Task CompileConstraintsAsync()
+		{
+			_speechRecognizer.Constraints.Clear();
+			if (UseListConstraint)
+			{
+				_speechRecognizer.Constraints.Add(_answers);
+			}
+
+			var compilation = await _speechRecognizer.CompileConstraintsAsync();
+			AppendLog($"Constraints compiled: {compilation.Status}");
+		}
 
 		private void ShowResult(SpeechRecognitionResult result)
 		{
 			LastResult = result.Text;
 			var alternates = string.Join(" | ", (result.GetAlternates(5) ?? Array.Empty<SpeechRecognitionResult>()).Skip(1).Select(alternate => alternate.Text));
 			LastResultDetails = $"Status: {result.Status}, Confidence: {result.Confidence} ({result.RawConfidence:0.00}), " +
-				$"Phrase: {result.PhraseStartTime:T} for {result.PhraseDuration.TotalSeconds:0.0}s" +
+				$"Constraint: {result.Constraint?.Tag ?? "(dictation)"}, Phrase: {result.PhraseStartTime:T} for {result.PhraseDuration.TotalSeconds:0.0}s" +
 				(alternates.Length > 0 ? $", Alternates: {alternates}" : "");
 		}
 
@@ -131,6 +195,19 @@ namespace UITests.Windows_Media
 				State = $"State: {args.State}";
 				AppendLog(args.State.ToString());
 			});
+
+		private void OnRecognitionQualityDegrading(SpeechRecognizer sender, SpeechRecognitionQualityDegradingEventArgs args)
+			=> OnUIThread(() => AppendLog($"Audio problem: {args.Problem}"));
+
+		private void OnContinuousResultGenerated(SpeechContinuousRecognitionSession sender, SpeechContinuousRecognitionResultGeneratedEventArgs args)
+			=> OnUIThread(() =>
+			{
+				ShowResult(args.Result);
+				AppendLog($"Result: {args.Result.Text}");
+			});
+
+		private void OnContinuousCompleted(SpeechContinuousRecognitionSession sender, SpeechContinuousRecognitionCompletedEventArgs args)
+			=> OnUIThread(() => AppendLog($"Continuous session completed: {args.Status}"));
 
 		private void AppendLog(string message) => Log = message + Environment.NewLine + Log;
 
@@ -145,6 +222,12 @@ namespace UITests.Windows_Media
 				AppendLog($"{ex.GetType().Name}: {ex.Message}");
 			}
 		}
+
+		private void Run(Action action) => Run(() =>
+		{
+			action();
+			return System.Threading.Tasks.Task.CompletedTask;
+		});
 
 		private async void OnUIThread(Action action)
 			=> await Dispatcher.RunAsync(UnitTestDispatcherCompat.Priority.Normal, () => action());

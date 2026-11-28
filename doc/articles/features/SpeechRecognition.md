@@ -19,23 +19,23 @@ The following features of `Windows.Media.SpeechRecognition.SpeechRecognizer` are
 |--------------------------------------------|-----|---------|--------------|-------------|-------------------------------|
 | SpeechRecognizer()                         | X   | X       | X            | X           |                               |
 | SpeechRecognizer(Language)                 | X   | X       | X            | X           |                               |
-| Constraints                                | -   | -       | -            | -           |                               |
-| ContinuousRecognitionSession               | -   | -       | -            | -           |                               |
+| Constraints                                | -   | -       | X            | -           | macOS: list and topic constraints, see [macOS behavior](#macos-behavior) |
+| ContinuousRecognitionSession               | -   | -       | X            | -           |                               |
 | CurrentLanguage                            | X   | X       | X            | X           |                               |
 | State                                      | X   | X       | X            | X           |                               |
-| SupportedGrammarLanguages                  | -   | -       | -            | -           |                               |
-| SupportedTopicLanguages                    | -   | -       | -            | -           |                               |
-| SystemSpeechLanguage                       | -   | -       | -            | -           |                               |
+| SupportedGrammarLanguages                  | -   | -       | X            | -           |                               |
+| SupportedTopicLanguages                    | -   | -       | X            | -           |                               |
+| SystemSpeechLanguage                       | -   | -       | X            | -           |                               |
 | Timeouts                                   | X   | X       | X            | X           |                               |
 | UIOptions                                  | X   | X       | X            | X           | Not used                      |
-| CompileConstraintsAsync()                  | X   | X       | X            | X           | iOS, Android, WebAssembly: always returns Success (implemented to meet WinUI constraint that requires `CompileConstraintsAsync()` to be called before `RecognizeAsync()`). macOS: returns `TopicLanguageNotSupported` for unsupported languages |
+| CompileConstraintsAsync()                  | X   | X       | X            | X           | iOS, Android, WebAssembly: always returns Success (implemented to meet WinUI constraint that requires `CompileConstraintsAsync()` to be called before `RecognizeAsync()`). macOS: returns `TopicLanguageNotSupported` for unsupported languages, and `GrammarCompilationFailure` for unsupported constraints |
 | Dispose()                                  | X   | X       | X            | X           |                               |
 | RecognizeAsync()                           | X   | X       | X            | X           |                               |
 | RecognizeWithUIAsync()                     | -   | -       | -            | -           |                               |
 | StopRecognitionAsync()                     | X   | X       | X            | X           |                               |
-| TrySetSystemSpeechLanguageAsync(Language)  | -   | -       | -            | -           |                               |
+| TrySetSystemSpeechLanguageAsync(Language)  | -   | -       | X            | -           | macOS: always returns `false`, apps can't change the system speech language |
 | HypothesisGenerated                        | X   | X       | X            | X           |                               |
-| RecognitionQualityDegrading                | -   | -       | -            | -           |                               |
+| RecognitionQualityDegrading                | -   | -       | X            | -           | macOS: estimated from the microphone level |
 | StateChanged                               | X   | X       | X            | X           |                               |
 
 ## Requirement
@@ -99,19 +99,22 @@ Requirements and behavior notes:
 
 On macOS, speech recognition follows the WinUI behavior described in the Microsoft documentation, using Apple's Speech framework:
 
-* `State` goes through `Capturing`, `SoundStarted`, `SpeechDetected`, `SoundEnded`, `Processing` and back to `Idle`.
-* `Timeouts` default to 5 seconds of `InitialSilenceTimeout`, 150 milliseconds of `EndSilenceTimeout` and no `BabbleTimeout`. Set a timeout to `TimeSpan.Zero` to disable it.
-* Failures are reported through `SpeechRecognitionResult.Status` (for example `TimeoutExceeded`, `UserCanceled`, `MicrophoneUnavailable` or `NetworkFailure`) rather than as exceptions.
-* When the user denies speech recognition or microphone access, or the `Info.plist` keys are missing, `RecognizeAsync()` throws a `COMException` with `HResult` `0x80045509`, like WinUI when the speech privacy policy isn't accepted.
-* Calling `RecognizeAsync()` or `CompileConstraintsAsync()` while the recognizer is busy throws an `InvalidOperationException`.
+* `State` goes through `Capturing`, `SoundStarted`, `SpeechDetected`, `SoundEnded`, `Processing` and back to `Idle`. A continuous session stays in `Capturing` between phrases and is `Paused` after `PauseAsync()`.
+* `Timeouts` default to 5 seconds of `InitialSilenceTimeout`, 150 milliseconds of `EndSilenceTimeout` and no `BabbleTimeout`. `AutoStopSilenceTimeout` defaults to 20 seconds. Set a timeout to `TimeSpan.Zero` to disable it.
+* Failures are reported through `SpeechRecognitionResult.Status` (for example `TimeoutExceeded`, `UserCanceled`, `MicrophoneUnavailable` or `NetworkFailure`) and `SpeechContinuousRecognitionCompletedEventArgs.Status`, rather than as exceptions.
+* When the user denies speech recognition or microphone access, or the `Info.plist` keys are missing, `RecognizeAsync()` and `StartAsync()` throw a `COMException` with `HResult` `0x80045509`, like WinUI when the speech privacy policy isn't accepted.
+* Calling `RecognizeAsync()`, `StartAsync()` or `CompileConstraintsAsync()` while the recognizer is busy throws an `InvalidOperationException`.
 * `StopRecognitionAsync()` returns the words recognized so far, or a `UserCanceled` result if nothing was said yet.
-* `SpeechRecognitionResult` provides `Text`, `Status`, `Confidence`, `RawConfidence`, `PhraseStartTime`, `PhraseDuration` and `GetAlternates()`. `RawConfidence` is the average of Apple's per-word confidence; `Confidence` is `High` from 0.8, `Medium` from 0.5, and `Low` below.
+* `SpeechRecognitionResult` provides `Text`, `Status`, `Confidence`, `RawConfidence`, `PhraseStartTime`, `PhraseDuration`, `Constraint` and `GetAlternates()`. `RawConfidence` is the average of Apple's per-word confidence; `Confidence` is `High` from 0.8, `Medium` from 0.5, and `Low` below.
+* A `SpeechRecognitionListConstraint` biases recognition toward its commands, and the result must be one of the commands (ignoring case and punctuation): otherwise the result has a `Rejected` confidence and an empty `Text`. Apple's engine uses up to 100 commands.
+* A `SpeechRecognitionTopicConstraint` selects the dictation or search mode of the engine. Grammar file and voice command definition constraints aren't supported.
+* While a continuous session is paused, audio is still captured (up to 30 seconds) and recognized after `Resume()`.
 * Events are raised on the UI thread when recognition is started from it.
 
 ## Limitation
 
 On iOS, Android and WebAssembly, only `Text`, `Alternates`, and `GetAlternates(uint maxAlternates)` are implemented in `Windows.Media.SpeechRecognition.SpeechRecognitionResult`, and `RawConfidence` is only provided on WebAssembly.
 
-On macOS, `RecognizeWithUIAsync()`, `RulePath` and `SemanticInterpretation` aren't supported. Apple limits each recognition to about one minute of audio.
+On macOS, `RecognizeWithUIAsync()`, `RulePath` and `SemanticInterpretation` aren't supported. Apple limits each recognition to about one minute of audio; continuous recognition starts a new recognition for each phrase.
 
 On WebAssembly specifically, availability is browser-dependent. If speech recognition is not available in the current browser, `RecognizeAsync()` fails with an `InvalidOperationException`.
