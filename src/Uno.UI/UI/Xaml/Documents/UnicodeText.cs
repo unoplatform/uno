@@ -41,6 +41,11 @@ internal readonly partial struct UnicodeText : IParsedText
 	private const int UBIDI_LTR = 0;
 	private const int UBIDI_RTL = 1;
 	private const string HorizontalEllipsis = "\u2026";
+
+	// Runs right after the paragraph BiDi pass, while ICU still points into the buffers it was given for the
+	// line reordering below. Tests use it to disturb the managed heap and the shared array pool in that window.
+	internal static Action<int>? ParagraphBidiResolvedForTests;
+
 	// Unicode rules P2-P3: the first strong character sets the paragraph level, otherwise the flow direction does.
 	internal static bool IsRightToLeftParagraph(string text, FlowDirection flowDirection)
 	{
@@ -49,8 +54,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			return flowDirection is FlowDirection.RightToLeft;
 		}
 
-		using var _ = ICU.CreateBiDiAndSetPara(text, 0, text.Length, flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR, out var bidi);
-		return ICU.GetMethod<ICU.ubidi_getParaLevel>()(bidi) is UBIDI_RTL;
+		return ICU.GetParaLevel(text, flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR) is UBIDI_RTL;
 	}
 
 	// Fallbacks for fonts that don't publish underline/strikeout metrics, as a fraction of the em
@@ -471,13 +475,23 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		_bidiBreaks = new List<(int end, FlowDirection direction)>();
 		var trivialLtr = allAscii && allRunsLtr && flowDirection is FlowDirection.LeftToRight && paragraphLayouts is null;
-		// The paragraph BiDi handle must outlive the per-line reordering below; boxed so the deferred close
-		// sees the handle assigned in the non-trivial branch (it stays default — no close — on the trivial path).
-		var bidiBox = new global::System.Runtime.CompilerServices.StrongBox<IntPtr>();
-		using var bidiDisposable = new DisposableStruct<global::System.Runtime.CompilerServices.StrongBox<IntPtr>>(
-			static box => { if (box.Value != default) { ICU.GetMethod<ICU.ubidi_close>()(box.Value); } },
+		// The paragraph BiDi object (and the buffers ICU points into) and the pooled index map must outlive the per-line
+		// reordering below; boxed so the deferred cleanup sees what the non-trivial branch created (it stays default —
+		// nothing to free — on the trivial path).
+		var bidiBox = new global::System.Runtime.CompilerServices.StrongBox<(ICU.ParagraphBiDi BiDi, int[]? TextToBidi)>();
+		using var bidiDisposable = new DisposableStruct<global::System.Runtime.CompilerServices.StrongBox<(ICU.ParagraphBiDi BiDi, int[]? TextToBidi)>>(
+			static box =>
+			{
+				box.Value.BiDi.Dispose();
+				if (box.Value.TextToBidi is { } textToBidi)
+				{
+					ArrayPool<int>.Shared.Return(textToBidi);
+				}
+			},
 			bidiBox);
 		IntPtr bidi = default;
+		// Null when ICU reads _text itself; otherwise the index in ICU's text of each index in _text (see CreateParagraphBiDi).
+		int[]? textToBidi = null;
 		if (trivialLtr)
 		{
 			// ASCII has no RTL characters, so with an LTR paragraph and LTR runs the BiDi outcome is a single
@@ -488,20 +502,9 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		else
 		{
-			var embeddingLevels = ArrayPool<byte>.Shared.Rent(_text.Length);
-			using var embeddingLevelsDisposable = new DisposableStruct<byte[]>(static embeddingLevels => ArrayPool<byte>.Shared.Return(embeddingLevels), embeddingLevels);
-			for (int i = 0; i < _runBreaks.Count; i++)
-			{
-				var (start, count) = i == 0 ? (0, _runBreaks[0].end) : (_runBreaks[i - 1].end, _runBreaks[i].end - _runBreaks[i - 1].end);
-				var direction = _runBreaks[i].direction;
-				var level = flowDirection is FlowDirection.LeftToRight
-					? (direction is FlowDirection.LeftToRight ? 0 : 1)
-					: (direction is FlowDirection.RightToLeft ? 1 : 2); // 2 and not 0 because embedding must increase nesting level when switching direction inside RTL paragraph
-				Array.Fill(embeddingLevels, (byte)level, start, count);
-			}
-
-			ICU.CreateBiDiAndSetPara(_text, 0, _text.Length, flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR, out bidi, embeddingLevels);
-			bidiBox.Value = bidi;
+			var paragraphBiDi = CreateParagraphBiDi(_text, _runBreaks, flowDirection, out textToBidi);
+			bidiBox.Value = (paragraphBiDi, textToBidi);
+			bidi = paragraphBiDi.Handle;
 			var runCount = ICU.GetMethod<ICU.ubidi_countRuns>()(bidi, out var countRunsErrorCode);
 			ICU.CheckErrorCode<ICU.ubidi_countRuns>(countRunsErrorCode);
 			_rtl = ICU.GetMethod<ICU.ubidi_getParaLevel>()(bidi) is UBIDI_RTL;
@@ -509,6 +512,15 @@ internal readonly partial struct UnicodeText : IParsedText
 			{
 				var level = ICU.GetMethod<ICU.ubidi_getVisualRun>()(bidi, bidiRunIndex, out var logicalStart, out var length);
 				CI.Assert(level is UBIDI_LTR or UBIDI_RTL);
+				if (textToBidi is not null)
+				{
+					var start = ToTextIndex(textToBidi, _text.Length, logicalStart);
+					(logicalStart, length) = (start, ToTextIndex(textToBidi, _text.Length, logicalStart + length) - start);
+					if (length == 0)
+					{
+						continue; // only embedding characters of ours
+					}
+				}
 				_bidiBreaks.Add((logicalStart + length, level is UBIDI_RTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight));
 
 				if (textAlignment is null && logicalStart == 0)
@@ -518,6 +530,8 @@ internal readonly partial struct UnicodeText : IParsedText
 				}
 			}
 		}
+
+		ParagraphBidiResolvedForTests?.Invoke(_text.Length);
 
 		_glyphs = new LinkedList<Glyph>();
 		var clusterBreaks = new LinkedList<Cluster>();
@@ -1129,12 +1143,16 @@ internal readonly partial struct UnicodeText : IParsedText
 			var lineRtl = line.paragraphLayout?.RightToLeft ?? _rtl;
 			var ellipsisCluster = line.hasEllipsis ? line.clusterLast : null;
 			var limit = line.hasEllipsis ? line.clusterLast.Value.start : line.clusterLast.Value.end;
+			// In ICU's copy, the line ends right after its last character: an embedding character that follows may
+			// belong to the next paragraph, and ubidi_setLine rejects a line that crosses one.
+			var bidiLineStart = ToBidiIndex(textToBidi, line.start);
+			var bidiLineLimit = limit > line.start ? ToBidiIndex(textToBidi, limit - 1) + 1 : bidiLineStart;
 			var lineBidi = ICU.GetMethod<ICU.ubidi_open>()();
-			ICU.GetMethod<ICU.ubidi_setLine>()(bidi, line.start, limit, lineBidi, out var setLineErrorCode);
+			ICU.GetMethod<ICU.ubidi_setLine>()(bidi, bidiLineStart, bidiLineLimit, lineBidi, out var setLineErrorCode);
 			ICU.CheckErrorCode<ICU.ubidi_setLine>(setLineErrorCode);
 			using var lineBidiDisposable = new DisposableStruct<IntPtr>(static bidi => ICU.GetMethod<ICU.ubidi_close>()(bidi), lineBidi);
 
-			var logicalToVisualMap = ArrayPool<int>.Shared.Rent(_text.Length);
+			var logicalToVisualMap = ArrayPool<int>.Shared.Rent(bidiLineLimit - bidiLineStart);
 			using var logicalToVisualMapDisposable = new DisposableStruct<int[]>(static logicalToVisualMap => ArrayPool<int>.Shared.Return(logicalToVisualMap), logicalToVisualMap);
 
 			fixed (int* logicalToVisualMapPtr = logicalToVisualMap)
@@ -1145,14 +1163,14 @@ internal readonly partial struct UnicodeText : IParsedText
 
 			var levels = ICU.GetMethod<ICU.ubidi_getLevels>()(lineBidi, out var getLevelsErrorCode);
 			ICU.CheckErrorCode<ICU.ubidi_getLevels>(getLevelsErrorCode);
-			var levelsSpan = new Span<byte>(levels.ToPointer(), limit - line.start);
+			var levelsSpan = new Span<byte>(levels.ToPointer(), bidiLineLimit - bidiLineStart);
 
 			var clusterBeforeBegin = line.clusterStart.Previous;
 
 			var nodes = new List<LinkedListNode<Cluster>>();
 			for (var (clusterNode, end) = (line.clusterStart, (ellipsisCluster ?? line.clusterLast.Next)); clusterNode != end;)
 			{
-				clusterNode!.Value = clusterNode.Value with { rtl = levelsSpan[clusterNode.Value.start - line.start] % 2 == 1 };
+				clusterNode!.Value = clusterNode.Value with { rtl = levelsSpan[ToBidiIndex(textToBidi, clusterNode.Value.start) - bidiLineStart] % 2 == 1 };
 				var next = clusterNode.Next;
 				nodes.Add(clusterNode);
 				clusterBreaks.Remove(clusterNode);
@@ -1165,7 +1183,9 @@ internal readonly partial struct UnicodeText : IParsedText
 				ellipsisCluster.Value = ellipsisCluster.Value with { indexInLine = lineRtl ? 0 : nodes.Count };
 			}
 
-			nodes.Sort((node1, node2) => logicalToVisualMap[node1.Value.start - line.start].CompareTo(logicalToVisualMap[node2.Value.start - line.start]));
+			var lineTextToBidi = textToBidi; // captured instead of textToBidi, which would put a closure on every layout
+			nodes.Sort((node1, node2) => logicalToVisualMap[ToBidiIndex(lineTextToBidi, node1.Value.start) - bidiLineStart]
+				.CompareTo(logicalToVisualMap[ToBidiIndex(lineTextToBidi, node2.Value.start) - bidiLineStart]));
 
 			for (var index = 0; index < nodes.Count; index++)
 			{
@@ -1311,6 +1331,84 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		return (possibleTrimPoints, lineBreakOpportunitiesLookupStart);
+	}
+
+	// As on WinUI, only a run whose direction differs from the control's is embedded, and the bidi control characters
+	// in the text are always honored. An embedding-levels array would make ICU ignore those characters, so a differing
+	// run is embedded the way WinUI hands it to its line layout: an LRE or RLE before it and a PDF after it, in a copy
+	// of the text that only ICU reads. textToBidi maps each index in text (and text.Length) to its index in that copy;
+	// it is null when no run differs and ICU reads the text as it is. Otherwise it is rented from the pool, possibly
+	// longer than text.Length + 1, and the caller returns it.
+	private static ICU.ParagraphBiDi CreateParagraphBiDi(string text, List<RunBreak> runBreaks, FlowDirection flowDirection, out int[]? textToBidi)
+	{
+		var paraLevel = flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR;
+		var anyRunDiffers = false;
+		foreach (var run in runBreaks)
+		{
+			anyRunDiffers |= run.direction != flowDirection;
+		}
+		if (!anyRunDiffers)
+		{
+			textToBidi = null;
+			return ICU.CreateBiDiAndSetPara(text, paraLevel);
+		}
+
+		const char LRE = '\u202A', RLE = '\u202B', PDF = '\u202C';
+		textToBidi = ArrayPool<int>.Shared.Rent(text.Length + 1);
+		// At most an opening character per run and per paragraph separator, and a PDF per run.
+		var bidiText = ArrayPool<char>.Shared.Rent(2 * text.Length + 2 * runBreaks.Count);
+		try
+		{
+			var length = 0;
+			var runStart = 0;
+			foreach (var run in runBreaks)
+			{
+				var differs = run.direction != flowDirection;
+				var opening = run.direction is FlowDirection.RightToLeft ? RLE : LRE;
+				var open = false;
+				for (var i = runStart; i < run.end; i++)
+				{
+					var c = text[i];
+					// A paragraph separator ends every embedding (UAX #9 X8), so the run's embedding is opened again
+					// after each one, never between the two halves of a CRLF.
+					if (differs && !open && !(c == '\n' && i > 0 && text[i - 1] == '\r'))
+					{
+						bidiText[length++] = opening;
+						open = true;
+					}
+					textToBidi[i] = length;
+					bidiText[length++] = c;
+					if (open && IsParagraphSeparator(c) && !(c == '\r' && i + 1 < text.Length && text[i + 1] == '\n'))
+					{
+						open = false;
+					}
+				}
+				if (open && !(text[run.end - 1] == '\r' && run.end < text.Length && text[run.end] == '\n'))
+				{
+					bidiText[length++] = PDF;
+				}
+				runStart = run.end;
+			}
+			textToBidi[text.Length] = length;
+
+			return ICU.CreateBiDiAndSetPara(bidiText.AsSpan(0, length), paraLevel);
+		}
+		finally
+		{
+			ArrayPool<char>.Shared.Return(bidiText);
+		}
+
+		// The characters of bidi class B.
+		static bool IsParagraphSeparator(char c) => c is '\n' or '\r' or (>= '\u001C' and <= '\u001E') or '\u0085' or '\u2029';
+	}
+
+	private static int ToBidiIndex(int[]? textToBidi, int index) => textToBidi is null ? index : textToBidi[index];
+
+	// The number of characters of the text before an index in ICU's copy of it.
+	private static int ToTextIndex(int[] textToBidi, int textLength, int bidiIndex)
+	{
+		var index = Array.BinarySearch(textToBidi, 0, textLength + 1, bidiIndex);
+		return index >= 0 ? index : ~index;
 	}
 
 	// Walks the intersection of run, script, bidi and font breaks without materializing a list of shaping runs.
