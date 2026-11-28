@@ -696,7 +696,7 @@ public class Given_ApplicationActivity
 
 	// The activity driving the test window, resolved through its host so it follows re-creation.
 	// The runtime tests don't reference Mono.Android or the Android host, hence the reflection.
-	private static object GetWindowActivity()
+	internal static object GetWindowActivity()
 	{
 		var host = GetWindowHost();
 

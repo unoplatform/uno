@@ -726,14 +726,27 @@ namespace Uno.UI.Runtime.Android
 		private void RaiseConfigurationChanges()
 		{
 			Wrapper.RaiseNativeSizeChanged();
-			//ViewHelper.RefreshFontScale();
 			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
 			SystemThemeHelper.RefreshSystemTheme();
+			ScheduleFontScaleRefresh(Window?.DecorView);
 
 			// Android has no accent change notification; a Material You palette change recreates or
 			// resumes the activity, so re-read the accent here.
 			AccentColorHelper.RefreshAccentColor();
 		}
+
+		private static void ScheduleFontScaleRefresh(View? decorView)
+		{
+			// Defer until Android has propagated the new configuration.
+			// The dispatcher covers calls before a decor view exists.
+			if (decorView?.Post(RefreshFontScale) is not true)
+			{
+				NativeDispatcher.Main.Enqueue(RefreshFontScale);
+			}
+		}
+
+		private static void RefreshFontScale() =>
+			WinUICoreServices.Instance.UpdateFontScale(UISettings.GetTextScaleFactorValue());
 
 #pragma warning disable CS0618 // deprecated members
 #pragma warning disable CS0672 // deprecated members

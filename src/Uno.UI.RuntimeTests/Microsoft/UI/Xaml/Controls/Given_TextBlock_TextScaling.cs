@@ -1,3 +1,6 @@
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
@@ -222,6 +225,73 @@ public class Given_TextBlock_TextScaling
 		{
 			FeatureConfiguration.Font.TextScaleFactor = originalOverride;
 			global::Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(originalOverride ?? 1.0);
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+	[DynamicDependency("GetHostForRoot", "Uno.UI.Hosting.XamlRootMap", "Uno.UI")]
+	[DynamicDependency("get_Activity", "Uno.UI.Runtime.Android.AndroidSkiaXamlRootHost", "Uno.UI.Runtime.Android")]
+	[DynamicDependency("RaiseConfigurationChanges", "Uno.UI.Runtime.Android.ApplicationActivity", "Uno.UI.Runtime.Android")]
+	[UnconditionalSuppressMessage("Trimming", "IL2035", Justification = "The Android runtime is only present on the platform this test runs on.")]
+	public async Task When_ConfigurationRefresh_Reevaluates_TextScale()
+	{
+		var activityType = GetApplicationActivityType();
+		var activity = Windows_UI_Xaml.Given_ApplicationActivity.GetWindowActivity();
+		var raiseConfigurationChanges = activityType.GetMethod(
+			"RaiseConfigurationChanges",
+			BindingFlags.NonPublic | BindingFlags.Instance);
+
+		Assert.IsNotNull(activity);
+		Assert.IsNotNull(raiseConfigurationChanges);
+
+		await AssertTextScaleIsRefreshed(() => raiseConfigurationChanges.Invoke(activity, null));
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+	public async Task When_FontScaleRefresh_Has_No_DecorView()
+	{
+		var scheduleFontScaleRefresh = GetApplicationActivityType().GetMethod(
+			"ScheduleFontScaleRefresh",
+			BindingFlags.NonPublic | BindingFlags.Static);
+
+		Assert.IsNotNull(scheduleFontScaleRefresh);
+
+		await AssertTextScaleIsRefreshed(() => scheduleFontScaleRefresh.Invoke(null, [null]));
+	}
+
+	private static Type GetApplicationActivityType()
+	{
+		var activityType = Type.GetType("Uno.UI.Runtime.Android.ApplicationActivity, Uno.UI.Runtime.Android");
+		Assert.IsNotNull(activityType);
+		return activityType;
+	}
+
+	private static async Task AssertTextScaleIsRefreshed(Action refresh)
+	{
+		var originalOverride = FeatureConfiguration.Font.TextScaleFactor;
+		var uiSettings = new UISettings();
+		var changeCount = 0;
+
+		void OnTextScaleFactorChanged(UISettings sender, object args) => changeCount++;
+
+		try
+		{
+			FeatureConfiguration.Font.TextScaleFactor = 1.0;
+			global::Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(uiSettings.TextScaleFactor);
+			uiSettings.TextScaleFactorChanged += OnTextScaleFactorChanged;
+
+			FeatureConfiguration.Font.TextScaleFactor = 1.5;
+			refresh();
+
+			await TestServices.WindowHelper.WaitFor(() => changeCount > 0);
+		}
+		finally
+		{
+			uiSettings.TextScaleFactorChanged -= OnTextScaleFactorChanged;
+			FeatureConfiguration.Font.TextScaleFactor = originalOverride;
+			global::Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(uiSettings.TextScaleFactor);
 		}
 	}
 #endif
