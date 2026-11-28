@@ -254,7 +254,9 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly Dictionary<int, global::Microsoft.UI.Text.TabLeader>? _tabLeaders;
 	private readonly Size _availableSize;
 	private readonly bool _layoutUsesAvailableWidth;
-	private readonly bool _layoutUsesAvailableHeight;
+	// The smallest available height this layout is valid for: 0 when the height isn't used, the height of the lines kept
+	// when the height dropped none, infinity when it did (then only the same height gives the same layout).
+	private readonly float _minimumHeightKeepingLayout;
 
 	internal unsafe UnicodeText(
 		Size availableSize,
@@ -919,8 +921,6 @@ internal readonly partial struct UnicodeText : IParsedText
 		ApplyParagraphJustification(lines, _text, (float)availableSize.Width, textAlignment!.Value);
 
 		var textEndsInLineBreak = IsLineBreak(_text, _text.Length);
-		// Lines that do not fit the available height are dropped below, so the height only matters past one line.
-		_layoutUsesAvailableHeight = lines.Count + (textEndsInLineBreak ? 1 : 0) > 1;
 		var (terminalNaturalHeight, terminalNaturalBaseline) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight, defaultFontDetails, false, true);
 		var terminalEffectiveHeight = endingParagraphLayout is null
 			? terminalNaturalHeight
@@ -931,6 +931,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		float totalHeight = 0;
 		int nextTrimPointLookupStart = 0;
 		var endedEarly = false;
+		var endedByMaxLines = false;
 		for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
 		{
 			var line = lines[lineIndex];
@@ -1037,9 +1038,19 @@ internal readonly partial struct UnicodeText : IParsedText
 			{
 				lines = lines[..(lineIndex + 1)];
 				endedEarly = true;
+				endedByMaxLines = maxLines > 0 && maxLines < actualLineCount && lineIndex == maxLines - 1;
 				break;
 			}
 		}
+
+		// The height only decides which lines are dropped (and where the trimming ellipsis goes), so it matters past one line,
+		// and the layout stays the same at any height that holds the lines the loop kept: the sum it compared. Lines dropped
+		// by the height can come back at another height; lines dropped by MaxLines can't.
+		_minimumHeightKeepingLayout = endedEarly && !endedByMaxLines
+			? float.PositiveInfinity
+			: lines.Count + (textEndsInLineBreak && !endedEarly ? 1 : 0) > 1
+				? totalHeight + (textEndsInLineBreak && !endedEarly ? terminalBlockHeight : 0)
+				: 0;
 
 		var hasEndingParagraphLine = !suppressEndingNewLineLine
 			&& !endedEarly
@@ -1256,13 +1267,19 @@ internal readonly partial struct UnicodeText : IParsedText
 			|| endingParagraphLayout is not null;
 	}
 
+	// FrameworkElement.ArrangeCore arranges up to this much below the desired size (its SIZE_EPSILON): the lines measure
+	// kept still count as fitting there.
+	private const double ArrangeSizeTolerance = 0.05;
+
 	/// <summary>
 	/// Whether laying the same text out in <paramref name="availableSize"/> would give this exact result, because the
 	/// dimensions that differ from the size this was parsed with are not ones the layout depends on.
 	/// </summary>
 	internal bool IsLayoutValidFor(Size availableSize)
 		=> (!_layoutUsesAvailableWidth || availableSize.Width == _availableSize.Width)
-		&& (!_layoutUsesAvailableHeight || availableSize.Height == _availableSize.Height);
+		&& (availableSize.Height == _availableSize.Height || availableSize.Height >= _minimumHeightKeepingLayout - ArrangeSizeTolerance);
+
+	bool IParsedText.IsLayoutValidFor(Size availableSize) => IsLayoutValidFor(availableSize);
 
 	// Printable ASCII (plus tab) has no mandatory line breaks and needs no ICU break analysis for NoWrap text.
 	private static bool IsAsciiWithoutLineBreaks(string text)
