@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.DevTools.Input;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.ViewManagement;
@@ -841,6 +842,406 @@ public class Given_InputPane
 		}
 	}
 
+	// Some browsers resize the layout viewport for the on-screen keyboard (interactive-widget=resizes-content) instead of
+	// only the visual viewport. In WinUI the keyboard occludes the window and never resizes it, and a resize light-dismisses
+	// the popups: a flyout focusing its TextBox when it opens would close as soon as the keyboard came up.
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Browser_Keyboard_Shrinks_Layout_Viewport_Then_Flyout_Stays_Open()
+	{
+		var (button, flyout, flyoutField, _) = BuildTopFlyoutPage();
+
+		var inputPane = InputPane.GetForCurrentView();
+		try
+		{
+			await UITestHelper.Load(new Grid { Children = { button } });
+			using var sizeChanges = new WindowSizeChanges();
+
+			// The tap that opens the flyout makes it a soft keyboard text entry.
+			PressBrowserPointer("touch");
+			await OpenFlyoutAndFocus(button, flyout, flyoutField);
+
+			var keyboardHeight = System.Math.Round(sizeChanges.InitialSize.Height / 3);
+			SetBrowserViewport(layoutHeightChange: -keyboardHeight, keyboardHeight: 0);
+
+			await WaitFor(
+				() => System.Math.Abs(inputPane.OccludedRect.Height - keyboardHeight) < 0.5,
+				() => $"The keyboard must be reported through the InputPane (OccludedRect {inputPane.OccludedRect}, expected a height of {keyboardHeight}).");
+			sizeChanges.AssertNone("while the keyboard shows");
+			Assert.IsTrue(flyout.IsOpen, "The flyout must stay open while the keyboard shows.");
+			Assert.AreNotEqual(FocusState.Unfocused, flyoutField.FocusState, "The flyout TextBox must keep the focus.");
+
+			SetBrowserViewport(layoutHeightChange: 0, keyboardHeight: 0);
+
+			await WaitFor(() => inputPane.OccludedRect.Height == 0, () => $"The keyboard must be reported hidden (OccludedRect {inputPane.OccludedRect}).");
+			sizeChanges.AssertNone("once the keyboard hides");
+			Assert.IsTrue(flyout.IsOpen, "The flyout must stay open once the keyboard hides.");
+		}
+		finally
+		{
+			RestoreBrowserViewport();
+			await CloseFlyoutAndClearOcclusion(flyout, inputPane);
+		}
+	}
+
+	// Edge on Android hides its bottom toolbar while the keyboard is up. Once the keyboard hides, with the TextBox still
+	// focused, the layout viewport grows by the toolbar height (793 -> 845 px) and comes back about 130 ms later
+	// (measured on a device in unoplatform/uno#25387).
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25380")]
+	public async Task When_Viewport_Blips_As_Soft_Keyboard_Hides_Then_Flyout_Stays_Open()
+	{
+		var (button, flyout, flyoutField, _) = BuildTopFlyoutPage();
+
+		var inputPane = InputPane.GetForCurrentView();
+		try
+		{
+			await UITestHelper.Load(new Grid { Children = { button } });
+			using var sizeChanges = new WindowSizeChanges();
+			PressBrowserPointer("touch");
+			await OpenFlyoutAndFocus(button, flyout, flyoutField);
+
+			var keyboardHeight = System.Math.Round(sizeChanges.InitialSize.Height / 3);
+			SetBrowserViewport(layoutHeightChange: 0, keyboardHeight: keyboardHeight);
+			await WaitFor(() => inputPane.OccludedRect.Height > 0, () => "The keyboard must be reported through the InputPane.");
+
+			SetBrowserViewport(layoutHeightChange: 0, keyboardHeight: 0);
+			SetBrowserViewport(layoutHeightChange: 52, keyboardHeight: 0, revertAfterMS: 150);
+			await Task.Delay(800);
+			await WindowHelper.WaitForIdle();
+
+			sizeChanges.AssertNone("for a toolbar that comes back");
+			Assert.IsTrue(flyout.IsOpen, "The flyout closed on the transient viewport resize.");
+		}
+		finally
+		{
+			RestoreBrowserViewport();
+			await CloseFlyoutAndClearOcclusion(flyout, inputPane);
+		}
+	}
+
+	// The same blip when the keyboard hides because the focus moved out of the TextBox (a tap on a button in the flyout).
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Viewport_Blips_After_Focus_Moves_Out_Then_Flyout_Stays_Open()
+	{
+		var (button, flyout, flyoutField, flyoutButton) = BuildTopFlyoutPage();
+
+		var inputPane = InputPane.GetForCurrentView();
+		try
+		{
+			await UITestHelper.Load(new Grid { Children = { button } });
+			using var sizeChanges = new WindowSizeChanges();
+			PressBrowserPointer("touch");
+			await OpenFlyoutAndFocus(button, flyout, flyoutField);
+
+			var keyboardHeight = System.Math.Round(sizeChanges.InitialSize.Height / 3);
+			SetBrowserViewport(layoutHeightChange: 0, keyboardHeight: keyboardHeight);
+			await WaitFor(() => inputPane.OccludedRect.Height > 0, () => "The keyboard must be reported through the InputPane.");
+
+			PressBrowserPointer("touch");
+			Assert.IsTrue(flyoutButton.Focus(FocusState.Pointer), "The flyout button failed to take focus.");
+			await WindowHelper.WaitFor(
+				() => WasmSemanticDomHelper.InvokeBrowserJs("document.activeElement?.id ?? ''") != "uno-input",
+				message: "The native text input kept the focus.");
+
+			SetBrowserViewport(layoutHeightChange: 0, keyboardHeight: 0);
+			SetBrowserViewport(layoutHeightChange: 52, keyboardHeight: 0, revertAfterMS: 150);
+			await Task.Delay(800);
+			await WindowHelper.WaitForIdle();
+
+			sizeChanges.AssertNone("for a toolbar that comes back");
+			Assert.IsTrue(flyout.IsOpen, "The flyout closed on the transient viewport resize.");
+		}
+		finally
+		{
+			RestoreBrowserViewport();
+			await CloseFlyoutAndClearOcclusion(flyout, inputPane);
+		}
+	}
+
+	// A browser that hides its bottom toolbar while the keyboard is up makes the layout viewport taller for as long as the
+	// keyboard stays. The extra height is under the keyboard: the window keeps its size until the keyboard goes down.
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Browser_Toolbar_Hides_Under_Keyboard_Then_Window_Keeps_Size()
+	{
+		var (button, flyout, flyoutField, _) = BuildTopFlyoutPage();
+
+		var inputPane = InputPane.GetForCurrentView();
+		try
+		{
+			await UITestHelper.Load(new Grid { Children = { button } });
+			using var sizeChanges = new WindowSizeChanges();
+			var initialHeight = sizeChanges.InitialSize.Height;
+			PressBrowserPointer("touch");
+			await OpenFlyoutAndFocus(button, flyout, flyoutField);
+
+			const double ToolbarHeight = 52;
+			var keyboardHeight = System.Math.Round(initialHeight / 3);
+			SetBrowserViewport(layoutHeightChange: 0, keyboardHeight: keyboardHeight);
+			await WaitFor(() => inputPane.OccludedRect.Height > 0, () => "The keyboard must be reported through the InputPane.");
+
+			SetBrowserViewport(layoutHeightChange: ToolbarHeight, keyboardHeight: keyboardHeight);
+			await Task.Delay(800);
+			await WindowHelper.WaitForIdle();
+
+			sizeChanges.AssertNone("while the keyboard is up");
+			Assert.IsTrue(flyout.IsOpen, "The flyout must stay open while the keyboard is up.");
+
+			// The keyboard goes down and the toolbar stays hidden: the window takes the layout height once it settled.
+			SetBrowserViewport(layoutHeightChange: ToolbarHeight, keyboardHeight: 0);
+			await WaitFor(
+				() => System.Math.Abs(WindowHelper.XamlRoot.Size.Height - (initialHeight + ToolbarHeight)) < 0.5,
+				() => $"The window must take the layout height once the keyboard is down (height {WindowHelper.XamlRoot.Size.Height}, expected {initialHeight + ToolbarHeight}).",
+				timeoutMS: 2000);
+		}
+		finally
+		{
+			RestoreBrowserViewport();
+			await CloseFlyoutAndClearOcclusion(flyout, inputPane);
+		}
+	}
+
+	// A growth of the layout viewport that lasts during a touch text entry is a window resize, reported once it has settled.
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Viewport_Grows_During_Text_Entry_Then_Window_Resized_Once_Settled()
+	{
+		var textBox = new TextBox { VerticalAlignment = VerticalAlignment.Top };
+
+		try
+		{
+			await UITestHelper.Load(new Grid { Children = { textBox } });
+			var initialHeight = WindowHelper.XamlRoot.Size.Height;
+			PressBrowserPointer("touch");
+			await FocusNativeTextInput(textBox);
+
+			const double Growth = 52;
+			SetBrowserViewport(layoutHeightChange: Growth, keyboardHeight: 0);
+
+			await Task.Delay(50);
+			Assert.IsTrue(
+				System.Math.Abs(WindowHelper.XamlRoot.Size.Height - initialHeight) < 0.5,
+				$"The growth must not be reported before it settles (height {WindowHelper.XamlRoot.Size.Height}, initially {initialHeight}).");
+
+			await WaitFor(
+				() => System.Math.Abs(WindowHelper.XamlRoot.Size.Height - (initialHeight + Growth)) < 0.5,
+				() => $"The settled growth must be reported (height {WindowHelper.XamlRoot.Size.Height}, expected {initialHeight + Growth}).",
+				timeoutMS: 2000);
+		}
+		finally
+		{
+			RestoreBrowserViewport();
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	// Synthetic: a shrink held during a touch text entry is released once the text entry ends, if the layout is still
+	// smaller after the keyboard had time to go away (a real change of size, such as a split-screen divider).
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Text_Entry_Ends_With_Viewport_Still_Shrunk_Then_Window_Resized()
+	{
+		var (button, flyout, flyoutField, flyoutButton) = BuildTopFlyoutPage();
+
+		var inputPane = InputPane.GetForCurrentView();
+		try
+		{
+			await UITestHelper.Load(new Grid { Children = { button } });
+			var initialHeight = WindowHelper.XamlRoot.Size.Height;
+			PressBrowserPointer("touch");
+			await OpenFlyoutAndFocus(button, flyout, flyoutField);
+
+			const double Shrink = 100;
+			SetBrowserViewport(layoutHeightChange: -Shrink, keyboardHeight: 0);
+			await WaitFor(() => inputPane.OccludedRect.Height > 0, () => "The shrink must be held as keyboard occlusion.");
+
+			Assert.IsTrue(flyoutButton.Focus(FocusState.Programmatic), "The flyout button failed to take focus.");
+			await WaitFor(
+				() => System.Math.Abs(WindowHelper.XamlRoot.Size.Height - (initialHeight - Shrink)) < 0.5,
+				() => $"The window must take the layout height once the text entry ended (height {WindowHelper.XamlRoot.Size.Height}, expected {initialHeight - Shrink}).",
+				timeoutMS: 3000);
+		}
+		finally
+		{
+			RestoreBrowserViewport();
+			await CloseFlyoutAndClearOcclusion(flyout, inputPane);
+		}
+	}
+
+	// Without touch input there is no on-screen keyboard: a desktop browser window resized while a TextBox has the focus is
+	// a window resize, reported at once whether it shrinks or grows.
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Browser_Layout_Height_Changes_During_Mouse_Text_Entry_Then_Window_Resized()
+	{
+		var textBox = new TextBox { VerticalAlignment = VerticalAlignment.Top };
+
+		try
+		{
+			await UITestHelper.Load(new Grid { Children = { textBox } });
+			var initialHeight = WindowHelper.XamlRoot.Size.Height;
+			PressBrowserPointer("mouse");
+			await FocusNativeTextInput(textBox);
+
+			const double HeightChange = -100;
+			SetBrowserViewport(layoutHeightChange: HeightChange, keyboardHeight: 0);
+
+			await WaitFor(
+				() => System.Math.Abs(WindowHelper.XamlRoot.Size.Height - (initialHeight + HeightChange)) < 0.5,
+				() => $"The window must take the smaller layout height (height {WindowHelper.XamlRoot.Size.Height}, expected {initialHeight + HeightChange}).");
+
+			// A growth is reported at once as well, well within the settle delay of a touch text entry.
+			const double Growth = 52;
+			SetBrowserViewport(layoutHeightChange: Growth, keyboardHeight: 0);
+			await WaitFor(
+				() => System.Math.Abs(WindowHelper.XamlRoot.Size.Height - (initialHeight + Growth)) < 0.5,
+				() => $"The window must take the larger layout height at once (height {WindowHelper.XamlRoot.Size.Height}, expected {initialHeight + Growth}).",
+				timeoutMS: 150);
+		}
+		finally
+		{
+			RestoreBrowserViewport();
+			await WindowHelper.WaitForIdle();
+		}
+	}
+
+	private static (Button Button, Flyout Flyout, TextBox FlyoutField, Button FlyoutButton) BuildTopFlyoutPage()
+	{
+		var flyoutField = new TextBox { PlaceholderText = "search" };
+		var flyoutButton = new Button { Content = "Done" };
+		var flyout = new Flyout { Content = new StackPanel { Children = { flyoutField, flyoutButton } } };
+		var button = new Button { Content = "Pick", VerticalAlignment = VerticalAlignment.Top };
+
+		return (button, flyout, flyoutField, flyoutButton);
+	}
+
+	private static async Task OpenFlyoutAndFocus(Button button, Flyout flyout, TextBox flyoutField)
+	{
+		flyout.ShowAt(button);
+		await WaitForFlyoutPresenter(flyout);
+		await FocusNativeTextInput(flyoutField);
+	}
+
+	private static async Task FocusNativeTextInput(TextBox textBox)
+	{
+		Assert.IsTrue(textBox.Focus(FocusState.Programmatic), "The TextBox failed to take focus.");
+		await WindowHelper.WaitFor(
+			() => WasmSemanticDomHelper.InvokeBrowserJs("document.activeElement?.id ?? ''") == "uno-input",
+			message: "The native text input did not take focus.");
+	}
+
+	private static void PressBrowserPointer(string pointerType)
+		=> Assert.AreEqual("ok", WasmSemanticDomHelper.InvokeBrowserJs(
+			$$"""(() => { document.dispatchEvent(new PointerEvent("pointerdown", { pointerType: "{{pointerType}}" })); return "ok"; })()"""));
+
+	// Changes the height of the layout viewport, and covers its bottom with a keyboard through the visual viewport. With
+	// revertAfterMS, the layout height comes back after that delay, as a browser toolbar would.
+	private static void SetBrowserViewport(double layoutHeightChange, double keyboardHeight, int revertAfterMS = 0)
+	{
+		static string Js(double value) => value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+		Assert.AreEqual("ok", WasmSemanticDomHelper.InvokeBrowserJs($$"""
+			(() => {
+				const root = document.documentElement;
+				const viewport = window.visualViewport;
+				if (!window.__unoTestViewport) {
+					window.__unoTestViewport = { layoutHeightChange: 0, keyboardHeight: 0 };
+					root.getBoundingClientRect = () => {
+						const real = Element.prototype.getBoundingClientRect.call(root);
+						return new DOMRect(0, 0, real.width, real.height + window.__unoTestViewport.layoutHeightChange);
+					};
+					Object.defineProperty(viewport, "height", {
+						configurable: true,
+						get: () => root.getBoundingClientRect().height - window.__unoTestViewport.keyboardHeight,
+					});
+				}
+				const apply = (layoutHeightChange, keyboardHeight) => {
+					Object.assign(window.__unoTestViewport, { layoutHeightChange, keyboardHeight });
+					viewport.dispatchEvent(new Event("resize"));
+					window.dispatchEvent(new Event("resize"));
+				};
+				const state = window.__unoTestViewport;
+				const previous = state.layoutHeightChange;
+				apply({{Js(layoutHeightChange)}}, {{Js(keyboardHeight)}});
+				if ({{revertAfterMS}} > 0) {
+					setTimeout(() => {
+						if (window.__unoTestViewport === state) {
+							apply(previous, {{Js(keyboardHeight)}});
+						}
+					}, {{revertAfterMS}});
+				}
+				return "ok";
+			})()
+			"""));
+	}
+
+	// Puts the real viewports and a mouse back.
+	private static void RestoreBrowserViewport()
+	{
+		Assert.AreEqual("ok", WasmSemanticDomHelper.InvokeBrowserJs("""
+			(() => {
+				// On the document, so the TextBox extension also sees the press and drops its touch-only guard.
+				document.dispatchEvent(new PointerEvent("pointerdown", { pointerType: "mouse" }));
+				if (window.__unoTestViewport) {
+					delete document.documentElement.getBoundingClientRect;
+					delete window.visualViewport.height;
+					delete window.__unoTestViewport;
+					window.visualViewport.dispatchEvent(new Event("resize"));
+					window.dispatchEvent(new Event("resize"));
+				}
+				return "ok";
+			})()
+			"""));
+	}
+
+	// Records the window sizes that differ from the one it was created with.
+	private sealed class WindowSizeChanges : System.IDisposable
+	{
+		private readonly XamlRoot _xamlRoot = WindowHelper.XamlRoot;
+		private readonly System.Collections.Generic.List<Size> _changes = new();
+
+		public WindowSizeChanges()
+		{
+			InitialSize = _xamlRoot.Size;
+			_xamlRoot.Changed += OnChanged;
+		}
+
+		public Size InitialSize { get; }
+
+		public void AssertNone(string when)
+		{
+			OnChanged(_xamlRoot, null);
+			Assert.AreEqual(0, _changes.Count, $"The window must keep its size {when} ({InitialSize}), but it changed to {string.Join(", ", _changes)}.");
+		}
+
+		public void Dispose() => _xamlRoot.Changed -= OnChanged;
+
+		private void OnChanged(XamlRoot sender, XamlRootChangedEventArgs args)
+		{
+			if (System.Math.Abs(sender.Size.Width - InitialSize.Width) >= 0.5 || System.Math.Abs(sender.Size.Height - InitialSize.Height) >= 0.5)
+			{
+				_changes.Add(sender.Size);
+			}
+		}
+	}
+
 	private static (Grid Root, TextBox TopField, Button Button, Flyout Flyout, TextBox FlyoutField) BuildBottomFlyoutPage(
 		double listMaxHeight,
 		double? contentWidth = 320,
@@ -946,11 +1347,11 @@ public class Given_InputPane
 	}
 
 	// Builds the failure message once the wait timed out, so it shows where the flyout ended up rather than where it started.
-	private static async Task WaitFor(System.Func<bool> condition, System.Func<string> message)
+	private static async Task WaitFor(System.Func<bool> condition, System.Func<string> message, int timeoutMS = 1000)
 	{
 		try
 		{
-			await WindowHelper.WaitFor(condition);
+			await WindowHelper.WaitFor(condition, timeoutMS);
 		}
 		catch (AssertFailedException)
 		{
