@@ -158,7 +158,8 @@
 		<PackageReference Include="@(_UnoProjectSystemPackageReference)" Exclude="@(PackageReference)" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(PublishTrimmed)' == 'true' ">
+	<!-- iOS and tvOS only set PublishTrimmed inside a target, after these items are collected -->
+	<ItemGroup Condition=" ('$(PublishTrimmed)' == 'true' OR '$(IsIOS)' == 'true' OR '$(IsTvOS)' == 'true') AND '$(UnoEnableDynamicObjectBinding)' != 'true' ">
 		<RuntimeHostConfigurationOption Include="Is_System_Dynamic_DynamicObject_Available" Value="false" Trim="true" />
 		<RuntimeHostConfigurationOption Include="Is_System_Dynamic_ExpandoObject_Available" Value="false" Trim="true" />
 	</ItemGroup>
