@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI;
@@ -757,6 +758,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Note: This depends on the implementation correctly raising the event
 			Assert.IsTrue(SUT.IsTextTrimmed || eventFired,
 				"Text should be trimmed or event should have fired");
+		}
+
+		[TestMethod]
+		public async Task When_IsTextTrimmedChanged_Is_Deferred()
+		{
+			var SUT = new RichTextBlock { TextTrimming = TextTrimming.CharacterEllipsis, TextWrapping = TextWrapping.NoWrap };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = "This is a very very very long text that needs trimming" });
+			SUT.Blocks.Add(paragraph);
+			var container = new Border { Width = 50, Child = SUT };
+
+			var states = new List<bool>();
+			SUT.IsTextTrimmedChanged += (s, e) => states.Add(SUT.IsTextTrimmed);
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+			await WindowHelper.WaitForIdle();
+			CollectionAssert.AreEqual(new[] { true }, states);
+
+			container.Width = 2000;
+			SUT.UpdateLayout();
+
+			// The property changes during arrange, but CEventManager::Raise posts the event.
+			Assert.IsFalse(SUT.IsTextTrimmed);
+			CollectionAssert.AreEqual(new[] { true }, states);
+
+			await WindowHelper.WaitFor(() => states.Count == 2);
+			CollectionAssert.AreEqual(new[] { true, false }, states);
 		}
 
 		[TestMethod]

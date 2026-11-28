@@ -649,24 +649,53 @@ namespace Microsoft.UI.Xaml.Controls
 		//------------------------------------------------------------------------
 		partial void UpdateIsTextTrimmed()
 		{
+			var last_isTextTrimmed = IsTextTrimmed;
+			bool isTextTrimmed;
+
 			if (HasOverflowContent)
 			{
-				IsTextTrimmed = true;
+				isTextTrimmed = true;
+			}
+			else
+			{
+				bool isTrimmed = false;
+
+				for (var blockChild = _pageNode?.GetFirstChild(); blockChild is not null; blockChild = blockChild.GetNext())
+				{
+					if (blockChild is ParagraphNode paragraphNode && paragraphNode.GetHasTrimmedLine())
+					{
+						isTrimmed = true;
+						break;
+					}
+				}
+
+				isTextTrimmed = isTrimmed;
+			}
+
+			if (last_isTextTrimmed != isTextTrimmed)
+			{
+				RaiseIsTextTrimmedChangedEvent();
+
+				IsTextTrimmed = isTextTrimmed;
+			}
+		}
+
+		//------------------------------------------------------------------------
+		//
+		//  Method:   CRichTextBlock::RaiseIsTextTrimmedChangedEvent
+		//
+		//  Synopsis: Raises event for IsTextTrimmedChanged.
+		//
+		//------------------------------------------------------------------------
+		private void RaiseIsTextTrimmedChangedEvent()
+		{
+			// CEventManager::Raise skips senders without listeners, then posts the event (fRaiseSync is false).
+			if (_isTextTrimmedChanged is null)
+			{
 				return;
 			}
 
-			bool isTrimmed = false;
-
-			for (var blockChild = _pageNode?.GetFirstChild(); blockChild is not null; blockChild = blockChild.GetNext())
-			{
-				if (blockChild is ParagraphNode paragraphNode && paragraphNode.GetHasTrimmedLine())
-				{
-					isTrimmed = true;
-					break;
-				}
-			}
-
-			IsTextTrimmed = isTrimmed;
+			NativeDispatcher.Main.Enqueue(() => _isTextTrimmedChanged?.Invoke(this, new()), NativeDispatcherPriority.Normal);
 		}
 
 		private int GetCharacterIndexAtPointSkia(Point point, bool extended)

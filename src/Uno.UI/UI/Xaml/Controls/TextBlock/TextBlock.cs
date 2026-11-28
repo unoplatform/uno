@@ -161,6 +161,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void InvalidateInlines(bool updateText) => InvalidateInlines(updateText, knownText: null);
 
+		// An inherited formatting change never reaches CTextBlock::OnContentChanged; the owner only runs InvalidateContent.
+		internal void InvalidateInlines(bool updateText, bool inherited) => InvalidateInlines(updateText, knownText: null, contentChanged: !inherited);
+
 		internal void InvalidateInlines(
 			string knownText,
 			IReadOnlyList<Inline> removed,
@@ -176,7 +179,8 @@ namespace Microsoft.UI.Xaml.Controls
 			bool updateText,
 			string knownText,
 			IReadOnlyList<Inline> removed = null,
-			IReadOnlyList<Inline> inserted = null)
+			IReadOnlyList<Inline> inserted = null,
+			bool contentChanged = true)
 		{
 			if (updateText || removed is not null && inserted is not null)
 			{
@@ -216,6 +220,11 @@ namespace Microsoft.UI.Xaml.Controls
 			else if (removed is not null && inserted is not null)
 			{
 				UpdateHyperlinks(removed, inserted);
+			}
+
+			if (contentChanged)
+			{
+				OnContentChanged();
 			}
 
 			OnInlinesChangedPartial();
@@ -361,6 +370,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected virtual void OnTextChanged(string oldValue, string newValue)
 		{
+			// Since we just set the text, we just removed any complex content which may have previously existed
+			ClearFastPathOptOutConditions(FastPathOptOutConditions.HasComplexContent);
 			UpdateInlines(newValue);
 
 #if __SKIA__
@@ -573,6 +584,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnTextTrimmingChanged()
 		{
+			UpdateFastPathOptOutConditions(TextTrimmingProperty);
 			OnTextTrimmingChangedPartial();
 			InvalidateTextBlock();
 		}
@@ -860,12 +872,18 @@ namespace Microsoft.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					defaultValue: IntBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnCharacterSpacingChanged()
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnCharacterSpacingChanged(e)
 				)
 			);
 
-		private void OnCharacterSpacingChanged()
+		private void OnCharacterSpacingChanged(DependencyPropertyChangedEventArgs e)
 		{
+			// CTextBlock::OnPropertySetImpl only runs for a value set on this TextBlock, not for an inherited one.
+			if (e.OldPrecedence < DependencyPropertyValuePrecedences.Inheritance || e.NewPrecedence < DependencyPropertyValuePrecedences.Inheritance)
+			{
+				UpdateFastPathOptOutConditions(CharacterSpacingProperty);
+			}
+
 			OnCharacterSpacingChangedPartial();
 			InvalidateTextBlock();
 		}
@@ -948,7 +966,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnIsTextTrimmedChanged()
 		{
 			OnIsTextTrimmedChangedPartial();
-			_isTextTrimmedChanged?.Invoke(this, new());
 		}
 
 		partial void OnIsTextTrimmedChangedPartial();
@@ -1460,14 +1477,6 @@ namespace Microsoft.UI.Xaml.Controls
 			/*IsEnabled() &&*/ (IsTextSelectionEnabled || IsTabStop || FocusProperties.GetCaretBrowsingModeEnable()) &&
 			AreAllAncestorsVisible();
 
-		[SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used only by some platforms")]
-		private bool IsTextTrimmable =>
-			TextTrimming != TextTrimming.None ||
-			MaxLines != 0;
-
-		[SuppressMessage("CodeQuality", "IDE0051:Remove unused private members", Justification = "Used only by some platforms")]
-		partial void UpdateIsTextTrimmed();
-
 		// The way this works in WinUI is by the MarkInheritedPropertyDirty call in CFrameworkElement::NotifyThemeChangedForInheritedProperties
 		// There is a special handling for Foreground specifically there.
 		void IThemeChangeAware.OnThemeChanged() => OnForegroundChanged();
@@ -1481,7 +1490,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private Action? _selectionHighlightColorChanged;
 		private IDisposable? _selectionHighlightBrushChangedSubscription;
 		private readonly VirtualKeyModifiers _platformCtrlKey = Uno.UI.Helpers.DeviceTargetHelper.PlatformCommandModifier;
-		private Size _lastInlinesArrangeWithPadding;
 		private readonly Dictionary<TextHighlighter, IDisposable> _textHighlighterDisposables = new();
 
 		private protected override ContainerVisual CreateElementVisual() => new TextVisual(Compositor.GetSharedCompositor(), this);
@@ -1660,6 +1668,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			ResolveTextMode();
+
 			var padding = Padding;
 			var availableSizeWithoutPadding = availableSize.Subtract(padding).AtLeastZero();
 			if (ParsedText is MathParsedText)
@@ -1668,6 +1678,13 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			ParsedText = ParseText(availableSizeWithoutPadding, out var desiredSize);
 			_textLayoutWidth = availableSizeWithoutPadding.Width;
+
+			if (_textMode == TextMode.Normal && TextTrimming != TextTrimming.None)
+			{
+				// ParagraphNode::MeasureCore: Trimming modes can always fit to whatever constraint is provided, so don't
+				// return a larger width than the constraint, or there's no way to trim to the actual arrange slot width.
+				desiredSize.Width = Math.Min(desiredSize.Width, availableSizeWithoutPadding.Width);
+			}
 			_textLayoutVersion++;
 
 			desiredSize = desiredSize.Add(padding);
@@ -1813,10 +1830,17 @@ namespace Microsoft.UI.Xaml.Controls
 				ParsedText = ParseText(availableSizeWithoutPadding, out arrangedSize);
 			}
 
-			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
-
 			var result = base.ArrangeOverride(finalSize);
-			UpdateIsTextTrimmed();
+
+			if (_textMode == TextMode.DWriteLayout)
+			{
+				UpdateIsTextTrimmedFastPath();
+			}
+			else
+			{
+				// PageNode::ArrangeCore takes the padding out of the final size; ParagraphNode collapses lines to that width.
+				UpdateIsTextTrimmedSlowPath(Math.Max(0, availableSizeWithoutPadding.Width), arrangedSize.Width);
+			}
 
 			return result;
 		}
@@ -2085,14 +2109,6 @@ namespace Microsoft.UI.Xaml.Controls
 			private set => this.SetValue(SelectedTextProperty, value);
 		}
 		#endregion
-
-		partial void UpdateIsTextTrimmed()
-		{
-			IsTextTrimmed = IsTextTrimmable && (
-				_lastInlinesArrangeWithPadding.Width > ActualWidth ||
-				_lastInlinesArrangeWithPadding.Height > ActualHeight
-			);
-		}
 
 		/// <summary>
 		/// Returns a mask that represents the alpha channel of the text as a CompositionBrush.

@@ -512,17 +512,12 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsTextTrimmed),
 				typeof(bool),
 				typeof(RichTextBlock),
-				new FrameworkPropertyMetadata(BoolBoxes.False, propertyChangedCallback: (s, e) => ((RichTextBlock)s).OnIsTextTrimmedChanged()));
+				new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		public bool IsTextTrimmed
 		{
 			get => (bool)GetValue(IsTextTrimmedProperty);
 			private set => SetValue(IsTextTrimmedProperty, value);
-		}
-
-		private void OnIsTextTrimmedChanged()
-		{
-			_isTextTrimmedChanged?.Invoke(this, new());
 		}
 
 		#endregion

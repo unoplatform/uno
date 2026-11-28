@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Documents
 					span.InvalidateInlines(updateText, inherited);
 					break;
 				case TextBlock textBlock:
-					textBlock.InvalidateInlines(updateText);
+					textBlock.InvalidateInlines(updateText, inherited);
 					break;
 				case Block block:
 					block.InvalidateInlines(contentChanged: !inherited);
@@ -47,11 +47,29 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			base.OnPropertyChanged2(args);
 
-			if (IsContentFormattingProperty(args.Property) &&
-				(args.OldPrecedence < DependencyPropertyValuePrecedences.Inheritance || args.NewPrecedence < DependencyPropertyValuePrecedences.Inheritance))
+			if (args.OldPrecedence < DependencyPropertyValuePrecedences.Inheritance || args.NewPrecedence < DependencyPropertyValuePrecedences.Inheritance)
 			{
-				InvalidateInlines(updateText: false, inherited: false);
+				if (IsContentFormattingProperty(args.Property))
+				{
+					InvalidateInlines(updateText: false, inherited: false);
+				}
+				else
+				{
+					// CTextBlock::OnContentChanged takes any property, Foreground included, out of the fast path.
+					GetOwningTextBlock()?.OnContentChanged();
+				}
 			}
+		}
+
+		private TextBlock GetOwningTextBlock()
+		{
+			var parent = this.GetParent();
+			while (parent is Span span)
+			{
+				parent = span.GetParent();
+			}
+
+			return parent as TextBlock;
 		}
 
 		// CRichTextBlock::OnContentChanged only re-renders for a Foreground change.
