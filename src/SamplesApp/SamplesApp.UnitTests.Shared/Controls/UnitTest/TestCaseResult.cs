@@ -20,6 +20,11 @@ internal record TestCaseResult
 	public string? FullName => ClassName is not null ? $"{ClassName}.{TestName}" : TestName;
 
 	/// <summary>
+	/// CalculatorTests.Add_WithParameters(1,2,3)
+	/// </summary>
+	public string? ShortName => ClassName is not null ? $"{ClassName[(ClassName.LastIndexOf('.') + 1)..]}.{TestName}" : TestName;
+
+	/// <summary>
 	/// Add_WithParameters
 	/// </summary>
 	public string? MethodName { get; init; }
