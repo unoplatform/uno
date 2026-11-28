@@ -402,7 +402,7 @@ internal sealed class PatternParser
 			int? idealLength = TryGetIdealLengthAndAdvance();
 			ExpectCharacterAndAdvance('}');
 
-			timeZone = new PatternTimeZoneNode(PatternTimeZoneNode.TimeZoneKind.Full, idealLength);
+			timeZone = new PatternTimeZoneNode(PatternTimeZoneNode.TimeZoneKind.Abbreviated, idealLength);
 			return true;
 		}
 
