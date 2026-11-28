@@ -438,6 +438,8 @@ namespace Microsoft.UI.Xaml.Controls
 			m_tpFixOffsetTimer?.Stop();
 
 			_fixOffsetSubscription.Disposable = null;
+			// The subscription removed the timer's Tick handler: let SetFixOffsetTimer create a new timer.
+			m_tpFixOffsetTimer = null;
 			_buttonsFadeOutTimerSubscription.Disposable = null;
 		}
 
@@ -931,6 +933,13 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				offset = GetDesiredItemWidth();
 				offset *= selectedIndex;
+			}
+
+			// Uno-specific: Uno always scrolls by pixels, so there's no valid offset until the FlipView has a size
+			// (e.g. while it's out of the visual tree). FixOffset syncs it again once the ScrollViewer is sized.
+			if (double.IsNaN(offset))
+			{
+				return;
 			}
 
 			if (m_tpScrollViewer != null)
@@ -1475,8 +1484,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			//&& m_tpScrollViewer?.IsManipulationHandlerReady()
 
+			// Uno-specific: without an item size (e.g. out of the visual tree) the bounds to animate to are NaN.
 			if ((oldIndex == newIndex + 1 || oldIndex == newIndex - 1) && m_tpScrollViewer != null
-				&& shouldUseAnimation && !m_skipAnimationOnce && oldIndex != -1 && newIndex != -1)
+				&& shouldUseAnimation && !m_skipAnimationOnce && oldIndex != -1 && newIndex != -1
+				&& !double.IsNaN(GetDesiredItemWidth()) && !double.IsNaN(GetDesiredItemHeight()))
 			{
 				Rect bounds = default;
 				bool handled = false;

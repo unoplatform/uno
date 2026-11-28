@@ -21,6 +21,7 @@ using Windows.UI.Input.Preview.Injection;
 using Uno.Extensions;
 using Windows.Foundation;
 using Uno.UI.DevTools.Input;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -491,6 +492,57 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				radioButton.IsChecked = true;
 			}
 
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26373")]
+		[DataRow(false, false)]
+		[DataRow(false, true)]
+		[DataRow(true, false)]
+		[DataRow(true, true)]
+		public async Task When_Detached_And_ItemsSource_Mutated(bool explicitWidth, bool insertAtStart)
+		{
+			var items = new ObservableCollection<string>(Enumerable.Range(0, 5).Select(i => "i" + i));
+			var root = new ContentControl();
+			WindowHelper.WindowContent = root;
+			await WindowHelper.WaitForIdle();
+
+			var flipView = new FlipView { ItemsSource = items };
+			if (explicitWidth)
+			{
+				flipView.Width = 300;
+			}
+
+			root.Content = flipView;
+			await WindowHelper.WaitForLoaded(flipView);
+			flipView.SelectedIndex = 2;
+			await WindowHelper.WaitForIdle();
+
+			root.Content = null;
+			await WindowHelper.WaitForIdle();
+
+			if (insertAtStart)
+			{
+				items.Insert(0, "new");
+			}
+			else
+			{
+				items.Add("new");
+			}
+
+			Assert.AreEqual("i2", flipView.SelectedItem);
+
+			// Once back in the tree, the view must be scrolled to the selected item.
+			root.Content = flipView;
+			await WindowHelper.WaitForLoaded(flipView);
+
+			var scrollViewer = flipView.FindFirstDescendant<ScrollViewer>("ScrollingHost");
+			Assert.IsNotNull(scrollViewer);
+			await UITestHelper.WaitFor(
+				() => scrollViewer.ViewportWidth > 0 && Math.Abs(scrollViewer.HorizontalOffset - flipView.SelectedIndex * scrollViewer.ViewportWidth) < 1,
+				timeoutMS: 2000,
+				"FlipView did not scroll to the selected item after being re-attached");
+			Assert.AreEqual("i2", flipView.SelectedItem);
 		}
 
 #if HAS_UNO
