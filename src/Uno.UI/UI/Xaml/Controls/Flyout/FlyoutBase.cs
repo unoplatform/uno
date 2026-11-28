@@ -73,6 +73,21 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private bool m_openingCanceled;
 
 		private bool m_shouldTakeFocus = true;
+		private bool m_shouldOverlayPassThroughAllInput;
+		private bool m_shouldHideIfPointerMovesAway;
+		private bool m_ownsOverlayInputPassThroughElement;
+		private (uint PointerId, ulong Timestamp)? m_passedThroughDismissingPress;
+
+		// MUX Reference: FlyoutBase_partial.h m_wrRootVisual, the placement target's public root visual while open.
+		private WeakReference<UIElement> m_wrRootVisual;
+
+		// Uno-specific: stands in for WinUI's m_rootVisualPointerMovedToken.
+		private Input.PointerEventHandler m_rootVisualPointerMovedHandler;
+		private bool m_isRootVisualPointerMovedHandlerAttached;
+
+		// Uno-specific: until the presenter is laid out for this opening it keeps the previous opening's bounds (or none
+		// the first time), so the move-away check would measure against the wrong place.
+		private bool m_isPresenterLaidOutForOpening;
 
 		private InputDeviceType m_inputDeviceTypeUsedToOpen;
 
@@ -292,7 +307,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		public static DependencyProperty OverlayInputPassThroughElementProperty { get; } =
-			DependencyProperty.Register(nameof(OverlayInputPassThroughElement), typeof(DependencyObject), typeof(FlyoutBase), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+			DependencyProperty.Register(
+				nameof(OverlayInputPassThroughElement),
+				typeof(DependencyObject),
+				typeof(FlyoutBase),
+				new FrameworkPropertyMetadata(
+					null,
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					// MUX Reference: FlyoutBase_partial.cpp OnPropertyChanged2, FlyoutBase_OverlayInputPassThroughElement.
+					propertyChangedCallback: (s, e) => ((FlyoutBase)s).m_ownsOverlayInputPassThroughElement = false));
 
 		/// <summary>
 		/// Gets or sets whether a disabled control can receive focus.
@@ -425,6 +448,22 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				m_openingCanceled = true;
 
+				RemoveRootVisualPointerMovedHandler();
+
+				if (_popup?.Child is FrameworkElement closingPresenter)
+				{
+					closingPresenter.LayoutUpdated -= OnPresenterLaidOutForOpening;
+				}
+
+				m_wrRootVisual = null;
+
+				// Uno-specific: WinUI keeps the root it set until the next Standard show. Letting go of it on close keeps a
+				// flyout that outlives its window from holding that window's tree.
+				if (m_ownsOverlayInputPassThroughElement)
+				{
+					OverlayInputPassThroughElement = null;
+				}
+
 				if (_popup != null)
 				{
 					_popup.IsOpen = false;
@@ -500,6 +539,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private protected virtual void ShowAtCore(FrameworkElement placementTarget, FlyoutShowOptions showOptions)
 		{
 			EnsurePopupCreated();
+
+			// Not on Hide: the dismissing press closes the flyout before it reaches the element under it.
+			m_passedThroughDismissingPress = null;
 
 			m_hasPlacementOverride = false;
 
@@ -601,14 +643,48 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			UpdateStateToShowMode(showOptions?.ShowMode ?? FlyoutShowMode.Standard);
 
+			// MUX Reference: FlyoutBase_partial.cpp Open, which keeps the placement target's public root visual
+			// and sets the light dismiss behavior before raising Opening.
+			m_wrRootVisual = VisualTree.GetForElement(placementTarget)?.PublicRootVisual is { } rootVisual
+				? new WeakReference<UIElement>(rootVisual)
+				: null;
+
+			SetPopupLightDismissBehavior();
+
 			// Reset forced resizing of width/height to get content's auto dimensions.
 			ResetPresenterSize();
 
-			OnOpening();
+			try
+			{
+				OnOpening();
+			}
+			catch
+			{
+				// Uno-specific: an Opening handler that throws leaves the flyout closed; don't keep the window's root.
+				m_wrRootVisual = null;
+				if (m_ownsOverlayInputPassThroughElement)
+				{
+					OverlayInputPassThroughElement = null;
+				}
+
+				throw;
+			}
 
 			if (m_openingCanceled)
 			{
 				return;
+			}
+
+			if (m_shouldHideIfPointerMovesAway)
+			{
+				AddRootVisualPointerMovedHandler();
+			}
+
+			m_isPresenterLaidOutForOpening = false;
+			if (_popup.Child is FrameworkElement openingPresenter)
+			{
+				openingPresenter.LayoutUpdated -= OnPresenterLaidOutForOpening;
+				openingPresenter.LayoutUpdated += OnPresenterLaidOutForOpening;
 			}
 
 			Open();
@@ -648,8 +724,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private void UpdateStateToShowMode(FlyoutShowMode showMode)
 		{
-			// TODO Uno: m_shouldHideIfPointerMovesAway and m_shouldOverlayPassThroughAllInput not handled yet.
-
 			if (showMode == FlyoutShowMode.Auto)
 			{
 				showMode = FlyoutShowMode.Standard;
@@ -657,15 +731,187 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			ShowMode = showMode;
 
+			var oldShouldHideIfPointerMovesAway = m_shouldHideIfPointerMovesAway;
+
 			switch (showMode)
 			{
 				case FlyoutShowMode.Standard:
 					m_shouldTakeFocus = true;
+					m_shouldHideIfPointerMovesAway = false;
+					m_shouldOverlayPassThroughAllInput = false;
 					break;
 				case FlyoutShowMode.Transient:
+					m_shouldTakeFocus = false;
+					m_shouldHideIfPointerMovesAway = false;
+					m_shouldOverlayPassThroughAllInput = true;
+					break;
 				case FlyoutShowMode.TransientWithDismissOnPointerMoveAway:
 					m_shouldTakeFocus = false;
+					m_shouldHideIfPointerMovesAway = true;
+					m_shouldOverlayPassThroughAllInput = true;
 					break;
+			}
+
+			if (_popup is { IsOpen: true })
+			{
+				SetPopupLightDismissBehavior();
+
+				if (m_shouldHideIfPointerMovesAway && !oldShouldHideIfPointerMovesAway)
+				{
+					AddRootVisualPointerMovedHandler();
+				}
+				else if (!m_shouldHideIfPointerMovesAway && oldShouldHideIfPointerMovesAway)
+				{
+					RemoveRootVisualPointerMovedHandler();
+				}
+			}
+		}
+
+		// MUX Reference: FlyoutBase_partial.cpp AddRootVisualPointerMovedHandler.
+		// Uno-specific: the handler also goes on the flyout's light-dismiss panel. It covers the window while the flyout is
+		// open and receives the moves, where WinUI's light-dismiss layer lets them through to the root visual.
+		private void AddRootVisualPointerMovedHandler()
+		{
+			if (!m_isRootVisualPointerMovedHandlerAttached)
+			{
+				m_rootVisualPointerMovedHandler ??= OnRootVisualPointerMoved;
+
+				if (m_wrRootVisual is not null && m_wrRootVisual.TryGetTarget(out var rootVisual))
+				{
+					rootVisual.PointerMoved += m_rootVisualPointerMovedHandler;
+				}
+
+				if (_popup?.PopupPanel is { } popupPanel)
+				{
+					popupPanel.PointerMoved += m_rootVisualPointerMovedHandler;
+				}
+
+				m_isRootVisualPointerMovedHandlerAttached = true;
+			}
+		}
+
+		// MUX Reference: FlyoutBase_partial.cpp RemoveRootVisualPointerMovedHandler.
+		private void RemoveRootVisualPointerMovedHandler()
+		{
+			if (m_isRootVisualPointerMovedHandlerAttached)
+			{
+				if (m_wrRootVisual is not null && m_wrRootVisual.TryGetTarget(out var rootVisual))
+				{
+					rootVisual.PointerMoved -= m_rootVisualPointerMovedHandler;
+				}
+
+				if (_popup?.PopupPanel is { } popupPanel)
+				{
+					popupPanel.PointerMoved -= m_rootVisualPointerMovedHandler;
+				}
+
+				m_isRootVisualPointerMovedHandlerAttached = false;
+			}
+		}
+
+		private void OnPresenterLaidOutForOpening(object sender, object args)
+		{
+			m_isPresenterLaidOutForOpening = true;
+
+			if (_popup?.Child is FrameworkElement presenter)
+			{
+				presenter.LayoutUpdated -= OnPresenterLaidOutForOpening;
+			}
+		}
+
+		// MUX Reference: FlyoutBase_partial.cpp OnRootVisualPointerMoved.
+		// Hides the flyout in TransientWithDismissOnPointerMoveAway mode when the pointer moves more than 80 pixels away.
+		private void OnRootVisualPointerMoved(object sender, Input.PointerRoutedEventArgs args)
+		{
+			// The flyout is hidden when the pointer is moved more than 80 pixels
+			// away from its bounds. This is the square of that threshold distance.
+			const double hidingThreshold = 6400;
+
+			if (_popup?.Child is not FrameworkElement presenter || !m_isPresenterLaidOutForOpening)
+			{
+				return;
+			}
+
+			// Uno-specific: moves of a pointer captured inside the flyout bubble up to its light-dismiss panel. In WinUI
+			// they reach the popup root, not the root visual, so they never hide the flyout.
+			if (PointerCapture.TryGet(args.Pointer, out var capture) && capture.ExplicitTarget is { } captureTarget)
+			{
+				for (DependencyObject element = captureTarget; element is not null; element = VisualTreeHelper.GetParent(element))
+				{
+					if (element == presenter)
+					{
+						return;
+					}
+				}
+			}
+
+			var pointerPosition = args.GetCurrentPoint(null).Position;
+
+			var presenterBounds = new Rect(0, 0, presenter.ActualWidth, presenter.ActualHeight);
+			var rootPresenterBounds = presenter.TransformToVisual(null).TransformBounds(presenterBounds);
+
+			var left = rootPresenterBounds.X;
+			var top = rootPresenterBounds.Y;
+			var right = left + rootPresenterBounds.Width;
+			var bottom = top + rootPresenterBounds.Height;
+			double xDistance = 0;
+			double yDistance = 0;
+
+			if (pointerPosition.X < left)
+			{
+				xDistance = left - pointerPosition.X;
+			}
+			else if (pointerPosition.X > right)
+			{
+				xDistance = pointerPosition.X - right;
+			}
+
+			if (pointerPosition.Y < top)
+			{
+				yDistance = top - pointerPosition.Y;
+			}
+			else if (pointerPosition.Y > bottom)
+			{
+				yDistance = pointerPosition.Y - bottom;
+			}
+
+			if (xDistance * xDistance + yDistance * yDistance > hidingThreshold)
+			{
+				Hide();
+			}
+		}
+
+		// Uno-specific: the press that dismissed this flyout and was passed on to the element under it. That element
+		// receives it once the flyout has closed, and can use this to tell the flyout was open when the press began.
+		internal void OnDismissingPressPassedThrough(Input.PointerRoutedEventArgs args)
+			=> m_passedThroughDismissingPress = GetPressKey(args);
+
+		internal bool WasDismissedBy(Input.PointerRoutedEventArgs args)
+			=> m_passedThroughDismissingPress is { } press && press == GetPressKey(args);
+
+		private static (uint PointerId, ulong Timestamp) GetPressKey(Input.PointerRoutedEventArgs args)
+		{
+			var point = args.GetCurrentPoint(null);
+			return (point.PointerId, point.Timestamp);
+		}
+
+		// MUX Reference: FlyoutBase_partial.cpp SetPopupLightDismissBehavior. The popup's IsLightDismissEnabled is kept in
+		// sync by IsLightDismissOverlayEnabled instead.
+		private void SetPopupLightDismissBehavior()
+		{
+			if (m_shouldOverlayPassThroughAllInput)
+			{
+				if (OverlayInputPassThroughElement is null
+					&& m_wrRootVisual is not null
+					&& m_wrRootVisual.TryGetTarget(out var rootVisual))
+				{
+					OverlayInputPassThroughElement = rootVisual;
+					m_ownsOverlayInputPassThroughElement = true;
+				}
+			}
+			else if (m_ownsOverlayInputPassThroughElement)
+			{
+				OverlayInputPassThroughElement = null;
 			}
 		}
 

@@ -1868,10 +1868,10 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 		UpdateCaretLoupe(isEndGripper ? SelectionStart + SelectionLength : SelectionStart);
 	}
 
-	void ITextSelectionGripperHost.OnGripperPressed()
+	void ITextSelectionGripperHost.OnGripperPressed(PointerRoutedEventArgs args)
 	{
 		// A tap on a handle toggles the menu, like a tap on the selection (see OnGripperTapped).
-		_selectionFlyoutOpenAtPress = SelectionFlyout?.IsOpen == true;
+		_selectionFlyoutOpenAtPress = IsSelectionFlyoutOpenAtPress(args);
 		// A handle press is a new touch too: drop a menu still waiting on the previous tap.
 		CancelDeferredTouchFlyout();
 		DismissSelectionFlyoutForPointerPress();

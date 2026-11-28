@@ -826,6 +826,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_isSelectionFlyoutUpdateQueued = false;
 
+			var selectionAtFlyoutClosingPress = _selectionAtFlyoutClosingPress;
+			_selectionAtFlyoutClosingPress = null;
+
 			if (SelectionFlyout is null || TextControlFlyoutHelper.IsOpen(ContextFlyout))
 			{
 				return;
@@ -833,9 +836,20 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var selectionLength = Math.Abs(Selection.end - Selection.start);
 
-			if (_lastInputDeviceType is PointerDeviceType.Pen or PointerDeviceType.Touch && selectionLength > 0)
+			if (_lastInputDeviceType is PointerDeviceType.Pen or PointerDeviceType.Touch
+				&& selectionLength > 0
+				&& selectionAtFlyoutClosingPress != Selection)
 			{
-				TextControlFlyoutHelper.ShowAt(SelectionFlyout, this, _lastPointerPosition, FlyoutShowMode.Transient);
+				// MUX Reference: TextSelectionManager.cpp UpdateSelectionFlyoutVisibility. The flyout goes at the top of the
+				// selection, so it opens above the selection rather than over the point that was tapped.
+				var position = _lastPointerPosition;
+				var selectionRect = _pSelectionManager?.GetSelectionBoundingRect() ?? Rect.Empty;
+				if (!selectionRect.IsEmpty)
+				{
+					position.Y = selectionRect.Y;
+				}
+
+				TextControlFlyoutHelper.ShowAt(SelectionFlyout, this, position, selectionRect.IsEmpty ? default : selectionRect, FlyoutShowMode.Transient);
 			}
 			else if (SelectionFlyout?.IsOpen == true)
 			{

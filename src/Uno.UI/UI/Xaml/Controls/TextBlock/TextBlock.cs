@@ -1094,6 +1094,9 @@ namespace Microsoft.UI.Xaml.Controls
 				// capture here, and we don't set Handled, so the Holding (long-press -> context menu)
 				// and Tapped/Released gestures still fire. Selection happens in OnPointerReleasedForSelectionFlyout.
 				that._lastPointerDownPoint = e.GetCurrentPoint(null);
+				that._selectionAtFlyoutClosingPress = that.SelectionFlyout is { } selectionFlyout && (selectionFlyout.IsOpen || selectionFlyout.WasDismissedBy(e))
+					? that.Selection
+					: null;
 				// Dismiss the selection flyout on press; the gesture re-shows it (tap) or yields to the context menu (hold).
 				that.DismissSelectionFlyoutForPointerPress();
 				if (!Internal.TextControlFlyoutHelper.IsOpen(that.ContextFlyout))
@@ -1498,6 +1501,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private TextSelectionGripperPresenter? _gripperPresenter;
 		private bool _grippersShown;
 		private Microsoft.UI.Input.PointerPoint? _lastPointerDownPoint;
+
+		// The selection when a touch press found the selection flyout open, or closed it on its way in (a transient flyout
+		// passes that press on once closed, see FlyoutBase.WasDismissedBy). A tap that leaves the selection as it was
+		// just closes the flyout, rather than showing it again.
+		private Range? _selectionAtFlyoutClosingPress;
 
 		private (Size availableSize, Size outSize, TextAlignment? alignment) _lastParsedTextCreationValues = (Size.Empty, Size.Empty, TextAlignment.Left);
 		private IParsedText _parsedText = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
@@ -2174,6 +2182,9 @@ namespace Microsoft.UI.Xaml.Controls
 			// Reset the queued flag
 			_isSelectionFlyoutUpdateQueued = false;
 
+			var selectionAtFlyoutClosingPress = _selectionAtFlyoutClosingPress;
+			_selectionAtFlyoutClosingPress = null;
+
 			if (!HasSelectionFlyout() || TextControlFlyoutHelper.IsOpen(ContextFlyout))
 			{
 				return;
@@ -2191,7 +2202,7 @@ namespace Microsoft.UI.Xaml.Controls
 					break;
 				case PointerDeviceType.Pen:
 				case PointerDeviceType.Touch:
-					if (selectionLength > 0)
+					if (selectionLength > 0 && selectionAtFlyoutClosingPress != Selection)
 					{
 						shouldShow = true;
 						showMode = FlyoutShowMode.Transient;
@@ -2313,7 +2324,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// A TextBlock doesn't scroll its own content, so there's nothing to bring into view.
 		void ITextSelectionGripperHost.ScrollForGripper(bool isEndGripper) { }
 
-		void ITextSelectionGripperHost.OnGripperPressed() => DismissSelectionFlyoutForPointerPress();
+		void ITextSelectionGripperHost.OnGripperPressed(PointerRoutedEventArgs args) => DismissSelectionFlyoutForPointerPress();
 
 		void ITextSelectionGripperHost.OnGripperPointerLost() { }
 

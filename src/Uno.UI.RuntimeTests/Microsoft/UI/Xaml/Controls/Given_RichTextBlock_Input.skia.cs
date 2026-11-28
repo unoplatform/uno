@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
@@ -756,6 +757,263 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finally
 			{
 				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[Timeout(120_000)]
+		public async Task When_Touch_Tap_Selects_Word_Flyout_Opens_Above_Selection()
+		{
+			var flyout = new Flyout { Content = new Border { Width = 60, Height = 20 } };
+			var sut = new RichTextBlock
+			{
+				IsTextSelectionEnabled = true,
+				// Room above for the flyout, whatever the window size.
+				Margin = new Thickness(0, 120, 0, 0),
+				Padding = new Thickness(0, 10, 0, 0),
+				SelectionFlyout = flyout,
+				Blocks = { new Paragraph { Inlines = { new Run { Text = "hello uno world" } } } },
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+			try
+			{
+				var lineTop = bounds.Y + sut.Padding.Top;
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using (var finger = injector.GetFinger())
+				{
+					finger.Press(new Point(bounds.X + 10, bounds.Bottom - 3));
+					finger.Release();
+				}
+
+				await WindowHelper.WaitFor(() => flyout.IsOpen, timeoutMS: 3000, message: "a touch tap on a word selects it and shows the flyout");
+				await WindowHelper.WaitForIdle();
+
+				var presenter = VisualTreeHelper.GetOpenPopupsForXamlRoot(sut.XamlRoot!).Select(p => p.Child).OfType<FlyoutPresenter>().Single();
+				var presenterBounds = presenter.TransformToVisual(null).TransformBounds(new Rect(0, 0, presenter.ActualWidth, presenter.ActualHeight));
+
+				// As in WinUI, the flyout is shown at the top of the selection, not at the tap point, so it doesn't cover the
+				// line that was tapped.
+				Assert.IsTrue(presenterBounds.Bottom <= lineTop + 1, $"the flyout ({presenterBounds}) should end above the selected line (top {lineTop})");
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+		}
+
+		private static (RichTextBlock Master, RichTextBlockOverflow Overflow, StackPanel Panel) CreateWithOverflow(Flyout? selectionFlyout = null)
+		{
+			var master = new RichTextBlock
+			{
+				IsTextSelectionEnabled = true,
+				Width = 400,
+				MaxLines = 1,
+				// Room above each line for the flyout, whatever the window size.
+				Margin = new Thickness(0, 120, 0, 0),
+				SelectionFlyout = selectionFlyout,
+				Blocks =
+				{
+					new Paragraph { Inlines = { new Run { Text = "hello uno world" } } },
+					new Paragraph { Inlines = { new Run { Text = "second paragraph words" } } },
+				},
+			};
+			var overflow = new RichTextBlockOverflow { Width = 400, Margin = new Thickness(0, 120, 0, 0) };
+			master.OverflowContentTarget = overflow;
+
+			var panel = new StackPanel();
+			panel.Children.Add(master);
+			panel.Children.Add(overflow);
+
+			return (master, overflow, panel);
+		}
+
+		[TestMethod]
+		[Timeout(120_000)]
+		public async Task When_Touch_Tap_With_Overflow_Flyout_Opens_Above_Selection()
+		{
+			var flyout = new Flyout { Content = new Border { Width = 60, Height = 20 } };
+			var (master, _, panel) = CreateWithOverflow(flyout);
+
+			await UITestHelper.Load(panel);
+			try
+			{
+				Assert.IsTrue(master.HasOverflowContent, "Precondition: the second paragraph should overflow");
+
+				var bounds = master.GetAbsoluteBounds();
+				var tap = new Point(bounds.X + 10, bounds.Y + bounds.Height / 2);
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using (var finger = injector.GetFinger())
+				{
+					finger.Press(tap);
+					finger.Release();
+				}
+
+				await WindowHelper.WaitFor(() => flyout.IsOpen, timeoutMS: 3000, message: $"a touch tap on a word shows the selection flyout (selection '{master.SelectedText}')");
+				await WindowHelper.WaitForIdle();
+
+				var presenter = VisualTreeHelper.GetOpenPopupsForXamlRoot(master.XamlRoot!).Select(p => p.Child).OfType<FlyoutPresenter>().Single();
+				var presenterBounds = presenter.TransformToVisual(null).TransformBounds(new Rect(0, 0, presenter.ActualWidth, presenter.ActualHeight));
+
+				Assert.IsTrue(presenterBounds.Bottom <= bounds.Y + 1, $"the flyout ({presenterBounds}) should end above the selected line (top {bounds.Y})");
+				Assert.IsTrue(presenterBounds.Left <= tap.X && tap.X <= presenterBounds.Right, $"the flyout ({presenterBounds}) should be over the tap ({tap})");
+			}
+			finally
+			{
+				flyout.Hide();
+			}
+		}
+
+		[TestMethod]
+		[Timeout(120_000)]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task When_Selection_In_Overflow_Bounding_Rect_Starts_At_Its_First_Line(bool startsInMaster)
+		{
+			var (master, overflow, panel) = CreateWithOverflow();
+
+			await UITestHelper.Load(panel);
+			Assert.IsTrue(master.HasOverflowContent, "Precondition: the second paragraph should overflow");
+
+			var second = (Run)((Paragraph)master.Blocks[1]).Inlines[0];
+			if (startsInMaster)
+			{
+				master.SelectAll();
+			}
+			else
+			{
+				master.Select(second.ContentStart!, second.ContentEnd!);
+			}
+
+			await WindowHelper.WaitForIdle();
+
+			var manager = master.GetSelectionManager() ?? throw new InvalidOperationException("The RichTextBlock should have a selection manager");
+			var bounds = manager.GetSelectionBoundingRect();
+
+			// In the master's coordinates, as WinUI maps each overflow's rects into the owner's.
+			var overflowTop = overflow.TransformToVisual(master).TransformPoint(default).Y;
+			var lineHeight = master.ActualHeight;
+
+			Assert.IsFalse(bounds.IsEmpty, "a selection should have bounds");
+			Assert.AreEqual(startsInMaster ? 0 : overflowTop, bounds.Top, 1, "the bounds start at the selection's first line");
+			Assert.IsTrue(bounds.Bottom >= overflowTop + lineHeight / 2, $"the bounds ({bounds}) should take in the overflow's line (top {overflowTop})");
+		}
+
+		[TestMethod]
+		[Timeout(120_000)]
+		public async Task When_Negative_Rect_Sizes_Disallowed_Touch_Tap_Shows_Flyout()
+		{
+			var flyout = new Flyout { Content = new Border { Width = 60, Height = 20 } };
+			var sut = new RichTextBlock
+			{
+				IsTextSelectionEnabled = true,
+				Margin = new Thickness(0, 120, 0, 0),
+				SelectionFlyout = flyout,
+				Blocks = { new Paragraph { Inlines = { new Run { Text = "hello uno world" } } } },
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+			var allowNegative = global::Uno.FoundationFeatureConfiguration.Rect.AllowNegativeWidthHeight;
+			global::Uno.FoundationFeatureConfiguration.Rect.AllowNegativeWidthHeight = false;
+			try
+			{
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using (var finger = injector.GetFinger())
+				{
+					finger.Press(new Point(bounds.X + 10, bounds.Y + bounds.Height / 2));
+					finger.Release();
+				}
+
+				await WindowHelper.WaitFor(() => flyout.IsOpen, timeoutMS: 3000, message: "a touch tap on a word shows the flyout when the app disallows negative rect sizes");
+			}
+			finally
+			{
+				global::Uno.FoundationFeatureConfiguration.Rect.AllowNegativeWidthHeight = allowNegative;
+				flyout.Hide();
+			}
+		}
+
+		[TestMethod]
+		[Timeout(120_000)]
+		public async Task When_Selection_On_Several_Lines_Bounding_Rect_Is_Their_Union()
+		{
+			// The second line is shorter and starts further left than the selected part of the first.
+			var sut = new RichTextBlock
+			{
+				IsTextSelectionEnabled = true,
+				Width = 150,
+				TextWrapping = TextWrapping.Wrap,
+				Blocks = { new Paragraph { Inlines = { new Run { Text = "alpha beta gamma delta epsilon" } } } },
+			};
+
+			await UITestHelper.Load(sut);
+
+			var run = (Run)((Paragraph)sut.Blocks[0]).Inlines[0];
+			sut.Select(run.ContentStart!.GetPositionAtOffset(8, LogicalDirection.Forward)!, run.ContentStart!.GetPositionAtOffset(24, LogicalDirection.Forward)!);
+			await WindowHelper.WaitForIdle();
+
+			var manager = sut.GetSelectionManager() ?? throw new InvalidOperationException("The RichTextBlock should have a selection manager");
+			manager.GetSelectionHighlightRects(sut.GetSingleElementTextView()!, out var lines);
+			Assert.IsGreaterThan(1, lines.Length, "Precondition: the selection should span several lines");
+			Assert.IsTrue(lines.Select(r => r.Left).Distinct().Count() > 1, "Precondition: the lines should start at different x");
+
+			var bounds = manager.GetSelectionBoundingRect();
+
+			Assert.AreEqual(lines.Min(r => r.Left), bounds.Left, 0.01, "left");
+			Assert.AreEqual(lines.Min(r => r.Top), bounds.Top, 0.01, "top");
+			Assert.AreEqual(lines.Max(r => r.Right), bounds.Right, 0.01, "right");
+			Assert.AreEqual(lines.Max(r => r.Bottom), bounds.Bottom, 0.01, "bottom");
+		}
+
+		[TestMethod]
+		[Timeout(120_000)]
+		public async Task When_Touch_Tap_On_Selection_Toggles_Flyout()
+		{
+			var flyout = new Flyout { Content = new Border { Width = 60, Height = 20 } };
+			var sut = new RichTextBlock
+			{
+				IsTextSelectionEnabled = true,
+				// Room above for the flyout, which opens above the selection, whatever the window size.
+				Margin = new Thickness(0, 120, 0, 0),
+				SelectionFlyout = flyout,
+				Blocks = { new Paragraph { Inlines = { new Run { Text = "hello uno world" } } } },
+			};
+
+			var bounds = await UITestHelper.Load(sut);
+			try
+			{
+				var point = new Point(bounds.X + 10, bounds.Y + bounds.Height / 2);
+
+				// Each tap with its own injector, so taps a moment apart don't count as a double-tap.
+				void Tap()
+				{
+					var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+					using var finger = injector.GetFinger();
+					finger.Press(point);
+					finger.Release();
+				}
+
+				Tap();
+				await WindowHelper.WaitFor(() => flyout.IsOpen, timeoutMS: 3000, message: "a touch tap on a word selects it and shows the flyout");
+				var selected = sut.SelectedText;
+				Assert.AreEqual("hello", selected.TrimEnd());
+
+				// The tap that closes the transient flyout reaches the RichTextBlock: it must not reopen it.
+				await Task.Delay(600);
+				Tap();
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(300);
+				await WindowHelper.WaitForIdle();
+				Assert.IsFalse(flyout.IsOpen, "a tap on the selection while the flyout shows should hide it");
+				Assert.AreEqual(selected, sut.SelectedText, "the tap must keep the selection");
+
+				await Task.Delay(600);
+				Tap();
+				await WindowHelper.WaitFor(() => flyout.IsOpen, timeoutMS: 3000, message: "tapping the selection again shows the flyout");
+			}
+			finally
+			{
+				flyout.Hide();
 			}
 		}
 	}

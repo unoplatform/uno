@@ -854,29 +854,56 @@ internal sealed partial class TextSelectionManager
 	//------------------------------------------------------------------------
 	public Rect GetSelectionBoundingRect()
 	{
-		// Uno adaptation: WinUI aggregates per-overflow highlight rects and transforms them
-		// into the owner's coordinate space. Overflow chaining lands at Stage 9; for now we
-		// union the highlight rects of the owner's single view.
-		Rect selectionBoundingRectLocal = RectUtilCreateEmptyRect();
+		var bounds = new SelectionBounds();
 
-		ITextView? view = m_owner.GetTextView();
-		if (view != null)
+		// A RichTextBlock's linked view can't produce bounds: as in WinUI, ask the master's own view and then each
+		// overflow's, and map the overflows' rects into the master's coordinates.
+		if (m_owner is RichTextBlock richTextBlock)
 		{
-			GetSelectionHighlightRects(view, out var highlightRects);
+			bounds.Add(this, richTextBlock.GetSingleElementTextView(), toOwner: null);
+
+			for (var overflow = richTextBlock.GetNext(); overflow is not null; overflow = overflow.GetNext())
+			{
+				bounds.Add(this, overflow.GetSingleElementTextView(), overflow.TransformToVisual(richTextBlock));
+			}
+		}
+		else if (m_owner.GetTextView() is { } view)
+		{
+			bounds.Add(this, view, toOwner: null);
+		}
+
+		return bounds.ToRect();
+	}
+
+	// Uno-specific: a true union of the rects' edges. WinUI keeps the smallest left and top but the largest width
+	// and height, which isn't the union once the lines have different lefts.
+	private struct SelectionBounds
+	{
+		private double _left, _top, _right, _bottom;
+		private bool _hasAny;
+
+		public void Add(TextSelectionManager manager, ITextView? view, GeneralTransform? toOwner)
+		{
+			if (view is null)
+			{
+				return;
+			}
+
+			manager.GetSelectionHighlightRects(view, out var highlightRects);
 			foreach (var highlightRect in highlightRects)
 			{
-				selectionBoundingRectLocal.X = Math.Min(selectionBoundingRectLocal.X, highlightRect.X);
-				selectionBoundingRectLocal.Y = Math.Min(selectionBoundingRectLocal.Y, highlightRect.Y);
-				selectionBoundingRectLocal.Width = Math.Max(selectionBoundingRectLocal.Width, highlightRect.Width);
-				selectionBoundingRectLocal.Height = Math.Max(selectionBoundingRectLocal.Height, highlightRect.Height);
+				var rect = toOwner?.TransformBounds(highlightRect) ?? highlightRect;
+				_left = _hasAny ? Math.Min(_left, rect.Left) : rect.Left;
+				_top = _hasAny ? Math.Min(_top, rect.Top) : rect.Top;
+				_right = _hasAny ? Math.Max(_right, rect.Right) : rect.Right;
+				_bottom = _hasAny ? Math.Max(_bottom, rect.Bottom) : rect.Bottom;
+				_hasAny = true;
 			}
 		}
 
-		return selectionBoundingRectLocal;
+		// Rect.Empty, not a rect built with negative sizes, which throws when an app disallows them.
+		public readonly Rect ToRect() => _hasAny ? new Rect(_left, _top, _right - _left, _bottom - _top) : Rect.Empty;
 	}
-
-	private static Rect RectUtilCreateEmptyRect()
-		=> new(float.PositiveInfinity, float.PositiveInfinity, float.NegativeInfinity, float.NegativeInfinity);
 
 	//------------------------------------------------------------------------
 	//  Method:   TextSelectionManager::GetSelectionHighlightRects
