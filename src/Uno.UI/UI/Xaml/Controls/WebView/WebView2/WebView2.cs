@@ -49,10 +49,7 @@ public partial class WebView2 : Control, IWebView
 
 	private void WebView2_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
 	{
-		if (!_coreWebView2Initialized)
-		{
-			EnsureCoreWebView2();
-		}
+		_ = EnsureCoreWebView2();
 
 #if __SKIA__
 		CoreWebView2.OnLoaded();
@@ -66,10 +63,7 @@ public partial class WebView2 : Control, IWebView
 	public IAsyncAction EnsureCoreWebView2Async() =>
 		AsyncAction.FromTask(async ct =>
 		{
-			if (!_coreWebView2Initialized)
-			{
-				EnsureCoreWebView2();
-			}
+			_ = EnsureCoreWebView2();
 
 			await CoreWebView2.EnsureNativeWebViewAsync();
 		});
@@ -85,13 +79,26 @@ public partial class WebView2 : Control, IWebView
 
 	public void NavigateToString(string htmlContent) => CoreWebView2.NavigateToString(htmlContent);
 
-	private void EnsureCoreWebView2()
+	private async Task EnsureCoreWebView2()
 	{
-		if (!_coreWebView2Initialized)
+		if (_coreWebView2Initialized)
 		{
-			CoreWebView2Initialized?.Invoke(this, new());
-			_coreWebView2Initialized = true;
+			return;
 		}
+
+		_coreWebView2Initialized = true;
+
+		Exception? exception = null;
+		try
+		{
+			await CoreWebView2.EnsureNativeWebViewAsync();
+		}
+		catch (Exception e)
+		{
+			exception = e;
+		}
+
+		CoreWebView2Initialized?.Invoke(this, new(exception));
 	}
 
 	private void CoreWebView2_NavigationStarting(CoreWebView2 sender, CoreWebView2NavigationStartingEventArgs args) =>

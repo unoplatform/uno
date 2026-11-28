@@ -9,8 +9,9 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public sealed partial class CoreWebView2InitializedEventArgs
 {
-	internal CoreWebView2InitializedEventArgs()
+	internal CoreWebView2InitializedEventArgs(Exception? exception = null)
 	{
+		Exception = exception;
 	}
 
 	/// <summary>
