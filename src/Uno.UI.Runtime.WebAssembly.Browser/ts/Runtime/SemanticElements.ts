@@ -884,7 +884,19 @@ namespace Uno.UI.Runtime {
 			});
 
 			// Handle IME composition events for international text input (T055)
+			element.addEventListener('compositionstart', () => {
+				SemanticElements.composingHandle = handle;
+			});
+			element.addEventListener('blur', () => {
+				if (SemanticElements.composingHandle === handle) {
+					SemanticElements.composingHandle = 0;
+				}
+			});
 			element.addEventListener('compositionend', () => {
+				// Cleared before the callback: managed code flushes re-adds it deferred while composing.
+				if (SemanticElements.composingHandle === handle) {
+					SemanticElements.composingHandle = 0;
+				}
 				if (callbacks.onTextInput) {
 					callbacks.onTextInput(
 						handle,
@@ -1160,6 +1172,12 @@ namespace Uno.UI.Runtime {
 		public static updateSelectionState(handle: number, selected: boolean): void {
 			SemanticElements.applyItemStateWhenCreated(`uno-semantics-${handle}`, 'selected', element => {
 				element.setAttribute('aria-selected', String(selected));
+			});
+		}
+
+		public static updateVirtualizedAriaLive(handle: number, ariaLive: string): void {
+			SemanticElements.applyItemStateWhenCreated(`uno-semantics-${handle}`, 'live', () => {
+				Accessibility.updateAriaLive(handle, ariaLive);
 			});
 		}
 
@@ -1754,6 +1772,9 @@ namespace Uno.UI.Runtime {
 		 */
 		private static virtualizedMutationQueue: (() => void)[] = [];
 		private static virtualizedRafId: number = 0;
+
+		/** Handle of the text input with an IME composition in progress, or 0. */
+		public static composingHandle: number = 0;
 
 		/**
 		 * Latest item state still waiting for its element, keyed by state and element id.
