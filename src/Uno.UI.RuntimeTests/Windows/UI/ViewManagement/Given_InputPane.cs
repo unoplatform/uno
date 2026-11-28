@@ -841,6 +841,57 @@ public class Given_InputPane
 		}
 	}
 
+	// Unlike the tests above, this one raises the real soft keyboard. The occluded area runs to the window's bottom:
+	// edge-to-edge puts the navigation bar, under the keyboard, inside the window on every API level.
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+	public async Task When_Soft_Keyboard_Shown_Then_OccludedRect_Ends_At_Window_Bottom()
+	{
+		var textBox = new TextBox { PlaceholderText = "soft keyboard" };
+
+		// Taken from Showing: the keyboard of an emulator can hide again on its own right after it showed.
+		Rect? shownRect = null;
+		void OnShowing(InputPane sender, InputPaneVisibilityEventArgs args) => shownRect ??= args.OccludedRect;
+
+		var inputPane = InputPane.GetForCurrentView();
+		inputPane.Showing += OnShowing;
+		try
+		{
+			await UITestHelper.Load(textBox);
+			Assert.IsTrue(textBox.Focus(FocusState.Programmatic), "TextBox failed to take focus.");
+
+			var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+			while (shownRect is null && stopwatch.ElapsedMilliseconds < 5000)
+			{
+				await Task.Delay(100);
+			}
+
+			if (shownRect is not { } rect)
+			{
+				Assert.Inconclusive("No soft keyboard showed, as with a hardware keyboard attached.");
+				return;
+			}
+
+			Assert.AreEqual(WindowHeight, rect.Bottom, 1, $"The keyboard rect ({rect}) does not end at the window's bottom.");
+		}
+		finally
+		{
+			inputPane.Showing -= OnShowing;
+			inputPane.TryHide();
+
+			// Doesn't throw, so a keyboard slow to hide can't replace the test's own outcome.
+			var hideStopwatch = System.Diagnostics.Stopwatch.StartNew();
+			while (inputPane.Visible && hideStopwatch.ElapsedMilliseconds < 5000)
+			{
+				await Task.Delay(100);
+			}
+
+			WindowHelper.WindowContent = null;
+		}
+	}
+
 	private static (Grid Root, TextBox TopField, Button Button, Flyout Flyout, TextBox FlyoutField) BuildBottomFlyoutPage(
 		double listMaxHeight,
 		double? contentWidth = 320,
