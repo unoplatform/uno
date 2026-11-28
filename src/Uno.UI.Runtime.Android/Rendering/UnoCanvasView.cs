@@ -52,6 +52,8 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 		if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
 		{
 			ImportantForAutofill = ImportantForAutofill.Yes;
+			// Uno draws its own focus visuals; Android's highlight would tint the whole render surface.
+			DefaultFocusHighlightEnabled = false;
 		}
 
 		SetWillNotDraw(false);
