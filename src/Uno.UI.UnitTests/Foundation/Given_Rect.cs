@@ -184,5 +184,71 @@ namespace Uno.UI.Tests.Foundation
 			Assert.AreEqual("1.50,2.00,3.00,0.10", ((IFormattable)sut).ToString("F2", CultureInfo.InvariantCulture));
 			Assert.AreEqual("Empty.", ((IFormattable)Rect.Empty).ToString("F2", CultureInfo.InvariantCulture));
 		}
+
+		[TestMethod]
+		public void When_Union_WithEmpty()
+		{
+			var sut = new Rect(1, 2, 3, 4);
+
+			sut.Union(Rect.Empty);
+
+			Assert.AreEqual(new Rect(1, 2, 3, 4), sut);
+		}
+
+		[TestMethod]
+		public void When_Union_FromEmpty()
+		{
+			var sut = Rect.Empty;
+
+			sut.Union(new Rect(1, 2, 3, 4));
+
+			Assert.AreEqual(new Rect(1, 2, 3, 4), sut);
+		}
+
+		[TestMethod]
+		public void When_Union_BothEmpty()
+		{
+			var sut = Rect.Empty;
+
+			sut.Union(Rect.Empty);
+
+			Assert.IsTrue(sut.IsEmpty);
+		}
+
+		[TestMethod]
+		public void When_Union()
+		{
+			var sut = new Rect(1, 2, 3, 4);
+
+			sut.Union(new Rect(-1, 5, 2, 10));
+
+			Assert.AreEqual(new Rect(-1, 2, 5, 13), sut);
+		}
+
+		[TestMethod]
+		public void When_RectHelper_Union_WithEmpty()
+		{
+			var rect = new Rect(1, 2, 3, 4);
+
+			Assert.AreEqual(rect, Microsoft.UI.Xaml.RectHelper.Union(rect, Rect.Empty));
+			Assert.AreEqual(rect, Microsoft.UI.Xaml.RectHelper.Union(Rect.Empty, rect));
+			Assert.IsTrue(Microsoft.UI.Xaml.RectHelper.Union(Rect.Empty, Rect.Empty).IsEmpty);
+		}
+
+		[TestMethod]
+		public void When_RectHelper_Union()
+		{
+			var target = new Rect(1, 2, 3, 4);
+
+			Assert.AreEqual(new Rect(-1, 2, 5, 13), Microsoft.UI.Xaml.RectHelper.Union(target, new Rect(-1, 5, 2, 10)));
+			Assert.AreEqual(new Rect(1, 2, 3, 4), target);
+		}
+
+		[TestMethod]
+		public void When_RectHelper_Union_Point()
+		{
+			Assert.AreEqual(new Rect(1, 2, 9, 4), Microsoft.UI.Xaml.RectHelper.Union(new Rect(1, 2, 3, 4), new Point(10, 3)));
+			Assert.AreEqual(new Rect(5, 6, 0, 0), Microsoft.UI.Xaml.RectHelper.Union(Rect.Empty, new Point(5, 6)));
+		}
 	}
 }
