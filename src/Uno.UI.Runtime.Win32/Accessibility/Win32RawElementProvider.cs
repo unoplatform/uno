@@ -503,12 +503,7 @@ internal class Win32RawElementProvider :
 				}
 
 				// Convert logical pixels to physical screen coordinates
-				float dpiScale = Win32UIAutomationInterop.GetDpiForWindow(_hwnd)
-					/ (float)Win32UIAutomationInterop.USER_DEFAULT_SCREEN_DPI;
-				if (dpiScale <= 0)
-				{
-					dpiScale = 1.0f;
-				}
+				var dpiScale = GetLogicalToPhysicalScale();
 
 				var clientOrigin = new System.Drawing.Point(0, 0);
 				Win32UIAutomationInterop.ClientToScreen(_hwnd, ref clientOrigin);
@@ -553,12 +548,7 @@ internal class Win32RawElementProvider :
 
 		// Convert logical client coordinates to physical screen coordinates,
 		// mirroring BoundingRectangle's DPI scale + ClientToScreen step.
-		float dpiScale = Win32UIAutomationInterop.GetDpiForWindow(_hwnd)
-			/ (float)Win32UIAutomationInterop.USER_DEFAULT_SCREEN_DPI;
-		if (dpiScale <= 0)
-		{
-			dpiScale = 1.0f;
-		}
+		var dpiScale = GetLogicalToPhysicalScale();
 
 		var clientOrigin = new System.Drawing.Point(0, 0);
 		if (!Win32UIAutomationInterop.ClientToScreen(_hwnd, ref clientOrigin))
@@ -572,6 +562,19 @@ internal class Win32RawElementProvider :
 			clientOrigin.X + point.X * dpiScale,
 			clientOrigin.Y + point.Y * dpiScale,
 		];
+	}
+
+	// The scale Uno draws this window at: the display scale override when one is set, else the window's DPI.
+	private float GetLogicalToPhysicalScale()
+	{
+		if (Win32DisplayScale.Override is { } scaleOverride)
+		{
+			return scaleOverride;
+		}
+
+		float dpiScale = Win32UIAutomationInterop.GetDpiForWindow(_hwnd)
+			/ (float)Win32UIAutomationInterop.USER_DEFAULT_SCREEN_DPI;
+		return dpiScale <= 0 ? 1.0f : dpiScale;
 	}
 
 	public IRawElementProviderFragment[]? GetEmbeddedFragmentRoots()

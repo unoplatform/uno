@@ -131,7 +131,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// synchronously initialize Position and Size here before anyone reads their values
 		OnWindowSizeOrLocationChanged();
 		UpdateDisplayInfo();
-		if (RasterizationScale != 1)
+		if (Win32DisplayScale.Override is { } scaleOverride)
+		{
+			ResizeForDisplayScaleOverride(scaleOverride);
+		}
+		else if (RasterizationScale != 1)
 		{
 			// https://github.com/unoplatform/uno/issues/20021
 			Resize(new SizeInt32((int)(Size.Width * RasterizationScale), (int)(Size.Height * RasterizationScale)));
@@ -322,6 +326,12 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			case PInvoke.WM_DPICHANGED:
 				OnWmDpiChanged(wParam, lParam);
 				return new LRESULT(0);
+			case PInvoke.WM_GETDPISCALEDSIZE when Win32DisplayScale.Override is not null:
+				if (OnWmGetDpiScaledSize(lParam))
+				{
+					return new LRESULT(1);
+				}
+				break;
 			case PInvoke.WM_DISPLAYCHANGE:
 				UpdateDisplayInfo();
 				UpdateCanRevealBackdrop(displaysChanged: true);
@@ -545,9 +555,37 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_DPICHANGED)} message with LOWORD(wParam) == {Win32Helper.LOWORD(wParam)} and lParam = RECT {rect.ToRect()}");
 		// the order of the next lines matters or else the canvas might not be resized correctly
 		UpdateDisplayInfo();
-		var success = PInvoke.SetWindowPos(_hwnd, HWND.Null, rect.X, rect.Y, rect.Width, rect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
-		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
+		// Under a display scale override Uno's scale didn't change: the window keeps its size in pixels (see
+		// OnWmGetDpiScaledSize) and stays where Windows put it, so the suggested rect isn't applied.
+		if (Win32DisplayScale.Override is null)
+		{
+			var success = PInvoke.SetWindowPos(_hwnd, HWND.Null, rect.X, rect.Y, rect.Width, rect.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
+			if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
+		}
 		RefreshIcon();
+	}
+
+	/// <summary>
+	/// Under a display scale override, gives the window's current size as its size at another DPI.
+	/// </summary>
+	/// <remarks>
+	/// Windows asks before moving a per-monitor aware window to a monitor with another DPI, and sizes a window
+	/// dragged there from the answer, scaling it linearly when the window doesn't answer. Uno's scale doesn't change
+	/// with the monitor under the override, so the window keeps its size in pixels.
+	/// </remarks>
+	private unsafe bool OnWmGetDpiScaledSize(LPARAM lParam)
+	{
+		if (!PInvoke.GetWindowRect(_hwnd, out var rect))
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.GetWindowRect)} failed: {Win32Helper.GetErrorMessage()}");
+			return false;
+		}
+
+		// lParam points to a SIZE, two 32-bit integers.
+		var size = (int*)lParam.Value;
+		size[0] = rect.Width;
+		size[1] = rect.Height;
+		return true;
 	}
 
 	private void RefreshIcon()
@@ -788,6 +826,27 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.SetWindowPos)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}
 
+	/// <summary>
+	/// Sizes the new window as a monitor at the override's scale would: its client area gets the same logical
+	/// size, although Windows still draws the frame for the monitor's real DPI.
+	/// </summary>
+	private void ResizeForDisplayScaleOverride(float scaleOverride)
+	{
+		var frame = new RECT();
+		if (!PInvoke.AdjustWindowRectExForDpi(ref frame, GetStyle(), false, 0, Win32DisplayScale.GetOverrideDpi(scaleOverride)))
+		{
+			this.LogError()?.Error($"{nameof(PInvoke.AdjustWindowRectExForDpi)} failed: {Win32Helper.GetErrorMessage()}");
+			return;
+		}
+
+		var (width, height) = Win32DisplayScale.GetWindowSizeForOverride(
+			(Size.Width, Size.Height),
+			scaleOverride,
+			(frame.Width, frame.Height),
+			(Size.Width - ClientSize.Width, Size.Height - ClientSize.Height));
+		Resize(new SizeInt32(width, height));
+	}
+
 	public override void Resize(SizeInt32 size)
 	{
 		var success = PInvoke.SetWindowPos(_hwnd, HWND.Null, 0, 0, size.Width, size.Height, SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOMOVE);
@@ -909,7 +968,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	private int GetScaledIconSize(int baseSize)
 	{
-		var scale = RasterizationScale == 0 ? 1 : RasterizationScale;
+		var scale = WindowDpiScale == 0 ? 1 : WindowDpiScale;
 		return (int)(baseSize * scale);
 	}
 

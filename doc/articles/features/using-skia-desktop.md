@@ -122,9 +122,18 @@ Each platform exposes its own `RenderingBackend` enum with only the backends it 
 
 Alternatively, you can use `FeatureConfiguration.Rendering` flags for backwards compatibility. The builder API takes precedence when both are used.
 
+## Display Scale Override
+
+On X11 and Windows, setting the `UNO_DISPLAY_SCALE_OVERRIDE` environment variable before the app starts fixes the display scale Uno Platform lays out and draws at, instead of the scale of the monitor, for example `1` for 100% or `1.5` for 150%. The value is read with a `.` as the decimal separator. The [Linux framebuffer host](xref:Uno.Skia.Linux.Framebuffer) reads the same variable.
+
+- On X11, the value is used as given.
+- On Windows, a value that isn't a positive number is ignored, and a value outside 0.25 to 8 is brought into that range, each with a warning in the log.
+
+On Windows, the app stays per-monitor DPI aware: only Uno Platform's own scale changes. A window on a 125% monitor with the override set to `1` draws its content smaller than other apps do. When the window moves to a monitor with another scale, it keeps its size in pixels. The window frame, title bar and icons still follow the monitor's scale, so the client area changes by a few pixels. The content of a native element such as a `WebView2` also keeps the monitor's scale. This is mostly useful to run tests written for a given scale on any monitor.
+
 ## X11 Specifics
 
-When running using X11 Wayland compatibility (e.g. recent Ubuntu releases), DPI scaling cannot be determined in a reliable way. In order to specify the scaling to be used by Uno Platform, set the `UNO_DISPLAY_SCALE_OVERRIDE` environment variable. The default value is `1.0`.
+When running using X11 Wayland compatibility (e.g. recent Ubuntu releases), DPI scaling cannot be determined in a reliable way. In order to specify the scaling to be used by Uno Platform, set the `UNO_DISPLAY_SCALE_OVERRIDE` environment variable (see [Display Scale Override](#display-scale-override)). When it isn't set, the scale comes from the `Xft.dpi` X resource when there is one.
 
 The X11 support uses DBus for various interactions with the system, such as file selection. Make sure that dbus is installed.
 
