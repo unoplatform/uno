@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Android.App;
@@ -202,9 +202,18 @@ namespace Uno.UI
 				{
 					LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent)
 				};
-				Width = 0; // this make sure we don't block touch events
+				Width = 0;
 				Height = ViewGroup.LayoutParams.MatchParent;
 				SetBackgroundDrawable(new ColorDrawable(Color.Transparent));
+
+				// This popup exists only to observe layout and insets, and must stay out of the input
+				// path. Zero width does not achieve that on its own: the dispatcher still picks the
+				// popup as the target for a touch over it, finds it has no input channel, and drops the
+				// event outright rather than falling through -- costing one tap per popup, and there is
+				// one popup per activity, so one per open window.
+				Focusable = false;
+				Touchable = false;
+				OutsideTouchable = false;
 			}
 
 			// lifecycle management

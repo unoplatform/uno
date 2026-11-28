@@ -48,13 +48,15 @@ internal sealed class AndroidSkiaXamlRootHost : IXamlRootHost, IAccessibilityOwn
 
 	// Resolved through the wrapper (not stored) so it follows the activity currently
 	// driving the window across activity re-creation.
-	internal ApplicationActivity Activity => _wrapper.CurrentActivity;
+	internal ApplicationActivity? Activity => _wrapper.CurrentActivity;
 
 	internal AndroidCorePointerInputSource PointerSource => _wrapper.PointerSource;
 
 	internal AndroidKeyboardInputSource KeyboardSource => _wrapper.KeyboardSource;
 
-	void IXamlRootHost.InvalidateRender() => Activity.InvalidateRender();
+	// Null while a secondary window waits for Android to hand it an activity; there is nothing
+	// to invalidate until then, and the activity renders on attach.
+	void IXamlRootHost.InvalidateRender() => Activity?.InvalidateRender();
 
 	// Whatever the activity's render view negotiated for its current surface. It changes when the surface is
 	// re-created, so it is read through rather than stored.

@@ -26,21 +26,58 @@ Apple UIKit runtime already use, making the architecture **multi-window-ready**.
   to the application context** — falling back would break the `(Activity)Current` hard-casts and
   `Current == null` guards in existing callers — and is typed `Context?` to say so honestly.
 
-**Out of scope (deliberate follow-ups):**
+**Out of scope of the de-singletoning work, delivered by the follow-up on this branch:**
 - Flipping `SupportsMultipleWindows` to `true` and driving a *live* second Activity —
-  that needs Activity↔Window lifecycle orchestration and on-device validation, and
-  mirrors how iOS staged its own multi-window behind scene adoption (#8341).
+  it needs Activity↔Window lifecycle orchestration and on-device validation, and
+  mirrors how iOS staged its own multi-window behind scene adoption (#8341). The
+  orchestration (`LaunchForWindow`/`ResolveWrapper`/`CompleteDeferredShow`, per-task
+  activities, caption-bar insets, foreground handover on top-resume) and a
+  `MultiWindowShowcase` sample now land here; see the validation section for what that
+  flip was and was not exercised against.
 - Threading an explicit owning-window `Context` through every `Uno.WinRT`/AddIn
   `ContextHelper.Current` consumer. While only one window is live this is a no-op;
   those callers stay on the most recently active live activity until live multi-window lands;
   purely app-scoped ones (system services, package info) use `ApplicationContext`.
 - `XamlRootMap.Unregister` on window close. There is no window-close path while
-  `SupportsMultipleWindows` is false (the app keeps one window for its lifetime), and the
-  other single-window Skia hosts (macOS, Linux.FrameBuffer, WASM, AppleUIKit) likewise don't
-  unregister. Needed only once a close/reopen cycle exists.
+  `SupportsMultipleWindows` is false (the app keeps one window for its lifetime). The follow-up
+  adds that path: a permanently closed secondary window unregisters its `XamlRoot` and drops its
+  native elements and process-wide subscriptions. The main window only hides when closed, as on
+  single-window targets, because Android keeps the process and the next launch shows it again.
 
-`SupportsMultipleWindows` stays **`false`**. Definition of done for this work is:
-**per-window instances everywhere, and zero single-window regressions.**
+### Release split
+
+The de-singletoning (#24042) ships in **7.0** as *multi-window ready*: every public-surface change
+live multi-window needs is made there, so that live multi-window (#24397) can land in **7.1+**
+without a binary break. The rest of the multi-window surface is additive (`InitializeWithWindow`
+for pickers, share, web authentication and store; a per-window context accessor keyed on
+`WindowId`; per-window overloads for `PermissionsHelper`, MSAL and the add-ins).
+
+Known gaps of the live multi-window follow-up, each still process-wide or main-window-bound:
+
+- `SystemNavigationManager` is a process-wide singleton, so back is only routed to it from the
+  main window; a secondary window keeps the system behavior (back closes it).
+- IME: a `TextBox` focused before its window's activity exists binds to the main window's input
+  plugin (`AndroidSkiaTextBoxNotificationsProviderSingleton`, `AndroidImeTextBoxExtension`).
+- `InputPane` occlusion is one value for all windows and only scrolls the initial window.
+- `DisplayInformation` (size, orientation, density) is refreshed from whichever activity last
+  changed configuration.
+- `StatusBar`'s insets listener follows the newest activity.
+- A deep link or jump-list intent can be re-handled when the main activity restarts after a
+  secondary window started (`NativeApplication` keeps one last-handled intent).
+- Native views adopted by a re-created activity keep the destroyed activity as their `Context`.
+  The additive fix is Flutter's platform-view contract: create them against a
+  `MutableContextWrapper` and repoint its base context on adoption.
+- Tests that activate a secondary window are skipped on the Android lane: the new task
+  backgrounds the test runner.
+- After process death, a restored secondary task that is resumed before the main task hosts the
+  main window, as nothing else does yet. Returning to the main task later then adopts that same
+  window. Telling the real main task apart would need state persisted across process death;
+  until then the restored windows share one wrapper.
+
+The de-singletoning work keeps `SupportsMultipleWindows` **`false`**; the follow-up above flips
+it to `true`. Definition of done for the de-singletoning is **per-window instances everywhere,
+and zero single-window regressions**; the follow-up adds **a live second Activity that neither
+disturbs the first window nor leaks it**.
 
 ## Current architecture — the three anchors
 

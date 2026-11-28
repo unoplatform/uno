@@ -18,6 +18,8 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 {
 	public virtual bool IsClosingCancellable => NativeWindowFactory.SupportsClosingCancellation;
 
+	public virtual bool ClosesPermanently => NativeWindowFactory.SupportsMultipleWindows;
+
 	public const int InitialWidth = 1024;
 	public const int InitialHeight = 640;
 

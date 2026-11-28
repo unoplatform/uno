@@ -25,6 +25,12 @@ namespace Uno.UI.Xaml.Controls;
 internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapper
 {
 	private ApplicationActivity _activity;
+	private readonly bool _isMainWindow;
+	private bool _launchPending;
+	private bool _activateOnShow;
+	private bool _closeRequested;
+	private bool _released;
+	private string _title;
 	private readonly ActivationPreDrawListener _preDrawListener;
 	private readonly DisplayInformation _displayInformation;
 	private bool _contentViewAttachedToWindow;
@@ -37,18 +43,40 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private Rect _previousTrueVisibleBounds;
 
+	/// <summary>
+	/// Creates a wrapper for the window an existing activity already drives.
+	/// </summary>
 	public NativeWindowWrapper(ApplicationActivity activity)
+		: this()
 	{
 		_activity = activity;
+		_isMainWindow = true;
+	}
+
+	/// <summary>
+	/// Creates a wrapper for a window whose hosting activity does not exist yet. <see cref="ShowCore"/>
+	/// launches one, and <see cref="CurrentActivity"/> is set once it adopts this window.
+	/// </summary>
+	public NativeWindowWrapper()
+	{
 		_preDrawListener = new ActivationPreDrawListener(this);
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += RaiseNativeSizeChanged;
 
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
-		_displayInformation.DpiChanged += (s, e) => DispatchDpiChanged();
+		_displayInformation.DpiChanged += OnDpiChanged;
 		DispatchDpiChanged();
 	}
 
-	public override object NativeWindow => _activity.Window;
+	/// <summary>
+	/// The main window only hides when closed, as on single-window targets: Android keeps the process,
+	/// and the next launch of the app shows it again rather than starting over. Every other window
+	/// lives in a task of its own and is gone with it.
+	/// </summary>
+	public override bool ClosesPermanently => !_isMainWindow;
+
+	internal bool IsMainWindow => _isMainWindow;
+
+	public override object NativeWindow => _activity?.Window;
 
 	/// <summary>
 	/// The activity currently driving this window. Updated on activity re-creation, since the
@@ -70,9 +98,23 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			// The attach state belongs to the activity's own content view, so a re-created activity starts over.
 			if (_observesContentViewAttach)
 			{
-				previous.ContentViewAttachedToWindow -= Instance_ContentViewAttachedToWindow;
-				value.ContentViewAttachedToWindow += Instance_ContentViewAttachedToWindow;
-				_contentViewAttachedToWindow = value.IsContentViewAttachedToWindow;
+				if (previous is not null)
+				{
+					previous.ContentViewAttachedToWindow -= Instance_ContentViewAttachedToWindow;
+				}
+
+				if (value is not null)
+				{
+					value.ContentViewAttachedToWindow += Instance_ContentViewAttachedToWindow;
+				}
+
+				_contentViewAttachedToWindow = value?.IsContentViewAttachedToWindow ?? false;
+			}
+
+			// A title set before the window had an activity to show it on.
+			if (value is not null && _title is not null)
+			{
+				value.Title = _title;
 			}
 
 			CurrentActivityChanged?.Invoke(this, EventArgs.Empty);
@@ -100,13 +142,23 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	internal AndroidKeyboardInputSource KeyboardSource { get; } = new();
 
+	private void OnDpiChanged(DisplayInformation sender, object args) => DispatchDpiChanged();
+
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
 	public override string Title
 	{
-		get => _activity.Title;
-		set => _activity.Title = value;
+		get => _title ?? _activity?.Title ?? string.Empty;
+		set
+		{
+			_title = value;
+
+			if (_activity is { } activity)
+			{
+				activity.Title = value;
+			}
+		}
 	}
 
 	internal int SystemUiVisibility { get; set; }
@@ -117,7 +169,99 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
-	internal void OnNativeClosed() => RaiseClosing();
+	/// <summary>
+	/// Called when the activity driving this window finishes. A close the app requested itself has
+	/// already run, so only a close by the system (back, recents) is reported to the window.
+	/// </summary>
+	internal void OnNativeClosed()
+	{
+		if (!_closeRequested)
+		{
+			RaiseClosing();
+		}
+
+		if (ClosesPermanently)
+		{
+			Release();
+		}
+		else
+		{
+			_closeRequested = false;
+		}
+	}
+
+	/// <summary>
+	/// Closing a window finishes the activity hosting it: a secondary window's task is removed with
+	/// it, while the main window's task stays in recents to be launched again.
+	/// </summary>
+	protected override void CloseCore()
+	{
+		_closeRequested = true;
+
+		if (_launchPending)
+		{
+			// Android may still start the activity; it then finds no window to adopt and finishes.
+			_launchPending = false;
+			ApplicationActivity.CancelLaunch(this);
+		}
+
+		if (_activity is { } activity)
+		{
+			if (!activity.IsFinishing)
+			{
+				if (_isMainWindow)
+				{
+					activity.Finish();
+				}
+				else
+				{
+					activity.FinishAndRemoveTask();
+				}
+			}
+		}
+		else
+		{
+			// No activity ever adopted this window, so no OnDestroy will release it.
+			Release();
+		}
+	}
+
+	/// <summary>
+	/// Drops everything that keeps a permanently closed window reachable from process-wide state.
+	/// </summary>
+	private void Release()
+	{
+		if (_released)
+		{
+			return;
+		}
+
+		_released = true;
+
+		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= RaiseNativeSizeChanged;
+		_displayInformation.DpiChanged -= OnDpiChanged;
+		if (MUX.Application.Current is { } application)
+		{
+			application.RequestedThemeChanged -= OnRequestedThemeChanged;
+		}
+
+		if (XamlRoot is { } xamlRoot)
+		{
+			AndroidSkiaNativeElementHostingExtension.ReleaseNativeElements(xamlRoot);
+		}
+
+		// Also unregisters the XamlRoot and releases the window's accessibility adapter.
+		XamlRootHost?.Dispose();
+
+		RemovePreDrawListener();
+
+		if (_observesContentViewAttach && _activity is { } activity)
+		{
+			activity.ContentViewAttachedToWindow -= Instance_ContentViewAttachedToWindow;
+		}
+
+		_activity = null;
+	}
 
 	internal void RaiseNativeSizeChanged()
 	{
@@ -132,8 +276,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		{
 			_previousTrueVisibleBounds = visibleBounds;
 
-			// TODO: Adjust when multiple windows are supported on Android #8341
-			ApplicationView.GetForCurrentView()?.SetTrueVisibleBounds(visibleBounds);
+			// Per window: GetForCurrentView() resolves the main window, which would let a
+			// secondary window overwrite the main window's visible bounds.
+			if (Window?.AppWindow is { } appWindow)
+			{
+				ApplicationView.GetOrCreateForWindowId(appWindow.Id).SetTrueVisibleBounds(visibleBounds);
+			}
 		}
 	}
 
@@ -150,24 +298,82 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			return;
 		}
 
-		MUX.Application.Current.RequestedThemeChanged += (_, _) =>
+		if (_activity is { } activity)
 		{
-			if (MUX.Application.Current.InitializationComplete)
-			{
-				ApplySystemOverlaysTheming();
-			}
-		};
+			ShowForActivity(activity);
+		}
+	}
 
-		_activity.ContentViewAttachedToWindow += Instance_ContentViewAttachedToWindow;
+	public override void Show(bool activateWindow)
+	{
+		if (_activity is null && !WasShown && MUX.Window.ContentHostOverride is null)
+		{
+			// A secondary window has no activity until Android hands it one. Ask for a task to host
+			// it, and only report the window shown once an activity adopted it (CompleteDeferredShow):
+			// there is no native window before that, and a close could not undo a reported show.
+			_activateOnShow |= activateWindow;
+			if (!_launchPending && !_closeRequested)
+			{
+				_launchPending = true;
+				ApplicationActivity.LaunchForWindow(this);
+			}
+
+			return;
+		}
+
+		base.Show(activateWindow);
+	}
+
+	/// <summary>
+	/// Runs a show that <see cref="Show"/> deferred because the window had no activity yet.
+	/// Called by the adopting activity once its render stack exists; a no-op otherwise.
+	/// </summary>
+	/// <returns>Whether a deferred show ran.</returns>
+	internal bool CompleteDeferredShow()
+	{
+		if (_launchPending && _activity is not null)
+		{
+			_launchPending = false;
+			var activate = _activateOnShow;
+			_activateOnShow = false;
+			Show(activate);
+			return true;
+		}
+
+		return false;
+	}
+
+	private void ShowForActivity(ApplicationActivity activity)
+	{
+		// The main window is shown again after each close, so keep the subscription single.
+		MUX.Application.Current.RequestedThemeChanged -= OnRequestedThemeChanged;
+		MUX.Application.Current.RequestedThemeChanged += OnRequestedThemeChanged;
+
+		AttachContentView(activity);
+	}
+
+	private void OnRequestedThemeChanged(object sender, EventArgs args)
+	{
+		if (MUX.Application.Current.InitializationComplete)
+		{
+			ApplySystemOverlaysTheming();
+		}
+	}
+
+	private void AttachContentView(ApplicationActivity activity)
+	{
+		// The main window is shown again after each close, so keep the subscription single.
+		activity.ContentViewAttachedToWindow -= Instance_ContentViewAttachedToWindow;
+		activity.ContentViewAttachedToWindow += Instance_ContentViewAttachedToWindow;
 		_observesContentViewAttach = true;
-		_activity.EnsureContentView();
+		activity.EnsureContentView();
 
 		// The activity attaches its own surface in OnStart when it adopts an existing window, so the
 		// attach can already have happened before this subscription and the event fired with nobody
 		// listening. The pre-draw listener holds back every draw pass until this flag is set -- and a
 		// window that never draws also never gets its SurfaceView z-ordered behind it -- so seed the
 		// flag from the activity's current state rather than relying on the event alone.
-		_contentViewAttachedToWindow |= _activity.IsContentViewAttachedToWindow;
+		_contentViewAttachedToWindow |= activity.IsContentViewAttachedToWindow;
 
 		ApplySystemOverlaysTheming();
 	}
@@ -177,8 +383,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private (Size windowSize, Rect visibleBounds) GetVisualBounds()
 	{
-		var activity = _activity;
-		if (activity.Window is null)
+		if (_activity is not { Window: not null } activity)
 		{
 			return default;
 		}
@@ -234,15 +439,18 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private WindowInsetsCompat GetWindowInsets(Activity activity)
 	{
+		// Prefer the attached window's own insets. CurrentWindowMetrics reports them as if the window
+		// filled the display, so in multi-window and freeform it misses the caption bar the system
+		// draws over the window -- and the app then lays out underneath it.
+		if (activity.Window?.DecorView is { IsAttachedToWindow: true } decorView
+			&& ViewCompat.GetRootWindowInsets(decorView) is { } rootInsets)
+		{
+			return rootInsets;
+		}
+
 		if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R)
 		{
 			return WindowInsetsCompat.ToWindowInsetsCompat(activity.WindowManager?.CurrentWindowMetrics.WindowInsets);
-		}
-
-		var decorView = activity.Window.DecorView;
-		if (decorView.IsAttachedToWindow)
-		{
-			return ViewCompat.GetRootWindowInsets(decorView);
 		}
 
 		return null;
@@ -255,11 +463,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		{
 			// In edge-to-edge experience we want to adjust the theming of status bar to match the app theme.
 			if (Microsoft.UI.Xaml.Application.Current is { } application &&
-				_activity.Window?.DecorView is { FitsSystemWindows: false } decorView)
+				_activity?.Window is { DecorView: { FitsSystemWindows: false } decorView } nativeWindow)
 			{
 				var requestedTheme = application.RequestedTheme;
 
-				var insetsController = WindowCompat.GetInsetsController(_activity.Window, decorView);
+				var insetsController = WindowCompat.GetInsetsController(nativeWindow, decorView);
 
 				// "appearance light" refers to status bar set to light theme == dark foreground
 				insetsController.AppearanceLightStatusBars = requestedTheme == Microsoft.UI.Xaml.ApplicationTheme.Light;
@@ -269,8 +477,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private Size GetWindowSize()
 	{
-		var activity = _activity;
-		if (activity.Window is null)
+		if (_activity is not { Window: not null } activity)
 		{
 			return default;
 		}
@@ -311,8 +518,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private void UpdateFullScreenMode(bool isFullscreen)
 	{
+		if (_activity is not { Window: not null } activity)
+		{
+			return;
+		}
+
 #pragma warning disable 618
-		var activity = _activity;
 #pragma warning disable CA1422 // Validate platform compatibility
 		var uiOptions = (int)activity.Window.DecorView.SystemUiVisibility;
 #pragma warning restore CA1422 // Validate platform compatibility
@@ -349,7 +560,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private void AddPreDrawListener()
 	{
-		if (_activity.Window?.DecorView is { } decorView)
+		if (_activity?.Window?.DecorView is { } decorView)
 		{
 			decorView.ViewTreeObserver.AddOnPreDrawListener(_preDrawListener);
 		}
@@ -357,7 +568,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private void RemovePreDrawListener()
 	{
-		if (_activity.Window?.DecorView is { } decorView)
+		if (_activity?.Window?.DecorView is { } decorView)
 		{
 			decorView.ViewTreeObserver.RemoveOnPreDrawListener(_preDrawListener);
 		}

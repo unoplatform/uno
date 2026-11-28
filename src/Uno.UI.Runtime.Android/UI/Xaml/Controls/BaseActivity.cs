@@ -60,8 +60,12 @@ namespace Uno.UI
 		private static Dictionary<int, BaseActivity> _instances = new Dictionary<int, BaseActivity>();
 		private static BaseActivity? _current;
 		private static long _activationCount;
+		private static int _startedCount;
+
+		private static void AdjustStartedCount(int delta) => Interlocked.Add(ref _startedCount, delta);
 
 		private long _lastActivation;
+		private bool _isStarted;
 
 		/// <summary>
 		/// When this activity last started or resumed, as a process-wide order; 0 if it never has.
@@ -251,6 +255,12 @@ namespace Uno.UI
 		{
 			SetAsCurrent();
 
+			if (!_isStarted)
+			{
+				_isStarted = true;
+				AdjustStartedCount(1);
+			}
+
 			Microsoft.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
 			{
 				OnNativeVisibilityChanged(true);
@@ -293,6 +303,15 @@ namespace Uno.UI
 
 		partial void InnerTopResumedActivityChanged(bool isTopResumedActivity)
 		{
+			// Becoming top-resumed is the only foreground handover between live activities: with
+			// several windows open the others stay started and resumed, so they never run the
+			// create/start/resume path that otherwise claims Current. Without this, closing the
+			// foreground window leaves Current null even though other windows are still alive.
+			if (isTopResumedActivity)
+			{
+				SetAsCurrent();
+			}
+
 			OnNativeActivationChanged(
 				isTopResumedActivity ?
 					CoreWindowActivationState.CodeActivated :
@@ -335,15 +354,25 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			// An outgoing activity reaches OnStop after its replacement has resumed and taken the
-			// window. Hiding and suspending from here would apply to the live replacement.
-			if (!IsDrivingWindow)
+			if (_isStarted)
 			{
-				return;
+				_isStarted = false;
+				AdjustStartedCount(-1);
 			}
 
-			OnNativeVisibilityChanged(false);
-			Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Microsoft.UI.Xaml.Application.Current?.RaiseSuspending());
+			// An outgoing activity reaches OnStop after its replacement has resumed and taken the
+			// window. Hiding from here would apply to the live replacement.
+			if (IsDrivingWindow)
+			{
+				OnNativeVisibilityChanged(false);
+			}
+
+			// The app goes to the background with its last visible activity, not with each window.
+			// A configuration-driven re-creation starts its replacement right away.
+			if (Volatile.Read(ref _startedCount) == 0 && !IsChangingConfigurations)
+			{
+				Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Microsoft.UI.Xaml.Application.Current?.RaiseSuspending());
+			}
 		}
 
 		protected override void OnDestroy()
