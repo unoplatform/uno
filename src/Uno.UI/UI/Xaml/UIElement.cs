@@ -1794,8 +1794,15 @@ namespace Microsoft.UI.Xaml
 
 			// This element now has a layout slot, so it may paint. Cleared before the no-change check
 			// below, which would otherwise leave a first arrange that happens to match the default rect
-			// permanently suppressed.
-			Visual.IsArrangePending = false;
+			// permanently suppressed. A non-finite offset (e.g. Canvas.Left = NaN) is accepted as in WinUI,
+			// but nothing can be painted there.
+			var hasFiniteOffset = double.IsFinite(finalRect.X) && double.IsFinite(finalRect.Y);
+			Visual.IsArrangePending = !hasFiniteOffset;
+
+			if (!hasFiniteOffset && this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"{this}: ArrangeVisual({finalRect}) -- non-finite offset, element will not be rendered");
+			}
 
 			var oldFinalRect = _lastFinalRect;
 			var oldClippedFrame = _lastClippedFrame;
@@ -1820,8 +1827,6 @@ namespace Microsoft.UI.Xaml
 					|| newRect.Height < 0
 					|| double.IsNaN(newRect.Width)
 					|| double.IsNaN(newRect.Height)
-					|| double.IsNaN(newRect.X)
-					|| double.IsNaN(newRect.Y)
 				)
 				{
 					throw new InvalidOperationException($"{this}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
