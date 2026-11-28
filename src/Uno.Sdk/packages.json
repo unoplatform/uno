@@ -65,7 +65,7 @@
 	},
 	{
 		"group": "Resizetizer",
-		"version": "2.0.1",
+		"version": "PLACEHOLDER-resizetizer-release-with-pr-423",
 		"packages": [
 			"Uno.Resizetizer"
 		]

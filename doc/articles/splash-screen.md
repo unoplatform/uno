@@ -25,6 +25,7 @@ Projects using the Uno.Sdk single-project layout can configure the splash screen
 | `UnoSplashScreenDarkBackgroundColor` | The background color when the dark theme is active. Defaults to `UnoSplashScreenBackgroundColor`. |
 | `UnoSplashScreenAccentColor` | The accent color of the WebAssembly loader progress bar for all themes, unless overridden by `UnoSplashScreenDarkAccentColor`. Defaults to the WinUI accent color. |
 | `UnoSplashScreenDarkAccentColor` | The accent color of the WebAssembly loader progress bar when the dark theme is active. Defaults to `UnoSplashScreenAccentColor` when set, otherwise to the WinUI dark theme accent color. |
+| `UnoSplashScreenScale` | Scales the splash image within its canvas, e.g. `0.5` for half size. Not set by default. On Windows App SDK, this needs Uno.Resizetizer 2.1 or later; earlier versions ignore it there. |
 
 By default the background color is `#FFFFFF`, except on WebAssembly where no color is set. Without a color, the WebAssembly splash screen follows the browser's light or dark theme, using `#F3F3F3` and `#202020` respectively. Set `UnoSplashScreenBackgroundColor` to keep a fixed color in both themes.
 
