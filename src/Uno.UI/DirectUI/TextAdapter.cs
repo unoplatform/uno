@@ -37,7 +37,7 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 	public FrameworkElement Owner => _owner;
 
 	/// <summary>
-	/// The text content surfaced through the Text pattern. Differs from
+	/// The text used to calculate Text pattern offsets. Differs from
 	/// <c>FrameworkElement.GetPlainText()</c>, which Uno overrides on TextBox to
 	/// return Header/PlaceholderText — that's the wrong source for TextPattern.
 	/// PasswordBox returns a masked string so the actual password never leaves
@@ -47,7 +47,7 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 	{
 		PasswordBox passwordBox => new string('•', passwordBox.Password?.Length ?? 0),
 		TextBox textBox => textBox.Text ?? string.Empty,
-		TextBlock textBlock => textBlock.Text ?? string.Empty,
+		TextBlock textBlock => textBlock.TextForSelection ?? string.Empty,
 		RichEditBox richEditBox => TryGetRichEditPlainText(richEditBox),
 		_ => owner.GetPlainText() ?? string.Empty,
 	};
@@ -106,7 +106,7 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 		}
 #endif
 
-		return GetEffectiveText(owner).Length;
+		return owner is TextBlock textBlock ? textBlock.TextForSelectionLength : GetEffectiveText(owner).Length;
 	}
 
 	public ITextRangeProvider DocumentRange

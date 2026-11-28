@@ -14,19 +14,80 @@ namespace Microsoft.UI.Xaml.Documents
 		/// </summary>
 		/// <param name="inline">The root Inline from which descend the leaf Inlines to combine</param>
 		/// <returns>The combined text of all the leaf Inlines (Run or LineBreak)</returns>
-		internal static string GetText(this Inline inline)
+		internal static string GetText(this Inline inline) => GetText(inline, useCrLf: false);
+
+		internal static string GetPlainText(this Inline inline) => GetText(inline, useCrLf: true);
+
+		private static string GetText(Inline inline, bool useCrLf)
 		{
 			switch (inline)
 			{
 				case Run run:
 					return run.Text ?? string.Empty;
-				case LineBreak lineBreak:
-					return "\n";
+				case LineBreak:
+					return useCrLf ? "\r\n" : "\n";
 				case Span span:
-					return string.Concat(span.Inlines.Select(GetText));
+					return string.Concat(span.Inlines.Select<Inline, string>(useCrLf ? GetPlainText : GetText));
 				default:
 					return string.Empty;
 			}
+		}
+
+		internal static string GetSelectedText(IEnumerable<InlineCollection> inlineCollections, int start, int end, bool includeParagraphBreaks)
+		{
+			var builder = new StringBuilder();
+			var flatIndex = 0;
+
+			void AppendText(string text, int flatLength)
+			{
+				if (flatLength == text.Length)
+				{
+					var from = Math.Max(start, flatIndex) - flatIndex;
+					var to = Math.Min(end, flatIndex + flatLength) - flatIndex;
+					if (from < to)
+					{
+						builder.Append(text, from, to - from);
+					}
+				}
+				else if (start <= flatIndex && flatIndex < end)
+				{
+					builder.Append(text);
+				}
+
+				flatIndex += flatLength;
+			}
+
+			void AppendInline(Inline inline)
+			{
+				switch (inline)
+				{
+					case Run or LineBreak:
+						var text = GetPlainText(inline);
+						AppendText(text, inline is LineBreak ? 1 : text.Length);
+						break;
+					case Span span:
+						foreach (var child in span.Inlines)
+						{
+							AppendInline(child);
+						}
+						break;
+				}
+			}
+
+			foreach (var inlines in inlineCollections)
+			{
+				foreach (var inline in inlines)
+				{
+					AppendInline(inline);
+				}
+
+				if (includeParagraphBreaks)
+				{
+					AppendText("\r\n", 2);
+				}
+			}
+
+			return builder.ToString();
 		}
 
 		/// <summary>

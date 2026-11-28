@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text;
 using Uno.Disposables;
 using Uno.Extensions;
 using Microsoft.UI.Xaml.Documents;
@@ -50,6 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
+		private int[] _inlineLineBreakPositions = [];
 		private IDisposable _foregroundBrushChangedSubscription;
 
 		// Used for text selection which is handled natively
@@ -186,6 +188,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (updateText)
 			{
+				var previousLineBreakPositions = _inlineLineBreakPositions;
+				List<int> lineBreakPositions = null;
 				if (knownText is not null)
 				{
 					_inlinesText = knownText;
@@ -196,12 +200,29 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					_inlinesText = string.Concat(Inlines.Select(InlineExtensions.GetText));
+					var text = new StringBuilder();
+					foreach (var inline in Inlines.TraversedTree.leafTree)
+					{
+						if (inline is LineBreak)
+						{
+							(lineBreakPositions ??= []).Add(text.Length);
+						}
+
+						text.Append(InlineExtensions.GetPlainText(inline));
+					}
+
+					_inlinesText = text.ToString();
 				}
+				_inlineLineBreakPositions = lineBreakPositions?.ToArray() ?? [];
 
 				if (!_skipInlinesChangedTextSetter)
 				{
+					var textChanged = Text != _inlinesText;
 					Text = _inlinesText;
+					if (!textChanged && !previousLineBreakPositions.AsSpan().SequenceEqual(_inlineLineBreakPositions))
+					{
+						ResetSelection();
+					}
 				}
 
 				if (removed is null || inserted is null)
@@ -362,14 +383,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected virtual void OnTextChanged(string oldValue, string newValue)
 		{
 			UpdateInlines(newValue);
-
-#if __SKIA__
-			if (OwningTextBox is null)
-#endif
-			{
-				// On skia, we don't want to set the selection here in case TextBox is managing the selection.
-				Selection = new Range(0, 0);
-			}
+			ResetSelection();
 
 			OnTextChangedPartial();
 			InvalidateTextBlock();
@@ -387,6 +401,17 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void OnTextChangedPartial();
+
+		private void ResetSelection()
+		{
+#if __SKIA__
+			if (OwningTextBox is null)
+#endif
+			{
+				// On skia, we don't want to set the selection here in case TextBox is managing the selection.
+				Selection = new Range(0, 0);
+			}
+		}
 
 		/// <summary>
 		/// When the TextBlock's accessible name is derived from its <see cref="Text"/> (i.e. no
@@ -1971,13 +1996,83 @@ namespace Microsoft.UI.Xaml.Controls
 		void IBlock.Invalidate(bool updateText) => InvalidateInlineAndRequireRepaint();
 		string IBlock.GetText() => Text;
 
+		// Same as Text, but with each explicit LineBreak as a single "\n", so offsets match selection and layout.
+		internal string TextForSelection
+		{
+			get
+			{
+				var text = Text;
+				if (_inlineLineBreakPositions.Length == 0)
+				{
+					return text;
+				}
+
+				var builder = new StringBuilder(text.Length - _inlineLineBreakPositions.Length);
+				var copied = 0;
+				foreach (var lineBreak in _inlineLineBreakPositions)
+				{
+					// Skip the "\r" of the exported "\r\n".
+					builder.Append(text, copied, lineBreak - copied);
+					copied = lineBreak + 1;
+				}
+
+				builder.Append(text, copied, text.Length - copied);
+				return builder.ToString();
+			}
+		}
+
+		internal int TextForSelectionLength => Text.Length - _inlineLineBreakPositions.Length;
+
+		internal string GetSelectedText(int start, int end)
+		{
+			if (_inlineLineBreakPositions.Length == 0)
+			{
+				return Text[start..end];
+			}
+
+			var text = Text;
+			var exportedStart = Math.Min(GetExportedTextOffset(start), text.Length);
+			var exportedEnd = Math.Min(GetExportedTextOffset(end), text.Length);
+			return exportedStart < exportedEnd ? text[exportedStart..exportedEnd] : string.Empty;
+		}
+
+		internal int GetExportedTextOffset(int flatOffset)
+		{
+			var offset = flatOffset;
+			foreach (var lineBreak in _inlineLineBreakPositions)
+			{
+				if (offset <= lineBreak)
+				{
+					break;
+				}
+
+				offset++;
+			}
+
+			return offset;
+		}
+
+		internal int? GetFlatTextOffset(int exportedOffset)
+		{
+			var index = Array.BinarySearch(_inlineLineBreakPositions, exportedOffset);
+			if (index >= 0)
+			{
+				return exportedOffset - index;
+			}
+
+			var precedingBreaks = ~index;
+			return precedingBreaks > 0 && exportedOffset == _inlineLineBreakPositions[precedingBreaks - 1] + 1
+				? null
+				: exportedOffset - precedingBreaks;
+		}
+
 		partial void OnSelectionChanged()
 		{
 			InvalidateInlineAndRequireRepaint();
 
 			var start = Math.Min(Selection.start, Selection.end);
 			var end = Math.Max(Selection.start, Selection.end);
-			SelectedText = Text[start..end];
+			SelectedText = GetSelectedText(start, end);
 
 			if (start == end)
 			{
@@ -2041,7 +2136,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public void SelectAll() => Selection = new Range(0, Text.Length);
+		public void SelectAll() => Selection = new Range(0, TextForSelectionLength);
 
 		// TODO: move to TextBlock.cs when we implement SelectionHighlightColor for the other platforms
 		#region SelectionHighlightColor (DP)

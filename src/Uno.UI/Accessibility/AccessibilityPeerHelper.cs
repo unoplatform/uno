@@ -964,6 +964,13 @@ internal static class AccessibilityPeerHelper
 				_ => false,
 			};
 
+	// The native text node, its selection and its word/line traversal all use layout offsets, where a
+	// TextBlock's explicit LineBreak is one character; the UIA text (GetText) exports it as "\r\n".
+	private static string GetLayoutText(AutomationPeer providerPeer, ITextProvider provider)
+		=> providerPeer is FrameworkElementAutomationPeer { Owner: TextBlock textBlock }
+			? textBlock.TextForSelection
+			: provider.DocumentRange.GetText(-1) ?? string.Empty;
+
 	internal static bool TryGetText(
 		AutomationPeer peer,
 		out string text,
@@ -980,7 +987,7 @@ internal static class AccessibilityPeerHelper
 				return false;
 			}
 
-			value = provider.DocumentRange.GetText(-1) ?? string.Empty;
+			value = GetLayoutText(providerPeer, provider);
 			selectionSupported = provider.SupportedTextSelection != SupportedTextSelection.None;
 			return true;
 		});
@@ -1166,7 +1173,7 @@ internal static class AccessibilityPeerHelper
 				return false;
 			}
 
-			var text = provider.DocumentRange.GetText(-1) ?? string.Empty;
+			var text = GetLayoutText(providerPeer, provider);
 			var owner = providerPeer is FrameworkElementAutomationPeer frameworkPeer
 				? frameworkPeer.Owner as FrameworkElement
 				: null;
@@ -1194,7 +1201,7 @@ internal static class AccessibilityPeerHelper
 			return 0;
 		}
 
-		var text = provider.DocumentRange.GetText(-1) ?? string.Empty;
+		var text = GetLayoutText(providerPeer, provider);
 		var owner = providerPeer is FrameworkElementAutomationPeer { Owner: FrameworkElement element }
 			? element
 			: null;
