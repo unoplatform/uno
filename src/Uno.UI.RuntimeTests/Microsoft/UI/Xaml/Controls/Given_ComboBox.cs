@@ -1089,6 +1089,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[CombinatorialData]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_ComboBox_Backspace_Then_Selection_Unchanged(bool isDropDownOpen)
+		{
+			var comboBox = new ComboBox();
+			comboBox.Items.Add("Cat");
+			comboBox.Items.Add("Dog");
+			comboBox.Items.Add("Rabbit");
+			comboBox.SelectedIndex = 1;
+
+			await UITestHelper.Load(comboBox);
+			comboBox.Focus(FocusState.Keyboard);
+
+			try
+			{
+				comboBox.IsDropDownOpen = isDropDownOpen;
+				await WindowHelper.WaitForIdle();
+
+				// Backspace's character is '\b', which a culture-aware prefix match ignores.
+				await KeyboardHelper.Backspace();
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(1, comboBox.SelectedIndex);
+			}
+			finally
+			{
+				comboBox.IsDropDownOpen = false;
+			}
+		}
+
+		[TestMethod]
+		[CombinatorialData]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_ComboBox_IsTextSearchEnabled_DropDown_Opened(bool isTextSearchEnabled)
 		{
 			var comboBox = new ComboBox();

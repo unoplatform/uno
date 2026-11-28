@@ -180,9 +180,11 @@ namespace Uno.UI.Runtime.Android
 
 			var handled = Wrapper.KeyboardSource.OnNativeKeyEvent(e);
 
-			if (!handled)
+			// Android goes back when the Back key-up reaches the activity after its key-down did, so an app that handles
+			// the key-down keeps Back. The key-up must still get there when a control handles every key-up (MenuFlyoutItem).
+			if (!handled || (e.KeyCode == Keycode.Back && e.Action == KeyEventActions.Up))
 			{
-				handled = base.DispatchKeyEvent(e);
+				handled = base.DispatchKeyEvent(e) || handled;
 			}
 
 			return handled;
@@ -251,8 +253,10 @@ namespace Uno.UI.Runtime.Android
 				nativelyHandled = base.DispatchTouchEvent(ev);
 			}
 
+			OnTouchEventDispatching(ev);
 			_renderViewAsView?.GetLocationInWindow(_locationInWindow);
 			Wrapper.PointerSource.OnNativeMotionEvent(ev, _locationInWindow, nativelyHandled);
+			OnTouchEventDispatched(ev);
 
 			// As the AndroidCorePointerInputSource can dispatch event asynchronously, we always return true to prevent the system from dispatching the event
 			// as we assume that anyway we are the fully opaque (i.e. the pointer should not be dispatch to any element under this current ApplicationActivity).
@@ -647,6 +651,9 @@ namespace Uno.UI.Runtime.Android
 			_resumed = false;
 			base.OnPause();
 
+			// A swipe that took the app away (home, recents) ends without a Back.
+			ClearGestureBack();
+
 			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #8341.
 			foreach (var contentRoot in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
 			{
@@ -739,7 +746,7 @@ namespace Uno.UI.Runtime.Android
 #pragma warning disable CS0672 // deprecated members
 		public override void OnBackPressed()
 		{
-			var handled = global::Windows.UI.Core.SystemNavigationManager.GetForCurrentView().RequestBack();
+			var handled = RequestBack();
 			if (!handled)
 			{
 #pragma warning disable CA1422 // Validate platform compatibility
