@@ -292,20 +292,25 @@ interface Window {
 }
 declare namespace Windows.Media {
     class SpeechRecognizer {
-        private static dispatchResult;
-        private static dispatchHypothesis;
-        private static dispatchStatus;
-        private static dispatchError;
         private static instanceMap;
+        private static dispatchers;
         private managedId;
+        private culture;
         private recognition;
+        private completed;
+        private disposed;
         private constructor();
         static initialize(managedId: string, culture: string): void;
         static recognize(managedId: string): boolean;
         static removeInstance(managedId: string): void;
+        private startAsync;
+        private tryEnableOnDeviceRecognition;
         private onResult;
         private onSpeechStart;
+        private onNoMatch;
         private onError;
+        private onEnd;
+        private static getExports;
     }
 }
 declare namespace Windows.Networking.Connectivity {
