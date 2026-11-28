@@ -1,10 +1,11 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TreeView.cpp, tag winui3/release/1.4.2
+// MUX Reference TreeView.cpp
 
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
 
@@ -19,9 +20,18 @@ public partial class TreeView : Control
 
 	private TreeViewList m_listControl;
 	private TreeViewNode m_rootNode;
+	// SelectedNodes vector is initialized in OnApplyTemplate, if developers try to update SelectedNodes in page constructor they'll get an exception since the vector is not ready.
+	// This pendingSelectedNodes is to temporarily hold the content before SelectedNodes is ready. It gets copied over and cleared in OnApplyTemplate.
 	private IList<TreeViewNode> m_pendingSelectedNodes;
 
+	private readonly SerialDisposable m_itemClickRevoker = new();
+	private readonly SerialDisposable m_containerContentChangingRevoker = new();
+	private readonly SerialDisposable m_dragItemsStartingRevoker = new();
+	private readonly SerialDisposable m_dragItemsCompletedRevoker = new();
+	private readonly SerialDisposable m_selectionChangedRevoker = new();
+
 #if HAS_UNO
+	// Uno specific (#15214): the SelectedItem that could not be selected yet, see OnPropertyChanged.
 	internal object PendingSelectedItem { get; set; }
 #endif
 
@@ -177,7 +187,7 @@ public partial class TreeView : Control
 
 	private void OnContainerContentChanging(object sender, ContainerContentChangingEventArgs args)
 	{
-		ContainerContentChanged?.Invoke((TreeView)sender, args);
+		ContainerContentChanged?.Invoke((ListView)sender, args);
 	}
 
 	private void OnNodeExpanding(TreeViewNode sender, object args)
@@ -188,6 +198,7 @@ public partial class TreeView : Control
 		{
 			if (ContainerFromNode(sender) is TreeViewItem expandingTvi)
 			{
+				//Update TVI properties
 				if (!expandingTvi.IsExpanded)
 				{
 					expandingTvi.IsExpanded = true;
@@ -273,12 +284,15 @@ public partial class TreeView : Control
 			var items = SelectedItems;
 			var selected = items?.Count > 0 ? items[0] : null;
 #if !HAS_UNO
+			// Checking if new value is different to the currently internally selected item
 			if (args.NewValue != selected)
 			{
 				ListControl?.ListViewModel?.SelectSingleItem(args.NewValue);
 			}
-#else // #15214: workaround for initial selection being lost
+#else
+			// Uno specific (#15214): WinUI drops a SelectedItem it cannot select yet, Uno keeps it pending.
 			PendingSelectedItem = null;
+			// Checking if new value is different to the currently internally selected item
 			if (args.NewValue != selected)
 			{
 				ListControl?.ListViewModel?.SelectSingleItem(args.NewValue);
@@ -286,7 +300,7 @@ public partial class TreeView : Control
 				// 1. OnApplyTemplate was not yet called
 				// 2. the item is a descendant of a collapsed node
 				// in these cases, we should mark the item pending for selection.
-				// so it can be later picked up by TreeViewList::OnContainerContentChanging when it becomes materialized
+				// so it can be later picked up by TreeViewList.PrepareContainerForItemOverride when it becomes materialized
 				if (items == null || (items is [var selected2] && args.NewValue != selected2))
 				{
 					PendingSelectedItem = args.NewValue;
@@ -314,7 +328,7 @@ public partial class TreeView : Control
 					var parentNode = draggedNode.Parent;
 					if (parentNode != null && parentNode != rootNode)
 					{
-						return ListControl.ItemFromNode(parentNode);
+						return listControl.ItemFromNode(parentNode);
 					}
 				}
 			}
@@ -442,10 +456,15 @@ public partial class TreeView : Control
 			}
 
 			listControl.ItemClick += OnItemClick;
+			m_itemClickRevoker.Disposable = Disposable.Create(() => listControl.ItemClick -= OnItemClick);
 			listControl.ContainerContentChanging += OnContainerContentChanging;
+			m_containerContentChangingRevoker.Disposable = Disposable.Create(() => listControl.ContainerContentChanging -= OnContainerContentChanging);
 			listControl.DragItemsStarting += OnListControlDragItemsStarting;
+			m_dragItemsStartingRevoker.Disposable = Disposable.Create(() => listControl.DragItemsStarting -= OnListControlDragItemsStarting);
 			listControl.DragItemsCompleted += OnListControlDragItemsCompleted;
+			m_dragItemsCompletedRevoker.Disposable = Disposable.Create(() => listControl.DragItemsCompleted -= OnListControlDragItemsCompleted);
 			listControl.SelectionChanged += OnListControlSelectionChanged;
+			m_selectionChangedRevoker.Disposable = Disposable.Create(() => listControl.SelectionChanged -= OnListControlSelectionChanged);
 
 			if (m_pendingSelectedNodes != null && m_pendingSelectedNodes.Count > 0)
 			{
@@ -457,5 +476,29 @@ public partial class TreeView : Control
 				m_pendingSelectedNodes.Clear();
 			}
 		}
+	}
+
+	internal TreeViewNode GetAssociatedNode(object item) => GetAssociatedNodeImpl(item, m_rootNode);
+
+	private TreeViewNode GetAssociatedNodeImpl(object item, TreeViewNode node)
+	{
+		if (node.Content is { } content)
+		{
+			// Uno specific: WinUI compares identities. A boxed value or a string is not the same instance in .NET,
+			// so items are compared with Equals.
+			if (Equals(content, item))
+			{
+				return node;
+			}
+		}
+
+		foreach (var childNode in node.Children)
+		{
+			if (GetAssociatedNodeImpl(item, childNode) is { } result)
+			{
+				return result;
+			}
+		}
+		return null;
 	}
 }

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TreeViewList.cpp, tag winui3/release/1.4.2
+// MUX Reference TreeViewList.cpp
 
 using System.Collections.Generic;
 using Uno.UI.Helpers.WinUI;
@@ -11,7 +11,6 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using TreeViewListAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.TreeViewListAutomationPeer;
 using DragEventArgs = Microsoft.UI.Xaml.DragEventArgs;
-using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -24,7 +23,7 @@ public partial class TreeViewList : ListView
 	private bool m_isMultiselectEnabled = false;
 	private bool m_itemsSourceAttached = false;
 	private string m_dropTargetDropEffectString;
-	private UIElement m_draggedOverItem;
+	private TreeViewItem m_draggedOverItem;
 	private int m_emptySlotIndex;
 	private TreeViewNode m_draggedTreeViewNode;
 
@@ -34,7 +33,10 @@ public partial class TreeViewList : ListView
 	public TreeViewList()
 	{
 		ListViewModel = new TreeViewViewModel();
+#if HAS_UNO
+		// Uno specific: TreeViewList moves the dragged nodes itself, ListViewBase must not reorder its items.
 		IsCustomReorder = true;
+#endif
 		DragItemsStarting += OnDragItemsStarting;
 		DragItemsCompleted += OnDragItemsCompleted;
 		ContainerContentChanging += OnContainerContentChanging;
@@ -144,7 +146,7 @@ public partial class TreeViewList : ListView
 
 				if (IsMutiSelectWithSelectedItems)
 				{
-					// Multiselect drag and drop. In the selected items, find all the selected subtrees 
+					// Multiselect drag and drop. In the selected items, find all the selected subtrees
 					// and move each of those subtrees.
 					var selectedRootNodes = GetRootsOfSelectedSubtrees();
 
@@ -167,7 +169,7 @@ public partial class TreeViewList : ListView
 		base.OnDrop(e);
 	}
 
-	// Required as OnDrop is protected and can't be accessed from outside
+	// Uno specific: OnDrop is protected, TreeViewItem calls it through this.
 	internal void OnDropInternal(Microsoft.UI.Xaml.DragEventArgs e) => OnDrop(e);
 
 	private void MoveNodeInto(TreeViewNode node, TreeViewNode insertAtNode)
@@ -339,8 +341,8 @@ public partial class TreeViewList : ListView
 		m_staleSelectionItem = ListViewModel.TryTakeStaleUnselection(NodeFromContainer(element)) ? item : null;
 		try
 		{
-			// Uno: we are moving PrepareContainerForItemOverride to the top, because otherwise
-			// the container will still be associated with the old item's state
+			// Uno specific: the base prepare runs first, a recycled container otherwise still carries
+			// the previous item's state while the node is applied to it.
 			base.PrepareContainerForItemOverride(element, item);
 		}
 		finally
@@ -365,12 +367,7 @@ public partial class TreeViewList : ListView
 			{
 				DispatcherQueue.TryEnqueue(() =>
 				{
-					// The "source of truth" for IsExpanded should come from the (likely recycled) container only if
-					// it has a binding on IsExpanded. Otherwise, the container doesn't know anything and we should
-					// use the IsExpanded value of the Node (which remembers the last value of IsExpanded before
-					// the container was recycled)
-					var bindingExists = itemContainer.GetBindingExpression(TreeViewItem.IsExpandedProperty) is { };
-					if (bindingExists)
+					if (itemContainer.GetBindingExpression(TreeViewItem.IsExpandedProperty) != null)
 					{
 						itemNode.IsExpanded = itemContainer.IsExpanded;
 					}
@@ -401,7 +398,8 @@ public partial class TreeViewList : ListView
 			ListViewModel.UpdateSelection(itemNodeImplNoRef, selectionState);
 		}
 
-#if HAS_UNO // #15214: workaround for initial selection being lost
+#if HAS_UNO
+		// Uno specific (#15214): selects the item TreeView.SelectedItem kept pending, see TreeView.OnPropertyChanged.
 		// Done here rather than in OnContainerContentChanging: that is raised once the container has its
 		// template, and TreeViewItem.OnApplyTemplate would first reset IsSelected from the unselected node.
 		if (itemContainer.IsSelected || ListViewModel.TreeView.PendingSelectedItem == item)
@@ -433,7 +431,11 @@ public partial class TreeViewList : ListView
 
 	protected override DependencyObject GetContainerForItemOverride()
 	{
-		var targetItem = new TreeViewItem() { IsGeneratedContainer = true }; // Uno specific IsGeneratedContainer
+		var targetItem = new TreeViewItem();
+#if HAS_UNO
+		// Uno specific: ItemsControl only keeps the style of a container it generated when it clears it.
+		targetItem.IsGeneratedContainer = true;
+#endif
 		return targetItem;
 	}
 
@@ -499,6 +501,7 @@ public partial class TreeViewList : ListView
 			dragItemPeer = FrameworkElementAutomationPeer.FromElement(dragItem);
 			if (dragItemPeer != null)
 			{
+				// Uno specific: GetNameCore is protected, GetName is called instead (here and below).
 				dragItemString = dragItemPeer.GetName();
 			}
 
@@ -773,35 +776,4 @@ public partial class TreeViewList : ListView
 	}
 
 	internal bool IsContentMode => ListViewModel?.IsContentMode ?? false;
-
-
-	// Uno Specific
-
-	private TreeView m_ancestorTreeView;
-
-	private T GetAncestorView<T>()
-		where T : class
-	{
-		DependencyObject treeViewItemAncestor = this;
-		T ancestorview = null;
-		while (treeViewItemAncestor != null && ancestorview == null)
-		{
-			treeViewItemAncestor = VisualTreeHelper.GetParent(treeViewItemAncestor);
-			ancestorview = treeViewItemAncestor as T;
-		}
-		return ancestorview;
-	}
-
-	internal TreeView AncestorTreeView
-	{
-		get
-		{
-			if (m_ancestorTreeView == null)
-			{
-				m_ancestorTreeView = GetAncestorView<TreeView>();
-			}
-
-			return m_ancestorTreeView;
-		}
-	}
 }

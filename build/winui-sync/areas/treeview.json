@@ -1,0 +1,39 @@
+{
+  "id": "treeview",
+  "title": "TreeView",
+  "baseline": "1b5b1a0ccc05ce5c8b5931dc303666975b57f498",
+  "upstream": {
+    "sources": [
+      "controls/dev/TreeView"
+    ],
+    "tests": [
+      "controls/dev/TreeView/APITests",
+      "controls/dev/TreeView/TestUI"
+    ],
+    "strings": "controls/dev/TreeView/Strings"
+  },
+  "uno": {
+    "sources": [
+      "src/Uno.UI/UI/Xaml/Controls/TreeView"
+    ],
+    "tests": [
+      "src/Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/TreeView",
+      "src/SamplesApp/SamplesApp.Samples/Microsoft/UI/Xaml/Controls/TreeView"
+    ],
+    "strings": "src/Uno.UI/UI/Xaml/Controls/TreeView/Strings"
+  },
+  "mirror": [
+    {
+      "upstream": "controls/dev/TreeView/TreeView.xaml",
+      "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/TreeView.xaml"
+    },
+    {
+      "upstream": "controls/dev/TreeView/TreeViewItem.xaml",
+      "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/TreeViewItem.xaml"
+    },
+    {
+      "upstream": "controls/dev/TreeView/TreeView_themeresources.xaml",
+      "uno": "src/Uno.UI.FluentTheme/Resources/PriorityDefault/TreeView_themeresources.xaml"
+    }
+  ]
+}

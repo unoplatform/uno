@@ -1,9 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ViewModel.cpp, tag winui3/release/1.4.2
+// MUX Reference ViewModel.cpp
 
 using System.Collections.Generic;
 using Windows.Foundation.Collections;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -13,6 +14,14 @@ namespace Microsoft.UI.Xaml.Controls;
 internal class SelectedTreeNodeVector : ObservableVector<TreeViewNode>
 {
 	TreeViewViewModel m_viewModel = null;
+
+	// Uno specific: VectorInnerImpl owns this in WinUI, see ObservableVector.IndexOf_OptimizedForRemove.
+	private int m_optimizedIndexOf_StartNextSearchAt;
+
+	public override int IndexOf(TreeViewNode node) => IndexOf_OptimizedForRemove(node, out var index) ? index : -1;
+
+	internal bool IndexOf_OptimizedForRemove(TreeViewNode node, out int index) =>
+		IndexOf_OptimizedForRemove(node, ref m_optimizedIndexOf_StartNextSearchAt, out index);
 
 	private void UpdateSelection(TreeViewNode node, TreeNodeSelectionState state)
 	{
@@ -39,7 +48,7 @@ internal class SelectedTreeNodeVector : ObservableVector<TreeViewNode>
 
 	internal void InsertAt(int index, TreeViewNode node)
 	{
-		// UpdateSelection will call InsertAtCore
+		// UpdateSelection will call InsertAtCore_NoContainsCheck
 		UpdateSelection(node, TreeNodeSelectionState.Selected);
 	}
 
@@ -60,7 +69,7 @@ internal class SelectedTreeNodeVector : ObservableVector<TreeViewNode>
 	public override void RemoveAt(int index)
 	{
 		var oldNode = base[index];
-		// UpdateNodeSelection will call RemoveAtCore
+		// UpdateSelection will call RemoveAtCore
 		UpdateSelection(oldNode, TreeNodeSelectionState.UnSelected);
 	}
 
@@ -86,24 +95,26 @@ internal class SelectedTreeNodeVector : ObservableVector<TreeViewNode>
 
 	// Default write methods will trigger TreeView visual updates.
 	// If you want to update vector content without notifying TreeViewNodes, use "core" version of the methods.
-	internal void InsertAtCore(int index, TreeViewNode node)
+	internal void InsertAtCore_NoContainsCheck(int index, TreeViewNode node)
 	{
-		if (!Contains(node))
-		{
-			base.Insert(index, node);
+		MUX_ASSERT(!Contains(node));
 
-			// Keep SelectedItems and SelectedNodes in sync
-			var viewModel = m_viewModel;
-			if (viewModel != null)
+		base.Insert(index, node);
+
+		// Keep SelectedItems and SelectedNodes in sync
+		var viewModel = m_viewModel;
+		if (viewModel != null)
+		{
+			var selectedItems = viewModel.SelectedItems;
+			if (selectedItems.Count != Count)
 			{
-				var selectedItems = viewModel.SelectedItems;
-				if (selectedItems.Count != Count)
+				var listControl = viewModel.ListControl;
+				if (listControl != null)
 				{
-					var listControl = viewModel.ListControl;
-					var item = listControl?.ItemFromNode(node);
+					var item = listControl.ItemFromNode(node);
 					if (item != null)
 					{
-						selectedItems.Insert(index, item);
+						((SelectedItemsVector)selectedItems).InsertAt_NoContainsCheck(index, item);
 						viewModel.TrackItemSelected(item);
 					}
 				}
@@ -120,7 +131,7 @@ internal class SelectedTreeNodeVector : ObservableVector<TreeViewNode>
 		if (viewModel != null)
 		{
 			var selectedItems = viewModel.SelectedItems;
-			if (Count != selectedItems.Count)
+			if (selectedItems.Count != Count)
 			{
 				var item = selectedItems[index];
 				selectedItems.RemoveAt(index);

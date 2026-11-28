@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TreeViewNode.cpp, tag winui3/release/1.4.2
+// MUX Reference TreeViewNode.cpp
 
-using System;
 using System.Collections;
 using Windows.Foundation.Collections;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -43,15 +43,8 @@ internal class TreeViewNodeVector : ObservableVector<TreeViewNode>
 
 	public void InsertAt(int index, TreeViewNode item, bool updateItemsSource = true)
 	{
-		if (m_parent == null)
-		{
-			throw new InvalidOperationException("Parent node must be set");
-		}
-		if (index > base.Count)
-		{
-			throw new ArgumentOutOfRangeException(nameof(index), "Index out of range for Insert");
-		}
-
+		MUX_ASSERT(m_parent != null);
+		MUX_ASSERT(index <= base.Count);
 		item.Parent = m_parent;
 
 		base.Insert(index, item);
@@ -96,6 +89,7 @@ internal class TreeViewNodeVector : ObservableVector<TreeViewNode>
 			}
 		}
 
+		// No children, so close parent if not requested otherwise
 		if (updateIsExpanded && base.Count == 0)
 		{
 			var ownerNode = m_parent;
@@ -116,6 +110,7 @@ internal class TreeViewNodeVector : ObservableVector<TreeViewNode>
 	public void RemoveAtEnd(bool updateItemsSource = true)
 	{
 		var index = Count - 1;
+		// Uno specific: WinUI passes updateItemsSource as the index, which removes the wrong node.
 		RemoveAt(index, updateItemsSource);
 	}
 
@@ -128,10 +123,7 @@ internal class TreeViewNodeVector : ObservableVector<TreeViewNode>
 
 			var itemsSource = GetWritableParentItemsSource();
 			// Set parent on new elements
-			if (m_parent == null)
-			{
-				throw new InvalidOperationException("Parent must be set");
-			}
+			MUX_ASSERT(m_parent != null);
 			foreach (var value in values)
 			{
 				value.Parent = m_parent;

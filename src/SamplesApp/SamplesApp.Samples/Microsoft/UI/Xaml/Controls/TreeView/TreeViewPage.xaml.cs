@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference TreeViewPage.xaml.cs
 
 using System;
 using System.Collections.Generic;
@@ -1015,6 +1016,11 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			GetFrame().Navigate(typeof(TreeViewUnrealizedChildrenTestPage));
 		}
 
+		private void TreeViewItemsSourceTestPage_Click(object sender, RoutedEventArgs e)
+		{
+			GetFrame().Navigate(typeof(TreeViewItemsSourceTestPage));
+		}
+
 		private void ClearException_Click(object sender, RoutedEventArgs e)
 		{
 			ExceptionMessage.Text = string.Empty;
@@ -1062,6 +1068,30 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 		{
 			Results.Text = ((TwoWayBoundButton.Content as TreeViewNode).Content as string)
 				+ ";" + ((TestTreeView.SelectedItem as TreeViewNode).Content as string);
+		}
+
+		private void LoadPerfTreeView_Click(object sender, RoutedEventArgs e)
+		{
+			TreeViewNode rootNode = new TreeViewNode() { Content = "Root" };
+			for (int level1Index = 0; level1Index < 10; level1Index++)
+			{
+				TreeViewNode level1 = new TreeViewNode()
+				{
+					Content = level1Index,
+				};
+				rootNode.Children.Add(level1);
+
+				for (int level2Index = 0; level2Index < 5000; level2Index++)
+				{
+					TreeViewNode level2 = new TreeViewNode()
+					{
+						Content = level1Index + "_" + level2Index,
+					};
+					level1.Children.Add(level2);
+				}
+			}
+			PerfScenarioTreeView.RootNodes.Clear();
+			PerfScenarioTreeView.RootNodes.Add(rootNode);
 		}
 
 		#region Uno specific

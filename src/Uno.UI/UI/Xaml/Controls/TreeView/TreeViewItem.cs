@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TreeViewItem.cpp, tag winui3/release/1.4.2
+// MUX Reference TreeViewItem.cpp
 
 using System;
 using Microsoft.UI.Input;
@@ -24,6 +24,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// </summary>
 public partial class TreeViewItem : ListViewItem
 {
+	// When dragging an item over a collapsed folder, we expand the folder after 1s hovering.
 	private const long c_dragOverInterval = 1000 * 10000;
 	private const string c_multiSelectCheckBoxName = "MultiSelectCheckBox";
 	private const string c_expandCollapseChevronName = "ExpandCollapseChevron";
@@ -42,6 +43,16 @@ public partial class TreeViewItem : ListViewItem
 		this.SetDefaultStyleKey();
 		SetValue(TreeViewItemTemplateSettingsProperty, new TreeViewItemTemplateSettings());
 	}
+
+#if HAS_UNO
+	// TODO Uno: Original C++ destructor cleanup. Uno does not support cleanup via finalizers.
+	// Original destructor logic (not executed):
+	// ~TreeViewItem()
+	// {
+	//     // We only need to use safe_get in the deconstruction loop
+	//     RecycleEvents(true /* useSafeGet */);
+	// }
+#endif
 
 	// IControlOverrides
 	protected override void OnKeyDown(KeyRoutedEventArgs e)
@@ -186,7 +197,7 @@ public partial class TreeViewItem : ListViewItem
 						mutableTreeViewList.SetDraggedOverItem(draggedOverItem);
 					}
 
-					treeViewList.UpdateDropTargetDropEffect(false, false, null);
+					mutableTreeViewList.UpdateDropTargetDropEffect(false, false, null);
 				}
 			}
 		}
@@ -229,19 +240,18 @@ public partial class TreeViewItem : ListViewItem
 					{
 						if (m_expandContentTimer != null)
 						{
-							var expandContentTimer = m_expandContentTimer;
-							expandContentTimer.Stop();
-							expandContentTimer.Start();
+							m_expandContentTimer.Stop();
+							m_expandContentTimer.Start();
 						}
 						else
 						{
 							// Initialize timer.
 							TimeSpan interval = new TimeSpan(c_dragOverInterval);
-							var expandContentTimer = new DispatcherTimer();
-							m_expandContentTimer = expandContentTimer;
-							expandContentTimer.Interval = interval;
-							expandContentTimer.Tick += OnExpandContentTimerTick;
-							expandContentTimer.Start();
+
+							m_expandContentTimer = new DispatcherTimer();
+							m_expandContentTimer.Interval = interval;
+							m_expandContentTimer.Tick += OnExpandContentTimerTick;
+							m_expandContentTimer.Start();
 						}
 					}
 				}
@@ -258,8 +268,8 @@ public partial class TreeViewItem : ListViewItem
 			var treeView = AncestorTreeView;
 			if (treeView != null)
 			{
-				var treeViewList = treeView.ListControl;
-				treeViewList.SetDraggedOverItem(null);
+				var mutableTreeViewList = treeView.MutableListControl;
+				mutableTreeViewList.SetDraggedOverItem(null);
 			}
 
 			if (m_expandContentTimer != null)
@@ -279,6 +289,13 @@ public partial class TreeViewItem : ListViewItem
 	protected override void OnApplyTemplate()
 	{
 		RecycleEvents();
+
+		// Uno specific: stands in for m_checkedEventRevoker and m_uncheckedEventRevoker, without allocating per item.
+		if (m_selectionBox != null)
+		{
+			m_selectionBox.Checked -= OnCheckToggle;
+			m_selectionBox.Unchecked -= OnCheckToggle;
+		}
 
 		m_selectionBox = (CheckBox)GetTemplateChild(c_multiSelectCheckBoxName);
 		RegisterPropertyChangedCallback(SelectorItem.IsSelectedProperty, OnIsSelectedChanged);
@@ -300,13 +317,6 @@ public partial class TreeViewItem : ListViewItem
 		{
 			UpdateNodeIsExpandedAsync(node, IsExpanded);
 			node.HasUnrealizedChildren = HasUnrealizedChildren;
-		}
-
-		// Uno specific - in case the OnApplyTemplate was not yet called
-		// the multiselect checkbox is not yet set - we must cache the selection and call this again
-		if (node != null)
-		{
-			UpdateSelectionVisual(node.SelectionState);
 		}
 
 		base.OnApplyTemplate();
@@ -332,20 +342,6 @@ public partial class TreeViewItem : ListViewItem
 			if (m_ancestorTreeView == null)
 			{
 				m_ancestorTreeView = GetAncestorView<TreeView>();
-			}
-			// TODO: Uno Specific - in case the container was generated, it is not yet part of the visual tree and we need to use
-			// the ItemsControlForItemContainerProperty to get the parent TreeViewList, and from there the TreeView
-			if (m_ancestorTreeView == null)
-			{
-				var weakReference = this.GetValue(ItemsControl.ItemsControlForItemContainerProperty) as WeakReference<ItemsControl>;
-				if (weakReference != null)
-				{
-					if (weakReference.TryGetTarget(out var target))
-					{
-						var list = target as TreeViewList;
-						m_ancestorTreeView = list.AncestorTreeView;
-					}
-				}
 			}
 			return m_ancestorTreeView;
 		}
@@ -504,20 +500,23 @@ public partial class TreeViewItem : ListViewItem
 		if (treeView != null)
 		{
 			var listControl = treeView.ListControl;
-			if (listControl.IsMultiselect)
+			if (listControl != null)
 			{
-				UpdateMultipleSelection(state);
-			}
-			else
-			{
-				var node = TreeNode;
-				if (node != null)
+				if (listControl.IsMultiselect)
 				{
-					var viewModel = listControl.ListViewModel;
-					var isNodeSelected = viewModel.IsNodeSelected(node);
-					if (isNodeSelected != IsSelected)
+					UpdateMultipleSelection(state);
+				}
+				else
+				{
+					var node = TreeNode;
+					if (node != null)
 					{
-						IsSelected = isNodeSelected;
+						var viewModel = listControl.ListViewModel;
+						var isNodeSelected = viewModel.IsNodeSelected(node);
+						if (isNodeSelected != IsSelected)
+						{
+							IsSelected = isNodeSelected;
+						}
 					}
 				}
 			}
@@ -531,8 +530,7 @@ public partial class TreeViewItem : ListViewItem
 
 	private void UpdateMultipleSelection(TreeNodeSelectionState state)
 	{
-		// Uno specific - in case the OnApplyTemplate was not yet called
-		// the multiselect checkbox is not yet set - we must cache the selection and call this again
+		// Uno specific: a template without the MultiSelectCheckBox part is tolerated, WinUI fails on it.
 		if (m_selectionBox == null)
 		{
 			return;
@@ -640,7 +638,7 @@ public partial class TreeViewItem : ListViewItem
 		}
 		else
 		{
-			// Leaf node: toggle selection 
+			// Leaf node: toggle selection
 			ToggleSelection();
 		}
 	}
@@ -768,6 +766,7 @@ public partial class TreeViewItem : ListViewItem
 		var chevron = m_expandCollapseChevron;
 		if (chevron != null)
 		{
+			// Uno specific: WinUI revokes PointerCanceled with the PointerPressed token, which detaches nothing.
 			chevron.PointerPressed -= OnExpandCollapseChevronPointerPressed;
 		}
 	}
@@ -810,26 +809,5 @@ public partial class TreeViewItem : ListViewItem
 		}
 
 		return TreeNodeSelectionState.PartialSelected;
-	}
-
-	~TreeViewItem()
-	{
-		// We only need to use safe_get in the deconstruction loop
-		RecycleEvents(/* useSafeGet */);
-	}
-
-	// Uno specifc: Ensure the indentation and selection visual are set properly
-	// when the tree view item returns from recycling queue.
-	// Removing this would break the TreeViewPartialSelectionTest-based UI tests.
-
-	private protected override void OnLoaded()
-	{
-		base.OnLoaded();
-
-		if (TreeNode != null)
-		{
-			UpdateIndentation(TreeNode.Depth);
-			UpdateSelectionVisual(TreeNode.SelectionState);
-		}
 	}
 }

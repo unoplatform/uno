@@ -1,4 +1,5 @@
 ﻿<!--  Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information.  -->
+<!--  MUX Reference TreeViewPage.xaml  -->
 <utilities:MUXTestPage
     x:Class="UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests.TreeViewPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -19,6 +20,7 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
@@ -337,6 +339,13 @@
                             Click="TreeViewUnrealizedChildrenTestPage_Click"
                             Content="TreeViewUnrealizedChildrenTestPage" />
                         <Button
+                            x:Name="TreeViewItemsSourceTestPage"
+                            Margin="1"
+                            HorizontalAlignment="Stretch"
+                            AutomationProperties.Name="TreeViewItemsSourceTestPage"
+                            Click="TreeViewItemsSourceTestPage_Click"
+                            Content="TreeViewItemsSourceTestPage" />
+                        <Button
                             x:Name="ResetItemsSource"
                             Margin="1"
                             HorizontalAlignment="Stretch"
@@ -490,6 +499,22 @@
                     </Border>
                 </StackPanel>
             </ScrollViewer>
+
+            <ScrollViewer Grid.Column="3">
+                <StackPanel x:Name="PerfScenarioStackPanel">
+
+                    <Button Click="LoadPerfTreeView_Click" Content="Load big tree view (SLOW on chk)" />
+
+                    <muxcontrols:TreeView
+                        x:Name="PerfScenarioTreeView"
+                        Width="400"
+                        Height="800"
+                        HorizontalAlignment="Left"
+                        SelectionMode="Multiple" />
+
+                </StackPanel>
+            </ScrollViewer>
+
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>

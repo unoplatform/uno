@@ -1,17 +1,26 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ViewModel.cpp, tag winui3/release/1.4.2
+// MUX Reference ViewModel.cpp
 
 using System.Collections.Generic;
 using Windows.Foundation.Collections;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-//// Similar to SelectedNodesVector, we need to make decisions before the item is inserted or removed.
-//// we can't use vector change events because the event already happened when event hander gets called.
+// Similar to SelectedNodesVector above, we need to make decisions before the item is inserted or removed.
+// we can't use vector change events because the event already happened when event hander gets called.
 internal class SelectedItemsVector : ObservableVector<object>
 {
 	private TreeViewViewModel m_viewModel;
+
+	// Uno specific: VectorInnerImpl owns this in WinUI, see ObservableVector.IndexOf_OptimizedForRemove.
+	private int m_optimizedIndexOf_StartNextSearchAt;
+
+	public override int IndexOf(object item) => IndexOf_OptimizedForRemove(item, out var index) ? index : -1;
+
+	internal bool IndexOf_OptimizedForRemove(object node, out int index) =>
+		IndexOf_OptimizedForRemove(node, ref m_optimizedIndexOf_StartNextSearchAt, out index);
 
 	public void SetViewModel(TreeViewViewModel viewModel)
 	{
@@ -26,23 +35,31 @@ internal class SelectedItemsVector : ObservableVector<object>
 	{
 		if (!Contains(item))
 		{
-			base.Insert(index, item);
+			InsertAt_NoContainsCheck(index, item);
+		}
+	}
 
-			// Keep SelectedNodes and SelectedItems in sync
-			var viewModel = m_viewModel;
-			if (viewModel != null)
+	public override void Insert(int index, object item) => InsertAt(index, item);
+
+	internal void InsertAt_NoContainsCheck(int index, object item)
+	{
+		MUX_ASSERT(!Contains(item));
+		base.Insert(index, item);
+
+		// Keep SelectedNodes and SelectedItems in sync
+		var viewModel = m_viewModel;
+		if (viewModel != null)
+		{
+			var selectedNodes = viewModel.SelectedNodes;
+			if (selectedNodes.Count != Count)
 			{
-				var selectedNodes = viewModel.SelectedNodes;
-				if (selectedNodes.Count != Count)
+				var listControl = viewModel.ListControl;
+				if (listControl != null)
 				{
-					var listControl = viewModel.ListControl;
-					if (listControl != null)
+					var node = listControl.NodeFromItem(item);
+					if (node != null)
 					{
-						var node = listControl.NodeFromItem(item);
-						if (node != null)
-						{
-							selectedNodes.Insert(index, node);
-						}
+						selectedNodes.Insert(index, node);
 					}
 				}
 			}
@@ -53,6 +70,12 @@ internal class SelectedItemsVector : ObservableVector<object>
 	{
 		RemoveAt(index);
 		InsertAt(index, item);
+	}
+
+	public override object this[int index]
+	{
+		get => base[index];
+		set => SetAt(index, value);
 	}
 
 	public override void RemoveAt(int index)

@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference TreeViewItemTemplateSelectorTestPage.xaml.cs
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -21,7 +22,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 		}
 	}
 
-	public class TreeViewItemTemplateSelector : DataTemplateSelector
+	public partial class TreeViewItemTemplateSelector : DataTemplateSelector
 	{
 		public DataTemplate Template1 { get; set; }
 		public DataTemplate Template2 { get; set; }
@@ -35,7 +36,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 		}
 	}
 
-	public class TreeViewItemStyleSelector : StyleSelector
+	public partial class TreeViewItemStyleSelector : StyleSelector
 	{
 		public Style Style1 { get; set; }
 		public Style Style2 { get; set; }

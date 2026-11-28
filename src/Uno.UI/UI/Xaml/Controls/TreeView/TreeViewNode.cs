@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TreeViewNode.cpp, tag winui3/release/1.4.2
+// MUX Reference TreeViewNode.cpp
 
 using System;
 using System.Collections.Generic;
@@ -269,15 +269,15 @@ public partial class TreeViewNode : DependencyObject, ICustomPropertyProvider, I
 				return resultStringable.ToString();
 			}
 
-			return content?.ToString() ?? GetType().Name;
+			return content.ToString() ?? GetType().FullName;
 		}
 
-		return GetType().Name;
+		return GetType().FullName;
 	}
 
 	#region ICustomPropertyProvider
 
-	Type ICustomPropertyProvider.Type => typeof(TreeViewNode);
+	Type ICustomPropertyProvider.Type => GetType();
 
 	ICustomProperty ICustomPropertyProvider.GetCustomProperty(string name) => null;
 

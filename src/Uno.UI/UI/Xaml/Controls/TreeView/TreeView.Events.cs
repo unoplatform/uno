@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TreeView.cpp, tag winui3/release/1.4.2
+// MUX Reference TreeView.cpp
 
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
@@ -39,5 +39,5 @@ public partial class TreeView
 	/// </summary>
 	public event TypedEventHandler<TreeView, TreeViewSelectionChangedEventArgs> SelectionChanged;
 
-	private event TypedEventHandler<TreeView, ContainerContentChangingEventArgs> ContainerContentChanged;
+	private event TypedEventHandler<ListViewBase, ContainerContentChangingEventArgs> ContainerContentChanged;
 }
