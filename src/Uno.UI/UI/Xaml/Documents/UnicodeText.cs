@@ -41,6 +41,13 @@ internal readonly partial struct UnicodeText : IParsedText
 	private const int UBIDI_LTR = 0;
 	private const int UBIDI_RTL = 1;
 	private const string HorizontalEllipsis = "\u2026";
+	private const string ObjectReplacementCharacter = "\uFFFC";
+	private static readonly InlineObjectInfo _emptyInlineObject = new(null, null, 0, 0, 0, global::Microsoft.UI.Text.VerticalCharacterAlignment.Baseline);
+
+	// Runs right after the paragraph BiDi pass, while ICU still points into the buffers it was given for the
+	// line reordering below. Tests use it to disturb the managed heap and the shared array pool in that window.
+	internal static Action<int>? ParagraphBidiResolvedForTests;
+
 	// Unicode rules P2-P3: the first strong character sets the paragraph level, otherwise the flow direction does.
 	internal static bool IsRightToLeftParagraph(string text, FlowDirection flowDirection)
 	{
@@ -49,8 +56,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			return flowDirection is FlowDirection.RightToLeft;
 		}
 
-		using var _ = ICU.CreateBiDiAndSetPara(text, 0, text.Length, flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR, out var bidi);
-		return ICU.GetMethod<ICU.ubidi_getParaLevel>()(bidi) is UBIDI_RTL;
+		return ICU.GetParaLevel(text, flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR) is UBIDI_RTL;
 	}
 
 	// Fallbacks for fonts that don't publish underline/strikeout metrics, as a fraction of the em
@@ -225,6 +231,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly TextAlignment _textAlignment;
 	private readonly FontDetails _defaultFontDetails;
 	private readonly List<Line> _lines;
+	private readonly int _firstResumedLine;
 	private readonly float? _endingNewLineLineHeight;
 	private readonly float _endingLineContentTop;
 	private readonly float _endingLineBaselineOffset;
@@ -279,9 +286,14 @@ internal readonly partial struct UnicodeText : IParsedText
 		bool ignoreTrailingCharacterSpacing,
 		out Size calculatedSize,
 		ShapingCache? shapingCache = null,
-		bool suppressEndingNewLineLine = false)
+		bool suppressEndingNewLineLine = false,
+		in UnicodeTextOptions options = default)
 	{
 		CI.Assert(maxLines >= 0);
+		var resumeIndex = options.ResumeIndex;
+		var forcedEllipsisLine = options.ForcedEllipsisLine ?? -1;
+		var trimmingWidth = options.TrimmingWidth ?? (float)availableSize.Width;
+		var inlineContainers = options.InlineContainers;
 		_endingParagraphLayout = endingParagraphLayout;
 		_endingParagraphAlignment = endingParagraphAlignment;
 		_defaultForeground = defaultForeground;
@@ -313,6 +325,14 @@ internal readonly partial struct UnicodeText : IParsedText
 			var inlineText = inline.GetText();
 			if (string.IsNullOrEmpty(inlineText))
 			{
+				// An InlineUIContainer has no text, so it is checked here, off the path every run of text takes.
+				if (inlineContainers is not null && inline is InlineUIContainer container)
+				{
+					singleInlineText = ++nonEmptyInlines == 1 ? ObjectReplacementCharacter : null;
+					allAscii = false;
+					allRunsLtr &= flowDirection is FlowDirection.LeftToRight;
+					inlineObjects = AppendInlineContainer(container, inlineContainers, resumeIndex, flowDirection, stringBuilder, inlineObjects, scriptBreaks, fontBreaks, _runBreaks);
+				}
 				continue;
 			}
 
@@ -425,9 +445,14 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		_text = singleInlineText ?? stringBuilder.ToString();
+		if ((uint)resumeIndex > (uint)_text.Length)
+		{
+			ThrowResumeIndexOutsideText(resumeIndex, _text.Length);
+		}
 		if (_text.Length == 0)
 		{
 			_lines = [];
+			_firstResumedLine = 0;
 			_defaultFontDetails = defaultFontDetails;
 			_rtl = flowDirection is FlowDirection.RightToLeft;
 			_textAlignment = textAlignment ?? TextAlignment.Left;
@@ -468,16 +493,35 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			AppendBoundaries(/* Line */ 2, _text, 0, lineOpportunityBreaks);
 		}
+		if (resumeIndex > 0)
+		{
+			// The line before the resume index ends there, as it did in the layout that broke there.
+			var resumeBreak = lineOpportunityBreaks.BinarySearch(resumeIndex);
+			if (resumeBreak < 0)
+			{
+				lineOpportunityBreaks.Insert(~resumeBreak, resumeIndex);
+			}
+		}
 
 		_bidiBreaks = new List<(int end, FlowDirection direction)>();
 		var trivialLtr = allAscii && allRunsLtr && flowDirection is FlowDirection.LeftToRight && paragraphLayouts is null;
-		// The paragraph BiDi handle must outlive the per-line reordering below; boxed so the deferred close
-		// sees the handle assigned in the non-trivial branch (it stays default — no close — on the trivial path).
-		var bidiBox = new global::System.Runtime.CompilerServices.StrongBox<IntPtr>();
-		using var bidiDisposable = new DisposableStruct<global::System.Runtime.CompilerServices.StrongBox<IntPtr>>(
-			static box => { if (box.Value != default) { ICU.GetMethod<ICU.ubidi_close>()(box.Value); } },
+		// The paragraph BiDi object (and the buffers ICU points into) and the pooled index map must outlive the per-line
+		// reordering below; boxed so the deferred cleanup sees what the non-trivial branch created (it stays default —
+		// nothing to free — on the trivial path).
+		var bidiBox = new global::System.Runtime.CompilerServices.StrongBox<(ICU.ParagraphBiDi BiDi, int[]? TextToBidi)>();
+		using var bidiDisposable = new DisposableStruct<global::System.Runtime.CompilerServices.StrongBox<(ICU.ParagraphBiDi BiDi, int[]? TextToBidi)>>(
+			static box =>
+			{
+				box.Value.BiDi.Dispose();
+				if (box.Value.TextToBidi is { } textToBidi)
+				{
+					ArrayPool<int>.Shared.Return(textToBidi);
+				}
+			},
 			bidiBox);
 		IntPtr bidi = default;
+		// Null when ICU reads _text itself; otherwise the index in ICU's text of each index in _text (see CreateParagraphBiDi).
+		int[]? textToBidi = null;
 		if (trivialLtr)
 		{
 			// ASCII has no RTL characters, so with an LTR paragraph and LTR runs the BiDi outcome is a single
@@ -488,20 +532,9 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		else
 		{
-			var embeddingLevels = ArrayPool<byte>.Shared.Rent(_text.Length);
-			using var embeddingLevelsDisposable = new DisposableStruct<byte[]>(static embeddingLevels => ArrayPool<byte>.Shared.Return(embeddingLevels), embeddingLevels);
-			for (int i = 0; i < _runBreaks.Count; i++)
-			{
-				var (start, count) = i == 0 ? (0, _runBreaks[0].end) : (_runBreaks[i - 1].end, _runBreaks[i].end - _runBreaks[i - 1].end);
-				var direction = _runBreaks[i].direction;
-				var level = flowDirection is FlowDirection.LeftToRight
-					? (direction is FlowDirection.LeftToRight ? 0 : 1)
-					: (direction is FlowDirection.RightToLeft ? 1 : 2); // 2 and not 0 because embedding must increase nesting level when switching direction inside RTL paragraph
-				Array.Fill(embeddingLevels, (byte)level, start, count);
-			}
-
-			ICU.CreateBiDiAndSetPara(_text, 0, _text.Length, flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR, out bidi, embeddingLevels);
-			bidiBox.Value = bidi;
+			var paragraphBiDi = CreateParagraphBiDi(_text, _runBreaks, flowDirection, out textToBidi);
+			bidiBox.Value = (paragraphBiDi, textToBidi);
+			bidi = paragraphBiDi.Handle;
 			var runCount = ICU.GetMethod<ICU.ubidi_countRuns>()(bidi, out var countRunsErrorCode);
 			ICU.CheckErrorCode<ICU.ubidi_countRuns>(countRunsErrorCode);
 			_rtl = ICU.GetMethod<ICU.ubidi_getParaLevel>()(bidi) is UBIDI_RTL;
@@ -509,6 +542,15 @@ internal readonly partial struct UnicodeText : IParsedText
 			{
 				var level = ICU.GetMethod<ICU.ubidi_getVisualRun>()(bidi, bidiRunIndex, out var logicalStart, out var length);
 				CI.Assert(level is UBIDI_LTR or UBIDI_RTL);
+				if (textToBidi is not null)
+				{
+					var start = ToTextIndex(textToBidi, _text.Length, logicalStart);
+					(logicalStart, length) = (start, ToTextIndex(textToBidi, _text.Length, logicalStart + length) - start);
+					if (length == 0)
+					{
+						continue; // only embedding characters of ours
+					}
+				}
 				_bidiBreaks.Add((logicalStart + length, level is UBIDI_RTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight));
 
 				if (textAlignment is null && logicalStart == 0)
@@ -518,6 +560,8 @@ internal readonly partial struct UnicodeText : IParsedText
 				}
 			}
 		}
+
+		ParagraphBidiResolvedForTests?.Invoke(_text.Length);
 
 		_glyphs = new LinkedList<Glyph>();
 		var clusterBreaks = new LinkedList<Cluster>();
@@ -621,6 +665,11 @@ internal readonly partial struct UnicodeText : IParsedText
 					};
 				}
 			}
+		}
+
+		if (resumeIndex > 0 && resumeIndex < _text.Length)
+		{
+			ValidateResumeIndex(_text, clusterBreaks, resumeIndex);
 		}
 
 		Dictionary<int, global::Microsoft.UI.Text.TabLeader>? tabLeaders = null;
@@ -751,7 +800,9 @@ internal readonly partial struct UnicodeText : IParsedText
 						maxHeightFontDetailsInChunkUnderTest = currentClusterBreak.Value.fontDetails;
 					}
 
-					if (textWrapping is TextWrapping.Wrap && chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth > effectiveAvailableWidth)
+					// The text before the resume index was laid out by a previous layout, so it never wraps here.
+					var lineAvailableWidth = resumeIndex > 0 && currentClusterBreak.Value.end <= resumeIndex ? float.PositiveInfinity : effectiveAvailableWidth;
+					if (textWrapping is TextWrapping.Wrap && chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth > lineAvailableWidth)
 					{
 						// The chunk being built can't fit on an empty line on its own — we have to break mid-chunk.
 						// If it can fit on a line, then it will be moved as a whole to the next line during the
@@ -822,7 +873,7 @@ internal readonly partial struct UnicodeText : IParsedText
 					// WinUI can always break after tabs, even in scenarios where ICU doesn't consider it a line break opportunity, so we follow suit
 					if (currentClusterBreak.Value.end == lineOpportunityBreaks[lineOpportunityBreakIndex] || currentClusterBreak.Value.containsTab)
 					{
-						if (lineWidth + chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth > effectiveAvailableWidth)
+						if (lineWidth + chunkUnderTestWidth - chunkUnderTestTrailingSpaceWidth > lineAvailableWidth)
 						{
 							if (textWrapping is not TextWrapping.NoWrap && currentLineEnd != -1)
 							{
@@ -872,7 +923,9 @@ internal readonly partial struct UnicodeText : IParsedText
 							}
 						}
 
-						if (IsLineBreak(_text, currentClusterBreak.Value.end))
+						// The text end is flushed below, as the last line.
+						if (IsLineBreak(_text, currentClusterBreak.Value.end)
+							|| (currentClusterBreak.Value.end == resumeIndex && resumeIndex < _text.Length))
 						{
 							var (h, b) = GetLineHeightAndBaselineOffset(textLineBounds, lineStackingStrategy, lineHeight, maxHeightFontDetailsInCurrentLine, lines.Count == 0, false);
 							lines.Add(new Line(lines.Count == 0 ? 0 : lines[^1].end, currentLineEnd, lines.Count == 0 ? clusterBreaks.First! : lines[^1].clusterLast.Next!, currentLineClusterLast, lineWidth, lineWidthWithoutTrailingSpaces, h, b));
@@ -918,6 +971,16 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 		ApplyParagraphJustification(lines, _text, (float)availableSize.Width, textAlignment!.Value);
 
+		var firstResumedLine = 0;
+		while (resumeIndex > 0 && firstResumedLine < lines.Count && lines[firstResumedLine].start < resumeIndex)
+		{
+			firstResumedLine++;
+		}
+		if (options.ForcedEllipsisLine is { } forcedLine && forcedLine < firstResumedLine)
+		{
+			ThrowForcedEllipsisLineBeforeResume(forcedLine, firstResumedLine);
+		}
+
 		var textEndsInLineBreak = IsLineBreak(_text, _text.Length);
 		// Lines that do not fit the available height are dropped below, so the height only matters past one line.
 		_layoutUsesAvailableHeight = lines.Count + (textEndsInLineBreak ? 1 : 0) > 1;
@@ -941,16 +1004,20 @@ internal readonly partial struct UnicodeText : IParsedText
 					? terminalBlockHeight
 					: 0;
 			var actualLineCount = lines.Count + (textEndsInLineBreak ? 1 : 0);
-			var isEarlyLastLine = (maxLines > 0 && maxLines < actualLineCount && lineIndex == maxLines - 1) || (lineIndex < actualLineCount - 1 && nextLineHeight + totalHeight > availableSize.Height);
+			var isEarlyLastLine = (maxLines > 0 && maxLines < actualLineCount && lineIndex == maxLines - 1)
+				|| (lineIndex < actualLineCount - 1 && nextLineHeight + totalHeight > availableSize.Height)
+				|| lineIndex == forcedEllipsisLine;
 
 			var lineWidth = line.width;
 			LinkedListNode<Cluster> lastClusterIncludedInLine = line.clusterLast;
 			var trimAvailableWidth = line.paragraphLayout is { } trimPl
-				? Math.Max(0, (float)availableSize.Width
+				? Math.Max(0, trimmingWidth
 					- GetParagraphLeftInset(trimPl, line.isFirstLineOfParagraph)
 					- GetParagraphRightInset(trimPl, line.isFirstLineOfParagraph))
-				: (float)availableSize.Width;
-			if (textTrimming is TextTrimming.CharacterEllipsis or TextTrimming.WordEllipsis && (line.widthWithoutTrailingSpaces > trimAvailableWidth || isEarlyLastLine))
+				: trimmingWidth;
+			if (textTrimming is TextTrimming.CharacterEllipsis or TextTrimming.WordEllipsis
+				&& lineIndex >= firstResumedLine // the unwrapped lines of a previous layout
+				&& (line.widthWithoutTrailingSpaces > trimAvailableWidth || isEarlyLastLine))
 			{
 				IEnumerable<LinkedListNode<Cluster>> possibleTrimPoints;
 				if (textTrimming is TextTrimming.WordEllipsis)
@@ -1129,12 +1196,16 @@ internal readonly partial struct UnicodeText : IParsedText
 			var lineRtl = line.paragraphLayout?.RightToLeft ?? _rtl;
 			var ellipsisCluster = line.hasEllipsis ? line.clusterLast : null;
 			var limit = line.hasEllipsis ? line.clusterLast.Value.start : line.clusterLast.Value.end;
+			// In ICU's copy, the line ends right after its last character: an embedding character that follows may
+			// belong to the next paragraph, and ubidi_setLine rejects a line that crosses one.
+			var bidiLineStart = ToBidiIndex(textToBidi, line.start);
+			var bidiLineLimit = limit > line.start ? ToBidiIndex(textToBidi, limit - 1) + 1 : bidiLineStart;
 			var lineBidi = ICU.GetMethod<ICU.ubidi_open>()();
-			ICU.GetMethod<ICU.ubidi_setLine>()(bidi, line.start, limit, lineBidi, out var setLineErrorCode);
+			ICU.GetMethod<ICU.ubidi_setLine>()(bidi, bidiLineStart, bidiLineLimit, lineBidi, out var setLineErrorCode);
 			ICU.CheckErrorCode<ICU.ubidi_setLine>(setLineErrorCode);
 			using var lineBidiDisposable = new DisposableStruct<IntPtr>(static bidi => ICU.GetMethod<ICU.ubidi_close>()(bidi), lineBidi);
 
-			var logicalToVisualMap = ArrayPool<int>.Shared.Rent(_text.Length);
+			var logicalToVisualMap = ArrayPool<int>.Shared.Rent(bidiLineLimit - bidiLineStart);
 			using var logicalToVisualMapDisposable = new DisposableStruct<int[]>(static logicalToVisualMap => ArrayPool<int>.Shared.Return(logicalToVisualMap), logicalToVisualMap);
 
 			fixed (int* logicalToVisualMapPtr = logicalToVisualMap)
@@ -1145,14 +1216,14 @@ internal readonly partial struct UnicodeText : IParsedText
 
 			var levels = ICU.GetMethod<ICU.ubidi_getLevels>()(lineBidi, out var getLevelsErrorCode);
 			ICU.CheckErrorCode<ICU.ubidi_getLevels>(getLevelsErrorCode);
-			var levelsSpan = new Span<byte>(levels.ToPointer(), limit - line.start);
+			var levelsSpan = new Span<byte>(levels.ToPointer(), bidiLineLimit - bidiLineStart);
 
 			var clusterBeforeBegin = line.clusterStart.Previous;
 
 			var nodes = new List<LinkedListNode<Cluster>>();
 			for (var (clusterNode, end) = (line.clusterStart, (ellipsisCluster ?? line.clusterLast.Next)); clusterNode != end;)
 			{
-				clusterNode!.Value = clusterNode.Value with { rtl = levelsSpan[clusterNode.Value.start - line.start] % 2 == 1 };
+				clusterNode!.Value = clusterNode.Value with { rtl = levelsSpan[ToBidiIndex(textToBidi, clusterNode.Value.start) - bidiLineStart] % 2 == 1 };
 				var next = clusterNode.Next;
 				nodes.Add(clusterNode);
 				clusterBreaks.Remove(clusterNode);
@@ -1165,7 +1236,9 @@ internal readonly partial struct UnicodeText : IParsedText
 				ellipsisCluster.Value = ellipsisCluster.Value with { indexInLine = lineRtl ? 0 : nodes.Count };
 			}
 
-			nodes.Sort((node1, node2) => logicalToVisualMap[node1.Value.start - line.start].CompareTo(logicalToVisualMap[node2.Value.start - line.start]));
+			var lineTextToBidi = textToBidi; // captured instead of textToBidi, which would put a closure on every layout
+			nodes.Sort((node1, node2) => logicalToVisualMap[ToBidiIndex(lineTextToBidi, node1.Value.start) - bidiLineStart]
+				.CompareTo(logicalToVisualMap[ToBidiIndex(lineTextToBidi, node2.Value.start) - bidiLineStart]));
 
 			for (var index = 0; index < nodes.Count; index++)
 			{
@@ -1227,6 +1300,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		_lines = lines;
+		_firstResumedLine = Math.Min(firstResumedLine, lines.Count);
 		_markerShapes = markerShapes;
 		_inlineObjects = inlineObjects;
 		_tabLeaders = tabLeaders;
@@ -1256,6 +1330,20 @@ internal readonly partial struct UnicodeText : IParsedText
 			|| endingParagraphLayout is not null;
 	}
 
+	// Appends a placeholder character the size of the hosted element. U+FFFC breaks on both sides (line break class CB).
+	private static Dictionary<int, InlineObjectInfo> AppendInlineContainer(InlineUIContainer container, Func<InlineUIContainer, InlineObjectInfo?> measure, int resumeIndex, FlowDirection flowDirection, StringBuilder text, Dictionary<int, InlineObjectInfo>? inlineObjects, List<int> scriptBreaks, List<(int end, FontDetails fontDetails)> fontBreaks, List<RunBreak> runBreaks)
+	{
+		var objectStart = text.Length;
+		text.Append(ObjectReplacementCharacter[0]);
+		inlineObjects ??= new();
+		// One before the resume index was laid out by a previous layout.
+		inlineObjects[objectStart] = (objectStart >= resumeIndex ? measure(container) : null) ?? _emptyInlineObject;
+		scriptBreaks.Add(objectStart + 1);
+		fontBreaks.Add((objectStart + 1, container.FontInfo));
+		runBreaks.Add(new RunBreak(objectStart + 1, container.Foreground, flowDirection, TextDecorations.None, 0, null));
+		return inlineObjects;
+	}
+
 	/// <summary>
 	/// Whether laying the same text out in <paramref name="availableSize"/> would give this exact result, because the
 	/// dimensions that differ from the size this was parsed with are not ones the layout depends on.
@@ -1263,6 +1351,35 @@ internal readonly partial struct UnicodeText : IParsedText
 	internal bool IsLayoutValidFor(Size availableSize)
 		=> (!_layoutUsesAvailableWidth || availableSize.Width == _availableSize.Width)
 		&& (!_layoutUsesAvailableHeight || availableSize.Height == _availableSize.Height);
+
+	// The option checks throw from these helpers, which keep the throws out of the constructor: as it grows, its loops
+	// get slower.
+	private static void ThrowResumeIndexOutsideText(int resumeIndex, int length)
+		=> throw new ArgumentOutOfRangeException("options", $"{nameof(UnicodeTextOptions.ResumeIndex)} {resumeIndex} is outside the text (length {length}).");
+
+	// A previous layout never starts a line inside a cluster, or between the two halves of a CRLF.
+	private static void ValidateResumeIndex(string text, LinkedList<Cluster> clusters, int resumeIndex)
+	{
+		if (!IsClusterEnd(clusters, resumeIndex) || (text[resumeIndex - 1] == '\r' && text[resumeIndex] == '\n'))
+		{
+			throw new ArgumentException($"{nameof(UnicodeTextOptions.ResumeIndex)} {resumeIndex} is inside a cluster or a line break; a layout resumes only where a line can start.", "options");
+		}
+	}
+
+	private static void ThrowForcedEllipsisLineBeforeResume(int forcedEllipsisLine, int firstResumedLine)
+		=> throw new ArgumentOutOfRangeException("options", $"{nameof(UnicodeTextOptions.ForcedEllipsisLine)} {forcedEllipsisLine} is before the first resumed line, {firstResumedLine}.");
+
+	private static bool IsClusterEnd(LinkedList<Cluster> clusters, int index)
+	{
+		for (var node = clusters.First; node is not null && node.Value.start < index; node = node.Next)
+		{
+			if (node.Value.end == index)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
 	// Printable ASCII (plus tab) has no mandatory line breaks and needs no ICU break analysis for NoWrap text.
 	private static bool IsAsciiWithoutLineBreaks(string text)
@@ -1311,6 +1428,84 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		return (possibleTrimPoints, lineBreakOpportunitiesLookupStart);
+	}
+
+	// As on WinUI, only a run whose direction differs from the control's is embedded, and the bidi control characters
+	// in the text are always honored. An embedding-levels array would make ICU ignore those characters, so a differing
+	// run is embedded the way WinUI hands it to its line layout: an LRE or RLE before it and a PDF after it, in a copy
+	// of the text that only ICU reads. textToBidi maps each index in text (and text.Length) to its index in that copy;
+	// it is null when no run differs and ICU reads the text as it is. Otherwise it is rented from the pool, possibly
+	// longer than text.Length + 1, and the caller returns it.
+	private static ICU.ParagraphBiDi CreateParagraphBiDi(string text, List<RunBreak> runBreaks, FlowDirection flowDirection, out int[]? textToBidi)
+	{
+		var paraLevel = flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR;
+		var anyRunDiffers = false;
+		foreach (var run in runBreaks)
+		{
+			anyRunDiffers |= run.direction != flowDirection;
+		}
+		if (!anyRunDiffers)
+		{
+			textToBidi = null;
+			return ICU.CreateBiDiAndSetPara(text, paraLevel);
+		}
+
+		const char LRE = '\u202A', RLE = '\u202B', PDF = '\u202C';
+		textToBidi = ArrayPool<int>.Shared.Rent(text.Length + 1);
+		// At most an opening character per run and per paragraph separator, and a PDF per run.
+		var bidiText = ArrayPool<char>.Shared.Rent(2 * text.Length + 2 * runBreaks.Count);
+		try
+		{
+			var length = 0;
+			var runStart = 0;
+			foreach (var run in runBreaks)
+			{
+				var differs = run.direction != flowDirection;
+				var opening = run.direction is FlowDirection.RightToLeft ? RLE : LRE;
+				var open = false;
+				for (var i = runStart; i < run.end; i++)
+				{
+					var c = text[i];
+					// A paragraph separator ends every embedding (UAX #9 X8), so the run's embedding is opened again
+					// after each one, never between the two halves of a CRLF.
+					if (differs && !open && !(c == '\n' && i > 0 && text[i - 1] == '\r'))
+					{
+						bidiText[length++] = opening;
+						open = true;
+					}
+					textToBidi[i] = length;
+					bidiText[length++] = c;
+					if (open && IsParagraphSeparator(c) && !(c == '\r' && i + 1 < text.Length && text[i + 1] == '\n'))
+					{
+						open = false;
+					}
+				}
+				if (open && !(text[run.end - 1] == '\r' && run.end < text.Length && text[run.end] == '\n'))
+				{
+					bidiText[length++] = PDF;
+				}
+				runStart = run.end;
+			}
+			textToBidi[text.Length] = length;
+
+			return ICU.CreateBiDiAndSetPara(bidiText.AsSpan(0, length), paraLevel);
+		}
+		finally
+		{
+			ArrayPool<char>.Shared.Return(bidiText);
+		}
+
+		// The characters of bidi class B.
+		static bool IsParagraphSeparator(char c) => c is '\n' or '\r' or (>= '\u001C' and <= '\u001E') or '\u0085' or '\u2029';
+	}
+
+	private static int ToBidiIndex(int[]? textToBidi, int index) => textToBidi is null ? index : textToBidi[index];
+
+	// The number of characters of the text before an index in ICU's copy of it.
+	private static int ToTextIndex(int[] textToBidi, int textLength, int bidiIndex)
+	{
+		var index = Array.BinarySearch(textToBidi, 0, textLength + 1, bidiIndex);
+		return index >= 0 ? index : ~index;
 	}
 
 	// Walks the intersection of run, script, bidi and font breaks without materializing a list of shaping runs.
@@ -1595,6 +1790,38 @@ internal readonly partial struct UnicodeText : IParsedText
 		(int startIndex, int length)? compositionRange,
 		bool suppressBackplate,
 		Color? foregroundOverride)
+		=> DrawLines(owner, session, null, caret, highlighters, compositionRange, suppressBackplate, foregroundOverride);
+
+	/// <summary>
+	/// How <see cref="DrawLines"/> draws a line. <see cref="GetLineDraw"/> gives the values that draw it where
+	/// <see cref="Draw"/> does.
+	/// </summary>
+	/// <param name="Line">The line, numbered as in <see cref="GetLineInfo"/>.</param>
+	/// <param name="Translation">How far the line's contents move from where the layout puts them (the
+	/// <see cref="UnicodeTextLineInfo"/> coordinates), on both axes. Zero draws the line where <see cref="Draw"/> does.</param>
+	/// <param name="BandTop">The top of the band that the line's character background, highlight, selection and
+	/// high-contrast fills and its caret cover, where it is drawn: <see cref="Translation"/> doesn't move it.</param>
+	/// <param name="BandHeight">The height of that band.</param>
+	internal readonly record struct LineDraw(int Line, Vector2 Translation, float BandTop, float BandHeight);
+
+	/// <summary>Draws a line where <see cref="Draw"/> does: no translation, and the line box as the band.</summary>
+	internal LineDraw GetLineDraw(int lineIndex)
+	{
+		var info = GetLineInfo(lineIndex);
+		return new LineDraw(lineIndex, Vector2.Zero, info.Top, info.Height);
+	}
+
+	/// <summary>
+	/// Draws the given lines, each at its own position. Null draws every line where the layout put it, as
+	/// <see cref="Draw"/> does.
+	/// </summary>
+	internal void DrawLines(UIElement owner, in Visual.PaintingSession session,
+		IReadOnlyList<LineDraw>? lines,
+		(int index, CompositionBrush brush, float thickness)? caret,
+		IEnumerable<TextHighlighter> highlighters,
+		(int startIndex, int length)? compositionRange,
+		bool suppressBackplate,
+		Color? foregroundOverride)
 	{
 		var useHighContrastAdjustment = owner.UseHighContrastAdjustment();
 		var effectiveOpacity = useHighContrastAdjustment && session.Opacity > 0
@@ -1649,8 +1876,38 @@ internal readonly partial struct UnicodeText : IParsedText
 		var highlighterSlices = highlighterSlicer.GetSegments();
 		var highlighterIndex = 0;
 		Rect? pendingHighContrastBackplate = null;
-		for (var clusterIndex = 0; clusterIndex < _clustersInLogicalOrder.Count; clusterIndex++)
+		// With explicit lines, the clusters of one line after another, each line at its own place.
+		var lineDrawIndex = -1;
+		var previousLineStart = -1;
+		var lineClustersEnd = lines is null ? _clustersInLogicalOrder.Count : 0;
+		LineDraw lineDraw = default;
+		LineDraw? endingLineDraw = null;
+		for (var clusterIndex = 0; ; clusterIndex++)
 		{
+			while (lines is not null && clusterIndex >= lineClustersEnd && ++lineDrawIndex < lines.Count)
+			{
+				lineDraw = lines[lineDrawIndex];
+				if (lineDraw.Line >= _lines.Count)
+				{
+					endingLineDraw = lineDraw;
+					continue;
+				}
+
+				(clusterIndex, lineClustersEnd) = (GetFirstClusterOfLine(lineDraw.Line), GetFirstClusterOfLine(lineDraw.Line + 1));
+				// The lines may come in any order. The indices only move forward, so lines in order continue where the
+				// previous one ended, and a line that starts at or before the previous one's start scans from the beginning.
+				if (clusterIndex <= previousLineStart)
+				{
+					(highlighterIndex, runBreakIndex, wordBoundariesIndex) = (0, 0, 0);
+				}
+
+				previousLineStart = clusterIndex;
+			}
+			if (clusterIndex >= lineClustersEnd)
+			{
+				break;
+			}
+
 			var cluster = _clustersInLogicalOrder[clusterIndex];
 			while (highlighterSlices[highlighterIndex].End <= cluster.Value.start)
 			{
@@ -1679,7 +1936,17 @@ internal readonly partial struct UnicodeText : IParsedText
 			var unalignedX = cluster.Value.indexInLine == 0
 				? 0
 				: _xyTable[lineIndex].prefixSummedWidths[cluster.Value.indexInLine - 1].sumUntilAfterCluster;
-			var alignmentOffset = GetAlignmentOffsetForLine(line);
+			// The x of the line's left edge, and the band its fills and caret cover.
+			float alignmentOffset, bandTop, bandHeight;
+			if (lines is null)
+			{
+				(alignmentOffset, bandTop, bandHeight) = (GetAlignmentOffsetForLine(line), y, line.lineHeight);
+			}
+			else
+			{
+				y += lineDraw.Translation.Y;
+				(alignmentOffset, bandTop, bandHeight) = (GetAlignmentOffsetForLine(line) + lineDraw.Translation.X, lineDraw.BandTop, lineDraw.BandHeight);
+			}
 			var positionAcc = new Vector2(unalignedX + alignmentOffset, y + line.baselineOffset);
 			var fontDetails = cluster.Value.fontDetails;
 			var clusterHidden = GetRunHidden(cluster.Value, _runBreaks);
@@ -1760,8 +2027,8 @@ internal readonly partial struct UnicodeText : IParsedText
 			// Floor every edge and +1 the trailing edges so adjacent background
 			// rects always overlap by 1 px, preventing antialiased-edge seams.
 			var backgroundRect = new Rect(
-				new Point(MathF.Floor(unalignedX + alignmentOffset), MathF.Floor(y)),
-				new Point(MathF.Floor(unalignedX + alignmentOffset + cluster.Value.width) + 1, MathF.Floor(y + line.lineHeight) + 1));
+				new Point(MathF.Floor(unalignedX + alignmentOffset), MathF.Floor(bandTop)),
+				new Point(MathF.Floor(unalignedX + alignmentOffset + cluster.Value.width) + 1, MathF.Floor(bandTop + bandHeight) + 1));
 			if (!clusterHidden && !useHighContrastAdjustment && _runBreaks[runBreakIndex].background is { } characterBackground)
 			{
 				session.Session.DrawRect(backgroundRect, WithOpacity(characterBackground, effectiveOpacity));
@@ -1937,14 +2204,14 @@ internal readonly partial struct UnicodeText : IParsedText
 				if (caretIndex >= cluster.Value.start && caretIndex < cluster.Value.end)
 				{
 					caretRect = cluster.Value.rtl
-						? new Rect(new Point(cluster.Value.width + alignmentOffset + unalignedX - caretThickness, y), new Point(cluster.Value.width + alignmentOffset + unalignedX, y + line.lineHeight))
-						: new Rect(new Point(alignmentOffset + unalignedX, y), new Point(alignmentOffset + unalignedX + caretThickness, y + line.lineHeight));
+						? new Rect(new Point(cluster.Value.width + alignmentOffset + unalignedX - caretThickness, bandTop), new Point(cluster.Value.width + alignmentOffset + unalignedX, bandTop + bandHeight))
+						: new Rect(new Point(alignmentOffset + unalignedX, bandTop), new Point(alignmentOffset + unalignedX + caretThickness, bandTop + bandHeight));
 				}
 				else if (_endingNewLineLineHeight is null && caretIndex >= cluster.Value.start && clusterIndex == _clustersInLogicalOrder.Count - 1)
 				{
 					caretRect = cluster.Value.rtl
-						? new Rect(new Point(alignmentOffset + unalignedX - caretThickness, y), new Point(alignmentOffset + unalignedX, y + line.lineHeight))
-						: new Rect(new Point(cluster.Value.width + alignmentOffset + unalignedX, y), new Point(cluster.Value.width + alignmentOffset + unalignedX + caretThickness, y + line.lineHeight));
+						? new Rect(new Point(alignmentOffset + unalignedX - caretThickness, bandTop), new Point(alignmentOffset + unalignedX, bandTop + bandHeight))
+						: new Rect(new Point(cluster.Value.width + alignmentOffset + unalignedX, bandTop), new Point(cluster.Value.width + alignmentOffset + unalignedX + caretThickness, bandTop + bandHeight));
 				}
 			}
 		}
@@ -1986,6 +2253,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		// Draw paragraph list markers on the first visual line of each paragraph
 		DrawParagraphMarkers(
 			session,
+			lines,
 			foregroundOverride ?? (useHighContrastAdjustment ? WithOpacity(highContrastForeground, effectiveOpacity) : null));
 
 		if (inlineObjectImages is not null)
@@ -2011,11 +2279,11 @@ internal readonly partial struct UnicodeText : IParsedText
 					color, 1);
 		}
 
-		if (caretRect is null && caret?.index == _text.Length) // ending new line or empty text
+		if (caretRect is null && caret?.index == _text.Length && (lines is null || endingLineDraw is not null)) // ending new line or empty text
 		{
-			var alignmentOffset = GetAlignmentOffsetForLine(null);
-			var top = _endingLineContentTop;
-			var height = _endingNewLineLineHeight ?? _defaultFontDetails.LineHeight;
+			var (alignmentOffset, top, height) = endingLineDraw is { } ending
+				? (GetAlignmentOffsetForLine(null) + ending.Translation.X, ending.BandTop, ending.BandHeight)
+				: (GetAlignmentOffsetForLine(null), _endingLineContentTop, _endingNewLineLineHeight ?? _defaultFontDetails.LineHeight);
 			caretRect = IsLineRightToLeft(null)
 				? new Rect(new Point(alignmentOffset - caret.Value.thickness, top), new Point(alignmentOffset, top + height))
 				: new Rect(new Point(alignmentOffset, top), new Point(alignmentOffset + caret.Value.thickness, top + height));
@@ -2027,11 +2295,32 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 	}
 
-	private void DrawParagraphMarkers(in Visual.PaintingSession session, Color? foregroundOverride)
+	// A marker moves with its line.
+	private void DrawParagraphMarkers(in Visual.PaintingSession session, IReadOnlyList<LineDraw>? lines, Color? foregroundOverride)
 	{
 		var runBreakIndex = 0;
-		for (var lineIndex = 0; lineIndex < _lines.Count; lineIndex++)
+		for (var i = 0; i < (lines?.Count ?? _lines.Count + 1); i++)
 		{
+			var lineIndex = lines?[i].Line ?? i;
+			var (dx, dy) = lines is null ? (0f, 0f) : (lines[i].Translation.X, lines[i].Translation.Y);
+			if (lineIndex >= _lines.Count)
+			{
+				if (_endingNewLineLineHeight is not null
+					&& _endingParagraphLayout is { MarkerText.Length: > 0 } endingLayout)
+				{
+					DrawParagraphMarker(
+						session,
+						endingLayout,
+						_defaultFontDetails.FontHandle,
+						(float)_availableSize.Width,
+						dx,
+						_endingLineContentTop + _endingLineBaselineOffset + dy,
+						_defaultForeground,
+						foregroundOverride);
+				}
+				continue;
+			}
+
 			var line = _lines[lineIndex];
 			if (!line.isFirstLineOfParagraph
 				|| line.paragraphLayout is not { MarkerText.Length: > 0 } layout)
@@ -2039,6 +2328,10 @@ internal readonly partial struct UnicodeText : IParsedText
 				continue;
 			}
 
+			if (lines is not null)
+			{
+				runBreakIndex = 0; // the lines may come in any order
+			}
 			while (runBreakIndex < _runBreaks.Count - 1 && _runBreaks[runBreakIndex].end <= line.start)
 			{
 				runBreakIndex++;
@@ -2050,23 +2343,30 @@ internal readonly partial struct UnicodeText : IParsedText
 				layout,
 				font,
 				(float)_availableSize.Width,
-				GetLineContentTop(lineIndex) + line.baselineOffset,
+				dx,
+				GetLineContentTop(lineIndex) + line.baselineOffset + dy,
 				_runBreaks[runBreakIndex].foreground,
 				foregroundOverride);
 		}
+	}
 
-		if (_endingNewLineLineHeight is not null
-			&& _endingParagraphLayout is { MarkerText.Length: > 0 } endingLayout)
+	// The index in _clustersInLogicalOrder of a line's first cluster, or of the end for the line after the last.
+	private int GetFirstClusterOfLine(int lineIndex)
+	{
+		var (low, high) = (0, _clustersInLogicalOrder.Count);
+		while (low < high)
 		{
-			DrawParagraphMarker(
-				session,
-				endingLayout,
-				_defaultFontDetails.FontHandle,
-				(float)_availableSize.Width,
-				_endingLineContentTop + _endingLineBaselineOffset,
-				_defaultForeground,
-				foregroundOverride);
+			var middle = (low + high) / 2;
+			if (_clustersInLogicalOrder[middle].Value.lineIndex < lineIndex)
+			{
+				low = middle + 1;
+			}
+			else
+			{
+				high = middle;
+			}
 		}
+		return low;
 	}
 
 	private sealed record MarkerShape(ushort[] Glyphs, Vector2[] Positions, Rect Ink);
@@ -2089,6 +2389,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		ParagraphLayoutInfo layout,
 		IFont font,
 		float totalWidth,
+		float dx,
 		float baseline,
 		Brush? foreground,
 		Color? foregroundOverride)
@@ -2103,7 +2404,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			_ => markerAnchor - markerBounds.Width,
 		};
 		session.Session.Save();
-		session.Session.Translate((float)(markerLeft - markerBounds.Left), 0);
+		session.Session.Translate((float)(markerLeft - markerBounds.Left) + dx, 0);
 		session.Session.DrawGlyphRun(font, glyphs, positions, baseline, foregroundOverride ?? BrushToColor(foreground, session.Opacity));
 		session.Session.Restore();
 	}
@@ -2777,6 +3078,43 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	public bool IsBaseDirectionRightToLeft => _rtl;
+
+	/// <summary>The first line at or after <see cref="UnicodeTextOptions.ResumeIndex"/>; the line count when none is.</summary>
+	internal int FirstResumedLine => _firstResumedLine;
+
+	internal int LineCount => _lines.Count;
+
+	internal readonly record struct ClusterForTests(int Start, int End, bool RightToLeft, float X, float Width, ushort[] Glyphs);
+
+	internal readonly record struct LineForTests(int Start, int End, float Width, float WidthWithoutTrailingSpaces, float Height, float Baseline, bool HasEllipsis, ClusterForTests[] Clusters);
+
+	// A line's clusters in visual order, with their x in the layout's coordinates.
+	internal LineForTests GetLineForTests(int lineIndex)
+	{
+		var line = _lines[lineIndex];
+		var alignmentOffset = GetAlignmentOffsetForLine(line);
+		var clusters = new List<ClusterForTests>();
+		var x = alignmentOffset;
+		for (var node = line.clusterStart; ; node = node.Next!)
+		{
+			var glyphs = new List<ushort>();
+			for (var glyph = node.Value.glyphStart; ; glyph = glyph.Next!)
+			{
+				glyphs.Add(glyph.Value.GlyphId);
+				if (glyph == node.Value.glyphLast)
+				{
+					break;
+				}
+			}
+			clusters.Add(new(node.Value.start, node.Value.end, node.Value.rtl, x, node.Value.width, glyphs.ToArray()));
+			x += node.Value.width;
+			if (node == line.clusterLast)
+			{
+				break;
+			}
+		}
+		return new(line.start, line.end, line.width, line.widthWithoutTrailingSpaces, line.lineHeight, line.baselineOffset, line.hasEllipsis, clusters.ToArray());
+	}
 
 	// The alignment the layout used, relative to the FlowDirection it was laid out with (Left = start):
 	// a default-aligned TextBox gets one from its content's direction.
