@@ -265,10 +265,19 @@ namespace Uno.UI.DataBinding
 
 		public object? DataContext
 		{
-			get => _dataContextWeakStorage?.Target;
-			set => SetWeakDataContext(Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, value));
+			get => _dataContextWeakStorage?.TargetOrNull;
+			set
+			{
+				// Not rented once disposed: nothing would return it.
+				if (!_disposed)
+				{
+					SetWeakDataContext(Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, value));
+				}
+			}
 		}
 
+		// Ownership: whoever rented the reference returns it, after everything sharing it is disposed.
+		// This path and its head item only return the references they rented; one provided by a BindingExpression is returned by it.
 		internal void SetWeakDataContext(ManagedWeakReference weakDataContext)
 		{
 			if (!_disposed)
@@ -301,6 +310,21 @@ namespace Uno.UI.DataBinding
 		internal void OnValueChanged(object? o)
 		{
 			Expression?.OnValueChanged(o);
+		}
+
+		private static void DisposeItems(BindingItem? item)
+		{
+			if (item is not null)
+			{
+				try
+				{
+					DisposeItems(item.Next);
+				}
+				finally
+				{
+					item.Dispose();
+				}
+			}
 		}
 
 		~BindingPath()
@@ -346,8 +370,19 @@ namespace Uno.UI.DataBinding
 
 			if (disposing)
 			{
-				_value.SafeDispose();
-				_chain.SafeDispose();
+				try
+				{
+					// Tail to head: disposing an item pushes UnsetValue to its Next, which must not re-subscribe.
+					DisposeItems(_chain);
+				}
+				finally
+				{
+					// The items no longer use the reference. Return it if this path rented it
+					// (a BindingExpression may have provided its own, which it returns itself).
+					var storage = _dataContextWeakStorage;
+					_dataContextWeakStorage = null;
+					Uno.UI.DataBinding.WeakReferencePool.ReturnWeakReference(this, storage);
+				}
 			}
 		}
 
@@ -513,12 +548,12 @@ namespace Uno.UI.DataBinding
 					{
 						if (typeof(BindingPath).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 						{
-							var target = dataContextReference.IsDisposed ? null : dataContextReference.Target;
+							var target = dataContextReference.TargetOrNull;
 							typeof(BindingPath).Log().Debug($"Property changed for {propertyName} on [{target?.GetType()}]");
 						}
 
-						if (!newValueActionWeak.IsDisposed
-						&& newValueActionWeak.Target is IPropertyChangedValueHandler handler)
+						// TargetOrNull: this may run off the UI thread while the subscription is being disposed.
+						if (newValueActionWeak.TargetOrNull is IPropertyChangedValueHandler handler)
 						{
 							handler.NewValue();
 						}
