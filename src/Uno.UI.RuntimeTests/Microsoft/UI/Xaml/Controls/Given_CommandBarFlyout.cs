@@ -87,6 +87,44 @@ public class Given_CommandBarFlyout
 		Assert.AreEqual("HasPrimaryLabels", state.Name);
 		Assert.AreEqual(Visibility.Visible, commandBar.CommandBarTemplateSettings.EffectiveOverflowButtonVisibility);
 	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24671")]
+	public async Task When_Hidden_Before_Deferred_Open_Then_Reopens_Collapsed()
+	{
+		var flyout = new CommandBarFlyout();
+		flyout.PrimaryCommands.Add(new AppBarButton { Label = "Primary Command" });
+		flyout.SecondaryCommands.Add(new AppBarButton { Label = "Secondary Command" });
+
+		var button = new Button { Content = "Open CommandBarFlyout" };
+		await UITestHelper.Load(button);
+
+		try
+		{
+			// A Standard show opens the bar on a later tick: hidden before that tick, the bar must stay closed.
+			flyout.ShowAt(button, new FlyoutShowOptions { ShowMode = FlyoutShowMode.Standard });
+			flyout.Hide();
+			await TestServices.WindowHelper.WaitFor(() => !flyout.IsOpen);
+			await UITestHelper.WaitForRender();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			flyout.ShowAt(button, new FlyoutShowOptions { ShowMode = FlyoutShowMode.Transient });
+			await TestServices.WindowHelper.WaitFor(() => flyout.IsOpen);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var commandBar = VisualTreeHelper.GetOpenPopupsForXamlRoot(TestServices.WindowHelper.XamlRoot)
+				.Select(p => (p.Child as FlyoutPresenter)?.Content as CommandBarFlyoutCommandBar)
+				.FirstOrDefault(c => c is not null);
+			Assert.IsNotNull(commandBar);
+			Assert.IsFalse(commandBar.IsOpen, "a Transient show should open with the secondary commands collapsed");
+		}
+		finally
+		{
+			flyout.Hide();
+			await TestServices.WindowHelper.WaitForIdle();
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
 #endif
 
 	// CommandBarFlyout first-open flash — kahua-private #480. Commands are logical-only at open time

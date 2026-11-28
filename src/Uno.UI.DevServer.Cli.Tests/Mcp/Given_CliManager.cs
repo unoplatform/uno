@@ -210,9 +210,9 @@ public class Given_CliManager
 
 	[TestMethod]
 	[Description("Without --solution the MCP bridge arguments are left untouched")]
-	public void ParseMcpSolutionArgument_WhenAbsent_ReturnsArgumentsUnchanged()
+	public void ParseSolutionArgument_WhenAbsent_ReturnsArgumentsUnchanged()
 	{
-		var result = CliManager.ParseMcpSolutionArgument(["--port", "0", "--force-roots-fallback"], Path.GetTempPath());
+		var result = CliManager.ParseSolutionArgument(["--port", "0", "--force-roots-fallback"], Path.GetTempPath());
 
 		result.Success.Should().BeTrue();
 		result.SolutionPath.Should().BeNull();
@@ -221,7 +221,7 @@ public class Given_CliManager
 
 	[TestMethod]
 	[Description("--solution is consumed by the MCP bridge (resolved against the working directory) instead of being forwarded to the host, which receives the bridge's own --solution (#25524)")]
-	public void ParseMcpSolutionArgument_WhenPresent_ResolvesThePathAndRemovesItFromForwardedArguments()
+	public void ParseSolutionArgument_WhenPresent_ResolvesThePathAndRemovesItFromForwardedArguments()
 	{
 		var baseDirectory = CreateTempDirectory();
 
@@ -229,7 +229,7 @@ public class Given_CliManager
 		{
 			var solutionPath = CreateSolutionFile(baseDirectory, "a", "App.slnx");
 
-			var result = CliManager.ParseMcpSolutionArgument(["--port", "0", "--solution", Path.Join("a", "App.slnx")], baseDirectory);
+			var result = CliManager.ParseSolutionArgument(["--port", "0", "--solution", Path.Join("a", "App.slnx")], baseDirectory);
 
 			result.Success.Should().BeTrue();
 			result.SolutionPath.Should().Be(solutionPath);
@@ -248,7 +248,7 @@ public class Given_CliManager
 	[DataRow("/solution={0}")]
 	[DataRow("solution={0}")]
 	[DataRow("SOLUTION={0}")]
-	public void ParseMcpSolutionArgument_WhenInlineOrAlternateSpelling_ConsumesIt(string format)
+	public void ParseSolutionArgument_WhenInlineOrAlternateSpelling_ConsumesIt(string format)
 	{
 		var baseDirectory = CreateTempDirectory();
 
@@ -256,7 +256,7 @@ public class Given_CliManager
 		{
 			var solutionPath = CreateSolutionFile(baseDirectory, "App.slnx");
 
-			var result = CliManager.ParseMcpSolutionArgument(["--port", "0", string.Format(System.Globalization.CultureInfo.InvariantCulture, format, solutionPath)], baseDirectory);
+			var result = CliManager.ParseSolutionArgument(["--port", "0", string.Format(System.Globalization.CultureInfo.InvariantCulture, format, solutionPath)], baseDirectory);
 
 			result.Success.Should().BeTrue();
 			result.SolutionPath.Should().Be(solutionPath);
@@ -272,7 +272,7 @@ public class Given_CliManager
 	[Description("The same file checks as uno_app_select_solution: a non-solution file and a missing file are refused")]
 	[DataRow("App.csproj", true, ".sln")]
 	[DataRow("Missing.slnx", false, "not found")]
-	public void ParseMcpSolutionArgument_WhenNotAnExistingSolution_Fails(string fileName, bool createFile, string expectedError)
+	public void ParseSolutionArgument_WhenNotAnExistingSolution_Fails(string fileName, bool createFile, string expectedError)
 	{
 		var baseDirectory = CreateTempDirectory();
 
@@ -284,7 +284,7 @@ public class Given_CliManager
 				File.WriteAllText(path, string.Empty);
 			}
 
-			var result = CliManager.ParseMcpSolutionArgument(["--solution", path], baseDirectory);
+			var result = CliManager.ParseSolutionArgument(["--solution", path], baseDirectory);
 
 			result.Success.Should().BeFalse();
 			result.Error.Should().Contain(expectedError);
@@ -301,9 +301,9 @@ public class Given_CliManager
 	[DataRow("--solutionX")]
 	[DataRow("--solution-dir=x")]
 	[DataRow("solution")]
-	public void ParseMcpSolutionArgument_WhenOptionOnlyLooksLikeSolution_ForwardsIt(string arg)
+	public void ParseSolutionArgument_WhenOptionOnlyLooksLikeSolution_ForwardsIt(string arg)
 	{
-		var result = CliManager.ParseMcpSolutionArgument([arg], Path.GetTempPath());
+		var result = CliManager.ParseSolutionArgument([arg], Path.GetTempPath());
 
 		result.Success.Should().BeTrue();
 		result.SolutionPath.Should().BeNull();
@@ -312,12 +312,22 @@ public class Given_CliManager
 
 	[TestMethod]
 	[Description("--solution given twice is a usage error rather than a silent last-wins")]
-	public void ParseMcpSolutionArgument_WhenGivenTwice_Fails()
+	public void ParseSolutionArgument_WhenGivenTwice_Fails()
 	{
-		var result = CliManager.ParseMcpSolutionArgument(["--solution", "A.slnx", "--solution=B.slnx"], Path.GetTempPath());
+		var result = CliManager.ParseSolutionArgument(["--solution", "A.slnx", "--solution=B.slnx"], Path.GetTempPath());
 
 		result.Success.Should().BeFalse();
 		result.Error.Should().Contain("more than once");
+	}
+
+	[TestMethod]
+	[Description("Even when it fails, --solution is removed from the arguments: start gives the host its own --solution")]
+	public void ParseSolutionArgument_WhenItFails_StillRemovesItFromForwardedArguments()
+	{
+		var result = CliManager.ParseSolutionArgument(["start", "--solution", "A.slnx", "--httpPort", "0", "/solution=B.slnx"], Path.GetTempPath());
+
+		result.Success.Should().BeFalse();
+		result.FilteredArgs.Should().Equal("start", "--httpPort", "0");
 	}
 
 	[TestMethod]
@@ -359,10 +369,167 @@ public class Given_CliManager
 	}
 
 	[TestMethod]
-	[Description("--solution without a value is a usage error")]
-	public void ParseMcpSolutionArgument_WhenValueIsMissing_Fails()
+	[Description("start, stop, disco and health resolve the workspace from --solution, the solution the IDE opened, instead of discovering it from the folder (#26122)")]
+	[DataRow("start")]
+	[DataRow("stop")]
+	[DataRow("disco")]
+	[DataRow("health")]
+	public async Task Command_WithSolution_ResolvesTheSolutionExplicitly(string command)
 	{
-		var result = CliManager.ParseMcpSolutionArgument(["--solution"], Path.GetTempPath());
+		var directory = CreateTempDirectory();
+
+		try
+		{
+			var solutionPath = CreateSolutionFile(directory, "App.slnx");
+			var resolver = new ThrowingWorkspaceResolver();
+			var cliManager = CreateCliManager(resolver);
+
+			var exitCode = await cliManager.RunAsync([command, "--solution", solutionPath, "--solution-dir", directory]);
+
+			exitCode.Should().Be(1, "the throwing resolver stops the run before anything starts");
+			resolver.SolutionRequests.Should().Equal((directory, solutionPath));
+		}
+		finally
+		{
+			Directory.Delete(directory, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("Without --solution, several solutions under one global.json are ambiguous: disco lists them and fails (#26122)")]
+	public async Task DiscoJson_WhenSeveralSolutionsShareTheFolder_IsAmbiguous()
+	{
+		var directory = CreateTempDirectory();
+
+		try
+		{
+			CreateUnoWorkspace(directory, "App.sln", "App-Copy.sln");
+
+			var (exitCode, root) = await RunJsonAsync(["--solution-dir", directory, "disco", "--json"]);
+
+			exitCode.Should().Be(1);
+			root.GetProperty("resolutionKind").GetString().Should().Be("Ambiguous");
+			root.GetProperty("errors").EnumerateArray().Select(error => error.GetString()).Should().Contain("Workspace could not be resolved.");
+		}
+		finally
+		{
+			Directory.Delete(directory, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("With the arguments Visual Studio passes, disco and health select the --solution even when another solution shares its folder (#26122)")]
+	[DataRow("disco", ".sln")]
+	[DataRow("disco", ".slnx")]
+	[DataRow("health", ".slnx")]
+	public async Task Json_WithSolution_WhenSeveralSolutionsShareTheFolder_SelectsThatSolution(string command, string extension)
+	{
+		var directory = CreateTempDirectory();
+
+		try
+		{
+			var solutionPath = CreateUnoWorkspace(directory, $"App{extension}", $"App-Copy{extension}")[1];
+
+			// The exit code depends on this machine's NuGet cache, which has no package of the test's Uno SDK.
+			var (_, root) = await RunJsonAsync([command, "--solution", solutionPath, "--solution-dir", directory, "--json"]);
+
+			root.GetProperty("resolutionKind").GetString().Should().Be("CurrentDirectory");
+			root.GetProperty("effectiveWorkspaceDirectory").GetString().Should().Be(directory);
+			root.GetProperty("selectedSolutionPath").GetString().Should().Be(solutionPath);
+			root.GetRawText().Should().NotContain("Workspace could not be resolved.").And.NotContain("WorkspaceAmbiguous");
+		}
+		finally
+		{
+			Directory.Delete(directory, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("A --solution that is not in an Uno workspace leaves the workspace discovered from the folder, and disco warns about it")]
+	public async Task DiscoJson_WithSolutionOutsideAnUnoWorkspace_WarnsAndDiscoversTheWorkspace()
+	{
+		var directory = CreateTempDirectory();
+		var outsideDirectory = CreateTempDirectory();
+
+		try
+		{
+			var solutionPath = CreateUnoWorkspace(directory, "App.sln")[0];
+			var outsideSolutionPath = CreateSolutionFile(outsideDirectory, "Other.sln");
+
+			var (_, root) = await RunJsonAsync(["disco", "--solution", outsideSolutionPath, "--solution-dir", directory, "--json"]);
+
+			root.GetProperty("resolutionKind").GetString().Should().Be("CurrentDirectory");
+			root.GetProperty("selectedSolutionPath").GetString().Should().Be(solutionPath);
+			root.GetProperty("warnings").EnumerateArray().Select(warning => warning.GetString())
+				.Should().ContainSingle(warning => warning!.EndsWith(CliManager.IgnoredSolutionOutcome, StringComparison.Ordinal))
+				.Which.Should().Contain(outsideSolutionPath);
+		}
+		finally
+		{
+			Directory.Delete(directory, recursive: true);
+			Directory.Delete(outsideDirectory, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("Unlike MCP mode, which stops with exit code 2, disco ignores an unusable --solution with a warning and discovers the workspace from the folder")]
+	[DataRow("Missing.sln", 1, "not found")]
+	[DataRow("App.csproj", 1, ".sln or .slnx")]
+	[DataRow("App.sln", 2, "more than once")]
+	[DataRow(@"\\server\share\App.sln", 1, "--solution")]
+	public async Task DiscoJson_WithUnusableSolution_WarnsAndDiscoversTheWorkspace(string solution, int count, string expectedReason)
+	{
+		var directory = CreateTempDirectory();
+
+		try
+		{
+			var solutionPath = CreateUnoWorkspace(directory, "App.sln")[0];
+			File.WriteAllText(Path.Join(directory, "App.csproj"), string.Empty);
+			var value = Path.IsPathRooted(solution) ? solution : Path.Join(directory, solution);
+			var solutionArgs = Enumerable.Repeat(new[] { "--solution", value }, count).SelectMany(pair => pair);
+
+			var (exitCode, root) = await RunJsonAsync(["disco", .. solutionArgs, "--solution-dir", directory, "--json"]);
+
+			exitCode.Should().NotBe(2);
+			root.GetProperty("selectedSolutionPath").GetString().Should().Be(solutionPath);
+			root.GetProperty("warnings").EnumerateArray().Select(warning => warning.GetString())
+				.Should().ContainSingle(warning => warning!.EndsWith(CliManager.IgnoredSolutionOutcome, StringComparison.Ordinal))
+				.Which.Should().Contain(expectedReason);
+		}
+		finally
+		{
+			Directory.Delete(directory, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("health reports an ignored --solution as a warning")]
+	public async Task HealthJson_WithUnusableSolution_ReportsAWarning()
+	{
+		var directory = CreateTempDirectory();
+
+		try
+		{
+			CreateUnoWorkspace(directory, "App.sln");
+
+			var (_, root) = await RunJsonAsync(["health", "--solution", Path.Join(directory, "Missing.sln"), "--solution-dir", directory, "--json"]);
+
+			root.GetProperty("issues").EnumerateArray()
+				.Should().Contain(issue =>
+					issue.GetProperty("severity").GetString() == "Warning"
+					&& issue.GetProperty("message").GetString()!.EndsWith(CliManager.IgnoredSolutionOutcome, StringComparison.Ordinal));
+		}
+		finally
+		{
+			Directory.Delete(directory, recursive: true);
+		}
+	}
+
+	[TestMethod]
+	[Description("--solution without a value is a usage error")]
+	public void ParseSolutionArgument_WhenValueIsMissing_Fails()
+	{
+		var result = CliManager.ParseSolutionArgument(["--solution"], Path.GetTempPath());
 
 		result.Success.Should().BeFalse();
 		result.Error.Should().Contain("--solution");
@@ -371,9 +538,9 @@ public class Given_CliManager
 	[TestMethod]
 	[OSCondition(OperatingSystems.Windows)]
 	[Description("A network (UNC) --solution is refused before any file-system access, as uno_app_select_solution does")]
-	public void ParseMcpSolutionArgument_WhenPathIsUnc_Fails()
+	public void ParseSolutionArgument_WhenPathIsUnc_Fails()
 	{
-		var result = CliManager.ParseMcpSolutionArgument(["--solution", @"\\server\share\App.slnx"], Path.GetTempPath());
+		var result = CliManager.ParseSolutionArgument(["--solution", @"\\server\share\App.slnx"], Path.GetTempPath());
 
 		result.Success.Should().BeFalse();
 		result.Error.Should().Contain("local path");
@@ -393,6 +560,36 @@ public class Given_CliManager
 		Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 		File.WriteAllText(path, string.Empty);
 		return path;
+	}
+
+	// A global.json declaring the Uno SDK, with the given solutions next to it.
+	private static string[] CreateUnoWorkspace(string directory, params string[] solutionNames)
+	{
+		File.WriteAllText(Path.Join(directory, "global.json"), """{"msbuild-sdks":{"Uno.Sdk":"6.6.0-dev.1"}}""");
+		return [.. solutionNames.Select(name => CreateSolutionFile(directory, name))];
+	}
+
+	// Runs the CLI with the real workspace resolver and parses the JSON it writes to stdout.
+	private static async Task<(int ExitCode, JsonElement Root)> RunJsonAsync(string[] args)
+	{
+		var cliManager = CreateCliManager(new WorkspaceResolver(NullLogger<WorkspaceResolver>.Instance));
+
+		using var stdout = new StringWriter();
+		var previousOut = Console.Out;
+		Console.SetOut(stdout);
+
+		int exitCode;
+		try
+		{
+			exitCode = await cliManager.RunAsync(args);
+		}
+		finally
+		{
+			Console.SetOut(previousOut);
+		}
+
+		using var document = JsonDocument.Parse(stdout.ToString());
+		return (exitCode, document.RootElement.Clone());
 	}
 
 	private static string CreateTempDirectory()

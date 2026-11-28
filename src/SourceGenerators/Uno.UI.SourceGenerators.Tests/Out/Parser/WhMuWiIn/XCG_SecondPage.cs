@@ -29,9 +29,9 @@ namespace TestRepro
 	partial class SecondPage : global::Microsoft.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_SecondPage_6b0363415e35aa5099bd5c22ab91d5f0 = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_SecondPage_dfee0712e8c8818b9ed05ba19f39b981 = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_SecondPage_6b0363415e35aa5099bd5c22ab91d5f0 = "ms-appx:///TestProject/0/SecondPage.xaml";
+		private const string __baseUri_SecondPage_dfee0712e8c8818b9ed05ba19f39b981 = "ms-appx:///TestProject/0/SecondPage.xaml";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -50,9 +50,9 @@ namespace TestRepro
 					// [ERROR] //Project/0/SecondPage.xaml(6,3): Property 'PropertyThatDoesNotExist' does not exist on 'Grid'.
 					// Source SecondPage.xaml (Line 6:3)
 				}
-				.SecondPage_6b0363415e35aa5099bd5c22ab91d5f0_XamlApply((SecondPage_6b0363415e35aa5099bd5c22ab91d5f0XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+				.SecondPage_dfee0712e8c8818b9ed05ba19f39b981_XamlApply((SecondPage_dfee0712e8c8818b9ed05ba19f39b981XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 				{
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_SecondPage_6b0363415e35aa5099bd5c22ab91d5f0);
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_SecondPage_dfee0712e8c8818b9ed05ba19f39b981);
 				__p1.CreationComplete();
 				}
 				))
@@ -60,17 +60,17 @@ namespace TestRepro
 			;
 			
 			this
-			.SecondPage_6b0363415e35aa5099bd5c22ab91d5f0_XamlApply((SecondPage_6b0363415e35aa5099bd5c22ab91d5f0XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+			.SecondPage_dfee0712e8c8818b9ed05ba19f39b981_XamlApply((SecondPage_dfee0712e8c8818b9ed05ba19f39b981XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
 			// Source SecondPage.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/SecondPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
-			.SecondPage_6b0363415e35aa5099bd5c22ab91d5f0_XamlApply((SecondPage_6b0363415e35aa5099bd5c22ab91d5f0XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+			.SecondPage_dfee0712e8c8818b9ed05ba19f39b981_XamlApply((SecondPage_dfee0712e8c8818b9ed05ba19f39b981XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
 			// Class TestRepro.SecondPage
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_SecondPage_6b0363415e35aa5099bd5c22ab91d5f0);
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_SecondPage_dfee0712e8c8818b9ed05ba19f39b981);
 			__p1.CreationComplete();
 			}
 			))
@@ -83,18 +83,18 @@ namespace TestRepro
 }
 namespace MyProject
 {
-	static class SecondPage_6b0363415e35aa5099bd5c22ab91d5f0XamlApplyExtensions
+	static class SecondPage_dfee0712e8c8818b9ed05ba19f39b981XamlApplyExtensions
 	{
 		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.Grid instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Grid SecondPage_6b0363415e35aa5099bd5c22ab91d5f0_XamlApply(this global::Microsoft.UI.Xaml.Controls.Grid instance, XamlApplyHandler0 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Grid SecondPage_dfee0712e8c8818b9ed05ba19f39b981_XamlApply(this global::Microsoft.UI.Xaml.Controls.Grid instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Controls.Page instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Page SecondPage_6b0363415e35aa5099bd5c22ab91d5f0_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler1 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Page SecondPage_dfee0712e8c8818b9ed05ba19f39b981_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;

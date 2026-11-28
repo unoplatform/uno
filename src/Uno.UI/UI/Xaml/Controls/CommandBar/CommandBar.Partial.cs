@@ -28,7 +28,6 @@ using Popup = Microsoft.UI.Xaml.Controls.Primitives.Popup;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Controls;
-using Uno.UI.Dispatching;
 
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
@@ -60,7 +59,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly SerialDisposable m_secondaryCommandsChangedEventHandler = new SerialDisposable();
 		private readonly SerialDisposable m_secondaryItemsControlLoadedEventHandler = new SerialDisposable();
 		private readonly SerialDisposable m_overflowContentSizeChangedEventHandler = new SerialDisposable();
-		private readonly SerialDisposable m_overflowPopupClosedEventHandler = new SerialDisposable();
 		private readonly SerialDisposable m_overflowPresenterItemsPresenterKeyDownEventHandler = new SerialDisposable();
 
 		private readonly SerialDisposable m_accessKeyInvokedEventHandler = new SerialDisposable();
@@ -229,11 +227,6 @@ namespace Microsoft.UI.Xaml.Controls
 				m_overflowPresenterItemsPresenterKeyDownEventHandler.Disposable = null;
 			}
 
-			if (m_tpOverflowPopup is { })
-			{
-				m_overflowPopupClosedEventHandler.Disposable = null;
-			}
-
 			// Clear our previous template parts.
 			m_tpContentControl = null;
 			m_tpOverflowContentRoot = null;
@@ -273,10 +266,6 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_tpOverflowPopup is { })
 			{
 				m_tpOverflowPopup.IsSubMenu = true;
-
-				// Uno Only: AppBar/CommandBar will not "light-dismiss" close unless we listen to the Closed event for the overflow Popup. Missing implementation for Layout Transition Elements
-				m_tpOverflowPopup.Closed += OnOverflowPopupClosed;
-				m_overflowPopupClosedEventHandler.Disposable = Disposable.Create(() => m_tpOverflowPopup.Closed -= OnOverflowPopupClosed);
 			}
 
 			m_tpWindowedPopupPadding = windowedPopupPadding;
@@ -333,15 +322,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			UpdateVisualState();
 		}
-
-		#region Uno Only
-
-		private void OnOverflowPopupClosed(object? sender, object e)
-		{
-			NativeDispatcher.Main.Enqueue(() => IsOpen = false, NativeDispatcherPriority.Idle);
-		}
-
-		#endregion
 
 		protected override Size MeasureOverride(Size availableSize)
 		{

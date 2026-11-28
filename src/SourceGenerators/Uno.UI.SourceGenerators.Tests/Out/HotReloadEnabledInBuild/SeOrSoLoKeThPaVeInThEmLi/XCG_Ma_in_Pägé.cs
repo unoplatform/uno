@@ -31,14 +31,14 @@ namespace MyProject
 	public sealed partial class GlobalStaticResources
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31 = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d = "ms-appx:///TestProject/0/Ma in Pägé.xaml";
+		private const string __baseUri_Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31 = "ms-appx:///TestProject/0/Ma in Pägé.xaml";
 		// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		internal string __Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d_checksum() => "a26d2bc8873f5d3b61fe90d2f6062f4393ef1484";
+		internal string __Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31_checksum() => "a26d2bc8873f5d3b61fe90d2f6062f4393ef1484";
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		internal sealed class ResourceDictionarySingleton__Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d : global::Uno.UI.IXamlResourceDictionaryProvider
+		internal sealed class ResourceDictionarySingleton__Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31 : global::Uno.UI.IXamlResourceDictionaryProvider
 		{
 			private static global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 			private static global::Uno.UI.IXamlResourceDictionaryProvider __that;
@@ -48,7 +48,7 @@ namespace MyProject
 				{
 					if (__that == null)
 					{
-						__that = new ResourceDictionarySingleton__Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d();
+						__that = new ResourceDictionarySingleton__Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31();
 					}
 
 					return __that;
@@ -56,48 +56,48 @@ namespace MyProject
 			}
 
 			private readonly global::Uno.UI.Xaml.XamlParseContext __ParseContext_;
-			internal static global::Uno.UI.Xaml.XamlParseContext GetParseContext() => ((ResourceDictionarySingleton__Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d)Instance).__ParseContext_;
+			internal static global::Uno.UI.Xaml.XamlParseContext GetParseContext() => ((ResourceDictionarySingleton__Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31)Instance).__ParseContext_;
 
-			public ResourceDictionarySingleton__Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d()
+			public ResourceDictionarySingleton__Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31()
 			{
 				__ParseContext_ = global::MyProject.GlobalStaticResources.__ParseContext_;
 			}
 
 			// Skipping initializer 1 for ImportantNumber  - Literal declaration, will be eagerly materialized and added to the dictionary
-			private global::Microsoft.UI.Xaml.ResourceDictionary _Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d_ResourceDictionary;
+			private global::Microsoft.UI.Xaml.ResourceDictionary _Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31_ResourceDictionary;
 
-			internal global::Microsoft.UI.Xaml.ResourceDictionary Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d_ResourceDictionary
+			internal global::Microsoft.UI.Xaml.ResourceDictionary Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31_ResourceDictionary
 			{
 				get
 				{
-					if (_Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d_ResourceDictionary == null)
+					if (_Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31_ResourceDictionary == null)
 					{
-						_Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d_ResourceDictionary = global::Microsoft.UI.Xaml.ResourceDictionary.CreateWithCapacity(1);
-						_Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d_ResourceDictionary.IsParsing = true;
-						global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(_Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d_ResourceDictionary, "OriginalSourceLocation", "file://///Project/0/Ma in Pägé.xaml#L1:2");
-						_Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d_ResourceDictionary["ImportantNumber"] = 
+						_Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31_ResourceDictionary = global::Microsoft.UI.Xaml.ResourceDictionary.CreateWithCapacity(1);
+						_Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31_ResourceDictionary.IsParsing = true;
+						global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(_Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31_ResourceDictionary, "OriginalSourceLocation", "file://///Project/0/Ma in Pägé.xaml#L1:2");
+						_Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31_ResourceDictionary["ImportantNumber"] = 
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							12d
 						)
 						;
-						_Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d_ResourceDictionary.Source = new global::System.Uri("ms-resource:///Files/0/Ma in Pägé.xaml");
-						_Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d_ResourceDictionary.CreationComplete();
+						_Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31_ResourceDictionary.Source = new global::System.Uri("ms-resource:///Files/0/Ma in Pägé.xaml");
+						_Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31_ResourceDictionary.CreationComplete();
 					}
-					return _Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d_ResourceDictionary;
+					return _Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31_ResourceDictionary;
 				}
 			}
 
-			global::Microsoft.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d_ResourceDictionary;
+			global::Microsoft.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31_ResourceDictionary;
 		}
 
-		internal static global::Microsoft.UI.Xaml.ResourceDictionary Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d_ResourceDictionary => ResourceDictionarySingleton__Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d.Instance.GetResourceDictionary();
+		internal static global::Microsoft.UI.Xaml.ResourceDictionary Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31_ResourceDictionary => ResourceDictionarySingleton__Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31.Instance.GetResourceDictionary();
 	}
 }
 namespace MyProject.__Resources
 {
 	[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 	[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-	internal class __Ma_in_Pägé_c557fd15e80a75bdd79cae415a71aa3d
+	internal class __Ma_in_Pägé_52c5a38c1106c3d97bc4ee57ab2eaa31
 	{
 	}
 }

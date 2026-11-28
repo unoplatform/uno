@@ -652,6 +652,11 @@ namespace Microsoft.UI.Xaml
 
 				SetValueInternal(value, precedence, propertyDetails);
 
+				if (value == DependencyProperty.UnsetValue)
+				{
+					ReapplyKeptCoercion(actualInstanceAlias, propertyDetails);
+				}
+
 				if (!isPersistentResourceBinding && !_isSettingPersistentResourceBinding)
 				{
 					// If a non-theme value is being set, clear any theme binding so it's not overwritten if the theme changes.
@@ -887,6 +892,25 @@ namespace Microsoft.UI.Xaml
 				// The base value and the coerced value are the same. Remove any existing coercion.
 				SetValueInternal(DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Coercion, propertyDetails);
 			}
+		}
+
+		/// <summary>
+		/// Clearing a layer drops the coercion (see <see cref="ApplyCoercion"/>). A property marked
+		/// <see cref="FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals"/> (e.g. IsEnabled suppressed by a
+		/// command's CanExecute) is coerced again against the base value that remains.
+		/// </summary>
+		private void ReapplyKeptCoercion(DependencyObject actualInstanceAlias, DependencyPropertyDetails propertyDetails)
+		{
+			var property = propertyDetails.Property;
+			if (property.Metadata.CoerceValueCallback is null
+				|| property.Metadata is not FrameworkPropertyMetadata { Options: var options }
+				|| (options & FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals) == 0)
+			{
+				return;
+			}
+
+			var (baseValue, basePrecedence) = GetBaseValue(property);
+			ApplyCoercion(actualInstanceAlias, propertyDetails, GetValue(propertyDetails), baseValue, basePrecedence);
 		}
 
 		internal void CoerceValue(DependencyProperty property)
@@ -1403,9 +1427,16 @@ namespace Microsoft.UI.Xaml
 			}
 			else
 			{
-				// Always update the inherited properties with the new value, the instance
-				// may change if a far ancestor changed.
-				(_inheritedForwardedProperties ??= new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default))[parentProperty] = sourceInstance;
+				if (newValue == DependencyProperty.UnsetValue)
+				{
+					_inheritedForwardedProperties?.Remove(parentProperty);
+				}
+				else
+				{
+					// Always update the inherited properties with the new value, the instance
+					// may change if a far ancestor changed.
+					(_inheritedForwardedProperties ??= new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default))[parentProperty] = sourceInstance;
+				}
 
 				// If not, propagate the DP down to the child listeners, if any.
 				var localChildrenStores = _childrenStores;
@@ -1508,8 +1539,6 @@ namespace Microsoft.UI.Xaml
 			{
 				_unregisteringInheritedProperties = true;
 
-				_inheritedForwardedProperties?.Clear();
-
 				if (_updatedProperties is not null)
 				{
 					foreach (var dp in _updatedProperties)
@@ -1522,11 +1551,47 @@ namespace Microsoft.UI.Xaml
 				{
 					SetValue(dataContextProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
 				}
+
+				ResetForwardedInheritedProperties();
 			}
 			finally
 			{
 				_unregisteringInheritedProperties = false;
 			}
+		}
+
+		/// <summary>
+		/// Clears the values this store forwarded to its children for properties it doesn't define (e.g. a Grid
+		/// forwarding IsEnabled), as their source is no longer an ancestor once this store is detached.
+		/// </summary>
+		private void ResetForwardedInheritedProperties()
+		{
+			var forwardedProperties = _inheritedForwardedProperties;
+			if (forwardedProperties is not { Count: > 0 })
+			{
+				return;
+			}
+
+			// Detached while iterating, as the child callbacks may re-enter this store.
+			_inheritedForwardedProperties = null;
+
+			var actualInstanceAlias = ActualInstance;
+			var localChildrenStores = _childrenStores;
+			for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+			{
+				var child = localChildrenStores[storeIndex];
+				foreach (var forwarded in forwardedProperties)
+				{
+					// Inheritable attached properties set on this store are sourced from itself: they are not stale.
+					if (!ReferenceEquals(forwarded.Value.Target, actualInstanceAlias))
+					{
+						child.OnParentPropertyChangedCallback(forwarded.Value, forwarded.Key, DependencyProperty.UnsetValue);
+					}
+				}
+			}
+
+			forwardedProperties.Clear();
+			_inheritedForwardedProperties ??= forwardedProperties;
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

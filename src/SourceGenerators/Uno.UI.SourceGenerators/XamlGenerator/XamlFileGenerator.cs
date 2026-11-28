@@ -4580,6 +4580,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var modeMember = bindNode.Members.FirstOrDefault(m => m.Member.Name == "Mode")?.Value?.ToString() ?? GetDefaultBindMode();
 			var rawBindBack = bindNode.Members.FirstOrDefault(m => m.Member.Name == "BindBack")?.Value?.ToString();
+			var hasConverter = bindNode.Members.Any(m => m.Member.Name == "Converter");
+
+			// Declared type of the source the value is written back to, passed as ConvertBack's targetType
+			// (WinUI's compiler uses PathStep.ValueType, see BindAssignment.GetConverterExpression).
+			string? convertBackTargetType = null;
 
 			var sourceInstance = CurrentResourceOwner switch
 			{
@@ -4657,7 +4662,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (!string.IsNullOrWhiteSpace(rawBindBack))
 							{
-								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ ___tctx.{rawBindBack}(({propertyType})__value); }} }}";
+								var bindBackValueType = GetXBindBackValueType(rawBindBack!, dataTypeSymbol);
+								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ ___tctx.{rawBindBack}(({bindBackValueType})__value); }} }}";
 							}
 							else
 							{
@@ -4669,6 +4675,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (contextFunction.Properties.Length == 1)
 							{
 								var targetPropertyType = GetXBindPropertyPathType(contextFunction.Properties[0], dataTypeSymbol, bindNode).GetFullyQualifiedTypeIncludingGlobal();
+								convertBackTargetType = hasConverter ? targetPropertyType : null;
 								var contextFunctionLValue = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType, targetPropertyType);
 								if (contextFunctionLValue.MethodDeclaration is not null)
 								{
@@ -4692,7 +4699,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType).GetFullyQualifiedTypeIncludingGlobal()} ___tctx ? ({contextFunction.Expression}) : (false, default), {buildBindBack()} {pathsArray}))";
+				var bindBack = buildBindBack();
+
+				return $".BindingApply(___b => /*defaultBindMode{GetDefaultBindMode()}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {GetType(dataType).GetFullyQualifiedTypeIncludingGlobal()} ___tctx ? ({contextFunction.Expression}) : (false, default), {bindBack}{GetConvertBackTargetTypeArgument()} {pathsArray}))";
 			}
 			else
 			{
@@ -4718,7 +4727,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (!string.IsNullOrWhiteSpace(rawBindBack))
 							{
-								return $"(___tctx, __value) => {rawBindBack}(({propertyType})__value)";
+								var bindBackValueType = GetXBindBackValueType(rawBindBack!, xBindSymbol);
+								return $"(___tctx, __value) => {rawBindBack}(({bindBackValueType})__value)";
 							}
 							else
 							{
@@ -4730,6 +4740,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (rewrittenRValue.Properties.Length == 1)
 							{
 								var targetPropertyType = GetXBindPropertyPathType(rewrittenRValue.Properties[0], rootType: null, bindNode).GetFullyQualifiedTypeIncludingGlobal();
+								convertBackTargetType = hasConverter ? targetPropertyType : null;
 
 								if (string.IsNullOrEmpty(rawFunction))
 								{
@@ -4782,8 +4793,44 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					? ", new [] {" + string.Join(", ", formattedPaths) + "}"
 					: "";
 
-				return $".BindingApply({sourceInstance}, (___b, ___t) =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => {bindFunction}, {buildBindBack()} {pathsArray}))";
+				var bindBack = buildBindBack();
+
+				return $".BindingApply({sourceInstance}, (___b, ___t) =>  /*defaultBindMode{GetDefaultBindMode()} {rawFunction}*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => {bindFunction}, {bindBack}{GetConvertBackTargetTypeArgument()} {pathsArray}))";
 			}
+
+			string GetConvertBackTargetTypeArgument()
+				=> convertBackTargetType is null ? "" : $", typeof({convertBackTargetType})";
+
+			// WinUI rejects a Converter on a function binding; Uno supports it, so ConvertBack targets
+			// the BindBack parameter type, which is also what the converted value gets cast to.
+			string? GetXBindBackValueType(string bindBack, ITypeSymbol? rootType)
+			{
+				if (hasConverter && FindXBindBackParameterType(bindBack, rootType) is { } parameterType)
+				{
+					return convertBackTargetType = parameterType.GetFullyQualifiedTypeIncludingGlobal();
+				}
+
+				return propertyType?.ToString();
+			}
+		}
+
+		private static ITypeSymbol? FindXBindBackParameterType(string bindBack, ITypeSymbol? rootType)
+		{
+			var parts = bindBack.Split('.');
+			var ownerType = rootType;
+
+			for (var i = 0; i < parts.Length - 1 && ownerType is not null; i++)
+			{
+				ownerType = ownerType.TryGetPropertyOrFieldType(parts[i]);
+			}
+
+			var candidates = ownerType
+				.GetAllMembersWithName(parts[parts.Length - 1])
+				.OfType<IMethodSymbol>()
+				.Where(m => m.Parameters.Length == 1 && !m.IsOverride)
+				.ToArray();
+
+			return candidates.Length == 1 ? candidates[0].Parameters[0].Type : null;
 		}
 
 		private ITypeSymbol GetXBindPropertyPathType(string propertyPath, INamedTypeSymbol? rootType, IXamlLocation location)

@@ -36,3 +36,15 @@ For iOS, no additional steps are needed—you can use the feature via the follow
 ```csharp
 await Windows.Services.Store.StoreContext.GetDefault().RequestRateAndReviewAppAsync();
 ```
+
+### Testing on Android
+
+Google Play only shows the review dialog to apps installed from Google Play, so a debug build deployed from your IDE won't display it. To exercise your integration without publishing, enable test mode before requesting a review:
+
+```csharp
+Uno.WinRTFeatureConfiguration.StoreContext.TestMode = true;
+```
+
+In test mode, Uno Platform uses Google's `FakeReviewManager`: no dialog is shown, and `RequestRateAndReviewAppAsync()` completes with `StoreRateAndReviewStatus.Succeeded` once the review flow has run. Use it to validate your code path, on an emulator or device.
+
+To see the real dialog, install the app from an internal test track in Google Play Console. With internal app sharing, the dialog appears but its submit button is disabled. See [Test in-app reviews](https://developer.android.com/guide/playcore/in-app-review/test) for the account and device requirements.

@@ -50,6 +50,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	public TextureView* RampView;       // one row per gradient: its colour ramp sampled by t (see RampRow)
 	public Buffer* DummyClipMore;            // one-entry placeholder for the clip overflow binding when a draw has four clips or fewer
 	public WebGpuTexturePool Pool;                // transient offscreen pool (reused across frames)
+	public WebGpuGroupCache Groups;              // every reused bind group, keyed by layout and the handles it names
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
 	public WebGpuClipSlab ClipSlab;               // size-classed storage slab backing every owned/restamped ClipU
 	public WebGpuSiteSlab SiteSlab;
@@ -114,7 +115,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	private readonly System.Collections.Generic.List<nint> _pendingBindGroups = new();
 	private readonly System.Collections.Generic.List<nint> _pendingBuffers = new();
 	private readonly System.Collections.Generic.List<nint> _pendingClipSlots = new();
-	private readonly System.Collections.Generic.List<WebGpuPathAtlas.Slot> _pendingAtlasSlots = new();
+	private readonly System.Collections.Generic.List<WebGpuMaskAtlas.Slot> _pendingAtlasSlots = new();
 	// Transient image textures whose owning IRenderRecord was disposed; drained (GPU-released) at the next frame start.
 	// Concurrent because a frame is disposed on the UI thread while BeginFrameResources runs on the render thread.
 	private readonly System.Collections.Concurrent.ConcurrentQueue<(nint view, nint tex)> _pendingTextures = new();
@@ -273,10 +274,10 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		Pool.BeginFrame();
 		BufferPool.BeginFrame();
 		foreach (var bg in _pendingBindGroups) { Api.BindGroupRelease((BindGroup*)bg); }
-		foreach (var b in _pendingBuffers) { Api.BufferRelease((Buffer*)b); }
+		foreach (var b in _pendingBuffers) { if (!BufferPool.Return(b)) { Groups.NoteDestroyed(b); Api.BufferRelease((Buffer*)b); } }
 		// Release (refcount) rather than Destroy (immediate) the transient one-shot textures: wgpu then frees them
 		// only once the GPU has finished the frames that used them — safe even when the per-frame drain is skipped.
-		while (_pendingTextures.TryDequeue(out var t)) { if (t.view != 0) { Api.TextureViewRelease((TextureView*)t.view); } if (t.tex != 0) { Api.TextureRelease((Texture*)t.tex); } }
+		while (_pendingTextures.TryDequeue(out var t)) { if (t.view != 0) { Groups.NoteDestroyed(t.view); Api.TextureViewRelease((TextureView*)t.view); } if (t.tex != 0) { Api.TextureRelease((Texture*)t.tex); } }
 		while (_pendingRecycle.TryDequeue(out var rc)) { OffscreenPool.Return((Texture*)rc.tex, (TextureView*)rc.view, rc.w, rc.h); }
 		OffscreenPool.BeginFrame();
 		_pendingBindGroups.Clear();
@@ -284,10 +285,9 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		// Clip-slab slots ride the same deferred pipeline as the buffers/bind groups that referenced them.
 		foreach (var s in _pendingClipSlots) { ClipSlab.Free(s); }
 		_pendingClipSlots.Clear();
-		foreach (var a in _pendingAtlasSlots) { PathAtlas.Free(a); }
+		foreach (var a in _pendingAtlasSlots) { Atlas.Free(a); }
 		_pendingAtlasSlots.Clear();
-		PathAtlas.SweepCache(FrameSeq);
-		ReleaseRetiredAtlasPages();
+		Atlas.BeginFrame(FrameSeq);
 
 		// Free the arena entries whose owning recording was disposed.
 		while (_pendingCompiled.TryDequeue(out var c)) { DeferRelease(c.Owned); DeferRelease(c.StampOwned); }
@@ -295,9 +295,12 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		// ... and the site slots/bind groups of the stamps that went with them.
 		while (_pendingSites.TryDequeue(out var s))
 		{
-			if (s.Bg != 0) { Api.BindGroupRelease((BindGroup*)s.Bg); }
 			if (s.SiteSlot != 0) { SiteSlab.Free(s.SiteSlot); }
+			if (s.Bg != 0) { Groups.Unpin((BindGroup*)s.Bg); }
 		}
+
+		// Last, once everything above has said which handles it destroyed.
+		Groups.BeginFrame();
 	}
 
 	public BindGroup* TrackBg(BindGroup* bg) { _pendingBindGroups.Add((nint)bg); return bg; }
@@ -318,8 +321,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		_pendingBuffers.AddRange(owned.Buffers);
 		_pendingBindGroups.AddRange(owned.BindGroups);
 		if (owned.ClipSlots is { } slots) { _pendingClipSlots.AddRange(slots); }
+		if (owned.ClipGroups is { } groups) { foreach (var g in groups) { Groups.UnpinNextFrame(g); } }
 		if (owned.AtlasSlots is { } aslots) { _pendingAtlasSlots.AddRange(aslots); }
-		if (owned.Textures is { } texs) { foreach (var tx in texs) { _pendingTextures.Enqueue(tx); } }
 		return true;
 	}
 	internal void DeferReleaseBuffer(Buffer* buf) { if (buf != null) { _pendingBuffers.Add((nint)buf); } }
@@ -379,7 +382,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	{
 		Api = ctx.Api;
 		Wgpu = new Wgpu(Api.Context);
-		OffscreenPool = new WebGpuOffscreenPool(Api);
+		OffscreenPool = new WebGpuOffscreenPool(this);
 		ColorFormat = ctx.ColorFormat == TextureFormat.Undefined ? DefaultColorFormat : ctx.ColorFormat;
 		Inst = ctx.Instance;
 		Adapter = ctx.Adapter;
@@ -405,7 +408,9 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		};
 		RampTex = Api.DeviceCreateTexture(Dev, &rampDesc);
 		RampView = Api.TextureCreateView(RampTex, null);
+		Groups = new WebGpuGroupCache(this);
 		Pool = new WebGpuTexturePool(this);
+		Atlas = new WebGpuMaskAtlas(this);
 		BufferPool = new WebGpuBufferPool(this);
 		ClipSlab = new WebGpuClipSlab(this);
 		SiteSlab = new WebGpuSiteSlab(this);
@@ -430,8 +435,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		// Unpadded straight out of the mapped range into the image's own buffer — no intermediate array.
 		var image = new WebGpuReadbackImage(w, h, new ReadOnlySpan<byte>(mp, (int)total), padded, sourceIsBgra);
 		Api.BufferUnmap(buf);
-		Api.BufferDestroy(buf);
-		Api.BufferRelease(buf);
+		DestroyBuffer(buf);
 		return image;
 	}
 
@@ -458,7 +462,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 
 	// Destroy frees the allocation now; without the Release the handle (and wgpu's accounting of it) stays for the
 	// life of the device.
-	public void DestroyBuffer(Buffer* buf) { Api.BufferDestroy(buf); Api.BufferRelease(buf); }
+	public void DestroyBuffer(Buffer* buf) { Groups.NoteDestroyed((nint)buf); Api.BufferDestroy(buf); Api.BufferRelease(buf); }
 
 	/// <summary>Set by the browser head at WebGPU init: maps a readback buffer (by wgpu handle ptr) off the JS
 	/// event loop and returns its raw (row-padded) bytes. The only way to complete a GPU→CPU map on WASM, where a
@@ -481,48 +485,14 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		return Api.TextureCreateView(tex, null);
 	}
 
-	/// <summary>
-	/// Shared coverage atlas for small paths (glyphs). Created on first use; CopyDst because entries are
-	/// rasterized into a scratch surface and copied in, TextureBinding because the draw samples it.
-	/// </summary>
-	public WebGpuPathAtlas PathAtlas { get; } = new();
+	/// <summary>The store for every coverage mask: glyphs, cached fills, clip masks and shadows (see <see cref="WebGpuMaskAtlas"/>).</summary>
+	public WebGpuMaskAtlas Atlas;
 
 	/// <summary>An entry was refused for want of room with every page open; the next frame evicts idle holders.</summary>
 	internal bool AtlasStarved;
 
 	/// <summary>Evictions run so far, so an entry built while starved can tell whether room has been made since.</summary>
 	internal long AtlasEvictions;
-
-	/// <summary>Opens another atlas page. Pages are added when the existing ones are exhausted.</summary>
-	public void AddPathAtlasPage()
-	{
-		if (PathAtlas.RegularPages >= WebGpuPathAtlas.MaxPages) { return; }
-		var td = new TextureDescriptor
-		{
-			Size = new Extent3D { Width = WebGpuPathAtlas.Size, Height = WebGpuPathAtlas.Size, DepthOrArrayLayers = 1 },
-			// The device's own format: entries are copied in from a scratch surface, and a texture copy requires
-			// matching formats (Bgra8 vs Rgba8 is not copy-compatible).
-			Format = ColorFormat,
-			MipLevelCount = 1,
-			SampleCount = 1,
-			Dimension = TextureDimension.Dimension2D,
-			Usage = TextureUsage.RenderAttachment | TextureUsage.TextureBinding | TextureUsage.CopyDst,
-		};
-		var tex = Api.DeviceCreateTexture(Dev, &td);
-		PathAtlas.AddPage(tex, Api.TextureCreateView(tex, null));
-	}
-
-	/// <summary>Destroys the textures of pages whose last slot was freed. Called at the frame boundary.</summary>
-	public void ReleaseRetiredAtlasPages()
-	{
-		if (PathAtlas.Retired.Count == 0) { return; }
-		foreach (var page in PathAtlas.Retired)
-		{
-			if (page.View != null) { Api.TextureViewRelease(page.View); }
-			if (page.Texture != null) { Api.TextureRelease(page.Texture); }
-		}
-		PathAtlas.Retired.Clear();
-	}
 
 	private ShaderModule* Module(string wgsl)
 	{
@@ -537,7 +507,9 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	private PipelineLayout* MakeClipPipeLayout()
 	{
 		const ShaderStage vf = ShaderStage.Vertex | ShaderStage.Fragment;
-		ClipBgl = Bgl(UniformEntry(0, vf, WebGpuFrame.ClipUBytes), TextureEntry(1, TextureSampleType.Float), TextureEntry(2, TextureSampleType.Float), SamplerEntry(3), StorageEntry(4, vf, WebGpuFrame.ClipEntryBytes));
+		// The ClipU binding takes a dynamic offset, so a recording's clips share groups (see ClipBinding).
+		ClipBgl = Bgl(new BindGroupLayoutEntry { Binding = 0, Visibility = vf, Buffer = new BufferBindingLayout { Type = BufferBindingType.Uniform, HasDynamicOffset = true, MinBindingSize = (ulong)WebGpuFrame.ClipUBytes } },
+			TextureEntry(1, TextureSampleType.Float), TextureEntry(2, TextureSampleType.Float), SamplerEntry(3), StorageEntry(4, vf, WebGpuFrame.ClipEntryBytes));
 		PassBgl = Bgl(UniformEntry(0, ShaderStage.Vertex, 16));
 		SiteBgl = Bgl(UniformEntry(0, vf, WebGpuFrame.SiteUBytes));   // the vertex shader places, the fragment clips
 		_emptyBgl = Bgl();
@@ -825,6 +797,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	public void Dispose()
 	{
 		Pool?.Dispose();
+		Atlas?.Dispose();
 		BufferPool?.Dispose();
+		Groups?.Dispose();
 	}
 }

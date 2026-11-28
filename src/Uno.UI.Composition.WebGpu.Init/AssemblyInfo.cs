@@ -4,6 +4,9 @@ using System.Runtime.CompilerServices;
 // references the renderer.
 
 // The hosts call the internal WebGpuContext.Create* helpers to build a WebGpu swapchain context for the WebGpu kind.
+// The renderer hands code outside it (a WebGpuCanvasElement) the API without its upload batching.
+[assembly: InternalsVisibleTo("Uno.UI.Composition.WebGpu")]
+
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.X11")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Win32")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.MacOS")]

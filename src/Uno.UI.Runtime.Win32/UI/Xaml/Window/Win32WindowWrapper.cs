@@ -685,8 +685,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// same size regardless of the reported top-left corner by Windows.
 		// Bounds = new Rect(windowRect.left / scale, windowRect.top / scale, windowRect.Width / scale, windowRect.Height / scale);
 		// VisibleBounds = new Rect(clientRect.left / scale, clientRect.top / scale, clientRect.Width / scale, clientRect.Height / scale);
-		var bounds = new Rect(0, 0, clientRect.Width / scale, clientRect.Height / scale);
-		SetBoundsAndVisibleBounds(bounds, bounds);
+		// Like WinUI, a minimized window keeps the bounds it had: its client area is empty, so the
+		// content would otherwise be laid out at 0x0 and the adaptive triggers would flip.
+		if (!PInvoke.IsIconic(_hwnd))
+		{
+			var bounds = new Rect(0, 0, clientRect.Width / scale, clientRect.Height / scale);
+			SetBoundsAndVisibleBounds(bounds, bounds);
+		}
 
 		SetSizes(new SizeInt32(windowRect.Width, windowRect.Height), new SizeInt32(clientRect.Width, clientRect.Height));
 		Position = new PointInt32(windowRect.left, windowRect.top);

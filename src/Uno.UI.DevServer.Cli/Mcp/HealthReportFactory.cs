@@ -19,7 +19,8 @@ internal static class HealthReportFactory
 		bool forceRootsFallback = false,
 		bool rootsProvided = false,
 		bool hostRespondedNoMcp = false,
-		ValidationIssue? selectionIssue = null)
+		ValidationIssue? selectionIssue = null,
+		IReadOnlyList<ValidationIssue>? workspaceWarnings = null)
 	{
 		var issues = new List<ValidationIssue>();
 
@@ -106,6 +107,11 @@ internal static class HealthReportFactory
 					"the SDK version in global.json. Hot Reload and other WebSocket-based features " +
 					"may still work with the current version, but MCP tools require the upgrade.",
 			});
+		}
+
+		if (workspaceWarnings is not null)
+		{
+			issues.AddRange(workspaceWarnings);
 		}
 
 		issues.AddRange(DiscoveryIssueMapper.MapDiscoveryIssues(discovery));

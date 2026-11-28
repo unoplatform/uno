@@ -615,6 +615,7 @@ public partial class Given_RichEditBox
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // Takes minutes on WASM https://github.com/unoplatform/uno/issues/26683
 	public async Task When_Local_Paragraph_Format_Changes_Retain_Distant_Paragraph_Inlines()
 	{
 		const int paragraphCount = 1024;
