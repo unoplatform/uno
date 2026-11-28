@@ -237,21 +237,37 @@ internal sealed class WebGpuShapeCache
 	// OUTLINE into a bbox-sized mask whose cost is the bbox rather than the ink. Offsets are computed in the
 	// geometry's own space before the linear map, so a non-uniform scale strokes correctly. Consecutive quads share
 	// their join edge exactly, so a translucent stroke does not double-blend, except where the polyline crosses itself.
+	// The pass is single-sampled, so the strip carries its own antialiasing, as a fill's ring does: a core at full
+	// coverage and a fringe one device pixel wide straddling each edge, its coverage falling to zero outwards.
 	private static Shape BuildStrip(IGeometry g, in Matrix3x2 linear, float width, float density, StrokeJoin join)
 	{
 		// Flattened in local space at the density the linear map will produce.
 		var scale = MathF.Max(new Vector2(linear.M11, linear.M12).Length(), new Vector2(linear.M21, linear.M22).Length());
-		var flat = new OpenFlattener(FlattenTolerancePx / MathF.Max(density * scale, 1e-3f));
+		var deviceScale = MathF.Max(density * scale, 1e-3f);
+		var flat = new OpenFlattener(FlattenTolerancePx / deviceScale);
 		g.StreamSegments(flat);
 		var tris = new List<float>();
+		var cov = new List<float>();
 		var bbMin = new Vector2(float.MaxValue); var bbMax = new Vector2(float.MinValue);
 		var h = width * 0.5f;
+		// Half a device pixel in the geometry's own units. A stroke thinner than a device pixel has no core: it draws
+		// as a pixel-wide band whose peak coverage keeps its ink (the band's triangular profile integrates to the width).
+		var aa = 0.5f / deviceScale;
+		var stroke = new StrokeProfile(Core: MathF.Max(h - aa, 0f), Outer: h + aa, Peak: h >= aa ? 1f : 2f * h / (h + aa));
 		foreach (var (pts, closed) in flat.Contours)
 		{
-			Strip(pts, closed, h, join, density * scale, linear, tris, ref bbMin, ref bbMax);
+			Strip(pts, closed, stroke, join, deviceScale, linear, tris, cov, ref bbMin, ref bbMax);
 		}
 		if (tris.Count == 0) { return Shape.Empty; }
-		return new Shape { Tris = tris.ToArray(), BbMin = bbMin, BbMax = bbMax };
+		return new Shape { Tris = tris.ToArray(), Cov = cov.ToArray(), BbMin = bbMin, BbMax = bbMax };
+	}
+
+	/// <summary>A stroke's cross-section: full coverage out to <see cref="Core"/>, then a fringe falling from
+	/// <see cref="Peak"/> to zero at <see cref="Outer"/>. Half-widths, in the geometry's own units.</summary>
+	private readonly record struct StrokeProfile(float Core, float Outer, float Peak)
+	{
+		// The core's offsets are the outer ones scaled down: every joint offset is linear in the half-width.
+		public float CoreRatio => Core / Outer;
 	}
 
 	// Flattens in the geometry's own space and keeps open contours open.
@@ -272,8 +288,10 @@ internal sealed class WebGpuShapeCache
 		}
 	}
 
-	private static void Strip(List<Vector2> pts, bool closed, float h, StrokeJoin join, float deviceScale, in Matrix3x2 m, List<float> tris, ref Vector2 bbMin, ref Vector2 bbMax)
+	private static void Strip(List<Vector2> pts, bool closed, StrokeProfile stroke, StrokeJoin join, float deviceScale, in Matrix3x2 m, List<float> tris, List<float> cov, ref Vector2 bbMin, ref Vector2 bbMax)
 	{
+		// The joints are laid out for the outer edge of the fringe; the core reuses them scaled.
+		var h = stroke.Outer;
 		for (int i = pts.Count - 1; i > 0; i--)
 		{
 			if ((pts[i] - pts[i - 1]).LengthSquared() < 1e-12f) { pts.RemoveAt(i); }
@@ -330,14 +348,30 @@ internal sealed class WebGpuShapeCache
 			};
 		}
 
+		var k = stroke.CoreRatio;
+		var peak = stroke.Peak;
 		var segs = closed ? n : n - 1;
 		for (int i = 0; i < segs; i++)
 		{
 			var j = (i + 1) % n;
-			var a0 = Vector2.Transform(pts[i] + joints[i].LeavePlus, m); var a1 = Vector2.Transform(pts[i] + joints[i].LeaveMinus, m);
-			var b0 = Vector2.Transform(pts[j] + joints[j].ArrivePlus, m); var b1 = Vector2.Transform(pts[j] + joints[j].ArriveMinus, m);
-			Emit(a0, tris, ref bbMin, ref bbMax); Emit(b0, tris, ref bbMin, ref bbMax); Emit(b1, tris, ref bbMin, ref bbMax);
-			Emit(a0, tris, ref bbMin, ref bbMax); Emit(b1, tris, ref bbMin, ref bbMax); Emit(a1, tris, ref bbMin, ref bbMax);
+			// Outer (o) and core (c) corners of the segment's quad, on the plus (0) and minus (1) sides.
+			var oa0 = Vector2.Transform(pts[i] + joints[i].LeavePlus, m); var oa1 = Vector2.Transform(pts[i] + joints[i].LeaveMinus, m);
+			var ob0 = Vector2.Transform(pts[j] + joints[j].ArrivePlus, m); var ob1 = Vector2.Transform(pts[j] + joints[j].ArriveMinus, m);
+			var ca0 = Vector2.Transform(pts[i] + joints[i].LeavePlus * k, m); var ca1 = Vector2.Transform(pts[i] + joints[i].LeaveMinus * k, m);
+			var cb0 = Vector2.Transform(pts[j] + joints[j].ArrivePlus * k, m); var cb1 = Vector2.Transform(pts[j] + joints[j].ArriveMinus * k, m);
+			if (k > 0f)
+			{
+				Quad(ca0, cb0, cb1, ca1, peak, peak, peak, peak, tris, cov, ref bbMin, ref bbMax);
+			}
+			Quad(ca0, oa0, ob0, cb0, peak, 0f, 0f, peak, tris, cov, ref bbMin, ref bbMax);
+			Quad(ca1, oa1, ob1, cb1, peak, 0f, 0f, peak, tris, cov, ref bbMin, ref bbMax);
+		}
+
+		if (!closed)
+		{
+			// Butt ends: the fringe continues half a device pixel past each end, fading along the stroke's direction.
+			EndFringe(pts[0], joints[0].LeavePlus, joints[0].LeaveMinus, -Norm(pts[1] - pts[0]), stroke, deviceScale, m, tris, cov, ref bbMin, ref bbMax);
+			EndFringe(pts[n - 1], joints[n - 1].ArrivePlus, joints[n - 1].ArriveMinus, Norm(pts[n - 1] - pts[n - 2]), stroke, deviceScale, m, tris, cov, ref bbMin, ref bbMax);
 		}
 
 		if (wedged)
@@ -352,7 +386,7 @@ internal sealed class WebGpuShapeCache
 				var to = jt.Outer > 0 ? jt.LeavePlus : jt.LeaveMinus;
 				if (from != to)
 				{
-					Wedge(pts[i], jt.Apex, from, to, h, join == StrokeJoin.Round, deviceScale, m, tris, ref bbMin, ref bbMax);
+					Wedge(pts[i], jt.Apex, from, to, h, join == StrokeJoin.Round, stroke, deviceScale, m, tris, cov, ref bbMin, ref bbMax);
 				}
 			}
 		}
@@ -381,7 +415,8 @@ internal sealed class WebGpuShapeCache
 	// step for a bevel), and the inner corner both quads already share. Fanned from that inner corner rather than
 	// from the vertex, because each quad's end edge runs to it -- a fan centred on the vertex would leave a thin
 	// uncovered triangle on each side, which shows as a hole at every join.
-	private static void Wedge(Vector2 v, Vector2 apex, Vector2 from, Vector2 to, float h, bool round, float deviceScale, in Matrix3x2 m, List<float> tris, ref Vector2 bbMin, ref Vector2 bbMax)
+	// The join's fringe follows the same sweep: a ring between the core's arc and the outer arc.
+	private static void Wedge(Vector2 v, Vector2 apex, Vector2 from, Vector2 to, float h, bool round, StrokeProfile stroke, float deviceScale, in Matrix3x2 m, List<float> tris, List<float> cov, ref Vector2 bbMin, ref Vector2 bbMax)
 	{
 		var total = MathF.Acos(Math.Clamp(Vector2.Dot(from, to) / MathF.Max(h * h, 1e-12f), -1f, 1f));
 		var steps = 1;
@@ -396,22 +431,56 @@ internal sealed class WebGpuShapeCache
 
 		// Sweep the short way, which is the side the ink is on.
 		var side = from.X * to.Y - from.Y * to.X < 0f ? -1f : 1f;
-		var vm = Vector2.Transform(v + apex, m);
-		var prev = Vector2.Transform(v + from, m);
+		var r = stroke.CoreRatio;
+		var peak = stroke.Peak;
+		var vm = Vector2.Transform(v + apex * r, m);
+		var prevOuter = Vector2.Transform(v + from, m);
+		var prevCore = Vector2.Transform(v + from * r, m);
 		for (var k = 1; k <= steps; k++)
 		{
 			var a = side * total * k / steps;
 			var c = MathF.Cos(a); var sn = MathF.Sin(a);
 			var p = k == steps ? to : new Vector2(from.X * c - from.Y * sn, from.X * sn + from.Y * c);
-			var cur = Vector2.Transform(v + p, m);
-			Emit(vm, tris, ref bbMin, ref bbMax); Emit(prev, tris, ref bbMin, ref bbMax); Emit(cur, tris, ref bbMin, ref bbMax);
-			prev = cur;
+			var curOuter = Vector2.Transform(v + p, m);
+			var curCore = Vector2.Transform(v + p * r, m);
+			if (r > 0f)
+			{
+				Emit(vm, peak, tris, cov, ref bbMin, ref bbMax); Emit(prevCore, peak, tris, cov, ref bbMin, ref bbMax); Emit(curCore, peak, tris, cov, ref bbMin, ref bbMax);
+			}
+			Quad(prevCore, prevOuter, curOuter, curCore, peak, 0f, 0f, peak, tris, cov, ref bbMin, ref bbMax);
+			prevOuter = curOuter;
+			prevCore = curCore;
 		}
 	}
 
-	private static void Emit(Vector2 p, List<float> tris, ref Vector2 bbMin, ref Vector2 bbMax)
+	// The fringe past a butt end: from the end's cross-section out along dir, coverage falling to zero. Its corners
+	// fade both ways, as the side fringes meeting there do.
+	private static void EndFringe(Vector2 v, Vector2 plus, Vector2 minus, Vector2 dir, StrokeProfile stroke, float deviceScale, in Matrix3x2 m, List<float> tris, List<float> cov, ref Vector2 bbMin, ref Vector2 bbMax)
+	{
+		if (dir == Vector2.Zero) { return; }
+		var k = stroke.CoreRatio;
+		var peak = stroke.Peak;
+		// Half a device pixel along dir, in the geometry's own units.
+		var ext = dir * (0.5f / deviceScale);
+		var cp = Vector2.Transform(v + plus * k, m); var op = Vector2.Transform(v + plus, m);
+		var cm = Vector2.Transform(v + minus * k, m); var om = Vector2.Transform(v + minus, m);
+		var cpx = Vector2.Transform(v + plus * k + ext, m); var opx = Vector2.Transform(v + plus + ext, m);
+		var cmx = Vector2.Transform(v + minus * k + ext, m); var omx = Vector2.Transform(v + minus + ext, m);
+		Quad(cm, cp, cpx, cmx, peak, peak, 0f, 0f, tris, cov, ref bbMin, ref bbMax);
+		Quad(cp, op, opx, cpx, peak, 0f, 0f, 0f, tris, cov, ref bbMin, ref bbMax);
+		Quad(cm, om, omx, cmx, peak, 0f, 0f, 0f, tris, cov, ref bbMin, ref bbMax);
+	}
+
+	private static void Quad(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float c0, float c1, float c2, float c3, List<float> tris, List<float> cov, ref Vector2 bbMin, ref Vector2 bbMax)
+	{
+		Emit(p0, c0, tris, cov, ref bbMin, ref bbMax); Emit(p1, c1, tris, cov, ref bbMin, ref bbMax); Emit(p2, c2, tris, cov, ref bbMin, ref bbMax);
+		Emit(p0, c0, tris, cov, ref bbMin, ref bbMax); Emit(p2, c2, tris, cov, ref bbMin, ref bbMax); Emit(p3, c3, tris, cov, ref bbMin, ref bbMax);
+	}
+
+	private static void Emit(Vector2 p, float coverage, List<float> tris, List<float> cov, ref Vector2 bbMin, ref Vector2 bbMax)
 	{
 		tris.Add(p.X); tris.Add(p.Y);
+		cov.Add(coverage);
 		bbMin = Vector2.Min(bbMin, p); bbMax = Vector2.Max(bbMax, p);
 	}
 }
