@@ -545,12 +545,10 @@ namespace Microsoft.UI.Xaml.Controls
 			base.UpdateThemeBindings(updateReason);
 			UpdateLastUsedTheme();
 
-			foreach (var paragraph in Blocks.OfType<Paragraph>())
+			var blocks = Blocks.GetEnumeratorFast();
+			while (blocks.MoveNext())
 			{
-				foreach (var inline in paragraph.Inlines)
-				{
-					UpdateChildThemeBindings(inline, updateReason, this);
-				}
+				UpdateChildThemeBindings(blocks.Current, updateReason, this);
 			}
 		}
 
