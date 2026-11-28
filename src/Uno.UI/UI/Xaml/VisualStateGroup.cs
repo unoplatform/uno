@@ -343,7 +343,7 @@ namespace Microsoft.UI.Xaml
 			void ApplyTargetState()
 			{
 				// Apply target state setters (the right time to do it!)
-				ApplyTargetStateSetters();
+				ApplySetters(element, target.setters);
 
 				// Starts target state animation
 				if (target.animation is { } stateAnimation)
@@ -353,35 +353,64 @@ namespace Microsoft.UI.Xaml
 
 				onStateChanged();
 			}
+		}
 
-			void ApplyTargetStateSetters()
+		/// <summary>
+		/// Re-applies the setters of the current state and completes its storyboards, so the values bound
+		/// in them are evaluated again. This is what WinUI does when asked, without transitions, to go
+		/// to the state it is already in.
+		/// </summary>
+		// MUX Reference: VisualStateManagerActuator::SnapToEnd, CVisualStateManager2::GoToStateOptimizedImpl
+		internal void SnapToEndAndReapplySetters(IFrameworkElement element)
+		{
+			var (state, transition) = _current;
+			if (state is null)
 			{
-				if (target.setters is null || element is null)
-				{
-					return;
-				}
+				return;
+			}
 
-				// Setter.ApplyValue resolves {ThemeResource} setters against the element's own theme
-				// (ResourceResolver.ApplyThemeResource → ResolveOwnerTheme).
-				try
-				{
-					// Setter.ApplyValue can resolve some theme resources.
-					// We need to invoke them using the right resource context.
-					ResourceResolver.PushNewScope(_xamlScope);
+			// Setters first, as when entering the state: Uno applies them at the animations' precedence, and the
+			// animations must win. Nothing runs after Complete, whose Completed handlers may change the state.
+			ApplySetters(element, state.Setters);
 
-					foreach (var setterBase in target.setters)
+			// While a transition runs, the state's storyboard has not started yet: completing the transition
+			// starts it, like on WinUI.
+			if (transition?.Storyboard is { State: Active or Paused } runningTransition)
+			{
+				runningTransition.Complete();
+			}
+			else if (state.Storyboard is { State: not Stopped } stateAnimation)
+			{
+				stateAnimation.Complete();
+			}
+		}
+
+		private void ApplySetters(IFrameworkElement element, SetterBaseCollection setters)
+		{
+			if (setters is not { Count: > 0 } || element is null)
+			{
+				return;
+			}
+
+			// Setter.ApplyValue resolves {ThemeResource} setters against the element's own theme
+			// (ResourceResolver.ApplyThemeResource → ResolveOwnerTheme).
+			try
+			{
+				// Setter.ApplyValue can resolve some theme resources.
+				// We need to invoke them using the right resource context.
+				ResourceResolver.PushNewScope(_xamlScope);
+
+				for (var i = 0; i < setters.Count; i++)
+				{
+					if (setters[i] is Setter setter)
 					{
-						if (setterBase is Setter setter)
-						{
-							setter.ApplyValue(element);
-						}
+						setter.ApplyValue(element);
 					}
 				}
-				finally
-				{
-					ResourceResolver.PopScope();
-				}
-
+			}
+			finally
+			{
+				ResourceResolver.PopScope();
 			}
 		}
 

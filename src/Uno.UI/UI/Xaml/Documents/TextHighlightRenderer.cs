@@ -33,7 +33,7 @@ internal static class TextHighlightRenderer
 		uint highlightRectCount,
 		Rect[] highlightRects);
 
-	private static void GetDefaultHighlighterBrushes(
+	internal static void GetDefaultHighlighterBrushes(
 		out SolidColorBrush? foregroundBrush,
 		out SolidColorBrush? backgroundBrush)
 	{

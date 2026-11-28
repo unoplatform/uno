@@ -19,16 +19,10 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: control whether selection check mark is shown or not.
 	/// </summary>
-	public bool SelectionCheckMarkVisualEnabled
-	{
-		get => GetSelectionCheckMarkVisualEnabledValue();
-		set => SetSelectionCheckMarkVisualEnabledValue(value);
-	}
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	public partial bool SelectionCheckMarkVisualEnabled { get; set; }
 
 	private static object GetSelectionCheckMarkVisualEnabledDefaultValue() => Boxer.Box(ListViewBaseItemPresenter.GetDefaultSelectionCheckMarkVisualEnabled());
-
-	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectionCheckMarkVisualEnabledProperty { get; } = CreateSelectionCheckMarkVisualEnabledProperty();
 
 	#endregion
 
@@ -37,14 +31,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: checkmark behind the item, shown when haven't swiped far enough to select. Identical to below, only shown at 50% opacity.
 	/// </summary>
-	public Brush? CheckHintBrush
-	{
-		get => GetCheckHintBrushValue();
-		set => SetCheckHintBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckHintBrushProperty { get; } = CreateCheckHintBrushProperty();
+	public partial Brush? CheckHintBrush { get; set; }
 
 	#endregion
 
@@ -53,14 +41,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: checkmark behind the item, shown when swiped far enough to select.
 	/// </summary>
-	public Brush? CheckSelectingBrush
-	{
-		get => GetCheckSelectingBrushValue();
-		set => SetCheckSelectingBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckSelectingBrushProperty { get; } = CreateCheckSelectingBrushProperty();
+	public partial Brush? CheckSelectingBrush { get; set; }
 
 	#endregion
 
@@ -69,14 +51,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: checkmark above the item, shown when selected. Not same color as above 2 in Light Theme.
 	/// </summary>
-	public Brush? CheckBrush
-	{
-		get => GetCheckBrushValue();
-		set => SetCheckBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckBrushProperty { get; } = CreateCheckBrushProperty();
+	public partial Brush? CheckBrush { get; set; }
 
 	#endregion
 
@@ -87,14 +63,8 @@ partial class ListViewItemPresenter
 	/// </summary>
 	// TODO Uno: https://github.com/unoplatform/uno/issues/25922
 	[Uno.NotImplemented]
-	public Brush? DragBackground
-	{
-		get => GetDragBackgroundValue();
-		set => SetDragBackgroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty DragBackgroundProperty { get; } = CreateDragBackgroundProperty();
+	public partial Brush? DragBackground { get; set; }
 
 	#endregion
 
@@ -105,14 +75,8 @@ partial class ListViewItemPresenter
 	/// </summary>
 	// TODO Uno: https://github.com/unoplatform/uno/issues/25922
 	[Uno.NotImplemented]
-	public Brush? DragForeground
-	{
-		get => GetDragForegroundValue();
-		set => SetDragForegroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty DragForegroundProperty { get; } = CreateDragForegroundProperty();
+	public partial Brush? DragForeground { get; set; }
 
 	#endregion
 
@@ -123,14 +87,8 @@ partial class ListViewItemPresenter
 	/// </summary>
 	// TODO Uno: https://github.com/unoplatform/uno/issues/25923
 	[Uno.NotImplemented]
-	public Brush? FocusBorderBrush
-	{
-		get => GetFocusBorderBrushValue();
-		set => SetFocusBorderBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty FocusBorderBrushProperty { get; } = CreateFocusBorderBrushProperty();
+	public partial Brush? FocusBorderBrush { get; set; }
 
 	#endregion
 
@@ -139,14 +97,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: background fill of placeholder item.
 	/// </summary>
-	public Brush? PlaceholderBackground
-	{
-		get => GetPlaceholderBackgroundValue();
-		set => SetPlaceholderBackgroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty PlaceholderBackgroundProperty { get; } = CreatePlaceholderBackgroundProperty();
+	public partial Brush? PlaceholderBackground { get; set; }
 
 	#endregion
 
@@ -155,14 +107,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: background fill of pointer over. NOTE! Backgrounds can and do mix if, say, user mousing over placeholder.
 	/// </summary>
-	public Brush? PointerOverBackground
-	{
-		get => GetPointerOverBackgroundValue();
-		set => SetPointerOverBackgroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty PointerOverBackgroundProperty { get; } = CreatePointerOverBackgroundProperty();
+	public partial Brush? PointerOverBackground { get; set; }
 
 	#endregion
 
@@ -171,14 +117,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: selection border color. When selected: Background of item.
 	/// </summary>
-	public Brush? SelectedBackground
-	{
-		get => GetSelectedBackgroundValue();
-		set => SetSelectedBackgroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectedBackgroundProperty { get; } = CreateSelectedBackgroundProperty();
+	public partial Brush? SelectedBackground { get; set; }
 
 	#endregion
 
@@ -187,14 +127,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: foreground set on the ContentPresenter for: Pointer over, Selecting, Selected, SelectedSwiping, SelectedUnfocused.
 	/// </summary>
-	public Brush? SelectedForeground
-	{
-		get => GetSelectedForegroundValue();
-		set => SetSelectedForegroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectedForegroundProperty { get; } = CreateSelectedForegroundProperty();
+	public partial Brush? SelectedForeground { get; set; }
 
 	#endregion
 
@@ -203,14 +137,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: only when selected: Selection background color becomes this on pointer over, pointer press.
 	/// </summary>
-	public Brush? SelectedPointerOverBackground
-	{
-		get => GetSelectedPointerOverBackgroundValue();
-		set => SetSelectedPointerOverBackgroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectedPointerOverBackgroundProperty { get; } = CreateSelectedPointerOverBackgroundProperty();
+	public partial Brush? SelectedPointerOverBackground { get; set; }
 
 	#endregion
 
@@ -219,14 +147,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: in same visual states as above, except it's the selection border color. Identical to above.
 	/// </summary>
-	public Brush? SelectedPointerOverBorderBrush
-	{
-		get => GetSelectedPointerOverBorderBrushValue();
-		set => SetSelectedPointerOverBorderBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectedPointerOverBorderBrushProperty { get; } = CreateSelectedPointerOverBorderBrushProperty();
+	public partial Brush? SelectedPointerOverBorderBrush { get; set; }
 
 	#endregion
 
@@ -235,17 +157,11 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: thickness of selection border.
 	/// </summary>
-	public Thickness SelectedBorderThickness
-	{
-		get => GetSelectedBorderThicknessValue();
-		set => SetSelectedBorderThicknessValue(value);
-	}
+	[GeneratedDependencyProperty(LocalCache = false, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	public partial Thickness SelectedBorderThickness { get; set; }
 
 	// Instances get the rounded/non-rounded default from ListViewBaseItemPresenter.GetDefaultValue2.
 	private static Thickness GetSelectedBorderThicknessDefaultValue() => new(0);
-
-	[GeneratedDependencyProperty(LocalCache = false, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectedBorderThicknessProperty { get; } = CreateSelectedBorderThicknessProperty();
 
 	#endregion
 
@@ -254,14 +170,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: opacity of ContentPresenter (only) when disabled.
 	/// </summary>
-	public double DisabledOpacity
-	{
-		get => GetDisabledOpacityValue();
-		set => SetDisabledOpacityValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = 0.55, LocalCache = false, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty DisabledOpacityProperty { get; } = CreateDisabledOpacityProperty();
+	public partial double DisabledOpacity { get; set; }
 
 	#endregion
 
@@ -272,16 +182,10 @@ partial class ListViewItemPresenter
 	/// </summary>
 	// TODO Uno: https://github.com/unoplatform/uno/issues/25922
 	[Uno.NotImplemented]
-	public double DragOpacity
-	{
-		get => GetDragOpacityValue();
-		set => SetDragOpacityValue(value);
-	}
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	public partial double DragOpacity { get; set; }
 
 	private static object GetDragOpacityDefaultValue() => Boxer.Box(ListViewBaseItemPresenter.GetDefaultDragOpacity());
-
-	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty DragOpacityProperty { get; } = CreateDragOpacityProperty();
 
 	#endregion
 
@@ -290,16 +194,10 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: amount containers move for reorder hints.
 	/// </summary>
-	public double ReorderHintOffset
-	{
-		get => GetReorderHintOffsetValue();
-		set => SetReorderHintOffsetValue(value);
-	}
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	public partial double ReorderHintOffset { get; set; }
 
 	private static object GetReorderHintOffsetDefaultValue() => Boxer.Box(ListViewBaseItemPresenter.GetDefaultListViewItemReorderHintOffset());
-
-	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty ReorderHintOffsetProperty { get; } = CreateReorderHintOffsetProperty();
 
 	#endregion
 
@@ -380,16 +278,10 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets the pointer over background margin.
 	/// </summary>
-	public Thickness PointerOverBackgroundMargin
-	{
-		get => GetPointerOverBackgroundMarginValue();
-		set => SetPointerOverBackgroundMarginValue(value);
-	}
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	public partial Thickness PointerOverBackgroundMargin { get; set; }
 
 	private static Thickness GetPointerOverBackgroundMarginDefaultValue() => new(0);
-
-	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty PointerOverBackgroundMarginProperty { get; } = CreatePointerOverBackgroundMarginProperty();
 
 	#endregion
 
@@ -398,16 +290,10 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets the content margin.
 	/// </summary>
-	public Thickness ContentMargin
-	{
-		get => GetContentMarginValue();
-		set => SetContentMarginValue(value);
-	}
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	public partial Thickness ContentMargin { get; set; }
 
 	private static Thickness GetContentMarginDefaultValue() => new(0);
-
-	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty ContentMarginProperty { get; } = CreateContentMarginProperty();
 
 	#endregion
 
@@ -416,14 +302,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: background/Border color becomes this when pressed and selected.
 	/// </summary>
-	public Brush? SelectedPressedBackground
-	{
-		get => GetSelectedPressedBackgroundValue();
-		set => SetSelectedPressedBackgroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectedPressedBackgroundProperty { get; } = CreateSelectedPressedBackgroundProperty();
+	public partial Brush? SelectedPressedBackground { get; set; }
 
 	#endregion
 
@@ -432,14 +312,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: background/Border color becomes this when pressed.
 	/// </summary>
-	public Brush? PressedBackground
-	{
-		get => GetPressedBackgroundValue();
-		set => SetPressedBackgroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty PressedBackgroundProperty { get; } = CreatePressedBackgroundProperty();
+	public partial Brush? PressedBackground { get; set; }
 
 	#endregion
 
@@ -448,14 +322,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the check box background.
 	/// </summary>
-	public Brush? CheckBoxBrush
-	{
-		get => GetCheckBoxBrushValue();
-		set => SetCheckBoxBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckBoxBrushProperty { get; } = CreateCheckBoxBrushProperty();
+	public partial Brush? CheckBoxBrush { get; set; }
 
 	#endregion
 
@@ -466,14 +334,8 @@ partial class ListViewItemPresenter
 	/// </summary>
 	// TODO Uno: https://github.com/unoplatform/uno/issues/25923
 	[Uno.NotImplemented]
-	public Brush? FocusSecondaryBorderBrush
-	{
-		get => GetFocusSecondaryBorderBrushValue();
-		set => SetFocusSecondaryBorderBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty FocusSecondaryBorderBrushProperty { get; } = CreateFocusSecondaryBorderBrushProperty();
+	public partial Brush? FocusSecondaryBorderBrush { get; set; }
 
 	#endregion
 
@@ -482,14 +344,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets the check mode.
 	/// </summary>
-	public ListViewItemPresenterCheckMode CheckMode
-	{
-		get => GetCheckModeValue();
-		set => SetCheckModeValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = ListViewItemPresenterCheckMode.Inline, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsArrange, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckModeProperty { get; } = CreateCheckModeProperty();
+	public partial ListViewItemPresenterCheckMode CheckMode { get; set; }
 
 	#endregion
 
@@ -498,14 +354,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: foreground set on the ContentPresenter for: Pointer over.
 	/// </summary>
-	public Brush? PointerOverForeground
-	{
-		get => GetPointerOverForegroundValue();
-		set => SetPointerOverForegroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty PointerOverForegroundProperty { get; } = CreatePointerOverForegroundProperty();
+	public partial Brush? PointerOverForeground { get; set; }
 
 	#endregion
 
@@ -514,14 +364,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush set for reveal background.
 	/// </summary>
-	public Brush? RevealBackground
-	{
-		get => GetRevealBackgroundValue();
-		set => SetRevealBackgroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty RevealBackgroundProperty { get; } = CreateRevealBackgroundProperty();
+	public partial Brush? RevealBackground { get; set; }
 
 	#endregion
 
@@ -530,14 +374,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush set for reveal border.
 	/// </summary>
-	public Brush? RevealBorderBrush
-	{
-		get => GetRevealBorderBrushValue();
-		set => SetRevealBorderBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty RevealBorderBrushProperty { get; } = CreateRevealBorderBrushProperty();
+	public partial Brush? RevealBorderBrush { get; set; }
 
 	#endregion
 
@@ -546,16 +384,10 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: thickness for reveal border.
 	/// </summary>
-	public Thickness RevealBorderThickness
-	{
-		get => GetRevealBorderThicknessValue();
-		set => SetRevealBorderThicknessValue(value);
-	}
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	public partial Thickness RevealBorderThickness { get; set; }
 
 	private static Thickness GetRevealBorderThicknessDefaultValue() => new(0);
-
-	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty RevealBorderThicknessProperty { get; } = CreateRevealBorderThicknessProperty();
 
 	#endregion
 
@@ -564,14 +396,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: draw reveal over content or under Content.
 	/// </summary>
-	public bool RevealBackgroundShowsAboveContent
-	{
-		get => GetRevealBackgroundShowsAboveContentValue();
-		set => SetRevealBackgroundShowsAboveContentValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = false, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty RevealBackgroundShowsAboveContentProperty { get; } = CreateRevealBackgroundShowsAboveContentProperty();
+	public partial bool RevealBackgroundShowsAboveContent { get; set; }
 
 	#endregion
 
@@ -580,14 +406,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the selected disabled background.
 	/// </summary>
-	public Brush? SelectedDisabledBackground
-	{
-		get => GetSelectedDisabledBackgroundValue();
-		set => SetSelectedDisabledBackgroundValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectedDisabledBackgroundProperty { get; } = CreateSelectedDisabledBackgroundProperty();
+	public partial Brush? SelectedDisabledBackground { get; set; }
 
 	#endregion
 
@@ -596,14 +416,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the pressed selection checkmark.
 	/// </summary>
-	public Brush? CheckPressedBrush
-	{
-		get => GetCheckPressedBrushValue();
-		set => SetCheckPressedBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckPressedBrushProperty { get; } = CreateCheckPressedBrushProperty();
+	public partial Brush? CheckPressedBrush { get; set; }
 
 	#endregion
 
@@ -612,14 +426,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the disabled selection checkmark.
 	/// </summary>
-	public Brush? CheckDisabledBrush
-	{
-		get => GetCheckDisabledBrushValue();
-		set => SetCheckDisabledBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckDisabledBrushProperty { get; } = CreateCheckDisabledBrushProperty();
+	public partial Brush? CheckDisabledBrush { get; set; }
 
 	#endregion
 
@@ -628,14 +436,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the pointer-over multi-select check box background.
 	/// </summary>
-	public Brush? CheckBoxPointerOverBrush
-	{
-		get => GetCheckBoxPointerOverBrushValue();
-		set => SetCheckBoxPointerOverBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckBoxPointerOverBrushProperty { get; } = CreateCheckBoxPointerOverBrushProperty();
+	public partial Brush? CheckBoxPointerOverBrush { get; set; }
 
 	#endregion
 
@@ -644,14 +446,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the pressed multi-select check box background.
 	/// </summary>
-	public Brush? CheckBoxPressedBrush
-	{
-		get => GetCheckBoxPressedBrushValue();
-		set => SetCheckBoxPressedBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckBoxPressedBrushProperty { get; } = CreateCheckBoxPressedBrushProperty();
+	public partial Brush? CheckBoxPressedBrush { get; set; }
 
 	#endregion
 
@@ -660,14 +456,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the disabled multi-select check box background.
 	/// </summary>
-	public Brush? CheckBoxDisabledBrush
-	{
-		get => GetCheckBoxDisabledBrushValue();
-		set => SetCheckBoxDisabledBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckBoxDisabledBrushProperty { get; } = CreateCheckBoxDisabledBrushProperty();
+	public partial Brush? CheckBoxDisabledBrush { get; set; }
 
 	#endregion
 
@@ -676,14 +466,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the selected multi-select check box background.
 	/// </summary>
-	public Brush? CheckBoxSelectedBrush
-	{
-		get => GetCheckBoxSelectedBrushValue();
-		set => SetCheckBoxSelectedBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckBoxSelectedBrushProperty { get; } = CreateCheckBoxSelectedBrushProperty();
+	public partial Brush? CheckBoxSelectedBrush { get; set; }
 
 	#endregion
 
@@ -692,14 +476,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the selected pointer-over multi-select check box background.
 	/// </summary>
-	public Brush? CheckBoxSelectedPointerOverBrush
-	{
-		get => GetCheckBoxSelectedPointerOverBrushValue();
-		set => SetCheckBoxSelectedPointerOverBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckBoxSelectedPointerOverBrushProperty { get; } = CreateCheckBoxSelectedPointerOverBrushProperty();
+	public partial Brush? CheckBoxSelectedPointerOverBrush { get; set; }
 
 	#endregion
 
@@ -708,14 +486,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the selected pressed multi-select check box background.
 	/// </summary>
-	public Brush? CheckBoxSelectedPressedBrush
-	{
-		get => GetCheckBoxSelectedPressedBrushValue();
-		set => SetCheckBoxSelectedPressedBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckBoxSelectedPressedBrushProperty { get; } = CreateCheckBoxSelectedPressedBrushProperty();
+	public partial Brush? CheckBoxSelectedPressedBrush { get; set; }
 
 	#endregion
 
@@ -724,14 +496,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the selected disabled multi-select check box background.
 	/// </summary>
-	public Brush? CheckBoxSelectedDisabledBrush
-	{
-		get => GetCheckBoxSelectedDisabledBrushValue();
-		set => SetCheckBoxSelectedDisabledBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckBoxSelectedDisabledBrushProperty { get; } = CreateCheckBoxSelectedDisabledBrushProperty();
+	public partial Brush? CheckBoxSelectedDisabledBrush { get; set; }
 
 	#endregion
 
@@ -740,14 +506,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the multi-select check box border.
 	/// </summary>
-	public Brush? CheckBoxBorderBrush
-	{
-		get => GetCheckBoxBorderBrushValue();
-		set => SetCheckBoxBorderBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckBoxBorderBrushProperty { get; } = CreateCheckBoxBorderBrushProperty();
+	public partial Brush? CheckBoxBorderBrush { get; set; }
 
 	#endregion
 
@@ -756,14 +516,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the pointer-over multi-select check box border.
 	/// </summary>
-	public Brush? CheckBoxPointerOverBorderBrush
-	{
-		get => GetCheckBoxPointerOverBorderBrushValue();
-		set => SetCheckBoxPointerOverBorderBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckBoxPointerOverBorderBrushProperty { get; } = CreateCheckBoxPointerOverBorderBrushProperty();
+	public partial Brush? CheckBoxPointerOverBorderBrush { get; set; }
 
 	#endregion
 
@@ -772,14 +526,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the pressed multi-select check box border.
 	/// </summary>
-	public Brush? CheckBoxPressedBorderBrush
-	{
-		get => GetCheckBoxPressedBorderBrushValue();
-		set => SetCheckBoxPressedBorderBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckBoxPressedBorderBrushProperty { get; } = CreateCheckBoxPressedBorderBrushProperty();
+	public partial Brush? CheckBoxPressedBorderBrush { get; set; }
 
 	#endregion
 
@@ -788,14 +536,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the disabled multi-select check box border.
 	/// </summary>
-	public Brush? CheckBoxDisabledBorderBrush
-	{
-		get => GetCheckBoxDisabledBorderBrushValue();
-		set => SetCheckBoxDisabledBorderBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckBoxDisabledBorderBrushProperty { get; } = CreateCheckBoxDisabledBorderBrushProperty();
+	public partial Brush? CheckBoxDisabledBorderBrush { get; set; }
 
 	#endregion
 
@@ -804,16 +546,10 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: corner radius set on the multi-select check box.
 	/// </summary>
-	public CornerRadius CheckBoxCornerRadius
-	{
-		get => GetCheckBoxCornerRadiusValue();
-		set => SetCheckBoxCornerRadiusValue(value);
-	}
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	public partial CornerRadius CheckBoxCornerRadius { get; set; }
 
 	private static CornerRadius GetCheckBoxCornerRadiusDefaultValue() => ListViewBaseItemPresenter.s_defaultCheckBoxCornerRadius;
-
-	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty CheckBoxCornerRadiusProperty { get; } = CreateCheckBoxCornerRadiusProperty();
 
 	#endregion
 
@@ -822,16 +558,10 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: corner radius set on the multi-select check box.
 	/// </summary>
-	public CornerRadius SelectionIndicatorCornerRadius
-	{
-		get => GetSelectionIndicatorCornerRadiusValue();
-		set => SetSelectionIndicatorCornerRadiusValue(value);
-	}
+	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
+	public partial CornerRadius SelectionIndicatorCornerRadius { get; set; }
 
 	private static CornerRadius GetSelectionIndicatorCornerRadiusDefaultValue() => ListViewBaseItemPresenter.s_defaultSelectionIndicatorCornerRadius;
-
-	[GeneratedDependencyProperty(Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectionIndicatorCornerRadiusProperty { get; } = CreateSelectionIndicatorCornerRadiusProperty();
 
 	#endregion
 
@@ -840,14 +570,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: control whether selection indicator is shown or not.
 	/// </summary>
-	public bool SelectionIndicatorVisualEnabled
-	{
-		get => GetSelectionIndicatorVisualEnabledValue();
-		set => SetSelectionIndicatorVisualEnabledValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = false, LocalCache = false, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectionIndicatorVisualEnabledProperty { get; } = CreateSelectionIndicatorVisualEnabledProperty();
+	public partial bool SelectionIndicatorVisualEnabled { get; set; }
 
 	#endregion
 
@@ -856,14 +580,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets the selection indicator mode.
 	/// </summary>
-	public ListViewItemPresenterSelectionIndicatorMode SelectionIndicatorMode
-	{
-		get => GetSelectionIndicatorModeValue();
-		set => SetSelectionIndicatorModeValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = ListViewItemPresenterSelectionIndicatorMode.Overlay, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender | FrameworkPropertyMetadataOptions.AffectsArrange, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectionIndicatorModeProperty { get; } = CreateSelectionIndicatorModeProperty();
+	public partial ListViewItemPresenterSelectionIndicatorMode SelectionIndicatorMode { get; set; }
 
 	#endregion
 
@@ -872,14 +590,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the selection indicator.
 	/// </summary>
-	public Brush? SelectionIndicatorBrush
-	{
-		get => GetSelectionIndicatorBrushValue();
-		set => SetSelectionIndicatorBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectionIndicatorBrushProperty { get; } = CreateSelectionIndicatorBrushProperty();
+	public partial Brush? SelectionIndicatorBrush { get; set; }
 
 	#endregion
 
@@ -888,14 +600,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the pointer-over selection indicator.
 	/// </summary>
-	public Brush? SelectionIndicatorPointerOverBrush
-	{
-		get => GetSelectionIndicatorPointerOverBrushValue();
-		set => SetSelectionIndicatorPointerOverBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectionIndicatorPointerOverBrushProperty { get; } = CreateSelectionIndicatorPointerOverBrushProperty();
+	public partial Brush? SelectionIndicatorPointerOverBrush { get; set; }
 
 	#endregion
 
@@ -904,14 +610,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the pressed selection indicator.
 	/// </summary>
-	public Brush? SelectionIndicatorPressedBrush
-	{
-		get => GetSelectionIndicatorPressedBrushValue();
-		set => SetSelectionIndicatorPressedBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectionIndicatorPressedBrushProperty { get; } = CreateSelectionIndicatorPressedBrushProperty();
+	public partial Brush? SelectionIndicatorPressedBrush { get; set; }
 
 	#endregion
 
@@ -920,14 +620,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the disabled selection indicator.
 	/// </summary>
-	public Brush? SelectionIndicatorDisabledBrush
-	{
-		get => GetSelectionIndicatorDisabledBrushValue();
-		set => SetSelectionIndicatorDisabledBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectionIndicatorDisabledBrushProperty { get; } = CreateSelectionIndicatorDisabledBrushProperty();
+	public partial Brush? SelectionIndicatorDisabledBrush { get; set; }
 
 	#endregion
 
@@ -936,14 +630,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the outer selection border.
 	/// </summary>
-	public Brush? SelectedBorderBrush
-	{
-		get => GetSelectedBorderBrushValue();
-		set => SetSelectedBorderBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectedBorderBrushProperty { get; } = CreateSelectedBorderBrushProperty();
+	public partial Brush? SelectedBorderBrush { get; set; }
 
 	#endregion
 
@@ -952,14 +640,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the outer selection pressed border.
 	/// </summary>
-	public Brush? SelectedPressedBorderBrush
-	{
-		get => GetSelectedPressedBorderBrushValue();
-		set => SetSelectedPressedBorderBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectedPressedBorderBrushProperty { get; } = CreateSelectedPressedBorderBrushProperty();
+	public partial Brush? SelectedPressedBorderBrush { get; set; }
 
 	#endregion
 
@@ -968,14 +650,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the outer selection disabled border.
 	/// </summary>
-	public Brush? SelectedDisabledBorderBrush
-	{
-		get => GetSelectedDisabledBorderBrushValue();
-		set => SetSelectedDisabledBorderBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectedDisabledBorderBrushProperty { get; } = CreateSelectedDisabledBorderBrushProperty();
+	public partial Brush? SelectedDisabledBorderBrush { get; set; }
 
 	#endregion
 
@@ -984,14 +660,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the inner selection border.
 	/// </summary>
-	public Brush? SelectedInnerBorderBrush
-	{
-		get => GetSelectedInnerBorderBrushValue();
-		set => SetSelectedInnerBorderBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty SelectedInnerBorderBrushProperty { get; } = CreateSelectedInnerBorderBrushProperty();
+	public partial Brush? SelectedInnerBorderBrush { get; set; }
 
 	#endregion
 
@@ -1000,14 +670,8 @@ partial class ListViewItemPresenter
 	/// <summary>
 	/// Gets or sets a value that describes the following: brush for the pointer-over outer border.
 	/// </summary>
-	public Brush? PointerOverBorderBrush
-	{
-		get => GetPointerOverBorderBrushValue();
-		set => SetPointerOverBorderBrushValue(value);
-	}
-
 	[GeneratedDependencyProperty(DefaultValue = null, Options = FrameworkPropertyMetadataOptions.AffectsRender, ChangedCallbackName = nameof(OnChromePropertyChanged))]
-	public static DependencyProperty PointerOverBorderBrushProperty { get; } = CreatePointerOverBorderBrushProperty();
+	public partial Brush? PointerOverBorderBrush { get; set; }
 
 	#endregion
 }

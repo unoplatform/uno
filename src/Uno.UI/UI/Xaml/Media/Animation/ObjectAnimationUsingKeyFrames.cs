@@ -186,17 +186,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			((ITimeline)this).Seek(offset);
 		}
 
-		void ITimeline.SkipToFill()
-		{
-			// Set value to last keytime and set state to filling
-			_frameScheduler?.Dispose();
-			_frameScheduler = null;
-
-			var fillFrame = KeyFrames.OrderBy(k => k.KeyTime.TimeSpan).Last();
-
-			SetValue(fillFrame.Value);
-			State = TimelineState.Stopped;
-		}
+		void ITimeline.SkipToFill() => End();
 
 		void ITimeline.Deactivate()
 		{
@@ -256,6 +246,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 				return;
 			}
 
+			End();
+		}
+
+		/// <summary>
+		/// Ends the animation, when its frames ran out or it was skipped to its fill.
+		/// </summary>
+		private void End()
+		{
 			if (FillBehavior == FillBehavior.HoldEnd)//Two types of fill behaviors : HoldEnd - Keep displaying the last frame
 			{
 				Fill();
@@ -322,9 +320,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		/// <summary>
 		/// Resolves all keyframe theme resources with the target element's effective theme.
-		/// Called once at Begin time to ensure keyframe values match the element-level theme.
+		/// Called before the key frame values are applied, so that they match the element-level theme.
 		/// </summary>
-		private void EnsureKeyFrameThemeResources()
+		internal void EnsureKeyFrameThemeResources()
 		{
 			if (PropertyInfo?.DataContext is not FrameworkElement targetElement)
 			{

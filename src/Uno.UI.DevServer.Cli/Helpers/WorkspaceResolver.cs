@@ -313,6 +313,12 @@ internal sealed record WorkspaceResolution
 	/// </summary>
 	public bool IsExplicitSolutionSelection { get; init; }
 
+	/// <summary>
+	/// Why the workspace is not the one the caller asked for, such as a --solution that could not select it. Discovery
+	/// reports these with its own warnings.
+	/// </summary>
+	public IReadOnlyList<string> Warnings { get; init; } = [];
+
 	public bool IsResolved => !string.IsNullOrWhiteSpace(EffectiveWorkspaceDirectory);
 }
 

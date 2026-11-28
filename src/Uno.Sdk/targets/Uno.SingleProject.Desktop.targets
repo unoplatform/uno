@@ -108,6 +108,28 @@
 	</Target>
 
 	<!--
+		The compile assets of those packages stay in ReferencePath, since the Win32 host compiles against them. ILLink
+		still loads every reference it is given, and walks the same interface chains for the types the host touches,
+		so they are hidden from it too.
+	-->
+	<Target Name="_UnoHideUnusedWebView2AotFromILLink"
+			AfterTargets="PrepareForILLink"
+			Condition=" '$(_UnoUnusedWebView2Packages)' != '' ">
+		<ItemGroup>
+			<_UnoHiddenWebView2Reference Include="@(ReferencePath)" Condition="$(_UnoUnusedWebView2Packages.Contains(';%(NuGetPackageId);'))" />
+			<ReferencePath Remove="@(_UnoHiddenWebView2Reference)" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_UnoRestoreUnusedWebView2AotReferences"
+			AfterTargets="ILLink"
+			Condition=" '@(_UnoHiddenWebView2Reference)' != '' ">
+		<ItemGroup>
+			<ReferencePath Include="@(_UnoHiddenWebView2Reference)" />
+		</ItemGroup>
+	</Target>
+
+	<!--
 		An explicit `Microsoft.Web.WebView2` reference pulls in the WPF-specific
 		Microsoft.Web.WebView2.Wpf reference even on a plain (non-WPF) desktop head; strip it
 		by default. Set `UnoDisableWebView2Workarounds` to keep it.

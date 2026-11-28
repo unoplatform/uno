@@ -343,6 +343,51 @@ public class Given_AppWindow
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26672")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Minimized_Then_Window_Keeps_Its_Bounds()
+	{
+		AssertPositioningAndSizingSupport();
+
+		var content = new Microsoft.UI.Xaml.Controls.Grid();
+		var newWindow = new Window { Content = content };
+		var overlapped = (OverlappedPresenter)newWindow.AppWindow.Presenter;
+		var activated = false;
+		var sizeChangedCount = 0;
+		try
+		{
+			newWindow.Activated += (s, e) => activated = true;
+			newWindow.Activate();
+			await TestServices.WindowHelper.WaitFor(() => activated && content.ActualWidth > 0);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var bounds = newWindow.Bounds;
+			var contentWidth = content.ActualWidth;
+			newWindow.SizeChanged += (s, e) => sizeChangedCount++;
+
+			overlapped.Minimize();
+			await TestServices.WindowHelper.WaitFor(() => overlapped.State == OverlappedPresenterState.Minimized);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(bounds, newWindow.Bounds, "A minimized window keeps its bounds.");
+			Assert.AreEqual(contentWidth, content.ActualWidth, "The content of a minimized window is not laid out again.");
+			Assert.AreEqual(0, sizeChangedCount, "Minimizing does not raise SizeChanged.");
+
+			overlapped.Restore();
+			await TestServices.WindowHelper.WaitFor(() => overlapped.State == OverlappedPresenterState.Restored);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(bounds, newWindow.Bounds);
+			Assert.AreEqual(contentWidth, content.ActualWidth);
+		}
+		finally
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.RunOnUIThread(() => newWindow.Close());
+		}
+	}
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_Activated_ClientSize_Is_Physical_Content_Size()
 	{

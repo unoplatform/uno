@@ -31,11 +31,11 @@ namespace MyProject
 	public sealed partial class GlobalStaticResources
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_Dictionary_29dfb80fc41ea07a94738e29eab24d42 = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_Dictionary_919ec9789205145ce3c290ab02464949 = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_Dictionary_29dfb80fc41ea07a94738e29eab24d42 = "ms-appx:///TestProject/0/Dictionary.xaml";
+		private const string __baseUri_Dictionary_919ec9789205145ce3c290ab02464949 = "ms-appx:///TestProject/0/Dictionary.xaml";
 		// This non-static inner class is a means of reducing size of AOT compilations by avoiding many accesses to static members from a static callsite, which adds costly class initializer checks each time.
-		internal sealed class ResourceDictionarySingleton__Dictionary_29dfb80fc41ea07a94738e29eab24d42 : global::Uno.UI.IXamlResourceDictionaryProvider
+		internal sealed class ResourceDictionarySingleton__Dictionary_919ec9789205145ce3c290ab02464949 : global::Uno.UI.IXamlResourceDictionaryProvider
 		{
 			private static global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 			private static global::Uno.UI.IXamlResourceDictionaryProvider __that;
@@ -45,7 +45,7 @@ namespace MyProject
 				{
 					if (__that == null)
 					{
-						__that = new ResourceDictionarySingleton__Dictionary_29dfb80fc41ea07a94738e29eab24d42();
+						__that = new ResourceDictionarySingleton__Dictionary_919ec9789205145ce3c290ab02464949();
 					}
 
 					return __that;
@@ -53,32 +53,32 @@ namespace MyProject
 			}
 
 			private readonly global::Uno.UI.Xaml.XamlParseContext __ParseContext_;
-			internal static global::Uno.UI.Xaml.XamlParseContext GetParseContext() => ((ResourceDictionarySingleton__Dictionary_29dfb80fc41ea07a94738e29eab24d42)Instance).__ParseContext_;
+			internal static global::Uno.UI.Xaml.XamlParseContext GetParseContext() => ((ResourceDictionarySingleton__Dictionary_919ec9789205145ce3c290ab02464949)Instance).__ParseContext_;
 
-			public ResourceDictionarySingleton__Dictionary_29dfb80fc41ea07a94738e29eab24d42()
+			public ResourceDictionarySingleton__Dictionary_919ec9789205145ce3c290ab02464949()
 			{
 				__ParseContext_ = global::MyProject.GlobalStaticResources.__ParseContext_;
 			}
 
 			// Skipping initializer 1 for DictionaryStateKey  - Literal declaration, will be eagerly materialized and added to the dictionary
 			// Skipping initializer 2 for DictionaryRunKey  - Literal declaration, will be eagerly materialized and added to the dictionary
-			private global::Microsoft.UI.Xaml.ResourceDictionary _Dictionary_29dfb80fc41ea07a94738e29eab24d42_ResourceDictionary;
+			private global::Microsoft.UI.Xaml.ResourceDictionary _Dictionary_919ec9789205145ce3c290ab02464949_ResourceDictionary;
 
-			internal global::Microsoft.UI.Xaml.ResourceDictionary Dictionary_29dfb80fc41ea07a94738e29eab24d42_ResourceDictionary
+			internal global::Microsoft.UI.Xaml.ResourceDictionary Dictionary_919ec9789205145ce3c290ab02464949_ResourceDictionary
 			{
 				get
 				{
-					if (_Dictionary_29dfb80fc41ea07a94738e29eab24d42_ResourceDictionary == null)
+					if (_Dictionary_919ec9789205145ce3c290ab02464949_ResourceDictionary == null)
 					{
-						_Dictionary_29dfb80fc41ea07a94738e29eab24d42_ResourceDictionary = global::Microsoft.UI.Xaml.ResourceDictionary.CreateWithCapacity(2);
-						_Dictionary_29dfb80fc41ea07a94738e29eab24d42_ResourceDictionary.IsParsing = true;
-						_Dictionary_29dfb80fc41ea07a94738e29eab24d42_ResourceDictionary["DictionaryStateKey"] = 
+						_Dictionary_919ec9789205145ce3c290ab02464949_ResourceDictionary = global::Microsoft.UI.Xaml.ResourceDictionary.CreateWithCapacity(2);
+						_Dictionary_919ec9789205145ce3c290ab02464949_ResourceDictionary.IsParsing = true;
+						_Dictionary_919ec9789205145ce3c290ab02464949_ResourceDictionary["DictionaryStateKey"] = 
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							new global::Microsoft.UI.Xaml.VisualState
 							{
 								// Source Dictionary.xaml (Line 4:3)
 							}
-							.Dictionary_29dfb80fc41ea07a94738e29eab24d42_XamlApply((Dictionary_29dfb80fc41ea07a94738e29eab24d42XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+							.Dictionary_919ec9789205145ce3c290ab02464949_XamlApply((Dictionary_919ec9789205145ce3c290ab02464949XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 							{
 							// x:Name DictionaryStateName
 							global::Uno.UI.Helpers.MarkupHelper.SetXName(__p1, "DictionaryStateName");
@@ -86,14 +86,14 @@ namespace MyProject
 							))
 						)
 						;
-						_Dictionary_29dfb80fc41ea07a94738e29eab24d42_ResourceDictionary["DictionaryRunKey"] = 
+						_Dictionary_919ec9789205145ce3c290ab02464949_ResourceDictionary["DictionaryRunKey"] = 
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							new global::Microsoft.UI.Xaml.Documents.Run
 							{
 								Text = "Hello",
 								// Source Dictionary.xaml (Line 5:3)
 							}
-							.Dictionary_29dfb80fc41ea07a94738e29eab24d42_XamlApply((Dictionary_29dfb80fc41ea07a94738e29eab24d42XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+							.Dictionary_919ec9789205145ce3c290ab02464949_XamlApply((Dictionary_919ec9789205145ce3c290ab02464949XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 							{
 							// x:Name DictionaryRunName
 							global::Uno.UI.Helpers.MarkupHelper.SetXName(__p1, "DictionaryRunName");
@@ -101,17 +101,17 @@ namespace MyProject
 							))
 						)
 						;
-						_Dictionary_29dfb80fc41ea07a94738e29eab24d42_ResourceDictionary.Source = new global::System.Uri("ms-resource:///Files/0/Dictionary.xaml");
-						_Dictionary_29dfb80fc41ea07a94738e29eab24d42_ResourceDictionary.CreationComplete();
+						_Dictionary_919ec9789205145ce3c290ab02464949_ResourceDictionary.Source = new global::System.Uri("ms-resource:///Files/0/Dictionary.xaml");
+						_Dictionary_919ec9789205145ce3c290ab02464949_ResourceDictionary.CreationComplete();
 					}
-					return _Dictionary_29dfb80fc41ea07a94738e29eab24d42_ResourceDictionary;
+					return _Dictionary_919ec9789205145ce3c290ab02464949_ResourceDictionary;
 				}
 			}
 
-			global::Microsoft.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => Dictionary_29dfb80fc41ea07a94738e29eab24d42_ResourceDictionary;
+			global::Microsoft.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => Dictionary_919ec9789205145ce3c290ab02464949_ResourceDictionary;
 		}
 
-		internal static global::Microsoft.UI.Xaml.ResourceDictionary Dictionary_29dfb80fc41ea07a94738e29eab24d42_ResourceDictionary => ResourceDictionarySingleton__Dictionary_29dfb80fc41ea07a94738e29eab24d42.Instance.GetResourceDictionary();
+		internal static global::Microsoft.UI.Xaml.ResourceDictionary Dictionary_919ec9789205145ce3c290ab02464949_ResourceDictionary => ResourceDictionarySingleton__Dictionary_919ec9789205145ce3c290ab02464949.Instance.GetResourceDictionary();
 	}
 }
 namespace MyProject.__Resources
@@ -119,18 +119,18 @@ namespace MyProject.__Resources
 }
 namespace MyProject
 {
-	static class Dictionary_29dfb80fc41ea07a94738e29eab24d42XamlApplyExtensions
+	static class Dictionary_919ec9789205145ce3c290ab02464949XamlApplyExtensions
 	{
 		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.VisualState instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.VisualState Dictionary_29dfb80fc41ea07a94738e29eab24d42_XamlApply(this global::Microsoft.UI.Xaml.VisualState instance, XamlApplyHandler0 handler)
+		public static global::Microsoft.UI.Xaml.VisualState Dictionary_919ec9789205145ce3c290ab02464949_XamlApply(this global::Microsoft.UI.Xaml.VisualState instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Documents.Run instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Documents.Run Dictionary_29dfb80fc41ea07a94738e29eab24d42_XamlApply(this global::Microsoft.UI.Xaml.Documents.Run instance, XamlApplyHandler1 handler)
+		public static global::Microsoft.UI.Xaml.Documents.Run Dictionary_919ec9789205145ce3c290ab02464949_XamlApply(this global::Microsoft.UI.Xaml.Documents.Run instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;

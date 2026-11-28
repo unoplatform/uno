@@ -380,6 +380,59 @@ public class Given_InputPane
 		}
 	}
 
+	// The keyboard hides while the window has no content, e.g. while an app swaps its root page: the root must still be restored.
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26579")]
+	public async Task When_OccludedRect_Cleared_Without_Window_Content_Then_Next_Content_Not_Moved()
+	{
+		var textBox = new TextBox { Height = 40, PreventKeyboardDisplayOnProgrammaticFocus = true, PlaceholderText = "bottom" };
+		var scrollViewer = new ScrollViewer
+		{
+			Content = new StackPanel
+			{
+				Children =
+				{
+					new Border { Height = 2000 },
+					textBox,
+				},
+			},
+		};
+
+		var inputPane = InputPane.GetForCurrentView();
+		try
+		{
+			await UITestHelper.Load(scrollViewer);
+
+			scrollViewer.ChangeView(null, scrollViewer.ScrollableHeight, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(textBox.Focus(FocusState.Programmatic), "TextBox failed to take focus.");
+			await WindowHelper.WaitForIdle();
+
+			var occludedTop = OccludeBelow(inputPane, WindowHeight / 2);
+			await WaitForAboveOcclusion(textBox, occludedTop);
+
+			WindowHelper.WindowContent = null;
+			inputPane.OccludedRect = new Rect(0, 0, 0, 0);
+			await WindowHelper.WaitForIdle();
+
+			// Bringing an element near the bottom into view must not move the root: the keyboard is gone.
+			var bottomButton = new Button { Content = "bottom", VerticalAlignment = VerticalAlignment.Bottom };
+			var page = new Grid { Children = { bottomButton } };
+			await UITestHelper.Load(page);
+			bottomButton.StartBringIntoView(new BringIntoViewOptions { AnimationDesired = false });
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, GetTop(page), 0.5, "The content was left moved for a keyboard that is no longer shown.");
+		}
+		finally
+		{
+			await ClearOcclusion(inputPane);
+		}
+	}
+
 	// A sign-in card centered in a full-window ScrollViewer, far above the keyboard, must not move.
 	[TestMethod]
 	[RunsOnUIThread]

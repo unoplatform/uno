@@ -121,7 +121,9 @@ If *your own* code uses AndroidX, add explicit `PackageReference`s.
 
 ### `SkiaSharp.Views.Uno.WinUI` no longer referenced implicitly
 
-The `Uno.Sdk` used to add it to every Uno Platform target, and to WebAssembly heads using the `lottie`, `svg`, `material`, `cupertino`, or `simpletheme` features. Nothing in Uno Platform needs it anymore — SVG draws through `Uno.WinUI.Graphics2DSK` and Lottie through `SkiaSharp.Skottie`. If *your own* code uses `SKXamlCanvas` or `SKSwapChainPanel`, switch to [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), which is hardware-accelerated and referenced implicitly. Do **not** add an explicit `PackageReference` to `SkiaSharp.Views.Uno.WinUI`: every published build was compiled against Uno Platform 6.x assemblies that 7.0 no longer ships, so the app throws `FileNotFoundException` from `SkiaSharp.Views.Windows.GlobalStaticResources.Initialize()` at startup.
+The `Uno.Sdk` used to add it to every Uno Platform target, and to WebAssembly heads using the `lottie`, `svg`, `material`, `cupertino`, or `simpletheme` features. Nothing in Uno Platform needs it anymore — SVG draws through `Uno.WinUI.Graphics2DSK` and Lottie through `SkiaSharp.Skottie`. If *your own* code uses `SKXamlCanvas` or `SKSwapChainPanel`, consider switching to [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), which is hardware-accelerated and referenced implicitly.
+
+To keep using the package, for those controls or for conversion helpers such as `ToColor()`, add a `PackageReference` to version 4.156.0 or later. Earlier versions were compiled against Uno Platform 6.x, and the build fails with [UNOB0023](xref:Build.Solution.error-codes#unob0023-a-runtime-enabled-package-provided-no-runtime-assembly). Use the same version as the SkiaSharp packages the `Uno.Sdk` references: Uno.Sdk 7.0.22 references 4.156.0, so update to that `Uno.Sdk` or later first. When you [upgrade SkiaSharp](xref:Uno.Skia.Desktop#upgrading-to-a-later-version-of-skiasharp), change this package's version with the others.
 
 See also: [SkiaSharp 4 is the default](xref:Uno.Development.MigratingToUno7.Behavior#skiasharp-4-is-the-default).
 

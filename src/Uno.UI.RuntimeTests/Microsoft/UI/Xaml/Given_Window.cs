@@ -361,6 +361,103 @@ public class Given_Window
 	}
 
 	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public void When_Vulkan_Render_Image_Resized_Then_Swapchain_Matches_Window()
+	{
+		var (vulkan, display, hwnd) = GetVulkanDisplay();
+		var window = TestServices.WindowHelper.CurrentTestWindow;
+		var previousSize = window.AppWindow.Size;
+		try
+		{
+			// The device lock keeps the render thread from presenting, so no driver gets to report the swapchain as
+			// out of date: only the resize itself can bring the swapchain to the window's new size.
+			using (var deviceLock = (IDisposable)vulkan.GetType().GetMethod("Lock")!.Invoke(vulkan, null)!)
+			{
+				var clientSize = ResizeClientArea(window, hwnd, previousSize);
+				vulkan.GetType().GetMethod("ResizeRenderImage")!.Invoke(vulkan, [clientSize.Width, clientSize.Height]);
+
+				Assert.AreEqual(Format(clientSize), Format(SwapchainSize(display)), "The swapchain kept its previous size, so frames are scaled into it.");
+			}
+		}
+		finally
+		{
+			window.AppWindow.Resize(previousSize);
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public async Task When_Window_Resized_Then_Vulkan_Swapchain_Follows()
+	{
+		var (_, display, hwnd) = GetVulkanDisplay();
+		var window = TestServices.WindowHelper.CurrentTestWindow;
+		var previousSize = window.AppWindow.Size;
+		using var resetWindowContent = UITestHelper.ResetWindowContent();
+		await UITestHelper.Load(new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) });
+		try
+		{
+			// Many drivers report a resized window's swapchain as out of date on the next present, but Mesa's Win32 one
+			// (Dozen, lavapipe) and Qualcomm's Adreno one never do: only those fail here without the resize recreating it.
+			var clientSize = ResizeClientArea(window, hwnd, previousSize);
+			await TestServices.WindowHelper.WaitFor(
+				() => SwapchainSize(display).Equals(clientSize),
+				message: $"The swapchain kept its previous size after the window was resized to {Format(clientSize)}: {Format(SwapchainSize(display))}.");
+		}
+		finally
+		{
+			window.AppWindow.Resize(previousSize);
+		}
+	}
+
+	// CI's Skia Windows agents have no GPU or Vulkan driver, so these tests are inconclusive there. Run them locally with
+	// UNO_WIN32_RENDERER=Vulkan, or in CI after installing Mesa lavapipe as the WebGPU runtime tests job does.
+	private static (object Vulkan, object Display, nint Hwnd) GetVulkanDisplay()
+	{
+		const BindingFlags Private = BindingFlags.Instance | BindingFlags.NonPublic;
+
+		var wrapper = TestServices.WindowHelper.CurrentTestWindow.NativeWrapper;
+		var context = wrapper.GetType().GetField("_context", Private)!.GetValue(wrapper);
+		if (context?.GetType().GetProperty("Kind")?.GetValue(context)?.ToString() != "Vulkan")
+		{
+			Assert.Inconclusive("The window did not negotiate a Vulkan context.");
+		}
+
+		var vulkan = context.GetType().GetField("_vk", Private)!.GetValue(context)!;
+		var display = vulkan.GetType().GetField("_display", Private)!.GetValue(vulkan)!;
+		return (vulkan, display, ((Uno.UI.NativeElementHosting.Win32NativeWindow)wrapper.NativeWindow).Hwnd);
+	}
+
+	private static Windows.Graphics.SizeInt32 SwapchainSize(object display)
+		=> (Windows.Graphics.SizeInt32)display.GetType().GetProperty("Size")!.GetValue(display)!;
+
+	private static string Format(Windows.Graphics.SizeInt32 size) => $"{size.Width}x{size.Height}";
+
+	private static Windows.Graphics.SizeInt32 ResizeClientArea(Window window, nint hwnd, Windows.Graphics.SizeInt32 previousSize)
+	{
+		GetClientRect(hwnd, out var before);
+		window.AppWindow.Resize(new Windows.Graphics.SizeInt32(previousSize.Width - 40, previousSize.Height - 30));
+		GetClientRect(hwnd, out var after);
+
+		if (after.Right == before.Right && after.Bottom == before.Bottom)
+		{
+			Assert.Inconclusive("The window could not be resized.");
+		}
+
+		return new Windows.Graphics.SizeInt32(after.Right - after.Left, after.Bottom - after.Top);
+	}
+
+	[System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+	private struct Win32Rect
+	{
+		public int Left, Top, Right, Bottom;
+	}
+
+	[System.Runtime.InteropServices.DllImport("user32.dll")]
+	private static extern bool GetClientRect(nint hWnd, out Win32Rect rect);
+
+	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
 	public void When_Probing_Vulkan_Devices_Then_Software_Comes_Last_In_Loader_Order()
 	{

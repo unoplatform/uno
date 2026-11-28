@@ -663,7 +663,9 @@ namespace Uno.UI.Runtime {
 			// Use child.remove() instead of parent.removeChild(child) to handle
 			// cases where the child's actual DOM parent differs from the semantic parent
 			// (e.g., after re-parenting or when duplicate IDs existed previously).
+			SemanticElements.clearActiveDescendantTo(child);
 			child.remove();
+			SemanticElements.schedulePruneDetachedActiveDescendantOwners();
 		}
 
 		public static updateIsFocusable(handle: number, isFocusable: boolean): void {

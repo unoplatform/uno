@@ -29,9 +29,9 @@ namespace TestRepro
 	partial class MainWindow : global::TestRepro.BaseWindow
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_MainWindow_35b16a7cd4c5f6ba316b074a0da7f8d9 = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_MainWindow_0658b8c38089747578b2691cfaea22f4 = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_MainWindow_35b16a7cd4c5f6ba316b074a0da7f8d9 = "ms-appx:///TestProject/0/MainWindow.xaml";
+		private const string __baseUri_MainWindow_0658b8c38089747578b2691cfaea22f4 = "ms-appx:///TestProject/0/MainWindow.xaml";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -46,12 +46,12 @@ namespace TestRepro
 					IsParsing = true,
 					// Source MainWindow.xaml (Line 10:3)
 				}
-				.MainWindow_35b16a7cd4c5f6ba316b074a0da7f8d9_XamlApply((MainWindow_35b16a7cd4c5f6ba316b074a0da7f8d9XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
+				.MainWindow_0658b8c38089747578b2691cfaea22f4_XamlApply((MainWindow_0658b8c38089747578b2691cfaea22f4XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 				{
 				/* _isTopLevelDictionary:False */
 				__that._component_0 = __p1;
 				global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainWindow_35b16a7cd4c5f6ba316b074a0da7f8d9);
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainWindow_0658b8c38089747578b2691cfaea22f4);
 				__p1.CreationComplete();
 				}
 				))
@@ -59,14 +59,14 @@ namespace TestRepro
 			;
 			
 			this
-			.MainWindow_35b16a7cd4c5f6ba316b074a0da7f8d9_XamlApply((MainWindow_35b16a7cd4c5f6ba316b074a0da7f8d9XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+			.MainWindow_0658b8c38089747578b2691cfaea22f4_XamlApply((MainWindow_0658b8c38089747578b2691cfaea22f4XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
 			// Source MainWindow.xaml (Line 1:2)
 			
 			// [WARNING] //Project/0/MainWindow.xaml(1,2): Property 'base' does not exist on 'BaseWindow', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
-			.MainWindow_35b16a7cd4c5f6ba316b074a0da7f8d9_XamlApply((MainWindow_35b16a7cd4c5f6ba316b074a0da7f8d9XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
+			.MainWindow_0658b8c38089747578b2691cfaea22f4_XamlApply((MainWindow_0658b8c38089747578b2691cfaea22f4XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 			{
 			// Class TestRepro.MainWindow
 			}
@@ -138,18 +138,18 @@ namespace TestRepro
 }
 namespace MyProject
 {
-	static class MainWindow_35b16a7cd4c5f6ba316b074a0da7f8d9XamlApplyExtensions
+	static class MainWindow_0658b8c38089747578b2691cfaea22f4XamlApplyExtensions
 	{
 		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.Page instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Page MainWindow_35b16a7cd4c5f6ba316b074a0da7f8d9_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler0 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Page MainWindow_0658b8c38089747578b2691cfaea22f4_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler1(global::TestRepro.BaseWindow instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::TestRepro.BaseWindow MainWindow_35b16a7cd4c5f6ba316b074a0da7f8d9_XamlApply(this global::TestRepro.BaseWindow instance, XamlApplyHandler1 handler)
+		public static global::TestRepro.BaseWindow MainWindow_0658b8c38089747578b2691cfaea22f4_XamlApply(this global::TestRepro.BaseWindow instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;

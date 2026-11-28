@@ -217,7 +217,14 @@ namespace Microsoft.UI.Xaml
 			var originalState = group.CurrentState;
 			if (object.Equals(originalState, state))
 			{
-				// Already in the right state
+				// Already in the right state. Without transitions, WinUI still snaps the state's storyboards to
+				// their end and re-applies its setters, which is how controls refresh values bound in a state.
+				// MUX Reference: CVisualStateManager2::GoToStateOptimizedImpl
+				if (!useTransitions)
+				{
+					group.SnapToEndAndReapplySetters(control);
+				}
+
 				return true;
 			}
 
