@@ -50,10 +50,6 @@ partial class TextBox : ITextBoxHost
 
 	TextAlignment ITextBoxHost.TextAlignment => TextAlignment;
 
-	bool ITextBoxHost.IsTextAlignmentExplicitlySet
-		=> ((DependencyObject)this)
-			.GetCurrentHighestValuePrecedence(TextAlignmentProperty) != DependencyPropertyValuePrecedences.DefaultValue;
-
 	CharacterCasing ITextBoxHost.CharacterCasing => CharacterCasing;
 
 	bool ITextBoxHost.IsTextPredictionEnabled => IsTextPredictionEnabled;

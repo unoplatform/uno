@@ -78,8 +78,6 @@ internal sealed partial class TextBoxCore
 
 	internal TextAlignment TextAlignment => _host.TextAlignment;
 
-	internal bool IsTextAlignmentExplicitlySet => _host.IsTextAlignmentExplicitlySet;
-
 	// The native overlay raises this on the control's behalf, so it needs a way through the engine.
 	internal void RaisePaste(TextControlPasteEventArgs args) => _host.RaisePaste(args);
 

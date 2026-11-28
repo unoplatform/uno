@@ -176,7 +176,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 	int ITextBoxViewHost.CompositionUnderlineLength => CompositionUnderlineLength;
 
-	bool ITextBoxViewHost.IsTextAlignmentSetToDefault => !IsTextAlignmentExplicitlySet;
+	bool ITextBoxViewHost.IsTextAlignmentDetectedFromContent => TextAlignment is TextAlignment.DetectFromContent;
 
 	private TextViewEditor _editorField;
 

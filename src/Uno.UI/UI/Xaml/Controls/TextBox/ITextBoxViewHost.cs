@@ -55,11 +55,10 @@ namespace Microsoft.UI.Xaml.Controls
 		int CompositionUnderlineLength { get; }
 
 		/// <summary>
-		/// Whether the host's <see cref="TextAlignment"/> is still at its default-value precedence
-		/// (i.e. not explicitly set). Used by the shared <see cref="TextBoxView.DisplayBlock"/> to
-		/// decide whether to defer to its own alignment.
+		/// Whether the <see cref="TextBoxView.DisplayBlock"/> aligns its text from the content's direction
+		/// rather than from its own <see cref="TextBlock.TextAlignment"/>.
 		/// </summary>
-		bool IsTextAlignmentSetToDefault { get; }
+		bool IsTextAlignmentDetectedFromContent { get; }
 
 		/// <summary>
 		/// Runs the host's text-input pipeline (BeforeTextChanging, TextChanging, DP coercion, etc.)

@@ -48,9 +48,8 @@ partial class PasswordBox : ITextBoxHost
 
 	CharacterCasing ITextBoxHost.CharacterCasing => CharacterCasing.Normal;
 
-	TextAlignment ITextBoxHost.TextAlignment => TextAlignment.Left;
-
-	bool ITextBoxHost.IsTextAlignmentExplicitlySet => false;
+	// PasswordBox has no TextAlignment property: its text keeps aligning from its content (WinUI aligns it to its start).
+	TextAlignment ITextBoxHost.TextAlignment => TextAlignment.DetectFromContent;
 
 	bool ITextBoxHost.IsPointerOver => _isPointerOver;
 
