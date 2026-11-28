@@ -559,7 +559,7 @@ public class Given_AnimatedBackVisualSource
 		await TestServices.WindowHelper.WaitForIdle();
 		await TestServices.WindowHelper.WaitForIdle();
 
-		var rotateShape = WalkForSpriteShape(ElementCompositionPreview.GetElementVisual(icon));
+		var rotateShape = WalkForSpriteShape(GetAnimatedRootVisual(icon));
 		Assert.IsNotNull(rotateShape, "Should have located the chevron's rotated SpriteShape under the AnimatedIcon.");
 
 		var collapsedRotation = rotateShape.RotationAngleInDegrees;
@@ -601,7 +601,7 @@ public class Given_AnimatedBackVisualSource
 		AnimatedIcon chevron = FindAnimatedIcon(expander);
 		Assert.IsNotNull(chevron, "Should have located the AnimatedIcon chevron in the Expander template.");
 
-		var rotateShape = WalkForSpriteShape(ElementCompositionPreview.GetElementVisual(chevron));
+		var rotateShape = WalkForSpriteShape(GetAnimatedRootVisual(chevron));
 		Assert.IsNotNull(rotateShape, "Should have located the chevron's rotated SpriteShape.");
 
 		var collapsedRotation = rotateShape.RotationAngleInDegrees;
@@ -671,7 +671,7 @@ public class Given_AnimatedBackVisualSource
 		await TestServices.WindowHelper.WaitForIdle();
 		await TestServices.WindowHelper.WaitForIdle();
 
-		var rotateShape = WalkForSpriteShape(ElementCompositionPreview.GetElementVisual(icon));
+		var rotateShape = WalkForSpriteShape(GetAnimatedRootVisual(icon));
 		Assert.IsNotNull(rotateShape);
 
 		// Drive the chevron through the same state transitions a Toggle visual-state machine
@@ -692,6 +692,15 @@ public class Given_AnimatedBackVisualSource
 
 		Assert.IsTrue(MathF.Abs(finalRotation - 180f) < 5f,
 			$"After rapid state transitions ending at NormalOn, chevron rotation should be ~180°. final={finalRotation}.");
+	}
+
+	// The icon's root panel also holds the collapsed Path WinUI's AnimatedIcon inherits from PathIcon,
+	// so start from the animated visual hosted on that panel.
+	private static Visual GetAnimatedRootVisual(AnimatedIcon icon)
+	{
+		var panel = (Panel)VisualTreeHelper.GetChild(icon, 0);
+		var elementVisuals = panel.Children.Select(ElementCompositionPreview.GetElementVisual).ToHashSet();
+		return ((ContainerVisual)ElementCompositionPreview.GetElementVisual(panel)).Children.First(v => !elementVisuals.Contains(v));
 	}
 
 	private static CompositionSpriteShape WalkForSpriteShape(Visual v)

@@ -4,7 +4,7 @@
 //     LottieGen version: 7.1.0+ge1fa92580f
 // </auto-generated>
 //------------------------------------------------------------------------------
-// MUX Reference AnimatedChevronDownSmallVisualSource.cpp (nested AnimatedChevronDownSmallVisualSource_AnimatedVisual class), commit 5f9e85113
+// MUX Reference AnimatedChevronDownSmallVisualSource.cpp (nested AnimatedChevronDownSmallVisualSource_AnimatedVisual class)
 
 // ____________________________________
 // |       Object stats       | Count |
@@ -179,12 +179,12 @@ internal sealed class AnimatedChevronDownSmallVisualSource_AnimatedVisual : IAni
 		result.Clip = InsetClip_0();
 		result.IsVisible = false;
 		result.Size = new Vector2(48.0F, 48.0F);
-		// Scale:<1, 1> — Identity matrix.
-		// Note: the WinUI-generated source applies a malformed 4x4 here with zeros on M22/M33.
-		// In WinUI's column-major DComp pipeline that ends up being interpreted as identity for
-		// 2D content; in Skia's row-major Matrix4x4 it would collapse the layer entirely. We
-		// substitute identity which is the intended behavior.
-		result.TransformMatrix = Matrix4x4.Identity;
+		// Scale:<1, 1>
+		result.TransformMatrix = new Matrix4x4(
+			1.0F, 0.0F, 0.0F, 0.0F,
+			0.0F, 1.0F, 0.0F, 0.0F,
+			0.0F, 0.0F, 0.0F, 0.0F,
+			0.0F, 0.0F, 0.0F, 1.0F);
 		// Transforms for Controls - 06 - Dropdown - 05 - PressedToNormal Scale(1,1,0)
 		result.Children.InsertAtTop(ShapeVisual_0());
 		StartProgressBoundAnimation(result, "IsVisible", IsVisibleBooleanAnimation_0(), _rootProgress);
@@ -197,8 +197,12 @@ internal sealed class AnimatedChevronDownSmallVisualSource_AnimatedVisual : IAni
 		var result = _c.CreateContainerVisual();
 		result.Clip = _insetClip_0;
 		result.Size = new Vector2(48.0F, 48.0F);
-		// Scale:<1, 1> — Identity matrix (see ContainerVisual_0 for context on the substitution).
-		result.TransformMatrix = Matrix4x4.Identity;
+		// Scale:<1, 1>
+		result.TransformMatrix = new Matrix4x4(
+			1.0F, 0.0F, 0.0F, 0.0F,
+			0.0F, 1.0F, 0.0F, 0.0F,
+			0.0F, 0.0F, 0.0F, 0.0F,
+			0.0F, 0.0F, 0.0F, 1.0F);
 		// Transforms for Controls - 06 - Dropdown - 04 - PointerOverToPressed Scale(1,1,0)
 		result.Children.InsertAtTop(ShapeVisual_1());
 		StartProgressBoundAnimation(result, "IsVisible", IsVisibleBooleanAnimation_1(), _rootProgress);

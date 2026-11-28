@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference FontIconSource_Partial.cpp, tag winui3/release/1.4.2
+// MUX Reference FontIconSource_Partial.cpp
 
 using Uno.UI.Helpers.Boxes;
 using Windows.UI.Text;
@@ -75,7 +75,10 @@ public partial class FontIconSource : IconSource
 	}
 
 	public static DependencyProperty FontFamilyProperty { get; } =
-		DependencyProperty.Register(nameof(FontFamily), typeof(FontFamily), typeof(FontIconSource), new FrameworkPropertyMetadata(new FontFamily(Uno.UI.FeatureConfiguration.Font.SymbolsFont), OnPropertyChanged));
+		DependencyProperty.Register(nameof(FontFamily), typeof(FontFamily), typeof(FontIconSource), new FrameworkPropertyMetadata(
+			// TODO Uno specific: Uno ships its own symbols font instead of GetDefaultFontIconFontFamily.
+			new FontFamily(Uno.UI.FeatureConfiguration.Font.SymbolsFont),
+			OnPropertyChanged));
 
 	/// <inheritdoc />
 	protected override IconElement CreateIconElementCore()

@@ -4,7 +4,7 @@
 //     LottieGen version: 7.1.0+ge1fa92580f
 // </auto-generated>
 //------------------------------------------------------------------------------
-// MUX Reference AnimatedGlobalNavigationButtonVisualSource.cpp (nested AnimatedGlobalNavigationButtonVisualSource_AnimatedVisual class), commit 5f9e85113
+// MUX Reference AnimatedGlobalNavigationButtonVisualSource.cpp (nested AnimatedGlobalNavigationButtonVisualSource_AnimatedVisual class)
 
 using System;
 using System.Numerics;
@@ -665,12 +665,12 @@ internal sealed class AnimatedGlobalNavigationButtonVisualSource_AnimatedVisual 
 		result.Clip = InsetClip_0();
 		result.IsVisible = false;
 		result.Size = new Vector2(48.0F, 48.0F);
-		// Scale:<1, 1> — Identity matrix.
-		// Note: the WinUI-generated source applies a malformed 4x4 here with zeros on M22/M33.
-		// In WinUI's column-major DComp pipeline that ends up being interpreted as identity for
-		// 2D content; in Skia's row-major Matrix4x4 it would collapse the layer entirely. We
-		// substitute identity which is the intended behavior.
-		result.TransformMatrix = Matrix4x4.Identity;
+		// Scale:<1, 1>
+		result.TransformMatrix = new Matrix4x4(
+			1.0F, 0.0F, 0.0F, 0.0F,
+			0.0F, 1.0F, 0.0F, 0.0F,
+			0.0F, 0.0F, 0.0F, 0.0F,
+			0.0F, 0.0F, 0.0F, 1.0F);
 		// Opacity for layer: Controls - 02 - Hamburger - 02 - NormalToPressed Controls - 02 -
 		// Hamburger - 04 - PointerOverToPressed Controls - 02 - Hamburger - 05 -
 		// PressedToNormal Controls - 02 - Hamburger - 06 - PressedToPointerOver
@@ -687,8 +687,12 @@ internal sealed class AnimatedGlobalNavigationButtonVisualSource_AnimatedVisual 
 		var result = _c.CreateContainerVisual();
 		result.Clip = _insetClip_0;
 		result.Size = new Vector2(48.0F, 48.0F);
-		// Scale:<1, 1> — Identity matrix (see ContainerVisual_0 for context).
-		result.TransformMatrix = Matrix4x4.Identity;
+		// Scale:<1, 1>
+		result.TransformMatrix = new Matrix4x4(
+			1.0F, 0.0F, 0.0F, 0.0F,
+			0.0F, 1.0F, 0.0F, 0.0F,
+			0.0F, 0.0F, 0.0F, 0.0F,
+			0.0F, 0.0F, 0.0F, 1.0F);
 		// Opacity for layer: Controls - 02 - Hamburger - 01 - NormalToPointerOver Controls -
 		// 02 - Hamburger - 03 - PointerOverToNormal
 		result.Children.InsertAtTop(ShapeVisual_1());

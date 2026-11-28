@@ -1,92 +1,20 @@
-﻿using System;
-using Uno.UI.Helpers.Boxes;
-using Windows.Foundation;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference icon.h
+
+#nullable enable
 
 namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
 /// Represents an icon that uses a bitmap as its content.
 /// </summary>
-public partial class BitmapIcon : IconElement, IThemeChangeAware
+public partial class BitmapIcon : IconElement
 {
-	private readonly Image _image;
-
 	/// <summary>
 	/// Initializes a new instance of the BitmapIcon class.
 	/// </summary>
 	public BitmapIcon()
 	{
-		_image = new Image();
-		AddIconChild(_image);
-
-		_image.SetBindingInternal(
-			dependencyProperty: Image.SourceProperty,
-			binding: new Binding { Source = this, Path = nameof(UriSource) }
-		);
-
-		UpdateImageMonochromeColor();
 	}
-
-	/// <summary>
-	/// Gets or sets a value that indicates whether the bitmap is shown in a single color.
-	/// </summary>
-	public bool ShowAsMonochrome
-	{
-		get => (bool)GetValue(ShowAsMonochromeProperty);
-		set => SetValue(ShowAsMonochromeProperty, value);
-	}
-
-	/// <summary>
-	/// Identifies the ShowAsMonochrome dependency property.
-	/// </summary>
-	public static DependencyProperty ShowAsMonochromeProperty { get; } =
-		DependencyProperty.Register(
-			nameof(ShowAsMonochrome), typeof(bool),
-			typeof(BitmapIcon),
-			new FrameworkPropertyMetadata(BoolBoxes.True, (s, e) => (s as BitmapIcon)?.OnShowAsMonochromeChanged((bool)e.NewValue)));
-
-	/// <summary>
-	/// Gets or sets the Uniform Resource Identifier (URI) of the graphics source file that generated this BitmapImage.
-	/// </summary>
-	public Uri UriSource
-	{
-		get => (Uri)GetValue(UriSourceProperty);
-		set => SetValue(UriSourceProperty, value);
-	}
-
-	/// <summary>
-	/// Identifies the UriSource dependency property.
-	/// </summary>
-	public static DependencyProperty UriSourceProperty { get; } =
-		DependencyProperty.Register(
-			nameof(UriSource),
-			typeof(Uri),
-			typeof(BitmapIcon),
-			new FrameworkPropertyMetadata(default(Uri)));
-
-	private void OnShowAsMonochromeChanged(bool value) => UpdateImageMonochromeColor();
-
-	private protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e)
-	{
-		// When ShowAsMonochrome is false, the foreground color is not used
-		// for rendering the image, so there is no need to update.
-		if (ShowAsMonochrome)
-		{
-			UpdateImageMonochromeColor();
-		}
-	}
-
-	private void UpdateImageMonochromeColor()
-	{
-		if (_image is not null)
-		{
-			_image.MonochromeColor = ShowAsMonochrome ? (Foreground as SolidColorBrush)?.Color : null;
-		}
-	}
-
-	// The way this works in WinUI is by the MarkInheritedPropertyDirty call in CFrameworkElement::NotifyThemeChangedForInheritedProperties
-	// There is a special handling for Foreground specifically there.
-	void IThemeChangeAware.OnThemeChanged() => UpdateImageMonochromeColor();
 }

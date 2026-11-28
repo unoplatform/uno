@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-// MUX Reference BitmapIconSource_Partial.cpp, tag winui3/release/1.4.2
+// MUX Reference BitmapIconSource_Partial.cpp
 
 using System;
 using Uno.UI.Helpers.Boxes;
@@ -38,8 +38,8 @@ public partial class BitmapIconSource : IconSource
 
 		var bitmapIcon = new BitmapIcon();
 
-		bitmapIcon.UriSource = UriSource;
-		bitmapIcon.ShowAsMonochrome = ShowAsMonochrome;
+		bitmapIcon.UriSource = uriSource;
+		bitmapIcon.ShowAsMonochrome = showAsMonochrome;
 
 		return bitmapIcon;
 	}
