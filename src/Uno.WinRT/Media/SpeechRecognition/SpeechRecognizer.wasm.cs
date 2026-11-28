@@ -47,18 +47,31 @@ namespace Windows.Media.SpeechRecognition
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
 			{
-				if (speechRecognizer._currentCompletionSource != null)
+				// Web Speech reports benign terminations (no-speech, aborted, no-match) and genuine
+				// failures (network, not-allowed, …) through the same "error" channel. Mirror UWP and
+				// complete with a SpeechRecognitionResult carrying the mapped Status instead of throwing.
+				var completionSource = speechRecognizer._currentCompletionSource;
+				if (completionSource is null)
 				{
-					speechRecognizer._currentCompletionSource.SetException(
-						new InvalidOperationException($"Speech recognition failed with '{error}'"));
+					LogIgnoredCallback(error);
+					return;
 				}
-				else
+
+				speechRecognizer.OnStateChanged(SpeechRecognizerState.Idle);
+				completionSource.TrySetResult(new SpeechRecognitionResult()
 				{
-					if (typeof(SpeechRecognizer).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Error))
-					{
-						typeof(SpeechRecognizer).Log().LogError($"Speech recognition failed with '{error}'");
-					}
-				}
+					Text = string.Empty,
+					Status = WebSpeechErrorMapper.ToStatus(error)
+				});
+			}
+		}
+
+		private static void LogIgnoredCallback(string outcome)
+		{
+			// Late or duplicate callback (after Dispose, or after the operation already completed).
+			if (typeof(SpeechRecognizer).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+			{
+				typeof(SpeechRecognizer).Log().LogDebug($"Speech recognition reported '{outcome}' while no operation is active, ignoring.");
 			}
 		}
 
@@ -92,13 +105,20 @@ namespace Windows.Media.SpeechRecognition
 		{
 			if (_instances.TryGetValue(instanceId, out var speechRecognizer))
 			{
+				var completionSource = speechRecognizer._currentCompletionSource;
+				if (completionSource is null)
+				{
+					LogIgnoredCallback("result");
+					return;
+				}
+
 				speechRecognizer.OnStateChanged(SpeechRecognizerState.Idle);
-				var recognitionResult = new SpeechRecognitionResult()
+				completionSource.TrySetResult(new SpeechRecognitionResult()
 				{
 					Text = result,
-					RawConfidence = confidence
-				};
-				speechRecognizer?._currentCompletionSource.SetResult(recognitionResult);
+					RawConfidence = confidence,
+					Status = SpeechRecognitionResultStatus.Success
+				});
 			}
 		}
 
@@ -127,8 +147,15 @@ namespace Windows.Media.SpeechRecognition
 
 			if (!recognizeResult)
 			{
-				throw new InvalidOperationException(
-					"Speech recognizer is not available on this device.");
+				_currentCompletionSource = null;
+
+				// No recognition engine in this browser. Report it through the result/status contract
+				// rather than throwing, consistent with the other completion paths.
+				return new SpeechRecognitionResult()
+				{
+					Text = string.Empty,
+					Status = SpeechRecognitionResultStatus.Unknown
+				};
 			}
 
 			var result = await _currentCompletionSource.Task;
@@ -138,8 +165,12 @@ namespace Windows.Media.SpeechRecognition
 
 		public void Dispose()
 		{
-			_currentCompletionSource?.SetCanceled();
+			// TrySetCanceled: the source is already finalized when recognition ended via a result or
+			// error, and SetCanceled would throw before the instance is released below.
+			_currentCompletionSource?.TrySetCanceled();
+			_currentCompletionSource = null;
 
+			_instances.TryRemove(_instanceId.ToString(), out _);
 			NativeMethods.RemoveInstance(_instanceId.ToString());
 		}
 
