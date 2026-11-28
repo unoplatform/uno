@@ -409,6 +409,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 	partial void OnUnloadedPartial()
 	{
+		_textBoxNotificationsSingleton?.OnLeaveVisualTree(this);
 		EndImeSession();
 		DetachImeGeometryTracking();
 		// Unload can happen mid-drag without an intervening blur (e.g. ListView/ItemsRepeater
@@ -426,6 +427,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost, ITextBoxV
 
 	partial void OnLoadedPartial()
 	{
+		_textBoxNotificationsSingleton?.OnEnteredVisualTree(this);
 		if (_imeGeometryTrackingRequested)
 		{
 			AttachImeGeometryTracking();

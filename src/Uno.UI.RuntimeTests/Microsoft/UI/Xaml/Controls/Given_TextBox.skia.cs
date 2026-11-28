@@ -11111,17 +11111,65 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26610")]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Loaded_And_Unloaded_Then_Platform_Notified_Of_Visual_Tree_Changes(bool isPassword)
+		{
+			// The platform keeps a live list of the text inputs from these notifications (e.g. the Android autofill structure).
+			var notifications = new CountingTextBoxNotifications();
+			using var notificationsDisposable = TextBox.SetNotificationsProviderForTesting(notifications);
+
+			try
+			{
+				Control SUT = isPassword ? new PasswordBox { Width = 200 } : new TextBox { Width = 200 };
+				var first = new StackPanel();
+				var second = new StackPanel();
+				first.Children.Add(SUT);
+				await UITestHelper.Load(new StackPanel { Children = { first, second } });
+
+				Assert.AreEqual("entered", string.Join(",", notifications.VisualTreeEventsOf(SUT)));
+
+				first.Children.Remove(SUT);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual("entered,left", string.Join(",", notifications.VisualTreeEventsOf(SUT)));
+
+				first.Children.Add(SUT);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual("entered,left,entered", string.Join(",", notifications.VisualTreeEventsOf(SUT)));
+
+				// Re-parenting within the same tick must end registered.
+				first.Children.Remove(SUT);
+				second.Children.Add(SUT);
+				await WindowHelper.WaitForIdle();
+				var events = notifications.VisualTreeEventsOf(SUT);
+				Assert.AreEqual("entered", events[^1], $"The last notification must register the still-live input ({string.Join(",", events)}).");
+				Assert.AreEqual(1, events.Count(e => e == "entered") - events.Count(e => e == "left"), $"Unbalanced notifications: {string.Join(",", events)}");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
+		}
+
 		private sealed class CountingTextBoxNotifications : ITextBoxNotificationsProviderSingleton
 		{
+			private readonly List<(TextBoxCore Core, string Event)> _visualTreeEvents = new();
+
 			public int FocusedCount { get; private set; }
+
+			public List<string> VisualTreeEventsOf(Control owner)
+				=> _visualTreeEvents.Where(e => ReferenceEquals(e.Core.Owner, owner)).Select(e => e.Event).ToList();
 
 			public void OnFocused(TextBoxCore core) => FocusedCount++;
 
 			public void OnUnfocused(TextBoxCore core) { }
 
-			public void OnEnteredVisualTree(TextBoxCore core) { }
+			public void OnEnteredVisualTree(TextBoxCore core) => _visualTreeEvents.Add((core, "entered"));
 
-			public void OnLeaveVisualTree(TextBoxCore core) { }
+			public void OnLeaveVisualTree(TextBoxCore core) => _visualTreeEvents.Add((core, "left"));
 
 			public void FinishAutofillContext(bool shouldSave) { }
 

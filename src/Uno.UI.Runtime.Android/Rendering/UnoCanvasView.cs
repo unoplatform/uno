@@ -9,7 +9,6 @@ using Android.OS;
 using Android.Runtime;
 using Android.Util;
 using Android.Views;
-using Android.Views.Autofill;
 using Android.Views.InputMethods;
 using AndroidX.Core.Graphics;
 using AndroidX.Core.View;
@@ -210,16 +209,17 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 	}
 
 	public override void Autofill(SparseArray values)
+		=> TextInputPlugin.Autofill(values);
+
+	public override bool IsVisibleToUserForAutofill(int virtualId)
+		=> TextInputPlugin.IsVisibleToUserForAutofill(virtualId);
+
+	public override void OnWindowFocusChanged(bool hasWindowFocus)
 	{
-		var count = values.Size();
-		for (int i = 0; i < count; i++)
+		base.OnWindowFocusChanged(hasWindowFocus);
+		if (hasWindowFocus)
 		{
-			var virtualId = values.KeyAt(i);
-			if (AndroidSkiaTextBoxNotificationsProviderSingleton.Instance.LiveTextBoxesMap.TryGetValue(virtualId, out var textBox))
-			{
-				var autofillValue = (AutofillValue)values.ValueAt(i)!;
-				textBox.Text = autofillValue.TextValue ?? string.Empty;
-			}
+			TextInputPlugin.OnWindowFocusGained();
 		}
 	}
 
