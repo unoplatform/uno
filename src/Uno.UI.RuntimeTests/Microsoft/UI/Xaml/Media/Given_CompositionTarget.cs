@@ -534,6 +534,50 @@ public class Given_CompositionTarget
 		Assert.IsTrue(raises >= 5, $"Rendering should keep being raised for the visible window, got {raises} raises");
 	}
 
+	/// <summary>
+	/// A minimized window presents nothing, but its frames must stay paced: WinUI keeps ticking a hidden window no
+	/// faster than the refresh rate, while an unpaced render loop spun tens of thousands of frames a second.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+	public async Task When_Window_Minimized_Then_Frames_Stay_Paced()
+	{
+		var (secondary, content) = await OpenSecondaryWindow();
+		var presenter = (Microsoft.UI.Windowing.OverlappedPresenter)secondary.AppWindow.Presenter;
+		var target = (CompositionTarget)content.Visual.CompositionTarget!;
+
+		var ticks = 0;
+		var presentedSinceRestore = 0;
+		EventHandler<long> driver = (_, _) => ticks++;
+		EventHandler<FramePresentedInfo> onPresented = (_, _) => presentedSinceRestore++;
+
+		try
+		{
+			presenter.Minimize();
+			await TestServices.WindowHelper.WaitFor(() => presenter.State == Microsoft.UI.Windowing.OverlappedPresenterState.Minimized);
+			await Task.Delay(500);
+
+			// A driver asks for a frame on every tick, like a running animation.
+			target.FrameStarting += driver;
+			await Task.Delay(1000);
+			target.FrameStarting -= driver;
+
+			Assert.IsTrue(ticks >= 5, $"a minimized window should keep ticking its drivers, got {ticks} ticks");
+			Assert.IsTrue(ticks <= 500, $"a minimized window should not tick faster than the refresh rate, got {ticks} ticks in one second");
+
+			target.FramePresented += onPresented;
+			presenter.Restore();
+			await TestServices.WindowHelper.WaitFor(() => presentedSinceRestore > 0, 5000, "the restored window should present a frame");
+		}
+		finally
+		{
+			target.FrameStarting -= driver;
+			target.FramePresented -= onPresented;
+			secondary.Close();
+		}
+	}
+
 	private static async Task<(Window Window, Border Content)> OpenSecondaryWindow()
 	{
 		var secondary = new Window();

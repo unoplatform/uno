@@ -56,6 +56,7 @@ internal partial class Win32WindowWrapper : IDisplayInformationExtension
 			// only the software-timer-paced DwmFlush degraded fallback actually retargets. The WebGPU
 			// context doesn't implement the interface (swapchain-paced), so this simply skips it.
 			(_context as IWin32PacedContext)?.UpdateRefreshRate(_refreshRate);
+			_renderThread?.UpdateRefreshRate(_refreshRate);
 		}
 	}
 

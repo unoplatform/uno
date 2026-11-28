@@ -19,14 +19,19 @@ internal partial class Win32WindowWrapper
 		private readonly ManualResetEventSlim _presentedEvent = new(false);
 		private readonly Func<IGeometry?> _drawFrame;
 		private readonly Action<IGeometry> _onClipPathUpdated;
+		// Contexts pace only the frames they present. A frame that presents nothing (a minimized window, nothing
+		// recorded yet) returns at once, so without this the loop spins as fast as frames are requested.
+		private readonly Win32RenderPacer _skippedFramePacer;
 		private volatile bool _disposed;
 
 		internal RenderThread(
 			Func<IGeometry?> drawFrame,
-			Action<IGeometry> onClipPathUpdated)
+			Action<IGeometry> onClipPathUpdated,
+			double fps)
 		{
 			_drawFrame = drawFrame;
 			_onClipPathUpdated = onClipPathUpdated;
+			_skippedFramePacer = new Win32RenderPacer(fps, followRefreshRate: false);
 			_thread = new Thread(RenderLoop) { Name = "Uno Render Thread", IsBackground = true };
 			_thread.Start();
 		}
@@ -47,6 +52,8 @@ internal partial class Win32WindowWrapper
 		/// </summary>
 		internal bool WaitForNextPresent(TimeSpan timeout) => _presentedEvent.Wait(timeout);
 
+		internal void UpdateRefreshRate(double fps) => _skippedFramePacer.UpdateTargetFps(fps);
+
 		private void RenderLoop()
 		{
 			while (!_disposed)
@@ -57,6 +64,9 @@ internal partial class Win32WindowWrapper
 					break;
 				}
 
+				_skippedFramePacer.OnFrameStart();
+				var presented = false;
+
 				try
 				{
 					// DrawFrame drives the frame through OnNativePlatformFrameRequested, which presents (SwapBuffers/
@@ -65,11 +75,18 @@ internal partial class Win32WindowWrapper
 					{
 						_onClipPathUpdated(clipPath);
 						_presentedEvent.Set();
+						presented = true;
 					}
 				}
 				catch (Exception ex)
 				{
 					typeof(RenderThread).LogError()?.Error($"Render thread error: {ex}");
+				}
+
+				// WinUI never ticks faster than the refresh rate, rendering or not (Scheduler::OnImmediateUIThreadFrame).
+				if (!presented && !_disposed)
+				{
+					_skippedFramePacer.WaitForNextFrame();
 				}
 			}
 		}
@@ -90,6 +107,7 @@ internal partial class Win32WindowWrapper
 
 			_frameSignal.Dispose();
 			_presentedEvent.Dispose();
+			_skippedFramePacer.Dispose();
 		}
 	}
 }
