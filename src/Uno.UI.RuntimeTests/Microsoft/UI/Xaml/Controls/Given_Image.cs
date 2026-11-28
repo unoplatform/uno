@@ -303,11 +303,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			string decoded_url = "https://uno-assets.platform.uno/tests/images/image with spaces.jpg";
 			var img = new Image();
 			var SUT = new BitmapImage(new Uri(decoded_url));
+			var imageLoaded = new TaskCompletionSource();
+			SUT.ImageOpened += (_, _) => imageLoaded.TrySetResult();
+			SUT.ImageFailed += (_, e) => imageLoaded.TrySetException(new AssertFailedException($"ImageFailed: {e.ErrorMessage}"));
 			img.Source = SUT;
 
 			TestServices.WindowHelper.WindowContent = img;
-			await TestServices.WindowHelper.WaitForIdle();
-			await TestServices.WindowHelper.WaitFor(() => img.ActualHeight > 0, 3000);
+
+			// Generous: on iOS CI the host can deliver no frame for many seconds, on top of the download.
+			await imageLoaded.Task.WaitAsync(TimeSpan.FromSeconds(30));
+			await TestServices.WindowHelper.WaitFor(() => img.ActualHeight > 0, 30000);
 
 			Assert.IsGreaterThan(0, img.ActualHeight);
 		}
