@@ -21,6 +21,7 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml
 {
@@ -90,7 +91,8 @@ namespace Microsoft.UI.Xaml
 		private DependencyProperty _parentDataContextProperty = FrameworkElement.DataContextProperty;
 
 		private ImmutableList<ExplicitPropertyChangedCallback> _genericCallbacks = ImmutableList<ExplicitPropertyChangedCallback>.Empty;
-		private ImmutableList<DependencyObject> _childrenStores = ImmutableList<DependencyObject>.Empty;
+		// The children inherited properties propagate to. Appended in place and read as a snapshot (SnapshotArray).
+		private DependencyObject?[] _childrenStores = Array.Empty<DependencyObject?>();
 		private ImmutableList<ParentChangedCallback> _parentChangedCallbacks = ImmutableList<ParentChangedCallback>.Empty;
 
 		/// <summary>
@@ -1181,7 +1183,7 @@ namespace Microsoft.UI.Xaml
 		/// </returns>
 		private ManagedWeakReference RegisterInheritedPropertyChangedCallback(DependencyObject childStore)
 		{
-			_childrenStores = _childrenStores.Add(childStore);
+			SnapshotArray.Add(ref _childrenStores, childStore);
 
 			// An object that opted out of auto-inheritance (e.g. VisualState/VisualStateGroup, which set
 			// IsAutoPropertyInheritanceEnabled = false) is not registered against its own parent until it has a
@@ -1202,7 +1204,7 @@ namespace Microsoft.UI.Xaml
 			if (objectStoreWeak.Target is DependencyObject that)
 			{
 				// Delegates integrate a null check when removing new delegates.
-				that._childrenStores = that._childrenStores.Remove(childStore);
+				SnapshotArray.Remove(ref that._childrenStores, childStore);
 			}
 		}
 
@@ -1440,9 +1442,10 @@ namespace Microsoft.UI.Xaml
 
 				// If not, propagate the DP down to the child listeners, if any.
 				var localChildrenStores = _childrenStores;
-				for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+				var childCount = SnapshotArray.CountOf(localChildrenStores);
+				for (var storeIndex = 0; storeIndex < childCount; storeIndex++)
 				{
-					var child = localChildrenStores[storeIndex];
+					var child = localChildrenStores[storeIndex]!;
 					child.OnParentPropertyChangedCallback(sourceInstance, parentProperty, newValue);
 				}
 			}
@@ -1462,7 +1465,7 @@ namespace Microsoft.UI.Xaml
 					// graph is built in reverse (such as with the
 					// XamlReader)
 					|| _properties is { HasBindings: true }
-					|| _childrenStores.Count != 0
+					|| _childrenStores.Length != 0
 				)
 			)
 			{
@@ -1577,9 +1580,10 @@ namespace Microsoft.UI.Xaml
 
 			var actualInstanceAlias = ActualInstance;
 			var localChildrenStores = _childrenStores;
-			for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+			var childCount = SnapshotArray.CountOf(localChildrenStores);
+			for (var storeIndex = 0; storeIndex < childCount; storeIndex++)
 			{
-				var child = localChildrenStores[storeIndex];
+				var child = localChildrenStores[storeIndex]!;
 				foreach (var forwarded in forwardedProperties)
 				{
 					// Inheritable attached properties set on this store are sourced from itself: they are not stale.
@@ -1784,7 +1788,7 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private void PropagateInheritedProperties(DependencyObject? childStore = null)
 		{
-			if (childStore is null && _childrenStores.Count == 0)
+			if (childStore is null && _childrenStores.Length == 0)
 			{
 				// Avoid doing any unnecessary work.
 				return;
@@ -1829,9 +1833,10 @@ namespace Microsoft.UI.Xaml
 			else
 			{
 				var localChildrenStores = _childrenStores;
-				for (var childStoreIndex = 0; childStoreIndex < localChildrenStores.Count; childStoreIndex++)
+				var childCount = SnapshotArray.CountOf(localChildrenStores);
+				for (var childStoreIndex = 0; childStoreIndex < childCount; childStoreIndex++)
 				{
-					var child = localChildrenStores[childStoreIndex];
+					var child = localChildrenStores[childStoreIndex]!;
 					Propagate(child);
 				}
 			}
@@ -1888,9 +1893,10 @@ namespace Microsoft.UI.Xaml
 					else
 					{
 						var localChildrenStores = _childrenStores;
-						for (var i = 0; i < localChildrenStores.Count; i++)
+						var childCount = SnapshotArray.CountOf(localChildrenStores);
+						for (var i = 0; i < childCount; i++)
 						{
-							Propagate(localChildrenStores[i]);
+							Propagate(localChildrenStores[i]!);
 						}
 					}
 				}
@@ -2126,14 +2132,15 @@ namespace Microsoft.UI.Xaml
 				if (frameworkPropertyMetadata.Options.HasInherits())
 				{
 					var localChildrenStores = _childrenStores;
-					if (localChildrenStores.Count > 0)
+					if (localChildrenStores.Length > 0)
 					{
 						// Minted only once we know there is an inheriting child: a leaf object never
 						// reaches this and so never rents a weak self-handle.
 						var instanceRef = SelfWeakReference;
-						for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+						var childCount = SnapshotArray.CountOf(localChildrenStores);
+						for (var storeIndex = 0; storeIndex < childCount; storeIndex++)
 						{
-							CallChildCallback(localChildrenStores[storeIndex], instanceRef, property, newValue);
+							CallChildCallback(localChildrenStores[storeIndex]!, instanceRef, property, newValue);
 						}
 					}
 				}
