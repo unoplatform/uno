@@ -193,6 +193,88 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 
 			grid.SetValue(Control.IsEnabledProperty, null);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[DataRow(1.25f)]
+		[DataRow(2.25f)]
+		[DataRow(2.75f)]
+		public async Task When_Available_Size_Off_Pixel_Grid_Then_Content_Measured_Within_It(float scale)
+		{
+			TestServices.WindowHelper.SetTestScaling(scale);
+			try
+			{
+				var inner = new Border { Child = new Border { Width = 1000, Height = 1000 } };
+				var SUT = new Border { Child = inner };
+				await UITestHelper.Load(new Canvas { Children = { SUT } }, x => x.IsLoaded);
+
+				// 100.6 physical pixels: content rounded up to 101 would not fit in the space the parent has.
+				var available = 100.6 / scale;
+				SUT.Measure(new Size(available, available));
+
+				Assert.AreEqual(100 / scale, inner.DesiredSize.Height, 1e-3);
+				Assert.AreEqual(100 / scale, SUT.DesiredSize.Height, 1e-3);
+			}
+			finally
+			{
+				TestServices.WindowHelper.UnsetTestScaling();
+			}
+		}
+
+		[TestMethod]
+		[DataRow(1.25f)]
+		[DataRow(1.75f)]
+		[DataRow(2.625f)]
+		[DataRow(2.75f)]
+		public async Task When_Available_Size_On_Pixel_Grid_Then_Content_Gets_All_Of_It(float scale)
+		{
+			TestServices.WindowHelper.SetTestScaling(scale);
+			try
+			{
+				var inner = new Border { Child = new Border { Width = 1000, Height = 1000 } };
+				var SUT = new Border { Child = inner };
+				await UITestHelper.Load(new Canvas { Children = { SUT } }, x => x.IsLoaded);
+
+				for (var pixels = 1; pixels <= 300; pixels++)
+				{
+					var available = pixels / scale;
+					SUT.Measure(new Size(available, available));
+
+					Assert.AreEqual(pixels, inner.DesiredSize.Height * scale, 1e-3, $"available {available}");
+				}
+			}
+			finally
+			{
+				TestServices.WindowHelper.UnsetTestScaling();
+			}
+		}
+
+		[TestMethod]
+		[DataRow(1.25f)]
+		[DataRow(2.25f)]
+		[DataRow(2.75f)]
+		public async Task When_Margin_Off_Pixel_Grid_Then_Rounded_Before_Content_Measured(float scale)
+		{
+			TestServices.WindowHelper.SetTestScaling(scale);
+			try
+			{
+				var inner = new Border { Child = new Border { Width = 1000, Height = 1000 } };
+				var SUT = new Border { Margin = new Microsoft.UI.Xaml.Thickness(0, 1.25 / scale, 0, 0), Child = inner };
+				await UITestHelper.Load(new Canvas { Children = { SUT } }, x => x.IsLoaded);
+
+				var available = 100 / scale;
+				SUT.Measure(new Size(available, available));
+
+				// Like WinUI, the 1.25px margin takes a whole pixel off the content, not two.
+				Assert.AreEqual(99 / scale, inner.DesiredSize.Height, 1e-3);
+				Assert.AreEqual(100 / scale, SUT.DesiredSize.Height, 1e-3);
+			}
+			finally
+			{
+				TestServices.WindowHelper.UnsetTestScaling();
+			}
+		}
+#endif
 	}
 
 #if HAS_UNO

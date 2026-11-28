@@ -1303,6 +1303,27 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
+		// Does a layout round, except only rounds down.
+		internal double LayoutRoundFloor(double value)
+		{
+#if __SKIA__
+			if (!double.IsFinite(value))
+			{
+				return value;
+			}
+
+			// Uno: sizes are stored as floats, so a size on the pixel grid can come back a hair under it
+			// (e.g. (float)(7 / 1.25) * 1.25 < 7), which must not cost a whole pixel.
+			const double tolerance = 0.01;
+
+			double scaleFactor = GetScaleFactorForLayoutRounding();
+
+			return Math.Floor(value * scaleFactor + tolerance) / scaleFactor;
+#else
+			return value;
+#endif
+		}
+
 		internal Rect LayoutRound(Rect value)
 		{
 #if __SKIA__
