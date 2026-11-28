@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml
 	public partial class ResourceDictionary : DependencyObject, IDependencyObjectParse, IDictionary<object, object>
 	{
 		private readonly SpecializedResourceDictionary _values;
-		private readonly ObservableCollection<ResourceDictionary> _mergedDictionaries = new();
+		private readonly MergedDictionaryCollection _mergedDictionaries;
 		private ResourceDictionary _themeDictionaries;
 		private ResourceDictionary _parent;
 		private ManagedWeakReference _sourceDictionary;
@@ -49,6 +49,7 @@ namespace Microsoft.UI.Xaml
 		internal ResourceDictionary(int initialCapacity)
 		{
 			_values = new SpecializedResourceDictionary(initialCapacity);
+			_mergedDictionaries = new MergedDictionaryCollection(this);
 			_mergedDictionaries.CollectionChanged += (s, e) =>
 			{
 				if (e.OldItems != null)
@@ -1463,6 +1464,76 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		/// <summary>
+		/// Whether <paramref name="dictionary"/> is this dictionary or one of the dictionaries it merges, directly or not.
+		/// </summary>
+		private bool MergesOrIs(ResourceDictionary dictionary)
+		{
+			if (ReferenceEquals(this, dictionary))
+			{
+				return true;
+			}
+
+			if (_mergedDictionaries.Count == 0)
+			{
+				// The common case while parsing XAML, so it doesn't allocate.
+				return false;
+			}
+
+			var visited = new HashSet<ResourceDictionary>(ReferenceEqualityComparer.Instance);
+			var pending = new Stack<ResourceDictionary>();
+			pending.Push(this);
+
+			while (pending.Count > 0)
+			{
+				var current = pending.Pop();
+				if (ReferenceEquals(current, dictionary))
+				{
+					return true;
+				}
+
+				if (visited.Add(current))
+				{
+					foreach (var merged in current._mergedDictionaries)
+					{
+						pending.Push(merged);
+					}
+				}
+			}
+
+			return false;
+		}
+
+		/// <summary>
+		/// The merged dictionaries of a <see cref="ResourceDictionary"/>. Like WinUI, it rejects a dictionary that would
+		/// make a merge cycle: lookups and not-found cache invalidation would otherwise never end.
+		/// </summary>
+		private sealed class MergedDictionaryCollection : ObservableCollection<ResourceDictionary>
+		{
+			private readonly ResourceDictionary _owner;
+
+			public MergedDictionaryCollection(ResourceDictionary owner) => _owner = owner;
+
+			protected override void InsertItem(int index, ResourceDictionary item)
+			{
+				ThrowIfCycle(item);
+				base.InsertItem(index, item);
+			}
+
+			protected override void SetItem(int index, ResourceDictionary item)
+			{
+				ThrowIfCycle(item);
+				base.SetItem(index, item);
+			}
+
+			private void ThrowIfCycle(ResourceDictionary item)
+			{
+				if (item is not null && item.MergesOrIs(_owner))
+				{
+					throw new InvalidOperationException("A ResourceDictionary can't be merged into itself or into a dictionary it merges.");
+				}
+			}
+		}
 
 		private static class Themes
 		{
