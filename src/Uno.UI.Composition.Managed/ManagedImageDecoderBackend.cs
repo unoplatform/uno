@@ -36,6 +36,26 @@ internal sealed class ManagedImageDecoderBackend : IImageEncoderDecoder
 		return false;
 	}
 
+	public bool TryGetSize(Stream stream, out int pixelWidth, out int pixelHeight)
+	{
+		ImageBytes bytes;
+		try
+		{
+			// A seekable stream is read on demand, from where TryDecode's copy of it starts: the headers are all it needs.
+			bytes = stream.CanSeek
+				? new ImageBytes(stream, stream is MemoryStream ? 0 : stream.Position)
+				: new ImageBytes(ReadAllBytes(stream));
+		}
+		catch (NotSupportedException)
+		{
+			pixelWidth = 0;
+			pixelHeight = 0;
+			return false; // too large to decode
+		}
+
+		return ManagedImageDecoder.TryGetSize(bytes, out pixelWidth, out pixelHeight);
+	}
+
 	public IImage CreateImage(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
 		=> new ManagedImage(pixelWidth, pixelHeight, bgraPremul);
 

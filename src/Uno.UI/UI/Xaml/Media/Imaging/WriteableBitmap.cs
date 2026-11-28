@@ -48,8 +48,6 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 #endif
 			override void OnSetSource()
 		{
-			UpdateBuffer();
-
 #if __SKIA__ // TODO: Other platforms.
 			DecodeStreamIntoBuffer();
 #endif
@@ -70,12 +68,17 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		private void DecodeStreamIntoBuffer()
 		{
-			// Decode the encoded stream to BGRA (premultiplied) pixels through the neutral backend decoder.
+			// Decode the encoded stream to BGRA (premultiplied) pixels through the neutral backend decoder. The pixel size
+			// comes from this decode, so the stream isn't read a second time for it.
 			if (ImageEncoderDecoder.Current.TryDecode(_stream.AsStream(), null, null, out var frames))
 			{
 				using (frames)
 				{
-					frames.Frames[0].CopyPixels(_buffer.Span);
+					var frame = frames.Frames[0];
+					PixelWidth = frame.PixelWidth;
+					PixelHeight = frame.PixelHeight;
+					UpdateBuffer();
+					frame.CopyPixels(_buffer.Span);
 				}
 			}
 		}
