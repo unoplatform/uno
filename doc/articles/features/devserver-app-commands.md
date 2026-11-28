@@ -77,11 +77,13 @@ These verbs combine tool calls on the CLI side:
 
 - `app wait [--timeoutSeconds 120] [--ready]` waits until an app is connected. With `--ready`, it then waits until the app's Hot Reload is Ready. It exits with 1 on timeout, or when Hot Reload is disabled.
 - `app assert <find parameters> [--state tok,..] [--absent] [--count N]` runs `find`, then checks the result:
-  - `--state`: each token must appear in the `{...}` state group of every match. A `!tok` token must not appear.
+  - `--state`: each token must appear in the `{...}` state group of every match that `find` returned. A `!tok` token must not appear.
   - `--absent`: passes when nothing matched.
-  - `--count N`: passes when exactly N elements matched.
+  - `--count N`: passes when exactly N elements matched, so `--count 0` passes when nothing matched.
 
-  It prints the find result, then `assert: pass` or `assert: fail (<reason>)`.
+  Without `--absent` or `--count`, an assert fails when nothing matched. It prints the find result, then `assert: pass` or `assert: fail (<reason>)`.
+
+  `--count` compares the total number of matches, but `--state` can only check the matches listed in the find result: 20 by default. When more elements matched than were listed, a `--state` assert fails rather than pass on matches it never saw. Raise the limit with `--maxResults` (up to 100), or narrow the search.
 
 ## Parameters
 

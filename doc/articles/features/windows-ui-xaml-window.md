@@ -33,7 +33,7 @@ To display a new window (both primary and secondary), you can utilize the `Micro
 
 ```csharp
 var window = new Window();
-window.Content = new TextBlock() { "Hello, world" };
+window.Content = new TextBlock() { Text = "Hello, world" };
 window.Activate();
 ```
 
@@ -120,6 +120,14 @@ These properties allow you to set the maximum dimensions for the window. When se
 // Set the window size here
 Host = await builder.NavigateAsync<Shell>();
 ```
+
+> [!NOTE]
+> On macOS (net10.0-desktop), window sizes don't yet follow WinUI ([#26110](https://github.com/unoplatform/uno/issues/26110)):
+>
+> * `PreferredMinimumWidth`, `PreferredMinimumHeight`, `PreferredMaximumWidth` and `PreferredMaximumHeight` are applied in points (logical pixels) to the whole window, title bar included. In WinUI, they are physical pixels.
+> * `AppWindow.Resize` takes physical pixels, as in WinUI, but sizes the area below the title bar rather than the whole window.
+>
+> Until this is fixed, give the preferred sizes in points on macOS, and include the title bar in the minimum and maximum heights.
 
 ## Enumerating windows
 
@@ -311,7 +319,7 @@ var nonClientInputSrc = InputNonClientPointerSource.GetForWindowId(appWindow.Id)
 // Define the maximize button region to enable Snap Layouts
 var maximizeButtonRect = new RectInt32(100, 0, 46, 32); // x, y, width, height in actual pixels
 
-nonClientInputSrc.SetRegionRects(NonClientRegionKind.Caption, new[] { maximizeButtonRect });
+nonClientInputSrc.SetRegionRects(NonClientRegionKind.Maximize, new[] { maximizeButtonRect });
 ```
 
 > [!IMPORTANT]

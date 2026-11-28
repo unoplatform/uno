@@ -74,7 +74,9 @@ internal sealed class AppCommandHandler
 		      Exit 1 on timeout, or when Hot Reload is disabled.
 		  assert <find parameters> [--state tok,..] [--absent] [--count N]
 		      Run find, then check every match: each tok must be in the match's {...} state group, a !tok must not.
-		      --absent passes when nothing matched, --count N on an exact count. Prints "assert: pass" or "assert: fail (why)".
+		      --absent passes when nothing matched, --count N on an exact count (--count 0 included).
+		      --state fails when find lists fewer matches than matched: raise --maxResults (up to 100).
+		      Prints "assert: pass" or "assert: fail (why)".
 
 		Parameters:
 		  --name value              Passed to the tool as "name". JSON values (numbers, true, false, null, {...}, [...]) are
@@ -314,7 +316,8 @@ internal sealed class AppCommandHandler
 	/// <summary>
 	/// The verdict of <c>app assert</c> on a find result: null when it passes, otherwise why it failed.
 	/// <paramref name="state"/> tokens must all be in every match's <c>{...}</c> group, a <c>!token</c> must be
-	/// in none; <paramref name="absent"/> passes on zero matches; <paramref name="count"/> is an exact count.
+	/// in none; <paramref name="absent"/> passes on zero matches; <paramref name="count"/> is an exact count (0 included).
+	/// Without either, nothing matched fails. A state check fails when find listed fewer matches than matched.
 	/// </summary>
 	internal static string? AssertFailure(string findText, string[] state, bool absent, int? count)
 	{
@@ -326,14 +329,24 @@ internal sealed class AppCommandHandler
 			return matched == 0 ? null : $"expected no match, {matched} matched";
 		}
 
-		if (count is { } expected && matched != expected)
+		if (count is { } expected)
 		{
-			return $"expected {expected} matched, got {matched}";
+			if (matched != expected)
+			{
+				return $"expected {expected} matched, got {matched}";
+			}
 		}
-
-		if (matched == 0)
+		else if (matched == 0)
 		{
 			return "expected a match, 0 matched";
+		}
+
+		// find lists one line per match, at most maxResults of them: a state check on fewer lines than matched
+		// would pass on matches it never saw.
+		var listed = lines.Length - 1;
+		if (state.Length > 0 && listed < matched)
+		{
+			return $"--state checked {listed} of {matched} matches: raise --maxResults (up to 100)";
 		}
 
 		foreach (var line in lines.Skip(1))
