@@ -267,8 +267,7 @@ internal sealed class SkiaDrawingFactory :
 			throw new System.ArgumentException("Texture was not produced by SkiaDrawingFactory.", nameof(texture));
 		}
 
-		// The returned image must own its pixels: the texture stays independently alive and disposable, and both
-		// wrappers free their SKImage.
+		// The returned image must own its pixels: the texture stays independently alive and disposable.
 		using var bitmap = new SKBitmap(new SKImageInfo(skia.PixelWidth, skia.PixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul));
 		if (!skia.Image.ReadPixels(bitmap.Info, bitmap.GetPixels(), bitmap.RowBytes, 0, 0))
 		{
@@ -280,6 +279,14 @@ internal sealed class SkiaDrawingFactory :
 
 	public ITexture CreateTexture(IImage image)
 	{
+		// A SkiaImage already holds immutable raster pixels: wrap them instead of holding them a second time. The wrapper
+		// is an SKImage of its own because Skia keys a raster image's GPU upload on its pixels' ID and keeps it until
+		// that image is gone; sharing the source's would keep every frame of an animation uploaded while it plays.
+		if (image is SkiaImage skia && SkiaTexture.TryWrap(skia) is { } wrapped)
+		{
+			return wrapped;
+		}
+
 		var info = new SKImageInfo(image.PixelWidth, image.PixelHeight, SKColorType.Bgra8888, SKAlphaType.Premul);
 		var pixels = new byte[image.PixelWidth * image.PixelHeight * 4];
 		image.CopyPixels(pixels);
