@@ -23,8 +23,8 @@ internal sealed class MacOSSpeechRecognizerExtension : ISpeechRecognizerExtensio
 	private TaskCompletionSource<(string text, IReadOnlyList<string> alternates)>? _pendingRecognition;
 	private bool _disposed;
 
-	public event Action<string>? HypothesisGenerated;
-	public event Action<SpeechRecognizerState>? StateChanged;
+	public event EventHandler<string>? HypothesisGenerated;
+	public event EventHandler<SpeechRecognizerState>? StateChanged;
 
 	private MacOSSpeechRecognizerExtension(object owner)
 	{
@@ -135,7 +135,7 @@ internal sealed class MacOSSpeechRecognizerExtension : ISpeechRecognizerExtensio
 		var text = Marshal.PtrToStringUTF8((nint)textUtf8) ?? string.Empty;
 		try
 		{
-			instance.HypothesisGenerated?.Invoke(text);
+			instance.HypothesisGenerated?.Invoke(instance, text);
 		}
 		catch (Exception ex)
 		{
@@ -156,7 +156,7 @@ internal sealed class MacOSSpeechRecognizerExtension : ISpeechRecognizerExtensio
 		}
 		try
 		{
-			instance.StateChanged?.Invoke((SpeechRecognizerState)state);
+			instance.StateChanged?.Invoke(instance, (SpeechRecognizerState)state);
 		}
 		catch (Exception ex)
 		{

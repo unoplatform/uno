@@ -7,9 +7,9 @@ namespace Windows.Media.SpeechRecognition;
 
 internal interface ISpeechRecognizerExtension : IDisposable
 {
-	event Action<string> HypothesisGenerated;
+	event EventHandler<string> HypothesisGenerated;
 
-	event Action<SpeechRecognizerState> StateChanged;
+	event EventHandler<SpeechRecognizerState> StateChanged;
 
 	void Initialize(Language language, SpeechRecognizerTimeouts timeouts);
 

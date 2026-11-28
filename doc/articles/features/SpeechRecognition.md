@@ -15,28 +15,28 @@ Uno's implementation currently supports basic native speech recognition.
 
 The following features of `Windows.Media.SpeechRecognition.SpeechRecognizer` are currently supported:
 
-| Feature                                    | iOS | Android | macOS (Skia) | WebAssembly | Remarks                       |
-|--------------------------------------------|-----|---------|--------------|-------------|-------------------------------|
-| SpeechRecognizer()                         | X   | X       | X            | X           |                               |
-| SpeechRecognizer(Language)                 | X   | X       | X            | X           |                               |
-| Constraints                                | -   | -       | -            | -           |                               |
-| ContinuousRecognitionSession               | -   | -       | -            | -           |                               |
-| CurrentLanguage                            | X   | X       | X            | X           |                               |
-| State                                      | X   | X       | X            | X           |                               |
-| SupportedGrammarLanguages                  | -   | -       | -            | -           |                               |
-| SupportedTopicLanguages                    | -   | -       | -            | -           |                               |
-| SystemSpeechLanguage                       | -   | -       | -            | -           |                               |
-| Timeouts                                   | X   | X       | X            | X           |                               |
-| UIOptions                                  | X   | X       | X            | X           | Not used                      |
-| CompileConstraintsAsync()                  | X   | X       | X            | X           | Always return Success (implemented to meet WinUI constraint that requires `CompileConstraintsAsync()` to be called before `RecognizeAsync()`) |
-| Dispose()                                  | X   | X       | X            | X           |                               |
-| RecognizeAsync()                           | X   | X       | X            | X           |                               |
-| RecognizeWithUIAsync()                     | -   | -       | -            | -           |                               |
-| StopRecognitionAsync()                     | X   | X       | X            | X           |                               |
-| TrySetSystemSpeechLanguageAsync(Language)  | -   | -       | -            | -           |                               |
-| HypothesisGenerated                        | X   | X       | X            | X           |                               |
-| RecognitionQualityDegrading                | -   | -       | -            | -           |                               |
-| StateChanged                               | X   | X       | X            | X           |                               |
+| Feature                                    | iOS | Android | macOS (Skia) | Windows (Skia) | WebAssembly | Remarks                       |
+|--------------------------------------------|-----|---------|--------------|----------------|-------------|-------------------------------|
+| SpeechRecognizer()                         | X   | X       | X            | X              | X           |                               |
+| SpeechRecognizer(Language)                 | X   | X       | X            | X              | X           |                               |
+| Constraints                                | -   | -       | -            | -              | -           |                               |
+| ContinuousRecognitionSession               | -   | -       | -            | -              | -           |                               |
+| CurrentLanguage                            | X   | X       | X            | X              | X           |                               |
+| State                                      | X   | X       | X            | X              | X           |                               |
+| SupportedGrammarLanguages                  | -   | -       | -            | -              | -           |                               |
+| SupportedTopicLanguages                    | -   | -       | -            | -              | -           |                               |
+| SystemSpeechLanguage                       | -   | -       | -            | -              | -           |                               |
+| Timeouts                                   | X   | X       | X            | X              | X           |                               |
+| UIOptions                                  | X   | X       | X            | X              | X           | Not used                      |
+| CompileConstraintsAsync()                  | X   | X       | X            | X              | X           | Always return Success (implemented to meet WinUI constraint that requires `CompileConstraintsAsync()` to be called before `RecognizeAsync()`) |
+| Dispose()                                  | X   | X       | X            | X              | X           |                               |
+| RecognizeAsync()                           | X   | X       | X            | X              | X           |                               |
+| RecognizeWithUIAsync()                     | -   | -       | -            | -              | -           |                               |
+| StopRecognitionAsync()                     | X   | X       | X            | X              | X           |                               |
+| TrySetSystemSpeechLanguageAsync(Language)  | -   | -       | -            | -              | -           |                               |
+| HypothesisGenerated                        | X   | X       | X            | X              | X           |                               |
+| RecognitionQualityDegrading                | -   | -       | -            | -              | -           |                               |
+| StateChanged                               | X   | X       | X            | X              | X           |                               |
 
 ## Requirement
 
@@ -81,6 +81,20 @@ The following lines need to be added to your AndroidManifest.xml:
 > ```bash
 > open src/SamplesApp/SamplesApp/bin/Debug/net11.0-desktop/SamplesApp.app
 > ```
+
+### Windows (Skia)
+
+The Win32 host uses the Windows speech engine (`Windows.Media.SpeechRecognition`), the same one WinUI apps use.
+
+* Windows 10 or later is required.
+* The speech language pack for the requested language must be installed (**Settings > Time & language > Speech**).
+* Dictation uses the online speech service: **Online speech recognition** must be turned on in **Settings > Privacy & security > Speech**. Otherwise `RecognizeAsync()` fails with HRESULT `0x80045509` (speech privacy policy not accepted), as it does on WinUI.
+* Desktop apps must be allowed to use the microphone (**Settings > Privacy & security > Microphone**).
+* As on WinUI, `HypothesisGenerated` and `StateChanged` are raised on a background thread.
+
+### Linux (Skia)
+
+Speech recognition is not available on the X11 and framebuffer hosts. `RecognizeAsync()` throws a `NotSupportedException`.
 
 ### WebAssembly
 
