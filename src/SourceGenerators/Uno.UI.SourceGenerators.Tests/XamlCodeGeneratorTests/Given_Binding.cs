@@ -347,7 +347,6 @@ public class Given_Binding
 		<StackPanel>
 			<TextBox Text="{x:Bind ViewModel.Mode, Mode=TwoWay, Converter={StaticResource EnumConverter}}" />
 			<TextBox Text="{x:Bind ViewModel.NullableMode, Mode=TwoWay, Converter={StaticResource EnumConverter}}" />
-			<TextBox Text="{x:Bind ViewModel.Format(ViewModel.Mode), BindBack=ViewModel.SetMode, Mode=TwoWay, Converter={StaticResource EnumConverter}}" />
 			<TextBox Text="{x:Bind ViewModel.Mode, Mode=OneWay, Converter={StaticResource EnumConverter}}" />
 			<TextBox Text="{x:Bind ViewModel.Name, Mode=TwoWay}" />
 			<ContentControl>
@@ -388,10 +387,6 @@ public class Given_Binding
 							public MyMode? NullableMode { get; set; }
 
 							public string Name { get; set; }
-
-							public string Format(MyMode mode) => mode.ToString();
-
-							public void SetMode(MyMode mode) => Mode = mode;
 						}
 
 						public class EnumConverter : IValueConverter
@@ -415,6 +410,94 @@ public class Given_Binding
 				}
 			}
 		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task When_XBind_Function_With_Converter()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml", """
+	<Page
+		x:Class="TestRepro.MainPage"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:local="using:TestRepro">
+
+		<Page.Resources>
+			<local:EnumConverter x:Key="EnumConverter" />
+		</Page.Resources>
+		<StackPanel>
+			<TextBox Text="{x:Bind ViewModel.Format(ViewModel.Mode), BindBack=ViewModel.SetMode, Mode=TwoWay, Converter={StaticResource EnumConverter}}" />
+			<ContentControl>
+				<ContentControl.ContentTemplate>
+					<DataTemplate x:DataType="local:VM">
+						<TextBox Text="{x:Bind Format(Mode), BindBack=SetMode, Mode=TwoWay, Converter={StaticResource EnumConverter}}" />
+					</DataTemplate>
+				</ContentControl.ContentTemplate>
+			</ContentControl>
+		</StackPanel>
+	</Page>
+	"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using System;
+					using Microsoft.UI.Xaml.Controls;
+					using Microsoft.UI.Xaml.Data;
+
+					namespace TestRepro
+					{
+						public enum MyMode
+						{
+							First,
+							Second,
+						}
+
+						public class VM
+						{
+							public MyMode Mode { get; set; }
+
+							public string Format(MyMode mode) => mode.ToString();
+
+							public void SetMode(string mode) => Mode = Enum.Parse<MyMode>(mode);
+						}
+
+						public class EnumConverter : IValueConverter
+						{
+							public object Convert(object value, Type targetType, object parameter, string language) => value;
+
+							public object ConvertBack(object value, Type targetType, object parameter, string language) => value;
+						}
+
+						public sealed partial class MainPage : Page
+						{
+							public VM ViewModel { get; set; }
+
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		test.ExpectedDiagnostics.AddRange(
+		[
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 11, 4, 11, 4).WithArguments("Using a converter with function binding is not supported"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 15, 7, 15, 7).WithArguments("Using a converter with function binding is not supported"),
+		]);
 
 		await test.RunAsync();
 	}

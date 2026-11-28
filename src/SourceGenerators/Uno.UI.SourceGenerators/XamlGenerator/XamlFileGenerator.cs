@@ -4662,8 +4662,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (!string.IsNullOrWhiteSpace(rawBindBack))
 							{
-								var bindBackValueType = GetXBindBackValueType(rawBindBack!, dataTypeSymbol);
-								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ ___tctx.{rawBindBack}(({bindBackValueType})__value); }} }}";
+								ValidateNoConverterOnFunctionBinding();
+								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ ___tctx.{rawBindBack}(({propertyType})__value); }} }}";
 							}
 							else
 							{
@@ -4727,8 +4727,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (!string.IsNullOrWhiteSpace(rawBindBack))
 							{
-								var bindBackValueType = GetXBindBackValueType(rawBindBack!, xBindSymbol);
-								return $"(___tctx, __value) => {rawBindBack}(({bindBackValueType})__value)";
+								ValidateNoConverterOnFunctionBinding();
+								return $"(___tctx, __value) => {rawBindBack}(({propertyType})__value)";
 							}
 							else
 							{
@@ -4801,36 +4801,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			string GetConvertBackTargetTypeArgument()
 				=> convertBackTargetType is null ? "" : $", typeof({convertBackTargetType})";
 
-			// WinUI rejects a Converter on a function binding; Uno supports it, so ConvertBack targets
-			// the BindBack parameter type, which is also what the converted value gets cast to.
-			string? GetXBindBackValueType(string bindBack, ITypeSymbol? rootType)
+			// WinUI: BindAssignment.ValidateConverter (BindAssignment_ConverterWithFunctionBindingNotSupported)
+			void ValidateNoConverterOnFunctionBinding()
 			{
-				if (hasConverter && FindXBindBackParameterType(bindBack, rootType) is { } parameterType)
+				if (hasConverter)
 				{
-					return convertBackTargetType = parameterType.GetFullyQualifiedTypeIncludingGlobal();
+					throw new XamlGenerationException("Using a converter with function binding is not supported", bindNode);
 				}
-
-				return propertyType?.ToString();
 			}
-		}
-
-		private static ITypeSymbol? FindXBindBackParameterType(string bindBack, ITypeSymbol? rootType)
-		{
-			var parts = bindBack.Split('.');
-			var ownerType = rootType;
-
-			for (var i = 0; i < parts.Length - 1 && ownerType is not null; i++)
-			{
-				ownerType = ownerType.TryGetPropertyOrFieldType(parts[i]);
-			}
-
-			var candidates = ownerType
-				.GetAllMembersWithName(parts[parts.Length - 1])
-				.OfType<IMethodSymbol>()
-				.Where(m => m.Parameters.Length == 1 && !m.IsOverride)
-				.ToArray();
-
-			return candidates.Length == 1 ? candidates[0].Parameters[0].Type : null;
 		}
 
 		private ITypeSymbol GetXBindPropertyPathType(string propertyPath, INamedTypeSymbol? rootType, IXamlLocation location)
