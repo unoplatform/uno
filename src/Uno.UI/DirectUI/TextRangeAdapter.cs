@@ -985,20 +985,19 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 #if __SKIA__
 		if (_owner is RichEditBox richEditBox)
 		{
-			if (richEditBox.Document.TryGetRangeRectangles(
-				_start,
-				_end,
-				Microsoft.UI.Text.PointOptions.None,
-				out var rectangles))
+			// Like every text range provider (and GetBoundingRectangleCore), report root-relative logical
+			// rectangles; the UIA bridge maps them to screen space (CUIATextRangeProviderWrapper::GetBoundingRectangles).
+			if (richEditBox.TryGetAccessibilityRangeRectangles(_start, _end, out var rectangles))
 			{
 				returnValue = new double[rectangles.Length * 4];
 				for (var i = 0; i < rectangles.Length; i++)
 				{
+					var rootRect = rectangles[i];
 					var offset = i * 4;
-					returnValue[offset] = rectangles[i].X;
-					returnValue[offset + 1] = rectangles[i].Y;
-					returnValue[offset + 2] = rectangles[i].Width;
-					returnValue[offset + 3] = rectangles[i].Height;
+					returnValue[offset] = rootRect.X;
+					returnValue[offset + 1] = rootRect.Y;
+					returnValue[offset + 2] = rootRect.Width;
+					returnValue[offset + 3] = rootRect.Height;
 				}
 				return;
 			}
