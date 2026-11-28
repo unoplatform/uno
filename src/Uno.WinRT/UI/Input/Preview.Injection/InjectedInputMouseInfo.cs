@@ -108,7 +108,7 @@ public partial class InjectedInputMouseInfo
 
 		var timestampInMicroseconds = state.Timestamp + TimeOffsetInMilliseconds * 1000;
 		var point = new PointerPoint(
-			state.FrameId + TimeOffsetInMilliseconds,
+			InjectedInputState.NextFrameId(),
 			timestampInMicroseconds,
 			PointerDevice.For(global::Windows.Devices.Input.PointerDeviceType.Mouse),
 			uint.MaxValue - 42, // Try to avoid conflict with the real mouse pointer
