@@ -1502,6 +1502,11 @@ namespace Microsoft.UI.Xaml.Controls
 		private (Size availableSize, Size outSize, TextAlignment? alignment) _lastParsedTextCreationValues = (Size.Empty, Size.Empty, TextAlignment.Left);
 		private IParsedText _parsedText = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
 
+		// The shaping of the last layout, reused while the inlines are unchanged so that a new size only breaks the lines again.
+		private global::System.Runtime.CompilerServices.StrongBox<UnicodeText.ShapedText?>? _shapedText;
+
+		internal UnicodeText.ShapedText? CachedShapedText => _shapedText?.Value;
+
 		// Draw replays the parsed text, so a new parse (in measure or arrange) is what calls for a repaint; an arrange
 		// that only moves the block keeps its recording.
 		internal IParsedText ParsedText
@@ -1625,7 +1630,21 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		internal ITextBoxViewHost? OwningTextBox { get; init; }
 
-		internal bool IsSpellCheckEnabled { get; set; }
+		private bool _isSpellCheckEnabled;
+
+		internal bool IsSpellCheckEnabled
+		{
+			get => _isSpellCheckEnabled;
+			set
+			{
+				if (_isSpellCheckEnabled != value)
+				{
+					_isSpellCheckEnabled = value;
+					// The corrections are computed with the layout.
+					InvalidateMeasure();
+				}
+			}
+		}
 
 		private float _defaultTabStop = 48;
 
@@ -1656,6 +1675,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_forceFocusedForContextFlyout = false;
 			HideGrippers();
+			DropShapedText();
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
@@ -1695,6 +1715,10 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var isTextBoxOwned = OwningTextBox is not null;
 			var adjustedTextAlignment = GetAdjustedTextAlignment();
+			if (!FeatureConfiguration.TextBlock.EnableShapingCache)
+			{
+				DropShapedText();
+			}
 			var inlines = Inlines.TraversedTree.leafTree;
 			var defaultFontDetails = GetDefaultFontDetails();
 			IParsedText ret = CustomTextLayout is { } customLayout
@@ -1727,7 +1751,8 @@ namespace Microsoft.UI.Xaml.Controls
 					Foreground,
 					AlignmentIncludesTrailingWhitespace,
 					IgnoreTrailingCharacterSpacing,
-					out size);
+					out size,
+					shapedText: FeatureConfiguration.TextBlock.EnableShapingCache ? _shapedText ??= new() : null);
 
 			if (isTextBoxOwned)
 			{
@@ -1808,9 +1833,26 @@ namespace Microsoft.UI.Xaml.Controls
 			var arrangedSize = _lastParsedTextCreationValues.outSize;
 			var sizeChanged = _lastParsedTextCreationValues.availableSize != availableSizeWithoutPadding
 				&& !(ParsedText is UnicodeText parsed && parsed.IsLayoutValidFor(availableSizeWithoutPadding));
-			if (sizeChanged || _lastParsedTextCreationValues.alignment != GetAdjustedTextAlignment())
+			if (_lastParsedTextCreationValues.alignment != GetAdjustedTextAlignment())
 			{
 				ParsedText = ParseText(availableSizeWithoutPadding, out arrangedSize);
+			}
+			else if (sizeChanged)
+			{
+				if (FeatureConfiguration.TextBlock.EnableArrangeLayoutReuse
+					&& CustomTextLayout is null
+					&& ParsedText is UnicodeText measured
+					&& measured.TryReuseForSize(availableSizeWithoutPadding, out var reused))
+				{
+					// Typically a block arranged at its desired width, narrower than the width it was measured with: its lines
+					// break as they did in measure, so it keeps that layout and only takes the new size, for alignment.
+					ParsedText = reused;
+					_lastParsedTextCreationValues.availableSize = availableSizeWithoutPadding;
+				}
+				else
+				{
+					ParsedText = ParseText(availableSizeWithoutPadding, out arrangedSize);
+				}
 			}
 
 			_lastInlinesArrangeWithPadding = arrangedSize.Add(padding);
@@ -1966,7 +2008,24 @@ namespace Microsoft.UI.Xaml.Controls
 			InvalidateInlineAndRequireRepaint();
 		}
 
-		void UnicodeText.IFontCacheUpdateListener.Invalidate() => InvalidateMeasure();
+		void UnicodeText.IFontCacheUpdateListener.Invalidate()
+		{
+			// A font this text uses, or falls back to, has loaded. Dropped here rather than in measure because
+			// InvalidateMeasure returns early when measure is already invalid.
+			DropShapedText();
+			InvalidateMeasure();
+		}
+
+		// Off the tree the shaping only costs memory, and changed inlines miss it anyway.
+		private void DropShapedText()
+		{
+			if (_shapedText is not null)
+			{
+				_shapedText.Value = null;
+			}
+		}
+
+		partial void OnInlinesChangedPartial() => DropShapedText();
 
 		void IBlock.Invalidate(bool updateText) => InvalidateInlineAndRequireRepaint();
 		string IBlock.GetText() => Text;

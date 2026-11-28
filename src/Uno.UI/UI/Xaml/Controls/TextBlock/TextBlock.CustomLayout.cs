@@ -16,6 +16,8 @@ partial class TextBlock
 			if (!ReferenceEquals(_customTextLayout, value))
 			{
 				_customTextLayout = value;
+				// The shaping cache belongs to the block's own layout, which a custom layout replaces.
+				DropShapedText();
 				InvalidateMeasure();
 			}
 		}
