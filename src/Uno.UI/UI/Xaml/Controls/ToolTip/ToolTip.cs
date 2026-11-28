@@ -67,6 +67,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal IDisposable? OwnerVisibilitySubscription { get; set; }
 
+		internal DependencyObject? AnchorForTesting => _owner;
+
+		/// <summary>
+		/// True when ToolTipService created this ToolTip to wrap a non-ToolTip value; it is reused when the value changes.
+		/// Cleared once a second owner shares it (the same element set as the ToolTip of both).
+		/// </summary>
+		internal bool IsImplicitToolTip { get; set; }
+
 #pragma warning disable CS0649
 #pragma warning disable CS0169
 #pragma warning disable CS0414

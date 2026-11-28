@@ -65,6 +65,50 @@ public partial class ToolTipService
 		toolTip.OwnerEventSubscriptions = SubscribeToEvents(container, toolTip);
 	}
 
+	private static bool TryUpdateImplicitToolTip(
+		DependencyObject owner,
+		FrameworkElement container,
+		DependencyProperty property,
+		object newValue,
+		bool isKeyboardAcceleratorToolTip)
+	{
+		if (!FeatureConfiguration.ToolTip.UseToolTips)
+		{
+			return false;
+		}
+
+		ToolTip GetCurrent() => isKeyboardAcceleratorToolTip
+			? GetKeyboardAcceleratorToolTipObject(owner)
+			: GetToolTipReference(owner);
+
+		var current = GetCurrent();
+		if (current is not { IsImplicitToolTip: true }
+			|| newValue is ToolTip
+			|| (newValue is FrameworkElement newElement && newElement.GetParent() is ToolTip))
+		{
+			// Nothing to reuse, or ConvertToToolTip would not create a new wrapper for this value.
+			return false;
+		}
+
+		try
+		{
+			CloseToolTipImpl(current);
+		}
+		finally
+		{
+			// A Closed handler may have set the value again or unregistered the wrapper: that nested change wins.
+			if (ReferenceEquals(GetCurrent(), current) && Equals(owner.GetValue(property), newValue))
+			{
+				// PlacementTarget has no change callback, so it is picked up here.
+				current.Placement = GetPlacement(current);
+				current.SetAnchor(GetPlacementTarget(container) ?? container);
+				current.Content = newValue;
+			}
+		}
+
+		return true;
+	}
+
 	private static void UnregisterToolTip(DependencyObject owner, FrameworkElement container, bool isKeyboardAcceleratorToolTip)
 	{
 		ToolTip toolTipReference = null;

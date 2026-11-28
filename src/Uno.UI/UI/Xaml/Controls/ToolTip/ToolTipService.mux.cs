@@ -16,6 +16,15 @@ partial class ToolTipService
 		if (sender is FrameworkElement senderAsFe)
 		{
 			bool isKeyboardAcceleratorToolTip = args.Property == ToolTipService.KeyboardAcceleratorToolTipProperty;
+
+			// Uno specific: reuse the implicit wrapper rather than create a ToolTip per change (e.g. a recycled list row). WinUI recreates it.
+			if (args.OldValue is not UnsetValue && args.OldValue is not null
+				&& args.NewValue is { } newValue
+				&& TryUpdateImplicitToolTip(sender, senderAsFe, args.Property, newValue, isKeyboardAcceleratorToolTip))
+			{
+				return;
+			}
+
 			if (args.OldValue is not UnsetValue && args.OldValue is not null)
 			{
 				ToolTipService.UnregisterToolTip(sender, senderAsFe, isKeyboardAcceleratorToolTip);
@@ -30,6 +39,12 @@ partial class ToolTipService
 
 	private static ToolTip ConvertToToolTip(object objectIn)
 	{
+		if (objectIn is ToolTip explicitToolTip)
+		{
+			// Uno specific: handed out as an explicit ToolTip (possibly to a second owner), so it must no longer be reused in place.
+			explicitToolTip.IsImplicitToolTip = false;
+		}
+
 		if (objectIn is not ToolTip toolTip)
 		{
 			if (objectIn is FrameworkElement frameworkElement)
@@ -37,13 +52,16 @@ partial class ToolTipService
 				var objectInParent = objectIn.GetParent();
 				if (objectInParent is ToolTip parentToolTip)
 				{
+					// Uno specific: shared by more than one owner, so it must no longer be reused in place.
+					parentToolTip.IsImplicitToolTip = false;
 					return parentToolTip;
 				}
 			}
 
 			var newToolTip = new ToolTip
 			{
-				Content = objectIn
+				Content = objectIn,
+				IsImplicitToolTip = true,
 			};
 
 			toolTip = newToolTip;
