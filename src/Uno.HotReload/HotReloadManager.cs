@@ -79,10 +79,15 @@ public sealed class HotReloadManager : IDisposable
 		CancellationToken ct,
 		bool forceEmitCompilationOutput = false)
 	{
+		// Only emit what is missing on disk (unless forced): an assembly that exists is a real build
+		// (the running app's, or one it references) and rewriting it with a fresh compile would give it
+		// a new MVID, so every EnC delta would target a module the app never loaded. Typical case: a
+		// multi-targeted library flavor the running head does not use was never built, and must not
+		// drag every other project's output into being overwritten.
 		if (forceEmitCompilationOutput
 			|| solution.Projects.Any(project => !File.Exists(project.CompilationOutputInfo.AssemblyPath)))
 		{
-			var result = await solution.EmitCompilationOutputAsync(ct).ConfigureAwait(false);
+			var result = await solution.EmitCompilationOutputAsync(ct, onlyMissing: !forceEmitCompilationOutput).ConfigureAwait(false);
 			result.EnsureSuccess();
 		}
 
