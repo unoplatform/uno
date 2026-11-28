@@ -9,6 +9,7 @@ using Uno.Helpers;
 using Windows.ApplicationModel;
 using Windows.Graphics.Display;
 using Windows.Storage;
+using Windows.Storage.Helpers;
 using Windows.Storage.Streams;
 
 namespace Uno.UI.Tests.Windows_Storage;
@@ -102,6 +103,18 @@ public class Given_AdditionalContentRoots
 		var resolved = await PlatformImageHelpers.GetScaledPath(Uri("plain.png"), ResolutionScale.Scale100Percent);
 
 		Assert.AreEqual(plain, resolved);
+	}
+
+	[TestMethod]
+	public async Task When_ImageArrivesAfterItWasFirstAskedFor_Then_ItIsFound()
+	{
+		var missing = await PlatformImageHelpers.GetScaledPath(Uri("late.png"), ResolutionScale.Scale100Percent);
+		var late = WriteAdditional("late.png", "100");
+
+		var resolved = await PlatformImageHelpers.GetScaledPath(Uri("late.png"), ResolutionScale.Scale100Percent);
+
+		Assert.AreEqual(Path.Combine(_installed, "late.png"), missing);
+		Assert.AreEqual(late, resolved);
 	}
 
 	[TestMethod]

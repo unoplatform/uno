@@ -462,12 +462,23 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				return result;
 			}
 
+			var resolutionScale = (int)(scaleOverride ?? DisplayInformation.GetForCurrentView().ResolutionScale);
+
+#if __SKIA__
+			result = PlatformImageHelpers.ResolveScaledPath(
+				rawPath.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar),
+				resolutionScale);
+			if (PlatformImageHelpers.IsCacheable(result))
+			{
+				_scaledBitmapPathCache[rawPath] = result;
+			}
+
+			return result;
+#else
 			var originalLocalPath =
 				Path.Combine(Package.Current.InstalledPath,
 					 rawPath.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar)
 				);
-
-			var resolutionScale = (int)(scaleOverride ?? DisplayInformation.GetForCurrentView().ResolutionScale);
 
 			var baseDirectory = Path.GetDirectoryName(originalLocalPath);
 			var baseFileName = Path.GetFileNameWithoutExtension(originalLocalPath);
@@ -503,6 +514,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 				return null;
 			}
+#endif
 		}
 	}
 }
