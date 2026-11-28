@@ -83,7 +83,7 @@ public class Given_Panel
 		for (var i = 0; i < 4; i++)
 		{
 			var child = (ListViewItem)lv.ContainerFromIndex(i);
-			var image = lv.FindFirstChild<Image>();
+			var image = lv.FindFirstDescendant<Image>();
 			var imageSource = ((BitmapImage)image.Source);
 
 			var availableSize = LayoutInformation.GetAvailableSize(child);

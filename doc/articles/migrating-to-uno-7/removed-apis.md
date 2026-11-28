@@ -355,8 +355,12 @@ See also: [`Microsoft.Web.WebView2` backend removed](xref:Uno.Development.Migrat
 `FindFirstDescendant`, …) were accidentally public in the WinAppSDK build of `Uno.WinUI` —
 a guard that was meant to keep them internal there always evaluated to `false`. They are
 now internal on WinAppSDK, matching the intended Skia-only public surface (they remain
-public in the Skia build). There is no known WinAppSDK consumer; if you called these from
-a WinAppSDK head, copy the extension methods into your own project.
+public in the Skia build).
+
+> [!NOTE]
+> Since Uno Platform 7.1, these helpers are public again on every target, WinAppSDK included:
+> they ship in `Uno.UI.Extras`, and `ViewExtensions` is renamed `VisualTreeExtensions`. See
+> [Visual tree helpers moved to `Uno.UI.Extras`](xref:Uno.Development.MigratingFromPreviousReleases#visual-tree-helpers-moved-to-unouiextras).
 
 ### `Windows.Media.Playback.IMediaPlaybackList`
 

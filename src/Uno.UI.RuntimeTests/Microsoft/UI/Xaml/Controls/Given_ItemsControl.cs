@@ -12,11 +12,7 @@ using Microsoft.UI;
 using Windows.UI;
 using AwesomeAssertions.Execution;
 using Microsoft.UI.Xaml.Markup;
-#if WINAPPSDK
 using Uno.UI.Extensions;
-#else
-using Uno.UI;
-#endif
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -67,7 +63,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitFor(() => (cp = SUT.ContainerFromItem(source[0]) as ContentPresenter) != null);
 			Assert.AreEqual("item 0", cp.Content);
 
-			var tb = cp.FindFirstChild<TextBlock>();
+			var tb = cp.FindFirstDescendant<TextBlock>();
 			Assert.IsNotNull(tb);
 			Assert.AreEqual("item 0", tb.Text);
 		}
@@ -110,7 +106,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				cp.Content.Should().Be(s, $"ContainerFromItem() at index {index}");
 #endif
 
-				var tb = cp.FindFirstChild<TextBlock>();
+				var tb = cp.FindFirstDescendant<TextBlock>();
 				tb.Should().NotBeNull($"Item at index {index}");
 				tb.Text.Should().Be(s, $"TextBlock.Text at index {index}");
 			}
@@ -179,7 +175,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual("Item 1", cp.Content);
 
-			var tb = cp.FindFirstChild<TextBlock>();
+			var tb = cp.FindFirstDescendant<TextBlock>();
 			Assert.IsNotNull(tb);
 			Assert.AreEqual("Item 1", tb.Text);
 		}

@@ -16,7 +16,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 
 		private void ListView_Loaded(object sender, RoutedEventArgs e)
 		{
-			var sv = (sender as ListViewBase).FindFirstChild<global::Microsoft.UI.Xaml.Controls.ScrollViewer>();
+			var sv = (sender as ListViewBase).FindFirstDescendant<global::Microsoft.UI.Xaml.Controls.ScrollViewer>();
 			var panel = (sender as ListViewBase).ItemsPanelRoot as ItemsStackPanel;
 			sv.ViewChanged += (_, __) =>
 			{

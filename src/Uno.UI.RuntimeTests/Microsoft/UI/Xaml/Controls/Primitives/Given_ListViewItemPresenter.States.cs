@@ -17,7 +17,7 @@ using Uno.UI.DevTools.Input;
 using Uno.UI.RuntimeTests.Extensions;
 using Windows.UI.Input.Preview.Injection;
 using static Private.Infrastructure.TestServices;
-using static Uno.UI.Extensions.ViewExtensions;
+using static Uno.UI.Extensions.VisualTreeExtensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 

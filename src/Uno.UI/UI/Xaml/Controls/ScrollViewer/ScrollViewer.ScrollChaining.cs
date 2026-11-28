@@ -3,6 +3,7 @@
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using System;
 using Uno.UI.Extensions;
+using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -49,7 +50,7 @@ partial class ScrollViewer
 		var remainingVerticalDelta = verticalDelta;
 		var didScroll = false;
 
-		foreach (var ancestor in origin.GetVisualAncestry())
+		foreach (var ancestor in VisualTreeHelper.EnumerateVisualParents(origin))
 		{
 			if (ancestor is not ScrollViewer { Presenter: { } presenter } scrollViewer)
 			{
@@ -132,7 +133,7 @@ partial class ScrollViewer
 	/// </summary>
 	internal static void CompleteChainedScrollFromDescendant(UIElement origin)
 	{
-		foreach (var ancestor in origin.GetVisualAncestry())
+		foreach (var ancestor in VisualTreeHelper.EnumerateVisualParents(origin))
 		{
 			if (ancestor is ScrollViewer { Presenter: { } presenter })
 			{

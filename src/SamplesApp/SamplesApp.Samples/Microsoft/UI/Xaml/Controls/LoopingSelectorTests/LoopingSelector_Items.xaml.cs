@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Samples.Controls;
 using Uno.UI;
+using Uno.UI.Extensions;
 
 namespace UITests.Windows_UI_Xaml_Controls.LoopingSelectorTests
 {
@@ -61,7 +62,7 @@ namespace UITests.Windows_UI_Xaml_Controls.LoopingSelectorTests
 			async void Do()
 			{
 				await Task.Delay(100);
-				var tree = this.ShowLocalVisualTree(0);
+				var tree = this.TreeGraph();
 				global::System.Diagnostics.Debug.WriteLine(tree);
 			}
 			Do();

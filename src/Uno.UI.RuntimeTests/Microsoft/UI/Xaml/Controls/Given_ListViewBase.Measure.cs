@@ -13,11 +13,7 @@ using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 
-#if WINAPPSDK
 using Uno.UI.Extensions;
-#else
-using Uno.UI;
-#endif
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -141,8 +137,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var initialMeasureCount = CounterGrid.GlobalMeasureCount;
 			var initialArrangeCount = CounterGrid.GlobalArrangeCount;
-			var counterGrid = container.FindFirstChild<CounterGrid>();
-			var badgeBorder = container.FindFirstChild<Border>(b => b.Name == "BadgeView");
+			var counterGrid = container.FindFirstDescendant<CounterGrid>();
+			var badgeBorder = container.FindFirstDescendant<Border>(b => b.Name == "BadgeView");
 			Assert.IsNotNull(counterGrid);
 			Assert.IsNotNull(badgeBorder);
 			var initialLocalMeasureCount = counterGrid.LocalMeasureCount;
@@ -187,7 +183,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var container = SUT.ContainerFromIndex(2) as ListViewItem;
 
-			var border = container.FindFirstChild<Border>(b => b.Name == "ContainerBorder");
+			var border = container.FindFirstDescendant<Border>(b => b.Name == "ContainerBorder");
 			Assert.AreEqual(196, border.ActualWidth, delta: 1);
 
 			hostGrid.Width = 244;
@@ -274,7 +270,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 
 			WindowHelper.WindowContent = SUT;
-			var itemsPresenter = await WindowHelper.WaitForNonNull(() => SUT.FindFirstChild<ItemsPresenter>());
+			var itemsPresenter = await WindowHelper.WaitForNonNull(() => SUT.FindFirstDescendant<ItemsPresenter>());
 			itemsPresenter.MinHeight = 310;
 
 			await WindowHelper.WaitForIdle();
@@ -289,7 +285,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(HeightOfTwoItems, initialRect.Y, 1, "HeightOfTwoItems");
 
 			await Task.Delay(2000);
-			var sv = SUT.FindFirstChild<ScrollViewer>();
+			var sv = SUT.FindFirstDescendant<ScrollViewer>();
 			ScrollTo(SUT, 40);
 			await Task.Delay(200); // Allow the scroll to complete
 			double InitialScroll()
@@ -328,7 +324,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			WindowHelper.WindowContent = SUT;
 			// cant use WaitForLoaded here, as the ListView is empty
-			await WindowHelper.WaitForNonNull(() => SUT.FindFirstChild<ItemsPresenter>());
+			await WindowHelper.WaitForNonNull(() => SUT.FindFirstDescendant<ItemsPresenter>());
 			await WindowHelper.WaitForIdle();
 
 			source.Add("Apple");
@@ -383,7 +379,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			// without ensuring this, we don't have a repro
-			var itemsStackPanel = SUT.FindFirstChild<ItemsStackPanel>();
+			var itemsStackPanel = SUT.FindFirstDescendant<ItemsStackPanel>();
 			Assert.IsNotNull(itemsStackPanel, "Expected ListView to use an ItemsStackPanel for virtualization.");
 
 			var materialized = itemsStackPanel.Children;
@@ -408,7 +404,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// Works around ScrollIntoView() not implemented for all platforms
 		private static void ScrollTo(ListViewBase listViewBase, double vOffset)
 		{
-			var sv = listViewBase.FindFirstChild<ScrollViewer>();
+			var sv = listViewBase.FindFirstDescendant<ScrollViewer>();
 			Assert.IsNotNull(sv);
 			sv.ChangeView(null, vOffset, null);
 		}
@@ -422,7 +418,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		/// </remarks>
 		private static async Task ScrollToAndWait(ListViewBase listViewBase, double vOffset, int timeoutInMs = 30000)
 		{
-			var sv = listViewBase.FindFirstChild<ScrollViewer>();
+			var sv = listViewBase.FindFirstDescendant<ScrollViewer>();
 
 			var lastScrolled = DateTime.Now;
 			var ended = false;
@@ -460,7 +456,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		private static async Task ScrollToInIncrements(ListViewBase listViewBase, double vOffset)
 		{
-			var sv = listViewBase.FindFirstChild<ScrollViewer>();
+			var sv = listViewBase.FindFirstDescendant<ScrollViewer>();
 			Assert.IsNotNull(sv);
 			var current = sv.VerticalOffset;
 			if (current == vOffset)

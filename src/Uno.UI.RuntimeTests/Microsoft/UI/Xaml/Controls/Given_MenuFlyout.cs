@@ -382,7 +382,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(SUT);
 
 
-				var button = SUT.FindFirstChild<Button>();
+				var button = SUT.FindFirstDescendant<Button>();
 				flyout = (MenuFlyout)button.Flyout;
 
 				flyout.ShowAt(button);

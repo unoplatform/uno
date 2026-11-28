@@ -27,9 +27,8 @@ using Combinatorial.MSTest;
 
 using Colors = Microsoft.UI.Colors;
 
-#if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __SKIA__
+#if __SKIA__
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
 #endif
@@ -179,7 +178,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.Load(grid);
 
 			// Get element marked "ContentElement" from template of textBox
-			var contentElement = textBox.FindFirstChild<ScrollViewer>(tb => tb.Name == "ContentElement");
+			var contentElement = textBox.FindFirstDescendant<ScrollViewer>(tb => tb.Name == "ContentElement");
 
 			var enabledScreenshot = await UITestHelper.ScreenShot(contentElement);
 
@@ -230,7 +229,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = textBox;
 			await WindowHelper.WaitForLoaded(textBox);
 
-			var placeholderTextContentPresenter = textBox.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextContentPresenter");
+			var placeholderTextContentPresenter = textBox.FindFirstDescendant<TextBlock>(tb => tb.Name == "PlaceholderTextContentPresenter");
 			Assert.IsNotNull(placeholderTextContentPresenter);
 
 			var lightThemeForeground = TestsColorHelper.ToColor("#9E000000");

@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Uno.UI.Helpers;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Tests.ListViewBaseTests
 {
@@ -653,7 +654,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var si = SUT.ContainerFromItem(source[0]) as SelectorItem;
 			Assert.IsNotNull(si);
 
-			var tb = si.FindFirstChild<TextBlock>();
+			var tb = si.FindFirstDescendant<TextBlock>();
 			Assert.IsNotNull(tb);
 			Assert.AreEqual("item 0", tb.Text);
 		}
@@ -708,7 +709,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var si = SUT.ContainerFromItem(source[0]) as ListViewItem;
 			Assert.IsNotNull(si);
 			Assert.AreEqual("Item 1", si.Content);
-			var cp = si.FindFirstChild<ContentPresenter>();
+			var cp = si.FindFirstDescendant<ContentPresenter>();
 			var cpRoot = Microsoft.UI.Xaml.Media.VisualTreeHelper.GetChild(cp, 0);
 			Assert.IsInstanceOfType(cpRoot, typeof(ImplicitTextBlock));
 			Assert.AreEqual("Item 1", (cpRoot as TextBlock).Text);

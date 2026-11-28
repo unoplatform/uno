@@ -22,7 +22,7 @@ namespace UITests.Shared.Windows_UI_Input.VisualStatesTests
 			FrameworkElement target;
 			IEnumerable<VisualStateGroup> groups;
 			if (!(sender is FrameworkElement ctrl)
-				|| (target = ctrl.FindFirstChild<FrameworkElement>(includeCurrent: false)) == null)
+				|| (target = ctrl.FindFirstDescendant<FrameworkElement>()) == null)
 			{
 				Console.WriteLine($"{sender?.GetType().Name ?? "-null-"} is not a FrameworkElement or has no child.");
 			}

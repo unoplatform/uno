@@ -31,7 +31,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			var SUT = new When_xLoad();
 
-			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
+			var stubs = SUT.EnumerateRawDescendants().OfType<ElementStub>();
 
 			Assert.HasCount(8, stubs);
 		}
@@ -41,7 +41,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			var SUT = new When_xLoad_LoadSingle();
 
-			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
+			var stubs = SUT.EnumerateRawDescendants().OfType<ElementStub>();
 			Assert.HasCount(1, stubs);
 
 			Assert.IsNull(SUT.border1);
@@ -55,7 +55,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			var SUT = new When_xLoad_Deferred_StaticCollapsed();
 
-			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
+			var stubs = SUT.EnumerateRawDescendants().OfType<ElementStub>();
 			Assert.HasCount(1, stubs);
 
 			Assert.IsNull(SUT.border6);
@@ -70,7 +70,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var SUT = new When_xLoad_Deferred_VisibilityBinding();
 			SUT.ForceLoaded();
 
-			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
+			var stubs = SUT.EnumerateRawDescendants().OfType<ElementStub>();
 			Assert.HasCount(1, stubs);
 
 			Assert.IsNull(SUT.border7);
@@ -91,7 +91,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			SUT.ForceLoaded();
 			SUT.Measure(new Size(42, 42));
 
-			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
+			var stubs = SUT.EnumerateRawDescendants().OfType<ElementStub>();
 			Assert.HasCount(1, stubs);
 
 			Assert.IsNull(SUT.border8);
@@ -115,7 +115,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			SUT.Measure(new Size(42, 42));
 			SUT.DataContext = Visibility.Collapsed;
 
-			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
+			var stubs = SUT.EnumerateRawDescendants().OfType<ElementStub>();
 			Assert.HasCount(1, stubs);
 
 			Assert.IsNull(SUT.border1);
@@ -134,7 +134,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			SUT.ForceLoaded();
 			SUT.Measure(new Size(42, 42));
 
-			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
+			var stubs = SUT.EnumerateRawDescendants().OfType<ElementStub>();
 			Assert.HasCount(1, stubs);
 
 			Assert.IsNull(SUT.border1);
@@ -150,10 +150,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			SUT.IsLoad = false;
 			SUT.Measure(new Size(42, 42));
 
-			stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
+			stubs = SUT.EnumerateRawDescendants().OfType<ElementStub>();
 			Assert.HasCount(1, stubs);
 
-			var borders = SUT.EnumerateAllChildren().OfType<Border>();
+			var borders = SUT.EnumerateRawDescendants().OfType<Border>();
 			Assert.IsEmpty(borders);
 		}
 
@@ -164,7 +164,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			SUT.ForceLoaded();
 
-			var stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
+			var stubs = SUT.EnumerateRawDescendants().OfType<ElementStub>();
 			Assert.HasCount(1, stubs);
 
 			var tb02 = SUT.FindName("tb02") as TextBlock;
@@ -173,12 +173,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var model = new When_xLoad_DataTemplate_In_ResDict_Model();
 			SUT.DataContext = model;
 
-			stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
+			stubs = SUT.EnumerateRawDescendants().OfType<ElementStub>();
 			Assert.HasCount(1, stubs);
 
 			model.Visible = true;
 
-			stubs = SUT.EnumerateAllChildren().OfType<ElementStub>();
+			stubs = SUT.EnumerateRawDescendants().OfType<ElementStub>();
 			Assert.IsEmpty(stubs);
 
 			Assert.IsNotNull(tb02.Foreground);

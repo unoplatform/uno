@@ -14,11 +14,7 @@ using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 
-#if WINAPPSDK
 using Uno.UI.Extensions;
-#else
-using Uno.UI;
-#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -47,8 +43,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = root;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var pinkRect = root.FindFirstChild<Rectangle>(x => x.Name == "PinkRect");
-			var whiteRect = root.FindFirstChild<Rectangle>(x => x.Name == "WhiteRect");
+			var pinkRect = root.FindFirstDescendant<Rectangle>(x => x.Name == "PinkRect");
+			var whiteRect = root.FindFirstDescendant<Rectangle>(x => x.Name == "WhiteRect");
 
 			var pinkCoords = pinkRect.GetOnScreenBounds();
 			var whiteCoords = whiteRect.GetOnScreenBounds();

@@ -12,6 +12,7 @@ using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 {
@@ -947,22 +948,22 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var innerRoot = SUT.FindName("innerRoot") as Grid;
 			Assert.IsNotNull(innerRoot);
 
-			Assert.AreEqual(1, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
+			Assert.AreEqual(1, innerRoot.EnumerateRawDescendants().OfType<ElementStub>().Count());
 
 			data.TopLevelVisiblity = true;
 
 			// Changing the visibility DOES NOT materialize the lazily-loaded element.
-			Assert.AreEqual(1, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
+			Assert.AreEqual(1, innerRoot.EnumerateRawDescendants().OfType<ElementStub>().Count());
 
 			// Calling FindName on an element inside a lazy-loaded element won't materialize the lazy-loaded element
 			var innerTextBlock = SUT.FindName("innerTextBlock") as TextBlock;
-			Assert.AreEqual(1, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
+			Assert.AreEqual(1, innerRoot.EnumerateRawDescendants().OfType<ElementStub>().Count());
 			Assert.IsNull(innerTextBlock);
 
 			data.TopLevelVisiblity = false;
 
 			var topLevelContent = SUT.FindName("topLevelContent") as FrameworkElement;
-			Assert.AreEqual(0, innerRoot.EnumerateAllChildren().OfType<ElementStub>().Count());
+			Assert.AreEqual(0, innerRoot.EnumerateRawDescendants().OfType<ElementStub>().Count());
 			innerTextBlock = SUT.FindName("innerTextBlock") as TextBlock;
 			Assert.IsNotNull(innerTextBlock);
 			Assert.AreEqual(data.InnerText, innerTextBlock.Text);

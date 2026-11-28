@@ -5710,10 +5710,18 @@
 		  <Member fullName="System.Void Uno.Foundation.WebAssemblyRuntime.DispatchAsyncError(System.Int64 handle, System.String error)" reason="Removed with InvokeAsync, its only caller (breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0)" reason="Removed legacy WASM unmarshalled interop; its JavaScript dispatcher is no longer shipped (breaking changes for 7.0)" />
 		  <Member fullName="System.Boolean Uno.Foundation.WebAssemblyRuntime.InvokeJSUnmarshalled(System.String functionIdentifier, System.IntPtr arg0, System.IntPtr arg1)" reason="Removed legacy WASM unmarshalled interop; its JavaScript dispatcher is no longer shipped (breaking changes for 7.0)" />
+		  <!-- Visual tree helpers moved to Uno.UI.Extras (type-level entries below); regex covers every overload. -->
+		  <Member fullName="Uno\.UI\.Extensions\.ViewExtensions\.\w+\(" reason="Moved from Uno.UI to Uno.UI.Extras, renamed VisualTreeExtensions and made public on every target" isRegex="true" />
+		  <Member fullName="Uno\.UI\.Extensions\.PrettyPrint\.\w+\(" reason="Moved from Uno.UI to Uno.UI.Extras (same namespace), public on every target" isRegex="true" />
+		  <Member fullName="Uno\.UI\.ViewExtensions\.EnumerateAllChildren\(" reason="Moved to Uno.UI.Extras as VisualTreeExtensions.EnumerateRawDescendants" isRegex="true" />
+		  <Member fullName="Uno\.UI\.DataBinding\.BinderReferenceHolder\.GetInactiveChild(ViewBinders|InstancesOfType)\(" reason="Removed: always threw NotImplementedException (through ViewExtensions.GetTopLevelParent) since the native renderers were removed" isRegex="true" />
 	  </Methods>
 	  <Types>
 		  <!-- Emulated LinearGradientBrush borders for the native renderers removed in 7.0; on Skia it rendered nothing. -->
 		  <Member fullName="Uno.UI.Controls.FauxGradientBorderPresenter" reason="Removed the no-op FauxGradientBorderPresenter; Skia draws gradient borders natively (#26572)" />
+		  <Member fullName="Uno.UI.Extensions.ViewExtensions" reason="Moved from Uno.UI to Uno.UI.Extras, renamed VisualTreeExtensions and made public on every target" />
+		  <Member fullName="Uno.UI.Extensions.PrettyPrint" reason="Moved from Uno.UI to Uno.UI.Extras (same namespace), public on every target" />
+		  <Member fullName="Uno.UI.ViewExtensions" reason="Removed; EnumerateAllChildren moved to Uno.UI.Extras as VisualTreeExtensions.EnumerateRawDescendants" />
 	  </Types>
 	</IgnoreSet>
 	<![CDATA[

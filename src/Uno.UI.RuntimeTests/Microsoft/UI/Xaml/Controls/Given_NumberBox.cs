@@ -10,9 +10,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.Globalization.NumberFormatting;
 using static Private.Infrastructure.TestServices;
 
-#if WINAPPSDK
 using Uno.UI.Extensions;
-#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
@@ -31,7 +29,7 @@ public class Given_NumberBox
 		WindowHelper.WindowContent = textBox;
 		await WindowHelper.WaitForLoaded(textBox);
 
-		var placeholderTextContentPresenter = textBox.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextContentPresenter");
+		var placeholderTextContentPresenter = textBox.FindFirstDescendant<TextBlock>(tb => tb.Name == "PlaceholderTextContentPresenter");
 		Assert.IsNotNull(placeholderTextContentPresenter);
 
 		var lightThemeForeground = TestsColorHelper.ToColor("#9E000000");

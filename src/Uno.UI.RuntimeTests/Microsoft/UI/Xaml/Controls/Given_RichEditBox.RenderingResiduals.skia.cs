@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Extensions;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -154,7 +155,7 @@ public partial class Given_RichEditBox
 
 			editor.Document.GetRange(lastIndex, lastIndex + 1).ScrollIntoView(PointOptions.Start);
 			await WindowHelper.WaitForIdle();
-			var scrollViewer = editor.FindFirstChild<ScrollViewer>(static view => view.Name == "ContentElement");
+			var scrollViewer = editor.FindFirstDescendant<ScrollViewer>(static view => view.Name == "ContentElement");
 			Assert.IsNotNull(scrollViewer);
 			Assert.IsGreaterThan(scrollViewer.ViewportHeight, scrollViewer.ExtentHeight);
 			Assert.IsGreaterThan(0, scrollViewer.VerticalOffset);

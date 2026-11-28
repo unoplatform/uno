@@ -21,6 +21,7 @@ using SwipeControl = Microsoft.UI.Xaml.Controls.SwipeControl;
 using SwipeMode = Microsoft.UI.Xaml.Controls.SwipeMode;
 using Uno.UI.Tests.Helpers;
 using System.Numerics;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
@@ -1263,7 +1264,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var app = UnitTestsApp.App.EnsureApplication();
 			app.HostView.Children.Add(r);
 
-			var SUT = r.FindFirstChild<TextBlock>();
+			var SUT = r.FindFirstDescendant<TextBlock>();
 
 			Assert.AreEqual("Sprong", SUT.Text);
 		}
@@ -1278,7 +1279,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var app = UnitTestsApp.App.EnsureApplication();
 			app.HostView.Children.Add(r);
 
-			var SUT = r.FindFirstChild<CheckBox>();
+			var SUT = r.FindFirstDescendant<CheckBox>();
 
 			Assert.IsFalse(SUT.IsChecked);
 
@@ -1296,7 +1297,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var app = UnitTestsApp.App.EnsureApplication();
 			app.HostView.Children.Add(r);
 
-			var SUT = r.FindFirstChild<CheckBox>();
+			var SUT = r.FindFirstDescendant<CheckBox>();
 
 			Assert.IsFalse(SUT.IsChecked);
 

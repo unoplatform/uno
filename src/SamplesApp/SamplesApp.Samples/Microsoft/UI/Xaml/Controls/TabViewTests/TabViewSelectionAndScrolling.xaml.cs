@@ -24,10 +24,8 @@ using TabViewTabDragCompletedEventArgs = Microsoft.UI.Xaml.Controls.TabViewTabDr
 using System.Numerics;
 using Microsoft.UI.Xaml.Media;
 
-#if !WINAPPSDK
-using static Uno.UI.Extensions.ViewExtensions;
+using static Uno.UI.Extensions.VisualTreeExtensions;
 using static Uno.UI.Extensions.PrettyPrint;
-#endif
 
 namespace UITests.Microsoft_UI_Xaml_Controls.TabViewTests;
 
@@ -53,26 +51,11 @@ public sealed partial class TabViewSelectionAndScrolling : Page
 
 	private void DebugVT(object sender, RoutedEventArgs e)
 	{
-#if !WINAPPSDK
 		var tree = (SUT as FrameworkElement).TreeGraph(DescribeVT);
-#endif
 	}
 
-#if !WINAPPSDK
 	private IEnumerable<string> DescribeVT(object x)
 	{
-#if __ANDROID__
-		if (x is Android.Views.View v)
-		{
-			yield return $"LTRB={v.Left},{v.Top},{v.Right},{v.Bottom}";
-		}
-#elif __APPLE_UIKIT__
-		if (x is UIKit.UIView view && view.Superview is { })
-		{
-			var abs = view.Superview.ConvertPointToView(view.Frame.Location, toView: null);
-			yield return $"Abs=[Rect {view.Frame.Width:0.#}x{view.Frame.Height:0.#}@{abs.X:0.#},{abs.Y:0.#}]";
-		}
-#endif
 		if (x is FrameworkElement fe)
 		{
 			yield return $"Desired={FormatSize(fe.DesiredSize)}";
@@ -81,18 +64,19 @@ public sealed partial class TabViewSelectionAndScrolling : Page
 		}
 		if (TryGetDpValue<Thickness>(x, "Margin", out var margin)) yield return $"Margin={FormatThickness(margin)}";
 		if (TryGetDpValue<Thickness>(x, "Padding", out var padding)) yield return $"Padding={FormatThickness(padding)}";
-		if (x is ItemsStackPanel isp) yield return $"Layouter={FormatObject((isp as IVirtualizingPanel)?.GetLayouter())}";
+#if !WINAPPSDK
+		if (x is ItemsStackPanel isp) yield return $"Layouter={FormatValue((isp as IVirtualizingPanel)?.GetLayouter())}";
+#endif
 		if (x is ScrollViewer sv)
 		{
 			yield return $"Offset=({sv.HorizontalOffset},{sv.VerticalOffset}), Viewport=({sv.ViewportHeight},{sv.ViewportWidth}), Extent=({sv.ExtentHeight},{sv.ExtentWidth})";
 		}
-		if (x is ContentPresenter cp) yield return $"Content={FormatObject(cp.Content)}";
+		if (x is ContentPresenter cp) yield return $"Content={FormatValue(cp.Content)}";
 		if (x is ListViewItem lvi)
 		{
 			yield return $"Index={(ItemsControl.ItemsControlFromItemContainer(lvi)?.IndexFromContainer(lvi) ?? -1)}";
 		}
 	}
-#endif
 
 	private static ListView? FindListView(DependencyObject reference)
 	{

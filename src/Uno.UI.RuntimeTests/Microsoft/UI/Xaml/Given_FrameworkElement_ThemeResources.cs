@@ -11,11 +11,7 @@ using Windows.UI;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
-#if WINAPPSDK
 using Uno.UI.Extensions;
-#else
-using Uno.UI;
-#endif
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
@@ -110,7 +106,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 				Assert.AreEqual(expectedForeground, (firstItem.Foreground as SolidColorBrush)?.Color);
 
-				var popup = comboBox.FindFirstChild<Popup>();
+				var popup = comboBox.FindFirstDescendant<Popup>();
 				var popupBorder = popup.Child as Border;
 				Assert.IsNotNull(popupBorder);
 				var acrylicBrush = popupBorder.Background as AcrylicBrush;

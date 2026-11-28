@@ -19,6 +19,7 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
+using Microsoft.UI.Xaml.Media;
 
 using _Panel = Microsoft.UI.Xaml.Controls.Panel;
 
@@ -202,7 +203,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnLoading(FrameworkElement frameworkElement, object args)
 		{
-			foreach (var parent in OwnerPanel.GetVisualAncestry())
+			foreach (var parent in VisualTreeHelper.EnumerateVisualParents(OwnerPanel))
 			{
 				if (parent is ScrollViewer scrollViewer && ScrollViewer == null)
 				{

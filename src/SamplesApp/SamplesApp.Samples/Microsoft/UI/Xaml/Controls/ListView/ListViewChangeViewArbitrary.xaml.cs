@@ -25,7 +25,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 			//Workaround for bug on Android that TargetListView's template is not materialized yet when Loaded gets called
 			TargetListView.ApplyTemplate();
 
-			var scrollViewer = TargetListView.FindFirstChild<Microsoft.UI.Xaml.Controls.ScrollViewer>();
+			var scrollViewer = TargetListView.FindFirstDescendant<Microsoft.UI.Xaml.Controls.ScrollViewer>();
 			scrollViewer.ViewChanged += ScrollViewer_ViewChanged;
 		}
 
@@ -48,7 +48,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 
 		private void ApplyOffsetDefault(object sender, RoutedEventArgs e)
 		{
-			var scrollViewer = TargetListView.FindFirstChild<Microsoft.UI.Xaml.Controls.ScrollViewer>();
+			var scrollViewer = TargetListView.FindFirstDescendant<Microsoft.UI.Xaml.Controls.ScrollViewer>();
 			float offset;
 			if (float.TryParse(OffsetTextBox.Text, out offset))
 			{
@@ -58,7 +58,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 
 		private void ApplyOffsetChooseAnimate(object sender, RoutedEventArgs e)
 		{
-			var scrollViewer = TargetListView.FindFirstChild<Microsoft.UI.Xaml.Controls.ScrollViewer>();
+			var scrollViewer = TargetListView.FindFirstDescendant<Microsoft.UI.Xaml.Controls.ScrollViewer>();
 			float offset;
 			if (float.TryParse(OffsetTextBox.Text, out offset))
 			{

@@ -126,7 +126,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(Visibility.Visible, GetEditableText(SUT).Visibility);
 		}
 
-		private TextBox GetEditableText(ComboBox comboBox) => comboBox.FindFirstChild<TextBox>(c => c.Name == "EditableText");
+		private TextBox GetEditableText(ComboBox comboBox) => comboBox.FindFirstDescendant<TextBox>(c => c.Name == "EditableText");
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
@@ -377,7 +377,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = comboBox;
 			await WindowHelper.WaitForLoaded(comboBox);
 
-			var placeholderTextBlock = comboBox.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextBlock");
+			var placeholderTextBlock = comboBox.FindFirstDescendant<TextBlock>(tb => tb.Name == "PlaceholderTextBlock");
 
 			Assert.IsNotNull(placeholderTextBlock);
 
@@ -1245,7 +1245,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsLessThan(1.0, Math.Abs(destination - sv.VerticalOffset), $"Expect sv.VerticalOffset to be near {destination:0.##}, got: {sv.VerticalOffset:0.##}");
 
 			// force an arrange
-			var cbi = sv.FindFirstChild<ComboBoxItem>();
+			var cbi = sv.FindFirstDescendant<ComboBoxItem>();
 			cbi.InvalidateArrange();
 			await UITestHelper.WaitForIdle();
 			Assert.IsLessThan(1.0, Math.Abs(destination - sv.VerticalOffset), $"Expect sv.VerticalOffset to be still near {destination:0.##}, got: {sv.VerticalOffset:0.##}");

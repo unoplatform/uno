@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI;
 using Uno.UI.Samples.Controls;
+using Uno.UI.Extensions;
 
 namespace UITests.Windows_UI_Xaml_Controls.Repeater
 {
@@ -39,10 +40,8 @@ namespace UITests.Windows_UI_Xaml_Controls.Repeater
 
 		private void Tree(object server, RoutedEventArgs routedEventArgs)
 		{
-#if !WINAPPSDK && (HAS_UNO || HAS_UNO_WINUI)
-			var txt = this.ShowLocalVisualTree(0);
+			var txt = this.TreeGraph();
 			Console.WriteLine(txt);
-#endif
 		}
 	}
 }

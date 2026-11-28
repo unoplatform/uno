@@ -140,7 +140,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Document.SetText(TextSetOptions.None, "Rendered content");
 			await WindowHelper.WaitForIdle();
 
-			var contentElement = SUT.FindFirstChild<ScrollViewer>(sv => sv.Name == "ContentElement");
+			var contentElement = SUT.FindFirstDescendant<ScrollViewer>(sv => sv.Name == "ContentElement");
 			Assert.IsNotNull(contentElement);
 
 			var displayBlock = contentElement.Content as TextBlock;
@@ -156,7 +156,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(SUT);
 			await WindowHelper.WaitForIdle();
 
-			var placeholder = SUT.FindFirstChild<TextBlock>(tb => tb.Name == "PlaceholderTextContentPresenter");
+			var placeholder = SUT.FindFirstDescendant<TextBlock>(tb => tb.Name == "PlaceholderTextContentPresenter");
 			Assert.IsNotNull(placeholder);
 			Assert.AreEqual(Visibility.Visible, placeholder.Visibility);
 
@@ -175,11 +175,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = SUT;
 				await WindowHelper.WaitForLoaded(SUT);
 				await WindowHelper.WaitForIdle();
-				Assert.IsNull(SUT.FindFirstChild<ContentPresenter>(cp => cp.Name == "HeaderContentPresenter"));
+				Assert.IsNull(SUT.FindFirstDescendant<ContentPresenter>(cp => cp.Name == "HeaderContentPresenter"));
 
 				SUT.Header = "A header";
 				await WindowHelper.WaitForIdle();
-				var header = SUT.FindFirstChild<ContentPresenter>(cp => cp.Name == "HeaderContentPresenter");
+				var header = SUT.FindFirstDescendant<ContentPresenter>(cp => cp.Name == "HeaderContentPresenter");
 				Assert.IsNotNull(header);
 				Assert.AreEqual(Visibility.Visible, header.Visibility);
 				Assert.AreEqual("A header", header.Content);
@@ -407,7 +407,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(5, range.EndPosition);
 
 			await WindowHelper.WaitForIdle();
-			var contentElement = SUT.FindFirstChild<ScrollViewer>(sv => sv.Name == "ContentElement");
+			var contentElement = SUT.FindFirstDescendant<ScrollViewer>(sv => sv.Name == "ContentElement");
 			var displayBlock = contentElement?.Content as TextBlock;
 			Assert.IsNotNull(displayBlock);
 			Assert.AreEqual("Howdy World", displayBlock.Text);
@@ -1066,7 +1066,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual("Hi there", text);
 
 			await WindowHelper.WaitForIdle();
-			var contentElement = SUT.FindFirstChild<ScrollViewer>(sv => sv.Name == "ContentElement");
+			var contentElement = SUT.FindFirstDescendant<ScrollViewer>(sv => sv.Name == "ContentElement");
 			var displayBlock = contentElement?.Content as TextBlock;
 			Assert.IsNotNull(displayBlock);
 			Assert.AreEqual("Hi there", displayBlock.Text);
@@ -1284,7 +1284,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Document.Undo();
 			await WindowHelper.WaitForIdle();
 
-			var contentElement = SUT.FindFirstChild<ScrollViewer>(sv => sv.Name == "ContentElement");
+			var contentElement = SUT.FindFirstDescendant<ScrollViewer>(sv => sv.Name == "ContentElement");
 			var displayBlock = contentElement?.Content as TextBlock;
 			Assert.IsNotNull(displayBlock);
 			Assert.AreEqual("Hello", displayBlock.Text);
@@ -1531,7 +1531,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			doc.GetRange(0, 5).CharacterFormat.Bold = FormatEffect.On;
 			await WindowHelper.WaitForIdle();
 
-			var contentElement = SUT.FindFirstChild<ScrollViewer>(sv => sv.Name == "ContentElement");
+			var contentElement = SUT.FindFirstDescendant<ScrollViewer>(sv => sv.Name == "ContentElement");
 			var displayBlock = contentElement?.Content as TextBlock;
 			Assert.IsNotNull(displayBlock);
 			Assert.AreEqual("Hello World", displayBlock.Text);
@@ -1565,7 +1565,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			range.CharacterFormat.Bold = FormatEffect.Off;
 			await WindowHelper.WaitForIdle();
 
-			var contentElement = SUT.FindFirstChild<ScrollViewer>(sv => sv.Name == "ContentElement");
+			var contentElement = SUT.FindFirstDescendant<ScrollViewer>(sv => sv.Name == "ContentElement");
 			var displayBlock = contentElement?.Content as TextBlock;
 			Assert.IsNotNull(displayBlock);
 			Assert.AreEqual("Hello", displayBlock.Text);
@@ -1598,7 +1598,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			cf.Size = 30f;
 			await WindowHelper.WaitForIdle();
 
-			var contentElement = SUT.FindFirstChild<ScrollViewer>(sv => sv.Name == "ContentElement");
+			var contentElement = SUT.FindFirstDescendant<ScrollViewer>(sv => sv.Name == "ContentElement");
 			var displayBlock = contentElement?.Content as TextBlock;
 			Assert.IsNotNull(displayBlock);
 

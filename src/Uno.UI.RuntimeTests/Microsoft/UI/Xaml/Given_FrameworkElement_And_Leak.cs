@@ -28,10 +28,6 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Controls;
 #endif
 
-#if WINAPPSDK
-using Microsoft.UI.Xaml.Media;
-#endif
-
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
 	[TestClass]
@@ -360,25 +356,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 						.ToDictionary(g => g.Key, g => g.Sum());
 				}
 
-				forest.Add(Uno.UI.Extensions.ViewExtensions.TreeGraph(rootContainer, DescribeView));
+				forest.Add(Uno.UI.Extensions.VisualTreeExtensions.TreeGraph(rootContainer, DescribeView));
 				static IEnumerable<string> DescribeView(object x)
 				{
 					if (x is FrameworkElement fe)
 					{
-						yield return $"TP={PrettyPrint.FormatType(fe.GetTemplatedParent())}, DC={PrettyPrint.FormatObject(fe.DataContext)}";
+						yield return $"TP={PrettyPrint.FormatType(fe.GetTemplatedParent())}, DC={PrettyPrint.FormatValue(fe.DataContext)}";
 					}
 				}
 #endif
 
 				#region Add all children to the tracking
-#if WINAPPSDK
-				for (int i = 0; i < VisualTreeHelper.GetChildrenCount((FrameworkElement)rootContainer.Content); i++)
+				foreach (var child in ((FrameworkElement)rootContainer.Content).EnumerateRawDescendants(maxDepth: 200))
 				{
-					var child = VisualTreeHelper.GetChild((FrameworkElement)rootContainer.Content, i);
-#else
-				foreach (var child in ((FrameworkElement)rootContainer.Content).EnumerateAllChildren(maxDepth: 200).OfType<UIElement>())
-				{
-#endif
 					TrackDependencyObject(child);
 
 					if (child is FrameworkElement fe)

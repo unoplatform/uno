@@ -15,11 +15,12 @@ using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.DevTools.Input;
+using Uno.UI.Extensions;
 
 using TabView = Microsoft.UI.Xaml.Controls.TabView;
 using TabViewItem = Microsoft.UI.Xaml.Controls.TabViewItem;
 
-using static Uno.UI.Extensions.ViewExtensions;
+using static Uno.UI.Extensions.VisualTreeExtensions;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
@@ -480,7 +481,7 @@ public class Given_TabView
 		var closeButton1 = (Button)tabviewItem1.GetTemplateChild("CloseButton");
 
 		var buttonLabel1 =
-		((ContentPresenter)closeButton1.GetTemplateChild("ContentPresenter")).FindFirstChild<ImplicitTextBlock>();
+		((ContentPresenter)closeButton1.GetTemplateChild("ContentPresenter")).FindFirstDescendant<ImplicitTextBlock>();
 
 		Assert.IsGreaterThan(0, buttonLabel1.ActualWidth, "TabViewItem Button for index 0 should have a non-zero width.");
 		Assert.IsGreaterThan(0, buttonLabel1.ActualHeight, "TabViewItem Button  for index 0 should have a non-zero height.");

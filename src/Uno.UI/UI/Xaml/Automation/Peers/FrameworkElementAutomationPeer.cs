@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Rect = Windows.Foundation.Rect;
 using Uno.UI.Xaml.Core.Scaling;
+using Microsoft.UI.Xaml.Media;
 
 
 
@@ -625,8 +626,8 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		{
 			/// We get our name by aggregating the name of all our children.
 			/// See <see cref="FeatureConfiguration.AutomationPeer.UseSimpleAccessibility" /> for details.
-			return string.Join(", ", view
-				.EnumerateAllChildren()
+			return string.Join(", ", VisualTreeHelper
+				.EnumerateRawDescendants(view)
 				.OfType<IFrameworkElement>()
 				.Where(child => child.Visibility == Visibility.Visible)
 				.Select(child =>

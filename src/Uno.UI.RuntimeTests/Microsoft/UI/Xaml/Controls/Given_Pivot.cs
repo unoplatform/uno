@@ -154,7 +154,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			container.Content.Should().NotBeNull("First PivotItem content should not be null after initial load");
 
 			var contentPresenter = await WindowHelper.WaitForNonNull(
-				() => container.FindFirstChild<ContentPresenter>(),
+				() => container.FindFirstDescendant<ContentPresenter>(),
 				message: "ContentPresenter inside PivotItem should exist");
 
 			// Asserted without waiting: #11914 is precisely about the content not being set at once on initial load.
@@ -182,7 +182,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				message: "PivotItem container at index 0 should exist");
 
 			var contentPresenter = await WindowHelper.WaitForNonNull(
-				() => selectedContainer.FindFirstChild<ContentPresenter>(),
+				() => selectedContainer.FindFirstDescendant<ContentPresenter>(),
 				message: "ContentPresenter inside PivotItem should exist");
 
 			// Asserted without waiting: the selected item's content must be set on initial load, without reselection.
@@ -190,7 +190,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// TextBlock materialization is part of the visual-tree scaffolding, not the #11914 regression.
 			var tb = await WindowHelper.WaitForNonNull(
-				() => contentPresenter.FindFirstChild<TextBlock>(),
+				() => contentPresenter.FindFirstDescendant<TextBlock>(),
 				message: "TextBlock inside ContentPresenter should exist after initial load");
 			tb.Text.Should().Be("Hello World", "TextBlock content should match PivotItem content");
 		}

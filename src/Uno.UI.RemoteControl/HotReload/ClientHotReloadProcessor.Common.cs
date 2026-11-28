@@ -206,7 +206,7 @@ namespace Uno.UI.RemoteControl.HotReload
 				if (!skipChildren)
 				{
 					var idx = 0;
-					foreach (var child in fe.EnumerateChildren())
+					foreach (var child in EnumerateChildren(fe))
 					{
 						var inner = EnumerateHotReloadInstances(child, predicate, $"{instanceKey}_[{idx}]");
 						idx++;
@@ -242,6 +242,15 @@ namespace Uno.UI.RemoteControl.HotReload
 				}
 			}
 #endif
+
+			static IEnumerable<DependencyObject> EnumerateChildren(DependencyObject reference)
+			{
+				var count = VisualTreeHelper.GetChildrenCount(reference);
+				for (var i = 0; i < count; i++)
+				{
+					yield return VisualTreeHelper.GetChild(reference, i);
+				}
+			}
 		}
 
 		[UnconditionalSuppressMessage("Trimming", "IL2072")]

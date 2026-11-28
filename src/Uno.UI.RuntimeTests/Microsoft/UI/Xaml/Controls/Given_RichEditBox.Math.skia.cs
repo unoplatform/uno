@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Extensions;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -279,7 +280,7 @@ public partial class Given_RichEditBox
 
 	private static MathParsedText GetMathLayout(RichEditBox richEditBox, out TextBlock block)
 	{
-		var content = richEditBox.FindFirstChild<ScrollViewer>(viewer => viewer.Name == "ContentElement");
+		var content = richEditBox.FindFirstDescendant<ScrollViewer>(viewer => viewer.Name == "ContentElement");
 		block = content?.Content as TextBlock
 			?? throw new AssertFailedException("The RichEditBox DisplayBlock was not found.");
 		return block.ParsedText as MathParsedText

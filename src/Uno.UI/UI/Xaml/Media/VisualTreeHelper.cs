@@ -690,12 +690,93 @@ namespace Microsoft.UI.Xaml.Media
 			=> element.Visual.ZIndex; // Equivalent to GetValue(Canvas.ZIndexProperty) on skia
 #endif
 
-		internal static IEnumerable<DependencyObject> EnumerateAncestors(DependencyObject o)
+		/// <summary>
+		/// Enumerates the ancestors of <paramref name="o"/>, following <see cref="FrameworkElement.Parent"/>.
+		/// </summary>
+		internal static IEnumerable<DependencyObject> EnumerateLogicalAncestors(DependencyObject o)
 		{
 			while ((o as FrameworkElement)?.Parent is { } parent)
 			{
 				yield return parent;
 				o = parent;
+			}
+		}
+
+		/// <summary>
+		/// Enumerates the ancestors of <paramref name="o"/>, following <see cref="GetParent"/>.
+		/// </summary>
+		internal static IEnumerable<DependencyObject> EnumerateVisualTreeAncestors(DependencyObject o)
+		{
+			if (o is null)
+			{
+				yield break;
+			}
+
+			while (GetParent(o) is { } parent)
+			{
+				yield return o = parent;
+			}
+		}
+
+		/// <summary>
+		/// Enumerates the ancestors of <paramref name="view"/>, following <see cref="FrameworkElement.VisualParent"/>.
+		/// </summary>
+		internal static IEnumerable<UIElement> EnumerateVisualParents(UIElement view)
+		{
+			var ancestor = view.GetVisualTreeParent();
+			while (ancestor != null)
+			{
+				yield return ancestor;
+				ancestor = ancestor.GetVisualTreeParent();
+			}
+		}
+
+		/// <summary>
+		/// Enumerates the direct children of <paramref name="o"/>, using <see cref="GetChildrenCount"/> and <see cref="GetChild"/>.
+		/// </summary>
+		internal static IEnumerable<DependencyObject> EnumerateChildren(DependencyObject o)
+		{
+			var count = GetChildrenCount(o);
+			for (var i = 0; i < count; i++)
+			{
+				yield return GetChild(o, i);
+			}
+		}
+
+		/// <summary>
+		/// Enumerates the descendants of <paramref name="o"/> in depth-first order, using <see cref="GetChildrenCount"/> and <see cref="GetChild"/>.
+		/// </summary>
+		internal static IEnumerable<DependencyObject> EnumerateDescendants(DependencyObject o)
+		{
+			foreach (var child in EnumerateChildren(o))
+			{
+				yield return child;
+
+				foreach (var descendant in EnumerateDescendants(child))
+				{
+					yield return descendant;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Enumerates the descendants of <paramref name="view"/> in depth-first order, walking the raw child list,
+		/// so the x:Load placeholders (<see cref="ElementStub"/>) that <see cref="GetChild"/> skips are included.
+		/// </summary>
+		/// <param name="maxDepth">0 for the direct children only, n for n + 1 levels; null for no limit.</param>
+		internal static IEnumerable<UIElement> EnumerateRawDescendants(UIElement view, int? maxDepth = null)
+		{
+			foreach (var child in view.GetChildren())
+			{
+				yield return child;
+
+				if (maxDepth is null or > 0)
+				{
+					foreach (var descendant in EnumerateRawDescendants(child, maxDepth - 1))
+					{
+						yield return descendant;
+					}
+				}
 			}
 		}
 

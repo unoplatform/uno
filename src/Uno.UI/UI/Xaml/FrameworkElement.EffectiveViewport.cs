@@ -17,6 +17,7 @@ using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using _This = Microsoft.UI.Xaml.FrameworkElement;
 using ItemsRepeater = Microsoft.UI.Xaml.Controls.ItemsRepeater;
 
@@ -98,7 +99,7 @@ namespace Microsoft.UI.Xaml
 					// viewport enqueued on its way out to be raised -- after it is back and laid out.
 					_lastEffectiveViewport = default;
 
-					var parent = this.FindFirstAncestor<IFrameworkElement_EffectiveViewport>();
+					var parent = VisualTreeHelper.EnumerateVisualTreeAncestors(this).OfType<IFrameworkElement_EffectiveViewport>().FirstOrDefault();
 					if (parent is null)
 					{
 						// We are the root of the visual tree, we update the effective viewport
@@ -152,7 +153,7 @@ namespace Microsoft.UI.Xaml
 		{
 			global::System.Diagnostics.Debug.Assert(
 				Uno.UI.Extensions.DependencyObjectExtensions.GetChildren(this).OfType<IFrameworkElement_EffectiveViewport>().Contains(child)
-				|| (child as _View)?.FindFirstAncestor<IFrameworkElement_EffectiveViewport>() == this);
+				|| (child is _View childView && VisualTreeHelper.EnumerateVisualTreeAncestors(childView).OfType<IFrameworkElement_EffectiveViewport>().FirstOrDefault() == this));
 
 			var childrenInterestedInViewportUpdates = _childrenInterestedInViewportUpdates switch
 			{

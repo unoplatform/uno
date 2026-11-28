@@ -172,7 +172,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			AssertItem(0, 0);
 			AssertItem(1, 29);
 
-			var sv = listView.FindFirstChild<ScrollViewer>();
+			var sv = listView.FindFirstDescendant<ScrollViewer>();
 			Assert.IsNotNull(sv);
 			sv.ChangeView(null, 10, null);
 			// The change is animated; a software-rendered frame can take most of the default second.

@@ -22,11 +22,7 @@ using DirectUI;
 using Uno.UI.Xaml.Input;
 #endif
 
-#if WINAPPSDK
 using Uno.UI.Extensions;
-#else
-using Uno.UI;
-#endif
 
 namespace Private.Infrastructure
 {
@@ -223,7 +219,7 @@ namespace Private.Infrastructure
 							return false;
 						}
 
-						if (element is Control control && control.FindFirstChild<FrameworkElement>(includeCurrent: false) == null)
+						if (element is Control control && !control.EnumerateRawDescendants().OfType<FrameworkElement>().Any())
 						{
 							return false;
 						}

@@ -75,7 +75,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ListView
 			AutomationStepTextBlock.Text = "Added";
 			yield return null;
 
-			var sv = SubjectList.FindFirstChild<ScrollViewer>();
+			var sv = SubjectList.FindFirstDescendant<ScrollViewer>();
 			sv.ChangeView(null, verticalOffset: 60, null, disableAnimation: true);
 			AutomationStepTextBlock.Text = "Scrolled1";
 			yield return null;
