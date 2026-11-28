@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -168,9 +167,9 @@ public class Given_TextBox_PreventKeyboardDisplay
 			await WindowHelper.WaitForIdle();
 			Assert.IsTrue(textBox.Core.IsSoftwareKeyboardSuppressed, "Pre-condition: the programmatic focus keeps the keyboard hidden");
 
-			var native = GetInvisibleNativeView(textBox);
-			Assert.AreEqual(true, GetMember(native, "IsFirstResponder"), "The native view should take the keyboard input");
-			Assert.IsNotNull(GetMember(native, "InputView"), "An empty view should stand in for the on-screen keyboard");
+			var native = NativeTextInputHelper.GetNativeView(textBox) ?? throw new InvalidOperationException("The native view was not created.");
+			Assert.AreEqual(true, NativeTextInputHelper.GetMember(native, "IsFirstResponder"), "The native view should take the keyboard input");
+			Assert.IsNotNull(NativeTextInputHelper.GetMember(native, "InputView"), "An empty view should stand in for the on-screen keyboard");
 
 			// What a hardware key press does.
 			native.GetType().GetMethod("InsertText", new[] { typeof(string) })!.Invoke(native, new object[] { "a" });
@@ -182,25 +181,14 @@ public class Given_TextBox_PreventKeyboardDisplay
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(textBox.Core.IsSoftwareKeyboardSuppressed);
-			Assert.IsNull(GetMember(native, "InputView"), "The tap should bring the on-screen keyboard back");
-			Assert.AreEqual(true, GetMember(native, "IsFirstResponder"));
+			Assert.IsNull(NativeTextInputHelper.GetMember(native, "InputView"), "The tap should bring the on-screen keyboard back");
+			Assert.AreEqual(true, NativeTextInputHelper.GetMember(native, "IsFirstResponder"));
 		}
 		finally
 		{
 			WindowHelper.WindowContent = null;
 		}
 	}
-
-	private static object GetInvisibleNativeView(TextBox textBox)
-	{
-		var extension = typeof(TextBoxView).GetField("_overlayTextBoxViewExtension", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(textBox.Core.TextBoxView)
-			?? throw new InvalidOperationException("The TextBox has no native view extension.");
-		return extension.GetType().GetField("_textBoxView", BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(extension)
-			?? throw new InvalidOperationException("The native view was not created.");
-	}
-
-	private static object GetMember(object instance, string name)
-		=> instance.GetType().GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!.GetValue(instance);
 
 	[TestMethod]
 	public async Task When_PasswordBox_Programmatically_Focused_Then_Keyboard_Suppressed()

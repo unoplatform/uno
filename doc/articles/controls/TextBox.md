@@ -132,3 +132,9 @@ The value is inherited, so it can be set once on a page or a container to opt in
 ```
 
 This is an iOS-only feature. Other targets ignore the property, as their soft keyboards already provide a way out (the Android back button) or are backed by a hardware keyboard.
+
+## Password AutoFill on iOS
+
+iOS fills a saved login into a username field and a `PasswordBox`. Uno Platform treats a `PasswordBox` and the single-line `TextBox` right before it in the tab order as such a pair, so picking a saved login fills both. Keep the two inputs next to each other in the tab order: another focusable element between them, or a `TabIndex` that reorders them, breaks the pair. A `PasswordBox` with the `NumericPin` input scope is not paired.
+
+The `TextBox` of a pair is marked as a username when its input scope is `Default`, `EmailSmtpAddress` or `EmailNameOrAddress`, while the keyboard still follows the input scope. Other input scopes keep their own content type.
