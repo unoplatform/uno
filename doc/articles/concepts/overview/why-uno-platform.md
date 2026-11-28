@@ -6,6 +6,9 @@ uid: Uno.Overview.WhyUno
 
 Thank you for considering Uno Platform for your next project. While we always recommend trying out any stack before deciding on your next project, here are some tips you can use for your in-depth evaluation.
 
+> [!TIP]
+> **The fastest way to evaluate is to try it.** [Launch Uno Platform Studio in your browser](https://studio.platform.uno/), where no install is required, and go from a prompt to a running cross-platform app in minutes. Prefer a local setup? [Download Uno Platform Studio](https://platform.uno/studio-download/) for Windows, macOS, or Linux, or [install the extension for your IDE](xref:Uno.GetStarted).
+
 ## It's a platform, not just a UI framework
 
 Uno Platform is a developer productivity **platform** and much **more than a UI framework**, for building single codebase, native, mobile, web, desktop, and embedded apps with .NET.
@@ -21,6 +24,12 @@ However, built on top of this foundation is also a rich platform which includes 
 ### Uno Platform Studio App - From Prompt to a Working Cross-Platform App
 
 The **[Uno Platform Studio App](xref:Uno.PlatformStudio.GetStarted)** lets you go from a prompt to a working, cross-platform Uno Platform app in minutes. Start from a description (or one of the curated samples in the Gallery), watch the app build live thanks to Hot Reload, refine it through the conversation panel, then export to your preferred IDE or CLI to keep building.
+
+The Studio App runs [in your browser](https://studio.platform.uno/) with no install required. You can browse the gallery, run samples, and try Hot Design before you even sign in. It's also available as [Studio Desktop](https://platform.uno/studio-download/) for Windows, macOS, and Linux. On first launch it runs `uno-check` to set up your environment.
+
+### Uno Platform Studio Companion App - Test on Real Mobile Devices
+
+The **[Uno Platform Studio companion app](https://platform.uno/blog/uno-platform-studio-3-3/)** for iOS and Android lets you test your app on a real phone or tablet as you build it. Changes reach the device over the air with Hot Reload. The app is available on iOS through TestFlight and on Android through Google Play.
 
 ### Uno Platform Studio Agent - AI Orchestration for Cross-Platform .NET
 
@@ -38,6 +47,11 @@ The **[Uno Platform Studio Agent](xref:Uno.PlatformStudio.Agent)** is the orches
 
 **App MCP** allows AI agents to control the running app using pointer and keyboard interactions along with visual tree queries. It enables AI agents from Visual Studio, VS Code, Claude Code, GitHub Copilot CLI, Codex, and more to interact with your application.
 
+The Uno Platform MCPs register automatically with Claude Code, GitHub Copilot (VS Code, Visual Studio, and CLI), Cursor, Kiro, Gemini CLI, and Codex CLI.
+
+> [!TIP]
+> Uno Platform Studio has a free Community tier that includes the Uno Platform MCP and the 70+ skill Essential Pack. [Try Studio in the browser](https://studio.platform.uno/), [download Studio Desktop](https://platform.uno/studio-download/), or [compare plans](https://platform.uno/select-subscription/).
+
 ## True Single Project across Mobile, Web, Desktop, and Embedded
 
 Our Single Project approach is .NET ecosystem’s first and only true Single Project solution, empowering developers with a unified approach, spanning mobile, web, desktop, and embedded apps. This genuine Single Project approach simplifies development, accelerates build times, and facilitates platform-specific development, enhancing your productivity and efficiency.
@@ -52,19 +66,19 @@ It is well funded and has a [sustainability model](https://platform.uno/blog/sus
 
 ### Broader Platform Support
 
-Uno Platform supports WebAssembly, enabling your .NET apps to run natively in browsers alongside mobile and desktop platforms. Uno Platform delivers true cross-platform reach including web deployment without additional frameworks.
+Uno Platform supports WebAssembly, enabling your .NET apps to run natively in browsers alongside mobile and desktop platforms. Uno Platform delivers true cross-platform reach including web deployment without additional frameworks. Beyond phones, tablets, and desktops, the same app can target tvOS, Android TV, Android Auto, Wear OS, and embedded Linux.
 
 ### Rich Tooling
 
 Uno Platform leverages the mature .NET ecosystem with Visual Studio, VS Code, and Rider support. With **Uno Platform Studio**, you get industry-leading tools, from prompt-to-app generation with the Uno Platform Studio App and the Uno Platform Studio Agent, to Hot Design® and AI-powered development assistance through the Uno MCP and App MCP, providing a wide range of powerful capabilities.
 
-### Pixel-Perfect Control with Multiple Rendering Options
+### Pixel-Perfect Control with a Unified Rendering Pipeline
 
-Uno Platform offers both native and Skia-based rendering approaches, giving you flexibility other frameworks lack. You can choose native platform controls for maximum OS integration or Skia rendering for guaranteed pixel-perfect consistency across all platforms—or mix both approaches based on your needs.
+[Uno Platform 7.0](https://platform.uno/blog/uno-platform-7-0/) unifies rendering across Android, iOS, tvOS, WebAssembly, Windows, macOS, and Linux. Every target renders through one pluggable pipeline, so you get consistent results everywhere, and a rendering fix applies to every platform at once. [SkiaSharp 4](xref:uno.features.renderer.skia) is the default backend, and on Android, Windows, and Linux it renders through Vulkan by default. WebGPU is available as an opt-in backend. Because the architecture is pluggable, you can adopt new rendering technology without rebuilding your apps. Native features stay reachable too: you can still [embed native platform controls](xref:Uno.Skia.Embedding.Native), such as maps or video players, right alongside your Uno Platform UI.
 
 ## A single codebase that runs everywhere natively
 
-Uno Platform apps run as a single codebase for native mobile, web, desktop, and embedded apps, utilizing the full breadth and reach of .NET. Uno Platform ships its releases in lock step with the latest .NET releases, including support for .NET 9 and .NET 10. You can always benefit from the latest and greatest advancements in the .NET world.
+Uno Platform apps run as a single codebase for native mobile, web, desktop, and embedded apps, utilizing the full breadth and reach of .NET. Uno Platform ships its releases in lock step with .NET: every new .NET release is supported on day zero, and the previous .NET version stays supported (currently .NET 11 and .NET 10). You can always benefit from the latest and greatest advancements in the .NET world.
 
 ## Keep using your favorite IDE
 
@@ -125,7 +139,7 @@ The _islands_ of hosted content enable any app to take advantage of modern WinUI
 
 Uno Platform-built apps are **native apps**. As a developer, you can take advantage of each platform's capabilities and features while enjoying the flexibility to adapt and optimize as needed.
 
-Uno Platform provides access to the **original APIs** provided by the target platform, both for UI and non-UI functionalities. You will be able to use the UI controls that come directly from the respective target platform's native SDK. This ensures that your app seamlessly incorporates the _familiar_ look and feel of the platform it's running on.
+Uno Platform provides access to the **original APIs** provided by the target platform. When you need a control that comes directly from the platform's native SDK, you can [embed it](xref:Uno.Skia.Embedding.Native) in your app's visual tree. With [Native AOT](https://platform.uno/blog/uno-platform-6-6/) on Android, iOS, Linux, macOS, and Windows, your apps also start faster.
 
 This versatility allows for a broader reach with compatibility across all supported platforms and devices.
 
@@ -145,7 +159,7 @@ The Windows Community Toolkit (WCT) is a collection of helper functions, control
 
 ## More UI controls with MAUI Embedding
 
-Uno Platform allows for embedding .NET MAUI-specific controls from all leading 3rd party vendors like Syncfusion, Grial Kit, Telerik, DevExpress, Esri, Grape City, and the .NET MAUI Community Toolkit. Keep in mind that this cross-platform approach works only for target platforms .NET MAUI reaches – iOS, Android, macOS, and Windows. [We have 6 sample apps](xref:Uno.Extensions.Maui.Overview) showing how to work with MAUI embedding by all leading 3rd party vendors.
+Uno Platform allows for embedding .NET MAUI-specific controls from all leading 3rd party vendors like Syncfusion, Grial Kit, Telerik, DevExpress, Esri, Grape City, and the .NET MAUI Community Toolkit. Starting with [Uno Platform 7.0](https://platform.uno/blog/uno-platform-7-0/), these third-party .NET MAUI controls run on every Uno Platform target, including the web and Linux. [We have 6 sample apps](xref:Uno.Extensions.Maui.Overview) showing how to work with MAUI embedding by all leading 3rd party vendors.
 
 > [!NOTE]
 > Uno Platform is not built on top of .NET MAUI.
@@ -160,7 +174,7 @@ Displaying consistent shadows in cross-platform apps was always a problem. We ar
 
 ## Maps
 
-Uno Platform offers charting components via integration with [Maps UI](https://github.com/Mapsui/Mapsui) (Open Source) on all targets.
+Uno Platform offers mapping components via integration with [Maps UI](https://github.com/Mapsui/Mapsui) (Open Source) on all targets.
 
 Also, for targeting just mobile, you can use [Esri ArcGIS Maps SDK for .NET](xref:Uno.Extensions.Maui.ThirdParty.EsriMaps) via our .NET MAUI embedding feature.
 
@@ -196,7 +210,7 @@ Uno.Extensions Authentication is a provider-based authentication service that ca
 
 ## Skia drawing
 
-The Uno Platform provides access to SkiaSharp as a render canvas for your app, enabling rich support for fine-grained drawing primitives. Uno Platform also uses SkiaSharp to render the UI for X11, FrameBuffer, macOS, and Windows 7+ apps. Starting from Uno Platform 6.0, Skia rendering is also available for iOS, Android, and WebAssembly.
+The Uno Platform provides access to SkiaSharp as a render canvas for your app, enabling rich support for fine-grained drawing primitives. Starting with Uno Platform 7.0, SkiaSharp 4 renders the UI on every target: Android, iOS, tvOS, WebAssembly, Windows, macOS, and Linux (X11 and FrameBuffer). WebGPU rendering is also available as an experimental opt-in. Uno Platform is a co-maintainer of SkiaSharp alongside Microsoft's .NET team.
 
 ## Animations: Beyond storyboards, access to Lottie and Rive
 
@@ -212,7 +226,7 @@ Uno Platform offers comprehensive [app packaging solutions](xref:uno.publishing.
 
 ## Accessibility included
 
-Uno Platform comes with built-in support for accessible apps, such as font scaling and support for screen readers. Support is provided for Windows Narrator, Android TalkBack, Apple VoiceOver, and browser-specific narrators when targeting the web. In addition, Uno Platform provides programmatic access to most UI elements, enabling assistive technology products.
+Uno Platform comes with built-in support for accessible apps, such as font scaling and support for screen readers. Support is provided for Windows Narrator, Android TalkBack, Apple VoiceOver, and browser-specific narrators when targeting the web. In addition, Uno Platform provides programmatic access to most UI elements, enabling assistive technology products. Apps follow the operating system's text scaling settings. On WebAssembly, an ARIA semantic DOM exposes your UI to screen readers, and on Windows, UI Automation peers do the same for Narrator.
 
 ## Localization included
 
@@ -242,7 +256,7 @@ Your Uno Platform WebAssembly app can run as a Progressive Web App. This means u
 
 ## WebView across platforms
 
-When you need to display web content within your cross-platform apps, you can use our `WebView2` control across all Uno Platform targets, at no additional cost. Not only will it easily handle rendering of both remote and in-app HTML content, but it will also allow you to implement bi-directional JavaScript communication without any hassle. We are working on an implementation for the remaining Skia targets.
+When you need to display web content within your cross-platform apps, you can use our `WebView2` control across all Uno Platform targets, at no additional cost. Not only will it easily handle rendering of both remote and in-app HTML content, but it will also allow you to implement bi-directional JavaScript communication without any hassle. See [WebView2](xref:Uno.Controls.WebView2) for per-platform details.
 
 ## Media Player across platforms
 
@@ -254,11 +268,7 @@ For all your in-app text and code editing needs, you can use our port of the Mon
 
 ## Mix and match XAML controls with native components
 
-Because Uno Platform apps are native mobile apps, you can embed any native control on a per platform basis into an Uno Platform app.
-
-Uno Platform views inherit from the base native view defined in .NET binding or the native framework itself, you can incorporate native views into your app's visual tree. For more information, see [UnoConf 2021 - Using Native Controls in Uno Platform Apps](https://www.youtube.com/watch?v=4Cwzk8dDHs0).
-
-Your app's powerful visual tree can also render native components through embedding in Skia targets.
+Because Uno Platform apps are native apps, you can embed any native control on a per-platform basis into an Uno Platform app, such as a native map, video player, or a platform-specific SDK view. These native components sit right alongside your Skia-rendered UI in the visual tree. For more information, see [Embedding Native Controls](xref:Uno.Skia.Embedding.Native).
 
 ## Choice of presentation framework
 
@@ -317,10 +327,16 @@ In addition to the UI components mentioned above, Uno Platform apps also integra
 
 ## The Community
 
-Welcoming, tight, and helpful community on GitHub Discussions and Discord, with over 300 contributors to the project. Popular with over 70,000,000 NuGet downloads of its various packages and is used among the [biggest companies](https://platform.uno/case-studies/), including Fortune 500 enterprises. Our core team is always ready to help, and the community provides excellent support for developers at all skill levels.
+Welcoming, tight, and helpful community on GitHub Discussions and Discord, with over 300 contributors to the project. Popular with over 250,000,000 NuGet downloads of its various packages and is used among the [biggest companies](https://platform.uno/case-studies/), including Fortune 500 enterprises. Our core team is always ready to help, and the community provides excellent support for developers at all skill levels.
 
 ## Wealth of Samples
 
 To show Uno Platform's versatility, we tinker around with technology and share with you our full-blown apps and code samples that you can learn from.
 
 Check out: [Cross-Platform Sample Apps with XAML and C# - Uno Platform](https://platform.uno/code-samples/)
+
+## Ready to try it?
+
+- **In your browser, no install required:** [Launch Uno Platform Studio](https://studio.platform.uno/) and build your first app from a prompt or a gallery sample.
+- **On your machine:** [Download Uno Platform Studio](https://platform.uno/studio-download/) for Windows, macOS, or Linux.
+- **In your IDE:** Follow [Get Started](xref:Uno.GetStarted) to install the extension for Visual Studio, VS Code, or Rider.
