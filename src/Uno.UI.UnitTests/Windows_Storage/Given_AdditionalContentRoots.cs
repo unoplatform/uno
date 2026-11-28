@@ -16,7 +16,7 @@ namespace Uno.UI.Tests.Windows_Storage;
 
 // A host whose install folder is read-only (an MSIX package) and that shows another app's content keeps that
 // content in a folder it can write to, and names it in WinRTFeatureConfiguration.Package.AdditionalContentRoots.
-[TestClass]
+[UITestClass]
 public class Given_AdditionalContentRoots
 {
 	private string _root = null!;
@@ -50,7 +50,7 @@ public class Given_AdditionalContentRoots
 
 		var file = await StorageFile.GetFileFromApplicationUriAsync(Uri("only-there.txt"));
 
-		Assert.AreEqual(path, file.Path);
+		Assert.AreEqual(path, Path.GetFullPath(file.Path));
 	}
 
 	[TestMethod]
@@ -61,7 +61,7 @@ public class Given_AdditionalContentRoots
 
 		var file = await StorageFile.GetFileFromApplicationUriAsync(Uri("both.txt"));
 
-		Assert.AreEqual(installed, file.Path);
+		Assert.AreEqual(installed, Path.GetFullPath(file.Path));
 	}
 
 	[TestMethod]
@@ -70,7 +70,7 @@ public class Given_AdditionalContentRoots
 		// GetFileFromPathAsync does not check the file exists, so the path is what tells where it looked.
 		var file = await StorageFile.GetFileFromApplicationUriAsync(Uri("missing.txt"));
 
-		Assert.AreEqual(Path.Combine(_installed, "missing.txt"), file.Path);
+		Assert.AreEqual(Path.Combine(_installed, "missing.txt"), Path.GetFullPath(file.Path));
 	}
 
 	[TestMethod]
@@ -81,7 +81,7 @@ public class Given_AdditionalContentRoots
 
 		var file = await StorageFile.GetFileFromApplicationUriAsync(Uri("ignored.txt"));
 
-		Assert.AreEqual(Path.Combine(_installed, "ignored.txt"), file.Path);
+		Assert.AreEqual(Path.Combine(_installed, "ignored.txt"), Path.GetFullPath(file.Path));
 	}
 
 	[TestMethod]
@@ -92,7 +92,7 @@ public class Given_AdditionalContentRoots
 
 		var resolved = await PlatformImageHelpers.GetScaledPath(Uri("picture.png"), ResolutionScale.Scale200Percent);
 
-		Assert.AreEqual(scaled, resolved);
+		Assert.AreEqual(scaled, Path.GetFullPath(resolved));
 	}
 
 	[TestMethod]
@@ -102,7 +102,7 @@ public class Given_AdditionalContentRoots
 
 		var resolved = await PlatformImageHelpers.GetScaledPath(Uri("plain.png"), ResolutionScale.Scale100Percent);
 
-		Assert.AreEqual(plain, resolved);
+		Assert.AreEqual(plain, Path.GetFullPath(resolved));
 	}
 
 	[TestMethod]
@@ -113,8 +113,8 @@ public class Given_AdditionalContentRoots
 
 		var resolved = await PlatformImageHelpers.GetScaledPath(Uri("late.png"), ResolutionScale.Scale100Percent);
 
-		Assert.AreEqual(Path.Combine(_installed, "late.png"), missing);
-		Assert.AreEqual(late, resolved);
+		Assert.AreEqual(Path.Combine(_installed, "late.png"), Path.GetFullPath(missing));
+		Assert.AreEqual(late, Path.GetFullPath(resolved));
 	}
 
 	[TestMethod]
@@ -125,7 +125,7 @@ public class Given_AdditionalContentRoots
 
 		var resolved = await PlatformImageHelpers.GetScaledPath(Uri("shared.png"), ResolutionScale.Scale100Percent);
 
-		Assert.AreEqual(installed, resolved);
+		Assert.AreEqual(installed, Path.GetFullPath(resolved));
 	}
 
 	[TestMethod]
