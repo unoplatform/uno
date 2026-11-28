@@ -132,6 +132,7 @@
 		<Compile Include="..\Uno.UI.Runtime.X11\Accessibility\AtspiRoleMap.cs" Link="Windows_UI_Xaml_Automation\AtspiRoleMap.cs" />
 		<Compile Include="..\Uno.UI.Runtime.AppleUIKit\AppleUIKitLifecycleDecision.cs" Link="Hosting\AppleUIKitLifecycleDecision.cs" />
 		<Compile Include="..\Uno.UI.Runtime.Win32\Rendering\BackgroundPrewarm.cs" Link="Hosting\BackgroundPrewarm.cs" />
+		<Compile Include="..\Uno.UI.Runtime.Win32\Accessibility\Win32UiaBoundsMath.cs" Link="Windows_UI_Xaml_Automation\Win32UiaBoundsMath.cs" />
 	</ItemGroup>
 	<ItemGroup>
 		<!--

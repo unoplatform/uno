@@ -513,12 +513,17 @@ internal class Win32RawElementProvider :
 				var clientOrigin = new System.Drawing.Point(0, 0);
 				Win32UIAutomationInterop.ClientToScreen(_hwnd, ref clientOrigin);
 
+				var physical = Win32UiaBoundsMath.ToPhysicalScreenRect(
+					(logicalRect.X, logicalRect.Y, logicalRect.Width, logicalRect.Height),
+					dpiScale,
+					(clientOrigin.X, clientOrigin.Y));
+
 				return new UiaRect
 				{
-					Left = clientOrigin.X + logicalRect.X * dpiScale,
-					Top = clientOrigin.Y + logicalRect.Y * dpiScale,
-					Width = logicalRect.Width * dpiScale,
-					Height = logicalRect.Height * dpiScale,
+					Left = physical.Left,
+					Top = physical.Top,
+					Width = physical.Width,
+					Height = physical.Height,
 				};
 			}
 			catch (Exception ex)
