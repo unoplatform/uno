@@ -35,6 +35,8 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	private readonly Win32SyntheticPaneProvider _innerPane;
 	private readonly ConditionalWeakTable<UIElement, Win32RawElementProvider> _providers = new();
 	private readonly ConditionalWeakTable<AutomationPeer, Win32RawElementProvider> _peerProviders = new();
+	private static readonly object s_unseeded = new();
+	private readonly ConditionalWeakTable<AutomationPeer, object> _unseededPeers = new();
 	private readonly ConcurrentDictionary<Win32RawElementProvider, byte> _liveProviders = new(ReferenceEqualityComparer.Instance);
 	private int _providerCleanupDepth;
 	// Pending StructureChanged events, coalesced onto the dispatcher. We record the specific
@@ -373,6 +375,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			_liveProviders.TryAdd(provider, 0);
 			RegisterProviderOwner(element, provider);
 			_peerProviders.AddOrUpdate(canonicalPeer, provider);
+			SeedAutomaticPropertyBaseline(canonicalPeer);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -390,6 +393,7 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			var provider = new Win32RawElementProvider(element, _hwnd, isRoot: false, this, resolvedPeer, isVirtualPeer: true);
 			_liveProviders.TryAdd(provider, 0);
 			_peerProviders.AddOrUpdate(resolvedPeer, provider);
+			SeedAutomaticPropertyBaseline(resolvedPeer);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -1038,6 +1042,70 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		}
 
 		return null;
+	}
+
+	// A peer with no provider can't deliver events (NotifyPropertyChangedEvent drops them), so layout skips it;
+	// its baseline is refreshed when the provider is created (SeedAutomaticPropertyBaseline).
+	protected override bool CanReceiveAutomaticPropertyChanges(AutomationPeer peer)
+	{
+		if (!IsAccessibilityEnabled)
+		{
+			return false;
+		}
+
+		// An unseeded baseline is stale: wait for the seed instead of comparing against it.
+		if (_unseededPeers.TryGetValue(peer, out _))
+		{
+			return false;
+		}
+
+		// A peer that reports through another peer's provider (EventsSource) can't be seeded: nothing lists
+		// the peers pointing at a source. Keep evaluating it on every arrange.
+		if (!ReferenceEquals(peer.ResolveProviderPeer(resolveEventsSource: true), peer))
+		{
+			return true;
+		}
+
+		return FindExistingProviderForPeer(peer) is not null;
+	}
+
+	// Refreshes the baseline raising nothing, so a client reading the new provider is notified of the next
+	// change only. IsOffscreen reads the visual tree, so it runs on the UI thread; off it, the peer is held
+	// back from the gate until the queued seed has run.
+	private void SeedAutomaticPropertyBaseline(AutomationPeer peer)
+	{
+		if (!_dispatcherQueue.HasThreadAccess)
+		{
+			_unseededPeers.AddOrUpdate(peer, s_unseeded);
+			if (!_dispatcherQueue.TryEnqueue(() => SeedAutomaticPropertyBaseline(peer)))
+			{
+				_unseededPeers.Remove(peer);
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"[A11y] Baseline of {peer.GetType().Name} not seeded: the dispatcher is shut down.");
+				}
+			}
+
+			return;
+		}
+
+		_unseededPeers.Remove(peer);
+		if (IsDisposed)
+		{
+			return;
+		}
+
+		try
+		{
+			peer.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: false);
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"[A11y] Seeding the baseline of {peer.GetType().Name} failed: {ex}");
+			}
+		}
 	}
 
 	// ──────────────────────────────────────────────────────────────

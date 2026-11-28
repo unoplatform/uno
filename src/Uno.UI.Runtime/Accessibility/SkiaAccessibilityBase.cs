@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Uno.Foundation.Logging;
 using Uno.Helpers;
 
 namespace Uno.UI.Runtime;
@@ -429,13 +430,40 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 			foreach (var owner in owners)
 			{
-				owner.CachedAutomationPeer?.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+				if (owner.CachedAutomationPeer is { } peer && ShouldRaiseAutomaticPropertyChanges(peer))
+				{
+					peer.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+				}
 			}
 		}
 		finally
 		{
 			owners.Clear();
 			_spareAutomaticPropertyOwners = owners;
+		}
+	}
+
+	// Lets a platform skip peers whose events no client can receive. An override that returns false must
+	// refresh the peer's baseline (RaiseAutomaticPropertyChanges with firePropertyChangedEvents: false)
+	// before it starts returning true, or the first change is compared with a stale value.
+	protected virtual bool CanReceiveAutomaticPropertyChanges(AutomationPeer peer) => true;
+
+	// The gate calls peer code (EventsSource, GetParent), so like RaiseAutomaticPropertyChanges it must not
+	// throw into layout. On a failure, raise as before.
+	private bool ShouldRaiseAutomaticPropertyChanges(AutomationPeer peer)
+	{
+		try
+		{
+			return CanReceiveAutomaticPropertyChanges(peer);
+		}
+		catch (Exception ex)
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"CanReceiveAutomaticPropertyChanges failed for {peer.GetType().Name}: {ex}");
+			}
+
+			return true;
 		}
 	}
 
@@ -739,7 +767,10 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		// which re-evaluates IsEnabled/IsOffscreen/Name/ItemStatus and raises PropertyChanged
 		// for any that changed. Platform subclasses that maintain a provider-level children
 		// cache (Win32) additionally drop it; see Win32Accessibility.NotifyInvalidatePeer.
-		peer.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+		if (ShouldRaiseAutomaticPropertyChanges(peer))
+		{
+			peer.RaiseAutomaticPropertyChanges(firePropertyChangedEvents: true);
+		}
 	}
 
 	public virtual bool ListenerExistsHelper(AutomationEvents eventId)
