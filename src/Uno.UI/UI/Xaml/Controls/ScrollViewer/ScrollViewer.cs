@@ -680,6 +680,10 @@ namespace Microsoft.UI.Xaml.Controls
 			return this.GetUseLayoutRounding() ? fe.LayoutRound(value) : value;
 		}
 
+		// The extent of the content before the zoom factor is applied.
+		private double _unzoomedContentExtentHeight;
+		private double _unzoomedContentExtentWidth;
+
 		private
 			void UpdateDimensionProperties()
 		{
@@ -715,15 +719,16 @@ namespace Microsoft.UI.Xaml.Controls
 			ViewportHeight = vpHeight;
 			ViewportWidth = vpWidth;
 
+			double extentHeight, extentWidth;
 			if (_presenter?.CustomContentExtent is { } customExtent)
 			{
-				ExtentHeight = customExtent.Height;
-				ExtentWidth = customExtent.Width;
+				extentHeight = customExtent.Height;
+				extentWidth = customExtent.Width;
 			}
 			else if (Content is FrameworkElement fe)
 			{
-				ExtentHeight = CalculateExtent(this, fe, isHorizontal: false);
-				ExtentWidth = CalculateExtent(this, fe, isHorizontal: true);
+				extentHeight = CalculateExtent(this, fe, isHorizontal: false);
+				extentWidth = CalculateExtent(this, fe, isHorizontal: true);
 
 				static double CalculateExtent(ScrollViewer sv, FrameworkElement fe, bool isHorizontal)
 				{
@@ -757,31 +762,34 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				ExtentHeight = 0;
-				ExtentWidth = 0;
+				extentHeight = 0;
+				extentWidth = 0;
 			}
+
+			_unzoomedContentExtentHeight = extentHeight;
+			_unzoomedContentExtentWidth = extentWidth;
+
+			// As in WinUI, the extent is reported in zoomed coordinates, while the presenter keeps the unzoomed one.
+			ExtentHeight = extentHeight * ZoomFactor;
+			ExtentWidth = extentWidth * ZoomFactor;
 
 			// For scrollable height and scrollable width we apply rounding
 			// to ensure there is no unwanted difference caused by double
 			// precision, which could then cause the scroll bars to appear
 			// for no reason.
-			// When zoomed, the effective extent is scaled by the zoom factor.
 
-			var scaledExtentHeight = ExtentHeight * ZoomFactor;
-			var scaledExtentWidth = ExtentWidth * ZoomFactor;
-
-			var scrollableHeight = Math.Max(Math.Round(scaledExtentHeight - ViewportHeight, 4), 0);
+			var scrollableHeight = Math.Max(Math.Round(ExtentHeight - ViewportHeight, 4), 0);
 
 			ScrollableHeight = scrollableHeight;
 
-			var scrollableWidth = Math.Max(Math.Round(scaledExtentWidth - ViewportWidth, 4), 0);
+			var scrollableWidth = Math.Max(Math.Round(ExtentWidth - ViewportWidth, 4), 0);
 
 			ScrollableWidth = scrollableWidth;
 
 			if (Presenter is not null)
 			{
-				Presenter.ExtentHeight = ExtentHeight;
-				Presenter.ExtentWidth = ExtentWidth;
+				Presenter.ExtentHeight = extentHeight;
+				Presenter.ExtentWidth = extentWidth;
 			}
 
 			UpdateComputedVerticalScrollability(invalidate: false);
@@ -1536,10 +1544,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// (SetVerticalOffsetPrivate, and AdjustTargetVerticalOffset which uses the target zoom).
 		// Left raw, a request past the extent keeps chasing it as the extent grows.
 		private double ValidateVerticalOffsetIntent(double offset, float? zoomFactor = null)
-			=> ValidateOffsetIntent(offset, ExtentHeight, ViewportHeight, zoomFactor);
+			=> ValidateOffsetIntent(offset, _unzoomedContentExtentHeight, ViewportHeight, zoomFactor);
 
 		private double ValidateHorizontalOffsetIntent(double offset, float? zoomFactor = null)
-			=> ValidateOffsetIntent(offset, ExtentWidth, ViewportWidth, zoomFactor);
+			=> ValidateOffsetIntent(offset, _unzoomedContentExtentWidth, ViewportWidth, zoomFactor);
 
 		private double ValidateOffsetIntent(double offset, double extent, double viewport, float? zoomFactor)
 		{

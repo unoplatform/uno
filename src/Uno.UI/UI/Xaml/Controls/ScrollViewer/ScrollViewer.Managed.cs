@@ -161,11 +161,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (_presenter is not null)
 			{
-				// Use scaled extent to account for zoom
+				// The extent is already scaled by the zoom factor
 				var (contentExtent, presenterViewportSize, offset) = orientation switch
 				{
-					Orientation.Vertical => (ExtentHeight * ZoomFactor, ViewportHeight, CurrentPresenterVerticalOffset),
-					_ => (ExtentWidth * ZoomFactor, ViewportWidth, CurrentPresenterHorizontalOffset),
+					Orientation.Vertical => (ExtentHeight, ViewportHeight, CurrentPresenterVerticalOffset),
+					_ => (ExtentWidth, ViewportWidth, CurrentPresenterHorizontalOffset),
 				};
 				var viewportEnd = offset + presenterViewportSize;
 				var overscroll = contentExtent - viewportEnd;
