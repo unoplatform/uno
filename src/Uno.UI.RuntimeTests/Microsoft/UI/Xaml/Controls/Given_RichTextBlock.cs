@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI;
@@ -463,6 +464,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsTrue(SUT.IsTextTrimmed, "Text should be trimmed");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26187")]
+		public async Task When_IsTextTrimmedChanged_NotRaisedDuringLayout()
+		{
+			var SUT = new RichTextBlock
+			{
+				TextTrimming = TextTrimming.CharacterEllipsis,
+				TextWrapping = TextWrapping.NoWrap,
+				MaxLines = 1
+			};
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = "This is a very very long text that definitely needs trimming." });
+			SUT.Blocks.Add(paragraph);
+			var container = new Border { Width = 50, Child = SUT };
+
+			var states = new List<bool>();
+			SUT.IsTextTrimmedChanged += (s, e) => states.Add(SUT.IsTextTrimmed);
+
+			try
+			{
+				WindowHelper.WindowContent = container;
+				await WindowHelper.WaitForLoaded(container);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(SUT.IsTextTrimmed, "Setup: IsTextTrimmed should be trimmed at 50px.");
+				Assert.HasCount(1, states, "Setup: event should have been raised once.");
+
+				container.Width = 5000;
+				container.UpdateLayout();
+
+				// WinUI queues IsTextTrimmedChanged and delivers it after the layout pass.
+				Assert.HasCount(1, states, "IsTextTrimmedChanged was raised synchronously during layout.");
+
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsFalse(SUT.IsTextTrimmed, "IsTextTrimmed should be false at 5000px.");
+				Assert.HasCount(2, states, "Event should be raised once the layout pass completes.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
