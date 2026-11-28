@@ -39,3 +39,12 @@ steps:
   displayName: Validate package version alignment (nuspecs, Uno.Sdk.Private, SkiaSharp)
   # Report alignment problems even when the network-based check above failed.
   condition: succeededOrFailed()
+
+- task: PowerShell@2
+  displayName: Validate Uno.Sdk version properties (packages.json versionProperty)
+  inputs:
+    pwsh: true
+    filePath: build/ci/scripts/validate-sdk-version-properties.ps1
+    arguments: '-RepoRoot "$(Build.SourcesDirectory)"'
+  # Offline check: every overridable group in packages.json names its version property.
+  condition: succeededOrFailed()
