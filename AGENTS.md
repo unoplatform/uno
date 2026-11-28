@@ -1,4 +1,4 @@
-# AGENTS.md
+﻿# AGENTS.md
 
 This file provides guidance to AI Agents when working with code in this repository.
 
@@ -19,6 +19,7 @@ Uno Platform is an open-source .NET UI cross-platform framework for building .NE
 | WinUI Sync Onboarding | `/winui-sync-onboard` | Adding a ported control or feature area to the weekly WinUI port sync (`build/winui-sync/areas/`) |
 | DevServer | `/devserver` | DevServer CLI/Host build, test, MCP proxy, add-in discovery |
 | Docs Build | `/docs-build` | Building, previewing & validating the docs website (DocFX), incl. external-doc commit bumps in `import_external_docs.ps1` |
+| WASM Device Test | `/wasm-device-test` | Publishing a WebAssembly head and serving it on the LAN so it can be opened on a phone or tablet |
 
 #### Pre-commit review (invoke via `/review-panel`)
 
