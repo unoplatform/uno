@@ -8,17 +8,21 @@
 		<readme>README.md</readme>
 		<projectUrl>https://github.com/unoplatform/uno</projectUrl>
 		<license type="expression">Apache-2.0</license>
-		<description>The WebGPU drawing backend for Uno Platform (implements the neutral IRenderBackend seam over the managed geometry engine). Referenced by the 'WebGpu' UnoFeature; opt-in, carries the wgpu-native runtime.</description>
+		<description>The WebGPU drawing backend for Uno Platform (implements the neutral IRenderBackend seam over the managed geometry engine). Referenced by the 'WebGpu' UnoFeature; opt-in. Renders with Dawn (Uno.Dawn) by default; UnoWebGpuNative=WgpuNative selects the wgpu-native runtime it also carries.</description>
 		<copyright>Copyright (C) 2015-$year$ Uno Platform Inc. - all rights reserved</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
 		<dependencies>
 			<group targetFramework="net10.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Uno.WinUI.Composition.WebGpu.Init" version="to-be-set-by-ci" />
+				<!-- KEEP IN STEP with Uno.Dawn in src/Directory.Packages.props. -->
+				<dependency id="Uno.Dawn" version="0.1.0-dev.12" />
 			</group>
 			<group targetFramework="net11.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 				<dependency id="Uno.WinUI.Composition.WebGpu.Init" version="to-be-set-by-ci" />
+				<!-- KEEP IN STEP with Uno.Dawn in src/Directory.Packages.props. -->
+				<dependency id="Uno.Dawn" version="0.1.0-dev.12" />
 			</group>
 		</dependencies>
 	</metadata>
@@ -34,15 +38,15 @@
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\bin\Release\net11.0\Uno.UI.Composition.WebGpu.pdb" target="lib\net11.0" />
 
 		<!-- wgpu-native runtime (pinned v29.0.1.1), fetched per RID by ProvisionWgpuNativeForPack in
-		     wgpu-native.targets. KEEP THE TWO LISTS IN STEP. Desktop ships under the DllImport's own name
-		     (webgpu) so default [DllImport("webgpu")] resolution finds it in runtimes/<rid>/native; Android keeps
-		     wgpu-native's own name, which the resolver loads by bare name there. -->
-		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\win-x64\lib\wgpu_native.dll" target="runtimes\win-x64\native\webgpu.dll" />
-		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\win-arm64\lib\wgpu_native.dll" target="runtimes\win-arm64\native\webgpu.dll" />
-		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\linux-x64\lib\libwgpu_native.so" target="runtimes\linux-x64\native\libwebgpu.so" />
-		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\linux-arm64\lib\libwgpu_native.so" target="runtimes\linux-arm64\native\libwebgpu.so" />
-		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\osx-x64\lib\libwgpu_native.dylib" target="runtimes\osx-x64\native\libwebgpu.dylib" />
-		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\osx-arm64\lib\libwgpu_native.dylib" target="runtimes\osx-arm64\native\libwebgpu.dylib" />
+		     wgpu-native.targets. KEEP THE TWO LISTS IN STEP. It keeps its own name everywhere, since Dawn ships under
+		     the DllImport's (webgpu); WebGpuLoader looks for both, and the package targets drop whichever engine is
+		     not selected (UnoWebGpuNative). -->
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\win-x64\lib\wgpu_native.dll" target="runtimes\win-x64\native\wgpu_native.dll" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\win-arm64\lib\wgpu_native.dll" target="runtimes\win-arm64\native\wgpu_native.dll" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\linux-x64\lib\libwgpu_native.so" target="runtimes\linux-x64\native\libwgpu_native.so" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\linux-arm64\lib\libwgpu_native.so" target="runtimes\linux-arm64\native\libwgpu_native.so" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\osx-x64\lib\libwgpu_native.dylib" target="runtimes\osx-x64\native\libwgpu_native.dylib" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\osx-arm64\lib\libwgpu_native.dylib" target="runtimes\osx-arm64\native\libwgpu_native.dylib" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\android-arm64\lib\libwgpu_native.so" target="runtimes\android-arm64\native\libwgpu_native.so" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\android-arm\lib\libwgpu_native.so" target="runtimes\android-arm\native\libwgpu_native.so" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\android-x64\lib\libwgpu_native.so" target="runtimes\android-x64\native\libwgpu_native.so" />
@@ -52,6 +56,8 @@
 		     Exists(), so leaving the second file out disables the trimming with no error at all. -->
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\package\Uno.WinUI.Composition.WebGpu.targets" target="buildTransitive\Uno.WinUI.Composition.WebGpu.targets" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\package\Uno.WinUI.Composition.WebGpu.NativeTrim.targets" target="buildTransitive\Uno.WinUI.Composition.WebGpu.NativeTrim.targets" />
+		<!-- Imported unconditionally by the targets above: without it UnoWebGpuNative has no default. -->
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\package\Uno.WinUI.Composition.WebGpu.Engine.targets" target="buildTransitive\Uno.WinUI.Composition.WebGpu.Engine.targets" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\package\wgpu-native-ios.symbols" target="buildTransitive\wgpu-native-ios.symbols" />
 
 		<!-- iOS links the static archive into the app image, so it cannot come from runtimes/; the targets above

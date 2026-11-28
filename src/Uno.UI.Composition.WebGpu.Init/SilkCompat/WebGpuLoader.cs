@@ -1,9 +1,8 @@
-// <auto-provisioning loader> Resolves the "webgpu" DllImport to the pinned wgpu-native (modern ABI). On desktop the
-// native is provisioned under the DllImport's own name (libwebgpu.so / webgpu.dll / libwebgpu.dylib, see
-// wgpu-native.targets), so the runtime's default resolution finds it (app dir, runtimes/<rid>/native via deps.json,
-// rpath/LD_LIBRARY_PATH) with no explicit probing here. This resolver only covers the cases default resolution can't:
-// Apple static linking (symbols in the main program image) and Android (packed as libwgpu_native.so per ABI).
-// Registered via a module initializer so it's active before any P/Invoke.
+// Resolves the "webgpu" DllImport to the WebGPU library the app ships: Dawn, under the DllImport's own name (webgpu.dll /
+// libwebgpu.so / libwebgpu.dylib) so default resolution finds it, or wgpu-native when UnoWebGpuNative=WgpuNative selects
+// it, under its own name (wgpu_native.dll / libwgpu_native.*). This resolver covers what default resolution can't: the
+// wgpu-native name, the runtimes/<rid>/native folder of an app built for several platforms, Apple static linking (symbols
+// in the main program image) and Android. Registered via a module initializer so it's active before any P/Invoke.
 #nullable enable
 using System;
 using System.Reflection;
@@ -32,6 +31,24 @@ internal static class WebGpuLoader
 	/// <summary>The library the "webgpu" [DllImport]s bound to, once one has been called.</summary>
 	internal static IntPtr Resolved { get; private set; }
 
+	/// <summary>Where that library came from (its path on desktop), for the device initialization log.</summary>
+	internal static string Source { get; private set; } = "default resolution";
+
+	// UNO_WEBGPU_LIBRARY: a path to the WebGPU library to load instead of the provisioned one, either engine. Read on
+	// first use, not at module initialization: Android sets UNO_* variables from the launch intent in OnCreate.
+	private static readonly Lazy<string?> _override = new(() => OperatingSystem.IsBrowser() ? null : Environment.GetEnvironmentVariable("UNO_WEBGPU_LIBRARY") is { Length: > 0 } path ? path : null);
+
+	/// <summary>The native WebGPU library, loaded if no "webgpu" [DllImport] has bound it yet. Not for the browser.</summary>
+	internal static IntPtr Library => Resolved != IntPtr.Zero ? Resolved : NativeLibrary.Load("webgpu", typeof(WGPU).Assembly, null);
+
+	/// <summary>
+	/// Whether the native library is Dawn rather than wgpu-native, whose extensions the binding then takes from the
+	/// Uno.Dawn package. Loads the library to tell.
+	/// </summary>
+	internal static bool IsDawn => _isDawn.Value;
+
+	private static readonly Lazy<bool> _isDawn = new(() => !OperatingSystem.IsBrowser() && Uno.Dawn.DawnLibrary.IsDawn(Library));
+
 	private static IntPtr Resolve(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
 	{
 		var handle = ResolveCore(libraryName);
@@ -49,35 +66,46 @@ internal static class WebGpuLoader
 			return IntPtr.Zero;
 		}
 
+		if (_override.Value is { } path)
+		{
+			Source = path;
+			return NativeLibrary.Load(path);
+		}
+
 		// iOS/tvOS (and any statically-linked host): wgpu-native is a static lib linked into the app, not a
 		// loadable dylib — Apple platforms forbid dlopen'ing arbitrary dylibs. Its symbols live in the main
 		// program image, so resolve "webgpu" to the main-program handle. (Requires the build to link the
 		// wgpu-native static lib with force-load; see wgpu-native.targets iOS provisioning.)
 		if (OperatingSystem.IsIOS() || OperatingSystem.IsTvOS() || OperatingSystem.IsMacCatalyst())
 		{
-			try { return NativeLibrary.GetMainProgramHandle(); }
+			try
+			{
+				var main = NativeLibrary.GetMainProgramHandle();
+				Source = "main program";
+				return main;
+			}
 			catch { /* fall through */ }
 		}
 
-		// Android packs the native per-ABI as libwgpu_native.so (its own name, not the DllImport's); resolve it by
-		// bare name through the Android loader. On desktop this fails harmlessly and we fall through to Zero, letting
-		// default resolution find the DllImport-named artifact (libwebgpu.*).
+		// Android packs the native per-ABI: Dawn as libwebgpu.so, wgpu-native under its own name, libwgpu_native.so.
+		// Resolve either by bare name through the Android loader.
 		if (OperatingSystem.IsAndroid())
 		{
-			foreach (var candidate in new[] { "wgpu_native", "libwgpu_native" })
+			foreach (var candidate in new[] { "webgpu", "libwebgpu", "wgpu_native", "libwgpu_native" })
 			{
 				if (NativeLibrary.TryLoad(candidate, out var handle))
 				{
+					Source = candidate;
 					return handle;
 				}
 			}
 		}
 
-		// Desktop: an app built on one OS ships every desktop platform's native under runtimes/<rid>/native (the
-		// names collide across architectures, so they cannot all sit next to the app); load this platform's.
-		if (!OperatingSystem.IsBrowser() && TryLoadFromRuntimesFolder() is var ridNative && ridNative != IntPtr.Zero)
+		// Desktop: next to the app, or under runtimes/<rid>/native for an app built on one OS for every desktop platform
+		// (the names collide across architectures, so they cannot all sit next to the app). Dawn first, then wgpu-native.
+		if (!OperatingSystem.IsBrowser() && TryLoadDesktop() is var desktop && desktop != IntPtr.Zero)
 		{
-			return ridNative;
+			return desktop;
 		}
 
 		// Otherwise decline so the runtime's default resolution handles "webgpu" (desktop finds the
@@ -85,12 +113,25 @@ internal static class WebGpuLoader
 		return IntPtr.Zero;
 	}
 
-	private static IntPtr TryLoadFromRuntimesFolder()
+	private static IntPtr TryLoadDesktop()
 	{
-		var fileName = OperatingSystem.IsWindows() ? "webgpu.dll"
-			: OperatingSystem.IsMacOS() ? "libwebgpu.dylib"
-			: "libwebgpu.so";
-		var path = System.IO.Path.Combine(AppContext.BaseDirectory, "runtimes", RuntimeInformation.RuntimeIdentifier, "native", fileName);
-		return System.IO.File.Exists(path) && NativeLibrary.TryLoad(path, out var handle) ? handle : IntPtr.Zero;
+		var dawn = Uno.Dawn.DawnLibrary.FileName;
+		var wgpu = OperatingSystem.IsWindows() ? "wgpu_native.dll"
+			: OperatingSystem.IsMacOS() ? "libwgpu_native.dylib"
+			: "libwgpu_native.so";
+		var ridFolder = System.IO.Path.Combine(AppContext.BaseDirectory, "runtimes", RuntimeInformation.RuntimeIdentifier, "native");
+		foreach (var file in new[] { dawn, wgpu })
+		{
+			foreach (var folder in new[] { AppContext.BaseDirectory, ridFolder })
+			{
+				var path = System.IO.Path.Combine(folder, file);
+				if (System.IO.File.Exists(path) && NativeLibrary.TryLoad(path, out var handle))
+				{
+					Source = path;
+					return handle;
+				}
+			}
+		}
+		return IntPtr.Zero;
 	}
 }

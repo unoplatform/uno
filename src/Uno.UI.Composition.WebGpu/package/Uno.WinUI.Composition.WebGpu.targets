@@ -1,5 +1,8 @@
 <Project>
 
+	<!-- UnoWebGpuNative: Dawn (the default) or WgpuNative. -->
+	<Import Project="$(MSBuildThisFileDirectory)Uno.WinUI.Composition.WebGpu.Engine.targets" />
+
 	<!-- Where the payloads live. Defaults to this package's own layout; the in-repo heads override them to
 	     their obj cache and import this file, so repo builds exercise the very wiring consumers get. -->
 	<PropertyGroup>
@@ -9,6 +12,8 @@
 
 	<!--
 	Consumer-side native wiring for the WebGpu backend.
+
+	These are wgpu-native's (UnoWebGpuNative=WgpuNative); Dawn's come with the Uno.Dawn package and its own targets.
 
 	Every other platform resolves its native through runtimes/<rid>/native at load time, so it needs nothing here.
 	iOS is the exception: Apple apps cannot dlopen a library from outside the bundle, so wgpu-native is linked
@@ -23,7 +28,7 @@
 	-->
 	<Target Name="_UnoWebGpuLinkIosNative"
 			BeforeTargets="_SanitizeNativeReferences;_ExpandNativeReferences;_ResolveAssemblies;BeforeBuild"
-			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' And '$(UnoWebGpuNative)' == 'WgpuNative'">
 		<PropertyGroup>
 			<!-- The RID is empty on the outer restore/build pass; default to the device slice so the item exists. -->
 			<_UnoWgpuIosRid>$(RuntimeIdentifier)</_UnoWgpuIosRid>
@@ -46,6 +51,19 @@
 		</ItemGroup>
 	</Target>
 
+
+	<!-- Only one engine reaches the app: with Dawn selected, wgpu-native's libraries are left out of the output. -->
+	<Target Name="_UnoWebGpuDropWgpuFromOutput" BeforeTargets="_CopyFilesMarkedCopyLocal" Condition="'$(UnoWebGpuNative)' == 'Dawn'">
+		<ItemGroup>
+			<ReferenceCopyLocalPaths Remove="@(ReferenceCopyLocalPaths)" Condition="('%(ReferenceCopyLocalPaths.Filename)' == 'wgpu_native' Or '%(ReferenceCopyLocalPaths.Filename)' == 'libwgpu_native') And '%(ReferenceCopyLocalPaths.NuGetPackageId)' == 'Uno.WinUI.Composition.WebGpu'" />
+		</ItemGroup>
+	</Target>
+
+	<Target Name="_UnoWebGpuDropWgpuFromPublish" AfterTargets="ComputeResolvedFilesToPublishList" Condition="'$(UnoWebGpuNative)' == 'Dawn'">
+		<ItemGroup>
+			<ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="('%(ResolvedFileToPublish.Filename)' == 'wgpu_native' Or '%(ResolvedFileToPublish.Filename)' == 'libwgpu_native') And '%(ResolvedFileToPublish.NuGetPackageId)' == 'Uno.WinUI.Composition.WebGpu'" />
+		</ItemGroup>
+	</Target>
 
 	<!--
 	WebAssembly: there is no library to load. Dawn's emdawnwebgpu is compiled INTO dotnet.native.wasm by emscripten

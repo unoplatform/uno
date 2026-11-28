@@ -746,11 +746,16 @@ public class Given_CompositionTarget
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_Content_Changes_While_Minimized_Then_Restore_Presents_It()
 	{
-		// Skia-on-Metal presents into a minimized window's layer, which keeps that content when restored. WebGPU gets an
-		// Occluded surface instead and presents nothing, so its frame has to be retried once the window shows.
+		// Skia-on-Metal and Dawn present into a minimized window's layer, which keeps that content when restored.
+		// wgpu-native gets an Occluded surface instead and presents nothing, so its frame has to be retried once the window shows.
 		if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is not ("1" or "true" or "neutral" or "swapchain"))
 		{
 			Assert.Inconclusive("Only WebGPU skips the present of a hidden window.");
+		}
+
+		if (RuntimeTestsBackendHelper.IsWebGpuDawn)
+		{
+			Assert.Inconclusive("Dawn presents into a hidden window's layer, like Skia-on-Metal.");
 		}
 
 		var text = new TextBlock { Text = "Before" };

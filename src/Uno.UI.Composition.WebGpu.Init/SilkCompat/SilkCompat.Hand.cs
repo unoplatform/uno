@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using Uno.Dawn;
 using SW = Silk.NET.WebGPU;
 using SX = Silk.NET.WebGPU.Extensions.WGPU;
 
@@ -115,6 +116,21 @@ internal static unsafe partial class Xlate
 			o = (WGPURequestAdapterOptions*)a.Alloc(sizeof(WGPURequestAdapterOptions));
 			Fill((SW.RequestAdapterOptions*)options, o, ref a);
 		}
+		if (WebGpuLoader.IsDawn)
+		{
+			if (o == null)
+			{
+				o = (WGPURequestAdapterOptions*)a.Alloc(sizeof(WGPURequestAdapterOptions));
+				*o = default;
+			}
+			o->BackendType = DawnBackend;
+			if (DawnLibrary.AdapterTogglesSize is > 0 and var size)
+			{
+				var toggles = a.Alloc(size);
+				DawnLibrary.WriteAdapterToggles((nint)toggles, (nint)o->NextInChain);
+				o->NextInChain = (WGPUChainedStruct*)toggles;
+			}
+		}
 		var info = new WGPURequestAdapterCallbackInfo
 		{
 			Mode = Spontaneous,
@@ -173,6 +189,20 @@ internal static unsafe partial class Xlate
 			lost.Userdata1 = (IntPtr)s->DeviceLostCallback.Handle;
 			lost.Userdata2 = (IntPtr)s->DeviceLostUserdata;
 		}
+		if (WebGpuLoader.IsDawn)
+		{
+			// A Dawn device is single-threaded unless asked otherwise, and the backend uses it from the render thread and
+			// from offscreen renders on others, as wgpu-native allows.
+			var count = (int)d->RequiredFeatureCount;
+			var features = (WGPUFeatureName*)a.Alloc(sizeof(WGPUFeatureName) * (count + 1));
+			for (var i = 0; i < count; i++)
+			{
+				features[i] = d->RequiredFeatures[i];
+			}
+			features[count] = (WGPUFeatureName)DawnLibrary.ImplicitDeviceSynchronizationFeature;
+			d->RequiredFeatures = features;
+			d->RequiredFeatureCount = (nuint)(count + 1);
+		}
 		d->DeviceLostCallbackInfo = lost;
 		d->UncapturedErrorCallbackInfo = new WGPUUncapturedErrorCallbackInfo
 		{
@@ -214,6 +244,12 @@ internal static unsafe partial class Xlate
 	{
 		if (device == null || !_errorHandlers.TryGetValue(*device, out var handler))
 		{
+			if (WebGpuLoader.IsDawn)
+			{
+				var unhandled = CString(message);
+				Console.Error.WriteLine($"[webgpu] uncaptured {type}: {Marshal.PtrToStringUTF8(unhandled)}");
+				Free(unhandled);
+			}
 			return;
 		}
 		var text = CString(message);
@@ -810,5 +846,11 @@ internal static unsafe partial class Xlate
 		// wgpu-native's own functions: the browser has none of them.
 		t["wgpuDevicePoll"] = OperatingSystem.IsBrowser() ? 0 : (nint)(delegate* unmanaged[Cdecl]<nint, uint, nint, uint>)&wgpuDevicePoll;
 		t["wgpuSetLogCallback"] = OperatingSystem.IsBrowser() ? 0 : (nint)(delegate* unmanaged[Cdecl]<nint, nint, void>)&wgpuSetLogCallback;
+
+		// Dawn's shims for the wgpu-native entry points go in here, ahead of the upload batching Populate wraps them with.
+		if (WebGpuLoader.IsDawn)
+		{
+			AddDawn(t);
+		}
 	}
 }

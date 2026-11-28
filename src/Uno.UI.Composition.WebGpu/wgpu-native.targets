@@ -1,9 +1,13 @@
 <Project>
-	<!-- Fetches the pinned wgpu-native (modern webgpu.h ABI) release for the host OS/arch and drops the native
-	     library next to the consuming output UNDER THE DllImport's OWN NAME (libwebgpu.so / webgpu.dll /
-	     libwebgpu.dylib) so the runtime's DEFAULT [DllImport("webgpu")] resolution finds it (app dir,
-	     runtimes/<rid>/native via deps.json, rpath) — no custom probing needed. Import this from the WebGpu backend
-	     project and from any app head that renders with the WebGPU backend. Cached under obj/. -->
+	<!-- Fetches the pinned wgpu-native (modern webgpu.h ABI) release and provisions it for an app head that selects it
+	     with UnoWebGpuNative=WgpuNative; Dawn, the default, comes from the Uno.Dawn package.
+	     On desktop it keeps its own name (wgpu_native.dll / libwgpu_native.so / libwgpu_native.dylib), since Dawn ships
+	     under the DllImport's ("webgpu"), and WebGpuLoader looks for both. Import this from the WebGpu backend project and
+	     from any app head that renders with the WebGPU backend. Cached under obj/. -->
+
+	<!-- UnoWebGpuNative: Dawn (the default) or WgpuNative, set the same way as for package consumers. -->
+	<Import Project="package\Uno.WinUI.Composition.WebGpu.Engine.targets" />
+
 	<PropertyGroup>
 		<WgpuNativeVersion>v29.0.1.1</WgpuNativeVersion>
 		<WgpuNativeCacheDir>$(MSBuildThisFileDirectory)obj\wgpu-native\$(WgpuNativeVersion)\</WgpuNativeCacheDir>
@@ -66,13 +70,9 @@
 			<_WgpuNativeFile>libwgpu_native.dylib</_WgpuNativeFile>
 		</PropertyGroup>
 
-		<!-- The desktop output/pack name matches the DllImport ("webgpu") so default resolution finds it with no
-		     custom probing. (Android keeps wgpu-native's own name — packed per-ABI and resolved by bare name — and
-		     iOS/tvOS is static-linked, so neither uses this.) -->
+		<!-- wgpu-native's own name on desktop; Dawn takes the DllImport's (see the header comment). -->
 		<PropertyGroup>
-			<_WgpuOutputFile Condition="$(_WgpuNativeFile.EndsWith('.dll'))">webgpu.dll</_WgpuOutputFile>
-			<_WgpuOutputFile Condition="$(_WgpuNativeFile.EndsWith('.so'))">libwebgpu.so</_WgpuOutputFile>
-			<_WgpuOutputFile Condition="$(_WgpuNativeFile.EndsWith('.dylib'))">libwebgpu.dylib</_WgpuOutputFile>
+			<_WgpuOutputFile>$(_WgpuNativeFile)</_WgpuOutputFile>
 		</PropertyGroup>
 	</Target>
 
@@ -144,7 +144,7 @@
 	     library would otherwise leave a loose desktop .so next to its dll, which .NET-Android harvests transitively and
 	     packs into every APK lib/<abi>/, shadowing the real per-ABI bionic binaries (dlopen then fails on libdl.so.2).
 	     The Library check sits on the target so a library never fetches a native it would not copy. -->
-	<Target Name="ProvisionWgpuNative" AfterTargets="Build" DependsOnTargets="_FetchWgpuNative" Condition="'$(OutputType)' != 'Library'">
+	<Target Name="ProvisionWgpuNative" AfterTargets="Build" DependsOnTargets="_FetchWgpuNative" Condition="'$(OutputType)' != 'Library' And '$(UnoWebGpuNative)' == 'WgpuNative'">
 		<Message Importance="high" Text="ProvisionWgpuNative: asset=$(_WgpuAsset) outputType=$(OutputType) -> $(OutDir)$(_WgpuOutputFile)" />
 		<Copy Condition="'$(_WgpuAsset)' != '' And '$(OutDir)' != '' And '$(_UnoWebGpuNativeUnused)' != 'true'"
 			SourceFiles="$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)" DestinationFiles="$(OutDir)$(_WgpuOutputFile)" SkipUnchangedFiles="true" />
@@ -155,12 +155,12 @@
 	     WebGpuLoader looks for the current platform's. The names collide across architectures (both macOS slices
 	     are libwebgpu.dylib), hence a folder per RID rather than next to the app. -->
 	<Target Name="_ProvisionWgpuNativeDesktopRids" AfterTargets="Build"
-			Condition="'$(OutputType)' != 'Library' And '$(OutDir)' != '' And ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop')">
+			Condition="'$(OutputType)' != 'Library' And '$(OutDir)' != '' And '$(UnoWebGpuNative)' == 'WgpuNative' And ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop')">
 		<ItemGroup>
-			<_WgpuDesktopRid Include="win-x64"><Asset>wgpu-windows-x86_64-msvc-release.zip</Asset><Native>wgpu_native.dll</Native><Name>webgpu.dll</Name></_WgpuDesktopRid>
-			<_WgpuDesktopRid Include="linux-x64"><Asset>wgpu-linux-x86_64-release.zip</Asset><Native>libwgpu_native.so</Native><Name>libwebgpu.so</Name></_WgpuDesktopRid>
-			<_WgpuDesktopRid Include="osx-x64"><Asset>wgpu-macos-x86_64-release.zip</Asset><Native>libwgpu_native.dylib</Native><Name>libwebgpu.dylib</Name></_WgpuDesktopRid>
-			<_WgpuDesktopRid Include="osx-arm64"><Asset>wgpu-macos-aarch64-release.zip</Asset><Native>libwgpu_native.dylib</Native><Name>libwebgpu.dylib</Name></_WgpuDesktopRid>
+			<_WgpuDesktopRid Include="win-x64"><Asset>wgpu-windows-x86_64-msvc-release.zip</Asset><Native>wgpu_native.dll</Native><Name>wgpu_native.dll</Name></_WgpuDesktopRid>
+			<_WgpuDesktopRid Include="linux-x64"><Asset>wgpu-linux-x86_64-release.zip</Asset><Native>libwgpu_native.so</Native><Name>libwgpu_native.so</Name></_WgpuDesktopRid>
+			<_WgpuDesktopRid Include="osx-x64"><Asset>wgpu-macos-x86_64-release.zip</Asset><Native>libwgpu_native.dylib</Native><Name>libwgpu_native.dylib</Name></_WgpuDesktopRid>
+			<_WgpuDesktopRid Include="osx-arm64"><Asset>wgpu-macos-aarch64-release.zip</Asset><Native>libwgpu_native.dylib</Native><Name>libwgpu_native.dylib</Name></_WgpuDesktopRid>
 		</ItemGroup>
 		<MakeDir Directories="$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\" />
 		<DownloadFile Condition="!Exists('$(WgpuNativeCacheDir)pack\%(_WgpuDesktopRid.Identity)\%(_WgpuDesktopRid.Asset)')"
@@ -179,7 +179,7 @@
 	</Target>
 
 	<Target Name="_AddWgpuNativeDesktopRidsToPublish" AfterTargets="ComputeFilesToPublish" DependsOnTargets="_ProvisionWgpuNativeDesktopRids"
-			Condition="'$(OutputType)' != 'Library' And ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop')">
+			Condition="'$(OutputType)' != 'Library' And '$(UnoWebGpuNative)' == 'WgpuNative' And ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop')">
 		<ItemGroup>
 			<ResolvedFileToPublish Include="@(_WgpuDesktopRidPublish)" CopyToPublishDirectory="PreserveNewest" />
 		</ItemGroup>
@@ -189,7 +189,7 @@
 	     copies it to the publish root. A loose file in OutDir is NOT a tracked publish item, so it would otherwise be
 	     dropped from the published output (the DllNotFound the WebGPU head hit on Windows). AfterTargets so it appends
 	     to the ResolvedFileToPublish that ComputeFilesToPublish just built, before the copy targets consume it. -->
-	<Target Name="_AddWgpuNativeToPublish" AfterTargets="ComputeFilesToPublish" DependsOnTargets="_FetchWgpuNative">
+	<Target Name="_AddWgpuNativeToPublish" AfterTargets="ComputeFilesToPublish" DependsOnTargets="_FetchWgpuNative" Condition="'$(UnoWebGpuNative)' == 'WgpuNative'">
 		<ItemGroup>
 			<ResolvedFileToPublish Include="$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)" Condition="'$(_WgpuNativeFile)' != '' And '$(_UnoWebGpuNativeUnused)' != 'true'">
 				<RelativePath>$(_WgpuOutputFile)</RelativePath>
@@ -204,7 +204,7 @@
 	     the items land in the APK build. Runs before assembly resolution so the native-lib collection sees them. -->
 	<Target Name="_ProvisionWgpuNativeAndroid"
 			BeforeTargets="_ResolveAssemblies;_ConvertResourcesCases;BeforeBuild"
-			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
+			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' And '$(UnoWebGpuNative)' == 'WgpuNative'">
 		<ItemGroup>
 			<_WgpuAndroidAbi Include="aarch64"><Abi>arm64-v8a</Abi></_WgpuAndroidAbi>
 			<_WgpuAndroidAbi Include="armv7"><Abi>armeabi-v7a</Abi></_WgpuAndroidAbi>
@@ -244,7 +244,7 @@
 	     and the static lib silently never reaches the native link. -->
 	<Target Name="_ProvisionWgpuNativeIos"
 			BeforeTargets="_UnoWebGpuLinkIosNative;_SanitizeNativeReferences;_ExpandNativeReferences;_ResolveAssemblies;BeforeBuild"
-			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">
+			Condition="($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos') And '$(UnoWebGpuNative)' == 'WgpuNative'">
 		<PropertyGroup>
 			<_WgpuIsTvos>false</_WgpuIsTvos>
 			<_WgpuIsTvos Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'">true</_WgpuIsTvos>

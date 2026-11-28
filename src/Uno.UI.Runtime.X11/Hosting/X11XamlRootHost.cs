@@ -563,7 +563,9 @@ internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 			case GraphicsContextKind.WebGpu:
 				try
 				{
-					_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+					// No window transparency on Dawn: its Vulkan swapchain needs a visual without alpha.
+					var depth = global::Uno.UI.Composition.WebGpu.WebGpuContext.NeedsOpaqueX11Window ? FallbackColorDepth : DefaultColorDepth;
+					_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window, depth);
 					_ = XLib.XSync(display, false);
 					var scale = (float)(_wrapper.RasterizationScale <= 0 ? 1 : _wrapper.RasterizationScale);
 					return global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateX11(TopX11Window.Display, TopX11Window.Window, scale);
@@ -688,9 +690,9 @@ internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 		return new X11Window(display, window, (stencil, samples, context));
 	}
 
-	private static X11Window CreateSoftwareRenderWindow(IntPtr display, int screen, Size size, IntPtr parent)
+	private static X11Window CreateSoftwareRenderWindow(IntPtr display, int screen, Size size, IntPtr parent, int preferredDepth = DefaultColorDepth)
 	{
-		var matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, DefaultColorDepth, 4, out var info);
+		var matchVisualInfoResult = XLib.XMatchVisualInfo(display, screen, preferredDepth, 4, out var info);
 		var success = matchVisualInfoResult != 0;
 		if (!success)
 		{

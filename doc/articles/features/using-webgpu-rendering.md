@@ -7,7 +7,7 @@ uid: uno.features.renderer.webgpu
 > [!IMPORTANT]
 > The WebGPU rendering backend is experimental. [Skia](xref:uno.features.renderer.skia) remains the default renderer, and an app uses WebGPU only when it selects it on its host builder.
 
-The WebGPU backend is an alternative to the SkiaSharp backend for drawing the UI. It renders through WebGPU: the `wgpu-native` library on native targets, and the browser's WebGPU support on WebAssembly.
+The WebGPU backend is an alternative to the SkiaSharp backend for drawing the UI. It renders through WebGPU: Google's [Dawn](https://dawn.googlesource.com/dawn) library on native targets, and the browser's WebGPU support on WebAssembly.
 
 ## Adding the backend
 
@@ -44,6 +44,34 @@ host.Run();
 ```
 
 The same two calls apply to the host builder of each target, for example before `.UseAndroid()`, `.UseAppleUIKit()` or `.UseWebAssembly()`.
+
+## Choosing the WebGPU library
+
+On native targets the `WebGpu` feature comes with two WebGPU libraries, and the `UnoWebGpuNative` property of the app project selects one:
+
+| `UnoWebGpuNative` | Library |
+|---|---|
+| `Dawn` (the default) | Google's Dawn, from the `Uno.Dawn` package |
+| `WgpuNative` | [wgpu-native](https://github.com/gfx-rs/wgpu-native) |
+
+For example, to use wgpu-native:
+
+```xml
+<PropertyGroup>
+  <UnoWebGpuNative>WgpuNative</UnoWebGpuNative>
+</PropertyGroup>
+```
+
+Only the selected library ships with the app. Any other value fails the build with [UNOB0037](xref:Build.Solution.error-codes#unob0037-unowebgpunative-has-an-unknown-value). The property has no effect on WebAssembly, which uses the browser's WebGPU.
+
+With Dawn:
+
+- Linux needs glibc 2.34 or later (Ubuntu 22.04, Debian 12, RHEL 9 and later).
+- macOS needs macOS 12 or later.
+- On Linux (X11), WebGPU windows can't be transparent: Dawn's Vulkan swapchain only composites opaque windows.
+- On Windows, Dawn compiles shaders with the system's `d3dcompiler_47.dll` and uses the system's Vulkan loader, so it needs nothing beyond Windows.
+
+The startup log names the library in use, in a line such as `[webgpu] init device — engine=Dawn adapter='…' backend=D3D12`.
 
 ## Fallback
 
