@@ -137,32 +137,88 @@ public partial class Given_PipsPager
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[Ignore("Fails even on Windows, very flaky on Uno.")] // Flaky #9080
-	public async Task When_MaxVisiblePips_GreaterThan_NumberOfPages_Horizontal()
+	// Not verified on NativeWinUI. SkiaWasm: animated BringIntoView scroll
+	// stalls under the headless browser (#23524).
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/16513")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_NumberOfPages_GreaterThan_MaxVisiblePips_Horizontal()
 	{
+		// Asserts the trailing slot still renders a pip once the scroll has settled.
 		var SUT = new PipsPager
 		{
 			NumberOfPages = 7,
-			MaxVisiblePips = 5
+			MaxVisiblePips = 5,
+			RequestedTheme = ElementTheme.Light,
+			Background = new SolidColorBrush(Microsoft.UI.Colors.White),
 		};
 
 		await UITestHelper.Load(SUT);
 
-		var initialScreenshot = await UITestHelper.ScreenShot(SUT);
+		var repeater = SUT.FindFirstDescendant<ItemsRepeater>("PipsPagerItemsRepeater");
+		Assert.IsNotNull(repeater, "Inner ItemsRepeater not found");
 
-		var color = initialScreenshot.GetPixel(initialScreenshot.Width - 5, initialScreenshot.Height / 2);
+		var scrollViewer = SUT.FindFirstDescendant<ScrollViewer>("PipsPagerScrollViewer");
+		Assert.IsNotNull(scrollViewer, "Inner ScrollViewer not found");
 
 		SUT.SelectedPageIndex = 3;
+		await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+		// Wait for the animated BringIntoView scroll to settle with the selected pip
+		// centred in the viewport before asserting or screenshotting.
+		await UITestHelper.WaitFor(
+			() =>
+			{
+				if (repeater.TryGetElement(3) is not FrameworkElement selectedPip)
+				{
+					return false;
+				}
+
+				var x = selectedPip.TransformToVisual(SUT).TransformPoint(new Windows.Foundation.Point(0, 0)).X;
+				var centre = x + selectedPip.ActualWidth / 2;
+				return scrollViewer.HorizontalOffset > 0 && System.Math.Abs(centre - SUT.ActualWidth / 2) <= 1;
+			},
+			timeoutMS: 5000,
+			message: "Selected pip did not scroll to the centre of the viewport after SelectedPageIndex = 3");
 		await TestServices.WindowHelper.WaitForIdle();
 
-		var scrolledScreenshot = await UITestHelper.ScreenShot(SUT);
-		ImageAssert.HasColorAt(scrolledScreenshot, scrolledScreenshot.Width - 5, scrolledScreenshot.Height / 2, color);
+		var horizontalOffset = scrollViewer.HorizontalOffset;
+
+		Assert.IsTrue(horizontalOffset > 0,
+			$"ScrollViewer must have scrolled to bring the selected pip into view. HorizontalOffset={horizontalOffset}");
+
+		// With pip 3 centred in a window of 5 pips, the visible window covers indices
+		// 1..5, so the trailing slot (index 5) must still hold a realized, laid-out pip.
+		var trailingPip = repeater.TryGetElement(5) as FrameworkElement;
+		Assert.IsNotNull(trailingPip, "Pip 5 must be realized in the trailing slot when pip 3 is centred");
+		Assert.IsTrue(trailingPip.ActualWidth > 0 && trailingPip.ActualHeight > 0,
+			$"Pip 5 must be laid out after navigation, was {trailingPip.ActualWidth}x{trailingPip.ActualHeight}");
+		var trailingX = trailingPip.TransformToVisual(SUT).TransformPoint(new Windows.Foundation.Point(0, 0)).X;
+		Assert.IsTrue(trailingX >= 0 && trailingX < SUT.ActualWidth,
+			$"Pip 5 X position {trailingX} is outside pager width {SUT.ActualWidth}. ScrollViewer offset={horizontalOffset}");
+
+		// With an opaque white background, any rendered pip ink near the trailing
+		// edge proves the trailing slot still renders after the scroll.
+		var screenshot = await UITestHelper.ScreenShot(SUT, opaque: true);
+		bool inkInTrailingSlot = false;
+		int midY = screenshot.Height / 2;
+		var slotStart = (int)(screenshot.Width * 0.75);
+		for (int x = slotStart; x < screenshot.Width; x++)
+		{
+			var c = screenshot.GetPixel(x, midY);
+			if (c.A == 255 && (c.R < 250 || c.G < 250 || c.B < 250))
+			{
+				inkInTrailingSlot = true;
+				break;
+			}
+		}
+
+		Assert.IsTrue(inkInTrailingSlot,
+			$"Expected pip ink in the trailing slot (>= x={slotStart}) after scrolling to SelectedPageIndex 3. ScrollViewer offset={horizontalOffset}.");
 	}
 
 	[TestMethod]
 	[RunsOnUIThread]
 	[Ignore("Very flaky on Uno.")] // Flaky #9080
-	public async Task When_MaxVisiblePips_GreaterThan_NumberOfPages_Vertical()
+	public async Task When_NumberOfPages_GreaterThan_MaxVisiblePips_Vertical()
 	{
 		var SUT = new PipsPager
 		{
