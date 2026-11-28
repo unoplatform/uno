@@ -14,6 +14,18 @@ dotnet new unoapp -toolkit
 > The Uno Toolkit is demonstrated as a live [Uno Toolkit web app](https://gallery.platform.uno/). It is also available as an [iOS](https://apps.apple.com/us/app/uno-gallery/id1380984680) or [Android](https://play.google.com/store/apps/details?id=com.nventive.uno.ui.demo) app.  
 > The Gallery app is open-source and is [available on GitHub](https://github.com/unoplatform/uno.gallery).  
 
+#### Hot Testing
+
+Turns on the `HotTesting` Uno feature, so tests can be written inside the app with [Uno.HotTesting](https://www.nuget.org/packages/Uno.HotTesting). The tests go in the app project's `Tests` folder and only exist in Debug builds: Release builds leave out both the package and the folder. The Windows (WinAppSDK) target doesn't get it.
+
+This is included by default in the recommended preset, but not in the blank preset.
+
+```dotnetcli
+dotnet new unoapp -hot-testing
+```
+
+You can read more in [Hot Testing in non-optimized builds](xref:Uno.Features.Uno.Sdk#hot-testing-in-non-optimized-builds).
+
 #### .NET MAUI Embedding
 
 Adds support for embedding .NET MAUI controls and third party libraries into an application. This is not included in either the blank or recommended presets.
