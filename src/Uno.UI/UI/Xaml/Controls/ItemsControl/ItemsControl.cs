@@ -332,7 +332,11 @@ namespace Microsoft.UI.Xaml.Controls
 						(o, e) => ((ItemsControl)o).OnItemContainerStyleChanged((Style)e.OldValue, (Style)e.NewValue))
 					);
 
-		protected virtual void OnItemContainerStyleChanged(Style oldItemContainerStyle, Style newItemContainerStyle) => Refresh();
+		protected virtual void OnItemContainerStyleChanged(Style oldItemContainerStyle, Style newItemContainerStyle)
+		{
+			Refresh();
+			ApplyItemContainerStyleToMaterializedContainers();
+		}
 		#endregion
 
 		#region ItemContainerStyleSelector DependencyProperty
@@ -348,7 +352,16 @@ namespace Microsoft.UI.Xaml.Controls
 				(o, e) => ((ItemsControl)o).OnItemContainerStyleSelectorChanged((StyleSelector)e.OldValue, (StyleSelector)e.NewValue))
 			);
 
-		protected virtual void OnItemContainerStyleSelectorChanged(StyleSelector oldItemContainerStyleSelector, StyleSelector newItemContainerStyleSelector) => Refresh();
+		protected virtual void OnItemContainerStyleSelectorChanged(StyleSelector oldItemContainerStyleSelector, StyleSelector newItemContainerStyleSelector)
+		{
+			Refresh();
+
+			// Like WinUI, the selector is ignored when ItemContainerStyle is set, so the containers only need updating otherwise.
+			if (ItemContainerStyle is null)
+			{
+				ApplyItemContainerStyleToMaterializedContainers();
+			}
+		}
 
 		#endregion
 
@@ -1676,6 +1689,22 @@ namespace Microsoft.UI.Xaml.Controls
 				if (child is SelectorItem selectorItem)
 				{
 					selectorItem.UpdateVisualState(useTransitions);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Re-applies ItemContainerStyle (or ItemContainerStyleSelector) to the containers that are already realized,
+		/// as WinUI does through RefreshContainers when either property changes.
+		/// </summary>
+		private void ApplyItemContainerStyleToMaterializedContainers()
+		{
+			foreach (var container in GetItemsPanelChildren().ToArray())
+			{
+				var index = IndexFromContainer(container);
+				if (index >= 0)
+				{
+					ApplyItemContainerStyle(container, ItemFromIndex(index));
 				}
 			}
 		}

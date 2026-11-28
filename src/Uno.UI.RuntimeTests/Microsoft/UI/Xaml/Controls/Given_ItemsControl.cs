@@ -603,6 +603,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, item.ActualHeight, "reset state: expecting the item's height to be remeasured to 0");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26423")]
+		public async Task When_ItemContainerStyle_Set_After_Containers_Realized()
+		{
+			var SUT = new ItemsControl { ItemsSource = new[] { "a", "b" } };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitFor(() => SUT.ContainerFromIndex(1) is not null);
+
+			SUT.ItemContainerStyle = CreateContentPresenterOpacityStyle(0.5);
+			await WindowHelper.WaitForIdle();
+
+			var c0 = (ContentPresenter)SUT.ContainerFromIndex(0);
+			var c1 = (ContentPresenter)SUT.ContainerFromIndex(1);
+			Assert.AreEqual(0.5, c0.Opacity);
+			Assert.AreEqual(0.5, c1.Opacity);
+
+			SUT.ItemContainerStyle = null;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1.0, c0.Opacity);
+			Assert.AreEqual(1.0, c1.Opacity);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26423")]
+		public async Task When_ItemContainerStyleSelector_Set_After_Containers_Realized()
+		{
+			var SUT = new ItemsControl { ItemsSource = new[] { "a", "b" } };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitFor(() => SUT.ContainerFromIndex(1) is not null);
+
+			SUT.ItemContainerStyleSelector = new TestStyleSelector { Style = CreateContentPresenterOpacityStyle(0.5) };
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0.5, ((ContentPresenter)SUT.ContainerFromIndex(0)).Opacity);
+			Assert.AreEqual(0.5, ((ContentPresenter)SUT.ContainerFromIndex(1)).Opacity);
+		}
+
+		private static Style CreateContentPresenterOpacityStyle(double opacity)
+			=> (Style)XamlReader.Load(
+				"<Style xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' TargetType='ContentPresenter'>" +
+				$"<Setter Property='Opacity' Value='{opacity.ToString(System.Globalization.CultureInfo.InvariantCulture)}'/></Style>");
+	}
+
+	internal class TestStyleSelector : StyleSelector
+	{
+		public Style Style { get; set; }
+
+		protected override Style SelectStyleCore(object item, DependencyObject container) => Style;
 	}
 
 	internal partial class ContentControlItemsControl : ItemsControl
