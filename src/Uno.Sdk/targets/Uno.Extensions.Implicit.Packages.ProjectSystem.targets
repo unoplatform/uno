@@ -44,6 +44,11 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Http.Kiota" ProjectSystem="true" />
 	</ItemGroup>
 
+	<ItemGroup Condition="$(UnoFeatures.Contains(';aspire;'))">
+		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Http.WinUI" ProjectSystem="true" />
+		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Aspire" ProjectSystem="true" />
+	</ItemGroup>
+
 	<ItemGroup Condition="$(UnoFeatures.Contains(';httprefit;'))">
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Http.WinUI" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Http.Refit" ProjectSystem="true" />

@@ -565,6 +565,10 @@
 					"description": "Adds support for custom HTTP clients, including the use of Refit with Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/extensions-http-refit"
 				},
+				"Aspire": {
+					"description": "Adds support for Aspire service discovery, resilience and telemetry using Uno.Extensions.",
+					"helpUrl": "https://platform.uno/docs/articles/external/uno.extensions/doc/Learn/Aspire/HowTo-Aspire.html"
+				},
 				"Localization": {
 					"description": "Adds support for Localization using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-localization"

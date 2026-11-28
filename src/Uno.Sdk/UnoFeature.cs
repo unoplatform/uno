@@ -61,6 +61,9 @@ public enum UnoFeature
 	HttpRefit,
 
 	[UnoArea(UnoArea.Extensions)]
+	Aspire,
+
+	[UnoArea(UnoArea.Extensions)]
 	Localization,
 
 	[UnoArea(UnoArea.Extensions)]
