@@ -7,20 +7,21 @@ namespace Microsoft.UI.Xaml.Input
 {
 	public sealed partial class DoubleTappedRoutedEventArgs : RoutedEventArgs, IHandleableRoutedEventArgs
 	{
-		private readonly UIElement _originalSource;
-		private readonly Point _position;
+		private readonly bool _hasPosition;
+		private readonly Point _globalPoint;
 
 		public DoubleTappedRoutedEventArgs() { }
 
-		/// <param name="originalSource">The original source of the PointerUp event causing the Tapped event (i.e. the top-most element that hit-tests positively).</param>
-		/// <param name="gestureRecognizerOwner">The element that subscribes to the Tapped event and initiates then propagates the event. This element is the owner of the GestureRecognizer that recognizes this Tap event.</param>
-		internal DoubleTappedRoutedEventArgs(UIElement originalSource, TappedEventArgs args, UIElement gestureRecognizerOwner)
+		/// <param name="originalSource">
+		/// The original source of the second PointerPressed event, which completes the double-tap
+		/// (i.e. the top-most element that hit-tests positively).
+		/// </param>
+		internal DoubleTappedRoutedEventArgs(UIElement originalSource, TappedEventArgs args)
 			: base(originalSource)
 		{
-			_originalSource = originalSource;
+			_hasPosition = true;
 			PointerDeviceType = args.PointerDeviceType;
-			// The TappedEventArgs position is relative to the GestureRecognizer owner, not the original source of the pointer event.
-			_position = gestureRecognizerOwner.GetPosition(args.Position, originalSource);
+			_globalPoint = args.RawPosition;
 			PointerId = args.PointerId;
 		}
 
@@ -32,18 +33,13 @@ namespace Microsoft.UI.Xaml.Input
 
 		public Point GetPosition(UIElement relativeTo)
 		{
-			if (_originalSource == null)
+			if (!_hasPosition)
 			{
 				return default; // Required for the default public ctor ...
 			}
-			else if (relativeTo == _originalSource)
-			{
-				return _position;
-			}
-			else
-			{
-				return _originalSource.GetPosition(_position, relativeTo);
-			}
+
+			// As on WinUI, the press point is resolved when asked, so the position doesn't follow the element.
+			return InputPointEventArgsHelper.ConvertGlobalPointToRelativePoint(_globalPoint, relativeTo);
 		}
 	}
 }

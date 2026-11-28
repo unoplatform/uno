@@ -9,17 +9,24 @@ namespace Windows.UI.Input;
 
 public partial class TappedEventArgs
 {
-	internal TappedEventArgs(uint pointerId, PointerDeviceType type, Point position, uint tapCount)
+	internal TappedEventArgs(uint pointerId, PointerDeviceType type, Point position, Point rawPosition, uint tapCount)
 	{
 		PointerId = pointerId;
 		PointerDeviceType = type;
 		Position = position;
+		RawPosition = rawPosition;
 		TapCount = tapCount;
 	}
 
 	public PointerDeviceType PointerDeviceType { get; }
 
 	public Point Position { get; }
+
+	/// <summary>
+	/// The <see cref="PointerPoint.RawPosition"/> of the press (the second one for a double-tap),
+	/// which is relative to the window for a UIElement recognizer.
+	/// </summary>
+	internal Point RawPosition { get; }
 
 	internal uint PointerId { get; }
 

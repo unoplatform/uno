@@ -130,9 +130,6 @@ namespace Microsoft.UI.Xaml
 		}
 #endif
 
-		internal Point GetPosition(Point position, UIElement relativeTo)
-			=> TransformToVisual(relativeTo).TransformPoint(position);
-
 		private void ChildEnter(UIElement child, EnterParams @params)
 		{
 			// Uno TODO: WinUI has much more complex logic than this.
