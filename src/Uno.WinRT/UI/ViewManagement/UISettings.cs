@@ -38,7 +38,7 @@ namespace Windows.UI.ViewManagement
 				var weakReference = instance.Key;
 				if (weakReference.TryGetTarget(out var uiSettings))
 				{
-					uiSettings.ColorValuesChanged?.Invoke(uiSettings, null);
+					uiSettings._colorValuesChanged?.Invoke(uiSettings, null);
 				}
 			}
 		}
@@ -55,7 +55,24 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		public event TypedEventHandler<UISettings, object> ColorValuesChanged;
+		private TypedEventHandler<UISettings, object> _colorValuesChanged;
+
+		/// <summary>
+		/// Occurs when color values have changed.
+		/// </summary>
+		/// <remarks>
+		/// Adding a handler starts observing the system theme, so the event is raised even when no
+		/// <c>Application</c> has been initialized.
+		/// </remarks>
+		public event TypedEventHandler<UISettings, object> ColorValuesChanged
+		{
+			add
+			{
+				_colorValuesChanged += value;
+				SystemThemeHelper.ObserveThemeChanges();
+			}
+			remove => _colorValuesChanged -= value;
+		}
 
 		/// <summary>
 		/// Starts observing OS text scale factor changes.
