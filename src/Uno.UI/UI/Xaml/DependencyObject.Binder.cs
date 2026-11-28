@@ -686,10 +686,9 @@ namespace Microsoft.UI.Xaml
 				// clear path, so pushing onto it here would cache a DataContext that is never released.
 				if (newValue is DependencyObject addedProvider
 					&& addedProvider.DataContextPropertyInternal is null
-					&& (addedProvider.GetParent() is not { } addedParent || ReferenceEquals(addedParent, ActualInstance))
-					&& DataContextPropertyDetails is { } dataContextDetails)
+					&& (addedProvider.GetParent() is not { } addedParent || ReferenceEquals(addedParent, ActualInstance)))
 				{
-					var currentDataContext = GetValue(dataContextDetails);
+					var currentDataContext = GetInheritedDataContextValue();
 					if (currentDataContext is not null && currentDataContext != DependencyProperty.UnsetValue)
 					{
 						addedProvider.SetInheritedDataContext(currentDataContext);
