@@ -30,7 +30,11 @@ internal partial class StorageFileHelper
 		var installDir = Package.GetAppInstallDirectory(Assembly.GetExecutingAssembly());
 		if (installDir != null)
 		{
+#if __SKIA__
+			var fullPath = Package.ResolveContentPath(installDir, fileName);
+#else
 			var fullPath = Path.Combine(installDir, fileName);
+#endif
 			return Task.FromResult(File.Exists(fullPath));
 		}
 

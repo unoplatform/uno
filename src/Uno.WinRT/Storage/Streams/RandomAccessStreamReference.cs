@@ -30,10 +30,12 @@ namespace Windows.Storage.Streams
 
 				if (uri.IsMsAppx())
 				{
-					var convertedPath =
-						Path.Combine(Package.Current.InstalledPath,
-							uri.PathAndQuery.TrimStart('/').Replace('/', Path.DirectorySeparatorChar)
-						);
+					var relativePath = uri.PathAndQuery.TrimStart('/').Replace('/', Path.DirectorySeparatorChar);
+#if __SKIA__
+					var convertedPath = Package.ResolveContentPath(Package.Current.InstalledPath, relativePath);
+#else
+					var convertedPath = Path.Combine(Package.Current.InstalledPath, relativePath);
+#endif
 					return await StorageFile.GetFileFromPath(convertedPath).OpenReadAsync();
 				}
 
