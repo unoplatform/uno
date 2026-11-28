@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation.Extensibility;
@@ -17,193 +18,265 @@ namespace Uno.UI.Runtime.MacOS;
 
 internal sealed class MacOSSpeechRecognizerExtension : ISpeechRecognizerExtension
 {
+	// Must match UNOSpeechSignal, UNOSpeechUtteranceOutcome and UNOSpeechErrorCode in UNOSpeechRecognizer.h.
+	private const int SignalSpeechDetected = 0;
+	private const int SignalFinishedReadingAudio = 1;
+	private const int OutcomeSuccess = 0;
+	private const int OutcomeError = 1;
+	private const string UnoSpeechErrorDomain = "UnoSpeech";
+	private const long ErrorNoInputDevice = 1;
+	private const long ErrorAudioEngineFailed = 2;
+	private const long ErrorRecognizerUnavailable = 3;
+
+	private const int MissingUsageDescription = -1;
+	private const int SpeechAuthorized = 3; // SFSpeechRecognizerAuthorizationStatusAuthorized
+	private const int MicrophoneAuthorized = 3; // AVAuthorizationStatusAuthorized
+
+	private const char ListSeparator = '\x1F';
+
+	private const string SFSpeechErrorDomain = "SFSpeechErrorDomain";
+	private const long SFSpeechErrorAudioReadFailed = 2;
+	private const long SFSpeechErrorTimeout = 12;
+
+	// The speech service also reports errors from these undocumented domains.
+	private const string AssistantErrorDomain = "kAFAssistantErrorDomain";
+	private const string LocalSpeechErrorDomain = "kLSRErrorDomain";
+	private const long AssistantErrorNoSpeechDetected = 1110;
+	private const long AssistantErrorCanceled = 216;
+	private const long RecognitionRequestCanceled = 301;
+
 	private static readonly ConcurrentDictionary<nint, MacOSSpeechRecognizerExtension> _instances = new();
+	private static readonly ConcurrentDictionary<long, TaskCompletionSource<SpeechRecognizerAuthorization>> _authorizationRequests = new();
+	private static long _nextAuthorizationToken;
 
-	private nint _nativeHandle;
-	private TaskCompletionSource<(string text, IReadOnlyList<string> alternates)>? _pendingRecognition;
-	private bool _disposed;
+	private nint _handle;
 
-	public event Action<string>? HypothesisGenerated;
-	public event Action<SpeechRecognizerState>? StateChanged;
-
-	private MacOSSpeechRecognizerExtension(object owner)
-	{
-		// `owner` is the SpeechRecognizer instance; we don't need it directly — language is supplied via Initialize().
-	}
+	public event EventHandler<string>? HypothesisGenerated;
+	public event EventHandler? SpeechDetected;
+	public event EventHandler? AudioCaptureEnded;
+	public event EventHandler<SpeechAudioLevel>? AudioLevelChanged;
+	public event EventHandler<SpeechUtteranceOutcome>? UtteranceCompleted;
 
 	public static unsafe void Register()
 	{
-		NativeUno.uno_speech_set_callbacks(
-			hypothesis: &OnHypothesis,
-			state: &OnState,
-			result: &OnResult,
-			error: &OnError);
-
-		ApiExtensibility.Register(typeof(ISpeechRecognizerExtension), o => new MacOSSpeechRecognizerExtension(o));
+		NativeUno.uno_speech_set_callbacks(&OnHypothesis, &OnSignal, &OnAudioLevel, &OnUtteranceCompleted, &OnAuthorization);
+		ApiExtensibility.Register(typeof(ISpeechRecognizerExtension), _ => new MacOSSpeechRecognizerExtension());
 	}
 
-	public void Initialize(Language language, SpeechRecognizerTimeouts timeouts)
+	public bool Initialize(Language language)
 	{
-		if (_nativeHandle != 0)
-		{
-			NativeUno.uno_speech_recognizer_destroy(_nativeHandle);
-			_instances.TryRemove(_nativeHandle, out _);
-			_nativeHandle = 0;
-		}
+		DestroyHandle();
 
-		// Apple expects locale identifiers like "en-US"; SpeechRecognizer ctor seeds CurrentLanguage from CultureInfo.CurrentCulture.Name
-		// which is already in BCP-47 form, so passing LanguageTag directly is correct.
-		var localeTag = language?.LanguageTag ?? CultureInfo.CurrentCulture.Name;
-		_nativeHandle = NativeUno.uno_speech_recognizer_create(localeTag);
-		if (_nativeHandle == 0)
+		var languageTag = language?.LanguageTag ?? CultureInfo.CurrentCulture.Name;
+		_handle = NativeUno.uno_speech_recognizer_create(languageTag);
+		if (_handle == 0)
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().Warn($"Speech recognition is not available for locale '{localeTag}' on this macOS version.");
+				this.Log().Warn($"Speech recognition is not supported for language '{languageTag}' on this Mac.");
 			}
-			return;
+
+			return false;
 		}
 
-		_instances[_nativeHandle] = this;
+		_instances[_handle] = this;
+		return true;
 	}
 
-	public Task<(string text, IReadOnlyList<string> alternates)> RecognizeAsync()
+	public Task<SpeechRecognizerAuthorization> RequestAuthorizationAsync()
 	{
-		if (_disposed)
-		{
-			throw new ObjectDisposedException(nameof(MacOSSpeechRecognizerExtension));
-		}
-		if (_nativeHandle == 0)
-		{
-			throw new InvalidOperationException("Speech recognition is not available on this macOS version.");
-		}
-
-		var tcs = new TaskCompletionSource<(string text, IReadOnlyList<string> alternates)>(TaskCreationOptions.RunContinuationsAsynchronously);
-
-		// Replace any previous pending recognition with this one (last-writer-wins, matches iOS behavior of cancelling prior task).
-		var previous = Interlocked.Exchange(ref _pendingRecognition, tcs);
-		previous?.TrySetCanceled();
-
-		if (!NativeUno.uno_speech_recognizer_start(_nativeHandle))
-		{
-			Interlocked.CompareExchange(ref _pendingRecognition, null, tcs);
-			tcs.TrySetException(new InvalidOperationException("Failed to start speech recognition. See logs for details."));
-		}
-
-		return tcs.Task;
+		var token = CreateAuthorizationToken();
+		var completion = new TaskCompletionSource<SpeechRecognizerAuthorization>(TaskCreationOptions.RunContinuationsAsynchronously);
+		_authorizationRequests[token] = completion;
+		NativeUno.uno_speech_request_authorization(token);
+		return completion.Task;
 	}
 
-	public Task StopAsync()
+	private static long CreateAuthorizationToken() => Interlocked.Increment(ref _nextAuthorizationToken);
+
+	public void BeginUtterance(SpeechUtteranceOptions options)
 	{
-		if (_nativeHandle != 0)
-		{
-			NativeUno.uno_speech_recognizer_stop(_nativeHandle);
-		}
-		return Task.CompletedTask;
+		var contextualStrings = options.ContextualStrings.Count > 0 ? string.Join(ListSeparator, options.ContextualStrings) : null;
+		NativeUno.uno_speech_recognizer_begin_utterance(GetHandle(), (int)options.TaskHint, contextualStrings);
 	}
 
-	public void Dispose()
-	{
-		if (_disposed)
-		{
-			return;
-		}
-		_disposed = true;
+	public void EndUtterance() => NativeUno.uno_speech_recognizer_end_utterance(GetHandle());
 
-		var handle = Interlocked.Exchange(ref _nativeHandle, 0);
+	public void CancelUtterance() => NativeUno.uno_speech_recognizer_cancel_utterance(GetHandle());
+
+	public void StopAudio()
+	{
+		if (_handle != 0)
+		{
+			NativeUno.uno_speech_recognizer_stop_audio(_handle);
+		}
+	}
+
+	public IReadOnlyList<string> GetSupportedLanguageTags()
+		=> TakeNativeString(NativeUno.uno_speech_copy_supported_locales())?.Split(ListSeparator, StringSplitOptions.RemoveEmptyEntries)
+			?? Array.Empty<string>();
+
+	public string? GetSystemLanguageTag() => TakeNativeString(NativeUno.uno_speech_copy_default_locale());
+
+	public void Dispose() => DestroyHandle();
+
+	private nint GetHandle() => _handle != 0 ? _handle : throw new InvalidOperationException("The speech recognizer language is not supported.");
+
+	private void DestroyHandle()
+	{
+		var handle = Interlocked.Exchange(ref _handle, 0);
 		if (handle != 0)
 		{
 			_instances.TryRemove(handle, out _);
 			NativeUno.uno_speech_recognizer_destroy(handle);
 		}
-
-		var pending = Interlocked.Exchange(ref _pendingRecognition, null);
-		pending?.TrySetCanceled();
 	}
+
+	private static unsafe string? TakeNativeString(nint value)
+	{
+		if (value == 0)
+		{
+			return null;
+		}
+
+		try
+		{
+			return Marshal.PtrToStringUTF8(value);
+		}
+		finally
+		{
+			NativeMemory.Free((void*)value);
+		}
+	}
+
+	internal static (SpeechUtteranceOutcomeKind Kind, SpeechRecognitionResultStatus Status) MapError(string? domain, long code)
+		=> (domain, code) switch
+		{
+			(UnoSpeechErrorDomain, ErrorNoInputDevice or ErrorAudioEngineFailed) => (SpeechUtteranceOutcomeKind.Error, SpeechRecognitionResultStatus.MicrophoneUnavailable),
+			(UnoSpeechErrorDomain, ErrorRecognizerUnavailable) => (SpeechUtteranceOutcomeKind.Error, SpeechRecognitionResultStatus.NetworkFailure),
+			(SFSpeechErrorDomain, SFSpeechErrorAudioReadFailed) => (SpeechUtteranceOutcomeKind.Error, SpeechRecognitionResultStatus.AudioQualityFailure),
+			(SFSpeechErrorDomain, SFSpeechErrorTimeout) => (SpeechUtteranceOutcomeKind.Error, SpeechRecognitionResultStatus.TimeoutExceeded),
+			(AssistantErrorDomain, AssistantErrorNoSpeechDetected) => (SpeechUtteranceOutcomeKind.Error, SpeechRecognitionResultStatus.TimeoutExceeded),
+			(AssistantErrorDomain, AssistantErrorCanceled or RecognitionRequestCanceled) or (LocalSpeechErrorDomain, RecognitionRequestCanceled)
+				=> (SpeechUtteranceOutcomeKind.Canceled, SpeechRecognitionResultStatus.UserCanceled),
+			("NSURLErrorDomain", _) => (SpeechUtteranceOutcomeKind.Error, SpeechRecognitionResultStatus.NetworkFailure),
+			_ => (SpeechUtteranceOutcomeKind.Error, SpeechRecognitionResultStatus.Unknown),
+		};
+
+	internal static SpeechUtteranceOutcome ParseResult(string json)
+	{
+		using var document = JsonDocument.Parse(json);
+		var root = document.RootElement;
+
+		var transcriptions = new List<SpeechTranscription>();
+		foreach (var transcription in root.GetProperty("transcriptions").EnumerateArray())
+		{
+			transcriptions.Add(new SpeechTranscription(
+				transcription.GetProperty("text").GetString() ?? string.Empty,
+				transcription.GetProperty("confidence").GetDouble(),
+				TimeSpan.FromSeconds(transcription.GetProperty("start").GetDouble()),
+				TimeSpan.FromSeconds(transcription.GetProperty("duration").GetDouble())));
+		}
+
+		var audioStart = root.GetProperty("audioStart").GetDouble();
+		return new SpeechUtteranceOutcome(
+			SpeechUtteranceOutcomeKind.Success,
+			transcriptions,
+			audioStart > 0 ? DateTimeOffset.FromUnixTimeMilliseconds((long)(audioStart * 1000)) : null);
+	}
+
+	private static SpeechUtteranceOutcome CreateOutcome(int outcome, string? json, string? errorDomain, long errorCode, string? errorMessage)
+	{
+		if (outcome == OutcomeSuccess && json is not null)
+		{
+			try
+			{
+				return ParseResult(json);
+			}
+			catch (Exception ex) when (ex is JsonException or KeyNotFoundException or InvalidOperationException)
+			{
+				return new SpeechUtteranceOutcome(SpeechUtteranceOutcomeKind.Error, Array.Empty<SpeechTranscription>(), ErrorMessage: ex.Message);
+			}
+		}
+
+		if (outcome == OutcomeError)
+		{
+			var (kind, status) = MapError(errorDomain, errorCode);
+			return new SpeechUtteranceOutcome(kind, Array.Empty<SpeechTranscription>(), ErrorStatus: status, ErrorMessage: errorMessage);
+		}
+
+		return new SpeechUtteranceOutcome(SpeechUtteranceOutcomeKind.Canceled, Array.Empty<SpeechTranscription>());
+	}
+
+	private static unsafe string? ToManagedString(byte* value) => value is null ? null : Marshal.PtrToStringUTF8((nint)value);
 
 	private static MacOSSpeechRecognizerExtension? Resolve(nint handle)
 		=> _instances.TryGetValue(handle, out var instance) ? instance : null;
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	private static unsafe void OnHypothesis(nint handle, byte* textUtf8)
+	private static unsafe void OnHypothesis(nint handle, byte* text)
 	{
-		var instance = Resolve(handle);
-		if (instance is null)
+		if (Resolve(handle) is { } instance)
 		{
-			return;
+			instance.HypothesisGenerated?.Invoke(instance, ToManagedString(text) ?? string.Empty);
 		}
-		var text = Marshal.PtrToStringUTF8((nint)textUtf8) ?? string.Empty;
-		try
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnSignal(nint handle, int signal)
+	{
+		if (Resolve(handle) is { } instance)
 		{
-			instance.HypothesisGenerated?.Invoke(text);
-		}
-		catch (Exception ex)
-		{
-			if (instance.Log().IsEnabled(LogLevel.Error))
+			switch (signal)
 			{
-				instance.Log().Error("HypothesisGenerated handler threw", ex);
+				case SignalSpeechDetected:
+					instance.SpeechDetected?.Invoke(instance, EventArgs.Empty);
+					break;
+
+				case SignalFinishedReadingAudio:
+					instance.AudioCaptureEnded?.Invoke(instance, EventArgs.Empty);
+					break;
 			}
 		}
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	private static void OnState(nint handle, int state)
+	private static void OnAudioLevel(nint handle, float rmsDecibels, float peakDecibels)
 	{
-		var instance = Resolve(handle);
-		if (instance is null)
+		if (Resolve(handle) is { } instance)
 		{
-			return;
-		}
-		try
-		{
-			instance.StateChanged?.Invoke((SpeechRecognizerState)state);
-		}
-		catch (Exception ex)
-		{
-			if (instance.Log().IsEnabled(LogLevel.Error))
-			{
-				instance.Log().Error("StateChanged handler threw", ex);
-			}
+			instance.AudioLevelChanged?.Invoke(instance, new SpeechAudioLevel(rmsDecibels, peakDecibels));
 		}
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	private static unsafe void OnResult(nint handle, byte* textUtf8, byte* alternatesUtf8)
+	private static unsafe void OnUtteranceCompleted(nint handle, int outcome, byte* resultJson, byte* errorDomain, long errorCode, byte* errorMessage)
 	{
-		var instance = Resolve(handle);
-		if (instance is null)
+		if (Resolve(handle) is not { } instance)
 		{
 			return;
 		}
-		var text = Marshal.PtrToStringUTF8((nint)textUtf8) ?? string.Empty;
-		IReadOnlyList<string> alternates;
-		if (alternatesUtf8 != null)
+
+		var result = CreateOutcome(outcome, ToManagedString(resultJson), ToManagedString(errorDomain), errorCode, ToManagedString(errorMessage));
+		if (result.Kind == SpeechUtteranceOutcomeKind.Error && instance.Log().IsEnabled(LogLevel.Debug))
 		{
-			var joined = Marshal.PtrToStringUTF8((nint)alternatesUtf8) ?? string.Empty;
-			alternates = joined.Length == 0
-				? Array.Empty<string>()
-				: joined.Split('\x1F');
-		}
-		else
-		{
-			alternates = Array.Empty<string>();
+			instance.Log().Debug($"Speech recognition failed ({ToManagedString(errorDomain)} {errorCode}): {result.ErrorMessage}");
 		}
 
-		var pending = Interlocked.Exchange(ref instance._pendingRecognition, null);
-		pending?.TrySetResult((text, alternates));
+		instance.UtteranceCompleted?.Invoke(instance, result);
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	private static unsafe void OnError(nint handle, byte* messageUtf8)
+	private static void OnAuthorization(long token, int speechStatus, int microphoneStatus)
 	{
-		var instance = Resolve(handle);
-		if (instance is null)
+		if (!_authorizationRequests.TryRemove(token, out var completion))
 		{
 			return;
 		}
-		var message = Marshal.PtrToStringUTF8((nint)messageUtf8) ?? "Unknown speech recognition error";
 
-		var pending = Interlocked.Exchange(ref instance._pendingRecognition, null);
-		pending?.TrySetException(new Exception($"Error during speech recognition: {message}"));
+		completion.TrySetResult(
+			speechStatus == MissingUsageDescription || microphoneStatus == MissingUsageDescription ? SpeechRecognizerAuthorization.MissingUsageDescription
+			: speechStatus == SpeechAuthorized && microphoneStatus == MicrophoneAuthorized ? SpeechRecognizerAuthorization.Authorized
+			: SpeechRecognizerAuthorization.Denied);
 	}
 }

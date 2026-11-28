@@ -32,6 +32,7 @@ namespace Windows.Media.SpeechRecognition
 			InitializeSpeechRecognizer();
 		}
 
+#if !__SKIA__
 		public IAsyncOperation<SpeechRecognitionCompilationResult> CompileConstraintsAsync()
 		{
 			return AsyncOperation.FromTask(ct =>
@@ -42,6 +43,7 @@ namespace Windows.Media.SpeechRecognition
 				});
 			});
 		}
+#endif
 
 		private void OnHypothesisGenerated(string hypothesis)
 		{
