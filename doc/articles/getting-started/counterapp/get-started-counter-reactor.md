@@ -19,10 +19,10 @@ To complete this tutorial, you don't need any prior knowledge of the Uno Platfor
 
 ## Create the Application
 
-The Reactor template is available from the command line. It comes with the Uno Platform 7.0 templates: until 7.0 is released, a plain `dotnet new install Uno.Templates` installs the stable templates, which don't include it, so name a 7.0 version (this one or a later one):
+The Reactor template is available from the command line. It comes with the Uno Platform templates, from 7.0 on:
 
 ```dotnetcli
-dotnet new install Uno.Templates@7.0.0-dev.161
+dotnet new install Uno.Templates
 ```
 
 For more about the templates, see [dotnet new templates for Uno Platform](xref:Uno.GetStarted.dotnet-new).

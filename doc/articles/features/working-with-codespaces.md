@@ -39,7 +39,7 @@ If you want to start from an empty repository, follow these steps:
 1. Open a terminal and create a new project using the following command:
 
     ```dotnetcli
-    dotnet new unoapp -o MyApp -ios=false -android=false -macos=false -skia-tizen=false -skia-wpf=false -skia-linux-fb=false --vscode
+    dotnet new unoapp -o MyApp -platforms wasm -platforms desktop -vscode
     ```
 
 1. Using the Codespaces top left menu, open the `MyApp` folder
