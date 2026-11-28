@@ -46,9 +46,9 @@ namespace Uno.Foundation.Logging
 
 		public void LogWarn(string message) => Log(LogLevel.Warning, message);
 		public void LogWarning(string message) => Log(LogLevel.Warning, message);
-		public void LogWarning(string message, Exception? ex) => Log(LogLevel.Warning, message);
+		public void LogWarning(string message, Exception? ex) => Log(LogLevel.Warning, message, ex);
 		public void Warn(string message) => Log(LogLevel.Warning, message);
-		public void Warn(string message, Exception? ex) => Log(LogLevel.Warning, message);
+		public void Warn(string message, Exception? ex) => Log(LogLevel.Warning, message, ex);
 		public void Warn(IFormattable formattable) => Log(LogLevel.Warning, formattable.ToString());
 
 		public void LogError(string message, params object?[] items) => Log(LogLevel.Error, string.Format(CultureInfo.InvariantCulture, message, items));
