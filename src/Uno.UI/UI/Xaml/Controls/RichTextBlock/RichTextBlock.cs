@@ -7,8 +7,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Uno.Disposables;
@@ -92,8 +90,6 @@ namespace Microsoft.UI.Xaml.Controls
 			Blocks.SetParent(this);
 			Blocks.VectorChanged += OnBlocksChanged;
 
-			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
-
 			// IsTextSelectionEnabled defaults to true, so its changed callback never fires for the
 			// default value - seed the cursor here or selectable text would keep the arrow.
 			UpdateProtectedCursor();
@@ -150,7 +146,16 @@ namespace Microsoft.UI.Xaml.Controls
 			// It gets repopulated on the next usage.
 			_focusableChildrenCollection = null;
 
-			UpdateHyperlinks();
+			// The links are found again on first use or at the next measure: a scan of every block per change made
+			// adding N blocks cost N scans. Selectable text takes pointer input whatever its links.
+			HyperlinkOver = null;
+			ReleaseRemovedHyperlinks();
+			_hyperlinksDirty = true;
+			if (IsTextSelectionEnabled)
+			{
+				SubscribeToPointerEvents = true;
+			}
+
 			InvalidateRichTextBlock();
 		}
 
@@ -357,7 +362,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static readonly PointerEventHandler OnPointerEntered = (sender, e) =>
 		{
-			if (sender is not RichTextBlock { HasHyperlink: true } that)
+			if (sender is not RichTextBlock that || !that.EnsureHasHyperlinks())
 			{
 				return;
 			}
@@ -369,7 +374,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static readonly PointerEventHandler OnPointerExit = (sender, e) =>
 		{
-			if (sender is not RichTextBlock { HasHyperlink: true } that)
+			if (sender is not RichTextBlock that || !that.EnsureHasHyperlinks())
 			{
 				return;
 			}
@@ -380,6 +385,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool AbortHyperlinkCaptures(Pointer pointer)
 		{
+			EnsureHyperlinks();
 			var aborted = false;
 			foreach (var hyperlink in _hyperlinks.ToList())
 			{
@@ -393,49 +399,108 @@ namespace Microsoft.UI.Xaml.Controls
 			return aborted;
 		}
 
-		private readonly ObservableCollection<Hyperlink> _hyperlinks = new();
+		private readonly List<Hyperlink> _hyperlinks = new();
+		private bool _hyperlinksDirty;
 
 		// The linked overflow columns host this element's links, so they need the same list to clear a
 		// press that ended outside the link it started on.
-		internal IReadOnlyList<Hyperlink> GetHyperlinks() => _hyperlinks;
+		internal IReadOnlyList<Hyperlink> GetHyperlinks()
+		{
+			EnsureHyperlinks();
+			return _hyperlinks;
+		}
 
 		// CRichTextBlock::m_focusableChildrenCollection - lazily built, dropped on any content change.
 		private List<DependencyObject>? _focusableChildrenCollection;
 
-		private void HyperlinksOnCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e) => RecalculateSubscribeToPointerEvents();
-
 		private void RecalculateSubscribeToPointerEvents()
 		{
-			SubscribeToPointerEvents = HasHyperlink
-				|| IsTextSelectionEnabled
+			// Selection first, so that a selectable RichTextBlock doesn't look for its links.
+			SubscribeToPointerEvents = IsTextSelectionEnabled
+				|| EnsureHasHyperlinks()
 				;
+		}
+
+		// Every reader of the list calls this, and so does the measure, so that the pointer subscription follows new
+		// content before input can reach it.
+		internal void EnsureHyperlinks()
+		{
+			if (_hyperlinksDirty)
+			{
+				_hyperlinksDirty = false;
+				UpdateHyperlinks();
+			}
+		}
+
+		// A link that left the content loses its pointer state at once, as when the list was rebuilt on every change: the
+		// rebuild now waits for the next read or measure, which a control that isn't laid out again never gets. Only the
+		// links of the last built list are checked, so this never costs more than that rebuild did.
+		private void ReleaseRemovedHyperlinks()
+		{
+			for (var i = _hyperlinks.Count - 1; i >= 0; i--)
+			{
+				var hyperlink = _hyperlinks[i];
+				if (!ReferenceEquals(hyperlink.GetContainingFrameworkElement(), this))
+				{
+					hyperlink.AbortAllPointerState();
+					_hyperlinks.RemoveAt(i);
+				}
+			}
 		}
 
 		private void UpdateHyperlinks()
 		{
-			HyperlinkOver = null;
-			var previousHyperLinks = _hyperlinks.ToHashSet();
-			_hyperlinks.Clear();
-
-			foreach (var block in Blocks)
+			HashSet<Hyperlink>? previousHyperLinks = null;
+			if (_hyperlinks.Count > 0)
 			{
-				if (block is Paragraph paragraph)
+				previousHyperLinks = _hyperlinks.ToHashSet();
+				_hyperlinks.Clear();
+			}
+
+			for (var i = 0; i < Blocks.Count; i++)
+			{
+				if (Blocks[i] is Paragraph paragraph)
 				{
-					foreach (var hyperlink in paragraph.Inlines.TraversedTree.preorderTree.OfType<Hyperlink>())
-					{
-						_hyperlinks.Add(hyperlink);
-						previousHyperLinks.Remove(hyperlink);
-					}
+					AddHyperlinks(paragraph.Inlines, previousHyperLinks);
 				}
 			}
 
-			foreach (var removed in previousHyperLinks)
+			if (previousHyperLinks is not null)
 			{
-				removed.AbortAllPointerState();
+				foreach (var removed in previousHyperLinks)
+				{
+					removed.AbortAllPointerState();
+				}
+			}
+
+			// Also what subscribes for the default IsTextSelectionEnabled, whose changed callback never runs.
+			RecalculateSubscribeToPointerEvents();
+		}
+
+		// In document order, as the paragraph's preorder tree lists them, without building that tree.
+		private void AddHyperlinks(InlineCollection inlines, HashSet<Hyperlink>? previousHyperLinks)
+		{
+			for (var i = 0; i < inlines.Count; i++)
+			{
+				if (inlines[i] is Span span)
+				{
+					if (span is Hyperlink hyperlink)
+					{
+						_hyperlinks.Add(hyperlink);
+						previousHyperLinks?.Remove(hyperlink);
+					}
+
+					AddHyperlinks(span.Inlines, previousHyperLinks);
+				}
 			}
 		}
 
-		private bool HasHyperlink => _hyperlinks.Count > 0;
+		// Rebuilds the list first when the content changed, which can also change the pointer subscription.
+		private bool EnsureHasHyperlinks()
+		{
+			EnsureHyperlinks();
+			return _hyperlinks.Count > 0;
+		}
 
 		// CRichTextBlock::GetFocusableChildrenHelper: navigates through the TextElement collection and
 		// retrieves the list of focusable elements.

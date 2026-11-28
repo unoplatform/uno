@@ -163,6 +163,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			MeasureDirtyEmbeddedElements(this);
+			EnsureHyperlinks();
 
 			RebuildBlockLayout();
 

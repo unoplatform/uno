@@ -229,6 +229,9 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 
+		// Whether a pointer is pressed on or hovering this link.
+		internal bool HasPointerState => _pressedPointer is not null || _hoveredPointer is not null;
+
 		internal void AbortAllPointerState()
 		{
 			_pressedPointer = null;
