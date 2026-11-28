@@ -17,7 +17,8 @@ internal sealed class CompositionSvgSurface : CompositionObject, ICompositionSur
 {
 	private readonly ISvgDocument _document;
 
-	public CompositionSvgSurface(ISvgDocument document) => _document = document;
+	// Like image surfaces, it never animates: it shares the compositor rather than creating one per load.
+	public CompositionSvgSurface(ISvgDocument document) : base(Compositor.GetSharedCompositor()) => _document = document;
 
 	Vector2 IPaintableSurface.Size
 	{
