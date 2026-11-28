@@ -140,6 +140,19 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 	}
 
 	/// <summary>
+	/// Removes an item that left the semantic tree (e.g. AccessibilityView became Raw), even when focus-pinned.
+	/// </summary>
+	internal void RemoveRealizedItem(IntPtr itemHandle, int index)
+	{
+		if (_isFocusPinned && _pinnedIndex == index)
+		{
+			UnpinFocusedItem();
+		}
+
+		OnItemUnrealized(itemHandle, index);
+	}
+
+	/// <summary>
 	/// Updates the total item count (e.g., when data source changes).
 	/// </summary>
 	internal void UpdateItemCount(int totalCount)

@@ -884,7 +884,19 @@ namespace Uno.UI.Runtime {
 			});
 
 			// Handle IME composition events for international text input (T055)
+			element.addEventListener('compositionstart', () => {
+				SemanticElements.composingHandle = handle;
+			});
+			element.addEventListener('blur', () => {
+				if (SemanticElements.composingHandle === handle) {
+					SemanticElements.composingHandle = 0;
+				}
+			});
 			element.addEventListener('compositionend', () => {
+				// Cleared before the callback: managed code flushes re-adds it deferred while composing.
+				if (SemanticElements.composingHandle === handle) {
+					SemanticElements.composingHandle = 0;
+				}
 				if (callbacks.onTextInput) {
 					callbacks.onTextInput(
 						handle,
@@ -1155,11 +1167,50 @@ namespace Uno.UI.Runtime {
 		}
 
 		/**
+		 * Updates aria-rowcount/aria-colcount on a grid; a count of 0 (unknown) omits the attribute.
+		 */
+		public static updateGridCounts(handle: number, rowCount: number, colCount: number): void {
+			const element = document.getElementById(`uno-semantics-${handle}`);
+			if (element) {
+				SemanticElements.setOrRemoveCount(element, 'aria-rowcount', rowCount);
+				SemanticElements.setOrRemoveCount(element, 'aria-colcount', colCount);
+			}
+		}
+
+		private static setOrRemoveCount(element: HTMLElement, attribute: string, count: number): void {
+			if (count > 0) {
+				element.setAttribute(attribute, String(count));
+			} else {
+				element.removeAttribute(attribute);
+			}
+		}
+
+		/**
+		 * Updates aria-sort on a column header; an empty value removes it.
+		 */
+		public static updateAriaSort(handle: number, sort: string): void {
+			const element = document.getElementById(`uno-semantics-${handle}`);
+			if (element) {
+				if (sort) {
+					element.setAttribute('aria-sort', sort);
+				} else {
+					element.removeAttribute('aria-sort');
+				}
+			}
+		}
+
+		/**
 		 * Updates the selected state of a list item element.
 		 */
 		public static updateSelectionState(handle: number, selected: boolean): void {
 			SemanticElements.applyItemStateWhenCreated(`uno-semantics-${handle}`, 'selected', element => {
 				element.setAttribute('aria-selected', String(selected));
+			});
+		}
+
+		public static updateVirtualizedAriaLive(handle: number, ariaLive: string): void {
+			SemanticElements.applyItemStateWhenCreated(`uno-semantics-${handle}`, 'live', () => {
+				Accessibility.updateAriaLive(handle, ariaLive);
 			});
 		}
 
@@ -1754,6 +1805,9 @@ namespace Uno.UI.Runtime {
 		 */
 		private static virtualizedMutationQueue: (() => void)[] = [];
 		private static virtualizedRafId: number = 0;
+
+		/** Handle of the text input with an IME composition in progress, or 0. */
+		public static composingHandle: number = 0;
 
 		/**
 		 * Latest item state still waiting for its element, keyed by state and element id.
