@@ -70,7 +70,7 @@ public partial class InputInjector
 		return null;
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__NETSTD_REFERENCE__")]
+	[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 	public static InputInjector? TryCreate()
 		=> GetFirstTarget() is { } target ? new InputInjector(target) : null;
 
@@ -88,7 +88,7 @@ public partial class InputInjector
 	/// </param>
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	[global::Uno.UnoOnly]
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__NETSTD_REFERENCE__")]
+	[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 	public static InputInjector? TryCreate(object relativeRoot)
 	{
 		var injector = TryCreate();
@@ -130,7 +130,7 @@ public partial class InputInjector
 		_target = target;
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
+	[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 	public void InitializeTouchInjection(InjectedInputVisualizationMode visualMode)
 	{
 		UninitializeTouchInjection();
@@ -138,7 +138,7 @@ public partial class InputInjector
 		_touch = (new InjectedInputState(PointerDeviceType.Touch), isAdded: false);
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
+	[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 	public void UninitializeTouchInjection()
 	{
 		if (_touch is not null)
@@ -158,7 +158,7 @@ public partial class InputInjector
 		}
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
+	[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 	public void InjectTouchInput(IEnumerable<InjectedInputTouchInfo> input)
 	{
 		if (_touch is null)
@@ -223,7 +223,7 @@ public partial class InputInjector
 		}
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
+	[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 	public void InitializePenInjection(InjectedInputVisualizationMode visualMode)
 	{
 		UninitializePenInjection();
@@ -231,7 +231,7 @@ public partial class InputInjector
 		_pen = (new InjectedInputState(PointerDeviceType.Pen), isAdded: false);
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
+	[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 	public void UninitializePenInjection()
 	{
 		if (_pen is not null)
@@ -256,7 +256,7 @@ public partial class InputInjector
 		}
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
+	[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 	public void InjectPenInput(InjectedInputPenInfo input)
 	{
 		if (_pen is null)
@@ -326,7 +326,7 @@ public partial class InputInjector
 	/// <see cref="InjectedInputKeyboardInfo.VirtualKey"/>. The batch is validated before anything is
 	/// dispatched, so no partial input is delivered.
 	/// </exception>
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+	[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 	public void InjectKeyboardInput(IEnumerable<InjectedInputKeyboardInfo> input)
 	{
 		foreach (var info in ValidateKeyboardBatch(input))
@@ -493,7 +493,7 @@ public partial class InputInjector
 
 	private const InjectedInputMouseOptions _mouseButtonDown = InjectedInputMouseOptions.LeftDown | InjectedInputMouseOptions.MiddleDown | InjectedInputMouseOptions.RightDown | InjectedInputMouseOptions.XDown;
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__WASM__", "__NETSTD_REFERENCE__")]
+	[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 	public void InjectMouseInput(IEnumerable<InjectedInputMouseInfo> input)
 	{
 		foreach (var info in input)
