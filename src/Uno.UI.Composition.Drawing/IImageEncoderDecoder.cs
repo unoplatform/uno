@@ -1,8 +1,10 @@
 #nullable enable
 
 using System;
+using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Runtime.InteropServices;
 using Windows.Graphics.Imaging;
 
 namespace Uno.UI.Composition.Drawing;
@@ -23,6 +25,30 @@ public interface IImageEncoderDecoder
 
 	/// <summary>Wraps raw BGRA (premultiplied) pixels as a single neutral <see cref="IImage"/> (copied, so the source buffer stays reusable).</summary>
 	IImage CreateImage(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul);
+
+	/// <summary>
+	/// Creates a single neutral <see cref="IImage"/> whose BGRA (premultiplied), tightly packed pixels
+	/// <paramref name="writePixels"/> writes, for pixels held outside managed memory (e.g. by the browser). The span is
+	/// only valid during the call and starts uninitialized: write all of it. If <paramref name="writePixels"/> throws, the
+	/// image is released and the exception propagates. The default writes into a temporary native buffer and copies it
+	/// with <see cref="CreateImage(int, int, ReadOnlySpan{byte})"/>; a backend overrides it to take the pixels into the
+	/// image's own storage, so they are copied once.
+	/// </summary>
+	unsafe IImage CreateImage<TState>(int pixelWidth, int pixelHeight, TState state, SpanAction<byte, TState> writePixels)
+	{
+		var length = checked(pixelWidth * pixelHeight * 4);
+		var buffer = NativeMemory.Alloc((nuint)Math.Max(1, length));
+		try
+		{
+			var pixels = new Span<byte>(buffer, length);
+			writePixels(pixels, state);
+			return CreateImage(pixelWidth, pixelHeight, pixels);
+		}
+		finally
+		{
+			NativeMemory.Free(buffer);
+		}
+	}
 
 	/// <summary>Wraps an already-decoded <see cref="IImage"/> as a single-frame <see cref="ImageFrames"/> for the
 	/// animation/frame-provider path, taking ownership of the image (disposing the frames releases it).</summary>
