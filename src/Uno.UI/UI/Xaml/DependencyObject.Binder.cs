@@ -21,6 +21,7 @@ using Uno.UI;
 using Uno.UI.DataBinding;
 
 using Uno.UI.Controls;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml
 {
@@ -286,13 +287,14 @@ namespace Microsoft.UI.Xaml
 			// items attach via SetParent (they become _childrenStores, not _childrenBindable), so propagate the
 			// inherited DataContext to them here — otherwise {Binding}s on collection items (e.g. the StateTriggers of
 			// a VisualState) never resolve. FrameworkElement stores reach these children through SetValue/Inheritance.
-			if (_dataContextProperty is null && _childrenStores.Count != 0)
+			if (_dataContextProperty is null && _childrenStores.Length != 0)
 			{
 				var instanceRef = SelfWeakReference;
 				var localChildrenStores = _childrenStores;
-				for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+				var childCount = SnapshotArray.CountOf(localChildrenStores);
+				for (var storeIndex = 0; storeIndex < childCount; storeIndex++)
 				{
-					CallChildCallback(localChildrenStores[storeIndex], instanceRef, FrameworkElement.DataContextProperty, actualDataContext);
+					CallChildCallback(localChildrenStores[storeIndex]!, instanceRef, FrameworkElement.DataContextProperty, actualDataContext);
 				}
 			}
 		}
