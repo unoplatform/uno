@@ -21,9 +21,11 @@ internal static class SymbolMatchingHelpers
 		}
 		else if (uapSymbol is INamedTypeSymbol uapNamedType)
 		{
+			// Named types are only reached as member signature types, where only identity matters:
+			// modifiers may legitimately diverge (e.g. Uno's SetterBase and Transform are abstract).
 			var result = unoSymbol is INamedTypeSymbol unoNamedType &&
 				(
-					(AreMatchingCommon(uapNamedType, unoNamedType) && uapNamedType.Name == unoNamedType.Name) ||
+					StripGlobal(uapNamedType.Name) == StripGlobal(unoNamedType.Name) ||
 					// This happens for not implemented symbols that are annotated as nullable.
 					// Since the compiler can't find the type, it considers it as value type, hence wraps it in Nullable<T>.
 					unoNamedType.Name == "Nullable"
@@ -76,29 +78,11 @@ internal static class SymbolMatchingHelpers
 			return true;
 		}
 
-		if (uapSymbol.Name == "IGeometrySource2D" ||
-			uapSymbol.Name == "SizeInt32" ||
-			uapSymbol.Name == "PointInt32")
-		{
-			// For some reason, these are marked with Kind=ErrorType.
-			// This means the matching then fails.
-			return true;
-		}
-
-		if (uapSymbol.Name == "Transform" && uapSymbol.Kind == SymbolKind.NamedType)
-		{
-			// In Uno, it's abstract to force all derived classes to implement a specific method.
-			// In UWP/WinUI, it's not abstract but it doesn't have any accessible constructors.
-			// The divergence here shouldn't be problematic/noticeable.
-			return true;
-		}
-		// Type accessibility is left to the compiler: it rejects a hand-written partial that conflicts with the generated one.
-		var result = (uapSymbol is INamedTypeSymbol || uapSymbol.DeclaredAccessibility == GetExternalAccessibility(unoSymbol)) &&
+		var result = uapSymbol.DeclaredAccessibility == GetExternalAccessibility(unoSymbol) &&
 			uapSymbol.IsAbstract == unoSymbol.IsAbstract &&
 			uapSymbol.IsOverride == unoSymbol.IsOverride &&
 			StripGlobal(uapSymbol.Name) == StripGlobal(unoSymbol.Name) &&
-			// Temporary skip named type: Until we match seal-ness with WinUI.
-			(uapSymbol.IsSealed == unoSymbol.IsSealed || uapSymbol.Kind == SymbolKind.NamedType) &&
+			uapSymbol.IsSealed == unoSymbol.IsSealed &&
 			(uapSymbol.IsStatic == unoSymbol.IsStatic) &&
 			uapSymbol.IsVirtual == unoSymbol.IsVirtual;
 		return result;

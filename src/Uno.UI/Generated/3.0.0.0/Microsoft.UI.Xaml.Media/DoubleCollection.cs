@@ -32,10 +32,4 @@ public partial class DoubleCollection : global::System.Collections.Generic.IList
 	// Processing: System.Collections.Generic.ICollection<double>
 	// Processing: System.Collections.Generic.IEnumerable<double>
 	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.Generic.ICollection<double>
-	// Processing: System.Collections.Generic.IEnumerable<double>
-	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.Generic.IEnumerable<double>
-	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.IEnumerable
 }

@@ -9,21 +9,21 @@ public partial class ColorKeyFrameCollection : global::System.Collections.Generi
 {
 	// Skipping already declared property Count
 	// Skipping already declared property IsReadOnly
-	// Skipping collection property provided by base class: this[]
+	// Skipping already declared property this[]
 	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.ColorKeyFrameCollection()
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.ColorKeyFrameCollection()
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.Count.get
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.IsReadOnly.get
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.this[int].get
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.this[int].set
-	// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.IndexOf(Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame)
-	// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.Insert(int, Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame)
+	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.IndexOf(Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame)
+	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.Insert(int, Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame)
 	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.RemoveAt(int)
-	// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.Add(Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame)
+	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.Add(Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame)
 	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.Clear()
-	// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.Contains(Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame)
-	// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.CopyTo(Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame[], int)
-	// Skipping collection method provided by base class: Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.Remove(Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame)
+	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.Contains(Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame)
+	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.CopyTo(Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame[], int)
+	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.Remove(Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame)
 	// Skipping already declared method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.GetEnumerator()
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.System.Collections.IEnumerable.GetEnumerator()
 	// Forced skipping of method Microsoft.UI.Xaml.Media.Animation.ColorKeyFrameCollection.System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame>.get_Item(int)
@@ -31,11 +31,5 @@ public partial class ColorKeyFrameCollection : global::System.Collections.Generi
 	// Processing: System.Collections.Generic.IList<Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame>
 	// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame>
 	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame>
-	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.Generic.ICollection<Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame>
-	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame>
-	// Processing: System.Collections.IEnumerable
-	// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Xaml.Media.Animation.ColorKeyFrame>
-	// Processing: System.Collections.IEnumerable
 	// Processing: System.Collections.IEnumerable
 }

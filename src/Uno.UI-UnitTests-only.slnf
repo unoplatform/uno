@@ -29,6 +29,8 @@
       "SourceGenerators\\Uno.UI.Tasks.Tests\\Uno.UI.Tasks.Tests.csproj",
       "Uno.ReferenceImplComparer\\Uno.ReferenceImplComparer.csproj",
       "Uno.ReferenceImplComparer.Tests\\Uno.ReferenceImplComparer.Tests.csproj",
+      "Uno.WinAppSDKSyncGenerator\\Uno.WinAppSDKSyncGenerator.csproj",
+      "Uno.WinAppSDKSyncGenerator.Tests\\Uno.WinAppSDKSyncGenerator.Tests.csproj",
       "Uno.UI.Tests.ViewLibraryProps\\Uno.UI.Tests.ViewLibraryProps.csproj",
       "Uno.UI.Tests.ViewLibrary\\Uno.UI.Tests.ViewLibrary.csproj",
       "Uno.UI.UnitTests\\Uno.UI.UnitTests.csproj",
