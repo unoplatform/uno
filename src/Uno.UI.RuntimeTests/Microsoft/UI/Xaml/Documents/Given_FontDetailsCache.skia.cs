@@ -5,6 +5,8 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Composition.Managed;
@@ -193,6 +195,47 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		private static WeakReference RequestFontAndTrack(float size)
 			=> new(FontDetailsCache.GetFont(null, size, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal).details.FontHandle);
+
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+		public async Task When_Local_Font_Requested_Then_First_Measure_Uses_It()
+		{
+			var path = await CopyFontToTempFile(LatinFontAsset);
+			try
+			{
+				var source = new Uri(path).AbsoluteUri;
+				var sut = new TextBlock { Text = "Measured before the first frame", FontSize = 17, FontFamily = new FontFamily(source) };
+
+				sut.Measure(new Windows.Foundation.Size(double.PositiveInfinity, double.PositiveInfinity));
+				var firstWidth = sut.DesiredSize.Width;
+
+				var (details, loadedTask) = FontDetailsCache.GetFont(source, 17f, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+				var loadedDuringRequest = loadedTask.IsCompletedSuccessfully;
+
+				// A load still running keeps the file open, which would fail the delete below and hide these asserts.
+				await loadedTask;
+
+				Assert.IsTrue(loadedDuringRequest, "A local font should load during the first request.");
+				Assert.AreEqual("Roboto", details.FontHandle.FamilyName);
+
+				sut.InvalidateMeasure();
+				sut.Measure(new Windows.Foundation.Size(double.PositiveInfinity, double.PositiveInfinity));
+				Assert.AreEqual(firstWidth, sut.DesiredSize.Width, 0.01);
+			}
+			finally
+			{
+				File.Delete(path);
+			}
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+		public void When_Package_Font_Requested_Then_Load_Completes_Synchronously()
+		{
+			var (details, loadedTask) = FontDetailsCache.GetFont(LatinFontAsset, 17f, FontWeights.Normal, FontStretch.Normal, FontStyle.Normal);
+
+			Assert.IsTrue(loadedTask.IsCompletedSuccessfully, "A font in the app package should load during the first request.");
+			Assert.AreEqual("Roboto", details.FontHandle.FamilyName);
+		}
 
 		private static async Task<IFont> LoadAssetFont()
 		{

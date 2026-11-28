@@ -102,9 +102,16 @@ internal static class FontDetailsCache
 
 		try
 		{
-			using var stream = await AppDataUriEvaluator.ToStream(uri, CancellationToken.None);
-			// LoadFontFile reads synchronously; keep that file I/O off the UI thread, as the async copy did.
-			return await Task.Run(() => FontProvider.LoadFontFile(stream));
+			var streamTask = AppDataUriEvaluator.ToStream(uri, CancellationToken.None);
+			var openedSynchronously = streamTask.IsCompleted;
+			using var stream = await streamTask;
+
+			// A local font read on the caller's thread resolves within the first measure, as in WinUI, rather than
+			// measuring with the fallback font and changing size later. A source that went async has already missed
+			// that measure, so its read gains nothing from the UI thread.
+			return openedSynchronously
+				? FontProvider.LoadFontFile(stream)
+				: await Task.Run(() => FontProvider.LoadFontFile(stream));
 		}
 		catch (Exception e)
 		{
