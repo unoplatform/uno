@@ -469,6 +469,34 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 		});
 	}
 
+	// One command for the whole run, where the default would record a command, a clip and a tracked geometry per
+	// instance: re-recording a long text would otherwise allocate in proportion to its glyphs.
+	public void DrawPaths(ReadOnlySpan<PathInstance> instances, WColor color)
+	{
+		if (_pendingColorMatrix is { Length: >= 20 } pm) { color = ApplyColorMatrix(color, pm); }
+		var run = new PathRunCmd { M = M3, Color = color };
+		var min = new Vector2(float.MaxValue);
+		var max = new Vector2(float.MinValue);
+		for (var i = 0; i < instances.Length; i++)
+		{
+			// Bounds only, through the same mapping the draw uses, so the union is exactly that of the fills.
+			var inst = instances[i];
+			Geo.Bounds(inst.Geometry, PathRunCmd.Placed(run.M, inst.Offset), out var a, out var b);
+			if (b.X <= a.X || b.Y <= a.Y) { continue; }
+			min = Vector2.Min(min, a);
+			max = Vector2.Max(max, b);
+		}
+		if (max.X <= min.X || max.Y <= min.Y) { return; }
+
+		run.Instances = instances.ToArray();
+		foreach (var inst in run.Instances) { inst.Geometry.AddRef(); }
+		(_data.Runs ??= new()).Add(run);
+		run.BbMin = min;
+		run.BbMax = max;
+		run.Clip = RelaxedClip(min, max);
+		_target.Add(run);
+	}
+
 	// The current matrix as the pixel affine the commands store.
 	private Matrix3x2 M3 => new(_m.M11, _m.M12, _m.M21, _m.M22, _m.M41, _m.M42);
 

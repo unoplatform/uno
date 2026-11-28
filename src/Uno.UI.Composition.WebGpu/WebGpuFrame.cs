@@ -108,6 +108,7 @@ internal sealed unsafe partial class WebGpuFrame
 				_d.ReturnVerts(_scratchBuf);
 				_scratchBuf = null;
 			}
+			Coverage.ReturnPooled();
 
 			// Same cadence as the stats line, so UNO_WEBGPU_STATS_EVERY=1 gives a per-FRAME phase breakdown rather
 			// than a 60-frame average - the only way to see a distribution instead of a mean.
@@ -285,6 +286,7 @@ internal sealed unsafe partial class WebGpuFrame
 				CmdKind.Image when cmd is ImageCmd im => QuadBounds(im.P0, im.P1, im.P2, im.P3, im.Clip),
 				CmdKind.Gradient when cmd is GradientCmd g => QuadBounds(g.P0, g.P1, g.P2, g.P3, g.Clip),
 				CmdKind.Path when cmd is PathCmd p => ClampToClip(new Vector4(p.BbMin.X, p.BbMin.Y, p.BbMax.X, p.BbMax.Y), p.Clip),
+				CmdKind.PathRun when cmd is PathRunCmd pr => ClampToClip(new Vector4(pr.BbMin.X, pr.BbMin.Y, pr.BbMax.X, pr.BbMax.Y), pr.Clip),
 				CmdKind.Shadow when cmd is ShadowCmd sh => ClampToClip(Inflate(new Vector4(sh.BbMin.X, sh.BbMin.Y, sh.BbMax.X, sh.BbMax.Y), MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f), sh.Clip),
 				CmdKind.Layer when cmd is LayerCmd l => ClampToClip(LayerBounds(l), l.Clip),
 				CmdKind.ReplayRef when cmd is ReplayRefCmd rr => ClampToClip(TransformBounds(rr.Data.IdentityBounds ??= CmdListBounds(rr.Commands), rr.Transform), rr.Clip),
@@ -599,6 +601,14 @@ internal sealed unsafe partial class WebGpuFrame
 	// first use and handed back when the frame ends, so its array is not reallocated every frame.
 	private VertBuf _scratchBuf;
 	private VertBuf Scratch => _scratchBuf ??= _d.RentVerts();
+
+	// A recording's op staged before it is packed into the bag's arena, which copies it.
+	private VertBuf ClearedScratch()
+	{
+		Scratch.Clear();
+		return Scratch;
+	}
+
 	private readonly float[] _clipU = new float[ClipUFloats];   // the uniform: header + the first ClipUniformEntries entries
 	private float[] _clipMore = new float[4 * ClipEntryFloats];  // the entries past those, for the overflow buffer; grows
 
@@ -635,16 +645,19 @@ internal sealed unsafe partial class WebGpuFrame
 	// antialiasing a solid quad can have, and the SDF's local space comes from the device corners, so it is exact
 	// under any affine.
 	private int AppendAaRect(VertBuf rr, in WColor color, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
-		=> AppendRrect(rr, new RoundedRectCmd { Half = new Vector2((p1 - p0).Length() * 0.5f, (p3 - p0).Length() * 0.5f), Color = color }, p0, p1, p2, p3);
+		=> AppendRrect(rr, new Vector2((p1 - p0).Length() * 0.5f, (p3 - p0).Length() * 0.5f), default, color, 1f, new Vector2(-1f, -1f), default, default, p0, p1, p2, p3);
 
 	// Appends one rounded rect at the given corners: per-vertex SDF params in its own centred space (transform-invariant).
 	// The quad is grown a pixel past the shape on every side: coverage below 1 lies OUTSIDE the edge, and a quad that
 	// stops at the edge never rasterises it - which left a rotated rect hard and an offset one half a pixel thin.
 	// Returns how many vertices it appended.
 	private int AppendRrect(VertBuf rr, RoundedRectCmd rrc, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
+		=> AppendRrect(rr, rrc.Half, rrc.Radii, rrc.Color, rrc.Opacity, rrc.InnerHalf, rrc.InnerCenter, rrc.InnerRadii, p0, p1, p2, p3);
+
+	// The shape by value: a plain rect has no command of its own, and making one up cost an allocation per fill.
+	private int AppendRrect(VertBuf rr, Vector2 hf, Vector4 rad, WColor fill, float opacity, Vector2 ih, Vector2 ic, Vector4 ir, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
 	{
-		var hf = rrc.Half; var rad = rrc.Radii; var ih = rrc.InnerHalf; var ic = rrc.InnerCenter; var ir = rrc.InnerRadii;
-		float cr = rrc.Color.R / 255f, cg = rrc.Color.G / 255f, cb = rrc.Color.B / 255f, color = rrc.Color.A / 255f * rrc.Opacity;
+		float cr = fill.R / 255f, cg = fill.G / 255f, cb = fill.B / 255f, color = fill.A / 255f * opacity;
 		const float Pad = 1f;
 		var ax = p1 - p0; var ay = p3 - p0;
 		float dw = ax.Length(), dh = ay.Length();
@@ -732,59 +745,60 @@ internal sealed unsafe partial class WebGpuFrame
 	internal nint Vbuf(float[] data, int stride, OwnedResources owned)
 		=> owned is null ? (nint)MakeBuffer(data) : PackVerts(owned, data, stride);
 
-	/// <summary>A bag's arena is split once it reaches this, so one recording's geometry can never ask for a
-	/// buffer larger than the device allows (wgpu's default maximum is 256 MB).</summary>
-	private const int MaxArenaBytes = 64 << 20;
+	/// <summary>A bag's arena goes to the GPU in chunks of this many floats (1 MB), so staging a long text's geometry
+	/// takes one pooled buffer of this size rather than a fresh one that doubles up to the whole geometry.</summary>
+	private const int ArenaChunkFloats = 1 << 18;
 
 	/// <summary>Appends an op's vertices to its bag's current arena chunk, aligned so the range starts on a vertex
 	/// boundary of its own stride, and returns a negative tag indexing <see cref="OwnedResources.PackedVertexRanges"/>:
 	/// <see cref="RealizeOwnedVertices"/> swaps it for that chunk's buffer. An index rather than the packed range
 	/// itself, because a pointer is only 32 bits on WebAssembly.</summary>
-	private static nint PackVerts(OwnedResources owned, ReadOnlySpan<float> data, int stride)
+	private nint PackVerts(OwnedResources owned, ReadOnlySpan<float> data, int stride)
 	{
-		var arenas = owned.VertexArenas ??= new List<VertBuf>();
-		if (arenas.Count == 0) { arenas.Add(new VertBuf()); }
-		var arena = arenas[arenas.Count - 1];
-		if (arena.Count > 0 && ((long)arena.Count + stride + data.Length) * sizeof(float) > MaxArenaBytes)
-		{
-			arena = new VertBuf();
-			arenas.Add(arena);
-		}
+		var arena = owned.Arena ??= _d.RentVerts();
+		// A full chunk is uploaded now and its staging reused: the queue copies the data on the write.
+		if (arena.Count > 0 && arena.Count + stride + data.Length > ArenaChunkFloats) { FlushArena(owned); }
 
 		var misaligned = arena.Count % stride;
 		if (misaligned != 0) { arena.Grow(stride - misaligned).Clear(); }
 		var first = arena.Count / stride;
 		data.CopyTo(arena.Grow(data.Length));
 		var ranges = owned.PackedVertexRanges ??= new List<(int Chunk, uint First)>();
-		ranges.Add((arenas.Count - 1, (uint)first));
+		ranges.Add((owned.ArenaChunks?.Count ?? 0, (uint)first));
 		return -ranges.Count;
 	}
 
-	/// <summary>Uploads a finished bag's arena chunks and points every op at the chunk it landed in.</summary>
+	private void FlushArena(OwnedResources owned)
+	{
+		var arena = owned.Arena;
+		var size = arena.Count * sizeof(float);
+		var buffer = _d.BufferPool.RentHeld(size, BufferUsage.Vertex | BufferUsage.CopyDst);
+		fixed (float* p = arena.A) { Api.QueueWriteBuffer(_d.Q, buffer, 0, p, (nuint)size); }
+		owned.Buffers.Add((nint)buffer);
+		(owned.ArenaChunks ??= new()).Add((nint)buffer);
+		arena.Clear();
+	}
+
+	/// <summary>Uploads a finished bag's last arena chunk and points every op at the chunk it landed in.</summary>
 	internal void RealizeOwnedVertices(List<DrawOp> ops, OwnedResources owned)
 	{
-		if (owned?.VertexArenas is not { Count: > 0 } arenas) { return; }
-		var buffers = new Buffer*[arenas.Count];
-		for (var c = 0; c < arenas.Count; c++)
-		{
-			var arena = arenas[c];
-			if (arena.Count == 0) { continue; }
-			var size = arena.Count * sizeof(float);
-			buffers[c] = _d.BufferPool.RentHeld(size, BufferUsage.Vertex | BufferUsage.CopyDst);
-			fixed (float* p = arena.A) { Api.QueueWriteBuffer(_d.Q, buffers[c], 0, p, (nuint)size); }
-			owned.Buffers.Add((nint)buffers[c]);
-		}
+		if (owned?.Arena is not { } arena) { return; }
+		if (arena.Count > 0) { FlushArena(owned); }
+		owned.Arena = null;
+		_d.ReturnVerts(arena);
 
-		var ranges = owned.PackedVertexRanges!;
-		owned.VertexArenas = null;
+		var chunks = owned.ArenaChunks;
+		var ranges = owned.PackedVertexRanges;
+		owned.ArenaChunks = null;
 		owned.PackedVertexRanges = null;
+		if (ranges is null) { return; }
 		for (var i = 0; i < ops.Count; i++)
 		{
 			var tag = ops[i].Verts;
 			if (tag >= 0) { continue; }
 			var (chunk, first) = ranges[(int)(-tag - 1)];
 			var op = ops[i];
-			op.Verts = (nint)buffers[chunk];
+			op.Verts = chunks![chunk];
 			op.FirstVertex = first;
 			ops[i] = op;
 		}

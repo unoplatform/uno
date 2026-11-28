@@ -54,37 +54,107 @@ internal sealed unsafe partial class WebGpuCoverage
 	private const int AtlasBatchMaxQuads = 256;
 
 	/// <summary>
-	/// Emits a RUN of consecutive fills sharing an atlas page, a colour and a clip as ONE draw, advancing
-	/// <paramref name="i"/> past them. Per-glyph geometry turns a string into N fills, and a draw apiece is far
-	/// worse than the single merged run it replaces - the quads all sample one page, so they batch trivially.
+	/// A position among consecutive path commands: a plain fill, or one instance of a run.
 	/// </summary>
-	internal bool TryAtlasBatch(List<WebGpuCommand> cmds, ref int i, OwnedResources owned, Vector2 scale, out DrawOp result, Vector2 place = default)
+	internal struct FillCursor
 	{
-		result = default;
-		if (cmds[i] is not PathCmd first) { return false; }
+		public int Cmd, Item;
+
+		public FillCursor(int cmd) { Cmd = cmd; }
+
+		public readonly bool Valid(List<WebGpuCommand> cmds) => Cmd < cmds.Count && cmds[Cmd].Kind is CmdKind.Path or CmdKind.PathRun;
+
+		/// <summary>The fill here, a run's written into <paramref name="scratch"/>; null for an instance without area.</summary>
+		public readonly PathCmd Current(List<WebGpuCommand> cmds, PathCmd scratch)
+			=> cmds[Cmd] is PathRunCmd run ? (run.Fill(Item, scratch) ? scratch : null) : (PathCmd)cmds[Cmd];
+
+		public void Advance(List<WebGpuCommand> cmds)
+		{
+			if (cmds[Cmd] is PathRunCmd run && Item + 1 < run.Instances.Length) { Item++; }
+			else { Cmd++; Item = 0; }
+		}
+	}
+
+	private PathCmd _runFill;
+
+	/// <summary>A run's instance as a fill, rewritten for each one. Nothing keeps the fill it is handed.</summary>
+	internal PathCmd RunFill => _runFill ??= new();
+
+	// Pages one batch may draw from, one op each. Made on the first batch a frame builds, so a frame that builds
+	// nothing pays nothing; the first page's quads go in _atlasQuads, the others' in buffers rented from the device.
+	private const int AtlasBatchMaxPages = 4;
+	private VertBuf[] _pageQuads;
+	private WebGpuMaskAtlas.Page[] _pages;
+	private Vector4[] _pageExtents;
+
+	/// <summary>Hands the batch buffers rented for this frame back to the device.</summary>
+	internal void ReturnPooled()
+	{
+		if (_pageQuads is not { } quads) { return; }
+		for (var p = 1; p < quads.Length; p++)
+		{
+			if (quads[p] is { } q) { _d.ReturnVerts(q); quads[p] = null; }
+		}
+	}
+
+	/// <summary>
+	/// Emits a RUN of consecutive fills sharing a colour and a clip as one draw per atlas page they sample, advancing
+	/// <paramref name="at"/> past them. Per-glyph geometry turns a string into N fills, and a draw apiece is far
+	/// worse than the merged run it replaces. Grouping by page reorders fills of one colour under one clip, which
+	/// source-over blends to the same result in any order up to rounding: where two glyphs' coverage overlaps, an
+	/// 8-bit target can differ by one level. Splitting the run at every page change instead broke text into a draw
+	/// every few glyphs once its glyphs had spread over pages.
+	/// </summary>
+	internal bool TryAtlasBatch(List<WebGpuCommand> cmds, ref FillCursor at, OwnedResources owned, Vector2 scale, List<DrawOp> ops, Vector2 place = default)
+	{
+		var first = at.Current(cmds, RunFill);
+		if (first is null) { return false; }
 		if (!TryAtlasSlot(first, ShapeOf(first, scale), owned, scale, out var slot0, out var ox0, out var oy0, place: place)) { return false; }
 
-		_atlasQuads.Clear();
-		var extent = AppendAtlasQuad(_atlasQuads, slot0, ox0, oy0, scale, first.Color);
+		var color = first.Color;
+		var clip = first.Clip;
+		var pages = 1;
+		_pages ??= new WebGpuMaskAtlas.Page[AtlasBatchMaxPages];
+		_pageQuads ??= new VertBuf[AtlasBatchMaxPages];
+		_pageExtents ??= new Vector4[AtlasBatchMaxPages];
+		_pages[0] = slot0.Owner;
+		var q0 = _pageQuads[0] ??= _atlasQuads;
+		q0.Clear();
+		_pageExtents[0] = AppendAtlasQuad(q0, slot0, ox0, oy0, scale, color);
 		var quads = 1;
-		var j = i + 1;
-		while (j < cmds.Count && quads < AtlasBatchMaxQuads && cmds[j] is PathCmd nx
-			&& nx.Color.R == first.Color.R && nx.Color.G == first.Color.G
-			&& nx.Color.B == first.Color.B && nx.Color.A == first.Color.A
-			&& WebGpuFrame.ClipDataEquals(nx.Clip, first.Clip))
+		at.Advance(cmds);
+		while (quads < AtlasBatchMaxQuads && at.Valid(cmds))
 		{
-			// A fill landing on ANOTHER page cannot share this draw's bind group. It stays baked, so the caller
-			// picks it up next and starts a fresh batch on what is by then a cache hit.
+			var nx = at.Current(cmds, RunFill);
+			if (nx is null) { at.Advance(cmds); continue; }
+			if (nx.Color.A != color.A || nx.Color.R != color.R || nx.Color.G != color.G || nx.Color.B != color.B
+				|| !WebGpuFrame.ClipDataEquals(nx.Clip, clip)) { break; }
+			// A fill that does not take the atlas, or lands on a page past the batch's last, stays where it is; the
+			// caller picks it up next, by then a cache hit.
 			if (!TryAtlasSlot(nx, ShapeOf(nx, scale), owned, scale, out var slotN, out var oxN, out var oyN, place: place)) { break; }
-			if (!ReferenceEquals(slotN.Owner, slot0.Owner)) { break; }
-			extent = WebGpuFrame.Union(extent, AppendAtlasQuad(_atlasQuads, slotN, oxN, oyN, scale, first.Color));
+			var p = 0;
+			while (p < pages && !ReferenceEquals(_pages[p], slotN.Owner)) { p++; }
+			if (p == pages)
+			{
+				if (pages == AtlasBatchMaxPages) { break; }
+				_pages[p] = slotN.Owner;
+				(_pageQuads[p] ??= _d.RentVerts()).Clear();
+				pages++;
+				_pageExtents[p] = AppendAtlasQuad(_pageQuads[p], slotN, oxN, oyN, scale, color);
+			}
+			else
+			{
+				_pageExtents[p] = WebGpuFrame.Union(_pageExtents[p], AppendAtlasQuad(_pageQuads[p], slotN, oxN, oyN, scale, color));
+			}
 			quads++;
-			j++;
+			at.Advance(cmds);
 		}
 
-		result = MakeAtlasOp(first, slot0.Owner, _atlasQuads, owned, extent);
-
-		i = j - 1;
+		for (var p = 0; p < pages; p++)
+		{
+			ops.Add(MakeAtlasOp(clip, _pages[p], _pageQuads[p], owned, _pageExtents[p]));
+			_pages[p] = null;
+		}
 		return true;
 	}
 
@@ -122,8 +192,10 @@ internal sealed unsafe partial class WebGpuCoverage
 			// A REUSED entry needs its own reference for this recording. One slot backs a glyph everywhere it
 			// appears, so without this the recording that baked it releases the region out from under every other
 			// holder and they start sampling whatever took its place.
-			if (!hitOnly)
+			// Once per bag, not per occurrence: a glyph repeated through a long text is one reference, not thousands.
+			if (!hitOnly && slot.LastBag != owned.Id)
 			{
+				slot.LastBag = owned.Id;
 				_d.Atlas.Retain(slot);
 				(owned.AtlasSlots ??= new()).Add(slot);
 			}
@@ -143,7 +215,7 @@ internal sealed unsafe partial class WebGpuCoverage
 				slot = _d.Atlas.Allocate(key, w, h, ox, oy);
 			}
 			if (slot is null) { AtlasNoRoom++; _d.AtlasStarved = true; return false; }
-			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
+			if (owned is not null) { slot.LastBag = owned.Id; (owned.AtlasSlots ??= new()).Add(slot); }
 			else { _d.Atlas.HoldForCache(slot, _d.FrameSeq); }
 			QueueEntryBake(pf, shape, slot, scale, snap);
 			if (big) { FillMasksBaked++; } else { AtlasBaked++; }
@@ -206,8 +278,11 @@ internal sealed unsafe partial class WebGpuCoverage
 
 	/// <summary>One solid draw for a batch of quads sharing a page, a colour and a clip; the page is their coverage.</summary>
 	private DrawOp MakeAtlasOp(PathCmd pf, WebGpuMaskAtlas.Page page, VertBuf quads, OwnedResources owned, Vector4 extent, bool filtered = false)
+		=> MakeAtlasOp(pf.Clip, page, quads, owned, extent, filtered);
+
+	private DrawOp MakeAtlasOp(in ClipData fillClip, WebGpuMaskAtlas.Page page, VertBuf quads, OwnedResources owned, Vector4 extent, bool filtered = false)
 	{
-		var clip = WithCoverage(pf.Clip, page.View, filtered);
+		var clip = WithCoverage(fillClip, page.View, filtered);
 		var op = DrawOp.Own(DrawKind.Solid, _f.Vbuf(quads, VertexStride.Solid, owned), (uint)(quads.Count / VertexStride.Solid), null, clip, _f.MakeClipBg(clip, owned));
 		op.Extent = extent;
 		return op;

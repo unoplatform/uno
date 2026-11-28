@@ -78,6 +78,9 @@ internal sealed unsafe class WebGpuMaskAtlas
 		/// <summary>True while the cache holds one of this slot's references.</summary>
 		public bool CacheHeld;
 
+		/// <summary>The last bag (<see cref="OwnedResources.Id"/>) that took a reference, so a bag takes one per slot.</summary>
+		public long LastBag;
+
 		/// <summary>The part of the page a draw of this entry samples; a blurred shadow stored reduced covers less than its slot.</summary>
 		public Vector4 Uv = new(0f, 0f, 1f, 1f);
 	}

@@ -118,7 +118,7 @@ internal unsafe struct ClipData
 
 /// <summary>Which command a <see cref="WebGpuCommand"/> is, so the walk dispatches on a field rather than on a
 /// chain of type tests: a list of thousands of recordings would otherwise test every earlier kind for each one.</summary>
-internal enum CmdKind : byte { Rect, RoundedRect, Path, Image, Gradient, Shadow, Layer, Backdrop, ReplayRef }
+internal enum CmdKind : byte { Rect, RoundedRect, Path, PathRun, Image, Gradient, Shadow, Layer, Backdrop, ReplayRef }
 
 // Draw commands share one ordered stream so cross-type z-order (rect over path over image) is preserved.
 internal abstract class WebGpuCommand
@@ -169,6 +169,49 @@ internal sealed class PathCmd : WebGpuCommand
 	public bool EvenOdd;
 	public Vector2 BbMin, BbMax;   // in the recording's space
 	public Vector2 Offset => new(M.M31, M.M32);
+}
+
+// A DrawPaths run, all in one colour: a line of text records as one command rather than one per glyph. Each
+// instance draws as the PathCmd it would have been recorded as alone (see Fill).
+internal sealed class PathRunCmd : WebGpuCommand
+{
+	public PathRunCmd() : base(CmdKind.PathRun) { }
+
+	public PathInstance[] Instances;
+	public Matrix3x2 M;            // the run's space -> the recording's
+	public WColor Color;
+	public Vector2 BbMin, BbMax;   // the instances' union, in the recording's space
+
+	/// <summary>
+	/// The matrix an instance at <paramref name="offset"/> is drawn under: the recorder's translate, in the same float
+	/// operations, so it is bit for bit the one a separate draw would have carried.
+	/// </summary>
+	public static Matrix3x2 Placed(in Matrix3x2 m, Vector2 offset)
+	{
+		var placed = m;
+		placed.M31 += offset.X * m.M11 + offset.Y * m.M21;
+		placed.M32 += offset.X * m.M12 + offset.Y * m.M22;
+		return placed;
+	}
+
+	/// <summary>Writes instance <paramref name="i"/> into <paramref name="into"/> as the fill recorded for it alone, or returns false when it has no area.</summary>
+	public bool Fill(int i, PathCmd into)
+	{
+		var inst = Instances[i];
+		var m = Placed(M, inst.Offset);
+		Geo.Bounds(inst.Geometry, m, out var min, out var max);
+		if (max.X <= min.X || max.Y <= min.Y) { return false; }
+		into.Geometry = inst.Geometry;
+		into.M = m;
+		into.Stroke = 0f;
+		into.Join = StrokeJoin.Miter;
+		into.Color = Color;
+		into.EvenOdd = inst.Geometry.FillRule == GeometryFillRule.EvenOdd;
+		into.BbMin = min;
+		into.BbMax = max;
+		into.Clip = Clip;
+		return true;
+	}
 }
 
 internal sealed unsafe class ImageCmd : WebGpuCommand

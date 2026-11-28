@@ -92,6 +92,7 @@ public sealed unsafe class WebGpuRenderRecord : IRenderRecord
 	// their GPU resources here at Dispose — resident textures (surface-owned) keep the composition's own reference.
 	internal List<WebGpuTexture> Textures;
 	internal List<IGeometry> Geometries;   // recorded path geometries, held like textures until this recording is disposed
+	internal List<PathRunCmd> Runs;        // recorded runs, whose instances' geometries are held the same way
 
 	// The recordings nested into this one, each holding a ref taken at Replay. Holding the nested RECORD is what
 	// keeps its textures and geometries alive, so nesting costs one refcount rather than one per resource it
@@ -144,6 +145,7 @@ public sealed unsafe class WebGpuRenderRecord : IRenderRecord
 		// frame's ReplayRef may still hold this command list (with the raw view handle) and be compiled after us.
 		if (Textures is { } textures) { foreach (var t in textures) { t.Release(); } }
 		if (Geometries is { } geometries) { foreach (var g in geometries) { g.Release(); } }
+		if (Runs is { } runs) { foreach (var run in runs) { foreach (var inst in run.Instances) { inst.Geometry.Release(); } } }
 		// Hand the arena entry's GPU resources to the render thread for a deferred free (an in-flight frame may
 		// still reference them). Interlocked so a concurrent render-thread rebuild can't leak or double-free it.
 		var c = System.Threading.Interlocked.Exchange(ref Compiled, null);

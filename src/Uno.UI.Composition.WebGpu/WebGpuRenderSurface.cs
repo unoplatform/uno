@@ -96,12 +96,19 @@ internal sealed unsafe class WebGpuRenderSurface
 
 internal sealed class OwnedResources
 {
+	private static long _lastId;
+
+	// Never 0, the value of a slot no bag has referenced yet.
+	public readonly long Id = System.Threading.Interlocked.Increment(ref _lastId);
 	public System.Collections.Generic.List<nint> Buffers = new();
 	// This bag's vertex data, packed into as few GPU buffers as possible when the build ends. A buffer per op
 	// costs a whole placed-resource slot on the GPU (64 KB on D3D12), so a few thousand small ops commit hundreds
-	// of MB; packing also lets the encoder's merge rule fire, which a buffer per op makes impossible. Split into
-	// chunks because a recording's geometry can exceed the device's maximum buffer size on its own.
-	internal System.Collections.Generic.List<VertBuf> VertexArenas;
+	// of MB; packing also lets the encoder's merge rule fire, which a buffer per op makes impossible. Uploaded in
+	// fixed-size chunks, so staging stays bounded however long the recording is.
+	// The chunk being filled, staged in a buffer rented from the device and returned once the build ends.
+	internal VertBuf Arena;
+	// The chunks already uploaded, in order.
+	internal System.Collections.Generic.List<nint> ArenaChunks;
 	// Where each packed op's vertices landed (chunk, first vertex); an op's provisional Verts tag indexes this.
 	internal System.Collections.Generic.List<(int Chunk, uint First)> PackedVertexRanges;
 	public System.Collections.Generic.List<nint> BindGroups = new();
