@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -99,7 +100,15 @@ internal partial class Win32DragDropExtension
 			}
 		}, mediumsToDispose);
 
-		TryHandleFileDescriptor(dataObject, formatEtcList, package);
+		_lastVirtualFilesHandler?.Cancel();
+		_lastVirtualFilesHandler = null;
+
+		// Real files come with CF_HDROP, and the app gets their original paths, as in WinUI.
+		// The shell offers FileGroupDescriptorW and FileContents for them too, which would copy them.
+		if (!formatEtcList.Any(static f => f.cfFormat == (int)CLIPBOARD_FORMAT.CF_HDROP))
+		{
+			TryHandleFileDescriptor(dataObject, formatEtcList, package);
+		}
 		var handled = TryhandleAsyncHDrop(dataObject, formatEtcList, package);
 		Win32ClipboardExtension.ReadContentIntoPackage(package, formatList, format =>
 		{
@@ -153,6 +162,8 @@ internal partial class Win32DragDropExtension
 		_manager.ProcessAborted(_fakePointerId);
 		_lastAsyncHDropHandler?.Leave();
 		_lastAsyncHDropHandler = null;
+		_lastVirtualFilesHandler?.Cancel();
+		_lastVirtualFilesHandler = null;
 
 		return HRESULT.S_OK;
 	}
@@ -179,6 +190,21 @@ internal partial class Win32DragDropExtension
 		{
 			_lastAsyncHDropHandler.DropEffect = *pdwEffect;
 			_lastAsyncHDropHandler = null;
+		}
+
+		// The app's Drop handler runs after this returns, and so after DoDragDrop returns in the source,
+		// which may then delete what it served (a move out of a zip folder), so the files are copied now.
+		if (_lastVirtualFilesHandler is { } virtualFilesHandler)
+		{
+			_lastVirtualFilesHandler = null;
+			if (*pdwEffect == DROPEFFECT.DROPEFFECT_NONE)
+			{
+				virtualFilesHandler.Cancel();
+			}
+			else
+			{
+				virtualFilesHandler.Drop(this, dataObject);
+			}
 		}
 
 		return HRESULT.S_OK;
@@ -374,21 +400,27 @@ internal partial class Win32DragDropExtension
 		{
 			return;
 		}
-		var formatEtc = formatEtcNullable.Value;
+
+		var virtualFilesHandler = new VirtualFilesHandler(formatEtcNullable.Value);
+		_lastVirtualFilesHandler = virtualFilesHandler;
+		package.SetDataProvider(StandardDataFormats.StorageItems, virtualFilesHandler.GetStorageItemsAsync);
+	}
+
+	private unsafe List<IStorageItem> ReadVirtualFiles(IDataObject* dataObject, FORMATETC formatEtc)
+	{
+		var storageItems = new List<IStorageItem>();
 
 		var getDataHResult = dataObject->GetData(formatEtc, out STGMEDIUM medium);
 		if (getDataHResult.Failed)
 		{
-			this.LogError()?.Error($"{nameof(IDataObject)}.{nameof(IDataObject.GetData)} failed to get {nameof(CFSTR_FILEDESCRIPTOR)} data: {Win32Helper.GetErrorMessage(getDataHResult)}");
-			return;
+			throw new InvalidOperationException($"{nameof(IDataObject)}.{nameof(IDataObject.GetData)} failed to get {nameof(CFSTR_FILEDESCRIPTOR)} data: {Win32Helper.GetErrorMessage(getDataHResult)}");
 		}
 		using var mediumDisposable = new DisposableStruct<STGMEDIUM>(static medium => PInvoke.ReleaseStgMedium(&medium), medium);
 
 		using var lockDisposable = Win32Helper.GlobalLock(medium.u.hGlobal, out var firstByte);
 		if (lockDisposable is null)
 		{
-			this.LogError()?.Error($"Failed to lock {nameof(HGLOBAL)} contents when reading {nameof(CFSTR_FILEDESCRIPTOR)} data.");
-			return;
+			throw new InvalidOperationException($"Failed to lock {nameof(HGLOBAL)} contents when reading {nameof(CFSTR_FILEDESCRIPTOR)} data.");
 		}
 
 		var fileGroupDescriptor = (FILEGROUPDESCRIPTORW*)firstByte;
@@ -396,99 +428,136 @@ internal partial class Win32DragDropExtension
 
 		if (fileCount == 0)
 		{
-			return;
+			return storageItems;
 		}
 
 		var fileDescriptors = new ReadOnlySpan<FILEDESCRIPTORW>((byte*)firstByte + sizeof(uint), (int)fileCount);
-
-		// Now retrieve the file contents for each file descriptor
-		var storageItems = new List<IStorageItem>();
+		var dropDirectory = CreateVirtualFileDirectory();
 
 		for (int i = 0; i < fileCount; i++)
 		{
-			ref readonly var fileDescriptor = ref fileDescriptors[i];
-			var isDirectory = (fileDescriptor.dwFileAttributes & (uint)System.IO.FileAttributes.Directory) != 0;
-
-			// Get the file name from the descriptor using fixed statement
-			string fileName;
-			fixed (char* pFileName = fileDescriptor.cFileName)
+			try
 			{
-				fileName = Marshal.PtrToStringAuto((IntPtr)pFileName) ?? string.Empty;
-			}
+				ref readonly var fileDescriptor = ref fileDescriptors[i];
+				var isDirectory = (fileDescriptor.dwFileAttributes & (uint)System.IO.FileAttributes.Directory) != 0;
 
-			if (string.IsNullOrEmpty(fileName))
-			{
-				this.LogWarn()?.Warn($"File descriptor at index {i} has no file name, skipping.");
-				continue;
-			}
-
-			var tempDir = Path.Combine(Path.GetTempPath(), "unoplatform-dragdrop", Guid.NewGuid().ToString("N"));
-			if (!Directory.Exists(tempDir))
-			{
-				Directory.CreateDirectory(tempDir);
-			}
-			var tempPath = Path.Combine(tempDir, fileName);
-
-			if (isDirectory)
-			{
-				if (!Directory.Exists(tempPath))
+				// Get the file name from the descriptor using fixed statement
+				string fileName;
+				fixed (char* pFileName = fileDescriptor.cFileName)
 				{
-					Directory.CreateDirectory(tempPath);
+					fileName = Marshal.PtrToStringAuto((IntPtr)pFileName) ?? string.Empty;
 				}
-				storageItems.Add(new StorageFolder(tempPath));
-			}
-			else
-			{
-				var fileContentsFormatEtc = new FORMATETC
-				{
-					cfFormat = (ushort)CFSTR_FILECONTENTS,
-					ptd = null,
-					dwAspect = (uint)DVASPECT.DVASPECT_CONTENT,
-					lindex = i, // Index of the file in the file group descriptor
-					tymed = (uint)TYMED.TYMED_ISTREAM | (uint)TYMED.TYMED_HGLOBAL | (uint)TYMED.TYMED_ISTORAGE
-				};
 
-				var getFileContentResult = dataObject->GetData(fileContentsFormatEtc, out STGMEDIUM fileContentMedium);
-				if (getFileContentResult.Failed)
+				if (string.IsNullOrEmpty(fileName))
 				{
-					this.LogError()?.Error($"Failed to get file contents for '{fileName}' at index {i}: {Win32Helper.GetErrorMessage(getFileContentResult)}");
+					this.LogWarn()?.Warn($"File descriptor at index {i} has no file name, skipping.");
 					continue;
 				}
 
-				using var fileContentMediumDisposable = new DisposableStruct<STGMEDIUM>(static medium => PInvoke.ReleaseStgMedium(&medium), fileContentMedium);
+				// Each item gets its own folder, so items with the same name don't overwrite each other.
+				var tempDir = Path.Combine(dropDirectory, i.ToString(CultureInfo.InvariantCulture));
+				var tempPath = Path.GetFullPath(Path.Combine(tempDir, fileName));
+				if (!tempPath.StartsWith(tempDir + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase))
+				{
+					this.LogWarn()?.Warn($"File descriptor at index {i} has a name outside of its folder, skipping.");
+					continue;
+				}
 
-				if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_ISTREAM) != 0 && fileContentMedium.u.pstm != null)
+				if (isDirectory)
 				{
-					using var fileStream = File.Create(tempPath);
-					ReadFromIStream(fileContentMedium.u.pstm, fileStream);
-					storageItems.Add(StorageFile.GetFileFromPath(tempPath));
-				}
-				else if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_HGLOBAL) != 0 && fileContentMedium.u.hGlobal.Value != (void*)IntPtr.Zero)
-				{
-					using var fileStream = File.Create(tempPath);
-					if (ReadFromHGlobal(fileContentMedium.u.hGlobal, fileDescriptor, fileStream))
-					{
-						storageItems.Add(StorageFile.GetFileFromPath(tempPath));
-					}
-				}
-				else if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_ISTORAGE) != 0 && fileContentMedium.u.pstg != null)
-				{
-					if (ReadFromIStorage(fileContentMedium.u.pstg, tempPath))
-					{
-						storageItems.Add(StorageFile.GetFileFromPath(tempPath));
-					}
+					Directory.CreateDirectory(tempPath);
+					storageItems.Add(new StorageFolder(tempPath));
 				}
 				else
 				{
-					this.LogError()?.Error($"Unsupported storage medium type {fileContentMedium.tymed} for file '{fileName}'");
+					Directory.CreateDirectory(Path.GetDirectoryName(tempPath)!);
+
+					var fileContentsFormatEtc = new FORMATETC
+					{
+						cfFormat = (ushort)CFSTR_FILECONTENTS,
+						ptd = null,
+						dwAspect = (uint)DVASPECT.DVASPECT_CONTENT,
+						lindex = i, // Index of the file in the file group descriptor
+						tymed = (uint)TYMED.TYMED_ISTREAM | (uint)TYMED.TYMED_HGLOBAL | (uint)TYMED.TYMED_ISTORAGE
+					};
+
+					var getFileContentResult = dataObject->GetData(fileContentsFormatEtc, out STGMEDIUM fileContentMedium);
+					if (getFileContentResult.Failed)
+					{
+						this.LogError()?.Error($"Failed to get file contents for '{fileName}' at index {i}: {Win32Helper.GetErrorMessage(getFileContentResult)}");
+						continue;
+					}
+
+					using var fileContentMediumDisposable = new DisposableStruct<STGMEDIUM>(static medium => PInvoke.ReleaseStgMedium(&medium), fileContentMedium);
+
+					if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_ISTREAM) != 0 && fileContentMedium.u.pstm != null)
+					{
+						using var fileStream = File.Create(tempPath);
+						ReadFromIStream(fileContentMedium.u.pstm, fileStream);
+						storageItems.Add(StorageFile.GetFileFromPath(tempPath));
+					}
+					else if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_HGLOBAL) != 0 && fileContentMedium.u.hGlobal.Value != (void*)IntPtr.Zero)
+					{
+						using var fileStream = File.Create(tempPath);
+						if (ReadFromHGlobal(fileContentMedium.u.hGlobal, fileDescriptor, fileStream))
+						{
+							storageItems.Add(StorageFile.GetFileFromPath(tempPath));
+						}
+					}
+					else if (((uint)fileContentMedium.tymed & (uint)TYMED.TYMED_ISTORAGE) != 0 && fileContentMedium.u.pstg != null)
+					{
+						if (ReadFromIStorage(fileContentMedium.u.pstg, tempPath))
+						{
+							storageItems.Add(StorageFile.GetFileFromPath(tempPath));
+						}
+					}
+					else
+					{
+						this.LogError()?.Error($"Unsupported storage medium type {fileContentMedium.tymed} for file '{fileName}'");
+					}
 				}
+			}
+			catch (Exception e) when (e is not OutOfMemoryException and not StackOverflowException and not AccessViolationException)
+			{
+				this.LogError()?.Error($"Failed to copy the dragged item at index {i}.", e);
 			}
 		}
 
-		if (storageItems.Count > 0)
+		return storageItems;
+	}
+
+	// The app may use the copies at any time while it runs, so they're deleted when it exits.
+	private static string CreateVirtualFileDirectory()
+	{
+		var directory = Path.Combine(Path.GetTempPath(), "unoplatform-dragdrop", Guid.NewGuid().ToString("N"));
+		Directory.CreateDirectory(directory);
+
+		lock (_virtualFileDirectories)
 		{
-			package.SetStorageItems(storageItems, readOnly: true);
+			if (_virtualFileDirectories.Count == 0)
+			{
+				AppDomain.CurrentDomain.ProcessExit += static (_, _) =>
+				{
+					lock (_virtualFileDirectories)
+					{
+						foreach (var path in _virtualFileDirectories)
+						{
+							try
+							{
+								Directory.Delete(path, recursive: true);
+							}
+							catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+							{
+								// A file the app or another process still has open.
+							}
+						}
+					}
+				};
+			}
+			_virtualFileDirectories.Add(directory);
 		}
+
+		return directory;
 	}
 
 	private static unsafe void ReadFromIStream(IStream* pStream, FileStream fileStream)
