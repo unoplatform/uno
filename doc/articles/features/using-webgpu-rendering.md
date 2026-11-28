@@ -17,7 +17,7 @@ Add the `WebGpu` [UnoFeature](xref:Uno.Features.Uno.Sdk) to the app project:
 <UnoFeatures>Skia;WebGpu</UnoFeatures>
 ```
 
-`WebGpu` counts as a renderer feature, so listing it stops `Skia` from being implied. List both, as above, to keep SkiaSharp in the app, which the fallback described below needs. Listing `WebGpu` without `Skia` produces an app with no SkiaSharp (see [Apps without SkiaSharp](#apps-without-skiasharp)).
+`WebGpu` counts as a renderer feature, so listing it stops `Skia` from being implied. List both, as above, to keep SkiaSharp in the app, which the fallback described below needs. Listing `WebGpu` without `Skia` produces an app whose Release builds have no SkiaSharp (see [Apps without SkiaSharp](#apps-without-skiasharp)).
 
 The `WebGpu` feature also adds [`WebGpuCanvasElement`](xref:Uno.Controls.WebGpuCanvasElement), which draws only with the WebGPU backend.
 
@@ -71,7 +71,7 @@ Where WebGPU isn't available, an app that registered Skia after it renders with 
 
 ## Apps without SkiaSharp
 
-When `UnoFeatures` lists `WebGpu` without `Skia`, the app references neither SkiaSharp nor its native libraries. WebGPU is then the only renderer, and it is used without a `GraphicsBackend(...)` call. Fonts, images, geometry, [SVG](xref:Uno.Features.SVG) and [Lottie](xref:Uno.Features.Lottie) use the managed engines built into Uno Platform (`Uno.UI.Composition.Managed.ManagedBackend`) instead of their SkiaSharp implementations.
+When `UnoFeatures` lists `WebGpu` without `Skia`, a Release build of the app references neither SkiaSharp nor its native libraries. Debug builds still include SkiaSharp, through the App MCP tooling (`Uno.UI.App.Mcp`) that the Uno.Sdk adds to non-optimized builds. WebGPU is then the only renderer, and it is used without a `GraphicsBackend(...)` call. Fonts, images, geometry, [SVG](xref:Uno.Features.SVG) and [Lottie](xref:Uno.Features.Lottie) use the managed engines built into Uno Platform (`Uno.UI.Composition.Managed.ManagedBackend`) instead of their SkiaSharp implementations.
 
 Such an app has no fallback renderer, and can't use SkiaSharp itself, for example to draw with [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement). An app that needs either lists `Skia;WebGpu`.
 

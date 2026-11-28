@@ -2,7 +2,7 @@
 
 The `unoapp` template comes with two preset options: *Blank* and *Recommended* (*Default* in Visual Studio Wizard). These represent two different sets of pre-configured values for the options that follow. The *Blank* option is the most minimal template, while the *Recommended* option comes with a few more features pre-configured.
 
-Both presets include the following platforms: Windows, Android, iOS, Desktop, and Wasm.
+Both presets include the following platforms: Android, iOS, Desktop, and Wasm.
 
 - #### Blank
 
@@ -24,7 +24,7 @@ Both presets include the following platforms: Windows, Android, iOS, Desktop, an
 
     The **Recommended** preset option represents a more complete Uno Platform application. It uses `Uno.Extensions` to initialize the application by creating an `IHost`, using the `IHostBuilder` pattern established by the Microsoft.Extensions libraries. The IHost provides a number of services that are useful in Uno Platform applications, including Dependency Injection, Logging, and Configuration.
 
-    The *Recommended* option also includes a number of additional packages that are useful in Uno Platform applications, including `Uno.UITest`, `Uno.Extensions.Http`, `Uno.Extensions.Navigation`, `Uno.Extensions.Serialization`, and `Uno.Extensions.Logging`.
+    The *Recommended* option also includes a number of additional packages that are useful in Uno Platform applications, including `Uno.Extensions.Http`, `Uno.Extensions.Navigation`, `Uno.Extensions.Serialization`, and `Uno.Extensions.Logging`.
 
     Create an application with the *Recommended* preset:
 
@@ -32,10 +32,10 @@ Both presets include the following platforms: Windows, Android, iOS, Desktop, an
     dotnet new unoapp -preset recommended
     ```
 
-    The *Recommended* preset can be augmented by clicking `Customize` in the Visual Studio Wizard, or by specifying additional command line parameters to the `dotnet new` command. For example, this command will create a *Blank* application with out the Uno.Toolkit.
+    The *Recommended* preset can be augmented by clicking `Customize` in the Visual Studio Wizard, or by specifying additional command line parameters to the `dotnet new` command. For example, this command will create a *Recommended* application without the Uno.Toolkit.
 
     ```dotnetcli
-    dotnet new unoapp -preset blank -toolkit false
+    dotnet new unoapp -preset recommended -toolkit false
     ```
 
 For each of the options that follow, we'll define the values that are set for each preset option.
