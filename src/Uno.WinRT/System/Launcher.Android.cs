@@ -8,6 +8,8 @@ using Android.Content.PM;
 using AndroidX.Core.Content.PM;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.Storage.Internal;
+using Windows.Storage;
 
 namespace Windows.System
 {
@@ -36,6 +38,48 @@ namespace Windows.System
 				if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
 				{
 					typeof(Launcher).Log().Error($"Failed to {nameof(LaunchUriAsync)}.", exception);
+				}
+
+				return Task.FromResult(false);
+			}
+		}
+
+		internal static Task<bool> LaunchFilePlatformAsync(IStorageFile file)
+		{
+			try
+			{
+				if (Uno.UI.ContextHelper.Current is not { } context)
+				{
+					throw new InvalidOperationException(
+						"LaunchFileAsync was called too early in application lifetime. " +
+						"App context needs to be initialized");
+				}
+
+				var uri = file is StorageFile { Implementation: StorageFile.SafFile safFile }
+					? safFile.Uri
+					: LauncherFileProvider.GetUri(context, file.Path);
+
+				var intent = new Intent(Intent.ActionView);
+				intent.SetDataAndType(uri, LauncherFileProvider.GetMimeType(file.Name, file.ContentType));
+				intent.AddFlags(ActivityFlags.NewTask | ActivityFlags.GrantReadUriPermission);
+
+				StartActivity(intent);
+				return Task.FromResult(true);
+			}
+			catch (ActivityNotFoundException)
+			{
+				if (typeof(Launcher).Log().IsEnabled(LogLevel.Warning))
+				{
+					typeof(Launcher).Log().Warn($"No app can open '{file.Name}' ({file.ContentType}).");
+				}
+
+				return Task.FromResult(false);
+			}
+			catch (Exception exception)
+			{
+				if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(Launcher).Log().Error($"Failed to {nameof(LaunchFileAsync)}.", exception);
 				}
 
 				return Task.FromResult(false);

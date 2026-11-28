@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Uno.UI.Runtime.Extensions.System.LauncherHelpers;
+using Windows.Storage;
 using Windows.System;
 using Uno.Extensions.System;
 using Uno.Foundation.Logging;
@@ -10,6 +12,8 @@ namespace Uno.UI.Runtime.Extensions.System
 {
 	internal class LinuxLauncherExtension : ILauncherExtension
 	{
+		private static readonly TimeSpan XdgOpenExitTimeout = TimeSpan.FromSeconds(5);
+
 		public LinuxLauncherExtension(object owner)
 		{
 		}
@@ -28,6 +32,51 @@ namespace Uno.UI.Runtime.Extensions.System
 			};
 
 			return Task.FromResult(process.Start());
+		}
+
+		public async Task<bool> LaunchFileAsync(IStorageFile file)
+		{
+			try
+			{
+				using var process = new Process
+				{
+					StartInfo = new ProcessStartInfo("xdg-open")
+					{
+						ArgumentList = { file.Path },
+						UseShellExecute = false,
+					}
+				};
+
+				process.Start();
+
+				// xdg-open reports a missing file or handler through its exit code, but some
+				// desktop environments keep it alive until the opened app quits.
+				using var timeout = new CancellationTokenSource(XdgOpenExitTimeout);
+				try
+				{
+					await process.WaitForExitAsync(timeout.Token);
+				}
+				catch (OperationCanceledException)
+				{
+					return true;
+				}
+
+				if (process.ExitCode != 0 && this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"xdg-open could not open '{file.Path}' (exit code {process.ExitCode}).");
+				}
+
+				return process.ExitCode == 0;
+			}
+			catch (Exception ex)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Could not launch file '{file.Path}'.", ex);
+				}
+
+				return false;
+			}
 		}
 
 		public Task<LaunchQuerySupportStatus> QueryUriSupportAsync(Uri uri, LaunchQuerySupportType launchQuerySupportType)

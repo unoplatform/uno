@@ -43,6 +43,8 @@ namespace Windows.Storage
 				_fileUri = _directoryDocument.Uri ?? throw new ArgumentException($"directoryDocument.Uri must not be null.", nameof(directoryDocument));
 			}
 
+			internal Android.Net.Uri Uri => _fileUri;
+
 			public override StorageProvider Provider => StorageProviders.AndroidSaf;
 
 			public override string Name => _directoryDocument?.Name ?? string.Empty;

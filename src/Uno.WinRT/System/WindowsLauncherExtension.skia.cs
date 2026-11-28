@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Win32;
+using Windows.Storage;
 using Windows.System;
 using Uno.Extensions.System;
 using Uno.Foundation.Logging;
@@ -47,6 +48,31 @@ namespace Uno.UI.Runtime.Extensions.System
 				}
 
 				return Task.FromResult(true);
+			}
+		}
+
+		public Task<bool> LaunchFileAsync(IStorageFile file)
+		{
+			try
+			{
+				// ShellExecute opens the file with its associated app. A null process only means
+				// the file was handed to an app that was already running.
+				using var process = Process.Start(new ProcessStartInfo(file.Path)
+				{
+					UseShellExecute = true,
+					Verb = "open"
+				});
+
+				return Task.FromResult(true);
+			}
+			catch (Exception ex)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Could not launch file '{file.Path}'.", ex);
+				}
+
+				return Task.FromResult(false);
 			}
 		}
 
