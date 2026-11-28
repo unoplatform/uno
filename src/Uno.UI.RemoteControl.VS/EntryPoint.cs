@@ -566,6 +566,21 @@ public partial class EntryPoint : IDisposable
 				_ideChannelClient.Connected += OnIdeChannelConnected;
 				_ideChannelClient.ConnectToHost();
 
+				// The host exited, was replaced or stopped: nothing will serve this pipe, stop waiting for it.
+				// This runs inside devServerCt.Cancel() (OnExitAsync, StopDevServer): it must not throw, or the restart or the kill would be skipped.
+				var ideChannelClient = _ideChannelClient;
+				devServerCt.Token.Register(() =>
+				{
+					try
+					{
+						ideChannelClient.Dispose();
+					}
+					catch (Exception e)
+					{
+						_debugAction?.Invoke($"Failed to dispose the IDE channel client: {e.Message}");
+					}
+				});
+
 				// Use scoped DI instead of this!
 				var remoteCommands = new IdeChannelCommandHandler(_ideChannelClient);
 				_commands.Register("Send to Dev Server", remoteCommands);
