@@ -2,8 +2,35 @@ parameters:
   poolName: ''
 
 jobs:
+# A manual stage rerun (forceRetryAllJobs) would rebuild and fail on publishing the artifact again
+# ("Artifact samplesapp-winappsdk already exists"). Skip the build when this run already uploaded it.
+- job: WASDK_Check
+  displayName: 'Check Samples App artifact'
+  pool:
+    vmImage: ubuntu-latest
+  steps:
+  - checkout: none
+  - pwsh: |
+      $skip = $false
+      try {
+        $uri = "$(System.CollectionUri)$(System.TeamProject)/_apis/build/builds/$(Build.BuildId)/artifacts?api-version=7.1"
+        $artifacts = Invoke-RestMethod -Uri $uri -Headers @{ Authorization = "Bearer $env:SYSTEM_ACCESSTOKEN" }
+        $skip = @($artifacts.value | Where-Object { $_.name -eq 'samplesapp-winappsdk' }).Count -gt 0
+      }
+      catch {
+        Write-Host "Could not list the build artifacts, building anyway: $_"
+      }
+      Write-Host "Skip the Samples App build: $skip"
+      Write-Host "##vso[task.setvariable variable=skipBuild;isOutput=true]$($skip.ToString().ToLower())"
+    name: check
+    displayName: Look for an already uploaded Samples App
+    env:
+      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+
 - job: WASDK_Build
   displayName: 'Build Samples App'
+  dependsOn: WASDK_Check
+  condition: ne(dependencies.WASDK_Check.outputs['check.skipBuild'], 'true')
   cancelTimeoutInMinutes: 0
 
   pool: ${{ parameters.poolName }}
@@ -112,7 +139,11 @@ jobs:
 ##
 - job: WinUI_Runtime_Tests
   displayName: 'Runtime Tests'
-  dependsOn: WASDK_Build
+  dependsOn:
+  - WASDK_Check
+  - WASDK_Build
+  # WASDK_Build is skipped when a previous attempt already uploaded the Samples App.
+  condition: in(dependencies.WASDK_Build.result, 'Succeeded', 'SucceededWithIssues', 'Skipped')
   timeoutInMinutes: 30
   cancelTimeoutInMinutes: 1
 
@@ -212,6 +243,15 @@ jobs:
       testResultsFiles: '$(build.sourcesdirectory)/build/winui-runtime-tests-results.xml'
       failTaskOnFailedTests: true
       failTaskOnMissingResultsFile: true
+
+  - task: PublishBuildArtifacts@1
+    condition: failed()
+    displayName: Publish crash dumps and app output
+    continueOnError: true
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/winui-crash-dumps
+      ArtifactName: runtime-tests-winappsdk-crash
+      ArtifactType: Container
 
   - task: PublishBuildArtifacts@1
     condition: always()
