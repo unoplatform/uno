@@ -105,7 +105,7 @@ public abstract partial class SKCanvasElement : Grid
 
 	// Renders through a raster SKSurface at device resolution and draws the pixels as a texture of the active
 	// backend. The surface persists across frames and is recreated only when the device size changes.
-	internal void PaintSoftware(IDrawingSession session, Vector2 size)
+	internal void PaintSoftware(IDrawingSession session, Vector2 size, float opacity)
 	{
 		// A session without an SKCanvas records in the visual's logical space and applies the device scale on replay,
 		// so its matrix never carries it: without this factor the surface is rasterized at 1x and stretched.
@@ -137,7 +137,7 @@ public abstract partial class SKCanvasElement : Grid
 		using var texture = session.Factory.CreateTexture(w, h, pixmap.GetPixelSpan());
 		session.Save();
 		session.Scale(1f / sx, 1f / sy);
-		session.DrawImage(texture, 0f, 0f);
+		session.DrawImage(texture, 0f, 0f, opacity);
 		session.Restore();
 	}
 
