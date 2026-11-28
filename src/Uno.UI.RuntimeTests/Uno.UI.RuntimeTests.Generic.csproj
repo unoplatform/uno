@@ -115,6 +115,7 @@
 		<Compile Remove="Microsoft\UI\Xaml\Media\Given_AcrylicBrush.cs" />
 		<Compile Remove="Microsoft\UI\Xaml\Media\Given_Geometry.cs" />
 		<Compile Remove="Microsoft\UI\Xaml\Media\Given_IFont_AlternativeBackend.cs" />
+		<Compile Remove="Microsoft\UI\Xaml\Media\Given_SkiaColrOutlineSource.cs" />
 		<Compile Remove="Microsoft\UI\Xaml\Shapes\Given_Basic_Shapes_Parity.cs" />
 	</ItemGroup>
 

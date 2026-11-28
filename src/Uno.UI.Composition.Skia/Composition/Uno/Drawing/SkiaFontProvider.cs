@@ -30,6 +30,9 @@ internal sealed class SkiaFontProvider : IFontProvider
 	// grayscale masks lighter and softer than WinUI's. Other scalers keep their edging until measured.
 	internal static readonly SKFontEdging TextEdging = OperatingSystem.IsWindows() ? SKFontEdging.Antialias : SKFontEdging.SubpixelAntialias;
 
+	// Skia's font manager and scaler on Apple platforms (Mac Catalyst counts as iOS).
+	internal static readonly bool UsesCoreText = OperatingSystem.IsMacOS() || OperatingSystem.IsIOS() || OperatingSystem.IsTvOS();
+
 	// Caches codepoint fallback resolution: the SKFontManager.MatchCharacter lookup is comparatively expensive,
 	// and a stable IFont instance lets the FontDetails cache dedupe. Keyed by codepoint + requested style + size.
 	private readonly Dictionary<(int Codepoint, int Weight, FontStretch Stretch, FontStyle Style, float Size), IFont?> _matchCharacterCache = new();
@@ -256,7 +259,9 @@ internal sealed class SkiaFontProvider : IFontProvider
 
 	private static IFont MakeFont(SkiaFontFace face, float fontSize) => new SkiaFont(CreateSKFont(face, fontSize), face);
 
-	private static SKFont CreateSKFont(SkiaFontFace face, float fontSize) => new(face.Typeface, fontSize)
+	private static SKFont CreateSKFont(SkiaFontFace face, float fontSize) => CreateSKFont(face.Typeface, fontSize);
+
+	internal static SKFont CreateSKFont(SKTypeface typeface, float fontSize) => new(typeface, fontSize)
 	{
 		Edging = TextEdging,
 		Subpixel = true,

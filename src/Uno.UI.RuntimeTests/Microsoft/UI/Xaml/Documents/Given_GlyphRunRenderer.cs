@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Numerics;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,6 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 #if __SKIA__
 using SkiaSharp;
 using Uno.UI.Composition.Drawing;
+using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Text;
 #endif
 
@@ -210,14 +210,8 @@ public class Given_GlyphRunRenderer
 			GlyphRunRenderer.ImageTextureCache.Get(session, clone.TextureKey, cloneImage));
 	}
 
-	private static async Task<byte[]> LoadFontData()
-	{
-		var file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf"));
-		using var stream = await file.OpenStreamForReadAsync();
-		using MemoryStream buffer = new();
-		await stream.CopyToAsync(buffer);
-		return buffer.ToArray();
-	}
+	private static Task<byte[]> LoadFontData()
+		=> AppPackageAssetHelper.ReadAllBytesAsync("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf");
 
 	// Built with the Skia provider directly: the registered one is not Skia's when the app runs another drawing backend.
 	private static IFont CreateSkiaFont(byte[] data, float fontSize)

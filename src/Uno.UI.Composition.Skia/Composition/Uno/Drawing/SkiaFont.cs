@@ -27,6 +27,7 @@ internal sealed class SkiaFont : IFont
 	private readonly Dictionary<ushort, IGeometry?> _glyphGeometries = new();
 	private IGeometryFactory? _geometryFactory;
 	private readonly Dictionary<ushort, RasterGlyph?> _colorGlyphs = new();
+	private SKFont? _colrOutlineFont;
 
 	public SkiaFont(SKFont font, SkiaFontFace face)
 	{
@@ -167,7 +168,7 @@ internal sealed class SkiaFont : IFont
 			}
 			else if (HasColorGlyphs && GetColorGlyph(glyphs[i]) is { } raster)
 			{
-				// Empty outline == a colour glyph (or blank). SkiaSharp only rasterizes it, so hand the neutral pixels
+				// No outline == a colour glyph (or blank). SkiaSharp only rasterizes it, so hand the neutral pixels
 				// across the seam; the caller uploads them to a texture (the font stays off the backend).
 				elements.Add(new GlyphImage(raster.Pixels, raster.Width, raster.Height,
 					positions[i].X + raster.InkLeft, positions[i].Y + baselineY + raster.InkTop));
@@ -211,11 +212,26 @@ internal sealed class SkiaFont : IFont
 			return cached;
 		}
 
-		using var glyphPath = _font.GetGlyphPath(glyph);
+		using var glyphPath = GetGlyphPath(glyph);
 		var ops = glyphPath is { IsEmpty: false } ? ExtractPenOps(glyphPath) : Array.Empty<PenOp>();
 		_glyphOutlines[glyph] = ops;
 		return ops;
 	}
+
+	// Null or empty for a colour glyph (or blank). CoreText gives no outline for any glyph of a COLR font, so there COLR decides which
+	// glyphs are colour ones, and the others take their outlines from the face's copy without COLR (see SkiaFontFace.ColrOutlineSource).
+	private SKPath? GetGlyphPath(ushort glyph)
+	{
+		if (_face.ColrOutlineSource is not { } source)
+		{
+			return _font.GetGlyphPath(glyph);
+		}
+
+		return source.IsColorGlyph(glyph) ? null : GetPlainGlyphPathFromCopyWithoutColr(source, glyph);
+	}
+
+	private SKPath? GetPlainGlyphPathFromCopyWithoutColr(SkiaColrOutlineSource source, ushort glyph)
+		=> (_colrOutlineFont ??= SkiaFontProvider.CreateSKFont(source.Typeface, _font.Size)).GetGlyphPath(glyph);
 
 	// Replays cached glyph-local pen ops into a neutral IPathBuilder, translated to the pen position.
 	private static void ReplayTranslated(IPathBuilder builder, PenOp[] ops, float dx, float dy)

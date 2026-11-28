@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Media;
 #if __SKIA__
 using SkiaSharp;
 using Uno.Media;
+using Uno.UI.RuntimeTests.Helpers;
 #endif
 
 using static Private.Infrastructure.TestServices;
@@ -321,6 +322,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			}
 
 			Assert.IsTrue(imageCount > 0, "expected the color emoji glyph to rasterize to at least one image");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26670")]
+		public async System.Threading.Tasks.Task ColrFont_PlainGlyph_Outlines_And_ColorGlyph_Rasterizes_To_Image()
+		{
+			// Skia's CoreText scaler gives no outline for any glyph of a font with COLR, plain ones included; those must still
+			// come out as outlines (filled with the text's brush), not as colour-glyph images.
+			using var data = SKData.CreateCopy(await AppPackageAssetHelper.ReadAllBytesAsync(Given_SkiaColrOutlineSource.ColrFontUri));
+			using var typeface = SKTypeface.FromData(data, 0);
+			using var skFont = new SKFont(typeface, 32);
+			var font = new Uno.UI.Composition.Drawing.SkiaFont(skFont, new Uno.UI.Composition.Drawing.SkiaFontFace(typeface));
+
+			// Glyph 1 is a plain square, glyph 3 a COLR colour glyph (see Given_SkiaColrOutlineSource).
+			ushort[] glyphs = [1, 3];
+			System.Numerics.Vector2[] positions = [new(0, 0), new(32, 0)];
+			var elements = new System.Collections.Generic.List<Uno.UI.Composition.Drawing.GlyphRunElement>();
+			font.BuildGlyphRun(new global::Uno.UI.Composition.Drawing.ManagedGeometryFactory(), glyphs, positions, 0f, elements);
+
+			Assert.HasCount(2, elements);
+			Assert.IsInstanceOfType<Uno.UI.Composition.Drawing.GlyphOutlineRef>(elements[0], "expected the plain glyph to give an outline");
+			Assert.IsInstanceOfType<Uno.UI.Composition.Drawing.GlyphImage>(elements[1], "expected the colour glyph to rasterize to an image");
 		}
 #endif
 	}

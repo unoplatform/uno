@@ -24,19 +24,56 @@ internal sealed class SkiaFontFace
 	// HarfBuzz shapes in font-design units at this fixed scale; SkiaFont converts the output to pixels for its size.
 	internal const int ShapeScale = 512;
 
-	private readonly object _hbGate = new();
+	// Guards the lazily built HarfBuzz font and COLR outline source.
+	private readonly object _gate = new();
 	private HbFont? _hbFont;
 	private ulong[]? _asciiCoverage;
+	private readonly bool _needsColrOutlineSource;
+	private bool _colrOutlineSourceCreated;
+	private SkiaColrOutlineSource? _colrOutlineSource;
 
 	public SkiaFontFace(SKTypeface typeface)
 	{
 		Typeface = typeface;
-		HasColorGlyphs = HasColorTables(typeface);
+		HasColorGlyphs = HasColorTables(typeface, out var colrOnly);
+
+		// Skia's CoreText scaler treats the font-level colour flag as per glyph, so it gives no outline for any glyph of a COLR font.
+		_needsColrOutlineSource = colrOnly && SkiaFontProvider.UsesCoreText;
 	}
 
 	public SKTypeface Typeface { get; }
 
 	public bool HasColorGlyphs { get; }
+
+	/// <summary>The outlines of the plain glyphs of a font whose colour glyphs come from COLR alone, where <see cref="Typeface"/> gives none.</summary>
+	/// <remarks><c>null</c> where <see cref="Typeface"/> gives them itself (any scaler but CoreText's), or where the source can't be built.
+	/// Built on first use.</remarks>
+	public SkiaColrOutlineSource? ColrOutlineSource
+	{
+		get
+		{
+			if (!_needsColrOutlineSource)
+			{
+				return null;
+			}
+
+			if (Volatile.Read(ref _colrOutlineSourceCreated))
+			{
+				return _colrOutlineSource;
+			}
+
+			lock (_gate)
+			{
+				if (!_colrOutlineSourceCreated)
+				{
+					_colrOutlineSource = SkiaColrOutlineSource.Create(Typeface);
+					Volatile.Write(ref _colrOutlineSourceCreated, true);
+				}
+
+				return _colrOutlineSource;
+			}
+		}
+	}
 
 	public HbFont HarfBuzzFont
 	{
@@ -47,7 +84,7 @@ internal sealed class SkiaFontFace
 				return existing;
 			}
 
-			lock (_hbGate)
+			lock (_gate)
 			{
 				if (_hbFont is null)
 				{
@@ -121,18 +158,18 @@ internal sealed class SkiaFontFace
 		return new HbBlob(handle.AddrOfPinnedObject(), bytes.Length, HarfBuzzSharp.MemoryMode.ReadOnly, handle.Free);
 	}
 
-	private static bool HasColorTables(SKTypeface typeface)
+	private static bool HasColorTables(SKTypeface typeface, out bool colrOnly)
 	{
+		bool colr = false, other = false;
 		foreach (var tag in typeface.GetTableTags())
 		{
-			if (tag == _colrTag || tag == _cbdtTag || tag == _sbixTag || tag == _svgTag)
-			{
-				return true;
-			}
+			colr |= tag == _colrTag;
+			other |= tag == _cbdtTag || tag == _sbixTag || tag == _svgTag;
 		}
 
-		return false;
+		colrOnly = colr && !other;
+		return colr || other;
 	}
 
-	private static uint Tag(string tag) => (uint)((tag[0] << 24) | (tag[1] << 16) | (tag[2] << 8) | tag[3]);
+	internal static uint Tag(string tag) => (uint)((tag[0] << 24) | (tag[1] << 16) | (tag[2] << 8) | tag[3]);
 }
