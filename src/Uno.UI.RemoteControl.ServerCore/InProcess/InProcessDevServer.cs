@@ -28,18 +28,21 @@ public sealed class InProcessDevServer : IAsyncDisposable
 	private readonly Dictionary<ConnectionLease, InProcessRemoteControlServerHost> _connections = new();
 	private readonly object _gate = new();
 	private readonly RemoteControlConnectionDescriptor _defaultDescriptor;
+	private readonly AppLaunchIdeMessageHandler _launchHandler;
 	private bool _disposed;
 
 	private InProcessDevServer(
 		IServiceProvider serviceProvider,
 		RemoteControlServerHost serverHost,
 		IIdeChannel ideChannel,
-		RemoteControlConnectionDescriptor defaultDescriptor)
+		RemoteControlConnectionDescriptor defaultDescriptor,
+		AppLaunchIdeMessageHandler launchHandler)
 	{
 		_serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 		_serverHost = serverHost ?? throw new ArgumentNullException(nameof(serverHost));
 		IdeChannel = ideChannel ?? throw new ArgumentNullException(nameof(ideChannel));
 		_defaultDescriptor = defaultDescriptor;
+		_launchHandler = launchHandler ?? throw new ArgumentNullException(nameof(launchHandler));
 	}
 
 	/// <summary>
@@ -77,6 +80,8 @@ public sealed class InProcessDevServer : IAsyncDisposable
 			?? options.ApplicationLaunchMonitor
 			?? CreateDefaultLaunchMonitor(sp));
 
+		services.AddSingleton<AppLaunchIdeMessageHandler>();
+
 		services.AddScoped<IRemoteControlProcessorFactory>(sp =>
 			options.ProcessorFactoryFactory?.Invoke(sp)
 			?? CreateDefaultProcessorFactory(sp));
@@ -98,7 +103,11 @@ public sealed class InProcessDevServer : IAsyncDisposable
 
 		var activeIdeChannel = provider.GetRequiredService<IIdeChannel>();
 		var defaultDescriptor = options.DefaultConnectionDescriptor ?? RemoteControlConnectionDescriptor.InProcess;
-		return new InProcessDevServer(provider, host, activeIdeChannel, defaultDescriptor);
+
+		// Subscribes to the IDE channel, so it must exist before the IDE can announce a launch.
+		var launchHandler = provider.GetRequiredService<AppLaunchIdeMessageHandler>();
+
+		return new InProcessDevServer(provider, host, activeIdeChannel, defaultDescriptor, launchHandler);
 	}
 
 	/// <summary>
@@ -133,6 +142,10 @@ public sealed class InProcessDevServer : IAsyncDisposable
 		}
 
 		_disposed = true;
+
+		// The IDE channel can outlive this devserver (NullIdeChannel.Instance is process-wide), and a custom
+		// provider may not dispose its singletons.
+		_launchHandler.Dispose();
 
 		KeyValuePair<ConnectionLease, InProcessRemoteControlServerHost>[] snapshot;
 		lock (_gate)

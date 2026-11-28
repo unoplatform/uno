@@ -134,6 +134,7 @@ namespace Uno.UI.RemoteControl.Host
 				globalServices.AddSingleton<IdeChannelServer>();
 				globalServices.AddSingleton<IIdeChannel>(sp => sp.GetRequiredService<IdeChannelServer>());
 				globalServices.AddSingleton<IIdeChannelManager>(sp => sp.GetRequiredService<IdeChannelServer>());
+				globalServices.AddSingleton<AppLaunchIdeMessageHandler>();
 				globalServices.AddSingleton(sp =>
 					new AmbientRegistry(sp.GetRequiredService<ILoggerFactory>().CreateLogger<AmbientRegistry>()));
 
@@ -147,6 +148,9 @@ namespace Uno.UI.RemoteControl.Host
 				// Note: The IDE channel is expected to inform IDE that we are up as soon as possible.
 				//		 This is required for UDEI to **not** log invalid timeout message.
 				globalServiceProvider.GetService<IIdeChannel>();
+
+				// Subscribes to the IDE channel, so it must exist before the IDE can announce a launch.
+				_ = globalServiceProvider.GetRequiredService<AppLaunchIdeMessageHandler>();
 
 #pragma warning disable ASPDEPR004
 				// STEP 2: Create the WebApplication builder with reference to the global service provider
