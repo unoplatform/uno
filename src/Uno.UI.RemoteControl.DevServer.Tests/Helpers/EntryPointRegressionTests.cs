@@ -72,9 +72,9 @@ public class EntryPointRegressionTests
 		source.Should().Contain("DevServerHostDiscovery");
 		source.Should().Contain("TryFindHostAsync");
 
-		// Cheap structural pin: the probe call comes before the spawn argument string.
+		// Cheap structural pin: the probe call comes before the spawn resolves its host.
 		var probeIndex = source.IndexOf("TryFindHostAsync", StringComparison.Ordinal);
-		var spawnIndex = source.IndexOf("Uno.UI.RemoteControl.Host.dll", StringComparison.Ordinal);
+		var spawnIndex = source.IndexOf("DevServerHostLocator.TryResolve(", StringComparison.Ordinal);
 		probeIndex.Should().BeGreaterThan(0, "the discovery probe must be present");
 		spawnIndex.Should().BeGreaterThan(0, "the legacy spawn line must still exist");
 		probeIndex.Should().BeLessThan(spawnIndex, "the probe must run before the spawn so we can short-circuit");

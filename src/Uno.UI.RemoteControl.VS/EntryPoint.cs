@@ -530,19 +530,42 @@ public partial class EntryPoint : IDisposable
 
 			var pipeGuid = Guid.NewGuid();
 
-			var hostBinPath = Path.Combine(_toolsPath, "host", $"net{version}.0", "Uno.UI.RemoteControl.Host.dll");
+			// The package may not ship a host for this exact .NET version (e.g. Uno 6.x has no
+			// net11.0 host, and Visual Studio 18.12 makes the .NET 11 SDK the default).
+			// Use the closest older one, as the CLI does, instead of a path that doesn't exist.
+			var hostRoot = Path.Combine(_toolsPath, "host");
+			if (DevServerHostLocator.TryResolve(hostRoot, version) is not { } host)
+			{
+				throw new InvalidOperationException(
+					$"This Uno.WinUI.DevServer package has no Dev Server host for .NET {version} " +
+					$"(available: {string.Join(", ", DevServerHostLocator.EnumerateHostTfms(hostRoot))}). " +
+					"Update the Uno.Sdk version, or pin a supported .NET SDK in global.json.");
+			}
+
+			if (host.RequiresMajorRollForward)
+			{
+				_debugAction?.Invoke($"No Dev Server host for .NET {version}, using {host.HostPath} with DOTNET_ROLL_FORWARD=Major");
+			}
+
+			var hostBinPath = host.HostPath;
 			var arguments = $"\"{hostBinPath}\" --httpPort {port} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id} --ideChannel \"{pipeGuid}\" --solution \"{_dte.Solution!.FullName}\"";
 			var pi = new ProcessStartInfo("dotnet", arguments)
 			{
 				UseShellExecute = false,
 				CreateNoWindow = true,
 				WindowStyle = ProcessWindowStyle.Hidden,
-				WorkingDirectory = Path.Combine(_toolsPath, "host"),
+				WorkingDirectory = hostRoot,
 
 				// redirect the output
 				RedirectStandardOutput = true,
 				RedirectStandardError = true
 			};
+
+			if (host.RequiresMajorRollForward)
+			{
+				// Lets the older host start on a machine that only has the newer runtime.
+				pi.EnvironmentVariables["DOTNET_ROLL_FORWARD"] = "Major";
+			}
 
 			var devServer = new System.Diagnostics.Process { EnableRaisingEvents = true };
 			_devServer = (devServer, port, devServerCt);
