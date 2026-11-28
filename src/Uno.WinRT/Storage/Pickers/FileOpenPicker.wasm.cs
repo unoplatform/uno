@@ -34,6 +34,29 @@ namespace Windows.Storage.Pickers
 			return _fileSystemAccessApiSupported.Value;
 		}
 
+		/// <summary>
+		/// Gets whether <see cref="PickSingleFileAsync"/> and <see cref="PickMultipleFilesAsync"/> have an implementation they can use under the current
+		/// <see cref="WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration"/>.
+		/// </summary>
+		internal static bool IsSupported() => GetImplementation() is not null;
+
+		/// <summary>
+		/// Gets the implementation <see cref="PickSingleFileAsync"/> and <see cref="PickMultipleFilesAsync"/> use under the current
+		/// <see cref="WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration"/>, or <see langword="null"/> if there is none.
+		/// </summary>
+		private static WasmPickerConfiguration? GetImplementation()
+		{
+			var configuration = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration;
+
+			if (configuration.HasFlag(WasmPickerConfiguration.FileSystemAccessApi) && IsNativePickerSupported())
+			{
+				return WasmPickerConfiguration.FileSystemAccessApi;
+			}
+
+			// Fallback to upload-based picker.
+			return configuration.HasFlag(WasmPickerConfiguration.DownloadUpload) ? WasmPickerConfiguration.DownloadUpload : null;
+		}
+
 		private async Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
 		{
 			var files = await PickFilesAsync(false, token);
@@ -47,22 +70,17 @@ namespace Windows.Storage.Pickers
 
 		private async Task<FilePickerSelectedFilesArray> PickFilesAsync(bool multiple, CancellationToken token)
 		{
-			var fileSystemAccessApiEnabled = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration
-				.HasFlag(WasmPickerConfiguration.FileSystemAccessApi);
-			if (fileSystemAccessApiEnabled && IsNativePickerSupported())
+			switch (GetImplementation())
 			{
-				return await NativePickerPickFilesAsync(multiple, token);
-			}
+				case WasmPickerConfiguration.FileSystemAccessApi:
+					return await NativePickerPickFilesAsync(multiple, token);
 
-			var downloadUploadEnabled = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration
-				.HasFlag(WasmPickerConfiguration.DownloadUpload);
-			if (downloadUploadEnabled)
-			{
-				// Fallback to download-based picker.
-				return await UploadPickerPickFilesAsync(multiple, token);
-			}
+				case WasmPickerConfiguration.DownloadUpload:
+					return await UploadPickerPickFilesAsync(multiple, token);
 
-			throw new NotSupportedException("Could not handle the request using any picker implementation.");
+				default:
+					throw new NotSupportedException("Could not handle the request using any picker implementation.");
+			}
 		}
 
 		private async Task<FilePickerSelectedFilesArray> NativePickerPickFilesAsync(bool multiple, CancellationToken token)

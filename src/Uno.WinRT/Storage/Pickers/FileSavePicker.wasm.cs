@@ -31,24 +31,42 @@ namespace Windows.Storage.Pickers
 			return _fileSystemAccessApiSupported.Value;
 		}
 
+		/// <summary>
+		/// Gets whether <see cref="PickSaveFileAsync"/> has an implementation it can use under the current
+		/// <see cref="WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration"/>.
+		/// </summary>
+		internal static bool IsSupported() => GetImplementation() is not null;
+
+		/// <summary>
+		/// Gets the implementation <see cref="PickSaveFileAsync"/> uses under the current
+		/// <see cref="WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration"/>, or <see langword="null"/> if there is none.
+		/// </summary>
+		private static WasmPickerConfiguration? GetImplementation()
+		{
+			var configuration = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration;
+
+			if (configuration.HasFlag(WasmPickerConfiguration.FileSystemAccessApi) && IsNativePickerSupported())
+			{
+				return WasmPickerConfiguration.FileSystemAccessApi;
+			}
+
+			// Fallback to download-based picker.
+			return configuration.HasFlag(WasmPickerConfiguration.DownloadUpload) ? WasmPickerConfiguration.DownloadUpload : null;
+		}
+
 		private async Task<StorageFile?> PickSaveFileTaskAsync(CancellationToken token)
 		{
-			var fileSystemAccessApiEnabled = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration
-				.HasFlag(WasmPickerConfiguration.FileSystemAccessApi);
-			if (fileSystemAccessApiEnabled && IsNativePickerSupported())
+			switch (GetImplementation())
 			{
-				return await NativePickerPickSaveFileAsync(token);
-			}
+				case WasmPickerConfiguration.FileSystemAccessApi:
+					return await NativePickerPickSaveFileAsync(token);
 
-			var downloadUploadEnabled = WinRTFeatureConfiguration.Storage.Pickers.WasmConfiguration
-				.HasFlag(WasmPickerConfiguration.DownloadUpload);
-			if (downloadUploadEnabled)
-			{
-				// Fallback to download-based picker.
-				return await DownloadPickerPickSaveFileAsync(token);
-			}
+				case WasmPickerConfiguration.DownloadUpload:
+					return await DownloadPickerPickSaveFileAsync(token);
 
-			throw new NotSupportedException("Could not handle the request using any picker implementation.");
+				default:
+					throw new NotSupportedException("Could not handle the request using any picker implementation.");
+			}
 		}
 
 		private async Task<StorageFile?> NativePickerPickSaveFileAsync(CancellationToken token)
