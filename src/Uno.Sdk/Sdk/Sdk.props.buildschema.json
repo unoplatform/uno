@@ -364,6 +364,22 @@
 		"UnoSplashScreenScale": {
 			"description": "Used to scale the image that will be used as the SplashScreen.",
 			"type": "float"
+		},
+		"UnoIconWinAppSdkAppIconScale": {
+			"description": "Size of the icon foreground on the plated Windows App SDK app icon (Logo.scale-*, Logo.targetsize-*), as a share of the image, multiplied by the foreground scale. Resizetizer defaults to 0.75.",
+			"type": "float"
+		},
+		"UnoIconWinAppSdkSmallTileScale": {
+			"description": "Size of the icon foreground on the Windows App SDK small tile, multiplied by the foreground scale. Resizetizer defaults to 0.5.",
+			"type": "float"
+		},
+		"UnoIconWinAppSdkTileScale": {
+			"description": "Size of the icon foreground on the Windows App SDK medium, wide and large tiles, multiplied by the foreground scale. Resizetizer defaults to 0.33.",
+			"type": "float"
+		},
+		"UnoIconWinAppSdkStoreLogoScale": {
+			"description": "Size of the icon foreground on the Windows App SDK store logo, multiplied by the foreground scale. Resizetizer defaults to 1.0.",
+			"type": "float"
 		}
 	},
 	"metadata": [
@@ -434,7 +450,11 @@
 				},
 				"WindowsForegroundScale": {
 					"type": "float",
-					"description": "The scale factor for the foreground image on Windows."
+					"description": "Legacy alias of WinAppSdkForegroundScale, which wins when both are set."
+				},
+				"WinAppSdkForegroundScale": {
+					"type": "float",
+					"description": "The scale factor for the foreground image on the Windows App SDK head. Wins over WindowsForegroundScale."
 				},
 				"IOSForegroundScale": {
 					"type": "float",
@@ -442,7 +462,27 @@
 				},
 				"SkiaForegroundScale": {
 					"type": "float",
-					"description": "The scale factor for the foreground image on Skia."
+					"description": "Legacy alias of DesktopForegroundScale, which wins when both are set."
+				},
+				"DesktopForegroundScale": {
+					"type": "float",
+					"description": "The scale factor for the foreground image on the Desktop head (Windows, macOS, Linux). Wins over SkiaForegroundScale."
+				},
+				"WinAppSdkAppIconScale": {
+					"type": "float",
+					"description": "Size of the foreground on the plated Windows App SDK app icon, as a share of the image. Defaults to 0.75."
+				},
+				"WinAppSdkSmallTileScale": {
+					"type": "float",
+					"description": "Size of the foreground on the Windows App SDK small tile. Defaults to 0.5."
+				},
+				"WinAppSdkTileScale": {
+					"type": "float",
+					"description": "Size of the foreground on the Windows App SDK medium, wide and large tiles. Defaults to 0.33."
+				},
+				"WinAppSdkStoreLogoScale": {
+					"type": "float",
+					"description": "Size of the foreground on the Windows App SDK store logo. Defaults to 1.0."
 				}
 			}
 		},
@@ -464,7 +504,11 @@
 				},
 				"WindowsScale": {
 					"type": "float",
-					"description": "Used to scale the image that will be used as SplashScreen on Windows."
+					"description": "Legacy alias of WinAppSdkScale, which wins when both are set."
+				},
+				"WinAppSdkScale": {
+					"type": "float",
+					"description": "Used to scale the image that will be used as SplashScreen on the Windows App SDK head. Wins over WindowsScale."
 				},
 				"WasmScale": {
 					"type": "float",
@@ -472,7 +516,11 @@
 				},
 				"SkiaScale": {
 					"type": "float",
-					"description": "Used to scale the image that will be used as SplashScreen on Skia."
+					"description": "Legacy alias of DesktopScale, which wins when both are set."
+				},
+				"DesktopScale": {
+					"type": "float",
+					"description": "Used to scale the image that will be used as SplashScreen on the Desktop head (Windows, macOS, Linux). Wins over SkiaScale."
 				}
 			}
 		},
