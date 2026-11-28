@@ -105,6 +105,44 @@ public class Given_SampleChooserViewModel
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/25304")]
+	public async Task When_Favorite_Toggled_Outside_Selected_Category_Star_Follows()
+	{
+		var vm = SampleChooserViewModel.Instance;
+		var previousCategory = vm.SelectedCategory;
+		var category = vm.Categories.First(c => !c.Equals(previousCategory) && c.Count > 0);
+		var sample = category.SamplesContent.First();
+		var other = vm.Categories.First(c => !c.Equals(category) && !c.SamplesContent.Contains(sample));
+		var initial = vm.FavoriteSamples?.Contains(sample) ?? false;
+
+		try
+		{
+			vm.SelectedCategory = other;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			for (var i = 0; i < 2; i++)
+			{
+				var expected = !(vm.FavoriteSamples?.Contains(sample) ?? false);
+				vm.ToggleFavoriteCommand.Execute(sample);
+				await TestServices.WindowHelper.WaitFor(() => (vm.FavoriteSamples?.Contains(sample) ?? false) == expected, timeoutMS: 5000);
+
+				Assert.AreEqual(expected, sample.IsFavorite);
+			}
+		}
+		finally
+		{
+			if ((vm.FavoriteSamples?.Contains(sample) ?? false) != initial)
+			{
+				vm.ToggleFavoriteCommand.Execute(sample);
+				await TestServices.WindowHelper.WaitFor(() => (vm.FavoriteSamples?.Contains(sample) ?? false) == initial, timeoutMS: 5000);
+			}
+
+			vm.SelectedCategory = previousCategory;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
 	public async Task When_Runtime_Test_Runner_Is_Missing_Run_Fails()
 	{
 		var path = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid():N}.xml");

@@ -1021,6 +1021,7 @@ namespace SampleControl.Presentation
 
 			if (wasFavorite)
 			{
+				UpdateFavoriteForSample(sample, false);
 				favorites.Remove(sample);
 			}
 			else
