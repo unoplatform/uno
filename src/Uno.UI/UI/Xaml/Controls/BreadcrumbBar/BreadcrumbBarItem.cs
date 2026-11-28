@@ -68,7 +68,7 @@ public partial class BreadcrumbBarItem : ContentControl
 			PreviewKeyDown += OnChildPreviewKeyDown;
 			m_childPreviewKeyDownToken.Disposable = Disposable.Create(() =>
 			{
-				PreviewKeyDown += OnChildPreviewKeyDown;
+				PreviewKeyDown -= OnChildPreviewKeyDown;
 			});
 		}
 
@@ -152,22 +152,22 @@ public partial class BreadcrumbBarItem : ContentControl
 				});
 				button.Loaded += OnLoadedEvent;
 
-				var isPressedToken = RegisterPropertyChangedCallback(ButtonBase.IsPressedProperty, OnVisualPropertyChanged);
+				var isPressedToken = button.RegisterPropertyChangedCallback(ButtonBase.IsPressedProperty, OnVisualPropertyChanged);
 				m_isPressedButtonRevoker.Disposable = Disposable.Create(() =>
 				{
-					UnregisterPropertyChangedCallback(ButtonBase.IsPressedProperty, isPressedToken);
+					button.UnregisterPropertyChangedCallback(ButtonBase.IsPressedProperty, isPressedToken);
 				});
 
-				var isPointerOverToken = RegisterPropertyChangedCallback(ButtonBase.IsPointerOverProperty, OnVisualPropertyChanged);
+				var isPointerOverToken = button.RegisterPropertyChangedCallback(ButtonBase.IsPointerOverProperty, OnVisualPropertyChanged);
 				m_isPointerOverButtonRevoker.Disposable = Disposable.Create(() =>
 				{
-					UnregisterPropertyChangedCallback(ButtonBase.IsPointerOverProperty, isPointerOverToken);
+					button.UnregisterPropertyChangedCallback(ButtonBase.IsPointerOverProperty, isPointerOverToken);
 				});
 
-				var isEnabledToken = RegisterPropertyChangedCallback(Control.IsEnabledProperty, OnVisualPropertyChanged);
+				var isEnabledToken = button.RegisterPropertyChangedCallback(Control.IsEnabledProperty, OnVisualPropertyChanged);
 				m_isEnabledButtonRevoker.Disposable = Disposable.Create(() =>
 				{
-					UnregisterPropertyChangedCallback(Control.IsEnabledProperty, isEnabledToken);
+					button.UnregisterPropertyChangedCallback(Control.IsEnabledProperty, isEnabledToken);
 				});
 			}
 
