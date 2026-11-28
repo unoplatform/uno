@@ -382,13 +382,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// AddChild also fires while a subtree is still detached (XAML builds bottom-up) and for live parents under
 		// a Collapsed ancestor. A node emitted then hangs off the semantic root with zero geometry; attaching the
 		// subtree root, or showing the ancestor, replays every descendant through the recursion below instead.
+		// A virtualized container's region owns its items (the recursion below never enters it), but AddChild
+		// still fires when a container is attached to its items panel: skip it, or the item gets a second node.
 		if (!parent.IsActiveInVisualTree
-			|| (_onChildAddedDepth == 0 && IsUnderCollapsedElement(parent))
+			|| (_onChildAddedDepth == 0 && (IsUnderCollapsedElement(parent) || IsVirtualizedContainerSubtree(parent)))
 			|| IsNativeTextControlSubtree(parent))
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"[A11y] OnChildAdded: skipped child={child.GetType().Name} handle={child.Visual.Handle}: parent {parent.GetType().Name} is detached or under a Collapsed ancestor");
+				this.Log().Trace($"[A11y] OnChildAdded: skipped child={child.GetType().Name} handle={child.Visual.Handle}: parent {parent.GetType().Name} is detached, under a Collapsed ancestor or inside a region-owned subtree");
 			}
 			return;
 		}
@@ -2156,6 +2158,20 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		// Ultimate fallback: use the root element handle
 		return _rootElementHandle;
+	}
+
+	// Mirrors the OnChildAdded recursion, which does not enter a semantic ListViewBase or ItemsRepeater.
+	private bool IsVirtualizedContainerSubtree(UIElement? element)
+	{
+		for (var current = element; current is not null; current = current.GetParent() as UIElement)
+		{
+			if (current is ListViewBase or ItemsRepeater && IsSemanticElement(current))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private bool IsNativeTextControlSubtree(UIElement? element)
