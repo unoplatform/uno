@@ -29,41 +29,31 @@ partial class TransitionTarget
 	private static void OnCompositeTransformChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 	{
 		var pThis = (TransitionTarget)sender;
-		if (args.OldValue is CompositeTransform oldTransform)
-		{
-			oldTransform.Changed -= pThis.OnCompositeTransformValueChanged;
-		}
-
-		if (args.NewValue is CompositeTransform newTransform)
-		{
-			newTransform.Changed += pThis.OnCompositeTransformValueChanged;
-		}
+		pThis._compositeTransformChangedRegistration?.Dispose();
+		pThis._compositeTransformChangedRegistration = (args.NewValue as CompositeTransform)?.RegisterChanged(pThis.OnCompositeTransformValueChanged);
 
 		NWSetTransformDirty(pThis);
 	}
+
+	private IDisposable? _compositeTransformChangedRegistration;
 
 	private void OnCompositeTransformValueChanged(object? sender, EventArgs e) => NWSetTransformDirty(this);
 
 	private static void OnClipTransformChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 	{
 		var pThis = (TransitionTarget)sender;
-		if (args.OldValue is CompositeTransform oldTransform)
-		{
-			oldTransform.Changed -= pThis.OnClipTransformValueChanged;
-		}
-
-		if (args.NewValue is CompositeTransform newTransform)
-		{
-			newTransform.Changed += pThis.OnClipTransformValueChanged;
-		}
+		pThis._clipTransformChangedRegistration?.Dispose();
+		pThis._clipTransformChangedRegistration = (args.NewValue as CompositeTransform)?.RegisterChanged(pThis.OnClipTransformValueChanged);
 
 		NWSetClipDirty(pThis);
 	}
 
+	private IDisposable? _clipTransformChangedRegistration;
+
 	private void OnClipTransformValueChanged(object? sender, EventArgs e)
 	{
 		// CompositeTransform.cpp: any value set on the transition clip transform marks the target as clip-animated (sticky).
-		// TODO Uno: WinUI also marks on a set that doesn't change the value; Transform.Changed only fires on actual changes.
+		// TODO Uno: WinUI also marks on a set that doesn't change the value; the transform's change notification only fires on actual changes.
 		SetHasClipAnimation();
 		NWSetClipDirty(this);
 	}
