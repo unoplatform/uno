@@ -1,0 +1,25 @@
+{
+  "id": "propertypath",
+  "title": "PropertyPathParser",
+  "baseline": "1b5b1a0ccc05ce5c8b5931dc303666975b57f498",
+  "upstream": {
+    "sources": [
+      "dxaml/xcp/dxaml/lib/PropertyPathParser.h",
+      "dxaml/xcp/dxaml/lib/PropertyPathParser.cpp",
+      "dxaml/xcp/dxaml/lib/PropertyPathStepDescriptor.h",
+      "dxaml/xcp/dxaml/lib/PropertyPathStepDescriptor.cpp"
+    ]
+  },
+  "uno": {
+    "sources": [
+      "src/Uno.UI/DirectUI/PropertyPathParser.cs",
+      "src/Uno.UI/DirectUI/PropertyPathParser.h.mux.cs",
+      "src/Uno.UI/DirectUI/PropertyPathParser.mux.cs",
+      "src/Uno.UI/DirectUI/PropertyPathParser.uno.cs",
+      "src/Uno.UI/DirectUI/PropertyPathStepDescriptor.cs",
+      "src/Uno.UI/DirectUI/PropertyPathStepDescriptor.h.mux.cs",
+      "src/Uno.UI/DirectUI/PropertyPathStepDescriptor.mux.cs",
+      "src/Uno.UI/DirectUI/PropertyPathStepDescriptor.uno.cs"
+    ]
+  }
+}
