@@ -1,0 +1,19 @@
+<Project>
+	<!--
+		Imported before the project body, as the .NET SDK does with its own implicit usings, so that a
+		<Using Remove="..." /> in the project applies to these. Item conditions are evaluated after every
+		property, so the values set in the project body and in the Uno.Sdk targets are the ones seen here.
+	-->
+	<ItemGroup Condition=" '$(DisableImplicitUnoNamespaces)' != 'true' AND ('$(ImplicitUsings)' == 'true' OR '$(ImplicitUsings)' == 'enable') ">
+		<Using Include="System.Windows.Input" Sdk="Uno" />
+		<Using Include="Windows.Networking.Connectivity" Sdk="Uno" />
+		<Using Include="Windows.Storage" Sdk="Uno" />
+		<Using Include="Microsoft.UI.Xaml" Sdk="Uno" />
+		<Using Include="Microsoft.UI.Xaml.Controls" Sdk="Uno" />
+		<Using Include="Microsoft.UI.Xaml.Media" Sdk="Uno" />
+		<Using Include="Microsoft.UI.Xaml.Navigation" Sdk="Uno" />
+		<!-- Uno.WinUI provides it, and a WinAppSDK-only library does not reference Uno.WinUI on Windows. -->
+		<Using Include="Uno.UI" Sdk="Uno" Condition=" '$(_UnoIsWinAppSdkOnlyLibrary)' != 'true' " />
+		<Using Include="Windows.ApplicationModel" Sdk="Uno" />
+	</ItemGroup>
+</Project>
