@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference src\controls\dev\NumberBox\NumberBox.h, tag winui3/release/1.7.1, commit 5f27a786ac9
+// MUX Reference controls\dev\NumberBox\NumberBox.h, commit b8cfb849061c00df624ebb29ac4727b9e58ea99c
 
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;

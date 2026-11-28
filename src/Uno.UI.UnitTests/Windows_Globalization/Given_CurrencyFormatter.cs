@@ -171,6 +171,19 @@ public class Given_CurrencyFormatter
 	}
 
 	[TestMethod]
+	public void When_NumberRounderProducesInfinity_Then_FormatSpecialValue()
+	{
+		var sut = MakeFormatter(USDCurrencyCode);
+		sut.NumberRounder = new IncrementNumberRounder
+		{
+			Increment = 1e308,
+			RoundingAlgorithm = RoundingAlgorithm.RoundAwayFromZero,
+		};
+
+		Assert.AreEqual("∞", sut.FormatDouble(1.5e308));
+	}
+
+	[TestMethod]
 	public void When_FormatDoubleUsingSignificantDigitsNumberRounder()
 	{
 		var sut = MakeFormatter(USDCurrencyCode);

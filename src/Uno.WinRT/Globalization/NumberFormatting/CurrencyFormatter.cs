@@ -102,6 +102,11 @@ public partial class CurrencyFormatter : INumberParser, INumberFormatter2, INumb
 		if (NumberRounder != null)
 		{
 			value = NumberRounder.RoundDouble(value);
+
+			if (!_formatterHelper.TryValidate(value, out text))
+			{
+				return text;
+			}
 		}
 
 		var isNegative = value.IsNegative();
