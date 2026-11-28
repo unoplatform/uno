@@ -9,5 +9,7 @@ public enum DataPackageOperation : uint
 	// Skipping already declared field Windows.ApplicationModel.DataTransfer.DataPackageOperation.Copy
 	// Skipping already declared field Windows.ApplicationModel.DataTransfer.DataPackageOperation.Move
 	// Skipping already declared field Windows.ApplicationModel.DataTransfer.DataPackageOperation.Link
+	// Skipping already declared field Windows.ApplicationModel.DataTransfer.DataPackageOperation.NewTarget
+	// Skipping already declared field Windows.ApplicationModel.DataTransfer.DataPackageOperation.BackgroundTarget
 }
 #endif

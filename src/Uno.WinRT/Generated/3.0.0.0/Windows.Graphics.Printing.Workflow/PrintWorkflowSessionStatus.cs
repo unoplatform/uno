@@ -17,5 +17,8 @@ public enum PrintWorkflowSessionStatus
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	Closed = 3,
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	PdlDataAvailableForModification = 4,
+#endif
 }
 #endif

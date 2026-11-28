@@ -93,6 +93,34 @@ public partial class Visual : global::Windows.UI.Composition.CompositionObject
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsHitTestVisible
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "IsHitTestVisible");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "IsHitTestVisible");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsPixelSnappingEnabled
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.Visual", "IsPixelSnappingEnabled");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Visual", "IsPixelSnappingEnabled");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public bool IsVisible
 	{
 		get
@@ -295,6 +323,10 @@ public partial class Visual : global::Windows.UI.Composition.CompositionObject
 	// Forced skipping of method Windows.UI.Composition.Visual.Clip.set
 	// Forced skipping of method Windows.UI.Composition.Visual.CompositeMode.get
 	// Forced skipping of method Windows.UI.Composition.Visual.CompositeMode.set
+	// Forced skipping of method Windows.UI.Composition.Visual.IsHitTestVisible.get
+	// Forced skipping of method Windows.UI.Composition.Visual.IsHitTestVisible.set
+	// Forced skipping of method Windows.UI.Composition.Visual.IsPixelSnappingEnabled.get
+	// Forced skipping of method Windows.UI.Composition.Visual.IsPixelSnappingEnabled.set
 	// Forced skipping of method Windows.UI.Composition.Visual.IsVisible.get
 	// Forced skipping of method Windows.UI.Composition.Visual.IsVisible.set
 	// Forced skipping of method Windows.UI.Composition.Visual.Offset.get

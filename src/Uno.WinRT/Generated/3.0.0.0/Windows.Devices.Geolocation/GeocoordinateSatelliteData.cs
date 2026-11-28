@@ -14,6 +14,16 @@ public partial class GeocoordinateSatelliteData
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public double? GeometricDilutionOfPrecision
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeocoordinateSatelliteData", "GeometricDilutionOfPrecision");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public double? HorizontalDilutionOfPrecision
 	{
 		get
@@ -34,6 +44,16 @@ public partial class GeocoordinateSatelliteData
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public double? TimeDilutionOfPrecision
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Geolocation.GeocoordinateSatelliteData", "TimeDilutionOfPrecision");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public double? VerticalDilutionOfPrecision
 	{
 		get
@@ -42,7 +62,9 @@ public partial class GeocoordinateSatelliteData
 		}
 	}
 #endif
+	// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.GeometricDilutionOfPrecision.get
 	// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.HorizontalDilutionOfPrecision.get
 	// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.PositionDilutionOfPrecision.get
+	// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.TimeDilutionOfPrecision.get
 	// Forced skipping of method Windows.Devices.Geolocation.GeocoordinateSatelliteData.VerticalDilutionOfPrecision.get
 }

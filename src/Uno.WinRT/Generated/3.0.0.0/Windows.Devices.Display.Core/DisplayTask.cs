@@ -26,4 +26,11 @@ public partial class DisplayTask
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayTask", "SetWait(DisplayFence readyFence, ulong readyFenceValue)");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public void SetSignal(global::Windows.Devices.Display.Core.DisplayTaskSignalKind signalKind, global::Windows.Devices.Display.Core.DisplayFence fence)
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayTask", "SetSignal(DisplayTaskSignalKind signalKind, DisplayFence fence)");
+	}
+#endif
 }

@@ -17,6 +17,13 @@ public partial class DispatcherQueueSynchronizationContext : global::System.Thre
 	// Forced skipping of method Microsoft.UI.Dispatching.DispatcherQueueSynchronizationContext.DispatcherQueueSynchronizationContext(Microsoft.UI.Dispatching.DispatcherQueue)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public override global::System.Threading.SynchronizationContext CreateCopy()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Dispatching.DispatcherQueueSynchronizationContext", "CreateCopy()");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public override void Post(global::System.Threading.SendOrPostCallback d, object state)
 	{
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Dispatching.DispatcherQueueSynchronizationContext", "Post(SendOrPostCallback d, object state)");
@@ -27,13 +34,6 @@ public partial class DispatcherQueueSynchronizationContext : global::System.Thre
 	public override void Send(global::System.Threading.SendOrPostCallback d, object state)
 	{
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Dispatching.DispatcherQueueSynchronizationContext", "Send(SendOrPostCallback d, object state)");
-	}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-	public override global::System.Threading.SynchronizationContext CreateCopy()
-	{
-		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Dispatching.DispatcherQueueSynchronizationContext", "CreateCopy()");
 	}
 #endif
 }

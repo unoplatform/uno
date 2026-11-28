@@ -78,4 +78,32 @@ public partial class VpnManagementAgent
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnManagementAgent", "DisconnectProfileAsync(IVpnProfile profile)");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Networking.Vpn.IVpnProfile GetAlwaysOnActiveProfile()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnManagementAgent", "GetAlwaysOnActiveProfile()");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Vpn.IVpnProfile> GetAlwaysOnActiveProfileAsync()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnManagementAgent", "GetAlwaysOnActiveProfileAsync()");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public void SetAlwaysOnActiveProfile(global::Windows.Networking.Vpn.IVpnProfile profile)
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnManagementAgent", "SetAlwaysOnActiveProfile(IVpnProfile profile)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Vpn.VpnManagementErrorStatus> SetAlwaysOnActiveProfileAsync(global::Windows.Networking.Vpn.IVpnProfile profile)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Networking.Vpn.VpnManagementAgent", "SetAlwaysOnActiveProfileAsync(IVpnProfile profile)");
+	}
+#endif
 }

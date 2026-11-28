@@ -17,5 +17,8 @@ public enum MediaStreamType
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	Photo = 3,
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	Metadata = 4,
+#endif
 }
 #endif

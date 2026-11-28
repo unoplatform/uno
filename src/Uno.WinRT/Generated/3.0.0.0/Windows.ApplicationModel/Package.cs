@@ -114,6 +114,16 @@ public partial class Package
 #endif
 	// Skipping already declared property PublisherDisplayName
 	// Skipping already declared property SignatureKind
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public string SourceUriSchemeName
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Package", "SourceUriSchemeName");
+		}
+	}
+#endif
 	// Skipping already declared property Status
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -203,6 +213,13 @@ public partial class Package
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Package", "GetAppListEntries()");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Package> FindRelatedPackages(global::Windows.ApplicationModel.FindRelatedPackagesOptions options)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Package", "FindRelatedPackages(FindRelatedPackagesOptions options)");
+	}
+#endif
 	// Forced skipping of method Windows.ApplicationModel.Package.Dependencies.get
 	// Forced skipping of method Windows.ApplicationModel.Package.Description.get
 	// Forced skipping of method Windows.ApplicationModel.Package.DisplayName.get
@@ -228,6 +245,7 @@ public partial class Package
 	// Forced skipping of method Windows.ApplicationModel.Package.MutablePath.get
 	// Forced skipping of method Windows.ApplicationModel.Package.PublisherDisplayName.get
 	// Forced skipping of method Windows.ApplicationModel.Package.SignatureKind.get
+	// Forced skipping of method Windows.ApplicationModel.Package.SourceUriSchemeName.get
 	// Forced skipping of method Windows.ApplicationModel.Package.Status.get
 	// Forced skipping of method Windows.ApplicationModel.Package.UserExternalLocation.get
 	// Forced skipping of method Windows.ApplicationModel.Package.UserExternalPath.get

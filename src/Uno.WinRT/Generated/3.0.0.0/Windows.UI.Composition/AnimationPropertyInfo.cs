@@ -26,6 +26,20 @@ public partial class AnimationPropertyInfo : global::Windows.UI.Composition.Comp
 		}
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.UI.Composition.CompositionObject GetResolvedCompositionObject()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.AnimationPropertyInfo", "GetResolvedCompositionObject()");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public string GetResolvedCompositionObjectProperty()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.UI.Composition.AnimationPropertyInfo", "GetResolvedCompositionObjectProperty()");
+	}
+#endif
 	// Forced skipping of method Windows.UI.Composition.AnimationPropertyInfo.AccessMode.get
 	// Forced skipping of method Windows.UI.Composition.AnimationPropertyInfo.AccessMode.set
 }

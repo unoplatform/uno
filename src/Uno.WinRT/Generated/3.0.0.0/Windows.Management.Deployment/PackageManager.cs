@@ -445,5 +445,47 @@ public partial class PackageManager
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageManager", "GetPackageStubPreference(string packageFamilyName)");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Management.Deployment.DeploymentResult, global::Windows.Management.Deployment.DeploymentProgress> ProvisionPackageForAllUsersAsync(string mainPackageFamilyName, global::Windows.Management.Deployment.PackageAllUserProvisioningOptions options)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageManager", "ProvisionPackageForAllUsersAsync(string mainPackageFamilyName, PackageAllUserProvisioningOptions options)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Management.Deployment.DeploymentResult, global::Windows.Management.Deployment.DeploymentProgress> RemovePackageByUriAsync(global::System.Uri packageUri, global::Windows.Management.Deployment.RemovePackageOptions options)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageManager", "RemovePackageByUriAsync(Uri packageUri, RemovePackageOptions options)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsPackageRemovalPending(string packageFullName)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageManager", "IsPackageRemovalPending(string packageFullName)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsPackageRemovalPendingForUser(string packageFullName, string userSecurityId)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageManager", "IsPackageRemovalPendingForUser(string packageFullName, string userSecurityId)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsPackageRemovalPendingByUri(global::System.Uri packageUri)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageManager", "IsPackageRemovalPendingByUri(Uri packageUri)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsPackageRemovalPendingByUriForUser(global::System.Uri packageUri, string userSecurityId)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Management.Deployment.PackageManager", "IsPackageRemovalPendingByUriForUser(Uri packageUri, string userSecurityId)");
+	}
+#endif
 	// Forced skipping of method Windows.Management.Deployment.PackageManager.DebugSettings.get
 }

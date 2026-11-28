@@ -35,5 +35,8 @@ public enum SocketProtectionLevel
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	Unspecified = 9,
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	Tls13 = 10,
+#endif
 }
 #endif

@@ -255,6 +255,8 @@ public partial class CoreWebView2
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.SaveFileSecurityCheckStarting.remove
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.ScreenCaptureStarting.add
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.ScreenCaptureStarting.remove
+	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.DedicatedWorkerCreated.add
+	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.DedicatedWorkerCreated.remove
 #if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]
 	public global::Windows.Foundation.IAsyncOperation<bool> TrySuspendAsync()
@@ -645,6 +647,22 @@ public partial class CoreWebView2
 		remove
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ScreenCaptureStarting");
+		}
+	}
+#endif
+#if __SKIA__
+	[global::Uno.NotImplemented("__SKIA__")]
+	public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2DedicatedWorkerCreatedEventArgs> DedicatedWorkerCreated
+	{
+		[global::Uno.NotImplemented("__SKIA__")]
+		add
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event DedicatedWorkerCreated");
+		}
+		[global::Uno.NotImplemented("__SKIA__")]
+		remove
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event DedicatedWorkerCreated");
 		}
 	}
 #endif

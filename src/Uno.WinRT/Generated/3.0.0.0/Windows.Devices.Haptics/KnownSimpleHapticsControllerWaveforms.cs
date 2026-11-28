@@ -7,14 +7,168 @@ namespace Windows.Devices.Haptics;
 #endif
 public static partial class KnownSimpleHapticsControllerWaveforms
 {
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static ushort Align
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms", "Align");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static ushort BrushContinuous
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms", "BrushContinuous");
+		}
+	}
+#endif
 	// Skipping already declared property BuzzContinuous
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static ushort ChiselMarkerContinuous
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms", "ChiselMarkerContinuous");
+		}
+	}
+#endif
 	// Skipping already declared property Click
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static ushort Collide
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms", "Collide");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static ushort EraserContinuous
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms", "EraserContinuous");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static ushort Error
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms", "Error");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static ushort GalaxyPenContinuous
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms", "GalaxyPenContinuous");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static ushort Grow
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms", "Grow");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static ushort Hover
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms", "Hover");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static ushort InkContinuous
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms", "InkContinuous");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static ushort MarkerContinuous
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms", "MarkerContinuous");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static ushort PencilContinuous
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms", "PencilContinuous");
+		}
+	}
+#endif
 	// Skipping already declared property Press
 	// Skipping already declared property Release
 	// Skipping already declared property RumbleContinuous
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static ushort Step
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms", "Step");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static ushort Success
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms", "Success");
+		}
+	}
+#endif
+	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.Align.get
+	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.BrushContinuous.get
 	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.BuzzContinuous.get
+	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.ChiselMarkerContinuous.get
 	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.Click.get
+	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.Collide.get
+	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.EraserContinuous.get
+	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.Error.get
+	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.GalaxyPenContinuous.get
+	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.Grow.get
+	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.Hover.get
+	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.InkContinuous.get
+	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.MarkerContinuous.get
+	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.PencilContinuous.get
 	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.Press.get
 	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.Release.get
 	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.RumbleContinuous.get
+	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.Step.get
+	// Forced skipping of method Windows.Devices.Haptics.KnownSimpleHapticsControllerWaveforms.Success.get
 }

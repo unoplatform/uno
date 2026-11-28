@@ -34,6 +34,16 @@ public partial class DisplayModeInfo
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Devices.Display.Core.DisplayPresentationRate PhysicalPresentationRate
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayModeInfo", "PhysicalPresentationRate");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public global::Windows.Devices.Display.Core.DisplayPresentationRate PresentationRate
 	{
 		get
@@ -98,6 +108,7 @@ public partial class DisplayModeInfo
 #endif
 	// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.IsInterlaced.get
 	// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.IsStereo.get
+	// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.PhysicalPresentationRate.get
 	// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.PresentationRate.get
 	// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.Properties.get
 	// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.SourcePixelFormat.get

@@ -72,10 +72,43 @@ public partial class StorePrice
 		}
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public string UnformattedBasePrice
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePrice", "UnformattedBasePrice");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public string UnformattedPrice
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePrice", "UnformattedPrice");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public string UnformattedRecurrencePrice
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Services.Store.StorePrice", "UnformattedRecurrencePrice");
+		}
+	}
+#endif
 	// Forced skipping of method Windows.Services.Store.StorePrice.CurrencyCode.get
 	// Forced skipping of method Windows.Services.Store.StorePrice.FormattedBasePrice.get
 	// Forced skipping of method Windows.Services.Store.StorePrice.FormattedPrice.get
 	// Forced skipping of method Windows.Services.Store.StorePrice.FormattedRecurrencePrice.get
 	// Forced skipping of method Windows.Services.Store.StorePrice.IsOnSale.get
 	// Forced skipping of method Windows.Services.Store.StorePrice.SaleEndDate.get
+	// Forced skipping of method Windows.Services.Store.StorePrice.UnformattedBasePrice.get
+	// Forced skipping of method Windows.Services.Store.StorePrice.UnformattedPrice.get
+	// Forced skipping of method Windows.Services.Store.StorePrice.UnformattedRecurrencePrice.get
 }

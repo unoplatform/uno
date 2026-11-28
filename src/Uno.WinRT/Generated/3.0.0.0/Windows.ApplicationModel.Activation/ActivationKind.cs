@@ -45,5 +45,10 @@ public enum ActivationKind
 	// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.StartupTask
 	// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.CommandLineLaunch
 	// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.BarcodeScannerProvider
+	// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.PrintSupportJobUI
+	// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.PrintSupportSettingsUI
+	// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.PhoneCallActivation
+	// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.VpnForeground
+	// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.PrintSupportEnterpriseManagementUI
 }
 #endif

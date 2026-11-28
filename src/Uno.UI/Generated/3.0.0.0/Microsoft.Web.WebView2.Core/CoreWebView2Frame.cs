@@ -76,6 +76,8 @@ public partial class CoreWebView2Frame
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.ScreenCaptureStarting.remove
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.FrameCreated.add
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.FrameCreated.remove
+	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.DedicatedWorkerCreated.add
+	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Frame.DedicatedWorkerCreated.remove
 #if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]
 	public void RemoveHostObjectFromScript(string name)
@@ -221,6 +223,22 @@ public partial class CoreWebView2Frame
 		remove
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Frame", "event FrameCreated");
+		}
+	}
+#endif
+#if __SKIA__
+	[global::Uno.NotImplemented("__SKIA__")]
+	public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2Frame, global::Microsoft.Web.WebView2.Core.CoreWebView2DedicatedWorkerCreatedEventArgs> DedicatedWorkerCreated
+	{
+		[global::Uno.NotImplemented("__SKIA__")]
+		add
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Frame", "event DedicatedWorkerCreated");
+		}
+		[global::Uno.NotImplemented("__SKIA__")]
+		remove
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Frame", "event DedicatedWorkerCreated");
 		}
 	}
 #endif

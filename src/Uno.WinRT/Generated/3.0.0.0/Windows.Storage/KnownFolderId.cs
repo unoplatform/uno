@@ -53,5 +53,8 @@ public enum KnownFolderId
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	CurrentAppMods = 15,
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	DownloadsFolder = 16,
+#endif
 }
 #endif

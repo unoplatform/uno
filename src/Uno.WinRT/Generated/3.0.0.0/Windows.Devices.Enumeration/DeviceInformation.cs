@@ -130,6 +130,27 @@ public partial class DeviceInformation
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> CreateFromIdAsync(string deviceId, global::System.Collections.Generic.IEnumerable<string> additionalProperties, global::Windows.Devices.Enumeration.DeviceInformationKind kind, global::Windows.Devices.Enumeration.IDeviceEnumerationSettings settings)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "CreateFromIdAsync(string deviceId, IEnumerable<string> additionalProperties, DeviceInformationKind kind, IDeviceEnumerationSettings settings)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformationCollection> FindAllAsync(string aqsFilter, global::System.Collections.Generic.IEnumerable<string> additionalProperties, global::Windows.Devices.Enumeration.DeviceInformationKind kind, global::Windows.Devices.Enumeration.IDeviceEnumerationSettings settings)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "FindAllAsync(string aqsFilter, IEnumerable<string> additionalProperties, DeviceInformationKind kind, IDeviceEnumerationSettings settings)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static global::Windows.Devices.Enumeration.DeviceWatcher CreateWatcher(string aqsFilter, global::System.Collections.Generic.IEnumerable<string> additionalProperties, global::Windows.Devices.Enumeration.DeviceInformationKind kind, global::Windows.Devices.Enumeration.IDeviceEnumerationSettings settings)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Enumeration.DeviceInformation", "CreateWatcher(string aqsFilter, IEnumerable<string> additionalProperties, DeviceInformationKind kind, IDeviceEnumerationSettings settings)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public void Update(global::Windows.Devices.Enumeration.DeviceInformationUpdate updateInfo)
 	{
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DeviceInformation", "Update(DeviceInformationUpdate updateInfo)");

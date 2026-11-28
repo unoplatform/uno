@@ -9,6 +9,20 @@ public partial class CoreWebView2Profile
 {
 #if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]
+	public bool AreWebViewScriptApisEnabledForServiceWorkers
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "AreWebViewScriptApisEnabledForServiceWorkers");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "AreWebViewScriptApisEnabledForServiceWorkers");
+		}
+	}
+#endif
+#if __SKIA__
+	[global::Uno.NotImplemented("__SKIA__")]
 	public global::Microsoft.Web.WebView2.Core.CoreWebView2CookieManager CookieManager
 	{
 		get
@@ -64,6 +78,26 @@ public partial class CoreWebView2Profile
 #endif
 	// Skipping already declared property ProfileName
 	// Skipping already declared property ProfilePath
+#if __SKIA__
+	[global::Uno.NotImplemented("__SKIA__")]
+	public global::Microsoft.Web.WebView2.Core.CoreWebView2ServiceWorkerManager ServiceWorkerManager
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "ServiceWorkerManager");
+		}
+	}
+#endif
+#if __SKIA__
+	[global::Uno.NotImplemented("__SKIA__")]
+	public global::Microsoft.Web.WebView2.Core.CoreWebView2SharedWorkerManager SharedWorkerManager
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "SharedWorkerManager");
+		}
+	}
+#endif
 	// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Profile.ClearBrowsingDataAsync(Microsoft.Web.WebView2.Core.CoreWebView2BrowsingDataKinds, System.DateTimeOffset, System.DateTimeOffset)
 	// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Profile.ClearBrowsingDataAsync()
 #if __SKIA__
@@ -104,6 +138,8 @@ public partial class CoreWebView2Profile
 #endif
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.Deleted.add
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.Deleted.remove
+	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.AreWebViewScriptApisEnabledForServiceWorkers.get
+	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.AreWebViewScriptApisEnabledForServiceWorkers.set
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.CookieManager.get
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.DefaultDownloadFolderPath.get
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.DefaultDownloadFolderPath.set
@@ -118,6 +154,8 @@ public partial class CoreWebView2Profile
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.PreferredTrackingPreventionLevel.set
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.ProfileName.get
 	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.ProfilePath.get
+	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.ServiceWorkerManager.get
+	// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.SharedWorkerManager.get
 #if __SKIA__
 	[global::Uno.NotImplemented("__SKIA__")]
 	public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2Profile, object> Deleted

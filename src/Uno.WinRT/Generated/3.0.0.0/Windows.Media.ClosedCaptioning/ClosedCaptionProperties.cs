@@ -127,6 +127,8 @@ public static partial class ClosedCaptionProperties
 		}
 	}
 #endif
+	// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.PropertiesChanged.add
+	// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.PropertiesChanged.remove
 	// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.BackgroundColor.get
 	// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.BackgroundOpacity.get
 	// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.ComputedBackgroundColor.get
@@ -139,4 +141,20 @@ public static partial class ClosedCaptionProperties
 	// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.FontStyle.get
 	// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.RegionColor.get
 	// Forced skipping of method Windows.Media.ClosedCaptioning.ClosedCaptionProperties.RegionOpacity.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static event global::System.EventHandler<object> PropertiesChanged
+	{
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		add
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "event PropertiesChanged");
+		}
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		remove
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ClosedCaptioning.ClosedCaptionProperties", "event PropertiesChanged");
+		}
+	}
+#endif
 }

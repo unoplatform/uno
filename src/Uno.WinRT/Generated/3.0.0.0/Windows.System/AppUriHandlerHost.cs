@@ -9,6 +9,20 @@ public partial class AppUriHandlerHost
 {
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsEnabled
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.AppUriHandlerHost", "IsEnabled");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppUriHandlerHost", "IsEnabled");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public string Name
 	{
 		get
@@ -37,6 +51,8 @@ public partial class AppUriHandlerHost
 	}
 #endif
 	// Forced skipping of method Windows.System.AppUriHandlerHost.AppUriHandlerHost(string)
+	// Forced skipping of method Windows.System.AppUriHandlerHost.IsEnabled.get
+	// Forced skipping of method Windows.System.AppUriHandlerHost.IsEnabled.set
 	// Forced skipping of method Windows.System.AppUriHandlerHost.Name.get
 	// Forced skipping of method Windows.System.AppUriHandlerHost.Name.set
 }

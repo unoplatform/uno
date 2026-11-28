@@ -28,6 +28,20 @@ public partial class LightSensorDataThreshold
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Devices.Sensors.LightSensorChromaticity Chromaticity
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Sensors.LightSensorDataThreshold", "Chromaticity");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.LightSensorDataThreshold", "Chromaticity");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public float LuxPercentage
 	{
 		get
@@ -42,6 +56,8 @@ public partial class LightSensorDataThreshold
 #endif
 	// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.AbsoluteLux.get
 	// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.AbsoluteLux.set
+	// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.Chromaticity.get
+	// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.Chromaticity.set
 	// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.LuxPercentage.get
 	// Forced skipping of method Windows.Devices.Sensors.LightSensorDataThreshold.LuxPercentage.set
 }

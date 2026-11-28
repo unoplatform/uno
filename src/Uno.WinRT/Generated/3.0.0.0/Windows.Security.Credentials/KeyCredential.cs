@@ -50,5 +50,26 @@ public partial class KeyCredential
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredential", "GetAttestationAsync()");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.KeyCredentialOperationResult> RequestDeriveSharedSecretAsync(global::Windows.UI.WindowId windowId, string message, global::Windows.Storage.Streams.IBuffer encryptedRequest)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredential", "RequestDeriveSharedSecretAsync(WindowId windowId, string message, IBuffer encryptedRequest)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Storage.Streams.IBuffer RetrieveAuthorizationContext(global::Windows.Storage.Streams.IBuffer encryptedRequest)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredential", "RetrieveAuthorizationContext(IBuffer encryptedRequest)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Credentials.KeyCredentialOperationResult> RequestSignForWindowAsync(global::Windows.UI.WindowId window, global::Windows.Storage.Streams.IBuffer data)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Security.Credentials.KeyCredential", "RequestSignForWindowAsync(WindowId window, IBuffer data)");
+	}
+#endif
 	// Forced skipping of method Windows.Security.Credentials.KeyCredential.Name.get
 }

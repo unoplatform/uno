@@ -78,6 +78,16 @@ public partial class LampArray
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsAvailable
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampArray", "IsAvailable");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public bool IsConnected
 	{
 		get
@@ -238,6 +248,8 @@ public partial class LampArray
 		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Lights.LampArray", "RequestMessageAsync(int messageId)");
 	}
 #endif
+	// Forced skipping of method Windows.Devices.Lights.LampArray.AvailabilityChanged.add
+	// Forced skipping of method Windows.Devices.Lights.LampArray.AvailabilityChanged.remove
 	// Forced skipping of method Windows.Devices.Lights.LampArray.BoundingBox.get
 	// Forced skipping of method Windows.Devices.Lights.LampArray.BrightnessLevel.get
 	// Forced skipping of method Windows.Devices.Lights.LampArray.BrightnessLevel.set
@@ -245,6 +257,7 @@ public partial class LampArray
 	// Forced skipping of method Windows.Devices.Lights.LampArray.HardwareProductId.get
 	// Forced skipping of method Windows.Devices.Lights.LampArray.HardwareVendorId.get
 	// Forced skipping of method Windows.Devices.Lights.LampArray.HardwareVersion.get
+	// Forced skipping of method Windows.Devices.Lights.LampArray.IsAvailable.get
 	// Forced skipping of method Windows.Devices.Lights.LampArray.IsConnected.get
 	// Forced skipping of method Windows.Devices.Lights.LampArray.IsEnabled.get
 	// Forced skipping of method Windows.Devices.Lights.LampArray.IsEnabled.set
@@ -252,4 +265,20 @@ public partial class LampArray
 	// Forced skipping of method Windows.Devices.Lights.LampArray.LampCount.get
 	// Forced skipping of method Windows.Devices.Lights.LampArray.MinUpdateInterval.get
 	// Forced skipping of method Windows.Devices.Lights.LampArray.SupportsVirtualKeys.get
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Lights.LampArray, object> AvailabilityChanged
+	{
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		add
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.LampArray", "event AvailabilityChanged");
+		}
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		remove
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.LampArray", "event AvailabilityChanged");
+		}
+	}
+#endif
 }

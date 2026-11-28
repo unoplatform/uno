@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.ConversationalAgent;
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 [global::Uno.NotImplemented]
 #endif
-public partial class ActivationSignalDetectionConfiguration
+public partial class ActivationSignalDetectionConfiguration : global::System.IDisposable
 {
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	internal ActivationSignalDetectionConfiguration()
@@ -69,6 +69,16 @@ public partial class ActivationSignalDetectionConfiguration
 		get
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration", "TrainingDataFormat");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public uint TrainingStepCompletionMaxAllowedTime
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration", "TrainingStepCompletionMaxAllowedTime");
 		}
 	}
 #endif
@@ -192,12 +202,48 @@ public partial class ActivationSignalDetectionConfiguration
 #endif
 	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.AvailabilityChanged.add
 	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.AvailabilityChanged.remove
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public void Dispose()
+	{
+		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration", "Dispose()");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationSetModelDataResult SetModelDataWithResult(string dataType, global::Windows.Storage.Streams.IInputStream data)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration", "SetModelDataWithResult(string dataType, IInputStream data)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationSetModelDataResult> SetModelDataWithResultAsync(string dataType, global::Windows.Storage.Streams.IInputStream data)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration", "SetModelDataWithResultAsync(string dataType, IInputStream data)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationStateChangeResult> SetEnabledWithResultAsync(bool value)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration", "SetEnabledWithResultAsync(bool value)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationStateChangeResult SetEnabledWithResult(bool value)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration", "SetEnabledWithResult(bool value)");
+	}
+#endif
 	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.AvailabilityInfo.get
 	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.DisplayName.get
 	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.IsActive.get
 	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.ModelId.get
 	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.SignalId.get
 	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.TrainingDataFormat.get
+	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.TrainingStepCompletionMaxAllowedTime.get
 	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.TrainingStepsCompleted.get
 	// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.TrainingStepsRemaining.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
@@ -216,4 +262,5 @@ public partial class ActivationSignalDetectionConfiguration
 		}
 	}
 #endif
+	// Processing: System.IDisposable
 }

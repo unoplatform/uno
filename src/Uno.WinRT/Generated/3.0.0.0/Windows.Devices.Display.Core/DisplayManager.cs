@@ -106,6 +106,20 @@ public partial class DisplayManager : global::System.IDisposable
 	// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.PathsFailedOrInvalidated.remove
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Devices.Display.Core.DisplayManagerResultWithState TryReadCurrentStateForModeQuery()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayManager", "TryReadCurrentStateForModeQuery()");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.Devices.Display.Core.DisplayDevice CreateDisplayDeviceForIndirectAdapter(global::Windows.Devices.Display.Core.DisplayAdapter indirectAdapter, global::Windows.Devices.Display.Core.DisplayAdapter renderAdapter)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Display.Core.DisplayManager", "CreateDisplayDeviceForIndirectAdapter(DisplayAdapter indirectAdapter, DisplayAdapter renderAdapter)");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public void Dispose()
 	{
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayManager", "Dispose()");

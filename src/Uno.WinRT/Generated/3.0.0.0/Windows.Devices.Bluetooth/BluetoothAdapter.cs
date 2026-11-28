@@ -94,11 +94,31 @@ public partial class BluetoothAdapter
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsLowEnergyCodedPhySupported
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothAdapter", "IsLowEnergyCodedPhySupported");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public bool IsLowEnergySupported
 	{
 		get
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothAdapter", "IsLowEnergySupported");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool IsLowEnergyUncoded2MPhySupported
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Devices.Bluetooth.BluetoothAdapter", "IsLowEnergyUncoded2MPhySupported");
 		}
 	}
 #endif
@@ -158,7 +178,9 @@ public partial class BluetoothAdapter
 	// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsCentralRoleSupported.get
 	// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsClassicSupported.get
 	// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsExtendedAdvertisingSupported.get
+	// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsLowEnergyCodedPhySupported.get
 	// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsLowEnergySupported.get
+	// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsLowEnergyUncoded2MPhySupported.get
 	// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsPeripheralRoleSupported.get
 	// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.MaxAdvertisementDataLength.get
 }

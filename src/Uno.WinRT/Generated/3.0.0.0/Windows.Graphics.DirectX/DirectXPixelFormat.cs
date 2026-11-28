@@ -368,5 +368,8 @@ public enum DirectXPixelFormat
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	SamplerFeedbackMipRegionUsedOpaque = 190,
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	A4B4G4R4 = 191,
+#endif
 }
 #endif

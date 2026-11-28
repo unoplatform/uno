@@ -9,6 +9,30 @@ public partial class BackgroundTaskBuilder
 {
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public static bool IsRunningTaskInStandbySupported
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "IsRunningTaskInStandbySupported");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool AllowRunningTaskInStandby
+	{
+		get
+		{
+			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "AllowRunningTaskInStandby");
+		}
+		set
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "AllowRunningTaskInStandby");
+		}
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public bool CancelOnConditionLoss
 	{
 		get
@@ -85,6 +109,7 @@ public partial class BackgroundTaskBuilder
 	}
 #endif
 	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskBuilder.BackgroundTaskBuilder()
+	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskBuilder.IsRunningTaskInStandbySupported.get
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 	public void SetTrigger(global::Windows.ApplicationModel.Background.IBackgroundTrigger trigger)
@@ -113,6 +138,22 @@ public partial class BackgroundTaskBuilder
 		global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "SetTaskEntryPointClsid(Guid TaskEntryPoint)");
 	}
 #endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public bool Validate()
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "Validate()");
+	}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	public global::Windows.ApplicationModel.Background.BackgroundTaskRegistration Register(string taskName)
+	{
+		throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "Register(string taskName)");
+	}
+#endif
+	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskBuilder.AllowRunningTaskInStandby.get
+	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskBuilder.AllowRunningTaskInStandby.set
 	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskBuilder.CancelOnConditionLoss.get
 	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskBuilder.CancelOnConditionLoss.set
 	// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskBuilder.IsNetworkRequested.get
