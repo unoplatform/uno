@@ -50,6 +50,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[DataRow(14d)]
+		[DataRow(40d)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/26395")]
+		public async Task When_Empty_Height_Matches_One_Line(double fontSize)
+		{
+			static RichTextBlock Create(double fontSize, params Inline[] inlines)
+			{
+				var paragraph = new Paragraph();
+				foreach (var inline in inlines)
+				{
+					paragraph.Inlines.Add(inline);
+				}
+
+				var richTextBlock = new RichTextBlock { FontSize = fontSize };
+				richTextBlock.Blocks.Add(paragraph);
+				return richTextBlock;
+			}
+
+			static async Task<double> MeasureHeight(RichTextBlock richTextBlock)
+			{
+				WindowHelper.WindowContent = new StackPanel
+				{
+					HorizontalAlignment = HorizontalAlignment.Left,
+					VerticalAlignment = VerticalAlignment.Top,
+					Children = { richTextBlock },
+				};
+				await WindowHelper.WaitForLoaded(richTextBlock, x => x.IsLoaded);
+				await WindowHelper.WaitForIdle();
+				return richTextBlock.ActualHeight;
+			}
+
+			var oneLine = await MeasureHeight(Create(fontSize, new Run { Text = "x" }));
+			var noBlocks = await MeasureHeight(new RichTextBlock { FontSize = fontSize });
+			var emptyParagraph = await MeasureHeight(Create(fontSize));
+			var trailingLineBreak = await MeasureHeight(Create(fontSize, new Run { Text = "x" }, new LineBreak()));
+
+			Assert.AreEqual(oneLine, noBlocks, 0.5, "No blocks");
+			Assert.AreEqual(oneLine, emptyParagraph, 0.5, "Empty paragraph");
+			Assert.AreEqual(2 * oneLine, trailingLineBreak, 0.5, "Trailing line break");
+		}
+
+		[TestMethod]
 		public async Task When_BaselineOffset_Reflects_First_Line()
 		{
 			var SUT = new RichTextBlock { FontSize = 24 };
