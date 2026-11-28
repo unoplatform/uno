@@ -19,7 +19,12 @@ namespace Windows.Media.SpeechRecognition
 
 		private async Task<SpeechRecognitionResult> RecognizeTaskAsync(CancellationToken ct)
 		{
+			ObjectDisposedException.ThrowIf(_speechRecognizer is null, this);
+
 			var isPermissionGranted = await PermissionsHelper.TryGetPermission(ct, Android.Manifest.Permission.RecordAudio);
+
+			var recognizer = _speechRecognizer;
+			ObjectDisposedException.ThrowIf(recognizer is null, this);
 
 			if (!isPermissionGranted)
 			{
@@ -54,8 +59,8 @@ namespace Windows.Media.SpeechRecognition
 				}
 			};
 
-			_speechRecognizer.SetRecognitionListener(listener);
-			_speechRecognizer.StartListening(this.CreateSpeechIntent());
+			recognizer.SetRecognitionListener(listener);
+			recognizer.StartListening(this.CreateSpeechIntent());
 
 			OnStateChanged(SpeechRecognizerState.Capturing);
 
@@ -82,14 +87,16 @@ namespace Windows.Media.SpeechRecognition
 
 		public IAsyncAction StopRecognitionAsync()
 		{
+			// Keep the recognizer alive so StopListening can deliver final results and allow reuse.
 			_speechRecognizer?.StopListening();
-			_speechRecognizer?.Destroy();
 			return Task.CompletedTask.AsAsyncAction();
 		}
 
 		public void Dispose()
 		{
+			_speechRecognizer?.Destroy();
 			_speechRecognizer?.Dispose();
+			_speechRecognizer = null;
 		}
 	}
 }
